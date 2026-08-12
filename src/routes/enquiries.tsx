@@ -1164,131 +1164,193 @@ function EnquiriesPage() {
 
           {/* Activity */}
           <div style={{ ...SECTION_HEADER, marginTop: 20 }}>Activity</div>
-          <div style={{ ...CARD, padding: "6px 0" }}>
+          <div style={{ ...CARD, padding: "18px 16px" }}>
             {(() => {
-              const items: {
-                title: string;
+              type Msg = { text: string; at: string; outgoing: boolean };
+              type Item = {
+                kind: "event" | "conversation";
+                title?: string;
                 at: string | null;
                 pending?: boolean;
                 type?: string;
-              }[] = [];
-              items.push({ title: "Enquiry received", at: enquiry.created_at, type: "received" });
-              list.forEach((a) =>
-                items.push({ title: a.body ?? a.type, at: a.created_at, type: a.type ?? undefined }),
-              );
-              if (status === "new")
-                items.push({ title: "Awaiting contact", at: null, pending: true, type: "pending" });
+                messages?: Msg[];
+              };
 
-              const meta = (type?: string, pending?: boolean) => {
-                if (pending) return { label: "Pending", color: "#9CA3AF" };
-                switch (type) {
+              const items: Item[] = [];
+              items.push({
+                kind: "event",
+                title: "Enquiry received",
+                at: enquiry.created_at,
+                type: "received",
+              });
+
+              const isMsg = (t: string | null) => t === "sms" || t === "sms_reply";
+              const cleanBody = (b: string | null) =>
+                (b ?? "").replace(/^SMS (sent|reply):\s*"?/i, "").replace(/"$/, "");
+
+              list.forEach((a) => {
+                if (isMsg(a.type)) {
+                  const prev = items[items.length - 1];
+                  const msg: Msg = {
+                    text: cleanBody(a.body),
+                    at: a.created_at,
+                    outgoing: a.type === "sms",
+                  };
+                  if (prev && prev.kind === "conversation") {
+                    prev.messages!.push(msg);
+                    prev.at = a.created_at;
+                  } else {
+                    items.push({ kind: "conversation", at: a.created_at, messages: [msg] });
+                  }
+                } else {
+                  items.push({
+                    kind: "event",
+                    title: a.body ?? a.type,
+                    at: a.created_at,
+                    type: a.type ?? undefined,
+                  });
+                }
+              });
+
+              if (status === "new")
+                items.push({
+                  kind: "event",
+                  title: "Pending — Awaiting contact",
+                  at: null,
+                  pending: true,
+                  type: "pending",
+                });
+
+              const metaFor = (it: Item) => {
+                if (it.kind === "conversation")
+                  return { label: "Conversation", color: "#7B4FC9", dot: "#7B4FC9" };
+                if (it.pending) return { label: "Pending", color: "#B0B0B5", dot: "#D1D1D6" };
+                switch (it.type) {
                   case "note":
-                    return { label: "Note", color: "#F59E0B" };
+                    return { label: "Note", color: "#D68A1B", dot: "#D68A1B" };
                   case "call":
-                    return { label: "Call / Contact", color: "#1877D6" };
-                  case "sms":
-                    return { label: "SMS sent", color: "#7C3AED" };
+                    return { label: "Call / Contact", color: "#1877D6", dot: "#1877D6" };
                   case "status_change":
-                    return { label: "Status", color: "#15803D" };
+                    return { label: "Status", color: "#248A3D", dot: "#248A3D" };
                   case "received":
-                    return { label: "Enquiry", color: "#1877D6" };
+                    return { label: "Enquiry", color: "#1877D6", dot: "#1877D6" };
                   default:
-                    return { label: "Activity", color: "#9CA3AF" };
+                    return { label: "Activity", color: "#8A8A8E", dot: "#B0B0B5" };
                 }
               };
 
               return items.map((it, i) => {
-                const { label, color } = meta(it.type, it.pending);
+                const { label, color, dot } = metaFor(it);
+                const showLine = !it.pending && i < items.length - 1;
                 return (
-                  <div
-                    key={`${it.title}-${i}`}
-                    style={{
-                      display: "flex",
-                      gap: 10,
-                      padding: "10px 16px",
-                      alignItems: "flex-start",
-                    }}
-                  >
+                  <div key={`${label}-${i}`} style={{ display: "flex", gap: 12 }}>
                     <div
                       style={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: "50%",
-                        background: color,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                         flexShrink: 0,
-                        marginTop: 6,
+                        paddingTop: 3,
                       }}
-                    />
-                    <div style={{ flex: 1, minWidth: 0 }}>
+                    >
+                      <span
+                        style={{ width: 9, height: 9, borderRadius: "50%", background: dot }}
+                      />
+                      {showLine && (
+                        <span style={{ width: 1.5, flex: 1, background: "#E4E4E8", marginTop: 4 }} />
+                      )}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0, paddingBottom: showLine ? 16 : 0 }}>
                       <div
                         style={{
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "center",
-                          marginBottom: 2,
                           gap: 8,
                         }}
                       >
-                        <div
+                        <span
                           style={{
                             fontSize: 11,
-                            fontWeight: 600,
-                            color,
+                            fontWeight: 800,
+                            letterSpacing: "0.4px",
                             textTransform: "uppercase",
-                            letterSpacing: "0.06em",
+                            color,
                             ...POPPINS,
                           }}
                         >
                           {label}
-                        </div>
-                        <div style={{ fontSize: 11, color: "#9CA3AF", flexShrink: 0, ...POPPINS }}>
-                          {it.at ? timeAgo(it.at) : ""}
-                        </div>
-                      </div>
-                      {it.type === "sms" ? (
-                        <div
-                          style={{
-                            background: "#F0F7FF",
-                            borderRadius: 8,
-                            padding: "8px 10px",
-                            fontSize: 13,
-                            color: "#0B1F3A",
-                            fontStyle: "italic",
-                            lineHeight: 1.5,
-                            marginTop: 4,
-                            ...POPPINS,
-                          }}
+                        </span>
+                        <span
+                          style={{ fontSize: 11, color: "#B0B0B5", flexShrink: 0, ...POPPINS }}
                         >
-                          {(it.title ?? "").replace(/^SMS sent:\s*"?/, "").replace(/"$/, "")}
+                          {it.at ? timeAgo(it.at) : ""}
+                        </span>
+                      </div>
+
+                      {it.kind === "conversation" ? (
+                        <div style={{ marginTop: 8, display: "grid", gap: 10 }}>
+                          {it.messages!.map((m, mi) => (
+                            <div
+                              key={mi}
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: m.outgoing ? "flex-end" : "flex-start",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  maxWidth: "82%",
+                                  padding: "9px 13px",
+                                  fontSize: 13,
+                                  lineHeight: 1.45,
+                                  borderRadius: 14,
+                                  background: m.outgoing ? "#1877D6" : "#F2F2F7",
+                                  color: m.outgoing ? "#fff" : "#0B1F3A",
+                                  ...(m.outgoing
+                                    ? { borderBottomRightRadius: 4 }
+                                    : { borderBottomLeftRadius: 4 }),
+                                  ...POPPINS,
+                                }}
+                              >
+                                {m.text}
+                              </div>
+                              <div
+                                style={{
+                                  marginTop: 3,
+                                  fontSize: 10,
+                                  color: "#B0B0B5",
+                                  ...POPPINS,
+                                }}
+                              >
+                                {m.outgoing ? "You" : (enquiry.name ?? "Reply")} ·{" "}
+                                {timeAgo(m.at)}
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       ) : (
                         <div
                           style={{
-                            fontSize: 13,
-                            color: it.pending ? "#9CA3AF" : "#0B1F3A",
-                            fontStyle: it.type === "note" ? "italic" : "normal",
-                            lineHeight: 1.5,
-                            ...(it.type === "status_change" || it.type === "call"
-                              ? {
-                                  display: "-webkit-box",
-                                  WebkitLineClamp: 2,
-                                  WebkitBoxOrient: "vertical" as const,
-                                  overflow: "hidden",
-                                }
-                              : {}),
+                            marginTop: 3,
+                            fontSize: 13.5,
+                            fontWeight: it.pending ? 500 : 600,
+                            color: it.pending ? "#B0B0B5" : "#0B1F3A",
+                            lineHeight: 1.45,
                             ...POPPINS,
                           }}
                         >
                           {it.title}
                         </div>
                       )}
-
                     </div>
                   </div>
                 );
               });
             })()}
           </div>
+
 
 
           {/* Actions */}
