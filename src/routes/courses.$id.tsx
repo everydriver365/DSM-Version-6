@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { toast } from "sonner";
-import { IconArchive, IconClock, IconLoader2, IconMapPin, IconMessage, IconMoon, IconPencil, IconPhone, IconSchool, IconSettings, IconSun, IconSunrise, IconX } from "@tabler/icons-react";
+import { IconArchive, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMessage, IconMoon, IconPencil, IconPhone, IconPhoto, IconSchool, IconSettings, IconSun, IconSunrise, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 import { Card } from "../components/dsm/Card";
