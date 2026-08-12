@@ -233,6 +233,15 @@ function EnquiriesPage() {
     };
   }, [selectedId]);
 
+  useEffect(() => {
+    if (!selectedId) return;
+    setUnreadReplies((prev) => {
+      const next = new Set(prev);
+      next.delete(selectedId);
+      return next;
+    });
+  }, [selectedId]);
+
   function appendActivity(enquiryId: string, activity: EnquiryActivity) {
     setActivities((prev) => ({
       ...prev,
