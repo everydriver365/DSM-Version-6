@@ -138,6 +138,7 @@ function EnquiriesPage() {
   const [savingNote, setSavingNote] = useState(false);
   const [smsText, setSmsText] = useState("");
   const [showSmsComposer, setShowSmsComposer] = useState(false);
+  const [unreadReplies, setUnreadReplies] = useState<Set<string>>(new Set());
 
   function defaultSmsText(enquiry: EnquiryRow) {
     const first = enquiry.name?.split(" ")[0] ?? "";
@@ -192,6 +193,21 @@ function EnquiriesPage() {
         .order("created_at", { ascending: false });
 
       setEnquiries((data as EnquiryRow[] | null) ?? []);
+
+      const { data: replies } = await supabase
+        .from("enquiry_activities")
+        .select("enquiry_id")
+        .eq("instructor_id", user.id)
+        .eq("type", "sms_reply")
+        .gt(
+          "created_at",
+          new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+        );
+
+      setUnreadReplies(
+        new Set((replies ?? []).map((r) => r.enquiry_id))
+      );
+
       setLoading(false);
     })();
   }, []);
@@ -215,6 +231,15 @@ function EnquiriesPage() {
     return () => {
       cancelled = true;
     };
+  }, [selectedId]);
+
+  useEffect(() => {
+    if (!selectedId) return;
+    setUnreadReplies((prev) => {
+      const next = new Set(prev);
+      next.delete(selectedId);
+      return next;
+    });
   }, [selectedId]);
 
   function appendActivity(enquiryId: string, activity: EnquiryActivity) {
@@ -505,9 +530,37 @@ function EnquiriesPage() {
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 16.5, fontWeight: 800, color: "#0B1F3A", ...POPPINS }}>
-            {enquiry.name ?? "Unknown"}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ fontSize: 16.5, fontWeight: 800, color: "#0B1F3A", ...POPPINS }}>
+              {enquiry.name ?? "Unknown"}
+            </div>
+            {unreadReplies.has(enquiry.id) && (
+              <div
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: "#1877D6",
+                  flexShrink: 0,
+                  marginLeft: 6,
+                  marginTop: 2,
+                }}
+              />
+            )}
           </div>
+          {unreadReplies.has(enquiry.id) && (
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: "#1877D6",
+                fontFamily: "Poppins, sans-serif",
+                marginTop: 2,
+              }}
+            >
+              Reply received
+            </div>
+          )}
           {enquiry.postcode && (
             <div
               style={{
