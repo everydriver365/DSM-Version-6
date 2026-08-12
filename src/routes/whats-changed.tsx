@@ -51,6 +51,7 @@ type ItemKind =
   | "lesson_cancelled"
   | "message"
   | "payment"
+  | "card_payment"
   | "gap"
   | "enquiry"
   | "job"
