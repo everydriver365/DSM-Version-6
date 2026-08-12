@@ -1489,7 +1489,7 @@ function EnquiriesPage() {
                     actionBg="#1877D6"
                     actionColor="#fff"
                     actionShadow="0 2px 0 #0F52A8"
-                    description="Opens a text to their number and logs it as your first contact."
+                    description="Opens a text to their number. Use Mark contacted after if you want that logged."
                     onClick={
                       enquiry.phone
                         ? () => {
