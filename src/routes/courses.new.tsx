@@ -211,6 +211,11 @@ function NewCoursePage() {
   const [publishMarketplace, setPublishMarketplace] = useState(true);
   const [publishWebsite, setPublishWebsite] = useState(true);
 
+  // Hero image
+  const [heroImage, setHeroImage] = useState<string | null>(null);
+  const [uploadingHero, setUploadingHero] = useState(false);
+  const heroInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
