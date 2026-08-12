@@ -169,6 +169,12 @@ function useUnreadMessages(): number {
         table: "instructor_messages",
         filter: `to_instructor_id=eq.${uid}`,
       }, () => { load(); })
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "enquiry_activities",
+        filter: `instructor_id=eq.${uid}`,
+      }, () => { load(); })
       .subscribe();
 
 
