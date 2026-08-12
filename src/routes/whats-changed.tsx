@@ -14,6 +14,7 @@ import {
   Video,
   Zap,
 } from "lucide-react";
+import { IconCreditCard } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { PageLayout } from "@/components/PageLayout";
