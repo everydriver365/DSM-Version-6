@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { toast } from "sonner";
-import { IconArchive, IconClock, IconLoader2, IconMapPin, IconMessage, IconMoon, IconPencil, IconPhone, IconSchool, IconSettings, IconSun, IconSunrise, IconX } from "@tabler/icons-react";
+import { IconArchive, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMessage, IconMoon, IconPencil, IconPhone, IconPhoto, IconSchool, IconSettings, IconSun, IconSunrise, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 import { Card } from "../components/dsm/Card";
@@ -56,6 +56,7 @@ interface Course {
   description: string | null;
   max_spaces: number;
   spaces_taken: number;
+  image_url: string | null;
   start_date: string | null;
   end_date: string | null;
   daily_hours: number | null;
@@ -131,6 +132,9 @@ function CourseDetailPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [addOpen, setAddOpen] = useState(false);
+  const [heroImage, setHeroImage] = useState<string | null>(null);
+  const [uploadingHero, setUploadingHero] = useState(false);
+  const heroInputRef = useRef<HTMLInputElement>(null);
 
   // Edit-mode form state mirrors Course shape
   const [form, setForm] = useState<Course | null>(null);
@@ -152,6 +156,7 @@ function CourseDetailPage() {
       const row = c as Course;
       setCourse(row);
       setForm(row);
+      setHeroImage((c as any).image_url ?? null);
     }
 
     const { data: bs, error: bErr } = await supabase
@@ -196,6 +201,7 @@ function CourseDetailPage() {
         pickup_area: form.pickup_area,
         pickup_lat: form.pickup_lat,
         pickup_lng: form.pickup_lng,
+        image_url: heroImage,
       })
       .eq("id", id);
 
@@ -208,6 +214,24 @@ function CourseDetailPage() {
     toast.success("Course updated");
     setEditing(false);
     load();
+  }
+
+  async function uploadHeroImage(file: File) {
+    if (!course?.instructor_id) return;
+    setUploadingHero(true);
+    try {
+      const ext = file.name.split('.').pop() ?? 'jpg';
+      const path = `${course.instructor_id}/${Date.now()}-hero.${ext}`;
+      const { error } = await supabase.storage.from('course-images').upload(path, file, { upsert: true });
+      if (error) throw error;
+      const { data: { publicUrl } } = supabase.storage.from('course-images').getPublicUrl(path);
+      setHeroImage(publicUrl);
+      toast.success('Image uploaded');
+    } catch (e: any) {
+      toast.error(e.message ?? 'Upload failed');
+    } finally {
+      setUploadingHero(false);
+    }
   }
 
   async function archive() {
@@ -257,6 +281,114 @@ function CourseDetailPage() {
   }
 
   const spacesLeft = course ? Math.max(0, (course.max_spaces ?? 0) - (course.spaces_taken ?? 0)) : 0;
+
+  function CourseImageSection() {
+    return (
+      <>
+        <div style={{ marginTop: 24, marginBottom: 8, padding: "0 16px" }}>
+          <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.6, fontFamily: "Poppins, sans-serif" }}>
+            COURSE IMAGE
+          </span>
+        </div>
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 16,
+            boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+            overflow: "hidden",
+            margin: "0 16px 12px",
+          }}
+        >
+          {heroImage ? (
+            <>
+              <img src={heroImage} alt="Course hero" style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} />
+              <button
+                type="button"
+                onClick={() => heroInputRef.current?.click()}
+                style={{
+                  width: "100%",
+                  textAlign: "left",
+                  padding: "12px 16px",
+                  background: "none",
+                  border: "none",
+                  borderBottom: "0.5px solid #EEF2F7",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: "#0B1F3A",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                Change image
+                {uploadingHero && (
+                  <IconLoader2 stroke={1.5} size={16} className="animate-spin" style={{ color: "#1877D6" }} />
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={() => setHeroImage(null)}
+                style={{
+                  width: "100%",
+                  textAlign: "left",
+                  padding: "12px 16px",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: "#CC2229",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                Remove image
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => heroInputRef.current?.click()}
+              style={{
+                width: "100%",
+                textAlign: "left",
+                padding: "12px 16px",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+              }}
+            >
+              <IconPhoto size={18} color="#6B7686" />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 500, color: "#0B1F3A", fontFamily: "Poppins, sans-serif" }}>Add course image</div>
+                <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2, fontFamily: "Poppins, sans-serif" }}>
+                  Shows on your mini-site and EveryDriver listings
+                </div>
+              </div>
+              <IconChevronRight size={18} color="#C7D0DC" />
+            </button>
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            ref={heroInputRef}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) uploadHeroImage(file);
+            }}
+          />
+        </div>
+      </>
+    );
+  }
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
@@ -913,6 +1045,8 @@ function CourseDetailPage() {
                 Duplicate course
               </Button>
             </div>
+
+            {editing && <CourseImageSection />}
 
             {/* EDIT actions */}
             {editing && (
