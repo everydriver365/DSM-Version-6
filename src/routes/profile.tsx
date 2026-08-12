@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { IconAlertTriangle, IconBell, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconCreditCard, IconDeviceMobile, IconExternalLink, IconLoader2, IconMail, IconShield, IconUser } from "@tabler/icons-react";
+import { IconAlertTriangle, IconBell, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconCreditCard, IconDeviceMobile, IconExternalLink, IconLoader2, IconMail, IconPhoto, IconShield, IconTrash, IconUser } from "@tabler/icons-react";
 import { Puzzle, Apple, Calendar as CalendarIcon } from "lucide-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
@@ -302,6 +302,11 @@ function ProfilePage() {
   const [coverageAreas, setCoverageAreas] = useState<
     { id: string; area_name: string | null; radius_miles: number | null }[]
   >([]);
+
+  // Logo / branding
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   // Vehicle
   const [vehicleMake, setVehicleMake] = useState("");
