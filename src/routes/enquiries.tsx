@@ -955,6 +955,12 @@ function EnquiriesPage() {
     const list = activities[enquiry.id] ?? [];
     const busy = busyId === enquiry.id;
 
+    const openSmsComposer = () => {
+      setSmsText(defaultSmsText(enquiry));
+      setShowSmsComposer(true);
+    };
+
+
     return (
       <div
         className="fixed inset-0 z-[3000] overflow-y-auto"
