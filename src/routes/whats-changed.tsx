@@ -612,6 +612,18 @@ function DetailSheet({
       );
       cta = { label: "View payments →", to: `/pupils/${r.pupil_id}` };
       break;
+    case "card_payment":
+      title = "Card payment received";
+      body = (
+        <>
+          <Field label="Pupil" value={pupilName(r)} />
+          <Field label="Amount paid" value={money(r.lesson_cost)} />
+          <Field label="Method" value={r.payment_method ?? "Card"} />
+          <Field label="Received" value={fmtDateTime(r.created_at)} />
+        </>
+      );
+      cta = { label: "View payments →", to: `/pupils/${r.pupil_id}` };
+      break;
     case "gap":
       title = "Slot accepted";
       body = (
