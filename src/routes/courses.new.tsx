@@ -576,6 +576,8 @@ function NewCoursePage() {
             publishWebsite={publishWebsite}
             setPublishWebsite={setPublishWebsite}
           />
+        )}
+
         {step === 3 && (
           <>
             <div style={{ marginTop: 24, marginBottom: 8 }}>
