@@ -576,7 +576,7 @@ function EnquiriesPage() {
             <div
               style={{
                 fontSize: 11,
-                fontWeight: 600,
+                fontWeight: 800,
                 color: "#1877D6",
                 fontFamily: "Poppins, sans-serif",
                 marginTop: 2,
