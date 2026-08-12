@@ -17,6 +17,8 @@ import {
   IconSend,
   IconBriefcase,
   IconArrowLeft,
+  IconArrowBackUp,
+  IconAlertTriangle,
 } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/enquiries")({
