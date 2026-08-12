@@ -299,11 +299,23 @@ function CourseDetailPage() {
   function CourseImageSection() {
     return (
       <>
+        {/* Section header */}
         <div style={{ marginTop: 24, marginBottom: 8, padding: "0 16px" }}>
-          <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.6, fontFamily: "Poppins, sans-serif" }}>
-            COURSE IMAGE
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: "#9CA3AF",
+              textTransform: "uppercase",
+              letterSpacing: 0.6,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            Course Image
           </span>
         </div>
+
+        {/* Grouped card */}
         <div
           style={{
             background: "#fff",
@@ -315,52 +327,71 @@ function CourseDetailPage() {
         >
           {heroImage ? (
             <>
-              <img src={heroImage} alt="Course hero" style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} />
+              {/* Preview */}
+              <img
+                src={heroImage}
+                alt="Course hero"
+                style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }}
+              />
+
+              {/* Change row */}
               <button
                 type="button"
                 onClick={() => heroInputRef.current?.click()}
                 style={{
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "12px 16px",
-                  background: "none",
-                  border: "none",
-                  borderBottom: "0.5px solid #EEF2F7",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "14px 16px",
                   cursor: "pointer",
+                  borderTop: "1px solid #E4E8EF",
+                  background: "none",
+                  borderLeft: "none",
+                  borderRight: "none",
+                  borderBottom: "none",
+                  width: "100%",
                   fontFamily: "Poppins, sans-serif",
                   fontSize: 14,
                   fontWeight: 500,
                   color: "#0B1F3A",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
                 }}
               >
-                Change image
-                {uploadingHero && (
-                  <IconLoader2 stroke={1.5} size={16} className="animate-spin" style={{ color: "#1877D6" }} />
-                )}
+                <IconPhoto size={18} stroke={1.5} color="#6B7686" />
+                <span style={{ flex: 1, textAlign: "left" }}>Change image</span>
+                <IconChevronRight size={18} stroke={1.5} color="#C7D0DC" />
               </button>
+
+              {/* Remove row */}
               <button
                 type="button"
-                onClick={() => setHeroImage(null)}
+                onClick={async () => {
+                  setHeroImage(null);
+                  await supabase
+                    .from("instructor_courses")
+                    .update({ image_url: null })
+                    .eq("id", id);
+                  toast.success("Image removed");
+                }}
                 style={{
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "12px 16px",
-                  background: "none",
-                  border: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "14px 16px",
                   cursor: "pointer",
+                  borderTop: "1px solid #E4E8EF",
+                  background: "none",
+                  borderLeft: "none",
+                  borderRight: "none",
+                  borderBottom: "none",
+                  width: "100%",
                   fontFamily: "Poppins, sans-serif",
                   fontSize: 14,
                   fontWeight: 500,
                   color: "#CC2229",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
                 }}
               >
-                Remove image
+                <IconTrash size={18} stroke={1.5} color="#CC2229" />
+                <span style={{ flex: 1, textAlign: "left" }}>Remove image</span>
               </button>
             </>
           ) : (
@@ -368,38 +399,57 @@ function CourseDetailPage() {
               type="button"
               onClick={() => heroInputRef.current?.click()}
               style={{
-                width: "100%",
-                textAlign: "left",
-                padding: "12px 16px",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
                 gap: 12,
+                padding: "14px 16px",
+                cursor: "pointer",
+                background: "none",
+                border: "none",
+                width: "100%",
+                fontFamily: "Poppins, sans-serif",
               }}
             >
-              <IconPhoto size={18} color="#6B7686" />
+              <IconPhoto size={18} stroke={1.5} color="#6B7686" />
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 14, fontWeight: 500, color: "#0B1F3A", fontFamily: "Poppins, sans-serif" }}>Add course image</div>
-                <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2, fontFamily: "Poppins, sans-serif" }}>
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 500,
+                    color: "#0B1F3A",
+                  }}
+                >
+                  {uploadingHero ? "Uploading..." : "Add course image"}
+                </div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: "#9CA3AF",
+                    marginTop: 2,
+                  }}
+                >
                   Shows on your mini-site and EveryDriver listings
                 </div>
               </div>
-              <IconChevronRight size={18} color="#C7D0DC" />
+              {uploadingHero ? null : (
+                <IconChevronRight size={18} stroke={1.5} color="#C7D0DC" />
+              )}
             </button>
           )}
-          <input
-            type="file"
-            accept="image/*"
-            style={{ display: "none" }}
-            ref={heroInputRef}
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) uploadHeroImage(file);
-            }}
-          />
         </div>
+
+        {/* Hidden file input */}
+        <input
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          ref={heroInputRef}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) uploadHeroImage(file);
+            e.target.value = "";
+          }}
+        />
       </>
     );
   }
