@@ -1046,6 +1046,8 @@ function CourseDetailPage() {
               </Button>
             </div>
 
+            {editing && <CourseImageSection />}
+
             {/* EDIT actions */}
             {editing && (
               <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 16 }}>
