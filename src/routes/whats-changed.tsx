@@ -643,7 +643,7 @@ function DetailSheet({
       body = (
         <>
           <Field label="Pupil" value={pupilName(r)} />
-          <Field label="Amount paid" value={money(r.lesson_cost)} />
+          <Field label="Amount paid" value={money(r.amount_paid ?? r.lesson_cost)} />
           <Field label="Method" value={r.payment_method ?? "Card"} />
           <Field label="Received" value={fmtDateTime(r.created_at)} />
         </>
