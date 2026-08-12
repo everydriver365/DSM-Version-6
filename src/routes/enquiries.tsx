@@ -1162,59 +1162,133 @@ function EnquiriesPage() {
             )}
           </div>
 
+          {/* Conversation */}
+          {(() => {
+            const isMsg = (t: string | null) => t === "sms" || t === "sms_reply";
+            const cleanBody = (b: string | null) =>
+              (b ?? "").replace(/^SMS (sent|reply):\s*"?/i, "").replace(/"$/, "");
+            const msgs = list
+              .filter((a) => isMsg(a.type))
+              .map((a) => ({
+                text: cleanBody(a.body),
+                at: a.created_at,
+                outgoing: a.type === "sms",
+              }));
+            if (msgs.length === 0) return null;
+            return (
+              <>
+                <div style={{ ...SECTION_HEADER, marginTop: 20 }}>Conversation</div>
+                <div style={{ ...CARD, padding: 16 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 5,
+                      color: "#7B4FC9",
+                      fontSize: 11.5,
+                      fontWeight: 700,
+                      marginBottom: 12,
+                      ...POPPINS,
+                    }}
+                  >
+                    <IconMessage size={12} stroke={2.2} color="#7B4FC9" />
+                    Started {timeAgo(msgs[0]!.at)} via SMS
+                  </div>
+
+                  {msgs.map((m, mi) => (
+                    <div
+                      key={mi}
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: m.outgoing ? "flex-end" : "flex-start",
+                        marginBottom: 8,
+                      }}
+                    >
+                      <div
+                        style={{
+                          maxWidth: "82%",
+                          padding: "9px 13px",
+                          fontSize: 13,
+                          lineHeight: 1.45,
+                          borderRadius: 14,
+                          background: m.outgoing ? "#1877D6" : "#F2F2F7",
+                          color: m.outgoing ? "#fff" : "#0B1F3A",
+                          ...(m.outgoing
+                            ? { borderBottomRightRadius: 4 }
+                            : { borderBottomLeftRadius: 4 }),
+                          ...POPPINS,
+                        }}
+                      >
+                        {m.text}
+                      </div>
+                      <div style={{ marginTop: 3, fontSize: 10, color: "#B0B0B5", ...POPPINS }}>
+                        {m.outgoing ? "You" : (enquiry.name ?? "Reply")} · {timeAgo(m.at)}
+                      </div>
+                    </div>
+                  ))}
+
+                  {enquiry.phone && (
+                    <button
+                      type="button"
+                      className="active:opacity-70"
+                      onClick={() => {
+                        setSmsText(defaultSmsText(enquiry));
+                        setShowSmsComposer(true);
+                      }}
+                      style={{
+                        width: "100%",
+                        marginTop: 4,
+                        background: "#F2F2F7",
+                        color: "#0B1F3A",
+                        border: "none",
+                        borderRadius: 10,
+                        padding: "9px 14px",
+                        fontSize: 12.5,
+                        fontWeight: 700,
+                        textAlign: "center",
+                        ...POPPINS,
+                      }}
+                    >
+                      Reply
+                    </button>
+                  )}
+                </div>
+              </>
+            );
+          })()}
+
           {/* Activity */}
           <div style={{ ...SECTION_HEADER, marginTop: 20 }}>Activity</div>
           <div style={{ ...CARD, padding: "18px 16px" }}>
             {(() => {
-              type Msg = { text: string; at: string; outgoing: boolean };
               type Item = {
-                kind: "event" | "conversation";
-                title?: string;
+                title: string;
                 at: string | null;
                 pending?: boolean;
                 type?: string;
-                messages?: Msg[];
               };
 
               const items: Item[] = [];
               items.push({
-                kind: "event",
                 title: "Enquiry received",
                 at: enquiry.created_at,
                 type: "received",
               });
 
               const isMsg = (t: string | null) => t === "sms" || t === "sms_reply";
-              const cleanBody = (b: string | null) =>
-                (b ?? "").replace(/^SMS (sent|reply):\s*"?/i, "").replace(/"$/, "");
 
               list.forEach((a) => {
-                if (isMsg(a.type)) {
-                  const prev = items[items.length - 1];
-                  const msg: Msg = {
-                    text: cleanBody(a.body),
-                    at: a.created_at,
-                    outgoing: a.type === "sms",
-                  };
-                  if (prev && prev.kind === "conversation") {
-                    prev.messages!.push(msg);
-                    prev.at = a.created_at;
-                  } else {
-                    items.push({ kind: "conversation", at: a.created_at, messages: [msg] });
-                  }
-                } else {
-                  items.push({
-                    kind: "event",
-                    title: a.body ?? a.type,
-                    at: a.created_at,
-                    type: a.type ?? undefined,
-                  });
-                }
+                if (isMsg(a.type)) return;
+                items.push({
+                  title: a.body ?? a.type ?? "",
+                  at: a.created_at,
+                  type: a.type ?? undefined,
+                });
               });
 
               if (status === "new")
                 items.push({
-                  kind: "event",
                   title: "Pending — Awaiting contact",
                   at: null,
                   pending: true,
@@ -1222,8 +1296,6 @@ function EnquiriesPage() {
                 });
 
               const metaFor = (it: Item) => {
-                if (it.kind === "conversation")
-                  return { label: "Conversation", color: "#7B4FC9", dot: "#7B4FC9" };
                 if (it.pending) return { label: "Pending", color: "#B0B0B5", dot: "#D1D1D6" };
                 switch (it.type) {
                   case "note":
@@ -1287,69 +1359,25 @@ function EnquiriesPage() {
                           {it.at ? timeAgo(it.at) : ""}
                         </span>
                       </div>
-
-                      {it.kind === "conversation" ? (
-                        <div style={{ marginTop: 8, display: "grid", gap: 10 }}>
-                          {it.messages!.map((m, mi) => (
-                            <div
-                              key={mi}
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: m.outgoing ? "flex-end" : "flex-start",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  maxWidth: "82%",
-                                  padding: "9px 13px",
-                                  fontSize: 13,
-                                  lineHeight: 1.45,
-                                  borderRadius: 14,
-                                  background: m.outgoing ? "#1877D6" : "#F2F2F7",
-                                  color: m.outgoing ? "#fff" : "#0B1F3A",
-                                  ...(m.outgoing
-                                    ? { borderBottomRightRadius: 4 }
-                                    : { borderBottomLeftRadius: 4 }),
-                                  ...POPPINS,
-                                }}
-                              >
-                                {m.text}
-                              </div>
-                              <div
-                                style={{
-                                  marginTop: 3,
-                                  fontSize: 10,
-                                  color: "#B0B0B5",
-                                  ...POPPINS,
-                                }}
-                              >
-                                {m.outgoing ? "You" : (enquiry.name ?? "Reply")} ·{" "}
-                                {timeAgo(m.at)}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div
-                          style={{
-                            marginTop: 3,
-                            fontSize: 13.5,
-                            fontWeight: it.pending ? 500 : 600,
-                            color: it.pending ? "#B0B0B5" : "#0B1F3A",
-                            lineHeight: 1.45,
-                            ...POPPINS,
-                          }}
-                        >
-                          {it.title}
-                        </div>
-                      )}
+                      <div
+                        style={{
+                          marginTop: 3,
+                          fontSize: 13.5,
+                          fontWeight: it.pending ? 500 : 600,
+                          color: it.pending ? "#B0B0B5" : "#0B1F3A",
+                          lineHeight: 1.45,
+                          ...POPPINS,
+                        }}
+                      >
+                        {it.title}
+                      </div>
                     </div>
                   </div>
                 );
               });
             })()}
           </div>
+
 
 
 
