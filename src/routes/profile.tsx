@@ -1070,6 +1070,77 @@ function ProfilePage() {
               Manage coverage areas
             </Link>
           </div>
+
+          <div className="mt-4">
+            <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+              LOGO
+            </label>
+            <input
+              ref={logoInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={onPickLogo}
+            />
+            <div
+              className="rounded-lg bg-white overflow-hidden"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+            >
+              <div className="flex items-center justify-between px-3 py-3">
+                <div className="flex items-center gap-3">
+                  {logoUrl ? (
+                    <img
+                      src={logoUrl}
+                      alt="Logo preview"
+                      className="w-[50px] h-[50px] rounded-lg object-contain bg-white"
+                    />
+                  ) : (
+                    <div
+                      className="w-[50px] h-[50px] rounded-lg flex items-center justify-center"
+                      style={{ backgroundColor: "#F2F2F7" }}
+                    >
+                      <IconPhoto size={24} color="#6B7280" stroke={1.5} />
+                    </div>
+                  )}
+                  <span className="text-[14px] text-[#0B1F3A] font-medium" style={POPPINS}>
+                    {logoUrl ? "Logo uploaded" : "No logo uploaded"}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => logoInputRef.current?.click()}
+                  disabled={uploadingLogo}
+                  className="flex items-center gap-1 text-[13px] font-medium"
+                  style={{ color: "#1877D6", ...POPPINS }}
+                >
+                  {uploadingLogo ? (
+                    <IconLoader2 size={16} className="animate-spin" />
+                  ) : (
+                    <>
+                      {logoUrl ? "Change" : "Upload"}
+                      <IconChevronRight size={16} stroke={1.5} color="#1877D6" />
+                    </>
+                  )}
+                </button>
+              </div>
+              {logoUrl && (
+                <>
+                  <div className="mx-3" style={{ height: 0.5, backgroundColor: "#EEF2F7" }} />
+                  <button
+                    type="button"
+                    onClick={removeLogo}
+                    className="w-full flex items-center justify-between px-3 py-3 text-[14px] text-[#CC2229] font-medium"
+                    style={POPPINS}
+                  >
+                    <span className="flex items-center gap-2">
+                      <IconTrash size={18} stroke={1.5} color="#CC2229" />
+                      Remove logo
+                    </span>
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
         </AccordionCard>
 
         {/* Vehicle */}
