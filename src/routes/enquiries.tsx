@@ -530,9 +530,37 @@ function EnquiriesPage() {
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 16.5, fontWeight: 800, color: "#0B1F3A", ...POPPINS }}>
-            {enquiry.name ?? "Unknown"}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ fontSize: 16.5, fontWeight: 800, color: "#0B1F3A", ...POPPINS }}>
+              {enquiry.name ?? "Unknown"}
+            </div>
+            {unreadReplies.has(enquiry.id) && (
+              <div
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: "#1877D6",
+                  flexShrink: 0,
+                  marginLeft: 6,
+                  marginTop: 2,
+                }}
+              />
+            )}
           </div>
+          {unreadReplies.has(enquiry.id) && (
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: "#1877D6",
+                fontFamily: "Poppins, sans-serif",
+                marginTop: 2,
+              }}
+            >
+              Reply received
+            </div>
+          )}
           {enquiry.postcode && (
             <div
               style={{
