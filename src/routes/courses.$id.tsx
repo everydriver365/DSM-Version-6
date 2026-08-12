@@ -56,6 +56,7 @@ interface Course {
   description: string | null;
   max_spaces: number;
   spaces_taken: number;
+  image_url: string | null;
   start_date: string | null;
   end_date: string | null;
   daily_hours: number | null;
@@ -131,6 +132,9 @@ function CourseDetailPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [addOpen, setAddOpen] = useState(false);
+  const [heroImage, setHeroImage] = useState<string | null>(null);
+  const [uploadingHero, setUploadingHero] = useState(false);
+  const heroInputRef = useRef<HTMLInputElement>(null);
 
   // Edit-mode form state mirrors Course shape
   const [form, setForm] = useState<Course | null>(null);
