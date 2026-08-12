@@ -138,6 +138,7 @@ function EnquiriesPage() {
   const [savingNote, setSavingNote] = useState(false);
   const [smsText, setSmsText] = useState("");
   const [showSmsComposer, setShowSmsComposer] = useState(false);
+  const [unreadReplies, setUnreadReplies] = useState<Set<string>>(new Set());
 
   function defaultSmsText(enquiry: EnquiryRow) {
     const first = enquiry.name?.split(" ")[0] ?? "";
