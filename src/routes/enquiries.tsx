@@ -1493,14 +1493,7 @@ function EnquiriesPage() {
                     actionColor="#fff"
                     actionShadow="0 2px 0 #0F52A8"
                     description="Opens a text to their number. Use Mark contacted after if you want that logged."
-                    onClick={
-                      enquiry.phone
-                        ? () => {
-                            setSmsText(defaultSmsText(enquiry));
-                            setShowSmsComposer(true);
-                          }
-                        : undefined
-                    }
+                    onClick={enquiry.phone ? openSmsComposer : undefined}
                   />
                 )}
 
