@@ -1248,8 +1248,8 @@ function EnquiriesPage() {
                       style={{
                         width: "100%",
                         marginTop: 4,
-                        background: "#F2F2F7",
-                        color: "#0B1F3A",
+                        background: "#1877D6",
+                        color: "#fff",
                         border: "none",
                         borderRadius: 10,
                         padding: "9px 14px",
