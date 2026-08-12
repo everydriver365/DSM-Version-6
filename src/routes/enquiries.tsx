@@ -199,7 +199,7 @@ function EnquiriesPage() {
 
       const { data: replies } = await supabase
         .from("enquiry_activities")
-        .select("enquiry_id")
+        .select("enquiry_id, created_at")
         .eq("instructor_id", user.id)
         .eq("type", "sms_reply")
         .gt(
@@ -207,8 +207,15 @@ function EnquiriesPage() {
           new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
         );
 
-      setUnreadReplies(
-        new Set((replies ?? []).map((r) => r.enquiry_id))
+      const replyRows = (replies ?? []) as { enquiry_id: string; created_at: string }[];
+      setUnreadReplies(new Set(replyRows.map((r) => r.enquiry_id)));
+      setLatestReplyAt(
+        replyRows.reduce<Record<string, string>>((acc, r) => {
+          if (!acc[r.enquiry_id] || r.created_at > acc[r.enquiry_id]) {
+            acc[r.enquiry_id] = r.created_at;
+          }
+          return acc;
+        }, {})
       );
 
       setLoading(false);
