@@ -18,7 +18,9 @@ import {
   IconBriefcase,
   IconArrowLeft,
   IconArrowBackUp,
+  IconArrowRight,
   IconAlertTriangle,
+
 } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/enquiries")({
@@ -98,6 +100,14 @@ function isValidPostcode(value: string | null) {
   const pattern = /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i;
   return pattern.test(value.trim());
 }
+
+/** Display-only: insert the space before the inward code (SO302TD -> SO30 2TD). */
+function formatPostcode(value: string) {
+  const raw = value.trim().toUpperCase().replace(/\s+/g, "");
+  if (!/^[A-Z]{1,2}\d[A-Z\d]?\d[A-Z]{2}$/.test(raw)) return value.trim();
+  return `${raw.slice(0, raw.length - 3)} ${raw.slice(-3)}`;
+}
+
 
 
 const STATUS_META: Record<
@@ -933,11 +943,11 @@ function EnquiriesPage() {
             top: 0,
             zIndex: 2,
             background: "#0B1F3A",
-            padding: "calc(12px + env(safe-area-inset-top, 0px)) 16px 14px",
-            borderRadius: "0 0 18px 18px",
+            padding: "calc(12px + env(safe-area-inset-top, 0px)) 16px 16px",
+            borderRadius: "0 0 28px 28px",
             display: "flex",
             alignItems: "center",
-            gap: 10,
+            gap: 12,
           }}
         >
           <button
@@ -946,23 +956,27 @@ function EnquiriesPage() {
             onClick={() => setSelectedId(null)}
             className="flex items-center justify-center active:opacity-70"
             style={{
-              width: 30,
-              height: 30,
-              borderRadius: 15,
-              background: "rgba(255,255,255,0.14)",
+              width: 34,
+              height: 34,
+              borderRadius: 17,
+              background: "rgba(255,255,255,0.08)",
               border: "none",
+              flexShrink: 0,
             }}
           >
-            <IconArrowLeft size={16} stroke={2} color="#fff" />
+            <IconArrowLeft size={17} stroke={2} color="#fff" />
           </button>
           <div
             style={{
               flex: 1,
               minWidth: 0,
               color: "#fff",
-              fontSize: 18,
+              fontSize: 19,
               fontWeight: 800,
               letterSpacing: "-0.3px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
               ...POPPINS,
             }}
           >
@@ -970,18 +984,20 @@ function EnquiriesPage() {
           </div>
           <span
             style={{
-              background: meta.bg,
-              color: meta.color,
+              background: "#1877D6",
+              color: "#fff",
               borderRadius: 20,
-              padding: "4px 10px",
-              fontSize: 11.5,
+              padding: "6px 14px",
+              fontSize: 12,
               fontWeight: 800,
+              flexShrink: 0,
               ...POPPINS,
             }}
           >
             {meta.label}
           </span>
         </div>
+
 
         <div style={{ padding: "4px 16px 40px" }}>
           {(() => {
