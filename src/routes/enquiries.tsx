@@ -955,10 +955,16 @@ function EnquiriesPage() {
     const list = activities[enquiry.id] ?? [];
     const busy = busyId === enquiry.id;
 
-    const openSmsComposer = () => {
-      setSmsText(defaultSmsText(enquiry));
+    const openSmsComposer = (opts?: { blank?: boolean }) => {
+      setSmsText(opts?.blank ? "" : defaultSmsText(enquiry));
       setShowSmsComposer(true);
+      setTimeout(() => {
+        const el = document.getElementById("dsm-sms-composer");
+        el?.scrollIntoView({ behavior: "smooth", block: "center" });
+        (el?.querySelector("textarea") as HTMLTextAreaElement | null)?.focus();
+      }, 60);
     };
+
 
 
     return (
@@ -1238,7 +1244,7 @@ function EnquiriesPage() {
                     <button
                       type="button"
                       className="active:opacity-70"
-                      onClick={openSmsComposer}
+                      onClick={() => openSmsComposer({ blank: true })}
                       style={{
                         width: "100%",
                         marginTop: 4,
@@ -1410,7 +1416,7 @@ function EnquiriesPage() {
                 />
 
                 {showSmsComposer ? (
-                  <div style={{ padding: 14, borderBottom: "1px solid #F0F0F3" }}>
+                  <div id="dsm-sms-composer" style={{ padding: 14, borderBottom: "1px solid #F0F0F3" }}>
                     <div
                       style={{
                         fontSize: 12,
@@ -1493,7 +1499,7 @@ function EnquiriesPage() {
                     actionColor="#fff"
                     actionShadow="0 2px 0 #0F52A8"
                     description="Opens a text to their number. Use Mark contacted after if you want that logged."
-                    onClick={enquiry.phone ? openSmsComposer : undefined}
+                    onClick={enquiry.phone ? () => openSmsComposer() : undefined}
                   />
                 )}
 
