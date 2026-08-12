@@ -77,7 +77,19 @@ function useUnreadMessages(): number {
       .is("read_at", null)
       .is("deleted_at", null);
 
-    setCount(pupilUnread + chatUnread + (dmUnread ?? 0));
+    const { count: enquiryReplies } = await supabase
+      .from("enquiry_activities")
+      .select("id", { count: "exact", head: true })
+      .eq("instructor_id", uid)
+      .eq("type", "sms_reply")
+      .gt(
+        "created_at",
+        new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+      );
+
+    setCount(
+      pupilUnread + chatUnread + (dmUnread ?? 0) + (enquiryReplies ?? 0)
+    );
   }, [uid]);
 
   // Effect A — once per user: realtime subscription + 60s safety-net poll.
@@ -156,6 +168,12 @@ function useUnreadMessages(): number {
         schema: "public",
         table: "instructor_messages",
         filter: `to_instructor_id=eq.${uid}`,
+      }, () => { load(); })
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "enquiry_activities",
+        filter: `instructor_id=eq.${uid}`,
       }, () => { load(); })
       .subscribe();
 
