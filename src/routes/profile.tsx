@@ -1042,64 +1042,58 @@ function ProfilePage() {
 
           <div className="mt-4">
             <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
-              LOGO
+              School Logo
             </label>
-            <input
-              ref={logoInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={onPickLogo}
-            />
             <div
               className="rounded-lg bg-white overflow-hidden"
               style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
             >
-              <div className="flex items-center justify-between px-3 py-3">
-                <div className="flex items-center gap-3">
-                  {logoUrl ? (
+              {logoUrl ? (
+                <>
+                  <div
+                    className="flex items-center gap-3 px-3 py-3"
+                  >
                     <img
                       src={logoUrl}
                       alt="Logo preview"
                       className="w-[50px] h-[50px] rounded-lg object-contain bg-white"
                     />
-                  ) : (
-                    <div
-                      className="w-[50px] h-[50px] rounded-lg flex items-center justify-center"
-                      style={{ backgroundColor: "#F2F2F7" }}
-                    >
-                      <IconPhoto size={24} color="#6B7280" stroke={1.5} />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                        Logo uploaded
+                      </div>
+                      <div className="text-[11px] text-[#6B7280]" style={POPPINS}>
+                        Shows on your mini-site
+                      </div>
                     </div>
-                  )}
-                  <span className="text-[14px] text-[#0B1F3A] font-medium" style={POPPINS}>
-                    {logoUrl ? "Logo uploaded" : "No logo uploaded"}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => logoInputRef.current?.click()}
-                  disabled={uploadingLogo}
-                  className="flex items-center gap-1 text-[13px] font-medium"
-                  style={{ color: "#1877D6", ...POPPINS }}
-                >
-                  {uploadingLogo ? (
-                    <IconLoader2 size={16} className="animate-spin" />
-                  ) : (
-                    <>
-                      {logoUrl ? "Change" : "Upload"}
-                      <IconChevronRight size={16} stroke={1.5} color="#1877D6" />
-                    </>
-                  )}
-                </button>
-              </div>
-              {logoUrl && (
-                <>
-                  <div className="mx-3" style={{ height: 0.5, backgroundColor: "#EEF2F7" }} />
+                  </div>
+
                   <button
                     type="button"
-                    onClick={removeLogo}
-                    className="w-full flex items-center justify-between px-3 py-3 text-[14px] text-[#CC2229] font-medium"
-                    style={POPPINS}
+                    onClick={() => logoInputRef.current?.click()}
+                    disabled={uploadingLogo}
+                    className="w-full flex items-center justify-between px-3 py-3 text-[14px] font-medium text-[#0B1F3A]"
+                    style={{ borderTop: "1px solid #EEF2F7", ...POPPINS }}
+                  >
+                    <span className="flex items-center gap-2">
+                      <IconPhoto size={18} stroke={1.5} color="#6B7280" />
+                      Change logo
+                    </span>
+                    <IconChevronRight size={18} stroke={1.5} color="#C7D0DC" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setLogoUrl(null);
+                      await supabase
+                        .from('instructors')
+                        .update({ logo_url: null })
+                        .eq('id', userId);
+                      toast.success('Logo removed');
+                    }}
+                    className="w-full flex items-center justify-between px-3 py-3 text-[14px] font-medium text-[#CC2229]"
+                    style={{ borderTop: "1px solid #EEF2F7", ...POPPINS }}
                   >
                     <span className="flex items-center gap-2">
                       <IconTrash size={18} stroke={1.5} color="#CC2229" />
@@ -1107,9 +1101,43 @@ function ProfilePage() {
                     </span>
                   </button>
                 </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => logoInputRef.current?.click()}
+                  disabled={uploadingLogo}
+                  className="w-full flex items-center gap-3 px-3 py-3"
+                  style={{ background: "none", border: "none", cursor: "pointer" }}
+                >
+                  <IconPhoto size={18} stroke={1.5} color="#6B7280" />
+                  <div className="flex-1 text-left min-w-0">
+                    <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
+                      {uploadingLogo ? 'Uploading...' : 'Upload school logo'}
+                    </div>
+                    <div className="text-[11px] text-[#6B7280]" style={POPPINS}>
+                      PNG or SVG · Shows on your mini-site
+                    </div>
+                  </div>
+                  {!uploadingLogo && (
+                    <IconChevronRight size={18} stroke={1.5} color="#C7D0DC" />
+                  )}
+                </button>
               )}
             </div>
+
+            <input
+              ref={logoInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) uploadLogo(file);
+                e.target.value = '';
+              }}
+            />
           </div>
+
         </AccordionCard>
 
         {/* Vehicle */}
