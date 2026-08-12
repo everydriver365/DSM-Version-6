@@ -93,6 +93,12 @@ function fullDate(iso: string | null) {
   });
 }
 
+function isValidPostcode(value: string | null) {
+  if (!value) return true;
+  const pattern = /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i;
+  return pattern.test(value.trim());
+}
+
 
 const STATUS_META: Record<
   string,
