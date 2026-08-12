@@ -472,7 +472,7 @@ function ProfilePage() {
         setDualControls(Boolean(inst.dual_controls));
         setInsuranceExpiry(inst.insurance_expiry ?? "");
         setVehiclePhotoUrl(inst.vehicle_photo_url ?? null);
-        setTransmission(inst.transmission ?? "Manual");
+        setTransmission(inst.car_type ?? "Manual");
 
         if (inst.notification_prefs && typeof inst.notification_prefs === "object") {
           setNotifPrefs({ ...defaultNotifPrefs(), ...(inst.notification_prefs as NotifPrefs) });
@@ -521,7 +521,7 @@ function ProfilePage() {
       vehicle_make: vehicleMake.trim() || null,
       vehicle_model: vehicleModel.trim() || null,
       vehicle_reg: vehicleReg.trim() || null,
-      transmission: transmission || null,
+      car_type: transmission || null,
       vehicle_year: vehicleYear.trim() ? Number(vehicleYear.trim()) : null,
       dual_controls: dualControls,
       insurance_expiry: insuranceExpiry || null,
