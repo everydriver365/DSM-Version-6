@@ -1238,10 +1238,7 @@ function EnquiriesPage() {
                     <button
                       type="button"
                       className="active:opacity-70"
-                      onClick={() => {
-                        setSmsText(defaultSmsText(enquiry));
-                        setShowSmsComposer(true);
-                      }}
+                      onClick={openSmsComposer}
                       style={{
                         width: "100%",
                         marginTop: 4,
