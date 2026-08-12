@@ -955,10 +955,16 @@ function EnquiriesPage() {
     const list = activities[enquiry.id] ?? [];
     const busy = busyId === enquiry.id;
 
-    const openSmsComposer = () => {
-      setSmsText(defaultSmsText(enquiry));
+    const openSmsComposer = (opts?: { blank?: boolean }) => {
+      setSmsText(opts?.blank ? "" : defaultSmsText(enquiry));
       setShowSmsComposer(true);
+      setTimeout(() => {
+        const el = document.getElementById("dsm-sms-composer");
+        el?.scrollIntoView({ behavior: "smooth", block: "center" });
+        (el?.querySelector("textarea") as HTMLTextAreaElement | null)?.focus();
+      }, 60);
     };
+
 
 
     return (
