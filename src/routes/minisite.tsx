@@ -29,7 +29,7 @@ export const Route = createFileRoute("/minisite")({
 });
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
-const SITE_BASE = "everydriver.co.uk/i/";
+const SITE_BASE = "sites.everydriver.co.uk/";
 
 type Theme = "classic" | "modern" | "warm" | "bold";
 type Font = "Poppins" | "Playfair Display";
