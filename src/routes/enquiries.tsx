@@ -546,7 +546,7 @@ function EnquiriesPage() {
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
             <div style={{ fontSize: 16.5, fontWeight: 800, color: "#0B1F3A", ...POPPINS }}>
               {enquiry.name ?? "Unknown"}
             </div>
@@ -558,8 +558,6 @@ function EnquiriesPage() {
                   borderRadius: "50%",
                   background: "#1877D6",
                   flexShrink: 0,
-                  marginLeft: 6,
-                  marginTop: 2,
                 }}
               />
             )}
@@ -580,8 +578,11 @@ function EnquiriesPage() {
           {enquiry.postcode && (
             <div
               style={{
-                background: "#F2F2F7",
-                color: "#6B6B6F",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+                background: isValidPostcode(enquiry.postcode) ? "#F2F2F7" : "#FDEDEC",
+                color: isValidPostcode(enquiry.postcode) ? "#6B6B6F" : "#FF3B30",
                 fontSize: 11,
                 fontWeight: 700,
                 padding: "3px 9px",
@@ -592,6 +593,9 @@ function EnquiriesPage() {
               }}
             >
               {enquiry.postcode}
+              {!isValidPostcode(enquiry.postcode) && (
+                <IconAlertTriangle size={11} stroke={2} color="#FF3B30" />
+              )}
             </div>
           )}
           <div
