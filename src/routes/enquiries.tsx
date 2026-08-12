@@ -659,9 +659,9 @@ function EnquiriesPage() {
 
   function ReplyBanner() {
     if (unreadReplies.size === 0) return null;
-    const mostRecentId = Object.entries(latestReplyAt).sort((a, b) =>
-      new Date(b[1]).getTime() - new Date(a[1]).getTime()
-    )[0]?.[0];
+    const mostRecentId = Object.entries(latestReplyAt)
+      .filter(([id]) => unreadReplies.has(id))
+      .sort((a, b) => new Date(b[1]).getTime() - new Date(a[1]).getTime())[0]?.[0];
     if (!mostRecentId) return null;
     const enquiry = enquiries.find((e) => e.id === mostRecentId);
     if (!enquiry) return null;
