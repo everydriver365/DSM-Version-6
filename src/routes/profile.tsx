@@ -610,62 +610,31 @@ function ProfilePage() {
   }
 
   async function uploadLogo(file: File) {
-    if (!file || !userId) return;
-    if (!/^image\/(png|jpe?g|webp)$/.test(file.type)) {
-      toast.error("Use a PNG or JPG image");
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image must be under 5MB");
-      return;
-    }
-    const localPreview = URL.createObjectURL(file);
-    const previousUrl = logoUrl;
-    setLogoUrl(localPreview);
+    if (!userId) return;
     setUploadingLogo(true);
     try {
-      const ext = file.name.split(".").pop() ?? "jpg";
-      const path = `${userId}/${Date.now()}.${ext}`;
-      const uploadRes = await supabase.storage
-        .from("logos")
-        .upload(path, file, { contentType: file.type, upsert: true });
-      if (uploadRes.error) throw uploadRes.error;
-      const { data: pub } = supabase.storage.from("logos").getPublicUrl(path);
-      const publicUrl = pub.publicUrl;
-      const payload = { id: userId, logo_url: publicUrl };
-      const logoSaveRes = await supabase.from("instructors").upsert(payload).select();
-      if (logoSaveRes.error) throw logoSaveRes.error;
+      const ext = file.name.split('.').pop() ?? 'png';
+      const path = `${userId}/logo.${ext}`;
+      const { error } = await supabase
+        .storage.from('avatars')
+        .upload(path, file, { upsert: true });
+      if (error) throw error;
+      const { data: { publicUrl } } =
+        supabase.storage
+          .from('avatars')
+          .getPublicUrl(path);
       setLogoUrl(publicUrl);
-      URL.revokeObjectURL(localPreview);
-      toast.success("Logo updated");
-    } catch (err) {
-      console.error("[profile] logo upload", err);
-      toast.error("Couldn't upload logo");
-      setLogoUrl(previousUrl);
-      URL.revokeObjectURL(localPreview);
+      await supabase.from('instructors')
+        .update({ logo_url: publicUrl })
+        .eq('id', userId);
+      toast.success('Logo uploaded');
+    } catch (e: any) {
+      toast.error(e.message ?? 'Failed');
     } finally {
       setUploadingLogo(false);
     }
   }
 
-  async function onPickLogo(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0];
-    e.target.value = "";
-    if (f) uploadLogo(f);
-  }
-
-  async function removeLogo() {
-    if (!userId) return;
-    setLogoUrl(null);
-    try {
-      const res = await supabase.from("instructors").upsert({ id: userId, logo_url: null }).select();
-      if (res.error) throw res.error;
-      toast.success("Logo removed");
-    } catch (err) {
-      console.error("[profile] logo remove", err);
-      toast.error("Couldn't remove logo");
-    }
-  }
 
   async function onPickDbs(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
