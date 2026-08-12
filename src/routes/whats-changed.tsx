@@ -159,7 +159,7 @@ function WhatsChangedPage() {
       ).toISOString();
       // Do NOT update lastLogin here — update after queries
 
-      async function safeQuery(fn: () => Promise<any>) {
+      async function safeQuery(fn: () => PromiseLike<any>) {
         try {
           return await fn();
         } catch {
