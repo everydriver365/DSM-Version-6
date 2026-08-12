@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { IconAlertTriangle, IconBell, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconCreditCard, IconDeviceMobile, IconExternalLink, IconLoader2, IconMail, IconShield, IconUser } from "@tabler/icons-react";
+import { IconAlertTriangle, IconBell, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconCreditCard, IconDeviceMobile, IconExternalLink, IconLoader2, IconMail, IconPhoto, IconShield, IconTrash, IconUser } from "@tabler/icons-react";
 import { Puzzle, Apple, Calendar as CalendarIcon } from "lucide-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
@@ -303,6 +303,11 @@ function ProfilePage() {
     { id: string; area_name: string | null; radius_miles: number | null }[]
   >([]);
 
+  // Logo / branding
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+
   // Vehicle
   const [vehicleMake, setVehicleMake] = useState("");
   const [vehicleModel, setVehicleModel] = useState("");
@@ -423,7 +428,7 @@ function ProfilePage() {
       const { data: inst, error: instErr } = await supabase
         .from("instructors")
         .select(
-          "name, phone, bio, car_make, car_model, profile_image_url, address, home_postcode, city, lat, lng, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, vehicle_make, vehicle_model, vehicle_reg, vehicle_year, dual_controls, insurance_expiry, vehicle_photo_url, transmission, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
+          "name, phone, bio, car_make, car_model, profile_image_url, address, home_postcode, city, lat, lng, email_verified, phone_verified, timezone, avatar_color, dvsa_badge, dvsa_grade, dvsa_type, trading_name, dbs_uploaded, dbs_document_url, logo_url, vehicle_make, vehicle_model, vehicle_reg, vehicle_year, dual_controls, insurance_expiry, vehicle_photo_url, transmission, notification_prefs, two_factor_enabled, two_factor_method, login_alerts",
 
         )
         .eq("id", user.id)
@@ -460,6 +465,7 @@ function ProfilePage() {
         setTradingName(inst.trading_name ?? "");
         setDbsUploaded(Boolean(inst.dbs_uploaded));
         setDbsUrl(inst.dbs_document_url ?? null);
+        setLogoUrl(inst.logo_url ?? null);
         
         setVehicleReg(inst.vehicle_reg ?? "");
         setVehicleYear(inst.vehicle_year != null ? String(inst.vehicle_year) : "");
@@ -600,6 +606,64 @@ function ProfilePage() {
       URL.revokeObjectURL(localPreview);
     } finally {
       setUploading(false);
+    }
+  }
+
+  async function uploadLogo(file: File) {
+    if (!file || !userId) return;
+    if (!/^image\/(png|jpe?g|webp)$/.test(file.type)) {
+      toast.error("Use a PNG or JPG image");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be under 5MB");
+      return;
+    }
+    const localPreview = URL.createObjectURL(file);
+    const previousUrl = logoUrl;
+    setLogoUrl(localPreview);
+    setUploadingLogo(true);
+    try {
+      const ext = file.name.split(".").pop() ?? "jpg";
+      const path = `${userId}/${Date.now()}.${ext}`;
+      const uploadRes = await supabase.storage
+        .from("logos")
+        .upload(path, file, { contentType: file.type, upsert: true });
+      if (uploadRes.error) throw uploadRes.error;
+      const { data: pub } = supabase.storage.from("logos").getPublicUrl(path);
+      const publicUrl = pub.publicUrl;
+      const payload = { id: userId, logo_url: publicUrl };
+      const logoSaveRes = await supabase.from("instructors").upsert(payload).select();
+      if (logoSaveRes.error) throw logoSaveRes.error;
+      setLogoUrl(publicUrl);
+      URL.revokeObjectURL(localPreview);
+      toast.success("Logo updated");
+    } catch (err) {
+      console.error("[profile] logo upload", err);
+      toast.error("Couldn't upload logo");
+      setLogoUrl(previousUrl);
+      URL.revokeObjectURL(localPreview);
+    } finally {
+      setUploadingLogo(false);
+    }
+  }
+
+  async function onPickLogo(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    e.target.value = "";
+    if (f) uploadLogo(f);
+  }
+
+  async function removeLogo() {
+    if (!userId) return;
+    setLogoUrl(null);
+    try {
+      const res = await supabase.from("instructors").upsert({ id: userId, logo_url: null }).select();
+      if (res.error) throw res.error;
+      toast.success("Logo removed");
+    } catch (err) {
+      console.error("[profile] logo remove", err);
+      toast.error("Couldn't remove logo");
     }
   }
 
@@ -1005,6 +1069,77 @@ function ProfilePage() {
             >
               Manage coverage areas
             </Link>
+          </div>
+
+          <div className="mt-4">
+            <label className="block mb-1 text-[12px] font-medium text-[#6B7280]" style={POPPINS}>
+              LOGO
+            </label>
+            <input
+              ref={logoInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={onPickLogo}
+            />
+            <div
+              className="rounded-lg bg-white overflow-hidden"
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+            >
+              <div className="flex items-center justify-between px-3 py-3">
+                <div className="flex items-center gap-3">
+                  {logoUrl ? (
+                    <img
+                      src={logoUrl}
+                      alt="Logo preview"
+                      className="w-[50px] h-[50px] rounded-lg object-contain bg-white"
+                    />
+                  ) : (
+                    <div
+                      className="w-[50px] h-[50px] rounded-lg flex items-center justify-center"
+                      style={{ backgroundColor: "#F2F2F7" }}
+                    >
+                      <IconPhoto size={24} color="#6B7280" stroke={1.5} />
+                    </div>
+                  )}
+                  <span className="text-[14px] text-[#0B1F3A] font-medium" style={POPPINS}>
+                    {logoUrl ? "Logo uploaded" : "No logo uploaded"}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => logoInputRef.current?.click()}
+                  disabled={uploadingLogo}
+                  className="flex items-center gap-1 text-[13px] font-medium"
+                  style={{ color: "#1877D6", ...POPPINS }}
+                >
+                  {uploadingLogo ? (
+                    <IconLoader2 size={16} className="animate-spin" />
+                  ) : (
+                    <>
+                      {logoUrl ? "Change" : "Upload"}
+                      <IconChevronRight size={16} stroke={1.5} color="#1877D6" />
+                    </>
+                  )}
+                </button>
+              </div>
+              {logoUrl && (
+                <>
+                  <div className="mx-3" style={{ height: 0.5, backgroundColor: "#EEF2F7" }} />
+                  <button
+                    type="button"
+                    onClick={removeLogo}
+                    className="w-full flex items-center justify-between px-3 py-3 text-[14px] text-[#CC2229] font-medium"
+                    style={POPPINS}
+                  >
+                    <span className="flex items-center gap-2">
+                      <IconTrash size={18} stroke={1.5} color="#CC2229" />
+                      Remove logo
+                    </span>
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </AccordionCard>
 
