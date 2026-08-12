@@ -193,6 +193,21 @@ function EnquiriesPage() {
         .order("created_at", { ascending: false });
 
       setEnquiries((data as EnquiryRow[] | null) ?? []);
+
+      const { data: replies } = await supabase
+        .from("enquiry_activities")
+        .select("enquiry_id")
+        .eq("instructor_id", user.id)
+        .eq("type", "sms_reply")
+        .gt(
+          "created_at",
+          new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+        );
+
+      setUnreadReplies(
+        new Set((replies ?? []).map((r) => r.enquiry_id))
+      );
+
       setLoading(false);
     })();
   }, []);
