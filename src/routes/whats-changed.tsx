@@ -300,6 +300,18 @@ function WhatsChangedPage() {
           })),
         },
         {
+          key: "card_payment",
+          label: "Card payments received",
+          icon: <CreditCard size={16} color="#1B7F3B" />,
+          items: rowsOf(cardPayments).map((r) => ({
+            id: String(r.id),
+            kind: "card_payment" as const,
+            title: pupilName(r),
+            subtitle: `${money(r.lesson_cost)} · ${r.payment_method ?? "Card"} · ${fmtDateTime(r.created_at)}`,
+            raw: r,
+          })),
+        },
+        {
           key: "gap",
           label: "Slots accepted",
           icon: <Zap size={16} color="#1B7F3B" />,
@@ -319,7 +331,11 @@ function WhatsChangedPage() {
             id: String(r.id),
             kind: "enquiry" as const,
             title: r.name || "Enquiry",
-            subtitle: truncate(r.message ?? ""),
+            subtitle: truncate(
+              r.course_interest
+                ? `${r.course_interest}${r.postcode ? " · " + r.postcode : ""}`
+                : r.notes ?? "New enquiry",
+            ),
             raw: r,
           })),
         },
