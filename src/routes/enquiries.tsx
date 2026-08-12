@@ -1458,7 +1458,10 @@ function EnquiriesPage() {
                     Icon={IconMessage}
                     chipBg="#E7F1FC"
                     chipColor="#1877D6"
-                    description="Sends a text message and automatically logs this as your first contact."
+                    actionBg="#1877D6"
+                    actionColor="#fff"
+                    actionShadow="0 2px 0 #0F52A8"
+                    description="Opens a text to their number and logs it as your first contact."
                     onClick={
                       enquiry.phone
                         ? () => {
@@ -1476,7 +1479,10 @@ function EnquiriesPage() {
                   chipBg="#E6F7EC"
                   chipColor="#248A3D"
                   labelColor="#248A3D"
-                  description="Converts this enquiry into a pupil record so you can schedule their first lesson. This can't be undone from here."
+                  actionBg="#248A3D"
+                  actionColor="#fff"
+                  actionShadow="0 2px 0 #186429"
+                  description="Converts to a pupil record. This can't be undone from here."
                   onClick={() => void acceptEnquiry(enquiry)}
                 />
                 <ActionRow
@@ -1484,7 +1490,10 @@ function EnquiriesPage() {
                   Icon={IconBriefcase}
                   chipBg="#FFF6DC"
                   chipColor="#D68A1B"
-                  description="Posts to the Jobs board for another local instructor to pick up — moves to your On jobs board section, not deleted."
+                  actionBg="#D68A1B"
+                  actionColor="#fff"
+                  actionShadow="0 2px 0 #A56A0F"
+                  description="Posts to the Jobs board. Moves to On jobs board, not deleted."
                   onClick={() => void declineEnquiry(enquiry, true)}
                 />
                 <ActionRow
@@ -1493,11 +1502,15 @@ function EnquiriesPage() {
                   chipBg="#FDEDEC"
                   chipColor="#FF3B30"
                   labelColor="#FF3B30"
-                  description="Closes this enquiry with no further action. It's archived, not deleted — you can still find it under Declined."
+                  actionBg="#fff"
+                  actionColor="#FF3B30"
+                  actionBorder="1.5px solid #FF3B30"
+                  description="Archives with no further action. Findable under Declined."
                   onClick={() => void declineEnquiry(enquiry, false)}
                 />
               </>
             )}
+
 
             {status === "accepted" && (
               <ActionRow
