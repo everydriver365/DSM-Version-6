@@ -825,6 +825,10 @@ function EnquiriesPage() {
     isFirst,
     value,
     description,
+    actionBg,
+    actionColor,
+    actionBorder,
+    actionShadow,
   }: {
     label: string;
     Icon: typeof IconMail;
@@ -836,71 +840,89 @@ function EnquiriesPage() {
     isFirst?: boolean;
     value?: string | null;
     description?: string;
+    actionBg?: string;
+    actionColor?: string;
+    actionBorder?: string;
+    actionShadow?: string;
   }) {
     const inner = (
       <div
         style={{
-          padding: "14px 16px",
+          padding: "15px 16px",
+          display: "flex",
+          alignItems: "center",
+          gap: 13,
           borderTop: isFirst ? "none" : "1px solid #EFEFF2",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: 10,
+            background: chipBg,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <Icon size={18} stroke={2} color={chipColor} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: 9,
-              background: chipBg,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            <Icon size={17} stroke={2} color={chipColor} />
-          </div>
-          <div
-            style={{
-              fontSize: 14.5,
-              fontWeight: 700,
+              fontSize: 15,
+              fontWeight: 800,
               color: labelColor ?? "#0B1F3A",
               ...POPPINS,
             }}
           >
             {label}
           </div>
-          <div
+          {description && (
+            <div
+              style={{
+                marginTop: 2,
+                color: "#8A8A8E",
+                fontSize: 11.5,
+                fontWeight: 500,
+                lineHeight: 1.35,
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical" as const,
+                overflow: "hidden",
+                ...POPPINS,
+              }}
+            >
+              {description}
+            </div>
+          )}
+        </div>
+        {value && (
+          <span style={{ fontSize: 12, color: "#8A8A8E", flexShrink: 0, ...POPPINS }}>{value}</span>
+        )}
+        {(onClick || href) && (
+          <span
+            aria-hidden
             style={{
-              marginLeft: "auto",
+              width: 38,
+              height: 38,
+              borderRadius: 19,
+              flexShrink: 0,
               display: "flex",
               alignItems: "center",
-              gap: 8,
+              justifyContent: "center",
+              background: actionBg ?? "#F2F2F7",
+              border: actionBorder ?? "none",
+              boxShadow: actionShadow ?? "none",
             }}
           >
-            {value && (
-              <span style={{ fontSize: 13, color: "#8A8A8E", ...POPPINS }}>{value}</span>
-            )}
-            <IconChevronRight size={13} stroke={2} color="#C7C7CC" />
-          </div>
-        </div>
-        {description && (
-          <div
-            style={{
-              marginTop: 6,
-              marginLeft: 44,
-              color: "#8A8A8E",
-              fontSize: 11.5,
-              fontWeight: 500,
-              lineHeight: 1.4,
-              ...POPPINS,
-            }}
-          >
-            {description}
-          </div>
+            <IconArrowRight size={15} stroke={2.4} color={actionColor ?? "#0B1F3A"} />
+          </span>
         )}
       </div>
     );
-
 
     if (href) {
       return (
@@ -923,6 +945,7 @@ function EnquiriesPage() {
     }
     return inner;
   }
+
 
 
   function DetailSheet({ enquiry }: { enquiry: EnquiryRow }) {
@@ -1066,7 +1089,9 @@ function EnquiriesPage() {
                   label: "Preferred start",
                   value: new Date(enquiry.preferred_start_date).toLocaleDateString("en-GB"),
                 });
-              if (enquiry.postcode) rows.push({ label: "Postcode", value: enquiry.postcode });
+              if (enquiry.postcode)
+                rows.push({ label: "Postcode", value: formatPostcode(enquiry.postcode) });
+
               if (enquiry.phone)
                 rows.push({ label: "Phone", value: formatPhone(enquiry.phone) });
               if (enquiry.email) rows.push({ label: "Email", value: enquiry.email });
