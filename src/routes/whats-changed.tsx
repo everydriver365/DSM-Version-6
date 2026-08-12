@@ -14,6 +14,7 @@ import {
   Video,
   Zap,
 } from "lucide-react";
+import { IconCreditCard } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { PageLayout } from "@/components/PageLayout";
@@ -158,93 +159,118 @@ function WhatsChangedPage() {
       ).toISOString();
       // Do NOT update lastLogin here — update after queries
 
+      async function safeQuery(fn: () => PromiseLike<any>) {
+        try {
+          return await fn();
+        } catch {
+          return { data: [] };
+        }
+      }
+
       const [
         lessonsNew,
         lessonsCanc,
         messages,
         payments,
-        cardPayments,
         gaps,
         enquiries,
         jobs,
         live,
         learn,
         listings,
+        cardPayments,
       ] = await Promise.all([
-        supabase
-          .from("lessons")
-          .select(
-            "id, pupil_id, lesson_date, lesson_time, duration_minutes, pickup_location, status, amount_due, pupils(name, first_name)",
-          )
-          .eq("instructor_id", userId)
-          .neq("status", "cancelled")
-          .gte("created_at", sinceIso),
-        supabase
-          .from("lessons")
-          .select("id, pupil_id, lesson_date, lesson_time, pupils(name, first_name)")
-          .eq("instructor_id", userId)
-          .eq("status", "cancelled")
-          .gte("created_at", sinceIso),
-        supabase
-          .from("chat_messages")
-          .select("id, pupil_id, body, created_at, pupils(name, first_name)")
-          .eq("instructor_id", userId)
-          .eq("sender_type", "pupil")
-          .is("read_at", null)
-          .gte("created_at", sinceIso),
-        supabase
-          .from("lessons")
-          .select(
-            "id, pupil_id, lesson_date, amount_due, paid_amount, payment_method, pupils(name, first_name)",
-          )
-          .eq("instructor_id", userId)
-          .eq("payment_status", "paid")
-          .gte("created_at", sinceIso),
-        supabase
-          .from("lesson_history")
-          .select(
-            "id, instructor_id, pupil_id, lesson_cost, payment_method, created_at, pupils(name, first_name)",
-          )
-          .eq("instructor_id", userId)
-          .eq("payment_status", "paid")
-          .is("deleted_at", null)
-          .gte("created_at", sinceIso),
-        supabase
-          .from("gap_filler_offers")
-          .select("id, pupil_id, slot_date, slot_time, duration_minutes, pupils(name, first_name)")
-          .eq("instructor_id", userId)
-          .eq("status", "accepted")
-          .gte("created_at", sinceIso),
-        supabase
-          .from("enquiries")
-          .select("id, name, notes, course_interest, postcode, created_at")
-          .eq("instructor_id", userId)
-          .gte("created_at", sinceIso),
-        supabase
-          .from("job_offers")
-          .select("id, title, created_at")
-          .eq("status", "open")
-          .gte("created_at", sinceIso),
-        supabase
-          .from("dsm_live_sessions")
-          .select("id, title, session_date, session_time")
-          .is("deleted_at", null)
-          .gte("created_at", sinceIso),
-        supabase
-          .from("learn_videos")
-          .select("id, title, duration, thumbnail_url")
-          .not("url", "is", null)
-          .gte("created_at", sinceIso),
-        supabase
-          .from("marketplace_listings")
-          .select("id, title, price_display, image_urls")
-          .eq("is_active", true)
-          .is("deleted_at", null)
-          .gte("created_at", sinceIso),
-      ]).catch((err) => {
-        console.error("[whats-changed] fetch error", err);
-        return [] as any[];
-      });
+        safeQuery(() =>
+          supabase
+            .from("lessons")
+            .select(
+              "id, pupil_id, lesson_date, lesson_time, duration_minutes, pickup_location, status, amount_due, pupils(name, first_name)",
+            )
+            .eq("instructor_id", userId)
+            .neq("status", "cancelled")
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("lessons")
+            .select("id, pupil_id, lesson_date, lesson_time, pupils(name, first_name)")
+            .eq("instructor_id", userId)
+            .eq("status", "cancelled")
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("chat_messages")
+            .select("id, pupil_id, body, created_at, pupils(name, first_name)")
+            .eq("instructor_id", userId)
+            .eq("sender_type", "pupil")
+            .is("read_at", null)
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("lessons")
+            .select(
+              "id, pupil_id, lesson_date, amount_due, paid_amount, payment_method, pupils(name, first_name)",
+            )
+            .eq("instructor_id", userId)
+            .eq("payment_status", "paid")
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("gap_filler_offers")
+            .select("id, pupil_id, slot_date, slot_time, duration_minutes, pupils(name, first_name)")
+            .eq("instructor_id", userId)
+            .eq("status", "accepted")
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("enquiries")
+            .select("id, name, notes, course_interest, postcode, created_at")
+            .eq("instructor_id", userId)
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("job_offers")
+            .select("id, title, created_at")
+            .eq("status", "open")
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("dsm_live_sessions")
+            .select("id, title, session_date, session_time")
+            .is("deleted_at", null)
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("learn_videos")
+            .select("id, title, duration, thumbnail_url")
+            .not("url", "is", null)
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("marketplace_listings")
+            .select("id, title, price_display, image_urls")
+            .eq("is_active", true)
+            .is("deleted_at", null)
+            .gte("created_at", sinceIso),
+        ),
+        safeQuery(() =>
+          supabase
+            .from("lesson_history")
+            .select("id, pupil_id, amount_paid, payment_method, created_at, pupils(name, first_name)")
+            .eq("instructor_id", userId)
+            .eq("payment_status", "paid")
+            .not("payment_method", "eq", "cancellation")
+            .gte("created_at", sinceIso),
+        ),
+      ]);
 
       if (cancelled) return;
 
@@ -302,12 +328,12 @@ function WhatsChangedPage() {
         {
           key: "card_payment",
           label: "Card payments received",
-          icon: <CreditCard size={16} color="#1B7F3B" />,
+          icon: <IconCreditCard size={16} color="#15803D" />,
           items: rowsOf(cardPayments).map((r) => ({
             id: String(r.id),
             kind: "card_payment" as const,
             title: pupilName(r),
-            subtitle: `${money(r.lesson_cost)} · ${r.payment_method ?? "Card"} · ${fmtDateTime(r.created_at)}`,
+            subtitle: `£${Number(r.amount_paid ?? 0).toFixed(2)} · ${r.payment_method ?? "card"}`,
             raw: r,
           })),
         },
@@ -617,7 +643,7 @@ function DetailSheet({
       body = (
         <>
           <Field label="Pupil" value={pupilName(r)} />
-          <Field label="Amount paid" value={money(r.lesson_cost)} />
+          <Field label="Amount paid" value={money(r.amount_paid ?? r.lesson_cost)} />
           <Field label="Method" value={r.payment_method ?? "Card"} />
           <Field label="Received" value={fmtDateTime(r.created_at)} />
         </>
