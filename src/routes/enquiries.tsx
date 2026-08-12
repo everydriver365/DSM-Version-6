@@ -17,6 +17,8 @@ import {
   IconSend,
   IconBriefcase,
   IconArrowLeft,
+  IconArrowBackUp,
+  IconAlertTriangle,
 } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/enquiries")({
@@ -91,6 +93,12 @@ function fullDate(iso: string | null) {
   });
 }
 
+function isValidPostcode(value: string | null) {
+  if (!value) return true;
+  const pattern = /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i;
+  return pattern.test(value.trim());
+}
+
 
 const STATUS_META: Record<
   string,
@@ -139,6 +147,7 @@ function EnquiriesPage() {
   const [smsText, setSmsText] = useState("");
   const [showSmsComposer, setShowSmsComposer] = useState(false);
   const [unreadReplies, setUnreadReplies] = useState<Set<string>>(new Set());
+  const [latestReplyAt, setLatestReplyAt] = useState<Record<string, string>>({});
 
   function defaultSmsText(enquiry: EnquiryRow) {
     const first = enquiry.name?.split(" ")[0] ?? "";
@@ -196,7 +205,7 @@ function EnquiriesPage() {
 
       const { data: replies } = await supabase
         .from("enquiry_activities")
-        .select("enquiry_id")
+        .select("enquiry_id, created_at")
         .eq("instructor_id", user.id)
         .eq("type", "sms_reply")
         .gt(
@@ -204,8 +213,15 @@ function EnquiriesPage() {
           new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
         );
 
-      setUnreadReplies(
-        new Set((replies ?? []).map((r) => r.enquiry_id))
+      const replyRows = (replies ?? []) as { enquiry_id: string; created_at: string }[];
+      setUnreadReplies(new Set(replyRows.map((r) => r.enquiry_id)));
+      setLatestReplyAt(
+        replyRows.reduce<Record<string, string>>((acc, r) => {
+          if (!acc[r.enquiry_id] || r.created_at > acc[r.enquiry_id]) {
+            acc[r.enquiry_id] = r.created_at;
+          }
+          return acc;
+        }, {})
       );
 
       setLoading(false);
@@ -530,7 +546,7 @@ function EnquiriesPage() {
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
             <div style={{ fontSize: 16.5, fontWeight: 800, color: "#0B1F3A", ...POPPINS }}>
               {enquiry.name ?? "Unknown"}
             </div>
@@ -542,8 +558,6 @@ function EnquiriesPage() {
                   borderRadius: "50%",
                   background: "#1877D6",
                   flexShrink: 0,
-                  marginLeft: 6,
-                  marginTop: 2,
                 }}
               />
             )}
@@ -564,8 +578,11 @@ function EnquiriesPage() {
           {enquiry.postcode && (
             <div
               style={{
-                background: "#F2F2F7",
-                color: "#6B6B6F",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+                background: isValidPostcode(enquiry.postcode) ? "#F2F2F7" : "#FDEDEC",
+                color: isValidPostcode(enquiry.postcode) ? "#6B6B6F" : "#FF3B30",
                 fontSize: 11,
                 fontWeight: 700,
                 padding: "3px 9px",
@@ -576,6 +593,9 @@ function EnquiriesPage() {
               }}
             >
               {enquiry.postcode}
+              {!isValidPostcode(enquiry.postcode) && (
+                <IconAlertTriangle size={11} stroke={2} color="#FF3B30" />
+              )}
             </div>
           )}
           <div
@@ -634,6 +654,81 @@ function EnquiriesPage() {
           <EnquiryRowItem key={e.id} enquiry={e} />
         ))}
       </div>
+    );
+  }
+
+  function ReplyBanner() {
+    if (unreadReplies.size === 0) return null;
+    const mostRecentId = Object.entries(latestReplyAt)
+      .filter(([id]) => unreadReplies.has(id))
+      .sort((a, b) => new Date(b[1]).getTime() - new Date(a[1]).getTime())[0]?.[0];
+    if (!mostRecentId) return null;
+    const enquiry = enquiries.find((e) => e.id === mostRecentId);
+    if (!enquiry) return null;
+    const count = unreadReplies.size;
+    const title = `${count} new ${count === 1 ? "reply" : "replies"} waiting`;
+    const subtitle = `${enquiry.name ?? "Unknown"} · ${timeAgo(latestReplyAt[mostRecentId])}`;
+
+    return (
+      <button
+        type="button"
+        onClick={() => {
+          setSelectedId(enquiry.id);
+          setNoteText("");
+          void loadActivities(enquiry.id);
+        }}
+        className="w-full active:opacity-80"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          background: "linear-gradient(100deg, #0B1F3A, #14509E)",
+          borderRadius: 16,
+          padding: "14px 16px",
+          marginBottom: 16,
+          border: "none",
+          textAlign: "left",
+          boxShadow: "0 3px 0 #081730, 0 10px 22px rgba(11,31,58,0.25)",
+        }}
+      >
+        <div
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: 10,
+            background: "rgba(255,255,255,0.15)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <IconArrowBackUp size={16} stroke={2} color="#fff" />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div
+            style={{
+              fontSize: 14,
+              fontWeight: 800,
+              color: "#fff",
+              ...POPPINS,
+            }}
+          >
+            {title}
+          </div>
+          <div
+            style={{
+              fontSize: 11.5,
+              color: "rgba(255,255,255,0.7)",
+              marginTop: 1,
+              ...POPPINS,
+            }}
+          >
+            {subtitle}
+          </div>
+        </div>
+        <IconChevronRight size={14} stroke={2} color="#fff" style={{ flexShrink: 0 }} />
+      </button>
     );
   }
 
@@ -1435,6 +1530,7 @@ function EnquiriesPage() {
           </div>
         ) : (
           <>
+            <ReplyBanner />
             <Section title="New" rows={byStatus("new")} />
             <Section title="Contacted" rows={byStatus("contacted")} />
             <Section title="Accepted" rows={byStatus("accepted")} />
