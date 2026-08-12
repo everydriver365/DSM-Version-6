@@ -117,7 +117,6 @@ import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as MessagesIndexRouteImport } from './routes/messages.index'
 import { Route as DsmLiveIndexRouteImport } from './routes/dsm-live.index'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
-import { Route as BookingsIndexRouteImport } from './routes/bookings.index'
 import { Route as TestDayPupilIdRouteImport } from './routes/test-day.$pupilId'
 import { Route as ReflectiveLogPupilIdRouteImport } from './routes/reflective-log.$pupilId'
 import { Route as QuotesNewRouteImport } from './routes/quotes.new'
@@ -714,11 +713,6 @@ const CoursesIndexRoute = CoursesIndexRouteImport.update({
   path: '/courses/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BookingsIndexRoute = BookingsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => BookingsRoute,
-} as any)
 const TestDayPupilIdRoute = TestDayPupilIdRouteImport.update({
   id: '/test-day/$pupilId',
   path: '/test-day/$pupilId',
@@ -1146,7 +1140,6 @@ export interface FileRoutesByFullPath {
   '/quotes/new': typeof QuotesNewRoute
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
-  '/bookings/': typeof BookingsIndexRoute
   '/courses/': typeof CoursesIndexRoute
   '/dsm-live/': typeof DsmLiveIndexRoute
   '/messages/': typeof MessagesIndexRoute
@@ -1179,6 +1172,7 @@ export interface FileRoutesByTo {
   '/availability': typeof AvailabilityRoute
   '/availability-settings': typeof AvailabilitySettingsRoute
   '/bitesize': typeof BitesizeRoute
+  '/bookings': typeof BookingsRouteWithChildren
   '/briefing': typeof BriefingRoute
   '/broadcast': typeof BroadcastRoute
   '/bulkmessage': typeof BulkmessageRoute
@@ -1308,7 +1302,6 @@ export interface FileRoutesByTo {
   '/quotes/new': typeof QuotesNewRoute
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
-  '/bookings': typeof BookingsIndexRoute
   '/courses': typeof CoursesIndexRoute
   '/dsm-live': typeof DsmLiveIndexRoute
   '/messages': typeof MessagesIndexRoute
@@ -1476,7 +1469,6 @@ export interface FileRoutesById {
   '/quotes/new': typeof QuotesNewRoute
   '/reflective-log/$pupilId': typeof ReflectiveLogPupilIdRoute
   '/test-day/$pupilId': typeof TestDayPupilIdRoute
-  '/bookings/': typeof BookingsIndexRoute
   '/courses/': typeof CoursesIndexRoute
   '/dsm-live/': typeof DsmLiveIndexRoute
   '/messages/': typeof MessagesIndexRoute
@@ -1644,7 +1636,6 @@ export interface FileRouteTypes {
     | '/quotes/new'
     | '/reflective-log/$pupilId'
     | '/test-day/$pupilId'
-    | '/bookings/'
     | '/courses/'
     | '/dsm-live/'
     | '/messages/'
@@ -1677,6 +1668,7 @@ export interface FileRouteTypes {
     | '/availability'
     | '/availability-settings'
     | '/bitesize'
+    | '/bookings'
     | '/briefing'
     | '/broadcast'
     | '/bulkmessage'
@@ -1806,7 +1798,6 @@ export interface FileRouteTypes {
     | '/quotes/new'
     | '/reflective-log/$pupilId'
     | '/test-day/$pupilId'
-    | '/bookings'
     | '/courses'
     | '/dsm-live'
     | '/messages'
@@ -1973,7 +1964,6 @@ export interface FileRouteTypes {
     | '/quotes/new'
     | '/reflective-log/$pupilId'
     | '/test-day/$pupilId'
-    | '/bookings/'
     | '/courses/'
     | '/dsm-live/'
     | '/messages/'
@@ -2900,13 +2890,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/bookings/': {
-      id: '/bookings/'
-      path: '/'
-      fullPath: '/bookings/'
-      preLoaderRoute: typeof BookingsIndexRouteImport
-      parentRoute: typeof BookingsRoute
-    }
     '/test-day/$pupilId': {
       id: '/test-day/$pupilId'
       path: '/test-day/$pupilId'
@@ -3354,12 +3337,10 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface BookingsRouteChildren {
   BookingsIdRoute: typeof BookingsIdRoute
-  BookingsIndexRoute: typeof BookingsIndexRoute
 }
 
 const BookingsRouteChildren: BookingsRouteChildren = {
   BookingsIdRoute: BookingsIdRoute,
-  BookingsIndexRoute: BookingsIndexRoute,
 }
 
 const BookingsRouteWithChildren = BookingsRoute._addFileChildren(
