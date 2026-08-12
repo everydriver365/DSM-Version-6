@@ -1530,6 +1530,7 @@ function EnquiriesPage() {
           </div>
         ) : (
           <>
+            <ReplyBanner />
             <Section title="New" rows={byStatus("new")} />
             <Section title="Contacted" rows={byStatus("contacted")} />
             <Section title="Accepted" rows={byStatus("accepted")} />
