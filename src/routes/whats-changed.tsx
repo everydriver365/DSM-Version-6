@@ -272,6 +272,162 @@ function WhatsChangedPage() {
         ),
       ]);
 
+      if (cancelled) return;
+
+      const rowsOf = (res: any): any[] => (res?.data ?? []) as any[];
+
+      const built: Section[] = ([
+        {
+          key: "lesson_new",
+          label: "New bookings",
+          icon: <CalendarCheck size={16} color="#1B7F3B" />,
+          items: rowsOf(lessonsNew).map((r) => ({
+            id: String(r.id),
+            kind: "lesson_new" as const,
+            title: pupilName(r),
+            subtitle: `${fmtDate(r.lesson_date)} · ${fmtTime(r.lesson_time)}`,
+            raw: r,
+          })),
+        },
+        {
+          key: "lesson_cancelled",
+          label: "Cancellations",
+          icon: <CalendarX size={16} color="#CC2229" />,
+          items: rowsOf(lessonsCanc).map((r) => ({
+            id: String(r.id),
+            kind: "lesson_cancelled" as const,
+            title: pupilName(r),
+            subtitle: `${fmtDate(r.lesson_date)} · ${fmtTime(r.lesson_time)}`,
+            raw: r,
+          })),
+        },
+        {
+          key: "message",
+          label: "New messages",
+          icon: <MessageSquare size={16} color={BLUE} />,
+          items: rowsOf(messages).map((r) => ({
+            id: String(r.id),
+            kind: "message" as const,
+            title: pupilName(r),
+            subtitle: truncate(r.body ?? ""),
+            raw: r,
+          })),
+        },
+        {
+          key: "payment",
+          label: "Payments received",
+          icon: <CreditCard size={16} color="#1B7F3B" />,
+          items: rowsOf(payments).map((r) => ({
+            id: String(r.id),
+            kind: "payment" as const,
+            title: pupilName(r),
+            subtitle: `${money(r.paid_amount ?? r.amount_due)} · ${fmtDate(r.lesson_date)}`,
+            raw: r,
+          })),
+        },
+        {
+          key: "card_payment",
+          label: "Card payments received",
+          icon: <IconCreditCard size={16} color="#15803D" />,
+          items: rowsOf(cardPayments).map((r) => ({
+            id: String(r.id),
+            kind: "card_payment" as const,
+            title: pupilName(r),
+            subtitle: `£${Number(r.amount_paid ?? 0).toFixed(2)} · ${r.payment_method ?? "card"}`,
+            raw: r,
+          })),
+        },
+        {
+          key: "gap",
+          label: "Slots accepted",
+          icon: <Zap size={16} color="#1B7F3B" />,
+          items: rowsOf(gaps).map((r) => ({
+            id: String(r.id),
+            kind: "gap" as const,
+            title: pupilName(r),
+            subtitle: `${fmtDate(r.slot_date)} · ${fmtTime(r.slot_time)}`,
+            raw: r,
+          })),
+        },
+        {
+          key: "enquiry",
+          label: "New enquiries",
+          icon: <Mail size={16} color={BLUE} />,
+          items: rowsOf(enquiries).map((r) => ({
+            id: String(r.id),
+            kind: "enquiry" as const,
+            title: r.name || "Enquiry",
+            subtitle: truncate(
+              r.course_interest
+                ? `${r.course_interest}${r.postcode ? " · " + r.postcode : ""}`
+                : r.notes ?? "New enquiry",
+            ),
+            raw: r,
+          })),
+        },
+        {
+          key: "job",
+          label: "New jobs",
+          icon: <Briefcase size={16} color="#B5661E" />,
+          items: rowsOf(jobs).map((r) => ({
+            id: String(r.id),
+            kind: "job" as const,
+            title: r.title || "Job offer",
+            subtitle: fmtDateTime(r.created_at),
+            raw: r,
+          })),
+        },
+        {
+          key: "live",
+          label: "DSM Live",
+          icon: <Video size={16} color={BLUE} />,
+          items: rowsOf(live).map((r) => ({
+            id: String(r.id),
+            kind: "live" as const,
+            title: r.title || "Live session",
+            subtitle: `${fmtDate(r.session_date)} · ${fmtTime(r.session_time)}`,
+            raw: r,
+          })),
+        },
+        {
+          key: "learn",
+          label: "New tutorials",
+          icon: <PlayCircle size={16} color="#7C3AED" />,
+          items: rowsOf(learn).map((r) => ({
+            id: String(r.id),
+            kind: "learn" as const,
+            title: r.title || "Tutorial",
+            subtitle: r.duration ? String(r.duration) : "DSM Learn",
+            raw: r,
+          })),
+        },
+        {
+          key: "marketplace",
+          label: "New listings",
+          icon: <ShoppingBag size={16} color="#B5661E" />,
+          items: rowsOf(listings).map((r) => ({
+            id: String(r.id),
+            kind: "marketplace" as const,
+            title: r.title || "Listing",
+            subtitle: r.price_display ? String(r.price_display) : "Marketplace",
+            raw: r,
+          })),
+        },
+      ] as Section[]).filter((s) => s.items.length > 0);
+
+      setSections(built);
+      const nowIso = new Date().toISOString();
+      setLastUpdated(nowIso);
+      setLoading(false);
+      try {
+        localStorage.setItem(key, nowIso);
+      } catch {}
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const go = (to: string) => {
     setSelected(null);
     navigate({ to } as never);
