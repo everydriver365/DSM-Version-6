@@ -732,7 +732,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                         <div
                           style={{
                             color: NAVY,
-                            fontSize: 17,
+                            fontSize: 16,
                             fontWeight: 800,
                             letterSpacing: "-0.3px",
                             marginTop: 8,
