@@ -75,6 +75,20 @@ function MiniSitePage() {
   const [customDomainStatus, setCustomDomainStatus] = useState<"pending" | null>(null);
   const [showDomainSearch, setShowDomainSearch] = useState(false);
 
+  // Upgrade flow: domain search happens before payment
+  const [upgradeStep, setUpgradeStep] = useState<
+    "idle" | "domain" | "choose-tier" | "processing"
+  >("idle");
+  const [chosenDomain, setChosenDomain] = useState<string | null>(null);
+  const [chosenTier, setChosenTier] = useState<
+    "website" | "pro" | "managed" | null
+  >(null);
+  const [domainQuery, setDomainQuery] = useState("");
+  const [domainChecking, setDomainChecking] = useState(false);
+  const [domainResult, setDomainResult] = useState<
+    { domain: string; available: boolean } | null
+  >(null);
+
   // Slug
   const [originalSlug, setOriginalSlug] = useState<string>("");
   const [slug, setSlug] = useState("");
