@@ -279,8 +279,9 @@ function BookingsPage() {
           subtitle={selectedBooking.course?.name ?? "Course booking"}
           onClose={() => {
             setSelectedId(null);
-            navigate({ to: "/bookings" as never, search: {} });
+            navigate({ to: "/bookings", search: {} });
           }}
+
         >
 
           <div style={{ display: "flex", flexDirection: "column", gap: 12, paddingBottom: 20 }}>
