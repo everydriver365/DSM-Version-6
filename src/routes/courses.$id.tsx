@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { toast } from "sonner";
-import { IconArchive, IconCamera, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMessage, IconMoon, IconPencil, IconPhone, IconPhoto, IconSchool, IconSettings, IconSun, IconSunrise, IconTrash, IconX } from "@tabler/icons-react";
+import { IconArchive, IconCalendar, IconCalendarStats, IconCalendarMonth, IconCamera, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMessage, IconMoon, IconPencil, IconPhone, IconPhoto, IconSchool, IconSettings, IconShield, IconSun, IconSunrise, IconTrash, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 import { Card } from "../components/dsm/Card";
@@ -65,9 +65,8 @@ interface Course {
   pickup_area: string | null;
   pickup_lat: number | null;
   pickup_lng: number | null;
-
+  series_id: string | null;
   radius_miles: number | null;
-
   lesson_time_preference: string;
   lesson_time_from: string | null;
   lesson_time_to: string | null;
