@@ -1156,7 +1156,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           >
             {PIRKX_LIVE
               ? "GP · DIA membership · 2,000+ discounts"
-              : "FREE DIA membership and many other exclusive member benefits - upgrade to unlock"}
+              : (
+                <>
+                  {"FREE DIA membership and many other "}
+                  <span style={{ fontWeight: 700 }}>exclusive</span>
+                  {" member benefits - upgrade to unlock"}
+                </>
+              )}
           </div>
         </div>
         <div
