@@ -105,6 +105,9 @@ function MiniSitePage() {
   const [chosenTier, setChosenTier] = useState<
     "website" | "pro" | "managed" | null
   >(null);
+  const [confirmTier, setConfirmTier] = useState<
+    "website" | "pro" | "managed" | null
+  >(null);
   const [domainQuery, setDomainQuery] = useState("");
   const [domainChecking, setDomainChecking] = useState(false);
   const [domainResult, setDomainResult] = useState<
@@ -637,6 +640,16 @@ function MiniSitePage() {
         </button>
       </div>
     ));
+  }
+
+  function promptUpgrade(tier: "website" | "pro" | "managed") {
+    setConfirmTier(tier);
+  }
+
+  function confirmUpgrade() {
+    if (!confirmTier) return;
+    setConfirmTier(null);
+    startUpgrade(confirmTier);
   }
 
   function startUpgrade(tier: "website" | "pro" | "managed") {
@@ -1501,7 +1514,7 @@ function MiniSitePage() {
                 {websiteTier !== "website" && (
                   <button
                     type="button"
-                    onClick={() => startUpgrade("website")}
+                    onClick={() => promptUpgrade("website")}
                     style={{
                       width: "100%",
                       background: "#1877D6",
@@ -1632,7 +1645,7 @@ function MiniSitePage() {
                   {websiteTier !== "pro" && (
                     <button
                       type="button"
-                      onClick={() => startUpgrade("pro")}
+                      onClick={() => promptUpgrade("pro")}
                       style={{
                         width: "100%",
                         background: "#fff",
@@ -1902,7 +1915,7 @@ function MiniSitePage() {
                       ) : above ? (
                         <button
                           type="button"
-                          onClick={() => startUpgrade(c.id as "website" | "pro")}
+                          onClick={() => promptUpgrade(c.id as "website" | "pro")}
                           style={{
                             background: "#1877D6",
                             color: "#fff",
@@ -1938,7 +1951,99 @@ function MiniSitePage() {
         )}
       </div>
 
-
+      {/* UPGRADE CONFIRMATION DIALOG */}
+      {confirmTier && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(11,31,58,0.55)",
+            zIndex: 190,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 16,
+          }}
+          onClick={() => setConfirmTier(null)}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 20,
+              padding: 24,
+              maxWidth: 400,
+              width: "100%",
+              boxShadow: "0 20px 60px rgba(11,31,58,0.25)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ fontSize: 18, fontWeight: 800, color: "#0B1F3A", marginBottom: 4 }}>
+              Confirm upgrade
+            </div>
+            <div style={{ fontSize: 13, color: "#6B7686", marginBottom: 20 }}>
+              You’re about to start upgrading to the {TIER_NAMES[confirmTier]}. You can choose or skip a custom domain on the next step.
+            </div>
+            <div
+              style={{
+                background: "#F3F8FF",
+                borderRadius: 14,
+                padding: 16,
+                marginBottom: 20,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 8 }}>
+                <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{TIER_NAMES[confirmTier]}</span>
+                <span style={{ fontSize: 14, fontWeight: 800, color: "#1877D6" }}>
+                  {confirmTier === "website" ? "£9.99" : confirmTier === "pro" ? "£19.99" : "£29.99"}/mo
+                </span>
+              </div>
+              <div style={{ fontSize: 12, color: "#6B7686" }}>
+                {confirmTier === "website" && "Your own .co.uk domain, gallery, video intro, Google reviews widget and analytics."}
+                {confirmTier === "pro" && "Everything in Website, plus blog & content pages, advanced SEO, promo codes and instructor login."}
+                {confirmTier === "managed" && "Everything in Pro, plus we build your site for you, monthly updates and dedicated account manager."}
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 10 }}>
+              <button
+                type="button"
+                onClick={() => setConfirmTier(null)}
+                style={{
+                  flex: 1,
+                  background: "#F3F8FF",
+                  color: "#0B1F3A",
+                  borderRadius: 12,
+                  padding: 13,
+                  fontSize: 14,
+                  fontWeight: 700,
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmUpgrade}
+                style={{
+                  flex: 1,
+                  background: "#1877D6",
+                  color: "#fff",
+                  borderRadius: 12,
+                  padding: 13,
+                  fontSize: 14,
+                  fontWeight: 800,
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                Continue →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* STEP 1 — DOMAIN SEARCH OVERLAY */}
       {upgradeStep === "domain" && (
