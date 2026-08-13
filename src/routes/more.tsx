@@ -8,7 +8,7 @@ import {
   Moon, TrendingUp, Activity, Radio, ShoppingBag, Users, GraduationCap as GraduationCapIcon,
   PlayCircle,
 } from "lucide-react";
-import { IconChevronRight, IconSearch, IconCreditCard, IconCalendar } from "@tabler/icons-react";
+import { IconChevronRight, IconSearch, IconCreditCard, IconCalendar, IconWorld } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
