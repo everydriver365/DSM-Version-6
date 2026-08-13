@@ -9,7 +9,6 @@ import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Card } from "../components/dsm/Card";
 import { Input } from "../components/dsm/Input";
 import { SectionHeader } from "../components/dsm/SectionHeader";
-import { StatTile } from "../components/dsm/StatTile";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 
