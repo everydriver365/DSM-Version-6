@@ -91,6 +91,10 @@ function MiniSitePage() {
     { domain: string; available: boolean } | null
   >(null);
 
+  console.log('[upgrade] step:', upgradeStep, 'result:', domainResult);
+
+
+
   // Slug
   const [originalSlug, setOriginalSlug] = useState<string>("");
   const [slug, setSlug] = useState("");
