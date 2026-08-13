@@ -1915,7 +1915,7 @@ function MiniSitePage() {
                       ) : above ? (
                         <button
                           type="button"
-                          onClick={() => startUpgrade(c.id as "website" | "pro")}
+                          onClick={() => promptUpgrade(c.id as "website" | "pro")}
                           style={{
                             background: "#1877D6",
                             color: "#fff",
