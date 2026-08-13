@@ -1280,6 +1280,9 @@ function HomePage() {
   const [nearbyOrigin, setNearbyOrigin] = useState<{ lat: number; lng: number } | null>(null);
   
   const [quickSearch, setQuickSearch] = useState('');
+  const [quickSearchOpen, setQuickSearchOpen] = useState(false);
+  const [qaPage, setQaPage] = useState(0);
+  const qaScrollRef = useRef<HTMLDivElement | null>(null);
   
 
 
