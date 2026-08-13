@@ -70,6 +70,11 @@ function MiniSitePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
+  // Domain registration state (for the optional domain-search result card)
+  const [customDomain, setCustomDomain] = useState<string | null>(null);
+  const [customDomainStatus, setCustomDomainStatus] = useState<"pending" | null>(null);
+  const [showDomainSearch, setShowDomainSearch] = useState(false);
+
   // Slug
   const [originalSlug, setOriginalSlug] = useState<string>("");
   const [slug, setSlug] = useState("");
