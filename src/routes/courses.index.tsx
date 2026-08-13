@@ -34,6 +34,45 @@ interface CourseRow {
   image_url: string | null;
 }
 
+interface BookingRow {
+  id: string;
+  course_id: string | null;
+  pupil_name: string | null;
+  status: string | null;
+  amount_paid: number | null;
+}
+
+function SectionBar({ label, count, color }: { label: string; count: number; color: string }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        margin: "18px 0 10px",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ width: 3, height: 14, borderRadius: 2, background: color }} />
+        <span
+          style={{
+            fontSize: 12,
+            fontWeight: 800,
+            letterSpacing: "0.6px",
+            textTransform: "uppercase",
+            color,
+          }}
+        >
+          {label}
+        </span>
+      </div>
+      <span style={{ fontSize: 12, fontWeight: 600, color: "#8A8A8E" }}>{count}</span>
+    </div>
+  );
+}
+
+
+
 
 function typeColor(t: string) {
   if (t === "intensive") return "#1877D6";
