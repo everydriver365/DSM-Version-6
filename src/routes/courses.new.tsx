@@ -1423,6 +1423,7 @@ function Step2(props: {
 /* ---------- Step 3 ---------- */
 function Step3(props: {
   price: string; setPrice: (v: string) => void;
+  isFree: boolean; setIsFree: (v: boolean) => void;
   deposit: string; setDeposit: (v: string) => void;
   depositOnly: boolean; setDepositOnly: (v: boolean) => void;
   earlyBird: boolean; setEarlyBird: (v: boolean) => void;
