@@ -6729,7 +6729,7 @@ function HomePage() {
                   const renderHomeTile = (tile: QuickTile, key: string) => {
                     const tint = TINTS[tile.bg as string] ?? { chip: '#E3EEFB', icon: '#1877D6' };
                     const tintedIcon = isValidElement(tile.icon)
-                      ? cloneElement(tile.icon as React.ReactElement<any>, { color: tint.icon, size: 24 })
+                      ? cloneElement(tile.icon as React.ReactElement<any>, { color: tint.icon, size: 16 })
                       : tile.icon;
                     const sub = SUBS[tile.label];
                     return (
@@ -6739,10 +6739,10 @@ function HomePage() {
                         onClick={() => goTile(tile)}
                         className="cf-tap qa-card"
                         style={{
-                          width: '100%',
+                          width: 76,
                           background: '#fff',
-                          borderRadius: 20,
-                          padding: '16px 16px 18px',
+                          borderRadius: 12,
+                          padding: '10px 6px',
                           boxShadow: '0 2px 8px rgba(11,31,58,0.06)',
                           display: 'flex',
                           flexDirection: 'column',
@@ -6760,8 +6760,8 @@ function HomePage() {
                         <div
                           className="qa-icon"
                           style={{
-                            width: 52,
-                            height: 52,
+                            width: 34,
+                            height: 34,
                             borderRadius: 16,
                             background: tint.chip,
                             display: 'flex',
@@ -6775,7 +6775,7 @@ function HomePage() {
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0, maxWidth: '100%' }}>
                           <span style={{
-                            fontSize: 17,
+                            fontSize: 10,
                             fontWeight: 700,
                             color: '#0B1F3A',
                             lineHeight: 1.2,
@@ -6787,7 +6787,7 @@ function HomePage() {
                           }}>{tile.label}</span>
                           {sub && (
                             <span style={{
-                              fontSize: 13,
+                              fontSize: 8,
                               fontWeight: 400,
                               color: '#8792A2',
                               lineHeight: 1.3,
