@@ -16,6 +16,7 @@ import {
   IconSchool,
   IconKey,
   IconPhoto,
+  IconRosetteDiscount,
 } from "@tabler/icons-react";
 
 import { supabase } from "@/lib/supabaseClient";
@@ -1119,18 +1120,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             width: 32,
             height: 32,
             borderRadius: 8,
+            background: "#EDE9FE",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
-            overflow: "hidden",
           }}
         >
-          <img
-            src={dialogo2Asset.url}
-            alt="DIA logo"
-            style={{ width: 32, height: 32, objectFit: "cover" }}
-          />
+          <IconRosetteDiscount size={18} color="#7C3AED" stroke={1.5} />
         </div>
         <div style={{ flex: 1 }}>
           <div
