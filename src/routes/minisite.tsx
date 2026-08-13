@@ -105,6 +105,9 @@ function MiniSitePage() {
   const [chosenTier, setChosenTier] = useState<
     "website" | "pro" | "managed" | null
   >(null);
+  const [confirmTier, setConfirmTier] = useState<
+    "website" | "pro" | "managed" | null
+  >(null);
   const [domainQuery, setDomainQuery] = useState("");
   const [domainChecking, setDomainChecking] = useState(false);
   const [domainResult, setDomainResult] = useState<
