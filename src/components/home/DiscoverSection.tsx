@@ -418,40 +418,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     ...(PIRKX_LIVE ? [benefitsCard] : []),
   ];
 
-  const chipIconWrap: React.CSSProperties = {
-    width: 32,
-    height: 32,
-    borderRadius: 9,
-    background: "#F2F2F7",
-    color: NAVY,
-    margin: "0 auto 8px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  };
-
-  const tileStyle: React.CSSProperties = {
-    background: "#fff",
-    borderRadius: 15,
-    padding: "13px 8px",
-    textAlign: "center",
-    cursor: "pointer",
-    position: "relative",
-    boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)",
-  };
-
-  const chipLabel: React.CSSProperties = {
-    fontSize: 12,
-    fontWeight: 800,
-    color: "#000",
-  };
-
-  const chipSub: React.CSSProperties = {
-    fontSize: 9,
-    color: "#B0B0B5",
-    marginTop: 2,
-  };
-
   return (
     <div style={{ margin: "0 -16px 0", padding: "0 16px 14px", borderRadius: 0, fontFamily: FONT }}>
       {/* FEATURED SECTION HEADER */}
