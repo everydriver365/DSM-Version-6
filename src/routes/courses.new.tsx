@@ -21,6 +21,7 @@ export const Route = createFileRoute("/courses/new")({
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 type CourseType = "intensive" | "semi-intensive" | "weekly" | "custom";
+type Transmission = "Manual" | "Automatic" | "Both";
 type RepeatType = "one-off" | "daily" | "weekly" | "monthly";
 type TimePref = "flexible" | "morning" | "afternoon" | "evening" | "daytime" | "school" | "custom";
 
@@ -174,6 +175,7 @@ function NewCoursePage() {
 
   // Step 1
   const [courseType, setCourseType] = useState<CourseType>("intensive");
+  const [transmission, setTransmission] = useState<Transmission>("Manual");
   const [hours, setHours] = useState<number>(10);
   const [includesTest, setIncludesTest] = useState(false);
   const [name, setName] = useState<string>(autoName("intensive", 10, false));
@@ -353,6 +355,7 @@ function NewCoursePage() {
       publish_marketplace: publishMarketplace,
       publish_mini_website: publishWebsite,
       image_url: heroImage,
+      transmission: transmission,
       status,
     };
 
@@ -513,6 +516,8 @@ function NewCoursePage() {
           <Step1
             courseType={courseType}
             setCourseType={setCourseType}
+            transmission={transmission}
+            setTransmission={setTransmission}
             hours={hours}
             setHours={setHours}
             includesTest={includesTest}
@@ -778,6 +783,8 @@ function NewCoursePage() {
 function Step1(props: {
   courseType: CourseType;
   setCourseType: (t: CourseType) => void;
+  transmission: Transmission;
+  setTransmission: (t: Transmission) => void;
   hours: number;
   setHours: (n: number) => void;
   includesTest: boolean;
@@ -790,7 +797,7 @@ function Step1(props: {
   setMaxSpaces: (n: number) => void;
 }) {
   const {
-    courseType, setCourseType, hours, setHours, includesTest, setIncludesTest,
+    courseType, setCourseType, transmission, setTransmission, hours, setHours, includesTest, setIncludesTest,
     name, setName, description, setDescription, maxSpaces, setMaxSpaces,
   } = props;
   const maxSpacesCap = courseType === "intensive" ? 4 : 20;
@@ -820,6 +827,46 @@ function Step1(props: {
             </button>
           );
         })}
+      </div>
+
+      <FieldLabel>Vehicle</FieldLabel>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: 12,
+          background: "#fff",
+          border: "0.5px solid #EEF2F7",
+          borderRadius: 10,
+          fontFamily: "Poppins, sans-serif",
+        }}
+      >
+        <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>Transmission</div>
+        <div style={{ display: "flex", gap: 6 }}>
+          {(["Manual", "Automatic", "Both"] as Transmission[]).map((t) => {
+            const active = transmission === t;
+            return (
+              <button
+                key={t}
+                onClick={() => setTransmission(t)}
+                style={{
+                  background: active ? "#1877D6" : "#EEF2F7",
+                  color: active ? "#fff" : "#6B7686",
+                  borderRadius: 20,
+                  padding: "6px 14px",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                {t}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <Input
