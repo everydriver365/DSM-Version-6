@@ -104,10 +104,27 @@ function CoursesPage() {
       }
 
       if (error) console.error("[courses] fetch error", error);
-      setCourses((data ?? []) as CourseRow[]);
+      const rows = (data ?? []) as CourseRow[];
+      setCourses(rows);
       setLoading(false);
+
+      if (rows.length > 0) {
+        const { data: bk } = await supabase
+          .from("course_bookings")
+          .select("id, course_id, pupil_name, status, amount_paid")
+          .eq("instructor_id", uid)
+          .in("course_id", rows.map((r) => r.id));
+        const map: Record<string, BookingRow[]> = {};
+        for (const b of (bk ?? []) as BookingRow[]) {
+          if (!b.course_id) continue;
+          if (b.status === "cancelled") continue;
+          (map[b.course_id] ??= []).push(b);
+        }
+        setBookings(map);
+      }
     })();
   }, []);
+
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS }}>
