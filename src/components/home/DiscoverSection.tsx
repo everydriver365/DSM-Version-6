@@ -20,7 +20,7 @@ import {
 
 import { supabase } from "@/lib/supabaseClient";
 import { sanitizeNewsTitle } from "@/lib/newsText";
-import diaLogoAsset from "@/assets/dialogo.png.asset.json";
+
 
 const PIRKX_LIVE = false;
 
