@@ -1269,7 +1269,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
 function HomePage() {
   const navigate = useNavigate();
 
-  const [quickPage, setQuickPage] = useState(0);
+  
   const [quickSearchOpen, setQuickSearchOpen] = useState(false);
   const [runningLateOpen, setRunningLateOpen] = useState(false);
   const [nearbyOpen, setNearbyOpen] = useState(false);
@@ -1279,7 +1279,7 @@ function HomePage() {
   const [nearbyError, setNearbyError] = useState<string | null>(null);
   const [nearbyOrigin, setNearbyOrigin] = useState<{ lat: number; lng: number } | null>(null);
   const [quickSearchQuery, setQuickSearchQuery] = useState('');
-  const qaStartX = useRef(0);
+  
 
 
   const [pupilQuery, setPupilQuery] = useState("");
@@ -6485,9 +6485,7 @@ function HomePage() {
                 { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
                 { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'spark' },
               ];
-              const tilesPerPage = 6;
-              const totalPages = Math.ceil(quickTiles.length / tilesPerPage);
-              const currentTiles = quickTiles.slice(quickPage * tilesPerPage, (quickPage + 1) * tilesPerPage);
+              const quickTilesHome = quickTiles.slice(0, 8);
 
               const goTile = (tile: QuickTile) => {
                 if (tile.action === 'running-late') { setRunningLateOpen(true); return; }
@@ -6748,60 +6746,44 @@ function HomePage() {
                 .qa-card:active::after { animation: qaRipple 0.5s ease-out; }
               `}</style>
                 <div style={{ background: PAGE_BACKGROUND, margin: 0, padding: 0, borderRadius: 0 }}>
-                      <div style={SECTION_HEADER_STYLE}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
-                          <span style={SECTION_TITLE_TEXT_STYLE}>Quick access</span>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#FFFFFF', borderRadius: 999, padding: '5px 9px', boxShadow: '0 1px 3px rgba(11,31,58,0.08)' }}>
-                          <div style={{ display: 'flex', gap: 4 }}>
-                            {Array.from({ length: totalPages }).map((_, i) => (
-                              <div
-                                key={i}
-                                onClick={() => setQuickPage(i)}
-                                style={{
-                                  width: quickPage === i ? 16 : 5,
-                                  height: 5,
-                                  borderRadius: 3,
-                                  background: quickPage === i ? '#0B1F3A' : '#D6DCE5',
-                                  transition: 'all 0.25s ease',
-                                  cursor: 'pointer',
-                                }}
-                              />
-                            ))}
-                          </div>
-                          <span style={{ fontSize: 10, fontWeight: 600, color: '#6B7686' }}>{quickPage + 1}/{totalPages}</span>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '14px 16px 6px',
+                      }}>
+                        <div style={{
+                          fontSize: 11,
+                          fontWeight: 600,
+                          color: '#9CA3AF',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.08em',
+                          fontFamily: 'Poppins, sans-serif',
+                        }}>
+                          Quick Access
                         </div>
                         <button
                           type="button"
-                          onClick={() => { setQuickSearchQuery(''); setQuickSearchOpen(true); }}
+                          onClick={() => navigate({ to: '/quick-access/all' as never })}
                           style={{
-                            width: 32, height: 32, borderRadius: 999,
-                            background: '#FFFFFF', border: 'none', padding: 0, marginLeft: 4, cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontSize: 12,
+                            fontWeight: 700,
+                            color: '#1877D6',
+                            fontFamily: 'Poppins, sans-serif',
+                            padding: 0,
                           }}
-                          aria-label="Search quick access"
                         >
-                          <IconSearch stroke={1.5} size={15} color="#0B1F3A" />
+                          See all →
                         </button>
                       </div>
-                    </div>
 
                     <div
-                      onTouchStart={(e) => { qaStartX.current = e.touches[0].clientX; }}
-                      onTouchEnd={(e) => {
-                        const dx = qaStartX.current - e.changedTouches[0].clientX;
-                        if (dx > 50 && quickPage < totalPages - 1) setQuickPage((p) => p + 1);
-                        if (dx < -50 && quickPage > 0) setQuickPage((p) => p - 1);
-                      }}
                       style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}
                     >
-                      {currentTiles.map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
-                    </div>
-                    <div style={{ textAlign: 'center', fontSize: 10.5, color: '#6B7686', marginTop: 6 }}>
-                      ← swipe for more →
+                      {quickTilesHome.map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
                     </div>
                   </div>
             </div>

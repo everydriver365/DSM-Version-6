@@ -319,7 +319,7 @@ function SearchPage() {
       </div>
 
 
-      <div className="px-4">
+      <div className="px-4" style={{ paddingTop: 16, paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))' }}>
         {!debounced && (
           <>
             <SectionHeader>RECENT</SectionHeader>
