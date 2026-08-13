@@ -6783,7 +6783,7 @@ function HomePage() {
                     <div
                       style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}
                     >
-                      {quickTiles.slice(0, 8).map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
+                      {quickTilesHome.map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
                     </div>
                   </div>
             </div>
