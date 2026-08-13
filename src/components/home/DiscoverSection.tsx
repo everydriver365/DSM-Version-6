@@ -20,14 +20,12 @@ import {
 
 import { supabase } from "@/lib/supabaseClient";
 import { sanitizeNewsTitle } from "@/lib/newsText";
-import diaLogoAsset from "@/assets/dialogo.png.asset.json";
 
-const PIRKX_LIVE = true;
+
+const PIRKX_LIVE = false;
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
-const RED = "#CC2229";
-const HAIRLINE = "#E4E8EF";
 const FONT = "Poppins, sans-serif";
 
 /** Pick an icon that matches the listing category for the missing-photo fallback. */
@@ -418,40 +416,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     ...(PIRKX_LIVE ? [benefitsCard] : []),
   ];
 
-  const chipIconWrap: React.CSSProperties = {
-    width: 32,
-    height: 32,
-    borderRadius: 9,
-    background: "#F2F2F7",
-    color: NAVY,
-    margin: "0 auto 8px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  };
-
-  const tileStyle: React.CSSProperties = {
-    background: "#fff",
-    borderRadius: 15,
-    padding: "13px 8px",
-    textAlign: "center",
-    cursor: "pointer",
-    position: "relative",
-    boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)",
-  };
-
-  const chipLabel: React.CSSProperties = {
-    fontSize: 12,
-    fontWeight: 800,
-    color: "#000",
-  };
-
-  const chipSub: React.CSSProperties = {
-    fontSize: 9,
-    color: "#B0B0B5",
-    marginTop: 2,
-  };
-
   return (
     <div style={{ margin: "0 -16px 0", padding: "0 16px 14px", borderRadius: 0, fontFamily: FONT }}>
       {/* FEATURED SECTION HEADER */}
@@ -461,7 +425,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           alignItems: "center",
           justifyContent: "space-between",
           marginTop: 18,
-          marginBottom: 12,
+          marginBottom: 8,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
@@ -469,7 +433,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             aria-hidden
             style={{
               width: 3,
-              height: 14,
+              height: 12,
               background: BLUE,
               borderRadius: 2,
               display: "inline-block",
@@ -478,7 +442,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           <span
             style={{
               color: BLUE,
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: 800,
               letterSpacing: "0.6px",
               textTransform: "uppercase",
@@ -492,7 +456,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/marketplace" as never })}
-          style={{ color: BLUE, fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}
+          style={{ color: BLUE, fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}
         >
           See all →
         </span>
@@ -877,14 +841,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           alignItems: "center",
           gap: 7,
           marginTop: 18,
-          marginBottom: 12,
+          marginBottom: 10,
         }}
       >
         <span
           aria-hidden
           style={{
             width: 3,
-            height: 14,
+            height: 12,
             background: BLUE,
             borderRadius: 2,
             display: "inline-block",
@@ -893,7 +857,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         <span
           style={{
             color: BLUE,
-            fontSize: 12,
+            fontSize: 11,
             fontWeight: 800,
             letterSpacing: "0.6px",
             textTransform: "uppercase",
@@ -904,13 +868,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         </span>
       </div>
 
-      {/* DISCOVER TILES — 4 COLUMNS */}
+      {/* DISCOVER TILES — 5 COLUMNS */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: 9,
-          marginBottom: 8,
+          gridTemplateColumns: "repeat(5, 1fr)",
+          gap: 6,
+          marginBottom: 10,
         }}
       >
         {/* Live */}
@@ -918,28 +882,49 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/live" as never })}
-          style={tileStyle}
+          style={{
+            background: "#fff",
+            borderRadius: 11,
+            padding: "9px 4px",
+            boxShadow: "0 2px 0 #E4E4E8",
+            textAlign: "center",
+            cursor: "pointer",
+            position: "relative",
+          }}
         >
           {liveActive && (
             <span
               style={{
-                position: "absolute",
-                top: 8,
-                left: "calc(50% + 12px)",
-                width: 8,
-                height: 8,
+                width: 6,
+                height: 6,
                 borderRadius: "50%",
                 background: "#FF3B30",
                 border: "1.5px solid #fff",
+                position: "absolute",
+                top: -2,
+                right: -2,
                 zIndex: 2,
               }}
             />
           )}
-          <span style={chipIconWrap}>
-            <IconRadio size={16} color={NAVY} stroke={2} />
-          </span>
-          <div style={chipLabel}>Live</div>
-          <div style={chipSub}>Join sessions</div>
+          <div
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 7,
+              background: "#F2F2F7",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 5px",
+              fontSize: 13,
+              position: "relative",
+            }}
+          >
+            <IconRadio size={13} color={NAVY} stroke={2} />
+          </div>
+          <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>Live</div>
+          <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Sessions</div>
         </div>
 
         {/* Learn */}
@@ -947,13 +932,69 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/learn" as never })}
-          style={tileStyle}
+          style={{
+            background: "#fff",
+            borderRadius: 11,
+            padding: "9px 4px",
+            boxShadow: "0 2px 0 #E4E4E8",
+            textAlign: "center",
+            cursor: "pointer",
+            position: "relative",
+          }}
         >
-          <span style={chipIconWrap}>
-            <IconPlayerPlay size={16} color={NAVY} stroke={2} />
-          </span>
-          <div style={chipLabel}>Learn</div>
-          <div style={chipSub}>Videos & bitesize</div>
+          <div
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 7,
+              background: "#F2F2F7",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 5px",
+              fontSize: 13,
+              position: "relative",
+            }}
+          >
+            <IconPlayerPlay size={13} color={NAVY} stroke={2} />
+          </div>
+          <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>Learn</div>
+          <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Videos</div>
+        </div>
+
+        {/* Bitesize */}
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate({ to: "/bitesize" as never })}
+          style={{
+            background: "#fff",
+            borderRadius: 11,
+            padding: "9px 4px",
+            boxShadow: "0 2px 0 #E4E4E8",
+            textAlign: "center",
+            cursor: "pointer",
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 7,
+              background: "#F2F2F7",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 5px",
+              fontSize: 13,
+              position: "relative",
+            }}
+          >
+            <IconBook size={13} color={NAVY} stroke={2} />
+          </div>
+          <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>Bitesize</div>
+          <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Tips</div>
         </div>
 
         {/* Watch */}
@@ -961,28 +1002,49 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/showcase" as never })}
-          style={tileStyle}
+          style={{
+            background: "#fff",
+            borderRadius: 11,
+            padding: "9px 4px",
+            boxShadow: "0 2px 0 #E4E4E8",
+            textAlign: "center",
+            cursor: "pointer",
+            position: "relative",
+          }}
         >
           {(showcaseCount ?? 0) > 0 && (
             <span
               style={{
-                position: "absolute",
-                top: 8,
-                left: "calc(50% + 12px)",
-                width: 8,
-                height: 8,
+                width: 6,
+                height: 6,
                 borderRadius: "50%",
                 background: "#FF3B30",
                 border: "1.5px solid #fff",
+                position: "absolute",
+                top: -2,
+                right: -2,
                 zIndex: 2,
               }}
             />
           )}
-          <span style={chipIconWrap}>
-            <IconPlayerPlay size={16} color={NAVY} stroke={2} />
-          </span>
-          <div style={chipLabel}>Watch</div>
-          <div style={chipSub}>Showcase</div>
+          <div
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 7,
+              background: "#F2F2F7",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 5px",
+              fontSize: 13,
+              position: "relative",
+            }}
+          >
+            <IconCamera size={13} color={NAVY} stroke={2} />
+          </div>
+          <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>Watch</div>
+          <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Showcase</div>
         </div>
 
         {/* News */}
@@ -990,123 +1052,118 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/news" as never })}
-          style={tileStyle}
+          style={{
+            background: "#fff",
+            borderRadius: 11,
+            padding: "9px 4px",
+            boxShadow: "0 2px 0 #E4E4E8",
+            textAlign: "center",
+            cursor: "pointer",
+            position: "relative",
+          }}
         >
           {newsUnread && (
             <span
               style={{
-                position: "absolute",
-                top: 8,
-                left: "calc(50% + 12px)",
-                width: 8,
-                height: 8,
+                width: 6,
+                height: 6,
                 borderRadius: "50%",
                 background: "#FF3B30",
                 border: "1.5px solid #fff",
+                position: "absolute",
+                top: -2,
+                right: -2,
                 zIndex: 2,
               }}
             />
           )}
-          <span style={chipIconWrap}>
-            <IconNews size={16} color={NAVY} stroke={2} />
-          </span>
-          <div style={chipLabel}>News</div>
-          <div style={chipSub}>Latest updates</div>
-        </div>
-      </div>
-
-      {/* PERKS BANNER */}
-      {PIRKX_LIVE && (
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => navigate({ to: "/marketplace/benefits" as never })}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") navigate({ to: "/marketplace/benefits" as never });
-          }}
-          style={{
-            background: "#fff",
-            borderRadius: 16,
-            padding: "4px 10px",
-            boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            cursor: "pointer",
-            marginBottom: 8,
-          }}
-        >
-          {/* DIA icon with FREE ribbon */}
           <div
             style={{
-              width: 28,
-              height: 28,
-              borderRadius: 8,
-              background: "#E6F7EC",
-              flexShrink: 0,
+              width: 26,
+              height: 26,
+              borderRadius: 7,
+              background: "#F2F2F7",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              margin: "0 auto 5px",
+              fontSize: 13,
               position: "relative",
-              overflow: "hidden",
             }}
           >
-            <img
-              src={diaLogoAsset.url}
-              alt="DIA"
-              style={{
-                width: 20,
-                height: 20,
-                objectFit: "contain",
-                borderRadius: 4,
-              }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                top: 4,
-                right: -11,
-                background: "#1A9B5C",
-                color: "#fff",
-                fontSize: 5,
-                fontWeight: 900,
-                letterSpacing: "0.3px",
-                padding: "1px 10px",
-                transform: "rotate(38deg)",
-                textTransform: "uppercase",
-              }}
-            >
-              FREE
-            </div>
+            <IconNews size={13} color={NAVY} stroke={2} />
           </div>
-
-          {/* Text block */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                color: NAVY,
-                fontSize: 12,
-                fontWeight: 800,
-                letterSpacing: "-0.2px",
-              }}
-            >
-              DSM member exclusive benefits
-            </div>
-            <div
-              style={{
-                color: "#8A8A8E",
-                fontSize: 9,
-                fontWeight: 500,
-                marginTop: 0,
-              }}
-            >
-              40+ perks including free DIA membership
-            </div>
-          </div>
-
-          <IconChevronRight size={10} color="#C7C7CC" stroke={2} />
+          <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>News</div>
+          <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Updates</div>
         </div>
-      )}
+      </div>
+
+      {/* PERKS STRIP */}
+      <div
+        onClick={() => navigate({ to: "/marketplace" as never })}
+        style={{
+          background: "#fff",
+          borderRadius: 12,
+          padding: "10px 12px",
+          boxShadow: "0 2px 0 #E4E4E8",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          cursor: "pointer",
+          marginBottom: 12,
+        }}
+      >
+        <div
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: 8,
+            background: "#EDE9FE",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 15,
+            flexShrink: 0,
+          }}
+        >
+          🎁
+        </div>
+        <div style={{ flex: 1 }}>
+          <div
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              color: "#0B1F3A",
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            DSM member perks
+          </div>
+          <div
+            style={{
+              fontSize: 9,
+              color: "#9CA3AF",
+              fontFamily: "Poppins, sans-serif",
+              marginTop: 1,
+            }}
+          >
+            {PIRKX_LIVE
+              ? "GP · DIA membership · 2,000+ discounts"
+              : "Coming soon — upgrade to unlock"}
+          </div>
+        </div>
+        <div
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            color: "#7C3AED",
+            fontFamily: "Poppins, sans-serif",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {PIRKX_LIVE ? "Access →" : "Upgrade →"}
+        </div>
+      </div>
     </div>
   );
 }
