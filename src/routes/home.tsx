@@ -3888,10 +3888,10 @@ function HomePage() {
 
   const quickAccessTiles = [
     { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Schedule", route: "/schedule" },
-    
+    { icon: <IconUsers stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
+    { icon: <IconWorld stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My website", route: "/minisite" },
     { icon: <IconMap stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Start tracking", route: "/live" },
     { icon: <IconCalendarCheck stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Month end", route: "/monthend" },
-    { icon: <IconUsers stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
     { icon: <IconSchool stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
     { icon: <IconCurrencyPound stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Payments", route: "/payments" },
     { icon: <IconMessage stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Messages", route: "/messages" },
@@ -3950,7 +3950,6 @@ function HomePage() {
     { icon: <IconFileText stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Quotes", route: "/quotes" },
     { icon: <IconSun stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Briefing", route: "/briefing" },
     { icon: <IconAlertCircle stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Outstanding", route: "/outstanding" },
-    { icon: <IconWorld stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My website", route: "/minisite" },
     { icon: <PlayCircle size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Learn", route: "/learn" },
 
   ] as const;
@@ -6442,67 +6441,11 @@ function HomePage() {
 
             {/* 5. QUICK ACCESS (swipeable 3x2) */}
             {(() => {
-              const unreadCount = unreadMsgs.length;
-              type GraphicKind = 'timeline' | 'calendar' | 'donut' | 'chart' | 'bubbles' | 'alarm' | 'book' | 'medal' | 'swap' | 'repeat' | 'checklist' | 'receipt' | 'grad' | 'map' | 'location' | 'fuel' | 'car' | 'bars' | 'moon' | 'invoice' | 'trend' | 'gear' | 'clock2' | 'sync' | 'gift' | 'shield' | 'spark' | 'calc' | 'card';
-              type QuickTile = { label: string; sub: string; route: string | null; icon: any; iconStroke: string; chipBg: string; wsIndex?: number; attention?: boolean; action?: 'running-late' | 'nearby' | 'take-payment' | 'add-expense' | 'log-mileage' | 'send-message'; badge?: number; graphic?: GraphicKind };
-              const quickTiles: QuickTile[] = [
-                // First four
-                { label: 'Fill Empty Slots', sub: 'Gaps', route: '/gaps', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', attention: freeSlotCount > 0, badge: freeSlotCount, graphic: 'timeline' },
-                { label: 'My Schedule', sub: 'View diary', route: null, icon: IconCalendar, iconStroke: '#1877D6', chipBg: '#E6F1FB', wsIndex: 1, graphic: 'calendar' },
-                { label: 'Take a Payment', sub: 'Card & QR', route: null, icon: IconCreditCard, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', action: 'take-payment', graphic: 'card' },
-                { label: 'Find Nearby', sub: 'Find places', route: null, icon: IconMapPin, iconStroke: '#1877D6', chipBg: '#E6F1FB', action: 'nearby', graphic: 'location' },
-                // Page 2 — Teaching
-                { label: 'Pupils', sub: `${activePupilsCount} active`, route: '/pupils', icon: IconUsers, iconStroke: '#6B4FA0', chipBg: '#EAE3F5', graphic: 'donut' },
-                { label: 'Courses', sub: 'List your\u00a0 courses', route: '/courses', icon: IconSchool, iconStroke: '#DC2626', chipBg: '#FBE2E2', graphic: 'grad' },
-                { label: 'Payments', sub: outstanding > 0 ? `£${Math.round(outstanding)} owed` : 'All settled', route: '/payments', icon: IconCurrencyPound, iconStroke: '#1E8E3E', chipBg: '#DDEFE1', attention: outstanding > 0, badge: outstanding > 0 ? Math.round(outstanding) : undefined, graphic: 'chart' },
-                { label: 'Messages', sub: unreadCount > 0 ? `${unreadCount} new` : 'No new', route: '/messages', icon: IconMessageCircle, iconStroke: '#1877D6', chipBg: '#E6F1FB', attention: unreadCount > 0, graphic: 'bubbles' },
-
-                { label: 'Send message', sub: 'Quick text', route: null, icon: IconMessage, iconStroke: '#1877D6', chipBg: '#E6F1FB', action: 'send-message', graphic: 'bubbles' },
-                { label: 'Running late', sub: 'Alert pupils', route: null, icon: IconClock, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'running-late', graphic: 'alarm' },
-                { label: 'EOL', sub: 'End of lesson', route: '/pupils', icon: BookOpen, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'book' },
-                { label: 'Log test', sub: 'Test result', route: '/driving-test', icon: IconAward, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'medal' },
-                { label: 'Test swap', sub: 'Manage per pupil', route: '/pupils', icon: ArrowLeftRight, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'swap' },
-                { label: 'Recurring', sub: 'Weekly series', route: '/lesson-series', icon: IconRefresh, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'repeat' },
-                { label: 'Syllabus', sub: 'Standards', route: '/standards', icon: IconSchool, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'grad' },
-                { label: 'Mock tests', sub: 'Practice', route: '/mock-tests', icon: IconClipboardCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
-                // Page 3 — Business
-                { label: 'Expenses', sub: 'Track costs', route: '/expenses', icon: Receipt, iconStroke: '#C23B3B', chipBg: '#FBE2E2', graphic: 'receipt' },
-                { label: 'Log expense', sub: 'Add cost', route: null, icon: Receipt, iconStroke: '#C23B3B', chipBg: '#FBE2E2', action: 'add-expense', graphic: 'receipt' },
-                { label: 'Certifications', sub: 'Licences', route: '/certifications', icon: IconAward, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'shield' },
-                { label: 'CPD log', sub: 'Development', route: '/cpd', icon: IconSchool, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'bars' },
-                { label: 'Mileage', sub: 'Log miles', route: null, icon: IconMapPin, iconStroke: '#5A6B85', chipBg: '#EEF2F7', action: 'log-mileage', graphic: 'map' },
-                { label: 'Find fuel', sub: 'Nearby', route: '/fuel', icon: Fuel, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'fuel' },
-                { label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', icon: IconCar, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'car' },
-                // Page 4 — Reports
-                { label: 'MTD', sub: 'Month summary', route: '/mtd', icon: IconChartBar, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'bars' },
-                { label: 'Tax report', sub: 'Self assessment', route: '/tax-report', icon: Calculator, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'calc' },
-                { label: 'Weekly', sub: 'Week report', route: '/weekly-report', icon: CalendarIcon, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'bars' },
-                { label: 'End of day', sub: 'Daily wrap', route: '/end-of-day', icon: IconMoon, iconStroke: '#7C3AED', chipBg: '#EFE7FB', graphic: 'moon' },
-                { label: 'Invoices', sub: 'Billing', route: '/invoices', icon: IconFileText, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'invoice' },
-                { label: 'Forecast', sub: 'Earnings', route: '/earnings', icon: IconTrendingUp, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'trend' },
-                // Page 5 — Admin
-                { label: 'Settings', sub: 'Account', route: '/settings', icon: SettingsIcon, iconStroke: '#5A6B85', chipBg: '#EEF2F7', graphic: 'gear' },
-                { label: 'Availability', sub: 'Working hours', route: '/availability-settings', icon: IconClock, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'clock2' },
-                { label: 'Coverage', sub: 'Service areas', route: '/coverage-areas', icon: IconMapPin, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'map' },
-                { label: 'Calendar', sub: 'Google sync', route: '/calendarsync', icon: CalendarIcon, iconStroke: '#1877D6', chipBg: '#E6F1FB', graphic: 'sync' },
-                { label: 'Referrals', sub: 'Rewards', route: '/referrals', icon: IconGift, iconStroke: '#00B5A5', chipBg: '#D8F1EE', graphic: 'gift' },
-                { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
-                { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'spark' },
-              ];
+              type QuickTile = typeof quickAccessTiles[number];
+              const quickTiles = quickAccessTiles;
               
 
               const goTile = (tile: QuickTile) => {
-                if (tile.action === 'running-late') { setRunningLateOpen(true); return; }
-                else if (tile.action === 'nearby') { setNearbyOpen(true); return; }
-                else if (tile.action === 'take-payment') { setUnifiedPayPupilId(undefined); setUnifiedPayOpen(true); return; }
-                else if (tile.action === 'add-expense') { setAddExpenseOpen(true); return; }
-                else if (tile.action === 'log-mileage') { setLogMileageOpen(true); return; }
-                else if (tile.action === 'send-message') { setSendMessagePupilId(undefined); setSendMessageOpen(true); return; }
-                if (tile.wsIndex === 1) { navigate({ to: '/schedule' as never }); return; }
-                if (tile.wsIndex === 2) { navigate({ to: '/pupils' as never }); return; }
-                if (tile.wsIndex === 3) { navigate({ to: '/payments' as never }); return; }
-                if (tile.wsIndex === 6) { navigate({ to: '/dsm-live' as never }); return; }
-                if (tile.wsIndex === 7 || tile.route === null) { navigate({ to: '/more' as never }); return; }
                 navigate({ to: tile.route as never });
               };
 
@@ -6697,8 +6640,7 @@ function HomePage() {
                 {(() => {
                   const filteredTiles = quickSearch.trim()
                     ? quickTiles.filter(t =>
-                        t.label.toLowerCase().includes(quickSearch.toLowerCase()) ||
-                        t.sub.toLowerCase().includes(quickSearch.toLowerCase())
+                        t.label.toLowerCase().includes(quickSearch.toLowerCase())
                       )
                     : quickTiles;
 
@@ -6711,7 +6653,6 @@ function HomePage() {
                   const currentPage = Math.min(qaPage, pageCount - 1);
 
                   const renderHomeTile = (tile: QuickTile, key: string) => {
-                    const Icon = tile.icon;
                     return (
                       <button
                         key={key}
@@ -6743,7 +6684,7 @@ function HomePage() {
                             width: 38,
                             height: 38,
                             borderRadius: 11,
-                            background: tile.chipBg,
+                            background: tile.bg,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -6751,7 +6692,7 @@ function HomePage() {
                             transition: 'transform 0.15s ease',
                           }}
                         >
-                          <Icon size={20} color={tile.iconStroke} strokeWidth={2} />
+                          {tile.icon}
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, maxWidth: '100%' }}>
                           <span style={{
@@ -6765,17 +6706,6 @@ function HomePage() {
                             textOverflow: 'ellipsis',
                             maxWidth: '100%',
                           }}>{tile.label}</span>
-                          <span style={{
-                            fontSize: 12,
-                            color: '#8792A2',
-                            lineHeight: 1.3,
-                            marginTop: 2,
-                            fontFamily: 'Poppins, sans-serif',
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            maxWidth: '100%',
-                          }}>{tile.sub}</span>
                         </div>
                       </button>
                     );
