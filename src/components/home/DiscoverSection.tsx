@@ -1160,7 +1160,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <>
                   {"FREE DIA membership and many other "}
                   <span style={{ fontWeight: 700 }}>exclusive</span>
-                  {" member benefits - upgrade to unlock"}
+                  {" member benefits - "}
+                  <span style={{ fontWeight: 600 }}>upgrade to unlock</span>
                 </>
               )}
           </div>
