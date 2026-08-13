@@ -6729,7 +6729,7 @@ function HomePage() {
                   const renderHomeTile = (tile: QuickTile, key: string) => {
                     const tint = TINTS[tile.bg as string] ?? { chip: '#E3EEFB', icon: '#1877D6' };
                     const tintedIcon = isValidElement(tile.icon)
-                      ? cloneElement(tile.icon as React.ReactElement<any>, { color: tint.icon, size: 18 })
+                      ? cloneElement(tile.icon as React.ReactElement<any>, { color: tint.icon, size: 16 })
                       : tile.icon;
                     const sub = SUBS[tile.label];
                     return (
@@ -6739,10 +6739,10 @@ function HomePage() {
                         onClick={() => goTile(tile)}
                         className="cf-tap qa-card"
                         style={{
-                          width: 82,
+                          width: '100%',
                           background: '#fff',
-                          borderRadius: 13,
-                          padding: '11px 6px',
+                          borderRadius: 12,
+                          padding: '12px 10px',
                           boxShadow: '0 2px 8px rgba(11,31,58,0.06)',
                           display: 'flex',
                           flexDirection: 'column',
@@ -6761,9 +6761,9 @@ function HomePage() {
                         <div
                           className="qa-icon"
                           style={{
-                            width: 36,
-                            height: 36,
-                            borderRadius: '50%',
+                            width: 34,
+                            height: 34,
+                            borderRadius: 16,
                             background: tint.chip,
                             display: 'flex',
                             alignItems: 'center',
