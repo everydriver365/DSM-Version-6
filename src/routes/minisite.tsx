@@ -118,8 +118,16 @@ function MiniSitePage() {
   const [headerStyle, setHeaderStyle] = useState<HeaderStyle>("standard");
   const [brandColour, setBrandColour] = useState<string>("#1877D6");
 
+  // Current subscription tier (from instructors.website_tier)
+  const [websiteTier, setWebsiteTier] = useState<TierId>("free");
+
+  // Tabs + collapsible rows
+  const [tab, setTab] = useState<"content" | "appearance" | "upgrade">("content");
+  const [openRow, setOpenRow] = useState<string | null>(null);
+
   const heroInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+
 
   // Load
   useEffect(() => {
