@@ -23,6 +23,7 @@ import {
 import { supabase } from "@/lib/supabaseClient";
 import { sanitizeNewsTitle } from "@/lib/newsText";
 import dialogo2Asset from "@/assets/dialogo-2.png.asset.json";
+import dialogo3Asset from "@/assets/dialogo-3.png.asset.json";
 
 
 const PIRKX_LIVE = false;
@@ -1121,14 +1122,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             width: 32,
             height: 32,
             borderRadius: 8,
-            background: "#EDE9FE",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
+            overflow: "hidden",
           }}
         >
-          <IconRosetteDiscount size={18} color="#7C3AED" stroke={1.5} />
+          <img
+            src={dialogo3Asset.url}
+            alt="DIA logo"
+            style={{ width: 32, height: 32, objectFit: "cover" }}
+          />
         </div>
         <div style={{ flex: 1 }}>
           <div
