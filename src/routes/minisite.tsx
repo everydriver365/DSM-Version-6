@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import {
   Copy,
   ExternalLink,
@@ -11,11 +10,19 @@ import {
   Check,
   Loader2,
   ChevronLeft,
+  ChevronDown,
+  FileText,
+  Image as ImageIcon,
+  Images,
+  Palette,
+  Type,
+  LayoutTemplate,
+  Paintbrush,
 } from "lucide-react";
+
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { IconCheck } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
-import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { Card } from "../components/dsm/Card";
@@ -36,6 +43,19 @@ const SITE_BASE = "sites.everydriver.co.uk/";
 type Theme = "classic" | "modern" | "warm" | "bold";
 type Font = "Poppins" | "Playfair Display";
 type HeaderStyle = "standard" | "centered" | "split";
+type TierId = "free" | "website" | "pro" | "managed";
+
+const TIER_ORDER: TierId[] = ["free", "website", "pro", "managed"];
+const TIER_NAMES: Record<TierId, string> = {
+  free: "DSM Mini Website (Free)",
+  website: "DSM Website",
+  pro: "DSM Website Pro",
+  managed: "DSM Managed Website",
+};
+const MANAGED_WA =
+  "https://wa.me/447767693279?text=" +
+  encodeURIComponent("Hi, I'm interested in DSM Managed Website");
+
 
 const THEMES: { key: Theme; label: string; swatch: string[] }[] = [
   { key: "classic", label: "Classic", swatch: ["#0B1F3A", "#1877D6", "#FFFFFF"] },
@@ -118,8 +138,16 @@ function MiniSitePage() {
   const [headerStyle, setHeaderStyle] = useState<HeaderStyle>("standard");
   const [brandColour, setBrandColour] = useState<string>("#1877D6");
 
+  // Current subscription tier (from instructors.website_tier)
+  const [websiteTier, setWebsiteTier] = useState<TierId>("free");
+
+  // Tabs + collapsible rows
+  const [tab, setTab] = useState<"content" | "appearance" | "upgrade">("content");
+  const [openRow, setOpenRow] = useState<string | null>(null);
+
   const heroInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+
 
   // Load
   useEffect(() => {
@@ -132,7 +160,7 @@ function MiniSitePage() {
       setUserId(user.id);
       const { data, error } = await supabase
         .from("instructors")
-        .select("name, app_slug, website_published, website_bio, website_hero_image_url, website_gallery_urls, website_theme, website_font, website_header_style, brand_colour")
+        .select("name, app_slug, website_published, website_bio, website_hero_image_url, website_gallery_urls, website_theme, website_font, website_header_style, brand_colour, website_tier")
         .eq("id", user.id)
         .maybeSingle();
       if (error) console.error("[minisite] load error", error);
@@ -149,6 +177,10 @@ function MiniSitePage() {
         if (d.website_font) setFont(d.website_font);
         if (d.website_header_style) setHeaderStyle(d.website_header_style);
         if (d.brand_colour) setBrandColour(d.brand_colour);
+        if (d.website_tier && TIER_ORDER.includes(d.website_tier)) {
+          setWebsiteTier(d.website_tier as TierId);
+        }
+
       }
       setLoading(false);
     })();
@@ -448,6 +480,8 @@ function MiniSitePage() {
 
   const slugValidFormat = /^[a-z0-9-]+$/.test(slug) && slug.length >= 3;
 
+  const currentIdx = TIER_ORDER.indexOf(websiteTier);
+
   const TIERS: {
     id: "website" | "pro" | "managed";
     name: string;
@@ -605,63 +639,284 @@ function MiniSitePage() {
     ));
   }
 
+  function startUpgrade(tier: "website" | "pro" | "managed") {
+    setChosenTier(tier);
+    setUpgradeStep("domain");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  const cardShadow = "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)";
+  const rowShadow = "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)";
+
+  function Eyebrow({ label }: { label: string }) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "18px 0 10px" }}>
+        <span style={{ width: 3, height: 14, borderRadius: 2, background: "#1877D6" }} />
+        <span
+          style={{
+            color: "#1877D6",
+            fontSize: 12,
+            fontWeight: 800,
+            textTransform: "uppercase",
+            letterSpacing: "0.08em",
+          }}
+        >
+          {label}
+        </span>
+      </div>
+    );
+  }
+
+  function CollapsibleRow({
+    id,
+    icon,
+    title,
+    summary,
+    children,
+  }: {
+    id: string;
+    icon: React.ReactNode;
+    title: string;
+    summary: string;
+    children: React.ReactNode;
+  }) {
+    const open = openRow === id;
+    return (
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 16,
+          padding: "14px 16px",
+          boxShadow: rowShadow,
+          marginBottom: 10,
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => setOpenRow(open ? null : id)}
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            background: "none",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+            textAlign: "left",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          <span
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: 10,
+              background: "#E7F1FC",
+              color: "#1877D6",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            {icon}
+          </span>
+          <span style={{ flex: 1, minWidth: 0 }}>
+            <span
+              style={{
+                display: "block",
+                fontSize: 15,
+                fontWeight: 700,
+                color: "#0B1F3A",
+              }}
+            >
+              {title}
+            </span>
+            <span
+              style={{
+                display: "block",
+                fontSize: 11.5,
+                color: "#8A8A8E",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {summary}
+            </span>
+          </span>
+          <ChevronDown
+            size={14}
+            color="#C7C7CC"
+            style={{
+              flexShrink: 0,
+              transform: open ? "rotate(180deg)" : "none",
+              transition: "transform 0.15s",
+            }}
+          />
+        </button>
+        {open && <div style={{ marginTop: 14 }}>{children}</div>}
+      </div>
+    );
+  }
+
+  const COMPARE_ROWS: { label: string; from: number }[] = [
+    { label: "Own domain", from: 1 },
+    { label: "Remove watermark", from: 1 },
+    { label: "Gallery", from: 1 },
+    { label: "Video intro", from: 1 },
+    { label: "Analytics", from: 1 },
+    { label: "Area pages", from: 2 },
+    { label: "Blog", from: 2 },
+    { label: "Advanced SEO", from: 2 },
+    { label: "Promo codes", from: 2 },
+    { label: "Managed by DSM", from: 3 },
+    { label: "Dedicated manager", from: 3 },
+  ];
+
+  const COMPARE_COLS: { id: TierId; name: string; price: string }[] = [
+    { id: "free", name: "Free", price: "£0" },
+    { id: "website", name: "Website", price: "£9.99/mo" },
+    { id: "pro", name: "Pro", price: "£19.99/mo" },
+    { id: "managed", name: "Managed", price: "£29.99/mo" },
+  ];
+
+  const gridCols = "1.4fr 1fr 1fr 1fr 1fr";
+
   return (
     <div className="min-h-screen pb-32" style={{ ...POPPINS, backgroundColor: "#F3F8FF" }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="My website"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
-
+      {/* HEADER */}
+      <div
+        style={{
+          background: "#0B1F3A",
+          borderRadius: "0 0 28px 28px",
+          padding: "calc(16px + env(safe-area-inset-top, 0px)) 16px 22px",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+        }}
+      >
+        <button
+          type="button"
+          aria-label="Back"
+          onClick={() => navigate({ to: "/home" as never })}
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: 999,
+            background: "rgba(255,255,255,0.08)",
+            border: "none",
+            cursor: "pointer",
+            color: "#fff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ChevronLeft size={20} />
+        </button>
+        <div style={{ color: "#fff", fontSize: 22, fontWeight: 800 }}>My Mini Website</div>
+      </div>
 
       <div className="px-4 pt-4">
-        {/* PREVIEW LINK CARD */}
-        <div
-          className="bg-white mb-3"
-          style={{ borderRadius: 12, padding: 16, borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
-        >
-          <div className="text-[10px] uppercase mb-1" style={{ color: "#9CA3AF", letterSpacing: "0.05em" }}>
-            Your website
-          </div>
-          <div className="flex items-center justify-between gap-2 mb-3">
-            <div className="text-[14px] truncate" style={{ color: "#1877D6" }}>{displayUrl}</div>
+        {/* URL / STATUS CARD */}
+        <div style={{ background: "#fff", borderRadius: 18, padding: 18, boxShadow: cardShadow }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  color: "#8A8A8E",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  marginBottom: 3,
+                }}
+              >
+                Your website
+              </div>
+              <div
+                style={{
+                  color: "#1877D6",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {displayUrl}
+              </div>
+            </div>
             <button
               onClick={copyUrl}
               aria-label="Copy URL"
-              style={{ background: "none", border: "none", cursor: "pointer", color: "#1877D6", display: "flex" }}
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 10,
+                background: "#F2F2F7",
+                border: "none",
+                cursor: "pointer",
+                color: "#0B1F3A",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
             >
-              <Copy size={18} />
+              <Copy size={16} />
             </button>
           </div>
 
-          <div className="flex items-center justify-between gap-2 mb-3">
-            <Button
-              variant="ghost"
-              inline
-              onClick={() => window.open(publicUrl, "_blank", "noopener,noreferrer")}
-              disabled={!originalSlug}
-            >
-              <ExternalLink size={16} style={{ marginRight: 6 }} />
-              Preview website
-            </Button>
-          </div>
+          <button
+            type="button"
+            onClick={() => window.open(publicUrl, "_blank", "noopener,noreferrer")}
+            disabled={!originalSlug}
+            style={{
+              width: "100%",
+              marginTop: 14,
+              background: "#F2F2F7",
+              color: "#0B1F3A",
+              fontSize: 14,
+              fontWeight: 700,
+              padding: 13,
+              borderRadius: 12,
+              border: "none",
+              cursor: originalSlug ? "pointer" : "not-allowed",
+              opacity: originalSlug ? 1 : 0.5,
+              fontFamily: "Poppins, sans-serif",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 6,
+            }}
+          >
+            <ExternalLink size={16} />
+            Preview website
+          </button>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              borderTop: "1px solid #F0F0F2",
+              paddingTop: 14,
+              marginTop: 14,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span
-                className="rounded-full"
                 style={{
-                  width: 8, height: 8,
-                  backgroundColor: published ? "#1877D6" : "#1877D6",
+                  width: 8,
+                  height: 8,
+                  borderRadius: 999,
+                  background: published ? "#15803D" : "#C7C7CC",
                 }}
               />
-              <span className="text-[13px]" style={{ color: published ? "#1877D6" : "#0B1F3A", fontWeight: 600 }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
                 {published ? "Live" : "Draft"}
               </span>
             </div>
@@ -672,7 +927,7 @@ function MiniSitePage() {
               onClick={() => togglePublished(!published)}
               style={{
                 width: 44, height: 26, borderRadius: 999,
-                background: published ? "#1877D6" : "#EEF2F7",
+                background: published ? "#1877D6" : "#E5E5EA",
                 border: "none", cursor: "pointer", position: "relative",
                 transition: "background 0.15s",
               }}
@@ -689,9 +944,48 @@ function MiniSitePage() {
           </div>
         </div>
 
+        {/* TABS */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gap: 4,
+            background: "#E5E5EA",
+            borderRadius: 14,
+            padding: 4,
+            marginTop: 14,
+          }}
+        >
+          {(["content", "appearance", "upgrade"] as const).map((t) => {
+            const active = tab === t;
+            return (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTab(t)}
+                style={{
+                  background: active ? "#fff" : "transparent",
+                  color: active ? "#0B1F3A" : "#6B6B6F",
+                  boxShadow: active ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+                  border: "none",
+                  borderRadius: 11,
+                  padding: "9px 6px",
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                  textTransform: "capitalize",
+                }}
+              >
+                {t}
+              </button>
+            );
+          })}
+        </div>
+
         {/* SLUG CLAIM */}
         {!originalSlug && (
-          <Card className="mb-3" style={{ background: "#fff" }}>
+          <Card className="mt-3" style={{ background: "#fff" }}>
             <div className="text-[13px] font-medium mb-2" style={{ color: "#0B1F3A" }}>
               Choose your website address
             </div>
@@ -730,285 +1024,908 @@ function MiniSitePage() {
           </Card>
         )}
 
-        {/* CONTENT */}
-        <SectionHeader>CONTENT</SectionHeader>
+        {/* ================= CONTENT TAB ================= */}
+        {tab === "content" && (
+          <>
+            <Eyebrow label="Content" />
 
-        <Card className="mb-3" style={{ background: "#fff" }}>
-          <label
-            className="block mb-1 text-[12px] font-medium"
-            style={{ color: "#6B7280", fontFamily: "Poppins, sans-serif" }}
-          >
-            Website bio
-          </label>
-          <textarea
-            value={websiteBio}
-            onChange={(e) => setWebsiteBio(e.target.value)}
-            placeholder="Tell pupils about yourself, your teaching style, and why they should choose you"
-            rows={5}
-            className="w-full rounded-lg px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-            style={{
-              fontFamily: "Poppins, sans-serif",
-              borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7",
-              resize: "vertical",
-            }}
-          />
-        </Card>
-
-        {/* HERO IMAGE */}
-        <Card className="mb-3" style={{ background: "#fff" }}>
-          <label
-            className="block mb-2 text-[12px] font-medium"
-            style={{ color: "#6B7280" }}
-          >
-            Hero image
-          </label>
-          {heroUrl ? (
-            <div className="relative" style={{ borderRadius: 12, overflow: "hidden" }}>
-              <img src={heroUrl} alt="Hero" style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} />
-              <button
-                onClick={() => heroInputRef.current?.click()}
-                style={{
-                  position: "absolute", bottom: 8, right: 8,
-                  background: "rgba(11,31,58,0.85)", color: "#fff",
-                  border: "none", borderRadius: 8, padding: "6px 10px",
-                  fontSize: 12, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 4,
-                }}
-              >
-                <Camera size={14} /> Replace
-              </button>
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => heroInputRef.current?.click()}
-              className="w-full flex flex-col items-center justify-center"
-              style={{
-                borderWidth: "1px", borderStyle: "dashed", borderColor: "#EEF2F7",
-                borderRadius: 12, padding: 24, background: "#FAFBFC", cursor: "pointer",
-              }}
+            <CollapsibleRow
+              id="bio"
+              icon={<FileText size={17} />}
+              title="Bio"
+              summary={
+                websiteBio.trim()
+                  ? websiteBio.trim().slice(0, 30) + (websiteBio.trim().length > 30 ? "…" : "")
+                  : "Not set"
+              }
             >
-              {uploadingHero ? (
-                <Loader2 className="animate-spin" color="#1877D6" />
-              ) : (
-                <>
-                  <Camera size={28} color="#9CA3AF" />
-                  <div className="text-[13px] mt-2" style={{ color: "#6B7280" }}>Tap to upload hero image</div>
-                </>
-              )}
-            </button>
-          )}
-          <input ref={heroInputRef} type="file" accept="image/*" hidden onChange={onPickHero} />
-        </Card>
-
-        {/* GALLERY */}
-        <Card className="mb-3" style={{ background: "#fff" }}>
-          <div className="flex items-center justify-between mb-2">
-            <label className="text-[12px] font-medium" style={{ color: "#6B7280" }}>
-              Gallery
-            </label>
-            <span className="text-[11px]" style={{ color: "#9CA3AF" }}>{gallery.length}/6</span>
-          </div>
-
-          {gallery.length > 0 && (
-            <div className="grid grid-cols-3 gap-2 mb-2">
-              {gallery.map((url, i) => (
-                <div key={url + i} className="relative" style={{ borderRadius: 8, overflow: "hidden" }}>
-                  <img src={url} alt={`Gallery ${i + 1}`} style={{ width: "100%", height: 80, objectFit: "cover", display: "block" }} />
-                  <button
-                    onClick={() => removeGalleryItem(i)}
-                    aria-label="Remove image"
-                    style={{
-                      position: "absolute", top: 4, right: 4,
-                      width: 22, height: 22, borderRadius: 999,
-                      background: "rgba(0,0,0,0.6)", color: "#fff",
-                      border: "none", cursor: "pointer",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                    }}
-                  >
-                    <X size={14} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {gallery.length < 6 && (
-            <button
-              type="button"
-              onClick={() => galleryInputRef.current?.click()}
-              className="w-full flex flex-col items-center justify-center"
-              style={{
-                borderWidth: "1px", borderStyle: "dashed", borderColor: "#EEF2F7",
-                borderRadius: 12, padding: 16, background: "#FAFBFC", cursor: "pointer",
-              }}
-            >
-              {uploadingGallery ? (
-                <Loader2 className="animate-spin" color="#1877D6" />
-              ) : (
-                <>
-                  <Camera size={22} color="#9CA3AF" />
-                  <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>Add images</div>
-                </>
-              )}
-            </button>
-          )}
-          <input ref={galleryInputRef} type="file" accept="image/*" multiple hidden onChange={onPickGallery} />
-        </Card>
-
-        {/* APPEARANCE */}
-        <SectionHeader>APPEARANCE</SectionHeader>
-
-        <Card className="mb-3" style={{ background: "#fff" }}>
-          <label className="block mb-2 text-[12px] font-medium" style={{ color: "#6B7280" }}>Theme</label>
-          <div className="grid grid-cols-2 gap-2">
-            {THEMES.map((t) => {
-              const selected = theme === t.key;
-              return (
-                <button
-                  key={t.key}
-                  type="button"
-                  onClick={() => setTheme(t.key)}
-                  style={{
-                    borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
-                    borderColor: selected ? "#1877D6" : "#EEF2F7",
-                    borderRadius: 12, padding: 10, background: "#fff",
-                    cursor: "pointer", textAlign: "left",
-                  }}
-                >
-                  <div className="flex gap-1 mb-2">
-                    {t.swatch.map((c) => (
-                      <span key={c} style={{ width: 18, height: 18, borderRadius: 4, background: c, border: "0.5px solid #EEF2F7" }} />
-                    ))}
-                  </div>
-                  <div className="text-[13px] font-medium" style={{ color: "#0B1F3A" }}>{t.label}</div>
-                </button>
-              );
-            })}
-          </div>
-        </Card>
-
-        <Card className="mb-3" style={{ background: "#fff" }}>
-          <label className="block mb-2 text-[12px] font-medium" style={{ color: "#6B7280" }}>Font</label>
-          <div className="flex flex-col gap-2">
-            {FONTS.map((f) => {
-              const selected = font === f;
-              return (
-                <button
-                  key={f}
-                  type="button"
-                  onClick={() => setFont(f)}
-                  style={{
-                    borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
-                    borderColor: selected ? "#1877D6" : "#EEF2F7",
-                    borderRadius: 10, padding: "10px 12px", background: "#fff",
-                    cursor: "pointer", textAlign: "left",
-                    fontFamily: `${f}, sans-serif`, fontSize: 14, color: "#0B1F3A",
-                  }}
-                >
-                  {f}
-                </button>
-              );
-            })}
-          </div>
-        </Card>
-
-        <Card className="mb-3" style={{ background: "#fff" }}>
-          <label className="block mb-2 text-[12px] font-medium" style={{ color: "#6B7280" }}>Header style</label>
-          <div className="grid grid-cols-3 gap-2">
-            {HEADER_STYLES.map((h) => {
-              const selected = headerStyle === h.key;
-              return (
-                <button
-                  key={h.key}
-                  type="button"
-                  onClick={() => setHeaderStyle(h.key)}
-                  style={{
-                    borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
-                    borderColor: selected ? "#1877D6" : "#EEF2F7",
-                    borderRadius: 10, padding: "10px 8px", background: "#fff",
-                    cursor: "pointer", textAlign: "center",
-                    fontSize: 12, color: "#0B1F3A",
-                  }}
-                >
-                  {h.label}
-                </button>
-              );
-            })}
-          </div>
-        </Card>
-
-        <Card className="mb-3" style={{ background: "#fff" }}>
-          <label className="block mb-2 text-[12px] font-medium" style={{ color: "#6B7280" }}>Brand colour</label>
-          <div className="flex items-center gap-2 mb-2">
-            <span
-              style={{
-                width: 32, height: 32, borderRadius: 8,
-                background: brandColour, border: "0.5px solid #EEF2F7",
-              }}
-            />
-            <Input
-              value={brandColour}
-              onChange={(e) => setBrandColour(e.target.value)}
-              placeholder="#1877D6"
-            />
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {COLOUR_SWATCHES.map((c) => (
-              <button
-                key={c}
-                type="button"
-                aria-label={`Use ${c}`}
-                onClick={() => setBrandColour(c)}
+              <textarea
+                value={websiteBio}
+                onChange={(e) => setWebsiteBio(e.target.value)}
+                placeholder="Tell pupils about yourself, your teaching style, and why they should choose you"
+                rows={5}
+                className="w-full rounded-lg px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                 style={{
-                  width: 28, height: 28, borderRadius: 999,
-                  background: c, cursor: "pointer",
-                  border: brandColour.toLowerCase() === c.toLowerCase() ? "2px solid #0B1F3A" : "0.5px solid #EEF2F7",
+                  fontFamily: "Poppins, sans-serif",
+                  borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7",
+                  resize: "vertical",
                 }}
               />
-            ))}
-          </div>
-        </Card>
+            </CollapsibleRow>
 
-        <div className="mt-4">
-          <Button onClick={saveAll} disabled={saving}>
-            {saving ? "Saving…" : "Save changes"}
-          </Button>
-        </div>
+            <CollapsibleRow
+              id="hero"
+              icon={<ImageIcon size={17} />}
+              title="Hero image"
+              summary={heroUrl ? "Set ✓" : "Not set"}
+            >
+              {heroUrl ? (
+                <div className="relative" style={{ borderRadius: 12, overflow: "hidden" }}>
+                  <img src={heroUrl} alt="Hero" style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} />
+                  <button
+                    onClick={() => heroInputRef.current?.click()}
+                    style={{
+                      position: "absolute", bottom: 8, right: 8,
+                      background: "rgba(11,31,58,0.85)", color: "#fff",
+                      border: "none", borderRadius: 8, padding: "6px 10px",
+                      fontSize: 12, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 4,
+                    }}
+                  >
+                    <Camera size={14} /> Replace
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => heroInputRef.current?.click()}
+                  className="w-full flex flex-col items-center justify-center"
+                  style={{
+                    borderWidth: "1px", borderStyle: "dashed", borderColor: "#EEF2F7",
+                    borderRadius: 12, padding: 24, background: "#FAFBFC", cursor: "pointer",
+                  }}
+                >
+                  {uploadingHero ? (
+                    <Loader2 className="animate-spin" color="#1877D6" />
+                  ) : (
+                    <>
+                      <Camera size={28} color="#9CA3AF" />
+                      <div className="text-[13px] mt-2" style={{ color: "#6B7280" }}>Tap to upload hero image</div>
+                    </>
+                  )}
+                </button>
+              )}
+              <input ref={heroInputRef} type="file" accept="image/*" hidden onChange={onPickHero} />
+            </CollapsibleRow>
 
-        {/* UPGRADE TIERS */}
-        <div className="pt-2">
-          <div
-            className="mb-3"
-            style={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: "#9CA3AF",
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-            }}
-          >
-            Upgrade your website
-          </div>
+            <CollapsibleRow
+              id="gallery"
+              icon={<Images size={17} />}
+              title="Gallery"
+              summary={gallery.length ? `${gallery.length} photos added` : "No photos yet"}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-[12px] font-medium" style={{ color: "#6B7280" }}>
+                  Gallery
+                </label>
+                <span className="text-[11px]" style={{ color: "#9CA3AF" }}>{gallery.length}/6</span>
+              </div>
 
-          {renderTiers((tier) => {
-            setChosenTier(tier);
-            setUpgradeStep("domain");
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          }, null)}
+              {gallery.length > 0 && (
+                <div className="grid grid-cols-3 gap-2 mb-2">
+                  {gallery.map((url, i) => (
+                    <div key={url + i} className="relative" style={{ borderRadius: 8, overflow: "hidden" }}>
+                      <img src={url} alt={`Gallery ${i + 1}`} style={{ width: "100%", height: 80, objectFit: "cover", display: "block" }} />
+                      <button
+                        onClick={() => removeGalleryItem(i)}
+                        aria-label="Remove image"
+                        style={{
+                          position: "absolute", top: 4, right: 4,
+                          width: 22, height: 22, borderRadius: 999,
+                          background: "rgba(0,0,0,0.6)", color: "#fff",
+                          border: "none", cursor: "pointer",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                        }}
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
 
-          <div
-            style={{
-              textAlign: "center",
-              fontSize: 12,
-              color: "#6B7686",
-              marginTop: 12,
-              fontFamily: "Poppins, sans-serif",
-            }}
-          >
-            All plans include SSL, hosting and mobile optimised design. Cancel anytime.
-          </div>
-        </div>
+              {gallery.length < 6 && (
+                <button
+                  type="button"
+                  onClick={() => galleryInputRef.current?.click()}
+                  className="w-full flex flex-col items-center justify-center"
+                  style={{
+                    borderWidth: "1px", borderStyle: "dashed", borderColor: "#EEF2F7",
+                    borderRadius: 12, padding: 16, background: "#FAFBFC", cursor: "pointer",
+                  }}
+                >
+                  {uploadingGallery ? (
+                    <Loader2 className="animate-spin" color="#1877D6" />
+                  ) : (
+                    <>
+                      <Camera size={22} color="#9CA3AF" />
+                      <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>Add images</div>
+                    </>
+                  )}
+                </button>
+              )}
+              <input ref={galleryInputRef} type="file" accept="image/*" multiple hidden onChange={onPickGallery} />
+            </CollapsibleRow>
+          </>
+        )}
+
+        {/* ================= APPEARANCE TAB ================= */}
+        {tab === "appearance" && (
+          <>
+            <Eyebrow label="Appearance" />
+
+            <CollapsibleRow
+              id="theme"
+              icon={<Palette size={17} />}
+              title="Theme"
+              summary={THEMES.find((t) => t.key === theme)?.label ?? "Classic"}
+            >
+              <div className="grid grid-cols-2 gap-2">
+                {THEMES.map((t) => {
+                  const selected = theme === t.key;
+                  return (
+                    <button
+                      key={t.key}
+                      type="button"
+                      onClick={() => setTheme(t.key)}
+                      style={{
+                        borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
+                        borderColor: selected ? "#1877D6" : "#EEF2F7",
+                        borderRadius: 12, padding: 10, background: "#fff",
+                        cursor: "pointer", textAlign: "left",
+                      }}
+                    >
+                      <div className="flex gap-1 mb-2">
+                        {t.swatch.map((c) => (
+                          <span key={c} style={{ width: 18, height: 18, borderRadius: 4, background: c, border: "0.5px solid #EEF2F7" }} />
+                        ))}
+                      </div>
+                      <div className="text-[13px] font-medium" style={{ color: "#0B1F3A" }}>{t.label}</div>
+                    </button>
+                  );
+                })}
+              </div>
+            </CollapsibleRow>
+
+            <CollapsibleRow
+              id="font"
+              icon={<Type size={17} />}
+              title="Font"
+              summary={font}
+            >
+              <div className="flex flex-col gap-2">
+                {FONTS.map((f) => {
+                  const selected = font === f;
+                  return (
+                    <button
+                      key={f}
+                      type="button"
+                      onClick={() => setFont(f)}
+                      style={{
+                        borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
+                        borderColor: selected ? "#1877D6" : "#EEF2F7",
+                        borderRadius: 10, padding: "10px 12px", background: "#fff",
+                        cursor: "pointer", textAlign: "left",
+                        fontFamily: `${f}, sans-serif`, fontSize: 14, color: "#0B1F3A",
+                      }}
+                    >
+                      {f}
+                    </button>
+                  );
+                })}
+              </div>
+            </CollapsibleRow>
+
+            <CollapsibleRow
+              id="header"
+              icon={<LayoutTemplate size={17} />}
+              title="Header style"
+              summary={HEADER_STYLES.find((h) => h.key === headerStyle)?.label ?? "Standard"}
+            >
+              <div className="grid grid-cols-3 gap-2">
+                {HEADER_STYLES.map((h) => {
+                  const selected = headerStyle === h.key;
+                  return (
+                    <button
+                      key={h.key}
+                      type="button"
+                      onClick={() => setHeaderStyle(h.key)}
+                      style={{
+                        borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
+                        borderColor: selected ? "#1877D6" : "#EEF2F7",
+                        borderRadius: 10, padding: "10px 8px", background: "#fff",
+                        cursor: "pointer", textAlign: "center",
+                        fontSize: 12, color: "#0B1F3A",
+                      }}
+                    >
+                      {h.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </CollapsibleRow>
+
+            <CollapsibleRow
+              id="colour"
+              icon={<Paintbrush size={17} />}
+              title="Brand colour"
+              summary={brandColour}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <span
+                  style={{
+                    width: 32, height: 32, borderRadius: 8,
+                    background: brandColour, border: "0.5px solid #EEF2F7",
+                  }}
+                />
+                <Input
+                  value={brandColour}
+                  onChange={(e) => setBrandColour(e.target.value)}
+                  placeholder="#1877D6"
+                />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {COLOUR_SWATCHES.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    aria-label={`Use ${c}`}
+                    onClick={() => setBrandColour(c)}
+                    style={{
+                      width: 28, height: 28, borderRadius: 999,
+                      background: c, cursor: "pointer",
+                      border: brandColour.toLowerCase() === c.toLowerCase() ? "2px solid #0B1F3A" : "0.5px solid #EEF2F7",
+                    }}
+                  />
+                ))}
+              </div>
+            </CollapsibleRow>
+
+            <button
+              type="button"
+              onClick={saveAll}
+              disabled={saving}
+              style={{
+                width: "100%",
+                background: "#1877D6",
+                color: "#fff",
+                fontSize: 15,
+                fontWeight: 800,
+                padding: 16,
+                borderRadius: 14,
+                border: "none",
+                cursor: "pointer",
+                boxShadow: "0 4px 0 #0F52A8",
+                fontFamily: "Poppins, sans-serif",
+                marginTop: 8,
+                opacity: saving ? 0.6 : 1,
+              }}
+            >
+              {saving ? "Saving…" : "Save changes"}
+            </button>
+          </>
+        )}
+
+        {/* ================= UPGRADE TAB ================= */}
+        {tab === "upgrade" && (
+          <>
+            {/* CURRENT PLAN */}
+            <div
+              style={{
+                background: "#E7F1FC",
+                border: "1.5px solid #1877D6",
+                borderRadius: 18,
+                padding: 16,
+                display: "flex",
+                gap: 12,
+                alignItems: "center",
+                marginTop: 16,
+              }}
+            >
+              <span
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 999,
+                  background: "#1877D6",
+                  color: "#fff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <Check size={18} />
+              </span>
+              <div style={{ minWidth: 0 }}>
+                <div
+                  style={{
+                    color: "#1877D6",
+                    fontSize: 10.5,
+                    fontWeight: 800,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  Current plan
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 800, color: "#0B1F3A" }}>
+                  {TIER_NAMES[websiteTier]}
+                </div>
+              </div>
+            </div>
+
+            <Eyebrow label="Upgrade your website" />
+
+            {/* TIER 1 — FREE */}
+            {currentIdx <= 0 && (
+              <div
+                style={{
+                  background: "#fff",
+                  borderRadius: 18,
+                  padding: 18,
+                  boxShadow: cardShadow,
+                  marginBottom: 12,
+                  opacity: websiteTier === "free" ? 1 : 0.85,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span
+                    style={{
+                      background: "#F2F2F7",
+                      color: "#6B6B6F",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      borderRadius: 20,
+                      padding: "4px 12px",
+                    }}
+                  >
+                    Free
+                  </span>
+                  {websiteTier === "free" && (
+                    <span
+                      style={{
+                        background: "#1877D6",
+                        color: "#fff",
+                        fontSize: 10,
+                        fontWeight: 800,
+                        borderRadius: 20,
+                        padding: "3px 10px",
+                      }}
+                    >
+                      Your plan
+                    </span>
+                  )}
+                </div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: "#0B1F3A", marginTop: 8 }}>
+                  DSM Mini Website (Free)
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 5, marginTop: 12 }}>
+                  {[
+                    "Professional mini-site",
+                    "Online booking",
+                    "Square payments",
+                    "Enquiry form",
+                    "sites.everydriver.co.uk/slug",
+                  ].map((f) => (
+                    <div key={f} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <IconCheck size={12} color="#15803D" />
+                      <span style={{ fontSize: 12, color: "#6B7686" }}>{f}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* TIER 2 — DSM WEBSITE */}
+            {currentIdx <= 1 && (
+              <div
+                style={{
+                  background: "#fff",
+                  borderRadius: 18,
+                  padding: 18,
+                  boxShadow: cardShadow,
+                  marginBottom: 12,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span
+                    style={{
+                      background: "#EFF6FF",
+                      color: "#1877D6",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      borderRadius: 20,
+                      padding: "4px 12px",
+                    }}
+                  >
+                    £9.99/mo
+                  </span>
+                  {websiteTier === "website" && (
+                    <span
+                      style={{
+                        background: "#1877D6",
+                        color: "#fff",
+                        fontSize: 10,
+                        fontWeight: 800,
+                        borderRadius: 20,
+                        padding: "3px 10px",
+                      }}
+                    >
+                      Your plan
+                    </span>
+                  )}
+                </div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: "#0B1F3A", marginTop: 8 }}>
+                  DSM Website
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 5, marginTop: 12 }}>
+                  {[
+                    "Everything in Free",
+                    "Your own .co.uk domain",
+                    'Remove "Powered by EveryDriver"',
+                    "Gallery (20 photos)",
+                    "Video intro",
+                    "Google reviews widget",
+                    "Analytics dashboard",
+                    "Priority listing on EveryDriver",
+                  ].map((f) => (
+                    <div key={f} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <IconCheck size={12} color="#15803D" />
+                      <span style={{ fontSize: 12, color: "#6B7686" }}>{f}</span>
+                    </div>
+                  ))}
+                </div>
+                {websiteTier !== "website" && (
+                  <button
+                    type="button"
+                    onClick={() => startUpgrade("website")}
+                    style={{
+                      width: "100%",
+                      background: "#1877D6",
+                      color: "#fff",
+                      borderRadius: 12,
+                      padding: 13,
+                      fontSize: 14,
+                      fontWeight: 800,
+                      marginTop: 14,
+                      border: "none",
+                      cursor: "pointer",
+                      boxShadow: "0 4px 0 #0F52A8",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    Upgrade to DSM Website →
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* TIER 3 — PRO */}
+            {currentIdx <= 2 && (
+              <div
+                style={{
+                  background: "linear-gradient(150deg, #14509E, #0B1F3A)",
+                  borderRadius: 18,
+                  padding: 18,
+                  position: "relative",
+                  overflow: "hidden",
+                  marginBottom: 12,
+                }}
+              >
+                <span
+                  style={{
+                    position: "absolute",
+                    top: -40,
+                    right: -40,
+                    width: 160,
+                    height: 160,
+                    borderRadius: "50%",
+                    background: "rgba(99,179,237,0.15)",
+                  }}
+                />
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 14,
+                    right: -24,
+                    background: "#15803D",
+                    color: "#fff",
+                    fontSize: 9,
+                    fontWeight: 900,
+                    padding: "4px 32px",
+                    transform: "rotate(38deg)",
+                  }}
+                >
+                  MOST POPULAR
+                </span>
+                <div style={{ position: "relative" }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      background: "rgba(255,255,255,0.15)",
+                      color: "#fff",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      borderRadius: 20,
+                      padding: "4px 12px",
+                    }}
+                  >
+                    PRO
+                  </span>
+                  {websiteTier === "pro" && (
+                    <span
+                      style={{
+                        display: "inline-block",
+                        marginLeft: 8,
+                        background: "#1877D6",
+                        color: "#fff",
+                        fontSize: 10,
+                        fontWeight: 800,
+                        borderRadius: 20,
+                        padding: "3px 10px",
+                      }}
+                    >
+                      Your plan
+                    </span>
+                  )}
+                  <div style={{ marginTop: 10, display: "flex", alignItems: "baseline", gap: 6 }}>
+                    <span style={{ fontSize: 38, fontWeight: 800, color: "#fff", letterSpacing: -1 }}>
+                      £19.99
+                    </span>
+                    <span style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>/month</span>
+                  </div>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", marginTop: 2 }}>
+                    DSM Website Pro
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 12 }}>
+                    {[
+                      "Everything in DSM Website",
+                      "Multiple area pages",
+                      "Blog & content pages",
+                      "Advanced SEO tools",
+                      "Google Search Console",
+                      "Promo codes on booking",
+                      "Instructor login to edit site",
+                    ].map((f) => (
+                      <div key={f} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span
+                          style={{
+                            width: 16,
+                            height: 16,
+                            borderRadius: 999,
+                            background: "#15803D",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                          }}
+                        >
+                          <IconCheck size={10} color="#fff" />
+                        </span>
+                        <span style={{ fontSize: 12, color: "rgba(255,255,255,0.85)" }}>{f}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {websiteTier !== "pro" && (
+                    <button
+                      type="button"
+                      onClick={() => startUpgrade("pro")}
+                      style={{
+                        width: "100%",
+                        background: "#fff",
+                        color: "#0B1F3A",
+                        borderRadius: 12,
+                        padding: 13,
+                        fontSize: 14,
+                        fontWeight: 800,
+                        marginTop: 14,
+                        border: "none",
+                        cursor: "pointer",
+                        boxShadow: "0 4px 0 rgba(0,0,0,0.3)",
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      Upgrade to Pro →
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* TIER 4 — MANAGED */}
+            <div
+              style={{
+                background: "linear-gradient(150deg, #1a1a1a, #000)",
+                borderRadius: 18,
+                padding: 18,
+                position: "relative",
+                overflow: "hidden",
+                marginBottom: 12,
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: -40,
+                  right: -40,
+                  width: 160,
+                  height: 160,
+                  borderRadius: "50%",
+                  background: "rgba(214,138,27,0.2)",
+                }}
+              />
+              <div style={{ position: "relative" }}>
+                <span
+                  style={{
+                    display: "inline-block",
+                    background: "#D68A1B",
+                    color: "#fff",
+                    fontSize: 9,
+                    fontWeight: 900,
+                    padding: "3px 10px",
+                    borderRadius: 20,
+                  }}
+                >
+                  WHITE GLOVE
+                </span>
+                {websiteTier === "managed" && (
+                  <span
+                    style={{
+                      display: "inline-block",
+                      marginLeft: 8,
+                      background: "#1877D6",
+                      color: "#fff",
+                      fontSize: 10,
+                      fontWeight: 800,
+                      borderRadius: 20,
+                      padding: "3px 10px",
+                    }}
+                  >
+                    Your plan
+                  </span>
+                )}
+                <div style={{ marginTop: 10, display: "flex", alignItems: "baseline", gap: 6 }}>
+                  <span style={{ fontSize: 38, fontWeight: 800, color: "#fff", letterSpacing: -1 }}>
+                    £29.99
+                  </span>
+                  <span style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>/month</span>
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", marginTop: 2 }}>
+                  DSM Managed Website
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 12 }}>
+                  {[
+                    "Everything in Pro",
+                    "We build your site for you",
+                    "Monthly content updates",
+                    "SEO reporting & management",
+                    "Google Business Profile setup",
+                    "Dedicated account manager",
+                  ].map((f) => (
+                    <div key={f} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span
+                        style={{
+                          width: 16,
+                          height: 16,
+                          borderRadius: 999,
+                          background: "#D68A1B",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <IconCheck size={10} color="#fff" />
+                      </span>
+                      <span style={{ fontSize: 12, color: "rgba(255,255,255,0.85)" }}>{f}</span>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => window.open(MANAGED_WA, "_blank")}
+                  style={{
+                    width: "100%",
+                    background: "#D68A1B",
+                    color: "#fff",
+                    borderRadius: 12,
+                    padding: 13,
+                    fontSize: 14,
+                    fontWeight: 800,
+                    marginTop: 14,
+                    border: "none",
+                    cursor: "pointer",
+                    boxShadow: "0 4px 0 #A56A0F",
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  Contact us →
+                </button>
+              </div>
+            </div>
+
+            {/* COMPARISON TABLE */}
+            <Eyebrow label="Compare plans" />
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 18,
+                overflow: "hidden",
+                boxShadow: cardShadow,
+              }}
+            >
+              <div style={{ display: "grid", gridTemplateColumns: gridCols }}>
+                <div />
+                {COMPARE_COLS.map((c) => (
+                  <div
+                    key={c.id}
+                    style={{
+                      padding: "12px 4px",
+                      textAlign: "center",
+                      background: c.id === websiteTier ? "#F7FAFE" : "transparent",
+                    }}
+                  >
+                    <div style={{ fontSize: 11, fontWeight: 800, color: "#0B1F3A" }}>{c.name}</div>
+                    <div style={{ fontSize: 9, color: "#8A8A8E", marginTop: 1 }}>{c.price}</div>
+                    {c.id === websiteTier && (
+                      <div
+                        style={{
+                          display: "inline-block",
+                          background: "#1877D6",
+                          color: "#fff",
+                          fontSize: 9,
+                          fontWeight: 800,
+                          borderRadius: 20,
+                          padding: "2px 7px",
+                          marginTop: 4,
+                        }}
+                      >
+                        CURRENT
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {COMPARE_ROWS.map((r) => (
+                <div
+                  key={r.label}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: gridCols,
+                    borderTop: "1px solid #F0F0F2",
+                    alignItems: "center",
+                  }}
+                >
+                  <div style={{ fontSize: 11.5, color: "#0B1F3A", padding: "10px 12px" }}>{r.label}</div>
+                  {COMPARE_COLS.map((c, i) => (
+                    <div
+                      key={c.id}
+                      style={{
+                        textAlign: "center",
+                        padding: "10px 4px",
+                        background: c.id === websiteTier ? "#F7FAFE" : "transparent",
+                      }}
+                    >
+                      {i >= r.from ? (
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            width: 16,
+                            height: 16,
+                            borderRadius: 999,
+                            background: "#15803D",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <IconCheck size={10} color="#fff" />
+                        </span>
+                      ) : (
+                        <span style={{ color: "#C7C7CC", fontSize: 13 }}>—</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ))}
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: gridCols,
+                  borderTop: "1px solid #F0F0F2",
+                  alignItems: "center",
+                }}
+              >
+                <div />
+                {COMPARE_COLS.map((c) => {
+                  const isCurrent = c.id === websiteTier;
+                  const isManaged = c.id === "managed";
+                  const above = TIER_ORDER.indexOf(c.id) > currentIdx;
+                  return (
+                    <div key={c.id} style={{ padding: "10px 4px", textAlign: "center" }}>
+                      {isCurrent ? (
+                        <span
+                          style={{
+                            display: "inline-block",
+                            background: "#F2F2F7",
+                            color: "#9CA3AF",
+                            fontSize: 10,
+                            fontWeight: 800,
+                            borderRadius: 10,
+                            padding: "6px 8px",
+                          }}
+                        >
+                          Current
+                        </span>
+                      ) : isManaged ? (
+                        <button
+                          type="button"
+                          onClick={() => window.open(MANAGED_WA, "_blank")}
+                          style={{
+                            background: "#D68A1B",
+                            color: "#fff",
+                            fontSize: 10,
+                            fontWeight: 800,
+                            borderRadius: 10,
+                            padding: "6px 8px",
+                            border: "none",
+                            cursor: "pointer",
+                            fontFamily: "Poppins, sans-serif",
+                          }}
+                        >
+                          Contact
+                        </button>
+                      ) : above ? (
+                        <button
+                          type="button"
+                          onClick={() => startUpgrade(c.id as "website" | "pro")}
+                          style={{
+                            background: "#1877D6",
+                            color: "#fff",
+                            fontSize: 10,
+                            fontWeight: 800,
+                            borderRadius: 10,
+                            padding: "6px 8px",
+                            border: "none",
+                            cursor: "pointer",
+                            fontFamily: "Poppins, sans-serif",
+                          }}
+                        >
+                          Upgrade
+                        </button>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div
+              style={{
+                textAlign: "center",
+                fontSize: 12,
+                color: "#6B7686",
+                marginTop: 12,
+              }}
+            >
+              All plans include SSL, hosting and mobile optimised design. Cancel anytime.
+            </div>
+          </>
+        )}
       </div>
+
+
 
       {/* STEP 1 — DOMAIN SEARCH OVERLAY */}
       {upgradeStep === "domain" && (
