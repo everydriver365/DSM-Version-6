@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { IconPhoto, IconChevronRight } from "@tabler/icons-react";
 import { Loader2, MapPin, Calendar, Repeat, CalendarDays, CalendarCheck, Clock, Sunrise, Sun, Moon, GraduationCap, Settings } from "lucide-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import DSMToggle from "@/components/dsm/DSMToggle";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
 
