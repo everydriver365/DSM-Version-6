@@ -3888,10 +3888,10 @@ function HomePage() {
 
   const quickAccessTiles = [
     { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Schedule", route: "/schedule" },
-    
+    { icon: <IconUsers stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
+    { icon: <IconWorld stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My website", route: "/minisite" },
     { icon: <IconMap stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Start tracking", route: "/live" },
     { icon: <IconCalendarCheck stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Month end", route: "/monthend" },
-    { icon: <IconUsers stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
     { icon: <IconSchool stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
     { icon: <IconCurrencyPound stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Payments", route: "/payments" },
     { icon: <IconMessage stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Messages", route: "/messages" },
@@ -3950,7 +3950,6 @@ function HomePage() {
     { icon: <IconFileText stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Quotes", route: "/quotes" },
     { icon: <IconSun stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Briefing", route: "/briefing" },
     { icon: <IconAlertCircle stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Outstanding", route: "/outstanding" },
-    { icon: <IconWorld stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My website", route: "/minisite" },
     { icon: <PlayCircle size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Learn", route: "/learn" },
 
   ] as const;
