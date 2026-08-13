@@ -544,8 +544,8 @@ function CourseDetailPage() {
             </div>
 
             {/* COURSE DETAILS */}
-            <SectionHeader>COURSE DETAILS</SectionHeader>
-            <Card style={{ padding: 0 }}>
+            <CourseSectionBar>Course details</CourseSectionBar>
+            <Card style={DETAIL_CARD(editing)}>
               {editing ? (
                 <div style={{ padding: 12, display: "flex", flexDirection: "column", gap: 10 }}>
                   <Input
@@ -916,7 +916,7 @@ function CourseDetailPage() {
                 </div>
               ) : (
                 <>
-                  <DetailRow label="Start date" value={formatDate(course.start_date)} />
+                  <DetailRow label="Start date" value={formatDate(course.start_date)} first />
                   <DetailRow label="End date" value={formatDate(course.end_date)} />
                   <DetailRow label="Daily hours" value={course.daily_hours ? `${course.daily_hours}h` : "—"} />
                   <DetailRow
@@ -952,8 +952,8 @@ function CourseDetailPage() {
             </Card>
 
             {/* PRICING */}
-            <SectionHeader>PRICING</SectionHeader>
-            <Card style={{ padding: 0 }}>
+            <CourseSectionBar>Pricing</CourseSectionBar>
+            <Card style={DETAIL_CARD(editing)}>
               {editing ? (
                 <div style={{ padding: 12, display: "flex", flexDirection: "column", gap: 10 }}>
                   <Input
@@ -997,7 +997,7 @@ function CourseDetailPage() {
                 </div>
               ) : (
                 <>
-                  <DetailRow label="Price" value={`£${Number(course.price).toFixed(2)}`} />
+                  <DetailRow label="Price" value={`£${Number(course.price).toFixed(2)}`} first />
                   <DetailRow
                     label="Deposit"
                     value={course.deposit_amount > 0 ? `£${Number(course.deposit_amount).toFixed(2)}` : "—"}
@@ -1176,6 +1176,7 @@ function DetailRow({ label, value, last, first }: { label: string; value: string
         gap: 12,
         padding: "12px 0",
         borderTop: first ? "none" : "1px solid #F0F0F2",
+        borderBottom: last ? "none" : undefined,
       }}
     >
       <div style={{ fontSize: 13.5, color: "#8A8A8E", fontWeight: 600 }}>{label}</div>
