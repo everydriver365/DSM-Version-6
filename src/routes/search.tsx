@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { IconClock, IconSearch } from "@tabler/icons-react";
+import { IconChevronRight, IconClock, IconSearch } from "@tabler/icons-react";
 import { Search as SearchIcon } from "lucide-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { toast } from "sonner";
@@ -52,6 +52,19 @@ const SCREEN_LABELS: Record<string, string> = {
   "/reports": "Reports",
   "/subscription": "My plan",
 };
+
+const NAV_PAGES = [
+  { label: "My Website", route: "/minisite", keywords: "website minisite domain" },
+  { label: "Schedule", route: "/schedule", keywords: "schedule diary calendar" },
+  { label: "Pupils", route: "/pupils", keywords: "pupils students learners" },
+  { label: "Payments", route: "/payments", keywords: "payments money finance" },
+  { label: "Enquiries", route: "/enquiries", keywords: "enquiries leads pipeline" },
+  { label: "Courses", route: "/courses", keywords: "courses intensive lessons" },
+  { label: "Marketplace", route: "/marketplace", keywords: "marketplace shop services" },
+  { label: "Profile", route: "/profile", keywords: "profile settings account" },
+  { label: "Reports", route: "/reports", keywords: "reports earnings income tax" },
+  { label: "Community", route: "/community", keywords: "community alerts local" },
+];
 
 function readRecents(): RecentScreen[] {
   if (typeof window === "undefined") return [];
@@ -255,6 +268,14 @@ function SearchPage() {
     );
   }, [results]);
 
+  const matchedPages = query.trim().length > 0
+    ? NAV_PAGES.filter(
+        (p) =>
+          p.label.toLowerCase().includes(query.toLowerCase()) ||
+          p.keywords.toLowerCase().includes(query.toLowerCase()),
+      )
+    : [];
+
   function go(route: string) {
     navigate({ to: route });
   }
@@ -325,7 +346,7 @@ function SearchPage() {
           </div>
         )}
 
-        {debounced && !loading && results && totalCount === 0 && (
+        {debounced && !loading && results && totalCount === 0 && matchedPages.length === 0 && (
           <EmptyState
             icon={<IconSearch size={32} color="#9CA3AF" stroke={1.5} />}
             title="No results found"
@@ -333,7 +354,31 @@ function SearchPage() {
           />
         )}
 
-        {debounced && !loading && results && totalCount > 0 && (
+        {debounced && !loading && matchedPages.length > 0 && (
+          <div>
+            <SectionHeader>PAGES</SectionHeader>
+            <div className="flex flex-col" style={{ gap: 0 }}>
+              {matchedPages.map((page, i) => (
+                <button
+                  key={page.route}
+                  type="button"
+                  onClick={() => navigate({ to: page.route as never })}
+                  className="bg-white text-left flex items-center justify-between"
+                  style={{
+                    padding: "13px 16px",
+                    borderBottom: i < matchedPages.length - 1 ? "1px solid #E4E8EF" : "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  <span className="text-[14px] text-[#0B1F3A]">{page.label}</span>
+                  <IconChevronRight size={18} color="#9CA3AF" />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {debounced && !loading && results && (totalCount > 0 || matchedPages.length > 0) && (
           <>
             {results.pupils.length > 0 && (
               <ResultGroup
