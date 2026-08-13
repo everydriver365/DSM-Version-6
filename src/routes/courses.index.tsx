@@ -196,8 +196,6 @@ function CoursesPage() {
       </div>
 
       <div style={{ padding: "0 16px 24px" }}>
-        <SectionHeader>ACTIVE COURSES</SectionHeader>
-
         {loading ? (
           <div style={{ color: "#6B7280", padding: 16 }}>Loading…</div>
         ) : courses.length === 0 ? (
@@ -235,219 +233,348 @@ function CoursesPage() {
             </button>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {courses.map((c) => {
-              const spacesLeft = Math.max(0, (c.max_spaces ?? 0) - (c.spaces_taken ?? 0));
-              const goToCourse = () => navigate({ to: "/courses/$id", params: { id: c.id } });
-              const draft = c.status === "draft";
-              const pcs = (c.pickup_postcodes ?? []).map((p) => p.postcode);
-              const locations = pcs.length > 0 ? pcs : c.pickup_area ? [c.pickup_area] : [];
-              const hours = c.total_hours == null ? "?" : String(Number(c.total_hours));
-              return (
-                <div
-                  key={c.id}
-                  role="button"
-                  tabIndex={0}
-                  onClick={goToCourse}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      goToCourse();
-                    }
-                  }}
-                  style={{
-                    background: "#fff",
-                    borderRadius: 18,
-                    padding: 16,
-                    marginBottom: 14,
-                    boxShadow: "0 1px 2px rgba(0,0,0,0.04), 0 8px 22px rgba(0,0,0,0.06)",
-                    cursor: "pointer",
-                    userSelect: "none",
-                    WebkitUserSelect: "none",
-                    WebkitTapHighlightColor: "rgba(11,31,58,0.08)",
-                  }}
-                >
-                  <div style={{ display: "flex", gap: 13, alignItems: "flex-start" }}>
-                    <div style={{ flexShrink: 0, position: "relative" }}>
-                      {/* Hero image if available */}
-                      {c.image_url ? (
-                        <img
-                          src={c.image_url}
-                          alt={c.name ?? ""}
-                          style={{
-                            width: 72,
-                            height: 72,
-                            borderRadius: 14,
-                            objectFit: "cover",
-                            display: "block",
-                            border: `2px solid ${draft ? "#D1D1D6" : "#E4E8EF"}`,
-                          }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: 72,
-                            height: 72,
-                            borderRadius: 14,
-                            background: draft ? "#F2F2F7" : "#EEF2F7",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: 28,
-                          }}
-                        >
-                          🚗
-                        </div>
-                      )}
-                      {/* Hours badge overlaid bottom-right of image */}
-                      <div
-                        style={{
-                          position: "absolute",
-                          bottom: -6,
-                          right: -6,
-                          width: 28,
-                          height: 28,
-                          borderRadius: "50%",
-                          background: draft ? "#D1D1D6" : "#CC2229",
-                          border: "2px solid #fff",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: 11,
-                          fontWeight: 800,
-                          color: "#fff",
-                          fontFamily: "Poppins, sans-serif",
-                          letterSpacing: "-0.3px",
-                        }}
-                      >
-                        {hours}
-                      </div>
-                    </div>
-
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div
-                            style={{
-                              fontSize: 16.5,
-                              fontWeight: 700,
-                              letterSpacing: "-0.2px",
-                              color: draft ? "#8A8A8E" : "#000",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {c.name}
-                          </div>
-                          <div
-                            style={{
-                              marginTop: 2,
-                              fontSize: 11.5,
-                              fontWeight: 700,
-                              textTransform: "uppercase",
-                              letterSpacing: "0.3px",
-                              color: draft ? "#B0B0B5" : "#1877D6",
-                            }}
-                          >
-                            {typeLabel(c.course_type)}
-                          </div>
-                        </div>
-                        <div
-                          style={{
-                            fontSize: 19,
-                            fontWeight: 800,
-                            letterSpacing: "-0.3px",
-                            color: draft ? "#C7C7CC" : "#000",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          £{Number(c.price).toFixed(0)}
-                        </div>
-                      </div>
-
-                      {locations.length > 0 && (
-                        <div style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 500, color: "#8A8A8E" }}>
-                          <MapPin size={13} color="#8A8A8E" />
-                          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            {locations.length > 1 ? `${locations.length} locations` : locations[0]}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      marginTop: 14,
-                      paddingTop: 13,
-                      borderTop: "1px solid #F0F0F2",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 8,
-                    }}
-                  >
-                    <div style={{ fontSize: 12.5, fontWeight: 500, color: "#8A8A8E" }}>{formatDate(c.start_date)}</div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <span
-                        style={{
-                          background: draft ? "#F2F2F7" : "#E7F1FC",
-                          color: draft ? "#8A8A8E" : "#1877D6",
-                          fontSize: 10.5,
-                          fontWeight: 700,
-                          padding: "4px 10px",
-                          borderRadius: 20,
-                        }}
-                      >
-                        {draft ? "Draft" : "Active"}
-                      </span>
-                      <span style={{ fontSize: 11.5, fontWeight: 600, color: spacesLeft <= 1 ? "#FF3B30" : "#8A8A8E" }}>
-                        {spacesLeft} spaces left
-                      </span>
-                    </div>
-                  </div>
-
-                  <div style={{ marginTop: 14, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        goToCourse();
-                      }}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        padding: 0,
-                        cursor: "pointer",
-                        color: draft ? "#8A8A8E" : "#1877D6",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        fontFamily: "Poppins, sans-serif",
-                      }}
-                    >
-                      {draft ? "Finish setup" : "Edit course"}
-                    </button>
-                    <span
-                      style={{
-                        width: 26,
-                        height: 26,
-                        borderRadius: "50%",
-                        background: "#F2F2F7",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <ChevronRight size={16} color="#C7C7CC" />
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <>
+            {available.length > 0 && (
+              <>
+                <SectionBar label="Available" count={available.length} color="#1877D6" />
+                {available.map((c) => (
+                  <CourseCard
+                    key={c.id}
+                    course={c}
+                    bookings={bookings[c.id] ?? []}
+                    soldOut={false}
+                    navigate={navigate}
+                  />
+                ))}
+              </>
+            )}
+            {soldOut.length > 0 && (
+              <>
+                <SectionBar label="Sold out" count={soldOut.length} color="#8A8A8E" />
+                {soldOut.map((c) => (
+                  <CourseCard
+                    key={c.id}
+                    course={c}
+                    bookings={bookings[c.id] ?? []}
+                    soldOut
+                    navigate={navigate}
+                  />
+                ))}
+              </>
+            )}
+          </>
         )}
       </div>
     </div>
   );
 }
+
+function CourseCard({
+  course: c,
+  bookings,
+  soldOut,
+  navigate,
+}: {
+  course: CourseRow;
+  bookings: BookingRow[];
+  soldOut: boolean;
+  navigate: ReturnType<typeof useNavigate>;
+}) {
+  const spacesLeft = Math.max(0, (c.max_spaces ?? 0) - (c.spaces_taken ?? 0));
+  const draft = c.status === "draft";
+  const pcs = (c.pickup_postcodes ?? []).map((p) => p.postcode);
+  const locations = pcs.length > 0 ? pcs : c.pickup_area ? [c.pickup_area] : [];
+  const locationText =
+    locations.length > 1 ? `${locations.length} locations` : locations[0] ?? formatDate(c.start_date);
+  const hours = c.total_hours == null ? "?" : String(Number(c.total_hours));
+  const goToCourse = () => navigate({ to: "/courses/$id", params: { id: c.id } });
+  const booker = bookings[0];
+  const paid = (booker?.amount_paid ?? 0) > 0;
+
+  return (
+    <div
+      style={{
+        background: "#fff",
+        borderRadius: 20,
+        padding: 12,
+        marginBottom: 14,
+        boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+      }}
+    >
+      {/* Photo */}
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={goToCourse}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            goToCourse();
+          }
+        }}
+        style={{
+          borderRadius: 14,
+          overflow: "hidden",
+          height: 150,
+          position: "relative",
+          cursor: "pointer",
+          background: "linear-gradient(150deg, #0B1F3A, #14509E)",
+        }}
+      >
+        {c.image_url ? (
+          <img
+            src={c.image_url}
+            alt={c.name ?? ""}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        ) : (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <GraduationCap size={54} color="rgba(255,255,255,0.15)" />
+          </div>
+        )}
+
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(180deg, transparent 50%, rgba(11,31,58,0.85) 100%)",
+          }}
+        />
+
+        {/* Top badges */}
+        <div
+          style={{
+            position: "absolute",
+            top: 10,
+            left: 10,
+            right: 10,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <span
+            style={{
+              background: "rgba(255,255,255,0.2)",
+              backdropFilter: "blur(4px)",
+              WebkitBackdropFilter: "blur(4px)",
+              color: "#fff",
+              fontSize: 10,
+              fontWeight: 800,
+              padding: "5px 10px",
+              borderRadius: 20,
+              textTransform: "uppercase",
+              letterSpacing: "0.4px",
+            }}
+          >
+            {typeLabel(c.course_type)}
+          </span>
+          <span
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: "50%",
+              background: soldOut ? "#8A8A8E" : "#FF3B30",
+              color: "#fff",
+              fontSize: 11,
+              fontWeight: 900,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {hours}
+          </span>
+        </div>
+
+        {/* Bottom text */}
+        <div style={{ position: "absolute", left: 12, right: 12, bottom: 10 }}>
+          <div
+            style={{
+              color: "#fff",
+              fontSize: 17,
+              fontWeight: 800,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {c.name}
+          </div>
+          <div
+            style={{
+              marginTop: 2,
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
+              color: "rgba(255,255,255,0.7)",
+              fontSize: 11,
+            }}
+          >
+            <MapPin size={10} color="rgba(255,255,255,0.7)" />
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {locationText}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          padding: "12px 4px 4px",
+        }}
+      >
+        <div style={{ color: "#0B1F3A", fontSize: 19, fontWeight: 900 }}>
+          £{Number(c.price).toFixed(0)}
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <span
+            style={{
+              display: "inline-block",
+              background: soldOut ? "#F2F2F7" : "#E6F7EC",
+              color: soldOut ? "#6B6B6F" : "#248A3D",
+              fontSize: 10.5,
+              fontWeight: 800,
+              padding: "4px 11px",
+              borderRadius: 20,
+            }}
+          >
+            {soldOut ? "Sold out" : draft ? "Draft" : "Active"}
+          </span>
+          <div
+            style={{
+              marginTop: 4,
+              fontSize: 11.5,
+              fontWeight: soldOut ? 600 : 700,
+              color: soldOut ? "#B0B0B5" : "#FF3B30",
+            }}
+          >
+            {spacesLeft} {spacesLeft === 1 ? "space" : "spaces"} left
+          </div>
+        </div>
+      </div>
+
+      {/* Booked by */}
+      {booker && (
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate({ to: "/bookings", search: { selected: booker.id } as never })}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              navigate({ to: "/bookings", search: { selected: booker.id } as never });
+            }
+          }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            paddingTop: 12,
+            borderTop: "1px solid #F0F0F2",
+            marginTop: 2,
+            cursor: "pointer",
+          }}
+        >
+          <PupilAvatar pupil={{ id: booker.id, name: booker.pupil_name }} size={32} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                color: "#8A8A8E",
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.3px",
+                textTransform: "uppercase",
+              }}
+            >
+              Booked by
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 7, minWidth: 0 }}>
+              <span
+                style={{
+                  color: "#0B1F3A",
+                  fontSize: 13.5,
+                  fontWeight: 800,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {booker.pupil_name ?? "Pupil"}
+              </span>
+              <span
+                style={{
+                  background: paid ? "#E6F7EC" : "#FDEDEC",
+                  color: paid ? "#248A3D" : "#FF3B30",
+                  fontSize: 9.5,
+                  fontWeight: 800,
+                  padding: "2px 8px",
+                  borderRadius: 20,
+                  flexShrink: 0,
+                }}
+              >
+                {paid ? "Paid" : "Due"}
+              </span>
+            </div>
+          </div>
+          <ChevronRight size={13} color="#C7C7CC" />
+        </div>
+      )}
+
+      {/* Actions */}
+      <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+        <button
+          type="button"
+          onClick={goToCourse}
+          style={{
+            flex: 1,
+            background: "#F2F2F7",
+            color: "#0B1F3A",
+            border: "none",
+            padding: 10,
+            borderRadius: 10,
+            fontSize: 12.5,
+            fontWeight: 700,
+            textAlign: "center",
+            cursor: "pointer",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          Edit course
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/bookings" })}
+          style={{
+            flex: 1,
+            background: "#0B1F3A",
+            color: "#fff",
+            border: "none",
+            padding: 10,
+            borderRadius: 10,
+            fontSize: 12.5,
+            fontWeight: 700,
+            textAlign: "center",
+            cursor: "pointer",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          View bookings
+        </button>
+      </div>
+    </div>
+  );
+}
+
