@@ -927,7 +927,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           >
             <IconBroadcast size={14} color="#CC2229" stroke={1.5} />
           </div>
-          <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>Live</div>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#000" }}>Live</div>
           <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Sessions</div>
         </div>
 
@@ -962,7 +962,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           >
             <IconBook size={14} color="#1877D6" stroke={1.5} />
           </div>
-          <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>Learn</div>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#000" }}>Learn</div>
           <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>DSM Training</div>
         </div>
 
@@ -997,7 +997,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           >
             <IconBolt size={14} color="#F59E0B" stroke={1.5} />
           </div>
-          <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>Bitesize</div>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#000" }}>Bitesize</div>
           <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Tips</div>
         </div>
 
@@ -1047,7 +1047,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           >
             <IconPlayerPlay size={14} color="#7C3AED" stroke={1.5} />
           </div>
-          <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>Showcase</div>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#000" }}>Showcase</div>
           <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Fun Videos</div>
         </div>
 
@@ -1097,7 +1097,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           >
             <IconNews size={14} color="#15803D" stroke={1.5} />
           </div>
-          <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>News</div>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#000" }}>News</div>
           <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Updates</div>
         </div>
       </div>
