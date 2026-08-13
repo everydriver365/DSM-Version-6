@@ -291,6 +291,93 @@ function MiniSitePage() {
     toast.success("Saved");
   }
 
+  async function handleUpgrade(
+    tier: 'website' | 'pro' | 'managed'
+  ) {
+    try {
+      const { data: { session } } =
+        await supabase.auth.getSession();
+      if (!session) {
+        toast.error('Please log in first');
+        return;
+      }
+
+      const res = await fetch(
+        'https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/square-create-subscription',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`,
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo',
+          },
+          body: JSON.stringify({ tier }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.error) {
+        toast.error(data.error);
+        return;
+      }
+
+      // Redirect to Square checkout
+      window.location.href = data.url;
+    } catch (e: any) {
+      toast.error(
+        e.message ?? 'Could not start upgrade');
+    }
+  }
+
+  async function registerDomain(
+    domain: string) {
+    try {
+      const { data: { session } } =
+        await supabase.auth.getSession();
+      toast.loading('Registering domain...');
+
+      const res = await fetch(
+        'https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/register-domain',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token}`,
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo',
+          },
+          body: JSON.stringify({ domain }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.error) {
+        toast.dismiss();
+        toast.error(data.error);
+        return;
+      }
+
+      toast.dismiss();
+      toast.success(
+        `${domain} registered! 🎉`,
+        {
+          description:
+            'DNS propagation takes up to 24 hours. Your site will be live soon.',
+          duration: 8000,
+        }
+      );
+
+      setCustomDomain(domain);
+      setCustomDomainStatus('pending');
+      setShowDomainSearch(false);
+    } catch (e: any) {
+      toast.dismiss();
+      toast.error(
+        e.message ?? 'Domain registration failed');
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ ...POPPINS, backgroundColor: "#F3F8FF" }}>
