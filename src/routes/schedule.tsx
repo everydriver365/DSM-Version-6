@@ -2403,6 +2403,42 @@ function EntryRow({
         <div style={rowSub}>
           {fmtTime(entry.start)} – {fmtTime(entry.end)}
         </div>
+        {(() => {
+          const pickup = l.pickup_location || [l.pupil?.address, l.pupil?.postcode].filter(Boolean).join(', ') || null;
+          if (!pickup) return null;
+          const custom = isCustomPickup(l.pupil, l.pickup_location);
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+                background: custom ? '#FEF3C7' : 'transparent',
+                borderRadius: custom ? 6 : 0,
+                padding: custom ? '2px 6px' : '0',
+              }}>
+                <span style={{
+                  fontSize: 11,
+                  color: custom ? '#92400E' : 'rgba(255,255,255,0.8)',
+                  fontWeight: custom ? 600 : 400,
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
+                  📍 {pickup}
+                </span>
+                {custom && (
+                  <span style={{
+                    fontSize: 9,
+                    fontWeight: 700,
+                    color: '#92400E',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    CUSTOM
+                  </span>
+                )}
+              </div>
+            </div>
+          );
+        })()}
         {cancelled && l.cancellation_reason ? (
           <div style={{ fontSize: 11, color: "#CC2229", marginTop: 2, textDecoration: "none" }}>
             {l.cancellation_reason}
