@@ -1278,7 +1278,7 @@ function HomePage() {
   const [nearbyCategory, setNearbyCategory] = useState<string | null>(null);
   const [nearbyError, setNearbyError] = useState<string | null>(null);
   const [nearbyOrigin, setNearbyOrigin] = useState<{ lat: number; lng: number } | null>(null);
-  const [quickSearchQuery, setQuickSearchQuery] = useState('');
+  
   const [quickSearch, setQuickSearch] = useState('');
   
 
