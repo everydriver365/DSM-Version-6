@@ -446,6 +446,14 @@ function NewCoursePage() {
 
   function goNext() {
     if (step === 2) {
+      if (repeatType !== "one-off") {
+        if (!repeatEndDate && (!repeatCount || parseInt(repeatCount, 10) <= 0)) {
+          const msg = "Please set either an end date or a number of occurrences for this repeating course";
+          setError(msg);
+          toast.error(msg);
+          return;
+        }
+      }
       if (!pickup) {
         setPickupError(PICKUP_EMPTY_MSG);
         toast.error(PICKUP_EMPTY_MSG);
@@ -459,6 +467,7 @@ function NewCoursePage() {
     }
     if (step < 3) setStep((step + 1) as 1 | 2 | 3);
   }
+
 
 
 
