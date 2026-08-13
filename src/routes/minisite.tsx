@@ -373,6 +373,7 @@ function MiniSitePage() {
 
       if (data.error) {
         toast.error(data.error);
+        setUpgradeStep('choose-tier');
         return;
       }
 
@@ -381,6 +382,7 @@ function MiniSitePage() {
     } catch (e: any) {
       toast.error(
         e.message ?? 'Could not start upgrade');
+      setUpgradeStep('choose-tier');
     }
   }
 
