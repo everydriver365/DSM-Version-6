@@ -963,7 +963,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             <IconBook size={14} color="#1877D6" stroke={1.5} />
           </div>
           <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>Learn</div>
-          <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Videos</div>
+          <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>DSM Training</div>
         </div>
 
         {/* Bitesize */}
