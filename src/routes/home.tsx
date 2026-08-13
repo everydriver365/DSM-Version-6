@@ -1270,7 +1270,7 @@ function HomePage() {
   const navigate = useNavigate();
 
   
-  const [quickSearchOpen, setQuickSearchOpen] = useState(false);
+  
   const [runningLateOpen, setRunningLateOpen] = useState(false);
   const [nearbyOpen, setNearbyOpen] = useState(false);
   const [nearbyLoading, setNearbyLoading] = useState<string | null>(null);
