@@ -139,6 +139,8 @@ interface Pupil {
   last_name?: string | null;
   calendar_colour?: string | null;
   prepaid_hours?: number | null;
+  address?: string | null;
+  postcode?: string | null;
 }
 
 interface Lesson {
@@ -154,6 +156,7 @@ interface Lesson {
   eol_completed?: boolean | null;
   cancellation_reason?: string | null;
   notes?: string | null;
+  pickup_location?: string | null;
 
   pupil: Pupil | null;
 
@@ -415,7 +418,7 @@ function SchedulePage() {
       const { data, error } = await supabase
         .from("lessons")
         .select(
-          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, notes, pupil:pupils!inner(id, name, first_name, last_name, calendar_colour, prepaid_hours, status, deleted_at)",
+          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, notes, pickup_location, pupil:pupils!inner(id, name, first_name, last_name, address, postcode, calendar_colour, prepaid_hours, status, deleted_at)",
         )
 
         .is("deleted_at", null)
@@ -2248,6 +2251,19 @@ function DayHeader({ date, isToday, isPast }: { date: Date; isToday: boolean; is
   );
 }
 
+function isCustomPickup(pupil: Pupil | null, pickup: string | null | undefined): boolean {
+  if (!pickup || !pupil) return false;
+  const address = (pupil.address ?? '').toLowerCase().trim();
+  const postcode = (pupil.postcode ?? '').toLowerCase().replace(/\s/g, '');
+  const p = pickup.toLowerCase().trim();
+  const pFirst = p.split(',')[0].trim();
+  if (!address && !postcode) return false;
+  return !(
+    (address && (p.includes(address) || address.includes(pFirst))) ||
+    (postcode && (p.replace(/\s/g, '').includes(postcode) || postcode.includes(pFirst.replace(/\s/g, ''))))
+  );
+}
+
 function EntryRow({
   entry,
   onLessonTap,
@@ -2387,6 +2403,42 @@ function EntryRow({
         <div style={rowSub}>
           {fmtTime(entry.start)} – {fmtTime(entry.end)}
         </div>
+        {(() => {
+          const pickup = l.pickup_location || [l.pupil?.address, l.pupil?.postcode].filter(Boolean).join(', ') || null;
+          if (!pickup) return null;
+          const custom = isCustomPickup(l.pupil, l.pickup_location);
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+                background: custom ? '#FEF3C7' : 'transparent',
+                borderRadius: custom ? 6 : 0,
+                padding: custom ? '2px 6px' : '0',
+              }}>
+                <span style={{
+                  fontSize: 11,
+                  color: custom ? '#92400E' : 'rgba(255,255,255,0.8)',
+                  fontWeight: custom ? 600 : 400,
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
+                  📍 {pickup}
+                </span>
+                {custom && (
+                  <span style={{
+                    fontSize: 9,
+                    fontWeight: 700,
+                    color: '#92400E',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    CUSTOM
+                  </span>
+                )}
+              </div>
+            </div>
+          );
+        })()}
         {cancelled && l.cancellation_reason ? (
           <div style={{ fontSize: 11, color: "#CC2229", marginTop: 2, textDecoration: "none" }}>
             {l.cancellation_reason}

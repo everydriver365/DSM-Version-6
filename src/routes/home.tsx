@@ -470,6 +470,22 @@ function isCurrentPupil(pupil: { status?: string | null; deleted_at?: string | n
   return status !== "inactive" && status !== "passed" && status !== "cancelled" && status !== "archived";
 }
 
+function isCustomPickup(
+  pupil: { address?: string | null; postcode?: string | null } | null,
+  pickup: string | null | undefined,
+): boolean {
+  if (!pickup || !pupil) return false;
+  const address = (pupil.address ?? '').toLowerCase().trim();
+  const postcode = (pupil.postcode ?? '').toLowerCase().replace(/\s/g, '');
+  const p = pickup.toLowerCase().trim();
+  const pFirst = p.split(',')[0].trim();
+  if (!address && !postcode) return false;
+  return !(
+    (address && (p.includes(address) || address.includes(pFirst))) ||
+    (postcode && (p.replace(/\s/g, '').includes(postcode) || postcode.includes(pFirst.replace(/\s/g, ''))))
+  );
+}
+
 function startOfDay(d: Date) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
@@ -6268,10 +6284,30 @@ function HomePage() {
                               </div>
                               {pickupLabel && (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, minWidth: 0 }}>
-                                  <IconMapPin size={12} stroke={1.9} color="#6B7686" style={{ flexShrink: 0 }} />
-                                  <span style={{ fontSize: 12, color: '#6B7686', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                    {pickupLabel}
-                                  </span>
+                                  {(() => {
+                                    const custom = isCustomPickup((l.pupils as any), l.pickup_location);
+                                    return (
+                                      <div style={{
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: 4,
+                                        background: custom ? '#FEF3C7' : 'transparent',
+                                        borderRadius: custom ? 6 : 0,
+                                        padding: custom ? '2px 6px' : '0',
+                                        minWidth: 0,
+                                      }}>
+                                        <IconMapPin size={12} stroke={1.9} color={custom ? '#92400E' : '#6B7686'} style={{ flexShrink: 0 }} />
+                                        <span style={{ fontSize: 12, color: custom ? '#92400E' : '#6B7686', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: custom ? 600 : 400 }}>
+                                          {pickupLabel}
+                                        </span>
+                                        {custom && (
+                                          <span style={{ fontSize: 9, fontWeight: 700, color: '#92400E', flexShrink: 0 }}>
+                                            CUSTOM
+                                          </span>
+                                        )}
+                                      </div>
+                                    );
+                                  })()}
                                 </div>
                               )}
                             </div>
