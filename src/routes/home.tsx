@@ -1270,7 +1270,7 @@ function HomePage() {
   const navigate = useNavigate();
 
   
-  const [quickSearchOpen, setQuickSearchOpen] = useState(false);
+  
   const [runningLateOpen, setRunningLateOpen] = useState(false);
   const [nearbyOpen, setNearbyOpen] = useState(false);
   const [nearbyLoading, setNearbyLoading] = useState<string | null>(null);
@@ -1278,7 +1278,8 @@ function HomePage() {
   const [nearbyCategory, setNearbyCategory] = useState<string | null>(null);
   const [nearbyError, setNearbyError] = useState<string | null>(null);
   const [nearbyOrigin, setNearbyOrigin] = useState<{ lat: number; lng: number } | null>(null);
-  const [quickSearchQuery, setQuickSearchQuery] = useState('');
+  
+  const [quickSearch, setQuickSearch] = useState('');
   
 
 
@@ -6485,7 +6486,7 @@ function HomePage() {
                 { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
                 { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'spark' },
               ];
-              const quickTilesHome = quickTiles.slice(0, 8);
+              
 
               const goTile = (tile: QuickTile) => {
                 if (tile.action === 'running-late') { setRunningLateOpen(true); return; }
@@ -6503,66 +6504,10 @@ function HomePage() {
               };
 
 
-              const renderQuickTile = (tile: QuickTile, key: string, onTap?: () => void) => {
-                const Icon = tile.icon;
-                const subColor = tile.attention ? '#CC2229' : '#64748B';
-                const subWeight = tile.attention ? 600 : 400;
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => { goTile(tile); onTap?.(); }}
-                    className="cf-tap qa-card"
-                    style={{
-                      position: 'relative',
-                      background: '#FFFFFF',
-                      border: '1px solid #E2E8F0',
-                      borderRadius: 14,
-                      padding: 10,
-                      minHeight: 78,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      gap: 8,
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      fontFamily: "Poppins, sans-serif",
-                      transition: 'transform 0.15s ease, box-shadow 0.2s ease',
-                      overflow: 'hidden',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-                    }}
-                  >
-                    <div
-                      className="qa-icon"
-                      style={{
-                        width: 30,
-                        height: 30,
-                        borderRadius: 8,
-                        background: tile.chipBg,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                        transition: 'transform 0.15s ease',
-                      }}
-                    >
-                      <Icon size={16} color={tile.iconStroke} strokeWidth={2} />
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, maxWidth: '100%' }}>
-                      <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', lineHeight: 1.25, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: "Poppins, sans-serif" }}>{tile.label}</span>
-                      <span style={{ marginTop: 1, fontSize: 10, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: 1.3, fontFamily: "Poppins, sans-serif" }}>{tile.sub}</span>
-                    </div>
-                  </button>
-                );
-              };
 
 
 
 
-              const sq = quickSearchQuery.trim().toLowerCase();
-              const searchResults = sq
-                ? quickTiles.filter((t) => t.label.toLowerCase().includes(sq) || t.sub.toLowerCase().includes(sq))
-                : quickTiles;
 
               return (
                 <>
@@ -6745,125 +6690,191 @@ function HomePage() {
                 .qa-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at center, rgba(15,32,68,0.18) 0%, transparent 60%); opacity: 0; pointer-events: none; }
                 .qa-card:active::after { animation: qaRipple 0.5s ease-out; }
               `}</style>
-                <div style={{ background: PAGE_BACKGROUND, margin: 0, padding: 0, borderRadius: 0 }}>
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '14px 16px 6px',
-                      }}>
-                        <div style={{
-                          fontSize: 11,
-                          fontWeight: 600,
-                          color: '#9CA3AF',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.08em',
-                          fontFamily: 'Poppins, sans-serif',
-                        }}>
-                          Quick Access
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => navigate({ to: '/quick-access/all' as never })}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                            fontSize: 12,
-                            fontWeight: 700,
-                            color: '#1877D6',
-                            fontFamily: 'Poppins, sans-serif',
-                            padding: 0,
-                          }}
-                        >
-                          See all →
-                        </button>
-                      </div>
-
-                    <div
-                      style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}
-                    >
-                      {quickTilesHome.map((tile, idx) => renderQuickTile(tile, `${tile.label}-${idx}`))}
-                    </div>
+              <div style={{ background: PAGE_BACKGROUND, margin: 0, padding: 0, borderRadius: 0 }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '14px 16px 6px',
+                }}>
+                  <div style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: '#9CA3AF',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    Quick Access
                   </div>
-            </div>
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: '/quick-access/all' as never })}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontSize: 12,
+                      fontWeight: 700,
+                      color: '#1877D6',
+                      fontFamily: 'Poppins, sans-serif',
+                      padding: 0,
+                    }}
+                  >
+                    See all →
+                  </button>
+                </div>
 
-
-                  {quickSearchOpen && (
-                    <div
-                      onClick={() => setQuickSearchOpen(false)}
+                {/* Search bar */}
+                <div style={{ position: 'relative', padding: '0 16px 12px' }}>
+                  <IconSearch
+                    size={16}
+                    color="#9CA3AF"
+                    style={{ position: 'absolute', left: 26, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
+                  />
+                  <input
+                    type="text"
+                    value={quickSearch}
+                    onChange={(e) => setQuickSearch(e.target.value)}
+                    placeholder="Search quick access..."
+                    style={{
+                      width: '100%',
+                      background: '#fff',
+                      border: '1px solid #E4E8EF',
+                      borderRadius: 12,
+                      padding: '10px 12px 10px 34px',
+                      fontSize: 13,
+                      color: '#0B1F3A',
+                      fontFamily: 'Poppins, sans-serif',
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                  {quickSearch && (
+                    <button
+                      type="button"
+                      onClick={() => setQuickSearch('')}
                       style={{
-                        position: 'fixed',
-                        top: 0, left: 0, right: 0, bottom: 0,
-                        background: 'rgba(0,0,0,0.5)',
-                        zIndex: 100,
-                        display: 'flex',
-                        alignItems: 'flex-end',
-                        fontFamily: 'Poppins, sans-serif',
+                        position: 'absolute',
+                        right: 10,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: '#9CA3AF',
+                        fontSize: 16,
+                        padding: 0,
+                        lineHeight: 1,
                       }}
                     >
-                      <div
-                        onClick={(e) => e.stopPropagation()}
+                      ×
+                    </button>
+                  )}
+                </div>
+
+                {/* Filtered tiles */}
+                {(() => {
+                  const filteredTiles = quickSearch.trim()
+                    ? quickTiles.filter(t =>
+                        t.label.toLowerCase().includes(quickSearch.toLowerCase()) ||
+                        t.sub.toLowerCase().includes(quickSearch.toLowerCase())
+                      )
+                    : quickTiles;
+
+                  const renderHomeTile = (tile: QuickTile, key: string, gridMode = false) => {
+                    const Icon = tile.icon;
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => goTile(tile)}
+                        className="cf-tap qa-card"
                         style={{
-                          background: '#FFFFFF',
-                          borderRadius: '20px 20px 0 0',
-                          padding: 20,
-                          maxHeight: '80vh',
-                          overflowY: 'auto',
-                          width: '100%',
+                          width: gridMode ? '100%' : 100,
+                          background: '#fff',
+                          borderRadius: 16,
+                          padding: '12px 8px',
+                          boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: 6,
+                          cursor: 'pointer',
+                          textAlign: 'center',
+                          border: '1px solid #E2E8F0',
+                          fontFamily: 'Poppins, sans-serif',
+                          transition: 'transform 0.15s ease, box-shadow 0.2s ease',
+                          overflow: 'hidden',
                         }}
                       >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                          <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Search tools</div>
-                          <button
-                            type="button"
-                            onClick={() => setQuickSearchOpen(false)}
-                            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-                            aria-label="Close search"
-                          >
-                            <IconX stroke={1.5} size={20} color="#6B7280" />
-                          </button>
+                        <div
+                          className="qa-icon"
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: '50%',
+                            background: tile.chipBg,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0,
+                            transition: 'transform 0.15s ease',
+                          }}
+                        >
+                          <Icon size={20} color="#FFFFFF" strokeWidth={2} />
                         </div>
-                        <div style={{
-                          background: '#F7FAFC',
-                          border: '0.5px solid #E2E6ED',
-                          borderRadius: 12,
-                          padding: '12px 16px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 8,
-                          marginBottom: 16,
-                        }}>
-                          <IconSearch stroke={1.5} size={16} color="#9CA3AF" />
-                          <input
-                            autoFocus
-                            type="text"
-                            placeholder="Search all features..."
-                            value={quickSearchQuery}
-                            onChange={(e) => setQuickSearchQuery(e.target.value)}
-                            style={{
-                              flex: 1,
-                              border: 'none',
-                              outline: 'none',
-                              background: 'transparent',
-                              fontSize: 14,
-                              color: '#0B1F3A',
-                              fontFamily: 'Poppins, sans-serif',
-                            }}
-                          />
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 0, maxWidth: '100%' }}>
+                          <span style={{ fontSize: 11, fontWeight: 600, color: '#0B1F3A', lineHeight: 1.2, fontFamily: 'Poppins, sans-serif' }}>{tile.label}</span>
+                          <span style={{ fontSize: 9, color: '#9CA3AF', lineHeight: 1.2, fontFamily: 'Poppins, sans-serif' }}>{tile.sub}</span>
                         </div>
-                        {searchResults.length === 0 ? (
-                          <div style={{ fontSize: 14, color: '#9CA3AF', textAlign: 'center', padding: 24 }}>
-                            No features found
-                          </div>
-                        ) : (
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
-                            {searchResults.map((tile, idx) => renderQuickTile(tile, `qs-${tile.label}-${idx}`, () => setQuickSearchOpen(false)))}
-                          </div>
-                        )}
+                      </button>
+                    );
+                  };
+
+                  if (quickSearch.trim()) {
+                    return (
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, padding: '0 16px' }}>
+                        {filteredTiles.map((tile, idx) => renderHomeTile(tile, `search-${tile.label}-${idx}`, true))}
                       </div>
+                    );
+                  }
+
+                  const columns: QuickTile[][] = [];
+                  for (let i = 0; i < filteredTiles.length; i += 3) {
+                    columns.push(filteredTiles.slice(i, i + 3));
+                  }
+
+                  return (
+                    <div style={{
+                      display: 'flex',
+                      overflowX: 'auto',
+                      gap: 10,
+                      padding: '0 16px 8px',
+                      scrollSnapType: 'x mandatory',
+                      WebkitOverflowScrolling: 'touch',
+                      msOverflowStyle: 'none',
+                      scrollbarWidth: 'none',
+                    }}>
+                      {columns.map((col, colIdx) => (
+                        <div
+                          key={colIdx}
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 10,
+                            scrollSnapAlign: 'start',
+                            flexShrink: 0,
+                          }}
+                        >
+                          {col.map((tile, idx) => renderHomeTile(tile, `${tile.label}-${colIdx}-${idx}`))}
+                        </div>
+                      ))}
                     </div>
-                  )}
+                  );
+                })()}
+              </div>
+            </div>
 
                   {runningLateOpen && (
                     <div
