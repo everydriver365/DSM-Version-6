@@ -118,6 +118,15 @@ function formatDate(d: string | null) {
     year: "numeric",
   });
 }
+function formatDateWithDay(d: string | null) {
+  if (!d) return "—";
+  return new Date(d + "T00:00:00").toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
 
 function CourseDetailPage() {
   const { id } = Route.useParams();
