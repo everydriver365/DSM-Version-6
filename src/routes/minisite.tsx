@@ -1805,7 +1805,17 @@ function MiniSitePage() {
                 boxShadow: cardShadow,
               }}
             >
-              <div style={{ display: "grid", gridTemplateColumns: gridCols }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: gridCols,
+                  position: "sticky",
+                  top: 0,
+                  zIndex: 10,
+                  background: "#fff",
+                  boxShadow: "0 2px 8px rgba(11,31,58,0.06)",
+                }}
+              >
                 <div />
                 {COMPARE_COLS.map((c) => (
                   <div
@@ -1838,43 +1848,70 @@ function MiniSitePage() {
                 ))}
               </div>
 
-              {COMPARE_ROWS.map((r) => (
-                <div
-                  key={r.label}
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: gridCols,
-                    borderTop: "1px solid #F0F0F2",
-                    alignItems: "center",
-                  }}
-                >
-                  <div style={{ fontSize: 11.5, color: "#0B1F3A", padding: "10px 12px" }}>{r.label}</div>
-                  {COMPARE_COLS.map((c, i) => (
+              {COMPARE_GROUPS.map((g, groupIdx) => (
+                <div key={g.title}>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: gridCols,
+                      borderTop: "1px solid #E8EDF3",
+                      background: "#F7FAFE",
+                    }}
+                  >
                     <div
-                      key={c.id}
                       style={{
-                        textAlign: "center",
-                        padding: "10px 4px",
-                        background: c.id === websiteTier ? "#F7FAFE" : "transparent",
+                        gridColumn: "1 / -1",
+                        padding: "8px 12px",
+                        fontSize: 10,
+                        fontWeight: 800,
+                        color: "#1877D6",
+                        letterSpacing: "0.04em",
+                        textTransform: "uppercase",
                       }}
                     >
-                      {i >= r.from ? (
-                        <span
+                      {g.title}
+                    </div>
+                  </div>
+                  {g.rows.map((r, rowIdx) => (
+                    <div
+                      key={r.label}
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: gridCols,
+                        borderTop: "1px solid #F0F0F2",
+                        alignItems: "center",
+                        background: groupIdx % 2 === 1 ? "rgba(243,248,255,0.35)" : "transparent",
+                      }}
+                    >
+                      <div style={{ fontSize: 11.5, color: "#0B1F3A", padding: "10px 12px" }}>{r.label}</div>
+                      {COMPARE_COLS.map((c, i) => (
+                        <div
+                          key={c.id}
                           style={{
-                            display: "inline-flex",
-                            width: 16,
-                            height: 16,
-                            borderRadius: 999,
-                            background: "#15803D",
-                            alignItems: "center",
-                            justifyContent: "center",
+                            textAlign: "center",
+                            padding: "10px 4px",
+                            background: c.id === websiteTier ? "#F7FAFE" : "transparent",
                           }}
                         >
-                          <IconCheck size={10} color="#fff" />
-                        </span>
-                      ) : (
-                        <span style={{ color: "#C7C7CC", fontSize: 13 }}>—</span>
-                      )}
+                          {i >= r.from ? (
+                            <span
+                              style={{
+                                display: "inline-flex",
+                                width: 16,
+                                height: 16,
+                                borderRadius: 999,
+                                background: "#15803D",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <IconCheck size={10} color="#fff" />
+                            </span>
+                          ) : (
+                            <span style={{ color: "#C7C7CC", fontSize: 13 }}>—</span>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   ))}
                 </div>
