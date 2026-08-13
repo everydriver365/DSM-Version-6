@@ -354,7 +354,7 @@ function NewCoursePage() {
       lesson_time_preference: timePref,
       lesson_time_from: timePref === "custom" ? lessonTimeFrom : null,
       lesson_time_to: timePref === "custom" ? lessonTimeTo : null,
-      price: parseFloat(price || "0"),
+      price: isFree ? 0 : parseFloat(price || "0"),
       deposit_amount: parseFloat(deposit || "0"),
       deposit_only_to_book: depositOnly,
       early_bird_discount: earlyBird ? parseFloat(earlyBirdAmount || "0") : 0,
