@@ -166,6 +166,10 @@ function CoursesPage() {
     })();
   }, []);
 
+  const spacesLeftOf = (c: CourseRow) => Math.max(0, (c.max_spaces ?? 0) - (c.spaces_taken ?? 0));
+  const available = courses.filter((c) => spacesLeftOf(c) > 0);
+  const soldOut = courses.filter((c) => spacesLeftOf(c) === 0);
+
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS }}>
