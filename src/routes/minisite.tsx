@@ -388,6 +388,163 @@ function MiniSitePage() {
 
   const slugValidFormat = /^[a-z0-9-]+$/.test(slug) && slug.length >= 3;
 
+  const TIERS: {
+    id: "website" | "pro" | "managed";
+    name: string;
+    price: string;
+    pillBg: string;
+    pillColor: string;
+    badge?: string;
+    features: string[];
+    cta: string;
+    btnBg: string;
+    btnShadow: string;
+  }[] = [
+    {
+      id: "website",
+      name: "DSM Website",
+      price: "£9.99/mo",
+      pillBg: "#EFF6FF",
+      pillColor: "#1877D6",
+      badge: "Most popular",
+      features: [
+        "Your own .co.uk domain included",
+        'Remove "Powered by EveryDriver"',
+        "Gallery (up to 20 photos)",
+        "Video intro",
+        "Google reviews widget",
+        "Priority listing on EveryDriver",
+        "Analytics dashboard",
+      ],
+      cta: "Upgrade to DSM Website →",
+      btnBg: "#1877D6",
+      btnShadow: "0 3px 0 #0F52A8",
+    },
+    {
+      id: "pro",
+      name: "DSM Website Pro",
+      price: "£19.99/mo",
+      pillBg: "#EDE9FE",
+      pillColor: "#7C3AED",
+      features: [
+        "Everything in DSM Website",
+        "Multiple area pages",
+        "Blog & content pages",
+        "Advanced SEO tools",
+        "Google Search Console",
+        "Promo codes on booking",
+        "Instructor login to edit site",
+      ],
+      cta: "Upgrade to Pro →",
+      btnBg: "#7C3AED",
+      btnShadow: "0 3px 0 #5B21B6",
+    },
+    {
+      id: "managed",
+      name: "DSM Managed Website",
+      price: "£29.99/mo",
+      pillBg: "#F1F5F9",
+      pillColor: "#0B1F3A",
+      features: [
+        "Everything in Pro",
+        "We build your website for you",
+        "Monthly content updates",
+        "SEO reporting & management",
+        "Google Business Profile setup",
+        "Dedicated account manager",
+      ],
+      cta: "Get a managed website →",
+      btnBg: "#0B1F3A",
+      btnShadow: "0 3px 0 #050D1C",
+    },
+  ];
+
+  function renderTiers(
+    onPick: (tier: "website" | "pro" | "managed") => void,
+    ctaLabel: string | null,
+  ) {
+    return TIERS.map((t) => (
+      <div
+        key={t.id}
+        style={{
+          background: "#fff",
+          borderRadius: 16,
+          boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+          padding: 16,
+          marginBottom: 10,
+        }}
+      >
+        <div className="flex items-center justify-between">
+          <span
+            style={{
+              background: t.pillBg,
+              color: t.pillColor,
+              fontSize: 12,
+              fontWeight: 700,
+              borderRadius: 20,
+              padding: "4px 10px",
+            }}
+          >
+            {t.price}
+          </span>
+          {t.badge && (
+            <span
+              style={{
+                background: "#FEF3C7",
+                color: "#92400E",
+                fontSize: 10,
+                fontWeight: 700,
+                borderRadius: 20,
+                padding: "3px 8px",
+              }}
+            >
+              {t.badge}
+            </span>
+          )}
+        </div>
+        <div
+          style={{
+            fontSize: 16,
+            fontWeight: 800,
+            color: "#0B1F3A",
+            marginTop: 8,
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          {t.name}
+        </div>
+        <div className="mt-3" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          {t.features.map((f) => (
+            <div key={f} className="flex items-center" style={{ gap: 8 }}>
+              <IconCheck size={12} color="#15803D" />
+              <span style={{ fontSize: 12, color: "#6B7686" }}>{f}</span>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => onPick(t.id)}
+          style={{
+            width: "100%",
+            background: t.btnBg,
+            color: "#fff",
+            borderRadius: 12,
+            padding: 12,
+            fontSize: 14,
+            fontWeight: 700,
+            marginTop: 12,
+            border: "none",
+            cursor: "pointer",
+            fontFamily: "Poppins, sans-serif",
+            boxShadow: t.btnShadow,
+          }}
+        >
+          {ctaLabel ?? t.cta}
+        </button>
+      </div>
+    ));
+  }
+
   return (
     <div className="min-h-screen pb-32" style={{ ...POPPINS, backgroundColor: "#F3F8FF" }}>
       <InstructorTopBar
