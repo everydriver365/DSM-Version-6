@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { toast } from "sonner";
-import { IconArchive, IconCamera, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMessage, IconMoon, IconPencil, IconPhone, IconPhoto, IconSchool, IconSettings, IconSun, IconSunrise, IconTrash, IconX } from "@tabler/icons-react";
+import { IconArchive, IconCalendar, IconCalendarStats, IconCalendarMonth, IconCamera, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMessage, IconMoon, IconPencil, IconPhone, IconPhoto, IconSchool, IconSettings, IconShield, IconSun, IconSunrise, IconTrash, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 import { Card } from "../components/dsm/Card";
@@ -65,9 +65,8 @@ interface Course {
   pickup_area: string | null;
   pickup_lat: number | null;
   pickup_lng: number | null;
-
+  series_id: string | null;
   radius_miles: number | null;
-
   lesson_time_preference: string;
   lesson_time_from: string | null;
   lesson_time_to: string | null;
@@ -119,6 +118,15 @@ function formatDate(d: string | null) {
     year: "numeric",
   });
 }
+function formatDateWithDay(d: string | null) {
+  if (!d) return "—";
+  return new Date(d + "T00:00:00").toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
 
 function CourseDetailPage() {
   const { id } = Route.useParams();
@@ -134,6 +142,12 @@ function CourseDetailPage() {
   const [heroImage, setHeroImage] = useState<string | null>(null);
   const [uploadingHero, setUploadingHero] = useState(false);
   const heroInputRef = useRef<HTMLInputElement>(null);
+
+  // Edit scope for repeating series
+  const [scopeSheetOpen, setScopeSheetOpen] = useState(false);
+  const [editScope, setEditScope] = useState<"this" | "following" | "all">("this");
+  const [seriesEditIds, setSeriesEditIds] = useState<string[]>([]);
+  const [skippedCount, setSkippedCount] = useState(0);
 
   // Edit-mode form state mirrors Course shape
   const [form, setForm] = useState<Course | null>(null);
@@ -174,6 +188,75 @@ function CourseDetailPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  async function handleScopeConfirm() {
+    setScopeSheetOpen(false);
+
+    if (editScope === "this" || !course?.series_id) {
+      setSeriesEditIds([]);
+      setSkippedCount(0);
+      setEditing(true);
+      return;
+    }
+
+    const seriesId = course.series_id;
+
+    if (editScope === "following") {
+      const { data: seriesCourses } = await supabase
+        .from("instructor_courses")
+        .select("id, start_date")
+        .eq("series_id", seriesId)
+        .gte("start_date", course.start_date ?? "")
+        .is("deleted_at", null)
+        .order("start_date");
+
+      const { data: bookings } = await supabase
+        .from("course_bookings")
+        .select("course_id")
+        .in(
+          "course_id",
+          (seriesCourses ?? []).map((c) => c.id),
+        )
+        .neq("status", "cancelled");
+
+      const bookedIds = new Set((bookings ?? []).map((b) => b.course_id));
+      const editableIds = (seriesCourses ?? [])
+        .filter((c) => !bookedIds.has(c.id))
+        .map((c) => c.id);
+
+      setSeriesEditIds(editableIds);
+      setSkippedCount((seriesCourses ?? []).length - editableIds.length);
+      setEditing(true);
+      return;
+    }
+
+    if (editScope === "all") {
+      const { data: seriesCourses } = await supabase
+        .from("instructor_courses")
+        .select("id")
+        .eq("series_id", seriesId)
+        .is("deleted_at", null);
+
+      const { data: bookings } = await supabase
+        .from("course_bookings")
+        .select("course_id")
+        .in(
+          "course_id",
+          (seriesCourses ?? []).map((c) => c.id),
+        )
+        .neq("status", "cancelled");
+
+      const bookedIds = new Set((bookings ?? []).map((b) => b.course_id));
+      const editableIds = (seriesCourses ?? [])
+        .filter((c) => !bookedIds.has(c.id))
+        .map((c) => c.id);
+
+      setSeriesEditIds(editableIds);
+      setSkippedCount((seriesCourses ?? []).length - editableIds.length);
+      setEditing(true);
+      return;
+    }
+  }
+
   async function saveChanges() {
     if (!form) return;
     if (!form.pickup_area || !isValidUKPostcode(form.pickup_area)) {
@@ -185,33 +268,67 @@ function CourseDetailPage() {
     }
     setSaving(true);
     setError(null);
-    const { id: _id, instructor_id: _ii, ...patch } = form;
+    const { id: _id, instructor_id: _ii, start_date: _sd, end_date: _ed, series_id: _si, spaces_taken: _st, ...patch } = form;
+    const updatePayload = {
+      ...patch,
+      total_hours: Number(patch.total_hours) || 0,
+      price: parseFloat(String(patch.price)) || 0,
+      deposit_amount: parseFloat(String(patch.deposit_amount)) || 0,
+      early_bird_discount: parseFloat(String(patch.early_bird_discount)) || 0,
+      max_spaces: Number(patch.max_spaces) || 1,
+      daily_hours: patch.daily_hours ? Number(patch.daily_hours) : null,
+      radius_miles: patch.radius_miles ? Number(patch.radius_miles) : 10,
+      pickup_area: form.pickup_area,
+      pickup_lat: form.pickup_lat,
+      pickup_lng: form.pickup_lng,
+      image_url: heroImage,
+    };
     const { error: upErr } = await supabase
       .from("instructor_courses")
-      .update({
-        ...patch,
-        total_hours: Number(patch.total_hours) || 0,
-        price: parseFloat(String(patch.price)) || 0,
-        deposit_amount: parseFloat(String(patch.deposit_amount)) || 0,
-        early_bird_discount: parseFloat(String(patch.early_bird_discount)) || 0,
-        max_spaces: Number(patch.max_spaces) || 1,
-        daily_hours: patch.daily_hours ? Number(patch.daily_hours) : null,
-        radius_miles: patch.radius_miles ? Number(patch.radius_miles) : 10,
-        pickup_area: form.pickup_area,
-        pickup_lat: form.pickup_lat,
-        pickup_lng: form.pickup_lng,
-        image_url: heroImage,
-      })
+      .update(updatePayload)
       .eq("id", id);
 
-    setSaving(false);
     if (upErr) {
+      setSaving(false);
       setError(upErr.message);
       toast.error(upErr.message);
       return;
     }
-    toast.success("Course updated");
+
+    // Apply the same changes to other selected courses in the series
+    if (seriesEditIds.length > 0) {
+      const otherIds = seriesEditIds.filter((courseId) => courseId !== id);
+      if (otherIds.length > 0) {
+        const { error: seriesErr } = await supabase
+          .from("instructor_courses")
+          .update(updatePayload)
+          .in("id", otherIds);
+        if (seriesErr) {
+          setSaving(false);
+          setError(seriesErr.message);
+          toast.error(seriesErr.message);
+          return;
+        }
+      }
+
+      if (skippedCount > 0) {
+        toast.success(
+          `Updated ${seriesEditIds.length} date${seriesEditIds.length === 1 ? "" : "s"}. ${skippedCount} booked date${skippedCount > 1 ? "s were" : " was"} left unchanged.`,
+        );
+      } else {
+        toast.success(
+          `Updated ${seriesEditIds.length} date${seriesEditIds.length === 1 ? "" : "s"} in series.`,
+        );
+      }
+    } else {
+      toast.success("Course updated");
+    }
+
+    setSeriesEditIds([]);
+    setSkippedCount(0);
+    setEditScope("this");
     setEditing(false);
+    setSaving(false);
     load();
   }
 
@@ -530,6 +647,14 @@ function CourseDetailPage() {
             if (editing) {
               setEditing(false);
               setForm(course);
+              setSeriesEditIds([]);
+              setSkippedCount(0);
+              setEditScope("this");
+            } else if (course?.series_id) {
+              setEditScope("this");
+              setSeriesEditIds([]);
+              setSkippedCount(0);
+              setScopeSheetOpen(true);
             } else {
               setEditing(true);
             }
@@ -1210,6 +1335,227 @@ function CourseDetailPage() {
           }}
         />
       )}
+
+      {scopeSheetOpen && course && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(11,31,58,0.45)",
+            zIndex: 60,
+            display: "flex",
+            alignItems: "flex-end",
+            ...POPPINS,
+          }}
+          onClick={() => setScopeSheetOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#F2F2F7",
+              width: "100%",
+              borderRadius: "22px 22px 0 0",
+              padding: "0 20px 24px",
+              maxHeight: "90vh",
+              overflowY: "auto",
+            }}
+          >
+            {/* Handle */}
+            <div
+              style={{
+                width: 36,
+                height: 5,
+                background: "#D1D1D6",
+                borderRadius: 3,
+                margin: "12px auto 8px",
+              }}
+            />
+
+            <h2
+              style={{
+                fontSize: 20,
+                fontWeight: 800,
+                color: "#0B1F3A",
+                textAlign: "center",
+                margin: "0 0 6px",
+              }}
+            >
+              Edit this course
+            </h2>
+            <p
+              style={{
+                fontSize: 13,
+                color: "#8A8A8E",
+                textAlign: "center",
+                margin: "0 0 16px",
+                lineHeight: 1.4,
+              }}
+            >
+              This is part of a repeating series. Which dates should this change apply to?
+            </p>
+
+            {/* Protection banner */}
+            <div
+              style={{
+                background: "#E6F7EC",
+                padding: "11px 13px",
+                borderRadius: 12,
+                marginBottom: 16,
+                display: "flex",
+                gap: 9,
+                alignItems: "flex-start",
+              }}
+            >
+              <IconShield size={15} color="#248A3D" style={{ flexShrink: 0, marginTop: 1 }} />
+              <span
+                style={{
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  color: "#186429",
+                  lineHeight: 1.4,
+                }}
+              >
+                Already-booked dates are never affected by this edit.
+              </span>
+            </div>
+
+            {/* Options */}
+            {[
+              {
+                value: "this" as const,
+                icon: IconCalendar,
+                title: "This date only",
+                description: `Only ${formatDateWithDay(course.start_date)}`,
+              },
+              {
+                value: "following" as const,
+                icon: IconCalendarStats,
+                title: "This and following dates",
+                description: `${formatDateWithDay(course.start_date)} onwards, skipping any already booked`,
+              },
+              {
+                value: "all" as const,
+                icon: IconCalendarMonth,
+                title: "All dates in series",
+                description: "Every unbooked date in this series",
+              },
+            ].map(({ value, icon: Icon, title, description }) => {
+              const selected = editScope === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setEditScope(value)}
+                  style={{
+                    background: "#fff",
+                    borderRadius: 14,
+                    padding: "14px 16px",
+                    boxShadow: selected
+                      ? "0 3px 0 #D6E8FB, 0 8px 18px rgba(24,119,214,0.1)"
+                      : "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
+                    marginBottom: 10,
+                    display: "flex",
+                    gap: 13,
+                    alignItems: "center",
+                    cursor: "pointer",
+                    border: selected ? "1.5px solid #1877D6" : "1.5px solid transparent",
+                    width: "100%",
+                    fontFamily: "Poppins, sans-serif",
+                    textAlign: "left",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: 10,
+                      background: "#E7F1FC",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Icon size={20} color="#1877D6" stroke={1.5} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14.5, fontWeight: 800, color: "#0B1F3A" }}>{title}</div>
+                    <div style={{ fontSize: 11.5, color: "#8A8A8E", marginTop: 2, lineHeight: 1.35 }}>
+                      {description}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      width: 20,
+                      height: 20,
+                      borderRadius: "50%",
+                      border: selected ? "none" : "2px solid #D1D1D6",
+                      background: selected ? "#1877D6" : "#fff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {selected && (
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path
+                          d="M2.5 6L5 8.5L9.5 3.5"
+                          stroke="white"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+
+            <button
+              type="button"
+              onClick={handleScopeConfirm}
+              style={{
+                width: "100%",
+                padding: 15,
+                background: "#0B1F3A",
+                color: "#fff",
+                fontSize: 15,
+                fontWeight: 800,
+                borderRadius: 14,
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+                boxShadow: "0 4px 0 #050D1C",
+                marginTop: 22,
+              }}
+            >
+              Continue
+            </button>
+            <button
+              type="button"
+              onClick={() => setScopeSheetOpen(false)}
+              style={{
+                display: "block",
+                width: "100%",
+                background: "none",
+                border: "none",
+                color: "#8A8A8E",
+                fontSize: 13.5,
+                fontWeight: 600,
+                textAlign: "center",
+                marginTop: 14,
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       {confirmSheet}
     </div>
   );
