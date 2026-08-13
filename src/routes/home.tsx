@@ -470,6 +470,22 @@ function isCurrentPupil(pupil: { status?: string | null; deleted_at?: string | n
   return status !== "inactive" && status !== "passed" && status !== "cancelled" && status !== "archived";
 }
 
+function isCustomPickup(
+  pupil: { address?: string | null; postcode?: string | null } | null,
+  pickup: string | null | undefined,
+): boolean {
+  if (!pickup || !pupil) return false;
+  const address = (pupil.address ?? '').toLowerCase().trim();
+  const postcode = (pupil.postcode ?? '').toLowerCase().replace(/\s/g, '');
+  const p = pickup.toLowerCase().trim();
+  const pFirst = p.split(',')[0].trim();
+  if (!address && !postcode) return false;
+  return !(
+    (address && (p.includes(address) || address.includes(pFirst))) ||
+    (postcode && (p.replace(/\s/g, '').includes(postcode) || postcode.includes(pFirst.replace(/\s/g, ''))))
+  );
+}
+
 function startOfDay(d: Date) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
