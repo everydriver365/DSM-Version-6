@@ -32,8 +32,12 @@ export const Route = createFileRoute("/bookings")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  validateSearch: (search: Record<string, unknown>): { selected?: string } => ({
+    selected: typeof search.selected === "string" ? search.selected : undefined,
+  }),
   component: BookingsPage,
 });
+
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
@@ -109,10 +113,17 @@ function money(n: number | null | undefined) {
 
 function BookingsPage() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const [userId, setUserId] = useState<string | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (search.selected) {
+      setSelectedId(search.selected);
+    }
+  }, [search.selected]);
 
   useEffect(() => {
     (async () => {
@@ -138,6 +149,7 @@ function BookingsPage() {
       setLoading(false);
     })();
   }, []);
+
 
   async function confirmBooking(booking: Booking) {
     await supabase.from("course_bookings").update({ status: "confirmed" }).eq("id", booking.id);
@@ -265,8 +277,13 @@ function BookingsPage() {
         <BottomSheet
           title={pupilName(selectedBooking)}
           subtitle={selectedBooking.course?.name ?? "Course booking"}
-          onClose={() => setSelectedId(null)}
+          onClose={() => {
+            setSelectedId(null);
+            navigate({ to: "/bookings", search: {} });
+          }}
+
         >
+
           <div style={{ display: "flex", flexDirection: "column", gap: 12, paddingBottom: 20 }}>
             {/* Status pill */}
             <div

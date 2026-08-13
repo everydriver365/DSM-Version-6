@@ -30,8 +30,11 @@ import { Toaster } from "@/components/ui/sonner";
 
 
 function getNotificationUrl(notification: any): string {
-  if (notification.reference_type === "course_booking") return `/bookings/${notification.reference_id}`;
+  if (notification.reference_type === "course_booking") {
+    return notification.reference_id ? `/bookings?selected=${notification.reference_id}` : "/bookings";
+  }
   if (notification.reference_type === "quote") return "/quotes";
+
   if (notification.reference_type === "reflective_log") return `/reflective-log/${notification.reference_id}`;
   if (notification.reference_type === "job_offer" && notification.reference_id)
     return `/messages?jobOfferId=${notification.reference_id}`;
