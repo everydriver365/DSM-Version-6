@@ -196,6 +196,7 @@ function CoursesPage() {
       </div>
 
       <div style={{ padding: "0 16px 24px" }}>
+
         {loading ? (
           <div style={{ color: "#6B7280", padding: 16 }}>Loading…</div>
         ) : courses.length === 0 ? (
