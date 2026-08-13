@@ -150,7 +150,7 @@ function CoursesPage() {
           .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, image_url")
           .eq("instructor_id", uid)
           .order("created_at", { ascending: false });
-        data = fallback.data?.map((row) => ({ ...row, pickup_postcodes: null })) ?? null;
+        data = fallback.data?.map((row) => ({ ...row, pickup_postcodes: null, transmission: null })) ?? null;
         error = fallback.error;
         if (error) {
           console.error("[courses] fallback (pickup_postcodes) query error:", error.code, error.message);
@@ -164,7 +164,7 @@ function CoursesPage() {
           .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area")
           .eq("instructor_id", uid)
           .order("created_at", { ascending: false });
-        data = fallback.data?.map((row) => ({ ...row, pickup_postcodes: null, image_url: null })) ?? null;
+        data = fallback.data?.map((row) => ({ ...row, pickup_postcodes: null, image_url: null, transmission: null })) ?? null;
         error = fallback.error;
         if (error) {
           console.error("[courses] fallback (image_url) query error:", error.code, error.message);
