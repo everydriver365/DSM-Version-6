@@ -8,7 +8,7 @@ import {
   Moon, TrendingUp, Activity, Radio, ShoppingBag, Users, GraduationCap as GraduationCapIcon,
   PlayCircle,
 } from "lucide-react";
-import { IconChevronRight, IconSearch, IconCreditCard, IconCalendar } from "@tabler/icons-react";
+import { IconChevronRight, IconSearch, IconCreditCard, IconCalendar, IconWorld } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -59,6 +59,7 @@ const allTools: Tool[] = [
   { icon: FileText, colour: '#1A52A0', label: 'Invoices', sub: 'Billing', route: '/invoices', group: 'Business' },
   { icon: MapPin, colour: '#1A52A0', label: 'Coverage areas', sub: 'Service areas', route: '/coverage-areas', group: 'Business' },
   { icon: IconCalendar, colour: '#7C3AED', label: 'Bookings', sub: 'Mini-site bookings', route: '/bookings', group: 'Business' },
+  { icon: IconWorld, colour: '#7C3AED', label: 'My Website', sub: 'View your mini-site', route: '/minisite', group: 'Marketing' },
   
 
   // Payments
@@ -80,7 +81,7 @@ const allTools: Tool[] = [
   { icon: Users, colour: '#00B5A5', label: 'Community', sub: 'Connect with ADIs', route: '/community', group: 'Community' },
 ];
 
-const GROUP_ORDER = ['Teaching', 'Business', 'Payments', 'Admin', 'Reports', 'Community'] as const;
+const GROUP_ORDER = ['Teaching', 'Business', 'Payments', 'Admin', 'Reports', 'Community', 'Marketing'] as const;
 
 function MorePage() {
   const navigate = useNavigate();
