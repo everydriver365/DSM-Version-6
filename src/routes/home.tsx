@@ -6947,7 +6947,7 @@ function HomePage() {
                                   display: 'grid',
                                   gridTemplateColumns: '1fr 1fr',
                                   gap: 12,
-                                  padding: '0 16px 4px',
+                                  padding: '0 0 4px',
                                   boxSizing: 'border-box',
                                   scrollSnapAlign: 'start',
                                 }}
