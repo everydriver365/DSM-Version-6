@@ -26,8 +26,6 @@ const PIRKX_LIVE = false;
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
-const RED = "#CC2229";
-const HAIRLINE = "#E4E8EF";
 const FONT = "Poppins, sans-serif";
 
 /** Pick an icon that matches the listing category for the missing-photo fallback. */
