@@ -323,6 +323,8 @@ function NewCoursePage() {
       return;
     }
 
+    const seriesId = repeatType !== "one-off" ? crypto.randomUUID() : null;
+
     const basePayload = {
       instructor_id: uid,
       course_type: courseType,
@@ -363,6 +365,7 @@ function NewCoursePage() {
         ...basePayload,
         start_date: sd,
         end_date: ymd(ed),
+        series_id: seriesId,
       };
     });
 
