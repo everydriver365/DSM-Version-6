@@ -3,8 +3,9 @@ import { useNavigate } from "@tanstack/react-router";
 import {
   IconPlayerPlay,
   IconChevronRight,
-  IconRadio,
+  IconBroadcast,
   IconBook,
+  IconBolt,
   IconShoppingBag,
   IconNews,
   IconBrowser,
@@ -914,7 +915,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               width: 26,
               height: 26,
               borderRadius: 7,
-              background: "#F2F2F7",
+              background: "#FEE2E2",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -923,7 +924,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               position: "relative",
             }}
           >
-            <IconRadio size={13} color={NAVY} stroke={2} />
+            <IconBroadcast size={14} color="#CC2229" stroke={1.5} />
           </div>
           <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>Live</div>
           <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Sessions</div>
@@ -949,7 +950,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               width: 26,
               height: 26,
               borderRadius: 7,
-              background: "#F2F2F7",
+              background: "#EFF6FF",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -958,7 +959,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               position: "relative",
             }}
           >
-            <IconPlayerPlay size={13} color={NAVY} stroke={2} />
+            <IconBook size={14} color="#1877D6" stroke={1.5} />
           </div>
           <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>Learn</div>
           <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Videos</div>
@@ -984,7 +985,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               width: 26,
               height: 26,
               borderRadius: 7,
-              background: "#F2F2F7",
+              background: "#FEF3C7",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -993,7 +994,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               position: "relative",
             }}
           >
-            <IconBook size={13} color={NAVY} stroke={2} />
+            <IconBolt size={14} color="#F59E0B" stroke={1.5} />
           </div>
           <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>Bitesize</div>
           <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Tips</div>
@@ -1034,7 +1035,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               width: 26,
               height: 26,
               borderRadius: 7,
-              background: "#F2F2F7",
+              background: "#EDE9FE",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -1043,7 +1044,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               position: "relative",
             }}
           >
-            <IconCamera size={13} color={NAVY} stroke={2} />
+            <IconPlayerPlay size={14} color="#7C3AED" stroke={1.5} />
           </div>
           <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>Watch</div>
           <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Showcase</div>
@@ -1084,7 +1085,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               width: 26,
               height: 26,
               borderRadius: 7,
-              background: "#F2F2F7",
+              background: "#F0FDF4",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -1093,7 +1094,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               position: "relative",
             }}
           >
-            <IconNews size={13} color={NAVY} stroke={2} />
+            <IconNews size={14} color="#15803D" stroke={1.5} />
           </div>
           <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>News</div>
           <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Updates</div>
