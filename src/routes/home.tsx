@@ -6789,7 +6789,7 @@ function HomePage() {
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         gap: 10,
-                        padding: '14px 16px 10px',
+                        padding: '14px 0 10px',
                       }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
                           <span aria-hidden style={{ width: 4, height: 16, borderRadius: 2, background: '#1877D6', display: 'inline-block' }} />
