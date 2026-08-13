@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { IconClock, IconSearch } from "@tabler/icons-react";
+import { IconChevronRight, IconClock, IconSearch } from "@tabler/icons-react";
 import { Search as SearchIcon } from "lucide-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { toast } from "sonner";
@@ -52,6 +52,19 @@ const SCREEN_LABELS: Record<string, string> = {
   "/reports": "Reports",
   "/subscription": "My plan",
 };
+
+const NAV_PAGES = [
+  { label: "My Website", route: "/minisite", keywords: "website minisite domain" },
+  { label: "Schedule", route: "/schedule", keywords: "schedule diary calendar" },
+  { label: "Pupils", route: "/pupils", keywords: "pupils students learners" },
+  { label: "Payments", route: "/payments", keywords: "payments money finance" },
+  { label: "Enquiries", route: "/enquiries", keywords: "enquiries leads pipeline" },
+  { label: "Courses", route: "/courses", keywords: "courses intensive lessons" },
+  { label: "Marketplace", route: "/marketplace", keywords: "marketplace shop services" },
+  { label: "Profile", route: "/profile", keywords: "profile settings account" },
+  { label: "Reports", route: "/reports", keywords: "reports earnings income tax" },
+  { label: "Community", route: "/community", keywords: "community alerts local" },
+];
 
 function readRecents(): RecentScreen[] {
   if (typeof window === "undefined") return [];
@@ -254,6 +267,14 @@ function SearchPage() {
       results.enquiries.length
     );
   }, [results]);
+
+  const matchedPages = query.trim().length > 0
+    ? NAV_PAGES.filter(
+        (p) =>
+          p.label.toLowerCase().includes(query.toLowerCase()) ||
+          p.keywords.toLowerCase().includes(query.toLowerCase()),
+      )
+    : [];
 
   function go(route: string) {
     navigate({ to: route });
