@@ -507,7 +507,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       position: "relative",
                       borderRadius: 20,
                       overflow: "hidden",
-                      height: 192,
+                      height: 172,
                       background: "linear-gradient(135deg, #14509E, #0B1F3A)",
                       boxShadow:
                         "0 6px 0 #E4E4E8, 0 16px 32px rgba(11,31,58,0.12)",
@@ -612,7 +612,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       position: "relative",
                       borderRadius: 20,
                       overflow: "hidden",
-                      height: 192,
+                      height: 172,
                       background: "#fff",
                       boxShadow:
                         "0 6px 0 #E4E4E8, 0 16px 32px rgba(11,31,58,0.12)",
@@ -889,7 +889,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           style={{
             background: "#fff",
             borderRadius: 11,
-            padding: "9px 4px",
+            padding: "19px 4px",
             boxShadow: "0 2px 0 #E4E4E8",
             textAlign: "center",
             cursor: "pointer",
@@ -939,7 +939,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           style={{
             background: "#fff",
             borderRadius: 11,
-            padding: "9px 4px",
+            padding: "19px 4px",
             boxShadow: "0 2px 0 #E4E4E8",
             textAlign: "center",
             cursor: "pointer",
@@ -974,7 +974,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           style={{
             background: "#fff",
             borderRadius: 11,
-            padding: "9px 4px",
+            padding: "19px 4px",
             boxShadow: "0 2px 0 #E4E4E8",
             textAlign: "center",
             cursor: "pointer",
@@ -1009,7 +1009,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           style={{
             background: "#fff",
             borderRadius: 11,
-            padding: "9px 4px",
+            padding: "19px 4px",
             boxShadow: "0 2px 0 #E4E4E8",
             textAlign: "center",
             cursor: "pointer",
@@ -1059,7 +1059,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           style={{
             background: "#fff",
             borderRadius: 11,
-            padding: "9px 4px",
+            padding: "19px 4px",
             boxShadow: "0 2px 0 #E4E4E8",
             textAlign: "center",
             cursor: "pointer",
