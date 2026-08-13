@@ -22,7 +22,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { sanitizeNewsTitle } from "@/lib/newsText";
 import diaLogoAsset from "@/assets/dialogo.png.asset.json";
 
-const PIRKX_LIVE = true;
+const PIRKX_LIVE = false;
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
