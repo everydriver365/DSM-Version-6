@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import {
-
   Copy,
   ExternalLink,
   Camera,
@@ -12,6 +11,7 @@ import {
   Check,
   Loader2,
 } from "lucide-react";
+import { IconCheck } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
