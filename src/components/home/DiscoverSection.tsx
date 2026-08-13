@@ -1047,8 +1047,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           >
             <IconPlayerPlay size={14} color="#7C3AED" stroke={1.5} />
           </div>
-          <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>Watch</div>
-          <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Showcase</div>
+          <div style={{ fontSize: 10, fontWeight: 800, color: "#000" }}>Showcase</div>
+          <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Fun Videos</div>
         </div>
 
         {/* News */}
