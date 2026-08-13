@@ -274,7 +274,7 @@ function NewCoursePage() {
     if (!name.trim()) missing.push("name");
     if (!hours || parseFloat(String(hours)) <= 0) missing.push("total_hours");
     if (status === "active") {
-      if (!price || parseFloat(price) <= 0) missing.push("price");
+      if (!isFree && (!price || parseFloat(price) <= 0)) missing.push("price");
       if (!startDate) missing.push("start_date");
     }
     // Pickup postcode is required and must be valid
