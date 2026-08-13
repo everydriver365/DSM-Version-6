@@ -153,7 +153,7 @@ function MiniSitePage() {
       setUserId(user.id);
       const { data, error } = await supabase
         .from("instructors")
-        .select("name, app_slug, website_published, website_bio, website_hero_image_url, website_gallery_urls, website_theme, website_font, website_header_style, brand_colour")
+        .select("name, app_slug, website_published, website_bio, website_hero_image_url, website_gallery_urls, website_theme, website_font, website_header_style, brand_colour, website_tier")
         .eq("id", user.id)
         .maybeSingle();
       if (error) console.error("[minisite] load error", error);
