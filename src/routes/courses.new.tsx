@@ -204,6 +204,7 @@ function NewCoursePage() {
 
   // Step 3
   const [price, setPrice] = useState<string>("");
+  const [isFree, setIsFree] = useState(false);
   const [deposit, setDeposit] = useState<string>("");
   const [depositOnly, setDepositOnly] = useState(false);
   const [earlyBird, setEarlyBird] = useState(false);
