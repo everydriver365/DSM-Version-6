@@ -3,13 +3,12 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { toast } from "sonner";
-import { IconArchive, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMessage, IconMoon, IconPencil, IconPhone, IconPhoto, IconSchool, IconSettings, IconSun, IconSunrise, IconTrash, IconX } from "@tabler/icons-react";
+import { IconArchive, IconCamera, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMessage, IconMoon, IconPencil, IconPhone, IconPhoto, IconSchool, IconSettings, IconSun, IconSunrise, IconTrash, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 import { Card } from "../components/dsm/Card";
 import { Input } from "../components/dsm/Input";
 import { SectionHeader } from "../components/dsm/SectionHeader";
-import { StatTile } from "../components/dsm/StatTile";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 
@@ -438,18 +437,6 @@ function CourseDetailPage() {
           )}
         </div>
 
-        {/* Hidden file input */}
-        <input
-          type="file"
-          accept="image/*"
-          style={{ display: "none" }}
-          ref={heroInputRef}
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) uploadHeroImage(file);
-            e.target.value = "";
-          }}
-        />
       </>
     );
   }
@@ -468,8 +455,76 @@ function CourseDetailPage() {
       />
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
+      {/* Hero image */}
+      <div style={{ position: "relative", width: "100%", height: 180, overflow: "hidden" }}>
+        {heroImage ? (
+          <img
+            src={heroImage}
+            alt={course?.name ?? "Course"}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        ) : (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              background: "linear-gradient(150deg, #0B1F3A, #14509E)",
+            }}
+          />
+        )}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(180deg, rgba(11,31,58,0.3) 0%, transparent 40%, rgba(0,0,0,0.15) 100%)",
+            pointerEvents: "none",
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => heroInputRef.current?.click()}
+          style={{
+            position: "absolute",
+            bottom: 12,
+            right: 12,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            background: "rgba(255,255,255,0.95)",
+            backdropFilter: "blur(4px)",
+            WebkitBackdropFilter: "blur(4px)",
+            color: "#0B1F3A",
+            fontSize: 12,
+            fontWeight: 800,
+            padding: "8px 14px",
+            borderRadius: 10,
+            border: "none",
+            cursor: "pointer",
+            fontFamily: "Poppins, sans-serif",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+          }}
+        >
+          <IconCamera size={13} stroke={1.8} />
+          {uploadingHero ? "Uploading…" : heroImage ? "Change photo" : "Add photo"}
+        </button>
+      </div>
+
+      {/* Hidden hero file input (shared by hero button + edit-mode section) */}
+      <input
+        type="file"
+        accept="image/*"
+        style={{ display: "none" }}
+        ref={heroInputRef}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) uploadHeroImage(file);
+          e.target.value = "";
+        }}
+      />
+
       {/* Action bar */}
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: 16, padding: "8px 16px" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: 16, padding: "12px 16px 0", marginBottom: 16 }}>
         <button
           onClick={() => {
             if (editing) {
@@ -479,18 +534,18 @@ function CourseDetailPage() {
               setEditing(true);
             }
           }}
-          style={{ background: "none", border: "none", cursor: "pointer", color: "#1877D6", display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600 }}
+          style={{ background: "none", border: "none", cursor: "pointer", color: "#1877D6", display: "flex", alignItems: "center", gap: 6, fontSize: 13.5, fontWeight: 700 }}
           aria-label={editing ? "Cancel edit" : "Edit"}
         >
-          {editing ? <IconX stroke={1.5} size={18} /> : <IconPencil stroke={1.5} size={16} />}
+          {editing ? <IconX stroke={1.8} size={13} /> : <IconPencil stroke={1.8} size={13} />}
           {editing ? "Cancel" : "Edit"}
         </button>
         <button
           onClick={archive}
-          style={{ background: "none", border: "none", cursor: "pointer", color: "#1877D6", display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600 }}
+          style={{ background: "none", border: "none", cursor: "pointer", color: "#8A8A8E", display: "flex", alignItems: "center", gap: 6, fontSize: 13.5, fontWeight: 700 }}
           aria-label="Archive"
         >
-          <IconArchive stroke={1.5} size={16} />
+          <IconArchive stroke={1.8} size={13} />
           Archive
         </button>
       </div>
@@ -505,47 +560,44 @@ function CourseDetailPage() {
         ) : (
           <>
             {/* Badges */}
-            <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-              <span
-                style={{
-                  background: typeColor(course.course_type),
-                  color: "#fff",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  padding: "4px 8px",
-                  borderRadius: 6,
-                  textTransform: "uppercase",
-                  letterSpacing: 0.4,
-                }}
-              >
-                {typeLabel(course.course_type)}
-              </span>
-              <span
-                style={{
-                  background: statusColor(course.status),
-                  color: "#fff",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  padding: "4px 8px",
-                  borderRadius: 6,
-                  textTransform: "uppercase",
-                  letterSpacing: 0.4,
-                }}
-              >
-                {course.status}
-              </span>
+            <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+              {[
+                { text: typeLabel(course.course_type), bg: "#1877D6" },
+                {
+                  text: course.status,
+                  bg: course.status === "active" ? "#0B1F3A" : "#8A8A8E",
+                },
+              ].map((t) => (
+                <span
+                  key={t.text}
+                  style={{
+                    background: t.bg,
+                    color: "#fff",
+                    fontSize: 11.5,
+                    fontWeight: 800,
+                    padding: "6px 14px",
+                    borderRadius: 20,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.3px",
+                  }}
+                >
+                  {t.text}
+                </span>
+              ))}
             </div>
 
             {/* Stats */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-              <StatTile value={`${course.total_hours}h`} label="Total" />
-              <StatTile value={`£${Number(course.price).toFixed(0)}`} label="Price" />
-              <StatTile value={spacesLeft} label="Spaces left" />
-            </div>
+            <StatStrip
+              items={[
+                { value: `${course.total_hours}h`, label: "Total" },
+                { value: `£${Number(course.price).toFixed(0)}`, label: "Price" },
+                { value: String(spacesLeft), label: "Spaces left" },
+              ]}
+            />
 
             {/* COURSE DETAILS */}
-            <SectionHeader>COURSE DETAILS</SectionHeader>
-            <Card style={{ padding: 0 }}>
+            <CourseSectionBar>Course details</CourseSectionBar>
+            <Card style={DETAIL_CARD(editing)}>
               {editing ? (
                 <div style={{ padding: 12, display: "flex", flexDirection: "column", gap: 10 }}>
                   <Input
@@ -916,7 +968,7 @@ function CourseDetailPage() {
                 </div>
               ) : (
                 <>
-                  <DetailRow label="Start date" value={formatDate(course.start_date)} />
+                  <DetailRow label="Start date" value={formatDate(course.start_date)} first />
                   <DetailRow label="End date" value={formatDate(course.end_date)} />
                   <DetailRow label="Daily hours" value={course.daily_hours ? `${course.daily_hours}h` : "—"} />
                   <DetailRow
@@ -952,8 +1004,8 @@ function CourseDetailPage() {
             </Card>
 
             {/* PRICING */}
-            <SectionHeader>PRICING</SectionHeader>
-            <Card style={{ padding: 0 }}>
+            <CourseSectionBar>Pricing</CourseSectionBar>
+            <Card style={DETAIL_CARD(editing)}>
               {editing ? (
                 <div style={{ padding: 12, display: "flex", flexDirection: "column", gap: 10 }}>
                   <Input
@@ -997,7 +1049,7 @@ function CourseDetailPage() {
                 </div>
               ) : (
                 <>
-                  <DetailRow label="Price" value={`£${Number(course.price).toFixed(2)}`} />
+                  <DetailRow label="Price" value={`£${Number(course.price).toFixed(2)}`} first />
                   <DetailRow
                     label="Deposit"
                     value={course.deposit_amount > 0 ? `£${Number(course.deposit_amount).toFixed(2)}` : "—"}
@@ -1165,7 +1217,56 @@ function CourseDetailPage() {
 
 /* ------------ subcomponents ------------ */
 
-function DetailRow({ label, value, last }: { label: string; value: string; last?: boolean }) {
+const DETAIL_CARD = (editing: boolean): React.CSSProperties => ({
+  padding: editing ? 0 : "4px 16px",
+  borderRadius: 16,
+  borderColor: "transparent",
+  boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
+});
+
+function StatStrip({ items }: { items: { value: string; label: string }[] }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        background: "#fff",
+        borderRadius: 16,
+        overflow: "hidden",
+        boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+      }}
+    >
+      {items.map((it, i) => (
+        <div
+          key={it.label}
+          style={{
+            flex: 1,
+            padding: "16px 12px",
+            borderLeft: i === 0 ? "none" : "1.5px dashed #E4E4E8",
+          }}
+        >
+          <div style={{ color: "#0B1F3A", fontSize: 22, fontWeight: 900, letterSpacing: "-0.5px" }}>
+            {it.value}
+          </div>
+          <div
+            style={{
+              color: "#8A8A8E",
+              fontSize: 9.5,
+              fontWeight: 700,
+              letterSpacing: "0.3px",
+              textTransform: "uppercase",
+              marginTop: 3,
+            }}
+          >
+            {it.label}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function DetailRow({ label, value, last, first }: { label: string; value: string; last?: boolean; first?: boolean }) {
+  const empty = value === "—" || value === "";
   return (
     <div
       style={{
@@ -1173,16 +1274,17 @@ function DetailRow({ label, value, last }: { label: string; value: string; last?
         justifyContent: "space-between",
         alignItems: "flex-start",
         gap: 12,
-        padding: "10px 12px",
-        borderBottom: last ? "none" : "0.5px solid #EEF2F7",
+        padding: "12px 0",
+        borderTop: first ? "none" : "1px solid #F0F0F2",
+        borderBottom: last ? "none" : undefined,
       }}
     >
-      <div style={{ fontSize: 13, color: LABEL }}>{label}</div>
+      <div style={{ fontSize: 13.5, color: "#8A8A8E", fontWeight: 600 }}>{label}</div>
       <div
         style={{
-          fontSize: 13,
-          color: VALUE,
-          fontWeight: 600,
+          fontSize: 14,
+          color: empty ? "#B0B0B5" : "#0B1F3A",
+          fontWeight: 700,
           textAlign: "right",
           maxWidth: "60%",
           wordBreak: "break-word",
@@ -1193,6 +1295,26 @@ function DetailRow({ label, value, last }: { label: string; value: string; last?
     </div>
   );
 }
+
+function CourseSectionBar({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "20px 0 10px" }}>
+      <span style={{ width: 3, height: 14, borderRadius: 2, background: "#1877D6" }} />
+      <span
+        style={{
+          fontSize: 12,
+          fontWeight: 800,
+          letterSpacing: "0.6px",
+          textTransform: "uppercase",
+          color: "#1877D6",
+        }}
+      >
+        {children}
+      </span>
+    </div>
+  );
+}
+
 
 function ToggleRow({
   label,
