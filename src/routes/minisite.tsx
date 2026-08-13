@@ -774,18 +774,33 @@ function MiniSitePage() {
     );
   }
 
-  const COMPARE_ROWS: { label: string; from: number }[] = [
-    { label: "Own domain", from: 1 },
-    { label: "Remove watermark", from: 1 },
-    { label: "Gallery", from: 1 },
-    { label: "Video intro", from: 1 },
-    { label: "Analytics", from: 1 },
-    { label: "Area pages", from: 2 },
-    { label: "Blog", from: 2 },
-    { label: "Advanced SEO", from: 2 },
-    { label: "Promo codes", from: 2 },
-    { label: "Managed by DSM", from: 3 },
-    { label: "Dedicated manager", from: 3 },
+  const COMPARE_GROUPS: { title: string; rows: { label: string; from: number }[] }[] = [
+    {
+      title: "Website basics",
+      rows: [
+        { label: "Own domain", from: 1 },
+        { label: "Remove watermark", from: 1 },
+        { label: "Gallery", from: 1 },
+        { label: "Video intro", from: 1 },
+        { label: "Analytics", from: 1 },
+      ],
+    },
+    {
+      title: "Growth features",
+      rows: [
+        { label: "Area pages", from: 2 },
+        { label: "Blog", from: 2 },
+        { label: "Advanced SEO", from: 2 },
+        { label: "Promo codes", from: 2 },
+      ],
+    },
+    {
+      title: "Done-for-you",
+      rows: [
+        { label: "Managed by DSM", from: 3 },
+        { label: "Dedicated manager", from: 3 },
+      ],
+    },
   ];
 
   const COMPARE_COLS: { id: TierId; name: string; price: string }[] = [
