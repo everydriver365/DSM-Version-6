@@ -1165,7 +1165,8 @@ function CourseDetailPage() {
 
 /* ------------ subcomponents ------------ */
 
-function DetailRow({ label, value, last }: { label: string; value: string; last?: boolean }) {
+function DetailRow({ label, value, last, first }: { label: string; value: string; last?: boolean; first?: boolean }) {
+  const empty = value === "—" || value === "";
   return (
     <div
       style={{
@@ -1173,16 +1174,16 @@ function DetailRow({ label, value, last }: { label: string; value: string; last?
         justifyContent: "space-between",
         alignItems: "flex-start",
         gap: 12,
-        padding: "10px 12px",
-        borderBottom: last ? "none" : "0.5px solid #EEF2F7",
+        padding: "12px 0",
+        borderTop: first ? "none" : "1px solid #F0F0F2",
       }}
     >
-      <div style={{ fontSize: 13, color: LABEL }}>{label}</div>
+      <div style={{ fontSize: 13.5, color: "#8A8A8E", fontWeight: 600 }}>{label}</div>
       <div
         style={{
-          fontSize: 13,
-          color: VALUE,
-          fontWeight: 600,
+          fontSize: 14,
+          color: empty ? "#B0B0B5" : "#0B1F3A",
+          fontWeight: 700,
           textAlign: "right",
           maxWidth: "60%",
           wordBreak: "break-word",
@@ -1193,6 +1194,26 @@ function DetailRow({ label, value, last }: { label: string; value: string; last?
     </div>
   );
 }
+
+function CourseSectionBar({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "20px 0 10px" }}>
+      <span style={{ width: 3, height: 14, borderRadius: 2, background: "#1877D6" }} />
+      <span
+        style={{
+          fontSize: 12,
+          fontWeight: 800,
+          letterSpacing: "0.6px",
+          textTransform: "uppercase",
+          color: "#1877D6",
+        }}
+      >
+        {children}
+      </span>
+    </div>
+  );
+}
+
 
 function ToggleRow({
   label,
