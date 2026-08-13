@@ -958,26 +958,39 @@ function MiniSitePage() {
         >
           {(["content", "appearance", "upgrade"] as const).map((t) => {
             const active = tab === t;
+            const isUpgrade = t === "upgrade";
             return (
               <button
                 key={t}
                 type="button"
                 onClick={() => setTab(t)}
                 style={{
-                  background: active ? "#fff" : "transparent",
-                  color: active ? "#0B1F3A" : "#6B6B6F",
-                  boxShadow: active ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+                  background: isUpgrade
+                    ? active
+                      ? "#fff"
+                      : "linear-gradient(135deg, #D68A1B, #A56A0F)"
+                    : active
+                      ? "#fff"
+                      : "transparent",
+                  color: isUpgrade ? (active ? "#D68A1B" : "#fff") : active ? "#0B1F3A" : "#6B6B6F",
+                  boxShadow: isUpgrade
+                    ? active
+                      ? "0 2px 6px rgba(0,0,0,0.08)"
+                      : "0 2px 6px rgba(214,138,27,0.4)"
+                    : active
+                      ? "0 2px 6px rgba(0,0,0,0.08)"
+                      : "none",
                   border: "none",
-                  borderRadius: 11,
+                  borderRadius: isUpgrade ? 10 : 11,
                   padding: "9px 6px",
                   fontSize: 13,
-                  fontWeight: 700,
+                  fontWeight: 800,
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
-                  textTransform: "capitalize",
+                  textTransform: isUpgrade ? "none" : "capitalize",
                 }}
               >
-                {t}
+                {isUpgrade ? "✦ Upgrade" : t}
               </button>
             );
           })}
