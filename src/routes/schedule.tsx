@@ -139,6 +139,8 @@ interface Pupil {
   last_name?: string | null;
   calendar_colour?: string | null;
   prepaid_hours?: number | null;
+  address?: string | null;
+  postcode?: string | null;
 }
 
 interface Lesson {
@@ -154,6 +156,7 @@ interface Lesson {
   eol_completed?: boolean | null;
   cancellation_reason?: string | null;
   notes?: string | null;
+  pickup_location?: string | null;
 
   pupil: Pupil | null;
 
