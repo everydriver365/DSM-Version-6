@@ -6636,8 +6636,7 @@ function HomePage() {
                 .qa-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at center, rgba(15,32,68,0.18) 0%, transparent 60%); opacity: 0; pointer-events: none; }
                 .qa-card:active::after { animation: qaRipple 0.5s ease-out; }
               `}</style>
-              <div style={{ background: PAGE_BACKGROUND, margin: 0, padding: 0, borderRadius: 0 }}>
-                {(() => {
+              {(() => {
                   const filteredTiles = quickSearch.trim()
                     ? quickTiles.filter(t =>
                         t.label.toLowerCase().includes(quickSearch.toLowerCase())
@@ -6713,26 +6712,10 @@ function HomePage() {
 
                   return (
                     <>
-                      {/* Header row */}
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        gap: 10,
-                        padding: '14px 0 10px',
-                      }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                          <span aria-hidden style={{ width: 4, height: 16, borderRadius: 2, background: '#1877D6', display: 'inline-block' }} />
-                          <span style={{
-                            fontSize: 13,
-                            fontWeight: 800,
-                            color: '#1877D6',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.12em',
-                            fontFamily: 'Poppins, sans-serif',
-                          }}>
-                            Quick Access
-                          </span>
+                      <div style={SECTION_HEADER_STYLE}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+                          <span style={SECTION_TITLE_TEXT_STYLE}>Quick Access</span>
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
@@ -6902,7 +6885,6 @@ function HomePage() {
                     </>
                   );
                 })()}
-              </div>
             </div>
 
                   {runningLateOpen && (
