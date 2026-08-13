@@ -11,7 +11,16 @@ import {
   Check,
   Loader2,
   ChevronLeft,
+  ChevronDown,
+  FileText,
+  Image as ImageIcon,
+  Images,
+  Palette,
+  Type,
+  LayoutTemplate,
+  Paintbrush,
 } from "lucide-react";
+
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { IconCheck } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
