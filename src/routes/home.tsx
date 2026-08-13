@@ -6651,7 +6651,87 @@ function HomePage() {
                   const pageCount = Math.max(pages.length, 1);
                   const currentPage = Math.min(qaPage, pageCount - 1);
 
+                  // Soft pastel chip tint derived from each tile's existing colour
+                  const TINTS: Record<string, { chip: string; icon: string }> = {
+                    '#1877D6': { chip: '#E3EEFB', icon: '#1877D6' },
+                    '#DC2626': { chip: '#FCE4E4', icon: '#DC2626' },
+                    '#0B1F3A': { chip: '#E6E9F2', icon: '#0B1F3A' },
+                    '#6B7280': { chip: '#EDEFF2', icon: '#6B7280' },
+                    '#7C3AED': { chip: '#EEE7FC', icon: '#7C3AED' },
+                    '#B5661E': { chip: '#FBEBDC', icon: '#B5661E' },
+                    '#16A34A': { chip: '#E2F5E9', icon: '#16A34A' },
+                  };
+
+                  const SUBS: Record<string, string> = {
+                    'Schedule': 'View diary',
+                    'Pupils': `${activePupilsCount} active`,
+                    'My website': 'Your minisite',
+                    'Start tracking': 'Live lesson',
+                    'Month end': 'Close the month',
+                    'Courses': 'List your courses',
+                    'Payments': 'Card & QR',
+                    'Messages': 'Inbox',
+                    'Earnings': 'Income',
+                    'Expenses': 'Costs',
+                    'Mileage': 'Track miles',
+                    'Fuel costs': 'Fill-ups',
+                    'Reports': 'Insights',
+                    'Performance': 'Your stats',
+                    'Tests': 'Booked tests',
+                    'DVSA risk': 'Risk check',
+                    'Test day': 'Run the day',
+                    'Rewards': 'Perks',
+                    'Reviews': 'Feedback',
+                    'Enquiries': 'New leads',
+                    'Waiting list': 'Pupils waiting',
+                    'Referrals': 'Invite & earn',
+                    'Vehicle': 'Car details',
+                    'CPD': 'Development',
+                    'Standards': 'Check standards',
+                    'Tax': 'Tax tools',
+                    'Tax report': 'Yearly figures',
+                    'Todos': 'Your tasks',
+                    'Notes': 'Jot it down',
+                    'Documents': 'Files',
+                    'Manifest': 'Daily list',
+                    'Checklist': 'Run through',
+                    'Reminders': 'Stay on top',
+                    'Health': 'Wellbeing',
+                    'Resources': 'Guides',
+                    'Help': 'Get support',
+                    'Pipeline': 'Lead stages',
+                    'Waivers': 'Consent forms',
+                    'Fill My Slots': 'Gaps',
+                    'Bulk message': 'Message all',
+                    'Sat Nav': 'Navigate',
+                    'Weekly report': 'This week',
+                    'Locations': 'Pickup spots',
+                    'Import': 'Bring data in',
+                    'Certifications': 'Your badges',
+                    'Availability': 'Working hours',
+                    'End of day': 'Wrap up',
+                    'Broadcast': 'Announce',
+                    'Automations': 'Auto tasks',
+                    'Diary': 'Day view',
+                    'My plan': 'Subscription',
+                    'Live session': 'Go live',
+                    'Search': 'Find anything',
+                    'Notifications': 'Alerts',
+                    'Calendar sync': 'Connect calendar',
+                    'Profile': 'Your details',
+                    'MTD': 'Making Tax Digital',
+                    'Quotes': 'Price enquiries',
+                    'Briefing': 'Morning brief',
+                    'Outstanding': 'Unpaid',
+                    'Learn': 'Training',
+                  };
+
                   const renderHomeTile = (tile: QuickTile, key: string) => {
+                    const tint = TINTS[tile.bg as string] ?? { chip: '#E3EEFB', icon: '#1877D6' };
+                    const tintedIcon = isValidElement(tile.icon)
+                      ? cloneElement(tile.icon as React.ReactElement<any>, { color: tint.icon, size: 24 })
+                      : tile.icon;
+                    const sub = SUBS[tile.label];
                     return (
                       <button
                         key={key}
@@ -6661,13 +6741,13 @@ function HomePage() {
                         style={{
                           width: '100%',
                           background: '#fff',
-                          borderRadius: 18,
-                          padding: '14px 14px 16px',
-                          boxShadow: '0 2px 6px rgba(11,31,58,0.05)',
+                          borderRadius: 20,
+                          padding: '16px 16px 18px',
+                          boxShadow: '0 2px 8px rgba(11,31,58,0.06)',
                           display: 'flex',
                           flexDirection: 'column',
                           alignItems: 'flex-start',
-                          gap: 10,
+                          gap: 12,
                           cursor: 'pointer',
                           textAlign: 'left',
                           border: 'none',
@@ -6680,10 +6760,10 @@ function HomePage() {
                         <div
                           className="qa-icon"
                           style={{
-                            width: 38,
-                            height: 38,
-                            borderRadius: 11,
-                            background: tile.bg,
+                            width: 52,
+                            height: 52,
+                            borderRadius: 16,
+                            background: tint.chip,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -6691,24 +6771,38 @@ function HomePage() {
                             transition: 'transform 0.15s ease',
                           }}
                         >
-                          {tile.icon}
+                          {tintedIcon}
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, maxWidth: '100%' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0, maxWidth: '100%' }}>
                           <span style={{
-                            fontSize: 15,
+                            fontSize: 17,
                             fontWeight: 700,
                             color: '#0B1F3A',
-                            lineHeight: 1.25,
+                            lineHeight: 1.2,
                             fontFamily: 'Poppins, sans-serif',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
                             maxWidth: '100%',
                           }}>{tile.label}</span>
+                          {sub && (
+                            <span style={{
+                              fontSize: 13,
+                              fontWeight: 400,
+                              color: '#8792A2',
+                              lineHeight: 1.3,
+                              fontFamily: 'Poppins, sans-serif',
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              maxWidth: '100%',
+                            }}>{sub}</span>
+                          )}
                         </div>
                       </button>
                     );
                   };
+
 
                   return (
                     <>
