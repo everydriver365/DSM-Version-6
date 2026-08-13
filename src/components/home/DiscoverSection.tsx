@@ -1027,11 +1027,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           style={{
             background: "#fff",
             borderRadius: 16,
-            padding: "8px 12px",
+            padding: "4px 10px",
             boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)",
             display: "flex",
             alignItems: "center",
-            gap: 10,
+            gap: 8,
             cursor: "pointer",
             marginBottom: 8,
           }}
@@ -1039,9 +1039,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           {/* DIA icon with FREE ribbon */}
           <div
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: 10,
+              width: 28,
+              height: 28,
+              borderRadius: 8,
               background: "#E6F7EC",
               flexShrink: 0,
               display: "flex",
@@ -1055,23 +1055,23 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               src={diaLogoAsset.url}
               alt="DIA"
               style={{
-                width: 26,
-                height: 26,
+                width: 20,
+                height: 20,
                 objectFit: "contain",
-                borderRadius: 6,
+                borderRadius: 4,
               }}
             />
             <div
               style={{
                 position: "absolute",
-                top: 6,
-                right: -14,
+                top: 4,
+                right: -11,
                 background: "#1A9B5C",
                 color: "#fff",
-                fontSize: 6,
+                fontSize: 5,
                 fontWeight: 900,
                 letterSpacing: "0.3px",
-                padding: "1px 14px",
+                padding: "1px 10px",
                 transform: "rotate(38deg)",
                 textTransform: "uppercase",
               }}
@@ -1082,34 +1082,20 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
           {/* Text block */}
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-              <div
-                style={{
-                  color: NAVY,
-                  fontSize: 13,
-                  fontWeight: 800,
-                  letterSpacing: "-0.2px",
-                }}
-              >
-                DSM member exclusive benefits
-              </div>
-              <span
-                style={{
-                  background: "#E6F7EC",
-                  color: "#1A9B5C",
-                  fontSize: 8,
-                  fontWeight: 900,
-                  padding: "1px 6px",
-                  borderRadius: 20,
-                }}
-              >
-                NEW
-              </span>
+            <div
+              style={{
+                color: NAVY,
+                fontSize: 12,
+                fontWeight: 800,
+                letterSpacing: "-0.2px",
+              }}
+            >
+              DSM member exclusive benefits
             </div>
             <div
               style={{
                 color: "#8A8A8E",
-                fontSize: 10,
+                fontSize: 9,
                 fontWeight: 500,
                 marginTop: 0,
               }}
@@ -1118,7 +1104,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             </div>
           </div>
 
-          <IconChevronRight size={12} color="#C7C7CC" stroke={2} />
+          <IconChevronRight size={10} color="#C7C7CC" stroke={2} />
         </div>
       )}
     </div>
