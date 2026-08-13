@@ -868,7 +868,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             fontFamily: FONT,
           }}
         >
-          Discover
+          Discover & Learn\u00a0
         </span>
       </div>
 
