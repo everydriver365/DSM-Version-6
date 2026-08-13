@@ -838,7 +838,7 @@ function MiniSitePage() {
             </div>
             <button
               type="button"
-              onClick={() => toast.info("Coming soon — we'll notify you when this is available")}
+              onClick={() => handleUpgrade('website')}
               style={{
                 width: "100%",
                 background: "#1877D6",
@@ -911,7 +911,7 @@ function MiniSitePage() {
             </div>
             <button
               type="button"
-              onClick={() => toast.info("Coming soon — we'll notify you when this is available")}
+              onClick={() => handleUpgrade('pro')}
               style={{
                 width: "100%",
                 background: "#7C3AED",
@@ -983,7 +983,7 @@ function MiniSitePage() {
             </div>
             <button
               type="button"
-              onClick={() => toast.info("Coming soon — we'll notify you when this is available")}
+              onClick={() => handleUpgrade('managed')}
               style={{
                 width: "100%",
                 background: "#0B1F3A",
