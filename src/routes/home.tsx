@@ -6694,89 +6694,6 @@ function HomePage() {
                 .qa-card:active::after { animation: qaRipple 0.5s ease-out; }
               `}</style>
               <div style={{ background: PAGE_BACKGROUND, margin: 0, padding: 0, borderRadius: 0 }}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '14px 16px 6px',
-                }}>
-                  <div style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: '#9CA3AF',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.08em',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}>
-                    Quick Access
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => navigate({ to: '/quick-access/all' as never })}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: 12,
-                      fontWeight: 700,
-                      color: '#1877D6',
-                      fontFamily: 'Poppins, sans-serif',
-                      padding: 0,
-                    }}
-                  >
-                    See all →
-                  </button>
-                </div>
-
-                {/* Search bar */}
-                <div style={{ position: 'relative', padding: '0 16px 12px' }}>
-                  <IconSearch
-                    size={16}
-                    color="#9CA3AF"
-                    style={{ position: 'absolute', left: 26, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
-                  />
-                  <input
-                    type="text"
-                    value={quickSearch}
-                    onChange={(e) => setQuickSearch(e.target.value)}
-                    placeholder="Search quick access..."
-                    style={{
-                      width: '100%',
-                      background: '#fff',
-                      border: '1px solid #E4E8EF',
-                      borderRadius: 12,
-                      padding: '10px 12px 10px 34px',
-                      fontSize: 13,
-                      color: '#0B1F3A',
-                      fontFamily: 'Poppins, sans-serif',
-                      outline: 'none',
-                      boxSizing: 'border-box',
-                    }}
-                  />
-                  {quickSearch && (
-                    <button
-                      type="button"
-                      onClick={() => setQuickSearch('')}
-                      style={{
-                        position: 'absolute',
-                        right: 10,
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        color: '#9CA3AF',
-                        fontSize: 16,
-                        padding: 0,
-                        lineHeight: 1,
-                      }}
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
-
-                {/* Filtered tiles */}
                 {(() => {
                   const filteredTiles = quickSearch.trim()
                     ? quickTiles.filter(t =>
@@ -6785,7 +6702,15 @@ function HomePage() {
                       )
                     : quickTiles;
 
-                  const renderHomeTile = (tile: QuickTile, key: string, gridMode = false) => {
+                  const PER_PAGE = 6;
+                  const pages: QuickTile[][] = [];
+                  for (let i = 0; i < filteredTiles.length; i += PER_PAGE) {
+                    pages.push(filteredTiles.slice(i, i + PER_PAGE));
+                  }
+                  const pageCount = Math.max(pages.length, 1);
+                  const currentPage = Math.min(qaPage, pageCount - 1);
+
+                  const renderHomeTile = (tile: QuickTile, key: string) => {
                     const Icon = tile.icon;
                     return (
                       <button
@@ -6794,29 +6719,30 @@ function HomePage() {
                         onClick={() => goTile(tile)}
                         className="cf-tap qa-card"
                         style={{
-                          width: gridMode ? '100%' : 100,
+                          width: '100%',
                           background: '#fff',
-                          borderRadius: 16,
-                          padding: '12px 8px',
-                          boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+                          borderRadius: 18,
+                          padding: '14px 14px 16px',
+                          boxShadow: '0 2px 6px rgba(11,31,58,0.05)',
                           display: 'flex',
                           flexDirection: 'column',
-                          alignItems: 'center',
-                          gap: 6,
+                          alignItems: 'flex-start',
+                          gap: 10,
                           cursor: 'pointer',
-                          textAlign: 'center',
-                          border: '1px solid #E2E8F0',
+                          textAlign: 'left',
+                          border: 'none',
                           fontFamily: 'Poppins, sans-serif',
                           transition: 'transform 0.15s ease, box-shadow 0.2s ease',
                           overflow: 'hidden',
+                          position: 'relative',
                         }}
                       >
                         <div
                           className="qa-icon"
                           style={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: '50%',
+                            width: 38,
+                            height: 38,
+                            borderRadius: 11,
                             background: tile.chipBg,
                             display: 'flex',
                             alignItems: 'center',
@@ -6825,55 +6751,225 @@ function HomePage() {
                             transition: 'transform 0.15s ease',
                           }}
                         >
-                          <Icon size={20} color="#FFFFFF" strokeWidth={2} />
+                          <Icon size={20} color={tile.iconStroke} strokeWidth={2} />
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 0, maxWidth: '100%' }}>
-                          <span style={{ fontSize: 11, fontWeight: 600, color: '#0B1F3A', lineHeight: 1.2, fontFamily: 'Poppins, sans-serif' }}>{tile.label}</span>
-                          <span style={{ fontSize: 9, color: '#9CA3AF', lineHeight: 1.2, fontFamily: 'Poppins, sans-serif' }}>{tile.sub}</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, maxWidth: '100%' }}>
+                          <span style={{
+                            fontSize: 15,
+                            fontWeight: 700,
+                            color: '#0B1F3A',
+                            lineHeight: 1.25,
+                            fontFamily: 'Poppins, sans-serif',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            maxWidth: '100%',
+                          }}>{tile.label}</span>
+                          <span style={{
+                            fontSize: 12,
+                            color: '#8792A2',
+                            lineHeight: 1.3,
+                            marginTop: 2,
+                            fontFamily: 'Poppins, sans-serif',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            maxWidth: '100%',
+                          }}>{tile.sub}</span>
                         </div>
                       </button>
                     );
                   };
 
-                  if (quickSearch.trim()) {
-                    return (
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, padding: '0 16px' }}>
-                        {filteredTiles.map((tile, idx) => renderHomeTile(tile, `search-${tile.label}-${idx}`, true))}
-                      </div>
-                    );
-                  }
-
-                  const columns: QuickTile[][] = [];
-                  for (let i = 0; i < filteredTiles.length; i += 3) {
-                    columns.push(filteredTiles.slice(i, i + 3));
-                  }
-
                   return (
-                    <div style={{
-                      display: 'flex',
-                      overflowX: 'auto',
-                      gap: 10,
-                      padding: '0 16px 8px',
-                      scrollSnapType: 'x mandatory',
-                      WebkitOverflowScrolling: 'touch',
-                      msOverflowStyle: 'none',
-                      scrollbarWidth: 'none',
-                    }}>
-                      {columns.map((col, colIdx) => (
-                        <div
-                          key={colIdx}
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 10,
-                            scrollSnapAlign: 'start',
-                            flexShrink: 0,
-                          }}
-                        >
-                          {col.map((tile, idx) => renderHomeTile(tile, `${tile.label}-${colIdx}-${idx}`))}
+                    <>
+                      {/* Header row */}
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: 10,
+                        padding: '14px 16px 10px',
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                          <span aria-hidden style={{ width: 4, height: 16, borderRadius: 2, background: '#1877D6', display: 'inline-block' }} />
+                          <span style={{
+                            fontSize: 13,
+                            fontWeight: 800,
+                            color: '#1877D6',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.12em',
+                            fontFamily: 'Poppins, sans-serif',
+                          }}>
+                            Quick Access
+                          </span>
                         </div>
-                      ))}
-                    </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                          {!quickSearch.trim() && pageCount > 1 && (
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 6,
+                              background: '#fff',
+                              borderRadius: 999,
+                              padding: '6px 10px',
+                              boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+                            }}>
+                              {pages.map((_, i) => (
+                                <span
+                                  key={i}
+                                  aria-hidden
+                                  style={{
+                                    width: i === currentPage ? 14 : 5,
+                                    height: 5,
+                                    borderRadius: 999,
+                                    background: i === currentPage ? '#0B1F3A' : '#D7DDE7',
+                                    display: 'inline-block',
+                                    transition: 'width 0.2s ease, background 0.2s ease',
+                                  }}
+                                />
+                              ))}
+                              <span style={{ fontSize: 11, fontWeight: 600, color: '#4A5568', marginLeft: 2, fontFamily: 'Poppins, sans-serif' }}>
+                                {currentPage + 1}/{pageCount}
+                              </span>
+                            </div>
+                          )}
+                          <button
+                            type="button"
+                            aria-label="Search quick access"
+                            onClick={() => {
+                              const next = !quickSearchOpen;
+                              setQuickSearchOpen(next);
+                              if (!next) setQuickSearch('');
+                            }}
+                            style={{
+                              width: 34,
+                              height: 34,
+                              borderRadius: '50%',
+                              background: '#fff',
+                              border: 'none',
+                              boxShadow: '0 1px 3px rgba(11,31,58,0.08)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              cursor: 'pointer',
+                              padding: 0,
+                              flexShrink: 0,
+                            }}
+                          >
+                            <IconSearch size={17} color="#0B1F3A" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Search bar */}
+                      {quickSearchOpen && (
+                        <div style={{ position: 'relative', padding: '0 16px 12px' }}>
+                          <IconSearch
+                            size={16}
+                            color="#9CA3AF"
+                            style={{ position: 'absolute', left: 28, top: 'calc(50% - 6px)', transform: 'translateY(-50%)', pointerEvents: 'none' }}
+                          />
+                          <input
+                            type="text"
+                            autoFocus
+                            value={quickSearch}
+                            onChange={(e) => setQuickSearch(e.target.value)}
+                            placeholder="Search quick access..."
+                            style={{
+                              width: '100%',
+                              background: '#fff',
+                              border: 'none',
+                              boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+                              borderRadius: 12,
+                              padding: '10px 12px 10px 34px',
+                              fontSize: 13,
+                              color: '#0B1F3A',
+                              fontFamily: 'Poppins, sans-serif',
+                              outline: 'none',
+                              boxSizing: 'border-box',
+                            }}
+                          />
+                          {quickSearch && (
+                            <button
+                              type="button"
+                              onClick={() => setQuickSearch('')}
+                              style={{
+                                position: 'absolute',
+                                right: 26,
+                                top: 'calc(50% - 6px)',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                color: '#9CA3AF',
+                                fontSize: 16,
+                                padding: 0,
+                                lineHeight: 1,
+                              }}
+                            >
+                              ×
+                            </button>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Tiles */}
+                      {quickSearch.trim() ? (
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, padding: '0 16px' }}>
+                          {filteredTiles.map((tile, idx) => renderHomeTile(tile, `search-${tile.label}-${idx}`))}
+                        </div>
+                      ) : (
+                        <>
+                          <div
+                            ref={qaScrollRef}
+                            onScroll={(e) => {
+                              const el = e.currentTarget;
+                              const idx = Math.round(el.scrollLeft / Math.max(el.clientWidth, 1));
+                              if (idx !== qaPage) setQaPage(idx);
+                            }}
+                            style={{
+                              display: 'flex',
+                              overflowX: 'auto',
+                              scrollSnapType: 'x mandatory',
+                              WebkitOverflowScrolling: 'touch',
+                              msOverflowStyle: 'none',
+                              scrollbarWidth: 'none',
+                            }}
+                          >
+                            {pages.map((page, pageIdx) => (
+                              <div
+                                key={pageIdx}
+                                style={{
+                                  flex: '0 0 100%',
+                                  minWidth: '100%',
+                                  display: 'grid',
+                                  gridTemplateColumns: '1fr 1fr',
+                                  gap: 12,
+                                  padding: '0 16px 4px',
+                                  boxSizing: 'border-box',
+                                  scrollSnapAlign: 'start',
+                                }}
+                              >
+                                {page.map((tile, idx) => renderHomeTile(tile, `${tile.label}-${pageIdx}-${idx}`))}
+                              </div>
+                            ))}
+                          </div>
+                          {pageCount > 1 && (
+                            <div style={{
+                              textAlign: 'center',
+                              fontSize: 12,
+                              color: '#9CA3AF',
+                              fontFamily: 'Poppins, sans-serif',
+                              padding: '10px 0 2px',
+                            }}>
+                              ← swipe for more →
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </>
                   );
                 })()}
               </div>
