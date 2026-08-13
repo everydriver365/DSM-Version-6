@@ -379,10 +379,27 @@ function NewCoursePage() {
       };
     });
 
-    const { error: insertError } = await supabase
+    console.log(
+      "[courses.new] rows to insert:",
+      JSON.stringify(
+        rows.map((r) => ({
+          name: r.name,
+          series_id: r.series_id,
+          start_date: r.start_date,
+          repeat_type: r.repeat_type,
+        }))
+      )
+    );
+
+    const { data: insertData, error: insertError } = await supabase
       .from("instructor_courses")
       .insert(rows)
       .select();
+
+    console.log("[courses.new] insert result:", insertData?.length ?? 0, "rows");
+    if (insertError) {
+      console.error("[courses.new] insert error:", insertError.code, insertError.message);
+    }
 
     setSaving(false);
 
