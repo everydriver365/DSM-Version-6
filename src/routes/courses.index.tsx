@@ -105,6 +105,8 @@ function CoursesPage() {
   const navigate = useNavigate();
   const [courses, setCourses] = useState<CourseRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [bookings, setBookings] = useState<Record<string, BookingRow[]>>({});
+
 
   useEffect(() => {
     (async () => {
