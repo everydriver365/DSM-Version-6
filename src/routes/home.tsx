@@ -6284,25 +6284,30 @@ function HomePage() {
                               </div>
                               {pickupLabel && (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, minWidth: 0 }}>
-                                  <div style={{
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: 4,
-                                    background: isCustomPickup((l.pupils as any), l.pickup_location) ? '#FEF3C7' : 'transparent',
-                                    borderRadius: isCustomPickup((l.pupils as any), l.pickup_location) ? 6 : 0,
-                                    padding: isCustomPickup((l.pupils as any), l.pickup_location) ? '2px 6px' : '0',
-                                    minWidth: 0,
-                                  }}>
-                                    <IconMapPin size={12} stroke={1.9} color={isCustomPickup((l.pupils as any), l.pickup_location) ? '#92400E' : '#6B7686'} style={{ flexShrink: 0 }} />
-                                    <span style={{ fontSize: 12, color: isCustomPickup((l.pupils as any), l.pickup_location) ? '#92400E' : '#6B7686', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: isCustomPickup((l.pupils as any), l.pickup_location) ? 600 : 400 }}>
-                                      {pickupLabel}
-                                    </span>
-                                    {isCustomPickup((l.pupils as any), l.pickup_location) && (
-                                      <span style={{ fontSize: 9, fontWeight: 700, color: '#92400E', flexShrink: 0 }}>
-                                        CUSTOM
-                                      </span>
-                                    )}
-                                  </div>
+                                  {(() => {
+                                    const custom = isCustomPickup((l.pupils as any), l.pickup_location);
+                                    return (
+                                      <div style={{
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: 4,
+                                        background: custom ? '#FEF3C7' : 'transparent',
+                                        borderRadius: custom ? 6 : 0,
+                                        padding: custom ? '2px 6px' : '0',
+                                        minWidth: 0,
+                                      }}>
+                                        <IconMapPin size={12} stroke={1.9} color={custom ? '#92400E' : '#6B7686'} style={{ flexShrink: 0 }} />
+                                        <span style={{ fontSize: 12, color: custom ? '#92400E' : '#6B7686', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: custom ? 600 : 400 }}>
+                                          {pickupLabel}
+                                        </span>
+                                        {custom && (
+                                          <span style={{ fontSize: 9, fontWeight: 700, color: '#92400E', flexShrink: 0 }}>
+                                            CUSTOM
+                                          </span>
+                                        )}
+                                      </div>
+                                    );
+                                  })()}
                                 </div>
                               )}
                             </div>
