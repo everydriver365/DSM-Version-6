@@ -1335,6 +1335,227 @@ function CourseDetailPage() {
           }}
         />
       )}
+
+      {scopeSheetOpen && course && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(11,31,58,0.45)",
+            zIndex: 60,
+            display: "flex",
+            alignItems: "flex-end",
+            ...POPPINS,
+          }}
+          onClick={() => setScopeSheetOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#F2F2F7",
+              width: "100%",
+              borderRadius: "22px 22px 0 0",
+              padding: "0 20px 24px",
+              maxHeight: "90vh",
+              overflowY: "auto",
+            }}
+          >
+            {/* Handle */}
+            <div
+              style={{
+                width: 36,
+                height: 5,
+                background: "#D1D1D6",
+                borderRadius: 3,
+                margin: "12px auto 8px",
+              }}
+            />
+
+            <h2
+              style={{
+                fontSize: 20,
+                fontWeight: 800,
+                color: "#0B1F3A",
+                textAlign: "center",
+                margin: "0 0 6px",
+              }}
+            >
+              Edit this course
+            </h2>
+            <p
+              style={{
+                fontSize: 13,
+                color: "#8A8A8E",
+                textAlign: "center",
+                margin: "0 0 16px",
+                lineHeight: 1.4,
+              }}
+            >
+              This is part of a repeating series. Which dates should this change apply to?
+            </p>
+
+            {/* Protection banner */}
+            <div
+              style={{
+                background: "#E6F7EC",
+                padding: "11px 13px",
+                borderRadius: 12,
+                marginBottom: 16,
+                display: "flex",
+                gap: 9,
+                alignItems: "flex-start",
+              }}
+            >
+              <IconShield size={15} color="#248A3D" style={{ flexShrink: 0, marginTop: 1 }} />
+              <span
+                style={{
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  color: "#186429",
+                  lineHeight: 1.4,
+                }}
+              >
+                Already-booked dates are never affected by this edit.
+              </span>
+            </div>
+
+            {/* Options */}
+            {[
+              {
+                value: "this" as const,
+                icon: IconCalendar,
+                title: "This date only",
+                description: `Only ${formatDateWithDay(course.start_date)}`,
+              },
+              {
+                value: "following" as const,
+                icon: IconCalendarStats,
+                title: "This and following dates",
+                description: `${formatDateWithDay(course.start_date)} onwards, skipping any already booked`,
+              },
+              {
+                value: "all" as const,
+                icon: IconCalendarMonth,
+                title: "All dates in series",
+                description: "Every unbooked date in this series",
+              },
+            ].map(({ value, icon: Icon, title, description }) => {
+              const selected = editScope === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setEditScope(value)}
+                  style={{
+                    background: "#fff",
+                    borderRadius: 14,
+                    padding: "14px 16px",
+                    boxShadow: selected
+                      ? "0 3px 0 #D6E8FB, 0 8px 18px rgba(24,119,214,0.1)"
+                      : "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
+                    marginBottom: 10,
+                    display: "flex",
+                    gap: 13,
+                    alignItems: "center",
+                    cursor: "pointer",
+                    border: selected ? "1.5px solid #1877D6" : "1.5px solid transparent",
+                    width: "100%",
+                    fontFamily: "Poppins, sans-serif",
+                    textAlign: "left",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: 10,
+                      background: "#E7F1FC",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Icon size={20} color="#1877D6" stroke={1.5} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14.5, fontWeight: 800, color: "#0B1F3A" }}>{title}</div>
+                    <div style={{ fontSize: 11.5, color: "#8A8A8E", marginTop: 2, lineHeight: 1.35 }}>
+                      {description}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      width: 20,
+                      height: 20,
+                      borderRadius: "50%",
+                      border: selected ? "none" : "2px solid #D1D1D6",
+                      background: selected ? "#1877D6" : "#fff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {selected && (
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path
+                          d="M2.5 6L5 8.5L9.5 3.5"
+                          stroke="white"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+
+            <button
+              type="button"
+              onClick={handleScopeConfirm}
+              style={{
+                width: "100%",
+                padding: 15,
+                background: "#0B1F3A",
+                color: "#fff",
+                fontSize: 15,
+                fontWeight: 800,
+                borderRadius: 14,
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+                boxShadow: "0 4px 0 #050D1C",
+                marginTop: 22,
+              }}
+            >
+              Continue
+            </button>
+            <button
+              type="button"
+              onClick={() => setScopeSheetOpen(false)}
+              style={{
+                display: "block",
+                width: "100%",
+                background: "none",
+                border: "none",
+                color: "#8A8A8E",
+                fontSize: 13.5,
+                fontWeight: 600,
+                textAlign: "center",
+                marginTop: 14,
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       {confirmSheet}
     </div>
   );
