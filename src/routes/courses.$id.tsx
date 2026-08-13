@@ -268,33 +268,67 @@ function CourseDetailPage() {
     }
     setSaving(true);
     setError(null);
-    const { id: _id, instructor_id: _ii, ...patch } = form;
+    const { id: _id, instructor_id: _ii, start_date: _sd, end_date: _ed, series_id: _si, spaces_taken: _st, ...patch } = form;
+    const updatePayload = {
+      ...patch,
+      total_hours: Number(patch.total_hours) || 0,
+      price: parseFloat(String(patch.price)) || 0,
+      deposit_amount: parseFloat(String(patch.deposit_amount)) || 0,
+      early_bird_discount: parseFloat(String(patch.early_bird_discount)) || 0,
+      max_spaces: Number(patch.max_spaces) || 1,
+      daily_hours: patch.daily_hours ? Number(patch.daily_hours) : null,
+      radius_miles: patch.radius_miles ? Number(patch.radius_miles) : 10,
+      pickup_area: form.pickup_area,
+      pickup_lat: form.pickup_lat,
+      pickup_lng: form.pickup_lng,
+      image_url: heroImage,
+    };
     const { error: upErr } = await supabase
       .from("instructor_courses")
-      .update({
-        ...patch,
-        total_hours: Number(patch.total_hours) || 0,
-        price: parseFloat(String(patch.price)) || 0,
-        deposit_amount: parseFloat(String(patch.deposit_amount)) || 0,
-        early_bird_discount: parseFloat(String(patch.early_bird_discount)) || 0,
-        max_spaces: Number(patch.max_spaces) || 1,
-        daily_hours: patch.daily_hours ? Number(patch.daily_hours) : null,
-        radius_miles: patch.radius_miles ? Number(patch.radius_miles) : 10,
-        pickup_area: form.pickup_area,
-        pickup_lat: form.pickup_lat,
-        pickup_lng: form.pickup_lng,
-        image_url: heroImage,
-      })
+      .update(updatePayload)
       .eq("id", id);
 
-    setSaving(false);
     if (upErr) {
+      setSaving(false);
       setError(upErr.message);
       toast.error(upErr.message);
       return;
     }
-    toast.success("Course updated");
+
+    // Apply the same changes to other selected courses in the series
+    if (seriesEditIds.length > 0) {
+      const otherIds = seriesEditIds.filter((courseId) => courseId !== id);
+      if (otherIds.length > 0) {
+        const { error: seriesErr } = await supabase
+          .from("instructor_courses")
+          .update(updatePayload)
+          .in("id", otherIds);
+        if (seriesErr) {
+          setSaving(false);
+          setError(seriesErr.message);
+          toast.error(seriesErr.message);
+          return;
+        }
+      }
+
+      if (skippedCount > 0) {
+        toast.success(
+          `Updated ${seriesEditIds.length} date${seriesEditIds.length === 1 ? "" : "s"}. ${skippedCount} booked date${skippedCount > 1 ? "s were" : " was"} left unchanged.`,
+        );
+      } else {
+        toast.success(
+          `Updated ${seriesEditIds.length} date${seriesEditIds.length === 1 ? "" : "s"} in series.`,
+        );
+      }
+    } else {
+      toast.success("Course updated");
+    }
+
+    setSeriesEditIds([]);
+    setSkippedCount(0);
+    setEditScope("this");
     setEditing(false);
+    setSaving(false);
     load();
   }
 
