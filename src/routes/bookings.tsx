@@ -277,8 +277,12 @@ function BookingsPage() {
         <BottomSheet
           title={pupilName(selectedBooking)}
           subtitle={selectedBooking.course?.name ?? "Course booking"}
-          onClose={() => setSelectedId(null)}
+          onClose={() => {
+            setSelectedId(null);
+            navigate({ to: "/bookings" as never, search: {} });
+          }}
         >
+
           <div style={{ display: "flex", flexDirection: "column", gap: 12, paddingBottom: 20 }}>
             {/* Status pill */}
             <div
