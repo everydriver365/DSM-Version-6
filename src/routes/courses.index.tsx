@@ -119,33 +119,61 @@ function CoursesPage() {
       }
       const query = supabase
         .from("instructor_courses")
-        .select("id, course_type, transmission, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, pickup_postcodes, image_url")
+        .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, pickup_postcodes, image_url, transmission")
         .eq("instructor_id", uid)
         .order("created_at", { ascending: false });
 
       let { data, error } = await query;
 
+      if (error) {
+        console.error("[courses] query error:", error.code, error.message);
+      }
+      console.log("[courses] data count:", data?.length ?? 0);
+
+      if (error?.code === "42703" && error.message.includes("transmission")) {
+        const fallback = await supabase
+          .from("instructor_courses")
+          .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, pickup_postcodes, image_url")
+          .eq("instructor_id", uid)
+          .order("created_at", { ascending: false });
+        data = fallback.data?.map((row) => ({ ...row, transmission: null })) ?? null;
+        error = fallback.error;
+        if (error) {
+          console.error("[courses] fallback (transmission) query error:", error.code, error.message);
+        }
+        console.log("[courses] fallback (transmission) data count:", data?.length ?? 0);
+      }
+
       if (error?.code === "42703" && error.message.includes("pickup_postcodes")) {
         const fallback = await supabase
           .from("instructor_courses")
-          .select("id, course_type, transmission, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, image_url")
+          .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, image_url")
           .eq("instructor_id", uid)
           .order("created_at", { ascending: false });
-        data = fallback.data?.map((row) => ({ ...row, pickup_postcodes: null })) ?? null;
+        data = fallback.data?.map((row) => ({ ...row, pickup_postcodes: null, transmission: null })) ?? null;
         error = fallback.error;
+        if (error) {
+          console.error("[courses] fallback (pickup_postcodes) query error:", error.code, error.message);
+        }
+        console.log("[courses] fallback (pickup_postcodes) data count:", data?.length ?? 0);
       }
 
       if (error?.code === "42703" && error.message.includes("image_url")) {
         const fallback = await supabase
           .from("instructor_courses")
-          .select("id, course_type, transmission, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area")
+          .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area")
           .eq("instructor_id", uid)
           .order("created_at", { ascending: false });
-        data = fallback.data?.map((row) => ({ ...row, pickup_postcodes: null, image_url: null })) ?? null;
+        data = fallback.data?.map((row) => ({ ...row, pickup_postcodes: null, image_url: null, transmission: null })) ?? null;
         error = fallback.error;
+        if (error) {
+          console.error("[courses] fallback (image_url) query error:", error.code, error.message);
+        }
+        console.log("[courses] fallback (image_url) data count:", data?.length ?? 0);
       }
 
       if (error) console.error("[courses] fetch error", error);
+
       const rows = (data ?? []) as CourseRow[];
       setCourses(rows);
       setLoading(false);
