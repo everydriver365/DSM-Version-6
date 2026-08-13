@@ -6486,7 +6486,7 @@ function HomePage() {
                 { label: 'T&Cs', sub: 'Terms', route: '/terms', icon: FileCheck, iconStroke: '#16A34A', chipBg: '#DDEFE1', graphic: 'checklist' },
                 { label: 'Automations', sub: 'Auto actions', route: '/automations', icon: IconBolt, iconStroke: '#B45309', chipBg: '#FBEBD3', graphic: 'spark' },
               ];
-              const quickTilesHome = quickTiles.slice(0, 8);
+              
 
               const goTile = (tile: QuickTile) => {
                 if (tile.action === 'running-late') { setRunningLateOpen(true); return; }
