@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   IconPlayerPlay,
-  IconChevronLeft,
   IconChevronRight,
   IconRadio,
   IconBook,
@@ -21,7 +20,8 @@ import {
 
 import { supabase } from "@/lib/supabaseClient";
 import { sanitizeNewsTitle } from "@/lib/newsText";
-import { SectionHeader } from "@/components/dsm/SectionHeader";
+
+const PIRKX_LIVE = false;
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
@@ -44,7 +44,6 @@ function categoryIcon(category?: string | null) {
   if (!c) return IconPhoto;
   return IconShoppingBag;
 }
-
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -81,7 +80,6 @@ function isLiveNow(s: LiveItem) {
 
 export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {}) {
   const navigate = useNavigate();
-  const liveRef = useRef<HTMLDivElement>(null);
   const [live, setLive] = useState<LiveItem[]>([]);
   const [liveActive, setLiveActive] = useState(false);
 
@@ -164,7 +162,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       } catch {
         /* ignore */
       }
-
 
       try {
         const { count, error } = await supabase
@@ -295,7 +292,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             };
           }),
         );
-
       });
 
     supabase
@@ -335,13 +331,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       });
   }, []);
 
-  const liveSorted = [...live].sort((a, b) => {
-    const la = isLiveNow(a) ? 1 : 0;
-    const lb = isLiveNow(b) ? 1 : 0;
-    if (la !== lb) return lb - la;
-    return startMs(a.session_date, a.session_time) - startMs(b.session_date, b.session_time);
-  });
-
   const [, setTick] = useState(0);
   useEffect(() => {
     const id = setInterval(() => setTick((t) => t + 1), 60000);
@@ -350,6 +339,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   type HeroCard = {
     id: string;
+    variant: "marketplace";
     title: string;
     category: string | null;
     priceLabel: string;
@@ -362,44 +352,23 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     onOpen: () => void;
   };
 
-  const liveHighlight = liveSorted[0] ?? null;
-  const liveHighlightStart = liveHighlight
-    ? startMs(liveHighlight.session_date, liveHighlight.session_time)
-    : 0;
-  const liveHighlightIsNow = liveHighlight ? isLiveNow(liveHighlight) : false;
-  const liveHighlightSoon =
-    !!liveHighlightStart &&
-    liveHighlightStart - Date.now() > 0 &&
-    liveHighlightStart - Date.now() < 24 * 60 * 60 * 1000;
+  type BenefitsSlide = {
+    id: string;
+    variant: "benefits";
+    title: string;
+    subtitle: string;
+    stat: string;
+    statLabel: string;
+    badge: string;
+    cta: string;
+    onOpen: () => void;
+  };
 
-  const liveCard: HeroCard | null =
-    liveHighlight && (liveHighlightIsNow || liveHighlightSoon)
-      ? {
-          id: `live-${liveHighlight.id}`,
-          title: liveHighlight.title || "DSM Live session",
-          category: "Live",
-          priceLabel: liveHighlightIsNow
-            ? "Now"
-            : new Date(liveHighlightStart).toLocaleTimeString("en-GB", {
-                hour: "2-digit",
-                minute: "2-digit",
-              }),
-          priceCaption: liveHighlightIsNow ? "ON AIR" : "STARTS",
-          imageUrl: liveHighlight.image_url ?? liveHero,
-          badge: liveHighlightIsNow ? "LIVE NOW" : "UPCOMING",
-          badgeColor: liveHighlightIsNow ? RED : BLUE,
-          footer: "DSM Live",
-          Icon: IconRadio,
-          onOpen: () =>
-            navigate({
-              to: "/dsm-live/$sessionId",
-              params: { sessionId: String(liveHighlight.id) },
-            }),
-        }
-      : null;
+  type CarouselSlide = HeroCard | BenefitsSlide;
 
   const listingCards: HeroCard[] = featuredListings.map((listing) => ({
     id: listing.id,
+    variant: "marketplace",
     title: listing.title ?? "Services & deals",
     category: listing.category,
     priceLabel: listing.price_display ?? "—",
@@ -418,6 +387,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const marketplaceFallback: HeroCard = {
     id: "empty",
+    variant: "marketplace",
     title: "Services & deals",
     category: null,
     priceLabel: "—",
@@ -430,19 +400,30 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     onOpen: () => navigate({ to: "/marketplace" as never }),
   };
 
-  const heroCards: HeroCard[] = [
-    ...(liveCard ? [liveCard] : []),
+  const benefitsCard: BenefitsSlide = {
+    id: "benefits",
+    variant: "benefits",
+    title: "DSM member exclusive benefits",
+    subtitle: "Including free DIA membership and 40+ perks",
+    stat: "40+",
+    statLabel: "PERKS",
+    badge: "NEW",
+    cta: "Explore",
+    onOpen: () => navigate({ to: "/marketplace/benefits" as never }),
+  };
+
+  const heroCards: CarouselSlide[] = [
     ...(listingCards.length > 0 ? listingCards : [marketplaceFallback]),
+    ...(PIRKX_LIVE ? [benefitsCard] : []),
   ];
 
-
   const chipIconWrap: React.CSSProperties = {
-    width: 26,
-    height: 26,
-    borderRadius: 8,
-    background: "#EEF2F7",
+    width: 32,
+    height: 32,
+    borderRadius: 9,
+    background: "#F2F2F7",
     color: NAVY,
-    margin: "0 auto 4px",
+    margin: "0 auto 8px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -450,39 +431,29 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
   const tileStyle: React.CSSProperties = {
     background: "#fff",
-    border: `1px solid ${HAIRLINE}`,
-    borderRadius: 13,
-    padding: "10px 8px",
+    borderRadius: 15,
+    padding: "13px 8px",
     textAlign: "center",
     cursor: "pointer",
     position: "relative",
-  };
-
-  const tileDot: React.CSSProperties = {
-    position: "absolute",
-    top: 5,
-    right: 5,
-    width: 6,
-    height: 6,
-    borderRadius: "50%",
-    background: RED,
+    boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)",
   };
 
   const chipLabel: React.CSSProperties = {
-    fontSize: 11.5,
-    fontWeight: 700,
-    color: NAVY,
+    fontSize: 12,
+    fontWeight: 800,
+    color: "#000",
   };
 
   const chipSub: React.CSSProperties = {
-    fontSize: 9.5,
-    color: "#8A8A8E",
-    marginTop: 1,
+    fontSize: 9,
+    color: "#B0B0B5",
+    marginTop: 2,
   };
 
   return (
     <div style={{ margin: "0 -16px 0", padding: "0 16px 14px", borderRadius: 0, fontFamily: FONT }}>
-      {/* MARKETPLACE SECTION HEADER */}
+      {/* FEATURED SECTION HEADER */}
       <div
         style={{
           display: "flex",
@@ -495,7 +466,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
           <span
             aria-hidden
-            style={{ width: 3, height: 14, background: BLUE, borderRadius: 2, display: "inline-block" }}
+            style={{
+              width: 3,
+              height: 14,
+              background: BLUE,
+              borderRadius: 2,
+              display: "inline-block",
+            }}
           />
           <span
             style={{
@@ -507,7 +484,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               fontFamily: FONT,
             }}
           >
-            Marketplace
+            Featured
           </span>
         </div>
         <span
@@ -520,7 +497,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         </span>
       </div>
 
-      {/* MARKETPLACE ANGLED-CUT CAROUSEL */}
+      {/* FEATURED CAROUSEL */}
       <div style={{ position: "relative" }}>
         <div
           ref={heroScrollRef}
@@ -542,379 +519,429 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             WebkitOverflowScrolling: "touch",
           }}
         >
-          {heroCards.map((listing) => {
-            const Icon = listing.Icon;
-
-            const open = listing.onOpen;
+          {heroCards.map((slide) => {
+            const open = slide.onOpen;
             return (
               <div
-                key={listing.id}
+                key={slide.id}
                 style={{ flex: "0 0 100%", scrollSnapAlign: "center", position: "relative" }}
-
               >
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={open}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") open();
-                  }}
-                  style={{
-                    position: "relative",
-                    borderRadius: 20,
-                    overflow: "hidden",
-                    height: 210,
-                    background: "#fff",
-                    boxShadow:
-                      "0 6px 0 #E4E4E8, 0 16px 32px rgba(11,31,58,0.12)",
-                    cursor: "pointer",
-                    fontFamily: FONT,
-                  }}
-                >
-                  {/* Image panel with angled clip */}
+                {slide.variant === "benefits" ? (
                   <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={open}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") open();
+                    }}
                     style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      bottom: 0,
-                      width: "42%",
-                      clipPath: "polygon(0 0, 100% 0, 72% 100%, 0 100%)",
-                      background: listing?.imageUrl
-                        ? "#0B1F3A"
-                        : `linear-gradient(150deg, #14335C 0%, ${NAVY} 62%, #071630 100%)`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                      position: "relative",
+                      borderRadius: 20,
                       overflow: "hidden",
-                    }}
-                  >
-                    {listing?.imageUrl ? (
-                      <img
-                        src={listing.imageUrl}
-                        alt=""
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                      />
-                    ) : (
-                      <div
-                        aria-hidden
-                        style={{
-                          /* nudge left: the angled cut removes space on the right */
-                          transform: "translateX(-11%)",
-                          width: 72,
-                          height: 72,
-                          borderRadius: 999,
-                          background: "rgba(255,255,255,0.10)",
-                          border: "1px solid rgba(255,255,255,0.18)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Icon size={34} color="#FFFFFF" stroke={1.6} opacity={0.9} />
-                      </div>
-                    )}
-
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        background:
-                          "linear-gradient(180deg, rgba(11,31,58,0.15) 0%, transparent 30%, transparent 70%, rgba(11,31,58,0.25) 100%)",
-                        pointerEvents: "none",
-                      }}
-                    />
-                  </div>
-
-                  {/* Status badge */}
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: 12,
-                      left: 14,
-                      zIndex: 2,
-                      background: listing.badgeColor,
-                      color: "#fff",
-                      fontSize: 10,
-                      fontWeight: 900,
-                      letterSpacing: "0.4px",
-                      padding: "5px 12px",
-                      borderRadius: 7,
-                      boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                      height: 192,
+                      background: "linear-gradient(135deg, #14509E, #0B1F3A)",
+                      boxShadow:
+                        "0 6px 0 #E4E4E8, 0 16px 32px rgba(11,31,58,0.12)",
+                      cursor: "pointer",
                       fontFamily: FONT,
-                    }}
-                  >
-                    {listing.badge}
-                  </span>
-
-
-                  {/* Content panel */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: "46%",
-                      right: 0,
-                      bottom: 34,
-                      padding: "16px 16px 0 12px",
                       display: "flex",
                       flexDirection: "column",
                       justifyContent: "space-between",
+                      padding: 16,
                     }}
                   >
-                    <div style={{ minWidth: 0 }}>
-                      {listing?.category && (
-                        <span
-                          style={{
-                            display: "inline-block",
-                            background: "#EEF2F7",
-                            color: "#6B7686",
-                            fontSize: 9,
-                            fontWeight: 800,
-                            letterSpacing: "0.3px",
-                            textTransform: "uppercase",
-                            padding: "3px 9px",
-                            borderRadius: 20,
-                            width: "fit-content",
-                          }}
-                        >
-                          {listing.category}
-                        </span>
-                      )}
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: 12,
+                        left: 14,
+                        zIndex: 2,
+                        background: "#1A9B5C",
+                        color: "#fff",
+                        fontSize: 10,
+                        fontWeight: 900,
+                        letterSpacing: "0.4px",
+                        padding: "5px 12px",
+                        borderRadius: 7,
+                        boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                        fontFamily: FONT,
+                      }}
+                    >
+                      {slide.badge}
+                    </span>
+                    <div>
                       <div
                         style={{
-                          color: NAVY,
-                          fontSize: 17,
-                          fontWeight: 800,
-                          letterSpacing: "-0.3px",
-                          marginTop: 8,
-                          lineHeight: 1.15,
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
+                          color: "#7CE8A8",
+                          fontSize: 32,
+                          fontWeight: 900,
+                          lineHeight: 1,
+                          letterSpacing: "-0.4px",
                         }}
                       >
-                        {listing.title}
+                        {slide.stat}
                       </div>
                       <div
                         style={{
-                          color: "#B0B0B5",
-                          fontSize: 10.5,
-                          fontWeight: 600,
+                          color: "#7CE8A8",
+                          fontSize: 10,
+                          fontWeight: 800,
+                          letterSpacing: "0.4px",
+                          textTransform: "uppercase",
                           marginTop: 2,
                         }}
                       >
-                        {listing.footer}
+                        {slide.statLabel}
                       </div>
                     </div>
-
+                    <div>
+                      <div
+                        style={{
+                          color: "#fff",
+                          fontSize: 17,
+                          fontWeight: 800,
+                          lineHeight: 1.2,
+                          letterSpacing: "-0.3px",
+                        }}
+                      >
+                        {slide.title}
+                      </div>
+                      <div
+                        style={{
+                          color: "rgba(255,255,255,0.72)",
+                          fontSize: 12,
+                          fontWeight: 500,
+                          marginTop: 4,
+                        }}
+                      >
+                        {slide.subtitle}
+                      </div>
+                    </div>
+                    <span
+                      style={{
+                        position: "absolute",
+                        bottom: 16,
+                        right: 16,
+                        color: "#fff",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        fontFamily: FONT,
+                      }}
+                    >
+                      {slide.cta} →
+                    </span>
+                  </div>
+                ) : (
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={open}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") open();
+                    }}
+                    style={{
+                      position: "relative",
+                      borderRadius: 20,
+                      overflow: "hidden",
+                      height: 192,
+                      background: "#fff",
+                      boxShadow:
+                        "0 6px 0 #E4E4E8, 0 16px 32px rgba(11,31,58,0.12)",
+                      cursor: "pointer",
+                      fontFamily: FONT,
+                    }}
+                  >
+                    {/* Image panel with angled clip */}
                     <div
                       style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        width: "42%",
+                        clipPath: "polygon(0 0, 100% 0, 72% 100%, 0 100%)",
+                        background: slide?.imageUrl
+                          ? "#0B1F3A"
+                          : `linear-gradient(150deg, #14335C 0%, ${NAVY} 62%, #071630 100%)`,
                         display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {slide?.imageUrl ? (
+                        <img
+                          src={slide.imageUrl}
+                          alt=""
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      ) : (
+                        <div
+                          aria-hidden
+                          style={{
+                            /* nudge left: the angled cut removes space on the right */
+                            transform: "translateX(-11%)",
+                            width: 72,
+                            height: 72,
+                            borderRadius: 999,
+                            background: "rgba(255,255,255,0.10)",
+                            border: "1px solid rgba(255,255,255,0.18)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <slide.Icon size={34} color="#FFFFFF" stroke={1.6} opacity={0.9} />
+                        </div>
+                      )}
+
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          background:
+                            "linear-gradient(180deg, rgba(11,31,58,0.15) 0%, transparent 30%, transparent 70%, rgba(11,31,58,0.25) 100%)",
+                          pointerEvents: "none",
+                        }}
+                      />
+                    </div>
+
+                    {/* Status badge */}
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: 12,
+                        left: 14,
+                        zIndex: 2,
+                        background: slide.badgeColor,
+                        color: "#fff",
+                        fontSize: 10,
+                        fontWeight: 900,
+                        letterSpacing: "0.4px",
+                        padding: "5px 12px",
+                        borderRadius: 7,
+                        boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                        fontFamily: FONT,
+                      }}
+                    >
+                      {slide.badge}
+                    </span>
+
+                    {/* Content panel */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: "46%",
+                        right: 0,
+                        bottom: 34,
+                        padding: "16px 16px 0 12px",
+                        display: "flex",
+                        flexDirection: "column",
                         justifyContent: "space-between",
-                        alignItems: "flex-end",
-                        gap: 8,
                       }}
                     >
                       <div style={{ minWidth: 0 }}>
-                        <div
-                          style={{
-                            color: "#B0B0B5",
-                            fontSize: 8.5,
-                            fontWeight: 700,
-                            letterSpacing: "0.3px",
-                          }}
-                        >
-                          {listing.priceCaption}
-                        </div>
+                        {slide?.category && (
+                          <span
+                            style={{
+                              display: "inline-block",
+                              background: "#EEF2F7",
+                              color: "#6B7686",
+                              fontSize: 9,
+                              fontWeight: 800,
+                              letterSpacing: "0.3px",
+                              textTransform: "uppercase",
+                              padding: "3px 9px",
+                              borderRadius: 20,
+                              width: "fit-content",
+                            }}
+                          >
+                            {slide.category}
+                          </span>
+                        )}
                         <div
                           style={{
                             color: NAVY,
-                            fontSize: 21,
-                            fontWeight: 900,
-                            letterSpacing: "-0.4px",
-                            lineHeight: 1.1,
+                            fontSize: 17,
+                            fontWeight: 800,
+                            letterSpacing: "-0.3px",
+                            marginTop: 8,
+                            lineHeight: 1.15,
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
                             overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
                           }}
                         >
-                          {listing.priceLabel}
+                          {slide.title}
                         </div>
-
+                        <div
+                          style={{
+                            color: "#B0B0B5",
+                            fontSize: 10.5,
+                            fontWeight: 600,
+                            marginTop: 2,
+                          }}
+                        >
+                          {slide.footer}
+                        </div>
                       </div>
-                      <span
+
+                      <div
                         style={{
-                          background: NAVY,
-                          color: "#fff",
-                          fontSize: 9,
-                          fontWeight: 700,
-                          padding: "4px 9px",
-                          borderRadius: 7,
-                          boxShadow: "0 2px 0 #050D1C",
-                          whiteSpace: "nowrap",
-                          flexShrink: 0,
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "flex-end",
+                          gap: 8,
                         }}
                       >
-                        View →
-                      </span>
+                        <div style={{ minWidth: 0 }}>
+                          <div
+                            style={{
+                              color: "#B0B0B5",
+                              fontSize: 8.5,
+                              fontWeight: 700,
+                              letterSpacing: "0.3px",
+                            }}
+                          >
+                            {slide.priceCaption}
+                          </div>
+                          <div
+                            style={{
+                              color: NAVY,
+                              fontSize: 21,
+                              fontWeight: 900,
+                              letterSpacing: "-0.4px",
+                              lineHeight: 1.1,
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {slide.priceLabel}
+                          </div>
+                        </div>
+                        <span
+                          style={{
+                            background: NAVY,
+                            color: "#fff",
+                            fontSize: 9,
+                            fontWeight: 700,
+                            padding: "4px 9px",
+                            borderRadius: 7,
+                            boxShadow: "0 2px 0 #050D1C",
+                            whiteSpace: "nowrap",
+                            flexShrink: 0,
+                          }}
+                        >
+                          View →
+                        </span>
+                      </div>
                     </div>
                   </div>
-
-                  {/* Marketplace pagination dots */}
-                  {heroCards.length > 1 && (
-                    <div
-                      role="tablist"
-                      aria-label="Marketplace listings"
-                      style={{
-                        position: "absolute",
-                        left: 0,
-                        right: 0,
-                        bottom: 10,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: 6,
-                        height: 7,
-                        zIndex: 2,
-                      }}
-                    >
-                      {heroCards.map((_, i) => {
-                        const isActive = i === heroIndex;
-                        return (
-                          <div
-                            key={i}
-                            role="tab"
-                            aria-selected={isActive}
-                            aria-label={`Listing ${i + 1}`}
-                            style={{
-                              width: isActive ? 18 : 7,
-                              height: 7,
-                              borderRadius: 4,
-                              backgroundColor: isActive ? BLUE : "#C7CDD9",
-                              opacity: isActive ? 1 : 0.5,
-                              transition: "width 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s ease",
-                            }}
-                          />
-                        );
-                      })}
-                    </div>
-                  )}
-
-                </div>
-                {heroCards.length > 1 && (
-                  <>
-                    <button
-                      aria-label="Previous listing"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const el = heroScrollRef.current;
-                        if (!el) return;
-                        const w = el.clientWidth;
-                        el.scrollTo({ left: Math.max(0, el.scrollLeft - w), behavior: "smooth" });
-                      }}
-                      style={{
-                        position: "absolute",
-                        left: 8,
-                        top: "50%",
-                        transform: `translateY(-50%) scale(${1 + scrollProgress * 0.15})`,
-                        width: 28,
-                        height: 28,
-                        borderRadius: "50%",
-                        background: "rgba(255,255,255,0.92)",
-                        color: NAVY,
-                        border: "none",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        boxShadow: "0 2px 8px rgba(11,31,58,0.18)",
-                        opacity: heroIndex === 0 ? 0 : 0.25 + 0.75 * scrollProgress,
-                        transition: "opacity 0.2s ease, transform 0.2s ease",
-                        zIndex: 3,
-                        cursor: "pointer",
-                        pointerEvents: heroIndex === 0 ? "none" : "auto",
-                        padding: 0,
-                      }}
-                    >
-                      <IconChevronLeft size={18} stroke={2.5} />
-                    </button>
-                    <button
-                      aria-label="Next listing"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const el = heroScrollRef.current;
-                        if (!el) return;
-                        const w = el.clientWidth;
-                        el.scrollTo({
-                          left: Math.min(el.scrollWidth - w, el.scrollLeft + w),
-                          behavior: "smooth",
-                        });
-                      }}
-                      style={{
-                        position: "absolute",
-                        right: 8,
-                        top: "50%",
-                        transform: `translateY(-50%) scale(${1 + (1 - scrollProgress) * 0.15})`,
-                        width: 28,
-                        height: 28,
-                        borderRadius: "50%",
-                        background: "rgba(255,255,255,0.92)",
-                        color: NAVY,
-                        border: "none",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        boxShadow: "0 2px 8px rgba(11,31,58,0.18)",
-                        opacity: heroIndex === heroCards.length - 1 ? 0 : 0.25 + 0.75 * (1 - scrollProgress),
-                        transition: "opacity 0.2s ease, transform 0.2s ease",
-                        zIndex: 3,
-                        cursor: "pointer",
-                        pointerEvents: heroIndex === heroCards.length - 1 ? "none" : "auto",
-                        padding: 0,
-                      }}
-                    >
-                      <IconChevronRight size={18} stroke={2.5} />
-                    </button>
-                  </>
                 )}
               </div>
             );
           })}
         </div>
 
+        {/* Swipe hint */}
+        {PIRKX_LIVE && heroCards.length > 1 && (
+          <div
+            style={{
+              position: "absolute",
+              right: 0,
+              top: 0,
+              bottom: 0,
+              width: 44,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              paddingRight: 10,
+              pointerEvents: "none",
+              background: "linear-gradient(90deg, transparent, rgba(11,31,58,0.06))",
+              borderRadius: 20,
+            }}
+          >
+            <IconChevronRight size={14} color="#B0B0B5" stroke={2.5} />
+          </div>
+        )}
       </div>
 
-      <SectionHeader>Discover</SectionHeader>
+      {/* DISCOVER SECTION HEADER */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 7,
+          marginTop: 18,
+          marginBottom: 12,
+        }}
+      >
+        <span
+          aria-hidden
+          style={{
+            width: 3,
+            height: 14,
+            background: BLUE,
+            borderRadius: 2,
+            display: "inline-block",
+          }}
+        />
+        <span
+          style={{
+            color: BLUE,
+            fontSize: 12,
+            fontWeight: 800,
+            letterSpacing: "0.6px",
+            textTransform: "uppercase",
+            fontFamily: FONT,
+          }}
+        >
+          Discover
+        </span>
+      </div>
 
-      {/* ROW 1 — 4 COMPACT TILES */}
+      {/* DISCOVER TILES — 4 COLUMNS */}
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(4, 1fr)",
-          gap: 6,
+          gap: 9,
           marginBottom: 8,
         }}
       >
-        {/* DSM Live */}
+        {/* Live */}
         <div
           role="button"
           tabIndex={0}
-          onClick={() => liveRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+          onClick={() => navigate({ to: "/live" as never })}
           style={tileStyle}
         >
-          {liveActive && <span style={tileDot} />}
+          {liveActive && (
+            <span
+              style={{
+                position: "absolute",
+                top: 8,
+                left: "calc(50% + 12px)",
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: "#FF3B30",
+                border: "1.5px solid #fff",
+                zIndex: 2,
+              }}
+            />
+          )}
           <span style={chipIconWrap}>
-            <IconRadio size={14} color={NAVY} stroke={2} />
+            <IconRadio size={16} color={NAVY} stroke={2} />
           </span>
           <div style={chipLabel}>Live</div>
-          <div style={chipSub}>Events</div>
-          {liveCount !== null && liveCount > 0 && (
-            <div style={chipSub}>{liveCount === 1 ? "1 session" : `${liveCount} sessions`}</div>
-          )}
+          <div style={chipSub}>Join sessions</div>
         </div>
 
-        {/* DSM Learn */}
+        {/* Learn */}
         <div
           role="button"
           tabIndex={0}
@@ -922,197 +949,187 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           style={tileStyle}
         >
           <span style={chipIconWrap}>
-            <IconPlayerPlay size={14} color={NAVY} stroke={2} />
+            <IconPlayerPlay size={16} color={NAVY} stroke={2} />
           </span>
           <div style={chipLabel}>Learn</div>
-          <div style={chipSub}>Videos</div>
-          {learnCount !== null && learnCount > 0 && (
-            <div style={chipSub}>{learnCount} videos</div>
-          )}
+          <div style={chipSub}>Videos & bitesize</div>
         </div>
 
-        {/* Bitesize */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => navigate({ to: "/bitesize" as never })}
-          style={tileStyle}
-        >
-          <span style={chipIconWrap}>
-            <IconBook size={14} color={NAVY} stroke={2} />
-          </span>
-          <div style={chipLabel}>Bitesize</div>
-          <div style={chipSub}>5 min</div>
-          {bitesizeCount !== null && bitesizeCount > 0 && (
-            <div style={chipSub}>{bitesizeCount} videos</div>
-          )}
-        </div>
-
-        {/* Showcase */}
+        {/* Watch */}
         <div
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/showcase" as never })}
           style={tileStyle}
         >
-          {(showcaseCount ?? 0) > 0 && <span style={tileDot} />}
-          <span style={chipIconWrap}>
-            <IconPlayerPlay size={14} color={NAVY} stroke={2} />
-          </span>
-          <div style={chipLabel}>Showcase</div>
-          <div style={chipSub}>Fun Videos</div>
-          {showcaseCount !== null && showcaseCount > 0 && (
-            <div style={chipSub}>{showcaseCount} clips</div>
+          {(showcaseCount ?? 0) > 0 && (
+            <span
+              style={{
+                position: "absolute",
+                top: 8,
+                left: "calc(50% + 12px)",
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: "#FF3B30",
+                border: "1.5px solid #fff",
+                zIndex: 2,
+              }}
+            />
           )}
+          <span style={chipIconWrap}>
+            <IconPlayerPlay size={16} color={NAVY} stroke={2} />
+          </span>
+          <div style={chipLabel}>Watch</div>
+          <div style={chipSub}>Showcase</div>
+        </div>
+
+        {/* News */}
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate({ to: "/news" as never })}
+          style={tileStyle}
+        >
+          {newsUnread && (
+            <span
+              style={{
+                position: "absolute",
+                top: 8,
+                left: "calc(50% + 12px)",
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: "#FF3B30",
+                border: "1.5px solid #fff",
+                zIndex: 2,
+              }}
+            />
+          )}
+          <span style={chipIconWrap}>
+            <IconNews size={16} color={NAVY} stroke={2} />
+          </span>
+          <div style={chipLabel}>News</div>
+          <div style={chipSub}>Latest updates</div>
         </div>
       </div>
 
-
-      {/* ROW 3 — INDUSTRY NEWS ROW (swipeable) */}
-      {(() => {
-        const panels =
-          newsItems.length > 0
-            ? newsItems
-            : [{ id: "fallback", title: latestNewsTitle, image_url: newsHero }];
-        const multi = panels.length > 1;
-        return (
-          <div style={{ marginBottom: 8 }}>
-            <div
-              ref={newsScrollRef}
-              onScroll={(e) => {
-                const el = e.currentTarget;
-                const w = el.clientWidth || 1;
-                setNewsIndex(Math.round(el.scrollLeft / w));
-              }}
+      {/* PERKS BANNER */}
+      {PIRKX_LIVE && (
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate({ to: "/marketplace/benefits" as never })}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") navigate({ to: "/marketplace/benefits" as never });
+          }}
+          style={{
+            background: "#fff",
+            borderRadius: 16,
+            padding: "14px 16px",
+            boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)",
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+            cursor: "pointer",
+            marginBottom: 8,
+          }}
+        >
+          {/* DIA placeholder icon with FREE ribbon */}
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              background: "#E6F7EC",
+              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <span
               style={{
-                display: "flex",
-                overflowX: multi ? "auto" : "hidden",
-                scrollSnapType: multi ? "x mandatory" : undefined,
-                WebkitOverflowScrolling: "touch",
-                scrollbarWidth: "none",
-                gap: 0,
+                fontSize: 11,
+                fontWeight: 900,
+                color: "#1A9B5C",
+                letterSpacing: "0.3px",
               }}
-              className="no-scrollbar"
             >
-              {panels.map((item) => (
-                <div
-                  key={item.id}
-                  style={{
-                    flex: "0 0 100%",
-                    scrollSnapAlign: "center",
-                    boxSizing: "border-box",
-                  }}
-                >
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => navigate({ to: "/news" as never })}
-                    style={{
-                      background: "#fff",
-                      border: `0.5px solid ${HAIRLINE}`,
-                      borderRadius: 16,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      padding: "12px 14px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: 10,
-                        flexShrink: 0,
-                        overflow: "hidden",
-                        background: item.image_url
-                          ? undefined
-                          : "linear-gradient(135deg, #1877D6, #0B1F3A)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {item.image_url ? (
-                        <img
-                          src={item.image_url}
-                          alt=""
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        />
-                      ) : (
-                        <IconNews size={20} color="#fff" />
-                      )}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontSize: 9,
-                          fontWeight: 700,
-                          color: BLUE,
-                          textTransform: "uppercase",
-                          marginBottom: 2,
-                        }}
-                      >
-                        DVSA · DIA · More
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
-                          fontFamily: FONT,
-                          marginBottom: 3,
-                        }}
-                      >
-                        {newsCount ?? 0} articles
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 13,
-                          fontWeight: 600,
-                          color: NAVY,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {item.title || "Industry news & updates"}
-                      </div>
-                    </div>
-                    <IconChevronRight size={16} color={HAIRLINE} style={{ flexShrink: 0 }} />
-                  </div>
-                </div>
-              ))}
+              DIA
+            </span>
+            <div
+              style={{
+                position: "absolute",
+                top: 8,
+                right: -16,
+                background: "#1A9B5C",
+                color: "#fff",
+                fontSize: 6.5,
+                fontWeight: 900,
+                letterSpacing: "0.3px",
+                padding: "2px 18px",
+                transform: "rotate(38deg)",
+                textTransform: "uppercase",
+              }}
+            >
+              FREE
             </div>
-            {multi && (
+          </div>
+
+          {/* Text block */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 6,
-                  marginTop: 8,
+                  color: NAVY,
+                  fontSize: 14,
+                  fontWeight: 800,
+                  letterSpacing: "-0.2px",
                 }}
               >
-                {panels.map((p, i) => (
-                  <span
-                    key={p.id}
-                    style={{
-                      width: i === newsIndex ? 16 : 6,
-                      height: 6,
-                      borderRadius: i === newsIndex ? 4 : "50%",
-                      background: i === newsIndex ? BLUE : "rgba(11,31,58,0.18)",
-                      transition: "width 0.25s ease, background 0.25s ease",
-                    }}
-                  />
-                ))}
+                DSM member exclusive benefits
               </div>
-            )}
+              <span
+                style={{
+                  background: "#E6F7EC",
+                  color: "#1A9B5C",
+                  fontSize: 8.5,
+                  fontWeight: 900,
+                  padding: "2px 7px",
+                  borderRadius: 20,
+                }}
+              >
+                NEW
+              </span>
+            </div>
+            <div
+              style={{
+                color: "#8A8A8E",
+                fontSize: 11,
+                fontWeight: 500,
+                marginTop: 2,
+              }}
+            >
+              40+ perks, including free DIA membership
+            </div>
+            <div
+              style={{
+                color: "#B0B0B5",
+                fontSize: 10,
+                fontWeight: 500,
+                marginTop: 1,
+              }}
+            >
+              Private GP, health insurance, retail discounts & more
+            </div>
           </div>
-        );
-      })()}
 
-      {/* BELOW — DSM LIVE SESSIONS */}
-      <div ref={liveRef} />
+          <IconChevronRight size={14} color="#C7C7CC" stroke={2} />
+        </div>
+      )}
     </div>
   );
 }
