@@ -143,6 +143,12 @@ function CourseDetailPage() {
   const [uploadingHero, setUploadingHero] = useState(false);
   const heroInputRef = useRef<HTMLInputElement>(null);
 
+  // Edit scope for repeating series
+  const [scopeSheetOpen, setScopeSheetOpen] = useState(false);
+  const [editScope, setEditScope] = useState<"this" | "following" | "all">("this");
+  const [seriesEditIds, setSeriesEditIds] = useState<string[]>([]);
+  const [skippedCount, setSkippedCount] = useState(0);
+
   // Edit-mode form state mirrors Course shape
   const [form, setForm] = useState<Course | null>(null);
   const [pickupError, setPickupError] = useState<string | null>(null);
