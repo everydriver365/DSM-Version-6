@@ -70,6 +70,7 @@ const quickAccessTiles = [
   { icon: <GraduationCap size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Test day", route: "/testday" },
   { icon: <Trophy size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Rewards", route: "/rewards" },
   { icon: <GraduationCap size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
+  { icon: <Globe size={22} color="#FFFFFF" />, bg: "#7C3AED", label: "My Website", route: "/minisite" },
   { icon: <Star size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Reviews", route: "/reviews" },
   { icon: <Inbox size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Enquiries", route: "/enquiries" },
   { icon: <Clock size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Waiting list", route: "/waitinglist" },
