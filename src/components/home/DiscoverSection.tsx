@@ -1141,7 +1141,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               fontFamily: "Poppins, sans-serif",
             }}
           >
-            DSM member perks
+            {PIRKX_LIVE ? "DSM member perks" : "FREE DIA Memberships"}
           </div>
           <div
             style={{
@@ -1153,7 +1153,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           >
             {PIRKX_LIVE
               ? "GP · DIA membership · 2,000+ discounts"
-              : "Coming soon — upgrade to unlock"}
+              : "FREE DIA membership and many other exclusive member benefits - upgrade to unlock"}
           </div>
         </div>
         <div
