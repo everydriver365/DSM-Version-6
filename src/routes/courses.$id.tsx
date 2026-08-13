@@ -188,6 +188,75 @@ function CourseDetailPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  async function handleScopeConfirm() {
+    setScopeSheetOpen(false);
+
+    if (editScope === "this" || !course?.series_id) {
+      setSeriesEditIds([]);
+      setSkippedCount(0);
+      setEditing(true);
+      return;
+    }
+
+    const seriesId = course.series_id;
+
+    if (editScope === "following") {
+      const { data: seriesCourses } = await supabase
+        .from("instructor_courses")
+        .select("id, start_date")
+        .eq("series_id", seriesId)
+        .gte("start_date", course.start_date ?? "")
+        .is("deleted_at", null)
+        .order("start_date");
+
+      const { data: bookings } = await supabase
+        .from("course_bookings")
+        .select("course_id")
+        .in(
+          "course_id",
+          (seriesCourses ?? []).map((c) => c.id),
+        )
+        .neq("status", "cancelled");
+
+      const bookedIds = new Set((bookings ?? []).map((b) => b.course_id));
+      const editableIds = (seriesCourses ?? [])
+        .filter((c) => !bookedIds.has(c.id))
+        .map((c) => c.id);
+
+      setSeriesEditIds(editableIds);
+      setSkippedCount((seriesCourses ?? []).length - editableIds.length);
+      setEditing(true);
+      return;
+    }
+
+    if (editScope === "all") {
+      const { data: seriesCourses } = await supabase
+        .from("instructor_courses")
+        .select("id")
+        .eq("series_id", seriesId)
+        .is("deleted_at", null);
+
+      const { data: bookings } = await supabase
+        .from("course_bookings")
+        .select("course_id")
+        .in(
+          "course_id",
+          (seriesCourses ?? []).map((c) => c.id),
+        )
+        .neq("status", "cancelled");
+
+      const bookedIds = new Set((bookings ?? []).map((b) => b.course_id));
+      const editableIds = (seriesCourses ?? [])
+        .filter((c) => !bookedIds.has(c.id))
+        .map((c) => c.id);
+
+      setSeriesEditIds(editableIds);
+      setSkippedCount((seriesCourses ?? []).length - editableIds.length);
+      setEditing(true);
+      return;
+    }
+  }
+
   async function saveChanges() {
     if (!form) return;
     if (!form.pickup_area || !isValidUKPostcode(form.pickup_area)) {
