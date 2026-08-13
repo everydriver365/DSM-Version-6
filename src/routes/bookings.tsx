@@ -32,8 +32,12 @@ export const Route = createFileRoute("/bookings")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  validateSearch: (search: Record<string, unknown>): { selected?: string } => ({
+    selected: typeof search.selected === "string" ? search.selected : undefined,
+  }),
   component: BookingsPage,
 });
+
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
