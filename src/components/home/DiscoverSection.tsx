@@ -20,6 +20,7 @@ import {
 
 import { supabase } from "@/lib/supabaseClient";
 import { sanitizeNewsTitle } from "@/lib/newsText";
+import diaLogoAsset from "@/assets/dialogo.png.asset.json";
 
 const PIRKX_LIVE = true;
 
@@ -1026,21 +1027,21 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           style={{
             background: "#fff",
             borderRadius: 16,
-            padding: "14px 16px",
+            padding: "8px 12px",
             boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)",
             display: "flex",
             alignItems: "center",
-            gap: 14,
+            gap: 10,
             cursor: "pointer",
             marginBottom: 8,
           }}
         >
-          {/* DIA placeholder icon with FREE ribbon */}
+          {/* DIA icon with FREE ribbon */}
           <div
             style={{
-              width: 44,
-              height: 44,
-              borderRadius: 12,
+              width: 36,
+              height: 36,
+              borderRadius: 10,
               background: "#E6F7EC",
               flexShrink: 0,
               display: "flex",
@@ -1050,27 +1051,27 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               overflow: "hidden",
             }}
           >
-            <span
+            <img
+              src={diaLogoAsset.url}
+              alt="DIA"
               style={{
-                fontSize: 11,
-                fontWeight: 900,
-                color: "#1A9B5C",
-                letterSpacing: "0.3px",
+                width: 26,
+                height: 26,
+                objectFit: "contain",
+                borderRadius: 6,
               }}
-            >
-              DIA
-            </span>
+            />
             <div
               style={{
                 position: "absolute",
-                top: 8,
-                right: -16,
+                top: 6,
+                right: -14,
                 background: "#1A9B5C",
                 color: "#fff",
-                fontSize: 6.5,
+                fontSize: 6,
                 fontWeight: 900,
                 letterSpacing: "0.3px",
-                padding: "2px 18px",
+                padding: "1px 14px",
                 transform: "rotate(38deg)",
                 textTransform: "uppercase",
               }}
@@ -1085,7 +1086,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               <div
                 style={{
                   color: NAVY,
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: 800,
                   letterSpacing: "-0.2px",
                 }}
@@ -1096,9 +1097,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 style={{
                   background: "#E6F7EC",
                   color: "#1A9B5C",
-                  fontSize: 8.5,
+                  fontSize: 8,
                   fontWeight: 900,
-                  padding: "2px 7px",
+                  padding: "1px 6px",
                   borderRadius: 20,
                 }}
               >
@@ -1108,26 +1109,16 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             <div
               style={{
                 color: "#8A8A8E",
-                fontSize: 11,
-                fontWeight: 500,
-                marginTop: 2,
-              }}
-            >
-              40+ perks, including free DIA membership
-            </div>
-            <div
-              style={{
-                color: "#B0B0B5",
                 fontSize: 10,
                 fontWeight: 500,
-                marginTop: 1,
+                marginTop: 0,
               }}
             >
-              Private GP, health insurance, retail discounts & more
+              40+ perks including free DIA membership
             </div>
           </div>
 
-          <IconChevronRight size={14} color="#C7C7CC" stroke={2} />
+          <IconChevronRight size={12} color="#C7C7CC" stroke={2} />
         </div>
       )}
     </div>
