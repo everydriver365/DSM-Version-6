@@ -446,6 +446,14 @@ function NewCoursePage() {
 
   function goNext() {
     if (step === 2) {
+      if (repeatType !== "one-off") {
+        if (!repeatEndDate && (!repeatCount || parseInt(repeatCount, 10) <= 0)) {
+          const msg = "Please set either an end date or a number of occurrences for this repeating course";
+          setError(msg);
+          toast.error(msg);
+          return;
+        }
+      }
       if (!pickup) {
         setPickupError(PICKUP_EMPTY_MSG);
         toast.error(PICKUP_EMPTY_MSG);
@@ -459,6 +467,7 @@ function NewCoursePage() {
     }
     if (step < 3) setStep((step + 1) as 1 | 2 | 3);
   }
+
 
 
 
@@ -1228,6 +1237,30 @@ function Step2(props: {
 
       {repeatType !== "one-off" && (
         <>
+          <div
+            style={{
+              background: "#FEF3C7",
+              borderRadius: 12,
+              padding: "10px 14px",
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 8,
+              marginBottom: 12,
+            }}
+          >
+            <span style={{ fontSize: 14 }}>⚠️</span>
+            <div
+              style={{
+                fontSize: 12,
+                color: "#92400E",
+                fontFamily: "Poppins, sans-serif",
+                lineHeight: 1.5,
+              }}
+            >
+              Set an end date or number of occurrences so DSM knows how many
+              course dates to create.
+            </div>
+          </div>
           <Input
             label="Repeat until (end date)"
             type="date"
@@ -1245,6 +1278,7 @@ function Step2(props: {
           />
         </>
       )}
+
 
       <div
         style={{
