@@ -327,12 +327,14 @@ function NewCoursePage() {
       return;
     }
 
+    // series_id fix v2 — 2026-08-13
     const seriesId = repeatType !== "one-off"
       ? "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
           const r = Math.random() * 16 | 0;
           return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16);
         })
       : null;
+    console.log('[courses.new] seriesId:', seriesId, 'repeatType:', repeatType);
 
     const basePayload = {
       instructor_id: uid,
