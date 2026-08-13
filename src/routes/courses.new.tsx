@@ -598,6 +598,8 @@ function NewCoursePage() {
           <Step3
             price={price}
             setPrice={setPrice}
+            isFree={isFree}
+            setIsFree={setIsFree}
             deposit={deposit}
             setDeposit={setDeposit}
             depositOnly={depositOnly}
