@@ -461,7 +461,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           alignItems: "center",
           justifyContent: "space-between",
           marginTop: 18,
-          marginBottom: 12,
+          marginBottom: 8,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
@@ -469,7 +469,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             aria-hidden
             style={{
               width: 3,
-              height: 14,
+              height: 12,
               background: BLUE,
               borderRadius: 2,
               display: "inline-block",
@@ -478,7 +478,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           <span
             style={{
               color: BLUE,
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: 800,
               letterSpacing: "0.6px",
               textTransform: "uppercase",
@@ -492,7 +492,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/marketplace" as never })}
-          style={{ color: BLUE, fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}
+          style={{ color: BLUE, fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}
         >
           See all →
         </span>
