@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import {
   Copy,
   ExternalLink,
@@ -24,7 +23,6 @@ import {
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { IconCheck } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
-import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { Card } from "../components/dsm/Card";
