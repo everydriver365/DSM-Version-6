@@ -908,18 +908,22 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             position: "relative",
           }}
         >
-          {liveActive && (
+          <style>{`@keyframes dsmLivePulse{0%{box-shadow:0 0 0 0 rgba(204,34,41,.55)}70%{box-shadow:0 0 0 5px rgba(204,34,41,0)}100%{box-shadow:0 0 0 0 rgba(204,34,41,0)}}`}</style>
+          {(liveActive || liveStatus !== "offline") && (
             <span
+              aria-hidden
               style={{
                 width: 6,
                 height: 6,
                 borderRadius: "50%",
-                background: "#FF3B30",
+                background: liveStatus === "live" ? "#FF3B30" : "#F59E0B",
                 border: "1.5px solid #fff",
                 position: "absolute",
                 top: -2,
                 right: -2,
                 zIndex: 2,
+                animation:
+                  liveStatus === "live" ? "dsmLivePulse 1.6s ease-out infinite" : undefined,
               }}
             />
           )}
@@ -928,7 +932,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               width: 26,
               height: 26,
               borderRadius: 7,
-              background: "#FEE2E2",
+              background: liveStatus === "offline" ? "#F1F1F4" : "#FEE2E2",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -937,10 +941,34 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               position: "relative",
             }}
           >
-            <IconBroadcast size={14} color="#CC2229" stroke={1.5} />
+            <IconBroadcast
+              size={14}
+              color={liveStatus === "offline" ? "#9CA3AF" : "#CC2229"}
+              stroke={1.5}
+            />
           </div>
           <div style={{ fontSize: 14, fontWeight: 800, color: "#000" }}>Live</div>
-          <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Sessions</div>
+          <div
+            aria-live="polite"
+            style={{
+              fontSize: 7.5,
+              fontWeight: liveStatus === "offline" ? 500 : 800,
+              letterSpacing: liveStatus === "offline" ? 0 : "0.3px",
+              color:
+                liveStatus === "live"
+                  ? "#CC2229"
+                  : liveStatus === "soon"
+                    ? "#B45309"
+                    : "#B0B0B5",
+              marginTop: 1,
+            }}
+          >
+            {liveStatus === "live"
+              ? "ON AIR"
+              : liveStatus === "soon"
+                ? "STARTING SOON"
+                : "Unavailable"}
+          </div>
         </div>
 
         {/* Learn */}
