@@ -6508,10 +6508,6 @@ function HomePage() {
 
 
 
-              const sq = quickSearchQuery.trim().toLowerCase();
-              const searchResults = sq
-                ? quickTiles.filter((t) => t.label.toLowerCase().includes(sq) || t.sub.toLowerCase().includes(sq))
-                : quickTiles;
 
               return (
                 <>
