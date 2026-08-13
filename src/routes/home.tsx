@@ -6504,58 +6504,6 @@ function HomePage() {
               };
 
 
-              const renderQuickTile = (tile: QuickTile, key: string, onTap?: () => void) => {
-                const Icon = tile.icon;
-                const subColor = tile.attention ? '#CC2229' : '#64748B';
-                const subWeight = tile.attention ? 600 : 400;
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => { goTile(tile); onTap?.(); }}
-                    className="cf-tap qa-card"
-                    style={{
-                      position: 'relative',
-                      background: '#FFFFFF',
-                      border: '1px solid #E2E8F0',
-                      borderRadius: 14,
-                      padding: 10,
-                      minHeight: 78,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      gap: 8,
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      fontFamily: "Poppins, sans-serif",
-                      transition: 'transform 0.15s ease, box-shadow 0.2s ease',
-                      overflow: 'hidden',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-                    }}
-                  >
-                    <div
-                      className="qa-icon"
-                      style={{
-                        width: 30,
-                        height: 30,
-                        borderRadius: 8,
-                        background: tile.chipBg,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                        transition: 'transform 0.15s ease',
-                      }}
-                    >
-                      <Icon size={16} color={tile.iconStroke} strokeWidth={2} />
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, maxWidth: '100%' }}>
-                      <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', lineHeight: 1.25, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: "Poppins, sans-serif" }}>{tile.label}</span>
-                      <span style={{ marginTop: 1, fontSize: 10, fontWeight: subWeight, color: subColor, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: tile.sub.includes('\n') ? 'pre-line' : 'nowrap', lineHeight: 1.3, fontFamily: "Poppins, sans-serif" }}>{tile.sub}</span>
-                    </div>
-                  </button>
-                );
-              };
 
 
 
