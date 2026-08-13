@@ -2251,6 +2251,19 @@ function DayHeader({ date, isToday, isPast }: { date: Date; isToday: boolean; is
   );
 }
 
+function isCustomPickup(pupil: Pupil | null, pickup: string | null | undefined): boolean {
+  if (!pickup || !pupil) return false;
+  const address = (pupil.address ?? '').toLowerCase().trim();
+  const postcode = (pupil.postcode ?? '').toLowerCase().replace(/\s/g, '');
+  const p = pickup.toLowerCase().trim();
+  const pFirst = p.split(',')[0].trim();
+  if (!address && !postcode) return false;
+  return !(
+    (address && (p.includes(address) || address.includes(pFirst))) ||
+    (postcode && (p.replace(/\s/g, '').includes(postcode) || postcode.includes(pFirst.replace(/\s/g, ''))))
+  );
+}
+
 function EntryRow({
   entry,
   onLessonTap,
