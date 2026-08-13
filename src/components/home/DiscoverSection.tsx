@@ -21,7 +21,7 @@ import {
 import { supabase } from "@/lib/supabaseClient";
 import { sanitizeNewsTitle } from "@/lib/newsText";
 
-const PIRKX_LIVE = false;
+const PIRKX_LIVE = true;
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
