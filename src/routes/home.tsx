@@ -6885,7 +6885,6 @@ function HomePage() {
                     </>
                   );
                 })()}
-              </div>
             </div>
 
                   {runningLateOpen && (
