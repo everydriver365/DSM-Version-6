@@ -30,6 +30,7 @@ interface CourseRow {
   spaces_taken: number;
   pickup_area: string | null;
   pickup_postcodes: { postcode: string; lat: number | null; lng: number | null }[] | null;
+  image_url: string | null;
 }
 
 
@@ -75,7 +76,7 @@ function CoursesPage() {
       }
       const query = supabase
         .from("instructor_courses")
-        .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, pickup_postcodes")
+        .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, pickup_postcodes, image_url")
         .eq("instructor_id", uid)
         .order("created_at", { ascending: false });
 
@@ -84,10 +85,20 @@ function CoursesPage() {
       if (error?.code === "42703" && error.message.includes("pickup_postcodes")) {
         const fallback = await supabase
           .from("instructor_courses")
-          .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area")
+          .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, image_url")
           .eq("instructor_id", uid)
           .order("created_at", { ascending: false });
         data = fallback.data?.map((row) => ({ ...row, pickup_postcodes: null })) ?? null;
+        error = fallback.error;
+      }
+
+      if (error?.code === "42703" && error.message.includes("image_url")) {
+        const fallback = await supabase
+          .from("instructor_courses")
+          .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area")
+          .eq("instructor_id", uid)
+          .order("created_at", { ascending: false });
+        data = fallback.data?.map((row) => ({ ...row, pickup_postcodes: null, image_url: null })) ?? null;
         error = fallback.error;
       }
 
@@ -198,25 +209,60 @@ function CoursesPage() {
                   }}
                 >
                   <div style={{ display: "flex", gap: 13, alignItems: "flex-start" }}>
-                    <div
-                      style={{
-                        width: 46,
-                        height: 46,
-                        flexShrink: 0,
-                        background: "#fff",
-                        border: `4px solid ${draft ? "#D1D1D6" : "#CC2229"}`,
-                        borderRadius: "50%",
-                        boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 19,
-                        fontWeight: 800,
-                        letterSpacing: "-0.5px",
-                        color: "#0B1F3A",
-                      }}
-                    >
-                      {hours}
+                    <div style={{ flexShrink: 0, position: "relative" }}>
+                      {/* Hero image if available */}
+                      {c.image_url ? (
+                        <img
+                          src={c.image_url}
+                          alt={c.name ?? ""}
+                          style={{
+                            width: 72,
+                            height: 72,
+                            borderRadius: 14,
+                            objectFit: "cover",
+                            display: "block",
+                            border: `2px solid ${draft ? "#D1D1D6" : "#E4E8EF"}`,
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: 72,
+                            height: 72,
+                            borderRadius: 14,
+                            background: draft ? "#F2F2F7" : "#EEF2F7",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: 28,
+                          }}
+                        >
+                          🚗
+                        </div>
+                      )}
+                      {/* Hours badge overlaid bottom-right of image */}
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: -6,
+                          right: -6,
+                          width: 28,
+                          height: 28,
+                          borderRadius: "50%",
+                          background: draft ? "#D1D1D6" : "#CC2229",
+                          border: "2px solid #fff",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 11,
+                          fontWeight: 800,
+                          color: "#fff",
+                          fontFamily: "Poppins, sans-serif",
+                          letterSpacing: "-0.3px",
+                        }}
+                      >
+                        {hours}
+                      </div>
                     </div>
 
                     <div style={{ flex: 1, minWidth: 0 }}>
