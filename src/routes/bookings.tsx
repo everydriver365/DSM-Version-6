@@ -113,10 +113,17 @@ function money(n: number | null | undefined) {
 
 function BookingsPage() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const [userId, setUserId] = useState<string | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (search.selected) {
+      setSelectedId(search.selected);
+    }
+  }, [search.selected]);
 
   useEffect(() => {
     (async () => {
@@ -142,6 +149,7 @@ function BookingsPage() {
       setLoading(false);
     })();
   }, []);
+
 
   async function confirmBooking(booking: Booking) {
     await supabase.from("course_bookings").update({ status: "confirmed" }).eq("id", booking.id);
