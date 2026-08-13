@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { IconPhoto, IconChevronRight } from "@tabler/icons-react";
 import { Loader2, MapPin, Calendar, Repeat, CalendarDays, CalendarCheck, Clock, Sunrise, Sun, Moon, GraduationCap, Settings } from "lucide-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import DSMToggle from "@/components/dsm/DSMToggle";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
 
@@ -203,6 +204,7 @@ function NewCoursePage() {
 
   // Step 3
   const [price, setPrice] = useState<string>("");
+  const [isFree, setIsFree] = useState(false);
   const [deposit, setDeposit] = useState<string>("");
   const [depositOnly, setDepositOnly] = useState(false);
   const [earlyBird, setEarlyBird] = useState(false);
@@ -352,7 +354,7 @@ function NewCoursePage() {
       lesson_time_preference: timePref,
       lesson_time_from: timePref === "custom" ? lessonTimeFrom : null,
       lesson_time_to: timePref === "custom" ? lessonTimeTo : null,
-      price: parseFloat(price || "0"),
+      price: isFree ? 0 : parseFloat(price || "0"),
       deposit_amount: parseFloat(deposit || "0"),
       deposit_only_to_book: depositOnly,
       early_bird_discount: earlyBird ? parseFloat(earlyBirdAmount || "0") : 0,
@@ -596,6 +598,8 @@ function NewCoursePage() {
           <Step3
             price={price}
             setPrice={setPrice}
+            isFree={isFree}
+            setIsFree={setIsFree}
             deposit={deposit}
             setDeposit={setDeposit}
             depositOnly={depositOnly}
@@ -1419,6 +1423,7 @@ function Step2(props: {
 /* ---------- Step 3 ---------- */
 function Step3(props: {
   price: string; setPrice: (v: string) => void;
+  isFree: boolean; setIsFree: (v: boolean) => void;
   deposit: string; setDeposit: (v: string) => void;
   depositOnly: boolean; setDepositOnly: (v: boolean) => void;
   earlyBird: boolean; setEarlyBird: (v: boolean) => void;
@@ -1431,14 +1436,66 @@ function Step3(props: {
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      <Input
-        label="Price (£)"
-        type="number"
-        min={0}
-        value={props.price}
-        onChange={(e) => props.setPrice(e.target.value)}
-        placeholder="e.g. 350"
-      />
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {props.isFree ? (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: 52,
+              borderRadius: 12,
+              background: "#E7F6EC",
+              border: "1.5px solid #34C759",
+              color: "#34C759",
+              fontSize: 18,
+              fontWeight: 700,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            FREE
+          </div>
+        ) : (
+          <Input
+            label="Price (£)"
+            type="number"
+            min={0}
+            value={props.price}
+            onChange={(e) => props.setPrice(e.target.value)}
+            placeholder="e.g. 350"
+            disabled={props.isFree}
+          />
+        )}
+        <button
+          type="button"
+          onClick={() => {
+            const next = !props.isFree;
+            props.setIsFree(next);
+            if (next) props.setPrice("0");
+          }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            padding: 12,
+            background: "#fff",
+            border: "0.5px solid #EEF2F7",
+            borderRadius: 10,
+            cursor: "pointer",
+            textAlign: "left",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>Free course</div>
+            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>No payment required to book</div>
+          </div>
+          <DSMToggle checked={props.isFree} onChange={(v) => {
+            props.setIsFree(v);
+            if (v) props.setPrice("0");
+          }} />
+        </button>
+      </div>
       <Input
         label="Deposit amount (£, optional)"
         type="number"
