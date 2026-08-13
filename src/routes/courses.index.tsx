@@ -209,25 +209,60 @@ function CoursesPage() {
                   }}
                 >
                   <div style={{ display: "flex", gap: 13, alignItems: "flex-start" }}>
-                    <div
-                      style={{
-                        width: 46,
-                        height: 46,
-                        flexShrink: 0,
-                        background: "#fff",
-                        border: `4px solid ${draft ? "#D1D1D6" : "#CC2229"}`,
-                        borderRadius: "50%",
-                        boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 19,
-                        fontWeight: 800,
-                        letterSpacing: "-0.5px",
-                        color: "#0B1F3A",
-                      }}
-                    >
-                      {hours}
+                    <div style={{ flexShrink: 0, position: "relative" }}>
+                      {/* Hero image if available */}
+                      {c.image_url ? (
+                        <img
+                          src={c.image_url}
+                          alt={c.name ?? ""}
+                          style={{
+                            width: 72,
+                            height: 72,
+                            borderRadius: 14,
+                            objectFit: "cover",
+                            display: "block",
+                            border: `2px solid ${draft ? "#D1D1D6" : "#E4E8EF"}`,
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: 72,
+                            height: 72,
+                            borderRadius: 14,
+                            background: draft ? "#F2F2F7" : "#EEF2F7",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: 28,
+                          }}
+                        >
+                          🚗
+                        </div>
+                      )}
+                      {/* Hours badge overlaid bottom-right of image */}
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: -6,
+                          right: -6,
+                          width: 28,
+                          height: 28,
+                          borderRadius: "50%",
+                          background: draft ? "#D1D1D6" : "#CC2229",
+                          border: "2px solid #fff",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 11,
+                          fontWeight: 800,
+                          color: "#fff",
+                          fontFamily: "Poppins, sans-serif",
+                          letterSpacing: "-0.3px",
+                        }}
+                      >
+                        {hours}
+                      </div>
                     </div>
 
                     <div style={{ flex: 1, minWidth: 0 }}>
