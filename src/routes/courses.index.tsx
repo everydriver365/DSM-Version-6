@@ -316,21 +316,16 @@ function CourseCard({
 }) {
   const spacesLeft = Math.max(0, (c.max_spaces ?? 0) - (c.spaces_taken ?? 0));
   const draft = c.status === "draft";
+  function outwardCode(postcode: string) {
+    return postcode.trim().toUpperCase().split(' ')[0];
+  }
   const locations = c.pickup_area
-    ? [c.pickup_area]
+    ? [outwardCode(c.pickup_area)]
     : (c.pickup_postcodes ?? [])
-        .map((p) => {
-          // Extract outward code only
-          // e.g. "SO30 2HT" → "SO30"
-          const outward = p.postcode
-            .trim()
-            .split(' ')[0]
-            .toUpperCase();
-          return outward;
-        })
+        .map((p) => outwardCode(p.postcode))
         .filter(Boolean)
-        // Deduplicate area prefixes
         .filter((v, i, arr) => arr.indexOf(v) === i);
+
   const locationText =
     locations.length > 1 ? `${locations.length} locations` : locations[0] ?? formatDate(c.start_date);
   const hours = c.total_hours == null ? "?" : String(Number(c.total_hours));
