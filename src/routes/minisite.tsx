@@ -642,6 +642,16 @@ function MiniSitePage() {
     ));
   }
 
+  function promptUpgrade(tier: "website" | "pro" | "managed") {
+    setConfirmTier(tier);
+  }
+
+  function confirmUpgrade() {
+    if (!confirmTier) return;
+    setConfirmTier(null);
+    startUpgrade(confirmTier);
+  }
+
   function startUpgrade(tier: "website" | "pro" | "managed") {
     setChosenTier(tier);
     setUpgradeStep("domain");
