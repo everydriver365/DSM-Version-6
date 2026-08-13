@@ -1269,7 +1269,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
 function HomePage() {
   const navigate = useNavigate();
 
-  const [quickPage, setQuickPage] = useState(0);
+  
   const [quickSearchOpen, setQuickSearchOpen] = useState(false);
   const [runningLateOpen, setRunningLateOpen] = useState(false);
   const [nearbyOpen, setNearbyOpen] = useState(false);
@@ -1279,7 +1279,7 @@ function HomePage() {
   const [nearbyError, setNearbyError] = useState<string | null>(null);
   const [nearbyOrigin, setNearbyOrigin] = useState<{ lat: number; lng: number } | null>(null);
   const [quickSearchQuery, setQuickSearchQuery] = useState('');
-  const qaStartX = useRef(0);
+  
 
 
   const [pupilQuery, setPupilQuery] = useState("");
