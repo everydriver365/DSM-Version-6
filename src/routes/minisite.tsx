@@ -1645,7 +1645,7 @@ function MiniSitePage() {
                   {websiteTier !== "pro" && (
                     <button
                       type="button"
-                      onClick={() => startUpgrade("pro")}
+                      onClick={() => promptUpgrade("pro")}
                       style={{
                         width: "100%",
                         background: "#fff",
