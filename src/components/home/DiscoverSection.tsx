@@ -85,6 +85,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const navigate = useNavigate();
   const [live, setLive] = useState<LiveItem[]>([]);
   const [liveActive, setLiveActive] = useState(false);
+  // Ticks forward on a timer so time-based live status re-evaluates itself.
+  const [nowTick, setNowTick] = useState<number>(() => Date.now());
 
   // Live tile status: on air now, starting soon, or nothing scheduled
   const liveStatus: "live" | "soon" | "offline" = useMemo(() => {
@@ -95,7 +97,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       return !!start && start > now && start - now <= 2 * 60 * 60 * 1000;
     });
     return soon ? "soon" : "offline";
-  }, [live]);
+  }, [live, nowTick]);
+
 
 
   const [liveCount, setLiveCount] = useState<number | null>(null);
