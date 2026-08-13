@@ -6739,10 +6739,10 @@ function HomePage() {
                         onClick={() => goTile(tile)}
                         className="cf-tap qa-card"
                         style={{
-                          width: 76,
+                          width: '100%',
                           background: '#fff',
                           borderRadius: 12,
-                          padding: '10px 6px',
+                          padding: '12px 10px',
                           boxShadow: '0 2px 8px rgba(11,31,58,0.06)',
                           display: 'flex',
                           flexDirection: 'column',
@@ -6755,6 +6755,7 @@ function HomePage() {
                           transition: 'transform 0.15s ease, box-shadow 0.2s ease',
                           overflow: 'hidden',
                           position: 'relative',
+                          boxSizing: 'border-box',
                         }}
                       >
                         <div
@@ -6924,7 +6925,7 @@ function HomePage() {
 
                       {/* Tiles */}
                       {quickSearch.trim() ? (
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, padding: 0 }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12, padding: 0 }}>
                           {filteredTiles.map((tile, idx) => renderHomeTile(tile, `search-${tile.label}-${idx}`))}
                         </div>
                       ) : (
@@ -6952,7 +6953,7 @@ function HomePage() {
                                   flex: '0 0 100%',
                                   minWidth: '100%',
                                   display: 'grid',
-                                  gridTemplateColumns: '1fr 1fr',
+                                  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
                                   gap: 12,
                                   padding: '0 0 4px',
                                   boxSizing: 'border-box',
