@@ -6917,7 +6917,7 @@ function HomePage() {
 
                       {/* Tiles */}
                       {quickSearch.trim() ? (
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, padding: '0 16px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, padding: 0 }}>
                           {filteredTiles.map((tile, idx) => renderHomeTile(tile, `search-${tile.label}-${idx}`))}
                         </div>
                       ) : (
