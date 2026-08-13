@@ -85,6 +85,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const navigate = useNavigate();
   const [live, setLive] = useState<LiveItem[]>([]);
   const [liveActive, setLiveActive] = useState(false);
+  // Ticks forward on a timer so time-based live status re-evaluates itself.
+  const [nowTick, setNowTick] = useState<number>(() => Date.now());
 
   // Live tile status: on air now, starting soon, or nothing scheduled
   const liveStatus: "live" | "soon" | "offline" = useMemo(() => {
@@ -95,7 +97,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       return !!start && start > now && start - now <= 2 * 60 * 60 * 1000;
     });
     return soon ? "soon" : "offline";
-  }, [live]);
+  }, [live, nowTick]);
+
 
 
   const [liveCount, setLiveCount] = useState<number | null>(null);
@@ -220,12 +223,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
     };
 
-    (async () => {
+    const loadLive = async () => {
       try {
         const today = new Date().toISOString().slice(0, 10);
         const res = await fetch(
           `${SUPABASE_URL}/rest/v1/dsm_live_sessions?deleted_at=is.null&status=eq.upcoming&session_date=gte.${today}&order=session_date.asc&order=session_time.asc&limit=10&select=id,title,session_date,session_time,duration_minutes,is_live,max_spaces,spaces_taken,image_url`,
-          { headers },
+          { headers, cache: "no-store" },
         );
         const data = (await res.json()) as LiveItem[];
         if (!cancelled && Array.isArray(data)) {
@@ -245,12 +248,42 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
       } catch {
         /* ignore */
       }
-    })();
+    };
+
+    void loadLive();
+
+    // Poll for live status so the Live tile updates without a refresh.
+    const poll = window.setInterval(() => {
+      if (typeof document !== "undefined" && document.hidden) return;
+      void loadLive();
+    }, 45000);
+
+    // Re-check immediately when the app regains focus / visibility.
+    const onWake = () => {
+      if (typeof document !== "undefined" && document.hidden) return;
+      setNowTick(Date.now());
+      void loadLive();
+    };
+    window.addEventListener("focus", onWake);
+    document.addEventListener("visibilitychange", onWake);
 
     return () => {
       cancelled = true;
+      window.clearInterval(poll);
+      window.removeEventListener("focus", onWake);
+      document.removeEventListener("visibilitychange", onWake);
     };
   }, []);
+
+  // Local clock tick so a session flipping to "live" by time alone re-renders.
+  useEffect(() => {
+    const t = window.setInterval(() => {
+      if (typeof document !== "undefined" && document.hidden) return;
+      setNowTick(Date.now());
+    }, 20000);
+    return () => window.clearInterval(t);
+  }, []);
+
 
   useEffect(() => {
     supabase
