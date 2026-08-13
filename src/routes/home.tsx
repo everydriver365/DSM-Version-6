@@ -6446,17 +6446,6 @@ function HomePage() {
               
 
               const goTile = (tile: QuickTile) => {
-                if (tile.action === 'running-late') { setRunningLateOpen(true); return; }
-                else if (tile.action === 'nearby') { setNearbyOpen(true); return; }
-                else if (tile.action === 'take-payment') { setUnifiedPayPupilId(undefined); setUnifiedPayOpen(true); return; }
-                else if (tile.action === 'add-expense') { setAddExpenseOpen(true); return; }
-                else if (tile.action === 'log-mileage') { setLogMileageOpen(true); return; }
-                else if (tile.action === 'send-message') { setSendMessagePupilId(undefined); setSendMessageOpen(true); return; }
-                if (tile.wsIndex === 1) { navigate({ to: '/schedule' as never }); return; }
-                if (tile.wsIndex === 2) { navigate({ to: '/pupils' as never }); return; }
-                if (tile.wsIndex === 3) { navigate({ to: '/payments' as never }); return; }
-                if (tile.wsIndex === 6) { navigate({ to: '/dsm-live' as never }); return; }
-                if (tile.wsIndex === 7 || tile.route === null) { navigate({ to: '/more' as never }); return; }
                 navigate({ to: tile.route as never });
               };
 
@@ -6651,8 +6640,7 @@ function HomePage() {
                 {(() => {
                   const filteredTiles = quickSearch.trim()
                     ? quickTiles.filter(t =>
-                        t.label.toLowerCase().includes(quickSearch.toLowerCase()) ||
-                        t.sub.toLowerCase().includes(quickSearch.toLowerCase())
+                        t.label.toLowerCase().includes(quickSearch.toLowerCase())
                       )
                     : quickTiles;
 
@@ -6665,7 +6653,6 @@ function HomePage() {
                   const currentPage = Math.min(qaPage, pageCount - 1);
 
                   const renderHomeTile = (tile: QuickTile, key: string) => {
-                    const Icon = tile.icon;
                     return (
                       <button
                         key={key}
@@ -6697,7 +6684,7 @@ function HomePage() {
                             width: 38,
                             height: 38,
                             borderRadius: 11,
-                            background: tile.chipBg,
+                            background: tile.bg,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -6705,7 +6692,7 @@ function HomePage() {
                             transition: 'transform 0.15s ease',
                           }}
                         >
-                          <Icon size={20} color={tile.iconStroke} strokeWidth={2} />
+                          {tile.icon}
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, maxWidth: '100%' }}>
                           <span style={{
@@ -6719,17 +6706,6 @@ function HomePage() {
                             textOverflow: 'ellipsis',
                             maxWidth: '100%',
                           }}>{tile.label}</span>
-                          <span style={{
-                            fontSize: 12,
-                            color: '#8792A2',
-                            lineHeight: 1.3,
-                            marginTop: 2,
-                            fontFamily: 'Poppins, sans-serif',
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            maxWidth: '100%',
-                          }}>{tile.sub}</span>
                         </div>
                       </button>
                     );
