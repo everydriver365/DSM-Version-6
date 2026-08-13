@@ -544,6 +544,14 @@ function CourseDetailPage() {
             if (editing) {
               setEditing(false);
               setForm(course);
+              setSeriesEditIds([]);
+              setSkippedCount(0);
+              setEditScope("this");
+            } else if (course?.series_id) {
+              setEditScope("this");
+              setSeriesEditIds([]);
+              setSkippedCount(0);
+              setScopeSheetOpen(true);
             } else {
               setEditing(true);
             }
