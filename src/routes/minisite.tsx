@@ -1141,16 +1141,28 @@ function MiniSitePage() {
             )}
 
             <div
-              onClick={() => setUpgradeStep("choose-tier")}
               style={{
-                fontSize: 12,
-                color: "#9CA3AF",
                 textAlign: "center",
-                marginTop: 16,
-                cursor: "pointer",
+                marginTop: 32,
+                paddingTop: 16,
+                borderTop: "1px solid #E4E8EF",
               }}
             >
-              I already have a domain / skip this step
+              <button
+                type="button"
+                onClick={() => setUpgradeStep("choose-tier")}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: 11,
+                  color: "#C7D0DC",
+                  fontFamily: "Poppins, sans-serif",
+                  padding: "4px 8px",
+                }}
+              >
+                Skip — I don't need a domain
+              </button>
             </div>
           </div>
         </div>
