@@ -453,7 +453,7 @@ function CourseDetailPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      <div style={{ height: "calc(70px + env(safe-area-inset-top, 0px))" }} />
 
       {/* Hero image */}
       <div style={{ position: "relative", width: "100%", height: 180, overflow: "hidden" }}>
