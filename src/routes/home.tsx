@@ -6789,7 +6789,7 @@ function HomePage() {
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         gap: 10,
-                        padding: '14px 16px 10px',
+                        padding: '14px 0 10px',
                       }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
                           <span aria-hidden style={{ width: 4, height: 16, borderRadius: 2, background: '#1877D6', display: 'inline-block' }} />
@@ -6865,11 +6865,11 @@ function HomePage() {
 
                       {/* Search bar */}
                       {quickSearchOpen && (
-                        <div style={{ position: 'relative', padding: '0 16px 12px' }}>
+                        <div style={{ position: 'relative', padding: '0 0 12px' }}>
                           <IconSearch
                             size={16}
                             color="#9CA3AF"
-                            style={{ position: 'absolute', left: 28, top: 'calc(50% - 6px)', transform: 'translateY(-50%)', pointerEvents: 'none' }}
+                            style={{ position: 'absolute', left: 12, top: 'calc(50% - 6px)', transform: 'translateY(-50%)', pointerEvents: 'none' }}
                           />
                           <input
                             type="text"
@@ -6897,7 +6897,7 @@ function HomePage() {
                               onClick={() => setQuickSearch('')}
                               style={{
                                 position: 'absolute',
-                                right: 26,
+                                right: 12,
                                 top: 'calc(50% - 6px)',
                                 transform: 'translateY(-50%)',
                                 background: 'none',
@@ -6917,7 +6917,7 @@ function HomePage() {
 
                       {/* Tiles */}
                       {quickSearch.trim() ? (
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, padding: '0 16px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, padding: 0 }}>
                           {filteredTiles.map((tile, idx) => renderHomeTile(tile, `search-${tile.label}-${idx}`))}
                         </div>
                       ) : (
@@ -6947,7 +6947,7 @@ function HomePage() {
                                   display: 'grid',
                                   gridTemplateColumns: '1fr 1fr',
                                   gap: 12,
-                                  padding: '0 16px 4px',
+                                  padding: '0 0 4px',
                                   boxSizing: 'border-box',
                                   scrollSnapAlign: 'start',
                                 }}
