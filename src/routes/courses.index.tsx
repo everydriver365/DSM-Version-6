@@ -30,6 +30,7 @@ interface CourseRow {
   spaces_taken: number;
   pickup_area: string | null;
   pickup_postcodes: { postcode: string; lat: number | null; lng: number | null }[] | null;
+  image_url: string | null;
 }
 
 
@@ -75,7 +76,7 @@ function CoursesPage() {
       }
       const query = supabase
         .from("instructor_courses")
-        .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, pickup_postcodes")
+        .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, pickup_postcodes, image_url")
         .eq("instructor_id", uid)
         .order("created_at", { ascending: false });
 
@@ -84,10 +85,20 @@ function CoursesPage() {
       if (error?.code === "42703" && error.message.includes("pickup_postcodes")) {
         const fallback = await supabase
           .from("instructor_courses")
-          .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area")
+          .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, image_url")
           .eq("instructor_id", uid)
           .order("created_at", { ascending: false });
         data = fallback.data?.map((row) => ({ ...row, pickup_postcodes: null })) ?? null;
+        error = fallback.error;
+      }
+
+      if (error?.code === "42703" && error.message.includes("image_url")) {
+        const fallback = await supabase
+          .from("instructor_courses")
+          .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area")
+          .eq("instructor_id", uid)
+          .order("created_at", { ascending: false });
+        data = fallback.data?.map((row) => ({ ...row, pickup_postcodes: null, image_url: null })) ?? null;
         error = fallback.error;
       }
 
