@@ -30,6 +30,7 @@ interface CourseRow {
   max_spaces: number;
   spaces_taken: number;
   pickup_area: string | null;
+  transmission: string | null;
   pickup_postcodes: { postcode: string; lat: number | null; lng: number | null }[] | null;
   image_url: string | null;
 }
@@ -118,7 +119,7 @@ function CoursesPage() {
       }
       const query = supabase
         .from("instructor_courses")
-        .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, pickup_postcodes, image_url")
+        .select("id, course_type, transmission, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, pickup_postcodes, image_url")
         .eq("instructor_id", uid)
         .order("created_at", { ascending: false });
 
@@ -127,7 +128,7 @@ function CoursesPage() {
       if (error?.code === "42703" && error.message.includes("pickup_postcodes")) {
         const fallback = await supabase
           .from("instructor_courses")
-          .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, image_url")
+          .select("id, course_type, transmission, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area, image_url")
           .eq("instructor_id", uid)
           .order("created_at", { ascending: false });
         data = fallback.data?.map((row) => ({ ...row, pickup_postcodes: null })) ?? null;
@@ -137,7 +138,7 @@ function CoursesPage() {
       if (error?.code === "42703" && error.message.includes("image_url")) {
         const fallback = await supabase
           .from("instructor_courses")
-          .select("id, course_type, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area")
+          .select("id, course_type, transmission, name, price, start_date, status, total_hours, max_spaces, spaces_taken, pickup_area")
           .eq("instructor_id", uid)
           .order("created_at", { ascending: false });
         data = fallback.data?.map((row) => ({ ...row, pickup_postcodes: null, image_url: null })) ?? null;
@@ -379,22 +380,39 @@ function CourseCard({
             justifyContent: "space-between",
           }}
         >
-          <span
-            style={{
-              background: "rgba(255,255,255,0.2)",
-              backdropFilter: "blur(4px)",
-              WebkitBackdropFilter: "blur(4px)",
-              color: "#fff",
-              fontSize: 10,
-              fontWeight: 800,
-              padding: "5px 10px",
-              borderRadius: 20,
-              textTransform: "uppercase",
-              letterSpacing: "0.4px",
-            }}
-          >
-            {typeLabel(c.course_type)}
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span
+              style={{
+                background: "rgba(255,255,255,0.2)",
+                backdropFilter: "blur(4px)",
+                WebkitBackdropFilter: "blur(4px)",
+                color: "#fff",
+                fontSize: 10,
+                fontWeight: 800,
+                padding: "5px 10px",
+                borderRadius: 20,
+                textTransform: "uppercase",
+                letterSpacing: "0.4px",
+              }}
+            >
+              {typeLabel(c.course_type)}
+            </span>
+            {c.transmission && (
+              <div style={{
+                background: c.transmission === 'Automatic' ? '#E0F2FE' : c.transmission === 'Both' ? '#F0FDF4' : '#F1F5F9',
+                color: c.transmission === 'Automatic' ? '#0369A1' : c.transmission === 'Both' ? '#15803D' : '#475569',
+                fontSize: 10,
+                fontWeight: 700,
+                borderRadius: 20,
+                padding: '2px 8px',
+                fontFamily: 'Poppins, sans-serif',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+              }}>
+                {c.transmission}
+              </div>
+            )}
+          </div>
           <span
             style={{
               width: 28,
