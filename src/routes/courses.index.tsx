@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { Plus, GraduationCap, ChevronRight, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { SectionHeader } from "../components/dsm/SectionHeader";
+import { PupilAvatar } from "@/components/PupilAvatar";
 import { supabase } from "../lib/supabaseClient";
+
 
 export const Route = createFileRoute("/courses/")({
   head: () => ({
