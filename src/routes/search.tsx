@@ -346,7 +346,7 @@ function SearchPage() {
           </div>
         )}
 
-        {debounced && !loading && results && totalCount === 0 && (
+        {debounced && !loading && results && totalCount === 0 && matchedPages.length === 0 && (
           <EmptyState
             icon={<IconSearch size={32} color="#9CA3AF" stroke={1.5} />}
             title="No results found"
@@ -354,7 +354,31 @@ function SearchPage() {
           />
         )}
 
-        {debounced && !loading && results && totalCount > 0 && (
+        {debounced && !loading && matchedPages.length > 0 && (
+          <div>
+            <SectionHeader>PAGES</SectionHeader>
+            <div className="flex flex-col" style={{ gap: 0 }}>
+              {matchedPages.map((page, i) => (
+                <button
+                  key={page.route}
+                  type="button"
+                  onClick={() => navigate({ to: page.route as never })}
+                  className="bg-white text-left flex items-center justify-between"
+                  style={{
+                    padding: "13px 16px",
+                    borderBottom: i < matchedPages.length - 1 ? "1px solid #E4E8EF" : "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  <span className="text-[14px] text-[#0B1F3A]">{page.label}</span>
+                  <IconChevronRight size={18} color="#9CA3AF" />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {debounced && !loading && results && (totalCount > 0 || matchedPages.length > 0) && (
           <>
             {results.pupils.length > 0 && (
               <ResultGroup
