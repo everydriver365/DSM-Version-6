@@ -6636,8 +6636,7 @@ function HomePage() {
                 .qa-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at center, rgba(15,32,68,0.18) 0%, transparent 60%); opacity: 0; pointer-events: none; }
                 .qa-card:active::after { animation: qaRipple 0.5s ease-out; }
               `}</style>
-              <div style={{ background: PAGE_BACKGROUND, margin: 0, padding: 0, borderRadius: 0 }}>
-                {(() => {
+              {(() => {
                   const filteredTiles = quickSearch.trim()
                     ? quickTiles.filter(t =>
                         t.label.toLowerCase().includes(quickSearch.toLowerCase())
