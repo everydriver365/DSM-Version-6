@@ -6729,7 +6729,7 @@ function HomePage() {
                   const renderHomeTile = (tile: QuickTile, key: string) => {
                     const tint = TINTS[tile.bg as string] ?? { chip: '#E3EEFB', icon: '#1877D6' };
                     const tintedIcon = isValidElement(tile.icon)
-                      ? cloneElement(tile.icon as React.ReactElement<any>, { color: tint.icon, size: 24 })
+                      ? cloneElement(tile.icon as React.ReactElement<any>, { color: tint.icon, size: 16 })
                       : tile.icon;
                     const sub = SUBS[tile.label];
                     return (
