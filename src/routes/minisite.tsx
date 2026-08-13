@@ -10,7 +10,9 @@ import {
   X,
   Check,
   Loader2,
+  ChevronLeft,
 } from "lucide-react";
+import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { IconCheck } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -74,6 +76,20 @@ function MiniSitePage() {
   const [customDomain, setCustomDomain] = useState<string | null>(null);
   const [customDomainStatus, setCustomDomainStatus] = useState<"pending" | null>(null);
   const [showDomainSearch, setShowDomainSearch] = useState(false);
+
+  // Upgrade flow: domain search happens before payment
+  const [upgradeStep, setUpgradeStep] = useState<
+    "idle" | "domain" | "choose-tier" | "processing"
+  >("idle");
+  const [chosenDomain, setChosenDomain] = useState<string | null>(null);
+  const [chosenTier, setChosenTier] = useState<
+    "website" | "pro" | "managed" | null
+  >(null);
+  const [domainQuery, setDomainQuery] = useState("");
+  const [domainChecking, setDomainChecking] = useState(false);
+  const [domainResult, setDomainResult] = useState<
+    { domain: string; available: boolean } | null
+  >(null);
 
   // Slug
   const [originalSlug, setOriginalSlug] = useState<string>("");
@@ -291,6 +307,39 @@ function MiniSitePage() {
     toast.success("Saved");
   }
 
+  async function checkDomain() {
+    const raw = domainQuery.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+    if (raw.length < 3) return;
+    const domain = raw.includes(".") ? raw : `${raw.replace(/[^a-z0-9-]/g, "")}.co.uk`;
+    setDomainChecking(true);
+    setDomainResult(null);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(
+        'https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/check-domain',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token}`,
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo',
+          },
+          body: JSON.stringify({ domain }),
+        }
+      );
+      const data = await res.json();
+      if (data.error) {
+        toast.error(data.error);
+        return;
+      }
+      setDomainResult({ domain: data.domain ?? domain, available: !!data.available });
+    } catch (e: any) {
+      toast.error(e.message ?? "Couldn't check that domain");
+    } finally {
+      setDomainChecking(false);
+    }
+  }
+
   async function handleUpgrade(
     tier: 'website' | 'pro' | 'managed'
   ) {
@@ -299,6 +348,7 @@ function MiniSitePage() {
         await supabase.auth.getSession();
       if (!session) {
         toast.error('Please log in first');
+        setUpgradeStep('choose-tier');
         return;
       }
 
@@ -311,7 +361,11 @@ function MiniSitePage() {
             'Authorization': `Bearer ${session.access_token}`,
             'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo',
           },
-          body: JSON.stringify({ tier }),
+          body: JSON.stringify({
+            tier,
+            domain: chosenDomain ?? null,
+            redirect_url: `https://drivingschoolmanager.co.uk/subscription-success?tier=${tier}&domain=${chosenDomain ?? ''}`,
+          }),
         }
       );
 
@@ -319,6 +373,7 @@ function MiniSitePage() {
 
       if (data.error) {
         toast.error(data.error);
+        setUpgradeStep('choose-tier');
         return;
       }
 
@@ -327,6 +382,7 @@ function MiniSitePage() {
     } catch (e: any) {
       toast.error(
         e.message ?? 'Could not start upgrade');
+      setUpgradeStep('choose-tier');
     }
   }
 
@@ -387,6 +443,163 @@ function MiniSitePage() {
   }
 
   const slugValidFormat = /^[a-z0-9-]+$/.test(slug) && slug.length >= 3;
+
+  const TIERS: {
+    id: "website" | "pro" | "managed";
+    name: string;
+    price: string;
+    pillBg: string;
+    pillColor: string;
+    badge?: string;
+    features: string[];
+    cta: string;
+    btnBg: string;
+    btnShadow: string;
+  }[] = [
+    {
+      id: "website",
+      name: "DSM Website",
+      price: "£9.99/mo",
+      pillBg: "#EFF6FF",
+      pillColor: "#1877D6",
+      badge: "Most popular",
+      features: [
+        "Your own .co.uk domain included",
+        'Remove "Powered by EveryDriver"',
+        "Gallery (up to 20 photos)",
+        "Video intro",
+        "Google reviews widget",
+        "Priority listing on EveryDriver",
+        "Analytics dashboard",
+      ],
+      cta: "Upgrade to DSM Website →",
+      btnBg: "#1877D6",
+      btnShadow: "0 3px 0 #0F52A8",
+    },
+    {
+      id: "pro",
+      name: "DSM Website Pro",
+      price: "£19.99/mo",
+      pillBg: "#EDE9FE",
+      pillColor: "#7C3AED",
+      features: [
+        "Everything in DSM Website",
+        "Multiple area pages",
+        "Blog & content pages",
+        "Advanced SEO tools",
+        "Google Search Console",
+        "Promo codes on booking",
+        "Instructor login to edit site",
+      ],
+      cta: "Upgrade to Pro →",
+      btnBg: "#7C3AED",
+      btnShadow: "0 3px 0 #5B21B6",
+    },
+    {
+      id: "managed",
+      name: "DSM Managed Website",
+      price: "£29.99/mo",
+      pillBg: "#F1F5F9",
+      pillColor: "#0B1F3A",
+      features: [
+        "Everything in Pro",
+        "We build your website for you",
+        "Monthly content updates",
+        "SEO reporting & management",
+        "Google Business Profile setup",
+        "Dedicated account manager",
+      ],
+      cta: "Get a managed website →",
+      btnBg: "#0B1F3A",
+      btnShadow: "0 3px 0 #050D1C",
+    },
+  ];
+
+  function renderTiers(
+    onPick: (tier: "website" | "pro" | "managed") => void,
+    ctaLabel: string | null,
+  ) {
+    return TIERS.map((t) => (
+      <div
+        key={t.id}
+        style={{
+          background: "#fff",
+          borderRadius: 16,
+          boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+          padding: 16,
+          marginBottom: 10,
+        }}
+      >
+        <div className="flex items-center justify-between">
+          <span
+            style={{
+              background: t.pillBg,
+              color: t.pillColor,
+              fontSize: 12,
+              fontWeight: 700,
+              borderRadius: 20,
+              padding: "4px 10px",
+            }}
+          >
+            {t.price}
+          </span>
+          {t.badge && (
+            <span
+              style={{
+                background: "#FEF3C7",
+                color: "#92400E",
+                fontSize: 10,
+                fontWeight: 700,
+                borderRadius: 20,
+                padding: "3px 8px",
+              }}
+            >
+              {t.badge}
+            </span>
+          )}
+        </div>
+        <div
+          style={{
+            fontSize: 16,
+            fontWeight: 800,
+            color: "#0B1F3A",
+            marginTop: 8,
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          {t.name}
+        </div>
+        <div className="mt-3" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          {t.features.map((f) => (
+            <div key={f} className="flex items-center" style={{ gap: 8 }}>
+              <IconCheck size={12} color="#15803D" />
+              <span style={{ fontSize: 12, color: "#6B7686" }}>{f}</span>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => onPick(t.id)}
+          style={{
+            width: "100%",
+            background: t.btnBg,
+            color: "#fff",
+            borderRadius: 12,
+            padding: 12,
+            fontSize: 14,
+            fontWeight: 700,
+            marginTop: 12,
+            border: "none",
+            cursor: "pointer",
+            fontFamily: "Poppins, sans-serif",
+            boxShadow: t.btnShadow,
+          }}
+        >
+          {ctaLabel ?? t.cta}
+        </button>
+      </div>
+    ));
+  }
 
   return (
     <div className="min-h-screen pb-32" style={{ ...POPPINS, backgroundColor: "#F3F8FF" }}>
@@ -773,235 +986,11 @@ function MiniSitePage() {
             Upgrade your website
           </div>
 
-          {/* Tier 1 — DSM Website */}
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: 16,
-              boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-              padding: 16,
-              marginBottom: 10,
-            }}
-          >
-            <div className="flex items-center justify-between">
-              <span
-                style={{
-                  background: "#EFF6FF",
-                  color: "#1877D6",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  borderRadius: 20,
-                  padding: "4px 10px",
-                }}
-              >
-                £9.99/mo
-              </span>
-              <span
-                style={{
-                  background: "#FEF3C7",
-                  color: "#92400E",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  borderRadius: 20,
-                  padding: "3px 8px",
-                }}
-              >
-                Most popular
-              </span>
-            </div>
-            <div
-              style={{
-                fontSize: 16,
-                fontWeight: 800,
-                color: "#0B1F3A",
-                marginTop: 8,
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              DSM Website
-            </div>
-            <div className="mt-3" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              {[
-                "Your own .co.uk domain included",
-                "Remove \"Powered by EveryDriver\"",
-                "Gallery (up to 20 photos)",
-                "Video intro",
-                "Google reviews widget",
-                "Priority listing on EveryDriver",
-                "Analytics dashboard",
-              ].map((f) => (
-                <div key={f} className="flex items-center" style={{ gap: 8 }}>
-                  <IconCheck size={12} color="#15803D" />
-                  <span style={{ fontSize: 12, color: "#6B7686" }}>{f}</span>
-                </div>
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={() => handleUpgrade('website')}
-              style={{
-                width: "100%",
-                background: "#1877D6",
-                color: "#fff",
-                borderRadius: 12,
-                padding: 12,
-                fontSize: 14,
-                fontWeight: 700,
-                marginTop: 12,
-                border: "none",
-                cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
-                boxShadow: "0 3px 0 #0F52A8",
-              }}
-            >
-              Upgrade to DSM Website →
-            </button>
-          </div>
-
-          {/* Tier 2 — DSM Website Pro */}
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: 16,
-              boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-              padding: 16,
-              marginBottom: 10,
-            }}
-          >
-            <div className="flex items-center justify-between">
-              <span
-                style={{
-                  background: "#EDE9FE",
-                  color: "#7C3AED",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  borderRadius: 20,
-                  padding: "4px 10px",
-                }}
-              >
-                £19.99/mo
-              </span>
-            </div>
-            <div
-              style={{
-                fontSize: 16,
-                fontWeight: 800,
-                color: "#0B1F3A",
-                marginTop: 8,
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              DSM Website Pro
-            </div>
-            <div className="mt-3" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              {[
-                "Everything in DSM Website",
-                "Multiple area pages",
-                "Blog & content pages",
-                "Advanced SEO tools",
-                "Google Search Console",
-                "Promo codes on booking",
-                "Instructor login to edit site",
-              ].map((f) => (
-                <div key={f} className="flex items-center" style={{ gap: 8 }}>
-                  <IconCheck size={12} color="#15803D" />
-                  <span style={{ fontSize: 12, color: "#6B7686" }}>{f}</span>
-                </div>
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={() => handleUpgrade('pro')}
-              style={{
-                width: "100%",
-                background: "#7C3AED",
-                color: "#fff",
-                borderRadius: 12,
-                padding: 12,
-                fontSize: 14,
-                fontWeight: 700,
-                marginTop: 12,
-                border: "none",
-                cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
-                boxShadow: "0 3px 0 #5B21B6",
-              }}
-            >
-              Upgrade to Pro →
-            </button>
-          </div>
-
-          {/* Tier 3 — DSM Managed Website */}
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: 16,
-              boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-              padding: 16,
-              marginBottom: 10,
-            }}
-          >
-            <div className="flex items-center justify-between">
-              <span
-                style={{
-                  background: "#F1F5F9",
-                  color: "#0B1F3A",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  borderRadius: 20,
-                  padding: "4px 10px",
-                }}
-              >
-                £29.99/mo
-              </span>
-            </div>
-            <div
-              style={{
-                fontSize: 16,
-                fontWeight: 800,
-                color: "#0B1F3A",
-                marginTop: 8,
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              DSM Managed Website
-            </div>
-            <div className="mt-3" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              {[
-                "Everything in Pro",
-                "We build your website for you",
-                "Monthly content updates",
-                "SEO reporting & management",
-                "Google Business Profile setup",
-                "Dedicated account manager",
-              ].map((f) => (
-                <div key={f} className="flex items-center" style={{ gap: 8 }}>
-                  <IconCheck size={12} color="#15803D" />
-                  <span style={{ fontSize: 12, color: "#6B7686" }}>{f}</span>
-                </div>
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={() => handleUpgrade('managed')}
-              style={{
-                width: "100%",
-                background: "#0B1F3A",
-                color: "#fff",
-                borderRadius: 12,
-                padding: 12,
-                fontSize: 14,
-                fontWeight: 700,
-                marginTop: 12,
-                border: "none",
-                cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
-                boxShadow: "0 3px 0 #050D1C",
-              }}
-            >
-              Get a managed website →
-            </button>
-          </div>
+          {renderTiers((tier) => {
+            setChosenTier(tier);
+            setUpgradeStep("domain");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }, null)}
 
           <div
             style={{
@@ -1016,6 +1005,219 @@ function MiniSitePage() {
           </div>
         </div>
       </div>
+
+      {/* STEP 1 — DOMAIN SEARCH OVERLAY */}
+      {upgradeStep === "domain" && (
+        <div style={{ position: "fixed", inset: 0, background: "#EEF2F7", zIndex: 200, overflowY: "auto" }}>
+          <div style={{ background: "#0B1F3A", padding: 16, display: "flex", gap: 12, alignItems: "center" }}>
+            <button
+              type="button"
+              onClick={() => setUpgradeStep("idle")}
+              aria-label="Back"
+              style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex" }}
+            >
+              <ChevronLeft size={22} />
+            </button>
+            <div style={{ color: "#fff", fontSize: 18, fontWeight: 800 }}>Choose your domain</div>
+          </div>
+
+          <div style={{ maxWidth: 480, margin: "0 auto", padding: "24px 16px" }}>
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 16,
+                padding: 16,
+                marginBottom: 16,
+                boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+              }}
+            >
+              <div style={{ fontSize: 20, marginBottom: 6 }}>🌐</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+                Your domain is included free with your subscription
+              </div>
+              <div style={{ fontSize: 12, color: "#6B7686", marginTop: 4 }}>
+                Search for your school name — we'll register it automatically when you subscribe.
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: 8 }}>
+              <input
+                value={domainQuery}
+                onChange={(e) => {
+                  setDomainQuery(e.target.value);
+                  setDomainResult(null);
+                }}
+                placeholder="yourschoolname.co.uk"
+                style={{
+                  flex: 1,
+                  background: "#fff",
+                  border: "0.5px solid #E4E8EF",
+                  borderRadius: 12,
+                  padding: "12px 14px",
+                  fontSize: 14,
+                  fontFamily: "Poppins, sans-serif",
+                  color: "#0B1F3A",
+                }}
+              />
+              <button
+                type="button"
+                onClick={checkDomain}
+                disabled={domainChecking || domainQuery.trim().length < 3}
+                style={{
+                  background: "#1877D6",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 12,
+                  padding: "0 18px",
+                  fontSize: 14,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                  opacity: domainChecking || domainQuery.trim().length < 3 ? 0.5 : 1,
+                }}
+              >
+                {domainChecking ? "…" : "Check"}
+              </button>
+            </div>
+
+            {domainResult && !domainResult.available && (
+              <div
+                style={{
+                  marginTop: 12,
+                  background: "#FEF2F2",
+                  border: "0.5px solid #FECACA",
+                  borderRadius: 16,
+                  padding: 16,
+                  fontSize: 13,
+                  color: "#CC2229",
+                  fontWeight: 600,
+                }}
+              >
+                {domainResult.domain} is already taken — try another name.
+              </div>
+            )}
+
+            {domainResult && domainResult.available && (
+              <div
+                style={{
+                  marginTop: 12,
+                  background: "#F0FDF4",
+                  border: "0.5px solid #BBF7D0",
+                  borderRadius: 16,
+                  padding: 16,
+                }}
+              >
+                <div style={{ fontSize: 15, fontWeight: 800, color: "#0B1F3A" }}>{domainResult.domain}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "#15803D", marginTop: 4 }}>
+                  ✓ Available — this domain is yours
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setChosenDomain(domainResult.domain);
+                    setUpgradeStep("choose-tier");
+                  }}
+                  style={{
+                    width: "100%",
+                    background: "#15803D",
+                    color: "#fff",
+                    borderRadius: 12,
+                    padding: 12,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    marginTop: 12,
+                    border: "none",
+                    cursor: "pointer",
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  Continue with {domainResult.domain} →
+                </button>
+              </div>
+            )}
+
+            <div
+              onClick={() => setUpgradeStep("choose-tier")}
+              style={{
+                fontSize: 12,
+                color: "#9CA3AF",
+                textAlign: "center",
+                marginTop: 16,
+                cursor: "pointer",
+              }}
+            >
+              I already have a domain / skip this step
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* STEP 2 — CHOOSE TIER OVERLAY */}
+      {upgradeStep === "choose-tier" && (
+        <div style={{ position: "fixed", inset: 0, background: "#EEF2F7", zIndex: 200, overflowY: "auto" }}>
+          <div style={{ background: "#0B1F3A", padding: 16, display: "flex", gap: 12, alignItems: "center" }}>
+            <button
+              type="button"
+              onClick={() => setUpgradeStep("domain")}
+              aria-label="Back"
+              style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex" }}
+            >
+              <ChevronLeft size={22} />
+            </button>
+            <div style={{ color: "#fff", fontSize: 18, fontWeight: 800 }}>Choose your plan</div>
+          </div>
+
+          <div style={{ maxWidth: 480, margin: "0 auto", padding: "24px 16px" }}>
+            {chosenDomain && (
+              <div style={{ marginBottom: 16 }}>
+                <span
+                  style={{
+                    display: "inline-block",
+                    background: "#DCFCE7",
+                    color: "#15803D",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    borderRadius: 20,
+                    padding: "4px 12px",
+                  }}
+                >
+                  ✓ {chosenDomain} reserved
+                </span>
+              </div>
+            )}
+
+            {renderTiers(
+              (tier) => {
+                setChosenTier(tier);
+                setUpgradeStep("processing");
+                handleUpgrade(tier);
+              },
+              chosenDomain ? "Subscribe & register domain →" : "Subscribe →",
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* STEP 3 — PROCESSING */}
+      {upgradeStep === "processing" && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "#EEF2F7",
+            zIndex: 210,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+          }}
+        >
+          <PageLoader />
+          <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+            Setting up your subscription...
+          </div>
+        </div>
+      )}
     </div>
   );
 }
