@@ -45,6 +45,7 @@ import {
   RefreshCw,
   UserCircle,
   FileSpreadsheet,
+  Globe,
 } from "lucide-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
