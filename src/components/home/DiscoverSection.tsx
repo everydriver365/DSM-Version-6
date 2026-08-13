@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   IconPlayerPlay,
@@ -85,6 +85,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const navigate = useNavigate();
   const [live, setLive] = useState<LiveItem[]>([]);
   const [liveActive, setLiveActive] = useState(false);
+
+  // Live tile status: on air now, starting soon, or nothing scheduled
+  const liveStatus: "live" | "soon" | "offline" = useMemo(() => {
+    if (live.some((s) => isLiveNow(s))) return "live";
+    const now = Date.now();
+    const soon = live.some((s) => {
+      const start = startMs(s.session_date, s.session_time);
+      return !!start && start > now && start - now <= 2 * 60 * 60 * 1000;
+    });
+    return soon ? "soon" : "offline";
+  }, [live]);
+
 
   const [liveCount, setLiveCount] = useState<number | null>(null);
   const [learnCount, setLearnCount] = useState<number | null>(null);
