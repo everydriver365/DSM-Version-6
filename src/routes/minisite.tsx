@@ -170,6 +170,10 @@ function MiniSitePage() {
         if (d.website_font) setFont(d.website_font);
         if (d.website_header_style) setHeaderStyle(d.website_header_style);
         if (d.brand_colour) setBrandColour(d.brand_colour);
+        if (d.website_tier && TIER_ORDER.includes(d.website_tier)) {
+          setWebsiteTier(d.website_tier as TierId);
+        }
+
       }
       setLoading(false);
     })();
