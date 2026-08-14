@@ -122,6 +122,28 @@ const BENEFITS = [
     comingSoon: false,
     exclusive: true,
   },
+  {
+    id: 'bennenden',
+    name: 'Bennenden Health',
+    tagline: 'Free to all DSM members',
+    icon: IconHeartHandshake,
+    iconBg: '#FEE2E2',
+    iconColor: '#991B1B',
+    description: 'Bennenden Health provides affordable healthcare for everyone. As a DSM member you get free access — including 24/7 GP helpline, mental health support and medical treatment.',
+    perks: [
+      '24/7 GP helpline',
+      'Mental health support',
+      'Medical treatment',
+      'Affordable healthcare',
+      'No waiting lists',
+      'Free to DSM members',
+    ],
+    ctaLabel: 'Access Bennenden →',
+    ctaAction: 'bennenden',
+    comingSoon: true,
+    exclusive: false,
+    freeForAll: true,
+  },
 ];
 
 const DEALS = [
