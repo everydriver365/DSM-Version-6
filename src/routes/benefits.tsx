@@ -9,7 +9,7 @@ import diaLogoAsset from '@/assets/dia-logo.png.asset.json';
 import perkboxLogoAsset from '@/assets/perkbox-logo.jpeg.asset.json';
 import pirkxLogoAsset from '@/assets/pirkx-logo.png.asset.json';
 import hmcaLogoAsset from '@/assets/hmca-logo.png.asset.json';
-import bennendenLogoAsset from '@/assets/bennenden-logo.png.asset.json';
+import bennendenLogoAsset from '@/assets/bennenden-logo.jpg.asset.json';
 import {
   IconCircleCheck,
   IconLock,
