@@ -193,12 +193,14 @@ const DEALS = [
   },
 ];
 
-function iconFor(name: string) {
+function iconFor(name: string | React.ComponentType<any>) {
+  if (typeof name === 'function') return name;
   switch (name) {
     case 'stethoscope':
       return IconStethoscope;
     case 'gift':
       return IconGift;
+    case 'shield-check':
     case 'school':
     default:
       return IconShieldCheck;
