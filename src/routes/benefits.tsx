@@ -61,7 +61,7 @@ const BENEFITS = [
   {
     id: 'dia',
     name: 'DIA Membership',
-    tagline: 'Free with DSM Pro',
+    tagline: 'Free with DSM Pro - Save £125 a year!',
     icon: 'school',
     imageUrl: diaLogoAsset.url,
     iconBg: '#E6F1FB',
