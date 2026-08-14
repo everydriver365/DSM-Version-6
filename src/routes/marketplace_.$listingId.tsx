@@ -4,9 +4,24 @@ import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { IconArrowLeft, IconBriefcase, IconCamera, IconCar, IconChevronRight, IconCircleCheck, IconHeart, IconMapPin, IconPackage, IconSchool, IconShieldCheck, IconStar, IconTag, IconTool, IconX } from "@tabler/icons-react";
+import { IconArrowLeft, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronRight, IconCircleCheck, IconHeart, IconMapPin, IconPackage, IconPlayerPlayFilled, IconSchool, IconShieldCheck, IconStar, IconTag, IconTool, IconX } from "@tabler/icons-react";
 import { BookOpen, Megaphone } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
+import {
+  COMPARISON_COLS,
+  COMPARISON_ROWS,
+  TIERS,
+  TIER_NAMES,
+  TIER_ORDER,
+  checkDomainAvailability,
+  createSubscriptionPaymentLink,
+  type DomainCheck,
+  type PaidTierId,
+  type TierId,
+} from "@/lib/websiteUpgrade";
+
+const WEBSITE_LISTING_ID = "8b150e48-fd7f-429e-a090-b28bc7e76057";
+
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
