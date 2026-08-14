@@ -23,6 +23,7 @@ import {
   IconTool,
   IconChevronRight,
   IconWorld,
+  IconHeartHandshake,
 } from '@tabler/icons-react';
 import {
   checkDomainAvailability,
@@ -121,6 +122,28 @@ const BENEFITS = [
     comingSoon: false,
     exclusive: true,
   },
+  {
+    id: 'bennenden',
+    name: 'Bennenden Health',
+    tagline: 'Free to all DSM members',
+    icon: IconHeartHandshake,
+    iconBg: '#FEE2E2',
+    iconColor: '#991B1B',
+    description: 'Bennenden Health provides affordable healthcare for everyone. As a DSM member you get free access — including 24/7 GP helpline, mental health support and medical treatment.',
+    perks: [
+      '24/7 GP helpline',
+      'Mental health support',
+      'Medical treatment',
+      'Affordable healthcare',
+      'No waiting lists',
+      'Free to DSM members',
+    ],
+    ctaLabel: 'Access Bennenden →',
+    ctaAction: 'bennenden',
+    comingSoon: true,
+    exclusive: false,
+    freeForAll: true,
+  },
 ];
 
 const DEALS = [
@@ -170,12 +193,14 @@ const DEALS = [
   },
 ];
 
-function iconFor(name: string) {
+function iconFor(name: string | React.ComponentType<any>) {
+  if (typeof name === 'function') return name;
   switch (name) {
     case 'stethoscope':
       return IconStethoscope;
     case 'gift':
       return IconGift;
+    case 'shield-check':
     case 'school':
     default:
       return IconShieldCheck;
@@ -243,6 +268,9 @@ function BenefitsPage() {
           'mailto:info@everydriver.co.uk?subject=HMCA Health Insurance Enquiry',
           '_blank',
         );
+        break;
+      case 'bennenden':
+        toast.info('Bennenden Health coming soon — we\'ll notify you when live');
         break;
     }
   }
@@ -565,7 +593,22 @@ function BenefitsPage() {
                   DSM exclusive
                 </span>
               )}
-              {!isPaid && (
+              {benefit.freeForAll ? (
+                <span
+                  style={{
+                    background: '#DCFCE7',
+                    color: '#15803D',
+                    fontSize: 9,
+                    fontWeight: 700,
+                    borderRadius: 20,
+                    padding: '2px 8px',
+                    flexShrink: 0,
+                    fontFamily: 'Poppins, sans-serif',
+                  }}
+                >
+                  Free for all members
+                </span>
+              ) : !isPaid && (
                 <IconLock size={16} color="#9CA3AF" stroke={1.5} />
               )}
             </div>
@@ -606,7 +649,49 @@ function BenefitsPage() {
                 borderTop: '1px solid #E4E8EF',
               }}
             >
-              {!isPaid ? (
+              {benefit.freeForAll ? (
+                benefit.comingSoon ? (
+                  <div>
+                    <span
+                      style={{
+                        background: '#FEF3C7',
+                        color: '#92400E',
+                        fontSize: 11,
+                        fontWeight: 700,
+                        borderRadius: 20,
+                        padding: '5px 12px',
+                        display: 'inline-block',
+                        fontFamily: 'Poppins, sans-serif',
+                      }}
+                    >
+                      Coming soon
+                    </span>
+                    <div style={{ fontSize: 10, color: '#9CA3AF', display: 'block', marginTop: 4 }}>
+                      We'll notify you when this goes live
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handleBenefitCta(benefit.ctaAction)}
+                    style={{
+                      width: '100%',
+                      background: '#1877D6',
+                      color: '#fff',
+                      borderRadius: 20,
+                      padding: 11,
+                      fontSize: 14,
+                      fontWeight: 700,
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontFamily: 'Poppins, sans-serif',
+                      boxShadow: '0 3px 0 #0F52A8',
+                    }}
+                  >
+                    {benefit.ctaLabel}
+                  </button>
+                )
+              ) : !isPaid ? (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <IconLock size={13} color="#9CA3AF" stroke={1.5} />
