@@ -1093,11 +1093,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/learn" as never })}
-          style={{ ...tileBase, gridColumn: 2, gridRow: 1, height: 96 }}
+          style={{ ...tileBase, gridColumn: 2, gridRow: 1, height: 96, background: "#F0FDF4", borderColor: "#DCFCE7" }}
         >
           <div>
-            <span style={{ ...chipBase, background: "#EAF3FB", color: BLUE }}>
-              <IconBook size={17} color={BLUE} stroke={1.6} />
+            <span style={{ ...chipBase, background: "#DCFCE7", color: "#16A34A" }}>
+              <IconBook size={17} color="#16A34A" stroke={1.6} />
             </span>
             <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8 }}>Learn</div>
             <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Training video</div>
