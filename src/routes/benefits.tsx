@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabaseClient';
 import { toast } from 'sonner';
 import InstructorTopBar from '@/components/dsm/InstructorTopBar';
 import { PageLoader } from '@/components/dsm/LoadingSpinner';
+import diaLogoAsset from '@/assets/dia-logo.png.asset.json';
 import {
   IconCircleCheck,
   IconLock,
@@ -11,7 +12,6 @@ import {
   IconRosetteDiscount,
   IconStethoscope,
   IconGift,
-  IconSchool,
   IconShieldCheck,
 } from '@tabler/icons-react';
 
@@ -63,6 +63,7 @@ const BENEFITS = [
     name: 'DIA Membership',
     tagline: 'Free with DSM Pro',
     icon: 'school',
+    imageUrl: diaLogoAsset.url,
     iconBg: '#E6F1FB',
     iconColor: '#185FA5',
     description: 'Full Driving Instructors Association membership included free — saving you money every year.',
@@ -109,8 +110,6 @@ function iconFor(name: string) {
     case 'gift':
       return IconGift;
     case 'school':
-      return IconSchool;
-    case 'shield-check':
     default:
       return IconShieldCheck;
   }
