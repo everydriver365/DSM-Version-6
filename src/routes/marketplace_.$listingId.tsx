@@ -1190,3 +1190,612 @@ function ListingPeek({ listing }: { listing: Listing }) {
     </div>
   );
 }
+
+/* ────────────────────────────────────────────────────────────────
+   "Multi Page Custom Website" listing — enhanced upgrade sections.
+   All tier data, comparison rows and edge-function calls come from
+   the shared @/lib/websiteUpgrade module (also used by /minisite).
+   ──────────────────────────────────────────────────────────────── */
+
+const SECTION_TITLE: React.CSSProperties = {
+  fontSize: 16,
+  fontWeight: 800,
+  color: "#0B1F3A",
+  marginBottom: 8,
+};
+
+const EXAMPLE_SITES = [
+  { name: "Southampton Driving School", url: "southamptondrivingschool.co.uk" },
+  { name: "Learn to Drive Winchester", url: "learntodrivewins.co.uk" },
+  { name: "Premier Driving Academy", url: "premierdrivingacademy.co.uk" },
+  { name: "Pass First Time Driving", url: "passfirsttimedriving.co.uk" },
+];
+
+function Tick({ colour }: { colour: string }) {
+  return <IconCheck stroke={2.4} size={12} color={colour} />;
+}
+
+function WebsiteUpgradeSections() {
+  const [tier, setTier] = useState<TierId>("free");
+  const [instructorName, setInstructorName] = useState("");
+  const [userId, setUserId] = useState<string | null>(null);
+
+  const [domainInput, setDomainInput] = useState("");
+  const [domainChecking, setDomainChecking] = useState(false);
+  const [domainResult, setDomainResult] = useState<DomainCheck | null>(null);
+
+  const [busyTier, setBusyTier] = useState<PaidTierId | null>(null);
+  const [compareOpen, setCompareOpen] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      const user = auth.user;
+      if (!user || cancelled) return;
+      setUserId(user.id);
+      const { data } = await supabase
+        .from("instructors")
+        .select("name, website_tier")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (cancelled || !data) return;
+      const d = data as { name: string | null; website_tier: string | null };
+      setInstructorName(d.name ?? "");
+      if (d.website_tier && TIER_ORDER.includes(d.website_tier as TierId)) {
+        setTier(d.website_tier as TierId);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function startUpgrade(paidTier: PaidTierId, domain?: string | null) {
+    setBusyTier(paidTier);
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        toast.error("Please sign in to upgrade");
+        return;
+      }
+      const { url } = await createSubscriptionPaymentLink(paidTier, domain ?? null, token);
+      window.location.href = url;
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not start upgrade");
+    } finally {
+      setBusyTier(null);
+    }
+  }
+
+  async function requestManaged() {
+    setBusyTier("managed");
+    try {
+      const who = instructorName || "An instructor";
+      await fetch(`${SUPABASE_URL}/functions/v1/send-contact-notification`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          name: "DSM Marketplace",
+          email: "info@everydriver.co.uk",
+          subject: `New managed website enquiry from ${who}`,
+          message: `${who} is interested in DSM Managed Website (£29.99/month).\n\nInstructor ID: ${userId ?? "unknown"}\n\nPlease contact them within 24 hours.`,
+        }),
+      });
+      toast.success("Request sent! We'll be in touch within 24 hours.");
+    } catch {
+      toast.error("Could not send your request — please try the enquiry form below");
+    } finally {
+      setBusyTier(null);
+    }
+  }
+
+  async function runDomainSearch() {
+    const q = domainInput.trim();
+    if (!q) return;
+    setDomainChecking(true);
+    setDomainResult(null);
+    try {
+      const { data } = await supabase.auth.getSession();
+      const result = await checkDomainAvailability(q, data.session?.access_token ?? null);
+      setDomainResult(result);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Domain check failed");
+    } finally {
+      setDomainChecking(false);
+    }
+  }
+
+  const website = TIERS.find((t) => t.id === "website");
+  const pro = TIERS.find((t) => t.id === "pro");
+  const managed = TIERS.find((t) => t.id === "managed");
+
+  const cardBase: React.CSSProperties = {
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 10,
+    position: "relative",
+  };
+  const pill: React.CSSProperties = {
+    fontSize: 12,
+    fontWeight: 700,
+    borderRadius: 20,
+    padding: "3px 10px",
+    whiteSpace: "nowrap",
+  };
+  const ctaBase: React.CSSProperties = {
+    width: "100%",
+    border: "none",
+    borderRadius: 8,
+    padding: 11,
+    fontSize: 14,
+    fontWeight: 700,
+    marginTop: 12,
+    cursor: "pointer",
+  };
+  const noteBase: React.CSSProperties = {
+    fontSize: 10,
+    textAlign: "center",
+    marginTop: 4,
+  };
+
+  const featureRow = (label: string, textColour: string, tickColour: string) => (
+    <div
+      key={label}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 7,
+        fontSize: 12,
+        color: textColour,
+        marginTop: 7,
+      }}
+    >
+      <Tick colour={tickColour} />
+      <span>{label}</span>
+    </div>
+  );
+
+  return (
+    <div style={{ maxWidth: 430, margin: "0 auto", width: "100%" }}>
+      {/* SECTION 1 — Current plan strip */}
+      <div
+        style={{
+          background: "#EFF6FF",
+          border: "1px solid #1877D6",
+          borderRadius: 10,
+          padding: "10px 14px",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          marginBottom: 16,
+        }}
+      >
+        <span
+          style={{ width: 8, height: 8, borderRadius: 999, background: "#1877D6", flexShrink: 0 }}
+        />
+        <span style={{ fontSize: 12, color: "#6B7686" }}>Your current plan:</span>
+        <span style={{ fontSize: 12, fontWeight: 700, color: "#0B1F3A" }}>
+          {TIER_NAMES[tier]}
+        </span>
+      </div>
+
+      {/* SECTION 2 — Choose your plan */}
+      <div style={{ ...SECTION_TITLE, marginBottom: 12 }}>Choose your plan</div>
+
+      {website && (
+        <div style={{ ...cardBase, background: "#fff", border: "1px solid #E4E8EF" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+            <span style={{ fontSize: 15, fontWeight: 800, color: "#0B1F3A" }}>{website.name}</span>
+            <span style={{ ...pill, background: "#EFF6FF", color: "#1877D6" }}>£9.99/month</span>
+          </div>
+          {website.features.map((f) => featureRow(f, "#6B7686", "#15803D"))}
+          <button
+            type="button"
+            disabled={busyTier !== null}
+            onClick={() => startUpgrade("website")}
+            style={{ ...ctaBase, background: "#1877D6", color: "#fff" }}
+          >
+            {busyTier === "website" ? "Starting…" : "Upgrade online →"}
+          </button>
+          <div style={{ ...noteBase, color: "#9CA3AF" }}>Takes you to secure checkout</div>
+        </div>
+      )}
+
+      {pro && (
+        <div style={{ ...cardBase, background: "linear-gradient(135deg,#14509E,#0B1F3A)" }}>
+          <span
+            style={{
+              position: "absolute",
+              top: 12,
+              right: 12,
+              background: "#15803D",
+              color: "#fff",
+              fontSize: 9,
+              fontWeight: 800,
+              borderRadius: 20,
+              padding: "3px 8px",
+            }}
+          >
+            Most popular
+          </span>
+          <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", paddingRight: 88 }}>
+            {pro.name}
+          </div>
+          <div style={{ marginTop: 8 }}>
+            <span
+              style={{ ...pill, background: "rgba(255,255,255,0.15)", color: "#fff", display: "inline-block" }}
+            >
+              £19.99/month
+            </span>
+          </div>
+          {pro.features.map((f) => featureRow(f, "rgba(255,255,255,0.9)", "#4ADE80"))}
+          <button
+            type="button"
+            disabled={busyTier !== null}
+            onClick={() => startUpgrade("pro")}
+            style={{ ...ctaBase, background: "#fff", color: "#0B1F3A" }}
+          >
+            {busyTier === "pro" ? "Starting…" : "Upgrade to Pro →"}
+          </button>
+          <div style={{ ...noteBase, color: "rgba(255,255,255,0.5)" }}>
+            Takes you to secure checkout
+          </div>
+        </div>
+      )}
+
+      {managed && (
+        <div style={{ ...cardBase, background: "linear-gradient(135deg,#1a1a1a,#000)" }}>
+          <span
+            style={{
+              position: "absolute",
+              top: 12,
+              right: 12,
+              background: "#D68A1B",
+              color: "#fff",
+              fontSize: 9,
+              fontWeight: 800,
+              borderRadius: 20,
+              padding: "3px 8px",
+            }}
+          >
+            White glove
+          </span>
+          <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", paddingRight: 88 }}>
+            {managed.name}
+          </div>
+          <div style={{ marginTop: 8 }}>
+            <span
+              style={{ ...pill, background: "rgba(214,138,27,0.18)", color: "#D68A1B", display: "inline-block" }}
+            >
+              £29.99/month
+            </span>
+          </div>
+          {managed.features.map((f) => featureRow(f, "rgba(255,255,255,0.9)", "#D68A1B"))}
+          <button
+            type="button"
+            disabled={busyTier !== null}
+            onClick={requestManaged}
+            style={{ ...ctaBase, background: "#D68A1B", color: "#fff" }}
+          >
+            {busyTier === "managed" ? "Sending…" : "Contact us →"}
+          </button>
+          <div style={{ ...noteBase, color: "rgba(255,255,255,0.5)" }}>
+            Our team will contact you within 24 hours
+          </div>
+        </div>
+      )}
+
+      {/* SECTION 3 — Find your domain */}
+      <div style={{ ...SECTION_TITLE, marginTop: 22 }}>Find your domain</div>
+      <div style={{ fontSize: 12, color: "#6B7686", marginBottom: 12 }}>
+        Search for your school name — included free with DSM Website
+      </div>
+      <div style={{ display: "flex", gap: 8 }}>
+        <input
+          value={domainInput}
+          onChange={(e) => setDomainInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") void runDomainSearch();
+          }}
+          placeholder="yourschoolname"
+          style={{
+            flex: 1,
+            minWidth: 0,
+            border: "1px solid #E4E8EF",
+            borderRadius: 8,
+            padding: "11px 12px",
+            fontSize: 14,
+            color: "#0B1F3A",
+            background: "#fff",
+            outline: "none",
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => void runDomainSearch()}
+          disabled={domainChecking}
+          style={{
+            background: "#1877D6",
+            color: "#fff",
+            border: "none",
+            borderRadius: 8,
+            padding: "11px 16px",
+            fontSize: 14,
+            fontWeight: 700,
+            cursor: "pointer",
+            flexShrink: 0,
+          }}
+        >
+          {domainChecking ? "…" : "Search"}
+        </button>
+      </div>
+
+      {domainResult && (
+        <div
+          style={{
+            marginTop: 10,
+            borderRadius: 12,
+            padding: 14,
+            border: `1px solid ${domainResult.available ? "#BBF7D0" : "#FECACA"}`,
+            background: domainResult.available ? "#F0FDF4" : "#FEF2F2",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 14,
+              fontWeight: 700,
+              color: domainResult.available ? "#15803D" : "#B91C1C",
+            }}
+          >
+            {domainResult.domain}
+          </div>
+          <div style={{ fontSize: 12, color: "#6B7686", marginTop: 3 }}>
+            {domainResult.available
+              ? "Available — included free with DSM Website"
+              : "Not available — try another name"}
+          </div>
+          {domainResult.available && (
+            <button
+              type="button"
+              disabled={busyTier !== null}
+              onClick={() => startUpgrade("website", domainResult.domain)}
+              style={{ ...ctaBase, background: "#15803D", color: "#fff" }}
+            >
+              {busyTier === "website" ? "Starting…" : "Register this domain →"}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* SECTION 4 — Compare plans */}
+      <div style={{ ...SECTION_TITLE, marginTop: 22 }}>Compare plans</div>
+      {!compareOpen ? (
+        <button
+          type="button"
+          onClick={() => setCompareOpen(true)}
+          style={{
+            background: "none",
+            border: "none",
+            padding: 0,
+            fontSize: 12,
+            color: "#1877D6",
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+        >
+          Tap to see full feature comparison →
+        </button>
+      ) : (
+        <div
+          style={{
+            background: "#fff",
+            border: "1px solid #E4E8EF",
+            borderRadius: 12,
+            overflow: "hidden",
+          }}
+        >
+          <div style={{ display: "flex", background: "#EEF2F7", padding: "8px 10px" }}>
+            <div style={{ flex: 2, fontSize: 10, fontWeight: 800, color: "#0B1F3A" }}>Feature</div>
+            {COMPARISON_COLS.map((c) => (
+              <div
+                key={c.id}
+                style={{
+                  flex: 1,
+                  textAlign: "center",
+                  fontSize: 10,
+                  fontWeight: 800,
+                  color: "#0B1F3A",
+                  background: c.id === tier ? "#F7FAFE" : "transparent",
+                }}
+              >
+                {c.name}
+                <div style={{ fontSize: 9, fontWeight: 600, color: "#6B7686" }}>{c.price}</div>
+              </div>
+            ))}
+          </div>
+          {COMPARISON_ROWS.map((group) => (
+            <div key={group.title}>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 800,
+                  color: "#6B7686",
+                  padding: "8px 10px 4px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.04em",
+                }}
+              >
+                {group.title}
+              </div>
+              {group.rows.map((row) => (
+                <div
+                  key={row.label}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "7px 10px",
+                    borderTop: "1px solid #F1F4F8",
+                  }}
+                >
+                  <div style={{ flex: 2, fontSize: 10, color: "#0B1F3A" }}>{row.label}</div>
+                  {COMPARISON_COLS.map((c, i) => (
+                    <div
+                      key={c.id}
+                      style={{
+                        flex: 1,
+                        textAlign: "center",
+                        fontSize: 10,
+                        color: i >= row.from ? "#15803D" : "#C7CDD6",
+                        background: c.id === tier ? "#F7FAFE" : "transparent",
+                      }}
+                    >
+                      {i >= row.from ? "✓" : "—"}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => setCompareOpen(false)}
+            style={{
+              width: "100%",
+              background: "#fff",
+              border: "none",
+              borderTop: "1px solid #E4E8EF",
+              padding: 10,
+              fontSize: 12,
+              fontWeight: 600,
+              color: "#1877D6",
+              cursor: "pointer",
+            }}
+          >
+            Hide comparison
+          </button>
+        </div>
+      )}
+
+      {/* SECTION 5 — Example sites */}
+      <div style={{ ...SECTION_TITLE, marginTop: 22 }}>Example sites</div>
+      {EXAMPLE_SITES.map((site) => (
+        <div
+          key={site.url}
+          style={{
+            background: "#fff",
+            borderRadius: 12,
+            border: "1px solid #E4E8EF",
+            marginBottom: 10,
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              height: 160,
+              width: "100%",
+              background: "linear-gradient(135deg,#EEF2F7,#E4E8EF)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 4,
+            }}
+          >
+            <span style={{ fontSize: 32 }}>🌐</span>
+            <span style={{ fontSize: 11, color: "#9CA3AF" }}>Example site</span>
+          </div>
+          <div style={{ padding: 12 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{site.name}</div>
+            <div style={{ fontSize: 11, color: "#1877D6", marginTop: 2 }}>{site.url}</div>
+            <a
+              href="#"
+              onClick={(e) => e.preventDefault()}
+              style={{
+                display: "inline-block",
+                marginTop: 8,
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#1877D6",
+                textDecoration: "none",
+              }}
+            >
+              View example →
+            </a>
+          </div>
+          <div
+            style={{
+              fontSize: 9,
+              color: "#F59E0B",
+              padding: "6px 12px",
+              background: "#FFFBEB",
+              borderTop: "1px solid #FDE68A",
+            }}
+          >
+            ⚠️ Placeholder — real example URLs coming soon
+          </div>
+        </div>
+      ))}
+
+      {/* SECTION 6 — See it in action */}
+      <div style={{ ...SECTION_TITLE, marginTop: 22 }}>See it in action</div>
+      <div
+        style={{
+          width: "100%",
+          paddingTop: "56.25%",
+          position: "relative",
+          background: "linear-gradient(135deg,#0B1F3A,#1877D6)",
+          borderRadius: 12,
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+          }}
+        >
+          <div
+            style={{
+              width: 56,
+              height: 56,
+              borderRadius: 999,
+              background: "#fff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <IconPlayerPlayFilled size={22} color="#0B1F3A" />
+          </div>
+          <span style={{ color: "rgba(255,255,255,0.8)", fontSize: 12 }}>
+            Watch a 2-minute demo
+          </span>
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            bottom: 8,
+            left: 0,
+            right: 0,
+            textAlign: "center",
+            fontSize: 9,
+            color: "rgba(255,255,255,0.4)",
+          }}
+        >
+          ⚠️ Placeholder — real demo video coming soon
+        </div>
+      </div>
+    </div>
+  );
+}
