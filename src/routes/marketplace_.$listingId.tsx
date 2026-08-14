@@ -348,6 +348,8 @@ function ListingDetailPage() {
                 style={{
                   width: "100%",
                   aspectRatio: "1 / 0.62",
+                  padding: "40px 0 20px",
+                  boxSizing: "border-box",
                   background: "linear-gradient(135deg,#1B4E8F 0%,#123A6E 45%,#0B1F3A 100%)",
                   display: "flex",
                   alignItems: "center",
@@ -358,8 +360,8 @@ function ListingDetailPage() {
                 {/* Phone mock */}
                 <div
                   style={{
-                    width: "26%",
-                    aspectRatio: "1 / 2",
+                    width: "23%",
+                    aspectRatio: "1 / 1.95",
                     background: "#FFFFFF",
                     border: "3px solid #0B1F3A",
                     borderRadius: 14,
@@ -383,7 +385,7 @@ function ListingDetailPage() {
                 {/* Browser mock */}
                 <div
                   style={{
-                    width: "44%",
+                    width: "40%",
                     aspectRatio: "1 / 0.68",
                     background: "#FFFFFF",
                     border: "3px solid #0B1F3A",
