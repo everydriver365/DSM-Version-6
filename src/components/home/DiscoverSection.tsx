@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
 import {
   IconPlayerPlay,
   IconChevronRight,
