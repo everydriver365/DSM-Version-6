@@ -193,6 +193,18 @@ function BenefitsPage() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const [upgradeStep, setUpgradeStep] = useState<'idle' | 'domain' | 'choose-tier' | 'processing'>('idle');
+  const [chosenDomain, setChosenDomain] = useState<string | null>(null);
+  const [chosenTier, setChosenTier] = useState<PaidTierId | null>(null);
+  const [domainSearch, setDomainSearch] = useState('');
+  const [domainResult, setDomainResult] = useState<{
+    domain: string;
+    available: boolean;
+    price?: string | null;
+  } | null>(null);
+  const [checkingDomain, setCheckingDomain] = useState(false);
+
+
   useEffect(() => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
