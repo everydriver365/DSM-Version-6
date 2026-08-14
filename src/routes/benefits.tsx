@@ -456,7 +456,10 @@ function BenefitsPage() {
           </div>
           <button
             type="button"
-            onClick={() => navigate({ to: '/minisite' as never })}
+            onClick={() => {
+              setUpgradeStep('domain');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             style={{
               background: '#fff',
               color: '#14509E',
@@ -473,6 +476,7 @@ function BenefitsPage() {
           </button>
         </div>
       )}
+
 
       <div
         style={{
