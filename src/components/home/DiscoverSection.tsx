@@ -1012,36 +1012,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 : "4 benefits active"}
             </div>
             <div style={{ display: "flex", alignItems: "center", marginTop: 10 }}>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {[
-                  { bg: "#1877D6", initial: "D" },
-                  { bg: "#0F9D58", initial: "I" },
-                  { bg: "#F59E0B", initial: "A" },
-                  { bg: "#8B5CF6", initial: "M" },
-                ].map((a, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      width: 22,
-                      height: 22,
-                      borderRadius: "50%",
-                      background: a.bg,
-                      border: "2px solid #fff",
-                      marginLeft: i === 0 ? 0 : -7,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 9,
-                      fontWeight: 700,
-                      color: "#fff",
-                      zIndex: 4 - i,
-                      position: "relative",
-                    }}
-                  >
-                    {a.initial}
-                  </div>
-                ))}
-              </div>
+              <img
+                src={diaLogoAsset.url}
+                alt="DIA"
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  border: "2px solid #fff",
+                  background: "#1877D6",
+                }}
+              />
               <span style={{ fontSize: 10, color: MUTED, marginLeft: 6 }}>4000 exclusive member offers.</span>
             </div>
           </div>
