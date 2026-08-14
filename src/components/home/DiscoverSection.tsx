@@ -31,6 +31,7 @@ const BLUE = "#1877D6";
 const RED = "#CC2229";
 const FONT = "Poppins, sans-serif";
 
+const MUTED = "#6B7280";
 const tileBase: React.CSSProperties = {
   borderRadius: 16,
   overflow: "hidden",
@@ -40,9 +41,21 @@ const tileBase: React.CSSProperties = {
   flexDirection: "column",
   justifyContent: "space-between",
   padding: 14,
-  color: "#fff",
+  background: "#fff",
+  border: "1px solid #EEF2F7",
+  boxShadow: "0 1px 2px rgba(11,31,58,0.05), 0 8px 24px -12px rgba(11,31,58,0.10)",
+  color: NAVY,
   fontFamily: FONT,
 };
+const chipBase: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: 32,
+  height: 32,
+  borderRadius: 9,
+};
+
 
 
 /** Pick an icon that matches the listing category for the missing-photo fallback. */
@@ -978,27 +991,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onClick={() =>
             navigate({ to: (isFreeTier ? "/minisite" : "/marketplace") as never })
           }
-          style={{
-            ...tileBase,
-            gridColumn: 1,
-            gridRow: "1 / 3",
-            height: 200,
-            background: isFreeTier
-              ? "linear-gradient(160deg, #7C3AED, #5B21B6)"
-              : "linear-gradient(160deg, #1877D6, #0F52A8)",
-          }}
+          style={{ ...tileBase, gridColumn: 1, gridRow: "1 / 3", height: 200 }}
         >
           <div>
-            <IconRosetteDiscount size={22} color="#fff" stroke={1.5} style={{ marginBottom: 6 }} />
-            <div style={{ fontSize: 16, fontWeight: 800, color: "#fff" }}>Perks</div>
-            <div
-              style={{
-                fontSize: 11,
-                color: "rgba(255,255,255,0.7)",
-                lineHeight: 1.4,
-                marginTop: 4,
-              }}
-            >
+            <span style={{ ...chipBase, background: "#EAF3FB", color: BLUE }}>
+              <IconRosetteDiscount size={20} color={BLUE} stroke={1.6} />
+            </span>
+            <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, marginTop: 10 }}>Perks</div>
+            <div style={{ fontSize: 11, color: MUTED, lineHeight: 1.4, marginTop: 4 }}>
               {isFreeTier
                 ? "Free DIA membership & exclusive member benefits"
                 : "4 benefits active"}
@@ -1006,7 +1006,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </div>
           <span
             style={{
-              background: "rgba(255,255,255,0.2)",
+              background: "#EAF3FB",
+              color: BLUE,
               borderRadius: 20,
               padding: "5px 12px",
               fontSize: 11,
@@ -1024,12 +1025,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/learn" as never })}
-          style={{ ...tileBase, gridColumn: 2, gridRow: 1, height: 96, background: BLUE }}
+          style={{ ...tileBase, gridColumn: 2, gridRow: 1, height: 96 }}
         >
           <div>
-            <IconBook size={18} color="#fff" stroke={1.5} />
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginTop: 6 }}>Learn</div>
-            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>Videos</div>
+            <span style={{ ...chipBase, background: "#EAF3FB", color: BLUE }}>
+              <IconBook size={17} color={BLUE} stroke={1.6} />
+            </span>
+            <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8 }}>Learn</div>
+            <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Videos</div>
           </div>
         </div>
 
@@ -1038,16 +1041,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/bitesize" as never })}
-          style={{ ...tileBase, gridColumn: 2, gridRow: 2, height: 96, background: NAVY }}
+          style={{ ...tileBase, gridColumn: 2, gridRow: 2, height: 96 }}
         >
           <div>
-            <IconBolt size={18} color="#fff" stroke={1.5} />
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginTop: 6 }}>
-              Bitesize
-            </div>
-            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>
-              Quick tips
-            </div>
+            <span style={{ ...chipBase, background: "#EEF2F7", color: NAVY }}>
+              <IconBolt size={17} color={NAVY} stroke={1.6} />
+            </span>
+            <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8 }}>Bitesize</div>
+            <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Quick tips</div>
           </div>
         </div>
 
@@ -1056,7 +1057,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/showcase" as never })}
-          style={{ ...tileBase, gridColumn: 1, gridRow: 3, height: 96, background: NAVY }}
+          style={{ ...tileBase, gridColumn: 1, gridRow: 3, height: 96 }}
         >
           {(showcaseCount ?? 0) > 0 && (
             <span
@@ -1069,16 +1070,16 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 height: 8,
                 borderRadius: "50%",
                 background: RED,
-                border: `2px solid ${NAVY}`,
+                border: "2px solid #fff",
               }}
             />
           )}
           <div>
-            <IconPlayerPlay size={18} color="#fff" stroke={1.5} />
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginTop: 6 }}>
-              Showcase
-            </div>
-            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>Watch</div>
+            <span style={{ ...chipBase, background: "#EEF2F7", color: NAVY }}>
+              <IconPlayerPlay size={17} color={NAVY} stroke={1.6} />
+            </span>
+            <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8 }}>Showcase</div>
+            <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Watch</div>
           </div>
         </div>
 
@@ -1093,30 +1094,36 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             gridRow: 3,
             height: 96,
             justifyContent: "center",
-            background: isLiveOnAir ? RED : NAVY,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span style={{ position: "relative", display: "inline-flex", flexShrink: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span
+              style={{
+                ...chipBase,
+                background: isLiveOnAir ? "#FDECEC" : "#EAF3FB",
+                position: "relative",
+                flexShrink: 0,
+              }}
+            >
               {isLiveOnAir ? (
                 <>
-                  <IconBroadcast size={20} color="#fff" stroke={1.5} />
+                  <IconBroadcast size={17} color={RED} stroke={1.6} />
                   <span
                     aria-hidden
                     style={{
                       position: "absolute",
-                      top: 0,
-                      right: 0,
-                      width: 8,
-                      height: 8,
+                      top: 2,
+                      right: 2,
+                      width: 7,
+                      height: 7,
                       borderRadius: "50%",
-                      background: "#fff",
+                      background: RED,
                       animation: "dsmLivePulse 1.5s infinite",
                     }}
                   />
                 </>
               ) : (
-                <IconNews size={20} color="#fff" stroke={1.5} />
+                <IconNews size={17} color={BLUE} stroke={1.6} />
               )}
             </span>
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -1124,7 +1131,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <>
                   <span
                     style={{
-                      background: "rgba(255,255,255,0.2)",
+                      background: "#FDECEC",
+                      color: RED,
                       borderRadius: 20,
                       padding: "2px 8px",
                       fontSize: 9,
@@ -1139,7 +1147,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     style={{
                       fontSize: 13,
                       fontWeight: 700,
-                      color: "#fff",
+                      color: NAVY,
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -1150,20 +1158,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 </>
               ) : (
                 <>
-                  <div
-                    style={{
-                      fontSize: 10,
-                      color: "rgba(255,255,255,0.6)",
-                      marginBottom: 2,
-                    }}
-                  >
-                    Latest news
-                  </div>
+                  <div style={{ fontSize: 10, color: MUTED, marginBottom: 2 }}>Latest news</div>
                   <div
                     style={{
                       fontSize: 13,
                       fontWeight: 600,
-                      color: "#fff",
+                      color: NAVY,
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -1174,10 +1174,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 </>
               )}
             </div>
-            <IconChevronRight size={16} color="rgba(255,255,255,0.4)" stroke={2} />
+            <IconChevronRight size={16} color="#9AA5B1" stroke={2} />
           </div>
         </div>
       </div>
+
 
     </div>
   );
