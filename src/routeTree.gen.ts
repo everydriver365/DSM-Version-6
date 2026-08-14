@@ -70,6 +70,7 @@ import { Route as ManifestRouteImport } from './routes/manifest'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LocationsRouteImport } from './routes/locations'
 import { Route as LivesessionRouteImport } from './routes/livesession'
+import { Route as LiveNewsRouteImport } from './routes/live-news'
 import { Route as LiveRouteImport } from './routes/live'
 import { Route as LessonSeriesRouteImport } from './routes/lesson-series'
 import { Route as LearnRouteImport } from './routes/learn'
@@ -476,6 +477,11 @@ const LocationsRoute = LocationsRouteImport.update({
 const LivesessionRoute = LivesessionRouteImport.update({
   id: '/livesession',
   path: '/livesession',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LiveNewsRoute = LiveNewsRouteImport.update({
+  id: '/live-news',
+  path: '/live-news',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LiveRoute = LiveRouteImport.update({
@@ -1034,6 +1040,7 @@ export interface FileRoutesByFullPath {
   '/learn': typeof LearnRoute
   '/lesson-series': typeof LessonSeriesRoute
   '/live': typeof LiveRoute
+  '/live-news': typeof LiveNewsRoute
   '/livesession': typeof LivesessionRoute
   '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
@@ -1197,6 +1204,7 @@ export interface FileRoutesByTo {
   '/learn': typeof LearnRoute
   '/lesson-series': typeof LessonSeriesRoute
   '/live': typeof LiveRoute
+  '/live-news': typeof LiveNewsRoute
   '/livesession': typeof LivesessionRoute
   '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
@@ -1361,6 +1369,7 @@ export interface FileRoutesById {
   '/learn': typeof LearnRoute
   '/lesson-series': typeof LessonSeriesRoute
   '/live': typeof LiveRoute
+  '/live-news': typeof LiveNewsRoute
   '/livesession': typeof LivesessionRoute
   '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
@@ -1527,6 +1536,7 @@ export interface FileRouteTypes {
     | '/learn'
     | '/lesson-series'
     | '/live'
+    | '/live-news'
     | '/livesession'
     | '/locations'
     | '/login'
@@ -1690,6 +1700,7 @@ export interface FileRouteTypes {
     | '/learn'
     | '/lesson-series'
     | '/live'
+    | '/live-news'
     | '/livesession'
     | '/locations'
     | '/login'
@@ -1853,6 +1864,7 @@ export interface FileRouteTypes {
     | '/learn'
     | '/lesson-series'
     | '/live'
+    | '/live-news'
     | '/livesession'
     | '/locations'
     | '/login'
@@ -2019,6 +2031,7 @@ export interface RootRouteChildren {
   LearnRoute: typeof LearnRoute
   LessonSeriesRoute: typeof LessonSeriesRoute
   LiveRoute: typeof LiveRoute
+  LiveNewsRoute: typeof LiveNewsRoute
   LivesessionRoute: typeof LivesessionRoute
   LocationsRoute: typeof LocationsRoute
   LoginRoute: typeof LoginRoute
@@ -2547,6 +2560,13 @@ declare module '@tanstack/react-router' {
       path: '/livesession'
       fullPath: '/livesession'
       preLoaderRoute: typeof LivesessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/live-news': {
+      id: '/live-news'
+      path: '/live-news'
+      fullPath: '/live-news'
+      preLoaderRoute: typeof LiveNewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/live': {
@@ -3401,6 +3421,7 @@ const rootRouteChildren: RootRouteChildren = {
   LearnRoute: LearnRoute,
   LessonSeriesRoute: LessonSeriesRoute,
   LiveRoute: LiveRoute,
+  LiveNewsRoute: LiveNewsRoute,
   LivesessionRoute: LivesessionRoute,
   LocationsRoute: LocationsRoute,
   LoginRoute: LoginRoute,
