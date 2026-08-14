@@ -1185,14 +1185,21 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/live-news" as never })}
-          style={{ ...tileBase, gridColumn: 2, gridRow: 3, height: 96 }}
+          style={{
+            ...tileBase,
+            gridColumn: 2,
+            gridRow: 3,
+            height: 96,
+            background: "linear-gradient(160deg, #FFF9FA 0%, #FDF2F5 100%)",
+            borderColor: "#F9E4EB",
+          }}
         >
           <div>
             <span
               style={{
                 ...chipBase,
-                background: isLiveOnAir ? "#FDECEC" : "#EAF3FB",
-                color: isLiveOnAir ? RED : BLUE,
+                background: isLiveOnAir ? "#FDECEC" : "#FCE8EF",
+                color: isLiveOnAir ? RED : "#E91E63",
                 position: "relative",
               }}
             >
@@ -1214,7 +1221,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   />
                 </>
               ) : (
-                <IconNews size={17} color={BLUE} stroke={1.6} />
+                <IconNews size={17} color="#E91E63" stroke={1.6} />
               )}
             </span>
             {isLiveOnAir ? (
