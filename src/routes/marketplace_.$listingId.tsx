@@ -348,7 +348,7 @@ function ListingDetailPage() {
                 style={{
                   width: "100%",
                   aspectRatio: "1 / 0.62",
-                  padding: "40px 0 20px",
+                  padding: "40px 0 46px",
                   boxSizing: "border-box",
                   background: "linear-gradient(135deg,#1B4E8F 0%,#123A6E 45%,#0B1F3A 100%)",
                   display: "flex",
