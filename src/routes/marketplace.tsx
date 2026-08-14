@@ -222,7 +222,7 @@ function MarketplacePage() {
     navigate({ to: "/marketplace/$listingId" as never, params: { listingId: id } as never });
 
   return (
-    <div style={{ minHeight: "100vh", background: "#DCE4F0", paddingBottom: 96, fontFamily: POPPINS }}>
+    <div style={{ minHeight: "100vh", background: "#EEF2F7", paddingBottom: 96, fontFamily: POPPINS }}>
       {/* Top bar */}
       <InstructorTopBar
         firstName=""
@@ -236,41 +236,48 @@ function MarketplacePage() {
       />
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
-      <div style={{ padding: "20px 16px 8px" }}>
+      <div style={{ padding: "16px 0 8px" }}>
         {/* Search bar */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            background: "#FFFFFF",
-            border: "1px solid rgba(15,32,68,0.10)",
-            borderRadius: 14,
-            padding: "11px 14px",
-            marginBottom: 20,
-          }}
-        >
-          <SearchIcon size={18} color="#64748B" strokeWidth={1.75} />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search products..."
-            style={{
-              border: "none",
-              outline: "none",
-              flex: 1,
-              fontSize: 14,
-              color: "#0F2044",
-              background: "transparent",
-              fontFamily: POPPINS,
-            }}
-          />
+        <div style={{ padding: "0 16px", marginBottom: 18 }}>
+          <div style={{ position: "relative" }}>
+            <div
+              style={{
+                position: "absolute",
+                left: 14,
+                top: "50%",
+                transform: "translateY(-50%)",
+                display: "flex",
+                alignItems: "center",
+                pointerEvents: "none",
+              }}
+            >
+              <SearchIcon size={14} color="#9CA3AF" strokeWidth={2} />
+            </div>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search products…"
+              style={{
+                width: "100%",
+                boxSizing: "border-box",
+                height: 44,
+                background: "#FFFFFF",
+                border: "1px solid #E4E8EF",
+                borderRadius: 12,
+                padding: "0 14px 0 38px",
+                outline: "none",
+                fontSize: 14,
+                color: "#0B1F3A",
+                fontFamily: POPPINS,
+              }}
+            />
+          </div>
         </div>
 
         {/* Categories */}
-        <style>{`.mkt-cat-row::-webkit-scrollbar{display:none}`}</style>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+        <style>{`.mkt-cat-row::-webkit-scrollbar{display:none}.mkt-search-input::placeholder{color:#9CA3AF}`}</style>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, padding: "0 16px" }}>
           <span style={{ width: 4, height: 14, borderRadius: 2, background: "#1877D6" }} />
           <span
             style={{
@@ -291,9 +298,10 @@ function MarketplacePage() {
             display: "flex",
             gap: 8,
             overflowX: "auto",
+            padding: "0 16px",
             WebkitOverflowScrolling: "touch",
             scrollbarWidth: "none",
-            marginBottom: 22,
+            marginBottom: 20,
           }}
         >
           {[{ id: "__all", slug: null as string | null, name: "All" }, ...categories].map((cat) => {
@@ -304,13 +312,14 @@ function MarketplacePage() {
                 type="button"
                 onClick={() => setActiveCategory(cat.slug)}
                 style={{
+                  height: 34,
                   background: isActive ? "#0B1F3A" : "#FFFFFF",
-                  border: isActive ? "1px solid #0B1F3A" : "1px solid #E3E8F0",
-                  borderRadius: 100,
-                  padding: "8px 16px",
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: isActive ? "#FFFFFF" : "#5B6472",
+                  border: isActive ? "none" : "1px solid #E4E8EF",
+                  borderRadius: 20,
+                  padding: "0 14px",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: isActive ? "#FFFFFF" : "#6B7686",
                   cursor: "pointer",
                   whiteSpace: "nowrap",
                   flexShrink: 0,
@@ -324,16 +333,18 @@ function MarketplacePage() {
         </div>
 
 
+
         {/* Top marketplace */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: 14,
+            padding: "0 16px",
+            marginBottom: 10,
           }}
         >
-          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#0B1F3A", fontFamily: POPPINS, letterSpacing: "-0.01em" }}>
+          <h2 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#0B1F3A", fontFamily: POPPINS }}>
             Top marketplace
           </h2>
           <button
@@ -345,7 +356,7 @@ function MarketplacePage() {
               padding: 0,
               cursor: "pointer",
               color: "#1877D6",
-              fontSize: 15,
+              fontSize: 13,
               fontWeight: 600,
               fontFamily: POPPINS,
             }}
@@ -355,23 +366,23 @@ function MarketplacePage() {
         </div>
 
         {loading ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: "0 16px" }}>
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
                 style={{
-                  height: 116,
-                  background: "#F1F5F9",
-                  borderRadius: 14,
-                  border: "1px solid #E3E8F0",
+                  height: 100,
+                  background: "#FFFFFF",
+                  borderRadius: 16,
+                  border: "1px solid #E4E8EF",
                 }}
               />
             ))}
           </div>
         ) : topMarketplace.length === 0 ? (
-          <div style={{ fontSize: 13, color: "#64748B" }}>No products yet.</div>
+          <div style={{ fontSize: 13, color: "#6B7686", padding: "0 16px" }}>No products yet.</div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: "flex", flexDirection: "column" }}>
             {topMarketplace.map((l, idx) =>
               idx === 0 ? (
                 <FeaturedCard key={l.id} listing={l} onOpen={openListing} />
@@ -391,10 +402,11 @@ function MarketplacePage() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                margin: "28px 0 14px",
+                padding: "0 16px",
+                margin: "22px 0 10px",
               }}
             >
-              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#0B1F3A", fontFamily: POPPINS, letterSpacing: "-0.01em" }}>
+              <h2 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#0B1F3A", fontFamily: POPPINS }}>
                 For sale by instructors
               </h2>
               <button
@@ -411,7 +423,7 @@ function MarketplacePage() {
                   padding: 0,
                   cursor: "pointer",
                   color: "#1877D6",
-                  fontSize: 15,
+                  fontSize: 13,
                   fontWeight: 600,
                   fontFamily: POPPINS,
                 }}
@@ -419,15 +431,73 @@ function MarketplacePage() {
                 List free →
               </button>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-
+            <div style={{ display: "flex", flexDirection: "column" }}>
               {forSale.map((l) => (
                 <ProductCard key={l.id} listing={l} onOpen={openListing} />
               ))}
             </div>
           </>
         )}
+
       </div>
+    </div>
+  );
+}
+
+const CARD_SHADOW = "0 1px 3px rgba(11,31,58,0.06)";
+
+const CATEGORY_PILL: React.CSSProperties = {
+  display: "inline-block",
+  background: "#EFF6FF",
+  color: "#1877D6",
+  fontSize: 10,
+  fontWeight: 700,
+  borderRadius: 20,
+  fontFamily: POPPINS,
+};
+
+const VIEW_BUTTON: React.CSSProperties = {
+  background: "#1877D6",
+  color: "#FFFFFF",
+  borderRadius: 20,
+  padding: "7px 16px",
+  fontSize: 13,
+  fontWeight: 700,
+  border: "none",
+  cursor: "pointer",
+  fontFamily: POPPINS,
+};
+
+/** Neutral "no price" state with an inline prompt to add one. */
+function NoPriceRow({ listingId }: { listingId: string }) {
+  const navigate = useNavigate();
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <span style={{ fontSize: 13, color: "#9CA3AF", fontFamily: POPPINS }}>
+        No price set
+      </span>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          navigate({
+            to: "/marketplace/edit/$id" as never,
+            params: { id: listingId } as never,
+          });
+        }}
+        style={{
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          fontSize: 12,
+          fontWeight: 600,
+          color: "#1877D6",
+          fontFamily: POPPINS,
+          padding: 0,
+        }}
+      >
+        Add price →
+      </button>
     </div>
   );
 }
@@ -441,12 +511,8 @@ function FeaturedCard({
 }) {
   const cat = listing.marketplace_categories;
   const price = listing.price_display?.trim() || null;
-  const priceIsBad = price && !/\d/.test(price);
-  const priceText = priceIsBad ? "No price set" : price ?? "Price on request";
+  const priceIsBad = !price || !/\d/.test(price);
   const heroImage = listing.image_urls?.[0] ?? null;
-  const headerBackground = heroImage
-    ? `url(${heroImage}) center/cover no-repeat`
-    : "linear-gradient(135deg,#16305A,#0B1F3A)";
 
   return (
     <div
@@ -460,10 +526,12 @@ function FeaturedCard({
         }
       }}
       style={{
-        borderRadius: 18,
-        border: "1px solid #E3E8F0",
-        overflow: "hidden",
+        margin: "0 16px 10px",
         background: "#fff",
+        borderRadius: 16,
+        border: "1px solid #E4E8EF",
+        overflow: "hidden",
+        boxShadow: CARD_SHADOW,
         cursor: "pointer",
         userSelect: "none",
         fontFamily: POPPINS,
@@ -471,35 +539,20 @@ function FeaturedCard({
     >
       <div
         style={{
-          height: 210,
-          background: headerBackground,
-          position: "relative",
-          padding: "12px 14px",
+          width: "100%",
+          height: 180,
+          background: heroImage
+            ? `#EEF2F7 url(${heroImage}) center/cover no-repeat`
+            : "linear-gradient(135deg,#16305A,#0B1F3A)",
         }}
-      >
-        <span
-          style={{
-            background: "rgba(255,255,255,0.16)",
-            backdropFilter: "blur(4px)",
-            color: "#fff",
-            fontSize: 11,
-            fontWeight: 700,
-            padding: "6px 14px",
-            borderRadius: 20,
-            textTransform: "uppercase",
-            letterSpacing: "0.04em",
-          }}
-        >
-          Featured
-        </span>
-      </div>
-      <div style={{ padding: "14px 16px 16px" }}>
+      />
+      <div style={{ padding: 14 }}>
         <div
           style={{
-            fontSize: 20,
+            fontSize: 15,
             fontWeight: 700,
             color: "#0B1F3A",
-            marginBottom: 10,
+            fontFamily: POPPINS,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -509,14 +562,10 @@ function FeaturedCard({
         </div>
         <span
           style={{
-            display: "inline-flex",
-            fontSize: 13,
-            fontWeight: 600,
-            color: "#1877D6",
-            background: "#E6F1FB",
-            padding: "6px 12px",
-            borderRadius: 10,
-            marginBottom: 16,
+            ...CATEGORY_PILL,
+            padding: "3px 10px",
+            marginTop: 4,
+            marginBottom: 8,
           }}
         >
           {cat?.name || "Marketplace"}
@@ -529,30 +578,16 @@ function FeaturedCard({
             gap: 8,
           }}
         >
-          <span
-            style={
-              priceIsBad
-                ? { fontSize: 15, fontWeight: 600, color: "#CC2229" }
-                : { fontSize: 15, fontWeight: 600, color: "#0B1F3A" }
-            }
-          >
-            {priceText}
-          </span>
-          <span
-            style={{
-              background: "#1877D6",
-              color: "#FFFFFF",
-              fontSize: 15,
-              fontWeight: 600,
-              padding: "10px 18px",
-              borderRadius: 10,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 4,
-            }}
-          >
+          {priceIsBad ? (
+            <NoPriceRow listingId={listing.id} />
+          ) : (
+            <span style={{ fontSize: 16, fontWeight: 800, color: "#0B1F3A" }}>
+              {price}
+            </span>
+          )}
+          <button type="button" style={VIEW_BUTTON} onClick={() => onOpen(listing.id)}>
             View ›
-          </span>
+          </button>
         </div>
       </div>
     </div>
@@ -571,10 +606,7 @@ function ProductCard({
   const accent = colorFor(cat?.slug);
   const image = listing.image_urls?.[0] ?? null;
   const price = listing.price_display?.trim() || null;
-  const subtitle =
-    listing.marketplace_suppliers?.name || cat?.name || "Marketplace";
-  const priceIsBad = price && !/\d/.test(price);
-  const priceText = priceIsBad ? "No price set" : price ?? "Price on request";
+  const priceIsBad = !price || !/\d/.test(price);
 
   return (
     <div
@@ -588,13 +620,15 @@ function ProductCard({
         }
       }}
       style={{
-        background: "#FFFFFF",
-        border: "1px solid #E3E8F0",
-        borderRadius: 14,
+        margin: "0 16px 10px",
+        background: "#fff",
+        borderRadius: 16,
+        border: "1px solid #E4E8EF",
+        boxShadow: CARD_SHADOW,
         padding: 12,
         display: "flex",
-        flexDirection: "row",
         gap: 12,
+        alignItems: "center",
         cursor: "pointer",
         userSelect: "none",
         fontFamily: POPPINS,
@@ -602,90 +636,72 @@ function ProductCard({
     >
       <div
         style={{
-          width: 90,
-          height: 90,
+          width: 76,
+          height: 76,
           flexShrink: 0,
           borderRadius: 10,
-          background: image ? `#F1F5F9 url(${image}) center/cover no-repeat` : `${accent}1F`,
+          background: image
+            ? `#EEF2F7 url(${image}) center/cover no-repeat`
+            : "#EEF2F7",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        {!image && <Icon size={28} color={accent} strokeWidth={1.75} />}
+        {!image && <Icon size={26} color={accent} strokeWidth={1.75} />}
       </div>
 
-      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: 600,
             color: "#0B1F3A",
+            fontFamily: POPPINS,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
-            marginBottom: 4,
           }}
         >
           {listing.title}
         </div>
         <span
           style={{
-            display: "inline-flex",
-            width: "fit-content",
-            fontSize: 12,
-            fontWeight: 600,
-            letterSpacing: "0.01em",
-            color: accent,
-            background: `${accent}1F`,
-            padding: "5px 11px",
-            borderRadius: 10,
-            marginBottom: "auto",
+            ...CATEGORY_PILL,
+            padding: "2px 8px",
+            marginTop: 3,
+            marginBottom: 6,
+            maxWidth: "100%",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
           }}
         >
-          {subtitle}
+          {cat?.name || "Marketplace"}
         </span>
-
         <div
           style={{
-            marginTop: 6,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             gap: 8,
           }}
         >
-          <span
-            style={
-              priceIsBad
-                ? { fontSize: 15, fontWeight: 600, color: "#CC2229" }
-                : { fontSize: 15, fontWeight: 600, color: "#0B1F3A" }
-            }
-          >
-            {priceText}
-          </span>
-          <span
-            style={{
-              background: "#1877D6",
-              color: "#FFFFFF",
-              fontSize: 15,
-              fontWeight: 600,
-              padding: "10px 18px",
-              borderRadius: 10,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 4,
-            }}
-          >
+          {priceIsBad ? (
+            <NoPriceRow listingId={listing.id} />
+          ) : (
+            <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>
+              {price}
+            </span>
+          )}
+          <button type="button" style={VIEW_BUTTON} onClick={() => onOpen(listing.id)}>
             View ›
-          </span>
+          </button>
         </div>
       </div>
     </div>
   );
 }
+
 
 
