@@ -8,7 +8,7 @@ import {
   Moon, TrendingUp, Activity, Radio, ShoppingBag, Users, GraduationCap as GraduationCapIcon,
   PlayCircle,
 } from "lucide-react";
-import { IconChevronRight, IconSearch, IconCreditCard, IconCalendar, IconWorld } from "@tabler/icons-react";
+import { IconChevronRight, IconSearch, IconCreditCard, IconCalendar, IconWorld, IconRosetteDiscount } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -79,6 +79,7 @@ const allTools: Tool[] = [
   { icon: Radio, colour: '#CC2229', label: 'DSM Live', sub: 'Sessions & podcasts', route: '/dsm-live', group: 'Community' },
   { icon: ShoppingBag, colour: '#1A52A0', label: 'Marketplace', sub: 'Products & services', route: '/marketplace', group: 'Community' },
   { icon: Users, colour: '#00B5A5', label: 'Community', sub: 'Connect with ADIs', route: '/community', group: 'Community' },
+  { icon: IconRosetteDiscount, colour: '#1877D6', label: 'Member Benefits', sub: 'Perks and rewards', route: '/benefits', group: 'Community' },
 ];
 
 const GROUP_ORDER = ['Teaching', 'Business', 'Payments', 'Admin', 'Reports', 'Community', 'Marketing'] as const;
