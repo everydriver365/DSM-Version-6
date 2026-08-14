@@ -612,7 +612,28 @@ function ListingDetailPage() {
                         <>
                           <span style={{ fontSize: 14, fontWeight: 600, color: "#6B7686" }}>
                             From
-                          </span>
+                    </span>
+                    {noPrice &&
+                      currentUserId &&
+                      listing.instructor_id === currentUserId && (
+                        <button
+                          type="button"
+                          onClick={() => navigate({ to: "/marketplace/edit" })}
+                          style={{
+                            marginLeft: 10,
+                            background: "none",
+                            border: "none",
+                            padding: 0,
+                            color: "#1877D6",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                            fontFamily: "Poppins, sans-serif",
+                          }}
+                        >
+                          Add price →
+                        </button>
+                      )}
                           £9.99
                           <span style={{ fontSize: 14, fontWeight: 600, color: "#6B7686" }}>
                             /mo
