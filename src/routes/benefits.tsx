@@ -607,40 +607,26 @@ function BenefitsPage() {
                   {benefit.tagline}
                 </div>
               </div>
-              {benefit.exclusive && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span
                   style={{
-                    background: '#DCFCE7',
-                    color: '#15803D',
+                    background: MIN_TIER_COLOR[benefit.minTier].bg,
+                    color: MIN_TIER_COLOR[benefit.minTier].color,
                     fontSize: 9,
                     fontWeight: 700,
                     borderRadius: 20,
-                    padding: '2px 8px',
+                    padding: '3px 8px',
+                    whiteSpace: 'nowrap',
                     flexShrink: 0,
                     fontFamily: 'Poppins, sans-serif',
                   }}
                 >
-                  DSM exclusive
+                  {benefit.minTier === 'free' ? 'All members' : `${MIN_TIER_LABEL[benefit.minTier]} and above`}
                 </span>
-              )}
-              {benefit.freeForAll ? (
-                <span
-                  style={{
-                    background: '#DCFCE7',
-                    color: '#15803D',
-                    fontSize: 9,
-                    fontWeight: 700,
-                    borderRadius: 20,
-                    padding: '2px 8px',
-                    flexShrink: 0,
-                    fontFamily: 'Poppins, sans-serif',
-                  }}
-                >
-                  Free for all members
-                </span>
-              ) : !isPaid && (
-                <IconLock size={16} color="#9CA3AF" stroke={1.5} />
-              )}
+                {!canAccessTier(benefit.minTier) && (
+                  <IconLock size={14} color="#9CA3AF" stroke={1.5} />
+                )}
+              </div>
             </div>
 
             <div style={{ height: 1, background: '#E4E8EF' }} />
