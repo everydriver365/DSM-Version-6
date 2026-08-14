@@ -925,36 +925,38 @@ function ContactActions({
   const type = listing.contact_type ?? "email";
 
   const primaryBtn = {
-    background: "#0B1F3A",
+    background: "#1877D6",
     color: "#fff",
     border: "none",
-    fontSize: 15,
-    fontWeight: 800,
-    padding: 15,
-    borderRadius: 14,
-    boxShadow: "0 4px 0 #050D1C",
+    fontSize: 14,
+    fontWeight: 700,
+    padding: 13,
+    borderRadius: 20,
+    boxShadow: "0 3px 0 #0F52A8",
     cursor: "pointer",
     width: "100%",
     textAlign: "center" as const,
     textDecoration: "none",
     display: "block",
+    fontFamily: "Poppins, sans-serif",
   };
 
   const secondaryBtn = {
-    background: "#EEF2F7",
-    color: "#0B1F3A",
-    border: "none",
-    fontSize: 15,
-    fontWeight: 800,
-    padding: 15,
-    borderRadius: 14,
-    boxShadow: "0 4px 0 #D8DEE7",
+    background: "#EFF6FF",
+    color: "#1877D6",
+    border: "1px solid #1877D6",
+    fontSize: 14,
+    fontWeight: 700,
+    padding: 13,
+    borderRadius: 20,
+    boxShadow: "none",
     cursor: "pointer",
     width: "100%",
     textAlign: "center" as const,
     textDecoration: "none",
     display: "block",
     marginTop: 12,
+    fontFamily: "Poppins, sans-serif",
   };
 
 
