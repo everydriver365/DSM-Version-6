@@ -23,6 +23,7 @@ import {
   IconTool,
   IconChevronRight,
   IconWorld,
+  IconHeartHandshake,
 } from '@tabler/icons-react';
 import {
   checkDomainAvailability,
