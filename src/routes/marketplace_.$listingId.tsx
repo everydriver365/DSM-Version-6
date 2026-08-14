@@ -404,6 +404,26 @@ function ListingDetailPage() {
               {statusBadge.label}
             </div>
 
+            {/* Photo counter */}
+            {photos.length > 1 && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: 12,
+                  right: 12,
+                  background: "rgba(255,255,255,0.94)",
+                  color: "#0B1F3A",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  padding: "6px 12px",
+                  borderRadius: 20,
+                }}
+              >
+                {photoIndex + 1} of {photos.length}
+              </div>
+            )}
+
+
             {/* Pagination dots */}
             {photos.length > 1 && (
               <div
