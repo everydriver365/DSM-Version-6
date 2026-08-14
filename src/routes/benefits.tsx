@@ -137,7 +137,7 @@ const BENEFITS = [
     imageUrl: bennendenLogoAsset.url,
     iconBg: '#FEE2E2',
     iconColor: '#991B1B',
-    minTier: 'free',
+    minTier: 'pro',
     description: 'Bennenden Health provides affordable healthcare for everyone. As a DSM member you get free access — including 24/7 GP helpline, mental health support and medical treatment.',
     perks: [
       '24/7 GP helpline',
@@ -254,7 +254,7 @@ const BENEFIT_COMPARISON = [
       { label: 'HMCA insurance', from: 1 },
       { label: 'pirkx Wellbeing', from: 2 },
       { label: 'Perkbox Rewards', from: 2 },
-      { label: 'Bennenden Health', from: 3 },
+      { label: 'Bennenden Health', from: 2 },
     ],
   },
   {
