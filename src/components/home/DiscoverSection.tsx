@@ -1086,7 +1086,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         <div
           role="button"
           tabIndex={0}
-          onClick={() => navigate({ to: (isLiveOnAir ? "/dsm-live" : "/news") as never })}
+          onClick={() => navigate({ to: "/live-news" as never })}
           style={{
             ...tileBase,
             gridColumn: 2,
