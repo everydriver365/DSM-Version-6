@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Clock, Newspaper, IconBroadcast } from "lucide-react";
+import { Clock, Newspaper } from "lucide-react";
+import { IconBroadcast } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
