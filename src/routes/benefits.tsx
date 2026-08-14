@@ -254,7 +254,7 @@ const BENEFIT_COMPARISON = [
       { label: 'HMCA insurance', from: 1 },
       { label: 'pirkx Wellbeing', from: 2 },
       { label: 'Perkbox Rewards', from: 2 },
-      { label: 'Bennenden Health', from: 3 },
+      { label: 'Bennenden Health', from: 2 },
     ],
   },
   {
