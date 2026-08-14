@@ -26,6 +26,16 @@ import { supabase } from "../lib/supabaseClient";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { Card } from "../components/dsm/Card";
+import {
+  TIERS as TIER_CARDS,
+  COMPARISON_ROWS,
+  COMPARISON_COLS,
+  TIER_ORDER as SHARED_TIER_ORDER,
+  TIER_NAMES as SHARED_TIER_NAMES,
+  checkDomainAvailability,
+  createSubscriptionPaymentLink,
+  type TierId as SharedTierId,
+} from "@/lib/websiteUpgrade";
 
 export const Route = createFileRoute("/minisite")({
   head: () => ({
@@ -43,15 +53,11 @@ const SITE_BASE = "sites.everydriver.co.uk/";
 type Theme = "classic" | "modern" | "warm" | "bold";
 type Font = "Poppins" | "Playfair Display";
 type HeaderStyle = "standard" | "centered" | "split";
-type TierId = "free" | "website" | "pro" | "managed";
+type TierId = SharedTierId;
 
-const TIER_ORDER: TierId[] = ["free", "website", "pro", "managed"];
-const TIER_NAMES: Record<TierId, string> = {
-  free: "DSM Mini Website (Free)",
-  website: "DSM Website",
-  pro: "DSM Website Pro",
-  managed: "DSM Managed Website",
-};
+const TIER_ORDER = SHARED_TIER_ORDER;
+const TIER_NAMES = SHARED_TIER_NAMES;
+
 const MANAGED_WA =
   "https://wa.me/447767693279?text=" +
   encodeURIComponent("Hi, I'm interested in DSM Managed Website");
@@ -349,29 +355,12 @@ function MiniSitePage() {
   async function checkDomain() {
     const raw = domainQuery.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");
     if (raw.length < 3) return;
-    const domain = raw.includes(".") ? raw : `${raw.replace(/[^a-z0-9-]/g, "")}.co.uk`;
     setDomainChecking(true);
     setDomainResult(null);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      const res = await fetch(
-        'https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/check-domain',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session?.access_token}`,
-            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo',
-          },
-          body: JSON.stringify({ domain }),
-        }
-      );
-      const data = await res.json();
-      if (data.error) {
-        toast.error(data.error);
-        return;
-      }
-      setDomainResult({ domain: data.domain ?? domain, available: !!data.available });
+      const result = await checkDomainAvailability(raw, session?.access_token);
+      setDomainResult({ domain: result.domain, available: result.available });
     } catch (e: any) {
       toast.error(e.message ?? "Couldn't check that domain");
     } finally {
@@ -391,33 +380,15 @@ function MiniSitePage() {
         return;
       }
 
-      const res = await fetch(
-        'https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/square-create-subscription',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session.access_token}`,
-            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo',
-          },
-          body: JSON.stringify({
-            tier,
-            domain: chosenDomain ?? null,
-            redirect_url: `https://drivingschoolmanager.co.uk/subscription-success?tier=${tier}&domain=${chosenDomain ?? ''}`,
-          }),
-        }
+      const { url } = await createSubscriptionPaymentLink(
+        tier,
+        chosenDomain ?? null,
+        session.access_token,
       );
 
-      const data = await res.json();
-
-      if (data.error) {
-        toast.error(data.error);
-        setUpgradeStep('choose-tier');
-        return;
-      }
-
       // Redirect to Square checkout
-      window.location.href = data.url;
+      window.location.href = url;
+
     } catch (e: any) {
       toast.error(
         e.message ?? 'Could not start upgrade');
@@ -485,76 +456,8 @@ function MiniSitePage() {
 
   const currentIdx = TIER_ORDER.indexOf(websiteTier);
 
-  const TIERS: {
-    id: "website" | "pro" | "managed";
-    name: string;
-    price: string;
-    pillBg: string;
-    pillColor: string;
-    badge?: string;
-    features: string[];
-    cta: string;
-    btnBg: string;
-    btnShadow: string;
-  }[] = [
-    {
-      id: "website",
-      name: "DSM Website",
-      price: "£9.99/mo",
-      pillBg: "#EFF6FF",
-      pillColor: "#1877D6",
-      badge: "Most popular",
-      features: [
-        "Your own .co.uk domain included",
-        'Remove "Powered by EveryDriver"',
-        "Gallery (up to 20 photos)",
-        "Video intro",
-        "Google reviews widget",
-        "Priority listing on EveryDriver",
-        "Analytics dashboard",
-      ],
-      cta: "Upgrade to DSM Website →",
-      btnBg: "#1877D6",
-      btnShadow: "0 3px 0 #0F52A8",
-    },
-    {
-      id: "pro",
-      name: "DSM Website Pro",
-      price: "£19.99/mo",
-      pillBg: "#EDE9FE",
-      pillColor: "#7C3AED",
-      features: [
-        "Everything in DSM Website",
-        "Multiple area pages",
-        "Blog & content pages",
-        "Advanced SEO tools",
-        "Google Search Console",
-        "Promo codes on booking",
-        "Instructor login to edit site",
-      ],
-      cta: "Upgrade to Pro →",
-      btnBg: "#7C3AED",
-      btnShadow: "0 3px 0 #5B21B6",
-    },
-    {
-      id: "managed",
-      name: "DSM Managed Website",
-      price: "£29.99/mo",
-      pillBg: "#F1F5F9",
-      pillColor: "#0B1F3A",
-      features: [
-        "Everything in Pro",
-        "We build your website for you",
-        "Monthly content updates",
-        "SEO reporting & management",
-        "Google Business Profile setup",
-        "Dedicated account manager",
-      ],
-      cta: "Get a managed website →",
-      btnBg: "#0B1F3A",
-      btnShadow: "0 3px 0 #050D1C",
-    },
-  ];
+  const TIERS = TIER_CARDS;
+
 
   function renderTiers(
     onPick: (tier: "website" | "pro" | "managed") => void,
@@ -774,41 +677,11 @@ function MiniSitePage() {
     );
   }
 
-  const COMPARE_GROUPS: { title: string; rows: { label: string; from: number }[] }[] = [
-    {
-      title: "Website basics",
-      rows: [
-        { label: "Own domain", from: 1 },
-        { label: "Remove watermark", from: 1 },
-        { label: "Gallery", from: 1 },
-        { label: "Video intro", from: 1 },
-        { label: "Analytics", from: 1 },
-      ],
-    },
-    {
-      title: "Growth features",
-      rows: [
-        { label: "Area pages", from: 2 },
-        { label: "Blog", from: 2 },
-        { label: "Advanced SEO", from: 2 },
-        { label: "Promo codes", from: 2 },
-      ],
-    },
-    {
-      title: "Done-for-you",
-      rows: [
-        { label: "Managed by DSM", from: 3 },
-        { label: "Dedicated manager", from: 3 },
-      ],
-    },
-  ];
+  const COMPARE_GROUPS = COMPARISON_ROWS;
 
-  const COMPARE_COLS: { id: TierId; name: string; price: string }[] = [
-    { id: "free", name: "Free", price: "£0" },
-    { id: "website", name: "Website", price: "£9.99/mo" },
-    { id: "pro", name: "Pro", price: "£19.99/mo" },
-    { id: "managed", name: "Managed", price: "£29.99/mo" },
-  ];
+
+  const COMPARE_COLS = COMPARISON_COLS;
+
 
   const gridCols = "1.4fr 1fr 1fr 1fr 1fr";
 
