@@ -800,7 +800,7 @@ function BenefitsPage() {
                     Coming soon
                   </span>
                   <div style={{ fontSize: 10, color: '#9CA3AF', display: 'block', marginTop: 4 }}>
-                    We'll notify you when this goes live
+                    Available now.
                   </div>
                 </div>
               ) : (
