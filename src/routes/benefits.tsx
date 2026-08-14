@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { toast } from 'sonner';
+import { ChevronLeft } from 'lucide-react';
 import InstructorTopBar from '@/components/dsm/InstructorTopBar';
 import { PageLoader } from '@/components/dsm/LoadingSpinner';
 import diaLogoAsset from '@/assets/dia-logo.png.asset.json';
@@ -19,7 +20,15 @@ import {
   IconCar,
   IconTool,
   IconChevronRight,
+  IconWorld,
 } from '@tabler/icons-react';
+import {
+  checkDomainAvailability,
+  createSubscriptionPaymentLink,
+  TIERS,
+  type PaidTierId,
+} from '@/lib/websiteUpgrade';
+
 
 const BENEFITS = [
   {
