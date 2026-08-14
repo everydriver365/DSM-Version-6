@@ -590,7 +590,22 @@ function BenefitsPage() {
                   DSM exclusive
                 </span>
               )}
-              {!isPaid && (
+              {benefit.freeForAll ? (
+                <span
+                  style={{
+                    background: '#DCFCE7',
+                    color: '#15803D',
+                    fontSize: 9,
+                    fontWeight: 700,
+                    borderRadius: 20,
+                    padding: '2px 8px',
+                    flexShrink: 0,
+                    fontFamily: 'Poppins, sans-serif',
+                  }}
+                >
+                  Free for all members
+                </span>
+              ) : !isPaid && (
                 <IconLock size={16} color="#9CA3AF" stroke={1.5} />
               )}
             </div>
