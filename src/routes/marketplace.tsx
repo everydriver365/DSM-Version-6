@@ -222,7 +222,7 @@ function MarketplacePage() {
     navigate({ to: "/marketplace/$listingId" as never, params: { listingId: id } as never });
 
   return (
-    <div style={{ minHeight: "100vh", background: "#DCE4F0", paddingBottom: 96, fontFamily: POPPINS }}>
+    <div style={{ minHeight: "100vh", background: "#EEF2F7", paddingBottom: 96, fontFamily: POPPINS }}>
       {/* Top bar */}
       <InstructorTopBar
         firstName=""
@@ -236,41 +236,48 @@ function MarketplacePage() {
       />
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
-      <div style={{ padding: "20px 16px 8px" }}>
+      <div style={{ padding: "16px 0 8px" }}>
         {/* Search bar */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            background: "#FFFFFF",
-            border: "1px solid rgba(15,32,68,0.10)",
-            borderRadius: 14,
-            padding: "11px 14px",
-            marginBottom: 20,
-          }}
-        >
-          <SearchIcon size={18} color="#64748B" strokeWidth={1.75} />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search products..."
-            style={{
-              border: "none",
-              outline: "none",
-              flex: 1,
-              fontSize: 14,
-              color: "#0F2044",
-              background: "transparent",
-              fontFamily: POPPINS,
-            }}
-          />
+        <div style={{ padding: "0 16px", marginBottom: 18 }}>
+          <div style={{ position: "relative" }}>
+            <div
+              style={{
+                position: "absolute",
+                left: 14,
+                top: "50%",
+                transform: "translateY(-50%)",
+                display: "flex",
+                alignItems: "center",
+                pointerEvents: "none",
+              }}
+            >
+              <SearchIcon size={14} color="#9CA3AF" strokeWidth={2} />
+            </div>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search products…"
+              style={{
+                width: "100%",
+                boxSizing: "border-box",
+                height: 44,
+                background: "#FFFFFF",
+                border: "1px solid #E4E8EF",
+                borderRadius: 12,
+                padding: "0 14px 0 38px",
+                outline: "none",
+                fontSize: 14,
+                color: "#0B1F3A",
+                fontFamily: POPPINS,
+              }}
+            />
+          </div>
         </div>
 
         {/* Categories */}
-        <style>{`.mkt-cat-row::-webkit-scrollbar{display:none}`}</style>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+        <style>{`.mkt-cat-row::-webkit-scrollbar{display:none}.mkt-search-input::placeholder{color:#9CA3AF}`}</style>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, padding: "0 16px" }}>
           <span style={{ width: 4, height: 14, borderRadius: 2, background: "#1877D6" }} />
           <span
             style={{
@@ -291,9 +298,10 @@ function MarketplacePage() {
             display: "flex",
             gap: 8,
             overflowX: "auto",
+            padding: "0 16px",
             WebkitOverflowScrolling: "touch",
             scrollbarWidth: "none",
-            marginBottom: 22,
+            marginBottom: 20,
           }}
         >
           {[{ id: "__all", slug: null as string | null, name: "All" }, ...categories].map((cat) => {
@@ -304,13 +312,14 @@ function MarketplacePage() {
                 type="button"
                 onClick={() => setActiveCategory(cat.slug)}
                 style={{
+                  height: 34,
                   background: isActive ? "#0B1F3A" : "#FFFFFF",
-                  border: isActive ? "1px solid #0B1F3A" : "1px solid #E3E8F0",
-                  borderRadius: 100,
-                  padding: "8px 16px",
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: isActive ? "#FFFFFF" : "#5B6472",
+                  border: isActive ? "none" : "1px solid #E4E8EF",
+                  borderRadius: 20,
+                  padding: "0 14px",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: isActive ? "#FFFFFF" : "#6B7686",
                   cursor: "pointer",
                   whiteSpace: "nowrap",
                   flexShrink: 0,
@@ -322,6 +331,7 @@ function MarketplacePage() {
             );
           })}
         </div>
+
 
 
         {/* Top marketplace */}
