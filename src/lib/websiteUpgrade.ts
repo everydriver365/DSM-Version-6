@@ -12,10 +12,10 @@ export type PaidTierId = "website" | "pro" | "managed";
 export const TIER_ORDER: TierId[] = ["free", "website", "pro", "managed"];
 
 export const TIER_NAMES: Record<TierId, string> = {
-  free: "DSM Mini Website (Free)",
-  website: "DSM Website",
-  pro: "DSM Website Pro",
-  managed: "DSM Managed Website",
+  free: "Free",
+  website: "Essential",
+  pro: "Pro",
+  managed: "Max",
 };
 
 export type Tier = {
@@ -34,7 +34,7 @@ export type Tier = {
 export const TIERS: Tier[] = [
   {
     id: "website",
-    name: "DSM Website",
+    name: "DSM Essential",
     price: "£9.99/mo",
     pillBg: "#EFF6FF",
     pillColor: "#1877D6",
@@ -73,7 +73,7 @@ export const TIERS: Tier[] = [
   },
   {
     id: "managed",
-    name: "DSM Managed Website",
+    name: "DSM Max",
     price: "£29.99/mo",
     pillBg: "#F1F5F9",
     pillColor: "#0B1F3A",
@@ -129,9 +129,9 @@ export const COMPARISON_ROWS: ComparisonGroup[] = [
 
 export const COMPARISON_COLS: { id: TierId; name: string; price: string }[] = [
   { id: "free", name: "Free", price: "£0" },
-  { id: "website", name: "Website", price: "£9.99/mo" },
+  { id: "website", name: "Essential", price: "£9.99/mo" },
   { id: "pro", name: "Pro", price: "£19.99/mo" },
-  { id: "managed", name: "Managed", price: "£29.99/mo" },
+  { id: "managed", name: "Max", price: "£29.99/mo" },
 ];
 
 /** Normalise free text into a domain (defaults to .co.uk). */
