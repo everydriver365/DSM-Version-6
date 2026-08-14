@@ -1041,7 +1041,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   </div>
                 ))}
               </div>
-              <span style={{ fontSize: 10, color: MUTED, marginLeft: 6 }}>40k+ members</span>
+              <span style={{ fontSize: 10, color: MUTED, marginLeft: 6 }}>4000 exclusive member offers.</span>
             </div>
           </div>
           <span
