@@ -1176,7 +1176,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     textOverflow: "ellipsis",
                   }}
                 >
-                  {latestNewsTitle || "DSM community updates"}
+                  {"News and Live Events"}
                 </div>
               </>
             )}
