@@ -852,24 +852,43 @@ function BenefitsPage() {
                   {deal.tagline}
                 </div>
               </div>
-              {deal.comingSoon ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span
                   style={{
-                    background: '#FEF3C7',
-                    color: '#92400E',
+                    background: MIN_TIER_COLOR[deal.minTier].bg,
+                    color: MIN_TIER_COLOR[deal.minTier].color,
                     fontSize: 9,
                     fontWeight: 700,
                     borderRadius: 20,
-                    padding: '2px 7px',
+                    padding: '3px 8px',
+                    whiteSpace: 'nowrap',
                     flexShrink: 0,
                     fontFamily: 'Poppins, sans-serif',
                   }}
                 >
-                  Soon
+                  {deal.minTier === 'free' ? 'All members' : `${MIN_TIER_LABEL[deal.minTier]} and above`}
                 </span>
-              ) : (
-                <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
-              )}
+                {!dealAccess ? (
+                  <IconLock size={14} color="#9CA3AF" stroke={1.5} />
+                ) : deal.comingSoon ? (
+                  <span
+                    style={{
+                      background: '#FEF3C7',
+                      color: '#92400E',
+                      fontSize: 9,
+                      fontWeight: 700,
+                      borderRadius: 20,
+                      padding: '2px 7px',
+                      flexShrink: 0,
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    Soon
+                  </span>
+                ) : (
+                  <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                )}
+              </div>
             </div>
           );
         })}
