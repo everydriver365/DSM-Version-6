@@ -603,11 +603,34 @@ function BenefitsPage() {
               }}
             >
               {!isPaid ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <IconLock size={13} color="#9CA3AF" stroke={1.5} />
-                  <span style={{ fontSize: 13, color: '#9CA3AF' }}>Upgrade to unlock</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <IconLock size={13} color="#9CA3AF" stroke={1.5} />
+                    <span style={{ fontSize: 13, color: '#9CA3AF' }}>Upgrade to unlock</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setUpgradeStep('domain');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    style={{
+                      background: '#1877D6',
+                      color: '#fff',
+                      borderRadius: 20,
+                      padding: '6px 14px',
+                      fontSize: 11,
+                      fontWeight: 700,
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    Upgrade →
+                  </button>
                 </div>
               ) : benefit.comingSoon ? (
+
                 <div>
                   <span
                     style={{
