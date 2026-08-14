@@ -1101,10 +1101,17 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/learn" as never })}
-          style={{ ...tileBase, gridColumn: 2, gridRow: 1, height: 96, background: "#F0FDF4", borderColor: "#DCFCE7" }}
+          style={{
+            ...tileBase,
+            gridColumn: 2,
+            gridRow: 1,
+            height: 96,
+            background: "linear-gradient(160deg, #FAFDFB 0%, #F0FDF4 100%)",
+            borderColor: "#E8F9ED",
+          }}
         >
           <div>
-            <span style={{ ...chipBase, background: "#DCFCE7", color: "#16A34A" }}>
+            <span style={{ ...chipBase, background: "#E8F9ED", color: "#16A34A" }}>
               <IconBook size={17} color="#16A34A" stroke={1.6} />
             </span>
             <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8 }}>Learn</div>
