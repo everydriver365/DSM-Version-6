@@ -770,11 +770,10 @@ function ListingDetailPage() {
               <div style={LABEL}>More in this category</div>
               <div
                 style={{
-                  display: "flex",
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
                   gap: 12,
-                  overflowX: "auto",
-                  paddingBottom: 14,
-                  scrollbarWidth: "none",
+                  paddingBottom: 6,
                 }}
               >
                 {similar.map((s) => (
@@ -795,7 +794,7 @@ function ListingDetailPage() {
 
           {/* More from this seller — always the final section */}
           {sellerListings.length > 0 && (
-            <div style={{ padding: "0 16px 120px" }}>
+            <div style={{ padding: "0 16px 160px" }}>
               <div style={LABEL}>More from this seller</div>
               <div
                 style={{ display: "flex", flexDirection: "column", gap: 10 }}
@@ -1215,6 +1214,68 @@ function EnquirySheet({
     </div>
   );
 }
+/** DSM blue-tint category pill. */
+function CategoryPill({ name }: { name: string }) {
+  return (
+    <span
+      style={{
+        display: "inline-block",
+        fontFamily: "Poppins, sans-serif",
+        fontSize: 10.5,
+        fontWeight: 600,
+        color: "#1A52A0",
+        background: "#EAF1FB",
+        padding: "3px 10px",
+        borderRadius: 999,
+      }}
+    >
+      {name}
+    </span>
+  );
+}
+
+/**
+ * Renders a listing price reliably. `price_display` is free text and is
+ * sometimes just a unit ("Per month", "pcm") with no amount, so fall back to
+ * building the label from price_amount + price_type, and to a neutral
+ * "Price on request" when there genuinely is no amount.
+ */
+const PRICE_UNITS: Record<string, string> = {
+  month: "/mo",
+  monthly: "/mo",
+  per_month: "/mo",
+  pcm: "/mo",
+  year: "/yr",
+  yearly: "/yr",
+  per_year: "/yr",
+  annual: "/yr",
+  week: "/wk",
+  weekly: "/wk",
+  day: "/day",
+  daily: "/day",
+  hour: "/hr",
+  hourly: "/hr",
+  per_hour: "/hr",
+};
+
+function formatListingPrice(
+  listing: Pick<Listing, "price_display" | "price_amount" | "price_type">,
+): { text: string; muted: boolean } {
+  const amount = listing.price_amount;
+  if (typeof amount === "number" && !Number.isNaN(amount)) {
+    if (amount === 0) return { text: "Free", muted: false };
+    const money =
+      Number.isInteger(amount) ? `£${amount}` : `£${amount.toFixed(2)}`;
+    const unit =
+      PRICE_UNITS[(listing.price_type ?? "").toLowerCase().replace(/\s+/g, "_")] ?? "";
+    return { text: `${money}${unit}`, muted: false };
+  }
+  const display = (listing.price_display ?? "").trim();
+  // Only trust price_display when it actually contains a number.
+  if (display && /\d/.test(display)) return { text: display, muted: false };
+  return { text: "Price on request", muted: true };
+}
+
 function SellerListingRow({
   listing,
   onOpen,
@@ -1226,6 +1287,7 @@ function SellerListingRow({
   const Icon = iconFor(cat?.slug);
   const img =
     (listing.image_urls && listing.image_urls[0]) || listing.image_url || null;
+  const price = formatListingPrice(listing);
   return (
     <div
       onClick={() => onOpen(listing.id)}
@@ -1233,10 +1295,11 @@ function SellerListingRow({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        background: "#fff",
-        borderRadius: 16,
+        background: "#FFFFFF",
+        border: "0.5px solid #E2E6ED",
+        borderRadius: 12,
         padding: 10,
-        boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)",
+        fontFamily: "Poppins, sans-serif",
         cursor: "pointer",
       }}
     >
@@ -1247,8 +1310,8 @@ function SellerListingRow({
           flexShrink: 0,
           borderRadius: 12,
           background: img
-            ? `#E7EDF5 url(${img}) center/cover`
-            : "linear-gradient(135deg,#0B1F3A,#1877D6)",
+            ? `#F8F9FB url(${img}) center/cover`
+            : "linear-gradient(135deg,#0F2044,#1A52A0)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -1259,9 +1322,9 @@ function SellerListingRow({
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            color: "#0B1F3A",
+            color: "#0F2044",
             fontSize: 14,
-            fontWeight: 800,
+            fontWeight: 700,
             lineHeight: 1.25,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -1271,32 +1334,19 @@ function SellerListingRow({
           {listing.title}
         </div>
         {cat?.name && (
-          <span
-            style={{
-              display: "inline-block",
-              marginTop: 5,
-              fontSize: 10.5,
-              fontWeight: 700,
-              letterSpacing: "0.03em",
-              textTransform: "uppercase",
-              color: "#6B7686",
-              background: "#EEF2F7",
-              padding: "3px 9px",
-              borderRadius: 999,
-            }}
-          >
-            {cat.name}
-          </span>
+          <div style={{ marginTop: 5 }}>
+            <CategoryPill name={cat.name} />
+          </div>
         )}
         <div
           style={{
             marginTop: 5,
-            color: "#0B1F3A",
+            color: price.muted ? "#6B7686" : "#0F2044",
             fontSize: 13.5,
-            fontWeight: 800,
+            fontWeight: price.muted ? 500 : 700,
           }}
         >
-          {listing.price_display ?? "POA"}
+          {price.text}
         </div>
       </div>
       <IconChevronRight stroke={1.8} size={18} color="#B0B0B5" />
@@ -1316,61 +1366,69 @@ function MiniListingCard({
   const Icon = iconFor(cat?.slug);
   const img =
     (listing.image_urls && listing.image_urls[0]) || listing.image_url || null;
+  const price = formatListingPrice(listing);
   return (
     <div
       onClick={() => onOpen(listing.id)}
       style={{
-        width: 140,
-        flexShrink: 0,
-        background: "#fff",
-        borderRadius: 16,
+        width: "100%",
+        background: "#FFFFFF",
+        border: "0.5px solid #E2E6ED",
+        borderRadius: 12,
         overflow: "hidden",
-        boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)",
+        fontFamily: "Poppins, sans-serif",
         cursor: "pointer",
       }}
     >
       <div
         style={{
-          height: 100,
+          height: 96,
           background: img
-            ? `#E7EDF5 url(${img}) center/cover`
-            : "linear-gradient(135deg,#0B1F3A,#1877D6)",
+            ? `#F8F9FB url(${img}) center/cover`
+            : "linear-gradient(135deg,#0F2044,#1A52A0)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        {!img && <Icon size={32} color="#FFFFFF" />}
+        {!img && <Icon size={30} color="#FFFFFF" />}
       </div>
-      <div
-        style={{
-          color: "#0B1F3A",
-          fontSize: 12.5,
-          fontWeight: 700,
-          lineHeight: 1.3,
-          padding: "10px 12px 0",
-          display: "-webkit-box",
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: "vertical",
-          overflow: "hidden",
-        }}
-      >
-        {listing.title}
-      </div>
-      <div
-        style={{
-          color: "#0B1F3A",
-          fontSize: 13.5,
-          fontWeight: 800,
-          marginTop: 5,
-          padding: "0 12px 12px",
-        }}
-      >
-        {listing.price_display ?? "POA"}
+      <div style={{ padding: "10px 10px 12px" }}>
+        <div
+          style={{
+            color: "#0F2044",
+            fontSize: 12.5,
+            fontWeight: 700,
+            lineHeight: 1.3,
+            minHeight: 32,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {listing.title}
+        </div>
+        {cat?.name && (
+          <div style={{ marginTop: 6 }}>
+            <CategoryPill name={cat.name} />
+          </div>
+        )}
+        <div
+          style={{
+            marginTop: 6,
+            color: price.muted ? "#6B7686" : "#0F2044",
+            fontSize: 13,
+            fontWeight: price.muted ? 500 : 700,
+          }}
+        >
+          {price.text}
+        </div>
       </div>
     </div>
   );
 }
+
 
 
 // Silence unused imports lint when IconTag is only imported for icon parity
