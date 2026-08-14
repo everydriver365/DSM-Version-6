@@ -311,9 +311,18 @@ function BenefitsPage() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
+                  overflow: 'hidden',
                 }}
               >
-                <Icon size={20} color={benefit.iconColor} stroke={1.5} />
+                {benefit.imageUrl ? (
+                  <img
+                    src={benefit.imageUrl}
+                    alt={benefit.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <Icon size={20} color={benefit.iconColor} stroke={1.5} />
+                )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 14, fontWeight: 700, color: '#0B1F3A' }}>
