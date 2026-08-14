@@ -794,7 +794,7 @@ function ListingDetailPage() {
 
           {/* More from this seller — always the final section */}
           {sellerListings.length > 0 && (
-            <div style={{ padding: "0 16px 120px" }}>
+            <div style={{ padding: "0 16px 160px" }}>
               <div style={LABEL}>More from this seller</div>
               <div
                 style={{ display: "flex", flexDirection: "column", gap: 10 }}
