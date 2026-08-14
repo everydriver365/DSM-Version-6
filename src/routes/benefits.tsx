@@ -43,6 +43,7 @@ const BENEFITS = [
     imageUrl: pirkxLogoAsset.url,
     iconBg: '#E6F1FB',
     iconColor: '#185FA5',
+    minTier: 'pro',
     description: 'Access private GP appointments 24/7, mental health support, prescription delivery and physiotherapy — all included with your DSM Pro subscription.',
     perks: [
       '24/7 private GP access',
@@ -65,6 +66,7 @@ const BENEFITS = [
     imageUrl: perkboxLogoAsset.url,
     iconBg: '#FBEAF0',
     iconColor: '#993556',
+    minTier: 'website',
     description: 'Save money every day with thousands of discounts on retail, restaurants, cinema, travel and more.',
     perks: [
       '4,000+ retail discounts',
@@ -87,6 +89,7 @@ const BENEFITS = [
     imageUrl: diaLogoAsset.url,
     iconBg: '#E6F1FB',
     iconColor: '#185FA5',
+    minTier: 'pro',
     description: 'Full Driving Instructors Association membership included free — saving you money every year.',
     perks: [
       'Full DIA membership',
@@ -109,6 +112,7 @@ const BENEFITS = [
     imageUrl: hmcaLogoAsset.url,
     iconBg: '#EAF3DE',
     iconColor: '#3B6D11',
+    minTier: 'pro',
     description: 'Fast access to medical investigations and treatment with HMCA Insurance. Three plan levels available — exclusively for DSM subscribers.',
     perks: [
       'Fast medical investigations',
@@ -131,6 +135,7 @@ const BENEFITS = [
     imageUrl: bennendenLogoAsset.url,
     iconBg: '#FEE2E2',
     iconColor: '#991B1B',
+    minTier: 'free',
     description: 'Bennenden Health provides affordable healthcare for everyone. As a DSM member you get free access — including 24/7 GP helpline, mental health support and medical treatment.',
     perks: [
       '24/7 GP helpline',
@@ -156,6 +161,7 @@ const DEALS = [
     icon: IconCamera,
     iconBg: '#EEF2F7',
     iconColor: '#0B1F3A',
+    minTier: 'website',
     description: 'Exclusive discounts on leading dashcam brands. Perfect for ADIs — front and rear recording, loop recording and parking mode.',
     dealLabel: 'View dashcam deals →',
     comingSoon: true,
@@ -167,6 +173,7 @@ const DEALS = [
     icon: IconGasStation,
     iconBg: '#FEF3C7',
     iconColor: '#92400E',
+    minTier: 'website',
     description: 'Save on every fill-up with a DSM partner fuel card. Works at thousands of forecourts across the UK.',
     dealLabel: 'Apply free →',
     comingSoon: true,
@@ -178,6 +185,7 @@ const DEALS = [
     icon: IconCar,
     iconBg: '#F0FDF4',
     iconColor: '#15803D',
+    minTier: 'website',
     description: 'Discounted tyre fitting, MOT and servicing from our network of approved garages nationwide.',
     dealLabel: 'Find a garage →',
     comingSoon: true,
@@ -189,6 +197,7 @@ const DEALS = [
     icon: IconTool,
     iconBg: '#FEE2E2',
     iconColor: '#991B1B',
+    minTier: 'website',
     description: 'Breakdown cover designed for driving instructors — includes dual-control vehicle cover and roadside assistance.',
     dealLabel: 'Get a quote →',
     comingSoon: true,
