@@ -114,6 +114,37 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     return soon ? "soon" : "offline";
   }, [live, nowTick]);
 
+  const isLiveOnAir = liveStatus === "live";
+
+  // Instructor website tier — drives the Perks tile styling/copy.
+  const [websiteTier, setWebsiteTier] = useState<string | null>(null);
+  const isFreeTier = !websiteTier || websiteTier === "free";
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data: auth } = await supabase.auth.getUser();
+        const user = auth.user;
+        if (!user || cancelled) return;
+        const { data } = await supabase
+          .from("instructors")
+          .select("website_tier")
+          .eq("id", user.id)
+          .maybeSingle();
+        if (!cancelled && data) {
+          setWebsiteTier((data as { website_tier: string | null }).website_tier ?? null);
+        }
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+
+
 
 
   const [liveCount, setLiveCount] = useState<number | null>(null);
