@@ -293,10 +293,10 @@ function ListingDetailPage() {
           onClick={goBack}
           aria-label="Back"
           style={{
-            width: 34,
-            height: 34,
+            width: 36,
+            height: 36,
             borderRadius: 999,
-            background: "rgba(255,255,255,0.08)",
+            background: "rgba(255,255,255,0.12)",
             border: "none",
             color: "#FFFFFF",
             cursor: "pointer",
@@ -314,6 +314,7 @@ function ListingDetailPage() {
             fontSize: 18,
             fontWeight: 700,
             color: "#fff",
+            fontFamily: "Poppins, sans-serif",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -468,7 +469,7 @@ function ListingDetailPage() {
                   aspectRatio: "1 / 0.9",
                   background: photos[0]
                     ? `#E7EDF5 url(${photos[0]}) center/cover`
-                    : "linear-gradient(135deg,#0B1F3A,#1877D6)",
+                    : "#0B1F3A",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -484,12 +485,15 @@ function ListingDetailPage() {
                 position: "absolute",
                 top: 12,
                 left: 12,
-                background: statusBadge.colour,
+                background: "rgba(11,31,58,0.7)",
+                backdropFilter: "blur(4px)",
+                WebkitBackdropFilter: "blur(4px)",
                 color: "#fff",
                 fontSize: 11,
-                fontWeight: 800,
-                padding: "6px 12px",
+                fontWeight: 700,
+                padding: "4px 10px",
                 borderRadius: 20,
+                fontFamily: "Poppins, sans-serif",
               }}
             >
               {statusBadge.label}
@@ -502,12 +506,15 @@ function ListingDetailPage() {
                   position: "absolute",
                   top: 12,
                   right: 12,
-                  background: "rgba(255,255,255,0.94)",
-                  color: "#0B1F3A",
-                  fontSize: 12,
+                  background: "rgba(11,31,58,0.7)",
+                  backdropFilter: "blur(4px)",
+                  WebkitBackdropFilter: "blur(4px)",
+                  color: "#fff",
+                  fontSize: 11,
                   fontWeight: 700,
-                  padding: "6px 12px",
+                  padding: "4px 10px",
                   borderRadius: 20,
+                  fontFamily: "Poppins, sans-serif",
                 }}
               >
                 {photoIndex + 1} of {photos.length}
