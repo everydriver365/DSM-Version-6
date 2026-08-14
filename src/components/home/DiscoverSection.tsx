@@ -1032,7 +1032,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               <IconBook size={17} color={BLUE} stroke={1.6} />
             </span>
             <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8 }}>Learn</div>
-            <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Videos</div>
+            <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Training video</div>
           </div>
         </div>
 
@@ -1048,7 +1048,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               <IconBolt size={17} color={NAVY} stroke={1.6} />
             </span>
             <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8 }}>Bitesize</div>
-            <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Quick tips</div>
+            <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Short information videos.</div>
           </div>
         </div>
 
@@ -1079,7 +1079,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               <IconPlayerPlay size={17} color={NAVY} stroke={1.6} />
             </span>
             <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8 }}>Showcase</div>
-            <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Watch</div>
+            <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Short fun videos</div>
           </div>
         </div>
 
