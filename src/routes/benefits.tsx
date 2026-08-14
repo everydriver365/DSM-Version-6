@@ -810,6 +810,7 @@ function BenefitsPage() {
         {DEALS.map((deal, index) => {
           const Icon = deal.icon;
           const isLast = index === DEALS.length - 1;
+          const dealAccess = canAccessTier(deal.minTier);
           return (
             <div
               key={deal.id}
