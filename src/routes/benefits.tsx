@@ -269,6 +269,9 @@ function BenefitsPage() {
           '_blank',
         );
         break;
+      case 'bennenden':
+        toast.info('Bennenden Health coming soon — we\'ll notify you when live');
+        break;
     }
   }
 
