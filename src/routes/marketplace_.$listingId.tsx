@@ -343,7 +343,72 @@ function ListingDetailPage() {
 
           {/* Hero photo gallery */}
           <div style={{ position: "relative", width: "100%", background: "#0B1F3A" }}>
-            {photos.length > 1 ? (
+            {listingId === WEBSITE_LISTING_ID ? (
+              <div
+                style={{
+                  width: "100%",
+                  aspectRatio: "1 / 0.62",
+                  padding: "40px 0 20px",
+                  boxSizing: "border-box",
+                  background: "linear-gradient(135deg,#1B4E8F 0%,#123A6E 45%,#0B1F3A 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 0,
+                }}
+              >
+                {/* Phone mock */}
+                <div
+                  style={{
+                    width: "23%",
+                    aspectRatio: "1 / 1.95",
+                    background: "#FFFFFF",
+                    border: "3px solid #0B1F3A",
+                    borderRadius: 14,
+                    overflow: "hidden",
+                    marginRight: -10,
+                    zIndex: 1,
+                    boxShadow: "0 10px 24px rgba(0,0,0,0.28)",
+                  }}
+                >
+                  <div style={{ height: 18, background: "#0B1F3A", display: "flex", alignItems: "center", gap: 3, padding: "0 6px" }}>
+                    {[0, 1, 2].map((i) => (
+                      <span key={i} style={{ width: 4, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.55)" }} />
+                    ))}
+                  </div>
+                  <div style={{ padding: 8, display: "flex", flexDirection: "column", gap: 5 }}>
+                    <span style={{ height: 6, borderRadius: 3, background: "#E7EDF5" }} />
+                    <span style={{ height: 6, width: "70%", borderRadius: 3, background: "#E7EDF5" }} />
+                    <span style={{ height: 6, width: "45%", borderRadius: 3, background: "#E7EDF5" }} />
+                  </div>
+                </div>
+                {/* Browser mock */}
+                <div
+                  style={{
+                    width: "40%",
+                    aspectRatio: "1 / 0.68",
+                    background: "#FFFFFF",
+                    border: "3px solid #0B1F3A",
+                    borderRadius: 10,
+                    overflow: "hidden",
+                    marginTop: 22,
+                    boxShadow: "0 12px 28px rgba(0,0,0,0.3)",
+                  }}
+                >
+                  <div style={{ height: 20, background: "#0B1F3A", display: "flex", alignItems: "center", gap: 4, padding: "0 8px" }}>
+                    {[0, 1, 2].map((i) => (
+                      <span key={i} style={{ width: 5, height: 5, borderRadius: 999, background: "rgba(255,255,255,0.55)" }} />
+                    ))}
+                  </div>
+                  <div style={{ padding: 10, display: "flex", flexDirection: "column", gap: 6 }}>
+                    <span style={{ height: 7, borderRadius: 3, background: "#E7EDF5" }} />
+                    <span style={{ height: 7, width: "80%", borderRadius: 3, background: "#E7EDF5" }} />
+                    <span style={{ height: 7, width: "55%", borderRadius: 3, background: "#E7EDF5" }} />
+                  </div>
+                </div>
+              </div>
+            ) : photos.length > 1 ? (
+
               <div
                 onScroll={(e) => {
                   const el = e.currentTarget;
