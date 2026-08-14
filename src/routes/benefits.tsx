@@ -302,6 +302,7 @@ function BenefitsPage() {
     price?: string | null;
   } | null>(null);
   const [checkingDomain, setCheckingDomain] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
 
 
   useEffect(() => {
