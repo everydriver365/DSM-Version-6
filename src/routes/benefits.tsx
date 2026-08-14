@@ -48,6 +48,7 @@ const BENEFITS = [
     name: 'Perkbox Rewards',
     tagline: '4,000+ exclusive discounts',
     icon: 'gift',
+    imageUrl: perkboxLogoAsset.url,
     iconBg: '#FBEAF0',
     iconColor: '#993556',
     description: 'Save money every day with thousands of discounts on retail, restaurants, cinema, travel and more.',
