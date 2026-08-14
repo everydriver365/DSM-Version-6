@@ -26,6 +26,16 @@ import { supabase } from "../lib/supabaseClient";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { Card } from "../components/dsm/Card";
+import {
+  TIERS as TIER_CARDS,
+  COMPARISON_ROWS,
+  COMPARISON_COLS,
+  TIER_ORDER as SHARED_TIER_ORDER,
+  TIER_NAMES as SHARED_TIER_NAMES,
+  checkDomainAvailability,
+  createSubscriptionPaymentLink,
+  type TierId as SharedTierId,
+} from "@/lib/websiteUpgrade";
 
 export const Route = createFileRoute("/minisite")({
   head: () => ({
