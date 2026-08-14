@@ -1352,23 +1352,25 @@ function SellerListingRow({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        background: "#FFFFFF",
-        border: "0.5px solid #E2E6ED",
-        borderRadius: 12,
-        padding: 10,
+        background: "#fff",
+        border: "1px solid #E4E8EF",
+        borderRadius: 16,
+        boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+        padding: 12,
+        marginBottom: 10,
         fontFamily: "Poppins, sans-serif",
         cursor: "pointer",
       }}
     >
       <div
         style={{
-          width: 64,
-          height: 64,
+          width: 72,
+          height: 72,
           flexShrink: 0,
-          borderRadius: 12,
+          borderRadius: 10,
           background: img
-            ? `#F8F9FB url(${img}) center/cover`
-            : "linear-gradient(135deg,#0F2044,#1A52A0)",
+            ? `#EEF2F7 url(${img}) center/cover`
+            : "#0B1F3A",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -1379,9 +1381,9 @@ function SellerListingRow({
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            color: "#0F2044",
-            fontSize: 14,
-            fontWeight: 700,
+            color: "#0B1F3A",
+            fontSize: 13,
+            fontWeight: 600,
             lineHeight: 1.25,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -1391,22 +1393,42 @@ function SellerListingRow({
           {listing.title}
         </div>
         {cat?.name && (
-          <div style={{ marginTop: 5 }}>
+          <div style={{ marginTop: 3 }}>
             <CategoryPill name={cat.name} />
           </div>
         )}
         <div
           style={{
-            marginTop: 5,
-            color: price.muted ? "#6B7686" : "#0F2044",
-            fontSize: 13.5,
+            marginTop: 4,
+            color: price.muted ? "#9CA3AF" : "#0B1F3A",
+            fontSize: 13,
             fontWeight: price.muted ? 500 : 700,
           }}
         >
           {price.text}
         </div>
       </div>
-      <IconChevronRight stroke={1.8} size={18} color="#B0B0B5" />
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onOpen(listing.id);
+        }}
+        style={{
+          background: "#1877D6",
+          color: "#fff",
+          borderRadius: 20,
+          padding: "6px 14px",
+          fontSize: 12,
+          fontWeight: 700,
+          border: "none",
+          cursor: "pointer",
+          fontFamily: "Poppins, sans-serif",
+          flexShrink: 0,
+        }}
+      >
+        View ›
+      </button>
     </div>
   );
 }
@@ -1429,9 +1451,10 @@ function MiniListingCard({
       onClick={() => onOpen(listing.id)}
       style={{
         width: "100%",
-        background: "#FFFFFF",
-        border: "0.5px solid #E2E6ED",
-        borderRadius: 12,
+        background: "#fff",
+        border: "1px solid #E4E8EF",
+        borderRadius: 16,
+        boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
         overflow: "hidden",
         fontFamily: "Poppins, sans-serif",
         cursor: "pointer",
@@ -1439,10 +1462,11 @@ function MiniListingCard({
     >
       <div
         style={{
-          height: 96,
+          width: "100%",
+          aspectRatio: "1 / 1",
           background: img
-            ? `#F8F9FB url(${img}) center/cover`
-            : "linear-gradient(135deg,#0F2044,#1A52A0)",
+            ? `#EEF2F7 url(${img}) center/cover`
+            : "#0B1F3A",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -1450,14 +1474,13 @@ function MiniListingCard({
       >
         {!img && <Icon size={30} color="#FFFFFF" />}
       </div>
-      <div style={{ padding: "10px 10px 12px" }}>
+      <div style={{ padding: 10 }}>
         <div
           style={{
-            color: "#0F2044",
-            fontSize: 12.5,
-            fontWeight: 700,
+            color: "#0B1F3A",
+            fontSize: 12,
+            fontWeight: 600,
             lineHeight: 1.3,
-            minHeight: 32,
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
@@ -1467,14 +1490,14 @@ function MiniListingCard({
           {listing.title}
         </div>
         {cat?.name && (
-          <div style={{ marginTop: 6 }}>
+          <div style={{ marginTop: 4 }}>
             <CategoryPill name={cat.name} />
           </div>
         )}
         <div
           style={{
             marginTop: 6,
-            color: price.muted ? "#6B7686" : "#0F2044",
+            color: price.muted ? "#9CA3AF" : "#0B1F3A",
             fontSize: 13,
             fontWeight: price.muted ? 500 : 700,
           }}
