@@ -752,35 +752,6 @@ function ListingDetailPage() {
             </div>
           </div>
 
-          {/* More from this seller */}
-          {sellerListings.length > 0 && (
-            <div style={{ padding: "0 16px 16px" }}>
-              <div style={LABEL}>More from this seller</div>
-              <div
-                style={{
-                  display: "flex",
-                  gap: 12,
-                  overflowX: "auto",
-                  paddingBottom: 14,
-                  scrollbarWidth: "none",
-                }}
-              >
-                {sellerListings.map((s) => (
-                  <MiniListingCard
-                    key={s.id}
-                    listing={s}
-                    onOpen={(id) =>
-                      navigate({
-                        to: "/marketplace/$listingId",
-                        params: { listingId: id },
-                      })
-                    }
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* Similar in category */}
           {similar.length > 0 && (
             <div style={{ padding: "0 16px 16px" }}>
@@ -809,6 +780,30 @@ function ListingDetailPage() {
               </div>
             </div>
           )}
+
+          {/* More from this seller — always the final section */}
+          {sellerListings.length > 0 && (
+            <div style={{ padding: "0 16px 120px" }}>
+              <div style={LABEL}>More from this seller</div>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 10 }}
+              >
+                {sellerListings.map((s) => (
+                  <SellerListingRow
+                    key={s.id}
+                    listing={s}
+                    onOpen={(id) =>
+                      navigate({
+                        to: "/marketplace/$listingId",
+                        params: { listingId: id },
+                      })
+                    }
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
 
           {enquiryOpen && (
             <EnquirySheet
@@ -1208,6 +1203,95 @@ function EnquirySheet({
     </div>
   );
 }
+function SellerListingRow({
+  listing,
+  onOpen,
+}: {
+  listing: Listing;
+  onOpen: (id: string) => void;
+}) {
+  const cat = listing.marketplace_categories;
+  const Icon = iconFor(cat?.slug);
+  const img =
+    (listing.image_urls && listing.image_urls[0]) || listing.image_url || null;
+  return (
+    <div
+      onClick={() => onOpen(listing.id)}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        background: "#fff",
+        borderRadius: 16,
+        padding: 10,
+        boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)",
+        cursor: "pointer",
+      }}
+    >
+      <div
+        style={{
+          width: 64,
+          height: 64,
+          flexShrink: 0,
+          borderRadius: 12,
+          background: img
+            ? `#E7EDF5 url(${img}) center/cover`
+            : "linear-gradient(135deg,#0B1F3A,#1877D6)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {!img && <Icon size={26} color="#FFFFFF" />}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div
+          style={{
+            color: "#0B1F3A",
+            fontSize: 14,
+            fontWeight: 800,
+            lineHeight: 1.25,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {listing.title}
+        </div>
+        {cat?.name && (
+          <span
+            style={{
+              display: "inline-block",
+              marginTop: 5,
+              fontSize: 10.5,
+              fontWeight: 700,
+              letterSpacing: "0.03em",
+              textTransform: "uppercase",
+              color: "#6B7686",
+              background: "#EEF2F7",
+              padding: "3px 9px",
+              borderRadius: 999,
+            }}
+          >
+            {cat.name}
+          </span>
+        )}
+        <div
+          style={{
+            marginTop: 5,
+            color: "#0B1F3A",
+            fontSize: 13.5,
+            fontWeight: 800,
+          }}
+        >
+          {listing.price_display ?? "POA"}
+        </div>
+      </div>
+      <IconChevronRight stroke={1.8} size={18} color="#B0B0B5" />
+    </div>
+  );
+}
+
 
 function MiniListingCard({
   listing,
