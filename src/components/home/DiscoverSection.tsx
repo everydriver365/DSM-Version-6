@@ -1124,11 +1124,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/bitesize" as never })}
-          style={{ ...tileBase, gridColumn: 2, gridRow: 2, height: 96 }}
+          style={{
+            ...tileBase,
+            gridColumn: 2,
+            gridRow: 2,
+            height: 96,
+            background: "linear-gradient(160deg, #FAF9FF 0%, #F3F1FE 100%)",
+            borderColor: "#EDE9FD",
+          }}
         >
           <div>
-            <span style={{ ...chipBase, background: "#EEF2F7", color: NAVY }}>
-              <IconBolt size={17} color={NAVY} stroke={1.6} />
+            <span style={{ ...chipBase, background: "#EDE9FD", color: "#7C3AED" }}>
+              <IconBolt size={17} color="#7C3AED" stroke={1.6} />
             </span>
             <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8 }}>Bitesize</div>
             <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Short information videos.</div>
