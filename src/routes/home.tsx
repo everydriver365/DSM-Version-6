@@ -7699,7 +7699,7 @@ function HomePage() {
                           }} />
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{
-                              fontSize: 13.5, fontWeight: 700, color: NAVY_C, fontFamily: PF_C,
+                              fontSize: 15, fontWeight: 700, color: NAVY_C, fontFamily: PF_C,
                               whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                             }}>
                               {latestItem.title}
