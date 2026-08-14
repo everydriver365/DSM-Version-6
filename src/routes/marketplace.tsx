@@ -444,6 +444,64 @@ function MarketplacePage() {
   );
 }
 
+const CARD_SHADOW = "0 1px 3px rgba(11,31,58,0.06)";
+
+const CATEGORY_PILL: React.CSSProperties = {
+  display: "inline-block",
+  background: "#EFF6FF",
+  color: "#1877D6",
+  fontSize: 10,
+  fontWeight: 700,
+  borderRadius: 20,
+  fontFamily: POPPINS,
+};
+
+const VIEW_BUTTON: React.CSSProperties = {
+  background: "#1877D6",
+  color: "#FFFFFF",
+  borderRadius: 20,
+  padding: "7px 16px",
+  fontSize: 13,
+  fontWeight: 700,
+  border: "none",
+  cursor: "pointer",
+  fontFamily: POPPINS,
+};
+
+/** Neutral "no price" state with an inline prompt to add one. */
+function NoPriceRow({ listingId }: { listingId: string }) {
+  const navigate = useNavigate();
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <span style={{ fontSize: 13, color: "#9CA3AF", fontFamily: POPPINS }}>
+        No price set
+      </span>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          navigate({
+            to: "/marketplace/edit/$id" as never,
+            params: { id: listingId } as never,
+          });
+        }}
+        style={{
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          fontSize: 12,
+          fontWeight: 600,
+          color: "#1877D6",
+          fontFamily: POPPINS,
+          padding: 0,
+        }}
+      >
+        Add price →
+      </button>
+    </div>
+  );
+}
+
 function FeaturedCard({
   listing,
   onOpen,
@@ -453,12 +511,8 @@ function FeaturedCard({
 }) {
   const cat = listing.marketplace_categories;
   const price = listing.price_display?.trim() || null;
-  const priceIsBad = price && !/\d/.test(price);
-  const priceText = priceIsBad ? "No price set" : price ?? "Price on request";
+  const priceIsBad = !price || !/\d/.test(price);
   const heroImage = listing.image_urls?.[0] ?? null;
-  const headerBackground = heroImage
-    ? `url(${heroImage}) center/cover no-repeat`
-    : "linear-gradient(135deg,#16305A,#0B1F3A)";
 
   return (
     <div
@@ -472,10 +526,12 @@ function FeaturedCard({
         }
       }}
       style={{
-        borderRadius: 18,
-        border: "1px solid #E3E8F0",
-        overflow: "hidden",
+        margin: "0 16px 10px",
         background: "#fff",
+        borderRadius: 16,
+        border: "1px solid #E4E8EF",
+        overflow: "hidden",
+        boxShadow: CARD_SHADOW,
         cursor: "pointer",
         userSelect: "none",
         fontFamily: POPPINS,
@@ -483,35 +539,20 @@ function FeaturedCard({
     >
       <div
         style={{
-          height: 210,
-          background: headerBackground,
-          position: "relative",
-          padding: "12px 14px",
+          width: "100%",
+          height: 180,
+          background: heroImage
+            ? `#EEF2F7 url(${heroImage}) center/cover no-repeat`
+            : "linear-gradient(135deg,#16305A,#0B1F3A)",
         }}
-      >
-        <span
-          style={{
-            background: "rgba(255,255,255,0.16)",
-            backdropFilter: "blur(4px)",
-            color: "#fff",
-            fontSize: 11,
-            fontWeight: 700,
-            padding: "6px 14px",
-            borderRadius: 20,
-            textTransform: "uppercase",
-            letterSpacing: "0.04em",
-          }}
-        >
-          Featured
-        </span>
-      </div>
-      <div style={{ padding: "14px 16px 16px" }}>
+      />
+      <div style={{ padding: 14 }}>
         <div
           style={{
-            fontSize: 20,
+            fontSize: 15,
             fontWeight: 700,
             color: "#0B1F3A",
-            marginBottom: 10,
+            fontFamily: POPPINS,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -521,14 +562,10 @@ function FeaturedCard({
         </div>
         <span
           style={{
-            display: "inline-flex",
-            fontSize: 13,
-            fontWeight: 600,
-            color: "#1877D6",
-            background: "#E6F1FB",
-            padding: "6px 12px",
-            borderRadius: 10,
-            marginBottom: 16,
+            ...CATEGORY_PILL,
+            padding: "3px 10px",
+            marginTop: 4,
+            marginBottom: 8,
           }}
         >
           {cat?.name || "Marketplace"}
@@ -541,30 +578,16 @@ function FeaturedCard({
             gap: 8,
           }}
         >
-          <span
-            style={
-              priceIsBad
-                ? { fontSize: 15, fontWeight: 600, color: "#CC2229" }
-                : { fontSize: 15, fontWeight: 600, color: "#0B1F3A" }
-            }
-          >
-            {priceText}
-          </span>
-          <span
-            style={{
-              background: "#1877D6",
-              color: "#FFFFFF",
-              fontSize: 15,
-              fontWeight: 600,
-              padding: "10px 18px",
-              borderRadius: 10,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 4,
-            }}
-          >
+          {priceIsBad ? (
+            <NoPriceRow listingId={listing.id} />
+          ) : (
+            <span style={{ fontSize: 16, fontWeight: 800, color: "#0B1F3A" }}>
+              {price}
+            </span>
+          )}
+          <button type="button" style={VIEW_BUTTON} onClick={() => onOpen(listing.id)}>
             View ›
-          </span>
+          </button>
         </div>
       </div>
     </div>
@@ -583,10 +606,7 @@ function ProductCard({
   const accent = colorFor(cat?.slug);
   const image = listing.image_urls?.[0] ?? null;
   const price = listing.price_display?.trim() || null;
-  const subtitle =
-    listing.marketplace_suppliers?.name || cat?.name || "Marketplace";
-  const priceIsBad = price && !/\d/.test(price);
-  const priceText = priceIsBad ? "No price set" : price ?? "Price on request";
+  const priceIsBad = !price || !/\d/.test(price);
 
   return (
     <div
@@ -600,13 +620,15 @@ function ProductCard({
         }
       }}
       style={{
-        background: "#FFFFFF",
-        border: "1px solid #E3E8F0",
-        borderRadius: 14,
+        margin: "0 16px 10px",
+        background: "#fff",
+        borderRadius: 16,
+        border: "1px solid #E4E8EF",
+        boxShadow: CARD_SHADOW,
         padding: 12,
         display: "flex",
-        flexDirection: "row",
         gap: 12,
+        alignItems: "center",
         cursor: "pointer",
         userSelect: "none",
         fontFamily: POPPINS,
@@ -614,90 +636,72 @@ function ProductCard({
     >
       <div
         style={{
-          width: 90,
-          height: 90,
+          width: 76,
+          height: 76,
           flexShrink: 0,
           borderRadius: 10,
-          background: image ? `#F1F5F9 url(${image}) center/cover no-repeat` : `${accent}1F`,
+          background: image
+            ? `#EEF2F7 url(${image}) center/cover no-repeat`
+            : "#EEF2F7",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        {!image && <Icon size={28} color={accent} strokeWidth={1.75} />}
+        {!image && <Icon size={26} color={accent} strokeWidth={1.75} />}
       </div>
 
-      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: 600,
             color: "#0B1F3A",
+            fontFamily: POPPINS,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
-            marginBottom: 4,
           }}
         >
           {listing.title}
         </div>
         <span
           style={{
-            display: "inline-flex",
-            width: "fit-content",
-            fontSize: 12,
-            fontWeight: 600,
-            letterSpacing: "0.01em",
-            color: accent,
-            background: `${accent}1F`,
-            padding: "5px 11px",
-            borderRadius: 10,
-            marginBottom: "auto",
+            ...CATEGORY_PILL,
+            padding: "2px 8px",
+            marginTop: 3,
+            marginBottom: 6,
+            maxWidth: "100%",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
           }}
         >
-          {subtitle}
+          {cat?.name || "Marketplace"}
         </span>
-
         <div
           style={{
-            marginTop: 6,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             gap: 8,
           }}
         >
-          <span
-            style={
-              priceIsBad
-                ? { fontSize: 15, fontWeight: 600, color: "#CC2229" }
-                : { fontSize: 15, fontWeight: 600, color: "#0B1F3A" }
-            }
-          >
-            {priceText}
-          </span>
-          <span
-            style={{
-              background: "#1877D6",
-              color: "#FFFFFF",
-              fontSize: 15,
-              fontWeight: 600,
-              padding: "10px 18px",
-              borderRadius: 10,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 4,
-            }}
-          >
+          {priceIsBad ? (
+            <NoPriceRow listingId={listing.id} />
+          ) : (
+            <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>
+              {price}
+            </span>
+          )}
+          <button type="button" style={VIEW_BUTTON} onClick={() => onOpen(listing.id)}>
             View ›
-          </span>
+          </button>
         </div>
       </div>
     </div>
   );
 }
+
 
 
