@@ -435,7 +435,10 @@ function ListingDetailPage() {
           </div>
 
           <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 14 }}>
+            {/* Enhanced upgrade sections — only for the DSM website listing */}
+            {listingId === WEBSITE_LISTING_ID && <WebsiteUpgradeSections />}
             {/* Title + price */}
+
             <div style={{ ...CARD, padding: 20 }}>
               <div
                 style={{
