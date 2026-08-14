@@ -277,6 +277,11 @@ function BenefitsPage() {
 
   const isPaid = websiteTier !== 'free';
 
+  const TIER_RANK: Record<string, number> = { free: 0, website: 1, pro: 2, managed: 3 };
+  function canAccessTier(minTier: string) {
+    return TIER_RANK[websiteTier] >= TIER_RANK[minTier];
+  }
+
   function handleBenefitCta(action: string) {
     switch (action) {
       case 'pirkx_sso':
