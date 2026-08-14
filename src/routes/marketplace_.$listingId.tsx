@@ -159,6 +159,16 @@ function ListingDetailPage() {
   const [similar, setSimilar] = useState<Listing[]>([]);
   const [sellerListings, setSellerListings] = useState<Listing[]>([]);
   const [enquiryOpen, setEnquiryOpen] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    void supabase.auth.getUser().then(({ data }) => {
+      if (!cancelled) setCurrentUserId(data.user?.id ?? null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const [photoIndex, setPhotoIndex] = useState(0);
 
   useEffect(() => {
@@ -852,7 +862,7 @@ function ListingDetailPage() {
                 )}
               </div>
               <div
-                style={{ display: "flex", flexDirection: "column", gap: 10 }}
+                style={{ display: "flex", flexDirection: "column" }}
               >
                 {sellerListings.map((s) => (
                   <SellerListingRow
