@@ -803,12 +803,8 @@ function MiniSitePage() {
     },
   ];
 
-  const COMPARE_COLS: { id: TierId; name: string; price: string }[] = [
-    { id: "free", name: "Free", price: "£0" },
-    { id: "website", name: "Website", price: "£9.99/mo" },
-    { id: "pro", name: "Pro", price: "£19.99/mo" },
-    { id: "managed", name: "Managed", price: "£29.99/mo" },
-  ];
+  const COMPARE_COLS = COMPARISON_COLS;
+
 
   const gridCols = "1.4fr 1fr 1fr 1fr 1fr";
 
