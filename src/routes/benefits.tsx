@@ -218,6 +218,20 @@ function iconFor(name: string | React.ComponentType<any>) {
   }
 }
 
+const MIN_TIER_LABEL: Record<string, string> = {
+  free: 'Free',
+  website: 'Essential',
+  pro: 'Pro',
+  managed: 'Max',
+};
+
+const MIN_TIER_COLOR: Record<string, { bg: string; color: string }> = {
+  free: { bg: '#F0FDF4', color: '#15803D' },
+  website: { bg: '#EFF6FF', color: '#1877D6' },
+  pro: { bg: '#EDE9FE', color: '#7C3AED' },
+  managed: { bg: '#FEF3C7', color: '#92400E' },
+};
+
 export const Route = createFileRoute('/benefits')({
   head: () => ({
     meta: [
