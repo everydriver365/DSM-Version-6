@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
+
 import {
   IconPlayerPlay,
   IconChevronRight,
@@ -1012,19 +1012,36 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 : "4 benefits active"}
             </div>
             <div style={{ display: "flex", alignItems: "center", marginTop: 10 }}>
-              <img
-                src={diaLogoAsset.url}
-                alt="DIA"
-                style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  border: "2px solid #fff",
-                  background: "#1877D6",
-                }}
-              />
-              <span style={{ fontSize: 10, color: MUTED, marginLeft: 6 }}>4000 exclusive member offers.</span>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {[
+                  { initial: "D", bg: "#1877D6" },
+                  { initial: "I", bg: "#0B1F3A" },
+                  { initial: "A", bg: "#3B82F6" },
+                  { initial: "M", bg: "#64748B" },
+                ].map((m, i) => (
+                  <div
+                    key={m.initial}
+                    style={{
+                      width: 26,
+                      height: 26,
+                      borderRadius: "50%",
+                      background: m.bg,
+                      color: "#fff",
+                      fontSize: 11,
+                      fontWeight: 700,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginLeft: i === 0 ? 0 : -8,
+                      border: "2px solid #fff",
+                      zIndex: 4 - i,
+                    }}
+                  >
+                    {m.initial}
+                  </div>
+                ))}
+              </div>
+              <span style={{ fontSize: 10, color: MUTED, marginLeft: 8 }}>4000 exclusive member offers.</span>
             </div>
           </div>
           <span
