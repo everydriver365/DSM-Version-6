@@ -991,10 +991,17 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onClick={() =>
             navigate({ to: (isFreeTier ? "/minisite" : "/marketplace") as never })
           }
-          style={{ ...tileBase, gridColumn: 1, gridRow: "1 / 3", height: 200 }}
+          style={{
+            ...tileBase,
+            gridColumn: 1,
+            gridRow: "1 / 3",
+            height: 200,
+            background: "linear-gradient(160deg, #EAF3FB 0%, #F5F9FF 55%, #fff 100%)",
+            border: "1px solid #D6E3F0",
+          }}
         >
           <div>
-            <span style={{ ...chipBase, background: "#EAF3FB", color: BLUE }}>
+            <span style={{ ...chipBase, background: "#fff", color: BLUE, boxShadow: "0 1px 2px rgba(11,31,58,0.06)" }}>
               <IconRosetteDiscount size={20} color={BLUE} stroke={1.6} />
             </span>
             <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, marginTop: 10 }}>Perks</div>
@@ -1006,8 +1013,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </div>
           <span
             style={{
-              background: "#EAF3FB",
-              color: BLUE,
+              background: BLUE,
+              color: "#fff",
               borderRadius: 20,
               padding: "5px 12px",
               fontSize: 11,
