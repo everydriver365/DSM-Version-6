@@ -43,6 +43,7 @@ const BENEFITS = [
     imageUrl: pirkxLogoAsset.url,
     iconBg: '#E6F1FB',
     iconColor: '#185FA5',
+    minTier: 'pro',
     description: 'Access private GP appointments 24/7, mental health support, prescription delivery and physiotherapy — all included with your DSM Pro subscription.',
     perks: [
       '24/7 private GP access',
@@ -65,6 +66,7 @@ const BENEFITS = [
     imageUrl: perkboxLogoAsset.url,
     iconBg: '#FBEAF0',
     iconColor: '#993556',
+    minTier: 'website',
     description: 'Save money every day with thousands of discounts on retail, restaurants, cinema, travel and more.',
     perks: [
       '4,000+ retail discounts',
@@ -87,6 +89,7 @@ const BENEFITS = [
     imageUrl: diaLogoAsset.url,
     iconBg: '#E6F1FB',
     iconColor: '#185FA5',
+    minTier: 'pro',
     description: 'Full Driving Instructors Association membership included free — saving you money every year.',
     perks: [
       'Full DIA membership',
@@ -109,6 +112,7 @@ const BENEFITS = [
     imageUrl: hmcaLogoAsset.url,
     iconBg: '#EAF3DE',
     iconColor: '#3B6D11',
+    minTier: 'pro',
     description: 'Fast access to medical investigations and treatment with HMCA Insurance. Three plan levels available — exclusively for DSM subscribers.',
     perks: [
       'Fast medical investigations',
@@ -131,6 +135,7 @@ const BENEFITS = [
     imageUrl: bennendenLogoAsset.url,
     iconBg: '#FEE2E2',
     iconColor: '#991B1B',
+    minTier: 'free',
     description: 'Bennenden Health provides affordable healthcare for everyone. As a DSM member you get free access — including 24/7 GP helpline, mental health support and medical treatment.',
     perks: [
       '24/7 GP helpline',
@@ -156,6 +161,7 @@ const DEALS = [
     icon: IconCamera,
     iconBg: '#EEF2F7',
     iconColor: '#0B1F3A',
+    minTier: 'website',
     description: 'Exclusive discounts on leading dashcam brands. Perfect for ADIs — front and rear recording, loop recording and parking mode.',
     dealLabel: 'View dashcam deals →',
     comingSoon: true,
@@ -167,6 +173,7 @@ const DEALS = [
     icon: IconGasStation,
     iconBg: '#FEF3C7',
     iconColor: '#92400E',
+    minTier: 'website',
     description: 'Save on every fill-up with a DSM partner fuel card. Works at thousands of forecourts across the UK.',
     dealLabel: 'Apply free →',
     comingSoon: true,
@@ -178,6 +185,7 @@ const DEALS = [
     icon: IconCar,
     iconBg: '#F0FDF4',
     iconColor: '#15803D',
+    minTier: 'website',
     description: 'Discounted tyre fitting, MOT and servicing from our network of approved garages nationwide.',
     dealLabel: 'Find a garage →',
     comingSoon: true,
@@ -189,6 +197,7 @@ const DEALS = [
     icon: IconTool,
     iconBg: '#FEE2E2',
     iconColor: '#991B1B',
+    minTier: 'website',
     description: 'Breakdown cover designed for driving instructors — includes dual-control vehicle cover and roadside assistance.',
     dealLabel: 'Get a quote →',
     comingSoon: true,
@@ -208,6 +217,20 @@ function iconFor(name: string | React.ComponentType<any>) {
       return IconShieldCheck;
   }
 }
+
+const MIN_TIER_LABEL: Record<string, string> = {
+  free: 'Free',
+  website: 'Essential',
+  pro: 'Pro',
+  managed: 'Max',
+};
+
+const MIN_TIER_COLOR: Record<string, { bg: string; color: string }> = {
+  free: { bg: '#F0FDF4', color: '#15803D' },
+  website: { bg: '#EFF6FF', color: '#1877D6' },
+  pro: { bg: '#EDE9FE', color: '#7C3AED' },
+  managed: { bg: '#FEF3C7', color: '#92400E' },
+};
 
 export const Route = createFileRoute('/benefits')({
   head: () => ({
@@ -253,6 +276,11 @@ function BenefitsPage() {
   }, []);
 
   const isPaid = websiteTier !== 'free';
+
+  const TIER_RANK: Record<string, number> = { free: 0, website: 1, pro: 2, managed: 3 };
+  function canAccessTier(minTier: string) {
+    return TIER_RANK[websiteTier] >= TIER_RANK[minTier];
+  }
 
   function handleBenefitCta(action: string) {
     switch (action) {
@@ -579,40 +607,26 @@ function BenefitsPage() {
                   {benefit.tagline}
                 </div>
               </div>
-              {benefit.exclusive && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span
                   style={{
-                    background: '#DCFCE7',
-                    color: '#15803D',
+                    background: MIN_TIER_COLOR[benefit.minTier].bg,
+                    color: MIN_TIER_COLOR[benefit.minTier].color,
                     fontSize: 9,
                     fontWeight: 700,
                     borderRadius: 20,
-                    padding: '2px 8px',
+                    padding: '3px 8px',
+                    whiteSpace: 'nowrap',
                     flexShrink: 0,
                     fontFamily: 'Poppins, sans-serif',
                   }}
                 >
-                  DSM exclusive
+                  {benefit.minTier === 'free' ? 'All members' : `${MIN_TIER_LABEL[benefit.minTier]} and above`}
                 </span>
-              )}
-              {benefit.freeForAll ? (
-                <span
-                  style={{
-                    background: '#DCFCE7',
-                    color: '#15803D',
-                    fontSize: 9,
-                    fontWeight: 700,
-                    borderRadius: 20,
-                    padding: '2px 8px',
-                    flexShrink: 0,
-                    fontFamily: 'Poppins, sans-serif',
-                  }}
-                >
-                  Free for all members
-                </span>
-              ) : !isPaid && (
-                <IconLock size={16} color="#9CA3AF" stroke={1.5} />
-              )}
+                {!canAccessTier(benefit.minTier) && (
+                  <IconLock size={14} color="#9CA3AF" stroke={1.5} />
+                )}
+              </div>
             </div>
 
             <div style={{ height: 1, background: '#E4E8EF' }} />
@@ -693,11 +707,13 @@ function BenefitsPage() {
                     {benefit.ctaLabel}
                   </button>
                 )
-              ) : !isPaid ? (
+              ) : !canAccessTier(benefit.minTier) ? (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <IconLock size={13} color="#9CA3AF" stroke={1.5} />
-                    <span style={{ fontSize: 13, color: '#9CA3AF' }}>Upgrade to unlock</span>
+                    <span style={{ fontSize: 12, color: '#9CA3AF' }}>
+                      Included with {MIN_TIER_LABEL[benefit.minTier]}
+                    </span>
                   </div>
                   <button
                     type="button"
@@ -794,6 +810,7 @@ function BenefitsPage() {
         {DEALS.map((deal, index) => {
           const Icon = deal.icon;
           const isLast = index === DEALS.length - 1;
+          const dealAccess = canAccessTier(deal.minTier);
           return (
             <div
               key={deal.id}
@@ -835,24 +852,43 @@ function BenefitsPage() {
                   {deal.tagline}
                 </div>
               </div>
-              {deal.comingSoon ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span
                   style={{
-                    background: '#FEF3C7',
-                    color: '#92400E',
+                    background: MIN_TIER_COLOR[deal.minTier].bg,
+                    color: MIN_TIER_COLOR[deal.minTier].color,
                     fontSize: 9,
                     fontWeight: 700,
                     borderRadius: 20,
-                    padding: '2px 7px',
+                    padding: '3px 8px',
+                    whiteSpace: 'nowrap',
                     flexShrink: 0,
                     fontFamily: 'Poppins, sans-serif',
                   }}
                 >
-                  Soon
+                  {deal.minTier === 'free' ? 'All members' : `${MIN_TIER_LABEL[deal.minTier]} and above`}
                 </span>
-              ) : (
-                <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
-              )}
+                {!dealAccess ? (
+                  <IconLock size={14} color="#9CA3AF" stroke={1.5} />
+                ) : deal.comingSoon ? (
+                  <span
+                    style={{
+                      background: '#FEF3C7',
+                      color: '#92400E',
+                      fontSize: 9,
+                      fontWeight: 700,
+                      borderRadius: 20,
+                      padding: '2px 7px',
+                      flexShrink: 0,
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    Soon
+                  </span>
+                ) : (
+                  <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                )}
+              </div>
             </div>
           );
         })}
