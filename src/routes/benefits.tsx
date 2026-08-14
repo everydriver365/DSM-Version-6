@@ -108,6 +108,54 @@ const BENEFITS = [
   },
 ];
 
+const DEALS = [
+  {
+    id: 'dashcam',
+    name: 'Dashcams',
+    tagline: 'Up to 20% off for DSM members',
+    icon: IconCamera,
+    iconBg: '#EEF2F7',
+    iconColor: '#0B1F3A',
+    description: 'Exclusive discounts on leading dashcam brands. Perfect for ADIs — front and rear recording, loop recording and parking mode.',
+    dealLabel: 'View dashcam deals →',
+    comingSoon: true,
+  },
+  {
+    id: 'fuel',
+    name: 'Fuel card',
+    tagline: 'Save up to 10p per litre',
+    icon: IconGasStation,
+    iconBg: '#FEF3C7',
+    iconColor: '#92400E',
+    description: 'Save on every fill-up with a DSM partner fuel card. Works at thousands of forecourts across the UK.',
+    dealLabel: 'Apply free →',
+    comingSoon: true,
+  },
+  {
+    id: 'tyres',
+    name: 'Tyres and servicing',
+    tagline: 'Member discount rates',
+    icon: IconCar,
+    iconBg: '#F0FDF4',
+    iconColor: '#15803D',
+    description: 'Discounted tyre fitting, MOT and servicing from our network of approved garages nationwide.',
+    dealLabel: 'Find a garage →',
+    comingSoon: true,
+  },
+  {
+    id: 'breakdown',
+    name: 'Breakdown cover',
+    tagline: 'ADI-specific cover',
+    icon: IconTool,
+    iconBg: '#FEE2E2',
+    iconColor: '#991B1B',
+    description: 'Breakdown cover designed for driving instructors — includes dual-control vehicle cover and roadside assistance.',
+    dealLabel: 'Get a quote →',
+    comingSoon: true,
+  },
+];
+];
+
 function iconFor(name: string) {
   switch (name) {
     case 'stethoscope':
