@@ -43,15 +43,11 @@ const SITE_BASE = "sites.everydriver.co.uk/";
 type Theme = "classic" | "modern" | "warm" | "bold";
 type Font = "Poppins" | "Playfair Display";
 type HeaderStyle = "standard" | "centered" | "split";
-type TierId = "free" | "website" | "pro" | "managed";
+type TierId = SharedTierId;
 
-const TIER_ORDER: TierId[] = ["free", "website", "pro", "managed"];
-const TIER_NAMES: Record<TierId, string> = {
-  free: "DSM Mini Website (Free)",
-  website: "DSM Website",
-  pro: "DSM Website Pro",
-  managed: "DSM Managed Website",
-};
+const TIER_ORDER = SHARED_TIER_ORDER;
+const TIER_NAMES = SHARED_TIER_NAMES;
+
 const MANAGED_WA =
   "https://wa.me/447767693279?text=" +
   encodeURIComponent("Hi, I'm interested in DSM Managed Website");
