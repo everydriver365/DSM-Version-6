@@ -519,7 +519,19 @@ function ListingDetailPage() {
             )}
           </div>
 
-          <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 14 }}>
+          <div
+            style={{
+              padding: "20px 16px 14px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 14,
+              position: "relative",
+              zIndex: 2,
+              marginTop: -26,
+              background: "#F5F6F8",
+              borderRadius: "26px 26px 0 0",
+            }}
+          >
             {/* Title + price */}
 
             <div style={{ ...CARD, padding: 20 }}>
