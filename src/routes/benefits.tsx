@@ -154,7 +154,6 @@ const DEALS = [
     comingSoon: true,
   },
 ];
-];
 
 function iconFor(name: string) {
   switch (name) {
