@@ -642,18 +642,18 @@ function ListingDetailPage() {
               {listing.location && (
                 <div
                   style={{
-                    borderTop: "1px solid #F0F0F2",
+                    borderTop: "1px solid #E4E8EF",
                     paddingTop: 12,
                     marginTop: 12,
                     display: "flex",
                     alignItems: "center",
                     gap: 6,
-                    color: "#8A8A8E",
-                    fontSize: 13,
-                    fontWeight: 600,
+                    color: "#6B7686",
+                    fontSize: 12,
+                    fontFamily: "Poppins, sans-serif",
                   }}
                 >
-                  <IconMapPin stroke={1.8} size={13} />
+                  <IconMapPin stroke={1.8} size={12} color="#9CA3AF" />
                   {listing.location}
                 </div>
               )}
