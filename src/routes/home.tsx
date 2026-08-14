@@ -6776,7 +6776,7 @@ function HomePage() {
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0, maxWidth: '100%' }}>
                           <span style={{
-                            fontSize: 10,
+                            fontSize: 15,
                             fontWeight: 700,
                             color: '#0B1F3A',
                             lineHeight: 1.2,
@@ -6788,7 +6788,7 @@ function HomePage() {
                           }}>{tile.label}</span>
                           {sub && (
                             <span style={{
-                              fontSize: 8,
+                              fontSize: 12,
                               fontWeight: 400,
                               color: '#8792A2',
                               lineHeight: 1.3,
