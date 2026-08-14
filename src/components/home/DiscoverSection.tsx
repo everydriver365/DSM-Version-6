@@ -1046,12 +1046,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </div>
           <span
             style={{
-              background: BLUE,
-              color: "#fff",
-              borderRadius: 20,
-              padding: "5px 12px",
-              fontSize: 11,
+              color: BLUE,
+              fontSize: 12,
               fontWeight: 700,
+              textDecoration: "underline",
               display: "inline-block",
               alignSelf: "flex-start",
             }}
