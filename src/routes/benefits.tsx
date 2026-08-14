@@ -25,6 +25,8 @@ import {
   IconChevronRight,
   IconWorld,
   IconHeartHandshake,
+  IconTable,
+  IconChevronDown,
 } from '@tabler/icons-react';
 import {
   checkDomainAvailability,
@@ -232,6 +234,49 @@ const MIN_TIER_COLOR: Record<string, { bg: string; color: string }> = {
   managed: { bg: '#FEF3C7', color: '#92400E' },
 };
 
+const BENEFIT_COMPARISON = [
+  {
+    group: 'Website',
+    rows: [
+      { label: 'Mini-site', from: 0 },
+      { label: 'Custom domain', from: 1 },
+      { label: 'Remove watermark', from: 1 },
+      { label: 'Analytics', from: 1 },
+      { label: 'Area pages', from: 2 },
+      { label: 'Blog', from: 2 },
+      { label: 'Managed by DSM', from: 3 },
+    ],
+  },
+  {
+    group: 'Member benefits',
+    rows: [
+      { label: 'DIA membership', from: 1 },
+      { label: 'HMCA insurance', from: 1 },
+      { label: 'pirkx Wellbeing', from: 2 },
+      { label: 'Perkbox Rewards', from: 2 },
+      { label: 'Bennenden Health', from: 3 },
+    ],
+  },
+  {
+    group: 'Deals',
+    rows: [
+      { label: 'Dashcam discount', from: 1 },
+      { label: 'Fuel card', from: 1 },
+      { label: 'Tyres and servicing', from: 1 },
+      { label: 'Breakdown cover', from: 1 },
+    ],
+  },
+];
+
+const COLS = [
+  { id: 'free', name: 'Free', price: '£0' },
+  { id: 'website', name: 'Essential', price: '£9.99' },
+  { id: 'pro', name: 'Pro', price: '£19.99' },
+  { id: 'managed', name: 'Max', price: '£29.99' },
+];
+
+const TIER_INDEX: Record<string, number> = { free: 0, website: 1, pro: 2, managed: 3 };
+
 export const Route = createFileRoute('/benefits')({
   head: () => ({
     meta: [
@@ -257,6 +302,7 @@ function BenefitsPage() {
     price?: string | null;
   } | null>(null);
   const [checkingDomain, setCheckingDomain] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
 
 
   useEffect(() => {
@@ -893,6 +939,238 @@ function BenefitsPage() {
           );
         })}
       </div>
+
+      {/* Compare plans */}
+      <button
+        type="button"
+        onClick={() => setShowComparison((prev) => !prev)}
+        style={{
+          margin: '0 16px 12px',
+          background: '#fff',
+          borderRadius: 16,
+          border: '1px solid #E4E8EF',
+          padding: '14px 16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          cursor: 'pointer',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <IconTable size={18} color="#1877D6" stroke={1.5} />
+          <span style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+            Compare all plans
+          </span>
+        </div>
+        <IconChevronDown
+          size={16}
+          color="#9CA3AF"
+          stroke={2}
+          style={{ transform: showComparison ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}
+        />
+      </button>
+
+      {showComparison && (
+        <div
+          style={{
+            margin: '0 16px 16px',
+            background: '#fff',
+            borderRadius: 16,
+            border: '1px solid #E4E8EF',
+            overflow: 'hidden',
+            display: 'grid',
+            gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr',
+          }}
+        >
+          {/* Header row */}
+          <div key="header-corner" style={{ padding: '10px 6px', borderBottom: '1px solid #E4E8EF' }} />
+          {COLS.map((col) => (
+            <div
+              key={`header-${col.id}`}
+              style={{
+                padding: '10px 6px',
+                textAlign: 'center',
+                borderBottom: '1px solid #E4E8EF',
+                background: col.id === websiteTier ? '#EFF6FF' : 'transparent',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: col.id === websiteTier ? '#1877D6' : '#0B1F3A',
+                  fontFamily: 'Poppins, sans-serif',
+                }}
+              >
+                {col.name}
+              </div>
+              <div
+                style={{
+                  fontSize: 9,
+                  color: col.id === websiteTier ? '#1877D6' : '#9CA3AF',
+                  marginTop: 2,
+                  fontFamily: 'Poppins, sans-serif',
+                }}
+              >
+                {col.price}
+              </div>
+              {col.id === websiteTier && (
+                <span
+                  style={{
+                    background: '#1877D6',
+                    color: '#fff',
+                    fontSize: 8,
+                    fontWeight: 800,
+                    borderRadius: 20,
+                    padding: '1px 5px',
+                    marginTop: 3,
+                    display: 'block',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}
+                >
+                  YOUR PLAN
+                </span>
+              )}
+            </div>
+          ))}
+
+          {/* Group rows */}
+          {BENEFIT_COMPARISON.map((group) => (
+            <div key={group.group} style={{ display: 'contents' }}>
+              <div
+                style={{
+                  gridColumn: '1 / -1',
+                  background: '#F8FAFC',
+                  padding: '8px 12px',
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: '#9CA3AF',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  fontFamily: 'Poppins, sans-serif',
+                }}
+              >
+                {group.group}
+              </div>
+              {group.rows.map((row) => (
+                <div key={row.label} style={{ display: 'contents' }}>
+                  <div
+                    style={{
+                      padding: '9px 12px',
+                      fontSize: 11,
+                      color: '#6B7686',
+                      borderBottom: '1px solid #F1F5F9',
+                      fontFamily: 'Poppins, sans-serif',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {row.label}
+                  </div>
+                  {COLS.map((col) => (
+                    <div
+                      key={`${row.label}-${col.id}`}
+                      style={{
+                        padding: '9px 6px',
+                        textAlign: 'center',
+                        borderBottom: '1px solid #F1F5F9',
+                        background: col.id === websiteTier ? '#F7FAFE' : 'transparent',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      {TIER_INDEX[col.id] >= row.from ? (
+                        <IconCheck size={14} color="#15803D" stroke={2} />
+                      ) : (
+                        <span style={{ fontSize: 12, color: '#D1D5DB' }}>—</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          ))}
+
+          {/* Bottom CTA row */}
+          <div
+            key="cta-corner"
+            style={{ borderTop: '2px solid #E4E8EF', padding: '10px 0' }}
+          />
+          {COLS.map((col) => (
+            <div
+              key={`cta-${col.id}`}
+              style={{
+                textAlign: 'center',
+                padding: 6,
+                borderTop: '2px solid #E4E8EF',
+              }}
+            >
+              {col.id === websiteTier ? (
+                <span
+                  style={{
+                    background: '#EEF2F7',
+                    color: '#9CA3AF',
+                    fontSize: 9,
+                    fontWeight: 700,
+                    borderRadius: 20,
+                    padding: '4px 8px',
+                    border: 'none',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}
+                >
+                  Current
+                </span>
+              ) : col.id === 'managed' ? (
+                <button
+                  type="button"
+                  onClick={() =>
+                    window.open(
+                      'https://wa.me/447767693279?text=' +
+                        encodeURIComponent("Hi, I'm interested in DSM Managed Website"),
+                      '_blank',
+                    )
+                  }
+                  style={{
+                    background: '#D68A1B',
+                    color: '#fff',
+                    fontSize: 9,
+                    fontWeight: 700,
+                    borderRadius: 20,
+                    padding: '4px 8px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}
+                >
+                  Contact
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUpgradeStep('domain');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  style={{
+                    background: '#1877D6',
+                    color: '#fff',
+                    fontSize: 9,
+                    fontWeight: 700,
+                    borderRadius: 20,
+                    padding: '4px 8px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}
+                >
+                  Upgrade
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Upgrade overlay — domain + plan */}
       {upgradeStep !== 'idle' && upgradeStep !== 'processing' && (
