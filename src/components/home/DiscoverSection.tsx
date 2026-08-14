@@ -913,7 +913,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             fontFamily: FONT,
           }}
         >
-          Discover & Learn\u00a0
+          Discover &amp; Learn
         </span>
       </div>
 
