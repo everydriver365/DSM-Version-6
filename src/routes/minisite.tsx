@@ -485,76 +485,8 @@ function MiniSitePage() {
 
   const currentIdx = TIER_ORDER.indexOf(websiteTier);
 
-  const TIERS: {
-    id: "website" | "pro" | "managed";
-    name: string;
-    price: string;
-    pillBg: string;
-    pillColor: string;
-    badge?: string;
-    features: string[];
-    cta: string;
-    btnBg: string;
-    btnShadow: string;
-  }[] = [
-    {
-      id: "website",
-      name: "DSM Website",
-      price: "£9.99/mo",
-      pillBg: "#EFF6FF",
-      pillColor: "#1877D6",
-      badge: "Most popular",
-      features: [
-        "Your own .co.uk domain included",
-        'Remove "Powered by EveryDriver"',
-        "Gallery (up to 20 photos)",
-        "Video intro",
-        "Google reviews widget",
-        "Priority listing on EveryDriver",
-        "Analytics dashboard",
-      ],
-      cta: "Upgrade to DSM Website →",
-      btnBg: "#1877D6",
-      btnShadow: "0 3px 0 #0F52A8",
-    },
-    {
-      id: "pro",
-      name: "DSM Website Pro",
-      price: "£19.99/mo",
-      pillBg: "#EDE9FE",
-      pillColor: "#7C3AED",
-      features: [
-        "Everything in DSM Website",
-        "Multiple area pages",
-        "Blog & content pages",
-        "Advanced SEO tools",
-        "Google Search Console",
-        "Promo codes on booking",
-        "Instructor login to edit site",
-      ],
-      cta: "Upgrade to Pro →",
-      btnBg: "#7C3AED",
-      btnShadow: "0 3px 0 #5B21B6",
-    },
-    {
-      id: "managed",
-      name: "DSM Managed Website",
-      price: "£29.99/mo",
-      pillBg: "#F1F5F9",
-      pillColor: "#0B1F3A",
-      features: [
-        "Everything in Pro",
-        "We build your website for you",
-        "Monthly content updates",
-        "SEO reporting & management",
-        "Google Business Profile setup",
-        "Dedicated account manager",
-      ],
-      cta: "Get a managed website →",
-      btnBg: "#0B1F3A",
-      btnShadow: "0 3px 0 #050D1C",
-    },
-  ];
+  const TIERS = TIER_CARDS;
+
 
   function renderTiers(
     onPick: (tier: "website" | "pro" | "managed") => void,
