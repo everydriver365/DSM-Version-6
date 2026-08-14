@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import InstructorTopBar from '@/components/dsm/InstructorTopBar';
 import { PageLoader } from '@/components/dsm/LoadingSpinner';
 import diaLogoAsset from '@/assets/dia-logo.png.asset.json';
+import perkboxLogoAsset from '@/assets/perkbox-logo.png.asset.json';
 import {
   IconCircleCheck,
   IconLock,
