@@ -995,7 +995,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() =>
-            navigate({ to: (isFreeTier ? "/minisite" : "/marketplace") as never })
+            navigate({ to: '/benefits' as never })
           }
           style={{
             ...tileBase,

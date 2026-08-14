@@ -105,6 +105,7 @@ import { Route as BroadcastRouteImport } from './routes/broadcast'
 import { Route as BriefingRouteImport } from './routes/briefing'
 import { Route as BookingsRouteImport } from './routes/bookings'
 import { Route as BitesizeRouteImport } from './routes/bitesize'
+import { Route as BenefitsRouteImport } from './routes/benefits'
 import { Route as AvailabilitySettingsRouteImport } from './routes/availability-settings'
 import { Route as AvailabilityRouteImport } from './routes/availability'
 import { Route as AutomationsRouteImport } from './routes/automations'
@@ -654,6 +655,11 @@ const BitesizeRoute = BitesizeRouteImport.update({
   path: '/bitesize',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BenefitsRoute = BenefitsRouteImport.update({
+  id: '/benefits',
+  path: '/benefits',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AvailabilitySettingsRoute = AvailabilitySettingsRouteImport.update({
   id: '/availability-settings',
   path: '/availability-settings',
@@ -1006,6 +1012,7 @@ export interface FileRoutesByFullPath {
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
   '/availability-settings': typeof AvailabilitySettingsRoute
+  '/benefits': typeof BenefitsRoute
   '/bitesize': typeof BitesizeRoute
   '/bookings': typeof BookingsRoute
   '/briefing': typeof BriefingRoute
@@ -1171,6 +1178,7 @@ export interface FileRoutesByTo {
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
   '/availability-settings': typeof AvailabilitySettingsRoute
+  '/benefits': typeof BenefitsRoute
   '/bitesize': typeof BitesizeRoute
   '/bookings': typeof BookingsRoute
   '/briefing': typeof BriefingRoute
@@ -1335,6 +1343,7 @@ export interface FileRoutesById {
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
   '/availability-settings': typeof AvailabilitySettingsRoute
+  '/benefits': typeof BenefitsRoute
   '/bitesize': typeof BitesizeRoute
   '/bookings': typeof BookingsRoute
   '/briefing': typeof BriefingRoute
@@ -1502,6 +1511,7 @@ export interface FileRouteTypes {
     | '/automations'
     | '/availability'
     | '/availability-settings'
+    | '/benefits'
     | '/bitesize'
     | '/bookings'
     | '/briefing'
@@ -1667,6 +1677,7 @@ export interface FileRouteTypes {
     | '/automations'
     | '/availability'
     | '/availability-settings'
+    | '/benefits'
     | '/bitesize'
     | '/bookings'
     | '/briefing'
@@ -1830,6 +1841,7 @@ export interface FileRouteTypes {
     | '/automations'
     | '/availability'
     | '/availability-settings'
+    | '/benefits'
     | '/bitesize'
     | '/bookings'
     | '/briefing'
@@ -1997,6 +2009,7 @@ export interface RootRouteChildren {
   AutomationsRoute: typeof AutomationsRoute
   AvailabilityRoute: typeof AvailabilityRoute
   AvailabilitySettingsRoute: typeof AvailabilitySettingsRoute
+  BenefitsRoute: typeof BenefitsRoute
   BitesizeRoute: typeof BitesizeRoute
   BookingsRoute: typeof BookingsRoute
   BriefingRoute: typeof BriefingRoute
@@ -2807,6 +2820,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BitesizeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/benefits': {
+      id: '/benefits'
+      path: '/benefits'
+      fullPath: '/benefits'
+      preLoaderRoute: typeof BenefitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/availability-settings': {
       id: '/availability-settings'
       path: '/availability-settings'
@@ -3387,6 +3407,7 @@ const rootRouteChildren: RootRouteChildren = {
   AutomationsRoute: AutomationsRoute,
   AvailabilityRoute: AvailabilityRoute,
   AvailabilitySettingsRoute: AvailabilitySettingsRoute,
+  BenefitsRoute: BenefitsRoute,
   BitesizeRoute: BitesizeRoute,
   BookingsRoute: BookingsRoute,
   BriefingRoute: BriefingRoute,
