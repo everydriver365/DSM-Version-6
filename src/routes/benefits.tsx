@@ -149,7 +149,7 @@ const BENEFITS = [
     ],
     ctaLabel: 'Access Bennenden →',
     ctaAction: 'bennenden',
-    comingSoon: true,
+    comingSoon: false,
     exclusive: false,
     freeForAll: true,
   },
