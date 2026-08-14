@@ -39,8 +39,10 @@ function LiveNewsPage() {
     (async () => {
       const { data: newsData } = await supabase
         .from("news_articles")
-        .select("*")
-        .eq("published", true)
+        .select(
+          "id, title, description, image_url, published_at, read_time_mins, source, category, link"
+        )
+        .eq("is_hidden", false)
         .order("published_at", { ascending: false })
         .limit(10);
       if (!cancelled) setArticles(newsData ?? []);
