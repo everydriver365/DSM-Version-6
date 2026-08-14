@@ -22,8 +22,6 @@ import {
 
 import { supabase } from "@/lib/supabaseClient";
 import { sanitizeNewsTitle } from "@/lib/newsText";
-import dialogo2Asset from "@/assets/dialogo-2.png.asset.json";
-import dialogo3Asset from "@/assets/dialogo-3.png.asset.json";
 
 
 const PIRKX_LIVE = false;
