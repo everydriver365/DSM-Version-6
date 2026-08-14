@@ -491,6 +491,97 @@ function BenefitsPage() {
           </div>
         );
       })}
+
+      <div
+        style={{
+          fontSize: 11,
+          fontWeight: 600,
+          color: '#9CA3AF',
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em',
+          padding: '8px 16px 6px',
+          fontFamily: 'Poppins, sans-serif',
+        }}
+      >
+        Deals and discounts
+      </div>
+
+      <div
+        style={{
+          margin: '0 16px 12px',
+          background: '#fff',
+          borderRadius: 16,
+          border: '1px solid #E4E8EF',
+          boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+          overflow: 'hidden',
+        }}
+      >
+        {DEALS.map((deal, index) => {
+          const Icon = deal.icon;
+          const isLast = index === DEALS.length - 1;
+          return (
+            <div
+              key={deal.id}
+              onClick={() => {
+                if (deal.comingSoon) {
+                  toast.info('Coming soon — check back shortly');
+                } else {
+                  // navigate to deal page when available
+                }
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                padding: '14px 16px',
+                borderBottom: isLast ? 'none' : '1px solid #E4E8EF',
+                cursor: 'pointer',
+              }}
+            >
+              <div
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: 10,
+                  background: deal.iconBg,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <Icon size={18} color={deal.iconColor} stroke={1.5} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A' }}>
+                  {deal.name}
+                </div>
+                <div style={{ fontSize: 11, color: '#6B7686', marginTop: 2 }}>
+                  {deal.tagline}
+                </div>
+              </div>
+              {deal.comingSoon ? (
+                <span
+                  style={{
+                    background: '#FEF3C7',
+                    color: '#92400E',
+                    fontSize: 9,
+                    fontWeight: 700,
+                    borderRadius: 20,
+                    padding: '2px 7px',
+                    flexShrink: 0,
+                    fontFamily: 'Poppins, sans-serif',
+                  }}
+                >
+                  Soon
+                </span>
+              ) : (
+                <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
