@@ -1330,31 +1330,35 @@ function MiniSitePage() {
                 ))}
               </div>
             </CollapsibleRow>
-
-            <button
-              type="button"
-              onClick={saveAll}
-              disabled={saving}
-              style={{
-                width: "100%",
-                background: "#1877D6",
-                color: "#fff",
-                fontSize: 15,
-                fontWeight: 800,
-                padding: 16,
-                borderRadius: 14,
-                border: "none",
-                cursor: "pointer",
-                boxShadow: "0 4px 0 #0F52A8",
-                fontFamily: "Poppins, sans-serif",
-                marginTop: 8,
-                opacity: saving ? 0.6 : 1,
-              }}
-            >
-              {saving ? "Saving…" : "Save changes"}
-            </button>
           </>
         )}
+
+        {(tab === "content" || tab === "appearance") && (
+          <button
+            type="button"
+            onClick={saveAll}
+            disabled={saving}
+            style={{
+              width: "100%",
+              background: "#1877D6",
+              color: "#fff",
+              fontSize: 15,
+              fontWeight: 800,
+              padding: 16,
+              borderRadius: 14,
+              border: "none",
+              cursor: "pointer",
+              boxShadow: "0 4px 0 #0F52A8",
+              fontFamily: "Poppins, sans-serif",
+              marginTop: 8,
+              opacity: saving ? 0.6 : 1,
+            }}
+          >
+            {saving ? "Saving…" : "Save changes"}
+          </button>
+        )}
+
+
 
         {/* ================= UPGRADE TAB ================= */}
         {tab === "upgrade" && (
