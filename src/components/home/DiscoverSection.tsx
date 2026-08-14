@@ -1147,7 +1147,14 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/showcase" as never })}
-          style={{ ...tileBase, gridColumn: 1, gridRow: 3, height: 96 }}
+          style={{
+            ...tileBase,
+            gridColumn: 1,
+            gridRow: 3,
+            height: 96,
+            background: "linear-gradient(160deg, #FAFBFF 0%, #F0F5FF 100%)",
+            borderColor: "#E3E9F7",
+          }}
         >
           {(showcaseCount ?? 0) > 0 && (
             <span
@@ -1165,8 +1172,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             />
           )}
           <div>
-            <span style={{ ...chipBase, background: "#EEF2F7", color: NAVY }}>
-              <IconPlayerPlay size={17} color={NAVY} stroke={1.6} />
+            <span style={{ ...chipBase, background: "#E3E9F7", color: BLUE }}>
+              <IconPlayerPlay size={17} color={BLUE} stroke={1.6} />
             </span>
             <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8 }}>Showcase</div>
             <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Short fun videos</div>
