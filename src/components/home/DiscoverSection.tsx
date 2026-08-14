@@ -30,7 +30,22 @@ const PIRKX_LIVE = false;
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
+const RED = "#CC2229";
 const FONT = "Poppins, sans-serif";
+
+const tileBase: React.CSSProperties = {
+  borderRadius: 16,
+  overflow: "hidden",
+  cursor: "pointer",
+  position: "relative",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  padding: 14,
+  color: "#fff",
+  fontFamily: FONT,
+};
+
 
 /** Pick an icon that matches the listing category for the missing-photo fallback. */
 function categoryIcon(category?: string | null) {
