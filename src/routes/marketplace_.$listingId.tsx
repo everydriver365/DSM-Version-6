@@ -752,35 +752,6 @@ function ListingDetailPage() {
             </div>
           </div>
 
-          {/* More from this seller */}
-          {sellerListings.length > 0 && (
-            <div style={{ padding: "0 16px 16px" }}>
-              <div style={LABEL}>More from this seller</div>
-              <div
-                style={{
-                  display: "flex",
-                  gap: 12,
-                  overflowX: "auto",
-                  paddingBottom: 14,
-                  scrollbarWidth: "none",
-                }}
-              >
-                {sellerListings.map((s) => (
-                  <MiniListingCard
-                    key={s.id}
-                    listing={s}
-                    onOpen={(id) =>
-                      navigate({
-                        to: "/marketplace/$listingId",
-                        params: { listingId: id },
-                      })
-                    }
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* Similar in category */}
           {similar.length > 0 && (
             <div style={{ padding: "0 16px 16px" }}>
@@ -809,6 +780,30 @@ function ListingDetailPage() {
               </div>
             </div>
           )}
+
+          {/* More from this seller — always the final section */}
+          {sellerListings.length > 0 && (
+            <div style={{ padding: "0 16px 120px" }}>
+              <div style={LABEL}>More from this seller</div>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 10 }}
+              >
+                {sellerListings.map((s) => (
+                  <SellerListingRow
+                    key={s.id}
+                    listing={s}
+                    onOpen={(id) =>
+                      navigate({
+                        to: "/marketplace/$listingId",
+                        params: { listingId: id },
+                      })
+                    }
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
 
           {enquiryOpen && (
             <EnquirySheet
