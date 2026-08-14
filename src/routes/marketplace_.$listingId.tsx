@@ -404,6 +404,26 @@ function ListingDetailPage() {
               {statusBadge.label}
             </div>
 
+            {/* Photo counter */}
+            {photos.length > 1 && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: 12,
+                  right: 12,
+                  background: "rgba(255,255,255,0.94)",
+                  color: "#0B1F3A",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  padding: "6px 12px",
+                  borderRadius: 20,
+                }}
+              >
+                {photoIndex + 1} of {photos.length}
+              </div>
+            )}
+
+
             {/* Pagination dots */}
             {photos.length > 1 && (
               <div
@@ -435,8 +455,6 @@ function ListingDetailPage() {
           </div>
 
           <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 14 }}>
-            {/* Enhanced upgrade sections — only for the DSM website listing */}
-            {listingId === WEBSITE_LISTING_ID && <WebsiteUpgradeSections />}
             {/* Title + price */}
 
             <div style={{ ...CARD, padding: 20 }}>
@@ -462,14 +480,30 @@ function ListingDetailPage() {
               >
                 <span
                   style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: 6,
                     color: "#0B1F3A",
                     fontSize: 28,
                     fontWeight: 900,
                     letterSpacing: "-0.6px",
                   }}
                 >
-                  {listing.price_display ?? "POA"}
+                  {listingId === WEBSITE_LISTING_ID ? (
+                    <>
+                      <span style={{ fontSize: 15, fontWeight: 700, color: "#8A8A8E", letterSpacing: 0 }}>
+                        From
+                      </span>
+                      £9.99
+                      <span style={{ fontSize: 15, fontWeight: 600, color: "#8A8A8E", letterSpacing: 0 }}>
+                        /mo
+                      </span>
+                    </>
+                  ) : (
+                    (listing.price_display ?? "POA")
+                  )}
                 </span>
+
                 {listing.condition && (
                   <span
                     style={{
@@ -583,24 +617,35 @@ function ListingDetailPage() {
             </div>
 
             {/* Description */}
-            {listing.description && (
-              <div>
-                <div style={LABEL}>Description</div>
-                <div style={CARD}>
-                  <div
-                    style={{
-                      color: "#6B6B6F",
-                      fontSize: 14,
-                      fontWeight: 500,
-                      lineHeight: 1.6,
-                      whiteSpace: "pre-wrap",
-                    }}
-                  >
-                    {listing.description}
+            {(() => {
+              const isWebsite = listingId === WEBSITE_LISTING_ID;
+              const body = isWebsite
+                ? "Give pupils a professional, bookable website in minutes — built on your DSM profile, no design work needed.\n\nYour own multi-page site with your branding, lesson prices, availability and online booking. Add your own domain, keep everything in sync with DSM automatically, and upgrade any time."
+                : listing.description;
+              if (!body) return null;
+              return (
+                <div>
+                  <div style={LABEL}>Description</div>
+                  <div style={CARD}>
+                    <div
+                      style={{
+                        color: "#6B6B6F",
+                        fontSize: 14,
+                        fontWeight: 500,
+                        lineHeight: 1.6,
+                        whiteSpace: "pre-wrap",
+                      }}
+                    >
+                      {body}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
+
+            {/* Enhanced upgrade sections — only for the DSM website listing */}
+            {listingId === WEBSITE_LISTING_ID && <WebsiteUpgradeSections />}
+
 
             {/* Tags */}
             {listing.tags && listing.tags.length > 0 && (
