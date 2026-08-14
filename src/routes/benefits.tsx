@@ -9,6 +9,7 @@ import diaLogoAsset from '@/assets/dia-logo.png.asset.json';
 import perkboxLogoAsset from '@/assets/perkbox-logo.jpeg.asset.json';
 import pirkxLogoAsset from '@/assets/pirkx-logo.png.asset.json';
 import hmcaLogoAsset from '@/assets/hmca-logo.png.asset.json';
+import bennendenLogoAsset from '@/assets/bennenden-logo.png.asset.json';
 import {
   IconCircleCheck,
   IconLock,
@@ -127,6 +128,7 @@ const BENEFITS = [
     name: 'Bennenden Health',
     tagline: 'Free to all DSM members',
     icon: IconHeartHandshake,
+    imageUrl: bennendenLogoAsset.url,
     iconBg: '#FEE2E2',
     iconColor: '#991B1B',
     description: 'Bennenden Health provides affordable healthcare for everyone. As a DSM member you get free access — including 24/7 GP helpline, mental health support and medical treatment.',
