@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
+import spotifyLogoAsset from "@/assets/spotify-logo.png.asset.json";
 
 import {
   IconPlayerPlay,
@@ -1043,6 +1044,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       <img
                         src={diaLogoAsset.url}
                         alt="DIA"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : i === 1 ? (
+                      <img
+                        src={spotifyLogoAsset.url}
+                        alt="Spotify"
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                       />
                     ) : (
