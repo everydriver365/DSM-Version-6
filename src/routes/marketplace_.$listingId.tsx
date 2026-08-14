@@ -233,17 +233,43 @@ function ListingDetailPage() {
 
   const CARD: React.CSSProperties = {
     background: "#fff",
-    borderRadius: 20,
-    padding: 18,
-    boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
+    borderRadius: 16,
+    border: "1px solid #E4E8EF",
+    padding: 16,
+    boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+    fontFamily: "Poppins, sans-serif",
   };
   const LABEL: React.CSSProperties = {
-    color: "#8A8A8E",
-    fontSize: 12,
-    fontWeight: 700,
-    letterSpacing: "0.5px",
+    color: "#9CA3AF",
+    fontSize: 11,
+    fontWeight: 600,
+    letterSpacing: "0.08em",
     textTransform: "uppercase",
-    margin: "0 4px 8px",
+    margin: "0 0 10px",
+    fontFamily: "Poppins, sans-serif",
+  };
+  const SECTION_HEADER: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "0 0 0 0",
+    marginBottom: 10,
+  };
+  const SECTION_TITLE: React.CSSProperties = {
+    fontSize: 15,
+    fontWeight: 700,
+    color: "#0B1F3A",
+    fontFamily: "Poppins, sans-serif",
+  };
+  const SECTION_LINK: React.CSSProperties = {
+    fontSize: 12,
+    fontWeight: 600,
+    color: "#1877D6",
+    fontFamily: "Poppins, sans-serif",
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    padding: 0,
   };
 
   return (
