@@ -8,6 +8,7 @@ import { PageLoader } from '@/components/dsm/LoadingSpinner';
 import diaLogoAsset from '@/assets/dia-logo.png.asset.json';
 import perkboxLogoAsset from '@/assets/perkbox-logo.jpeg.asset.json';
 import pirkxLogoAsset from '@/assets/pirkx-logo.png.asset.json';
+import hmcaLogoAsset from '@/assets/hmca-logo.png.asset.json';
 import {
   IconCircleCheck,
   IconLock,
@@ -103,6 +104,7 @@ const BENEFITS = [
     name: 'HMCA Health Insurance',
     tagline: 'Exclusively with DSM',
     icon: 'shield-check',
+    imageUrl: hmcaLogoAsset.url,
     iconBg: '#EAF3DE',
     iconColor: '#3B6D11',
     description: 'Fast access to medical investigations and treatment with HMCA Insurance. Three plan levels available — exclusively for DSM subscribers.',
