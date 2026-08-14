@@ -234,6 +234,49 @@ const MIN_TIER_COLOR: Record<string, { bg: string; color: string }> = {
   managed: { bg: '#FEF3C7', color: '#92400E' },
 };
 
+const BENEFIT_COMPARISON = [
+  {
+    group: 'Website',
+    rows: [
+      { label: 'Mini-site', from: 0 },
+      { label: 'Custom domain', from: 1 },
+      { label: 'Remove watermark', from: 1 },
+      { label: 'Analytics', from: 1 },
+      { label: 'Area pages', from: 2 },
+      { label: 'Blog', from: 2 },
+      { label: 'Managed by DSM', from: 3 },
+    ],
+  },
+  {
+    group: 'Member benefits',
+    rows: [
+      { label: 'DIA membership', from: 1 },
+      { label: 'HMCA insurance', from: 1 },
+      { label: 'pirkx Wellbeing', from: 2 },
+      { label: 'Perkbox Rewards', from: 2 },
+      { label: 'Bennenden Health', from: 3 },
+    ],
+  },
+  {
+    group: 'Deals',
+    rows: [
+      { label: 'Dashcam discount', from: 1 },
+      { label: 'Fuel card', from: 1 },
+      { label: 'Tyres and servicing', from: 1 },
+      { label: 'Breakdown cover', from: 1 },
+    ],
+  },
+];
+
+const COLS = [
+  { id: 'free', name: 'Free', price: '£0' },
+  { id: 'website', name: 'Essential', price: '£9.99' },
+  { id: 'pro', name: 'Pro', price: '£19.99' },
+  { id: 'managed', name: 'Max', price: '£29.99' },
+];
+
+const TIER_INDEX: Record<string, number> = { free: 0, website: 1, pro: 2, managed: 3 };
+
 export const Route = createFileRoute('/benefits')({
   head: () => ({
     meta: [
