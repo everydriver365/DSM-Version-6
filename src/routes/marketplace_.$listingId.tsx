@@ -797,7 +797,16 @@ function ListingDetailPage() {
           {/* Similar in category */}
           {similar.length > 0 && (
             <div style={{ padding: "0 16px 16px" }}>
-              <div style={LABEL}>More in this category</div>
+              <div style={SECTION_HEADER}>
+                <div style={SECTION_TITLE}>More in this category</div>
+                <button
+                  type="button"
+                  style={SECTION_LINK}
+                  onClick={() => navigate({ to: "/marketplace" })}
+                >
+                  See all →
+                </button>
+              </div>
               <div
                 style={{
                   display: "grid",
@@ -825,7 +834,23 @@ function ListingDetailPage() {
           {/* More from this seller — always the final section */}
           {sellerListings.length > 0 && (
             <div style={{ padding: "0 16px 160px" }}>
-              <div style={LABEL}>More from this seller</div>
+              <div style={SECTION_HEADER}>
+                <div style={SECTION_TITLE}>More from this seller</div>
+                {hasSellerProfile && (
+                  <button
+                    type="button"
+                    style={SECTION_LINK}
+                    onClick={() =>
+                      navigate({
+                        to: "/marketplace/seller/$supplierId",
+                        params: { supplierId: listing.supplier_id as string },
+                      })
+                    }
+                  >
+                    See all →
+                  </button>
+                )}
+              </div>
               <div
                 style={{ display: "flex", flexDirection: "column", gap: 10 }}
               >
@@ -1251,12 +1276,12 @@ function CategoryPill({ name }: { name: string }) {
       style={{
         display: "inline-block",
         fontFamily: "Poppins, sans-serif",
-        fontSize: 10.5,
-        fontWeight: 600,
-        color: "#1A52A0",
-        background: "#EAF1FB",
+        fontSize: 10,
+        fontWeight: 700,
+        color: "#1877D6",
+        background: "#EFF6FF",
         padding: "3px 10px",
-        borderRadius: 999,
+        borderRadius: 20,
       }}
     >
       {name}
@@ -1303,7 +1328,7 @@ function formatListingPrice(
   const display = (listing.price_display ?? "").trim();
   // Only trust price_display when it actually contains a number.
   if (display && /\d/.test(display)) return { text: display, muted: false };
-  return { text: "Price on request", muted: true };
+  return { text: "No price set", muted: true };
 }
 
 function SellerListingRow({
