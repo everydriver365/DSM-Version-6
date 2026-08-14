@@ -128,6 +128,7 @@ const BENEFITS = [
     name: 'Bennenden Health',
     tagline: 'Free to all DSM members',
     icon: IconHeartHandshake,
+    imageUrl: bennendenLogoAsset.url,
     iconBg: '#FEE2E2',
     iconColor: '#991B1B',
     description: 'Bennenden Health provides affordable healthcare for everyone. As a DSM member you get free access — including 24/7 GP helpline, mental health support and medical treatment.',
