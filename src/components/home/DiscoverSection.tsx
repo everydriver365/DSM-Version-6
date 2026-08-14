@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
 
 import {
   IconPlayerPlay,
@@ -1035,13 +1036,21 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       marginLeft: i === 0 ? 0 : -8,
                       border: "2px solid #fff",
                       zIndex: 4 - i,
+                      overflow: "hidden",
                     }}
                   >
-                    {m.initial}
+                    {i === 0 ? (
+                      <img
+                        src={diaLogoAsset.url}
+                        alt="DIA"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : (
+                      m.initial
+                    )}
                   </div>
                 ))}
               </div>
-              
             </div>
           </div>
           <span
