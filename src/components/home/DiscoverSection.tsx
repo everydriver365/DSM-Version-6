@@ -1088,21 +1088,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/live-news" as never })}
-          style={{
-            ...tileBase,
-            gridColumn: 2,
-            gridRow: 3,
-            height: 96,
-            justifyContent: "center",
-          }}
+          style={{ ...tileBase, gridColumn: 2, gridRow: 3, height: 96 }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div>
             <span
               style={{
                 ...chipBase,
                 background: isLiveOnAir ? "#FDECEC" : "#EAF3FB",
+                color: isLiveOnAir ? RED : BLUE,
                 position: "relative",
-                flexShrink: 0,
               }}
             >
               {isLiveOnAir ? (
@@ -1126,57 +1120,69 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 <IconNews size={17} color={BLUE} stroke={1.6} />
               )}
             </span>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              {isLiveOnAir ? (
-                <>
+            {isLiveOnAir ? (
+              <>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 4,
+                    background: "#FDECEC",
+                    color: RED,
+                    borderRadius: 20,
+                    padding: "2px 8px",
+                    fontSize: 9,
+                    fontWeight: 800,
+                    marginTop: 8,
+                  }}
+                >
                   <span
                     style={{
-                      background: "#FDECEC",
-                      color: RED,
-                      borderRadius: 20,
-                      padding: "2px 8px",
-                      fontSize: 9,
-                      fontWeight: 800,
-                      marginBottom: 4,
-                      display: "inline-block",
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      background: RED,
+                      animation: "dsmLivePulse 1.5s infinite",
                     }}
-                  >
-                    On air
-                  </span>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: NAVY,
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {live.find((s) => isLiveNow(s))?.title ?? "DSM Live"}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div style={{ fontSize: 10, color: MUTED, marginBottom: 2 }}>Live & News</div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: NAVY,
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {latestNewsTitle || "DSM community updates"}
-                  </div>
-                </>
-              )}
-            </div>
-            <IconChevronRight size={16} color="#9AA5B1" stroke={2} />
+                  />
+                  On air
+                </span>
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: NAVY,
+                    marginTop: 4,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {live.find((s) => isLiveNow(s))?.title ?? "DSM Live"}
+                </div>
+              </>
+            ) : (
+              <>
+                <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8 }}>
+                  Live & News
+                </div>
+                <div
+                  style={{
+                    fontSize: 10,
+                    color: MUTED,
+                    marginTop: 1,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {latestNewsTitle || "DSM community updates"}
+                </div>
+              </>
+            )}
           </div>
         </div>
+
       </div>
 
 
