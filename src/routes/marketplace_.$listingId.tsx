@@ -770,11 +770,10 @@ function ListingDetailPage() {
               <div style={LABEL}>More in this category</div>
               <div
                 style={{
-                  display: "flex",
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
                   gap: 12,
-                  overflowX: "auto",
-                  paddingBottom: 14,
-                  scrollbarWidth: "none",
+                  paddingBottom: 6,
                 }}
               >
                 {similar.map((s) => (
