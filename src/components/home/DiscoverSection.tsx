@@ -917,294 +917,224 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         </span>
       </div>
 
-      {/* DISCOVER TILES — BENTO MIX */}
-      <style>{`@keyframes dsmLivePulse{0%{box-shadow:0 0 0 0 rgba(204,34,41,.55)}70%{box-shadow:0 0 0 5px rgba(204,34,41,0)}100%{box-shadow:0 0 0 0 rgba(204,34,41,0)}}`}</style>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
-        {/* Live */}
+      {/* DISCOVER MOSAIC */}
+      <style>{`@keyframes dsmLivePulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.55)}70%{box-shadow:0 0 0 5px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}`}</style>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 8,
+          marginBottom: 12,
+        }}
+      >
+        {/* PERKS — tall hero */}
         <div
           role="button"
           tabIndex={0}
-          onClick={() => navigate({ to: "/dsm-live" as never })}
+          onClick={() =>
+            navigate({ to: (isFreeTier ? "/minisite" : "/marketplace") as never })
+          }
           style={{
-            background: "#fff",
-            borderRadius: 14,
-            border: "1px solid #E4E8EF",
-            padding: 12,
-            minHeight: 92,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            cursor: "pointer",
-            position: "relative",
+            ...tileBase,
+            gridColumn: 1,
+            gridRow: "1 / 3",
+            height: 200,
+            background: isFreeTier
+              ? "linear-gradient(160deg, #7C3AED, #5B21B6)"
+              : "linear-gradient(160deg, #1877D6, #0F52A8)",
           }}
         >
-          {(liveActive || liveStatus !== "offline") && (
-            <span
-              aria-hidden
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                background: liveStatus === "live" ? "#FF3B30" : "#F59E0B",
-                border: "1.5px solid #fff",
-                position: "absolute",
-                top: 10,
-                right: 10,
-                animation:
-                  liveStatus === "live" ? "dsmLivePulse 1.6s ease-out infinite" : undefined,
-              }}
-            />
-          )}
-          <span
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: 10,
-              background: liveStatus === "offline" ? "#F1F1F4" : "#FEE2E2",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <IconBroadcast
-              size={17}
-              color={liveStatus === "offline" ? "#9CA3AF" : "#CC2229"}
-              stroke={1.6}
-            />
-          </span>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A", fontFamily: FONT }}>
-              Live
-            </div>
+            <IconRosetteDiscount size={22} color="#fff" stroke={1.5} style={{ marginBottom: 6 }} />
+            <div style={{ fontSize: 16, fontWeight: 800, color: "#fff" }}>Perks</div>
             <div
-              aria-live="polite"
               style={{
-                fontSize: 10.5,
-                fontWeight: liveStatus === "offline" ? 500 : 800,
-                color:
-                  liveStatus === "live"
-                    ? "#CC2229"
-                    : liveStatus === "soon"
-                      ? "#B45309"
-                      : "#8592A6",
-                fontFamily: FONT,
+                fontSize: 11,
+                color: "rgba(255,255,255,0.7)",
+                lineHeight: 1.4,
+                marginTop: 4,
               }}
             >
-              {liveStatus === "live"
-                ? "ON AIR"
-                : liveStatus === "soon"
-                  ? "STARTING SOON"
-                  : "Unavailable"}
+              {isFreeTier
+                ? "Free DIA membership & exclusive member benefits"
+                : "4 benefits active"}
             </div>
           </div>
+          <span
+            style={{
+              background: "rgba(255,255,255,0.2)",
+              borderRadius: 20,
+              padding: "5px 12px",
+              fontSize: 11,
+              fontWeight: 700,
+              display: "inline-block",
+              alignSelf: "flex-start",
+            }}
+          >
+            {isFreeTier ? "Upgrade →" : "Access benefits →"}
+          </span>
         </div>
 
-        {/* Learn */}
+        {/* LEARN */}
         <div
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/learn" as never })}
-          style={{
-            background: "#fff",
-            borderRadius: 14,
-            border: "1px solid #E4E8EF",
-            padding: 12,
-            minHeight: 92,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            cursor: "pointer",
-          }}
+          style={{ ...tileBase, gridColumn: 2, gridRow: 1, height: 96, background: BLUE }}
         >
-          <span
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: 10,
-              background: "#EFF6FF",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <IconBook size={17} color="#1877D6" stroke={1.6} />
-          </span>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A", fontFamily: FONT }}>
-              Learn
+            <IconBook size={18} color="#fff" stroke={1.5} />
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginTop: 6 }}>Learn</div>
+            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>Videos</div>
+          </div>
+        </div>
+
+        {/* BITESIZE */}
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate({ to: "/bitesize" as never })}
+          style={{ ...tileBase, gridColumn: 2, gridRow: 2, height: 96, background: NAVY }}
+        >
+          <div>
+            <IconBolt size={18} color="#fff" stroke={1.5} />
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginTop: 6 }}>
+              Bitesize
             </div>
-            <div style={{ fontSize: 10.5, fontWeight: 500, color: "#8592A6", fontFamily: FONT }}>
-              DSM Training
+            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>
+              Quick tips
             </div>
           </div>
         </div>
-      </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: 8,
-          marginBottom: 10,
-        }}
-      >
-        {[
-          {
-            key: "bitesize",
-            label: "Bitesize",
-            to: "/bitesize",
-            tint: "#FEF3C7",
-            colour: "#F59E0B",
-            Icon: IconBolt,
-            dot: false,
-          },
-          {
-            key: "showcase",
-            label: "Showcase",
-            to: "/showcase",
-            tint: "#EDE9FE",
-            colour: "#7C3AED",
-            Icon: IconPlayerPlay,
-            dot: (showcaseCount ?? 0) > 0,
-          },
-          {
-            key: "news",
-            label: "News",
-            to: "/news",
-            tint: "#F0FDF4",
-            colour: "#15803D",
-            Icon: IconNews,
-            dot: newsUnread,
-          },
-        ].map((t) => (
-          <div
-            key={t.key}
-            role="button"
-            tabIndex={0}
-            onClick={() => navigate({ to: t.to as never })}
-            style={{
-              background: "#fff",
-              borderRadius: 14,
-              border: "1px solid #E4E8EF",
-              padding: "12px 6px",
-              textAlign: "center",
-              cursor: "pointer",
-              position: "relative",
-            }}
-          >
-            {t.dot && (
-              <span
-                aria-hidden
-                style={{
-                  width: 7,
-                  height: 7,
-                  borderRadius: "50%",
-                  background: "#FF3B30",
-                  border: "1.5px solid #fff",
-                  position: "absolute",
-                  top: 8,
-                  right: 8,
-                }}
-              />
-            )}
-            <span
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 9,
-                background: t.tint,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 6px",
-              }}
-            >
-              <t.Icon size={15} color={t.colour} stroke={1.6} />
-            </span>
-            <div style={{ fontSize: 12.5, fontWeight: 600, color: "#0B1F3A", fontFamily: FONT }}>
-              {t.label}
-            </div>
-          </div>
-        ))}
-      </div>
-
-
-      {/* PERKS STRIP */}
-      <div
-        onClick={() => navigate({ to: "/marketplace" as never })}
-        style={{
-          background: "#fff",
-          borderRadius: 12,
-          padding: "10px 12px",
-          boxShadow: "0 2px 0 #E4E4E8",
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          cursor: "pointer",
-          marginBottom: 12,
-        }}
-      >
+        {/* SHOWCASE */}
         <div
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate({ to: "/showcase" as never })}
+          style={{ ...tileBase, gridColumn: 1, gridRow: 3, height: 96, background: NAVY }}
+        >
+          {(showcaseCount ?? 0) > 0 && (
+            <span
+              aria-hidden
+              style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: RED,
+                border: `2px solid ${NAVY}`,
+              }}
+            />
+          )}
+          <div>
+            <IconPlayerPlay size={18} color="#fff" stroke={1.5} />
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginTop: 6 }}>
+              Showcase
+            </div>
+            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>Watch</div>
+          </div>
+        </div>
+
+        {/* LIVE & NEWS */}
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate({ to: (isLiveOnAir ? "/dsm-live" : "/news") as never })}
           style={{
-            width: 32,
-            height: 32,
-            borderRadius: 8,
-            display: "flex",
-            alignItems: "center",
+            ...tileBase,
+            gridColumn: 2,
+            gridRow: 3,
+            height: 96,
             justifyContent: "center",
-            flexShrink: 0,
-            overflow: "hidden",
+            background: isLiveOnAir ? RED : NAVY,
           }}
         >
-          <img
-            src={dialogo3Asset.url}
-            alt="DIA logo"
-            style={{ width: 32, height: 32, objectFit: "cover" }}
-          />
-        </div>
-        <div style={{ flex: 1 }}>
-          <div
-            style={{
-              fontSize: 12,
-              fontWeight: 700,
-              color: "#0B1F3A",
-              fontFamily: "Poppins, sans-serif",
-            }}
-          >
-            {PIRKX_LIVE ? "DSM member perks" : "FREE DIA Memberships"}
-          </div>
-          <div
-            style={{
-              fontSize: 9,
-              color: "#9CA3AF",
-              fontFamily: "Poppins, sans-serif",
-              marginTop: 1,
-            }}
-          >
-            {PIRKX_LIVE
-              ? "GP · DIA membership · 2,000+ discounts"
-              : (
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ position: "relative", display: "inline-flex", flexShrink: 0 }}>
+              {isLiveOnAir ? (
                 <>
-                  {"FREE DIA membership and many other "}
-                  <span style={{ fontWeight: 700 }}>exclusive</span>
-                  {" member benefits - "}
-                  <span style={{ fontWeight: 600 }}>upgrade to unlock</span>
+                  <IconBroadcast size={20} color="#fff" stroke={1.5} />
+                  <span
+                    aria-hidden
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: "#fff",
+                      animation: "dsmLivePulse 1.5s infinite",
+                    }}
+                  />
+                </>
+              ) : (
+                <IconNews size={20} color="#fff" stroke={1.5} />
+              )}
+            </span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              {isLiveOnAir ? (
+                <>
+                  <span
+                    style={{
+                      background: "rgba(255,255,255,0.2)",
+                      borderRadius: 20,
+                      padding: "2px 8px",
+                      fontSize: 9,
+                      fontWeight: 800,
+                      marginBottom: 4,
+                      display: "inline-block",
+                    }}
+                  >
+                    On air
+                  </span>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: "#fff",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {live.find((s) => isLiveNow(s))?.title ?? "DSM Live"}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div
+                    style={{
+                      fontSize: 10,
+                      color: "rgba(255,255,255,0.6)",
+                      marginBottom: 2,
+                    }}
+                  >
+                    Latest news
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: "#fff",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {latestNewsTitle || "DSM community updates"}
+                  </div>
                 </>
               )}
+            </div>
+            <IconChevronRight size={16} color="rgba(255,255,255,0.4)" stroke={2} />
           </div>
         </div>
-        <div
-          style={{
-            fontSize: 10,
-            fontWeight: 700,
-            color: "#7C3AED",
-            fontFamily: "Poppins, sans-serif",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {PIRKX_LIVE ? "Access →" : "Upgrade →"}
-        </div>
       </div>
+
     </div>
   );
 }
