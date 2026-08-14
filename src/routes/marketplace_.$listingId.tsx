@@ -159,6 +159,16 @@ function ListingDetailPage() {
   const [similar, setSimilar] = useState<Listing[]>([]);
   const [sellerListings, setSellerListings] = useState<Listing[]>([]);
   const [enquiryOpen, setEnquiryOpen] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    void supabase.auth.getUser().then(({ data }) => {
+      if (!cancelled) setCurrentUserId(data.user?.id ?? null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const [photoIndex, setPhotoIndex] = useState(0);
 
   useEffect(() => {
@@ -233,17 +243,43 @@ function ListingDetailPage() {
 
   const CARD: React.CSSProperties = {
     background: "#fff",
-    borderRadius: 20,
-    padding: 18,
-    boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
+    borderRadius: 16,
+    border: "1px solid #E4E8EF",
+    padding: 16,
+    boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+    fontFamily: "Poppins, sans-serif",
   };
   const LABEL: React.CSSProperties = {
-    color: "#8A8A8E",
-    fontSize: 12,
-    fontWeight: 700,
-    letterSpacing: "0.5px",
+    color: "#9CA3AF",
+    fontSize: 11,
+    fontWeight: 600,
+    letterSpacing: "0.08em",
     textTransform: "uppercase",
-    margin: "0 4px 8px",
+    margin: "0 0 10px",
+    fontFamily: "Poppins, sans-serif",
+  };
+  const SECTION_HEADER: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "0 0 0 0",
+    marginBottom: 10,
+  };
+  const SECTION_TITLE: React.CSSProperties = {
+    fontSize: 15,
+    fontWeight: 700,
+    color: "#0B1F3A",
+    fontFamily: "Poppins, sans-serif",
+  };
+  const SECTION_LINK: React.CSSProperties = {
+    fontSize: 12,
+    fontWeight: 600,
+    color: "#1877D6",
+    fontFamily: "Poppins, sans-serif",
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    padding: 0,
   };
 
   return (
@@ -267,10 +303,10 @@ function ListingDetailPage() {
           onClick={goBack}
           aria-label="Back"
           style={{
-            width: 34,
-            height: 34,
+            width: 36,
+            height: 36,
             borderRadius: 999,
-            background: "rgba(255,255,255,0.08)",
+            background: "rgba(255,255,255,0.12)",
             border: "none",
             color: "#FFFFFF",
             cursor: "pointer",
@@ -288,6 +324,7 @@ function ListingDetailPage() {
             fontSize: 18,
             fontWeight: 700,
             color: "#fff",
+            fontFamily: "Poppins, sans-serif",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -442,7 +479,7 @@ function ListingDetailPage() {
                   aspectRatio: "1 / 0.9",
                   background: photos[0]
                     ? `#E7EDF5 url(${photos[0]}) center/cover`
-                    : "linear-gradient(135deg,#0B1F3A,#1877D6)",
+                    : "#0B1F3A",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -458,12 +495,15 @@ function ListingDetailPage() {
                 position: "absolute",
                 top: 12,
                 left: 12,
-                background: statusBadge.colour,
+                background: "rgba(11,31,58,0.7)",
+                backdropFilter: "blur(4px)",
+                WebkitBackdropFilter: "blur(4px)",
                 color: "#fff",
                 fontSize: 11,
-                fontWeight: 800,
-                padding: "6px 12px",
+                fontWeight: 700,
+                padding: "4px 10px",
                 borderRadius: 20,
+                fontFamily: "Poppins, sans-serif",
               }}
             >
               {statusBadge.label}
@@ -476,12 +516,15 @@ function ListingDetailPage() {
                   position: "absolute",
                   top: 12,
                   right: 12,
-                  background: "rgba(255,255,255,0.94)",
-                  color: "#0B1F3A",
-                  fontSize: 12,
+                  background: "rgba(11,31,58,0.7)",
+                  backdropFilter: "blur(4px)",
+                  WebkitBackdropFilter: "blur(4px)",
+                  color: "#fff",
+                  fontSize: 11,
                   fontWeight: 700,
-                  padding: "6px 12px",
+                  padding: "4px 10px",
                   borderRadius: 20,
+                  fontFamily: "Poppins, sans-serif",
                 }}
               >
                 {photoIndex + 1} of {photos.length}
@@ -534,85 +577,114 @@ function ListingDetailPage() {
           >
             {/* Title + price */}
 
-            <div style={{ ...CARD, padding: 20 }}>
+            <div style={CARD}>
               <div
                 style={{
                   color: "#0B1F3A",
-                  fontSize: 22,
+                  fontSize: 18,
                   fontWeight: 800,
-                  letterSpacing: "-0.3px",
-                  lineHeight: 1.25,
+                  lineHeight: 1.3,
+                  fontFamily: "Poppins, sans-serif",
+                  marginBottom: 8,
                 }}
               >
                 {listing.title}
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "baseline",
-                  gap: 10,
-                  marginTop: 10,
-                }}
-              >
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "baseline",
-                    gap: 6,
-                    color: "#0B1F3A",
-                    fontSize: 28,
-                    fontWeight: 900,
-                    letterSpacing: "-0.6px",
-                  }}
-                >
-                  {listingId === WEBSITE_LISTING_ID ? (
-                    <>
-                      <span style={{ fontSize: 15, fontWeight: 700, color: "#8A8A8E", letterSpacing: 0 }}>
-                        From
-                      </span>
-                      £9.99
-                      <span style={{ fontSize: 15, fontWeight: 600, color: "#8A8A8E", letterSpacing: 0 }}>
-                        /mo
-                      </span>
-                    </>
-                  ) : (
-                    (listing.price_display ?? "POA")
-                  )}
-                </span>
+              {(() => {
+                const isWebsiteListing = listingId === WEBSITE_LISTING_ID;
+                const raw = (listing.price_display ?? "").trim();
+                const noPrice =
+                  !isWebsiteListing && (!raw || raw.toUpperCase() === "POA");
+                return (
+                  <div>
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "baseline",
+                        gap: 6,
+                        color: noPrice ? "#9CA3AF" : "#0B1F3A",
+                        fontSize: noPrice ? 16 : 24,
+                        fontWeight: noPrice ? 500 : 800,
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      {isWebsiteListing ? (
+                        <>
+                          <span style={{ fontSize: 14, fontWeight: 600, color: "#6B7686" }}>
+                            From
+                    </span>
+                    {noPrice &&
+                      currentUserId &&
+                      listing.instructor_id === currentUserId && (
+                        <button
+                          type="button"
+                          onClick={() => navigate({ to: "/marketplace/edit" })}
+                          style={{
+                            marginLeft: 10,
+                            background: "none",
+                            border: "none",
+                            padding: 0,
+                            color: "#1877D6",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                            fontFamily: "Poppins, sans-serif",
+                          }}
+                        >
+                          Add price →
+                        </button>
+                      )}
+                          £9.99
+                          <span style={{ fontSize: 14, fontWeight: 600, color: "#6B7686" }}>
+                            /mo
+                          </span>
+                        </>
+                      ) : noPrice ? (
+                        "No price set"
+                      ) : (
+                        raw
+                      )}
+                    </span>
 
-                {listing.condition && (
-                  <span
-                    style={{
-                      background: "#EEF2F7",
-                      color: "#6B7686",
-                      fontSize: 11.5,
-                      fontWeight: 700,
-                      padding: "5px 11px",
-                      borderRadius: 20,
-                      whiteSpace: "nowrap",
-                      textTransform: "capitalize",
-                    }}
-                  >
-                    {listing.condition}
-                  </span>
-                )}
-              </div>
+                    {listing.condition && (
+                      <div>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            background: "#EFF6FF",
+                            color: "#1877D6",
+                            fontSize: 11,
+                            fontWeight: 700,
+                            padding: "4px 10px",
+                            borderRadius: 20,
+                            marginTop: 8,
+                            whiteSpace: "nowrap",
+                            textTransform: "capitalize",
+                            fontFamily: "Poppins, sans-serif",
+                          }}
+                        >
+                          {listing.condition}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
               {listing.location && (
                 <div
                   style={{
-                    borderTop: "1px solid #F0F0F2",
+                    borderTop: "1px solid #E4E8EF",
                     paddingTop: 12,
                     marginTop: 12,
                     display: "flex",
                     alignItems: "center",
                     gap: 6,
-                    color: "#8A8A8E",
-                    fontSize: 13,
-                    fontWeight: 600,
+                    color: "#6B7686",
+                    fontSize: 12,
+                    fontFamily: "Poppins, sans-serif",
                   }}
                 >
-                  <IconMapPin stroke={1.8} size={13} />
+                  <IconMapPin stroke={1.8} size={12} color="#9CA3AF" />
                   {listing.location}
                 </div>
               )}
@@ -701,20 +773,18 @@ function ListingDetailPage() {
                 : listing.description;
               if (!body) return null;
               return (
-                <div>
+                <div style={CARD}>
                   <div style={LABEL}>Description</div>
-                  <div style={CARD}>
-                    <div
-                      style={{
-                        color: "#6B6B6F",
-                        fontSize: 14,
-                        fontWeight: 500,
-                        lineHeight: 1.6,
-                        whiteSpace: "pre-wrap",
-                      }}
-                    >
-                      {body}
-                    </div>
+                  <div
+                    style={{
+                      color: "#6B7686",
+                      fontSize: 14,
+                      lineHeight: 1.6,
+                      whiteSpace: "pre-wrap",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    {body}
                   </div>
                 </div>
               );
@@ -747,16 +817,7 @@ function ListingDetailPage() {
 
             {/* Get in touch */}
             <div style={CARD}>
-              <div
-                style={{
-                  color: "#0B1F3A",
-                  fontSize: 16,
-                  fontWeight: 800,
-                  marginBottom: 12,
-                }}
-              >
-                Get in touch
-              </div>
+              <div style={{ ...LABEL, marginBottom: 12 }}>Get in touch</div>
               <ContactActions
                 listing={listing}
                 onEnquire={() => setEnquiryOpen(true)}
@@ -767,7 +828,16 @@ function ListingDetailPage() {
           {/* Similar in category */}
           {similar.length > 0 && (
             <div style={{ padding: "0 16px 16px" }}>
-              <div style={LABEL}>More in this category</div>
+              <div style={SECTION_HEADER}>
+                <div style={SECTION_TITLE}>More in this category</div>
+                <button
+                  type="button"
+                  style={SECTION_LINK}
+                  onClick={() => navigate({ to: "/marketplace" })}
+                >
+                  See all →
+                </button>
+              </div>
               <div
                 style={{
                   display: "grid",
@@ -795,9 +865,25 @@ function ListingDetailPage() {
           {/* More from this seller — always the final section */}
           {sellerListings.length > 0 && (
             <div style={{ padding: "0 16px 160px" }}>
-              <div style={LABEL}>More from this seller</div>
+              <div style={SECTION_HEADER}>
+                <div style={SECTION_TITLE}>More from this seller</div>
+                {hasSellerProfile && (
+                  <button
+                    type="button"
+                    style={SECTION_LINK}
+                    onClick={() =>
+                      navigate({
+                        to: "/marketplace/seller/$supplierId",
+                        params: { supplierId: listing.supplier_id as string },
+                      })
+                    }
+                  >
+                    See all →
+                  </button>
+                )}
+              </div>
               <div
-                style={{ display: "flex", flexDirection: "column", gap: 10 }}
+                style={{ display: "flex", flexDirection: "column" }}
               >
                 {sellerListings.map((s) => (
                   <SellerListingRow
@@ -870,36 +956,38 @@ function ContactActions({
   const type = listing.contact_type ?? "email";
 
   const primaryBtn = {
-    background: "#0B1F3A",
+    background: "#1877D6",
     color: "#fff",
     border: "none",
-    fontSize: 15,
-    fontWeight: 800,
-    padding: 15,
-    borderRadius: 14,
-    boxShadow: "0 4px 0 #050D1C",
+    fontSize: 14,
+    fontWeight: 700,
+    padding: 13,
+    borderRadius: 20,
+    boxShadow: "0 3px 0 #0F52A8",
     cursor: "pointer",
     width: "100%",
     textAlign: "center" as const,
     textDecoration: "none",
     display: "block",
+    fontFamily: "Poppins, sans-serif",
   };
 
   const secondaryBtn = {
-    background: "#EEF2F7",
-    color: "#0B1F3A",
-    border: "none",
-    fontSize: 15,
-    fontWeight: 800,
-    padding: 15,
-    borderRadius: 14,
-    boxShadow: "0 4px 0 #D8DEE7",
+    background: "#EFF6FF",
+    color: "#1877D6",
+    border: "1px solid #1877D6",
+    fontSize: 14,
+    fontWeight: 700,
+    padding: 13,
+    borderRadius: 20,
+    boxShadow: "none",
     cursor: "pointer",
     width: "100%",
     textAlign: "center" as const,
     textDecoration: "none",
     display: "block",
     marginTop: 12,
+    fontFamily: "Poppins, sans-serif",
   };
 
 
@@ -1221,12 +1309,12 @@ function CategoryPill({ name }: { name: string }) {
       style={{
         display: "inline-block",
         fontFamily: "Poppins, sans-serif",
-        fontSize: 10.5,
-        fontWeight: 600,
-        color: "#1A52A0",
-        background: "#EAF1FB",
+        fontSize: 10,
+        fontWeight: 700,
+        color: "#1877D6",
+        background: "#EFF6FF",
         padding: "3px 10px",
-        borderRadius: 999,
+        borderRadius: 20,
       }}
     >
       {name}
@@ -1273,7 +1361,7 @@ function formatListingPrice(
   const display = (listing.price_display ?? "").trim();
   // Only trust price_display when it actually contains a number.
   if (display && /\d/.test(display)) return { text: display, muted: false };
-  return { text: "Price on request", muted: true };
+  return { text: "No price set", muted: true };
 }
 
 function SellerListingRow({
@@ -1295,23 +1383,25 @@ function SellerListingRow({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        background: "#FFFFFF",
-        border: "0.5px solid #E2E6ED",
-        borderRadius: 12,
-        padding: 10,
+        background: "#fff",
+        border: "1px solid #E4E8EF",
+        borderRadius: 16,
+        boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+        padding: 12,
+        marginBottom: 10,
         fontFamily: "Poppins, sans-serif",
         cursor: "pointer",
       }}
     >
       <div
         style={{
-          width: 64,
-          height: 64,
+          width: 72,
+          height: 72,
           flexShrink: 0,
-          borderRadius: 12,
+          borderRadius: 10,
           background: img
-            ? `#F8F9FB url(${img}) center/cover`
-            : "linear-gradient(135deg,#0F2044,#1A52A0)",
+            ? `#EEF2F7 url(${img}) center/cover`
+            : "#0B1F3A",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -1322,9 +1412,9 @@ function SellerListingRow({
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            color: "#0F2044",
-            fontSize: 14,
-            fontWeight: 700,
+            color: "#0B1F3A",
+            fontSize: 13,
+            fontWeight: 600,
             lineHeight: 1.25,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -1334,22 +1424,42 @@ function SellerListingRow({
           {listing.title}
         </div>
         {cat?.name && (
-          <div style={{ marginTop: 5 }}>
+          <div style={{ marginTop: 3 }}>
             <CategoryPill name={cat.name} />
           </div>
         )}
         <div
           style={{
-            marginTop: 5,
-            color: price.muted ? "#6B7686" : "#0F2044",
-            fontSize: 13.5,
+            marginTop: 4,
+            color: price.muted ? "#9CA3AF" : "#0B1F3A",
+            fontSize: 13,
             fontWeight: price.muted ? 500 : 700,
           }}
         >
           {price.text}
         </div>
       </div>
-      <IconChevronRight stroke={1.8} size={18} color="#B0B0B5" />
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onOpen(listing.id);
+        }}
+        style={{
+          background: "#1877D6",
+          color: "#fff",
+          borderRadius: 20,
+          padding: "6px 14px",
+          fontSize: 12,
+          fontWeight: 700,
+          border: "none",
+          cursor: "pointer",
+          fontFamily: "Poppins, sans-serif",
+          flexShrink: 0,
+        }}
+      >
+        View ›
+      </button>
     </div>
   );
 }
@@ -1372,9 +1482,10 @@ function MiniListingCard({
       onClick={() => onOpen(listing.id)}
       style={{
         width: "100%",
-        background: "#FFFFFF",
-        border: "0.5px solid #E2E6ED",
-        borderRadius: 12,
+        background: "#fff",
+        border: "1px solid #E4E8EF",
+        borderRadius: 16,
+        boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
         overflow: "hidden",
         fontFamily: "Poppins, sans-serif",
         cursor: "pointer",
@@ -1382,10 +1493,11 @@ function MiniListingCard({
     >
       <div
         style={{
-          height: 96,
+          width: "100%",
+          aspectRatio: "1 / 1",
           background: img
-            ? `#F8F9FB url(${img}) center/cover`
-            : "linear-gradient(135deg,#0F2044,#1A52A0)",
+            ? `#EEF2F7 url(${img}) center/cover`
+            : "#0B1F3A",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -1393,14 +1505,13 @@ function MiniListingCard({
       >
         {!img && <Icon size={30} color="#FFFFFF" />}
       </div>
-      <div style={{ padding: "10px 10px 12px" }}>
+      <div style={{ padding: 10 }}>
         <div
           style={{
-            color: "#0F2044",
-            fontSize: 12.5,
-            fontWeight: 700,
+            color: "#0B1F3A",
+            fontSize: 12,
+            fontWeight: 600,
             lineHeight: 1.3,
-            minHeight: 32,
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
@@ -1410,14 +1521,14 @@ function MiniListingCard({
           {listing.title}
         </div>
         {cat?.name && (
-          <div style={{ marginTop: 6 }}>
+          <div style={{ marginTop: 4 }}>
             <CategoryPill name={cat.name} />
           </div>
         )}
         <div
           style={{
             marginTop: 6,
-            color: price.muted ? "#6B7686" : "#0F2044",
+            color: price.muted ? "#9CA3AF" : "#0B1F3A",
             fontSize: 13,
             fontWeight: price.muted ? 500 : 700,
           }}
