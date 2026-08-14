@@ -4,6 +4,7 @@ import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
 import spotifyLogoAsset from "@/assets/spotify-logo.png.asset.json";
 import balloonLogoAsset from "@/assets/balloon-logo.png.asset.json";
 import vitalityLogoAsset from "@/assets/vitality-logo.png.asset.json";
+import hmacaLogoAsset from "@/assets/hmaca-logo.png.asset.json";
 
 import {
   IconPlayerPlay,
@@ -1022,6 +1023,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   { initial: "I", bg: "#0B1F3A" },
                   { initial: "A", bg: "#3B82F6" },
                   { initial: "M", bg: "#64748B" },
+                  { initial: "H", bg: "#1e3a5f" },
                 ].map((m, i) => (
                   <div
                     key={m.initial}
@@ -1038,7 +1040,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       justifyContent: "center",
                       marginLeft: i === 0 ? 0 : -8,
                       border: "2px solid #fff",
-                      zIndex: 4 - i,
+                      zIndex: 5 - i,
                       overflow: "hidden",
                     }}
                   >
@@ -1064,6 +1066,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       <img
                         src={vitalityLogoAsset.url}
                         alt="Vitality"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : i === 4 ? (
+                      <img
+                        src={hmacaLogoAsset.url}
+                        alt="HMCA"
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                       />
                     ) : (
