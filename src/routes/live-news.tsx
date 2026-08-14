@@ -276,7 +276,7 @@ function LiveNewsPage() {
                           </span>
                         ) : (
                           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                            <IconClock size={11} color="#9CA3AF" strokeWidth={1.5} />
+                            <Clock size={11} color="#9CA3AF" strokeWidth={1.5} />
                             <span style={{ fontSize: 11, color: "#9CA3AF" }}>
                               {formatSessionTime(s.session_time)}
                             </span>
