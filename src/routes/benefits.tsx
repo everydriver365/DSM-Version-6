@@ -243,7 +243,141 @@ function BenefitsPage() {
     }
   }
 
-  if (loading) return <PageLoader />;
+  async function checkDomain() {
+    if (!domainSearch.trim()) return;
+    setCheckingDomain(true);
+    setDomainResult(null);
+    try {
+      const result = await checkDomainAvailability(domainSearch.trim());
+      setDomainResult({
+        domain: result.domain,
+        available: result.available,
+        price: typeof result.price === 'number' ? result.price.toString() : result.price,
+      });
+    } catch {
+      toast.error('Could not check domain');
+    } finally {
+      setCheckingDomain(false);
+    }
+  }
+
+  async function handleUpgrade(tier: PaidTierId) {
+    setUpgradeStep('processing');
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Please log in first');
+
+      const { url } = await createSubscriptionPaymentLink(
+        tier,
+        chosenDomain,
+        session.access_token,
+      );
+
+      window.location.href = url;
+    } catch (e: any) {
+      toast.error(e.message ?? 'Could not start upgrade');
+      setUpgradeStep('choose-tier');
+    }
+  }
+
+  function renderTiers(
+    onPick: (tier: PaidTierId) => void,
+    ctaLabel: string | null,
+  ) {
+    return TIERS.map((t) => (
+      <div
+        key={t.id}
+        style={{
+          background: '#fff',
+          borderRadius: 16,
+          boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+          padding: 16,
+          marginBottom: 10,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span
+            style={{
+              background: t.pillBg,
+              color: t.pillColor,
+              fontSize: 12,
+              fontWeight: 700,
+              borderRadius: 20,
+              padding: '4px 10px',
+              fontFamily: 'Poppins, sans-serif',
+            }}
+          >
+            {t.price}
+          </span>
+          {t.badge && (
+            <span
+              style={{
+                background: '#FEF3C7',
+                color: '#92400E',
+                fontSize: 10,
+                fontWeight: 700,
+                borderRadius: 20,
+                padding: '3px 8px',
+                fontFamily: 'Poppins, sans-serif',
+              }}
+            >
+              {t.badge}
+            </span>
+          )}
+        </div>
+        <div
+          style={{
+            fontSize: 16,
+            fontWeight: 800,
+            color: '#0B1F3A',
+            marginTop: 8,
+            fontFamily: 'Poppins, sans-serif',
+          }}
+        >
+          {t.name}
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 12 }}>
+          {t.features.map((f) => (
+            <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <IconCheck size={12} color="#15803D" />
+              <span style={{ fontSize: 12, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>{f}</span>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            if (t.id === 'managed') {
+              window.open(
+                'https://wa.me/447767693279?text=' +
+                  encodeURIComponent('Hi, I\'m interested in DSM Managed Website'),
+                '_blank',
+              );
+              return;
+            }
+            onPick(t.id);
+          }}
+          style={{
+            width: '100%',
+            background: t.id === 'managed' ? '#D68A1B' : t.btnBg,
+            color: '#fff',
+            borderRadius: 12,
+            padding: 12,
+            fontSize: 14,
+            fontWeight: 700,
+            marginTop: 12,
+            border: 'none',
+            cursor: 'pointer',
+            fontFamily: 'Poppins, sans-serif',
+            boxShadow: t.id === 'managed' ? '0 3px 0 #9C6012' : t.btnShadow,
+          }}
+        >
+          {t.id === 'managed' ? 'Contact us →' : (ctaLabel ?? t.cta)}
+        </button>
+      </div>
+    ));
+  }
+
 
   return (
     <div
