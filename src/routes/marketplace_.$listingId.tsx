@@ -567,70 +567,78 @@ function ListingDetailPage() {
           >
             {/* Title + price */}
 
-            <div style={{ ...CARD, padding: 20 }}>
+            <div style={CARD}>
               <div
                 style={{
                   color: "#0B1F3A",
-                  fontSize: 22,
+                  fontSize: 18,
                   fontWeight: 800,
-                  letterSpacing: "-0.3px",
-                  lineHeight: 1.25,
+                  lineHeight: 1.3,
+                  fontFamily: "Poppins, sans-serif",
+                  marginBottom: 8,
                 }}
               >
                 {listing.title}
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "baseline",
-                  gap: 10,
-                  marginTop: 10,
-                }}
-              >
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "baseline",
-                    gap: 6,
-                    color: "#0B1F3A",
-                    fontSize: 28,
-                    fontWeight: 900,
-                    letterSpacing: "-0.6px",
-                  }}
-                >
-                  {listingId === WEBSITE_LISTING_ID ? (
-                    <>
-                      <span style={{ fontSize: 15, fontWeight: 700, color: "#8A8A8E", letterSpacing: 0 }}>
-                        From
-                      </span>
-                      £9.99
-                      <span style={{ fontSize: 15, fontWeight: 600, color: "#8A8A8E", letterSpacing: 0 }}>
-                        /mo
-                      </span>
-                    </>
-                  ) : (
-                    (listing.price_display ?? "POA")
-                  )}
-                </span>
+              {(() => {
+                const isWebsiteListing = listingId === WEBSITE_LISTING_ID;
+                const raw = (listing.price_display ?? "").trim();
+                const noPrice =
+                  !isWebsiteListing && (!raw || raw.toUpperCase() === "POA");
+                return (
+                  <div>
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "baseline",
+                        gap: 6,
+                        color: noPrice ? "#9CA3AF" : "#0B1F3A",
+                        fontSize: noPrice ? 16 : 24,
+                        fontWeight: noPrice ? 500 : 800,
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      {isWebsiteListing ? (
+                        <>
+                          <span style={{ fontSize: 14, fontWeight: 600, color: "#6B7686" }}>
+                            From
+                          </span>
+                          £9.99
+                          <span style={{ fontSize: 14, fontWeight: 600, color: "#6B7686" }}>
+                            /mo
+                          </span>
+                        </>
+                      ) : noPrice ? (
+                        "No price set"
+                      ) : (
+                        raw
+                      )}
+                    </span>
 
-                {listing.condition && (
-                  <span
-                    style={{
-                      background: "#EEF2F7",
-                      color: "#6B7686",
-                      fontSize: 11.5,
-                      fontWeight: 700,
-                      padding: "5px 11px",
-                      borderRadius: 20,
-                      whiteSpace: "nowrap",
-                      textTransform: "capitalize",
-                    }}
-                  >
-                    {listing.condition}
-                  </span>
-                )}
-              </div>
+                    {listing.condition && (
+                      <div>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            background: "#EFF6FF",
+                            color: "#1877D6",
+                            fontSize: 11,
+                            fontWeight: 700,
+                            padding: "4px 10px",
+                            borderRadius: 20,
+                            marginTop: 8,
+                            whiteSpace: "nowrap",
+                            textTransform: "capitalize",
+                            fontFamily: "Poppins, sans-serif",
+                          }}
+                        >
+                          {listing.condition}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
               {listing.location && (
                 <div
                   style={{
