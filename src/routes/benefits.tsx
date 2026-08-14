@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import InstructorTopBar from '@/components/dsm/InstructorTopBar';
 import { PageLoader } from '@/components/dsm/LoadingSpinner';
 import diaLogoAsset from '@/assets/dia-logo.png.asset.json';
+import perkboxLogoAsset from '@/assets/perkbox-logo.png.asset.json';
 import {
   IconCircleCheck,
   IconLock,
@@ -47,6 +48,7 @@ const BENEFITS = [
     name: 'Perkbox Rewards',
     tagline: '4,000+ exclusive discounts',
     icon: 'gift',
+    imageUrl: perkboxLogoAsset.url,
     iconBg: '#FBEAF0',
     iconColor: '#993556',
     description: 'Save money every day with thousands of discounts on retail, restaurants, cinema, travel and more.',
