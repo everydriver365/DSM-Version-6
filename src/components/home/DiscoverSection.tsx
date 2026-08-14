@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
 import spotifyLogoAsset from "@/assets/spotify-logo.png.asset.json";
 import balloonLogoAsset from "@/assets/balloon-logo.png.asset.json";
+import vitalityLogoAsset from "@/assets/vitality-logo.png.asset.json";
 
 import {
   IconPlayerPlay,
@@ -1057,6 +1058,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       <img
                         src={balloonLogoAsset.url}
                         alt="Balloon"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : i === 3 ? (
+                      <img
+                        src={vitalityLogoAsset.url}
+                        alt="Vitality"
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                       />
                     ) : (
