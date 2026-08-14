@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { toast } from 'sonner';
+import { ChevronLeft } from 'lucide-react';
 import InstructorTopBar from '@/components/dsm/InstructorTopBar';
 import { PageLoader } from '@/components/dsm/LoadingSpinner';
 import diaLogoAsset from '@/assets/dia-logo.png.asset.json';
@@ -19,7 +20,15 @@ import {
   IconCar,
   IconTool,
   IconChevronRight,
+  IconWorld,
 } from '@tabler/icons-react';
+import {
+  checkDomainAvailability,
+  createSubscriptionPaymentLink,
+  TIERS,
+  type PaidTierId,
+} from '@/lib/websiteUpgrade';
+
 
 const BENEFITS = [
   {
@@ -184,6 +193,18 @@ function BenefitsPage() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const [upgradeStep, setUpgradeStep] = useState<'idle' | 'domain' | 'choose-tier' | 'processing'>('idle');
+  const [chosenDomain, setChosenDomain] = useState<string | null>(null);
+  const [chosenTier, setChosenTier] = useState<PaidTierId | null>(null);
+  const [domainSearch, setDomainSearch] = useState('');
+  const [domainResult, setDomainResult] = useState<{
+    domain: string;
+    available: boolean;
+    price?: string | null;
+  } | null>(null);
+  const [checkingDomain, setCheckingDomain] = useState(false);
+
+
   useEffect(() => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -222,7 +243,141 @@ function BenefitsPage() {
     }
   }
 
-  if (loading) return <PageLoader />;
+  async function checkDomain() {
+    if (!domainSearch.trim()) return;
+    setCheckingDomain(true);
+    setDomainResult(null);
+    try {
+      const result = await checkDomainAvailability(domainSearch.trim());
+      setDomainResult({
+        domain: result.domain,
+        available: result.available,
+        price: typeof result.price === 'number' ? result.price.toString() : result.price,
+      });
+    } catch {
+      toast.error('Could not check domain');
+    } finally {
+      setCheckingDomain(false);
+    }
+  }
+
+  async function handleUpgrade(tier: PaidTierId) {
+    setUpgradeStep('processing');
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Please log in first');
+
+      const { url } = await createSubscriptionPaymentLink(
+        tier,
+        chosenDomain,
+        session.access_token,
+      );
+
+      window.location.href = url;
+    } catch (e: any) {
+      toast.error(e.message ?? 'Could not start upgrade');
+      setUpgradeStep('choose-tier');
+    }
+  }
+
+  function renderTiers(
+    onPick: (tier: PaidTierId) => void,
+    ctaLabel: string | null,
+  ) {
+    return TIERS.map((t) => (
+      <div
+        key={t.id}
+        style={{
+          background: '#fff',
+          borderRadius: 16,
+          boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+          padding: 16,
+          marginBottom: 10,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span
+            style={{
+              background: t.pillBg,
+              color: t.pillColor,
+              fontSize: 12,
+              fontWeight: 700,
+              borderRadius: 20,
+              padding: '4px 10px',
+              fontFamily: 'Poppins, sans-serif',
+            }}
+          >
+            {t.price}
+          </span>
+          {t.badge && (
+            <span
+              style={{
+                background: '#FEF3C7',
+                color: '#92400E',
+                fontSize: 10,
+                fontWeight: 700,
+                borderRadius: 20,
+                padding: '3px 8px',
+                fontFamily: 'Poppins, sans-serif',
+              }}
+            >
+              {t.badge}
+            </span>
+          )}
+        </div>
+        <div
+          style={{
+            fontSize: 16,
+            fontWeight: 800,
+            color: '#0B1F3A',
+            marginTop: 8,
+            fontFamily: 'Poppins, sans-serif',
+          }}
+        >
+          {t.name}
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 12 }}>
+          {t.features.map((f) => (
+            <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <IconCheck size={12} color="#15803D" />
+              <span style={{ fontSize: 12, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>{f}</span>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            if (t.id === 'managed') {
+              window.open(
+                'https://wa.me/447767693279?text=' +
+                  encodeURIComponent('Hi, I\'m interested in DSM Managed Website'),
+                '_blank',
+              );
+              return;
+            }
+            onPick(t.id);
+          }}
+          style={{
+            width: '100%',
+            background: t.id === 'managed' ? '#D68A1B' : t.btnBg,
+            color: '#fff',
+            borderRadius: 12,
+            padding: 12,
+            fontSize: 14,
+            fontWeight: 700,
+            marginTop: 12,
+            border: 'none',
+            cursor: 'pointer',
+            fontFamily: 'Poppins, sans-serif',
+            boxShadow: t.id === 'managed' ? '0 3px 0 #9C6012' : t.btnShadow,
+          }}
+        >
+          {t.id === 'managed' ? 'Contact us →' : (ctaLabel ?? t.cta)}
+        </button>
+      </div>
+    ));
+  }
+
 
   return (
     <div
@@ -301,7 +456,10 @@ function BenefitsPage() {
           </div>
           <button
             type="button"
-            onClick={() => navigate({ to: '/minisite' as never })}
+            onClick={() => {
+              setUpgradeStep('domain');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             style={{
               background: '#fff',
               color: '#14509E',
@@ -318,6 +476,7 @@ function BenefitsPage() {
           </button>
         </div>
       )}
+
 
       <div
         style={{
@@ -444,11 +603,34 @@ function BenefitsPage() {
               }}
             >
               {!isPaid ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <IconLock size={13} color="#9CA3AF" stroke={1.5} />
-                  <span style={{ fontSize: 13, color: '#9CA3AF' }}>Upgrade to unlock</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <IconLock size={13} color="#9CA3AF" stroke={1.5} />
+                    <span style={{ fontSize: 13, color: '#9CA3AF' }}>Upgrade to unlock</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setUpgradeStep('domain');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    style={{
+                      background: '#1877D6',
+                      color: '#fff',
+                      borderRadius: 20,
+                      padding: '6px 14px',
+                      fontSize: 11,
+                      fontWeight: 700,
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    Upgrade →
+                  </button>
                 </div>
               ) : benefit.comingSoon ? (
+
                 <div>
                   <span
                     style={{
@@ -584,6 +766,243 @@ function BenefitsPage() {
           );
         })}
       </div>
+
+      {/* Upgrade overlay — domain + plan */}
+      {upgradeStep !== 'idle' && upgradeStep !== 'processing' && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: '#EEF2F7',
+            zIndex: 200,
+            overflowY: 'auto',
+          }}
+        >
+          <div
+            style={{
+              background: '#0B1F3A',
+              padding: 16,
+              display: 'flex',
+              gap: 12,
+              alignItems: 'center',
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => setUpgradeStep(upgradeStep === 'domain' ? 'idle' : 'domain')}
+              aria-label="Back"
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: '#fff',
+                display: 'flex',
+              }}
+            >
+              <ChevronLeft size={22} />
+            </button>
+            <div style={{ color: '#fff', fontSize: 18, fontWeight: 800, fontFamily: 'Poppins, sans-serif' }}>
+              {upgradeStep === 'domain' ? 'Choose your domain' : 'Choose your plan'}
+            </div>
+          </div>
+
+          <div style={{ maxWidth: 480, margin: '0 auto', padding: '24px 16px' }}>
+            {upgradeStep === 'domain' && (
+              <>
+                <div
+                  style={{
+                    background: '#fff',
+                    borderRadius: 16,
+                    padding: 16,
+                    marginBottom: 16,
+                    boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+                  }}
+                >
+                  <IconWorld size={20} color="#1877D6" stroke={1.5} />
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', marginTop: 8, fontFamily: 'Poppins, sans-serif' }}>
+                    Your domain is included free with your subscription
+                  </div>
+                  <div style={{ fontSize: 12, color: '#6B7686', marginTop: 4, fontFamily: 'Poppins, sans-serif' }}>
+                    Search for your school name — we'll register it automatically.
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <input
+                    value={domainSearch}
+                    onChange={(e) => {
+                      setDomainSearch(e.target.value);
+                      setDomainResult(null);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') checkDomain();
+                    }}
+                    placeholder="yourschoolname.co.uk"
+                    style={{
+                      flex: 1,
+                      background: '#fff',
+                      border: '0.5px solid #E4E8EF',
+                      borderRadius: 12,
+                      padding: '12px 14px',
+                      fontSize: 14,
+                      fontFamily: 'Poppins, sans-serif',
+                      color: '#0B1F3A',
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={checkDomain}
+                    disabled={checkingDomain || domainSearch.trim().length < 3}
+                    style={{
+                      background: '#1877D6',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: 12,
+                      padding: '0 18px',
+                      fontSize: 14,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      fontFamily: 'Poppins, sans-serif',
+                      opacity: checkingDomain || domainSearch.trim().length < 3 ? 0.5 : 1,
+                    }}
+                  >
+                    {checkingDomain ? '…' : 'Check'}
+                  </button>
+                </div>
+
+                {domainResult && !domainResult.available && (
+                  <div
+                    style={{
+                      marginTop: 12,
+                      background: '#FEF2F2',
+                      border: '0.5px solid #FECACA',
+                      borderRadius: 16,
+                      padding: 16,
+                      fontSize: 13,
+                      color: '#CC2229',
+                      fontWeight: 600,
+                      fontFamily: 'Poppins, sans-serif',
+                    }}
+                  >
+                    {domainResult.domain} is not available
+                  </div>
+                )}
+
+                {domainResult && domainResult.available && (
+                  <div
+                    style={{
+                      marginTop: 12,
+                      background: '#F0FDF4',
+                      border: '0.5px solid #BBF7D0',
+                      borderRadius: 16,
+                      padding: 16,
+                    }}
+                  >
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#15803D', fontFamily: 'Poppins, sans-serif' }}>
+                      ✓ Available
+                    </div>
+                    <div style={{ fontSize: 15, fontWeight: 800, color: '#0B1F3A', marginTop: 4, fontFamily: 'Poppins, sans-serif' }}>
+                      {domainResult.domain}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setChosenDomain(domainResult.domain);
+                        setUpgradeStep('choose-tier');
+                      }}
+                      style={{
+                        width: '100%',
+                        background: '#15803D',
+                        color: '#fff',
+                        borderRadius: 12,
+                        padding: 12,
+                        fontSize: 14,
+                        fontWeight: 700,
+                        marginTop: 12,
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontFamily: 'Poppins, sans-serif',
+                      }}
+                    >
+                      Continue with {domainResult.domain} →
+                    </button>
+                  </div>
+                )}
+
+                <div style={{ textAlign: 'center', marginTop: 24 }}>
+                  <button
+                    type="button"
+                    onClick={() => setUpgradeStep('choose-tier')}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontSize: 12,
+                      color: '#9CA3AF',
+                      fontFamily: 'Poppins, sans-serif',
+                      padding: '4px 8px',
+                    }}
+                  >
+                    Skip — I don't need a domain
+                  </button>
+                </div>
+              </>
+            )}
+
+            {upgradeStep === 'choose-tier' && (
+              <>
+                {chosenDomain && (
+                  <div style={{ marginBottom: 16 }}>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        background: '#DCFCE7',
+                        color: '#15803D',
+                        fontSize: 11,
+                        fontWeight: 700,
+                        borderRadius: 20,
+                        padding: '4px 12px',
+                        fontFamily: 'Poppins, sans-serif',
+                      }}
+                    >
+                      ✓ {chosenDomain} reserved
+                    </span>
+                  </div>
+                )}
+                {renderTiers(
+                  (tier) => {
+                    setChosenTier(tier);
+                    handleUpgrade(tier);
+                  },
+                  chosenDomain ? 'Subscribe and register domain →' : 'Subscribe →',
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {upgradeStep === 'processing' && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: '#EEF2F7',
+            zIndex: 210,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            gap: 12,
+          }}
+        >
+          <PageLoader />
+          <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+            Setting up your subscription...
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
