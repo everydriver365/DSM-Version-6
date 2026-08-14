@@ -707,11 +707,13 @@ function BenefitsPage() {
                     {benefit.ctaLabel}
                   </button>
                 )
-              ) : !isPaid ? (
+              ) : !canAccessTier(benefit.minTier) ? (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <IconLock size={13} color="#9CA3AF" stroke={1.5} />
-                    <span style={{ fontSize: 13, color: '#9CA3AF' }}>Upgrade to unlock</span>
+                    <span style={{ fontSize: 12, color: '#9CA3AF' }}>
+                      Included with {MIN_TIER_LABEL[benefit.minTier]}
+                    </span>
                   </div>
                   <button
                     type="button"
