@@ -13,6 +13,11 @@ import {
   IconStethoscope,
   IconGift,
   IconShieldCheck,
+  IconCamera,
+  IconGasStation,
+  IconCar,
+  IconTool,
+  IconChevronRight,
 } from '@tabler/icons-react';
 
 const BENEFITS = [
