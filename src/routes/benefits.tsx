@@ -37,6 +37,7 @@ const BENEFITS = [
     name: 'pirkx Wellbeing',
     tagline: 'Health and wellbeing benefits',
     icon: 'stethoscope',
+    imageUrl: pirkxLogoAsset.url,
     iconBg: '#E6F1FB',
     iconColor: '#185FA5',
     description: 'Access private GP appointments 24/7, mental health support, prescription delivery and physiotherapy — all included with your DSM Pro subscription.',
