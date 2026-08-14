@@ -25,6 +25,8 @@ import {
   IconChevronRight,
   IconWorld,
   IconHeartHandshake,
+  IconTable,
+  IconChevronDown,
 } from '@tabler/icons-react';
 import {
   checkDomainAvailability,
