@@ -31,6 +31,7 @@ const BLUE = "#1877D6";
 const RED = "#CC2229";
 const FONT = "Poppins, sans-serif";
 
+const MUTED = "#6B7280";
 const tileBase: React.CSSProperties = {
   borderRadius: 16,
   overflow: "hidden",
@@ -40,9 +41,21 @@ const tileBase: React.CSSProperties = {
   flexDirection: "column",
   justifyContent: "space-between",
   padding: 14,
-  color: "#fff",
+  background: "#fff",
+  border: "1px solid #EEF2F7",
+  boxShadow: "0 1px 2px rgba(11,31,58,0.05), 0 8px 24px -12px rgba(11,31,58,0.10)",
+  color: NAVY,
   fontFamily: FONT,
 };
+const chipBase: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: 32,
+  height: 32,
+  borderRadius: 9,
+};
+
 
 
 /** Pick an icon that matches the listing category for the missing-photo fallback. */
