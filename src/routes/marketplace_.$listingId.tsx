@@ -435,8 +435,6 @@ function ListingDetailPage() {
           </div>
 
           <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 14 }}>
-            {/* Enhanced upgrade sections — only for the DSM website listing */}
-            {listingId === WEBSITE_LISTING_ID && <WebsiteUpgradeSections />}
             {/* Title + price */}
 
             <div style={{ ...CARD, padding: 20 }}>
@@ -462,14 +460,30 @@ function ListingDetailPage() {
               >
                 <span
                   style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: 6,
                     color: "#0B1F3A",
                     fontSize: 28,
                     fontWeight: 900,
                     letterSpacing: "-0.6px",
                   }}
                 >
-                  {listing.price_display ?? "POA"}
+                  {listingId === WEBSITE_LISTING_ID ? (
+                    <>
+                      <span style={{ fontSize: 15, fontWeight: 700, color: "#8A8A8E", letterSpacing: 0 }}>
+                        From
+                      </span>
+                      £9.99
+                      <span style={{ fontSize: 15, fontWeight: 600, color: "#8A8A8E", letterSpacing: 0 }}>
+                        /mo
+                      </span>
+                    </>
+                  ) : (
+                    (listing.price_display ?? "POA")
+                  )}
                 </span>
+
                 {listing.condition && (
                   <span
                     style={{
