@@ -355,29 +355,12 @@ function MiniSitePage() {
   async function checkDomain() {
     const raw = domainQuery.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");
     if (raw.length < 3) return;
-    const domain = raw.includes(".") ? raw : `${raw.replace(/[^a-z0-9-]/g, "")}.co.uk`;
     setDomainChecking(true);
     setDomainResult(null);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      const res = await fetch(
-        'https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/check-domain',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session?.access_token}`,
-            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo',
-          },
-          body: JSON.stringify({ domain }),
-        }
-      );
-      const data = await res.json();
-      if (data.error) {
-        toast.error(data.error);
-        return;
-      }
-      setDomainResult({ domain: data.domain ?? domain, available: !!data.available });
+      const result = await checkDomainAvailability(raw, session?.access_token);
+      setDomainResult({ domain: result.domain, available: result.available });
     } catch (e: any) {
       toast.error(e.message ?? "Couldn't check that domain");
     } finally {
@@ -397,33 +380,15 @@ function MiniSitePage() {
         return;
       }
 
-      const res = await fetch(
-        'https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/square-create-subscription',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session.access_token}`,
-            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo',
-          },
-          body: JSON.stringify({
-            tier,
-            domain: chosenDomain ?? null,
-            redirect_url: `https://drivingschoolmanager.co.uk/subscription-success?tier=${tier}&domain=${chosenDomain ?? ''}`,
-          }),
-        }
+      const { url } = await createSubscriptionPaymentLink(
+        tier,
+        chosenDomain ?? null,
+        session.access_token,
       );
 
-      const data = await res.json();
-
-      if (data.error) {
-        toast.error(data.error);
-        setUpgradeStep('choose-tier');
-        return;
-      }
-
       // Redirect to Square checkout
-      window.location.href = data.url;
+      window.location.href = url;
+
     } catch (e: any) {
       toast.error(
         e.message ?? 'Could not start upgrade');
