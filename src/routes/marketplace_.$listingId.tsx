@@ -583,24 +583,35 @@ function ListingDetailPage() {
             </div>
 
             {/* Description */}
-            {listing.description && (
-              <div>
-                <div style={LABEL}>Description</div>
-                <div style={CARD}>
-                  <div
-                    style={{
-                      color: "#6B6B6F",
-                      fontSize: 14,
-                      fontWeight: 500,
-                      lineHeight: 1.6,
-                      whiteSpace: "pre-wrap",
-                    }}
-                  >
-                    {listing.description}
+            {(() => {
+              const isWebsite = listingId === WEBSITE_LISTING_ID;
+              const body = isWebsite
+                ? "Give pupils a professional, bookable website in minutes — built on your DSM profile, no design work needed.\n\nYour own multi-page site with your branding, lesson prices, availability and online booking. Add your own domain, keep everything in sync with DSM automatically, and upgrade any time."
+                : listing.description;
+              if (!body) return null;
+              return (
+                <div>
+                  <div style={LABEL}>Description</div>
+                  <div style={CARD}>
+                    <div
+                      style={{
+                        color: "#6B6B6F",
+                        fontSize: 14,
+                        fontWeight: 500,
+                        lineHeight: 1.6,
+                        whiteSpace: "pre-wrap",
+                      }}
+                    >
+                      {body}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
+
+            {/* Enhanced upgrade sections — only for the DSM website listing */}
+            {listingId === WEBSITE_LISTING_ID && <WebsiteUpgradeSections />}
+
 
             {/* Tags */}
             {listing.tags && listing.tags.length > 0 && (
