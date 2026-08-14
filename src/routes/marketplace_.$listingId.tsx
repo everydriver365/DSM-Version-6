@@ -742,20 +742,18 @@ function ListingDetailPage() {
                 : listing.description;
               if (!body) return null;
               return (
-                <div>
+                <div style={CARD}>
                   <div style={LABEL}>Description</div>
-                  <div style={CARD}>
-                    <div
-                      style={{
-                        color: "#6B6B6F",
-                        fontSize: 14,
-                        fontWeight: 500,
-                        lineHeight: 1.6,
-                        whiteSpace: "pre-wrap",
-                      }}
-                    >
-                      {body}
-                    </div>
+                  <div
+                    style={{
+                      color: "#6B7686",
+                      fontSize: 14,
+                      lineHeight: 1.6,
+                      whiteSpace: "pre-wrap",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    {body}
                   </div>
                 </div>
               );
@@ -788,16 +786,7 @@ function ListingDetailPage() {
 
             {/* Get in touch */}
             <div style={CARD}>
-              <div
-                style={{
-                  color: "#0B1F3A",
-                  fontSize: 16,
-                  fontWeight: 800,
-                  marginBottom: 12,
-                }}
-              >
-                Get in touch
-              </div>
+              <div style={{ ...LABEL, marginBottom: 12 }}>Get in touch</div>
               <ContactActions
                 listing={listing}
                 onEnquire={() => setEnquiryOpen(true)}
