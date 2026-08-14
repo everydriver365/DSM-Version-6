@@ -917,15 +917,9 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         </span>
       </div>
 
-      {/* DISCOVER TILES — 5 COLUMNS */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(5, 1fr)",
-          gap: 6,
-          marginBottom: 10,
-        }}
-      >
+      {/* DISCOVER TILES — BENTO MIX */}
+      <style>{`@keyframes dsmLivePulse{0%{box-shadow:0 0 0 0 rgba(204,34,41,.55)}70%{box-shadow:0 0 0 5px rgba(204,34,41,0)}100%{box-shadow:0 0 0 0 rgba(204,34,41,0)}}`}</style>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
         {/* Live */}
         <div
           role="button"
@@ -933,74 +927,75 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onClick={() => navigate({ to: "/dsm-live" as never })}
           style={{
             background: "#fff",
-            borderRadius: 11,
-            padding: "19px 4px",
-            boxShadow: "0 2px 0 #E4E4E8",
-            textAlign: "center",
+            borderRadius: 14,
+            border: "1px solid #E4E8EF",
+            padding: 12,
+            minHeight: 92,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
             cursor: "pointer",
             position: "relative",
           }}
         >
-          <style>{`@keyframes dsmLivePulse{0%{box-shadow:0 0 0 0 rgba(204,34,41,.55)}70%{box-shadow:0 0 0 5px rgba(204,34,41,0)}100%{box-shadow:0 0 0 0 rgba(204,34,41,0)}}`}</style>
           {(liveActive || liveStatus !== "offline") && (
             <span
               aria-hidden
               style={{
-                width: 6,
-                height: 6,
+                width: 8,
+                height: 8,
                 borderRadius: "50%",
                 background: liveStatus === "live" ? "#FF3B30" : "#F59E0B",
                 border: "1.5px solid #fff",
                 position: "absolute",
-                top: -2,
-                right: -2,
-                zIndex: 2,
+                top: 10,
+                right: 10,
                 animation:
                   liveStatus === "live" ? "dsmLivePulse 1.6s ease-out infinite" : undefined,
               }}
             />
           )}
-          <div
+          <span
             style={{
-              width: 26,
-              height: 26,
-              borderRadius: 7,
+              width: 32,
+              height: 32,
+              borderRadius: 10,
               background: liveStatus === "offline" ? "#F1F1F4" : "#FEE2E2",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              margin: "0 auto 5px",
-              fontSize: 13,
-              position: "relative",
             }}
           >
             <IconBroadcast
-              size={14}
+              size={17}
               color={liveStatus === "offline" ? "#9CA3AF" : "#CC2229"}
-              stroke={1.5}
+              stroke={1.6}
             />
-          </div>
-          <div style={{ fontSize: 14, fontWeight: 800, color: "#000" }}>Live</div>
-          <div
-            aria-live="polite"
-            style={{
-              fontSize: 7.5,
-              fontWeight: liveStatus === "offline" ? 500 : 800,
-              letterSpacing: liveStatus === "offline" ? 0 : "0.3px",
-              color:
-                liveStatus === "live"
-                  ? "#CC2229"
-                  : liveStatus === "soon"
-                    ? "#B45309"
-                    : "#B0B0B5",
-              marginTop: 1,
-            }}
-          >
-            {liveStatus === "live"
-              ? "ON AIR"
-              : liveStatus === "soon"
-                ? "STARTING SOON"
-                : "Unavailable"}
+          </span>
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A", fontFamily: FONT }}>
+              Live
+            </div>
+            <div
+              aria-live="polite"
+              style={{
+                fontSize: 10.5,
+                fontWeight: liveStatus === "offline" ? 500 : 800,
+                color:
+                  liveStatus === "live"
+                    ? "#CC2229"
+                    : liveStatus === "soon"
+                      ? "#B45309"
+                      : "#8592A6",
+                fontFamily: FONT,
+              }}
+            >
+              {liveStatus === "live"
+                ? "ON AIR"
+                : liveStatus === "soon"
+                  ? "STARTING SOON"
+                  : "Unavailable"}
+            </div>
           </div>
         </div>
 
@@ -1011,169 +1006,128 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           onClick={() => navigate({ to: "/learn" as never })}
           style={{
             background: "#fff",
-            borderRadius: 11,
-            padding: "19px 4px",
-            boxShadow: "0 2px 0 #E4E4E8",
-            textAlign: "center",
+            borderRadius: 14,
+            border: "1px solid #E4E8EF",
+            padding: 12,
+            minHeight: 92,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
             cursor: "pointer",
-            position: "relative",
           }}
         >
-          <div
+          <span
             style={{
-              width: 26,
-              height: 26,
-              borderRadius: 7,
+              width: 32,
+              height: 32,
+              borderRadius: 10,
               background: "#EFF6FF",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              margin: "0 auto 5px",
-              fontSize: 13,
-              position: "relative",
             }}
           >
-            <IconBook size={14} color="#1877D6" stroke={1.5} />
+            <IconBook size={17} color="#1877D6" stroke={1.6} />
+          </span>
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A", fontFamily: FONT }}>
+              Learn
+            </div>
+            <div style={{ fontSize: 10.5, fontWeight: 500, color: "#8592A6", fontFamily: FONT }}>
+              DSM Training
+            </div>
           </div>
-          <div style={{ fontSize: 14, fontWeight: 800, color: "#000" }}>Learn</div>
-          <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>DSM Training</div>
-        </div>
-
-        {/* Bitesize */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => navigate({ to: "/bitesize" as never })}
-          style={{
-            background: "#fff",
-            borderRadius: 11,
-            padding: "19px 4px",
-            boxShadow: "0 2px 0 #E4E4E8",
-            textAlign: "center",
-            cursor: "pointer",
-            position: "relative",
-          }}
-        >
-          <div
-            style={{
-              width: 26,
-              height: 26,
-              borderRadius: 7,
-              background: "#FEF3C7",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              margin: "0 auto 5px",
-              fontSize: 13,
-              position: "relative",
-            }}
-          >
-            <IconBolt size={14} color="#F59E0B" stroke={1.5} />
-          </div>
-          <div style={{ fontSize: 14, fontWeight: 800, color: "#000" }}>Bitesize</div>
-          <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Tips</div>
-        </div>
-
-        {/* Watch */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => navigate({ to: "/showcase" as never })}
-          style={{
-            background: "#fff",
-            borderRadius: 11,
-            padding: "19px 4px",
-            boxShadow: "0 2px 0 #E4E4E8",
-            textAlign: "center",
-            cursor: "pointer",
-            position: "relative",
-          }}
-        >
-          {(showcaseCount ?? 0) > 0 && (
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: "#FF3B30",
-                border: "1.5px solid #fff",
-                position: "absolute",
-                top: -2,
-                right: -2,
-                zIndex: 2,
-              }}
-            />
-          )}
-          <div
-            style={{
-              width: 26,
-              height: 26,
-              borderRadius: 7,
-              background: "#EDE9FE",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              margin: "0 auto 5px",
-              fontSize: 13,
-              position: "relative",
-            }}
-          >
-            <IconPlayerPlay size={14} color="#7C3AED" stroke={1.5} />
-          </div>
-          <div style={{ fontSize: 14, fontWeight: 800, color: "#000" }}>Showcase</div>
-          <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Fun Videos</div>
-        </div>
-
-        {/* News */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => navigate({ to: "/news" as never })}
-          style={{
-            background: "#fff",
-            borderRadius: 11,
-            padding: "19px 4px",
-            boxShadow: "0 2px 0 #E4E4E8",
-            textAlign: "center",
-            cursor: "pointer",
-            position: "relative",
-          }}
-        >
-          {newsUnread && (
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: "#FF3B30",
-                border: "1.5px solid #fff",
-                position: "absolute",
-                top: -2,
-                right: -2,
-                zIndex: 2,
-              }}
-            />
-          )}
-          <div
-            style={{
-              width: 26,
-              height: 26,
-              borderRadius: 7,
-              background: "#F0FDF4",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              margin: "0 auto 5px",
-              fontSize: 13,
-              position: "relative",
-            }}
-          >
-            <IconNews size={14} color="#15803D" stroke={1.5} />
-          </div>
-          <div style={{ fontSize: 14, fontWeight: 800, color: "#000" }}>News</div>
-          <div style={{ fontSize: 7.5, color: "#B0B0B5", marginTop: 1 }}>Updates</div>
         </div>
       </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: 8,
+          marginBottom: 10,
+        }}
+      >
+        {[
+          {
+            key: "bitesize",
+            label: "Bitesize",
+            to: "/bitesize",
+            tint: "#FEF3C7",
+            colour: "#F59E0B",
+            Icon: IconBolt,
+            dot: false,
+          },
+          {
+            key: "showcase",
+            label: "Showcase",
+            to: "/showcase",
+            tint: "#EDE9FE",
+            colour: "#7C3AED",
+            Icon: IconPlayerPlay,
+            dot: (showcaseCount ?? 0) > 0,
+          },
+          {
+            key: "news",
+            label: "News",
+            to: "/news",
+            tint: "#F0FDF4",
+            colour: "#15803D",
+            Icon: IconNews,
+            dot: newsUnread,
+          },
+        ].map((t) => (
+          <div
+            key={t.key}
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate({ to: t.to as never })}
+            style={{
+              background: "#fff",
+              borderRadius: 14,
+              border: "1px solid #E4E8EF",
+              padding: "12px 6px",
+              textAlign: "center",
+              cursor: "pointer",
+              position: "relative",
+            }}
+          >
+            {t.dot && (
+              <span
+                aria-hidden
+                style={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: "50%",
+                  background: "#FF3B30",
+                  border: "1.5px solid #fff",
+                  position: "absolute",
+                  top: 8,
+                  right: 8,
+                }}
+              />
+            )}
+            <span
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 9,
+                background: t.tint,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 6px",
+              }}
+            >
+              <t.Icon size={15} color={t.colour} stroke={1.6} />
+            </span>
+            <div style={{ fontSize: 12.5, fontWeight: 600, color: "#0B1F3A", fontFamily: FONT }}>
+              {t.label}
+            </div>
+          </div>
+        ))}
+      </div>
+
 
       {/* PERKS STRIP */}
       <div
