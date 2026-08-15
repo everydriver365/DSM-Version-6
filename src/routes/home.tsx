@@ -8366,6 +8366,33 @@ function HomePage() {
         />
       )}
 
+      {detailsSheetForLesson && (
+        <LessonDetailsSheet
+          open={true}
+          onClose={() => setDetailsSheetForLesson(null)}
+          lesson={detailsSheetForLesson as any}
+          onViewPupil={() => {
+            const pupilId = detailsSheetForLesson?.pupil_id;
+            setDetailsSheetForLesson(null);
+            if (pupilId) navigate({ to: '/pupils/$id', params: { id: pupilId } });
+          }}
+          onTakePayment={() => {
+            const pupilId = detailsSheetForLesson?.pupil_id;
+            const lesson = detailsSheetForLesson;
+            setDetailsSheetForLesson(null);
+            if (pupilId) {
+              setUnifiedPayPupilId(pupilId);
+              setUnifiedPayOpen(true);
+            }
+          }}
+          onCancelLesson={() => {
+            const lesson = detailsSheetForLesson;
+            setDetailsSheetForLesson(null);
+            if (lesson) setCancelSheetForLesson(lesson);
+          }}
+        />
+      )}
+
       {cancelSheetForLesson && (
         <CancelLessonSheet
           open={true}
