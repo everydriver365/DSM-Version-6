@@ -8,6 +8,9 @@ import {
   IconNews,
   IconPlayerPlayFilled,
   IconPlayerPauseFilled,
+  IconSearch,
+  IconX,
+
 } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
