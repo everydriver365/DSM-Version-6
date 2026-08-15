@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
-import { IconBook, IconBriefcase, IconChevronLeft, IconChevronRight, IconFileCheck, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconPencil, IconPlayerPlay, IconSettings, IconShieldCheck, IconShoppingBag, IconStar, IconTrash, IconUsers, IconVideo } from "@tabler/icons-react";
+import { IconBook, IconBriefcase, IconChevronLeft, IconChevronRight, IconFileCheck, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconNews, IconPencil, IconPlayerPlay, IconSettings, IconShieldCheck, IconShoppingBag, IconStar, IconTrash, IconUsers, IconVideo } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -1166,6 +1166,12 @@ function AdminHub() {
               label="Podcasts"
               onClick={() => navigate({ to: "/admin/podcasts" as never })}
             />
+            <AdminSectionTile
+              icon={<IconNews stroke={1.6} size={18} color="#000" />}
+              label="News"
+              onClick={() => navigate({ to: "/admin/news" as never })}
+            />
+
           </AdminGroupCard>
 
           <AdminGroupLabel>Instructors</AdminGroupLabel>

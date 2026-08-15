@@ -6,6 +6,10 @@ import { sanitizeNewsContent, sanitizeNewsTitle } from "../lib/newsText";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
+import { categoryOf } from "@/lib/newsCategories";
+import { getLearnItem } from "@/lib/learnLibrary";
+import { PODCAST_SHOWS } from "@/lib/podcasts";
+
 
 export const Route = createFileRoute("/news/$articleId")({
   head: () => ({
@@ -55,7 +59,16 @@ function cleanContent(raw: string): string {
 
 
 function ArticleBody({ article }: { article: any }) {
+  const navigate = useNavigate();
+  const sources = [article.source, ...((article.extra_sources as string[] | null) ?? [])].filter(
+    Boolean,
+  ) as string[];
+  const relatedLearn = article.related_learn_id ? getLearnItem(article.related_learn_id) : undefined;
+  const relatedShow = article.related_podcast_show
+    ? PODCAST_SHOWS.find((s) => s.id === article.related_podcast_show)
+    : undefined;
   return (
+
     <div>
       {/* Hero image */}
       {article.image_url ? (
@@ -142,6 +155,73 @@ function ArticleBody({ article }: { article: any }) {
         {/* Divider */}
         <div style={{ width: "100%", height: 1, backgroundColor: "#E4E8EF", marginBottom: 16 }} />
 
+        {/* Category + importance */}
+        {(() => {
+          const cat = categoryOf(article.category);
+          const important = article.importance === "important";
+          return (
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 }}>
+              <span
+                style={{
+                  background: cat.bg,
+                  color: cat.colour,
+                  fontSize: 10,
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.3px",
+                  borderRadius: 20,
+                  padding: "4px 9px",
+                  ...POPPINS,
+                }}
+              >
+                {cat.emoji} {cat.label}
+              </span>
+              {important ? (
+                <span
+                  style={{
+                    background: "#CC2229",
+                    color: "#fff",
+                    fontSize: 10,
+                    fontWeight: 800,
+                    textTransform: "uppercase",
+                    borderRadius: 20,
+                    padding: "4px 9px",
+                    ...POPPINS,
+                  }}
+                >
+                  🚨 Important
+                </span>
+              ) : null}
+            </div>
+          );
+        })()}
+
+        {/* Short summary */}
+        {article.summary ? (
+          <p style={{ fontSize: 14, lineHeight: 1.6, color: "#0B1F3A", fontWeight: 600, marginBottom: 12, ...POPPINS }}>
+            {article.summary}
+          </p>
+        ) : null}
+
+        {/* Why this matters */}
+        {article.why_matters ? (
+          <div
+            style={{
+              background: "#FFF8E7",
+              border: "1px solid #F3E3BC",
+              borderRadius: 12,
+              padding: 12,
+              marginBottom: 16,
+              ...POPPINS,
+            }}
+          >
+            <div style={{ fontSize: 12, fontWeight: 800, color: "#7A5B10", marginBottom: 4 }}>
+              Why this matters
+            </div>
+            <div style={{ fontSize: 13, lineHeight: 1.5, color: "#7A5B10" }}>{article.why_matters}</div>
+          </div>
+        ) : null}
+
         {/* Content body */}
         <div
           style={{
@@ -156,6 +236,68 @@ function ArticleBody({ article }: { article: any }) {
           {cleanContent(article.content)}
         </div>
 
+        {/* Related DSM Learn */}
+        {relatedLearn ? (
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/learn" })}
+            style={{
+              marginTop: 20,
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              background: "#EFEAFE",
+              border: "1px solid #DCD2FB",
+              borderRadius: 12,
+              padding: 12,
+              textAlign: "left",
+              cursor: "pointer",
+              ...POPPINS,
+            }}
+          >
+            <span style={{ fontSize: 18 }}>🎓</span>
+            <span style={{ minWidth: 0 }}>
+              <span style={{ display: "block", fontSize: 11, fontWeight: 800, color: "#5B21B6" }}>
+                DSM Learn
+              </span>
+              <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
+                {relatedLearn.title}
+              </span>
+            </span>
+          </button>
+        ) : null}
+
+        {/* Related podcast */}
+        {relatedShow ? (
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/live-news" })}
+            style={{
+              marginTop: 10,
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              background: "#E7F1FC",
+              border: "1px solid #CFE2F8",
+              borderRadius: 12,
+              padding: 12,
+              textAlign: "left",
+              cursor: "pointer",
+              ...POPPINS,
+            }}
+          >
+            <span style={{ fontSize: 18 }}>🎙️</span>
+            <span style={{ minWidth: 0 }}>
+              <span style={{ display: "block", fontSize: 11, fontWeight: 800, color: "#1877D6" }}>Listen</span>
+              <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
+                {relatedShow.name}
+              </span>
+            </span>
+          </button>
+        ) : null}
+
         {/* Attribution footer */}
         <div
           style={{
@@ -168,7 +310,7 @@ function ArticleBody({ article }: { article: any }) {
           }}
         >
           <span style={{ fontSize: 12, color: "#9CA3AF", ...INTER }}>
-            Source: {article.source}
+            {sources.length > 1 ? `Sources: ${sources.join(" · ")}` : `Source: ${article.source}`}
           </span>
           <button
             type="button"
@@ -179,6 +321,27 @@ function ArticleBody({ article }: { article: any }) {
             <IconExternalLink size={14} />
           </button>
         </div>
+
+        <button
+          type="button"
+          onClick={() => window.open(article.link, "_blank")}
+          style={{
+            marginTop: 14,
+            width: "100%",
+            background: "#1877D6",
+            color: "#fff",
+            border: "none",
+            borderRadius: 12,
+            padding: "12px 16px",
+            fontSize: 14,
+            fontWeight: 700,
+            cursor: "pointer",
+            ...POPPINS,
+          }}
+        >
+          Read official update →
+        </button>
+
       </div>
     </div>
   );

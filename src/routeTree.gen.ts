@@ -146,6 +146,7 @@ import { Route as CoursesIdRouteImport } from './routes/courses.$id'
 import { Route as ApiSquareCreateSubscriptionRouteImport } from './routes/api/square-create-subscription'
 import { Route as AdminTermsRouteImport } from './routes/admin.terms'
 import { Route as AdminPodcastsRouteImport } from './routes/admin.podcasts'
+import { Route as AdminNewsRouteImport } from './routes/admin.news'
 import { Route as AdminListingsRouteImport } from './routes/admin.listings'
 import { Route as AdminLearnVideosRouteImport } from './routes/admin.learn-videos'
 import { Route as AdminJobOffersRouteImport } from './routes/admin.job-offers'
@@ -173,6 +174,7 @@ import { Route as LessonsFeedbackIdRouteImport } from './routes/lessons.feedback
 import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
 import { Route as DsmLivePodcastPodcastIdRouteImport } from './routes/dsm-live.podcast.$podcastId'
 import { Route as ApiPublicSquareWebhookRouteImport } from './routes/api/public/square-webhook'
+import { Route as ApiPublicNewsIngestRouteImport } from './routes/api/public/news-ingest'
 import { Route as ApiPublicCarplayV1LessonRouteImport } from './routes/api/public/carplay/v1/lesson'
 import { Route as ApiPublicCarplayV1DirectionsRouteImport } from './routes/api/public/carplay/v1/directions'
 import { Route as ApiPublicCarplayV1DevicesRouteImport } from './routes/api/public/carplay/v1/devices'
@@ -863,6 +865,11 @@ const AdminPodcastsRoute = AdminPodcastsRouteImport.update({
   path: '/podcasts',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminNewsRoute = AdminNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminListingsRoute = AdminListingsRouteImport.update({
   id: '/listings',
   path: '/listings',
@@ -998,6 +1005,11 @@ const DsmLivePodcastPodcastIdRoute = DsmLivePodcastPodcastIdRouteImport.update({
 const ApiPublicSquareWebhookRoute = ApiPublicSquareWebhookRouteImport.update({
   id: '/api/public/square-webhook',
   path: '/api/public/square-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicNewsIngestRoute = ApiPublicNewsIngestRouteImport.update({
+  id: '/api/public/news-ingest',
+  path: '/api/public/news-ingest',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicCarplayV1LessonRoute =
@@ -1144,6 +1156,7 @@ export interface FileRoutesByFullPath {
   '/admin/job-offers': typeof AdminJobOffersRoute
   '/admin/learn-videos': typeof AdminLearnVideosRoute
   '/admin/listings': typeof AdminListingsRoute
+  '/admin/news': typeof AdminNewsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
   '/api/square-create-subscription': typeof ApiSquareCreateSubscriptionRoute
@@ -1176,6 +1189,7 @@ export interface FileRoutesByFullPath {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/api/public/news-ingest': typeof ApiPublicNewsIngestRoute
   '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
   '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
@@ -1310,6 +1324,7 @@ export interface FileRoutesByTo {
   '/admin/job-offers': typeof AdminJobOffersRoute
   '/admin/learn-videos': typeof AdminLearnVideosRoute
   '/admin/listings': typeof AdminListingsRoute
+  '/admin/news': typeof AdminNewsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
   '/api/square-create-subscription': typeof ApiSquareCreateSubscriptionRoute
@@ -1342,6 +1357,7 @@ export interface FileRoutesByTo {
   '/notes': typeof NotesIndexRoute
   '/pupils': typeof PupilsIndexRoute
   '/quotes': typeof QuotesIndexRoute
+  '/api/public/news-ingest': typeof ApiPublicNewsIngestRoute
   '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
   '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
@@ -1481,6 +1497,7 @@ export interface FileRoutesById {
   '/admin/job-offers': typeof AdminJobOffersRoute
   '/admin/learn-videos': typeof AdminLearnVideosRoute
   '/admin/listings': typeof AdminListingsRoute
+  '/admin/news': typeof AdminNewsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
   '/api/square-create-subscription': typeof ApiSquareCreateSubscriptionRoute
@@ -1513,6 +1530,7 @@ export interface FileRoutesById {
   '/notes/': typeof NotesIndexRoute
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
+  '/api/public/news-ingest': typeof ApiPublicNewsIngestRoute
   '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
   '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
@@ -1652,6 +1670,7 @@ export interface FileRouteTypes {
     | '/admin/job-offers'
     | '/admin/learn-videos'
     | '/admin/listings'
+    | '/admin/news'
     | '/admin/podcasts'
     | '/admin/terms'
     | '/api/square-create-subscription'
@@ -1684,6 +1703,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/api/public/news-ingest'
     | '/api/public/square-webhook'
     | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
@@ -1818,6 +1838,7 @@ export interface FileRouteTypes {
     | '/admin/job-offers'
     | '/admin/learn-videos'
     | '/admin/listings'
+    | '/admin/news'
     | '/admin/podcasts'
     | '/admin/terms'
     | '/api/square-create-subscription'
@@ -1850,6 +1871,7 @@ export interface FileRouteTypes {
     | '/notes'
     | '/pupils'
     | '/quotes'
+    | '/api/public/news-ingest'
     | '/api/public/square-webhook'
     | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
@@ -1988,6 +2010,7 @@ export interface FileRouteTypes {
     | '/admin/job-offers'
     | '/admin/learn-videos'
     | '/admin/listings'
+    | '/admin/news'
     | '/admin/podcasts'
     | '/admin/terms'
     | '/api/square-create-subscription'
@@ -2020,6 +2043,7 @@ export interface FileRouteTypes {
     | '/notes/'
     | '/pupils/'
     | '/quotes/'
+    | '/api/public/news-ingest'
     | '/api/public/square-webhook'
     | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
@@ -2169,6 +2193,7 @@ export interface RootRouteChildren {
   NewsIndexRoute: typeof NewsIndexRoute
   NotesIndexRoute: typeof NotesIndexRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
+  ApiPublicNewsIngestRoute: typeof ApiPublicNewsIngestRoute
   ApiPublicSquareWebhookRoute: typeof ApiPublicSquareWebhookRoute
   LessonsEditIdRoute: typeof LessonsEditIdRoute
   LessonsFeedbackIdRoute: typeof LessonsFeedbackIdRoute
@@ -3147,6 +3172,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPodcastsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/news': {
+      id: '/admin/news'
+      path: '/news'
+      fullPath: '/admin/news'
+      preLoaderRoute: typeof AdminNewsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/listings': {
       id: '/admin/listings'
       path: '/listings'
@@ -3336,6 +3368,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSquareWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/news-ingest': {
+      id: '/api/public/news-ingest'
+      path: '/api/public/news-ingest'
+      fullPath: '/api/public/news-ingest'
+      preLoaderRoute: typeof ApiPublicNewsIngestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/carplay/v1/lesson': {
       id: '/api/public/carplay/v1/lesson'
       path: '/api/public/carplay/v1/lesson'
@@ -3397,6 +3436,7 @@ interface AdminRouteChildren {
   AdminJobOffersRoute: typeof AdminJobOffersRoute
   AdminLearnVideosRoute: typeof AdminLearnVideosRoute
   AdminListingsRoute: typeof AdminListingsRoute
+  AdminNewsRoute: typeof AdminNewsRoute
   AdminPodcastsRoute: typeof AdminPodcastsRoute
   AdminTermsRoute: typeof AdminTermsRoute
 }
@@ -3411,6 +3451,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminJobOffersRoute: AdminJobOffersRoute,
   AdminLearnVideosRoute: AdminLearnVideosRoute,
   AdminListingsRoute: AdminListingsRoute,
+  AdminNewsRoute: AdminNewsRoute,
   AdminPodcastsRoute: AdminPodcastsRoute,
   AdminTermsRoute: AdminTermsRoute,
 }
@@ -3591,6 +3632,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsIndexRoute: NewsIndexRoute,
   NotesIndexRoute: NotesIndexRoute,
   PupilsIndexRoute: PupilsIndexRoute,
+  ApiPublicNewsIngestRoute: ApiPublicNewsIngestRoute,
   ApiPublicSquareWebhookRoute: ApiPublicSquareWebhookRoute,
   LessonsEditIdRoute: LessonsEditIdRoute,
   LessonsFeedbackIdRoute: LessonsFeedbackIdRoute,
