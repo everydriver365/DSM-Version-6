@@ -45,6 +45,18 @@ const MANAGED_WA =
   "https://wa.me/447767693279?text=" +
   encodeURIComponent("Hi, I'm interested in DSM Managed Website");
 
+const PRICES = {
+  website: { monthly: 9.99, annual: 89.90 },
+  pro: { monthly: 19.99, annual: 179.90 },
+  managed: { monthly: 39.99, annual: 359.90 },
+};
+
+const ANNUAL_SAVING = {
+  website: 29.98,
+  pro: 59.98,
+  managed: 119.98,
+};
+
 
 const THEMES: { key: Theme; label: string; swatch: string[] }[] = [
   { key: "classic", label: "Classic", swatch: ["#0B1F3A", "#1877D6", "#FFFFFF"] },
@@ -97,6 +109,9 @@ function MiniSitePage() {
   const [confirmTier, setConfirmTier] = useState<
     "website" | "pro" | "managed" | null
   >(null);
+  const [billingPeriod, setBillingPeriod] = useState<
+    "monthly" | "annual"
+  >("annual");
   const [domainQuery, setDomainQuery] = useState("");
   const [domainChecking, setDomainChecking] = useState(false);
   const [domainResult, setDomainResult] = useState<
@@ -367,6 +382,7 @@ function MiniSitePage() {
         tier,
         chosenDomain ?? null,
         session.access_token,
+        billingPeriod,
       );
 
       // Redirect to Square checkout
@@ -468,7 +484,9 @@ function MiniSitePage() {
               padding: "4px 10px",
             }}
           >
-            {t.price}
+            {billingPeriod === "annual"
+              ? `£${PRICES[t.id].annual.toFixed(2)}/year`
+              : `£${PRICES[t.id].monthly.toFixed(2)}/month`}
           </span>
           {t.badge && (
             <span
@@ -485,6 +503,18 @@ function MiniSitePage() {
             </span>
           )}
         </div>
+        {billingPeriod === "annual" && (
+          <div
+            style={{
+              fontSize: 11,
+              color: "#15803D",
+              fontWeight: 600,
+              marginTop: 4,
+            }}
+          >
+            Save £{ANNUAL_SAVING[t.id].toFixed(2)} vs monthly
+          </div>
+        )}
         <div
           style={{
             fontSize: 16,
@@ -2148,6 +2178,75 @@ function MiniSitePage() {
                 </span>
               </div>
             )}
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 0,
+                background: "#E5E5EA",
+                borderRadius: 14,
+                padding: 4,
+                margin: "0 0 16px",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => setBillingPeriod("monthly")}
+                style={{
+                  flex: 1,
+                  padding: "8px 0",
+                  borderRadius: 10,
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  background: billingPeriod === "monthly" ? "#fff" : "transparent",
+                  color: billingPeriod === "monthly" ? "#0B1F3A" : "#6B6B6F",
+                  boxShadow: billingPeriod === "monthly" ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+                  transition: "all 0.15s",
+                }}
+              >
+                Monthly
+              </button>
+              <button
+                type="button"
+                onClick={() => setBillingPeriod("annual")}
+                style={{
+                  flex: 1,
+                  padding: "8px 0",
+                  borderRadius: 10,
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  background: billingPeriod === "annual" ? "#fff" : "transparent",
+                  color: billingPeriod === "annual" ? "#0B1F3A" : "#6B6B6F",
+                  boxShadow: billingPeriod === "annual" ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+                  transition: "all 0.15s",
+                  position: "relative",
+                }}
+              >
+                Annual
+                <span
+                  style={{
+                    marginLeft: 6,
+                    background: "#15803D",
+                    color: "#fff",
+                    fontSize: 9,
+                    fontWeight: 800,
+                    borderRadius: 20,
+                    padding: "2px 6px",
+                    verticalAlign: "middle",
+                  }}
+                >
+                  2 months free
+                </span>
+              </button>
+            </div>
 
             {renderTiers(
               (tier) => {

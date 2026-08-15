@@ -143,6 +143,7 @@ import { Route as DsmLiveSessionIdRouteImport } from './routes/dsm-live.$session
 import { Route as DrivingTestPupilIdRouteImport } from './routes/driving-test.$pupilId'
 import { Route as CoursesNewRouteImport } from './routes/courses.new'
 import { Route as CoursesIdRouteImport } from './routes/courses.$id'
+import { Route as ApiSquareCreateSubscriptionRouteImport } from './routes/api/square-create-subscription'
 import { Route as AdminTermsRouteImport } from './routes/admin.terms'
 import { Route as AdminPodcastsRouteImport } from './routes/admin.podcasts'
 import { Route as AdminListingsRouteImport } from './routes/admin.listings'
@@ -846,6 +847,12 @@ const CoursesIdRoute = CoursesIdRouteImport.update({
   path: '/courses/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSquareCreateSubscriptionRoute =
+  ApiSquareCreateSubscriptionRouteImport.update({
+    id: '/api/square-create-subscription',
+    path: '/api/square-create-subscription',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminTermsRoute = AdminTermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -1139,6 +1146,7 @@ export interface FileRoutesByFullPath {
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
+  '/api/square-create-subscription': typeof ApiSquareCreateSubscriptionRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/driving-test/$pupilId': typeof DrivingTestPupilIdRoute
@@ -1304,6 +1312,7 @@ export interface FileRoutesByTo {
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
+  '/api/square-create-subscription': typeof ApiSquareCreateSubscriptionRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/driving-test/$pupilId': typeof DrivingTestPupilIdRoute
@@ -1474,6 +1483,7 @@ export interface FileRoutesById {
   '/admin/listings': typeof AdminListingsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
+  '/api/square-create-subscription': typeof ApiSquareCreateSubscriptionRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
   '/driving-test/$pupilId': typeof DrivingTestPupilIdRoute
@@ -1644,6 +1654,7 @@ export interface FileRouteTypes {
     | '/admin/listings'
     | '/admin/podcasts'
     | '/admin/terms'
+    | '/api/square-create-subscription'
     | '/courses/$id'
     | '/courses/new'
     | '/driving-test/$pupilId'
@@ -1809,6 +1820,7 @@ export interface FileRouteTypes {
     | '/admin/listings'
     | '/admin/podcasts'
     | '/admin/terms'
+    | '/api/square-create-subscription'
     | '/courses/$id'
     | '/courses/new'
     | '/driving-test/$pupilId'
@@ -1978,6 +1990,7 @@ export interface FileRouteTypes {
     | '/admin/listings'
     | '/admin/podcasts'
     | '/admin/terms'
+    | '/api/square-create-subscription'
     | '/courses/$id'
     | '/courses/new'
     | '/driving-test/$pupilId'
@@ -2132,6 +2145,7 @@ export interface RootRouteChildren {
   WeeklyReportRoute: typeof WeeklyReportRoute
   WeeklyreportRoute: typeof WeeklyreportRoute
   WhatsChangedRoute: typeof WhatsChangedRoute
+  ApiSquareCreateSubscriptionRoute: typeof ApiSquareCreateSubscriptionRoute
   CoursesIdRoute: typeof CoursesIdRoute
   CoursesNewRoute: typeof CoursesNewRoute
   DrivingTestPupilIdRoute: typeof DrivingTestPupilIdRoute
@@ -3112,6 +3126,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/square-create-subscription': {
+      id: '/api/square-create-subscription'
+      path: '/api/square-create-subscription'
+      fullPath: '/api/square-create-subscription'
+      preLoaderRoute: typeof ApiSquareCreateSubscriptionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/terms': {
       id: '/admin/terms'
       path: '/terms'
@@ -3546,6 +3567,7 @@ const rootRouteChildren: RootRouteChildren = {
   WeeklyReportRoute: WeeklyReportRoute,
   WeeklyreportRoute: WeeklyreportRoute,
   WhatsChangedRoute: WhatsChangedRoute,
+  ApiSquareCreateSubscriptionRoute: ApiSquareCreateSubscriptionRoute,
   CoursesIdRoute: CoursesIdRoute,
   CoursesNewRoute: CoursesNewRoute,
   DrivingTestPupilIdRoute: DrivingTestPupilIdRoute,

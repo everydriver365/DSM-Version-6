@@ -171,17 +171,18 @@ export async function createSubscriptionPaymentLink(
   tier: PaidTierId,
   domain: string | null,
   accessToken: string,
+  billingPeriod: "monthly" | "annual" = "annual",
 ): Promise<{ url: string }> {
-  const res = await fetch(`${SUPABASE_URL}/functions/v1/square-create-subscription`, {
+  const res = await fetch(`/api/square-create-subscription`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
-      apikey: SUPABASE_ANON_KEY,
     },
     body: JSON.stringify({
       tier,
       domain: domain ?? null,
+      billing_period: billingPeriod,
       redirect_url: `https://drivingschoolmanager.co.uk/subscription-success?tier=${tier}&domain=${domain ?? ""}`,
     }),
   });
