@@ -551,9 +551,164 @@ function LiveNewsPage() {
                   <span>
                     Latest episodes from{" "}
                     <strong style={{ color: "#0B1F3A" }}>
-                      {PODCAST_SHOWS.length} instructor podcasts
+                      {PODCAST_SHOWS.length} podcasts
                     </strong>
                   </span>
+                </div>
+
+                <div style={{ marginBottom: 12 }}>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: "#0B1F3A",
+                      marginBottom: 8,
+                      ...POPPINS,
+                    }}
+                  >
+                    Recommended
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 10,
+                      overflowX: "auto",
+                      paddingBottom: 4,
+                      scrollbarWidth: "none",
+                    }}
+                  >
+                    {PODCAST_SHOWS.filter((sh) => sh.recommended).map((sh) => {
+                      const latest =
+                        (episodes ?? []).find((e) => e.showId === sh.id && e.audioUrl) ?? null;
+                      const isActive = showFilter === sh.id;
+                      return (
+                        <div
+                          key={sh.id}
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => setShowFilter(isActive ? "all" : sh.id)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ")
+                              setShowFilter(isActive ? "all" : sh.id);
+                          }}
+                          style={{
+                            flex: "0 0 auto",
+                            width: 208,
+                            background: "#fff",
+                            border: `1px solid ${isActive ? "#1877D6" : "#E4E8EF"}`,
+                            borderRadius: 16,
+                            boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                            padding: 10,
+                            cursor: "pointer",
+                            ...POPPINS,
+                          }}
+                        >
+                          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                            <div
+                              style={{
+                                width: 46,
+                                height: 46,
+                                flexShrink: 0,
+                                borderRadius: 10,
+                                overflow: "hidden",
+                                background: "#EEF2F7",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              {latest?.imageUrl ? (
+                                <img
+                                  src={latest.imageUrl}
+                                  alt=""
+                                  loading="lazy"
+                                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                />
+                              ) : (
+                                <IconMicrophone size={18} color="#6B7686" />
+                              )}
+                            </div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div
+                                style={{
+                                  fontSize: 12.5,
+                                  fontWeight: 700,
+                                  color: "#0B1F3A",
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                }}
+                              >
+                                {sh.name}
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: 10.5,
+                                  color: "#6B7686",
+                                  lineHeight: 1.35,
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 2,
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden",
+                                }}
+                              >
+                                {sh.recommendedNote}
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              aria-label={`Play latest episode of ${sh.name}`}
+                              disabled={!latest}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (latest) playEpisode(latest);
+                              }}
+                              style={{
+                                width: 30,
+                                height: 30,
+                                flexShrink: 0,
+                                borderRadius: 15,
+                                border: "none",
+                                background:
+                                  playing?.id && latest && playing.id === latest.id
+                                    ? "#1877D6"
+                                    : "#EFF6FF",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                cursor: latest ? "pointer" : "not-allowed",
+                              }}
+                            >
+                              {playing?.id && latest && playing.id === latest.id && isPlaying ? (
+                                <IconPlayerPauseFilled size={13} color="#fff" />
+                              ) : (
+                                <IconPlayerPlayFilled
+                                  size={13}
+                                  color={
+                                    playing?.id && latest && playing.id === latest.id
+                                      ? "#fff"
+                                      : "#1877D6"
+                                  }
+                                />
+                              )}
+                            </button>
+                          </div>
+                          <div
+                            style={{
+                              marginTop: 8,
+                              fontSize: 10.5,
+                              color: "#9CA3AF",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {latest ? `Latest: ${latest.title}` : "No episodes loaded"}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <div
