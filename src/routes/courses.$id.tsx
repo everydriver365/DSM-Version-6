@@ -11,6 +11,7 @@ import { Input } from "../components/dsm/Input";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
+import { useGoBack } from "@/hooks/useGoBack";
 
 export const Route = createFileRoute("/courses/$id")({
   head: () => ({
@@ -558,13 +559,7 @@ function CourseDetailPage() {
     );
   }
 
-  const canGoBack = typeof window !== "undefined" && window.history.length > 1;
-  function goBack(fallback: string) {
-    if (canGoBack) {
-      navigate({ to: -1 as any });
-    } else {
-      navigate({ to: fallback as never });
-    }
+  const goBack = useGoBack();
   }
 
   return (

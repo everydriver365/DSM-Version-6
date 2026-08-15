@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { IconArrowLeft, IconBook, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronRight, IconCircleCheck, IconHeart, IconMapPin, IconPackage, IconPlayerPlayFilled, IconSchool, IconShieldCheck, IconSpeakerphone, IconStar, IconTag, IconTool, IconX } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import {
+import { useGoBack } from "@/hooks/useGoBack";
   COMPARISON_COLS,
   COMPARISON_ROWS,
   TIERS,
@@ -147,13 +148,7 @@ function ListingDetailPage() {
   const { listingId } = Route.useParams();
   const { from } = Route.useSearch();
   const navigate = useNavigate();
-  const canGoBack = typeof window !== "undefined" && window.history.length > 1;
-  function goBack(fallback: string) {
-    if (canGoBack) {
-      navigate({ to: -1 as any });
-    } else {
-      navigate({ to: fallback as never });
-    }
+  const goBack = useGoBack();
   }
 
 

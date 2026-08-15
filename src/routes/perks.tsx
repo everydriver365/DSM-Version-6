@@ -13,6 +13,7 @@ import {
   IconCheck,
 } from '@tabler/icons-react';
 import {
+import { useGoBack } from "@/hooks/useGoBack";
   createSubscriptionPaymentLink,
   type PaidTierId,
 } from '@/lib/websiteUpgrade';
@@ -288,13 +289,7 @@ function PerksPage() {
     })();
   }, []);
 
-  const canGoBack = typeof window !== "undefined" && window.history.length > 1;
-  function goBack(fallback: string) {
-    if (canGoBack) {
-      navigate({ to: -1 as any });
-    } else {
-      navigate({ to: fallback as never });
-    }
+  const goBack = useGoBack();
   }
 
   const isPaid = websiteTier !== 'free';

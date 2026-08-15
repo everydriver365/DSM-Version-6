@@ -11,6 +11,7 @@ import hmcaLogoAsset from '@/assets/hmca-logo.png.asset.json';
 import bennendenLogoAsset from '@/assets/bennenden-logo.jpg.asset.json';
 import { IconCamera, IconCar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconCircleCheck, IconGasStation, IconGift, IconHeartHandshake, IconLock, IconRosetteDiscount, IconShieldCheck, IconStethoscope, IconTable, IconTool } from "@tabler/icons-react";
 import {
+import { useGoBack } from "@/hooks/useGoBack";
   createSubscriptionPaymentLink,
   TIERS,
   type PaidTierId,
@@ -295,13 +296,7 @@ function BenefitsPage() {
     })();
   }, []);
 
-  const canGoBack = typeof window !== 'undefined' && window.history.length > 1;
-  function goBack(fallback: string) {
-    if (canGoBack) {
-      navigate({ to: -1 as any });
-    } else {
-      navigate({ to: fallback as never });
-    }
+  const goBack = useGoBack();
   }
 
   const isPaid = websiteTier !== 'free';
