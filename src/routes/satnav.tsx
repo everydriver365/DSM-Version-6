@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { X, Phone, MessageSquare, Navigation } from "lucide-react";
+import { IconMessage, IconNavigation, IconPhone, IconX } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/satnav")({
@@ -103,7 +103,7 @@ function SatNavPage() {
           onClick={() => navigate({ to: "/home" })}
           className="w-10 flex items-center justify-end"
         >
-          <X size={22} color="#ffffff" />
+          <IconX size={22} color="#ffffff" />
         </button>
       </div>
 
@@ -187,14 +187,14 @@ function SatNavPage() {
                 className="flex-1 flex items-center justify-center gap-1 text-white text-[13px] font-medium"
                 style={{ height: 40, borderRadius: 8, backgroundColor: "#1877D6" }}
               >
-                <Navigation size={16} /> Navigate
+                <IconNavigation size={16} /> Navigate
               </a>
               <a
                 href={pupilPhone ? `tel:${pupilPhone}` : "#"}
                 className="flex-1 flex items-center justify-center gap-1 text-white text-[13px] font-medium"
                 style={{ height: 40, borderRadius: 8, backgroundColor: "#1877D6" }}
               >
-                <Phone size={16} /> Call
+                <IconPhone size={16} /> Call
               </a>
               <a
                 href={pupilPhone ? `sms:${pupilPhone}` : "#"}
@@ -206,7 +206,7 @@ function SatNavPage() {
                   color: "#0B1F3A",
                 }}
               >
-                <MessageSquare size={16} /> Text
+                <IconMessage size={16} /> Text
               </a>
             </div>
           </>

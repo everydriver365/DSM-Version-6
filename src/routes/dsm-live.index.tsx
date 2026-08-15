@@ -1,9 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Play, Users, Mic } from "lucide-react";
 
 import { toast } from "sonner";
-import { IconBroadcast, IconSteeringWheel } from "@tabler/icons-react";
+import { IconBroadcast, IconMicrophone, IconPlayerPlay, IconSteeringWheel, IconUsers } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 import {
@@ -362,7 +361,7 @@ function CommunitySection() {
         margin: "12px 16px 16px",
       }}
     >
-      <Users color="#fff" size={28} style={{ marginBottom: 12 }} />
+      <IconUsers color="#fff" size={28} style={{ marginBottom: 12 }} />
       <div style={{ color: "#fff", fontWeight: 900, fontSize: 18 }}>DSM Community</div>
       <div
         style={{
@@ -478,7 +477,7 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
           justifyContent: "center",
         }}
       >
-        {!p.image_url && <Mic size={22} color="#FFFFFF" />}
+        {!p.image_url && <IconMicrophone size={22} color="#FFFFFF" />}
       </div>
 
       {/* Right */}
@@ -581,7 +580,7 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
                 fontFamily: poppins,
               }}
             >
-              <Play size={12} /> Play
+              <IconPlayerPlay size={12} /> IconPlayerPlay
             </button>
           )}
           {!hasAny && (

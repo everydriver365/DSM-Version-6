@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { IconAlertTriangle, IconArrowLeft, IconCar, IconExternalLink, IconFileText, IconPlus, IconShieldCheck, IconTrash, IconUpload, IconX } from "@tabler/icons-react";
-import { FolderOpen, BadgeCheck, FileCheck, Receipt } from "lucide-react";
+import { IconAlertTriangle, IconArrowLeft, IconCar, IconExternalLink, IconFileCheck, IconFileText, IconFolderOpen, IconPlus, IconReceipt, IconRosette, IconShieldCheck, IconTrash, IconUpload, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { z } from "zod";
@@ -51,15 +50,15 @@ function TypeIcon({ type, size = 18 }: { type: string; size?: number }) {
   const meta = typeMeta(type);
   const Icon =
     type === "adi"
-      ? BadgeCheck
+      ? IconRosette
       : type === "insurance"
       ? IconShieldCheck
       : type === "mot"
       ? IconCar
       : type === "dbs"
-      ? FileCheck
+      ? IconFileCheck
       : type === "tax"
-      ? Receipt
+      ? IconReceipt
       : IconFileText;
   return <Icon size={size} color={meta.color} />;
 }
@@ -198,7 +197,7 @@ function DocumentsPage() {
             className="flex flex-col items-center justify-center text-[13px]"
             style={{ color: "#6B7280", padding: "32px 0" }}
           >
-            <FolderOpen size={28} color="#6B7280" />
+            <IconFolderOpen size={28} color="#6B7280" />
             <div className="mt-2">No documents stored</div>
           </div>
         ) : (

@@ -2,13 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { useState } from "react";
-import {
-  ArrowLeft,
-  Mail,
-  MessageSquare,
-  ChevronRight,
-  ChevronDown,
-} from "lucide-react";
+import { IconArrowLeft, IconChevronDown, IconChevronRight, IconMail, IconMessage } from "@tabler/icons-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Card } from "../components/dsm/Card";
 import { PageLayout } from "@/components/PageLayout";
@@ -32,13 +26,13 @@ interface ContactItem {
 const contacts: ContactItem[] = [
   {
     label: "Email support",
-    icon: <Mail size={18} color="#1877D6" />,
+    icon: <IconMail size={18} color="#1877D6" />,
     iconBg: "#DBEAFE",
     href: "mailto:support@everydriver.co.uk",
   },
   {
     label: "WhatsApp",
-    icon: <MessageSquare size={18} color="#1877D6" />,
+    icon: <IconMessage size={18} color="#1877D6" />,
     iconBg: "#EEF2F7",
     // TODO: replace with real WhatsApp business number (E.164, no +)
     href: "https://wa.me/447XXXXXXXXX",
@@ -128,7 +122,7 @@ function HelpPage() {
               <span className="flex-1 ml-3 text-[14px] font-semibold text-[#0B1F3A]">
                 {c.label}
               </span>
-              <ChevronRight size={18} color="#6B7280" className="shrink-0" />
+              <IconChevronRight size={18} color="#6B7280" className="shrink-0" />
             </a>
           ))}
         </div>
@@ -160,9 +154,9 @@ function HelpPage() {
                     {faq.question}
                   </span>
                   {isOpen ? (
-                    <ChevronDown size={18} color="#6B7280" className="shrink-0" />
+                    <IconChevronDown size={18} color="#6B7280" className="shrink-0" />
                   ) : (
-                    <ChevronRight size={18} color="#6B7280" className="shrink-0" />
+                    <IconChevronRight size={18} color="#6B7280" className="shrink-0" />
                   )}
                 </button>
                 {isOpen && (

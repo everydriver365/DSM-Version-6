@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { IconArrowLeft } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import {
@@ -242,7 +242,7 @@ END:VCALENDAR`;
           style={{ background: "transparent", border: 0, color: "#fff", padding: 4, cursor: "pointer" }}
           aria-label="Back"
         >
-          <ArrowLeft size={22} />
+          <IconArrowLeft size={22} />
         </button>
         <div
           style={{

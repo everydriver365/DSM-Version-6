@@ -1,8 +1,7 @@
 import { SkeletonCard } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconUsers, IconX } from "@tabler/icons-react";
-import { Megaphone, ArrowUpDown } from "lucide-react";
+import { IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { getPupilBalance } from "@/lib/payments";
@@ -758,7 +757,7 @@ function PupilsIndexPage() {
               border: "1px solid #EEF2F7",
             }}
           >
-            <Megaphone size={14} color="#1877D6" />
+            <IconSpeakerphone size={14} color="#1877D6" />
             <span style={{ fontSize: 12, fontWeight: 600, color: "#1877D6", ...POPPINS }}>Message all</span>
           </Link>
           <button
@@ -802,7 +801,7 @@ function PupilsIndexPage() {
               border: "1px solid #EEF2F7",
             }}
           >
-            <ArrowUpDown size={16} color="#1877D6" />
+            <IconArrowsUpDown size={16} color="#1877D6" />
           </button>
         </div>
       </div>

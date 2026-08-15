@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Bell } from "lucide-react";
+import { IconBell } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
@@ -201,7 +201,7 @@ function NotificationSettingsPage() {
               className="flex items-center justify-center rounded-full"
               style={{ width: 32, height: 32, backgroundColor: "#DBEAFE", flexShrink: 0 }}
             >
-              <Bell size={16} color="#1877D6" />
+              <IconBell size={16} color="#1877D6" />
             </span>
             <div className="flex-1">
               <div className="text-[14px] font-semibold text-[#0B1F3A]" style={POPPINS}>
@@ -264,7 +264,7 @@ function NotificationSettingsPage() {
                   className="flex items-center justify-center rounded-full"
                   style={{ width: 32, height: 32, backgroundColor: status.bg, flexShrink: 0 }}
                 >
-                  <Bell size={16} color={status.color} />
+                  <IconBell size={16} color={status.color} />
                 </span>
                 <div
                   className="flex-1 text-[13px] font-semibold"

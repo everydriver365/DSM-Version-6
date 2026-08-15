@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { X, StickyNote, Navigation as NavIcon, Phone, CheckSquare, ChevronLeft } from "lucide-react";
+import { IconChevronLeft, IconNavigation, IconNote, IconPhone, IconSquareCheck, IconX } from "@tabler/icons-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
@@ -162,7 +162,7 @@ function LiveSessionPage() {
           className="flex items-center justify-center"
           style={{ width: 28, height: 28, background: "transparent", border: "none", cursor: "pointer" }}
         >
-          <ChevronLeft size={24} color="#ffffff" />
+          <IconChevronLeft size={24} color="#ffffff" />
         </button>
         <div className="text-white text-[16px] font-semibold">Live session</div>
         <button
@@ -172,7 +172,7 @@ function LiveSessionPage() {
           className="flex items-center justify-center"
           style={{ width: 28, height: 28 }}
         >
-          <X size={22} color="#ffffff" />
+          <IconX size={22} color="#ffffff" />
         </button>
       </div>
 
@@ -240,7 +240,7 @@ function LiveSessionPage() {
             onClick={endSession}
             style={actionBtn("#1877D6")}
           >
-            <CheckSquare size={20} color="#fff" />
+            <IconSquareCheck size={20} color="#fff" />
             <span>End lesson</span>
           </button>
           <button
@@ -248,7 +248,7 @@ function LiveSessionPage() {
             onClick={() => setNoteSheetOpen(true)}
             style={actionBtn("#1877D6")}
           >
-            <StickyNote size={20} color="#fff" />
+            <IconNote size={20} color="#fff" />
             <span>Add note</span>
           </button>
           <button
@@ -256,7 +256,7 @@ function LiveSessionPage() {
             onClick={() => window.open("https://maps.google.com", "_blank")}
             style={actionBtn("#1877D6")}
           >
-            <NavIcon size={20} color="#fff" />
+            <IconNavigation size={20} color="#fff" />
             <span>Navigate</span>
           </button>
           <button
@@ -266,7 +266,7 @@ function LiveSessionPage() {
             }}
             style={{ ...actionBtn("#1877D6"), opacity: pupilPhone ? 1 : 0.6 }}
           >
-            <Phone size={20} color="#fff" />
+            <IconPhone size={20} color="#fff" />
             <span>Call pupil</span>
           </button>
         </div>
