@@ -1,10 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import {
-  ChevronLeft, ChevronRight, Phone, Navigation, Sun, Cloud, CloudRain, CloudSnow,
-  CloudLightning, CloudFog, Wind, Eye, PoundSterling, GraduationCap,
-  Inbox, FileText, Wrench, Fuel,
-} from "lucide-react";
+import { IconChevronLeft, IconChevronRight, IconCloud, IconCloudFog, IconCloudRain, IconCloudSnow, IconCloudStorm, IconCurrencyPound, IconEye, IconFileText, IconGasStation, IconInbox, IconNavigation, IconPhone, IconSchool, IconSun, IconTool, IconWind } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Card } from "../components/dsm/Card";
@@ -78,18 +74,18 @@ function statusColor(s: string) {
   return "#6B7280";
 }
 
-function weatherMeta(code: number): { label: string; Icon: typeof Sun } {
-  if (code === 0) return { label: "Clear sky", Icon: Sun };
-  if (code <= 2) return { label: "Mostly clear", Icon: Sun };
-  if (code === 3) return { label: "Overcast", Icon: Cloud };
-  if (code <= 48) return { label: "Foggy", Icon: CloudFog };
-  if (code <= 57) return { label: "Drizzle", Icon: CloudRain };
-  if (code <= 67) return { label: "Rain", Icon: CloudRain };
-  if (code <= 77) return { label: "Snow", Icon: CloudSnow };
-  if (code <= 82) return { label: "Rain showers", Icon: CloudRain };
-  if (code <= 86) return { label: "Snow showers", Icon: CloudSnow };
-  if (code <= 99) return { label: "Thunderstorm", Icon: CloudLightning };
-  return { label: "Weather", Icon: Cloud };
+function weatherMeta(code: number): { label: string; Icon: typeof IconSun } {
+  if (code === 0) return { label: "Clear sky", Icon: IconSun };
+  if (code <= 2) return { label: "Mostly clear", Icon: IconSun };
+  if (code === 3) return { label: "Overcast", Icon: IconCloud };
+  if (code <= 48) return { label: "Foggy", Icon: IconCloudFog };
+  if (code <= 57) return { label: "Drizzle", Icon: IconCloudRain };
+  if (code <= 67) return { label: "Rain", Icon: IconCloudRain };
+  if (code <= 77) return { label: "Snow", Icon: IconCloudSnow };
+  if (code <= 82) return { label: "Rain showers", Icon: IconCloudRain };
+  if (code <= 86) return { label: "Snow showers", Icon: IconCloudSnow };
+  if (code <= 99) return { label: "Thunderstorm", Icon: IconCloudStorm };
+  return { label: "Weather", Icon: IconCloud };
 }
 
 async function getCoords(): Promise<{ lat: number; lon: number; source: "geo" | "fallback" }> {
@@ -211,10 +207,10 @@ function BriefingPage() {
   }, []);
 
   const attentionRows = [
-    { icon: <PoundSterling size={18} color="#0B1F3A" />, tint: "#EEF2F7", label: "Outstanding payments", count: outstandingCount, route: "/payments" as const },
-    { icon: <GraduationCap size={18} color="#1E40AF" />, tint: "#DBEAFE", label: "Tests in next 7 days", count: upcomingTests, route: "/tests" as const },
-    { icon: <Inbox size={18} color="#5B21B6" />, tint: "#EDE9FE", label: "New enquiries", count: newEnquiries, route: "/enquiries" as const },
-    { icon: <FileText size={18} color="#1877D6" />, tint: "#FEF2F2", label: "Documents expiring (30d)", count: expiringDocs, route: "/documents" as const },
+    { icon: <IconCurrencyPound size={18} color="#0B1F3A" />, tint: "#EEF2F7", label: "Outstanding payments", count: outstandingCount, route: "/payments" as const },
+    { icon: <IconSchool size={18} color="#1E40AF" />, tint: "#DBEAFE", label: "Tests in next 7 days", count: upcomingTests, route: "/tests" as const },
+    { icon: <IconInbox size={18} color="#5B21B6" />, tint: "#EDE9FE", label: "New enquiries", count: newEnquiries, route: "/enquiries" as const },
+    { icon: <IconFileText size={18} color="#1877D6" />, tint: "#FEF2F2", label: "Documents expiring (30d)", count: expiringDocs, route: "/documents" as const },
   ];
 
   const W = weather ? weatherMeta(weather.code) : null;
@@ -294,11 +290,11 @@ function BriefingPage() {
                 fontSize: 12, color: "#6B7280",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  <Wind size={14} /> {weather.wind} mph
+                  <IconWind size={14} /> {weather.wind} mph
                 </div>
                 {weather.visibility != null && (
                   <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                    <Eye size={14} /> {weather.visibility} km
+                    <IconEye size={14} /> {weather.visibility} km
                   </div>
                 )}
                 <div style={{ marginLeft: "auto", fontSize: 11 }}>
@@ -359,7 +355,7 @@ function BriefingPage() {
                       textDecoration: "none", pointerEvents: l.pupils?.phone ? "auto" : "none",
                     }}
                   >
-                    <Phone size={14} /> Call
+                    <IconPhone size={14} /> Call
                   </a>
                   <button
                     onClick={() => navigate({ to: "/satnav" })}
@@ -371,7 +367,7 @@ function BriefingPage() {
                       cursor: "pointer", fontFamily: "Poppins, sans-serif",
                     }}
                   >
-                    <Navigation size={14} /> Navigate
+                    <IconNavigation size={14} /> Navigate
                   </button>
                 </div>
               </Card>
@@ -410,7 +406,7 @@ function BriefingPage() {
               }}>
                 {r.count}
               </span>
-              <ChevronRight size={18} color="#9CA3AF" />
+              <IconChevronRight size={18} color="#9CA3AF" />
             </button>
           ))}
         </Card>
@@ -429,7 +425,7 @@ function BriefingPage() {
               width: 32, height: 32, borderRadius: 8, background: "#EDE9FE",
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
-              <Wrench size={18} color="#5B21B6" />
+              <IconTool size={18} color="#5B21B6" />
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
@@ -441,7 +437,7 @@ function BriefingPage() {
                   : "No upcoming reminders"}
               </div>
             </div>
-            <ChevronRight size={18} color="#9CA3AF" />
+            <IconChevronRight size={18} color="#9CA3AF" />
           </button>
           <div style={{
             display: "flex", alignItems: "center", gap: 12,
@@ -451,7 +447,7 @@ function BriefingPage() {
               width: 32, height: 32, borderRadius: 8, background: "#EEF2F7",
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
-              <Fuel size={18} color="#0B1F3A" />
+              <IconGasStation size={18} color="#0B1F3A" />
             </div>
             <div style={{ flex: 1, fontSize: 13, color: "#0B1F3A" }}>
               Remember to check fuel before lessons
