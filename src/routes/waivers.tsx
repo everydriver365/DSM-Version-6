@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { IconFileText, IconPlus, IconX } from "@tabler/icons-react";
-import { FileSignature } from "lucide-react";
+import { IconFileText, IconPlus, IconSignature, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { Button } from "../components/dsm/Button";
@@ -167,7 +166,7 @@ function WaiversPage() {
         )}
         {!loading && templates.length === 0 && (
           <Card className="flex flex-col items-center justify-center text-center" style={{ padding: 24 }}>
-            <FileSignature size={36} color="#1877D6" />
+            <IconSignature size={36} color="#1877D6" />
             <div className="mt-2 text-[13px]" style={{ color: "#6B7280" }}>
               No waiver templates yet
             </div>

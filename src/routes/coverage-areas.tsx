@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, MapPin, Circle, Plus, X } from "lucide-react";
+import { IconArrowLeft, IconCircle, IconMapPin, IconPlus, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -286,7 +286,7 @@ function CoverageAreasPage() {
           style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", padding: 4 }}
           aria-label="Back"
         >
-          <ArrowLeft size={22} />
+          <IconArrowLeft size={22} />
         </button>
         <h1 style={{ fontSize: 17, fontWeight: 700, margin: 0, ...POPPINS }}>Coverage Areas</h1>
       </div>
@@ -302,7 +302,7 @@ function CoverageAreasPage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <MapPin size={16} color="#1A52A0" />
+          <IconMapPin size={16} color="#1A52A0" />
           <div style={{ fontWeight: 600, fontSize: 14, color: "#0F2044" }}>Define where you teach</div>
         </div>
         <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
@@ -315,7 +315,7 @@ function CoverageAreasPage() {
         <div style={{ padding: 24, textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>Loading…</div>
       ) : areas.length === 0 ? (
         <div style={{ padding: "40px 16px 0", textAlign: "center" }}>
-          <MapPin size={48} color="#D1D5DB" style={{ marginBottom: 12 }} />
+          <IconMapPin size={48} color="#D1D5DB" style={{ marginBottom: 12 }} />
           <div style={{ fontWeight: 600, fontSize: 14, color: "#6B7280" }}>No coverage areas set</div>
           <div style={{ fontSize: 13, color: "#9CA3AF", marginTop: 4 }}>
             Add your first area to appear on EveryDriver
@@ -372,7 +372,7 @@ function CoverageAreasPage() {
                 ...POPPINS,
               }}
             >
-              <Plus size={16} /> Add coverage area
+              <IconPlus size={16} /> Add coverage area
             </button>
           </div>
         </>
@@ -473,11 +473,11 @@ function AreaCard({
 
       <div style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          <MapPin size={12} color="#9CA3AF" />
+          <IconMapPin size={12} color="#9CA3AF" />
           <span style={{ fontSize: 12, color: "#6B7280" }}>{outcodes || "—"}</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          <Circle size={12} color="#9CA3AF" />
+          <IconCircle size={12} color="#9CA3AF" />
           <span style={{ fontSize: 12, color: "#6B7280" }}>{area.radius_miles} mile radius</span>
         </div>
       </div>
@@ -949,7 +949,7 @@ function AreaEditor({
                   ...POPPINS,
                 }}
               >
-                {oc} <X size={11} />
+                {oc} <IconX size={11} />
               </button>
             ))}
           </div>

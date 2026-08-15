@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { IconAward, IconBolt, IconCheck, IconChevronRight, IconDownload, IconMovie, IconPlayerPlay, IconStar, IconTrendingUp, IconX } from "@tabler/icons-react";
-import { ShoppingBag, CalendarOff } from "lucide-react";
+import { IconAward, IconBolt, IconCalendarOff, IconCheck, IconChevronRight, IconDownload, IconMovie, IconPlayerPlay, IconShoppingBag, IconStar, IconTrendingUp, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -37,14 +36,14 @@ const GROUPS: { heading: string; items: Guide[] }[] = [
   {
     heading: "Grow your business",
     items: [
-      { icon: ShoppingBag, title: "Marketplace", description: "Sell courses, resources and services to other ADIs.", route: "/marketplace" },
+      { icon: IconShoppingBag, title: "Marketplace", description: "Sell courses, resources and services to other ADIs.", route: "/marketplace" },
       { icon: IconAward, title: "Accreditations", description: "Show pupils the qualifications you've earned.", route: "/certifications" },
     ],
   },
   {
     heading: "Organize your day",
     items: [
-      { icon: CalendarOff, title: "Gap Filler", description: "Find pupils to book into empty slots automatically.", route: "/gaps" },
+      { icon: IconCalendarOff, title: "Gap Filler", description: "Find pupils to book into empty slots automatically.", route: "/gaps" },
       { icon: IconBolt, title: "Auto-booking", description: "Let pupils book themselves into your free time.", route: "/availability" },
     ],
   },

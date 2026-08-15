@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { CheckCircle2, Minus, MapPin, Camera, ChevronDown } from "lucide-react";
+import { IconCamera, IconChevronDown, IconCircleCheck, IconMapPin, IconMinus } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/_marketing/pricing")({
   head: () => ({
@@ -140,7 +140,7 @@ function PricingPage() {
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           <div className="bg-white border border-gray-200 rounded-2xl p-6">
-            <MapPin className="text-[#1877D6] w-8 h-8 mb-4" />
+            <IconMapPin className="text-[#1877D6] w-8 h-8 mb-4" />
             <h3 className="font-bold text-[#133155] text-lg mb-1">GPS Tracker</h3>
             <div className="text-2xl font-black text-[#133155]">£14.99/month</div>
             <p className="text-[#718096] text-xs mb-4">per vehicle · rolling monthly</p>
@@ -153,7 +153,7 @@ function PricingPage() {
           </div>
 
           <div className="bg-white border border-gray-200 rounded-2xl p-6">
-            <Camera className="text-[#1877D6] w-8 h-8 mb-4" />
+            <IconCamera className="text-[#1877D6] w-8 h-8 mb-4" />
             <h3 className="font-bold text-[#133155] text-lg mb-1">Front Dashcam</h3>
             <div className="text-2xl font-black text-[#133155]">£19.99/month</div>
             <p className="text-[#718096] text-xs mb-4">per vehicle · rolling monthly</p>
@@ -166,7 +166,7 @@ function PricingPage() {
           </div>
 
           <div className="bg-[#133155] rounded-2xl p-6">
-            <Camera className="text-[#1877D6] w-8 h-8 mb-4" />
+            <IconCamera className="text-[#1877D6] w-8 h-8 mb-4" />
             <h3 className="font-bold text-white text-lg mb-1">Front &amp; Rear Dashcam</h3>
             <div className="text-2xl font-black text-white">£39.99/month</div>
             <p className="text-white/60 text-xs mb-4">per vehicle · 36-month minimum</p>
@@ -247,7 +247,7 @@ function PricingPage() {
 function Feat({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex items-start gap-2">
-      <CheckCircle2 className="text-[#1877D6] w-4 h-4 mt-0.5 shrink-0" />
+      <IconCircleCheck className="text-[#1877D6] w-4 h-4 mt-0.5 shrink-0" />
       <span>{children}</span>
     </li>
   );
@@ -256,7 +256,7 @@ function Feat({ children }: { children: React.ReactNode }) {
 function FeatDark({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex items-start gap-2">
-      <CheckCircle2 className="text-[#1877D6] w-4 h-4 mt-0.5 shrink-0" />
+      <IconCircleCheck className="text-[#1877D6] w-4 h-4 mt-0.5 shrink-0" />
       <span>{children}</span>
     </li>
   );
@@ -278,9 +278,9 @@ function Row({
       {cells.map((c, i) => (
         <td key={i} className="p-4 text-center">
           {c ? (
-            <CheckCircle2 className="text-[#1877D6] w-5 h-5 inline-block" />
+            <IconCircleCheck className="text-[#1877D6] w-5 h-5 inline-block" />
           ) : (
-            <Minus className="text-gray-300 w-5 h-5 inline-block" />
+            <IconMinus className="text-gray-300 w-5 h-5 inline-block" />
           )}
         </td>
       ))}
@@ -328,7 +328,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         className="w-full flex items-center justify-between p-5 text-left"
       >
         <span className="font-semibold text-[#133155]">{q}</span>
-        <ChevronDown
+        <IconChevronDown
           className={`text-[#718096] w-5 h-5 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>

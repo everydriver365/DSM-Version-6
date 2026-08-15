@@ -1,8 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useState, useRef } from "react";
-import { Briefcase, X, Send } from "lucide-react";
-import { IconCheck } from "@tabler/icons-react";
+import { IconBriefcase, IconCheck, IconSend, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 
@@ -599,7 +598,7 @@ function JobsPage() {
           <div className="p-8 text-center text-[13px]" style={{ color: GREY, ...POPPINS }}>Loading…</div>
         ) : jobs.length === 0 ? (
           <div className="p-10 text-center" style={POPPINS}>
-            <Briefcase size={36} color="#9CA3AF" style={{ margin: "0 auto 12px" }} />
+            <IconBriefcase size={36} color="#9CA3AF" style={{ margin: "0 auto 12px" }} />
             <div className="text-[14px] font-semibold text-[#0B1F3A]">No open jobs right now</div>
             <div className="text-[12px] mt-1" style={{ color: GREY }}>
               Check back later — new pupil enquiries appear here.
@@ -634,7 +633,7 @@ function JobsPage() {
           <div className="p-8 text-center text-[13px]" style={{ color: GREY, ...POPPINS }}>Loading…</div>
         ) : claimedJobs.length === 0 ? (
           <div className="p-10 text-center" style={POPPINS}>
-            <Briefcase size={36} color="#9CA3AF" style={{ margin: "0 auto 12px" }} />
+            <IconBriefcase size={36} color="#9CA3AF" style={{ margin: "0 auto 12px" }} />
             <div className="text-[14px] font-semibold text-[#0B1F3A]">No claimed jobs yet</div>
             <div className="text-[12px] mt-1" style={{ color: GREY }}>
               Jobs you accept will appear here.
@@ -778,7 +777,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
             </div>
           </div>
           <button onClick={onClose} style={{ padding: 6, background: "transparent", border: "none", cursor: "pointer" }}>
-            <X size={20} color={GREY} />
+            <IconX size={20} color={GREY} />
           </button>
         </div>
 
@@ -837,7 +836,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
               cursor: draft.trim() ? "pointer" : "not-allowed", opacity: draft.trim() ? 1 : 0.5,
             }}
           >
-            <Send size={16} />
+            <IconSend size={16} />
           </button>
         </div>
       </div>
@@ -942,7 +941,7 @@ function JobDetailSheet({
             </div>
           </div>
           <button onClick={onClose} style={{ padding: 6, background: "transparent", border: "none", cursor: "pointer" }}>
-            <X size={20} color={GREY} />
+            <IconX size={20} color={GREY} />
           </button>
         </div>
 

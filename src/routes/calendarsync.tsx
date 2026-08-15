@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Info, Copy, Check, Calendar, CalendarPlus, AlertTriangle, ChevronDown, Loader2, AlertCircle } from "lucide-react";
+import { IconAlertCircle, IconAlertTriangle, IconArrowLeft, IconCalendar, IconCalendarPlus, IconCheck, IconChevronDown, IconCopy, IconInfoCircle, IconLoader2 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
@@ -40,7 +40,7 @@ interface GoogleConnection {
 export const Route = createFileRoute("/calendarsync")({
   head: () => ({
     meta: [
-      { title: "Calendar sync — DSM by EveryDriver" },
+      { title: "IconCalendar sync — DSM by EveryDriver" },
       { name: "description", content: "Sync your lessons to any calendar app using an ICS feed." },
     ],
   }),
@@ -229,7 +229,7 @@ function CalendarSyncPage() {
     })();
   }, [navigate]);
 
-  // Google Calendar (outbound) connection state + OAuth return handling
+  // Google IconCalendar (outbound) connection state + OAuth return handling
   useEffect(() => {
     (async () => {
       const { data: userData } = await supabase.auth.getUser();
@@ -252,11 +252,11 @@ function CalendarSyncPage() {
     const connected = params.get("connected");
     const err = params.get("error");
     if (connected === "google") {
-      toast.success("Google Calendar connected");
+      toast.success("Google IconCalendar connected");
     } else if (err === "google_denied") {
-      toast.error("Google Calendar access was denied");
+      toast.error("Google IconCalendar access was denied");
     } else if (err === "token_failed") {
-      toast.error("Could not complete Google Calendar connection");
+      toast.error("Could not complete Google IconCalendar connection");
     }
     if (connected || err) {
       params.delete("connected");
@@ -282,7 +282,7 @@ function CalendarSyncPage() {
       }
       toast.error("Could not start Google sign-in");
     } catch {
-      toast.error("Could not connect to Google Calendar");
+      toast.error("Could not connect to Google IconCalendar");
     } finally {
       setConnecting(false);
     }
@@ -301,9 +301,9 @@ function CalendarSyncPage() {
         .eq("instructor_id", userId)
         .gte("lesson_date", today);
       setConn(null);
-      toast.success("Google Calendar disconnected");
+      toast.success("Google IconCalendar disconnected");
     } catch {
-      toast.error("Could not disconnect Google Calendar");
+      toast.error("Could not disconnect Google IconCalendar");
     } finally {
       setDisconnecting(false);
     }
@@ -315,7 +315,7 @@ function CalendarSyncPage() {
     if (!userId) return;
     const trimmed = urlToUse.trim();
     if (!trimmed) {
-      toast.error("Paste your Google Calendar ICS URL first");
+      toast.error("Paste your Google IconCalendar ICS URL first");
       return;
     }
     let parsed: URL | null = null;
@@ -367,8 +367,8 @@ function CalendarSyncPage() {
         const count = syncData.eventsImported || 0;
         toast.success(
           count > 0
-            ? `Calendar synced — ${count} event${count !== 1 ? "s" : ""} imported`
-            : "Calendar synced — no upcoming events found",
+            ? `IconCalendar synced — ${count} event${count !== 1 ? "s" : ""} imported`
+            : "IconCalendar synced — no upcoming events found",
         );
         setLastSynced(new Date().toISOString());
       } else {
@@ -440,7 +440,7 @@ function CalendarSyncPage() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "My DSM Calendar Feed",
+          title: "My DSM IconCalendar Feed",
           text: "Sync your lessons to any calendar app using this ICS feed.",
           url: icsUrl,
         });
@@ -456,7 +456,7 @@ function CalendarSyncPage() {
     <PageLayout style={POPPINS}>
       <InstructorTopBar
         firstName=""
-        pageTitle="Calendar sync"
+        pageTitle="IconCalendar sync"
         onBack={() => navigate({ to: "/settings" as never })}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
@@ -467,7 +467,7 @@ function CalendarSyncPage() {
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       <div className="px-4 pb-12">
-        {/* Info card */}
+        {/* IconInfoCircle card */}
         <div
           className="mx-0 mt-3"
           style={{
@@ -479,9 +479,9 @@ function CalendarSyncPage() {
             gap: 10,
           }}
         >
-          <Info size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
+          <IconInfoCircle size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
           <p style={{ ...POPPINS, color: "#0B1F3A", fontSize: 13, fontWeight: 500, lineHeight: 1.5 }}>
-            Sync your lessons to any calendar app using an ICS feed. Works with Google Calendar, Apple Calendar, and Outlook.
+            Sync your lessons to any calendar app using an ICS feed. Works with Google IconCalendar, Apple IconCalendar, and Outlook.
           </p>
         </div>
 
@@ -489,7 +489,7 @@ function CalendarSyncPage() {
         <div style={{ marginTop: 24 }}>
           <SectionLabel>Google events → DSM</SectionLabel>
         </div>
-        {/* Import external Google Calendar */}
+        {/* Import external Google IconCalendar */}
         <div style={SECTION_CARD}>
           <p style={DESC}>
             See your personal events in DSM so gap filler knows when you're busy
@@ -509,8 +509,8 @@ function CalendarSyncPage() {
               fontWeight: 700,
             }}
           >
-            <span>How to get your Google Calendar URL</span>
-            <ChevronDown
+            <span>How to get your Google IconCalendar URL</span>
+            <IconChevronDown
               size={11}
               color="#1877D6"
               style={{ transform: howToOpen ? "rotate(180deg)" : "none", transition: "transform 150ms" }}
@@ -519,7 +519,7 @@ function CalendarSyncPage() {
           {howToOpen && (
             <div style={{ marginTop: 10 }}>
               <ol className="list-decimal pl-5 text-[12px] leading-[1.5]" style={{ ...POPPINS, color: "#0F2044" }}>
-                <li>Open Google Calendar on desktop (calendar.google.com)</li>
+                <li>Open Google IconCalendar on desktop (calendar.google.com)</li>
                 <li>Click the three dots ⋮ next to your calendar name</li>
                 <li>Click 'Settings and sharing'</li>
                 <li>Scroll down to 'Secret address in iCal format'</li>
@@ -532,7 +532,7 @@ function CalendarSyncPage() {
           )}
 
           <div style={{ marginTop: 16 }}>
-            <label style={FIELD_LABEL}>Your Google Calendar ICS URL</label>
+            <label style={FIELD_LABEL}>Your Google IconCalendar ICS URL</label>
             <input
               ref={inputRef}
               type="url"
@@ -554,13 +554,13 @@ function CalendarSyncPage() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <AlertCircle size={14} color="#FF3B30" />
+                <IconAlertCircle size={14} color="#FF3B30" />
                 <span className="text-xs" style={{ ...POPPINS, color: "#FF3B30", fontWeight: 600 }}>
                   Sync error: {syncError}
                 </span>
               </div>
               <div className="text-xs" style={{ ...POPPINS, color: "#8A8A8E", marginTop: 4 }}>
-                This usually means your ICS URL has expired. Get a new one from Google Calendar.
+                This usually means your ICS URL has expired. Get a new one from Google IconCalendar.
               </div>
               <button
                 type="button"
@@ -591,7 +591,7 @@ function CalendarSyncPage() {
                   }}
                 >
                   <span style={STATUS_DOT}>
-                    <Check size={12} color="#FFFFFF" strokeWidth={3} />
+                    <IconCheck size={12} color="#FFFFFF" stroke={3} />
                   </span>
                   <div>
                     <div style={{ ...POPPINS, color: "#0F6B3D", fontSize: 14.5, fontWeight: 800 }}>
@@ -620,7 +620,7 @@ function CalendarSyncPage() {
           >
             {syncing ? (
               <>
-                <Loader2 size={16} className="animate-spin" /> Syncing...
+                <IconLoader2 size={16} className="animate-spin" /> Syncing...
               </>
             ) : (
               <>Save and sync calendar →</>
@@ -658,7 +658,7 @@ function CalendarSyncPage() {
         <SectionLabel>DSM lessons → Google</SectionLabel>
         <div style={SECTION_CARD}>
           <p style={DESC}>
-            Connect your Google account so lessons you book in DSM appear in your Google Calendar straight away.
+            Connect your Google account so lessons you book in DSM appear in your Google IconCalendar straight away.
           </p>
 
           {conn ? (
@@ -674,11 +674,11 @@ function CalendarSyncPage() {
                 }}
               >
                 <span style={STATUS_DOT}>
-                  <Check size={12} color="#FFFFFF" strokeWidth={3} />
+                  <IconCheck size={12} color="#FFFFFF" stroke={3} />
                 </span>
                 <div>
                   <div style={{ ...POPPINS, color: "#0F6B3D", fontSize: 14.5, fontWeight: 800 }}>
-                    Connected to Google Calendar
+                    Connected to Google IconCalendar
                   </div>
                   <div style={{ ...POPPINS, color: "#3D8A63", fontSize: 11.5, lineHeight: 1.5 }}>
                     Connected on: {formatDate(conn.connected_at)}
@@ -709,11 +709,11 @@ function CalendarSyncPage() {
             >
               {connecting ? (
                 <>
-                  <Loader2 size={16} className="animate-spin" /> Connecting…
+                  <IconLoader2 size={16} className="animate-spin" /> Connecting…
                 </>
               ) : (
                 <>
-                  <CalendarPlus size={16} /> Connect Google Calendar
+                  <IconCalendarPlus size={16} /> Connect Google IconCalendar
                 </>
               )}
             </button>
@@ -734,11 +734,11 @@ function CalendarSyncPage() {
           <button type="button" onClick={copyLink} style={{ ...BTN_PRIMARY, marginTop: 12 }}>
             {copied ? (
               <>
-                <Check size={16} /> Copied!
+                <IconCheck size={16} /> Copied!
               </>
             ) : (
               <>
-                <Copy size={16} /> Copy link
+                <IconCopy size={16} /> IconCopy link
               </>
             )}
           </button>
@@ -763,7 +763,7 @@ function CalendarSyncPage() {
           }}
         >
           <div className="flex items-start gap-3">
-            <Info size={16} color="#1A52A0" className="shrink-0 mt-0.5" />
+            <IconInfoCircle size={16} color="#1A52A0" className="shrink-0 mt-0.5" />
             <div>
               <div
                 className="text-[14px] font-semibold"
@@ -775,16 +775,16 @@ function CalendarSyncPage() {
                 className="text-xs"
                 style={{ ...POPPINS, color: "#6B7280", lineHeight: 1.6 }}
               >
-                <li>✓ Your Google Calendar events sync into DSM every 2 hours</li>
-                <li>✓ DSM lessons appear in Google Calendar within 24 hours</li>
+                <li>✓ Your Google IconCalendar events sync into DSM every 2 hours</li>
+                <li>✓ DSM lessons appear in Google IconCalendar within 24 hours</li>
                 <li>✓ DSM is always up to date — use it as your primary schedule</li>
-                <li>○ Google Calendar is a read-only view — manage lessons in DSM</li>
+                <li>○ Google IconCalendar is a read-only view — manage lessons in DSM</li>
               </ul>
             </div>
           </div>
         </div>
 
-        {/* Info banner */}
+        {/* IconInfoCircle banner */}
         <div
           className="mt-3 flex items-start gap-3"
           style={{
@@ -796,7 +796,7 @@ function CalendarSyncPage() {
             padding: 12,
           }}
         >
-          <AlertTriangle size={20} color="#1877D6" className="shrink-0 mt-0.5" />
+          <IconAlertTriangle size={20} color="#1877D6" className="shrink-0 mt-0.5" />
           <p className="text-[13px] text-[#0B1F3A] leading-[1.5]" style={POPPINS}>
             This is a one-way read feed. Your DSM lessons appear in your calendar app, but changes made in your calendar app will not sync back to DSM. Always manage your lessons in DSM.
           </p>
@@ -818,8 +818,8 @@ function CalendarSyncPage() {
           >
             <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 12 }}>
               <span className="flex items-center gap-3">
-                <Calendar size={20} color="#1877D6" />
-                Google Calendar
+                <IconCalendar size={20} color="#1877D6" />
+                Google IconCalendar
               </span>
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-4">
@@ -832,7 +832,7 @@ function CalendarSyncPage() {
                     1
                   </div>
                   <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Open Google Calendar on a computer (not phone)
+                    Open Google IconCalendar on a computer (not phone)
                   </p>
                 </li>
                 <li className="flex items-start gap-3">
@@ -900,8 +900,8 @@ function CalendarSyncPage() {
           >
             <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 12 }}>
               <span className="flex items-center gap-3">
-                <Calendar size={20} color="#1877D6" />
-                Apple Calendar
+                <IconCalendar size={20} color="#1877D6" />
+                Apple IconCalendar
               </span>
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-4">
@@ -914,7 +914,7 @@ function CalendarSyncPage() {
                     1
                   </div>
                   <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Open the Calendar app on Mac or iPhone
+                    Open the IconCalendar app on Mac or iPhone
                   </p>
                 </li>
                 <li className="flex items-start gap-3">
@@ -925,7 +925,7 @@ function CalendarSyncPage() {
                     2
                   </div>
                   <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Click File → New Calendar Subscription (Mac) or tap Calendars → Add Calendar → Add Subscription Calendar (iPhone)
+                    Click File → New IconCalendar Subscription (Mac) or tap Calendars → Add IconCalendar → Add Subscription IconCalendar (iPhone)
                   </p>
                 </li>
                 <li className="flex items-start gap-3">
@@ -971,7 +971,7 @@ function CalendarSyncPage() {
           >
             <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 12 }}>
               <span className="flex items-center gap-3">
-                <Calendar size={20} color="#1877D6" />
+                <IconCalendar size={20} color="#1877D6" />
                 Outlook
               </span>
             </AccordionTrigger>
@@ -985,7 +985,7 @@ function CalendarSyncPage() {
                     1
                   </div>
                   <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Go to outlook.com and open Calendar
+                    Go to outlook.com and open IconCalendar
                   </p>
                 </li>
                 <li className="flex items-start gap-3">

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Check, ChevronLeft, Trash2 } from "lucide-react";
+import { IconCheck, IconChevronLeft, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
@@ -55,7 +55,7 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
           flexShrink: 0,
         }}
       >
-        <ChevronLeft size={18} />
+        <IconChevronLeft size={18} />
       </button>
       <span style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.4px", color: "#fff" }}>{title}</span>
     </div>
@@ -122,7 +122,7 @@ function DSMCheckbox({ checked, onChange }: { checked: boolean; onChange: (v: bo
           pointerEvents: "none",
         }}
       >
-        {checked && <Check size={12} color="#fff" strokeWidth={3} />}
+        {checked && <IconCheck size={12} color="#fff" stroke={3} />}
       </span>
     </span>
   );
@@ -521,7 +521,7 @@ function AdminChatRooms() {
                       opacity: deletingId === room.id ? 0.6 : 1,
                     }}
                   >
-                    <Trash2 size={12} />
+                    <IconTrash size={12} />
                     {deletingId === room.id ? "Deleting…" : "Delete"}
                   </button>
                 </div>

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Calendar, PoundSterling, MapPin, Users, BarChart3, Globe, Check } from "lucide-react";
 
+import { IconCalendar, IconChartBar, IconCheck, IconCurrencyPound, IconMapPin, IconUsers, IconWorld } from "@tabler/icons-react";
 const NAVY = "#133155";
 const TEAL = "#1877D6";
 const LIGHT_BG = "#F7FAFC";
@@ -24,7 +24,7 @@ function FeatureItem({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-start gap-3">
       <div className="mt-0.5 min-w-[20px] h-5 w-5 rounded-full bg-[#1877D6]/10 flex items-center justify-center">
-        <Check size={12} color={TEAL} strokeWidth={3} />
+        <IconCheck size={12} color={TEAL} stroke={3} />
       </div>
       <span className="text-[#2D3748] text-base">{children}</span>
     </div>
@@ -104,7 +104,7 @@ function FeaturesPage() {
 
       {/* Section 1: Smart scheduling */}
       <FeatureSection
-        icon={Calendar}
+        icon={IconCalendar}
         heading="Smart scheduling"
         description="Your complete diary in your pocket. See your week at a glance, add lessons in seconds, and never double-book again."
         features={[
@@ -115,7 +115,7 @@ function FeaturesPage() {
         ]}
         mockup={
           <MockupCard>
-            <Calendar size={80} color={TEAL} strokeWidth={1.5} />
+            <IconCalendar size={80} color={TEAL} stroke={1.5} />
           </MockupCard>
         }
         bg={WHITE}
@@ -123,7 +123,7 @@ function FeaturesPage() {
 
       {/* Section 2: Take payments anywhere */}
       <FeatureSection
-        icon={PoundSterling}
+        icon={IconCurrencyPound}
         heading="Take payments anywhere"
         description="Accept card, Apple Pay and Google Pay in seconds. Share a QR code, send a payment link, or take payment at the end of every lesson."
         features={[
@@ -134,7 +134,7 @@ function FeaturesPage() {
         ]}
         mockup={
           <MockupCard>
-            <PoundSterling size={80} color={TEAL} strokeWidth={1.5} />
+            <IconCurrencyPound size={80} color={TEAL} stroke={1.5} />
           </MockupCard>
         }
         bg={LIGHT_BG}
@@ -143,7 +143,7 @@ function FeaturesPage() {
 
       {/* Section 3: Live GPS tracking */}
       <FeatureSection
-        icon={MapPin}
+        icon={IconMapPin}
         heading="Live GPS tracking"
         description="Record every route automatically. Monitor speed, see journey history and keep a full log of every lesson driven."
         features={[
@@ -154,7 +154,7 @@ function FeaturesPage() {
         ]}
         mockup={
           <MockupCard>
-            <MapPin size={80} color={TEAL} strokeWidth={1.5} />
+            <IconMapPin size={80} color={TEAL} stroke={1.5} />
           </MockupCard>
         }
         bg={WHITE}
@@ -162,7 +162,7 @@ function FeaturesPage() {
 
       {/* Section 4: Complete pupil management */}
       <FeatureSection
-        icon={Users}
+        icon={IconUsers}
         heading="Complete pupil management"
         description="Everything you need to know about every pupil, in one place. Progress, payments, notes and syllabus — all connected."
         features={[
@@ -173,7 +173,7 @@ function FeaturesPage() {
         ]}
         mockup={
           <MockupCard>
-            <Users size={80} color={TEAL} strokeWidth={1.5} />
+            <IconUsers size={80} color={TEAL} stroke={1.5} />
           </MockupCard>
         }
         bg={LIGHT_BG}
@@ -182,7 +182,7 @@ function FeaturesPage() {
 
       {/* Section 5: Business reports */}
       <FeatureSection
-        icon={BarChart3}
+        icon={IconChartBar}
         heading="Business reports that matter"
         description="Know exactly how your business is performing. Month-to-date earnings, tax estimates, weekly summaries and more."
         features={[
@@ -193,7 +193,7 @@ function FeaturesPage() {
         ]}
         mockup={
           <MockupCard>
-            <BarChart3 size={80} color={TEAL} strokeWidth={1.5} />
+            <IconChartBar size={80} color={TEAL} stroke={1.5} />
           </MockupCard>
         }
         bg={WHITE}
@@ -201,7 +201,7 @@ function FeaturesPage() {
 
       {/* Section 6: Mini website */}
       <FeatureSection
-        icon={Globe}
+        icon={IconWorld}
         heading="Your own mini website"
         description="Every DSM instructor gets a free booking page on EveryDriver. Upgrade to Plus or Max for your own custom domain and white label branding."
         features={[
@@ -212,7 +212,7 @@ function FeaturesPage() {
         ]}
         mockup={
           <MockupCard>
-            <Globe size={80} color={TEAL} strokeWidth={1.5} />
+            <IconWorld size={80} color={TEAL} stroke={1.5} />
           </MockupCard>
         }
         bg={LIGHT_BG}

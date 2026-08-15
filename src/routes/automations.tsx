@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Plus, Zap, Edit2 } from "lucide-react";
+import { IconBolt, IconPencil, IconPlus } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Card } from "../components/dsm/Card";
@@ -182,7 +182,7 @@ function AutomationsPage() {
           style={{ color: "#1877D6", background: "none", border: "none" }}
           aria-label="Add automation"
         >
-          <Plus size={18} color="#1877D6" />
+          <IconPlus size={18} color="#1877D6" />
           New automation
         </button>
       </div>
@@ -217,7 +217,7 @@ function AutomationsPage() {
                 className="flex items-center justify-center rounded-full"
                 style={{ width: 56, height: 56, backgroundColor: "#EEF4FB" }}
               >
-                <Zap size={28} color="#1877D6" />
+                <IconBolt size={28} color="#1877D6" />
               </div>
               <div className="text-[14px] text-[#6B7280]">
                 No automations set up yet
@@ -273,7 +273,7 @@ function AutomationsPage() {
                       className="flex items-center justify-center"
                       style={{ width: 32, height: 32, flexShrink: 0 }}
                     >
-                      <Edit2 size={16} color="#6B7280" />
+                      <IconPencil size={16} color="#6B7280" />
                     </button>
                   </div>
                 </Card>

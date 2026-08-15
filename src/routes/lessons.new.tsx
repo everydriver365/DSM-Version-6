@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, RefreshCw } from "lucide-react";
+import { IconArrowLeft, IconRefresh } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
@@ -379,7 +379,7 @@ function NewLessonPage() {
             onClick={() => navigate({ to: "/schedule" })}
             className="flex items-center justify-center w-8 h-8 -ml-1"
           >
-            <ArrowLeft size={20} color="#0B1F3A" />
+            <IconArrowLeft size={20} color="#0B1F3A" />
           </button>
           <p
             className="text-[20px] font-semibold"
@@ -527,7 +527,7 @@ function NewLessonPage() {
             }}
           >
             <div className="flex items-center" style={{ flex: 1, gap: 8 }}>
-              <RefreshCw size={14} color="#9CA3AF" />
+              <IconRefresh size={14} color="#9CA3AF" />
               <span style={{ fontSize: 14, color: "#0B1F3A" }}>Make this a recurring lesson</span>
             </div>
             <button
