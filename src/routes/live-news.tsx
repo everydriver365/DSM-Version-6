@@ -54,6 +54,9 @@ function LiveNewsPage() {
   const [episodes, setEpisodes] = useState<PodcastEpisode[] | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [showFilter, setShowFilter] = useState<string>("all");
+  const [podcastQuery, setPodcastQuery] = useState("");
+  const [topicFilter, setTopicFilter] = useState<string>("all");
+
 
 
   useEffect(() => {
