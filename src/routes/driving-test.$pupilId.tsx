@@ -1201,6 +1201,11 @@ function RecordTab(props: any) {
         )}
       </Card>
 
+      {/* Recommended learning based on the DL25 grid above */}
+      <RecommendedLearning faults={faults} />
+
+
+
       {/* Notes */}
       <Card>
         <SectionTitle>Notes</SectionTitle>
