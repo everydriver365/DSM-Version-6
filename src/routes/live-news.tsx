@@ -133,6 +133,7 @@ function LiveNewsPage() {
   const [showFilter, setShowFilter] = useState<string>("all");
   const [podcastQuery, setPodcastQuery] = useState("");
   const [topicFilter, setTopicFilter] = useState<string>("all");
+  const [searchOpen, setSearchOpen] = useState(false);
 
   // ---- saved / bookmarked episodes (per device) ----
   const [saved, setSaved] = useState<SavedMap>({});
