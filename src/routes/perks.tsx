@@ -10,7 +10,12 @@ import {
   IconLock,
   IconChevronRight,
   IconX,
+  IconCheck,
 } from '@tabler/icons-react';
+import {
+  createSubscriptionPaymentLink,
+  type PaidTierId,
+} from '@/lib/websiteUpgrade';
 
 export const Route = createFileRoute('/perks')({
   component: PerksPage,
@@ -29,11 +34,17 @@ type Perk = {
 
 const TIER_ORDER = ['free', 'website', 'pro', 'managed'];
 
-const TIER_NAMES: Record<string, string> = {
+const TIER_DISPLAY: Record<string, string> = {
   free: 'Free',
   website: 'Essential',
   pro: 'Pro',
   managed: 'Max',
+};
+
+const TIER_PRICE: Record<string, string> = {
+  website: 'from £9.99/month',
+  pro: 'from £19.99/month',
+  managed: 'from £29.99/month',
 };
 
 function hasAccess(userTier: string, minTier: string): boolean {
@@ -259,6 +270,8 @@ function PerksPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
+  const [upgradeSheetOpen, setUpgradeSheetOpen] = useState(false);
+  const [selectedPerk, setSelectedPerk] = useState<Perk | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -291,6 +304,27 @@ function PerksPage() {
   }, [search, activeCategory]);
 
   const accessibleCount = PERKS.filter((p) => hasAccess(websiteTier, p.minTier)).length;
+
+  const unlockedPerks = useMemo(() => {
+    if (!selectedPerk) return [];
+    return PERKS.filter(
+      (p) =>
+        TIER_ORDER.indexOf(p.minTier) <= TIER_ORDER.indexOf(selectedPerk.minTier) &&
+        !hasAccess(websiteTier, p.minTier)
+    );
+  }, [selectedPerk, websiteTier]);
+
+  const planCircle = useMemo(() => {
+    if (!selectedPerk) return { bg: '#EFF6FF', color: '#1877D6', letter: 'E' };
+    switch (selectedPerk.minTier) {
+      case 'pro':
+        return { bg: '#EDE9FE', color: '#7C3AED', letter: 'P' };
+      case 'managed':
+        return { bg: '#FEF3C7', color: '#D68A1B', letter: 'M' };
+      default:
+        return { bg: '#EFF6FF', color: '#1877D6', letter: 'E' };
+    }
+  }, [selectedPerk]);
 
   if (loading) return <PageLoader />;
 
@@ -472,7 +506,8 @@ function PerksPage() {
                 if (accessible) {
                   toast.info('Coming soon — full perk access launching shortly');
                 } else {
-                  navigate({ to: '/benefits' as never });
+                  setSelectedPerk(perk);
+                  setUpgradeSheetOpen(true);
                 }
               }}
               style={{
@@ -540,7 +575,7 @@ function PerksPage() {
                         padding: '2px 7px',
                       }}
                     >
-                      {TIER_NAMES[perk.minTier] ?? perk.minTier}+
+                      {TIER_DISPLAY[perk.minTier] ?? perk.minTier} and above
                     </span>
                     <IconLock size={13} color="#9CA3AF" stroke={1.5} />
                   </span>
@@ -558,6 +593,243 @@ function PerksPage() {
           </div>
         )}
       </div>
+
+      {/* UPGRADE BOTTOM SHEET */}
+      {upgradeSheetOpen && selectedPerk && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 300,
+            background: 'rgba(0,0,0,0.4)',
+            display: 'flex',
+            alignItems: 'flex-end',
+            fontFamily: 'Poppins, sans-serif',
+          }}
+          onClick={() => setUpgradeSheetOpen(false)}
+        >
+          <div
+            style={{
+              background: '#EEF2F7',
+              borderRadius: '22px 22px 0 0',
+              padding: '0 0 32px',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              width: '100%',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Handle bar */}
+            <div
+              style={{
+                width: 36,
+                height: 5,
+                background: '#D1D1D6',
+                borderRadius: 3,
+                margin: '12px auto 16px',
+              }}
+            />
+
+            {/* Selected perk preview */}
+            <div
+              style={{
+                margin: '0 16px 16px',
+                background: '#fff',
+                borderRadius: 16,
+                border: '1px solid #E4E8EF',
+                padding: 16,
+                display: 'flex',
+                gap: 12,
+                alignItems: 'center',
+              }}
+            >
+              <span
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 10,
+                  background: '#EFF6FF',
+                  color: '#1877D6',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 22,
+                  flexShrink: 0,
+                }}
+              >
+                {selectedPerk.logo}
+              </span>
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>{selectedPerk.name}</div>
+                <div style={{ fontSize: 12, color: '#6B7686', marginTop: 2 }}>
+                  {selectedPerk.provider} · {selectedPerk.category}
+                </div>
+                <span
+                  style={{
+                    display: 'inline-block',
+                    background: '#F0FDF4',
+                    color: '#15803D',
+                    fontSize: 9,
+                    fontWeight: 700,
+                    borderRadius: 20,
+                    padding: '2px 7px',
+                    marginTop: 4,
+                  }}
+                >
+                  {selectedPerk.saving}
+                </span>
+                <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 6 }}>Unlock this perk</div>
+              </span>
+            </div>
+
+            {/* What you get */}
+            <div style={{ padding: '0 16px 8px', fontSize: 11, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase' }}>
+              What's included
+            </div>
+            {unlockedPerks.length > 0 ? (
+              <div
+                style={{
+                  margin: '0 16px 16px',
+                  background: '#fff',
+                  borderRadius: 16,
+                  border: '1px solid #E4E8EF',
+                  overflow: 'hidden',
+                }}
+              >
+                {unlockedPerks.map((perk, idx) => (
+                  <div
+                    key={perk.id}
+                    style={{
+                      display: 'flex',
+                      gap: 10,
+                      alignItems: 'center',
+                      padding: '11px 16px',
+                      borderBottom: idx === unlockedPerks.length - 1 ? 'none' : '1px solid #E4E8EF',
+                    }}
+                  >
+                    <IconCheck size={14} color="#15803D" stroke={2} />
+                    <span style={{ fontSize: 13, fontWeight: 500, color: '#0B1F3A', flex: 1, minWidth: 0 }}>
+                      {perk.name}
+                    </span>
+                    <span style={{ fontSize: 11, color: '#9CA3AF', marginLeft: 'auto' }}>{perk.provider}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div
+                style={{
+                  margin: '0 16px 16px',
+                  background: '#fff',
+                  borderRadius: 16,
+                  border: '1px solid #E4E8EF',
+                  padding: 16,
+                  fontSize: 14,
+                  color: '#15803D',
+                  textAlign: 'center',
+                }}
+              >
+                You already have access to this perk
+              </div>
+            )}
+
+            {/* Plan required */}
+            <div style={{ padding: '0 16px 8px', fontSize: 11, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase' }}>
+              Plan required
+            </div>
+            <div
+              style={{
+                margin: '0 16px 16px',
+                background: '#fff',
+                borderRadius: 16,
+                border: '1px solid #E4E8EF',
+                padding: '14px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+              }}
+            >
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: '50%',
+                  background: planCircle.bg,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 14,
+                  fontWeight: 800,
+                  color: planCircle.color,
+                  flexShrink: 0,
+                }}
+              >
+                {planCircle.letter}
+              </div>
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#0B1F3A' }}>
+                  {TIER_DISPLAY[selectedPerk.minTier] ?? selectedPerk.minTier} and above
+                </div>
+                <div style={{ fontSize: 12, color: '#6B7686', marginTop: 2 }}>
+                  {TIER_PRICE[selectedPerk.minTier] ?? ''}
+                </div>
+              </span>
+              <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+            </div>
+
+            {/* Upgrade CTA */}
+            <button
+              type="button"
+              onClick={async () => {
+                setUpgradeSheetOpen(false);
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                  toast.error('Please log in first');
+                  return;
+                }
+                try {
+                  const { url } = await createSubscriptionPaymentLink(
+                    (selectedPerk?.minTier as PaidTierId) ?? 'website',
+                    null,
+                    session.access_token
+                  );
+                  window.location.href = url;
+                } catch (e: any) {
+                  toast.error(e.message ?? 'Could not start upgrade');
+                }
+              }}
+              style={{
+                margin: '0 16px',
+                width: 'calc(100% - 32px)',
+                background: '#1877D6',
+                color: '#fff',
+                borderRadius: 20,
+                padding: 15,
+                fontSize: 15,
+                fontWeight: 800,
+                border: 'none',
+                cursor: 'pointer',
+                fontFamily: 'Poppins, sans-serif',
+                boxShadow: '0 4px 0 #0F52A8',
+              }}
+            >
+              Upgrade to {TIER_DISPLAY[selectedPerk?.minTier ?? 'website']} →
+            </button>
+
+            <div
+              style={{
+                textAlign: 'center',
+                marginTop: 12,
+                fontSize: 13,
+                color: '#9CA3AF',
+                cursor: 'pointer',
+              }}
+              onClick={() => setUpgradeSheetOpen(false)}
+            >
+              Cancel
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
