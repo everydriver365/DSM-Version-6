@@ -6212,14 +6212,12 @@ function HomePage() {
 
                     return (
                       <React.Fragment key={l.id}>
-                        {tab === 'next' && (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                            <span style={{ fontSize: 11, fontWeight: 700, color: '#1877D6', letterSpacing: 0.3, textTransform: 'uppercase' }}>
-                              {dateLabel}
-                            </span>
-                            <span style={{ flex: 1, height: 1, background: '#E4E8EF' }} />
-                          </div>
-                        )}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: '#1877D6', letterSpacing: 0.3, textTransform: 'uppercase' }}>
+                            {dateLabel}
+                          </span>
+                          <span style={{ flex: 1, height: 1, background: '#E4E8EF' }} />
+                        </div>
                         <div style={{ position: 'relative', background: '#FFFFFF', border: '1px solid #E4E8EF', borderRadius: 13, marginBottom: 8 }}>
                         <div
                           onClick={() => setActionsOpenForLesson(l)}
