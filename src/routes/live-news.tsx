@@ -769,7 +769,6 @@ function LiveNewsPage() {
                             <div
                               style={{
                                 position: "relative",
-                                overflow: "visible",
                                 width: 46,
                                 height: 46,
                                 flexShrink: 0,
