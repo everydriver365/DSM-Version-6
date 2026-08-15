@@ -135,7 +135,7 @@ function LiveNewsPage() {
     }
     const pending = resumeTargetRef.current;
     // Some CDNs ignore a seek issued before playback is underway, so keep
-    // issued before playback is underway, so keep retrying for a short window.
+    // retrying for a short window until the position sticks.
     if (!pending || pending.target <= 0 || Date.now() - pending.startedAt > 20000) return;
     if (Math.abs(el.currentTime - pending.target) < 3) {
       pending.target = 0; // resumed — stop tracking so manual seeks stick
