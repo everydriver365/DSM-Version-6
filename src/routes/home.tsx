@@ -1,4 +1,4 @@
-import { Separator } from "@/components/ui/separator";
+import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { typography } from "@/lib/typography";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import React from "react";
