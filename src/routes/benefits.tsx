@@ -23,13 +23,12 @@ import {
   IconCar,
   IconTool,
   IconChevronRight,
-  IconWorld,
+  
   IconHeartHandshake,
   IconTable,
   IconChevronDown,
 } from '@tabler/icons-react';
 import {
-  checkDomainAvailability,
   createSubscriptionPaymentLink,
   TIERS,
   type PaidTierId,
@@ -292,16 +291,9 @@ function BenefitsPage() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const [upgradeStep, setUpgradeStep] = useState<'idle' | 'domain' | 'choose-tier' | 'processing'>('idle');
+  const [upgradeStep, setUpgradeStep] = useState<'idle' | 'choose-tier' | 'processing'>('idle');
   const [chosenDomain, setChosenDomain] = useState<string | null>(null);
   const [chosenTier, setChosenTier] = useState<PaidTierId | null>(null);
-  const [domainSearch, setDomainSearch] = useState('');
-  const [domainResult, setDomainResult] = useState<{
-    domain: string;
-    available: boolean;
-    price?: string | null;
-  } | null>(null);
-  const [checkingDomain, setCheckingDomain] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
 
 
@@ -351,23 +343,6 @@ function BenefitsPage() {
     }
   }
 
-  async function checkDomain() {
-    if (!domainSearch.trim()) return;
-    setCheckingDomain(true);
-    setDomainResult(null);
-    try {
-      const result = await checkDomainAvailability(domainSearch.trim());
-      setDomainResult({
-        domain: result.domain,
-        available: result.available,
-        price: typeof result.price === 'number' ? result.price.toString() : result.price,
-      });
-    } catch {
-      toast.error('Could not check domain');
-    } finally {
-      setCheckingDomain(false);
-    }
-  }
 
   async function handleUpgrade(tier: PaidTierId) {
     setUpgradeStep('processing');
@@ -565,7 +540,7 @@ function BenefitsPage() {
           <button
             type="button"
             onClick={() => {
-              setUpgradeStep('domain');
+              setUpgradeStep('choose-tier');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             style={{
@@ -764,7 +739,7 @@ function BenefitsPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      setUpgradeStep('domain');
+                      setUpgradeStep('choose-tier');
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                     style={{
@@ -1149,7 +1124,7 @@ function BenefitsPage() {
                 <button
                   type="button"
                   onClick={() => {
-                    setUpgradeStep('domain');
+                    setUpgradeStep('choose-tier');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   style={{
@@ -1194,7 +1169,7 @@ function BenefitsPage() {
           >
             <button
               type="button"
-              onClick={() => setUpgradeStep(upgradeStep === 'domain' ? 'idle' : 'domain')}
+              onClick={() => setUpgradeStep('idle')}
               aria-label="Back"
               style={{
                 background: 'none',
@@ -1207,181 +1182,17 @@ function BenefitsPage() {
               <ChevronLeft size={22} />
             </button>
             <div style={{ color: '#fff', fontSize: 18, fontWeight: 800, fontFamily: 'Poppins, sans-serif' }}>
-              {upgradeStep === 'domain' ? 'Choose your domain' : 'Choose your plan'}
+              Choose your plan
             </div>
           </div>
 
           <div style={{ maxWidth: 480, margin: '0 auto', padding: '24px 16px' }}>
-            {upgradeStep === 'domain' && (
-              <>
-                <div
-                  style={{
-                    background: '#fff',
-                    borderRadius: 16,
-                    padding: 16,
-                    marginBottom: 16,
-                    boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
-                  }}
-                >
-                  <IconWorld size={20} color="#1877D6" stroke={1.5} />
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', marginTop: 8, fontFamily: 'Poppins, sans-serif' }}>
-                    Your domain is included free with your subscription
-                  </div>
-                  <div style={{ fontSize: 12, color: '#6B7686', marginTop: 4, fontFamily: 'Poppins, sans-serif' }}>
-                    Search for your school name — we'll register it automatically.
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <input
-                    value={domainSearch}
-                    onChange={(e) => {
-                      setDomainSearch(e.target.value);
-                      setDomainResult(null);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') checkDomain();
-                    }}
-                    placeholder="yourschoolname.co.uk"
-                    style={{
-                      flex: 1,
-                      background: '#fff',
-                      border: '0.5px solid #E4E8EF',
-                      borderRadius: 12,
-                      padding: '12px 14px',
-                      fontSize: 14,
-                      fontFamily: 'Poppins, sans-serif',
-                      color: '#0B1F3A',
-                    }}
-                  />
-                  <button
-                    type="button"
-                    onClick={checkDomain}
-                    disabled={checkingDomain || domainSearch.trim().length < 3}
-                    style={{
-                      background: '#1877D6',
-                      color: '#fff',
-                      border: 'none',
-                      borderRadius: 12,
-                      padding: '0 18px',
-                      fontSize: 14,
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      fontFamily: 'Poppins, sans-serif',
-                      opacity: checkingDomain || domainSearch.trim().length < 3 ? 0.5 : 1,
-                    }}
-                  >
-                    {checkingDomain ? '…' : 'Check'}
-                  </button>
-                </div>
-
-                {domainResult && !domainResult.available && (
-                  <div
-                    style={{
-                      marginTop: 12,
-                      background: '#FEF2F2',
-                      border: '0.5px solid #FECACA',
-                      borderRadius: 16,
-                      padding: 16,
-                      fontSize: 13,
-                      color: '#CC2229',
-                      fontWeight: 600,
-                      fontFamily: 'Poppins, sans-serif',
-                    }}
-                  >
-                    {domainResult.domain} is not available
-                  </div>
-                )}
-
-                {domainResult && domainResult.available && (
-                  <div
-                    style={{
-                      marginTop: 12,
-                      background: '#F0FDF4',
-                      border: '0.5px solid #BBF7D0',
-                      borderRadius: 16,
-                      padding: 16,
-                    }}
-                  >
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#15803D', fontFamily: 'Poppins, sans-serif' }}>
-                      ✓ Available
-                    </div>
-                    <div style={{ fontSize: 15, fontWeight: 800, color: '#0B1F3A', marginTop: 4, fontFamily: 'Poppins, sans-serif' }}>
-                      {domainResult.domain}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setChosenDomain(domainResult.domain);
-                        setUpgradeStep('choose-tier');
-                      }}
-                      style={{
-                        width: '100%',
-                        background: '#15803D',
-                        color: '#fff',
-                        borderRadius: 12,
-                        padding: 12,
-                        fontSize: 14,
-                        fontWeight: 700,
-                        marginTop: 12,
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontFamily: 'Poppins, sans-serif',
-                      }}
-                    >
-                      Continue with {domainResult.domain} →
-                    </button>
-                  </div>
-                )}
-
-                <div style={{ textAlign: 'center', marginTop: 24 }}>
-                  <button
-                    type="button"
-                    onClick={() => setUpgradeStep('choose-tier')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: 12,
-                      color: '#9CA3AF',
-                      fontFamily: 'Poppins, sans-serif',
-                      padding: '4px 8px',
-                    }}
-                  >
-                    Skip — I don't need a domain
-                  </button>
-                </div>
-              </>
-            )}
-
-            {upgradeStep === 'choose-tier' && (
-              <>
-                {chosenDomain && (
-                  <div style={{ marginBottom: 16 }}>
-                    <span
-                      style={{
-                        display: 'inline-block',
-                        background: '#DCFCE7',
-                        color: '#15803D',
-                        fontSize: 11,
-                        fontWeight: 700,
-                        borderRadius: 20,
-                        padding: '4px 12px',
-                        fontFamily: 'Poppins, sans-serif',
-                      }}
-                    >
-                      ✓ {chosenDomain} reserved
-                    </span>
-                  </div>
-                )}
-                {renderTiers(
-                  (tier) => {
-                    setChosenTier(tier);
-                    handleUpgrade(tier);
-                  },
-                  chosenDomain ? 'Subscribe and register domain →' : 'Subscribe →',
-                )}
-              </>
+            {renderTiers(
+              (tier) => {
+                setChosenTier(tier);
+                handleUpgrade(tier);
+              },
+              'Subscribe →',
             )}
           </div>
         </div>
