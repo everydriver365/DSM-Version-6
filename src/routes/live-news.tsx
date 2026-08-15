@@ -644,7 +644,14 @@ function LiveNewsPage() {
                 </div>
 
                 {visibleEpisodes.length === 0 && (
-                  <EmptyState message="No episodes for this podcast right now" />
+                  <EmptyState
+                    message={
+                      podcastSearch || topicFilter !== "all"
+                        ? "No episodes match your search"
+                        : "No episodes for this podcast right now"
+                    }
+                  />
+
                 )}
 
                 {visibleEpisodes.map((ep) => {
