@@ -1,4 +1,6 @@
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
+import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
+
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import React from "react";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from "react";
@@ -3651,41 +3653,24 @@ function HomePage() {
             </button>
           )}
           {isLive ? (
-            <span
-              className="text-[12px] font-medium inline-flex items-center"
-              style={{
-                gap: 6,
-                color: "#1877D6",
-                padding: "3px 8px",
-                borderRadius: 999,
-                backgroundColor: "#FFECEC",
-              }}
-            >
-              <span style={{ width: 6, height: 6, borderRadius: 999, backgroundColor: "#1877D6" }} />
-              In progress
-            </span>
+            <LessonPaymentBadge
+              status={l.payment_status}
+              amountDue={l.amount_due}
+              paidAmount={(l as any).paid_amount}
+              prepaidHours={l.pupils?.prepaid_hours}
+              isLive
+              size="md"
+            />
           ) : (
-            <span
-              className="text-[12px] inline-flex items-center"
-              style={{
-                gap: 6,
-                color: paid ? "#1A7A3C" : "#D33B3B",
-                padding: "3px 8px",
-                borderRadius: 999,
-                backgroundColor: paid ? "#E8F8ED" : "#FFECEC",
-              }}
-            >
-              <span
-                style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: 999,
-                  backgroundColor: paid ? "#1A7A3C" : "#D33B3B",
-                }}
-              />
-              {paid ? "Paid" : "Not paid"}
-            </span>
+            <LessonPaymentBadge
+              status={l.payment_status}
+              amountDue={l.amount_due}
+              paidAmount={(l as any).paid_amount}
+              prepaidHours={l.pupils?.prepaid_hours}
+              size="md"
+            />
           )}
+
         </div>
       </div>
     );
@@ -3760,28 +3745,12 @@ function HomePage() {
     const timeColor = isPast ? "#9CA3AF" : "#0B1F3A";
     const nameColor = isPast ? "#9CA3AF" : "#0B1F3A";
     const endPassed = end.getTime() < now.getTime();
-    const paymentStatus = (l.payment_status ?? "").toLowerCase();
     const eolDone = l.eol_completed === true;
 
     type Badge = { label: string; bg: string; color: string };
     const badges: Badge[] = [];
     if (endPassed && !eolDone) badges.push({ label: "EOL", bg: "#EEF2F7", color: "#0B1F3A" });
 
-    const fmtAmt = (n: number) => {
-      const v = Math.abs(n);
-      return Number.isInteger(v) ? `£${v}` : `£${v.toFixed(2)}`;
-    };
-    const amountDue = typeof l.amount_due === "number" ? l.amount_due : 0;
-    const balance = 0;
-    if (paymentStatus === "paid" && amountDue > 0) {
-      badges.push({ label: `${fmtAmt(amountDue)} ✓`, bg: "#E8F8ED", color: "#1A7A3C" });
-    } else if (paymentStatus === "unpaid" && amountDue > 0) {
-      badges.push({ label: fmtAmt(amountDue), bg: "#FFECEC", color: "#D33B3B" });
-    } else if (balance < 0) {
-      badges.push({ label: fmtAmt(balance), bg: "#FFECEC", color: "#D33B3B" });
-    } else if (balance > 0) {
-      badges.push({ label: `+${fmtAmt(balance)}`, bg: "#E8F8ED", color: "#1A7A3C" });
-    }
 
     const rowInner = (
       <div style={cardStyle}>
@@ -3803,7 +3772,14 @@ function HomePage() {
           {pupilName(l)}
         </div>
         <div className="flex items-center" style={{ gap: 4, flexShrink: 0 }}>
+          <LessonPaymentBadge
+            status={l.payment_status}
+            amountDue={l.amount_due}
+            paidAmount={(l as any).paid_amount}
+            prepaidHours={l.pupils?.prepaid_hours}
+          />
           {badges.map((b, i) =>
+
             b.label === "EOL" ? (
               <button
                 key={i}
@@ -4306,8 +4282,8 @@ function HomePage() {
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     {todayLessons.map((l) => {
-                      const paid = (l.payment_status ?? "").toLowerCase() === "paid";
                       const [hh, mm] = (l.lesson_time ?? "00:00").split(":").map(Number);
+
                       const endMinutes = hh * 60 + mm + (l.duration_minutes ?? 60);
                       const nowMinutes = new Date().getHours() * 60 + new Date().getMinutes();
                       const eolDue = !l.eol_completed && l.lesson_date === todayISO && endMinutes <= nowMinutes;
@@ -4326,12 +4302,14 @@ function HomePage() {
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{formatTime(l)}</span>
                           <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{pupilName(l)}</span>
                           <span style={{ fontSize: 12, color: "#6B7280" }}>{formatDuration(l.duration_minutes)}</span>
-                          <span style={{
-                            fontSize: 10, fontWeight: 700, textTransform: "uppercase",
-                            padding: "3px 8px", borderRadius: 6,
-                            background: paid ? "#DCFCE7" : "#FEE2E2",
-                            color: paid ? "#166534" : "#991B1B",
-                          }}>{paid ? "Paid" : "Unpaid"}</span>
+                          <LessonPaymentBadge
+                            status={l.payment_status}
+                            amountDue={l.amount_due}
+                            paidAmount={(l as any).paid_amount}
+                            prepaidHours={(l.pupils as any)?.prepaid_hours}
+                            size="md"
+                          />
+
                           {eolDue && (
                             <span
                               onClick={(e) => {
@@ -4935,17 +4913,18 @@ function HomePage() {
                       {/* Payment pill */}
                       <div style={{
                         position: 'absolute', top: 10, right: 10, zIndex: 5,
-                        display: 'inline-flex', alignItems: 'center',
-                        background: hPillBgFinal,
-                        color: hPillFgFinal,
-                        borderRadius: 20,
-                        padding: '4px 10px',
-                        fontSize: 12, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
-                        whiteSpace: 'nowrap',
                         boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                        borderRadius: 20,
                       }}>
-                        {hLabelFinal}
+                        <LessonPaymentBadge
+                          status={upcoming?.payment_status}
+                          amountDue={upcoming?.amount_due}
+                          paidAmount={(upcoming as any)?.paid_amount}
+                          prepaidHours={upcoming?.pupils?.prepaid_hours}
+                          size="md"
+                        />
                       </div>
+
 
                       {/* ETA pill */}
 
@@ -6232,13 +6211,6 @@ function HomePage() {
                       null;
 
 
-                    const payPill = isCancelled ? null : isLive
-                      ? { label: 'Live', bg: '#E6F1FB', fg: '#1877D6' }
-                      : (isPrepaidPupil || payStatus === 'prepaid')
-                        ? { label: 'Prepaid', bg: '#E4F5EA', fg: '#2E7D4F' }
-                        : dueUnpaid
-                          ? { label: `£${amt.toFixed(0)} owed`, bg: '#FCE9E9', fg: '#CC2229' }
-                          : null;
 
                     return (
                       <React.Fragment key={l.id}>
@@ -6299,30 +6271,17 @@ function HomePage() {
                                   }}>
                                     Cancelled
                                   </span>
-                                ) : payPill ? (
-                                  <button
-                                    type="button"
+                                ) : (
+                                  <LessonPaymentBadge
+                                    status={l.payment_status}
+                                    amountDue={l.amount_due}
+                                    paidAmount={(l as any).paid_amount}
+                                    prepaidHours={(l.pupils as any)?.prepaid_hours}
+                                    isLive={isLive}
                                     onClick={(ev) => { ev.stopPropagation(); setPaymentSheetForLesson(l); }}
-                                    style={{
-                                      flexShrink: 0,
-                                      display: 'inline-flex',
-                                      alignItems: 'center',
-                                      fontSize: 11,
-                                      fontWeight: 700,
-                                      padding: '2px 9px',
-                                      borderRadius: 999,
-                                      border: 'none',
-                                      cursor: 'pointer',
-                                      whiteSpace: 'nowrap',
-                                      background: payPill.bg,
-                                      color: payPill.fg,
-                                      fontFamily: PF,
-                                      lineHeight: 1.4,
-                                    }}
-                                  >
-                                    {payPill.label}
-                                  </button>
-                                ) : null}
+                                  />
+                                )}
+
                               </div>
                               {pickupLabel && (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, minWidth: 0 }}>
