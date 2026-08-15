@@ -2179,6 +2179,75 @@ function MiniSitePage() {
               </div>
             )}
 
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 0,
+                background: "#E5E5EA",
+                borderRadius: 14,
+                padding: 4,
+                margin: "0 0 16px",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => setBillingPeriod("monthly")}
+                style={{
+                  flex: 1,
+                  padding: "8px 0",
+                  borderRadius: 10,
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  background: billingPeriod === "monthly" ? "#fff" : "transparent",
+                  color: billingPeriod === "monthly" ? "#0B1F3A" : "#6B6B6F",
+                  boxShadow: billingPeriod === "monthly" ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+                  transition: "all 0.15s",
+                }}
+              >
+                Monthly
+              </button>
+              <button
+                type="button"
+                onClick={() => setBillingPeriod("annual")}
+                style={{
+                  flex: 1,
+                  padding: "8px 0",
+                  borderRadius: 10,
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  background: billingPeriod === "annual" ? "#fff" : "transparent",
+                  color: billingPeriod === "annual" ? "#0B1F3A" : "#6B6B6F",
+                  boxShadow: billingPeriod === "annual" ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+                  transition: "all 0.15s",
+                  position: "relative",
+                }}
+              >
+                Annual
+                <span
+                  style={{
+                    marginLeft: 6,
+                    background: "#15803D",
+                    color: "#fff",
+                    fontSize: 9,
+                    fontWeight: 800,
+                    borderRadius: 20,
+                    padding: "2px 6px",
+                    verticalAlign: "middle",
+                  }}
+                >
+                  2 months free
+                </span>
+              </button>
+            </div>
+
             {renderTiers(
               (tier) => {
                 setChosenTier(tier);
