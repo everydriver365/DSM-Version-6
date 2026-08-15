@@ -6271,30 +6271,17 @@ function HomePage() {
                                   }}>
                                     Cancelled
                                   </span>
-                                ) : payPill ? (
-                                  <button
-                                    type="button"
+                                ) : (
+                                  <LessonPaymentBadge
+                                    status={l.payment_status}
+                                    amountDue={l.amount_due}
+                                    paidAmount={(l as any).paid_amount}
+                                    prepaidHours={(l.pupils as any)?.prepaid_hours}
+                                    isLive={isLive}
                                     onClick={(ev) => { ev.stopPropagation(); setPaymentSheetForLesson(l); }}
-                                    style={{
-                                      flexShrink: 0,
-                                      display: 'inline-flex',
-                                      alignItems: 'center',
-                                      fontSize: 11,
-                                      fontWeight: 700,
-                                      padding: '2px 9px',
-                                      borderRadius: 999,
-                                      border: 'none',
-                                      cursor: 'pointer',
-                                      whiteSpace: 'nowrap',
-                                      background: payPill.bg,
-                                      color: payPill.fg,
-                                      fontFamily: PF,
-                                      lineHeight: 1.4,
-                                    }}
-                                  >
-                                    {payPill.label}
-                                  </button>
-                                ) : null}
+                                  />
+                                )}
+
                               </div>
                               {pickupLabel && (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, minWidth: 0 }}>
