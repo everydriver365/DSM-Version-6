@@ -145,6 +145,14 @@ const SECTION_HEADER: React.CSSProperties = {
 
 function EnquiriesPage() {
   const navigate = useNavigate();
+  const canGoBack = window.history.length > 1;
+  function goBack(fallback: string) {
+    if (canGoBack) {
+      navigate({ to: -1 as any });
+    } else {
+      navigate({ to: fallback as never });
+    }
+  }
   const [userId, setUserId] = useState<string | null>(null);
   const [enquiries, setEnquiries] = useState<EnquiryRow[]>([]);
   const [loading, setLoading] = useState(true);
