@@ -3890,7 +3890,7 @@ function HomePage() {
     { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Schedule", route: "/schedule" },
     { icon: <IconUsers stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
     { icon: <IconWorld stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My website", route: "/minisite" },
-    { icon: <IconRosetteDiscount stroke={1.5} size={20} color="#FFFFFF" />, bg: '#7C3AED', label: 'My Perks', sub: 'Perks and rewards', route: '/perks' },
+    { icon: <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><IconRosetteDiscount stroke={1.5} size={20} color="#FFFFFF" /><span style={{ position: 'absolute', right: -4, bottom: -4, width: 16, height: 16, borderRadius: '50%', background: '#7C3AED', border: '1.5px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconSearch size={9} color="#FFFFFF" stroke={2.5} /></span></span>, bg: '#7C3AED', label: 'My Perks', sub: 'Perks and rewards', route: '/perks' },
     { icon: <IconMap stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Start tracking", route: "/live" },
     { icon: <IconCalendarCheck stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Month end", route: "/monthend" },
     { icon: <IconSchool stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
