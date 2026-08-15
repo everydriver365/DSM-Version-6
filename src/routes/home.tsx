@@ -3772,7 +3772,14 @@ function HomePage() {
           {pupilName(l)}
         </div>
         <div className="flex items-center" style={{ gap: 4, flexShrink: 0 }}>
+          <LessonPaymentBadge
+            status={l.payment_status}
+            amountDue={l.amount_due}
+            paidAmount={(l as any).paid_amount}
+            prepaidHours={l.pupils?.prepaid_hours}
+          />
           {badges.map((b, i) =>
+
             b.label === "EOL" ? (
               <button
                 key={i}
