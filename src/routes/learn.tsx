@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
+import LearnLibrarySection from "@/components/learn/LearnLibrarySection";
 
 export const Route = createFileRoute("/learn")({
   head: () => ({
@@ -492,6 +493,8 @@ function LearnPage() {
           ))}
         </div>
       </div>
+
+      <LearnLibrarySection />
 
       <div style={{ marginTop: 24 }}>
         <SectionLabel

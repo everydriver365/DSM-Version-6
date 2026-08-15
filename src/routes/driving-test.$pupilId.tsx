@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import RecommendedLearning from "@/components/learn/RecommendedLearning";
 
 export const Route = createFileRoute("/driving-test/$pupilId")({
   head: () => ({ meta: [{ title: "Test report — DSM by EveryDriver" }] }),
@@ -1200,6 +1201,11 @@ function RecordTab(props: any) {
           </div>
         )}
       </Card>
+
+      {/* Recommended learning based on the DL25 grid above */}
+      <RecommendedLearning faults={faults} />
+
+
 
       {/* Notes */}
       <Card>
