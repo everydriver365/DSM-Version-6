@@ -579,11 +579,15 @@ function SchedulePage() {
         },
         body: JSON.stringify({ instructorId: userId }),
       });
-      const data = await res.json();
+      const raw = await res.text();
+      let data: any = {};
+      try { data = JSON.parse(raw); } catch { /* non-JSON error body */ }
       if (data.success) {
         toast.success("Calendar synced — " + (data.eventsImported || 0) + " events updated");
         setLastSynced(new Date().toISOString());
         await fetchCalendarBlocks();
+      } else if (res.status === 429 || raw.includes("429")) {
+        toast.info("Calendar provider is rate-limiting us — try again in a few minutes");
       } else {
         toast.error("Sync failed — check your calendar URL in Settings");
       }
