@@ -51,7 +51,8 @@ export const getPodcastEpisodes = createServerFn({ method: "GET" }).handler(
         const audioUrl = attr(item, "enclosure", "url") ?? "";
         const guid = tagText(item, "guid");
         const pubDateRaw = tagText(item, "pubDate");
-        const pubDate = pubDateRaw ? new Date(pubDateRaw).toISOString() : null;
+        const pubMs = pubDateRaw ? new Date(pubDateRaw).getTime() : NaN;
+        const pubDate = Number.isNaN(pubMs) ? null : new Date(pubMs).toISOString();
 
         return {
           id: guid || audioUrl || `episode-${index}`,
