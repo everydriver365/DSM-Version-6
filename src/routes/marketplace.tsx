@@ -468,36 +468,13 @@ const VIEW_BUTTON: React.CSSProperties = {
   fontFamily: POPPINS,
 };
 
-/** Neutral "no price" state with an inline prompt to add one. */
-function NoPriceRow({ listingId }: { listingId: string }) {
-  const navigate = useNavigate();
+/** Neutral "no price" state. */
+function NoPriceRow() {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
       <span style={{ fontSize: 13, color: "#9CA3AF", fontFamily: POPPINS }}>
         No price set
       </span>
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          navigate({
-            to: "/marketplace/edit/$id" as never,
-            params: { id: listingId } as never,
-          });
-        }}
-        style={{
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          fontSize: 12,
-          fontWeight: 600,
-          color: "#1877D6",
-          fontFamily: POPPINS,
-          padding: 0,
-        }}
-      >
-        Add price →
-      </button>
     </div>
   );
 }
