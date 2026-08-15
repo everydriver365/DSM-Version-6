@@ -6442,8 +6442,9 @@ function HomePage() {
 
                            </div>
                          )}
-                       </div>
-                      );
+                        </div>
+                      </React.Fragment>
+                    );
 
                   })}
                   </div>
