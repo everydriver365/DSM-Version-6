@@ -22,6 +22,7 @@ import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { PageLayout } from "@/components/PageLayout";
 import { SheetQueueController } from "@/components/dsm/SheetQueue";
 import { LessonActionsSheet } from "@/components/lessons/LessonActionsSheet";
+import { LessonDetailsSheet } from "@/components/lessons/LessonDetailsSheet";
 import { WelcomeOverlay } from "@/components/dsm/WelcomeOverlay";
 
 
@@ -1373,6 +1374,7 @@ function HomePage() {
   const [lessons, setLessons] = useState<LessonRow[]>([]);
   const [autoTrackLessons, setAutoTrackLessons] = useState<boolean>(false);
   const [actionsOpenForLesson, setActionsOpenForLesson] = useState<LessonRow | null>(null);
+  const [detailsSheetForLesson, setDetailsSheetForLesson] = useState<LessonRow | null>(null);
   const [cancelSheetForLesson, setCancelSheetForLesson] = useState<LessonRow | null>(null);
   const [deleteSheetForLesson, setDeleteSheetForLesson] = useState<LessonRow | null>(null);
   const [paymentSheetForLesson, setPaymentSheetForLesson] = useState<LessonRow | null>(null);
@@ -6231,7 +6233,7 @@ function HomePage() {
                         </div>
                         <div style={{ position: 'relative', background: '#FFFFFF', border: '1px solid #E4E8EF', borderRadius: 13, marginBottom: 8 }}>
                         <div
-                          onClick={() => setActionsOpenForLesson(l)}
+                          onClick={() => setDetailsSheetForLesson(l)}
                           onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
                           role="button"
                           tabIndex={0}
@@ -6414,17 +6416,28 @@ function HomePage() {
                                overflow: 'hidden',
                              }}
                            >
-                              <button
-                                type="button"
-                                style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
-                                onClick={(ev) => {
-                                  ev.stopPropagation();
-                                  setActionsOpenForLesson(null);
-                                  navigate({ to: '/lessons/edit/$id', params: { id: l.id } });
-                                }}
-                              >
-                                Edit lesson
-                              </button>
+                               <button
+                                 type="button"
+                                 style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
+                                 onClick={(ev) => {
+                                   ev.stopPropagation();
+                                   setActionsOpenForLesson(null);
+                                   setDetailsSheetForLesson(l);
+                                 }}
+                               >
+                                 View details
+                               </button>
+                               <button
+                                 type="button"
+                                 style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
+                                 onClick={(ev) => {
+                                   ev.stopPropagation();
+                                   setActionsOpenForLesson(null);
+                                   navigate({ to: '/lessons/edit/$id', params: { id: l.id } });
+                                 }}
+                               >
+                                 Edit lesson
+                               </button>
                               <button
                                 type="button"
                                 style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
@@ -8349,6 +8362,33 @@ function HomePage() {
               ),
             );
             toast.success(`EOL completed for ${eolLesson.pupils?.name ?? "pupil"}`);
+          }}
+        />
+      )}
+
+      {detailsSheetForLesson && (
+        <LessonDetailsSheet
+          open={true}
+          onClose={() => setDetailsSheetForLesson(null)}
+          lesson={detailsSheetForLesson as any}
+          onViewPupil={() => {
+            const pupilId = detailsSheetForLesson?.pupil_id;
+            setDetailsSheetForLesson(null);
+            if (pupilId) navigate({ to: '/pupils/$id', params: { id: pupilId } });
+          }}
+          onTakePayment={() => {
+            const pupilId = detailsSheetForLesson?.pupil_id;
+            const lesson = detailsSheetForLesson;
+            setDetailsSheetForLesson(null);
+            if (pupilId) {
+              setUnifiedPayPupilId(pupilId);
+              setUnifiedPayOpen(true);
+            }
+          }}
+          onCancelLesson={() => {
+            const lesson = detailsSheetForLesson;
+            setDetailsSheetForLesson(null);
+            if (lesson) setCancelSheetForLesson(lesson);
           }}
         />
       )}
