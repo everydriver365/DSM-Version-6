@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  IconBookmark,
+  IconBookmarkFilled,
   IconBroadcast,
   IconChevronRight,
   IconClock,
@@ -33,6 +35,12 @@ import {
   type EpisodeProgress,
   type ProgressMap,
 } from "@/lib/podcastProgress";
+import {
+  loadSaved,
+  toggleSaved,
+  savedList,
+  type SavedMap,
+} from "@/lib/podcastSaved";
 
 export const Route = createFileRoute("/live-news")({
   component: LiveNewsPage,
@@ -93,7 +101,7 @@ function LiveNewsPage() {
       navigate({ to: fallback as never });
     }
   }
-  const [activeTab, setActiveTab] = useState<"live" | "news" | "podcasts">("live");
+  const [activeTab, setActiveTab] = useState<"live" | "news" | "podcasts" | "saved">("live");
   const [sessions, setSessions] = useState<LiveSession[] | null>(null);
   const [articles, setArticles] = useState<any[] | null>(null);
   const [episodes, setEpisodes] = useState<PodcastEpisode[] | null>(null);
@@ -106,6 +114,20 @@ function LiveNewsPage() {
   const [showFilter, setShowFilter] = useState<string>("all");
   const [podcastQuery, setPodcastQuery] = useState("");
   const [topicFilter, setTopicFilter] = useState<string>("all");
+
+  // ---- saved / bookmarked episodes (per device) ----
+  const [saved, setSaved] = useState<SavedMap>({});
+  useEffect(() => {
+    setSaved(loadSaved());
+  }, []);
+  const toggleSave = useCallback((ep: PodcastEpisode) => {
+    setSaved((prev) => {
+      const next = toggleSaved(prev, ep);
+      toast.success(next[ep.id] ? "Saved for later" : "Removed from saved");
+      return next;
+    });
+  }, []);
+  const savedEpisodes = savedList(saved);
 
   // ---- listening progress (per device) ----
   const [progress, setProgress] = useState<ProgressMap>({});
@@ -303,7 +325,8 @@ function LiveNewsPage() {
 
   const playNext = useCallback(() => {
     if (!playing) return;
-    const list = visibleEpisodes.filter((e) => e.audioUrl);
+    const source = activeTab === "saved" ? savedEpisodes : visibleEpisodes;
+    const list = source.filter((e) => e.audioUrl);
     const idx = list.findIndex((e) => e.id === playing.id);
     const next = idx >= 0 ? list[idx + 1] : list[0];
     if (!next) return;
@@ -312,7 +335,7 @@ function LiveNewsPage() {
     setDuration(0);
     setPlaying(next);
     if (selectedEpisode) setSelectedEpisode(next);
-  }, [playing, visibleEpisodes, selectedEpisode, flushProgress]);
+  }, [playing, visibleEpisodes, savedEpisodes, activeTab, selectedEpisode, flushProgress]);
 
   useEffect(() => {
     const el = audioRef.current;
@@ -326,7 +349,7 @@ function LiveNewsPage() {
   const allSessions = activeSession ? [activeSession, ...upcomingSessions] : upcomingSessions;
 
   const tabButton = (
-    key: "live" | "news" | "podcasts",
+    key: "live" | "news" | "podcasts" | "saved",
     label: string,
     count: number,
   ) => {
@@ -410,6 +433,7 @@ function LiveNewsPage() {
         {tabButton("live", "Live", sessions?.length ?? 0)}
         {tabButton("news", "News", articles?.length ?? 0)}
         {tabButton("podcasts", "Podcasts", episodes?.length ?? 0)}
+        {tabButton("saved", "Saved", savedEpisodes.length)}
       </div>
 
       <div
@@ -1023,6 +1047,47 @@ function LiveNewsPage() {
             )}
           </section>
         )}
+
+        {activeTab === "saved" && (
+          <section>
+            {savedEpisodes.length === 0 ? (
+              <EmptyState message="No saved episodes yet — tap the bookmark on any episode to save it here" />
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    marginBottom: 10,
+                    color: "#6B7686",
+                    fontSize: 12,
+                  }}
+                >
+                  <IconBookmarkFilled size={14} color="#1877D6" />
+                  <span>
+                    <strong style={{ color: "#0B1F3A" }}>{savedEpisodes.length}</strong> saved{" "}
+                    {savedEpisodes.length === 1 ? "episode" : "episodes"} on this device
+                  </span>
+                </div>
+                {savedEpisodes.map((ep) => (
+                  <EpisodeCard
+                    key={ep.id}
+                    ep={ep}
+                    isOpen={selectedEpisode?.id === ep.id}
+                    onOpen={() => setSelectedEpisode(ep)}
+                    isCurrent={playing?.id === ep.id}
+                    isPlaying={isPlaying}
+                    onPlay={() => playEpisode(ep)}
+                    progressEntry={progress[ep.id]}
+                    isSaved
+                    onToggleSave={() => toggleSave(ep)}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
       </div>
 
       {playing ? (
@@ -1070,6 +1135,8 @@ function LiveNewsPage() {
           progressEntry={progress[selectedEpisode.id]}
           onSeek={seekTo}
           onNext={playNext}
+          isSaved={!!saved[selectedEpisode.id]}
+          onToggleSave={() => toggleSave(selectedEpisode)}
         />
       )}
 
@@ -1314,6 +1381,8 @@ function EpisodeModal({
   progressEntry,
   onSeek,
   onNext,
+  isSaved,
+  onToggleSave,
 }: {
   episode: PodcastEpisode;
   onClose: () => void;
@@ -1326,6 +1395,8 @@ function EpisodeModal({
   progressEntry?: EpisodeProgress;
   onSeek: (secs: number) => void;
   onNext: () => void;
+  isSaved: boolean;
+  onToggleSave: () => void;
 }) {
   const [tab, setTab] = useState<"notes" | "transcript">("notes");
   const [transcript, setTranscript] = useState<string | null>(null);
@@ -1605,7 +1676,33 @@ function EpisodeModal({
                 </div>
               );
             })()}
-            <div style={{ marginTop: 10 }}>
+            <div style={{ marginTop: 10, display: "flex", gap: 8 }}>
+              <button
+                type="button"
+                onClick={onToggleSave}
+                aria-label={isSaved ? "Remove from saved" : "Save episode"}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  border: `1px solid ${isSaved ? "#1877D6" : "#E4E8EF"}`,
+                  borderRadius: 8,
+                  background: isSaved ? "#EFF6FF" : "#fff",
+                  color: isSaved ? "#1877D6" : "#6B7686",
+                  padding: "6px 10px",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  ...POPPINS,
+                }}
+              >
+                {isSaved ? (
+                  <IconBookmarkFilled size={18} color="#1877D6" />
+                ) : (
+                  <IconBookmark size={18} stroke={1.5} />
+                )}
+                {isSaved ? "Saved" : "Save"}
+              </button>
               <button
                 type="button"
                 onClick={() => handleShareEpisode(episode)}
