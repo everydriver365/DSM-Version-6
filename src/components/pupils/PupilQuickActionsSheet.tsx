@@ -13,7 +13,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { supabase } from "@/lib/supabaseClient";
 import { recordPayment } from "@/lib/payments";
 import { IconChevronRight, IconCreditCard, IconCurrencyPound, IconFileText, IconMessage, IconTrendingUp, IconUser } from "@tabler/icons-react";
-import { IconCalendarPlus, IconHistory, IconClipboardList } from "@tabler/icons-react";
+import { IconCalendarPlus, IconHistory, IconClipboardList, IconNotes } from "@tabler/icons-react";
 
 const navy = "#0B1F3A";
 const muted = "#8A93A3";
