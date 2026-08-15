@@ -267,7 +267,10 @@ function LiveNewsPage() {
         ? true
         : showFilter === "featured"
           ? ep.showFeatured
-          : ep.showId === showFilter;
+          : showFilter === "ted"
+            ? ep.showId.startsWith("ted-")
+            : ep.showId === showFilter;
+
     if (!showOk) return false;
     if (topicFilter !== "all" && !ep.showCategories.includes(topicFilter)) return false;
     if (!podcastSearch) return true;
