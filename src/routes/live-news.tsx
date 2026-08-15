@@ -960,11 +960,19 @@ function LiveNewsPage() {
                               justifyContent: "center",
                             }}
                           >
-                            {latest?.imageUrl ? (
+                            {latest?.imageUrl || sh.artworkUrl ? (
                               <img
-                                src={latest.imageUrl}
+                                src={latest?.imageUrl || sh.artworkUrl}
                                 alt=""
                                 loading="lazy"
+                                onError={(e) => {
+                                  const img = e.currentTarget;
+                                  if (sh.artworkUrl && img.src !== sh.artworkUrl) {
+                                    img.src = sh.artworkUrl;
+                                  } else {
+                                    img.style.display = "none";
+                                  }
+                                }}
                                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
                               />
                             ) : (
