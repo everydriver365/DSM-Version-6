@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { IconCreditCard, IconCurrencyPound, IconDotsVertical, IconPlus, IconRotateClockwise2, IconSearch, IconX } from "@tabler/icons-react";
-import { IconBanknote, IconBuildingBank, IconQrcode, IconReceipt, IconWallet } from "@tabler/icons-react";
+import { IconCashBanknote, IconBuildingBank, IconQrcode, IconReceipt, IconWallet } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 
 import { Button } from "../components/dsm/Button";
@@ -93,13 +93,13 @@ function MethodIcon({ method, refund }: { method: string | null | undefined; ref
   const color = "#fff";
   if (refund) return <IconRotateClockwise2 stroke={1.5} size={size} color={color} />;
   switch (method) {
-    case "cash": return <IconBanknote size={size} color={color} />;
+    case "cash": return <IconCashBanknote size={size} color={color} />;
     case "card": return <IconCreditCard stroke={1.5} size={size} color={color} />;
     case "qr": return <IconQrcode size={size} color={color} />;
     case "bank_transfer": return <IconBuildingBank size={size} color={color} />;
     case "klarna":
     case "clearpay": return <IconWallet size={size} color={color} />;
-    default: return <IconBanknote size={size} color={color} />;
+    default: return <IconCashBanknote size={size} color={color} />;
   }
 }
 function methodBg(method: string | null | undefined, refund?: boolean) {

@@ -625,7 +625,7 @@ function ProductCard({
           justifyContent: "center",
         }}
       >
-        {!image && <Icon size={26} color={accent} stroke={1.75} />}
+        {!image && <Icon size={26} color={accent} strokeWidth={1.75} />}
       </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>

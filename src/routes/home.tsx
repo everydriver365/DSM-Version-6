@@ -23,8 +23,7 @@ import { LessonActionsSheet } from "@/components/lessons/LessonActionsSheet";
 import { WelcomeOverlay } from "@/components/dsm/WelcomeOverlay";
 
 
-import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconAward, IconBell, IconBolt, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconChartBar, IconCheckbox, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDots, IconDotsVertical, IconFileText, IconGift, IconHeart, IconInbox, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPlay, IconPlus, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconSend, IconSettings, IconShield, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserPlus, IconUsers, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
-import { IconArrowsLeftRight, IconBook, IconBuilding, IconCalculator, IconCalendar, IconCalendarOff, IconChecks, IconCrown, IconFileCheck, IconFileSpreadsheet, IconFolderOpen, IconGasStation, IconHeadphones, IconHelpCircle, IconInfinity, IconMove, IconPlayerPlay, IconReceipt, IconSettings, IconShieldExclamation, IconSignature, IconSparkles, IconSpeakerphone, IconToggleLeft, IconUserCircle, IconVideo } from "@tabler/icons-react";
+import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconArrowsLeftRight, IconArrowsMove, IconAward, IconBell, IconBolt, IconBook, IconBuilding, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarOff, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconChartBar, IconCheckbox, IconChecks, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDots, IconDotsVertical, IconFileCheck, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHeadphones, IconHeart, IconHelpCircle, IconInbox, IconInfinity, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPlay, IconPlus, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconSend, IconSettings, IconShield, IconShieldExclamation, IconSignature, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconToggleLeft, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserCircle, IconUserPlus, IconUsers, IconVideo, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
 
 
 
@@ -638,7 +637,7 @@ function TodayLessonsTile({
           flexShrink: 0,
         }}
       >
-        <IconCalendar stroke={1.5} size={18} stroke={1.5} />
+        <IconCalendar stroke={1.5} size={18} />
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -668,7 +667,7 @@ function TodayLessonsTile({
                 padding: 0,
               }}
             >
-              <IconPlus stroke={1.5} size={14} stroke={2.5} />
+              <IconPlus stroke={1.5} size={14} />
             </button>
           )}
         </div>
@@ -1061,7 +1060,7 @@ function TileCard({
           boxShadow: "0 1px 2px rgba(11, 31, 58, 0.06)",
         }}
       >
-        <IconChevronRight stroke={1.5} size={16} color="#0B1F3A" stroke={2.4} />
+        <IconChevronRight stroke={1.5} size={16} color="#0B1F3A" />
       </span>
     </button>
   );
@@ -5619,7 +5618,7 @@ function HomePage() {
             title: 'This week',
             subtitleTop: `${weekLessonsTotal} lessons completed`,
             subtitleBottom: weekAvg > 0 ? `avg £${weekAvg.toFixed(0)} per lesson` : 'avg —',
-            icon: <IconCurrencyPound stroke={1.5} size={20} stroke={1.75} />,
+            icon: <IconCurrencyPound stroke={1.5} size={20} />,
             right: { kind: 'value', value: `£${Math.round(weekEarnings)}`, label: 'earned' },
           },
           {
@@ -5627,7 +5626,7 @@ function HomePage() {
             title: 'This month',
             subtitleTop: `${monthLessonsCompleted} lessons completed`,
             subtitleBottom: <span style={{ color: '#B0BAC9' }}>— vs last month</span>,
-            icon: <IconCurrencyPound stroke={1.5} size={20} stroke={1.75} />,
+            icon: <IconCurrencyPound stroke={1.5} size={20} />,
             right: { kind: 'value', value: `£${Math.round(monthEarnings)}`, label: 'earned' },
           },
           {
@@ -5635,7 +5634,7 @@ function HomePage() {
             title: 'Year to date',
             subtitleTop: `${ytdLessonsCompleted} lessons completed`,
             subtitleBottom: <span style={{ color: '#B0BAC9' }}>— vs last year</span>,
-            icon: <IconChartBar stroke={1.5} size={20} stroke={1.75} />,
+            icon: <IconChartBar stroke={1.5} size={20} />,
             right: { kind: 'value', value: `£${Math.round(ytdEarnings)}`, label: 'earned' },
           },
         ];
@@ -5729,7 +5728,7 @@ function HomePage() {
                     style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: '#1877D6', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, lineHeight: 1 }}
                   >
                     Full schedule
-                    <IconArrowRight stroke={1.5} size={14} stroke={2.2} />
+                    <IconArrowRight stroke={1.5} size={14} />
                   </button>
                 </div>
               </div>
@@ -5870,7 +5869,7 @@ function HomePage() {
                             flexShrink: 0,
                           }}
                         >
-                          <IconMove size={14} color="#FFFFFF" />
+                          <IconArrowsMove size={14} color="#FFFFFF" />
                         </div>
                         <div style={{ fontSize: 13, fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           Moving: {(movingLessonHome.pupils as any)?.name?.split(' ')[0] || 'lesson'}'s {movingLessonHome.duration_minutes} min lesson
@@ -6997,7 +6996,7 @@ function HomePage() {
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                           <div style={{ width: 36, height: 36, borderRadius: 8, background: '#FBE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <IconClock stroke={1.5} size={20} color="#C23B3B" stroke={1.8} />
+                            <IconClock stroke={1.5} size={20} color="#C23B3B" />
                           </div>
                           <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Running late</div>
                         </div>
@@ -10621,7 +10620,7 @@ function DiscoverSection() {
               onClick={() => navigate({ to: "/dsm-live" })}
             >
               View all
-              <IconArrowRight stroke={1.5} size={14} stroke={2} />
+              <IconArrowRight stroke={1.5} size={14} />
             </button>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

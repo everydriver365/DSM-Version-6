@@ -2,7 +2,7 @@ import { pupilColour } from "@/components/PupilAvatar";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { IconArrowLeft, IconArrowRight, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
-import { IconArrowDown, IconMove } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowsMove } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
@@ -975,7 +975,7 @@ function SchedulePage() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <IconMove size={16} color="#FFFFFF" />
+            <IconArrowsMove size={16} color="#FFFFFF" />
             <span style={{ color: '#FFFFFF', fontWeight: 600, fontSize: 13, marginLeft: 8 }}>
               Moving: {(movingLesson.pupil?.first_name || movingLesson.pupils?.first_name || 'lesson')}'s {movingLesson.duration_minutes} min lesson
             </span>
