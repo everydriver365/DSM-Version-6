@@ -40,6 +40,14 @@ export interface RecordPaymentWithPackageInput extends RecordPaymentInput {
 
 /** Everything a caller (e.g. the quick-actions sheet's StatRow) needs to
  *  update its optimistic UI without re-deriving reconciliation state. */
+export interface PaidLessonUpdate {
+  id: string;
+  payment_status: "paid" | "partial";
+  paid_amount: number;
+  payment_method: string;
+  paid_at: string;
+}
+
 export interface RecordPaymentResult {
   /** Amount applied to unpaid lessons (excludes overpayment). */
   amountApplied: number;
@@ -53,6 +61,12 @@ export interface RecordPaymentResult {
   lessonsFullyPaid: number;
   /** 1 if a lesson was left in `partial`, else 0. */
   lessonsLeftPartial: number;
+  /**
+   * Every lesson row this payment changed, with its new status/amount.
+   * Lets callers patch their local lesson lists optimistically instead of
+   * waiting for a refetch.
+   */
+  updatedLessons: PaidLessonUpdate[];
   /**
    * Delta to apply to a previously-known balance owed:
    *   newBalanceOwed = priorBalanceOwed - amountApplied
@@ -84,6 +98,7 @@ async function recordPaymentCore(
   let remaining = amount;
   let lessonsFullyPaid = 0;
   let lessonsLeftPartial = 0;
+  const updatedLessons: PaidLessonUpdate[] = [];
 
   // 0. If a specific lesson was targeted, pay that one first.
   if (input.targetLessonId) {
@@ -105,6 +120,13 @@ async function recordPaymentCore(
           paid_amount: full ? due : pay,
         })
         .eq("id", input.targetLessonId);
+      updatedLessons.push({
+        id: input.targetLessonId,
+        payment_status: full ? "paid" : "partial",
+        paid_amount: full ? due : pay,
+        payment_method: method,
+        paid_at: now,
+      });
       remaining -= pay;
       if (full) lessonsFullyPaid += 1;
       else lessonsLeftPartial = 1;
@@ -113,6 +135,13 @@ async function recordPaymentCore(
         .from("lessons")
         .update({ payment_status: "paid", payment_method: method, paid_at: now, paid_amount: 0 })
         .eq("id", input.targetLessonId);
+      updatedLessons.push({
+        id: input.targetLessonId,
+        payment_status: "paid",
+        paid_amount: 0,
+        payment_method: method,
+        paid_at: now,
+      });
     }
   }
 
@@ -140,6 +169,13 @@ async function recordPaymentCore(
           paid_amount: due,
         })
         .eq("id", l.id);
+      updatedLessons.push({
+        id: l.id,
+        payment_status: "paid",
+        paid_amount: due,
+        payment_method: method,
+        paid_at: now,
+      });
       remaining -= due;
       lessonsFullyPaid += 1;
     } else {
@@ -152,6 +188,13 @@ async function recordPaymentCore(
           paid_amount: remaining,
         })
         .eq("id", l.id);
+      updatedLessons.push({
+        id: l.id,
+        payment_status: "partial",
+        paid_amount: remaining,
+        payment_method: method,
+        paid_at: now,
+      });
       remaining = 0;
       lessonsLeftPartial = 1;
     }
@@ -272,6 +315,7 @@ async function recordPaymentCore(
     newPrepaidHours,
     lessonsFullyPaid,
     lessonsLeftPartial,
+    updatedLessons,
     balanceOwedDelta: -amountApplied,
   };
 }
