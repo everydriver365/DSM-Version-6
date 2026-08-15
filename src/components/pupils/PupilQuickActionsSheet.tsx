@@ -434,6 +434,15 @@ export function PupilQuickActionsSheet({
         <SectionLabel>OPEN</SectionLabel>
         <SheetGroup>
           <NavRow
+            icon={<IconNotes stroke={1.5} size={18} color={muted} />}
+            label="Pupil brief"
+            onClick={() => {
+              onClose();
+              navigate({ to: "/pupils/brief/$id", params: { id: pupil.id } });
+            }}
+          />
+          <SheetDivider />
+          <NavRow
             icon={<IconUser stroke={1.5} size={18} color={muted} />}
             label="Full profile"
             onClick={() => {
