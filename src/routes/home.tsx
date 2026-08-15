@@ -4302,12 +4302,14 @@ function HomePage() {
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{formatTime(l)}</span>
                           <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{pupilName(l)}</span>
                           <span style={{ fontSize: 12, color: "#6B7280" }}>{formatDuration(l.duration_minutes)}</span>
-                          <span style={{
-                            fontSize: 10, fontWeight: 700, textTransform: "uppercase",
-                            padding: "3px 8px", borderRadius: 6,
-                            background: paid ? "#DCFCE7" : "#FEE2E2",
-                            color: paid ? "#166534" : "#991B1B",
-                          }}>{paid ? "Paid" : "Unpaid"}</span>
+                          <LessonPaymentBadge
+                            status={l.payment_status}
+                            amountDue={l.amount_due}
+                            paidAmount={(l as any).paid_amount}
+                            prepaidHours={(l.pupils as any)?.prepaid_hours}
+                            size="md"
+                          />
+
                           {eolDue && (
                             <span
                               onClick={(e) => {
