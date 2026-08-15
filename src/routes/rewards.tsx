@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Zap, Medal, Trophy } from "lucide-react";
+import { IconArrowLeft, IconBolt, IconMedal, IconTrophy } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 
@@ -174,7 +174,7 @@ function RewardsPage() {
           aria-label="Back"
           style={{ background: "transparent", border: 0, color: "#fff", padding: 4, display: "flex" }}
         >
-          <ArrowLeft size={22} />
+          <IconArrowLeft size={22} />
         </button>
         <div style={{ fontWeight: 800, fontSize: 17 }}>DSM Rewards</div>
       </div>
@@ -239,7 +239,7 @@ function RewardsPage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-          <Zap size={18} color="#D97706" />
+          <IconBolt size={18} color="#D97706" />
           <div style={{ fontWeight: 800, color: "#0B1F3A", fontSize: 15 }}>How to earn points</div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
@@ -288,7 +288,7 @@ function RewardsPage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Medal size={18} color="#D97706" />
+          <IconMedal size={18} color="#D97706" />
           <div style={{ fontWeight: 800, color: "#0B1F3A", fontSize: 15 }}>
             Leaderboard {currentYear}
           </div>
@@ -310,7 +310,7 @@ function RewardsPage() {
               padding: "12px 0",
             }}
           >
-            <Trophy size={16} color="#9CA3AF" />
+            <IconTrophy size={16} color="#9CA3AF" />
             No leaderboard entries yet this season.
           </div>
         ) : (

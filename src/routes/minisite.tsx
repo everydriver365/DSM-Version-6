@@ -2,26 +2,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import {
-  Copy,
-  ExternalLink,
-  Camera,
-  X,
-  Check,
-  Loader2,
-  ChevronLeft,
-  ChevronDown,
-  FileText,
-  Image as ImageIcon,
-  Images,
-  Palette,
-  Type,
-  LayoutTemplate,
-  Paintbrush,
-} from "lucide-react";
 
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
-import { IconCheck } from "@tabler/icons-react";
+import { IconBrush, IconCamera, IconCheck, IconChevronDown, IconChevronLeft, IconCopy, IconExternalLink, IconFileText, IconLayoutBoard, IconLoader2, IconPalette, IconPhoto, IconTypography, IconX } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
@@ -408,7 +391,7 @@ function MiniSitePage() {
         {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-IconTypography': 'application/json',
             'Authorization': `Bearer ${session?.access_token}`,
             'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo',
           },
@@ -447,7 +430,7 @@ function MiniSitePage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ ...POPPINS, backgroundColor: "#F3F8FF" }}>
-        <Loader2 className="animate-spin" color="#1877D6" />
+        <IconLoader2 className="animate-spin" color="#1877D6" />
       </div>
     );
   }
@@ -662,7 +645,7 @@ function MiniSitePage() {
               {summary}
             </span>
           </span>
-          <ChevronDown
+          <IconChevronDown
             size={14}
             color="#C7C7CC"
             style={{
@@ -715,7 +698,7 @@ function MiniSitePage() {
             justifyContent: "center",
           }}
         >
-          <ChevronLeft size={20} />
+          <IconChevronLeft size={20} />
         </button>
         <div style={{ color: "#fff", fontSize: 22, fontWeight: 800 }}>My Mini Website</div>
       </div>
@@ -752,7 +735,7 @@ function MiniSitePage() {
             </div>
             <button
               onClick={copyUrl}
-              aria-label="Copy URL"
+              aria-label="IconCopy URL"
               style={{
                 width: 32,
                 height: 32,
@@ -767,7 +750,7 @@ function MiniSitePage() {
                 flexShrink: 0,
               }}
             >
-              <Copy size={16} />
+              <IconCopy size={16} />
             </button>
           </div>
 
@@ -794,7 +777,7 @@ function MiniSitePage() {
               gap: 6,
             }}
           >
-            <ExternalLink size={16} />
+            <IconExternalLink size={16} />
             Preview website
           </button>
 
@@ -920,7 +903,7 @@ function MiniSitePage() {
               )}
               {slugValidFormat && !slugChecking && slugAvailable === true && (
                 <span style={{ color: "#1877D6", display: "inline-flex", alignItems: "center", gap: 4 }}>
-                  <Check size={14} /> Available
+                  <IconCheck size={14} /> Available
                 </span>
               )}
               {slugValidFormat && !slugChecking && slugAvailable === false && (
@@ -945,7 +928,7 @@ function MiniSitePage() {
 
             <CollapsibleRow
               id="bio"
-              icon={<FileText size={17} />}
+              icon={<IconFileText size={17} />}
               title="Bio"
               summary={
                 websiteBio.trim()
@@ -969,7 +952,7 @@ function MiniSitePage() {
 
             <CollapsibleRow
               id="hero"
-              icon={<ImageIcon size={17} />}
+              icon={<IconPhoto size={17} />}
               title="Hero image"
               summary={heroUrl ? "Set ✓" : "Not set"}
             >
@@ -985,7 +968,7 @@ function MiniSitePage() {
                       fontSize: 12, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 4,
                     }}
                   >
-                    <Camera size={14} /> Replace
+                    <IconCamera size={14} /> Replace
                   </button>
                 </div>
               ) : (
@@ -999,10 +982,10 @@ function MiniSitePage() {
                   }}
                 >
                   {uploadingHero ? (
-                    <Loader2 className="animate-spin" color="#1877D6" />
+                    <IconLoader2 className="animate-spin" color="#1877D6" />
                   ) : (
                     <>
-                      <Camera size={28} color="#9CA3AF" />
+                      <IconCamera size={28} color="#9CA3AF" />
                       <div className="text-[13px] mt-2" style={{ color: "#6B7280" }}>Tap to upload hero image</div>
                     </>
                   )}
@@ -1013,7 +996,7 @@ function MiniSitePage() {
 
             <CollapsibleRow
               id="gallery"
-              icon={<Images size={17} />}
+              icon={<IconPhoto size={17} />}
               title="Gallery"
               summary={gallery.length ? `${gallery.length} photos added` : "No photos yet"}
             >
@@ -1040,7 +1023,7 @@ function MiniSitePage() {
                           display: "flex", alignItems: "center", justifyContent: "center",
                         }}
                       >
-                        <X size={14} />
+                        <IconX size={14} />
                       </button>
                     </div>
                   ))}
@@ -1058,10 +1041,10 @@ function MiniSitePage() {
                   }}
                 >
                   {uploadingGallery ? (
-                    <Loader2 className="animate-spin" color="#1877D6" />
+                    <IconLoader2 className="animate-spin" color="#1877D6" />
                   ) : (
                     <>
-                      <Camera size={22} color="#9CA3AF" />
+                      <IconCamera size={22} color="#9CA3AF" />
                       <div className="text-[12px] mt-1" style={{ color: "#6B7280" }}>Add images</div>
                     </>
                   )}
@@ -1079,7 +1062,7 @@ function MiniSitePage() {
 
             <CollapsibleRow
               id="theme"
-              icon={<Palette size={17} />}
+              icon={<IconPalette size={17} />}
               title="Theme"
               summary={THEMES.find((t) => t.key === theme)?.label ?? "Classic"}
             >
@@ -1112,7 +1095,7 @@ function MiniSitePage() {
 
             <CollapsibleRow
               id="font"
-              icon={<Type size={17} />}
+              icon={<IconTypography size={17} />}
               title="Font"
               summary={font}
             >
@@ -1141,7 +1124,7 @@ function MiniSitePage() {
 
             <CollapsibleRow
               id="header"
-              icon={<LayoutTemplate size={17} />}
+              icon={<IconLayoutBoard size={17} />}
               title="Header style"
               summary={HEADER_STYLES.find((h) => h.key === headerStyle)?.label ?? "Standard"}
             >
@@ -1170,7 +1153,7 @@ function MiniSitePage() {
 
             <CollapsibleRow
               id="colour"
-              icon={<Paintbrush size={17} />}
+              icon={<IconBrush size={17} />}
               title="Brand colour"
               summary={brandColour}
             >
@@ -1262,7 +1245,7 @@ function MiniSitePage() {
                   flexShrink: 0,
                 }}
               >
-                <Check size={18} />
+                <IconCheck size={18} />
               </span>
               <div style={{ minWidth: 0 }}>
                 <div
@@ -1984,7 +1967,7 @@ function MiniSitePage() {
               aria-label="Back"
               style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex" }}
             >
-              <ChevronLeft size={22} />
+              <IconChevronLeft size={22} />
             </button>
             <div style={{ color: "#fff", fontSize: 18, fontWeight: 800 }}>Choose your domain</div>
           </div>
@@ -2044,7 +2027,7 @@ function MiniSitePage() {
                   opacity: domainChecking || domainQuery.trim().length < 3 ? 0.5 : 1,
                 }}
               >
-                {domainChecking ? "…" : "Check"}
+                {domainChecking ? "…" : "IconCheck"}
               </button>
             </div>
 
@@ -2142,7 +2125,7 @@ function MiniSitePage() {
               aria-label="Back"
               style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex" }}
             >
-              <ChevronLeft size={22} />
+              <IconChevronLeft size={22} />
             </button>
             <div style={{ color: "#fff", fontSize: 18, fontWeight: 800 }}>Choose your plan</div>
           </div>

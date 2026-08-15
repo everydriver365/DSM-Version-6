@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ChevronLeft, ExternalLink, User, Clock, Calendar } from "lucide-react";
+import { IconCalendar, IconChevronLeft, IconClock, IconExternalLink, IconUser } from "@tabler/icons-react";
 
 import { sanitizeNewsContent, sanitizeNewsTitle } from "../lib/newsText";
 import { supabase } from "../lib/supabaseClient";
@@ -123,18 +123,18 @@ function ArticleBody({ article }: { article: any }) {
         >
           {article.author && (
             <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <User size={13} />
+              <IconUser size={13} />
               {article.author}
             </span>
           )}
           {article.read_time_mins && (
             <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <Clock size={13} />
+              <IconClock size={13} />
               {article.read_time_mins} min read
             </span>
           )}
           <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-            <Calendar size={13} />
+            <IconCalendar size={13} />
             {formatDate(article.published_at)}
           </span>
         </div>
@@ -176,7 +176,7 @@ function ArticleBody({ article }: { article: any }) {
             onClick={() => window.open(article.link, "_blank")}
             style={{ color: "#1877D6", display: "flex", alignItems: "center", gap: 4 }}
           >
-            <ExternalLink size={14} />
+            <IconExternalLink size={14} />
           </button>
         </div>
       </div>
@@ -241,7 +241,7 @@ function NewsArticlePage() {
             className="flex items-center gap-2 text-white"
             style={{ fontSize: 14, ...POPPINS }}
           >
-            <ChevronLeft size={18} />
+            <IconChevronLeft size={18} />
             Back to home
           </button>
         </div>
@@ -270,7 +270,7 @@ function NewsArticlePage() {
           className="flex items-center justify-center"
           style={{ width: 36, height: 36, color: "#FFFFFF" }}
         >
-          <ChevronLeft size={28} />
+          <IconChevronLeft size={28} />
         </button>
         <span
           className="text-white"
@@ -286,7 +286,7 @@ function NewsArticlePage() {
           className="flex items-center justify-center"
           style={{ width: 36, height: 36, color: "#FFFFFF" }}
         >
-          <ExternalLink size={22} />
+          <IconExternalLink size={22} />
         </button>
       </div>
 

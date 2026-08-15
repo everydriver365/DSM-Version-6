@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
@@ -236,7 +236,7 @@ function RegisterPage() {
               aria-label={showPassword ? "Hide password" : "Show password"}
               tabIndex={-1}
             >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showPassword ? <IconEyeOff size={18} /> : <IconEye size={18} />}
             </button>
           </div>
 
@@ -269,7 +269,7 @@ function RegisterPage() {
               aria-label={showConfirm ? "Hide confirm password" : "Show confirm password"}
               tabIndex={-1}
             >
-              {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showConfirm ? <IconEyeOff size={18} /> : <IconEye size={18} />}
             </button>
           </div>
 

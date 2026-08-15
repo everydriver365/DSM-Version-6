@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, UserPlus } from "lucide-react";
+import { IconArrowLeft, IconUserPlus } from "@tabler/icons-react";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
@@ -138,7 +138,7 @@ function NewPupilPage() {
             onClick={() => navigate({ to: "/pupils" })}
             className="flex items-center justify-center w-8 h-8 -ml-1"
           >
-            <ArrowLeft size={20} color="#0B1F3A" />
+            <IconArrowLeft size={20} color="#0B1F3A" />
           </button>
           <p
             className="text-[20px] font-semibold"
@@ -189,7 +189,7 @@ function NewPupilPage() {
                   fontFamily: "Poppins, sans-serif",
                 }}
               >
-                <UserPlus size={16} color="#1877D6" />
+                <IconUserPlus size={16} color="#1877D6" />
                 Import from contacts
               </button>
             )}

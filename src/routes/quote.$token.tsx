@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { CheckCircle2, Lock } from "lucide-react";
+import { IconCircleCheck, IconLock } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 
 export const Route = createFileRoute("/quote/$token")({
@@ -299,7 +299,7 @@ function PublicQuotePage() {
         <div style={{ padding: "0 16px 24px", display: "flex", flexDirection: "column", gap: 10 }}>
           {accepted ? (
             <div style={{ padding: "24px 16px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 12 }}>
-              <CheckCircle2 size={72} color="#1877D6" strokeWidth={2} />
+              <IconCircleCheck size={72} color="#1877D6" stroke={2} />
               <div style={{ fontSize: 22, fontWeight: 700, color: "#0B1F3A" }}>Quote accepted! 🎉</div>
               <div style={{ fontSize: 14, color: "#6B7280", maxWidth: 340 }}>
                 {depositPaid && !depositDoneNow
@@ -313,14 +313,14 @@ function PublicQuotePage() {
 
               {depositAmount > 0 && depositPaid && (
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 999, background: "#EEF2F7", color: "#0B1F3A", fontSize: 13, fontWeight: 700 }}>
-                  <CheckCircle2 size={16} /> Deposit paid
+                  <IconCircleCheck size={16} /> Deposit paid
                 </span>
               )}
 
               {needsDeposit && (
                 <div style={{ width: "100%", marginTop: 16, padding: 20, background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 12, textAlign: "left" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                    <Lock size={18} color="#1877D6" />
+                    <IconLock size={18} color="#1877D6" />
                     <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>Secure your booking</div>
                   </div>
                   <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 12 }}>

@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { Calendar } from "lucide-react";
+import { IconCalendar } from "@tabler/icons-react";
 
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { StatTile } from "../components/dsm/StatTile";
@@ -105,7 +105,7 @@ function PupilHistoryPage() {
 
         {lessons === null ? null : lessons.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16">
-            <Calendar size={40} color="#6B7280" />
+            <IconCalendar size={40} color="#6B7280" />
             <p className="mt-3 text-[14px] text-[#6B7280]" style={POPPINS}>
               No lesson history
             </p>
@@ -132,7 +132,7 @@ function PupilHistoryPage() {
                       }}
                     >
                       <div style={{ width: 40, height: 40, borderRadius: 999, background: bg, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, letterSpacing: 0.2, flexShrink: 0 }}>
-                        <Calendar size={18} color="#FFFFFF" />
+                        <IconCalendar size={18} color="#FFFFFF" />
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: 15, fontWeight: 600, color: isCancelled ? "#64748B" : "#0F2044", textDecoration: isCancelled ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>

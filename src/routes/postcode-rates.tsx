@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { MapPin, Trash2 } from "lucide-react";
+import { IconMapPin, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -145,7 +145,7 @@ function PostcodeRatesPage() {
                   {r.label && <div className="text-[12px] truncate" style={{ color: "#6B7280", ...POPPINS }}>{r.label}</div>}
                 </div>
                 <button type="button" aria-label="Delete" onClick={() => delRule(r.id)} className="flex items-center justify-center rounded-lg" style={{ width: 36, height: 36, background: "#FEECEE" }}>
-                  <Trash2 size={16} color="#CC2229" />
+                  <IconTrash size={16} color="#CC2229" />
                 </button>
               </div>
             ))
@@ -154,7 +154,7 @@ function PostcodeRatesPage() {
 
         <div className="mt-6 bg-white rounded-xl p-4" style={{ border: "0.5px solid #E2E6ED" }}>
           <div className="flex items-center gap-2 mb-3">
-            <MapPin size={18} color="#1877D6" />
+            <IconMapPin size={18} color="#1877D6" />
             <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Add rule</span>
           </div>
           <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Outward code</label>

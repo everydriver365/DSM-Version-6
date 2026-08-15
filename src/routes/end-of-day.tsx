@@ -2,8 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { IconAlertTriangle, IconArrowLeft, IconCalendarOff, IconCar, IconChevronRight, IconFileText, IconMicrophone, IconMicrophoneOff } from "@tabler/icons-react";
-import { Receipt, Calendar as CalendarIcon } from "lucide-react";
+import { IconAlertTriangle, IconArrowLeft, IconCalendar, IconCalendarOff, IconCar, IconChevronRight, IconFileText, IconMicrophone, IconMicrophoneOff, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard.tsx";
@@ -355,7 +354,7 @@ function EndOfDayPage() {
 
       {/* Section 4: Tomorrow */}
       <Card>
-        <Heading icon={<CalendarIcon size={16} color="#1877D6" />} title="Tomorrow" />
+        <Heading icon={<IconCalendar size={16} color="#1877D6" />} title="Tomorrow" />
         {tomorrowLessons.length === 0 ? (
           <EmptyState
             icon={<IconCalendarOff size={32} color="#9CA3AF" stroke={1.5} />}
@@ -470,7 +469,7 @@ function EndOfDayPage() {
               flexShrink: 0,
             }}
           >
-            <Receipt size={17} color="#C23B3B" />
+            <IconReceipt size={17} color="#C23B3B" />
           </span>
           <span style={{ flex: 1 }}>
             <span style={{ display: "block", fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>Log an expense</span>

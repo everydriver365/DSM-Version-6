@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { BookOpen, Mic, MicOff, Plus, Send, X } from "lucide-react";
+import { IconBook, IconMicrophone, IconMicrophoneOff, IconPlus, IconSend, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -124,7 +124,7 @@ function MicTextarea({
           border: "none",
         }}
       >
-        {listening ? <MicOff size={16} /> : <Mic size={16} />}
+        {listening ? <IconMicrophoneOff size={16} /> : <IconMicrophone size={16} />}
       </button>
     </div>
   );
@@ -278,7 +278,7 @@ function ReflectiveLogPage() {
         </div>
       ) : logs.length === 0 ? (
         <div className="px-6 py-16 flex flex-col items-center text-center">
-          <BookOpen className="w-16 h-16 mx-auto mb-4" color="#7C3AED" />
+          <IconBook className="w-16 h-16 mx-auto mb-4" color="#7C3AED" />
           <div className="text-[16px] font-bold" style={{ color: "#0F2044" }}>
             No reflective logs yet
           </div>
@@ -393,8 +393,8 @@ function ReflectiveLogPage() {
                           opacity: savingResponse ? 0.7 : 1,
                         }}
                       >
-                        <Send size={14} />
-                        {savingResponse ? "Sending…" : "Send response"}
+                        <IconSend size={14} />
+                        {savingResponse ? "Sending…" : "IconSend response"}
                       </button>
                     </div>
                   </div>
@@ -440,8 +440,8 @@ function ReflectiveLogPage() {
           zIndex: 30,
         }}
       >
-        <BookOpen size={22} />
-        <Plus size={12} style={{ position: "absolute", right: 12, bottom: 12 }} />
+        <IconBook size={22} />
+        <IconPlus size={12} style={{ position: "absolute", right: 12, bottom: 12 }} />
       </button>
 
       {addOpen && (
@@ -479,7 +479,7 @@ function ReflectiveLogPage() {
                   color: "#0F2044",
                 }}
               >
-                <X size={16} />
+                <IconX size={16} />
               </button>
             </div>
             <div className="px-4 pt-2 space-y-4">
@@ -515,7 +515,7 @@ function ReflectiveLogPage() {
                   opacity: saving ? 0.7 : 1,
                 }}
               >
-                <BookOpen size={16} />
+                <IconBook size={16} />
                 {saving ? "Saving…" : "Save log entry"}
               </button>
             </div>

@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Car, Trash2 } from "lucide-react";
+import { IconCar, IconPlus, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { LogMileageSheet } from "@/components/mileage/LogMileageSheet";
@@ -181,7 +181,7 @@ function MileagePage() {
           className="inline-flex items-center gap-1 text-[13px] font-semibold text-white"
           style={{ background: "#1877D6", borderRadius: 999, padding: "8px 14px", border: "none" }}
         >
-          <Plus size={16} color="#FFFFFF" /> Add mileage
+          <IconPlus size={16} color="#FFFFFF" /> Add mileage
         </button>
       </div>
 
@@ -238,7 +238,7 @@ function MileagePage() {
           <SectionHeader>MILEAGE LOG</SectionHeader>
           {logs.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12">
-              <Car size={40} color="#6B7280" />
+              <IconCar size={40} color="#6B7280" />
               <div className="mt-3 text-[13px] text-[#6B7280]">No mileage recorded</div>
             </div>
           ) : (
@@ -260,7 +260,7 @@ function MileagePage() {
                         className="flex items-center justify-center"
                         style={{ width: 24, height: 24 }}
                       >
-                        <Trash2 size={14} color="#1877D6" />
+                        <IconTrash size={14} color="#1877D6" />
                       </button>
                     </div>
                   </div>

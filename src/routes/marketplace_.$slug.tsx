@@ -2,15 +2,7 @@ import * as React from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
-import {
-  MapPin,
-  Camera,
-  Heart,
-  GraduationCap,
-  Star,
-  CheckCircle2,
-  ChevronLeft,
-} from "lucide-react";
+import { IconCamera, IconChevronLeft, IconCircleCheck, IconHeart, IconMapPin, IconSchool, IconStar } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 
 export const Route = createFileRoute("/marketplace_/$slug")({
@@ -34,11 +26,11 @@ type Tile = {
 };
 
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ size?: number; color?: string; style?: React.CSSProperties }>> = {
-  tracking: MapPin,
-  hardware: Camera,
-  health: Heart,
-  learning: GraduationCap,
-  promotion: Star,
+  tracking: IconMapPin,
+  hardware: IconCamera,
+  health: IconHeart,
+  learning: IconSchool,
+  promotion: IconStar,
 };
 
 const FEATURES: Record<string, string[]> = {
@@ -136,7 +128,7 @@ function MarketplaceProductPage() {
           }}
           aria-label="Back"
         >
-          <ChevronLeft size={24} />
+          <IconChevronLeft size={24} />
         </button>
         <div
           style={{
@@ -261,7 +253,7 @@ function MarketplaceProductPage() {
                       marginBottom: isLast ? 0 : 12,
                     }}
                   >
-                    <CheckCircle2 size={18} color="#1877D6" />
+                    <IconCircleCheck size={18} color="#1877D6" />
                     <span style={{ fontSize: 13, color: "#374151" }}>
                       {feature}
                     </span>
@@ -336,6 +328,6 @@ function MarketplaceProductPage() {
 }
 
 function CategoryIcon({ category }: { category: string }) {
-  const Icon = CATEGORY_ICONS[category] || Star;
+  const Icon = CATEGORY_ICONS[category] || IconStar;
   return <Icon size={64} color="#0B1F3A" style={{ opacity: 0.3 }} />;
 }

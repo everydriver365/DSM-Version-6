@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Star } from "lucide-react";
+import { IconStar } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Card } from "../components/dsm/Card";
@@ -37,7 +37,7 @@ function Stars({ rating, size = 14 }: { rating: number; size?: number }) {
       {[1, 2, 3, 4, 5].map((i) => {
         const filled = i <= Math.round(rating);
         return (
-          <Star
+          <IconStar
             key={i}
             size={size}
             color={filled ? "#1877D6" : "#EEF2F7"}
@@ -115,7 +115,7 @@ function ReviewsPage() {
             className="flex flex-col items-center justify-center text-[13px]"
             style={{ color: "#6B7280", padding: "24px 0" }}
           >
-            <Star size={24} color="#6B7280" />
+            <IconStar size={24} color="#6B7280" />
             <div className="mt-2">No reviews yet</div>
           </div>
         ) : (

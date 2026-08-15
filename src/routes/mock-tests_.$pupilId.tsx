@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { ClipboardCheck, Mic, MicOff, Plus, Trash2, X } from "lucide-react";
+import { IconClipboardCheck, IconMicrophone, IconMicrophoneOff, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { supabase } from "../lib/supabaseClient";
@@ -130,7 +130,7 @@ function MicTextarea({
           border: "none",
         }}
       >
-        {listening ? <MicOff size={16} /> : <Mic size={16} />}
+        {listening ? <IconMicrophoneOff size={16} /> : <IconMicrophone size={16} />}
       </button>
     </div>
   );
@@ -341,7 +341,7 @@ function MockTestsPage() {
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
           style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
-          <Plus size={15} />
+          <IconPlus size={15} />
           Record mock test
         </button>
       </div>
@@ -416,7 +416,7 @@ function MockTestsPage() {
         </div>
       ) : tests.length === 0 ? (
         <div className="px-6 py-14 flex flex-col items-center text-center">
-          <ClipboardCheck size={56} color="#0891B2" />
+          <IconClipboardCheck size={56} color="#0891B2" />
           <div className="mt-4 text-[16px] font-bold" style={{ color: "#0F2044" }}>
             No mock tests recorded yet
           </div>
@@ -487,7 +487,7 @@ function MockTestsPage() {
                       className="inline-flex items-center gap-1 text-[12px] font-medium px-3 h-8 rounded-lg"
                       style={{ backgroundColor: "#FEE2E2", color: "#B91C1C", border: "none" }}
                     >
-                      <Trash2 size={14} />
+                      <IconTrash size={14} />
                       Delete
                     </button>
                   </div>
@@ -528,7 +528,7 @@ function MockTestsPage() {
                 className="inline-flex items-center justify-center rounded-full"
                 style={{ width: 32, height: 32, backgroundColor: "#F3F4F6", border: "none", color: "#0F2044" }}
               >
-                <X size={16} />
+                <IconX size={16} />
               </button>
             </div>
             <div className="px-4 pt-2 space-y-4">
@@ -662,7 +662,7 @@ function MockTestsPage() {
                   opacity: saving ? 0.7 : 1,
                 }}
               >
-                <ClipboardCheck size={16} />
+                <IconClipboardCheck size={16} />
                 {saving ? "Saving…" : "Save mock test"}
               </button>
             </div>

@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Check } from "lucide-react";
+import { IconArrowLeft, IconCheck } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -178,7 +178,7 @@ function ChecklistPage() {
                         border: on ? "1px solid #1877D6" : "1.5px solid #CBD5E1",
                       }}
                     >
-                      {on && <Check size={14} color="#FFFFFF" strokeWidth={3} />}
+                      {on && <IconCheck size={14} color="#FFFFFF" stroke={3} />}
                     </span>
                     <span
                       className="text-[14px]"

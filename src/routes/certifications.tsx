@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, AlertCircle, Award, Calendar, CheckCircle, Clock, MoreHorizontal, X } from "lucide-react";
+import { IconAlertCircle, IconArrowLeft, IconAward, IconCalendar, IconCircleCheck, IconClock, IconDots, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -313,7 +313,7 @@ function CertificationsPage() {
               style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4, color: "#9CA3AF" }}
               aria-label="More"
             >
-              <MoreHorizontal size={16} />
+              <IconDots size={16} />
             </button>
             {menuFor === cert.id && (
               <div style={{ position: "absolute", top: 26, right: 0, background: "#fff", border: "0.5px solid #E2E6ED", borderRadius: 10, boxShadow: "0 6px 20px rgba(0,0,0,0.1)", zIndex: 20, minWidth: 140, overflow: "hidden" }}>
@@ -333,12 +333,12 @@ function CertificationsPage() {
         <div style={{ padding: "0 16px 12px", display: "flex", gap: 16, flexWrap: "wrap" }}>
           {cert.issued_date && (
             <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, color: "#6B7280" }}>
-              <Calendar size={12} color="#9CA3AF" /> Issued {fmtDate(cert.issued_date)}
+              <IconCalendar size={12} color="#9CA3AF" /> Issued {fmtDate(cert.issued_date)}
             </div>
           )}
           {cert.expiry_date && (
             <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, color: s.colour, fontWeight: 600 }}>
-              <Clock size={12} color={s.colour} /> {s.label}
+              <IconClock size={12} color={s.colour} /> {s.label}
             </div>
           )}
         </div>
@@ -361,7 +361,7 @@ function CertificationsPage() {
             style={{ background: "transparent", border: "none", color: "#FFFFFF", cursor: "pointer", padding: 4 }}
             aria-label="Back"
           >
-            <ArrowLeft size={22} />
+            <IconArrowLeft size={22} />
           </button>
           <div style={{ fontSize: 17, fontWeight: 700 }}>Certifications & Licences</div>
         </div>
@@ -370,7 +370,7 @@ function CertificationsPage() {
           style={{ background: "transparent", border: "none", color: "#FFFFFF", cursor: "pointer", padding: 4 }}
           aria-label="Close"
         >
-          <X size={22} />
+          <IconX size={22} />
         </button>
       </div>
 
@@ -391,7 +391,7 @@ function CertificationsPage() {
       {/* Urgent alert */}
       {(expiredCount > 0 || expiringCount > 0) && (
         <div style={{ margin: "12px 16px 0", background: "#FEF2F2", border: "0.5px solid #FECACA", borderRadius: 12, padding: "14px 16px", display: "flex", alignItems: "flex-start", gap: 10 }}>
-          <AlertCircle size={16} color="#CC2229" style={{ marginTop: 1 }} />
+          <IconAlertCircle size={16} color="#CC2229" style={{ marginTop: 1 }} />
           <div>
             <div style={{ fontSize: 13, fontWeight: 600, color: "#CC2229" }}>
               {expiredCount} expired · {expiringCount} expiring soon
@@ -408,7 +408,7 @@ function CertificationsPage() {
         <div style={{ padding: 32, textAlign: "center", color: "#9CA3AF" }}>Loading…</div>
       ) : certs.length === 0 ? (
         <div style={{ padding: "48px 24px 24px", textAlign: "center" }}>
-          <Award size={48} color="#D1D5DB" style={{ margin: "0 auto 12px" }} />
+          <IconAward size={48} color="#D1D5DB" style={{ margin: "0 auto 12px" }} />
           <div style={{ fontSize: 15, fontWeight: 600, color: "#6B7280" }}>No certifications tracked</div>
           <div style={{ fontSize: 13, color: "#9CA3AF", marginTop: 4 }}>
             Add your ADI licence, DBS check and other important dates
@@ -464,13 +464,13 @@ function CertificationsPage() {
                 style={{ background: "#F3F4F6", border: "none", width: 32, height: 32, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
                 aria-label="Close sheet"
               >
-                <X size={16} color="#6B7280" />
+                <IconX size={16} color="#6B7280" />
               </button>
             </div>
 
             {saveSuccess ? (
               <div style={{ background: "#E0FFF4", borderRadius: 12, padding: 24, textAlign: "center" }}>
-                <CheckCircle size={48} color="#16A34A" style={{ margin: "0 auto 12px" }} />
+                <IconCircleCheck size={48} color="#16A34A" style={{ margin: "0 auto 12px" }} />
                 <div style={{ fontSize: 20, fontWeight: 900, color: "#0F2044" }}>Saved!</div>
                 <div style={{ fontSize: 14, fontWeight: 600, color: "#16A34A", marginTop: 4 }}>{fTitle}</div>
                 {fExpiry && !fNoExpiry ? (

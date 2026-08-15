@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { IconCurrencyPound, IconMail, IconMessage, IconPencil, IconPlus, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { PoundSterling, Plus, MessageSquare, Mail, X, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -355,7 +355,7 @@ function PupilPaymentsPage() {
                 className="flex items-center justify-center gap-2 rounded-xl border border-[#E2E8F0] bg-white py-3 text-[13px] font-semibold text-[#0B1F3A]"
                 style={POPPINS}
               >
-                <MessageSquare size={16} color="#1877D6" />
+                <IconMessage size={16} color="#1877D6" />
                 Text
               </a>
               <a
@@ -363,7 +363,7 @@ function PupilPaymentsPage() {
                 className="flex items-center justify-center gap-2 rounded-xl border border-[#E2E8F0] bg-white py-3 text-[13px] font-semibold text-[#0B1F3A]"
                 style={POPPINS}
               >
-                <Mail size={16} color="#1877D6" />
+                <IconMail size={16} color="#1877D6" />
                 Email
               </a>
             </div>
@@ -379,13 +379,13 @@ function PupilPaymentsPage() {
           className="w-full flex items-center justify-center gap-2 rounded-xl py-3 mb-4 text-[14px] font-semibold text-white"
           style={{ backgroundColor: "#1877D6", ...POPPINS }}
         >
-          <Plus size={18} color="#FFFFFF" />
+          <IconPlus size={18} color="#FFFFFF" />
           Record payment
         </button>
 
         {payments === null ? null : payments.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16">
-            <PoundSterling size={40} color="#6B7280" />
+            <IconCurrencyPound size={40} color="#6B7280" />
             <p className="mt-3 text-[14px] text-[#6B7280]" style={POPPINS}>
               No payment history
             </p>
@@ -423,7 +423,7 @@ function PupilPaymentsPage() {
                             onClick={() => openEdit(p)}
                             className="rounded-lg border border-[#E2E8F0] p-2"
                           >
-                            <Pencil size={14} color="#0B1F3A" />
+                            <IconPencil size={14} color="#0B1F3A" />
                           </button>
                         </div>
                       </div>
@@ -470,7 +470,7 @@ function PupilPaymentsPage() {
                 onClick={() => !editSaving && setEditing(null)}
                 className="p-1"
               >
-                <X size={20} color="#0B1F3A" />
+                <IconX size={20} color="#0B1F3A" />
               </button>
             </div>
 
@@ -588,7 +588,7 @@ function PupilPaymentsPage() {
                 onClick={() => !recSaving && setShowRecord(false)}
                 className="p-1"
               >
-                <X size={20} color="#0B1F3A" />
+                <IconX size={20} color="#0B1F3A" />
               </button>
             </div>
 

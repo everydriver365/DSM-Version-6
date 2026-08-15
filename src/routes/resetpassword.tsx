@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { Eye, EyeOff, CheckCircle2 } from "lucide-react";
+import { IconCircleCheck, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
@@ -67,7 +67,7 @@ function ResetPasswordPage() {
       >
         {done ? (
           <div className="flex flex-col items-center text-center">
-            <CheckCircle2 size={48} className="text-[#1877D6] mb-3" />
+            <IconCircleCheck size={48} className="text-[#1877D6] mb-3" />
             <h2 className="text-[20px] font-semibold text-[#0B1F3A]">Password updated!</h2>
             <p className="text-[13px] text-[#6B7280] mt-2">Redirecting to sign in…</p>
           </div>
@@ -98,7 +98,7 @@ function ResetPasswordPage() {
                   aria-label={showPw ? "Hide password" : "Show password"}
                   tabIndex={-1}
                 >
-                  {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPw ? <IconEyeOff size={18} /> : <IconEye size={18} />}
                 </button>
               </div>
 
@@ -124,7 +124,7 @@ function ResetPasswordPage() {
                   aria-label={showConfirm ? "Hide password" : "Show password"}
                   tabIndex={-1}
                 >
-                  {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showConfirm ? <IconEyeOff size={18} /> : <IconEye size={18} />}
                 </button>
               </div>
             </div>

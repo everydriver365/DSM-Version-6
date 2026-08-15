@@ -1,8 +1,7 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { IconChevronLeft, IconFileText, IconPlus, IconRefresh, IconSend } from "@tabler/icons-react";
-import { Link2 } from "lucide-react";
+import { IconChevronLeft, IconFileText, IconLink, IconPlus, IconRefresh, IconSend } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -403,7 +402,7 @@ function QuotesPage() {
                           cursor: "pointer", fontFamily: "Poppins, sans-serif",
                         }}
                       >
-                        <Link2 size={14} /> Copy link
+                        <IconLink size={14} /> Copy link
                       </button>
                       {(q.recipient_email || q.recipient_phone) && (
                         <button

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Pencil, Trash2, Plus, Upload, Film } from "lucide-react";
+import { IconChevronLeft, IconMovie, IconPencil, IconPlus, IconTrash, IconUpload } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
@@ -399,7 +399,7 @@ function VideoForm({
               color: source === s ? BLUE : GREY,
             }}
           >
-            {s === "upload" ? "Upload file" : "YouTube link"}
+            {s === "upload" ? "IconUpload file" : "YouTube link"}
           </button>
         ))}
       </div>
@@ -649,7 +649,7 @@ function VideoForm({
 
       {uploadStatus === "error" && (
         <div style={{ marginTop: 16, fontSize: 13, color: RED, fontWeight: 600 }}>
-          Upload failed. Please try again.
+          IconUpload failed. Please try again.
         </div>
       )}
 
@@ -675,7 +675,7 @@ function VideoForm({
             ...POPPINS,
           }}
         >
-          <Upload size={16} />
+          <IconUpload size={16} />
           {uploadStatus === "uploading"
             ? "Uploading…"
             : uploadStatus === "saved"
@@ -799,7 +799,7 @@ function AdminLearnVideosPage() {
             color: "#fff",
           }}
         >
-          <ChevronLeft size={18} />
+          <IconChevronLeft size={18} />
         </button>
         <span style={{ fontSize: 16, fontWeight: 600, flex: 1 }}>Learn videos</span>
       </div>
@@ -828,7 +828,7 @@ function AdminLearnVideosPage() {
               ...POPPINS,
             }}
           >
-            <Plus size={18} />
+            <IconPlus size={18} />
             Add video
           </button>
         )}
@@ -903,7 +903,7 @@ function AdminLearnVideosPage() {
                       style={{ width: "100%", height: "100%", objectFit: "cover" }}
                     />
                   ) : (
-                    <Film size={16} />
+                    <IconMovie size={16} />
                   )}
                 </div>
 
@@ -949,7 +949,7 @@ function AdminLearnVideosPage() {
                     boxShadow: "0 3px 0 #E4E4E8",
                   }}
                 >
-                  <Pencil size={16} />
+                  <IconPencil size={16} />
                 </button>
                 <button
                   type="button"
@@ -970,7 +970,7 @@ function AdminLearnVideosPage() {
                     boxShadow: "0 3px 0 #F7C9C6",
                   }}
                 >
-                  <Trash2 size={16} />
+                  <IconTrash size={16} />
                 </button>
               </div>
             ))}

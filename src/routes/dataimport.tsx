@@ -10,7 +10,7 @@ import {
   type PupilField,
 } from "@/lib/csvColumnMapping";
 import { validatePupilRows, resolveName } from "@/lib/pupilRowValidation";
-import { ChevronLeft, Info, Upload, CheckCircle2, AlertCircle, Download, AlertTriangle } from "lucide-react";
+import { IconAlertCircle, IconAlertTriangle, IconChevronLeft, IconCircleCheck, IconDownload, IconInfoCircle, IconUpload } from "@tabler/icons-react";
 
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -307,16 +307,16 @@ function DataImportPage() {
               gap: 12,
             }}
           >
-            <Info size={20} color="#1877D6" style={{ flexShrink: 0, marginTop: 2 }} />
+            <IconInfoCircle size={20} color="#1877D6" style={{ flexShrink: 0, marginTop: 2 }} />
             <div className="text-[13px] text-[#0B1F3A]">
-              Upload a CSV file to import pupils in bulk. Download the template below to get started.
+              IconUpload a CSV file to import pupils in bulk. IconDownload the template below to get started.
             </div>
           </div>
 
           <div className="mt-3">
             <Button onClick={downloadTemplate}>
-              <Download size={18} className="mr-2" />
-              Download CSV template
+              <IconDownload size={18} className="mr-2" />
+              IconDownload CSV template
             </Button>
           </div>
 
@@ -335,7 +335,7 @@ function DataImportPage() {
               backgroundColor: "#FAFBFC",
             }}
           >
-            <Upload size={28} color="#6B7280" />
+            <IconUpload size={28} color="#6B7280" />
             <div className="text-[14px] text-[#6B7280]">
               {fileName ? fileName : "Tap to select CSV file"}
             </div>
@@ -439,9 +439,9 @@ function DataImportPage() {
             >
               <div className="flex items-center" style={{ gap: 10 }}>
                 {invalidRowCount > 0 ? (
-                  <AlertCircle size={20} color="#CC2229" />
+                  <IconAlertCircle size={20} color="#CC2229" />
                 ) : (
-                  <CheckCircle2 size={20} color="#1877D6" />
+                  <IconCircleCheck size={20} color="#1877D6" />
                 )}
                 <div className="text-[13px] font-semibold text-[#0B1F3A]">
                   {invalidRowCount > 0
@@ -534,9 +534,9 @@ function DataImportPage() {
                                     style={{ gap: 3, color: err ? "#CC2229" : "#B26B00", maxWidth: 170 }}
                                   >
                                     {err ? (
-                                      <AlertCircle size={11} style={{ flexShrink: 0, marginTop: 1 }} />
+                                      <IconAlertCircle size={11} style={{ flexShrink: 0, marginTop: 1 }} />
                                     ) : (
-                                      <AlertTriangle size={11} style={{ flexShrink: 0, marginTop: 1 }} />
+                                      <IconAlertTriangle size={11} style={{ flexShrink: 0, marginTop: 1 }} />
                                     )}
                                     <span>{err || warn}</span>
                                   </div>
@@ -607,13 +607,13 @@ function DataImportPage() {
 
                   <div className="mt-2.5 flex items-center" style={{ gap: 14 }}>
                     <div className="flex items-center" style={{ gap: 6 }}>
-                      <CheckCircle2 size={16} color="#1877D6" />
+                      <IconCircleCheck size={16} color="#1877D6" />
                       <span className="text-[12px] text-[#0B1F3A]">
                         <strong>{liveSuccess}</strong> imported
                       </span>
                     </div>
                     <div className="flex items-center" style={{ gap: 6 }}>
-                      <AlertCircle size={16} color={liveFailed > 0 ? "#CC2229" : "#9AA3AF"} />
+                      <IconAlertCircle size={16} color={liveFailed > 0 ? "#CC2229" : "#9AA3AF"} />
                       <span
                         className="text-[12px]"
                         style={{ color: liveFailed > 0 ? "#CC2229" : "#6B7280" }}

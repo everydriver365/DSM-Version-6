@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Search, X, Receipt } from "lucide-react";
+import { IconArrowLeft, IconReceipt, IconSearch, IconX } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
@@ -149,20 +149,20 @@ function InvoicesPage() {
         <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>{filtered.length} record{filtered.length === 1 ? "" : "s"}</div>
       </div>
 
-      {/* Search */}
+      {/* IconSearch */}
       <div style={{ margin: "0 16px 12px" }}>
         <div style={{ background: "white", borderRadius: 12, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,0.06)", display: "flex", alignItems: "center", gap: 8 }}>
-          <Search size={16} color="#9CA3AF" />
+          <IconSearch size={16} color="#9CA3AF" />
           <input
             type="text"
-            placeholder="Search by pupil name..."
+            placeholder="IconSearch by pupil name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{ flex: 1, border: "none", outline: "none", fontSize: 14, color: "#0B1F3A", background: "transparent", ...POPPINS }}
           />
           {search && (
             <button type="button" onClick={() => setSearch("")} style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }} aria-label="Clear search">
-              <X size={16} color="#9CA3AF" />
+              <IconX size={16} color="#9CA3AF" />
             </button>
           )}
         </div>
@@ -174,7 +174,7 @@ function InvoicesPage() {
           <div style={{ textAlign: "center", padding: 40, color: "#9CA3AF", fontSize: 13 }}>Loading…</div>
         ) : filtered.length === 0 ? (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 24px", gap: 8 }}>
-            <Receipt size={40} color="#D0D5DD" />
+            <IconReceipt size={40} color="#D0D5DD" />
             <div style={{ fontSize: 14, color: "#6B7280" }}>No invoices found</div>
             <div style={{ fontSize: 12, color: "#9CA3AF" }}>{search ? "Try a different search" : "Invoice records will appear here"}</div>
           </div>

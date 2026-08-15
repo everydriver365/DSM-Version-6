@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ToggleLeft, ChevronRight } from "lucide-react";
+import { IconChevronRight, IconToggleLeft } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Card } from "../components/dsm/Card";
@@ -186,7 +186,7 @@ function QuickAvailabilityPage() {
                   <span className="text-[14px] text-[#0B1F3A] font-medium">
                     Edit working hours
                   </span>
-                  <ChevronRight size={18} color="#6B7280" />
+                  <IconChevronRight size={18} color="#6B7280" />
                 </div>
               </Card>
             </Link>
@@ -199,5 +199,5 @@ function QuickAvailabilityPage() {
   );
 }
 
-// Silence unused import warning if ToggleLeft not used elsewhere
-void ToggleLeft;
+// Silence unused import warning if IconToggleLeft not used elsewhere
+void IconToggleLeft;

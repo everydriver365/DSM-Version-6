@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Gift, Share2 } from "lucide-react";
+import { IconGift, IconShare } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -232,7 +232,7 @@ function ReferralsPage() {
             fontFamily: "Poppins, sans-serif",
           }}
         >
-          <Share2 size={18} color="#FFFFFF" />
+          <IconShare size={18} color="#FFFFFF" />
           <span>Share</span>
         </button>
       </div>
@@ -281,7 +281,7 @@ function ReferralsPage() {
                 margin: "0 auto 16px",
               }}
             >
-              <Gift size={24} color="#B0B0B5" />
+              <IconGift size={24} color="#B0B0B5" />
             </div>
             <div
               style={{

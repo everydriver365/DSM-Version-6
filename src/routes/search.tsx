@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconChevronRight, IconClock, IconSearch } from "@tabler/icons-react";
-import { Search as SearchIcon } from "lucide-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -300,7 +299,7 @@ function SearchPage() {
           className="flex items-center"
           style={{ backgroundColor: "#FFFFFF", borderRadius: 10, height: 38, paddingLeft: 10, paddingRight: 10, gap: 8, border: "1px solid #E2E8F0" }}
         >
-          <SearchIcon size={16} color="#6B7280" />
+          <IconSearch size={16} color="#6B7280" />
           <input
             autoFocus
             type="text"

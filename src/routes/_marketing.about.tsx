@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Shield, Zap, Heart } from "lucide-react";
 
+import { IconBolt, IconHeart, IconShield } from "@tabler/icons-react";
 const TEAL = "#1877D6";
 const WHITE = "#FFFFFF";
 const LIGHT_BG = "#F7FAFC";
@@ -21,17 +21,17 @@ export const Route = createFileRoute("/_marketing/about")({
 
 const values = [
   {
-    icon: Shield,
+    icon: IconShield,
     title: "Trust first",
     body: "We protect learners and instructors equally. Every feature we build is designed to create a fairer, safer experience for everyone on the platform.",
   },
   {
-    icon: Zap,
+    icon: IconBolt,
     title: "Simple by design",
     body: "Great software should feel effortless. If something takes more than a few taps, we've done it wrong.",
   },
   {
-    icon: Heart,
+    icon: IconHeart,
     title: "Built for the profession",
     body: "We're instructors too. We understand the job, the pressures and what actually matters — and that shapes everything we build.",
   },

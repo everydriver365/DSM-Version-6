@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { Trash2 } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { PageLayout } from "@/components/PageLayout";
@@ -100,7 +100,7 @@ function NoteEditPage() {
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
           style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#CC2229" }}
         >
-          <Trash2 size={15} />
+          <IconTrash size={15} />
           Delete
         </button>
       </div>

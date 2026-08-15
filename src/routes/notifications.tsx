@@ -1,8 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconChevronRight, IconCircleX, IconCurrencyPound, IconRefresh, IconTrash, IconUsers, IconX } from "@tabler/icons-react";
-import { CheckCheck, Calendar as CalendarIcon } from "lucide-react";
+import { IconBell, IconCalendar, IconChecks, IconChevronRight, IconCircleX, IconCurrencyPound, IconRefresh, IconTrash, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -53,7 +52,7 @@ function formatTime(iso: string) {
 function typeIcon(type: string | null) {
   switch (type) {
     case "lesson":
-      return { bg: "#1877D6", node: <CalendarIcon size={18} color="#FFFFFF" /> };
+      return { bg: "#1877D6", node: <IconCalendar size={18} color="#FFFFFF" /> };
     case "payment":
       return { bg: "#1877D6", node: <IconCurrencyPound stroke={1.5} size={18} color="#FFFFFF" /> };
     case "pupil":
@@ -202,7 +201,7 @@ function NotificationsPage() {
           style={{ color: "#1877D6", ...POPPINS }}
           aria-label="Mark all as read"
         >
-          <CheckCheck size={14} color="#1877D6" />
+          <IconChecks size={14} color="#1877D6" />
           Mark all read
         </button>
       </div>

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { IconCircleCheck } from "@tabler/icons-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
@@ -52,7 +52,7 @@ function ForgotPasswordPage() {
       >
         {sent ? (
           <div className="flex flex-col items-center text-center">
-            <CheckCircle2 size={48} className="text-[#1877D6] mb-3" />
+            <IconCircleCheck size={48} className="text-[#1877D6] mb-3" />
             <h2 className="text-[20px] font-semibold text-[#0B1F3A]">Check your email</h2>
             <p className="text-[13px] text-[#6B7280] mt-2">
               We've sent a password reset link to <span className="text-[#0B1F3A]">{email}</span>.

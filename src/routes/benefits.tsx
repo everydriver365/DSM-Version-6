@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { toast } from 'sonner';
-import { ChevronLeft } from 'lucide-react';
 import InstructorTopBar from '@/components/dsm/InstructorTopBar';
 import { PageLoader } from '@/components/dsm/LoadingSpinner';
 import diaLogoAsset from '@/assets/dia-logo.png.asset.json';
@@ -10,24 +9,7 @@ import perkboxLogoAsset from '@/assets/perkbox-logo.jpeg.asset.json';
 import pirkxLogoAsset from '@/assets/pirkx-logo.png.asset.json';
 import hmcaLogoAsset from '@/assets/hmca-logo.png.asset.json';
 import bennendenLogoAsset from '@/assets/bennenden-logo.jpg.asset.json';
-import {
-  IconCircleCheck,
-  IconLock,
-  IconCheck,
-  IconRosetteDiscount,
-  IconStethoscope,
-  IconGift,
-  IconShieldCheck,
-  IconCamera,
-  IconGasStation,
-  IconCar,
-  IconTool,
-  IconChevronRight,
-  
-  IconHeartHandshake,
-  IconTable,
-  IconChevronDown,
-} from '@tabler/icons-react';
+import { IconCamera, IconCar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconCircleCheck, IconGasStation, IconGift, IconHeartHandshake, IconLock, IconRosetteDiscount, IconShieldCheck, IconStethoscope, IconTable, IconTool } from "@tabler/icons-react";
 import {
   createSubscriptionPaymentLink,
   TIERS,
@@ -1188,7 +1170,7 @@ function BenefitsPage() {
                 display: 'flex',
               }}
             >
-              <ChevronLeft size={22} />
+              <IconChevronLeft size={22} />
             </button>
             <div style={{ color: '#fff', fontSize: 18, fontWeight: 800, fontFamily: 'Poppins, sans-serif' }}>
               Choose your plan

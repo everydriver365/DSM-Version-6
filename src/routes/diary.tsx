@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Plus, X } from "lucide-react";
+import { IconChevronLeft, IconChevronRight, IconPlus, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Card } from "../components/dsm/Card";
@@ -270,7 +270,7 @@ function DiaryPage() {
           className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
           style={{ backgroundColor: "#1877D6" }}
         >
-          <Plus size={16} color="#fff" /> Add entry
+          <IconPlus size={16} color="#fff" /> Add entry
         </button>
       </div>
 
@@ -287,7 +287,7 @@ function DiaryPage() {
             className="flex items-center justify-center rounded-md"
             style={{ width: 32, height: 32 }}
           >
-            <ChevronLeft size={20} color="#1877D6" />
+            <IconChevronLeft size={20} color="#1877D6" />
           </button>
           <div className="text-[15px] font-semibold text-[#0B1F3A]">
             {monthLabel(month)}
@@ -299,7 +299,7 @@ function DiaryPage() {
             className="flex items-center justify-center rounded-md"
             style={{ width: 32, height: 32 }}
           >
-            <ChevronRight size={20} color="#1877D6" />
+            <IconChevronRight size={20} color="#1877D6" />
           </button>
         </div>
 
@@ -604,7 +604,7 @@ function DiaryPage() {
                 className="flex items-center justify-center"
                 style={{ width: 32, height: 32 }}
               >
-                <X size={20} color="#6B7280" />
+                <IconX size={20} color="#6B7280" />
               </button>
             </div>
 

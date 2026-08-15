@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Play, Music } from "lucide-react";
+import { IconArrowLeft, IconMusic, IconPlayerPlay } from "@tabler/icons-react";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -106,7 +106,7 @@ function PodcastDetailPage() {
           style={{ background: "transparent", border: 0, color: "#fff", padding: 4, cursor: "pointer" }}
           aria-label="Back"
         >
-          <ArrowLeft size={22} />
+          <IconArrowLeft size={22} />
         </button>
         <div
           style={{
@@ -144,7 +144,7 @@ function PodcastDetailPage() {
             letterSpacing: "0.04em",
           }}
         >
-          <Music size={12} /> Podcast
+          <IconMusic size={12} /> Podcast
         </div>
         <div style={{ fontWeight: 900, fontSize: 20, marginTop: 12 }}>{podcast.title}</div>
         {podcast.guest_name && (
@@ -303,7 +303,7 @@ function PodcastDetailPage() {
                     gap: 6,
                   }}
                 >
-                  <Play size={14} /> Play now
+                  <IconPlayerPlay size={14} /> IconPlayerPlay now
                 </button>
               )}
             </div>

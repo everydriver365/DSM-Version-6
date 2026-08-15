@@ -1,8 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { IconPhoto, IconChevronRight } from "@tabler/icons-react";
-import { Loader2, MapPin, Calendar, Repeat, CalendarDays, CalendarCheck, Clock, Sunrise, Sun, Moon, GraduationCap, Settings } from "lucide-react";
+import { IconCalendar, IconCalendarCheck, IconCalendarMonth, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMoon, IconPhoto, IconRepeat, IconSchool, IconSettings, IconSun, IconSunrise } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import DSMToggle from "@/components/dsm/DSMToggle";
 import { Input } from "../components/dsm/Input";
@@ -73,7 +72,7 @@ function autoName(t: CourseType, hours: number, includesTest: boolean) {
   return includesTest ? `${base} + Test` : base;
 }
 
-const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const DAY_LABELS = ["IconSun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const WEEKDAYS = [1, 2, 3, 4, 5];
 const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
 
@@ -664,7 +663,7 @@ function NewCoursePage() {
                   >
                     Change image
                     {uploadingHero && (
-                      <Loader2 strokeWidth={1.5} size={16} className="animate-spin" style={{ color: "#1877D6" }} />
+                      <IconLoader2 stroke={1.5} size={16} className="animate-spin" style={{ color: "#1877D6" }} />
                     )}
                   </button>
                   <button
@@ -799,7 +798,7 @@ function NewCoursePage() {
                   opacity: saving ? 0.7 : 1,
                 }}
               >
-                {saving && <Loader2 size={16} className="animate-spin" />}
+                {saving && <IconLoader2 size={16} className="animate-spin" />}
                 {saving ? "Publishing…" : "Publish course"}
               </button>
             </>
@@ -1037,12 +1036,12 @@ function Step2(props: {
     key: RepeatType;
     label: string;
     desc: string;
-    Icon: typeof Calendar;
+    Icon: typeof IconCalendar;
   }> = [
-    { key: "one-off", label: "One-off", desc: "Runs once", Icon: Calendar },
-    { key: "daily", label: "Daily", desc: "Every day", Icon: Repeat },
-    { key: "weekly", label: "Weekly", desc: "Chosen days", Icon: CalendarDays },
-    { key: "monthly", label: "Monthly", desc: "Same date each month", Icon: CalendarCheck },
+    { key: "one-off", label: "One-off", desc: "Runs once", Icon: IconCalendar },
+    { key: "daily", label: "Daily", desc: "Every day", Icon: IconRepeat },
+    { key: "weekly", label: "Weekly", desc: "Chosen days", Icon: IconCalendarMonth },
+    { key: "monthly", label: "Monthly", desc: "Same date each month", Icon: IconCalendarCheck },
   ];
 
   function toggleDay(d: number) {
@@ -1096,7 +1095,7 @@ function Step2(props: {
 
       {/* REPEAT */}
       <div>
-        <FieldLabel>Repeat</FieldLabel>
+        <FieldLabel>IconRepeat</FieldLabel>
         
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           {REPEAT_CARDS.map(({ key, label, desc, Icon }) => {
@@ -1266,7 +1265,7 @@ function Step2(props: {
             </div>
           </div>
           <Input
-            label="Repeat until (end date)"
+            label="IconRepeat until (end date)"
             type="date"
             value={repeatEndDate}
             onChange={(e) => setRepeatEndDate(e.target.value)}
@@ -1343,14 +1342,14 @@ function Step2(props: {
         <FieldLabel>Lesson times</FieldLabel>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           {([
-            { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: Clock, color: "#1877D6", full: false },
-            { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: Sunrise, color: "#1877D6", full: false },
-            { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: Sun, color: "#E8641A", full: false },
-            { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: Moon, color: "#1877D6", full: false },
-            { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: Sun, color: "#1877D6", full: false },
-            { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: GraduationCap, color: "#1877D6", full: false },
-            { key: "custom", label: "Custom", desc: "Set your own times", Icon: Settings, color: "#6B7280", full: true },
-          ] as Array<{ key: TimePref; label: string; desc: string; Icon: typeof Clock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
+            { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: IconClock, color: "#1877D6", full: false },
+            { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: IconSunrise, color: "#1877D6", full: false },
+            { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: IconSun, color: "#E8641A", full: false },
+            { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: IconMoon, color: "#1877D6", full: false },
+            { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: IconSun, color: "#1877D6", full: false },
+            { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: IconSchool, color: "#1877D6", full: false },
+            { key: "custom", label: "Custom", desc: "Set your own times", Icon: IconSettings, color: "#6B7280", full: true },
+          ] as Array<{ key: TimePref; label: string; desc: string; Icon: typeof IconClock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
             const active = timePref === key;
             return (
               <button
@@ -1796,7 +1795,7 @@ function PostcodeAutocomplete(props: {
   return (
     <div style={{ position: "relative" }}>
       <div style={{ position: "relative" }}>
-        <MapPin
+        <IconMapPin
           size={16}
           color="#6B7280"
           style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
@@ -1897,7 +1896,7 @@ function PostcodeAutocomplete(props: {
                 fontFamily: "Poppins, sans-serif",
               }}
             >
-              <MapPin size={14} color="#6B7280" />
+              <IconMapPin size={14} color="#6B7280" />
               <span style={{ fontWeight: 700, color: "#0B1F3A", fontSize: 14 }}>{s.postcode}</span>
               <span style={{ color: "#6B7280", fontSize: 13 }}>{s.area}</span>
             </div>

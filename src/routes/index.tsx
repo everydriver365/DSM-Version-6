@@ -1,17 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import {
-  Calendar,
-  Globe,
-  Smartphone,
-  Activity,
-  Building2,
-  ArrowRight,
-  Play,
-  Check,
-  Star,
-  Sparkles,
-} from "lucide-react";
+import { IconActivity, IconArrowRight, IconBuilding, IconCalendar, IconCheck, IconDeviceMobile, IconPlayerPlay, IconSparkles, IconStar, IconWorld } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { MarketingNav } from "../components/marketing/MarketingNav";
 import { MarketingFooter } from "../components/marketing/MarketingFooter";
@@ -188,7 +177,7 @@ function Eyebrow({ children }: { children: ReactNode }) {
         color: BLUE_DARK,
         letterSpacing: "0.14em"}}
     >
-      <Sparkles className="w-3 h-3" />
+      <IconSparkles className="w-3 h-3" />
       {children}
     </span>
   );
@@ -252,7 +241,7 @@ function Hero() {
                   }}
                 >
                   Start free
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                  <IconArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
                 <Link
                   to="/features"
@@ -278,13 +267,13 @@ function Hero() {
                 style={{ color: MUTED }}
               >
                 <span className="inline-flex items-center gap-1.5">
-                  <Check className="w-4 h-4" style={{ color: BLUE }} /> No card required
+                  <IconCheck className="w-4 h-4" style={{ color: BLUE }} /> No card required
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Check className="w-4 h-4" style={{ color: BLUE }} /> Cancel anytime
+                  <IconCheck className="w-4 h-4" style={{ color: BLUE }} /> Cancel anytime
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Check className="w-4 h-4" style={{ color: BLUE }} /> GDPR compliant
+                  <IconCheck className="w-4 h-4" style={{ color: BLUE }} /> GDPR compliant
                 </span>
               </div>
             </Reveal>
@@ -461,7 +450,7 @@ function DiarySection() {
                 }}
               >
                 Watch the 90-second tour
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                <IconArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </a>
             </Reveal>
           </div>
@@ -503,7 +492,7 @@ function DiarySection() {
                         background: BLUE,
                         boxShadow: "0 12px 30px rgba(14,124,206,0.55)"}}
                     >
-                      <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-white text-white ml-1" />
+                      <IconPlayerPlay className="w-6 h-6 sm:w-7 sm:h-7 fill-white text-white ml-1" />
                     </span>
                     <span className="text-sm sm:text-base font-medium tracking-wide">
                       Watch the 90-second tour
@@ -525,7 +514,7 @@ const features = [
     img: paymentsImg,
     title: "Manage Your Diary",
     body: "The ultimate driving instructor diary. Schedule lessons, manage pupils, sync across devices and never miss a booking — all from one beautiful calendar.",
-    bullets: ["Drag-and-drop scheduling", "Pupil availability", "Calendar sync", "Lesson reminders"],
+    bullets: ["Drag-and-drop scheduling", "Pupil availability", "IconCalendar sync", "Lesson reminders"],
   },
   {
     img: flexiblePaymentsImg,
@@ -561,7 +550,7 @@ const features = [
     img: callAnsweringHeroImg,
     title: "Call Answering Service",
     body: "Never miss a new pupil enquiry. Our AI receptionist answers calls, takes messages and books appointments while you teach.",
-    bullets: ["24/7 call handling", "Instant SMS summary", "Calendar integration", "Affordable add-on"],
+    bullets: ["24/7 call handling", "Instant SMS summary", "IconCalendar integration", "Affordable add-on"],
   },
   {
     img: testSwapImg,
@@ -666,7 +655,7 @@ function FeaturesShowcase() {
                             className="w-5 h-5 rounded-full grid place-items-center shrink-0 mt-0.5"
                             style={{ background: BLUE_TINT }}
                           >
-                            <Check
+                            <IconCheck
                               className="w-3 h-3"
                               style={{ color: BLUE_DARK }}
                             />
@@ -695,7 +684,7 @@ function FeaturesShowcase() {
                       style={{ color: BLUE_DARK }}
                     >
                       Learn more
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                      <IconArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                     </Link>
                   </div>
                 </Reveal>
@@ -716,19 +705,19 @@ function HowItWorks() {
       n: "01",
       t: "Create Your Account",
       b: "Sign up with your email in 60 seconds. No credit card needed.",
-      Icon: Activity,
+      Icon: IconActivity,
     },
     {
       n: "02",
       t: "Set Up Your Diary",
       b: "Add availability, import existing pupils, and configure your preferences.",
-      Icon: Calendar,
+      Icon: IconCalendar,
     },
     {
       n: "03",
       t: "Start Teaching",
       b: "Manage bookings, track payments and grow your business from day one.",
-      Icon: Building2,
+      Icon: IconBuilding,
     },
   ];
   return (
@@ -800,7 +789,7 @@ function PricingTiers() {
       price: "Free Forever",
       img: diaryImg,
       desc: "Your complete lesson management hub — scheduling, payments, and gap-filling in one place.",
-      bullets: ["Drag-and-drop calendar", "Google Calendar sync", "Gap filling & SMS", "Payment tracking"],
+      bullets: ["Drag-and-drop calendar", "Google IconCalendar sync", "Gap filling & SMS", "Payment tracking"],
       cta: "Get started free",
       highlight: false,
     },
@@ -917,7 +906,7 @@ function PricingTiers() {
                           className="flex items-center gap-2"
                           style={{ color: NAVY }}
                         >
-                          <Check
+                          <IconCheck
                             className="w-4 h-4 shrink-0"
                             style={{ color: BLUE }}
                           />{" "}
@@ -931,7 +920,7 @@ function PricingTiers() {
                       style={{ color: BLUE_DARK }}
                     >
                       {p.cta}{" "}
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                      <IconArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                     </Link>
                   </div>
                 </div>
@@ -949,7 +938,7 @@ function PricingTiers() {
               border: `1px solid ${HAIRLINE}`,
               color: NAVY}}
           >
-            Compare all plans &amp; features <ArrowRight className="w-4 h-4" />
+            Compare all plans &amp; features <IconArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
@@ -1003,7 +992,7 @@ function Testimonials() {
               >
                 <div className="flex gap-1 mb-4">
                   {Array.from({ length: 5 }).map((_, idx) => (
-                    <Star
+                    <IconStar
                       key={idx}
                       className="w-4 h-4"
                       style={{ color: BLUE, fill: BLUE }}
@@ -1090,7 +1079,7 @@ function ComparisonFormula() {
                     className="w-7 h-7 rounded-full grid place-items-center shrink-0"
                     style={{ background: BLUE_TINT }}
                   >
-                    <Check
+                    <IconCheck
                       className="w-3.5 h-3.5"
                       style={{ color: BLUE_DARK }}
                     />
@@ -1143,7 +1132,7 @@ function ComparisonFormula() {
                 e.currentTarget.style.transform = "translateY(0)";
               }}
             >
-              Start free today <ArrowRight className="w-4 h-4" />
+              Start free today <IconArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </Reveal>
@@ -1155,10 +1144,10 @@ function ComparisonFormula() {
 /* ---------- Final CTA ---------- */
 function FinalCTA() {
   const platforms = [
-    { i: Smartphone, t: "iOS & Android" },
-    { i: Globe, t: "Web App" },
-    { i: Activity, t: "24/7 Access" },
-    { i: Building2, t: "GDPR Compliant" },
+    { i: IconDeviceMobile, t: "iOS & Android" },
+    { i: IconWorld, t: "Web App" },
+    { i: IconActivity, t: "24/7 Access" },
+    { i: IconBuilding, t: "GDPR Compliant" },
   ];
   return (
     <section className="px-5 sm:px-8 py-16 sm:py-24">
@@ -1224,7 +1213,7 @@ function FinalCTA() {
                     e.currentTarget.style.transform = "translateY(0)";
                   }}
                 >
-                  Create free account <ArrowRight className="w-4 h-4" />
+                  Create free account <IconArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   to="/pricing"

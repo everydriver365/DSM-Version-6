@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Download, Car } from "lucide-react";
+import { IconCar, IconDownload } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 import { toast } from "sonner";
@@ -555,7 +555,7 @@ function MtdPage() {
                 gap: 6,
               }}
             >
-              <Car size={14} color="#1877D6" /> Miles this month
+              <IconCar size={14} color="#1877D6" /> Miles this month
             </span>
             <span style={{ fontSize: 14, fontWeight: 600, color: VALUE }}>
               {mtdMiles.toLocaleString("en-GB", { maximumFractionDigits: 1 })}
@@ -593,7 +593,7 @@ function MtdPage() {
           />
           <div className="mt-4">
             <Button variant="ghost" onClick={exportCsv}>
-              <Download size={16} style={{ marginRight: 8 }} />
+              <IconDownload size={16} style={{ marginRight: 8 }} />
               Export records
             </Button>
           </div>

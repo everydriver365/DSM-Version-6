@@ -1,21 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  UserPlus,
-  BookOpen,
-  Calendar,
-  TrendingUp,
-  Search,
-  Shield,
-  CreditCard,
-  Star,
-  ChevronRight,
-} from "lucide-react";
-import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { IconBook, IconCalendar, IconChevronRight, IconCreditCard, IconSearch, IconShield, IconStar, IconTrendingUp, IconUserPlus } from "@tabler/icons-react";
 
 const TEAL = "#1877D6";
 const WHITE = "#FFFFFF";
@@ -26,25 +16,25 @@ const MUTED = "#718096";
 const instructorSteps = [
   {
     n: "1",
-    icon: UserPlus,
+    icon: IconUserPlus,
     title: "Create your free account",
     description: "Sign up in 60 seconds. No card required, no contract, no catch.",
   },
   {
     n: "2",
-    icon: BookOpen,
+    icon: IconBook,
     title: "Add your pupils",
     description: "Add existing pupils manually or let them find you through EveryDriver.",
   },
   {
     n: "3",
-    icon: Calendar,
+    icon: IconCalendar,
     title: "Schedule and teach",
     description: "Book lessons, take payments and record progress — all from your phone.",
   },
   {
     n: "4",
-    icon: TrendingUp,
+    icon: IconTrendingUp,
     title: "Watch your business grow",
     description: "Get more pupils from EveryDriver, track your earnings and grow at your own pace.",
   },
@@ -53,25 +43,25 @@ const instructorSteps = [
 const learnerSteps = [
   {
     n: "1",
-    icon: Search,
+    icon: IconSearch,
     title: "Find your instructor",
-    description: "Search by location, compare courses and read verified reviews.",
+    description: "IconSearch by location, compare courses and read verified reviews.",
   },
   {
     n: "2",
-    icon: Shield,
+    icon: IconShield,
     title: "Choose your package",
     description: "Pick Standard, Protected or Complete — the level of support that suits you.",
   },
   {
     n: "3",
-    icon: CreditCard,
+    icon: IconCreditCard,
     title: "Book and pay securely",
     description: "Pay your deposit online. Apple Pay, Google Pay and card all accepted.",
   },
   {
     n: "4",
-    icon: Star,
+    icon: IconStar,
     title: "Learn and pass",
     description: "Track your progress, swap test dates and stay supported until you pass.",
   },
@@ -186,11 +176,11 @@ function HowItWorksPage() {
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <span className="bg-[#1877D6] text-white px-6 py-3 rounded-xl font-bold">DSM</span>
-            <ChevronRight className="text-white/50" size={24} />
+            <IconChevronRight className="text-white/50" size={24} />
             <span className="bg-white/10 text-white px-6 py-3 rounded-xl">Course published</span>
-            <ChevronRight className="text-white/50" size={24} />
+            <IconChevronRight className="text-white/50" size={24} />
             <span className="bg-white/10 text-white px-6 py-3 rounded-xl">Learner books</span>
-            <ChevronRight className="text-white/50" size={24} />
+            <IconChevronRight className="text-white/50" size={24} />
             <span className="bg-[#1877D6] text-white px-6 py-3 rounded-xl font-bold">Booking in DSM</span>
           </div>
         </div>

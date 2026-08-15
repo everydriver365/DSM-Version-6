@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Save } from "lucide-react";
+import { IconChevronLeft, IconDeviceFloppy } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
@@ -175,7 +175,7 @@ function AdminTermsPage() {
             color: "#fff",
           }}
         >
-          <ChevronLeft size={18} />
+          <IconChevronLeft size={18} />
         </button>
         <span style={{ fontSize: 16, fontWeight: 600, flex: 1 }}>Platform terms</span>
       </div>
@@ -254,8 +254,8 @@ function AdminTermsPage() {
                 ...POPPINS,
               }}
             >
-              <Save size={18} />
-              {saving ? "Saving…" : "Save"}
+              <IconDeviceFloppy size={18} />
+              {saving ? "Saving…" : "IconDeviceFloppy"}
             </button>
           </>
         )}

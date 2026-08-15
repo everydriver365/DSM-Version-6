@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { IconSearch } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -137,14 +137,14 @@ function ReminderPage() {
         </div>
 
         <div className="relative">
-          <Search
+          <IconSearch
             size={16}
             color="#6B7280"
             style={{ position: "absolute", left: 12, top: 14 }}
           />
           <input
             type="text"
-            placeholder="Search pupils"
+            placeholder="IconSearch pupils"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="h-11 w-full rounded-lg pl-9 pr-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"

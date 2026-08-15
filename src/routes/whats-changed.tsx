@@ -1,20 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import {
-  Briefcase,
-  CalendarCheck,
-  CalendarX,
-  CheckCircle2,
-  ChevronRight,
-  CreditCard,
-  Mail,
-  MessageSquare,
-  PlayCircle,
-  ShoppingBag,
-  Video,
-  Zap,
-} from "lucide-react";
-import { IconCreditCard } from "@tabler/icons-react";
+import { IconBolt, IconBriefcase, IconCalendarCheck, IconCalendarX, IconChevronRight, IconCircleCheck, IconCreditCard, IconMail, IconMessage, IconPlayerPlay, IconShoppingBag, IconVideo } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { PageLayout } from "@/components/PageLayout";
@@ -280,7 +266,7 @@ function WhatsChangedPage() {
         {
           key: "lesson_new",
           label: "New bookings",
-          icon: <CalendarCheck size={16} color="#1B7F3B" />,
+          icon: <IconCalendarCheck size={16} color="#1B7F3B" />,
           items: rowsOf(lessonsNew).map((r) => ({
             id: String(r.id),
             kind: "lesson_new" as const,
@@ -292,7 +278,7 @@ function WhatsChangedPage() {
         {
           key: "lesson_cancelled",
           label: "Cancellations",
-          icon: <CalendarX size={16} color="#CC2229" />,
+          icon: <IconCalendarX size={16} color="#CC2229" />,
           items: rowsOf(lessonsCanc).map((r) => ({
             id: String(r.id),
             kind: "lesson_cancelled" as const,
@@ -304,7 +290,7 @@ function WhatsChangedPage() {
         {
           key: "message",
           label: "New messages",
-          icon: <MessageSquare size={16} color={BLUE} />,
+          icon: <IconMessage size={16} color={BLUE} />,
           items: rowsOf(messages).map((r) => ({
             id: String(r.id),
             kind: "message" as const,
@@ -316,7 +302,7 @@ function WhatsChangedPage() {
         {
           key: "payment",
           label: "Payments received",
-          icon: <CreditCard size={16} color="#1B7F3B" />,
+          icon: <IconCreditCard size={16} color="#1B7F3B" />,
           items: rowsOf(payments).map((r) => ({
             id: String(r.id),
             kind: "payment" as const,
@@ -340,7 +326,7 @@ function WhatsChangedPage() {
         {
           key: "gap",
           label: "Slots accepted",
-          icon: <Zap size={16} color="#1B7F3B" />,
+          icon: <IconBolt size={16} color="#1B7F3B" />,
           items: rowsOf(gaps).map((r) => ({
             id: String(r.id),
             kind: "gap" as const,
@@ -352,7 +338,7 @@ function WhatsChangedPage() {
         {
           key: "enquiry",
           label: "New enquiries",
-          icon: <Mail size={16} color={BLUE} />,
+          icon: <IconMail size={16} color={BLUE} />,
           items: rowsOf(enquiries).map((r) => ({
             id: String(r.id),
             kind: "enquiry" as const,
@@ -368,7 +354,7 @@ function WhatsChangedPage() {
         {
           key: "job",
           label: "New jobs",
-          icon: <Briefcase size={16} color="#B5661E" />,
+          icon: <IconBriefcase size={16} color="#B5661E" />,
           items: rowsOf(jobs).map((r) => ({
             id: String(r.id),
             kind: "job" as const,
@@ -380,7 +366,7 @@ function WhatsChangedPage() {
         {
           key: "live",
           label: "DSM Live",
-          icon: <Video size={16} color={BLUE} />,
+          icon: <IconVideo size={16} color={BLUE} />,
           items: rowsOf(live).map((r) => ({
             id: String(r.id),
             kind: "live" as const,
@@ -392,7 +378,7 @@ function WhatsChangedPage() {
         {
           key: "learn",
           label: "New tutorials",
-          icon: <PlayCircle size={16} color="#7C3AED" />,
+          icon: <IconPlayerPlay size={16} color="#7C3AED" />,
           items: rowsOf(learn).map((r) => ({
             id: String(r.id),
             kind: "learn" as const,
@@ -404,7 +390,7 @@ function WhatsChangedPage() {
         {
           key: "marketplace",
           label: "New listings",
-          icon: <ShoppingBag size={16} color="#B5661E" />,
+          icon: <IconShoppingBag size={16} color="#B5661E" />,
           items: rowsOf(listings).map((r) => ({
             id: String(r.id),
             kind: "marketplace" as const,
@@ -458,7 +444,7 @@ function WhatsChangedPage() {
           </div>
         ) : sections.length === 0 ? (
           <div style={{ padding: "56px 0", textAlign: "center" }}>
-            <CheckCircle2 size={44} color="#1B7F3B" style={{ margin: "0 auto 12px" }} />
+            <IconCircleCheck size={44} color="#1B7F3B" style={{ margin: "0 auto 12px" }} />
             <div style={{ fontSize: 17, fontWeight: 700, color: NAVY }}>You're all caught up</div>
             <div style={{ fontSize: 13, color: GRAY, marginTop: 4 }}>
               Nothing new since your last visit.
@@ -539,7 +525,7 @@ function WhatsChangedPage() {
                         {it.subtitle}
                       </div>
                     </div>
-                    <ChevronRight size={16} color="#9AA5B4" />
+                    <IconChevronRight size={16} color="#9AA5B4" />
                   </button>
                 ))}
               </div>

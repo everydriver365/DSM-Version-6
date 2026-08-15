@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Plus, MapPin, Navigation as NavIcon, Copy } from "lucide-react";
+import { IconChevronLeft, IconCopy, IconMapPin, IconNavigation, IconPlus } from "@tabler/icons-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Input } from "../components/dsm/Input";
@@ -171,7 +171,7 @@ function LocationsPage() {
           className="inline-flex items-center gap-1 text-[13px] font-semibold text-white"
           style={{ background: "#1877D6", borderRadius: 999, padding: "8px 14px", border: "none" }}
         >
-          <Plus size={16} color="#FFFFFF" /> Add location
+          <IconPlus size={16} color="#FFFFFF" /> Add location
         </button>
       </div>
 
@@ -188,7 +188,7 @@ function LocationsPage() {
                 className="flex items-center justify-center rounded-full"
                 style={{ width: 56, height: 56, backgroundColor: "#EEF4FB" }}
               >
-                <MapPin size={28} color="#1877D6" />
+                <IconMapPin size={28} color="#1877D6" />
               </div>
               <div className="text-[14px] text-[#6B7280]">No saved locations yet</div>
             </div>
@@ -212,7 +212,7 @@ function LocationsPage() {
                           flexShrink: 0,
                         }}
                       >
-                        <MapPin size={18} color="#1877D6" />
+                        <IconMapPin size={18} color="#1877D6" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="text-[14px] font-semibold text-[#0B1F3A] truncate">
@@ -232,7 +232,7 @@ function LocationsPage() {
                         e.stopPropagation();
                         copyPostcode(r);
                       }}
-                      aria-label="Copy postcode"
+                      aria-label="IconCopy postcode"
                       className="flex items-center justify-center rounded-md"
                       style={{
                         width: 32,
@@ -241,7 +241,7 @@ function LocationsPage() {
                         backgroundColor: copiedId === r.id ? "#F3F8FF" : "transparent",
                       }}
                     >
-                      <Copy size={16} color={copiedId === r.id ? "#1877D6" : "#6B7280"} />
+                      <IconCopy size={16} color={copiedId === r.id ? "#1877D6" : "#6B7280"} />
                     </button>
 
                     <button
@@ -259,7 +259,7 @@ function LocationsPage() {
                         color: "#1877D6",
                       }}
                     >
-                      <NavIcon size={14} color="#1877D6" />
+                      <IconNavigation size={14} color="#1877D6" />
                       <span className="text-[12px] font-medium">Navigate</span>
                     </button>
                   </div>

@@ -3,8 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconAward, IconCheckbox, IconChevronDown, IconChevronUp, IconCircleCheck, IconCurrencyPound, IconFileText, IconInbox, IconPhone, IconSchool, IconSquare } from "@tabler/icons-react";
-import { UserX } from "lucide-react";
+import { IconAward, IconCheckbox, IconChevronDown, IconChevronUp, IconCircleCheck, IconCurrencyPound, IconFileText, IconInbox, IconPhone, IconSchool, IconSquare, IconUserX } from "@tabler/icons-react";
 import { Card } from "../components/dsm/Card";
 import { supabase } from "../lib/supabaseClient";
 
@@ -173,7 +172,7 @@ function OutstandingPage() {
     { key: "docs", label: "Expiring documents (30d)", icon: <IconFileText stroke={1.5} size={18} color="#1877D6" />, tint: "#FEF2F2", count: docs.length },
     { key: "certs", label: "Expiring certifications (60d)", icon: <IconAward stroke={1.5} size={18} color="#1877D6" />, tint: "#FEF2F2", count: certs.length },
     { key: "todos", label: "Overdue todos", icon: <IconCheckbox stroke={1.5} size={18} color="#0B1F3A" />, tint: "#EEF2F7", count: todos.length },
-    { key: "stale", label: "Pupils with no recent lesson (30d)", icon: <UserX size={18} color="#5B21B6" />, tint: "#EDE9FE", count: stale.length },
+    { key: "stale", label: "Pupils with no recent lesson (30d)", icon: <IconUserX size={18} color="#5B21B6" />, tint: "#EDE9FE", count: stale.length },
   ], [debts, tests, enquiries, docs, certs, todos, stale]);
 
   const total = sections.reduce((s, x) => s + x.count, 0);

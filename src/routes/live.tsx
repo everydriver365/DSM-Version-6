@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { IconChevronLeft, IconChevronRight, IconSearch, IconX } from "@tabler/icons-react";
-import { Map as MapIcon } from "lucide-react";
+import { IconChevronLeft, IconChevronRight, IconMap, IconSearch, IconX } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { PupilAvatar } from "../components/PupilAvatar";
 import { buildTripReport } from "../lib/tripReport";
@@ -1701,7 +1700,7 @@ function LivePage() {
           }}
         >
           <div className="flex items-center justify-center" style={{ marginBottom: 12 }}>
-            <MapIcon size={44} color="#1877D6" strokeWidth={1.8} />
+            <IconMap size={44} color="#1877D6" stroke={1.8} />
           </div>
           <div style={{ fontSize: 18, fontWeight: 700, color: "#0B1F3A", marginBottom: 6 }}>
             No active lesson

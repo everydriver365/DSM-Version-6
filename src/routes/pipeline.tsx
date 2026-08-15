@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { Plus, X } from "lucide-react";
+import { IconPlus, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
@@ -112,7 +112,7 @@ function PipelinePage() {
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
           style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
-          <Plus size={15} />
+          <IconPlus size={15} />
           Add lead
         </button>
       </div>
@@ -292,7 +292,7 @@ function SheetShell({
             className="flex items-center justify-center"
             style={{ width: 36, height: 36 }}
           >
-            <X size={20} color="#0B1F3A" />
+            <IconX size={20} color="#0B1F3A" />
           </button>
         </div>
         <div style={{ padding: 16 }}>{children}</div>

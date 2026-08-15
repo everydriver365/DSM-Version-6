@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Mail, MapPin, Clock } from "lucide-react";
+import { IconClock, IconMail, IconMapPin } from "@tabler/icons-react";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -234,7 +234,7 @@ function ContactPage() {
             </h2>
 
             <div className="border border-gray-100 rounded-2xl p-6 mb-4 flex gap-4">
-              <Mail className="text-[#1877D6] shrink-0" size={24} />
+              <IconMail className="text-[#1877D6] shrink-0" size={24} />
               <div>
                 <p className="font-bold text-[#133155] mb-1">Email</p>
                 <a
@@ -250,7 +250,7 @@ function ContactPage() {
             </div>
 
             <div className="border border-gray-100 rounded-2xl p-6 mb-4 flex gap-4">
-              <MapPin className="text-[#1877D6] shrink-0" size={24} />
+              <IconMapPin className="text-[#1877D6] shrink-0" size={24} />
               <div>
                 <p className="font-bold text-[#133155] mb-1">Based in</p>
                 <p className="text-[#133155]">Winchester, Hampshire</p>
@@ -261,7 +261,7 @@ function ContactPage() {
             </div>
 
             <div className="border border-gray-100 rounded-2xl p-6 mb-6 flex gap-4">
-              <Clock className="text-[#1877D6] shrink-0" size={24} />
+              <IconClock className="text-[#1877D6] shrink-0" size={24} />
               <div>
                 <p className="font-bold text-[#133155] mb-1">Support hours</p>
                 <p className="text-[#133155]">Monday – Friday, 9am – 5pm</p>

@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Clock, Newspaper } from "lucide-react";
-import { IconBroadcast, IconChevronRight } from "@tabler/icons-react";
+import { IconBroadcast, IconChevronRight, IconClock, IconNews } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
@@ -276,7 +275,7 @@ function LiveNewsPage() {
                           </span>
                         ) : (
                           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                            <Clock size={11} color="#9CA3AF" strokeWidth={1.5} />
+                            <IconClock size={11} color="#9CA3AF" stroke={1.5} />
                             <span style={{ fontSize: 11, color: "#9CA3AF" }}>
                               {formatSessionTime(s.session_time)}
                             </span>
@@ -348,7 +347,7 @@ function LiveNewsPage() {
                           style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />
                       ) : (
-                        <Newspaper size={24} color="#6B7686" />
+                        <IconNews size={24} color="#6B7686" />
                       )}
                     </div>
 

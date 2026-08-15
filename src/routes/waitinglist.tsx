@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Plus, X, Users, Hourglass } from "lucide-react";
+import { IconHourglass, IconPlus, IconUsers, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -116,7 +116,7 @@ function WaitingListPage() {
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
           style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
-          <Plus size={15} />
+          <IconPlus size={15} />
           Add entry
         </button>
       </div>
@@ -129,7 +129,7 @@ function WaitingListPage() {
             className="flex flex-col items-center justify-center text-[13px]"
             style={{ color: "#6B7280", padding: "40px 0" }}
           >
-            <Users size={28} color="#6B7280" />
+            <IconUsers size={28} color="#6B7280" />
             <div className="mt-2">No one on the waiting list</div>
           </div>
         ) : (
@@ -276,7 +276,7 @@ function SheetShell({
             className="flex items-center justify-center"
             style={{ width: 32, height: 32 }}
           >
-            <X size={18} color="#6B7280" />
+            <IconX size={18} color="#6B7280" />
           </button>
         </div>
         <div className="px-4 pt-2">{children}</div>
@@ -391,7 +391,7 @@ function ConfirmSheet({
     <SheetShell title="REMOVE FROM WAITING LIST" onClose={onClose}>
       <div className="flex flex-col" style={{ gap: 16 }}>
         <div className="flex items-center justify-center" style={{ paddingTop: 8 }}>
-          <Hourglass size={28} color="#1877D6" />
+          <IconHourglass size={28} color="#1877D6" />
         </div>
         <div className="text-[14px] text-center" style={{ color: "#0B1F3A" }}>
           Remove <span className="font-semibold">{name}</span> from the waiting list?

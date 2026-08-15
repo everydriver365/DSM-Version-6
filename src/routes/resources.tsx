@@ -1,15 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import {
-  ExternalLink,
-  BookOpen,
-  IdCard,
-  Calendar,
-  Car,
-  Award,
-  MapPin,
-  Navigation,
-  Cloud,
-} from "lucide-react";
+import { IconAward, IconBook, IconCalendar, IconCar, IconCloud, IconExternalLink, IconId, IconMapPin, IconNavigation } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -28,7 +18,7 @@ interface ResourceItem {
   title: string;
   description: string;
   url: string;
-  Icon: typeof BookOpen;
+  Icon: typeof IconBook;
   iconColor: string;
 }
 
@@ -37,42 +27,42 @@ const dvsaResources: ResourceItem[] = [
     title: "DVSA guidance",
     description: "Official DVSA instructor guidance and updates",
     url: "https://www.gov.uk/government/organisations/driver-and-vehicle-standards-agency",
-    Icon: BookOpen,
+    Icon: IconBook,
     iconColor: "#1877D6",
   },
   {
     title: "Check a driving licence",
     description: "Verify a pupil's licence details",
     url: "https://www.gov.uk/check-driving-information",
-    Icon: IdCard,
+    Icon: IconId,
     iconColor: "#1877D6",
   },
   {
     title: "Book a theory test",
     description: "Help pupils book their theory test",
     url: "https://www.gov.uk/book-theory-test",
-    Icon: Calendar,
+    Icon: IconCalendar,
     iconColor: "#1877D6",
   },
   {
     title: "Book a driving test",
     description: "Help pupils book their practical test",
     url: "https://www.gov.uk/book-driving-test",
-    Icon: Car,
+    Icon: IconCar,
     iconColor: "#1877D6",
   },
   {
     title: "ADI register",
     description: "Check the approved driving instructor register",
     url: "https://www.gov.uk/find-driving-instructor",
-    Icon: Award,
+    Icon: IconAward,
     iconColor: "#1877D6",
   },
   {
     title: "Highway Code",
     description: "Latest Highway Code rules and updates",
     url: "https://www.gov.uk/guidance/the-highway-code",
-    Icon: BookOpen,
+    Icon: IconBook,
     iconColor: "#6B7280",
   },
 ];
@@ -82,21 +72,21 @@ const usefulTools: ResourceItem[] = [
     title: "What3Words",
     description: "Find precise pickup locations",
     url: "https://what3words.com",
-    Icon: MapPin,
+    Icon: IconMapPin,
     iconColor: "#1877D6",
   },
   {
     title: "Google Maps",
     description: "Navigate to your next lesson",
     url: "https://maps.google.com",
-    Icon: Navigation,
+    Icon: IconNavigation,
     iconColor: "#1877D6",
   },
   {
     title: "Met Office",
     description: "Check weather before lessons",
     url: "https://www.metoffice.gov.uk",
-    Icon: Cloud,
+    Icon: IconCloud,
     iconColor: "#6B7280",
   },
 ];
@@ -170,7 +160,7 @@ function ResourceCard({ resource }: { resource: ResourceItem }) {
         </div>
         <div className="text-[13px] text-[#6B7280] truncate">{description}</div>
       </div>
-      <ExternalLink size={16} color="#6B7280" className="shrink-0 ml-2" />
+      <IconExternalLink size={16} color="#6B7280" className="shrink-0 ml-2" />
     </a>
   );
 }
