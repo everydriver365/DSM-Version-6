@@ -6202,8 +6202,25 @@ function HomePage() {
                           ? { label: `£${amt.toFixed(0)} owed`, bg: '#FCE9E9', fg: '#CC2229' }
                           : null;
 
+                    const dateLabel = (() => {
+                      const d = start;
+                      const day = DAY_NAMES[d.getDay()].slice(0, 3);
+                      const date = d.getDate();
+                      const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+                      return `${day} ${date} ${month}`;
+                    })();
+
                     return (
-                      <div key={l.id} style={{ position: 'relative', background: '#FFFFFF', border: '1px solid #E4E8EF', borderRadius: 13, marginBottom: 8 }}>
+                      <React.Fragment key={l.id}>
+                        {tab === 'next' && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                            <span style={{ fontSize: 11, fontWeight: 700, color: '#1877D6', letterSpacing: 0.3, textTransform: 'uppercase' }}>
+                              {dateLabel}
+                            </span>
+                            <span style={{ flex: 1, height: 1, background: '#E4E8EF' }} />
+                          </div>
+                        )}
+                        <div style={{ position: 'relative', background: '#FFFFFF', border: '1px solid #E4E8EF', borderRadius: 13, marginBottom: 8 }}>
                         <div
                           onClick={() => setActionsOpenForLesson(l)}
                           onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
