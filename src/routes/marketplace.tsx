@@ -556,7 +556,7 @@ function FeaturedCard({
           }}
         >
           {priceIsBad ? (
-            <NoPriceRow listingId={listing.id} />
+            <NoPriceRow />
           ) : (
             <span style={{ fontSize: 16, fontWeight: 800, color: "#0B1F3A" }}>
               {price}
@@ -665,7 +665,7 @@ function ProductCard({
           }}
         >
           {priceIsBad ? (
-            <NoPriceRow listingId={listing.id} />
+            <NoPriceRow />
           ) : (
             <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>
               {price}
