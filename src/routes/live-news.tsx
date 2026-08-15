@@ -55,6 +55,18 @@ export const Route = createFileRoute("/live-news")({
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
+/** Small icon for a podcast category chip. */
+function categoryIcon(topic: string) {
+  const t = topic.toLowerCase();
+  if (t.includes("business") || t.includes("industry") || t.includes("growth")) return IconBriefcase;
+  if (t.includes("cpd") || t.includes("teach") || t.includes("training") || t.includes("standards"))
+    return IconSchool;
+  if (t.includes("well") || t.includes("health") || t.includes("mind")) return IconHeart;
+  if (t.includes("driv") || t.includes("road") || t.includes("vehicle")) return IconCar;
+  return IconTag;
+}
+
+
 function formatDate(iso: string | null | undefined): string {
   if (!iso) return "—";
   const d = new Date(iso);
