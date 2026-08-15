@@ -1666,7 +1666,7 @@ function EnquiriesPage() {
           fontFamily: "Sora, Poppins, sans-serif",
         }}
 
-        onBack={() => navigate({ to: "/home" as never })}
+        onBack={() => goBack('/enquiries')}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
         onLiveTrack={() => navigate({ to: "/live" as never })}
