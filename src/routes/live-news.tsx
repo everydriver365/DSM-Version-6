@@ -917,12 +917,235 @@ function LiveNewsPage() {
   );
 }
 
-function EpisodeModal({
+function formatClock(secs: number): string {
+  if (!Number.isFinite(secs) || secs < 0) return "0:00";
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60);
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function ProgressBar({
+  currentTime,
+  duration,
+  onSeek,
+}: {
+  currentTime: number;
+  duration: number;
+  onSeek: (secs: number) => void;
+}) {
+  return (
+    <input
+      type="range"
+      min={0}
+      max={duration || 0}
+      step={1}
+      value={Math.min(currentTime, duration || 0)}
+      disabled={!duration}
+      aria-label="Seek"
+      onChange={(e) => onSeek(Number(e.target.value))}
+      style={{ width: "100%", accentColor: "#1877D6", cursor: duration ? "pointer" : "default" }}
+    />
+  );
+}
+
+function MiniPlayer({
   episode,
+  isPlaying,
+  currentTime,
+  duration,
+  onToggle,
+  onSeek,
+  onNext,
+  onOpen,
   onClose,
 }: {
   episode: PodcastEpisode;
+  isPlaying: boolean;
+  currentTime: number;
+  duration: number;
+  onToggle: () => void;
+  onSeek: (secs: number) => void;
+  onNext: () => void;
+  onOpen: () => void;
   onClose: () => void;
+}) {
+  return (
+    <div
+      style={{
+        position: "fixed",
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 190,
+        background: "#fff",
+        borderTop: "1px solid #E4E8EF",
+        boxShadow: "0 -4px 16px rgba(11,31,58,0.10)",
+        padding: "8px 12px calc(8px + env(safe-area-inset-bottom))",
+        ...POPPINS,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={onOpen}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") onOpen();
+          }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            flex: 1,
+            minWidth: 0,
+            cursor: "pointer",
+          }}
+        >
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              flexShrink: 0,
+              borderRadius: 8,
+              overflow: "hidden",
+              background: "#EEF2F7",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {episode.imageUrl ? (
+              <img
+                src={episode.imageUrl}
+                alt=""
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              <IconMicrophone size={18} color="#6B7686" />
+            )}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 12.5,
+                fontWeight: 700,
+                color: "#0B1F3A",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {episode.title}
+            </div>
+            <div
+              style={{
+                fontSize: 10.5,
+                color: "#9CA3AF",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {episode.showName}
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label={isPlaying ? "Pause" : "Play"}
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: 19,
+            border: "none",
+            background: "#1877D6",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          {isPlaying ? (
+            <IconPlayerPauseFilled size={16} color="#fff" />
+          ) : (
+            <IconPlayerPlayFilled size={16} color="#fff" />
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={onNext}
+          aria-label="Next episode"
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: 17,
+            border: "none",
+            background: "#EFF6FF",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          <IconPlayerTrackNextFilled size={15} color="#1877D6" />
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close player"
+          style={{
+            width: 28,
+            height: 28,
+            borderRadius: 14,
+            border: "none",
+            background: "transparent",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          <IconX size={15} color="#9CA3AF" stroke={2} />
+        </button>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2 }}>
+        <span style={{ fontSize: 10, color: "#9CA3AF", width: 34 }}>
+          {formatClock(currentTime)}
+        </span>
+        <div style={{ flex: 1 }}>
+          <ProgressBar currentTime={currentTime} duration={duration} onSeek={onSeek} />
+        </div>
+        <span style={{ fontSize: 10, color: "#9CA3AF", width: 34, textAlign: "right" }}>
+          {formatClock(duration)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function EpisodeModal({
+  episode,
+  onClose,
+  isCurrent,
+  isPlaying,
+  currentTime,
+  duration,
+  onPlay,
+  onSeek,
+  onNext,
+}: {
+  episode: PodcastEpisode;
+  onClose: () => void;
+  isCurrent: boolean;
+  isPlaying: boolean;
+  currentTime: number;
+  duration: number;
+  onPlay: () => void;
+  onSeek: (secs: number) => void;
+  onNext: () => void;
 }) {
   const [tab, setTab] = useState<"notes" | "transcript">("notes");
   const [transcript, setTranscript] = useState<string | null>(null);
@@ -1089,8 +1312,80 @@ function EpisodeModal({
 
         {episode.audioUrl ? (
           <div style={{ padding: "12px 16px 0" }}>
-            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-            <audio src={episode.audioUrl} controls preload="none" style={{ width: "100%" }} />
+            <div
+              style={{
+                background: "#fff",
+                border: "1px solid #E4E8EF",
+                borderRadius: 14,
+                padding: 12,
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <button
+                type="button"
+                onClick={onPlay}
+                aria-label={isPlaying ? "Pause" : "Play"}
+                style={{
+                  width: 42,
+                  height: 42,
+                  borderRadius: 21,
+                  border: "none",
+                  background: "#1877D6",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+              >
+                {isPlaying ? (
+                  <IconPlayerPauseFilled size={18} color="#fff" />
+                ) : (
+                  <IconPlayerPlayFilled size={18} color="#fff" />
+                )}
+              </button>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <ProgressBar
+                  currentTime={isCurrent ? currentTime : 0}
+                  duration={isCurrent ? duration : 0}
+                  onSeek={onSeek}
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: 10,
+                    color: "#9CA3AF",
+                  }}
+                >
+                  <span>{formatClock(isCurrent ? currentTime : 0)}</span>
+                  <span>
+                    {formatClock(
+                      isCurrent && duration ? duration : (episode.durationSecs ?? 0),
+                    )}
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={onNext}
+                aria-label="Next episode"
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 18,
+                  border: "none",
+                  background: "#EFF6FF",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <IconPlayerTrackNextFilled size={16} color="#1877D6" />
+              </button>
+            </div>
           </div>
         ) : null}
 
