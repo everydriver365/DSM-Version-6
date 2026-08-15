@@ -7,7 +7,6 @@ import {
   IconMicrophone,
   IconNews,
   IconPlayerPlayFilled,
-  IconPlayerPauseFilled,
   IconSearch,
   IconX,
 
@@ -1006,7 +1005,7 @@ function EpisodeModal({
               padding: 14,
               fontSize: 13,
               lineHeight: 1.6,
-              color: "#43506380".slice(0, 7),
+              color: "#435063",
               whiteSpace: "pre-wrap",
             }}
           >
