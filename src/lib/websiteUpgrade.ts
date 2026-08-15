@@ -170,6 +170,7 @@ export async function checkDomainAvailability(
 export async function createSubscriptionPaymentLink(
   tier: PaidTierId,
   domain: string | null,
+  billingPeriod: "monthly" | "annual",
   accessToken: string,
 ): Promise<{ url: string }> {
   const res = await fetch(`${SUPABASE_URL}/functions/v1/square-create-subscription`, {
@@ -182,6 +183,7 @@ export async function createSubscriptionPaymentLink(
     body: JSON.stringify({
       tier,
       domain: domain ?? null,
+      billing_period: billingPeriod,
       redirect_url: `https://drivingschoolmanager.co.uk/subscription-success?tier=${tier}&domain=${domain ?? ""}`,
     }),
   });
