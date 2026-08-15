@@ -77,6 +77,15 @@ function LiveNewsPage() {
       if (!cancelled) setArticles(newsData ?? []);
     })();
 
+    (async () => {
+      try {
+        const eps = await getPodcastEpisodes();
+        if (!cancelled) setEpisodes(eps ?? []);
+      } catch {
+        if (!cancelled) setEpisodes([]);
+      }
+    })();
+
     return () => {
       cancelled = true;
     };
