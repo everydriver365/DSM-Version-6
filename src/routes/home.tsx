@@ -24,7 +24,7 @@ import { WelcomeOverlay } from "@/components/dsm/WelcomeOverlay";
 
 
 import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconAward, IconBell, IconBolt, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconChartBar, IconCheckbox, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDots, IconDotsVertical, IconFileText, IconGift, IconHeart, IconInbox, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPlay, IconPlus, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconSend, IconSettings, IconShield, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserPlus, IconUsers, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
-import { CalendarOff, Receipt, BookOpen, HelpCircle, Calculator, Fuel, FolderOpen, FileSignature, ToggleLeft, Crown, UserCircle, PlayCircle, CheckCheck, FileSpreadsheet, ArrowLeftRight, Megaphone, Sparkles, FileCheck, Headphones, Infinity, Move, Video, ShieldAlert, Building2 as Building, Calendar as CalendarIcon, Settings as SettingsIcon } from "lucide-react";
+import { IconArrowsLeftRight, IconBook, IconBuilding, IconCalculator, IconCalendar, IconCalendarOff, IconChecks, IconCrown, IconFileCheck, IconFileSpreadsheet, IconFolderOpen, IconGasStation, IconHeadphones, IconHelpCircle, IconInfinity, IconMove, IconPlayerPlay, IconReceipt, IconSettings, IconShieldExclamation, IconSignature, IconSparkles, IconSpeakerphone, IconToggleLeft, IconUserCircle, IconVideo } from "@tabler/icons-react";
 
 
 
@@ -638,7 +638,7 @@ function TodayLessonsTile({
           flexShrink: 0,
         }}
       >
-        <IconCalendar stroke={1.5} size={18} strokeWidth={1.5} />
+        <IconCalendar stroke={1.5} size={18} stroke={1.5} />
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -668,7 +668,7 @@ function TodayLessonsTile({
                 padding: 0,
               }}
             >
-              <IconPlus stroke={1.5} size={14} strokeWidth={2.5} />
+              <IconPlus stroke={1.5} size={14} stroke={2.5} />
             </button>
           )}
         </div>
@@ -1061,7 +1061,7 @@ function TileCard({
           boxShadow: "0 1px 2px rgba(11, 31, 58, 0.06)",
         }}
       >
-        <IconChevronRight stroke={1.5} size={16} color="#0B1F3A" strokeWidth={2.4} />
+        <IconChevronRight stroke={1.5} size={16} color="#0B1F3A" stroke={2.4} />
       </span>
     </button>
   );
@@ -2151,8 +2151,8 @@ function HomePage() {
   const notifBanner = (() => {
     const type = toastNotif?.type || "default";
     const map: Record<string, { bg: string; Icon: any; route: string }> = {
-      booking: { bg: "#1877D6", Icon: BookOpen, route: "/bookings" },
-      course_booking: { bg: "#1877D6", Icon: BookOpen, route: "/bookings" },
+      booking: { bg: "#1877D6", Icon: IconBook, route: "/bookings" },
+      course_booking: { bg: "#1877D6", Icon: IconBook, route: "/bookings" },
       payment: { bg: "#16A34A", Icon: IconCurrencyPound, route: "/payments" },
       message: { bg: "#00B5A5", Icon: IconMessage, route: "/messages" },
       rewards: { bg: "#D97706", Icon: IconTrophy, route: "/rewards" },
@@ -3887,7 +3887,7 @@ function HomePage() {
   };
 
   const quickAccessTiles = [
-    { icon: <CalendarIcon size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Schedule", route: "/schedule" },
+    { icon: <IconCalendar size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Schedule", route: "/schedule" },
     { icon: <IconUsers stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
     { icon: <IconWorld stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My website", route: "/minisite" },
     { icon: <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><IconRosetteDiscount stroke={1.5} size={20} color="#FFFFFF" /><span style={{ position: 'absolute', right: -4, bottom: -4, width: 16, height: 16, borderRadius: '50%', background: '#7C3AED', border: '1.5px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconSearch size={9} color="#FFFFFF" stroke={2.5} /></span></span>, bg: '#7C3AED', label: 'My Perks', sub: 'Perks and rewards', route: '/perks' },
@@ -3897,13 +3897,13 @@ function HomePage() {
     { icon: <IconCurrencyPound stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Payments", route: "/payments" },
     { icon: <IconMessage stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Messages", route: "/messages" },
     { icon: <IconTrendingUp stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Earnings", route: "/earnings" },
-    { icon: <Receipt size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Expenses", route: "/expenses" },
+    { icon: <IconReceipt size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Expenses", route: "/expenses" },
     { icon: <IconCar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Mileage", route: "/mileage" },
-    { icon: <Fuel size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Fuel costs", route: "/fuel" },
+    { icon: <IconGasStation size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Fuel costs", route: "/fuel" },
     { icon: <IconChartBar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Reports", route: "/reports" },
     { icon: <IconTrendingUp stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Performance", route: "/performance" },
     { icon: <IconSchool stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Tests", route: "/tests" },
-    { icon: <ShieldAlert size={20} color="#FFFFFF" />, bg: "#B5661E", label: "DVSA risk", route: "/tests" },
+    { icon: <IconShieldExclamation size={20} color="#FFFFFF" />, bg: "#B5661E", label: "DVSA risk", route: "/tests" },
     { icon: <IconSchool stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Test day", route: "/testday" },
     { icon: <IconTrophy stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Rewards", route: "/rewards" },
     { icon: <IconStar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Reviews", route: "/reviews" },
@@ -3911,22 +3911,22 @@ function HomePage() {
     { icon: <IconClock stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Waiting list", route: "/waitlist" },
     { icon: <IconGift stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Referrals", route: "/referrals" },
     { icon: <IconCar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Vehicle", route: "/vehicle" },
-    { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#1877D6", label: "CPD", route: "/cpd" },
+    { icon: <IconBook size={20} color="#FFFFFF" />, bg: "#1877D6", label: "CPD", route: "/cpd" },
     
     { icon: <IconClipboardCheck stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Standards", route: "/standards" },
-    { icon: <Calculator size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Tax", route: "/tax" },
+    { icon: <IconCalculator size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Tax", route: "/tax" },
     { icon: <IconFileText stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Tax report", route: "/tax-report" },
     { icon: <IconCheckbox stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Todos", route: "/todos" },
     { icon: <IconFileText stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Notes", route: "/notes" },
-    { icon: <FolderOpen size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Documents", route: "/documents" },
+    { icon: <IconFolderOpen size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Documents", route: "/documents" },
     { icon: <IconClipboardList stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Manifest", route: "/manifest" },
     { icon: <IconCheckbox stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Checklist", route: "/checklist" },
     { icon: <IconBell stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Reminders", route: "/reminder" },
     { icon: <IconHeart stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Health", route: "/health" },
-    { icon: <BookOpen size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Resources", route: "/resources" },
-    { icon: <HelpCircle size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Help", route: "/help" },
+    { icon: <IconBook size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Resources", route: "/resources" },
+    { icon: <IconHelpCircle size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Help", route: "/help" },
     { icon: <IconLayoutGrid stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pipeline", route: "/pipeline" },
-    { icon: <FileSignature size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Waivers", route: "/waivers" },
+    { icon: <IconSignature size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Waivers", route: "/waivers" },
     { icon: <IconBolt stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Fill My Slots", route: "/gaps" },
     { icon: <IconUsers stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Bulk message", route: "/bulkmessage" },
     { icon: <IconNavigation stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Sat Nav", route: "/satnav" },
@@ -3934,24 +3934,24 @@ function HomePage() {
     { icon: <IconMapPin stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Locations", route: "/locations" },
     { icon: <IconUpload stroke={1.5} size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Import", route: "/dataimport" },
     { icon: <IconAward stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Certifications", route: "/certifications" },
-    { icon: <ToggleLeft size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Availability", route: "/availability" },
+    { icon: <IconToggleLeft size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Availability", route: "/availability" },
     
     { icon: <IconMoon stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "End of day", route: "/end-of-day" },
-    { icon: <Megaphone size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Broadcast", route: "/broadcast" },
+    { icon: <IconSpeakerphone size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Broadcast", route: "/broadcast" },
     { icon: <IconBolt stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Automations", route: "/automations" },
     { icon: <IconCalendar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Diary", route: "/diary" },
-    { icon: <Crown size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My plan", route: "/subscription" },
-    { icon: <PlayCircle size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Live session", route: "/livesession" },
+    { icon: <IconCrown size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My plan", route: "/subscription" },
+    { icon: <IconPlayerPlay size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Live session", route: "/livesession" },
     { icon: <IconSearch stroke={1.5} size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Search", route: "/search" },
     { icon: <IconBell stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Notifications", route: "/notifications" },
     
     { icon: <IconRefresh stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Calendar sync", route: "/calendarsync" },
-    { icon: <UserCircle size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Profile", route: "/profile" },
-    { icon: <FileSpreadsheet size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "MTD", route: "/mtd" },
+    { icon: <IconUserCircle size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Profile", route: "/profile" },
+    { icon: <IconFileSpreadsheet size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "MTD", route: "/mtd" },
     { icon: <IconFileText stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Quotes", route: "/quotes" },
     { icon: <IconSun stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Briefing", route: "/briefing" },
     { icon: <IconAlertCircle stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Outstanding", route: "/outstanding" },
-    { icon: <PlayCircle size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Learn", route: "/learn" },
+    { icon: <IconPlayerPlay size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Learn", route: "/learn" },
 
   ] as const;
 
@@ -4344,7 +4344,7 @@ function HomePage() {
                       fontFamily: 'Poppins, sans-serif',
                     }}
                   >
-                    <CalendarIcon size={12} color="#1877D6" />
+                    <IconCalendar size={12} color="#1877D6" />
                     Sync Google
                   </button>
                 </div>
@@ -4492,7 +4492,7 @@ function HomePage() {
                     <IconUsers stroke={1.5} size={18} color="#1877D6" /> Add pupil
                   </button>
                   <button style={quickBtn} onClick={() => navigate({ to: "/schedule" })}>
-                    <CalendarIcon size={18} color="#1877D6" /> Schedule
+                    <IconCalendar size={18} color="#1877D6" /> Schedule
                   </button>
                   <button style={quickBtn} onClick={() => navigate({ to: "/quotes" })}>
                     <IconFileText stroke={1.5} size={18} color="#1877D6" /> Quotes
@@ -5611,7 +5611,7 @@ function HomePage() {
             title: "Today's lessons",
             subtitleTop: todayLessons.length === 0 ? 'No lessons today' : `${todayUpcoming} upcoming · ${todayCompleted} completed`,
             subtitleBottom: `£${Math.round(todayEarnings)} earned today`,
-            icon: <CalendarIcon size={20} strokeWidth={1.75} />,
+            icon: <IconCalendar size={20} stroke={1.75} />,
             right: { kind: 'circle', value: todayLessons.length, active: todayLessons.length > 0 },
           },
           {
@@ -5619,7 +5619,7 @@ function HomePage() {
             title: 'This week',
             subtitleTop: `${weekLessonsTotal} lessons completed`,
             subtitleBottom: weekAvg > 0 ? `avg £${weekAvg.toFixed(0)} per lesson` : 'avg —',
-            icon: <IconCurrencyPound stroke={1.5} size={20} strokeWidth={1.75} />,
+            icon: <IconCurrencyPound stroke={1.5} size={20} stroke={1.75} />,
             right: { kind: 'value', value: `£${Math.round(weekEarnings)}`, label: 'earned' },
           },
           {
@@ -5627,7 +5627,7 @@ function HomePage() {
             title: 'This month',
             subtitleTop: `${monthLessonsCompleted} lessons completed`,
             subtitleBottom: <span style={{ color: '#B0BAC9' }}>— vs last month</span>,
-            icon: <IconCurrencyPound stroke={1.5} size={20} strokeWidth={1.75} />,
+            icon: <IconCurrencyPound stroke={1.5} size={20} stroke={1.75} />,
             right: { kind: 'value', value: `£${Math.round(monthEarnings)}`, label: 'earned' },
           },
           {
@@ -5635,7 +5635,7 @@ function HomePage() {
             title: 'Year to date',
             subtitleTop: `${ytdLessonsCompleted} lessons completed`,
             subtitleBottom: <span style={{ color: '#B0BAC9' }}>— vs last year</span>,
-            icon: <IconChartBar stroke={1.5} size={20} strokeWidth={1.75} />,
+            icon: <IconChartBar stroke={1.5} size={20} stroke={1.75} />,
             right: { kind: 'value', value: `£${Math.round(ytdEarnings)}`, label: 'earned' },
           },
         ];
@@ -5729,7 +5729,7 @@ function HomePage() {
                     style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: '#1877D6', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, lineHeight: 1 }}
                   >
                     Full schedule
-                    <IconArrowRight stroke={1.5} size={14} strokeWidth={2.2} />
+                    <IconArrowRight stroke={1.5} size={14} stroke={2.2} />
                   </button>
                 </div>
               </div>
@@ -5870,7 +5870,7 @@ function HomePage() {
                             flexShrink: 0,
                           }}
                         >
-                          <Move size={14} color="#FFFFFF" />
+                          <IconMove size={14} color="#FFFFFF" />
                         </div>
                         <div style={{ fontSize: 13, fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           Moving: {(movingLessonHome.pupils as any)?.name?.split(' ')[0] || 'lesson'}'s {movingLessonHome.duration_minutes} min lesson
@@ -6997,7 +6997,7 @@ function HomePage() {
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                           <div style={{ width: 36, height: 36, borderRadius: 8, background: '#FBE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <IconClock stroke={1.5} size={20} color="#C23B3B" strokeWidth={1.8} />
+                            <IconClock stroke={1.5} size={20} color="#C23B3B" stroke={1.8} />
                           </div>
                           <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Running late</div>
                         </div>
@@ -7416,7 +7416,7 @@ function HomePage() {
             avatarItems.push({ key: 'issues', bg: RED_C, node: <IconAlertTriangle stroke={1.5} size={15} color="#FFFFFF" /> });
           }
           if (adminUnread > 0) {
-            avatarItems.push({ key: 'admin', bg: '#92400E', node: <Megaphone size={15} color="#FFFFFF" /> });
+            avatarItems.push({ key: 'admin', bg: '#92400E', node: <IconSpeakerphone size={15} color="#FFFFFF" /> });
           }
           const firstPupil = pupilReplies[0];
           if (firstPupil) {
@@ -7773,7 +7773,7 @@ function HomePage() {
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       }}
                                     >
-                                      <Megaphone size={14} color="#92400E" />
+                                      <IconSpeakerphone size={14} color="#92400E" />
                                     </div>
                                   );
                                 }
@@ -10385,7 +10385,7 @@ function TestsBreakdownModal({
           })}
 
           <div style={{ padding: "16px 16px 8px", display: "flex", alignItems: "center", gap: 6 }}>
-            <ArrowLeftRight size={14} color="#1877D6" />
+            <IconArrowsLeftRight size={14} color="#1877D6" />
             <span style={{ fontSize: 11, fontWeight: 700, color: "#1877D6", textTransform: "uppercase", letterSpacing: 0.5 }}>
               EverySwap requests
             </span>
@@ -10621,7 +10621,7 @@ function DiscoverSection() {
               onClick={() => navigate({ to: "/dsm-live" })}
             >
               View all
-              <IconArrowRight stroke={1.5} size={14} strokeWidth={2} />
+              <IconArrowRight stroke={1.5} size={14} stroke={2} />
             </button>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

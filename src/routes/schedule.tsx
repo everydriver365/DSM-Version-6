@@ -2,7 +2,7 @@ import { pupilColour } from "@/components/PupilAvatar";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { IconArrowLeft, IconArrowRight, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
-import { Move, ArrowDown } from "lucide-react";
+import { IconArrowDown, IconMove } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
@@ -975,7 +975,7 @@ function SchedulePage() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Move size={16} color="#FFFFFF" />
+            <IconMove size={16} color="#FFFFFF" />
             <span style={{ color: '#FFFFFF', fontWeight: 600, fontSize: 13, marginLeft: 8 }}>
               Moving: {(movingLesson.pupil?.first_name || movingLesson.pupils?.first_name || 'lesson')}'s {movingLesson.duration_minutes} min lesson
             </span>
@@ -2138,7 +2138,7 @@ function SchedulePage() {
               {movingLesson.lesson_date} at {String(movingLesson.lesson_time).slice(0, 5)}
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
-              <ArrowDown size={20} color="#9CA3AF" />
+              <IconArrowDown size={20} color="#9CA3AF" />
             </div>
             <div style={{ fontSize: 11, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>To</div>
             <div style={{ fontSize: 14, color: '#0B1F3A', fontWeight: 700 }}>
