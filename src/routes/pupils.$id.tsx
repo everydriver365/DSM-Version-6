@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { IconAward, IconCalendar, IconCamera, IconCar, IconChartBar, IconCheck, IconChevronDown, IconChevronRight, IconClipboardCheck, IconClipboardList, IconClock, IconCreditCard, IconCurrencyPound, IconDots, IconExternalLink, IconFlag, IconHeart, IconLoader2, IconMail, IconMapPin, IconMessage, IconPalette, IconPencil, IconPhone, IconPlus, IconRefresh, IconSearch, IconSend, IconTrash, IconTrophy, IconX } from "@tabler/icons-react";
-import { BookOpen, History } from "lucide-react";
+import { IconBook, IconHistory } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { uploadImage } from "@/lib/uploadFile";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
@@ -1798,7 +1798,7 @@ function PupilDetailPage() {
                             className="p-2 rounded-lg shrink-0 flex items-center justify-center"
                             style={{ backgroundColor: theoryPassed ? "#00B5A5" : "#94A3B8" }}
                           >
-                            {theoryPassed ? <IconCheck stroke={1.5} size={14} color="#FFFFFF" /> : <BookOpen size={14} color="#FFFFFF" />}
+                            {theoryPassed ? <IconCheck stroke={1.5} size={14} color="#FFFFFF" /> : <IconBook size={14} color="#FFFFFF" />}
                           </div>
                           <div className="min-w-0">
                             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider" style={POPPINS}>Theory</p>
@@ -3872,7 +3872,7 @@ function PupilDetailPage() {
         >
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2" style={{ color: "#0B1F3A", fontSize: 16, fontWeight: 800, ...POPPINS }}>
-              <BookOpen size={18} color="#1877D6" /> Theory test
+              <IconBook size={18} color="#1877D6" /> Theory test
             </span>
             <button
               type="button"

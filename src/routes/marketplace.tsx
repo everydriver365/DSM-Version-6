@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import type { ComponentType } from "react";
 import { IconBriefcase, IconCamera, IconCar, IconHeart, IconMapPin, IconPackage, IconSchool, IconShieldCheck, IconStar, IconTool } from "@tabler/icons-react";
-import { BookOpen, Megaphone, Search as SearchIcon } from "lucide-react";
+import { IconBook, IconSearch, IconSpeakerphone } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
@@ -66,13 +66,13 @@ const CATEGORY_ICONS: Record<string, IconCmp> = {
   health: IconHeart,
   learning: IconSchool,
   cpd: IconSchool,
-  courses: BookOpen,
+  courses: IconBook,
   insurance: IconShieldCheck,
   vehicles: IconCar,
   cars: IconCar,
   maintenance: IconTool,
   services: IconBriefcase,
-  marketing: Megaphone,
+  marketing: IconSpeakerphone,
   promotion: IconStar,
 };
 
@@ -251,7 +251,7 @@ function MarketplacePage() {
                 pointerEvents: "none",
               }}
             >
-              <SearchIcon size={14} color="#9CA3AF" strokeWidth={2} />
+              <IconSearch size={14} color="#9CA3AF" stroke={2} />
             </div>
             <input
               type="text"

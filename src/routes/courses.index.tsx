@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Plus, GraduationCap, ChevronRight, MapPin } from "lucide-react";
+import { IconChevronRight, IconMapPin, IconPlus, IconSchool } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { PupilAvatar } from "@/components/PupilAvatar";
@@ -222,7 +222,7 @@ function CoursesPage() {
           aria-label="New course"
         >
           <span style={{ width: 22, height: 22, borderRadius: "50%", background: "#1877D6", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-            <Plus size={14} color="#fff" strokeWidth={3} />
+            <IconPlus size={14} color="#fff" stroke={3} />
           </span>
           New course
         </button>
@@ -244,7 +244,7 @@ function CoursesPage() {
               gap: 12,
             }}
           >
-            <GraduationCap size={48} color="#9CA3AF" />
+            <IconSchool size={48} color="#9CA3AF" />
             <div style={{ fontSize: 14, fontWeight: 600 }}>
               No courses yet — create your first course
             </div>
@@ -379,7 +379,7 @@ function CourseCard({
               justifyContent: "center",
             }}
           >
-            <GraduationCap size={54} color="rgba(255,255,255,0.15)" />
+            <IconSchool size={54} color="rgba(255,255,255,0.15)" />
           </div>
         )}
 
@@ -478,7 +478,7 @@ function CourseCard({
               fontSize: 11,
             }}
           >
-            <MapPin size={10} color="rgba(255,255,255,0.7)" />
+            <IconMapPin size={10} color="rgba(255,255,255,0.7)" />
             <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {locationText}
             </span>
@@ -588,7 +588,7 @@ function CourseCard({
               </span>
             </div>
           </div>
-          <ChevronRight size={13} color="#C7C7CC" />
+          <IconChevronRight size={13} color="#C7C7CC" />
         </div>
       )}
 

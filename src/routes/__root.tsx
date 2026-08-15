@@ -10,7 +10,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMenu2, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconSearch, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconX } from "@tabler/icons-react";
-import { CalendarPlus, ListTodo, Sparkles, Receipt, Calculator, FileSignature, Megaphone, HelpCircle, Settings as SettingsIcon } from "lucide-react";
+import { IconCalculator, IconCalendarPlus, IconHelpCircle, IconListCheck, IconReceipt, IconSettings, IconSignature, IconSparkles, IconSpeakerphone } from "@tabler/icons-react";
 
 import appCss from "../styles.css?url";
 import icon192 from "../assets/icon-192.png.asset.json";
@@ -199,7 +199,7 @@ const QUICK_ACTIONS: MenuItem[] = [
   { label: "Call a pupil", icon: IconPhone, to: "/messages" },
   { label: "Live track", icon: IconMapPin, to: "/live" },
   { label: "Take payment", icon: IconCurrencyPound, event: "dsm-open-unified-payment-sheet", fallback: "/home" },
-  { label: "Add lesson", icon: CalendarPlus, event: "dsm-open-add-lesson-sheet", fallback: "/home" },
+  { label: "Add lesson", icon: IconCalendarPlus, event: "dsm-open-add-lesson-sheet", fallback: "/home" },
 ];
 
 const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
@@ -207,18 +207,18 @@ const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
     title: "Daily",
     items: [
       { label: "Day briefing", icon: IconSun, to: "/briefing" },
-      { label: "Outstanding", icon: ListTodo, to: "/outstanding" },
+      { label: "Outstanding", icon: IconListCheck, to: "/outstanding" },
       { label: "End of day", icon: IconMoon, to: "/end-of-day" },
-      { label: "What's changed", icon: Sparkles, to: "/whats-changed" },
+      { label: "What's changed", icon: IconSparkles, to: "/whats-changed" },
     ],
   },
   {
     title: "Money",
     items: [
       { label: "Earnings", icon: IconTrendingUp, to: "/earnings" },
-      { label: "Expenses", icon: Receipt, to: "/expenses" },
+      { label: "Expenses", icon: IconReceipt, to: "/expenses" },
       { label: "Mileage", icon: IconCar, to: "/mileage" },
-      { label: "Tax & MTD", icon: Calculator, to: "/mtd" },
+      { label: "Tax & MTD", icon: IconCalculator, to: "/mtd" },
       { label: "Invoices", icon: IconFileText, to: "/invoices" },
     ],
   },
@@ -227,7 +227,7 @@ const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
     items: [
       { label: "Tests", icon: IconClipboardCheck, to: "/tests" },
       { label: "Courses", icon: IconSchool, to: "/courses" },
-      { label: "Quotes", icon: FileSignature, to: "/quotes" },
+      { label: "Quotes", icon: IconSignature, to: "/quotes" },
       { label: "Waiting list", icon: IconUsers, to: "/waitinglist" },
       { label: "Waivers", icon: IconShieldCheck, to: "/waivers" },
     ],
@@ -237,7 +237,7 @@ const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
     items: [
       { label: "Reviews", icon: IconStar, to: "/reviews" },
       { label: "Referrals", icon: IconGift, to: "/referrals" },
-      { label: "Broadcast", icon: Megaphone, to: "/broadcast" },
+      { label: "Broadcast", icon: IconSpeakerphone, to: "/broadcast" },
       { label: "Reports", icon: IconChartBar, to: "/reports" },
       { label: "CPD & certs", icon: IconAward, to: "/cpd" },
       { label: "Community", icon: IconMessageCircle, to: "/community" },
@@ -246,9 +246,9 @@ const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
   {
     title: "Account",
     items: [
-      { label: "Settings", icon: SettingsIcon, to: "/settings" },
+      { label: "Settings", icon: IconSettings, to: "/settings" },
       { label: "Calendar sync", icon: IconRefresh, to: "/calendarsync" },
-      { label: "Help", icon: HelpCircle, to: "/help" },
+      { label: "Help", icon: IconHelpCircle, to: "/help" },
       { label: "Sign out", icon: IconLogout, signOut: true },
     ],
   },
@@ -316,7 +316,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
             flexShrink: 0,
           }}
         >
-          <Icon size={17} strokeWidth={1.8} color="#000" />
+          <Icon size={17} stroke={1.8} color="#000" />
         </span>
         <span style={{ flex: 1, fontSize: 15, fontWeight: 500, color: "#000" }}>{m.label}</span>
         <IconChevronRight size={14} color="#C7C7CC" />
