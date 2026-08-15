@@ -997,6 +997,7 @@ function LiveNewsPage() {
                   {[
                     { id: "all", name: "All" },
                     { id: "featured", name: "Featured" },
+                    { id: "ted", name: "TED Talks" },
                     ...PODCAST_SHOWS.map((s) => ({ id: s.id, name: s.name })),
                   ].map((chip) => {
                     const active = showFilter === chip.id;
@@ -1005,7 +1006,10 @@ function LiveNewsPage() {
                         ? episodes.length
                         : chip.id === "featured"
                           ? episodes.filter((e) => e.showFeatured).length
-                          : episodes.filter((e) => e.showId === chip.id).length;
+                          : chip.id === "ted"
+                            ? episodes.filter((e) => e.showId.startsWith("ted-")).length
+                            : episodes.filter((e) => e.showId === chip.id).length;
+
                     return (
                       <button
                         key={chip.id}
