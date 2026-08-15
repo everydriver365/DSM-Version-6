@@ -29,6 +29,8 @@ import { filterEchoedBlocks } from "@/lib/calendarDedupe";
 
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
+import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
+
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
@@ -1692,39 +1694,20 @@ function SchedulePage() {
                                                       }}>
                                                         Cancelled
                                                       </span>
-                                                      ) : (isLive || isPrepaidPupil || isPaid || dueUnpaid || payStatus === 'partial') ? (
-                                                        <button
-                                                          type="button"
+                                                      ) : (
+                                                        <LessonPaymentBadge
+                                                          status={e.lesson.payment_status}
+                                                          amountDue={e.lesson.amount_due}
+                                                          paidAmount={(e.lesson as any).paid_amount}
+                                                          prepaidHours={e.lesson.pupil?.prepaid_hours}
+                                                          isLive={isLive}
                                                           onClick={(ev) => {
                                                             ev.stopPropagation();
                                                             setPaymentSheetFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
                                                           }}
-                                                          style={{
-                                                            flexShrink: 0,
-                                                            display: 'inline-flex',
-                                                            alignItems: 'center',
-                                                            fontSize: 10,
-                                                            fontWeight: 700,
-                                                            padding: '2px 7px',
-                                                            borderRadius: 20,
-                                                            lineHeight: 1.4,
-                                                            border: 'none',
-                                                            cursor: 'pointer',
-                                                            fontFamily: 'Poppins, sans-serif',
-                                                            ...(isLive ? {
-                                                              background: '#E6F1FB', color: '#1877D6',
-                                                            } : isPrepaidPupil || isPaid ? {
-                                                              background: '#DCFCE7', color: '#15803D',
-                                                            } : payStatus === 'partial' ? {
-                                                              background: '#FEF3C7', color: '#92400E',
-                                                            } : {
-                                                              background: '#FCE9E9', color: '#CC2229',
-                                                            }),
-                                                          }}
-                                                        >
-                                                          {isLive ? 'Live' : isPrepaidPupil ? 'Prepaid' : isPaid ? 'Paid' : payStatus === 'partial' ? 'Partial' : dueUnpaid ? `£${amt.toFixed(0)} due` : null}
-                                                        </button>
-                                                    ) : null}
+                                                        />
+                                                      )}
+
                                                    {(() => {
                                                      const lsn = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
                                                      const lst = (lsn.status ?? '').toLowerCase();
