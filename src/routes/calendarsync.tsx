@@ -363,17 +363,21 @@ function CalendarSyncPage() {
       );
       const syncData = await syncRes.json().catch(() => ({}));
       console.log("[calendar-sync] sync response:", syncData);
+      const rawErr = String(syncData.error || syncData.message || "");
       if (syncData.success) {
         const count = syncData.eventsImported || 0;
         toast.success(
           count > 0
-            ? `IconCalendar synced — ${count} event${count !== 1 ? "s" : ""} imported`
-            : "IconCalendar synced — no upcoming events found",
+            ? `Calendar synced — ${count} event${count !== 1 ? "s" : ""} imported`
+            : "Calendar synced — no upcoming events found",
         );
         setLastSynced(new Date().toISOString());
+      } else if (syncRes.status === 429 || rawErr.includes("429")) {
+        toast.error("Your calendar provider is rate-limiting us. Please wait a few minutes and sync again.");
       } else {
         toast.error(syncData.message || syncData.error || "Sync failed — check your URL and try again");
       }
+
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Sync failed");
     } finally {
