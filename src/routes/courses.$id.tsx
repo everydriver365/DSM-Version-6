@@ -560,6 +560,16 @@ function CourseDetailPage() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
+
+  const canGoBack = window.history.length > 1;
+  function goBack(fallback: string) {
+    if (canGoBack) {
+      navigate({ to: -1 as any });
+    } else {
+      navigate({ to: fallback as never });
+    }
+  }
+
       <InstructorTopBar
         firstName=""
         pageTitle={course?.name ?? "Course"}
