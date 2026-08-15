@@ -1517,6 +1517,7 @@ function HomePage() {
     pupilName: string;
   }>>([]);
   
+  const search = useSearch({ from: '/home' });
   const [tab, setTab] = useState<TabKey>(() => {
     const searchTab = isValidTabKey(search?.tab) ? search.tab : null;
     if (searchTab) return searchTab;
@@ -1529,6 +1530,8 @@ function HomePage() {
       setTab(search.tab);
     }
   }, [search?.tab]);
+
+  const [authChecked, setAuthChecked] = useState(false);
   const [workingHours, setWorkingHours] = useState<any>(null);
   const minGapMinutes = useMinGapMinutes();
   const [instructorBufferAfter, setInstructorBufferAfter] = useState<number>(15);
