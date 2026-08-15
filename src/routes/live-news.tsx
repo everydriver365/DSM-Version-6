@@ -98,13 +98,28 @@ function LiveNewsPage() {
   }, []);
 
   const activeSession = sessions?.find((s) => s.is_live) ?? null;
-  const visibleEpisodes = (episodes ?? []).filter((ep) =>
-    showFilter === "all"
-      ? true
-      : showFilter === "featured"
-        ? ep.showFeatured
-        : ep.showId === showFilter,
-  );
+  const podcastTopics = Array.from(
+    new Set(PODCAST_SHOWS.flatMap((s) => s.categories)),
+  ).sort((a, b) => a.localeCompare(b));
+  const podcastSearch = podcastQuery.trim().toLowerCase();
+  const visibleEpisodes = (episodes ?? []).filter((ep) => {
+    const showOk =
+      showFilter === "all"
+        ? true
+        : showFilter === "featured"
+          ? ep.showFeatured
+          : ep.showId === showFilter;
+    if (!showOk) return false;
+    if (topicFilter !== "all" && !ep.showCategories.includes(topicFilter)) return false;
+    if (!podcastSearch) return true;
+    return (
+      ep.title.toLowerCase().includes(podcastSearch) ||
+      ep.description.toLowerCase().includes(podcastSearch) ||
+      ep.showName.toLowerCase().includes(podcastSearch) ||
+      ep.showCategories.some((c) => c.toLowerCase().includes(podcastSearch))
+    );
+  });
+
 
   const upcomingSessions = sessions?.filter((s) => !s.is_live) ?? [];
   const allSessions = activeSession ? [activeSession, ...upcomingSessions] : upcomingSessions;
