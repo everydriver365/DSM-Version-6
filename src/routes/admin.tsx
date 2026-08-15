@@ -1166,6 +1166,12 @@ function AdminHub() {
               label="Podcasts"
               onClick={() => navigate({ to: "/admin/podcasts" as never })}
             />
+            <AdminSectionTile
+              icon={<IconNews stroke={1.6} size={18} color="#000" />}
+              label="News"
+              onClick={() => navigate({ to: "/admin/news" as never })}
+            />
+
           </AdminGroupCard>
 
           <AdminGroupLabel>Instructors</AdminGroupLabel>
