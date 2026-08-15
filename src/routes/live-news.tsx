@@ -95,7 +95,11 @@ function LiveNewsPage() {
   const upcomingSessions = sessions?.filter((s) => !s.is_live) ?? [];
   const allSessions = activeSession ? [activeSession, ...upcomingSessions] : upcomingSessions;
 
-  const tabButton = (key: "live" | "news", label: string, count: number) => {
+  const tabButton = (
+    key: "live" | "news" | "podcasts",
+    label: string,
+    count: number,
+  ) => {
     const isActive = activeTab === key;
     return (
       <button
