@@ -558,9 +558,6 @@ function CourseDetailPage() {
     );
   }
 
-  return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
-
   const canGoBack = window.history.length > 1;
   function goBack(fallback: string) {
     if (canGoBack) {
@@ -570,10 +567,12 @@ function CourseDetailPage() {
     }
   }
 
+  return (
+    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
       <InstructorTopBar
         firstName=""
         pageTitle={course?.name ?? "Course"}
-        onBack={() => navigate({ to: "/courses" as never })}
+        onBack={() => goBack('/courses')}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
         onLiveTrack={() => navigate({ to: "/live" as never })}
