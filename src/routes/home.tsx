@@ -4913,17 +4913,18 @@ function HomePage() {
                       {/* Payment pill */}
                       <div style={{
                         position: 'absolute', top: 10, right: 10, zIndex: 5,
-                        display: 'inline-flex', alignItems: 'center',
-                        background: hPillBgFinal,
-                        color: hPillFgFinal,
-                        borderRadius: 20,
-                        padding: '4px 10px',
-                        fontSize: 12, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
-                        whiteSpace: 'nowrap',
                         boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                        borderRadius: 20,
                       }}>
-                        {hLabelFinal}
+                        <LessonPaymentBadge
+                          status={upcoming?.payment_status}
+                          amountDue={upcoming?.amount_due}
+                          paidAmount={(upcoming as any)?.paid_amount}
+                          prepaidHours={upcoming?.pupils?.prepaid_hours}
+                          size="md"
+                        />
                       </div>
+
 
                       {/* ETA pill */}
 
