@@ -121,7 +121,7 @@ const PRICING_OPTIONS: {
   Icon: React.ComponentType<{ size?: number; color?: string }>;
 }[] = [
   { key: "block", label: "Block", Icon: IconPackage },
-  { key: "national_intensives", label: "National Intensives", Icon: Building2 },
+  { key: "national_intensives", label: "National Intensives", Icon: IconBuilding },
   { key: "standard", label: "Standard", Icon: IconClock },
   { key: "custom", label: "One-off", sublabel: "Single occasion payment", Icon: IconReceipt },
 ];
@@ -891,17 +891,17 @@ export function UnifiedPaymentSheet({
     const keyNorm = key.replace(/_/g, "");
     return (aliases[keyNorm] ?? [keyNorm]).some((a) => normalised.includes(a));
   };
-  const methodList: { key: PayMethod; Icon: typeof Banknote }[] = (
+  const methodList: { key: PayMethod; Icon: typeof IconCashBanknote }[] = (
     [
-      { key: "cash" as const, Icon: Banknote },
-      { key: "bank_transfer" as const, Icon: Landmark },
+      { key: "cash" as const, Icon: IconCashBanknote },
+      { key: "bank_transfer" as const, Icon: IconBuildingBank },
       { key: "card_square" as const, Icon: IconCreditCard },
       { key: "card_evd" as const, Icon: IconCreditCard },
-      { key: "qr" as const, Icon: QrCode },
-      { key: "link" as const, Icon: Link2 },
+      { key: "qr" as const, Icon: IconQrcode },
+      { key: "link" as const, Icon: IconLink },
       { key: "klarna" as const, Icon: IconCreditCard },
       { key: "clearpay" as const, Icon: IconCreditCard },
-    ] as { key: PayMethod; Icon: typeof Banknote }[]
+    ] as { key: PayMethod; Icon: typeof IconCashBanknote }[]
   ).filter((m) => methodAllowed(m.key));
 
   const isRemote = method === "qr" || method === "link" || method === "card_square";
@@ -3217,10 +3217,10 @@ export function UnifiedPaymentSheet({
                   }}
                 >
                   {[
-                    { key: "cash" as const, Icon: Banknote, label: "Cash" },
-                    { key: "bank_transfer" as const, Icon: Landmark, label: "Bank transfer" },
-                    { key: "qr" as const, Icon: QrCode, label: "QR" },
-                    { key: "link" as const, Icon: Link2, label: "Pay link" },
+                    { key: "cash" as const, Icon: IconCashBanknote, label: "Cash" },
+                    { key: "bank_transfer" as const, Icon: IconBuildingBank, label: "Bank transfer" },
+                    { key: "qr" as const, Icon: IconQrcode, label: "QR" },
+                    { key: "link" as const, Icon: IconLink, label: "Pay link" },
                   ].map(({ key, Icon, label }) => {
                     const active = oneOffMethod === key;
                     return (
