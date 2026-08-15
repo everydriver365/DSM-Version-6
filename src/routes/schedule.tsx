@@ -2861,7 +2861,40 @@ function MonthStrip({
           <IconChevronLeft size={18} stroke={2} />
         </button>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{monthLabel}</div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                aria-label="Jump to date"
+                style={{
+                  background: "transparent",
+                  border: 0,
+                  cursor: "pointer",
+                  padding: 4,
+                  color: "#0B1F3A",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{monthLabel}</div>
+                <IconCalendar size={16} stroke={2} />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 pointer-events-auto" align="center">
+              <Calendar
+                mode="single"
+                selected={selectedDate ? new Date(selectedDate + "T12:00:00") : undefined}
+                onSelect={(date) => {
+                  if (date) {
+                    onSelectDate(ymdLocal(date));
+                  }
+                }}
+                initialFocus
+                className="p-3"
+              />
+            </PopoverContent>
+          </Popover>
           <button
             type="button"
             onClick={onToday}
