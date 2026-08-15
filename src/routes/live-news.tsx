@@ -112,10 +112,10 @@ async function handleShareEpisode(episode: PodcastEpisode) {
 
 function LiveNewsPage() {
   const navigate = useNavigate();
-  const canGoBack = typeof window !== "undefined" && window.history.length > 1;
+  const router = useRouter();
   function goBack(fallback: string) {
-    if (canGoBack) {
-      navigate({ to: -1 as any });
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.history.back();
     } else {
       navigate({ to: fallback as never });
     }
