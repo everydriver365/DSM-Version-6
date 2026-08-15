@@ -55,7 +55,7 @@ function SubscriptionPage() {
     })();
   }, []);
 
-  const TIER_LOSSES = useMemo(
+  const TIER_LOSSES = useMemo<Record<string, { icon: string; text: string }[]>>(
     () => ({
       website: [
         {
