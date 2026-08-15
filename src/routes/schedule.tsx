@@ -1081,17 +1081,9 @@ function SchedulePage() {
               return (
                 <div
                   key={row.key}
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 500,
-                    letterSpacing: "0.4px",
-                    textTransform: "uppercase",
-                    color: "#8A93A3",
-                    marginTop: isFirstWeek ? 4 : 24,
-                    marginBottom: 16,
-                  }}
+                  style={{ marginTop: isFirstWeek ? 4 : 24 }}
                 >
-                  {row.label.toUpperCase()}
+                  <ScheduleDateDivider label={row.label.toUpperCase()} />
                 </div>
               );
             }
