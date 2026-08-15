@@ -721,32 +721,6 @@ function LiveNewsPage() {
               <EmptyState message="Podcast episodes unavailable right now" />
             ) : (
               <div style={{ display: "flex", flexDirection: "column" }}>
-                {/* ---- header block ---- */}
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-                  <span
-                    style={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: 22,
-                      background: "#EAF3FB",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <IconMicrophone size={22} color="#1877D6" stroke={1.9} />
-                  </span>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 20, fontWeight: 800, color: "#0B1F3A", letterSpacing: "-0.3px" }}>
-                      Listen
-                    </div>
-                    <div style={{ fontSize: 12.5, color: "#6B7686" }}>
-                      {PODCAST_SHOWS.length} shows · {episodes.length} episodes
-                    </div>
-                  </div>
-                </div>
-
                 {/* ---- continue listening ---- */}
                 {(() => {
                   const inProgress = (episodes ?? [])
