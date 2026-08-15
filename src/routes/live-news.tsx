@@ -412,6 +412,7 @@ function LiveNewsPage() {
                     </div>
                   );
                 })}
+                {playing ? <div style={{ height: 96 }} /> : null}
               </div>
             )}
           </section>
