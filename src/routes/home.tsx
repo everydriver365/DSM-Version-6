@@ -8485,9 +8485,23 @@ function HomePage() {
         open={unifiedPayOpen}
         onClose={() => setUnifiedPayOpen(false)}
         initialPupilId={unifiedPayPupilId}
-        onSaved={() => {
+        onSaved={(info) => {
           setUnifiedPayOpen(false);
           setUnifiedPayPupilId(undefined);
+          // Optimistic: reflect paid status on schedule rows immediately,
+          // before the background refetch lands.
+          const updates = info?.updatedLessons ?? [];
+          if (updates.length) {
+            const byId = new Map(updates.map((u) => [u.id, u]));
+            setLessons((prev) =>
+              (prev ?? []).map((l) => {
+                const u = byId.get(l.id);
+                return u
+                  ? { ...l, payment_status: u.payment_status, paid_amount: u.paid_amount }
+                  : l;
+              }),
+            );
+          }
           setReloadKey((k) => k + 1);
         }}
       />

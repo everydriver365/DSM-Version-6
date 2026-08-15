@@ -507,6 +507,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
           overpayment: 0,
           newAccountBalance: balance,
           newPrepaidHours: 0,
+          updatedLessons: [],
           lessonsFullyPaid: 1,
           lessonsLeftPartial: 0,
           balanceOwedDelta: 0,

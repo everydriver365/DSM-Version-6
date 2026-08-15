@@ -2042,9 +2042,22 @@ function SchedulePage() {
         open={unifiedPayOpen}
         onClose={() => { setUnifiedPayOpen(false); setUnifiedPayPupilId(undefined); }}
         initialPupilId={unifiedPayPupilId}
-        onSaved={() => {
+        onSaved={(info) => {
           setUnifiedPayOpen(false);
           setUnifiedPayPupilId(undefined);
+          // Optimistic: paid status shows on the agenda straight away.
+          const updates = info?.updatedLessons ?? [];
+          if (updates.length) {
+            const byId = new Map(updates.map((u) => [u.id, u]));
+            setLessons((prev) =>
+              (prev ?? []).map((l: any) => {
+                const u = byId.get(l.id);
+                return u
+                  ? { ...l, payment_status: u.payment_status, paid_amount: u.paid_amount }
+                  : l;
+              }),
+            );
+          }
           setLessonsReloadKey((k) => k + 1);
           toast.success("Payment recorded");
           setTimeout(() => {

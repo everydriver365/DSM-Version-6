@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { IconCircleCheck, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
+import type { PaidLessonUpdate } from "@/lib/payments";
 import { recordPayment, recordRefund, recordStandalonePayment, correctPaymentRecord, getPupilBalance, type PupilBalance } from "@/lib/payments";
 import { createSquareIntent, watchSquareIntent } from "@/lib/squareIntents";
 import {
@@ -67,7 +68,13 @@ type TabKey = "payment" | "pricing";
 export interface UnifiedPaymentSheetProps {
   open: boolean;
   onClose: () => void;
-  onSaved?: () => void;
+  /**
+   * Called after a successful save. When the payment was allocated to
+   * lessons, `info.updatedLessons` carries the new payment_status /
+   * paid_amount for each affected lesson so callers can patch their local
+   * lists optimistically instead of waiting for a refetch.
+   */
+  onSaved?: (info?: { updatedLessons: PaidLessonUpdate[] }) => void;
   initialPupilId?: string;
 }
 
@@ -1028,6 +1035,7 @@ export function UnifiedPaymentSheet({
       setSaving(true);
       try {
         const methodStr = toDbMethod(m);
+        let paidLessonUpdates: PaidLessonUpdate[] = [];
         const nowIso = new Date(`${paymentDate}T12:00:00`).toISOString();
         let historyId = "";
 
@@ -1042,7 +1050,7 @@ export function UnifiedPaymentSheet({
           });
           historyId = res.historyId;
         } else {
-          await recordPayment({
+          const payRes = await recordPayment({
             pupilId,
             amount: amountNum,
             method: methodStr,
@@ -1050,6 +1058,7 @@ export function UnifiedPaymentSheet({
             currentAccountBalance: Number(pupil?.account_balance ?? 0),
             createdAt: nowIso,
           });
+          paidLessonUpdates = payRes.updatedLessons;
 
           // NI tracking lives on the pupil row, not the payment ledger.
           const type = (pupil?.pricing_type ?? "standard") as PricingType;
@@ -1098,7 +1107,7 @@ export function UnifiedPaymentSheet({
         setQrUrl(null);
         setPayUrl(null);
 
-        onSaved?.();
+        onSaved?.({ updatedLessons: paidLessonUpdates });
       } catch (e) {
         console.error("[UnifiedPaymentSheet] handleRecordPayment", e);
         toast.error("Couldn't record payment");
