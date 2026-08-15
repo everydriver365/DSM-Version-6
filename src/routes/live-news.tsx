@@ -710,7 +710,7 @@ function LiveNewsPage() {
                                 textDecoration: "none",
                               }}
                             >
-                              Open in Captivate
+                              Open episode page
                               <IconChevronRight size={13} stroke={2} />
                             </a>
                           )}
