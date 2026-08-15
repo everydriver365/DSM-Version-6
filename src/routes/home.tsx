@@ -6214,11 +6214,20 @@ function HomePage() {
 
                     return (
                       <React.Fragment key={l.id}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                          <span style={{ fontSize: 11, fontWeight: 700, color: '#1877D6', letterSpacing: 0.3, textTransform: 'uppercase' }}>
+                        <div className="flex items-center gap-2.5 mb-1.5">
+                          <span
+                            style={{
+                              fontSize: typography.sizes.sectionLabel,
+                              fontWeight: typography.weights.bold,
+                              color: typography.colors.accent,
+                              letterSpacing: '0.3px',
+                              textTransform: 'uppercase',
+                              fontFamily: typography.family,
+                            }}
+                          >
                             {dateLabel}
                           </span>
-                          <span style={{ flex: 1, height: 1, background: '#E4E8EF' }} />
+                          <Separator className="flex-1 bg-border" />
                         </div>
                         <div style={{ position: 'relative', background: '#FFFFFF', border: '1px solid #E4E8EF', borderRadius: 13, marginBottom: 8 }}>
                         <div
