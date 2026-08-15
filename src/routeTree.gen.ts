@@ -47,6 +47,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PostcodeRatesRouteImport } from './routes/postcode-rates'
 import { Route as PipelineRouteImport } from './routes/pipeline'
+import { Route as PerksRouteImport } from './routes/perks'
 import { Route as PerformanceRouteImport } from './routes/performance'
 import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as PaymentCompleteRouteImport } from './routes/payment-complete'
@@ -363,6 +364,11 @@ const PostcodeRatesRoute = PostcodeRatesRouteImport.update({
 const PipelineRoute = PipelineRouteImport.update({
   id: '/pipeline',
   path: '/pipeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerksRoute = PerksRouteImport.update({
+  id: '/perks',
+  path: '/perks',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PerformanceRoute = PerformanceRouteImport.update({
@@ -1071,6 +1077,7 @@ export interface FileRoutesByFullPath {
   '/payment-complete': typeof PaymentCompleteRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
+  '/perks': typeof PerksRoute
   '/pipeline': typeof PipelineRoute
   '/postcode-rates': typeof PostcodeRatesRoute
   '/privacy': typeof PrivacyRoute
@@ -1235,6 +1242,7 @@ export interface FileRoutesByTo {
   '/payment-complete': typeof PaymentCompleteRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
+  '/perks': typeof PerksRoute
   '/pipeline': typeof PipelineRoute
   '/postcode-rates': typeof PostcodeRatesRoute
   '/privacy': typeof PrivacyRoute
@@ -1402,6 +1410,7 @@ export interface FileRoutesById {
   '/payment-complete': typeof PaymentCompleteRoute
   '/payments': typeof PaymentsRoute
   '/performance': typeof PerformanceRoute
+  '/perks': typeof PerksRoute
   '/pipeline': typeof PipelineRoute
   '/postcode-rates': typeof PostcodeRatesRoute
   '/privacy': typeof PrivacyRoute
@@ -1570,6 +1579,7 @@ export interface FileRouteTypes {
     | '/payment-complete'
     | '/payments'
     | '/performance'
+    | '/perks'
     | '/pipeline'
     | '/postcode-rates'
     | '/privacy'
@@ -1734,6 +1744,7 @@ export interface FileRouteTypes {
     | '/payment-complete'
     | '/payments'
     | '/performance'
+    | '/perks'
     | '/pipeline'
     | '/postcode-rates'
     | '/privacy'
@@ -1900,6 +1911,7 @@ export interface FileRouteTypes {
     | '/payment-complete'
     | '/payments'
     | '/performance'
+    | '/perks'
     | '/pipeline'
     | '/postcode-rates'
     | '/privacy'
@@ -2068,6 +2080,7 @@ export interface RootRouteChildren {
   PaymentCompleteRoute: typeof PaymentCompleteRoute
   PaymentsRoute: typeof PaymentsRoute
   PerformanceRoute: typeof PerformanceRoute
+  PerksRoute: typeof PerksRoute
   PipelineRoute: typeof PipelineRoute
   PostcodeRatesRoute: typeof PostcodeRatesRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -2412,6 +2425,13 @@ declare module '@tanstack/react-router' {
       path: '/pipeline'
       fullPath: '/pipeline'
       preLoaderRoute: typeof PipelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perks': {
+      id: '/perks'
+      path: '/perks'
+      fullPath: '/perks'
+      preLoaderRoute: typeof PerksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/performance': {
@@ -3466,6 +3486,7 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentCompleteRoute: PaymentCompleteRoute,
   PaymentsRoute: PaymentsRoute,
   PerformanceRoute: PerformanceRoute,
+  PerksRoute: PerksRoute,
   PipelineRoute: PipelineRoute,
   PostcodeRatesRoute: PostcodeRatesRoute,
   PrivacyRoute: PrivacyRoute,
