@@ -1,0 +1,145 @@
+import { sanitizeNewsTitle } from "@/lib/newsText";
+
+export type PodcastShow = {
+  id: string;
+  name: string;
+  feedUrl: string;
+  siteUrl: string;
+  categories: string[];
+  featured: boolean;
+};
+
+export type PodcastEpisode = {
+  id: string;
+  title: string;
+  description: string;
+  audioUrl: string;
+  pubDate: string | null;
+  durationSecs: number | null;
+  imageUrl: string | null;
+  link: string | null;
+  showId: string;
+  showName: string;
+  showFeatured: boolean;
+  showCategories: string[];
+};
+
+export const PODCAST_SHOWS: PodcastShow[] = [
+  {
+    id: "the-instructor",
+    name: "The Instructor",
+    feedUrl: "https://feeds.captivate.fm/the-instructor/",
+    siteUrl: "https://the-instructor.captivate.fm",
+    categories: ["Teaching", "Business", "Industry", "CPD"],
+    featured: true,
+  },
+  {
+    id: "dipod",
+    name: "DIPOD",
+    feedUrl: "https://rss.libsyn.com/shows/35544/destinations/89261.xml",
+    siteUrl: "https://dipod.libsyn.com/",
+    categories: ["Driving Instructors", "CPD", "Industry", "Teaching", "Road Safety"],
+    featured: true,
+  },
+  {
+    id: "inspire",
+    name: "Inspire Instructor Training",
+    feedUrl: "https://feeds.captivate.fm/instructor-training/",
+    siteUrl: "https://inspireinstructortraining.com/podcast/",
+    categories: ["CPD", "Teaching", "Standards Check", "Part 3", "Instructor Development"],
+    featured: true,
+  },
+  {
+    id: "vision-zero",
+    name: "Driving Instructors & Vision Zero",
+    feedUrl: "https://feeds.captivate.fm/driving-instructors-and/",
+    siteUrl:
+      "https://podcasts.apple.com/gb/podcast/driving-instructors-and-vision-zero/id1749241446",
+    categories: ["Road Safety", "Driver Behaviour", "Vision Zero", "Professional Development"],
+    featured: true,
+  },
+  {
+    id: "dia-motormouth",
+    name: "DIA Motormouth",
+    feedUrl: "https://rss.buzzsprout.com/2123108.rss",
+    siteUrl: "https://podcasts.apple.com/gb/podcast/dia-motormouth/id1880195390",
+    categories: ["Industry", "Business", "Driving Instructors", "Training"],
+    featured: true,
+  },
+  {
+    id: "car-school-confessions",
+    name: "Car School Confessions",
+    feedUrl: "https://anchor.fm/s/dfbeeddc/podcast/rss",
+    siteUrl: "https://creators.spotify.com/pod/show/carschoolconfession",
+    categories: ["Instructor Life", "Learners", "Driving", "Community"],
+    featured: false,
+  },
+];
+
+function tagText(xml: string, tag: string): string {
+  const m = xml.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, "i"));
+  if (!m) return "";
+  return (m[1] ?? "").replace(/^<!\[CDATA\[/, "").replace(/\]\]>$/, "").trim();
+}
+
+function attr(xml: string, tag: string, name: string): string | null {
+  const m = xml.match(new RegExp(`<${tag}[^>]*\\s${name}="([^"]*)"`, "i"));
+  return m ? (m[1] ?? null) : null;
+}
+
+function parseDuration(raw: string): number | null {
+  if (!raw) return null;
+  if (/^\d+$/.test(raw)) return Number(raw);
+  const parts = raw.split(":").map((p) => Number(p));
+  if (parts.some((p) => Number.isNaN(p))) return null;
+  return parts.reduce((acc, p) => acc * 60 + p, 0);
+}
+
+export function parseFeed(xml: string, show: PodcastShow, limit: number): PodcastEpisode[] {
+  const firstItem = xml.indexOf("<item");
+  const channelHead = firstItem > 0 ? xml.slice(0, firstItem) : xml;
+  const channelImage =
+    attr(channelHead, "itunes:image", "href") || tagText(channelHead, "url") || null;
+
+  const items = xml.match(/<item[\s\S]*?<\/item>/g) ?? [];
+
+  return items.slice(0, limit).map((item, index) => {
+    const audioUrl = attr(item, "enclosure", "url") ?? "";
+    const guid = tagText(item, "guid");
+    const pubDateRaw = tagText(item, "pubDate");
+    const pubMs = pubDateRaw ? new Date(pubDateRaw).getTime() : NaN;
+    const pubDate = Number.isNaN(pubMs) ? null : new Date(pubMs).toISOString();
+
+    return {
+      id: `${show.id}:${guid || audioUrl || `episode-${index}`}`,
+      title: sanitizeNewsTitle(tagText(item, "title")),
+      description: sanitizeNewsTitle(tagText(item, "description")).slice(0, 400),
+      audioUrl,
+      pubDate,
+      durationSecs: parseDuration(tagText(item, "itunes:duration")),
+      imageUrl: attr(item, "itunes:image", "href") ?? channelImage,
+      link: tagText(item, "link") || show.siteUrl,
+      showId: show.id,
+      showName: show.name,
+      showFeatured: show.featured,
+      showCategories: show.categories,
+    };
+  });
+}
+
+export async function fetchAllEpisodes(): Promise<PodcastEpisode[]> {
+  const results = await Promise.allSettled(
+    PODCAST_SHOWS.map(async (show) => {
+      const res = await fetch(show.feedUrl, {
+        headers: { Accept: "application/rss+xml, application/xml, text/xml" },
+      });
+      if (!res.ok) return [] as PodcastEpisode[];
+      return parseFeed(await res.text(), show, 10);
+    }),
+  );
+
+  return results
+    .flatMap((r) => (r.status === "fulfilled" ? r.value : []))
+    .sort((a, b) => (b.pubDate ?? "").localeCompare(a.pubDate ?? ""))
+    .slice(0, 60);
+}
