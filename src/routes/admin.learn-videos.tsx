@@ -7,7 +7,6 @@ import { useAdminGate } from "./admin";
 import {
   BITESIZE_CATEGORIES,
   VIDEO_CATEGORIES,
-  type LearnVideo as LibraryVideo,
 } from "@/lib/learnVideos";
 
 export const Route = createFileRoute("/admin/learn-videos")({
