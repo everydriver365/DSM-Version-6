@@ -5,6 +5,7 @@ export type PodcastShow = {
   name: string;
   feedUrl: string;
   siteUrl: string;
+  artworkUrl?: string;
   categories: string[];
   featured: boolean;
   recommended: boolean;
@@ -36,6 +37,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     name: "The Instructor",
     feedUrl: "https://feeds.captivate.fm/the-instructor/",
     siteUrl: "https://the-instructor.captivate.fm",
+    artworkUrl: "https://artwork.captivate.fm/a34f9c5a-5ceb-4bcd-8e1f-3f49a9b7fb62/9-8-Public-Cover-27.jpg",
     categories: ["Teaching", "Business", "Industry", "CPD"],
     featured: true,
     recommended: true,
@@ -46,6 +48,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     name: "DIPOD",
     feedUrl: "https://rss.libsyn.com/shows/35544/destinations/89261.xml",
     siteUrl: "https://dipod.libsyn.com/",
+    artworkUrl: "https://static.libsyn.com/p/assets/1/4/f/b/14fbc970010f8c6b16c3140a3186d450/Large-Icon-Imaged-20260510-qwvljsbv5v.png",
     categories: ["Driving Instructors", "CPD", "Industry", "Teaching", "Road Safety"],
     featured: true,
     recommended: true,
@@ -56,6 +59,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     name: "Inspire Instructor Training",
     feedUrl: "https://feeds.captivate.fm/instructor-training/",
     siteUrl: "https://inspireinstructortraining.com/podcast/",
+    artworkUrl: "https://artwork.captivate.fm/45e7d424-84d7-4690-ad87-d3c1e44c0345/biiKMnZGc61lNSJcNWm12xwd.jpg",
     categories: ["CPD", "Teaching", "Standards Check", "Part 3", "Instructor Development"],
     featured: true,
     recommended: true,
@@ -94,6 +98,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     name: "The Diary Of A CEO",
     feedUrl: "https://feeds.megaphone.fm/thediaryofaceo",
     siteUrl: "https://stevenbartlett.com/doac/",
+    artworkUrl: "https://assets.flightcast.com/workspaces/edpmsc3wdznn1aa2txug5e3p/podcasts/xmsftuzjjykcmqwolaqn6mdn/cs9v0tiwz4lv6yfo3vt6q6dx.png",
     categories: ["Business", "Mindset", "Growth", "Leadership"],
     featured: false,
     recommended: true,
@@ -104,6 +109,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     name: "Full Disclosure with James O'Brien",
     feedUrl: "https://feeds.captivate.fm/full-disclosure/",
     siteUrl: "https://www.globalplayer.com/podcasts/42KuVs/",
+    artworkUrl: "https://artwork.captivate.fm/4e7d8709-3985-48f5-9a9d-4ed6b2cdfdca/JBQwprF9WilDB4wS-t-iRtlF.jpg",
     categories: ["Interviews", "Talk", "General"],
     featured: false,
     recommended: true,
@@ -114,6 +120,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     name: "The Nick Abbot Habit",
     feedUrl: "https://feeds.captivate.fm/the-nick-abbot-habit/",
     siteUrl: "https://thenickabbothabit.captivate.fm",
+    artworkUrl: "https://artwork.captivate.fm/ee402057-4c98-4d71-a834-dde9aa75d500/EjhZWdIPAaigqRa8PRXbU-fe.jpg",
     categories: ["Talk", "Radio", "General"],
     featured: false,
     recommended: true,
@@ -124,6 +131,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     name: "TED Talks Daily",
     feedUrl: "https://feeds.acast.com/public/shows/67587e77c705e441797aff96",
     siteUrl: "https://www.ted.com/podcasts/ted-talks-daily",
+    artworkUrl: "https://assets.pippa.io/shows/67587e77c705e441797aff96/show-cover.png",
     categories: ["TED", "Ideas", "Learning", "General"],
     featured: false,
     recommended: true,
