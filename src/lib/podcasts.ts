@@ -7,6 +7,8 @@ export type PodcastShow = {
   siteUrl: string;
   categories: string[];
   featured: boolean;
+  recommended: boolean;
+  recommendedNote?: string;
 };
 
 export type PodcastEpisode = {
@@ -24,6 +26,7 @@ export type PodcastEpisode = {
   showId: string;
   showName: string;
   showFeatured: boolean;
+  showRecommended: boolean;
   showCategories: string[];
 };
 
@@ -35,6 +38,8 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     siteUrl: "https://the-instructor.captivate.fm",
     categories: ["Teaching", "Business", "Industry", "CPD"],
     featured: true,
+    recommended: true,
+    recommendedNote: "The core UK instructor interview show",
   },
   {
     id: "dipod",
@@ -43,6 +48,8 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     siteUrl: "https://dipod.libsyn.com/",
     categories: ["Driving Instructors", "CPD", "Industry", "Teaching", "Road Safety"],
     featured: true,
+    recommended: true,
+    recommendedNote: "Instructor community and road safety",
   },
   {
     id: "inspire",
@@ -51,6 +58,8 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     siteUrl: "https://inspireinstructortraining.com/podcast/",
     categories: ["CPD", "Teaching", "Standards Check", "Part 3", "Instructor Development"],
     featured: true,
+    recommended: true,
+    recommendedNote: "Part 3 and Standards Check prep",
   },
   {
     id: "vision-zero",
@@ -60,6 +69,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
       "https://podcasts.apple.com/gb/podcast/driving-instructors-and-vision-zero/id1749241446",
     categories: ["Road Safety", "Driver Behaviour", "Vision Zero", "Professional Development"],
     featured: true,
+    recommended: false,
   },
   {
     id: "dia-motormouth",
@@ -68,6 +78,7 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     siteUrl: "https://podcasts.apple.com/gb/podcast/dia-motormouth/id1880195390",
     categories: ["Industry", "Business", "Driving Instructors", "Training"],
     featured: true,
+    recommended: false,
   },
   {
     id: "car-school-confessions",
@@ -76,6 +87,17 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     siteUrl: "https://creators.spotify.com/pod/show/carschoolconfession",
     categories: ["Instructor Life", "Learners", "Driving", "Community"],
     featured: false,
+    recommended: false,
+  },
+  {
+    id: "diary-of-a-ceo",
+    name: "The Diary Of A CEO",
+    feedUrl: "https://feeds.megaphone.fm/thediaryofaceo",
+    siteUrl: "https://stevenbartlett.com/doac/",
+    categories: ["Business", "Mindset", "Growth", "Leadership"],
+    featured: false,
+    recommended: true,
+    recommendedNote: "Business growth and mindset for running your school",
   },
 ];
 
@@ -145,6 +167,7 @@ export function parseFeed(xml: string, show: PodcastShow, limit: number): Podcas
       showId: show.id,
       showName: show.name,
       showFeatured: show.featured,
+      showRecommended: show.recommended,
       showCategories: show.categories,
     };
   });
