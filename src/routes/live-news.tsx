@@ -768,6 +768,8 @@ function LiveNewsPage() {
                           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                             <div
                               style={{
+                                position: "relative",
+                                overflow: "visible",
                                 width: 46,
                                 height: 46,
                                 flexShrink: 0,
@@ -789,6 +791,26 @@ function LiveNewsPage() {
                               ) : (
                                 <IconMicrophone size={18} color="#6B7686" />
                               )}
+                                {latest && saved[latest.id] ? (
+                                  <div
+                                    aria-hidden
+                                    style={{
+                                      position: "absolute",
+                                      top: -4,
+                                      right: -4,
+                                      width: 18,
+                                      height: 18,
+                                      borderRadius: 9,
+                                      background: "#fff",
+                                      border: "1px solid #1877D6",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <IconBookmarkFilled size={11} color="#1877D6" />
+                                  </div>
+                                ) : null}
                             </div>
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div
@@ -862,6 +884,9 @@ function LiveNewsPage() {
                               textOverflow: "ellipsis",
                             }}
                           >
+                            {latest && saved[latest.id] ? (
+                              <span style={{ color: "#1877D6", fontWeight: 700 }}>Saved · </span>
+                            ) : null}
                             {latest ? `Latest: ${latest.title}` : "No episodes loaded"}
                           </div>
                         </div>
@@ -1895,6 +1920,27 @@ function EpisodeCard({
           >
             {ep.showName}
           </div>
+        {isSaved ? (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 3,
+              marginLeft: 6,
+              verticalAlign: "middle",
+              background: "#EFF6FF",
+              color: "#1877D6",
+              borderRadius: 6,
+              padding: "2px 6px",
+              fontSize: 10,
+              fontWeight: 700,
+              marginBottom: 5,
+            }}
+          >
+            <IconBookmarkFilled size={10} color="#1877D6" />
+            Saved
+          </span>
+        ) : null}
           <div
 
             style={{
