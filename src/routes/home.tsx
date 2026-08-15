@@ -294,11 +294,16 @@ export const Route = createFileRoute("/home")({
       { name: "description", content: "Your daily overview of lessons, pupils and earnings." },
     ],
   }),
-  validateSearch: (search: Record<string, unknown>): { ws?: number } => {
-    const raw = search.ws;
-    const n = typeof raw === "number" ? raw : typeof raw === "string" ? Number(raw) : NaN;
-    if (!Number.isFinite(n)) return {};
-    return { ws: Math.max(0, Math.min(7, Math.trunc(n))) };
+  validateSearch: (search: Record<string, unknown>): { ws?: number; tab?: TabKey } => {
+    const result: { ws?: number; tab?: TabKey } = {};
+    const rawWs = search.ws;
+    const n = typeof rawWs === "number" ? rawWs : typeof rawWs === "string" ? Number(rawWs) : NaN;
+    if (Number.isFinite(n)) result.ws = Math.max(0, Math.min(7, Math.trunc(n)));
+    const rawTab = search.tab;
+    if (rawTab === "today" || rawTab === "tomorrow" || rawTab === "next") {
+      result.tab = rawTab;
+    }
+    return result;
   },
   component: HomePage,
 });
