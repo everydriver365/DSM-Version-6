@@ -13,7 +13,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { supabase } from "@/lib/supabaseClient";
 import { recordPayment } from "@/lib/payments";
 import { IconChevronRight, IconCreditCard, IconCurrencyPound, IconFileText, IconMessage, IconTrendingUp, IconUser } from "@tabler/icons-react";
-import { IconCalendarPlus, IconHistory, IconClipboardList } from "@tabler/icons-react";
+import { IconCalendarPlus, IconHistory, IconClipboardList, IconNotes } from "@tabler/icons-react";
 
 const navy = "#0B1F3A";
 const muted = "#8A93A3";
@@ -433,6 +433,15 @@ export function PupilQuickActionsSheet({
 
         <SectionLabel>OPEN</SectionLabel>
         <SheetGroup>
+          <NavRow
+            icon={<IconNotes stroke={1.5} size={18} color={muted} />}
+            label="Pupil brief"
+            onClick={() => {
+              onClose();
+              navigate({ to: "/pupils/brief/$id", params: { id: pupil.id } });
+            }}
+          />
+          <SheetDivider />
           <NavRow
             icon={<IconUser stroke={1.5} size={18} color={muted} />}
             label="Full profile"
