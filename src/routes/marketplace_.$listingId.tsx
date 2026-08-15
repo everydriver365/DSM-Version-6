@@ -149,7 +149,6 @@ function ListingDetailPage() {
   const { from } = Route.useSearch();
   const navigate = useNavigate();
   const goBack = useGoBack();
-  }
 
 
   const [listing, setListing] = useState<Listing | null>(null);

@@ -297,7 +297,6 @@ function BenefitsPage() {
   }, []);
 
   const goBack = useGoBack();
-  }
 
   const isPaid = websiteTier !== 'free';
 

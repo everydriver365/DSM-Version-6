@@ -560,7 +560,6 @@ function CourseDetailPage() {
   }
 
   const goBack = useGoBack();
-  }
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>

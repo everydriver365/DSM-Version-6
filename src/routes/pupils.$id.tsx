@@ -1357,7 +1357,6 @@ function PupilDetailPage() {
   const confirmedLessonCount = allLessons.filter(l => ['confirmed', 'completed', 'in_progress'].includes(l.status) && l.deleted_at === null).length || 0;
 
   const goBack = useGoBack();
-  }
 
 
   return (

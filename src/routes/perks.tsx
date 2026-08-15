@@ -290,7 +290,6 @@ function PerksPage() {
   }, []);
 
   const goBack = useGoBack();
-  }
 
   const isPaid = websiteTier !== 'free';
 

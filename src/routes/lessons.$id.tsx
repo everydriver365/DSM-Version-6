@@ -322,7 +322,6 @@ function LessonDetailPage() {
     : null;
 
   const goBack = useGoBack();
-  }
 
   return (
     <PageLayout className="pb-8" style={POPPINS}>
