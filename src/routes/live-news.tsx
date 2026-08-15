@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   IconBroadcast,
   IconChevronRight,
@@ -7,6 +7,8 @@ import {
   IconMicrophone,
   IconNews,
   IconPlayerPlayFilled,
+  IconPlayerPauseFilled,
+  IconPlayerTrackNextFilled,
   IconSearch,
   IconX,
 
@@ -59,6 +61,11 @@ function LiveNewsPage() {
   const [articles, setArticles] = useState<any[] | null>(null);
   const [episodes, setEpisodes] = useState<PodcastEpisode[] | null>(null);
   const [selectedEpisode, setSelectedEpisode] = useState<PodcastEpisode | null>(null);
+  const [playing, setPlaying] = useState<PodcastEpisode | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [showFilter, setShowFilter] = useState<string>("all");
   const [podcastQuery, setPodcastQuery] = useState("");
   const [topicFilter, setTopicFilter] = useState<string>("all");
@@ -126,6 +133,56 @@ function LiveNewsPage() {
     );
   });
 
+
+  const playEpisode = useCallback((ep: PodcastEpisode) => {
+    if (!ep.audioUrl) return;
+    setPlaying((prev) => {
+      if (prev?.id === ep.id) {
+        const el = audioRef.current;
+        if (el) {
+          if (el.paused) void el.play();
+          else el.pause();
+        }
+        return prev;
+      }
+      setCurrentTime(0);
+      setDuration(0);
+      return ep;
+    });
+  }, []);
+
+  const togglePlay = useCallback(() => {
+    const el = audioRef.current;
+    if (!el) return;
+    if (el.paused) void el.play();
+    else el.pause();
+  }, []);
+
+  const seekTo = useCallback((secs: number) => {
+    const el = audioRef.current;
+    if (!el) return;
+    el.currentTime = secs;
+    setCurrentTime(secs);
+  }, []);
+
+  const playNext = useCallback(() => {
+    if (!playing) return;
+    const list = visibleEpisodes.filter((e) => e.audioUrl);
+    const idx = list.findIndex((e) => e.id === playing.id);
+    const next = idx >= 0 ? list[idx + 1] : list[0];
+    if (!next) return;
+    setCurrentTime(0);
+    setDuration(0);
+    setPlaying(next);
+    if (selectedEpisode) setSelectedEpisode(next);
+  }, [playing, visibleEpisodes, selectedEpisode]);
+
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el || !playing) return;
+    el.load();
+    void el.play().catch(() => setIsPlaying(false));
+  }, [playing]);
 
   const upcomingSessions = sessions?.filter((s) => !s.is_live) ?? [];
   const allSessions = activeSession ? [activeSession, ...upcomingSessions] : upcomingSessions;
@@ -355,6 +412,7 @@ function LiveNewsPage() {
                     </div>
                   );
                 })}
+                {playing ? <div style={{ height: 96 }} /> : null}
               </div>
             )}
           </section>
@@ -767,21 +825,39 @@ function LiveNewsPage() {
                           </div>
                         </div>
 
-                        <div
+                        <button
+                          type="button"
+                          aria-label={
+                            playing?.id === ep.id && isPlaying ? "Pause episode" : "Play episode"
+                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            playEpisode(ep);
+                          }}
+                          disabled={!ep.audioUrl}
                           style={{
                             width: 36,
                             height: 36,
                             flexShrink: 0,
                             borderRadius: 18,
-                            background: isOpen ? "#1877D6" : "#EFF6FF",
+                            border: "none",
+                            background: playing?.id === ep.id ? "#1877D6" : "#EFF6FF",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             alignSelf: "center",
+                            cursor: ep.audioUrl ? "pointer" : "not-allowed",
                           }}
                         >
-                          <IconPlayerPlayFilled size={16} color={isOpen ? "#fff" : "#1877D6"} />
-                        </div>
+                          {playing?.id === ep.id && isPlaying ? (
+                            <IconPlayerPauseFilled size={16} color="#fff" />
+                          ) : (
+                            <IconPlayerPlayFilled
+                              size={16}
+                              color={playing?.id === ep.id ? "#fff" : "#1877D6"}
+                            />
+                          )}
+                        </button>
                       </div>
 
                     </div>
@@ -793,9 +869,260 @@ function LiveNewsPage() {
         )}
       </div>
 
+      {playing ? (
+        // eslint-disable-next-line jsx-a11y/media-has-caption
+        <audio
+          ref={audioRef}
+          src={playing.audioUrl}
+          preload="metadata"
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+          onLoadedMetadata={(e) => setDuration(e.currentTarget.duration || 0)}
+          onEnded={playNext}
+          style={{ display: "none" }}
+        />
+      ) : null}
+
       {selectedEpisode && (
-        <EpisodeModal episode={selectedEpisode} onClose={() => setSelectedEpisode(null)} />
+        <EpisodeModal
+          episode={selectedEpisode}
+          onClose={() => setSelectedEpisode(null)}
+          isCurrent={playing?.id === selectedEpisode.id}
+          isPlaying={playing?.id === selectedEpisode.id && isPlaying}
+          currentTime={playing?.id === selectedEpisode.id ? currentTime : 0}
+          duration={playing?.id === selectedEpisode.id ? duration : 0}
+          onPlay={() => playEpisode(selectedEpisode)}
+          onSeek={seekTo}
+          onNext={playNext}
+        />
       )}
+
+      {playing && (
+        <MiniPlayer
+          episode={playing}
+          isPlaying={isPlaying}
+          currentTime={currentTime}
+          duration={duration}
+          onToggle={togglePlay}
+          onSeek={seekTo}
+          onNext={playNext}
+          onOpen={() => setSelectedEpisode(playing)}
+          onClose={() => {
+            setPlaying(null);
+            setIsPlaying(false);
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function formatClock(secs: number): string {
+  if (!Number.isFinite(secs) || secs < 0) return "0:00";
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60);
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function ProgressBar({
+  currentTime,
+  duration,
+  onSeek,
+}: {
+  currentTime: number;
+  duration: number;
+  onSeek: (secs: number) => void;
+}) {
+  return (
+    <input
+      type="range"
+      min={0}
+      max={duration || 0}
+      step={1}
+      value={Math.min(currentTime, duration || 0)}
+      disabled={!duration}
+      aria-label="Seek"
+      onChange={(e) => onSeek(Number(e.target.value))}
+      style={{ width: "100%", accentColor: "#1877D6", cursor: duration ? "pointer" : "default" }}
+    />
+  );
+}
+
+function MiniPlayer({
+  episode,
+  isPlaying,
+  currentTime,
+  duration,
+  onToggle,
+  onSeek,
+  onNext,
+  onOpen,
+  onClose,
+}: {
+  episode: PodcastEpisode;
+  isPlaying: boolean;
+  currentTime: number;
+  duration: number;
+  onToggle: () => void;
+  onSeek: (secs: number) => void;
+  onNext: () => void;
+  onOpen: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <div
+      style={{
+        position: "fixed",
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 190,
+        background: "#fff",
+        borderTop: "1px solid #E4E8EF",
+        boxShadow: "0 -4px 16px rgba(11,31,58,0.10)",
+        padding: "8px 12px calc(8px + env(safe-area-inset-bottom))",
+        ...POPPINS,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={onOpen}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") onOpen();
+          }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            flex: 1,
+            minWidth: 0,
+            cursor: "pointer",
+          }}
+        >
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              flexShrink: 0,
+              borderRadius: 8,
+              overflow: "hidden",
+              background: "#EEF2F7",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {episode.imageUrl ? (
+              <img
+                src={episode.imageUrl}
+                alt=""
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              <IconMicrophone size={18} color="#6B7686" />
+            )}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 12.5,
+                fontWeight: 700,
+                color: "#0B1F3A",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {episode.title}
+            </div>
+            <div
+              style={{
+                fontSize: 10.5,
+                color: "#9CA3AF",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {episode.showName}
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label={isPlaying ? "Pause" : "Play"}
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: 19,
+            border: "none",
+            background: "#1877D6",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          {isPlaying ? (
+            <IconPlayerPauseFilled size={16} color="#fff" />
+          ) : (
+            <IconPlayerPlayFilled size={16} color="#fff" />
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={onNext}
+          aria-label="Next episode"
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: 17,
+            border: "none",
+            background: "#EFF6FF",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          <IconPlayerTrackNextFilled size={15} color="#1877D6" />
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close player"
+          style={{
+            width: 28,
+            height: 28,
+            borderRadius: 14,
+            border: "none",
+            background: "transparent",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          <IconX size={15} color="#9CA3AF" stroke={2} />
+        </button>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2 }}>
+        <span style={{ fontSize: 10, color: "#9CA3AF", width: 34 }}>
+          {formatClock(currentTime)}
+        </span>
+        <div style={{ flex: 1 }}>
+          <ProgressBar currentTime={currentTime} duration={duration} onSeek={onSeek} />
+        </div>
+        <span style={{ fontSize: 10, color: "#9CA3AF", width: 34, textAlign: "right" }}>
+          {formatClock(duration)}
+        </span>
+      </div>
     </div>
   );
 }
@@ -803,9 +1130,23 @@ function LiveNewsPage() {
 function EpisodeModal({
   episode,
   onClose,
+  isCurrent,
+  isPlaying,
+  currentTime,
+  duration,
+  onPlay,
+  onSeek,
+  onNext,
 }: {
   episode: PodcastEpisode;
   onClose: () => void;
+  isCurrent: boolean;
+  isPlaying: boolean;
+  currentTime: number;
+  duration: number;
+  onPlay: () => void;
+  onSeek: (secs: number) => void;
+  onNext: () => void;
 }) {
   const [tab, setTab] = useState<"notes" | "transcript">("notes");
   const [transcript, setTranscript] = useState<string | null>(null);
@@ -972,8 +1313,80 @@ function EpisodeModal({
 
         {episode.audioUrl ? (
           <div style={{ padding: "12px 16px 0" }}>
-            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-            <audio src={episode.audioUrl} controls preload="none" style={{ width: "100%" }} />
+            <div
+              style={{
+                background: "#fff",
+                border: "1px solid #E4E8EF",
+                borderRadius: 14,
+                padding: 12,
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <button
+                type="button"
+                onClick={onPlay}
+                aria-label={isPlaying ? "Pause" : "Play"}
+                style={{
+                  width: 42,
+                  height: 42,
+                  borderRadius: 21,
+                  border: "none",
+                  background: "#1877D6",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+              >
+                {isPlaying ? (
+                  <IconPlayerPauseFilled size={18} color="#fff" />
+                ) : (
+                  <IconPlayerPlayFilled size={18} color="#fff" />
+                )}
+              </button>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <ProgressBar
+                  currentTime={isCurrent ? currentTime : 0}
+                  duration={isCurrent ? duration : 0}
+                  onSeek={onSeek}
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: 10,
+                    color: "#9CA3AF",
+                  }}
+                >
+                  <span>{formatClock(isCurrent ? currentTime : 0)}</span>
+                  <span>
+                    {formatClock(
+                      isCurrent && duration ? duration : (episode.durationSecs ?? 0),
+                    )}
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={onNext}
+                aria-label="Next episode"
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 18,
+                  border: "none",
+                  background: "#EFF6FF",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <IconPlayerTrackNextFilled size={16} color="#1877D6" />
+              </button>
+            </div>
           </div>
         ) : null}
 
