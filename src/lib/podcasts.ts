@@ -199,6 +199,27 @@ export const CURATED_EPISODES: PodcastEpisode[] = [
     showRecommended: true,
     showCategories: ["TED", "Ideas", "Learning", "General"],
   },
+  {
+    id: "ted-talks-daily:bring-on-the-learning-revolution",
+    title: "Bring on the learning revolution! | Sir Ken Robinson",
+    description:
+      "In this poignant, funny follow-up to his fabled 2006 talk, Sir Ken Robinson makes the case for a radical shift from standardized schools to personalized learning.",
+    showNotes:
+      "In this poignant, funny follow-up to his fabled 2006 talk, Sir Ken Robinson makes the case for a radical shift from standardized schools to personalized learning -- creating conditions where kids' natural talents can flourish. Originally recorded at TED2010.",
+    transcriptUrl: null,
+    transcriptType: null,
+    audioUrl:
+      "https://py.tedcdn.com/consus/projects/00/12/50/011/products/2010-sir-ken-robinson-011-fallback-c7f1063860dc53fce768a68bc68eded1-1200k.mp4",
+    pubDate: "2010-05-24T09:06:00.000Z",
+    durationSecs: 1060,
+    imageUrl: "https://pe.tedcdn.com/images/ted/172559_800x600.jpg",
+    link: "https://www.ted.com/talks/sir_ken_robinson_bring_on_the_learning_revolution",
+    showId: "ted-talks-daily",
+    showName: "TED Talks Daily",
+    showFeatured: true,
+    showRecommended: true,
+    showCategories: ["TED", "Ideas", "Learning", "General"],
+  },
 ];
 
 
