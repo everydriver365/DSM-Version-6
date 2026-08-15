@@ -45,6 +45,18 @@ const MANAGED_WA =
   "https://wa.me/447767693279?text=" +
   encodeURIComponent("Hi, I'm interested in DSM Managed Website");
 
+const PRICES = {
+  website: { monthly: 9.99, annual: 89.90 },
+  pro: { monthly: 19.99, annual: 179.90 },
+  managed: { monthly: 39.99, annual: 359.90 },
+};
+
+const ANNUAL_SAVING = {
+  website: 29.98,
+  pro: 59.98,
+  managed: 119.98,
+};
+
 
 const THEMES: { key: Theme; label: string; swatch: string[] }[] = [
   { key: "classic", label: "Classic", swatch: ["#0B1F3A", "#1877D6", "#FFFFFF"] },
