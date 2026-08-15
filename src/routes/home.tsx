@@ -887,6 +887,19 @@ function SwipeableStatsCard({
 
 type TabKey = "today" | "tomorrow" | "next";
 
+const SCHEDULE_TAB_KEY = "dsm-home-schedule-tab";
+const SCHEDULE_TAB_OPTIONS: TabKey[] = ["today", "tomorrow", "next"];
+
+function isValidTabKey(value: unknown): value is TabKey {
+  return value === "today" || value === "tomorrow" || value === "next";
+}
+
+function readSavedScheduleTab(): TabKey | null {
+  if (typeof window === "undefined") return null;
+  const saved = window.localStorage.getItem(SCHEDULE_TAB_KEY);
+  return isValidTabKey(saved) ? saved : null;
+}
+
 type MarketplaceTile = {
   id: string;
   title: string;
