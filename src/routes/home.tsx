@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { typography } from "@/lib/typography";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import React from "react";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from "react";
 import { useServerFn } from "@tanstack/react-start";
@@ -294,11 +294,16 @@ export const Route = createFileRoute("/home")({
       { name: "description", content: "Your daily overview of lessons, pupils and earnings." },
     ],
   }),
-  validateSearch: (search: Record<string, unknown>): { ws?: number } => {
-    const raw = search.ws;
-    const n = typeof raw === "number" ? raw : typeof raw === "string" ? Number(raw) : NaN;
-    if (!Number.isFinite(n)) return {};
-    return { ws: Math.max(0, Math.min(7, Math.trunc(n))) };
+  validateSearch: (search: Record<string, unknown>): { ws?: number; tab?: TabKey } => {
+    const result: { ws?: number; tab?: TabKey } = {};
+    const rawWs = search.ws;
+    const n = typeof rawWs === "number" ? rawWs : typeof rawWs === "string" ? Number(rawWs) : NaN;
+    if (Number.isFinite(n)) result.ws = Math.max(0, Math.min(7, Math.trunc(n)));
+    const rawTab = search.tab;
+    if (rawTab === "today" || rawTab === "tomorrow" || rawTab === "next") {
+      result.tab = rawTab;
+    }
+    return result;
   },
   component: HomePage,
 });
@@ -881,6 +886,19 @@ function SwipeableStatsCard({
 
 
 type TabKey = "today" | "tomorrow" | "next";
+
+const SCHEDULE_TAB_KEY = "dsm-home-schedule-tab";
+const SCHEDULE_TAB_OPTIONS: TabKey[] = ["today", "tomorrow", "next"];
+
+function isValidTabKey(value: unknown): value is TabKey {
+  return value === "today" || value === "tomorrow" || value === "next";
+}
+
+function readSavedScheduleTab(): TabKey | null {
+  if (typeof window === "undefined") return null;
+  const saved = window.localStorage.getItem(SCHEDULE_TAB_KEY);
+  return isValidTabKey(saved) ? saved : null;
+}
 
 type MarketplaceTile = {
   id: string;
@@ -1499,7 +1517,20 @@ function HomePage() {
     pupilName: string;
   }>>([]);
   
-  const [tab, setTab] = useState<TabKey>("today");
+  const search = useSearch({ from: '/home' });
+  const [tab, setTab] = useState<TabKey>(() => {
+    const searchTab = isValidTabKey(search?.tab) ? search.tab : null;
+    if (searchTab) return searchTab;
+    return readSavedScheduleTab() ?? "today";
+  });
+
+  // Keep the local tab in sync with the URL search param (e.g. browser back).
+  useEffect(() => {
+    if (isValidTabKey(search?.tab) && search.tab !== tab) {
+      setTab(search.tab);
+    }
+  }, [search?.tab]);
+
   const [authChecked, setAuthChecked] = useState(false);
   const [workingHours, setWorkingHours] = useState<any>(null);
   const minGapMinutes = useMinGapMinutes();
@@ -5803,7 +5834,11 @@ function HomePage() {
                           type="button"
                           role="tab"
                           aria-selected={active}
-                          onClick={() => setTab(t)}
+                          onClick={() => {
+                            setTab(t);
+                            window.localStorage.setItem(SCHEDULE_TAB_KEY, t);
+                            navigate({ to: '.', search: (prev: any) => ({ ...prev, tab: t }), replace: true });
+                          }}
                           style={{
                             flex: 1,
                             padding: '8px 0',
