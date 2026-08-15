@@ -124,22 +124,23 @@ function LiveNewsPage() {
     if (resumeTargetRef.current?.id !== ep.id) {
       if (restartRef.current === ep.id) {
         restartRef.current = null;
-        resumeTargetRef.current = { id: ep.id, target: 0, tries: 0 };
+        resumeTargetRef.current = { id: ep.id, target: 0, tries: Date.now() };
         el.currentTime = 0;
         setCurrentTime(0);
         return;
       }
       const resumeAt = resumePosition(progressRef.current[ep.id]);
       const usable = resumeAt > 0 && (!el.duration || resumeAt < el.duration - 30);
-      resumeTargetRef.current = { id: ep.id, target: usable ? resumeAt : 0, tries: 0 };
+      resumeTargetRef.current = { id: ep.id, target: usable ? resumeAt : 0, tries: Date.now() };
     }
     const pending = resumeTargetRef.current;
-    if (!pending || pending.target <= 0 || pending.tries >= 6) return;
+    // `tries` holds the moment we started resuming; some CDNs ignore a seek
+    // issued before playback is underway, so keep retrying for a short window.
+    if (!pending || pending.target <= 0 || Date.now() - pending.tries > 20000) return;
     if (Math.abs(el.currentTime - pending.target) < 3) {
       pending.target = 0; // resumed — stop tracking so manual seeks stick
       return;
     }
-    pending.tries += 1;
     el.currentTime = pending.target;
     setCurrentTime(pending.target);
   }, []);
