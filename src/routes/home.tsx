@@ -1517,8 +1517,18 @@ function HomePage() {
     pupilName: string;
   }>>([]);
   
-  const [tab, setTab] = useState<TabKey>("today");
-  const [authChecked, setAuthChecked] = useState(false);
+  const [tab, setTab] = useState<TabKey>(() => {
+    const searchTab = isValidTabKey(search?.tab) ? search.tab : null;
+    if (searchTab) return searchTab;
+    return readSavedScheduleTab() ?? "today";
+  });
+
+  // Keep the local tab in sync with the URL search param (e.g. browser back).
+  useEffect(() => {
+    if (isValidTabKey(search?.tab) && search.tab !== tab) {
+      setTab(search.tab);
+    }
+  }, [search?.tab]);
   const [workingHours, setWorkingHours] = useState<any>(null);
   const minGapMinutes = useMinGapMinutes();
   const [instructorBufferAfter, setInstructorBufferAfter] = useState<number>(15);
