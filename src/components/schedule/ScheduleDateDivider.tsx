@@ -1,5 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { typography } from "@/lib/typography";
+import { useMemo } from "react";
 
 const DAY_NAMES = [
   "Sunday",
