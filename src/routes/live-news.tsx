@@ -3,18 +3,25 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   IconBookmark,
   IconBookmarkFilled,
+  IconBriefcase,
   IconBroadcast,
+  IconCar,
   IconChevronRight,
   IconClock,
+  IconHeart,
+  IconLayoutGrid,
   IconMicrophone,
   IconNews,
   IconPlayerPlayFilled,
   IconPlayerPauseFilled,
   IconPlayerTrackNextFilled,
+  IconSchool,
   IconSearch,
   IconShare,
+  IconTag,
   IconX,
 } from "@tabler/icons-react";
+
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
@@ -47,6 +54,18 @@ export const Route = createFileRoute("/live-news")({
 });
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+
+/** Small icon for a podcast category chip. */
+function categoryIcon(topic: string) {
+  const t = topic.toLowerCase();
+  if (t.includes("business") || t.includes("industry") || t.includes("growth")) return IconBriefcase;
+  if (t.includes("cpd") || t.includes("teach") || t.includes("training") || t.includes("standards"))
+    return IconSchool;
+  if (t.includes("well") || t.includes("health") || t.includes("mind")) return IconHeart;
+  if (t.includes("driv") || t.includes("road") || t.includes("vehicle")) return IconCar;
+  return IconTag;
+}
+
 
 function formatDate(iso: string | null | undefined): string {
   if (!iso) return "—";
@@ -702,41 +721,236 @@ function LiveNewsPage() {
               <EmptyState message="Podcast episodes unavailable right now" />
             ) : (
               <div style={{ display: "flex", flexDirection: "column" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    marginBottom: 10,
-                    color: "#6B7686",
-                    fontSize: 12,
-                  }}
-                >
-                  <IconMicrophone size={14} color="#1877D6" stroke={1.8} />
-                  <span>
-                    Latest episodes from{" "}
-                    <strong style={{ color: "#0B1F3A" }}>
-                      {PODCAST_SHOWS.length} podcasts
-                    </strong>
-                  </span>
-                </div>
-
-                <div style={{ marginBottom: 12 }}>
-                  <div
+                {/* ---- header block ---- */}
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                  <span
                     style={{
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: "#0B1F3A",
-                      marginBottom: 8,
-                      ...POPPINS,
+                      width: 44,
+                      height: 44,
+                      borderRadius: 22,
+                      background: "#EAF3FB",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
                     }}
                   >
-                    Recommended
+                    <IconMicrophone size={22} color="#1877D6" stroke={1.9} />
+                  </span>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 20, fontWeight: 800, color: "#0B1F3A", letterSpacing: "-0.3px" }}>
+                      Podcasts
+                    </div>
+                    <div style={{ fontSize: 12.5, color: "#6B7686" }}>
+                      {PODCAST_SHOWS.length} podcasts · {episodes.length} episodes
+                    </div>
+                  </div>
+                </div>
+
+                {/* ---- continue listening ---- */}
+                {(() => {
+                  const inProgress = (episodes ?? [])
+                    .filter((e) => {
+                      const entry = progress[e.id];
+                      return !!entry && !isFinished(entry) && resumePosition(entry) > 0;
+                    })
+                    .sort(
+                      (a, b) => (progress[b.id]?.updatedAt ?? 0) - (progress[a.id]?.updatedAt ?? 0),
+                    );
+                  const ep = inProgress[0];
+                  if (!ep) return null;
+                  const entry = progress[ep.id];
+                  const pct = entry?.duration
+                    ? Math.min(100, Math.round((entry.position / entry.duration) * 100))
+                    : 0;
+                  return (
+                    <div style={{ marginBottom: 18 }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          marginBottom: 8,
+                        }}
+                      >
+                        <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A" }}>
+                          Continue listening
+                        </div>
+                        {inProgress.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => setSelectedEpisode(ep)}
+                            style={{
+                              border: "none",
+                              background: "none",
+                              padding: 0,
+                              cursor: "pointer",
+                              color: "#1877D6",
+                              fontFamily: "Poppins, sans-serif",
+                              fontSize: 12.5,
+                              fontWeight: 600,
+                            }}
+                          >
+                            View all
+                          </button>
+                        )}
+                      </div>
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => setSelectedEpisode(ep)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") setSelectedEpisode(ep);
+                        }}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                          background: "#fff",
+                          border: "1px solid #E4E8EF",
+                          borderRadius: 16,
+                          boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                          padding: 12,
+                          cursor: "pointer",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 64,
+                            height: 64,
+                            borderRadius: 12,
+                            overflow: "hidden",
+                            flexShrink: 0,
+                            background: "#EEF2F7",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          {ep.imageUrl ? (
+                            <img
+                              src={ep.imageUrl}
+                              alt=""
+                              loading="lazy"
+                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                            />
+                          ) : (
+                            <IconMicrophone size={22} color="#6B7686" />
+                          )}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 11, fontWeight: 600, color: "#1877D6" }}>
+                            {ep.showName}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 14,
+                              fontWeight: 700,
+                              color: "#0B1F3A",
+                              lineHeight: 1.35,
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                              margin: "2px 0 8px",
+                            }}
+                          >
+                            {ep.title}
+                          </div>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <div
+                              style={{
+                                flex: 1,
+                                height: 4,
+                                borderRadius: 2,
+                                background: "#E4E8EF",
+                                overflow: "hidden",
+                              }}
+                            >
+                              <div
+                                style={{ width: `${pct}%`, height: "100%", background: "#1877D6" }}
+                              />
+                            </div>
+                            <span style={{ fontSize: 11, color: "#6B7686", whiteSpace: "nowrap" }}>
+                              {remainingLabel(entry) ?? ""}
+                            </span>
+                          </div>
+                        </div>
+                        <div style={{ textAlign: "center", flexShrink: 0 }}>
+                          <button
+                            type="button"
+                            aria-label={`Continue ${ep.title}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              playEpisode(ep);
+                            }}
+                            style={{
+                              width: 48,
+                              height: 48,
+                              borderRadius: 24,
+                              border: "none",
+                              background: "#1877D6",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              cursor: "pointer",
+                              boxShadow: "0 3px 8px rgba(24,119,214,0.25)",
+                            }}
+                          >
+                            {playing?.id === ep.id && isPlaying ? (
+                              <IconPlayerPauseFilled size={20} color="#fff" />
+                            ) : (
+                              <IconPlayerPlayFilled size={20} color="#fff" />
+                            )}
+                          </button>
+                          <div
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 600,
+                              color: "#1877D6",
+                              marginTop: 4,
+                            }}
+                          >
+                            Continue
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* ---- featured shows ---- */}
+                <div style={{ marginBottom: 18 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      marginBottom: 8,
+                    }}
+                  >
+                    <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A" }}>Featured</div>
+                    <button
+                      type="button"
+                      onClick={() => setShowFilter("featured")}
+                      style={{
+                        border: "none",
+                        background: "none",
+                        padding: 0,
+                        cursor: "pointer",
+                        color: "#1877D6",
+                        fontFamily: "Poppins, sans-serif",
+                        fontSize: 12.5,
+                        fontWeight: 600,
+                      }}
+                    >
+                      View all
+                    </button>
                   </div>
                   <div
                     style={{
                       display: "flex",
-                      gap: 10,
+                      gap: 12,
                       overflowX: "auto",
                       paddingBottom: 4,
                       scrollbarWidth: "none",
@@ -745,102 +959,42 @@ function LiveNewsPage() {
                     {PODCAST_SHOWS.filter((sh) => sh.recommended).map((sh) => {
                       const latest =
                         (episodes ?? []).find((e) => e.showId === sh.id && e.audioUrl) ?? null;
-                      const isActive = showFilter === sh.id;
+                      const active = showFilter === sh.id;
                       return (
-                        <div
-                          key={sh.id}
-                          role="button"
-                          tabIndex={0}
-                          onClick={() => setShowFilter(isActive ? "all" : sh.id)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ")
-                              setShowFilter(isActive ? "all" : sh.id);
-                          }}
-                          style={{
-                            flex: "0 0 auto",
-                            width: 208,
-                            background: "#fff",
-                            border: `1px solid ${isActive ? "#1877D6" : "#E4E8EF"}`,
-                            borderRadius: 16,
-                            boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-                            padding: 10,
-                            cursor: "pointer",
-                            ...POPPINS,
-                          }}
-                        >
-                          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                            <div
-                              style={{
-                                position: "relative",
-                                width: 46,
-                                height: 46,
-                                flexShrink: 0,
-                                borderRadius: 10,
-                                overflow: "hidden",
-                                background: "#EEF2F7",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
-                            >
-                              {latest?.imageUrl ? (
-                                <img
-                                  src={latest.imageUrl}
-                                  alt=""
-                                  loading="lazy"
-                                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                                />
-                              ) : (
-                                <IconMicrophone size={18} color="#6B7686" />
-                              )}
-                                {latest && saved[latest.id] ? (
-                                  <div
-                                    aria-hidden
-                                    style={{
-                                      position: "absolute",
-                                      top: -4,
-                                      right: -4,
-                                      width: 18,
-                                      height: 18,
-                                      borderRadius: 9,
-                                      background: "#fff",
-                                      border: "1px solid #1877D6",
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    <IconBookmarkFilled size={11} color="#1877D6" />
-                                  </div>
-                                ) : null}
-                            </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div
-                                style={{
-                                  fontSize: 12.5,
-                                  fontWeight: 700,
-                                  color: "#0B1F3A",
-                                  whiteSpace: "nowrap",
-                                  overflow: "hidden",
-                                  textOverflow: "ellipsis",
-                                }}
-                              >
-                                {sh.name}
-                              </div>
-                              <div
-                                style={{
-                                  fontSize: 10.5,
-                                  color: "#6B7686",
-                                  lineHeight: 1.35,
-                                  display: "-webkit-box",
-                                  WebkitLineClamp: 2,
-                                  WebkitBoxOrient: "vertical",
-                                  overflow: "hidden",
-                                }}
-                              >
-                                {sh.recommendedNote}
-                              </div>
-                            </div>
+                        <div key={sh.id} style={{ flex: "0 0 auto", width: 116 }}>
+                          <div
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => setShowFilter(active ? "all" : sh.id)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ")
+                                setShowFilter(active ? "all" : sh.id);
+                            }}
+                            style={{
+                              position: "relative",
+                              width: 116,
+                              height: 116,
+                              borderRadius: 14,
+                              overflow: "hidden",
+                              background: "#EEF2F7",
+                              border: `1px solid ${active ? "#1877D6" : "#E4E8EF"}`,
+                              boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                              cursor: "pointer",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            {latest?.imageUrl ? (
+                              <img
+                                src={latest.imageUrl}
+                                alt=""
+                                loading="lazy"
+                                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                              />
+                            ) : (
+                              <IconMicrophone size={26} color="#6B7686" />
+                            )}
                             <button
                               type="button"
                               aria-label={`Play latest episode of ${sh.name}`}
@@ -850,46 +1004,44 @@ function LiveNewsPage() {
                                 if (latest) playEpisode(latest);
                               }}
                               style={{
-                                width: 44,
-                                height: 44,
-                                flexShrink: 0,
-                                borderRadius: 22,
+                                position: "absolute",
+                                right: 8,
+                                bottom: 8,
+                                width: 34,
+                                height: 34,
+                                borderRadius: 17,
                                 border: "none",
-                                background: "#1877D6",
+                                background: "#fff",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 cursor: latest ? "pointer" : "not-allowed",
-                                boxShadow: "0 3px 8px rgba(24,119,214,0.25)",
+                                boxShadow: "0 2px 6px rgba(11,31,58,0.25)",
                                 opacity: latest ? 1 : 0.5,
-                                transform:
-                                  playing?.id && latest && playing.id === latest.id
-                                    ? "scale(1.05)"
-                                    : "scale(1)",
-                                transition: "transform 0.15s ease",
                               }}
                             >
-                              {playing?.id && latest && playing.id === latest.id && isPlaying ? (
-                                <IconPlayerPauseFilled size={20} color="#fff" />
+                              {latest && playing?.id === latest.id && isPlaying ? (
+                                <IconPlayerPauseFilled size={15} color="#1877D6" />
                               ) : (
-                                <IconPlayerPlayFilled size={20} color="#fff" />
+                                <IconPlayerPlayFilled size={15} color="#1877D6" />
                               )}
                             </button>
                           </div>
                           <div
                             style={{
-                              marginTop: 8,
-                              fontSize: 10.5,
-                              color: "#9CA3AF",
+                              fontSize: 13,
+                              fontWeight: 700,
+                              color: "#0B1F3A",
+                              marginTop: 6,
                               whiteSpace: "nowrap",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                             }}
                           >
-                            {latest && saved[latest.id] ? (
-                              <span style={{ color: "#1877D6", fontWeight: 700 }}>Saved · </span>
-                            ) : null}
-                            {latest ? `Latest: ${latest.title}` : "No episodes loaded"}
+                            {sh.name}
+                          </div>
+                          <div style={{ fontSize: 11, color: "#9CA3AF" }}>
+                            {latest?.durationSecs ? formatDuration(latest.durationSecs) : "—"}
                           </div>
                         </div>
                       );
@@ -897,6 +1049,7 @@ function LiveNewsPage() {
                   </div>
                 </div>
 
+                {/* ---- search ---- */}
                 <div
                   style={{
                     position: "relative",
@@ -904,18 +1057,18 @@ function LiveNewsPage() {
                     alignItems: "center",
                     background: "#fff",
                     border: "1px solid #E4E8EF",
-                    borderRadius: 12,
-                    padding: "0 10px",
-                    marginBottom: 10,
+                    borderRadius: 999,
+                    padding: "0 14px",
+                    marginBottom: 18,
                     boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                   }}
                 >
-                  <IconSearch size={16} color="#9CA3AF" stroke={1.9} />
+                  <IconSearch size={17} color="#9CA3AF" stroke={1.9} />
                   <input
                     type="text"
                     value={podcastQuery}
                     onChange={(e) => setPodcastQuery(e.target.value)}
-                    placeholder="Search episodes, shows or topics"
+                    placeholder="Search podcasts, episodes or topics"
                     aria-label="Search podcast episodes"
                     style={{
                       flex: 1,
@@ -923,9 +1076,9 @@ function LiveNewsPage() {
                       border: "none",
                       outline: "none",
                       background: "transparent",
-                      padding: "11px 8px",
+                      padding: "14px 10px",
                       fontFamily: "Poppins, sans-serif",
-                      fontSize: 13,
+                      fontSize: 13.5,
                       color: "#0B1F3A",
                     }}
                   />
@@ -947,10 +1100,14 @@ function LiveNewsPage() {
                   )}
                 </div>
 
+                {/* ---- browse by category ---- */}
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A", marginBottom: 8 }}>
+                  Browse by category
+                </div>
                 <div
                   style={{
                     display: "flex",
-                    gap: 6,
+                    gap: 8,
                     overflowX: "auto",
                     paddingBottom: 10,
                     scrollbarWidth: "none",
@@ -958,6 +1115,7 @@ function LiveNewsPage() {
                 >
                   {["all", ...podcastTopics].map((topic) => {
                     const active = topicFilter === topic;
+                    const Icon = topic === "all" ? IconLayoutGrid : categoryIcon(topic);
                     return (
                       <button
                         key={topic}
@@ -965,25 +1123,28 @@ function LiveNewsPage() {
                         onClick={() => setTopicFilter(topic)}
                         style={{
                           flexShrink: 0,
-                          padding: "6px 11px",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 6,
+                          padding: "9px 14px",
                           borderRadius: 999,
-                          border: `1px solid ${active ? "#1877D6" : "#E4E8EF"}`,
-                          background: active ? "#EFF6FF" : "#fff",
-                          color: active ? "#1877D6" : "#6B7686",
+                          border: `1px solid ${active ? "#0B1F3A" : "#E4E8EF"}`,
+                          background: active ? "#0B1F3A" : "#fff",
+                          color: active ? "#fff" : "#0B1F3A",
                           fontFamily: "Poppins, sans-serif",
-                          fontSize: 12,
+                          fontSize: 12.5,
                           fontWeight: 600,
                           cursor: "pointer",
                         }}
                       >
-                        {topic === "all" ? "All topics" : topic}
+                        <Icon size={15} stroke={1.9} />
+                        {topic === "all" ? "All" : topic}
                       </button>
                     );
                   })}
                 </div>
 
-
-
+                {/* ---- show filter chips ---- */}
                 <div
                   style={{
                     display: "flex",
@@ -1022,9 +1183,9 @@ function LiveNewsPage() {
                           gap: 6,
                           padding: "7px 12px",
                           borderRadius: 999,
-                          border: `1px solid ${active ? "#0B1F3A" : "#E4E8EF"}`,
-                          background: active ? "#0B1F3A" : "#fff",
-                          color: active ? "#fff" : "#0B1F3A",
+                          border: `1px solid ${active ? "#1877D6" : "#E4E8EF"}`,
+                          background: active ? "#EFF6FF" : "#fff",
+                          color: active ? "#1877D6" : "#6B7686",
                           fontFamily: "Poppins, sans-serif",
                           fontSize: 12.5,
                           fontWeight: 600,
@@ -1037,8 +1198,7 @@ function LiveNewsPage() {
                             style={{
                               fontSize: 11,
                               fontWeight: 700,
-                              color: active ? "#fff" : "#1877D6",
-                              opacity: active ? 0.85 : 1,
+                              color: active ? "#1877D6" : "#9CA3AF",
                             }}
                           >
                             {count}
@@ -1048,6 +1208,11 @@ function LiveNewsPage() {
                     );
                   })}
                 </div>
+
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A", margin: "8px 0 8px" }}>
+                  Latest episodes
+                </div>
+
 
                 {visibleEpisodes.length === 0 && (
                   <EmptyState
