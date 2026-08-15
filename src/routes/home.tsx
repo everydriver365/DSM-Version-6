@@ -6211,13 +6211,6 @@ function HomePage() {
                       null;
 
 
-                    const payPill = isCancelled ? null : isLive
-                      ? { label: 'Live', bg: '#E6F1FB', fg: '#1877D6' }
-                      : (isPrepaidPupil || payStatus === 'prepaid')
-                        ? { label: 'Prepaid', bg: '#E4F5EA', fg: '#2E7D4F' }
-                        : dueUnpaid
-                          ? { label: `£${amt.toFixed(0)} owed`, bg: '#FCE9E9', fg: '#CC2229' }
-                          : null;
 
                     return (
                       <React.Fragment key={l.id}>
