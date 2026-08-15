@@ -1,21 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  ArrowLeft,
-  Zap,
-  Calendar as CalendarIcon,
-  
-  Clock,
-  Users,
-  MessageSquare,
-  Plus,
-  ChevronDown,
-  ChevronUp,
-  AlertTriangle,
-  Coffee,
-  Send,
-} from "lucide-react";
+import { IconAlertTriangle, IconArrowLeft, IconBolt, IconCalendar, IconChevronDown, IconChevronUp, IconClock, IconCoffee, IconMessage, IconPlus, IconSend, IconUsers } from "@tabler/icons-react";
 import { Check, ChevronRight, RefreshCw, Sparkles, XCircle, X as XIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
@@ -1675,7 +1661,7 @@ function GapsPage() {
                 justifyContent: "center",
               }}
             >
-              <CalendarIcon size={20} color={ACCENT} />
+              <IconCalendar size={20} color={ACCENT} />
             </div>
             <div style={{ color: TEXT_PRIMARY, fontWeight: 600, fontSize: 15 }}>
               No free slots in the next 14 days
@@ -1830,7 +1816,7 @@ function GapsPage() {
                       gap: 8,
                     }}
                   >
-                    <Coffee size={14} color="#9CA3AF" />
+                    <IconCoffee size={14} color="#9CA3AF" />
                     <span style={{ fontSize: 13, color: "#6B7280" }}>
                       Lunch break
                     </span>
@@ -2034,7 +2020,7 @@ function GapsPage() {
                                     flexShrink: 0,
                                   }}
                                 >
-                                  <Zap size={20} color="#FFFFFF" />
+                                  <IconBolt size={20} color="#FFFFFF" />
                                 </div>
                               )}
                               <div style={{ flex: 1, minWidth: 0 }}>
@@ -2109,7 +2095,7 @@ function GapsPage() {
                             gap: 8,
                           }}
                         >
-                          <Clock size={14} color="#1877D6" />
+                          <IconClock size={14} color="#1877D6" />
                           <span
                             style={{
                               fontSize: 13,
@@ -2341,7 +2327,7 @@ function GapsPage() {
                 background: "#FFFFFF",
               }}
             >
-              <Users size={40} color="#9CA3AF" style={{ margin: "0 auto" }} />
+              <IconUsers size={40} color="#9CA3AF" style={{ margin: "0 auto" }} />
               <div style={{ fontWeight: 600, color: NAVY, marginTop: 8 }}>
                 No active pupils found
               </div>
@@ -2371,7 +2357,7 @@ function GapsPage() {
                   fontSize: 14,
                 }}
               >
-                <AlertTriangle size={16} /> No strong matches for this slot
+                <IconAlertTriangle size={16} /> No strong matches for this slot
               </div>
               <div style={{ color: "#78350F", fontSize: 13, marginTop: 6 }}>
                 These pupils have low availability for this time — consider
@@ -2554,9 +2540,9 @@ function GapsPage() {
               </button>
             )}
             {offersOpen ? (
-              <ChevronUp size={18} color={MUTED} />
+              <IconChevronUp size={18} color={MUTED} />
             ) : (
-              <ChevronDown size={18} color={MUTED} />
+              <IconChevronDown size={18} color={MUTED} />
             )}
           </div>
         </button>
@@ -2643,8 +2629,8 @@ function GapsPage() {
               gap: 8,
             }}
           >
-            <Send size={18} />
-            Send message
+            <IconSend size={18} />
+            IconSend message
           </button>
         </div>
       )}
@@ -2773,9 +2759,9 @@ function GapsPage() {
                     </div>
                   </div>
                   {recipientsExpanded ? (
-                    <ChevronUp size={18} color="#6B7280" />
+                    <IconChevronUp size={18} color="#6B7280" />
                   ) : (
-                    <ChevronDown size={18} color="#6B7280" />
+                    <IconChevronDown size={18} color="#6B7280" />
                   )}
                 </button>
 
@@ -3106,16 +3092,16 @@ function GapsPage() {
           >
             {selectedPupilIds.size === 0
               ? "Select pupils to send"
-              : `Send to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}`}
+              : `IconSend to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"}`}
           </button>
         </div>
       </BottomSheet>
 
       <ConfirmDialog
         open={confirmSendOpen}
-        title="Send bulk message?"
+        title="IconSend bulk message?"
         message={`You are about to send a message to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"} for ${selectedSlots.length} selected slot${selectedSlots.length === 1 ? "" : "s"}. This will queue SMS messages where phone numbers are available and send an in-app message to all selected pupils.`}
-        confirmLabel="Send"
+        confirmLabel="IconSend"
         cancelLabel="Cancel"
         onConfirm={() => {
           setConfirmSendOpen(false);
@@ -3379,7 +3365,7 @@ function PupilCard({
             color: availLabel.color,
           }}
         >
-          <CalendarIcon size={12} /> {availLabel.text}
+          <IconCalendar size={12} /> {availLabel.text}
         </span>
         <span
           style={{
@@ -3389,7 +3375,7 @@ function PupilCard({
             color: MUTED,
           }}
         >
-          <Clock size={12} /> {last}
+          <IconClock size={12} /> {last}
         </span>
       </div>
 

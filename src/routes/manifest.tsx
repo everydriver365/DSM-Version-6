@@ -2,14 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { useEffect, useMemo, useState } from "react";
-import {
-  ArrowLeft,
-  Phone,
-  MessageSquare,
-  Navigation,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+import { IconArrowLeft, IconChevronDown, IconChevronUp, IconMessage, IconNavigation, IconPhone } from "@tabler/icons-react";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
@@ -245,9 +238,9 @@ function ManifestPage() {
                         onClick={() => setExpanded(isOpen ? null : l.id)}
                       >
                         {isOpen ? (
-                          <ChevronUp size={18} color="#6B7280" />
+                          <IconChevronUp size={18} color="#6B7280" />
                         ) : (
-                          <ChevronDown size={18} color="#6B7280" />
+                          <IconChevronDown size={18} color="#6B7280" />
                         )}
                       </button>
                     </div>
@@ -255,20 +248,20 @@ function ManifestPage() {
 
                   <div className="mt-2 flex" style={{ gap: 6 }}>
                     <ActionBtn
-                      icon={<Phone size={14} />}
+                      icon={<IconPhone size={14} />}
                       label="Call"
                       bg="#1877D6"
                       href={l.pupils?.phone ? `tel:${l.pupils.phone}` : undefined}
                     />
                     <ActionBtn
-                      icon={<MessageSquare size={14} />}
+                      icon={<IconMessage size={14} />}
                       label="Text"
                       bg="#F3F4F6"
                       color="#0B1F3A"
                       href={l.pupils?.phone ? `sms:${l.pupils.phone}` : undefined}
                     />
                     <ActionBtn
-                      icon={<Navigation size={14} />}
+                      icon={<IconNavigation size={14} />}
                       label="Navigate"
                       bg="#1877D6"
                     />

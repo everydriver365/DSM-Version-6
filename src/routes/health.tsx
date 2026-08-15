@@ -1,15 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useState } from "react";
-import {
-  ArrowLeft,
-  Droplets,
-  Smile,
-  Activity,
-  Coffee,
-  X,
-  Heart,
-} from "lucide-react";
+import { IconActivity, IconArrowLeft, IconCoffee, IconDroplet, IconHeart, IconMoodSmile, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { Input } from "../components/dsm/Input";
@@ -176,7 +168,7 @@ function HealthPage() {
         <Card className="bg-white">
           <div className="grid grid-cols-2" style={{ gap: 8 }}>
             <QuickLog
-              icon={<Droplets size={20} color="#1877D6" />}
+              icon={<IconDroplet size={20} color="#1877D6" />}
               tint="#DBEAFE"
               label="Log water"
               onClick={() =>
@@ -186,19 +178,19 @@ function HealthPage() {
               }
             />
             <QuickLog
-              icon={<Smile size={20} color="#1877D6" />}
+              icon={<IconMoodSmile size={20} color="#1877D6" />}
               tint="#F3F8FF"
               label="Log mood"
               onClick={() => setMoodOpen(true)}
             />
             <QuickLog
-              icon={<Activity size={20} color="#1877D6" />}
+              icon={<IconActivity size={20} color="#1877D6" />}
               tint="#EEF2F7"
               label="Log steps"
               onClick={() => setStepsOpen(true)}
             />
             <QuickLog
-              icon={<Coffee size={20} color="#1877D6" />}
+              icon={<IconCoffee size={20} color="#1877D6" />}
               tint="#FEE2E2"
               label="Log break"
               onClick={() =>
@@ -232,7 +224,7 @@ function HealthPage() {
                       border: "0.5px solid #EEF2F7",
                     }}
                   >
-                    <Droplets
+                    <IconDroplet
                       size={14}
                       color={filled ? "#1877D6" : "#C7CCD3"}
                     />
@@ -461,7 +453,7 @@ function SheetShell({
             className="flex items-center justify-center"
             style={{ width: 32, height: 32 }}
           >
-            <X size={18} color="#6B7280" />
+            <IconX size={18} color="#6B7280" />
           </button>
         </div>
         <div className="px-4 pt-2 pb-2">{children}</div>

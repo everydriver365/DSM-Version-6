@@ -1,18 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Calendar as CalendarIcon,
-  ChevronDown,
-  ChevronUp,
-  MapPin,
-  Mic,
-  MicOff,
-  Check,
-  Plus,
-  Search,
-  Trophy,
-  User,
-} from "lucide-react";
+import { IconCalendar, IconCheck, IconChevronDown, IconChevronUp, IconMapPin, IconMicrophone, IconMicrophoneOff, IconPlus, IconSearch, IconTrophy, IconUser } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
@@ -748,7 +736,7 @@ function CentreSearchSelect({
           }}
         >
           <div className="flex items-center gap-2">
-            <Check size={16} color="#16A34A" />
+            <IconCheck size={16} color="#16A34A" />
             <span className="text-[14px] font-semibold" style={{ color: "#0F2044" }}>
               {selectedCentre.name}
               {selectedCentre.town ? (
@@ -777,14 +765,14 @@ function CentreSearchSelect({
       ) : (
         <>
           <div style={{ position: "relative" }}>
-            <Search
+            <IconSearch
               size={16}
               color="#64748B"
               style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}
             />
             <input
               type="text"
-              placeholder="Search test centres..."
+              placeholder="IconSearch test centres..."
               value={centreSearch}
               onChange={(e) => {
                 setCentreSearch(e.target.value);
@@ -837,7 +825,7 @@ function CentreSearchSelect({
                   onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F7FAFC")}
                   onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
                 >
-                  <Plus size={14} />
+                  <IconPlus size={14} />
                   <span className="text-[13px] font-semibold">
                     Add &ldquo;{centreSearch.trim()}&rdquo; as new centre
                   </span>
@@ -985,7 +973,7 @@ function RecordTab(props: any) {
 
       {/* Test details */}
       <Card>
-        <SectionTitle icon={<CalendarIcon size={16} color="#0F2044" />}>Test details</SectionTitle>
+        <SectionTitle icon={<IconCalendar size={16} color="#0F2044" />}>Test details</SectionTitle>
         <Field label="Date">
           <input type="date" value={testDate} onChange={(e) => setTestDate(e.target.value)} style={inputStyle} />
         </Field>
@@ -1021,7 +1009,7 @@ function RecordTab(props: any) {
 
       {/* Test centre */}
       <Card>
-        <SectionTitle icon={<MapPin size={16} color="#0F2044" />}>Test centre</SectionTitle>
+        <SectionTitle icon={<IconMapPin size={16} color="#0F2044" />}>Test centre</SectionTitle>
         <CentreSearchSelect
           centres={centres}
           centreSearch={centreSearch}
@@ -1038,7 +1026,7 @@ function RecordTab(props: any) {
 
       {/* Examiner */}
       <Card>
-        <SectionTitle icon={<User size={16} color="#0F2044" />}>Examiner</SectionTitle>
+        <SectionTitle icon={<IconUser size={16} color="#0F2044" />}>Examiner</SectionTitle>
         <div className="flex flex-wrap gap-2">
           {examiners.map((e: Examiner) => (
             <Pill
@@ -1098,7 +1086,7 @@ function RecordTab(props: any) {
 
       {/* Result */}
       <Card>
-        <SectionTitle icon={<Trophy size={16} color="#0F2044" />}>Result</SectionTitle>
+        <SectionTitle icon={<IconTrophy size={16} color="#0F2044" />}>Result</SectionTitle>
         <div className="grid grid-cols-3 gap-2">
           {[
             { k: "pass", label: "PASS 🎉", bg: "#059669" },
@@ -1151,7 +1139,7 @@ function RecordTab(props: any) {
           <div className="text-[13px] font-semibold" style={{ color: "#0F2044" }}>
             Detailed faults (DL25)
           </div>
-          {dl25Open ? <ChevronUp size={16} color="#0F2044" /> : <ChevronDown size={16} color="#0F2044" />}
+          {dl25Open ? <IconChevronUp size={16} color="#0F2044" /> : <IconChevronDown size={16} color="#0F2044" />}
         </button>
         {dl25Open && (
           <div className="mt-3 space-y-3">
@@ -1247,7 +1235,7 @@ function RecordTab(props: any) {
             }}
             aria-label="Voice input"
           >
-            {notesMic.listening ? <MicOff size={16} /> : <Mic size={16} />}
+            {notesMic.listening ? <IconMicrophoneOff size={16} /> : <IconMicrophone size={16} />}
           </button>
         </div>
       </Card>
@@ -1309,7 +1297,7 @@ function HistoryTab({
   if (history.length === 0) {
     return (
       <div className="px-6 py-14 flex flex-col items-center text-center">
-        <Trophy size={48} color="#D97706" />
+        <IconTrophy size={48} color="#D97706" />
         <div className="mt-4 text-[16px] font-bold" style={{ color: "#0F2044" }}>
           No test reports yet
         </div>
