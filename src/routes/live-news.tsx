@@ -23,6 +23,15 @@ import {
   type PodcastEpisode,
 } from "@/lib/podcasts.functions";
 import { PODCAST_SHOWS } from "@/lib/podcasts";
+import {
+  loadProgress,
+  saveProgress,
+  isFinished,
+  resumePosition,
+  remainingLabel,
+  type EpisodeProgress,
+  type ProgressMap,
+} from "@/lib/podcastProgress";
 
 export const Route = createFileRoute("/live-news")({
   component: LiveNewsPage,
@@ -69,6 +78,96 @@ function LiveNewsPage() {
   const [showFilter, setShowFilter] = useState<string>("all");
   const [podcastQuery, setPodcastQuery] = useState("");
   const [topicFilter, setTopicFilter] = useState<string>("all");
+
+  // ---- listening progress (per device) ----
+  const [progress, setProgress] = useState<ProgressMap>({});
+  const progressRef = useRef<ProgressMap>({});
+  const playingRef = useRef<PodcastEpisode | null>(null);
+  const lastSaveRef = useRef(0);
+  const restartRef = useRef<string | null>(null);
+  const resumeDoneRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const stored = loadProgress();
+    progressRef.current = stored;
+    setProgress(stored);
+  }, []);
+
+  const commitProgress = useCallback(
+    (epId: string, position: number, dur: number, opts?: { played?: boolean; force?: boolean }) => {
+      if (!epId || !Number.isFinite(position)) return;
+      const now = Date.now();
+      if (!opts?.force && !opts?.played && now - lastSaveRef.current < 5000) return;
+      lastSaveRef.current = now;
+      const entry: EpisodeProgress = {
+        position: opts?.played ? 0 : Math.max(0, position),
+        duration: Number.isFinite(dur) ? dur : 0,
+        played: opts?.played ?? false,
+        updatedAt: now,
+      };
+      const next = { ...progressRef.current, [epId]: entry };
+      progressRef.current = next;
+      setProgress(next);
+      saveProgress(next);
+    },
+    [],
+  );
+
+  /**
+   * Seek a freshly loaded episode to its stored position. Called from both
+   * loadedmetadata and canplay because some hosts ignore a seek before the
+   * first byte range is available.
+   */
+  const applyResume = useCallback((el: HTMLAudioElement) => {
+    const ep = playingRef.current;
+    console.log("[resume] applyResume", {
+      ep: ep?.id,
+      done: resumeDoneRef.current,
+      entry: ep ? progressRef.current[ep.id] : null,
+      dur: el.duration,
+    });
+    if (!ep || resumeDoneRef.current === ep.id) return;
+    if (restartRef.current === ep.id) {
+      restartRef.current = null;
+      resumeDoneRef.current = ep.id;
+      el.currentTime = 0;
+      setCurrentTime(0);
+      return;
+    }
+    const resumeAt = resumePosition(progressRef.current[ep.id]);
+    if (resumeAt <= 0) {
+      resumeDoneRef.current = ep.id;
+      return;
+    }
+    if (el.duration && resumeAt >= el.duration - 30) {
+      resumeDoneRef.current = ep.id;
+      return;
+    }
+    el.currentTime = resumeAt;
+    setCurrentTime(resumeAt);
+    if (Math.abs(el.currentTime - resumeAt) < 2) resumeDoneRef.current = ep.id;
+  }, []);
+
+  const flushProgress = useCallback(() => {
+    const el = audioRef.current;
+    const ep = playingRef.current;
+    if (!el || !ep) return;
+    commitProgress(ep.id, el.currentTime, el.duration || 0, { force: true });
+  }, [commitProgress]);
+
+  useEffect(() => {
+    playingRef.current = playing;
+  }, [playing]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onLeave = () => flushProgress();
+    window.addEventListener("beforeunload", onLeave);
+    return () => {
+      window.removeEventListener("beforeunload", onLeave);
+      onLeave();
+    };
+  }, [flushProgress]);
 
 
 
@@ -134,22 +233,34 @@ function LiveNewsPage() {
   });
 
 
-  const playEpisode = useCallback((ep: PodcastEpisode) => {
-    if (!ep.audioUrl) return;
-    setPlaying((prev) => {
-      if (prev?.id === ep.id) {
-        const el = audioRef.current;
-        if (el) {
-          if (el.paused) void el.play();
-          else el.pause();
+  const playEpisode = useCallback(
+    (ep: PodcastEpisode, opts?: { restart?: boolean }) => {
+      if (!ep.audioUrl) return;
+      if (opts?.restart) restartRef.current = ep.id;
+      setPlaying((prev) => {
+        if (prev?.id === ep.id) {
+          const el = audioRef.current;
+          if (el) {
+            if (opts?.restart) {
+              el.currentTime = 0;
+              setCurrentTime(0);
+              void el.play();
+            } else if (el.paused) {
+              void el.play();
+            } else {
+              el.pause();
+            }
+          }
+          return prev;
         }
-        return prev;
-      }
-      setCurrentTime(0);
-      setDuration(0);
-      return ep;
-    });
-  }, []);
+        flushProgress();
+        setCurrentTime(0);
+        setDuration(0);
+        return ep;
+      });
+    },
+    [flushProgress],
+  );
 
   const togglePlay = useCallback(() => {
     const el = audioRef.current;
@@ -171,15 +282,17 @@ function LiveNewsPage() {
     const idx = list.findIndex((e) => e.id === playing.id);
     const next = idx >= 0 ? list[idx + 1] : list[0];
     if (!next) return;
+    flushProgress();
     setCurrentTime(0);
     setDuration(0);
     setPlaying(next);
     if (selectedEpisode) setSelectedEpisode(next);
-  }, [playing, visibleEpisodes, selectedEpisode]);
+  }, [playing, visibleEpisodes, selectedEpisode, flushProgress]);
 
   useEffect(() => {
     const el = audioRef.current;
     if (!el || !playing) return;
+    resumeDoneRef.current = null;
     el.load();
     void el.play().catch(() => setIsPlaying(false));
   }, [playing]);
@@ -975,7 +1088,48 @@ function LiveNewsPage() {
                               </>
                             ) : null}
                           </div>
+                          {(() => {
+                            const entry = progress[ep.id];
+                            const finished = isFinished(entry);
+                            const left = remainingLabel(entry);
+                            if (!finished && !left) return null;
+                            const pct =
+                              entry && entry.duration
+                                ? Math.min(100, Math.round((entry.position / entry.duration) * 100))
+                                : 100;
+                            return (
+                              <div style={{ marginTop: 6 }}>
+                                <div
+                                  style={{
+                                    height: 3,
+                                    borderRadius: 2,
+                                    background: "#E4E8EF",
+                                    overflow: "hidden",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      width: `${pct}%`,
+                                      height: "100%",
+                                      background: finished ? "#16A34A" : "#1877D6",
+                                    }}
+                                  />
+                                </div>
+                                <div
+                                  style={{
+                                    marginTop: 3,
+                                    fontSize: 10,
+                                    fontWeight: 600,
+                                    color: finished ? "#16A34A" : "#1877D6",
+                                  }}
+                                >
+                                  {finished ? "Played" : left}
+                                </div>
+                              </div>
+                            );
+                          })()}
                         </div>
+
 
                         <button
                           type="button"
@@ -1029,10 +1183,25 @@ function LiveNewsPage() {
           src={playing.audioUrl}
           preload="metadata"
           onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
-          onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-          onLoadedMetadata={(e) => setDuration(e.currentTarget.duration || 0)}
-          onEnded={playNext}
+          onPause={(e) => {
+            setIsPlaying(false);
+            commitProgress(playing.id, e.currentTarget.currentTime, e.currentTarget.duration || 0, {
+              force: true,
+            });
+          }}
+          onTimeUpdate={(e) => {
+            setCurrentTime(e.currentTarget.currentTime);
+            commitProgress(playing.id, e.currentTarget.currentTime, e.currentTarget.duration || 0);
+          }}
+          onLoadedMetadata={(e) => {
+            setDuration(e.currentTarget.duration || 0);
+            applyResume(e.currentTarget);
+          }}
+          onCanPlay={(e) => applyResume(e.currentTarget)}
+          onEnded={(e) => {
+            commitProgress(playing.id, 0, e.currentTarget.duration || 0, { played: true });
+            playNext();
+          }}
           style={{ display: "none" }}
         />
       ) : null}
@@ -1046,6 +1215,8 @@ function LiveNewsPage() {
           currentTime={playing?.id === selectedEpisode.id ? currentTime : 0}
           duration={playing?.id === selectedEpisode.id ? duration : 0}
           onPlay={() => playEpisode(selectedEpisode)}
+          onRestart={() => playEpisode(selectedEpisode, { restart: true })}
+          progressEntry={progress[selectedEpisode.id]}
           onSeek={seekTo}
           onNext={playNext}
         />
@@ -1288,6 +1459,8 @@ function EpisodeModal({
   currentTime,
   duration,
   onPlay,
+  onRestart,
+  progressEntry,
   onSeek,
   onNext,
 }: {
@@ -1298,6 +1471,8 @@ function EpisodeModal({
   currentTime: number;
   duration: number;
   onPlay: () => void;
+  onRestart: () => void;
+  progressEntry?: EpisodeProgress;
   onSeek: (secs: number) => void;
   onNext: () => void;
 }) {
@@ -1543,6 +1718,42 @@ function EpisodeModal({
                 <IconPlayerTrackNextFilled size={16} color="#1877D6" />
               </button>
             </div>
+            {(() => {
+              const finished = isFinished(progressEntry);
+              const left = remainingLabel(progressEntry);
+              if (!finished && !left) return null;
+              return (
+                <div
+                  style={{
+                    marginTop: 8,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 10,
+                  }}
+                >
+                  <span style={{ fontSize: 11, fontWeight: 600, color: finished ? "#16A34A" : "#6B7686" }}>
+                    {finished ? "Played" : `Resumes with ${left}`}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={onRestart}
+                    style={{
+                      border: "none",
+                      background: "transparent",
+                      padding: 0,
+                      fontSize: 11,
+                      fontWeight: 700,
+                      color: "#1877D6",
+                      cursor: "pointer",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    Start from beginning
+                  </button>
+                </div>
+              );
+            })()}
           </div>
         ) : null}
 
