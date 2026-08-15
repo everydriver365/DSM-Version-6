@@ -510,7 +510,7 @@ function LiveNewsPage() {
                 >
                   <IconSearch size={16} color="#9CA3AF" stroke={1.9} />
                   <input
-                    type="search"
+                    type="text"
                     value={podcastQuery}
                     onChange={(e) => setPodcastQuery(e.target.value)}
                     placeholder="Search episodes, shows or topics"
