@@ -1117,30 +1117,8 @@ function SchedulePage() {
                 }}
               >
                 {/* Day heading */}
-                <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 10 }}>
-                  <span
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 500,
-                      color: "#8A93A3",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.04em",
-                    }}
-                  >
-                    {weekday}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 16,
-                      fontWeight: 600,
-                      color: "#0B1F3A",
-                      fontVariantNumeric: "tabular-nums",
-                      ...POPPINS,
-                    }}
-                  >
-                    {dayNum}
-                  </span>
-                </div>
+                <ScheduleDateDivider date={row.date} />
+
 
                 {row.entries.length === 0 && isToday ? (
                   <div
