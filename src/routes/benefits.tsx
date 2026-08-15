@@ -90,7 +90,7 @@ const BENEFITS = [
     imageUrl: diaLogoAsset.url,
     iconBg: '#E6F1FB',
     iconColor: '#185FA5',
-    minTier: 'pro',
+    minTier: 'website',
     description: 'Full Driving Instructors Association membership included free — saving you money every year.',
     perks: [
       'Full DIA membership',
