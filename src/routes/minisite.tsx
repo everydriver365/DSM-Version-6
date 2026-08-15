@@ -381,6 +381,7 @@ function MiniSitePage() {
       const { url } = await createSubscriptionPaymentLink(
         tier,
         chosenDomain ?? null,
+        billingPeriod,
         session.access_token,
       );
 
