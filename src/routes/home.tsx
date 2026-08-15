@@ -1,5 +1,4 @@
-import { Separator } from "@/components/ui/separator";
-import { typography } from "@/lib/typography";
+import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import React from "react";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from "react";
@@ -6241,31 +6240,9 @@ function HomePage() {
                           ? { label: `£${amt.toFixed(0)} owed`, bg: '#FCE9E9', fg: '#CC2229' }
                           : null;
 
-                    const dateLabel = (() => {
-                      const d = start;
-                      const day = DAY_NAMES[d.getDay()].slice(0, 3);
-                      const date = d.getDate();
-                      const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
-                      return `${day} ${date} ${month}`;
-                    })();
-
                     return (
                       <React.Fragment key={l.id}>
-                        <div className="flex items-center gap-2.5 mb-1.5">
-                          <span
-                            style={{
-                              fontSize: typography.sizes.sectionLabel,
-                              fontWeight: typography.weights.bold,
-                              color: typography.colors.accent,
-                              letterSpacing: '0.3px',
-                              textTransform: 'uppercase',
-                              fontFamily: typography.family,
-                            }}
-                          >
-                            {dateLabel}
-                          </span>
-                          <Separator className="flex-1 bg-border" />
-                        </div>
+                        <ScheduleDateDivider date={start} />
                         <div style={{ position: 'relative', background: '#FFFFFF', border: '1px solid #E4E8EF', borderRadius: 13, marginBottom: 8 }}>
                         <div
                           onClick={() => setDetailsSheetForLesson(l)}
