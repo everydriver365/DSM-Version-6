@@ -119,7 +119,63 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     recommended: true,
     recommendedNote: "Sharp talk radio for the driving-time habit",
   },
+  {
+    id: "ted-talks-daily",
+    name: "TED Talks Daily",
+    feedUrl: "https://feeds.acast.com/public/shows/67587e77c705e441797aff96",
+    siteUrl: "https://www.ted.com/podcasts/ted-talks-daily",
+    categories: ["TED", "Ideas", "Learning", "General"],
+    featured: false,
+    recommended: true,
+    recommendedNote: "A fresh TED talk every weekday",
+  },
+  {
+    id: "ted-how-to-be-a-better-human",
+    name: "How to Be a Better Human",
+    feedUrl: "https://feeds.acast.com/public/shows/67572b3b2dd88df13220eb3b",
+    siteUrl: "https://www.ted.com/podcasts/how-to-be-a-better-human",
+    categories: ["TED", "Wellbeing", "Mindset", "Personal Development"],
+    featured: false,
+    recommended: false,
+  },
+  {
+    id: "ted-health",
+    name: "TED Health",
+    feedUrl: "https://feeds.acast.com/public/shows/67585b08102e6d4448d360b1",
+    siteUrl: "https://www.ted.com/podcasts",
+    categories: ["TED", "Health", "Wellbeing"],
+    featured: false,
+    recommended: false,
+  },
+  {
+    id: "ted-business",
+    name: "TED Business",
+    feedUrl: "https://feeds.acast.com/public/shows/675727607205a5bc68e57057",
+    siteUrl: "https://www.ted.com/podcasts",
+    categories: ["TED", "Business", "Growth", "Leadership"],
+    featured: false,
+    recommended: false,
+  },
+  {
+    id: "ted-tech",
+    name: "TED Tech",
+    feedUrl: "https://feeds.acast.com/public/shows/67585c62102e6d4448d44969",
+    siteUrl: "https://www.ted.com/podcasts",
+    categories: ["TED", "Technology", "AI", "Innovation"],
+    featured: false,
+    recommended: false,
+  },
+  {
+    id: "ted-radio-hour",
+    name: "TED Radio Hour",
+    feedUrl: "https://feeds.npr.org/510298/podcast.xml",
+    siteUrl: "https://www.ted.com/podcasts/ted-radio-hour",
+    categories: ["TED", "Ideas", "Learning", "General"],
+    featured: false,
+    recommended: false,
+  },
 ];
+
 
 function tagText(xml: string, tag: string): string {
   const m = xml.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, "i"));
