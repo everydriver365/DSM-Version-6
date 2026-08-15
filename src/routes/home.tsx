@@ -6233,7 +6233,7 @@ function HomePage() {
                         </div>
                         <div style={{ position: 'relative', background: '#FFFFFF', border: '1px solid #E4E8EF', borderRadius: 13, marginBottom: 8 }}>
                         <div
-                          onClick={() => setActionsOpenForLesson(l)}
+                          onClick={() => setDetailsSheetForLesson(l)}
                           onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
                           role="button"
                           tabIndex={0}
