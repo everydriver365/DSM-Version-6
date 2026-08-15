@@ -25,6 +25,7 @@ import {
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
+import { typography } from "@/lib/typography";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
 import { sanitizeNewsTitle } from "@/lib/newsText";
 import {
