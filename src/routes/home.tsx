@@ -5834,7 +5834,11 @@ function HomePage() {
                           type="button"
                           role="tab"
                           aria-selected={active}
-                          onClick={() => setTab(t)}
+                          onClick={() => {
+                            setTab(t);
+                            window.localStorage.setItem(SCHEDULE_TAB_KEY, t);
+                            navigate({ to: '.', search: (prev: any) => ({ ...prev, tab: t }), replace: true });
+                          }}
                           style={{
                             flex: 1,
                             padding: '8px 0',
