@@ -145,6 +145,14 @@ const SECTION_HEADER: React.CSSProperties = {
 
 function EnquiriesPage() {
   const navigate = useNavigate();
+  const canGoBack = window.history.length > 1;
+  function goBack(fallback: string) {
+    if (canGoBack) {
+      navigate({ to: -1 as any });
+    } else {
+      navigate({ to: fallback as never });
+    }
+  }
   const [userId, setUserId] = useState<string | null>(null);
   const [enquiries, setEnquiries] = useState<EnquiryRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1658,7 +1666,7 @@ function EnquiriesPage() {
           fontFamily: "Sora, Poppins, sans-serif",
         }}
 
-        onBack={() => navigate({ to: "/home" as never })}
+        onBack={() => goBack('/enquiries')}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
         onLiveTrack={() => navigate({ to: "/live" as never })}
