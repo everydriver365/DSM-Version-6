@@ -742,7 +742,7 @@ function LiveNewsPage() {
                       Listen
                     </div>
                     <div style={{ fontSize: 12.5, color: "#6B7686" }}>
-                      {PODCAST_SHOWS.length} podcasts · {episodes.length} episodes
+                      {PODCAST_SHOWS.length} shows · {episodes.length} episodes
                     </div>
                   </div>
                 </div>
