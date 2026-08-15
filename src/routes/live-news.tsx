@@ -134,7 +134,7 @@ function LiveNewsPage() {
       resumeTargetRef.current = { id: ep.id, target: usable ? resumeAt : 0, startedAt: Date.now() };
     }
     const pending = resumeTargetRef.current;
-    // `tries` holds the moment we started resuming; some CDNs ignore a seek
+    // Some CDNs ignore a seek issued before playback is underway, so keep
     // issued before playback is underway, so keep retrying for a short window.
     if (!pending || pending.target <= 0 || Date.now() - pending.startedAt > 20000) return;
     if (Math.abs(el.currentTime - pending.target) < 3) {
