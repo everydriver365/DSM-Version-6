@@ -170,8 +170,8 @@ export async function checkDomainAvailability(
 export async function createSubscriptionPaymentLink(
   tier: PaidTierId,
   domain: string | null,
-  billingPeriod: "monthly" | "annual",
   accessToken: string,
+  billingPeriod: "monthly" | "annual" = "annual",
 ): Promise<{ url: string }> {
   const res = await fetch(`${SUPABASE_URL}/functions/v1/square-create-subscription`, {
     method: "POST",
