@@ -144,17 +144,74 @@ export function formatVideoDuration(v: LearnVideo): string {
   return m == null ? "" : `${m} min`;
 }
 
+/** Titles like "Ten Minute Takeaways: …" carry their own duration. */
+const TEN_MINUTE_RE = /\bten[- ]minute|10[- ]minute\b/i;
+
+export function isTenMinuteTakeaway(v: LearnVideo): boolean {
+  const hay = `${v.title ?? ""} ${v.source ?? ""}`;
+  if (/takeaway/i.test(hay) && TEN_MINUTE_RE.test(hay)) return true;
+  if (/takeaway/i.test(v.title ?? "")) return true;
+  const m = videoMinutes(v);
+  return (v.source ?? "").toUpperCase() === "ADINJC" && m != null && m >= 8 && m <= 13;
+}
+
 /** Bitesize = roughly 1–15 minutes, with 5–10 minutes preferred. */
 export function isBitesizeLength(v: LearnVideo): boolean {
   const m = videoMinutes(v);
-  return m != null && m >= 1 && m <= 15;
+  if (m == null) return isTenMinuteTakeaway(v);
+  return m >= 1 && m <= 15;
+}
+
+/**
+ * Eligible for Bitesize: admin-marked rows always, otherwise any short
+ * (1–15 min) instructor/driving video from the existing Learn library.
+ * Admin can opt a row out explicitly with is_bitesize = false plus a long
+ * duration; long videos never auto-qualify.
+ */
+export function isBitesizeEligible(v: LearnVideo): boolean {
+  if (v.is_bitesize === true) return true;
+  return isBitesizeLength(v);
 }
 
 export function bitesizeRank(v: LearnVideo): number {
+  if (isTenMinuteTakeaway(v)) return -1;
   const m = videoMinutes(v) ?? 99;
   if (m >= 5 && m <= 10) return 0;
   if (m <= 15) return 1;
   return 2;
+}
+
+export type BitesizeSection = "takeaways" | "driving" | "cpd" | "quick";
+
+export const BITESIZE_SECTIONS: {
+  key: BitesizeSection;
+  emoji: string;
+  title: string;
+  subtitle?: string;
+}[] = [
+  { key: "takeaways", emoji: "⚡", title: "10-Minute Instructor Takeaways" },
+  { key: "driving", emoji: "🚗", title: "Driving Tips" },
+  { key: "cpd", emoji: "🎓", title: "CPD" },
+  { key: "quick", emoji: "🧠", title: "Quick Learning" },
+];
+
+/** Which Bitesize row a Learn video belongs in — no extra records needed. */
+export function bitesizeSection(v: LearnVideo): BitesizeSection {
+  if (isTenMinuteTakeaway(v)) return "takeaways";
+  const cat = (v.bitesize_category ?? "").toLowerCase();
+  const cats = (v.categories ?? []).map((c) => c.toLowerCase());
+  const has = (s: string) => cat.includes(s) || cats.some((c) => c.includes(s));
+  if (cat.includes("driving tip") || has("driving") || has("manoeuvre") || has("hazard"))
+    return "driving";
+  if (cat === "cpd" || has("cpd") || has("instructor") || has("teaching")) return "cpd";
+  return "quick";
+}
+
+/** Card label — falls back to the Learn category when no Bitesize one is set. */
+export function bitesizeLabel(v: LearnVideo): string {
+  if (v.bitesize_category) return v.bitesize_category;
+  const first = (v.categories ?? [])[0];
+  return first ?? "Learn";
 }
 
 export function searchVideos(videos: LearnVideo[], query: string): LearnVideo[] {
@@ -179,8 +236,13 @@ export function searchVideos(videos: LearnVideo[], query: string): LearnVideo[] 
 /** Row shape shared by the DB and the client filters. */
 export const LEARN_VIDEO_COLUMNS = "*";
 
+/**
+ * `kind` may be absent on older databases where the library migration has not
+ * been applied yet — an undefined column must not hide the whole library.
+ */
 export function isLibraryVideo(v: LearnVideo): boolean {
-  return (v.kind ?? "howto") === "library";
+  if (v.kind === undefined) return true;
+  return (v.kind ?? "library") === "library";
 }
 
 export function isHowToVideo(v: LearnVideo): boolean {
@@ -190,3 +252,4 @@ export function isHowToVideo(v: LearnVideo): boolean {
 export function isPublished(v: LearnVideo): boolean {
   return v.is_published !== false;
 }
+

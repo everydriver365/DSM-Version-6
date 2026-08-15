@@ -2,14 +2,17 @@ import { useEffect, useMemo, useState } from "react";
 import { IconPlayerPlay } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import {
-  BITESIZE_CATEGORIES,
   BITESIZE_CATEGORY_EMOJI,
+  BITESIZE_SECTIONS,
+  bitesizeLabel,
   bitesizeRank,
+  bitesizeSection,
   formatVideoDuration,
-  isBitesizeLength,
+  isBitesizeEligible,
   isLibraryVideo,
   isPublished,
   videoThumbnail,
+  type BitesizeSection,
   type LearnVideo,
 } from "@/lib/learnVideos";
 import { markSeen } from "@/lib/learnSaved";
@@ -22,11 +25,12 @@ const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 /**
  * Short DSM Learn videos surfaced inside Bitesize. Same underlying
- * `learn_videos` rows as Learn → Videos — no duplicate records.
+ * `learn_videos` rows as Learn → Videos — no duplicate records, no second
+ * database. Eligibility comes from the admin `is_bitesize` flag or, for
+ * unmarked rows, an automatic 1–15 minute length rule.
  */
-export default function BitesizeLearnVideos({ limit = 12 }: { limit?: number }) {
+export default function BitesizeLearnVideos({ limitPerSection = 12 }: { limitPerSection?: number }) {
   const [videos, setVideos] = useState<LearnVideo[]>([]);
-  const [category, setCategory] = useState<string>("All");
   const [playing, setPlaying] = useState<LearnVideo | null>(null);
 
   useEffect(() => {
@@ -38,12 +42,14 @@ export default function BitesizeLearnVideos({ limit = 12 }: { limit?: number }) 
         .order("sort_order", { ascending: true });
       if (cancelled || error || !data) return;
       const rows = (data as LearnVideo[]).filter(
-        (v) =>
-          isLibraryVideo(v) &&
-          isPublished(v) &&
-          (v.is_bitesize === true || isBitesizeLength(v)),
+        (v) => isLibraryVideo(v) && isPublished(v) && isBitesizeEligible(v),
       );
-      rows.sort((a, b) => bitesizeRank(a) - bitesizeRank(b));
+      rows.sort(
+        (a, b) =>
+          Number(!!b.is_featured) - Number(!!a.is_featured) ||
+          bitesizeRank(a) - bitesizeRank(b) ||
+          (a.sort_order ?? 0) - (b.sort_order ?? 0),
+      );
       setVideos(rows);
     })();
     return () => {
@@ -51,138 +57,158 @@ export default function BitesizeLearnVideos({ limit = 12 }: { limit?: number }) 
     };
   }, []);
 
-  const cats = useMemo(() => {
-    const present = new Set(
-      videos.map((v) => v.bitesize_category).filter((c): c is string => !!c),
-    );
-    return ["All", ...BITESIZE_CATEGORIES.filter((c) => present.has(c))];
+  const grouped = useMemo(() => {
+    const map = new Map<BitesizeSection, LearnVideo[]>();
+    for (const v of videos) {
+      const key = bitesizeSection(v);
+      const list = map.get(key) ?? [];
+      if (!list.some((x) => x.id === v.id)) list.push(v);
+      map.set(key, list);
+    }
+    return map;
   }, [videos]);
-
-  const list = useMemo(
-    () =>
-      (category === "All"
-        ? videos
-        : videos.filter((v) => v.bitesize_category === category)
-      ).slice(0, limit),
-    [videos, category, limit],
-  );
 
   if (videos.length === 0) return null;
 
   return (
-    <div style={{ background: "#fff", borderBottom: "0.5px solid #E4E8EF", padding: "14px 0 16px" }}>
-      <div style={{ padding: "0 16px 8px", display: "flex", alignItems: "center", gap: 7 }}>
+    <div style={{ background: "#fff", borderBottom: "0.5px solid #E4E8EF", padding: "14px 0 18px" }}>
+      <div style={{ padding: "0 16px 2px", display: "flex", alignItems: "center", gap: 7 }}>
         <span style={{ fontSize: 14 }}>⚡</span>
         <span style={{ fontSize: 14, fontWeight: 700, color: NAVY, ...POPPINS }}>
           Bitesize from DSM Learn
         </span>
       </div>
-      <div style={{ padding: "0 16px 4px", fontSize: 12, color: GRAY_BODY, ...POPPINS }}>
+      <div style={{ padding: "0 16px", fontSize: 12, color: GRAY_BODY, ...POPPINS }}>
         Short videos from the Learn library — 1 to 15 minutes.
       </div>
 
-      {cats.length > 1 && (
-        <div style={{ display: "flex", gap: 8, overflowX: "auto", padding: "10px 16px 2px" }}>
-          {cats.map((c) => (
-            <button
-              key={c}
-              type="button"
-              onClick={() => setCategory(c)}
+      {BITESIZE_SECTIONS.map((section) => {
+        const list = (grouped.get(section.key) ?? []).slice(0, limitPerSection);
+        if (list.length === 0) return null;
+        return (
+          <div key={section.key} style={{ marginTop: 14 }}>
+            <div
               style={{
-                flexShrink: 0,
-                border: "none",
-                cursor: "pointer",
-                borderRadius: 20,
-                padding: "6px 12px",
-                fontSize: 12,
-                fontWeight: 600,
-                background: category === c ? NAVY : "#F1F5F9",
-                color: category === c ? "#fff" : "#6B7686",
+                padding: "0 16px 2px",
+                display: "flex",
+                alignItems: "center",
+                gap: 7,
                 ...POPPINS,
               }}
             >
-              {c === "All" ? "All" : `${BITESIZE_CATEGORY_EMOJI[c] ?? ""} ${c}`}
-            </button>
-          ))}
-        </div>
-      )}
+              <span style={{ fontSize: 13 }}>{section.emoji}</span>
+              <span style={{ fontSize: 13.5, fontWeight: 700, color: NAVY }}>{section.title}</span>
+              <span style={{ fontSize: 11.5, color: GRAY_BODY, marginLeft: "auto" }}>
+                {list.length}
+              </span>
+            </div>
 
-      <div style={{ display: "flex", gap: 12, overflowX: "auto", padding: "12px 16px 2px" }}>
-        {list.map((v) => {
-          const thumb = videoThumbnail(v);
-          return (
-            <button
-              key={v.id}
-              type="button"
-              onClick={() => {
-                setPlaying(v);
-                markSeen(videoKey(v.id));
-              }}
-              style={{
-                flexShrink: 0,
-                width: 216,
-                textAlign: "left",
-                border: "0.5px solid #E4E8EF",
-                background: "#fff",
-                borderRadius: 12,
-                overflow: "hidden",
-                cursor: "pointer",
-                padding: 0,
-                ...POPPINS,
-              }}
-            >
-              <div
-                style={{
-                  width: "100%",
-                  aspectRatio: "16 / 9",
-                  background: thumb ? `center/cover url(${thumb})` : NAVY,
-                  position: "relative",
-                }}
-              >
-                <span
-                  style={{
-                    position: "absolute",
-                    bottom: 6,
-                    right: 6,
-                    padding: "2px 7px",
-                    borderRadius: 20,
-                    background: "rgba(0,0,0,0.65)",
-                    color: "#fff",
-                    fontSize: 10.5,
-                    fontWeight: 700,
-                  }}
-                >
-                  {formatVideoDuration(v)}
-                </span>
-              </div>
-              <div style={{ padding: 10 }}>
-                {v.bitesize_category && (
-                  <div style={{ fontSize: 10.5, fontWeight: 700, color: BLUE, marginBottom: 3 }}>
-                    {BITESIZE_CATEGORY_EMOJI[v.bitesize_category] ?? "⚡"} {v.bitesize_category}
-                  </div>
-                )}
-                <div style={{ fontSize: 13, fontWeight: 600, color: NAVY, lineHeight: 1.3 }}>
-                  {v.title}
-                </div>
-                <div style={{ fontSize: 11.5, color: GRAY_BODY, marginTop: 3 }}>{v.source}</div>
-                <div
-                  style={{
-                    marginTop: 8,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 5,
-                    color: BLUE,
-                    fontSize: 12,
-                    fontWeight: 700,
-                  }}
-                >
-                  <IconPlayerPlay size={13} fill={BLUE} color={BLUE} /> Watch
-                </div>
-              </div>
-            </button>
-          );
-        })}
-      </div>
+            <div style={{ display: "flex", gap: 12, overflowX: "auto", padding: "10px 16px 2px" }}>
+              {list.map((v) => {
+                const thumb = videoThumbnail(v);
+                const label = bitesizeLabel(v);
+                return (
+                  <button
+                    key={v.id}
+                    type="button"
+                    onClick={() => {
+                      setPlaying(v);
+                      markSeen(videoKey(v.id));
+                    }}
+                    style={{
+                      flexShrink: 0,
+                      width: 216,
+                      textAlign: "left",
+                      border: "0.5px solid #E4E8EF",
+                      background: "#fff",
+                      borderRadius: 12,
+                      overflow: "hidden",
+                      cursor: "pointer",
+                      padding: 0,
+                      ...POPPINS,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "100%",
+                        aspectRatio: "16 / 9",
+                        background: thumb ? `center/cover url(${thumb})` : NAVY,
+                        position: "relative",
+                      }}
+                    >
+                      <span
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <span
+                          style={{
+                            width: 34,
+                            height: 34,
+                            borderRadius: "50%",
+                            background: "rgba(11,31,58,0.72)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <IconPlayerPlay size={15} fill="#fff" color="#fff" />
+                        </span>
+                      </span>
+                      {formatVideoDuration(v) && (
+                        <span
+                          style={{
+                            position: "absolute",
+                            bottom: 6,
+                            right: 6,
+                            padding: "2px 7px",
+                            borderRadius: 20,
+                            background: "rgba(0,0,0,0.65)",
+                            color: "#fff",
+                            fontSize: 10.5,
+                            fontWeight: 700,
+                          }}
+                        >
+                          {formatVideoDuration(v)}
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ padding: 10 }}>
+                      <div style={{ fontSize: 10.5, fontWeight: 700, color: BLUE, marginBottom: 3 }}>
+                        {BITESIZE_CATEGORY_EMOJI[label] ?? "⚡"} {label}
+                      </div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: NAVY, lineHeight: 1.3 }}>
+                        {v.title}
+                      </div>
+                      <div style={{ fontSize: 11.5, color: GRAY_BODY, marginTop: 3 }}>
+                        {v.source ?? "DSM Learn"}
+                        {formatVideoDuration(v) ? ` · ${formatVideoDuration(v)}` : ""}
+                      </div>
+                      <div
+                        style={{
+                          marginTop: 8,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 5,
+                          color: BLUE,
+                          fontSize: 12,
+                          fontWeight: 700,
+                        }}
+                      >
+                        <IconPlayerPlay size={13} fill={BLUE} color={BLUE} /> Watch
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
 
       {playing && <VideoPlayerSheet video={playing} onClose={() => setPlaying(null)} />}
     </div>
