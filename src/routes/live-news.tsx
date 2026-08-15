@@ -52,7 +52,9 @@ function LiveNewsPage() {
   const [sessions, setSessions] = useState<LiveSession[] | null>(null);
   const [articles, setArticles] = useState<any[] | null>(null);
   const [episodes, setEpisodes] = useState<PodcastEpisode[] | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [showFilter, setShowFilter] = useState<string>("all");
+
 
   useEffect(() => {
     let cancelled = false;
