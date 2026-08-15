@@ -1024,61 +1024,92 @@ function LiveNewsPage() {
                   </div>
                 </div>
 
-                {/* ---- search ---- */}
+                {/* ---- browse by category ---- */}
                 <div
                   style={{
-                    position: "relative",
                     display: "flex",
                     alignItems: "center",
-                    background: "#fff",
-                    border: "1px solid #E4E8EF",
-                    borderRadius: 999,
-                    padding: "0 14px",
-                    marginBottom: 18,
-                    boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                    justifyContent: "space-between",
+                    marginBottom: searchOpen ? 10 : 8,
                   }}
                 >
-                  <IconSearch size={17} color="#9CA3AF" stroke={1.9} />
-                  <input
-                    type="text"
-                    value={podcastQuery}
-                    onChange={(e) => setPodcastQuery(e.target.value)}
-                    placeholder="Search podcasts, episodes or topics"
-                    aria-label="Search podcast episodes"
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A" }}>
+                    Browse by category
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSearchOpen((s) => !s)}
+                    aria-label={searchOpen ? "Close search" : "Open search"}
                     style={{
-                      flex: 1,
-                      minWidth: 0,
+                      width: 32,
+                      height: 32,
+                      borderRadius: 16,
                       border: "none",
-                      outline: "none",
-                      background: "transparent",
-                      padding: "14px 10px",
-                      fontFamily: "Poppins, sans-serif",
-                      fontSize: 13.5,
-                      color: "#0B1F3A",
+                      background: searchOpen ? "#0B1F3A" : "#EEF2F7",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      transition: "background 0.15s ease",
                     }}
-                  />
-                  {podcastQuery && (
-                    <button
-                      type="button"
-                      onClick={() => setPodcastQuery("")}
-                      aria-label="Clear search"
-                      style={{
-                        border: "none",
-                        background: "transparent",
-                        padding: 4,
-                        cursor: "pointer",
-                        display: "flex",
-                      }}
-                    >
-                      <IconX size={15} color="#9CA3AF" stroke={2} />
-                    </button>
-                  )}
+                  >
+                    <IconSearch size={17} color={searchOpen ? "#fff" : "#0B1F3A"} stroke={1.9} />
+                  </button>
                 </div>
 
-                {/* ---- browse by category ---- */}
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A", marginBottom: 8 }}>
-                  Browse by category
-                </div>
+                {searchOpen && (
+                  <div
+                    style={{
+                      position: "relative",
+                      display: "flex",
+                      alignItems: "center",
+                      background: "#fff",
+                      border: "1px solid #E4E8EF",
+                      borderRadius: 999,
+                      padding: "0 14px",
+                      marginBottom: 14,
+                      boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                    }}
+                  >
+                    <IconSearch size={17} color="#9CA3AF" stroke={1.9} />
+                    <input
+                      type="text"
+                      value={podcastQuery}
+                      onChange={(e) => setPodcastQuery(e.target.value)}
+                      placeholder="Search podcasts, episodes or topics"
+                      aria-label="Search podcast episodes"
+                      autoFocus
+                      style={{
+                        flex: 1,
+                        minWidth: 0,
+                        border: "none",
+                        outline: "none",
+                        background: "transparent",
+                        padding: "12px 10px",
+                        fontFamily: "Poppins, sans-serif",
+                        fontSize: 13.5,
+                        color: "#0B1F3A",
+                      }}
+                    />
+                    {podcastQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setPodcastQuery("")}
+                        aria-label="Clear search"
+                        style={{
+                          border: "none",
+                          background: "transparent",
+                          padding: 4,
+                          cursor: "pointer",
+                          display: "flex",
+                        }}
+                      >
+                        <IconX size={15} color="#9CA3AF" stroke={2} />
+                      </button>
+                    )}
+                  </div>
+                )}
+
                 <div
                   style={{
                     display: "flex",
