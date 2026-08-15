@@ -135,6 +135,7 @@ function LiveNewsPage() {
       return;
     }
     const resumeAt = resumePosition(progressRef.current[ep.id]);
+    console.log("[resume] resumeAt", resumeAt, "keys", Object.keys(progressRef.current).length);
     if (resumeAt <= 0) {
       resumeDoneRef.current = ep.id;
       return;
