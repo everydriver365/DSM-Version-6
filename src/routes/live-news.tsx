@@ -1,10 +1,19 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { IconBroadcast, IconChevronRight, IconClock, IconNews } from "@tabler/icons-react";
+import {
+  IconBroadcast,
+  IconChevronRight,
+  IconClock,
+  IconMicrophone,
+  IconNews,
+  IconPlayerPlayFilled,
+  IconPlayerPauseFilled,
+} from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
 import { sanitizeNewsTitle } from "@/lib/newsText";
+import { getPodcastEpisodes, type PodcastEpisode } from "@/lib/podcasts.functions";
 
 export const Route = createFileRoute("/live-news")({
   component: LiveNewsPage,
