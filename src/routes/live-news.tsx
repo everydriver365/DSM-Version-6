@@ -1005,196 +1005,20 @@ function LiveNewsPage() {
 
                 )}
 
-                {visibleEpisodes.map((ep) => {
-
-                  const isOpen = selectedEpisode?.id === ep.id;
-                  return (
-                    <div
-                      key={ep.id}
-                      style={{
-                        background: "#fff",
-                        borderRadius: 16,
-                        border: `1px solid ${isOpen ? "#1877D6" : "#E4E8EF"}`,
-                        boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-                        padding: 12,
-                        marginBottom: 10,
-                      }}
-                    >
-                      <div
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => setSelectedEpisode(ep)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" || e.key === " ") setSelectedEpisode(ep);
-                        }}
-                        style={{
-                          display: "flex",
-                          gap: 12,
-                          alignItems: "flex-start",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: 76,
-                            height: 76,
-                            flexShrink: 0,
-                            borderRadius: 10,
-                            overflow: "hidden",
-                            background: ep.imageUrl ? undefined : "#EEF2F7",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          {ep.imageUrl ? (
-                            <img
-                              src={ep.imageUrl}
-                              alt=""
-                              loading="lazy"
-                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                            />
-                          ) : (
-                            <IconMicrophone size={24} color="#6B7686" />
-                          )}
-                        </div>
-
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div
-                            style={{
-                              display: "inline-block",
-                              maxWidth: "100%",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                              background: "#EFF6FF",
-                              color: "#1877D6",
-                              borderRadius: 6,
-                              padding: "2px 6px",
-                              fontSize: 10,
-                              fontWeight: 700,
-                              letterSpacing: "0.02em",
-                              marginBottom: 5,
-                            }}
-                          >
-                            {ep.showName}
-                          </div>
-                          <div
-
-                            style={{
-                              fontSize: 14,
-                              fontWeight: 700,
-                              color: "#0B1F3A",
-                              fontFamily: "Poppins, sans-serif",
-                              display: "-webkit-box",
-                              WebkitLineClamp: 2,
-                              WebkitBoxOrient: "vertical",
-                              overflow: "hidden",
-                              lineHeight: 1.4,
-                              marginBottom: 4,
-                            }}
-                          >
-                            {ep.title}
-                          </div>
-                          <div
-                            style={{
-                              fontSize: 11,
-                              color: "#9CA3AF",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 6,
-                            }}
-                          >
-                            <span>{formatDate(ep.pubDate)}</span>
-                            {ep.durationSecs ? (
-                              <>
-                                <span>·</span>
-                                <span>{formatDuration(ep.durationSecs)}</span>
-                              </>
-                            ) : null}
-                          </div>
-                          {(() => {
-                            const entry = progress[ep.id];
-                            const finished = isFinished(entry);
-                            const left = remainingLabel(entry);
-                            if (!finished && !left) return null;
-                            const pct =
-                              entry && entry.duration
-                                ? Math.min(100, Math.round((entry.position / entry.duration) * 100))
-                                : 100;
-                            return (
-                              <div style={{ marginTop: 6 }}>
-                                <div
-                                  style={{
-                                    height: 3,
-                                    borderRadius: 2,
-                                    background: "#E4E8EF",
-                                    overflow: "hidden",
-                                  }}
-                                >
-                                  <div
-                                    style={{
-                                      width: `${pct}%`,
-                                      height: "100%",
-                                      background: finished ? "#16A34A" : "#1877D6",
-                                    }}
-                                  />
-                                </div>
-                                <div
-                                  style={{
-                                    marginTop: 3,
-                                    fontSize: 10,
-                                    fontWeight: 600,
-                                    color: finished ? "#16A34A" : "#1877D6",
-                                  }}
-                                >
-                                  {finished ? "Played" : left}
-                                </div>
-                              </div>
-                            );
-                          })()}
-                        </div>
-
-
-                        <button
-                          type="button"
-                          aria-label={
-                            playing?.id === ep.id && isPlaying ? "Pause episode" : "Play episode"
-                          }
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            playEpisode(ep);
-                          }}
-                          disabled={!ep.audioUrl}
-                          style={{
-                            width: 48,
-                            height: 48,
-                            flexShrink: 0,
-                            borderRadius: 24,
-                            border: "none",
-                            background: "#1877D6",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            alignSelf: "center",
-                            cursor: ep.audioUrl ? "pointer" : "not-allowed",
-                            boxShadow: "0 3px 8px rgba(24,119,214,0.25)",
-                            opacity: ep.audioUrl ? 1 : 0.5,
-                            transform: playing?.id === ep.id ? "scale(1.05)" : "scale(1)",
-                            transition: "transform 0.15s ease",
-                          }}
-                        >
-                          {playing?.id === ep.id && isPlaying ? (
-                            <IconPlayerPauseFilled size={22} color="#fff" />
-                          ) : (
-                            <IconPlayerPlayFilled size={22} color="#fff" />
-                          )}
-                        </button>
-                      </div>
-
-                    </div>
-                  );
-                })}
+                {visibleEpisodes.map((ep) => (
+                  <EpisodeCard
+                    key={ep.id}
+                    ep={ep}
+                    isOpen={selectedEpisode?.id === ep.id}
+                    onOpen={() => setSelectedEpisode(ep)}
+                    isCurrent={playing?.id === ep.id}
+                    isPlaying={isPlaying}
+                    onPlay={() => playEpisode(ep)}
+                    progressEntry={progress[ep.id]}
+                    isSaved={!!saved[ep.id]}
+                    onToggleSave={() => toggleSave(ep)}
+                  />
+                ))}
               </div>
             )}
           </section>
@@ -1878,6 +1702,243 @@ function EmptyState({ message }: { message: string }) {
       }}
     >
       {message}
+    </div>
+  );
+}
+
+function EpisodeCard({
+  ep,
+  isOpen,
+  onOpen,
+  isCurrent,
+  isPlaying,
+  onPlay,
+  progressEntry,
+  isSaved,
+  onToggleSave,
+}: {
+  ep: PodcastEpisode;
+  isOpen: boolean;
+  onOpen: () => void;
+  isCurrent: boolean;
+  isPlaying: boolean;
+  onPlay: () => void;
+  progressEntry?: EpisodeProgress;
+  isSaved: boolean;
+  onToggleSave: () => void;
+}) {
+  return (
+    <div
+      key={ep.id}
+      style={{
+        background: "#fff",
+        borderRadius: 16,
+        border: `1px solid ${isOpen ? "#1877D6" : "#E4E8EF"}`,
+        boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+        padding: 12,
+        marginBottom: 10,
+      }}
+    >
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => onOpen()}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") onOpen();
+        }}
+        style={{
+          display: "flex",
+          gap: 12,
+          alignItems: "flex-start",
+          cursor: "pointer",
+        }}
+      >
+        <div
+          style={{
+            width: 76,
+            height: 76,
+            flexShrink: 0,
+            borderRadius: 10,
+            overflow: "hidden",
+            background: ep.imageUrl ? undefined : "#EEF2F7",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {ep.imageUrl ? (
+            <img
+              src={ep.imageUrl}
+              alt=""
+              loading="lazy"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          ) : (
+            <IconMicrophone size={24} color="#6B7686" />
+          )}
+        </div>
+
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div
+            style={{
+              display: "inline-block",
+              maxWidth: "100%",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              background: "#EFF6FF",
+              color: "#1877D6",
+              borderRadius: 6,
+              padding: "2px 6px",
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: "0.02em",
+              marginBottom: 5,
+            }}
+          >
+            {ep.showName}
+          </div>
+          <div
+
+            style={{
+              fontSize: 14,
+              fontWeight: 700,
+              color: "#0B1F3A",
+              fontFamily: "Poppins, sans-serif",
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              lineHeight: 1.4,
+              marginBottom: 4,
+            }}
+          >
+            {ep.title}
+          </div>
+          <div
+            style={{
+              fontSize: 11,
+              color: "#9CA3AF",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <span>{formatDate(ep.pubDate)}</span>
+            {ep.durationSecs ? (
+              <>
+                <span>·</span>
+                <span>{formatDuration(ep.durationSecs)}</span>
+              </>
+            ) : null}
+          </div>
+          {(() => {
+            const entry = progressEntry;
+            const finished = isFinished(entry);
+            const left = remainingLabel(entry);
+            if (!finished && !left) return null;
+            const pct =
+              entry && entry.duration
+                ? Math.min(100, Math.round((entry.position / entry.duration) * 100))
+                : 100;
+            return (
+              <div style={{ marginTop: 6 }}>
+                <div
+                  style={{
+                    height: 3,
+                    borderRadius: 2,
+                    background: "#E4E8EF",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${pct}%`,
+                      height: "100%",
+                      background: finished ? "#16A34A" : "#1877D6",
+                    }}
+                  />
+                </div>
+                <div
+                  style={{
+                    marginTop: 3,
+                    fontSize: 10,
+                    fontWeight: 600,
+                    color: finished ? "#16A34A" : "#1877D6",
+                  }}
+                >
+                  {finished ? "Played" : left}
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+
+
+        <button
+          type="button"
+          aria-label={isSaved ? "Remove from saved" : "Save episode"}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleSave();
+          }}
+          style={{
+            width: 36,
+            height: 36,
+            flexShrink: 0,
+            borderRadius: 18,
+            border: `1px solid ${isSaved ? "#1877D6" : "#E4E8EF"}`,
+            background: isSaved ? "#EFF6FF" : "#fff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            alignSelf: "center",
+            marginRight: 8,
+            cursor: "pointer",
+          }}
+        >
+          {isSaved ? (
+            <IconBookmarkFilled size={18} color="#1877D6" />
+          ) : (
+            <IconBookmark size={18} color="#6B7686" stroke={1.8} />
+          )}
+        </button>
+        <button
+          type="button"
+          aria-label={
+            isCurrent && isPlaying ? "Pause episode" : "Play episode"
+          }
+          onClick={(e) => {
+            e.stopPropagation();
+            onPlay();
+          }}
+          disabled={!ep.audioUrl}
+          style={{
+            width: 48,
+            height: 48,
+            flexShrink: 0,
+            borderRadius: 24,
+            border: "none",
+            background: "#1877D6",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            alignSelf: "center",
+            cursor: ep.audioUrl ? "pointer" : "not-allowed",
+            boxShadow: "0 3px 8px rgba(24,119,214,0.25)",
+            opacity: ep.audioUrl ? 1 : 0.5,
+            transform: isCurrent ? "scale(1.05)" : "scale(1)",
+            transition: "transform 0.15s ease",
+          }}
+        >
+          {isCurrent && isPlaying ? (
+            <IconPlayerPauseFilled size={22} color="#fff" />
+          ) : (
+            <IconPlayerPlayFilled size={22} color="#fff" />
+          )}
+        </button>
+      </div>
+
     </div>
   );
 }
