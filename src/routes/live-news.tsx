@@ -14,6 +14,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
 import { sanitizeNewsTitle } from "@/lib/newsText";
 import { getPodcastEpisodes, type PodcastEpisode } from "@/lib/podcasts.functions";
+import { PODCAST_SHOWS } from "@/lib/podcasts";
 
 export const Route = createFileRoute("/live-news")({
   component: LiveNewsPage,
