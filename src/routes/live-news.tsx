@@ -136,7 +136,7 @@ function LiveNewsPage() {
       <InstructorTopBar
         firstName=""
         pageTitle="Live & News"
-        onBack={() => navigate({ to: "/home" as never })}
+        onBack={() => goBack('/home')}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
         onLiveTrack={() => navigate({ to: "/live" as never })}
