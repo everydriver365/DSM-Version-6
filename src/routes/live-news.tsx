@@ -664,32 +664,29 @@ function LiveNewsPage() {
                                 if (latest) playEpisode(latest);
                               }}
                               style={{
-                                width: 30,
-                                height: 30,
+                                width: 44,
+                                height: 44,
                                 flexShrink: 0,
-                                borderRadius: 15,
+                                borderRadius: 22,
                                 border: "none",
-                                background:
-                                  playing?.id && latest && playing.id === latest.id
-                                    ? "#1877D6"
-                                    : "#EFF6FF",
+                                background: "#1877D6",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 cursor: latest ? "pointer" : "not-allowed",
+                                boxShadow: "0 3px 8px rgba(24,119,214,0.25)",
+                                opacity: latest ? 1 : 0.5,
+                                transform:
+                                  playing?.id && latest && playing.id === latest.id
+                                    ? "scale(1.05)"
+                                    : "scale(1)",
+                                transition: "transform 0.15s ease",
                               }}
                             >
                               {playing?.id && latest && playing.id === latest.id && isPlaying ? (
-                                <IconPlayerPauseFilled size={13} color="#fff" />
+                                <IconPlayerPauseFilled size={20} color="#fff" />
                               ) : (
-                                <IconPlayerPlayFilled
-                                  size={13}
-                                  color={
-                                    playing?.id && latest && playing.id === latest.id
-                                      ? "#fff"
-                                      : "#1877D6"
-                                  }
-                                />
+                                <IconPlayerPlayFilled size={20} color="#fff" />
                               )}
                             </button>
                           </div>
@@ -991,26 +988,27 @@ function LiveNewsPage() {
                           }}
                           disabled={!ep.audioUrl}
                           style={{
-                            width: 36,
-                            height: 36,
+                            width: 48,
+                            height: 48,
                             flexShrink: 0,
-                            borderRadius: 18,
+                            borderRadius: 24,
                             border: "none",
-                            background: playing?.id === ep.id ? "#1877D6" : "#EFF6FF",
+                            background: "#1877D6",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             alignSelf: "center",
                             cursor: ep.audioUrl ? "pointer" : "not-allowed",
+                            boxShadow: "0 3px 8px rgba(24,119,214,0.25)",
+                            opacity: ep.audioUrl ? 1 : 0.5,
+                            transform: playing?.id === ep.id ? "scale(1.05)" : "scale(1)",
+                            transition: "transform 0.15s ease",
                           }}
                         >
                           {playing?.id === ep.id && isPlaying ? (
-                            <IconPlayerPauseFilled size={16} color="#fff" />
+                            <IconPlayerPauseFilled size={22} color="#fff" />
                           ) : (
-                            <IconPlayerPlayFilled
-                              size={16}
-                              color={playing?.id === ep.id ? "#fff" : "#1877D6"}
-                            />
+                            <IconPlayerPlayFilled size={22} color="#fff" />
                           )}
                         </button>
                       </div>
@@ -1484,21 +1482,24 @@ function EpisodeModal({
                 onClick={onPlay}
                 aria-label={isPlaying ? "Pause" : "Play"}
                 style={{
-                  width: 42,
-                  height: 42,
-                  borderRadius: 21,
+                  width: 52,
+                  height: 52,
+                  borderRadius: 26,
                   border: "none",
                   background: "#1877D6",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   cursor: "pointer",
+                  boxShadow: "0 3px 8px rgba(24,119,214,0.25)",
+                  transform: isPlaying ? "scale(1.05)" : "scale(1)",
+                  transition: "transform 0.15s ease",
                 }}
               >
                 {isPlaying ? (
-                  <IconPlayerPauseFilled size={18} color="#fff" />
+                  <IconPlayerPauseFilled size={24} color="#fff" />
                 ) : (
-                  <IconPlayerPlayFilled size={18} color="#fff" />
+                  <IconPlayerPlayFilled size={24} color="#fff" />
                 )}
               </button>
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -1588,26 +1589,6 @@ function EpisodeModal({
             )}
           </div>
 
-          {episode.link && (
-            <a
-              href={episode.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 4,
-                marginTop: 12,
-                fontSize: 12,
-                fontWeight: 600,
-                color: "#1877D6",
-                textDecoration: "none",
-              }}
-            >
-              Open episode page
-              <IconChevronRight size={13} stroke={2} />
-            </a>
-          )}
         </div>
       </div>
     </div>
