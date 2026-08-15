@@ -10,11 +10,12 @@ import {
   IconPlayerPauseFilled,
   IconPlayerTrackNextFilled,
   IconSearch,
+  IconShare,
   IconX,
-
 } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
+import { toast } from "sonner";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
 import { sanitizeNewsTitle } from "@/lib/newsText";
 import {
@@ -53,6 +54,33 @@ function formatSessionDay(iso: string | null | undefined): string {
 function formatSessionMonth(iso: string | null | undefined): string {
   if (!iso) return "";
   return new Date(iso).toLocaleDateString("en-GB", { month: "short" });
+}
+
+async function handleShareEpisode(episode: PodcastEpisode) {
+  const url = episode.link || episode.audioUrl;
+  if (!url) {
+    toast.error("No link available for this episode");
+    return;
+  }
+  const title = episode.title;
+  const text = `Check out this episode from ${episode.showName}`;
+  try {
+    if (
+      typeof window !== "undefined" &&
+      typeof navigator.share === "function"
+    ) {
+      await navigator.share({ title, text, url });
+      return;
+    }
+  } catch {
+    /* user cancelled or share failed — fall back to copy */
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+    toast.success("Episode link copied");
+  } catch {
+    toast.error("Could not copy link");
+  }
 }
 
 function LiveNewsPage() {
@@ -1753,6 +1781,30 @@ function EpisodeModal({
                 </div>
               );
             })()}
+            <div style={{ marginTop: 10 }}>
+              <button
+                type="button"
+                onClick={() => handleShareEpisode(episode)}
+                aria-label="Share episode"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  border: "1px solid #1877D6",
+                  borderRadius: 8,
+                  background: "#fff",
+                  color: "#1877D6",
+                  padding: "6px 10px",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  ...POPPINS,
+                }}
+              >
+                <IconShare size={18} stroke={1.5} />
+                Share
+              </button>
+            </div>
           </div>
         ) : null}
 
