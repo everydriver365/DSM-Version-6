@@ -99,6 +99,26 @@ export const PODCAST_SHOWS: PodcastShow[] = [
     recommended: true,
     recommendedNote: "Business growth and mindset for running your school",
   },
+  {
+    id: "full-disclosure",
+    name: "Full Disclosure with James O'Brien",
+    feedUrl: "https://feeds.captivate.fm/full-disclosure/",
+    siteUrl: "https://www.globalplayer.com/podcasts/42KuVs/",
+    categories: ["Interviews", "Talk", "General"],
+    featured: false,
+    recommended: true,
+    recommendedNote: "Long-form interviews and interview technique",
+  },
+  {
+    id: "nick-abbot",
+    name: "The Nick Abbot Habit",
+    feedUrl: "https://feeds.captivate.fm/the-nick-abbot-habit/",
+    siteUrl: "https://thenickabbothabit.captivate.fm",
+    categories: ["Talk", "Radio", "General"],
+    featured: false,
+    recommended: true,
+    recommendedNote: "Sharp talk radio for the driving-time habit",
+  },
 ];
 
 function tagText(xml: string, tag: string): string {
