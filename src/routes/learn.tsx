@@ -435,9 +435,15 @@ function LearnPage() {
     (async () => {
       const { data, error } = await supabase
         .from("learn_videos")
-        .select("id, title, duration, url, thumbnail_url")
+        .select("*")
         .order("sort_order", { ascending: true });
-      if (!cancelled && !error && data) setVideos(data as Video[]);
+      // Library videos render in the Videos section below, not the How-to grid.
+      if (!cancelled && !error && data)
+        setVideos(
+          (data as (Video & { kind?: string | null })[]).filter(
+            (v) => (v.kind ?? "howto") === "howto",
+          ),
+        );
     })();
     return () => {
       cancelled = true;
