@@ -596,6 +596,26 @@ function LiveNewsPage() {
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div
                             style={{
+                              display: "inline-block",
+                              maxWidth: "100%",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              background: "#EFF6FF",
+                              color: "#1877D6",
+                              borderRadius: 6,
+                              padding: "2px 6px",
+                              fontSize: 10,
+                              fontWeight: 700,
+                              letterSpacing: "0.02em",
+                              marginBottom: 5,
+                            }}
+                          >
+                            {ep.showName}
+                          </div>
+                          <div
+
+                            style={{
                               fontSize: 14,
                               fontWeight: 700,
                               color: "#0B1F3A",
