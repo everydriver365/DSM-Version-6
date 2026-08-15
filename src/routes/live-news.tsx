@@ -30,6 +30,14 @@ function formatSessionMonth(iso: string | null | undefined): string {
 
 function LiveNewsPage() {
   const navigate = useNavigate();
+  const canGoBack = window.history.length > 1;
+  function goBack(fallback: string) {
+    if (canGoBack) {
+      navigate({ to: -1 as any });
+    } else {
+      navigate({ to: fallback as never });
+    }
+  }
   const [activeTab, setActiveTab] = useState<"live" | "news">("live");
   const [sessions, setSessions] = useState<LiveSession[] | null>(null);
   const [articles, setArticles] = useState<any[] | null>(null);
