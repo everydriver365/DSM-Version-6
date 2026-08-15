@@ -135,7 +135,10 @@ function LiveNewsPage() {
     }
     const pending = resumeTargetRef.current;
     if (!pending || pending.target <= 0 || pending.tries >= 6) return;
-    if (Math.abs(el.currentTime - pending.target) < 3) return;
+    if (Math.abs(el.currentTime - pending.target) < 3) {
+      pending.target = 0; // resumed — stop tracking so manual seeks stick
+      return;
+    }
     pending.tries += 1;
     el.currentTime = pending.target;
     setCurrentTime(pending.target);
