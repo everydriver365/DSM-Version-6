@@ -28,11 +28,12 @@ export function getLessonPaymentBadge(
   const paid = Number(paidAmount ?? 0);
   const prepaid = Number(prepaidHours ?? 0) > 0;
 
-  // Paid / prepaid / nothing outstanding
-  if (s === "paid" || s === "prepaid" || prepaid || due <= 0) {
+  // Paid / prepaid / nothing outstanding / fully paid by amount
+  if (s === "paid" || s === "prepaid" || prepaid || due <= 0 || paid >= due) {
     const label = s === "prepaid" || prepaid ? "Prepaid" : "Paid";
     return { label, bg: "#E8F8ED", color: "#1A7A3C" };
   }
+
 
   // Partial payment
   if (s === "partial" || (paid > 0 && paid < due)) {
