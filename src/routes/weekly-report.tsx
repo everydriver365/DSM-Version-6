@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { IconChevronLeft, IconChevronRight, IconDownload, IconStar, IconUsers } from "@tabler/icons-react";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { IconCalendar, IconChevronLeft, IconChevronRight, IconDownload, IconStar, IconUsers } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
@@ -425,7 +424,7 @@ function WeeklyReportPage() {
       {/* Section 2 — Day by day */}
       <div style={{ margin: "0 16px" }}>
         <CardBox>
-          <SectionHead icon={<CalendarIcon size={16} color="#1877D6" />} title="Day by day" />
+          <SectionHead icon={<IconCalendar size={16} color="#1877D6" />} title="Day by day" />
           <div className="flex flex-col gap-2 mt-3">
             {dayRows.map((d) => {
               const pct = Math.min(100, (d.hours / maxDayHours) * 100);

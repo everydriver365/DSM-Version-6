@@ -3,8 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { PageHeader } from "@/components/dsm/PageHeader";
-import { IconBriefcase, IconCar, IconDots, IconMicrophone, IconPencil, IconPhone, IconPlus, IconRepeat, IconSchool, IconShield, IconTool, IconTrash, IconUpload, IconX } from "@tabler/icons-react";
-import { Leaf, Fuel, Megaphone } from "lucide-react";
+import { IconBriefcase, IconCar, IconDots, IconGasStation, IconLeaf, IconMicrophone, IconPencil, IconPhone, IconPlus, IconRepeat, IconSchool, IconShield, IconSpeakerphone, IconTool, IconTrash, IconUpload, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { BottomSheet } from "../components/dsm/BottomSheet";
@@ -21,7 +20,7 @@ const BORDER = "0.5px solid #EEF2F7";
 const GREEN = "#1877D6";
 
 const CATEGORIES = [
-  "Fuel",
+  "IconGasStation",
   "Insurance",
   "Marketing",
   "Equipment",
@@ -35,7 +34,7 @@ type Category = (typeof CATEGORIES)[number];
 
 const FILTERS: Array<"All" | Category> = [
   "All",
-  "Fuel",
+  "IconGasStation",
   "Insurance",
   "Marketing",
   "Equipment",
@@ -54,9 +53,9 @@ function hexToRgba(hex: string, alpha: number) {
 
 const categoryIcon = (category: string, size: number = 16): ReactNode => {
   const icons: Record<string, ReactNode> = {
-    'Fuel': <Fuel size={size} />,
+    'IconGasStation': <IconGasStation size={size} />,
     'Insurance': <IconShield stroke={1.5} size={size} />,
-    'Marketing': <Megaphone size={size} />,
+    'Marketing': <IconSpeakerphone size={size} />,
     'Equipment': <IconTool stroke={1.5} size={size} />,
     'Training': <IconSchool stroke={1.5} size={size} />,
     'Vehicle': <IconCar stroke={1.5} size={size} />,
@@ -69,7 +68,7 @@ const categoryIcon = (category: string, size: number = 16): ReactNode => {
 
 const categoryColour = (category: string) => {
   const colours: Record<string, string> = {
-    'Fuel': '#1877D6',
+    'IconGasStation': '#1877D6',
     'Insurance': '#3B82F6',
     'Marketing': '#8B5CF6',
     'Equipment': '#6B7280',
@@ -474,7 +473,7 @@ function ExpenseRow({
         <div style={{ textAlign: "right", flexShrink: 0 }}>
           <div style={{ fontWeight: 800, color: NAVY, display: "inline-flex", alignItems: "center", gap: 6 }}>
             {money(Number(row.amount || 0))}
-            {row.tax_deductible && <Leaf size={14} color={GREEN} />}
+            {row.tax_deductible && <IconLeaf size={14} color={GREEN} />}
           </div>
           <div style={{ color: "#6B7280", fontSize: 11, marginTop: 2 }}>{date}</div>
         </div>
@@ -562,7 +561,7 @@ function AddEditSheet({
   onClose: () => void;
   onSaved: () => void;
 }) {
-  const [category, setCategory] = useState<Category>((initial?.category as Category) ?? "Fuel");
+  const [category, setCategory] = useState<Category>((initial?.category as Category) ?? "IconGasStation");
   const [description, setDescription] = useState(initial?.description ?? "");
   const [amount, setAmount] = useState<string>(initial ? String(initial.amount) : "");
   const [date, setDate] = useState(initial?.expense_date ?? todayISO());
@@ -671,7 +670,7 @@ function AddEditSheet({
         return;
       }
       toast.success(initial ? "Expense updated" : "Expense added");
-      setCategory("Fuel");
+      setCategory("IconGasStation");
       setDescription("");
       setAmount("");
       setDate(todayISO());
@@ -712,7 +711,7 @@ function AddEditSheet({
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="e.g. Fuel at Shell"
+              placeholder="e.g. IconGasStation at Shell"
               style={{ ...inputStyle, paddingRight: 42 }}
             />
             <button

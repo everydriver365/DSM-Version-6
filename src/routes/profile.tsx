@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { IconAlertTriangle, IconBell, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconCreditCard, IconDeviceMobile, IconExternalLink, IconLoader2, IconMail, IconPhoto, IconShield, IconTrash, IconUser } from "@tabler/icons-react";
-import { Puzzle, Apple, Calendar as CalendarIcon } from "lucide-react";
+import { IconAlertTriangle, IconApple, IconBell, IconBriefcase, IconCalendar, IconCamera, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconCreditCard, IconDeviceMobile, IconExternalLink, IconLoader2, IconMail, IconPhoto, IconPuzzle, IconShield, IconTrash, IconUser } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
 import { toast } from "sonner";
@@ -45,7 +44,7 @@ const SECTION_META: {
   { key: "vehicle", label: "Vehicle", icon: IconCar, iconColor: "#1877D6" },
   { key: "notifications", label: "Notifications", icon: IconBell, iconColor: "#1877D6" },
   { key: "security", label: "Security", icon: IconShield, iconColor: "#1877D6" },
-  { key: "integrations", label: "Integrations", icon: Puzzle, iconColor: "#1877D6" },
+  { key: "integrations", label: "Integrations", icon: IconPuzzle, iconColor: "#1877D6" },
   { key: "danger", label: "Danger zone", icon: IconAlertTriangle, iconColor: "#1877D6" },
 ];
 
@@ -1375,7 +1374,7 @@ function ProfilePage() {
                 className="flex items-center justify-center rounded-lg"
                 style={{ width: 36, height: 36, backgroundColor: "#E8F0FE" }}
               >
-                <CalendarIcon size={20} color="#4285F4" />
+                <IconCalendar size={20} color="#4285F4" />
               </div>
               <div className="flex-1">
                 <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Google Calendar</div>
@@ -1394,10 +1393,10 @@ function ProfilePage() {
                 className="flex items-center justify-center rounded-lg"
                 style={{ width: 36, height: 36, backgroundColor: "#F3F4F6" }}
               >
-                <Apple size={20} color="#000000" />
+                <IconApple size={20} color="#000000" />
               </div>
               <div className="flex-1">
-                <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Apple Calendar</div>
+                <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>IconApple Calendar</div>
                 <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
                   Subscribe to your DSM schedule on iPhone
                 </div>

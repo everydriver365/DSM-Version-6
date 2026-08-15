@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Check, Crown } from "lucide-react";
 import { toast } from "sonner";
+import { IconCheck, IconCrown } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
@@ -166,7 +166,7 @@ function SubscriptionPage() {
 function Feature({ text }: { text: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <Check size={16} color="#1877D6" strokeWidth={3} />
+      <IconCheck size={16} color="#1877D6" stroke={3} />
       <span style={{ fontSize: 14, color: "#0B1F3A" }}>{text}</span>
     </div>
   );

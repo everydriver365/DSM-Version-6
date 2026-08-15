@@ -4,8 +4,7 @@ import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { IconArrowLeft, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronRight, IconCircleCheck, IconHeart, IconMapPin, IconPackage, IconPlayerPlayFilled, IconSchool, IconShieldCheck, IconStar, IconTag, IconTool, IconX } from "@tabler/icons-react";
-import { BookOpen, Megaphone } from "lucide-react";
+import { IconArrowLeft, IconBook, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronRight, IconCircleCheck, IconHeart, IconMapPin, IconPackage, IconPlayerPlayFilled, IconSchool, IconShieldCheck, IconSpeakerphone, IconStar, IconTag, IconTool, IconX } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import {
   COMPARISON_COLS,
@@ -118,13 +117,13 @@ const CATEGORY_ICONS: Record<string, React.ComponentType<{ size?: number; color?
   health: IconHeart,
   learning: IconSchool,
   cpd: IconSchool,
-  courses: BookOpen,
+  courses: IconBook,
   insurance: IconShieldCheck,
   vehicles: IconCar,
   cars: IconCar,
   maintenance: IconTool,
   services: IconBriefcase,
-  marketing: Megaphone,
+  marketing: IconSpeakerphone,
   promotion: IconStar,
 };
 

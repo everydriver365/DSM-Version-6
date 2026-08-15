@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { GraduationCap } from "lucide-react";
+import { IconSchool } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -246,7 +246,7 @@ function TestDayPage() {
           className="flex flex-col items-center justify-center text-center px-6"
           style={{ marginTop: 80, gap: 12 }}
         >
-          <GraduationCap size={40} color="#6B7280" />
+          <IconSchool size={40} color="#6B7280" />
           <div className="text-[15px] font-semibold" style={{ color: "#0B1F3A" }}>
             No upcoming tests
           </div>

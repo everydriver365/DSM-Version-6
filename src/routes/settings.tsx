@@ -1,39 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { IconAlertTriangle, IconBell, IconBolt, IconBuildingBank, IconBuildingStore, IconCalculator, IconCalendar, IconCheck, IconChevronDown, IconChevronRight, IconClipboardList, IconClock, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconGift, IconHelpCircle, IconLogout, IconMapPin, IconPlus, IconShield, IconTag, IconTrash, IconUser, IconWorld } from "@tabler/icons-react";
 import squareLogo from "../assets/square-logo.png.asset.json";
 
 
 
-import {
-  User,
-  Clock,
-  Bell,
-  Calendar,
-  HelpCircle,
-  Shield,
-  ChevronRight,
-  ChevronDown,
-  PoundSterling,
-  Crown,
-  MapPin,
-  Check,
-  Trash2,
-  Plus,
-  Store,
-  Tag,
-  ClipboardList,
-  AlertTriangle,
-  Globe,
-  LogOut,
-  Landmark,
-  CreditCard,
-
-  Calculator,
-  Zap,
-
-  Gift,
-  Copy,
-} from "lucide-react";
 import { toast } from "sonner";
 
 
@@ -805,7 +776,7 @@ function SettingsPage() {
       <div className="px-4">
         <SectionCard>
           <AccountRow
-            icon={<Clock color="#1877D6" size={20} />}
+            icon={<IconClock color="#1877D6" size={20} />}
             iconBg="#E7F1FC"
             label="Availability & working hours"
             subLabel="Working days, hours, buffers, lunch break, time off, travel time"
@@ -821,28 +792,28 @@ function SettingsPage() {
         <Label>Account</Label>
         <SectionCard>
           <AccountRow
-            icon={<User color="#1877D6" size={20} />}
+            icon={<IconUser color="#1877D6" size={20} />}
             iconBg="#E7F1FC"
             label="Profile"
             onClick={() => navigate({ to: "/profile" })}
             isFirst
           />
           <AccountRow
-            icon={<PoundSterling color="#FF3B30" size={20} />}
+            icon={<IconCurrencyPound color="#FF3B30" size={20} />}
             iconBg="#FDEDEC"
             label="Payments"
             onClick={() => navigate({ to: "/payments" })}
           />
           <AccountRow
-            icon={<Bell color="#D68A1B" size={20} />}
+            icon={<IconBell color="#D68A1B" size={20} />}
             iconBg="#FFF6DC"
             label="Notifications"
             onClick={() => navigate({ to: "/notificationsettings" })}
           />
           <AccountRow
-            icon={<Calendar color="#7B4FC9" size={20} />}
+            icon={<IconCalendar color="#7B4FC9" size={20} />}
             iconBg="#F3EEFB"
-            label="Calendar sync"
+            label="IconCalendar sync"
             onClick={() => navigate({ to: "/calendarsync" })}
             warning={
               calendarLastSynced &&
@@ -852,31 +823,31 @@ function SettingsPage() {
             }
           />
           <AccountRow
-            icon={<Gift size={20} color="#00B5A5" />}
+            icon={<IconGift size={20} color="#00B5A5" />}
             iconBg="#CCFBF1"
             label="Referrals"
             onClick={() => navigate({ to: "/referrals" })}
           />
           <AccountRow
-            icon={<Zap size={20} color="#D97706" />}
+            icon={<IconBolt size={20} color="#D97706" />}
             iconBg="#FEF3C7"
             label="Automations"
             onClick={() => navigate({ to: "/automations" })}
           />
           <AccountRow
-            icon={<Globe size={20} color="#1877D6" />}
+            icon={<IconWorld size={20} color="#1877D6" />}
             iconBg="#E6F1FB"
             label="My mini website"
             onClick={() => navigate({ to: "/minisite" })}
           />
           <AccountRow
-            icon={<Landmark color="#1877D6" size={20} />}
+            icon={<IconBuildingBank color="#1877D6" size={20} />}
             iconBg="#E6F1FB"
             label="Accounting integrations"
             onClick={() => navigate({ to: "/mtd" })}
           />
           <AccountRow
-            icon={<Crown color="#1877D6" size={20} />}
+            icon={<IconCrown color="#1877D6" size={20} />}
             iconBg="#E6F1FB"
             label="My plan"
             value="DSM Free"
@@ -939,7 +910,7 @@ function SettingsPage() {
         <Label>LESSON REMINDERS</Label>
         <SectionCard>
           <MenuRow
-            icon={<Clock color="#B5661E" />}
+            icon={<IconClock color="#B5661E" />}
             iconBg="#FBEFE1"
 
             label="Lesson reminders"
@@ -1026,7 +997,7 @@ function SettingsPage() {
         <Label>RATES & SCHEDULING</Label>
         <SectionCard>
           <MenuRow
-            icon={<PoundSterling size={18} color="#1877D6" />}
+            icon={<IconCurrencyPound size={18} color="#1877D6" />}
             iconBg="#DBEAFE"
             label="Rates & scheduling"
             expanded={expanded === "rates"}
@@ -1147,7 +1118,7 @@ function SettingsPage() {
                 style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2" }}
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <Clock size={14} color="#0B1F3A" />
+                  <IconClock size={14} color="#0B1F3A" />
                   <div className="text-[14px] font-bold" style={{ color: "#0B1F3A", ...POPPINS }}>
                     Lesson buffer
                   </div>
@@ -1260,7 +1231,7 @@ function SettingsPage() {
         <Label>COVERAGE AREA</Label>
         <SectionCard>
           <AccountRow
-            icon={<MapPin size={20} color="#1877D6" />}
+            icon={<IconMapPin size={20} color="#1877D6" />}
             iconBg="#E0F4FF"
             label="Coverage areas"
             subLabel={
@@ -1277,7 +1248,7 @@ function SettingsPage() {
         <Label>PRICING RULES</Label>
         <SectionCard>
           <MenuRow
-            icon={<PoundSterling size={18} color="#1877D6" />}
+            icon={<IconCurrencyPound size={18} color="#1877D6" />}
             iconBg="#DBEAFE"
             label="Pricing rules"
             expanded={expanded === "pricing"}
@@ -1287,7 +1258,7 @@ function SettingsPage() {
           {expanded === "pricing" && (
             <div className="px-4 pb-4" style={{ borderTop: "1px solid #EFEFF2" }}>
               <MenuRow
-                icon={<MapPin size={18} color="#0369A1" />}
+                icon={<IconMapPin size={18} color="#0369A1" />}
                 iconBg="#E0F2FE"
                 label="Postcode rates"
                 onClick={() => navigate({ to: "/postcode-rates" })}
@@ -1373,7 +1344,7 @@ function SettingsPage() {
                           color: "#1877D6",
                         }}
                       >
-                        <Trash2 size={18} />
+                        <IconTrash size={18} />
                       </button>
                     </div>
                   ))}
@@ -1491,7 +1462,7 @@ function SettingsPage() {
                                 fontSize: 12, color: "#0F7B3F", background: "#E8F5EC",
                                 padding: "2px 8px", borderRadius: 999, ...POPPINS,
                               }}>
-                                <Check size={12} /> {v}
+                                <IconCheck size={12} /> {v}
                               </span>
                             ))}
                           </div>
@@ -1562,7 +1533,7 @@ function SettingsPage() {
                       ...POPPINS,
                     }}
                   >
-                    <Plus size={16} /> {savingRule ? "Adding…" : "Add rule"}
+                    <IconPlus size={16} /> {savingRule ? "Adding…" : "Add rule"}
                   </button>
                 </div>
               </div>
@@ -1573,14 +1544,14 @@ function SettingsPage() {
         <Label>PUPILS</Label>
         <SectionCard>
           <MenuRow
-            icon={<ClipboardList size={18} color="#1877D6" />}
+            icon={<IconClipboardList size={18} color="#1877D6" />}
             iconBg="#E0F2FE"
             label="Intake questions"
             onClick={() => navigate({ to: "/intake-questions" })}
             isFirst
           />
           <MenuRow
-            icon={<AlertTriangle size={18} color="#D97706" />}
+            icon={<IconAlertTriangle size={18} color="#D97706" />}
             iconBg="#FEF3C7"
             label="No-show policy"
             onClick={() => navigate({ to: "/no-show-policy" })}
@@ -1590,14 +1561,14 @@ function SettingsPage() {
         <Label>MARKETING</Label>
         <SectionCard>
           <MenuRow
-            icon={<Tag size={18} />}
+            icon={<IconTag size={18} />}
             iconBg="#EEF2F7"
             label="Discount codes"
             onClick={() => navigate({ to: "/discount-codes" })}
             isFirst
           />
           <MenuRow
-            icon={<Store size={18} color="#52525B" />}
+            icon={<IconBuildingStore size={18} color="#52525B" />}
             iconBg="#F4F4F5"
             label="Edit marketplace tiles"
             onClick={() => navigate({ to: "/marketplace/edit" })}
@@ -1606,7 +1577,7 @@ function SettingsPage() {
 
         <Label>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            <Globe size={14} color="#6B7280" /> EVERYDRIVER
+            <IconWorld size={14} color="#6B7280" /> EVERYDRIVER
           </span>
         </Label>
         <SectionCard>
@@ -1618,7 +1589,7 @@ function SettingsPage() {
               className="flex items-center justify-center"
               style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 10, backgroundColor: "#DBEAFE", flexShrink: 0 }}
             >
-              <Globe size={18} color="#1877D6" />
+              <IconWorld size={18} color="#1877D6" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
@@ -1672,7 +1643,7 @@ function SettingsPage() {
               className="flex items-center justify-center"
               style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 10, backgroundColor: "#FEF3C7", flexShrink: 0 }}
             >
-              <Crown size={18} color="#D97706" />
+              <IconCrown size={18} color="#D97706" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
@@ -1749,12 +1720,12 @@ function SettingsPage() {
               className="flex items-center justify-center"
               style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 10, backgroundColor: "#DBEAFE", flexShrink: 0 }}
             >
-              <Globe size={18} color="#1877D6" />
+              <IconWorld size={18} color="#1877D6" />
             </div>
             <span className="flex-1 text-[14px] text-[#0B1F3A]" style={POPPINS}>
               View my EveryDriver profile
             </span>
-            <ChevronRight size={18} color="#6B7280" />
+            <IconChevronRight size={18} color="#6B7280" />
           </button>
         </SectionCard>
 
@@ -1764,7 +1735,7 @@ function SettingsPage() {
         {/* Section 1 — No-show & cancellation policy */}
         <SectionCard>
           <MenuRow
-            icon={<AlertTriangle color="#CC2229" />}
+            icon={<IconAlertTriangle color="#CC2229" />}
             iconBg="#FCEBEB"
             label="No-show & cancellation policy"
             subLabel="Set fees for late cancellations and no-shows"
@@ -1857,7 +1828,7 @@ function SettingsPage() {
         {/* Section 2 — Lesson reminders (automation) */}
         <SectionCard>
           <MenuRow
-            icon={<Bell color="#1877D6" />}
+            icon={<IconBell color="#1877D6" />}
             iconBg="#E0F4FF"
             label="Lesson reminders"
             subLabel="Automated reminders for lessons and payments"
@@ -1918,7 +1889,7 @@ function SettingsPage() {
         {/* Section 3 — Deposit settings */}
         <SectionCard>
           <MenuRow
-            icon={<PoundSterling color="#16A34A" />}
+            icon={<IconCurrencyPound color="#16A34A" />}
             iconBg="#DCFCE7"
             label="Deposit settings"
             subLabel="Require deposits when pupils book courses"
@@ -1959,7 +1930,7 @@ function SettingsPage() {
         {/* Section 4 — Payment options */}
         <SectionCard>
           <MenuRow
-            icon={<CreditCard color="#7C3AED" />}
+            icon={<IconCreditCard color="#7C3AED" />}
             iconBg="#EDE9FE"
             label="Payment options"
             subLabel="Which payment methods you accept"
@@ -2019,7 +1990,7 @@ function SettingsPage() {
         {/* Section 5 — Tax & expenses */}
         <SectionCard>
           <MenuRow
-            icon={<Calculator color="#D97706" />}
+            icon={<IconCalculator color="#D97706" />}
             iconBg="#FEF3C7"
             label="Tax & expenses"
             subLabel="Tax code, vehicle costs and allowable deductions"
@@ -2115,7 +2086,7 @@ function SettingsPage() {
         {/* Section 6 — Referral programme */}
         <SectionCard>
           <MenuRow
-            icon={<Gift color="#00B5A5" />}
+            icon={<IconGift color="#00B5A5" />}
             iconBg="#CCFBF1"
             label="Referral programme"
             subLabel="Reward pupils who refer their friends"
@@ -2154,12 +2125,12 @@ function SettingsPage() {
                         try {
                           await navigator.clipboard.writeText(referralCode);
                           toast.success("Referral code copied");
-                        } catch { toast.error("Copy failed"); }
+                        } catch { toast.error("IconCopy failed"); }
                       }}
                       className="flex items-center gap-1 text-[13px]"
                       style={{ padding: "10px 14px", borderRadius: 10, background: "#EEF2F7", color: "#0B1F3A", border: "none", cursor: "pointer", ...POPPINS }}
                     >
-                      <Copy size={14} /> Copy
+                      <IconCopy size={14} /> IconCopy
                     </button>
                   </div>
                   <FieldLabel>Discount amount</FieldLabel>
@@ -2202,14 +2173,14 @@ function SettingsPage() {
         <Label>SUPPORT</Label>
         <SectionCard>
           <MenuRow
-            icon={<HelpCircle size={18} color="#52525B" />}
+            icon={<IconHelpCircle size={18} color="#52525B" />}
             iconBg="#F4F4F5"
             label="Help"
             onClick={() => navigate({ to: "/help" })}
             isFirst
           />
           <MenuRow
-            icon={<Shield size={18} color="#52525B" />}
+            icon={<IconShield size={18} color="#52525B" />}
             iconBg="#F4F4F5"
             label="Privacy policy"
             onClick={() =>
@@ -2217,7 +2188,7 @@ function SettingsPage() {
             }
           />
           <MenuRow
-            icon={<Shield size={18} color="#1877D6" />}
+            icon={<IconShield size={18} color="#1877D6" />}
             iconBg="#FEECEE"
             label="Admin"
             onClick={() => navigate({ to: "/admin" })}
@@ -2226,7 +2197,7 @@ function SettingsPage() {
 
         <SectionCard>
           <MenuRow
-            icon={<LogOut color="#CC2229" />}
+            icon={<IconLogout color="#CC2229" />}
             iconBg="#FCEBEB"
             label="Sign out"
             labelColor="#CC2229"
@@ -2364,9 +2335,9 @@ function MenuRow({
         </span>
       ) : null}
       {hideChevron ? null : expanded ? (
-        <ChevronDown size={15} color="#C7C7CC" />
+        <IconChevronDown size={15} color="#C7C7CC" />
       ) : (
-        <ChevronRight size={15} color="#C7C7CC" />
+        <IconChevronRight size={15} color="#C7C7CC" />
       )}
     </button>
   );
@@ -2465,7 +2436,7 @@ function AccountRow({
           {value}
         </span>
       ) : null}
-      <ChevronRight size={15} color="#C7C7CC" />
+      <IconChevronRight size={15} color="#C7C7CC" />
     </button>
   );
 }

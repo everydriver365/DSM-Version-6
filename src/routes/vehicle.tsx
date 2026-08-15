@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { IconAlertTriangle, IconCalendar, IconCircle, IconFileText, IconPlus, IconShield, IconTool, IconX } from "@tabler/icons-react";
-import { Receipt, Gauge } from "lucide-react";
+import { IconAlertTriangle, IconCalendar, IconCircle, IconFileText, IconGauge, IconPlus, IconReceipt, IconShield, IconTool, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -252,7 +251,7 @@ function VehiclePage() {
           onClick={() => setEditField("insurance_expiry")}
         />
         <StatusCard
-          icon={<Receipt size={16} color={NAVY} />}
+          icon={<IconReceipt size={16} color={NAVY} />}
           label="Road tax"
           value={fmtDate(vh.tax_expiry)}
           badge={expiryBadge(vh.tax_expiry)}
@@ -304,7 +303,7 @@ function VehiclePage() {
         style={{ backgroundColor: "#FFFFFF", border: BORDER, borderRadius: 12, padding: 16 }}
       >
         <div className="flex items-center" style={{ gap: 8 }}>
-          <Gauge size={18} color={NAVY} />
+          <IconGauge size={18} color={NAVY} />
           <div className="text-[14px] font-semibold" style={{ color: NAVY }}>
             Current mileage
           </div>

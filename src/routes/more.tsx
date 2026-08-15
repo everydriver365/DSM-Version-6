@@ -1,14 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import {
-  Search, X, Briefcase, RefreshCw, Award, ArrowLeftRight, GraduationCap,
-  ClipboardCheck, FileText, Receipt, Fuel, Car, MapPin, Calendar,
-  BarChart3, Calculator,
-
-  Moon, TrendingUp, Activity, Radio, ShoppingBag, Users, GraduationCap as GraduationCapIcon,
-  PlayCircle,
-} from "lucide-react";
-import { IconChevronRight, IconSearch, IconCreditCard, IconCalendar, IconWorld, IconRosetteDiscount } from "@tabler/icons-react";
+import { IconActivity, IconArrowsLeftRight, IconAward, IconBriefcase, IconCalculator, IconCalendar, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconFileText, IconGasStation, IconMapPin, IconMoon, IconPlayerPlay, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconShoppingBag, IconTrendingUp, IconUsers, IconWorld, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -42,22 +34,22 @@ type Tool = {
 
 const allTools: Tool[] = [
   // Teaching
-  { icon: Briefcase, colour: '#7C3AED', label: 'Jobs', sub: 'Job offers & requests', route: '/jobs', group: 'Teaching' },
-  { icon: RefreshCw, colour: '#1A52A0', label: 'Recurring lessons', sub: 'Weekly series', route: '/lesson-series', group: 'Teaching' },
-  { icon: Award, colour: '#7C3AED', label: 'Log test result', sub: 'Pass or fail', route: '/tests', group: 'Teaching' },
-  { icon: ArrowLeftRight, colour: '#7C3AED', label: 'Test swap', sub: 'Manage per pupil', route: '/pupils', group: 'Teaching' },
-  { icon: GraduationCap, colour: '#16A34A', label: 'Syllabus', sub: 'Standards check', route: '/standards', group: 'Teaching' },
-  { icon: ClipboardCheck, colour: '#16A34A', label: 'Mock tests', sub: 'Practice tests', route: '/mock-tests', group: 'Teaching' },
-  { icon: FileText, colour: '#9CA3AF', label: 'Lesson notes', sub: 'Templates', route: '/lesson-notes', group: 'Teaching' },
+  { icon: IconBriefcase, colour: '#7C3AED', label: 'Jobs', sub: 'Job offers & requests', route: '/jobs', group: 'Teaching' },
+  { icon: IconRefresh, colour: '#1A52A0', label: 'Recurring lessons', sub: 'Weekly series', route: '/lesson-series', group: 'Teaching' },
+  { icon: IconAward, colour: '#7C3AED', label: 'Log test result', sub: 'Pass or fail', route: '/tests', group: 'Teaching' },
+  { icon: IconArrowsLeftRight, colour: '#7C3AED', label: 'Test swap', sub: 'Manage per pupil', route: '/pupils', group: 'Teaching' },
+  { icon: IconSchool, colour: '#16A34A', label: 'Syllabus', sub: 'Standards check', route: '/standards', group: 'Teaching' },
+  { icon: IconClipboardCheck, colour: '#16A34A', label: 'Mock tests', sub: 'Practice tests', route: '/mock-tests', group: 'Teaching' },
+  { icon: IconFileText, colour: '#9CA3AF', label: 'Lesson notes', sub: 'Templates', route: '/lesson-notes', group: 'Teaching' },
   // Business
-  { icon: Award, colour: '#D97706', label: 'Certifications', sub: 'Licences & renewals', route: '/certifications', group: 'Business' },
-  { icon: GraduationCap, colour: '#16A34A', label: 'CPD log', sub: 'Development hours', route: '/cpd', group: 'Business' },
-  { icon: Receipt, colour: '#CC2229', label: 'Expenses', sub: 'Track costs', route: '/expenses', group: 'Business' },
-  { icon: Fuel, colour: '#D97706', label: 'Find fuel', sub: 'Nearby stations', route: '/fuel', group: 'Business' },
-  { icon: Car, colour: '#6B7280', label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', group: 'Business' },
-  { icon: MapPin, colour: '#6B7280', label: 'Mileage', sub: 'Log miles', route: '/mileage', group: 'Business' },
-  { icon: FileText, colour: '#1A52A0', label: 'Invoices', sub: 'Billing', route: '/invoices', group: 'Business' },
-  { icon: MapPin, colour: '#1A52A0', label: 'Coverage areas', sub: 'Service areas', route: '/coverage-areas', group: 'Business' },
+  { icon: IconAward, colour: '#D97706', label: 'Certifications', sub: 'Licences & renewals', route: '/certifications', group: 'Business' },
+  { icon: IconSchool, colour: '#16A34A', label: 'CPD log', sub: 'Development hours', route: '/cpd', group: 'Business' },
+  { icon: IconReceipt, colour: '#CC2229', label: 'Expenses', sub: 'Track costs', route: '/expenses', group: 'Business' },
+  { icon: IconGasStation, colour: '#D97706', label: 'Find fuel', sub: 'Nearby stations', route: '/fuel', group: 'Business' },
+  { icon: IconCar, colour: '#6B7280', label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', group: 'Business' },
+  { icon: IconMapPin, colour: '#6B7280', label: 'Mileage', sub: 'Log miles', route: '/mileage', group: 'Business' },
+  { icon: IconFileText, colour: '#1A52A0', label: 'Invoices', sub: 'Billing', route: '/invoices', group: 'Business' },
+  { icon: IconMapPin, colour: '#1A52A0', label: 'Coverage areas', sub: 'Service areas', route: '/coverage-areas', group: 'Business' },
   { icon: IconCalendar, colour: '#7C3AED', label: 'Bookings', sub: 'Mini-site bookings', route: '/bookings', group: 'Business' },
   { icon: IconWorld, colour: '#7C3AED', label: 'My Website', sub: 'View your mini-site', route: '/minisite', group: 'Marketing' },
   
@@ -69,16 +61,16 @@ const allTools: Tool[] = [
 
 
   // Reports
-  { icon: BarChart3, colour: '#1A52A0', label: 'MTD', sub: 'Month to date', route: '/mtd', group: 'Reports' },
-  { icon: Calculator, colour: '#D97706', label: 'Tax report', sub: 'Self assessment', route: '/tax-report', group: 'Reports' },
-  { icon: Calendar, colour: '#16A34A', label: 'Weekly report', sub: 'Week summary', route: '/weekly-report', group: 'Reports' },
-  { icon: Moon, colour: '#7C3AED', label: 'End of day', sub: 'Daily wrap up', route: '/end-of-day', group: 'Reports' },
-  { icon: TrendingUp, colour: '#16A34A', label: 'Earnings forecast', sub: 'Predict income', route: '/earnings-forecast', group: 'Reports' },
-  { icon: Activity, colour: '#CC2229', label: 'Business health', sub: 'Key metrics', route: '/business-health', group: 'Reports' },
+  { icon: IconChartBar, colour: '#1A52A0', label: 'MTD', sub: 'Month to date', route: '/mtd', group: 'Reports' },
+  { icon: IconCalculator, colour: '#D97706', label: 'Tax report', sub: 'Self assessment', route: '/tax-report', group: 'Reports' },
+  { icon: IconCalendar, colour: '#16A34A', label: 'Weekly report', sub: 'Week summary', route: '/weekly-report', group: 'Reports' },
+  { icon: IconMoon, colour: '#7C3AED', label: 'End of day', sub: 'Daily wrap up', route: '/end-of-day', group: 'Reports' },
+  { icon: IconTrendingUp, colour: '#16A34A', label: 'Earnings forecast', sub: 'Predict income', route: '/earnings-forecast', group: 'Reports' },
+  { icon: IconActivity, colour: '#CC2229', label: 'Business health', sub: 'Key metrics', route: '/business-health', group: 'Reports' },
   // Community
-  { icon: Radio, colour: '#CC2229', label: 'DSM Live', sub: 'Sessions & podcasts', route: '/dsm-live', group: 'Community' },
-  { icon: ShoppingBag, colour: '#1A52A0', label: 'Marketplace', sub: 'Products & services', route: '/marketplace', group: 'Community' },
-  { icon: Users, colour: '#00B5A5', label: 'Community', sub: 'Connect with ADIs', route: '/community', group: 'Community' },
+  { icon: IconRadio, colour: '#CC2229', label: 'DSM Live', sub: 'Sessions & podcasts', route: '/dsm-live', group: 'Community' },
+  { icon: IconShoppingBag, colour: '#1A52A0', label: 'Marketplace', sub: 'Products & services', route: '/marketplace', group: 'Community' },
+  { icon: IconUsers, colour: '#00B5A5', label: 'Community', sub: 'Connect with ADIs', route: '/community', group: 'Community' },
   { icon: IconRosetteDiscount, colour: '#1877D6', label: 'Member Benefits', sub: 'Perks and rewards', route: '/benefits', group: 'Community' },
 ];
 
@@ -131,7 +123,7 @@ function MorePage() {
       />
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
-      {/* Search */}
+      {/* IconSearch */}
       <div
         style={{
           background: '#fff',
@@ -145,11 +137,11 @@ function MorePage() {
           boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
         }}
       >
-        <Search size={16} color="#9CA3AF" />
+        <IconSearch size={16} color="#9CA3AF" />
         <input
           type="text"
           autoFocus
-          placeholder="Search features..."
+          placeholder="IconSearch features..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{
@@ -168,7 +160,7 @@ function MorePage() {
             style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex' }}
             aria-label="Clear search"
           >
-            <X size={16} color="#9CA3AF" />
+            <IconX size={16} color="#9CA3AF" />
           </button>
         )}
       </div>
@@ -253,7 +245,7 @@ function MorePage() {
                         flexShrink: 0,
                       }}
                     >
-                      <PlayCircle size={18} color="white" />
+                      <IconPlayerPlay size={18} color="white" />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

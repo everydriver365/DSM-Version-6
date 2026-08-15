@@ -1,8 +1,7 @@
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Pencil, Navigation, ChevronRight, Map, AlertTriangle } from "lucide-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconX } from "@tabler/icons-react";
+import { IconAlertTriangle, IconChevronRight, IconMap, IconNavigation, IconPencil, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -349,7 +348,7 @@ function LessonDetailPage() {
           className="flex items-center gap-1 text-[13px] font-semibold"
           style={{ color: "#1877D6", background: "none", border: "none" }}
         >
-          <Pencil size={16} color="#1877D6" />
+          <IconPencil size={16} color="#1877D6" />
           Edit
         </button>
       </div>
@@ -478,7 +477,7 @@ function LessonDetailPage() {
               }}
               onClick={handleNavigate}
             >
-              <Navigation size={14} color="#FFFFFF" />
+              <IconNavigation size={14} color="#FFFFFF" />
               Navigate
             </button>
           </div>
@@ -590,7 +589,7 @@ function LessonDetailPage() {
                   }}
                 >
                   <div className="flex items-center gap-2 mb-3">
-                    <Map size={18} color="#1877D6" />
+                    <IconMap size={18} color="#1877D6" />
                     <span
                       className="text-[11px] font-semibold tracking-wider"
                       style={{ color: "#1877D6", ...POPPINS }}
@@ -647,7 +646,7 @@ function LessonDetailPage() {
                   {overspeedEvents.length > 0 && (
                     <div className="mb-3">
                       <div className="flex items-center gap-2 mb-2">
-                        <AlertTriangle size={16} color="#1877D6" />
+                        <IconAlertTriangle size={16} color="#1877D6" />
                         <span
                           className="text-[12px] font-semibold"
                           style={{ color: "#1877D6", ...POPPINS }}
@@ -679,7 +678,7 @@ function LessonDetailPage() {
 
                   <button
                     type="button"
-                    onClick={() => toast("Map replay coming soon")}
+                    onClick={() => toast("IconMap replay coming soon")}
                     className="w-full text-center text-[13px] font-semibold"
                     style={{
                       background: "transparent",
@@ -850,7 +849,7 @@ function ActionRow({
       <span className="text-[14px] font-medium" style={{ color, ...POPPINS }}>
         {label}
       </span>
-      <ChevronRight size={18} color="#6B7280" />
+      <IconChevronRight size={18} color="#6B7280" />
     </button>
   );
 }

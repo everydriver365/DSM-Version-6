@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ChevronLeft, Clock, Newspaper } from "lucide-react";
+import { IconChevronLeft, IconClock, IconNews } from "@tabler/icons-react";
 import { sanitizeNewsTitle } from "../lib/newsText";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -83,7 +83,7 @@ function NewsIndexPage() {
             cursor: "pointer",
           }}
         >
-          <ChevronLeft size={20} />
+          <IconChevronLeft size={20} />
         </button>
         <span
           className="text-white"
@@ -203,7 +203,7 @@ function NewsIndexPage() {
                       style={{ width: "100%", height: "100%", objectFit: "cover" }}
                     />
                   ) : (
-                    <Newspaper size={24} color="#FFFFFF" />
+                    <IconNews size={24} color="#FFFFFF" />
                   )}
                 </div>
 
@@ -274,7 +274,7 @@ function NewsIndexPage() {
                         ...INTER,
                       }}
                     >
-                      <Clock size={11} />
+                      <IconClock size={11} />
                       <span>{a.read_time_mins ? `${a.read_time_mins} min` : "—"}</span>
                       <span>·</span>
                       <span>{formatDate(a.published_at)}</span>

@@ -3,10 +3,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { reverseGeocode } from "@/lib/geocode.functions";
-import { IconAlertTriangle, IconArrowLeft, IconBell, IconBellOff, IconCar, IconChevronDown, IconClock, IconFlag, IconInfoCircle, IconLayoutGrid, IconMapPin, IconMessage, IconMessageCircle, IconPlus, IconSchool, IconSearch, IconSend, IconThumbUp, IconUsers, IconX } from "@tabler/icons-react";
+import { IconAlertTriangle, IconArrowLeft, IconBell, IconBellOff, IconBuilding, IconCar, IconChevronDown, IconClock, IconFlag, IconInfoCircle, IconLayoutGrid, IconMapPin, IconMessage, IconMessageCircle, IconPlus, IconSchool, IconSearch, IconSend, IconThumbUp, IconUsers, IconX } from "@tabler/icons-react";
 
 
-import { Building2 as Building } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import {
   BottomSheet,
@@ -123,7 +122,7 @@ const TYPE_CONFIG: Record<string, AlertTypeConfig> = {
   hazard:            defineType("Hazard",        "critical", IconAlertTriangle),
   flooding:          defineType("Flooding",      "critical", IconAlertTriangle),
   weather:           defineType("Weather",       "caution",  IconAlertTriangle),
-  test_centre_busy:  defineType("TC busy",       "critical", Building),
+  test_centre_busy:  defineType("TC busy",       "critical", IconBuilding),
   test_centre_delay: defineType("TC delay",      "critical", IconClock),
   examiner_tip:      defineType("Examiner tip",  "info",     IconSchool),
   other:             defineType("Other",         "neutral",  IconInfoCircle),
@@ -1485,7 +1484,7 @@ function AlertsTab({
                 }}
                 aria-hidden="true"
               >
-                <Building size={20} strokeWidth={1.9} />
+                <IconBuilding size={20} stroke={1.9} />
               </div>
               <div style={{ minWidth: 0, textAlign: "left" }}>
                 <div style={{ fontSize: 15.5, fontWeight: 800, color: "#0B1F3A", lineHeight: 1.25 }}>
