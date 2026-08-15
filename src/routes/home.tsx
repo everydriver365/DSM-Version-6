@@ -1,3 +1,5 @@
+import { Separator } from "@/components/ui/separator";
+import { typography } from "@/lib/typography";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import React from "react";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from "react";
