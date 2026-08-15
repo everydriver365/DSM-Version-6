@@ -1,5 +1,4 @@
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
-import { typography } from "@/lib/typography";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import React from "react";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from "react";
