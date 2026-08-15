@@ -4282,8 +4282,8 @@ function HomePage() {
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     {todayLessons.map((l) => {
-                      const paid = (l.payment_status ?? "").toLowerCase() === "paid";
                       const [hh, mm] = (l.lesson_time ?? "00:00").split(":").map(Number);
+
                       const endMinutes = hh * 60 + mm + (l.duration_minutes ?? 60);
                       const nowMinutes = new Date().getHours() * 60 + new Date().getMinutes();
                       const eolDue = !l.eol_completed && l.lesson_date === todayISO && endMinutes <= nowMinutes;
