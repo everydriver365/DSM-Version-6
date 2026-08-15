@@ -484,7 +484,9 @@ function MiniSitePage() {
               padding: "4px 10px",
             }}
           >
-            {t.price}
+            {billingPeriod === "annual"
+              ? `£${PRICES[t.id].annual.toFixed(2)}/year`
+              : `£${PRICES[t.id].monthly.toFixed(2)}/month`}
           </span>
           {t.badge && (
             <span
@@ -501,6 +503,18 @@ function MiniSitePage() {
             </span>
           )}
         </div>
+        {billingPeriod === "annual" && (
+          <div
+            style={{
+              fontSize: 11,
+              color: "#15803D",
+              fontWeight: 600,
+              marginTop: 4,
+            }}
+          >
+            Save £{ANNUAL_SAVING[t.id].toFixed(2)} vs monthly
+          </div>
+        )}
         <div
           style={{
             fontSize: 16,
