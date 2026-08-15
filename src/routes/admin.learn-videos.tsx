@@ -4,6 +4,10 @@ import { IconChevronLeft, IconMovie, IconPencil, IconPlus, IconTrash, IconUpload
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { useAdminGate } from "./admin";
+import {
+  BITESIZE_CATEGORIES,
+  VIDEO_CATEGORIES,
+} from "@/lib/learnVideos";
 
 export const Route = createFileRoute("/admin/learn-videos")({
   component: AdminLearnVideosPage,
@@ -24,6 +28,21 @@ interface LearnVideo {
   url: string | null;
   thumbnail_url: string | null;
   sort_order: number | null;
+  kind?: string | null;
+  source?: string | null;
+  source_url?: string | null;
+  categories?: string[] | null;
+  topics?: string[] | null;
+  audience?: string | null;
+  is_bitesize?: boolean | null;
+  bitesize_category?: string | null;
+  is_featured?: boolean | null;
+  is_published?: boolean | null;
+  duration_seconds?: number | null;
+  embed_url?: string | null;
+  related_podcast_slug?: string | null;
+  related_learn_item_id?: string | null;
+  revision_topic?: string | null;
 }
 
 function slugify(s: string) {
@@ -199,6 +218,20 @@ function VideoForm({
   const [youtubeUrl, setYoutubeUrl] = useState(
     initial?.url && /youtu/.test(initial.url) ? initial.url : "",
   );
+  const [kind, setKind] = useState<string>(initial?.kind ?? "howto");
+  const [videoSource, setVideoSource] = useState(initial?.source ?? "");
+  const [sourceUrl, setSourceUrl] = useState(initial?.source_url ?? "");
+  const [embedUrl, setEmbedUrl] = useState(initial?.embed_url ?? "");
+  const [categories, setCategories] = useState<string[]>(initial?.categories ?? []);
+  const [topics, setTopics] = useState((initial?.topics ?? []).join(", "));
+  const [audience, setAudience] = useState(initial?.audience ?? "instructor");
+  const [isBitesize, setIsBitesize] = useState(!!initial?.is_bitesize);
+  const [bitesizeCategory, setBitesizeCategory] = useState(initial?.bitesize_category ?? "");
+  const [isFeatured, setIsFeatured] = useState(!!initial?.is_featured);
+  const [isPublishedField, setIsPublishedField] = useState(initial?.is_published !== false);
+  const [relatedPodcast, setRelatedPodcast] = useState(initial?.related_podcast_slug ?? "");
+  const [relatedLearnItem, setRelatedLearnItem] = useState(initial?.related_learn_item_id ?? "");
+  const [revisionTopic, setRevisionTopic] = useState(initial?.revision_topic ?? "");
   const [saving, setSaving] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<
     "idle" | "uploading" | "saved" | "error"
@@ -280,7 +313,26 @@ function VideoForm({
         url,
         thumbnail_url: thumbnailUrl,
         sort_order: Number(sortOrder) || 0,
+        kind,
+        source: videoSource.trim() || null,
+        source_url: sourceUrl.trim() || null,
+        embed_url: embedUrl.trim() || null,
+        categories,
+        topics: topics
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
+        audience,
+        is_bitesize: isBitesize,
+        bitesize_category: bitesizeCategory || null,
+        is_featured: isFeatured,
+        is_published: isPublishedField,
       };
+      Object.assign(payload, {
+        related_podcast_slug: relatedPodcast.trim() || null,
+        related_learn_item_id: relatedLearnItem.trim() || null,
+        revision_topic: revisionTopic.trim() || null,
+      });
 
 
       const { error } = initial?.id
@@ -379,6 +431,226 @@ function VideoForm({
         value={sortOrder}
         onChange={(e) => setSortOrder(e.target.value)}
       />
+
+      <label style={labelStyle}>Section</label>
+      <div style={{ display: "flex", gap: 8 }}>
+        {([
+          { v: "howto", l: "DSM How-to" },
+          { v: "library", l: "Learn → Videos" },
+        ] as const).map((k) => (
+          <button
+            key={k.v}
+            type="button"
+            onClick={() => setKind(k.v)}
+            style={{
+              flex: 1,
+              padding: "10px 12px",
+              borderRadius: 10,
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
+              border: `1px solid ${kind === k.v ? BLUE : BORDER}`,
+              background: kind === k.v ? "#E8F1FC" : "#fff",
+              color: kind === k.v ? BLUE : GREY,
+            }}
+          >
+            {k.l}
+          </button>
+        ))}
+      </div>
+
+      {kind === "library" && (
+        <>
+          <label style={labelStyle} htmlFor="lv-source">Source / publisher</label>
+          <input
+            id="lv-source"
+            style={inputStyle}
+            value={videoSource}
+            onChange={(e) => setVideoSource(e.target.value)}
+            placeholder="ADINJC"
+          />
+
+          <label style={labelStyle} htmlFor="lv-source-url">Source page URL</label>
+          <input
+            id="lv-source-url"
+            style={inputStyle}
+            value={sourceUrl}
+            onChange={(e) => setSourceUrl(e.target.value)}
+            placeholder="https://www.adinjc.org.uk/video-resource-hub/"
+          />
+
+          <label style={labelStyle} htmlFor="lv-embed">Official embed URL (optional)</label>
+          <input
+            id="lv-embed"
+            style={inputStyle}
+            value={embedUrl}
+            onChange={(e) => setEmbedUrl(e.target.value)}
+            placeholder="Leave blank for YouTube links"
+          />
+
+          <label style={labelStyle}>Categories</label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {VIDEO_CATEGORIES.map((c) => {
+              const on = categories.includes(c);
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() =>
+                    setCategories((prev) =>
+                      prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c],
+                    )
+                  }
+                  style={{
+                    padding: "6px 10px",
+                    borderRadius: 20,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    border: `1px solid ${on ? BLUE : BORDER}`,
+                    background: on ? "#E8F1FC" : "#fff",
+                    color: on ? BLUE : GREY,
+                  }}
+                >
+                  {c}
+                </button>
+              );
+            })}
+          </div>
+
+          <label style={labelStyle}>Audience</label>
+          <div style={{ display: "flex", gap: 8 }}>
+            {(["instructor", "pupil", "both"] as const).map((a) => (
+              <button
+                key={a}
+                type="button"
+                onClick={() => setAudience(a)}
+                style={{
+                  flex: 1,
+                  padding: "10px 12px",
+                  borderRadius: 10,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  textTransform: "capitalize",
+                  cursor: "pointer",
+                  border: `1px solid ${audience === a ? BLUE : BORDER}`,
+                  background: audience === a ? "#E8F1FC" : "#fff",
+                  color: audience === a ? BLUE : GREY,
+                }}
+              >
+                {a}
+              </button>
+            ))}
+          </div>
+
+          <label style={labelStyle} htmlFor="lv-topics">
+            Pre-lesson revision topics (DL25 ids, comma separated)
+          </label>
+          <input
+            id="lv-topics"
+            style={inputStyle}
+            value={topics}
+            onChange={(e) => setTopics(e.target.value)}
+            placeholder="junctions, roundabouts, manoeuvres"
+          />
+
+          <label style={labelStyle} htmlFor="lv-revision">Linked revision topic</label>
+          <input
+            id="lv-revision"
+            style={inputStyle}
+            value={revisionTopic}
+            onChange={(e) => setRevisionTopic(e.target.value)}
+            placeholder="junctions"
+          />
+
+          <label style={labelStyle} htmlFor="lv-podcast">Related podcast slug</label>
+          <input
+            id="lv-podcast"
+            style={inputStyle}
+            value={relatedPodcast}
+            onChange={(e) => setRelatedPodcast(e.target.value)}
+          />
+
+          <label style={labelStyle} htmlFor="lv-learn-item">Related Learn item id</label>
+          <input
+            id="lv-learn-item"
+            style={inputStyle}
+            value={relatedLearnItem}
+            onChange={(e) => setRelatedLearnItem(e.target.value)}
+          />
+
+          <label style={labelStyle}>Bitesize</label>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <button
+              type="button"
+              onClick={() => setIsBitesize((b) => !b)}
+              style={{
+                padding: "10px 14px",
+                borderRadius: 10,
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+                border: `1px solid ${isBitesize ? BLUE : BORDER}`,
+                background: isBitesize ? "#E8F1FC" : "#fff",
+                color: isBitesize ? BLUE : GREY,
+              }}
+            >
+              {isBitesize ? "Shown in Bitesize" : "Not in Bitesize"}
+            </button>
+            <select
+              value={bitesizeCategory}
+              onChange={(e) => setBitesizeCategory(e.target.value)}
+              aria-label="Bitesize category"
+              style={{ ...inputStyle, flex: 1 }}
+            >
+              <option value="">Bitesize category…</option>
+              {BITESIZE_CATEGORIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <label style={labelStyle}>Visibility</label>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              type="button"
+              onClick={() => setIsFeatured((f) => !f)}
+              style={{
+                flex: 1,
+                padding: "10px 12px",
+                borderRadius: 10,
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+                border: `1px solid ${isFeatured ? BLUE : BORDER}`,
+                background: isFeatured ? "#E8F1FC" : "#fff",
+                color: isFeatured ? BLUE : GREY,
+              }}
+            >
+              {isFeatured ? "⭐ Featured" : "Not featured"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsPublishedField((p) => !p)}
+              style={{
+                flex: 1,
+                padding: "10px 12px",
+                borderRadius: 10,
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+                border: `1px solid ${isPublishedField ? BLUE : BORDER}`,
+                background: isPublishedField ? "#E8F1FC" : "#fff",
+                color: isPublishedField ? BLUE : GREY,
+              }}
+            >
+              {isPublishedField ? "Published" : "Hidden"}
+            </button>
+          </div>
+        </>
+      )}
 
       <label style={labelStyle}>Video source</label>
       <div style={{ display: "flex", gap: 8 }}>

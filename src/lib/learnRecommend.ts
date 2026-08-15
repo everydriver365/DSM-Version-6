@@ -32,8 +32,8 @@ export interface RecommendedItem {
   title: string;
   source: string;
   minutes?: number | null;
-  /** "learn" = curated library item, "bitesize" = bitesize_videos row. */
-  kind: "learn" | "bitesize";
+  /** "learn" = curated library item, "bitesize" = bitesize_videos row, "video" = learn_videos row. */
+  kind: "learn" | "bitesize" | "video";
 }
 
 export interface Recommendation {
@@ -161,6 +161,34 @@ function scoreBitesize(video: BitesizeLike, area: WeakArea): number {
   return score;
 }
 
+/** A learn_videos library row, as far as the matcher cares. */
+export interface VideoLike {
+  id: string;
+  title: string;
+  description?: string | null;
+  source?: string | null;
+  categories?: string[] | null;
+  topics?: string[] | null;
+  minutes?: number | null;
+}
+
+function scoreVideo(video: VideoLike, area: WeakArea): number {
+  let score = 0;
+  if (video.topics?.includes(area.id)) score += 10;
+  const haystack = [
+    video.title,
+    video.description ?? "",
+    (video.categories ?? []).join(" "),
+  ]
+    .join(" ")
+    .toLowerCase();
+  if (haystack.includes(area.label.toLowerCase())) score += 6;
+  for (const kw of area.keywords) {
+    if (haystack.includes(kw.toLowerCase())) score += 3;
+  }
+  return score;
+}
+
 /**
  * Builds up to `perTopic` recommendations for each weak area, drawing on the
  * curated Learn library plus any existing bitesize videos passed in.
@@ -170,6 +198,7 @@ export function recommendForFaults(
   bitesize: BitesizeLike[] = [],
   perTopic = 3,
   maxTopics = 6,
+  videos: VideoLike[] = [],
 ): Recommendation[] {
   return areas.slice(0, maxTopics).map((topic) => {
     const scored: { item: RecommendedItem; score: number }[] = [];
@@ -194,6 +223,22 @@ export function recommendForFaults(
             source: video.category ? `Bitesize · ${video.category}` : "Bitesize",
             minutes: video.duration_mins ?? null,
             kind: "bitesize",
+          },
+        });
+      }
+    }
+
+    for (const video of videos) {
+      const score = scoreVideo(video, topic);
+      if (score > 0) {
+        scored.push({
+          score: score + 1,
+          item: {
+            id: video.id,
+            title: video.title,
+            source: video.source ? `Video · ${video.source}` : "Video",
+            minutes: video.minutes ?? null,
+            kind: "video",
           },
         });
       }

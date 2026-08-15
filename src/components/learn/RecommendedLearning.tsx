@@ -10,7 +10,15 @@ import {
   weakAreasFromFaults,
   type BitesizeLike,
   type FaultMap,
+  type VideoLike,
 } from "@/lib/learnRecommend";
+import {
+  isLibraryVideo,
+  isPublished,
+  videoMinutes,
+  type LearnVideo,
+} from "@/lib/learnVideos";
+import { VideoPlayerSheet } from "./LearnVideosSection";
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
@@ -24,6 +32,8 @@ const FONT = "Poppins, sans-serif";
 export default function RecommendedLearning({ faults }: { faults: FaultMap | null | undefined }) {
   const navigate = useNavigate();
   const [bitesize, setBitesize] = useState<BitesizeLike[]>([]);
+  const [videos, setVideos] = useState<LearnVideo[]>([]);
+  const [playing, setPlaying] = useState<LearnVideo | null>(null);
 
   const areas = useMemo(() => weakAreasFromFaults(faults), [faults]);
 
@@ -38,14 +48,38 @@ export default function RecommendedLearning({ faults }: { faults: FaultMap | nul
       .then(({ data }) => {
         if (!cancelled && data) setBitesize(data as unknown as BitesizeLike[]);
       });
+    supabase
+      .from("learn_videos")
+      .select("*")
+      .then(({ data }) => {
+        if (cancelled || !data) return;
+        setVideos((data as LearnVideo[]).filter((v) => isLibraryVideo(v) && isPublished(v)));
+      });
     return () => {
       cancelled = true;
     };
   }, [areas.length]);
 
+  const videoLikes: VideoLike[] = useMemo(
+    () =>
+      videos.map((v) => ({
+        id: v.id,
+        title: v.title,
+        description: v.description,
+        source: v.source,
+        categories: v.categories,
+        topics: v.topics,
+        minutes: videoMinutes(v),
+      })),
+    [videos],
+  );
+
   const recommendations = useMemo(
-    () => recommendForFaults(areas, bitesize).filter((r) => r.items.length > 0),
-    [areas, bitesize],
+    () =>
+      recommendForFaults(areas, bitesize, 3, 6, videoLikes).filter(
+        (r) => r.items.length > 0,
+      ),
+    [areas, bitesize, videoLikes],
   );
 
   if (recommendations.length === 0) return null;
@@ -98,6 +132,12 @@ export default function RecommendedLearning({ faults }: { faults: FaultMap | nul
               key={`${rec.topic.id}-${item.kind}-${item.id}`}
               type="button"
               onClick={() => {
+                if (item.kind === "video") {
+                  const v = videos.find((x) => x.id === item.id);
+                  if (v) setPlaying(v);
+                  else navigate({ to: "/learn" as never });
+                  return;
+                }
                 if (item.kind === "bitesize") {
                   navigate({ to: "/bitesize" as never });
                   return;
@@ -157,6 +197,8 @@ export default function RecommendedLearning({ faults }: { faults: FaultMap | nul
       >
         Open DSM Learn
       </button>
+
+      {playing && <VideoPlayerSheet video={playing} onClose={() => setPlaying(null)} />}
     </div>
   );
 }
