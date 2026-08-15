@@ -120,33 +120,25 @@ function LiveNewsPage() {
    */
   const applyResume = useCallback((el: HTMLAudioElement) => {
     const ep = playingRef.current;
-    console.log("[resume] applyResume", {
-      ep: ep?.id,
-      done: resumeDoneRef.current,
-      entry: ep ? progressRef.current[ep.id] : null,
-      dur: el.duration,
-    });
-    if (!ep || resumeDoneRef.current === ep.id) return;
-    if (restartRef.current === ep.id) {
-      restartRef.current = null;
-      resumeDoneRef.current = ep.id;
-      el.currentTime = 0;
-      setCurrentTime(0);
-      return;
+    if (!ep) return;
+    if (resumeTargetRef.current?.id !== ep.id) {
+      if (restartRef.current === ep.id) {
+        restartRef.current = null;
+        resumeTargetRef.current = { id: ep.id, target: 0, tries: 0 };
+        el.currentTime = 0;
+        setCurrentTime(0);
+        return;
+      }
+      const resumeAt = resumePosition(progressRef.current[ep.id]);
+      const usable = resumeAt > 0 && (!el.duration || resumeAt < el.duration - 30);
+      resumeTargetRef.current = { id: ep.id, target: usable ? resumeAt : 0, tries: 0 };
     }
-    const resumeAt = resumePosition(progressRef.current[ep.id]);
-    console.log("[resume] resumeAt", resumeAt, "keys", Object.keys(progressRef.current).length);
-    if (resumeAt <= 0) {
-      resumeDoneRef.current = ep.id;
-      return;
-    }
-    if (el.duration && resumeAt >= el.duration - 30) {
-      resumeDoneRef.current = ep.id;
-      return;
-    }
-    el.currentTime = resumeAt;
-    setCurrentTime(resumeAt);
-    if (Math.abs(el.currentTime - resumeAt) < 2) resumeDoneRef.current = ep.id;
+    const pending = resumeTargetRef.current;
+    if (!pending || pending.target <= 0 || pending.tries >= 6) return;
+    if (Math.abs(el.currentTime - pending.target) < 3) return;
+    pending.tries += 1;
+    el.currentTime = pending.target;
+    setCurrentTime(pending.target);
   }, []);
 
   const flushProgress = useCallback(() => {
