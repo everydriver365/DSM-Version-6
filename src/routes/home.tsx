@@ -6237,13 +6237,7 @@ function HomePage() {
                                 alignSelf: 'stretch',
                               }}
                             />
-                            <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
-                              {tab === 'next' && (
-                                <div style={{ fontSize: 11, fontWeight: 500, color: '#1877D6', marginBottom: 2, fontVariantNumeric: 'tabular-nums', letterSpacing: 0.2 }}>
-                                  {start.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })}
-                                </div>
-                              )}
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0, paddingTop: 2 }}>
                                 <span style={{ flex: 1, minWidth: 0, fontSize: 15, fontWeight: 600, color: isCancelled ? '#6B7280' : '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none', fontFamily: PF }}>
                                   {name}
                                 </span>
