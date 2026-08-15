@@ -109,6 +109,9 @@ function MiniSitePage() {
   const [confirmTier, setConfirmTier] = useState<
     "website" | "pro" | "managed" | null
   >(null);
+  const [billingPeriod, setBillingPeriod] = useState<
+    "monthly" | "annual"
+  >("annual");
   const [domainQuery, setDomainQuery] = useState("");
   const [domainChecking, setDomainChecking] = useState(false);
   const [domainResult, setDomainResult] = useState<
