@@ -747,9 +747,17 @@ function RootComponent() {
 
     const syncCalendar = async () => {
       try {
+        // Throttle: Google rate-limits (HTTP 429) ICS feeds that are polled
+        // too often. At most one background sync every 15 minutes per device.
+        const THROTTLE_MS = 15 * 60 * 1000;
+        const lastKey = `dsm:calendar-sync:${userId}`;
+        const last = Number(localStorage.getItem(lastKey) || 0);
+        if (Date.now() - last < THROTTLE_MS) return;
+
         const { data: { session } } = await supabase.auth.getSession();
         const token = session?.access_token;
         if (!token) return;
+
 
         const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
         const SUPABASE_ANON_KEY =
@@ -772,7 +780,8 @@ function RootComponent() {
         }
 
         // Silent background sync
-        await fetch(`${SUPABASE_URL}/functions/v1/sync-external-calendar`, {
+        localStorage.setItem(`dsm:calendar-sync:${userId}`, String(Date.now()));
+        const syncRes = await fetch(`${SUPABASE_URL}/functions/v1/sync-external-calendar`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -781,9 +790,15 @@ function RootComponent() {
           },
           body: JSON.stringify({ instructorId: userId }),
         });
+        if (!syncRes.ok) {
+          // e.g. the calendar provider rate-limited us (HTTP 429) — ignore silently
+          console.warn('[calendar] External calendar sync skipped:', syncRes.status);
+          return;
+        }
 
         console.log('[calendar] External calendar synced on app open');
         window.dispatchEvent(new Event('calendar-synced'));
+
       } catch (err) {
         // Silent fail — never block app load
         console.warn('[calendar] External calendar sync failed:', err);
