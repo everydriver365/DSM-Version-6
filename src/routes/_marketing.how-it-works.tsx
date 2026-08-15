@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-import { IconBook, IconCalendar, IconChevronRight, IconCreditCard, IconSearch, IconShield, IconStar, IconTrendingUp, IconUserPlus } from "@tabler/icons-react";
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { IconBook, IconCalendar, IconChevronRight, IconCreditCard, IconSearch, IconShield, IconStar, IconTrendingUp, IconUserPlus } from "@tabler/icons-react";
 
 const TEAL = "#1877D6";
 const WHITE = "#FFFFFF";
