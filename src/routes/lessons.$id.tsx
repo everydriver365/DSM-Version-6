@@ -317,13 +317,21 @@ function LessonDetailPage() {
       })()
     : null;
 
+  const canGoBack = window.history.length > 1;
+  function goBack(fallback: string) {
+    if (canGoBack) {
+      navigate({ to: -1 as any });
+    } else {
+      navigate({ to: fallback as never });
+    }
+  }
 
   return (
     <PageLayout className="pb-8" style={POPPINS}>
       <InstructorTopBar
         firstName=""
         pageTitle="Lesson"
-        onBack={() => router.history.back()}
+        onBack={() => goBack('/schedule')}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
         onLiveTrack={() => navigate({ to: "/live" as never })}

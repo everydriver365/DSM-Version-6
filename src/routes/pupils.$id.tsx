@@ -1355,12 +1355,22 @@ function PupilDetailPage() {
   const completedLessonCount = allLessons.filter(l => l.status === 'completed' && l.deleted_at === null).length || 0;
   const confirmedLessonCount = allLessons.filter(l => ['confirmed', 'completed', 'in_progress'].includes(l.status) && l.deleted_at === null).length || 0;
 
+  const canGoBack = window.history.length > 1;
+  function goBack(fallback: string) {
+    if (canGoBack) {
+      navigate({ to: -1 as any });
+    } else {
+      navigate({ to: fallback as never });
+    }
+  }
+
+
   return (
     <div className="min-h-screen bg-slate-50 pb-8" style={POPPINS}>
       <InstructorTopBar
         firstName=""
         pageTitle={pupil?.name ?? ""}
-        onBack={() => navigate({ to: "/pupils" } as never)}
+        onBack={() => goBack('/pupils')}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
         onLiveTrack={() => navigate({ to: "/live" as never })}

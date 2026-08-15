@@ -148,11 +148,15 @@ function ListingDetailPage() {
   const { listingId } = Route.useParams();
   const { from } = Route.useSearch();
   const navigate = useNavigate();
-  // Return to the Discover marketplace section when we arrived from there.
-  const goBack = () =>
-    from === "discover"
-      ? navigate({ to: "/discover", search: { tab: "market" } })
-      : navigate({ to: "/marketplace" });
+  const canGoBack = window.history.length > 1;
+  function goBack(fallback: string) {
+    if (canGoBack) {
+      navigate({ to: -1 as any });
+    } else {
+      navigate({ to: fallback as never });
+    }
+  }
+
 
   const [listing, setListing] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
@@ -300,7 +304,7 @@ function ListingDetailPage() {
       >
         <button
           type="button"
-          onClick={goBack}
+          onClick={() => goBack('/marketplace')}
           aria-label="Back"
           style={{
             width: 36,
@@ -343,7 +347,7 @@ function ListingDetailPage() {
           </div>
           <button
             type="button"
-            onClick={goBack}
+            onClick={() => goBack('/marketplace')}
             style={{
               background: "none",
               border: "none",
