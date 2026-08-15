@@ -1,4 +1,6 @@
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
+import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
+
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import React from "react";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from "react";
