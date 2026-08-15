@@ -1,5 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { typography } from "@/lib/typography";
+import { useMemo } from "react";
 
 const DAY_NAMES = [
   "Sunday",
@@ -27,12 +28,17 @@ const MONTH_NAMES = [
 ];
 
 export interface ScheduleDateDividerProps {
-  date: Date;
+  date?: Date;
+  label?: string;
 }
 
-export function ScheduleDateDivider({ date }: ScheduleDateDividerProps) {
-  const day = DAY_NAMES[date.getDay()].slice(0, 3);
-  const dateLabel = `${day} ${date.getDate()} ${MONTH_NAMES[date.getMonth()]}`;
+export function ScheduleDateDivider({ date, label }: ScheduleDateDividerProps) {
+  const dateLabel = useMemo(() => {
+    if (label) return label;
+    if (!date) return "";
+    const day = DAY_NAMES[date.getDay()].slice(0, 3);
+    return `${day} ${date.getDate()} ${MONTH_NAMES[date.getMonth()]}`;
+  }, [date, label]);
 
   return (
     <div className="flex items-center gap-2.5 mb-1.5">
