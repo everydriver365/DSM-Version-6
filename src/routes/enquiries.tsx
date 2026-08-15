@@ -145,7 +145,7 @@ const SECTION_HEADER: React.CSSProperties = {
 
 function EnquiriesPage() {
   const navigate = useNavigate();
-  const canGoBack = window.history.length > 1;
+  const canGoBack = typeof window !== "undefined" && window.history.length > 1;
   function goBack(fallback: string) {
     if (canGoBack) {
       navigate({ to: -1 as any });
