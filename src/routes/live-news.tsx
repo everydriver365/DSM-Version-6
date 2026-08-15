@@ -1016,9 +1016,11 @@ function LiveNewsPage() {
                               fontWeight: 700,
                               color: "#0B1F3A",
                               marginTop: 6,
-                              whiteSpace: "nowrap",
+                              lineHeight: 1.25,
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
                               overflow: "hidden",
-                              textOverflow: "ellipsis",
                             }}
                           >
                             {sh.name}
