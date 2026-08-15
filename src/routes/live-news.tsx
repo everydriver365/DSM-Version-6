@@ -494,6 +494,93 @@ function LiveNewsPage() {
 
                 <div
                   style={{
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    background: "#fff",
+                    border: "1px solid #E4E8EF",
+                    borderRadius: 12,
+                    padding: "0 10px",
+                    marginBottom: 10,
+                    boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                  }}
+                >
+                  <IconSearch size={16} color="#9CA3AF" stroke={1.9} />
+                  <input
+                    type="search"
+                    value={podcastQuery}
+                    onChange={(e) => setPodcastQuery(e.target.value)}
+                    placeholder="Search episodes, shows or topics"
+                    aria-label="Search podcast episodes"
+                    style={{
+                      flex: 1,
+                      minWidth: 0,
+                      border: "none",
+                      outline: "none",
+                      background: "transparent",
+                      padding: "11px 8px",
+                      fontFamily: "Poppins, sans-serif",
+                      fontSize: 13,
+                      color: "#0B1F3A",
+                    }}
+                  />
+                  {podcastQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setPodcastQuery("")}
+                      aria-label="Clear search"
+                      style={{
+                        border: "none",
+                        background: "transparent",
+                        padding: 4,
+                        cursor: "pointer",
+                        display: "flex",
+                      }}
+                    >
+                      <IconX size={15} color="#9CA3AF" stroke={2} />
+                    </button>
+                  )}
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 6,
+                    overflowX: "auto",
+                    paddingBottom: 10,
+                    scrollbarWidth: "none",
+                  }}
+                >
+                  {["all", ...podcastTopics].map((topic) => {
+                    const active = topicFilter === topic;
+                    return (
+                      <button
+                        key={topic}
+                        type="button"
+                        onClick={() => setTopicFilter(topic)}
+                        style={{
+                          flexShrink: 0,
+                          padding: "6px 11px",
+                          borderRadius: 999,
+                          border: `1px solid ${active ? "#1877D6" : "#E4E8EF"}`,
+                          background: active ? "#EFF6FF" : "#fff",
+                          color: active ? "#1877D6" : "#6B7686",
+                          fontFamily: "Poppins, sans-serif",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                        }}
+                      >
+                        {topic === "all" ? "All topics" : topic}
+                      </button>
+                    );
+                  })}
+                </div>
+
+
+
+                <div
+                  style={{
                     display: "flex",
                     gap: 6,
                     overflowX: "auto",
