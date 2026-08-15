@@ -56,6 +56,34 @@ export const Route = createFileRoute("/live-news")({
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
+const PODCAST_STYLES = {
+  title: {
+    fontFamily: typography.family,
+    fontSize: typography.sizes.body,
+    fontWeight: typography.weights.bold,
+    color: typography.colors.primary,
+    lineHeight: 1.35,
+  },
+  showName: {
+    fontFamily: typography.family,
+    fontSize: typography.sizes.sectionLabel,
+    fontWeight: typography.weights.semibold,
+    color: typography.colors.accent,
+  },
+  meta: {
+    fontFamily: typography.family,
+    fontSize: typography.sizes.sectionLabel,
+    fontWeight: typography.weights.regular,
+    color: typography.colors.muted,
+  },
+  pill: {
+    fontFamily: typography.family,
+    fontSize: typography.sizes.caption,
+    fontWeight: typography.weights.bold,
+    color: typography.colors.accent,
+  },
+} as const;
+
 /** Small icon for a podcast category chip. */
 function categoryIcon(topic: string) {
   const t = topic.toLowerCase();
