@@ -1,3 +1,4 @@
+import { useGoBack } from "@/hooks/useGoBack";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 
@@ -7,7 +8,6 @@ import { toast } from "sonner";
 import { IconArrowLeft, IconBook, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronRight, IconCircleCheck, IconHeart, IconMapPin, IconPackage, IconPlayerPlayFilled, IconSchool, IconShieldCheck, IconSpeakerphone, IconStar, IconTag, IconTool, IconX } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import {
-import { useGoBack } from "@/hooks/useGoBack";
   COMPARISON_COLS,
   COMPARISON_ROWS,
   TIERS,

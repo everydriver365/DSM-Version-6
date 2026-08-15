@@ -1,3 +1,4 @@
+import { useGoBack } from "@/hooks/useGoBack";
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
@@ -13,7 +14,6 @@ import {
   IconCheck,
 } from '@tabler/icons-react';
 import {
-import { useGoBack } from "@/hooks/useGoBack";
   createSubscriptionPaymentLink,
   type PaidTierId,
 } from '@/lib/websiteUpgrade';

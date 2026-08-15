@@ -1,3 +1,4 @@
+import { useGoBack } from "@/hooks/useGoBack";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
@@ -11,7 +12,6 @@ import { Input } from "../components/dsm/Input";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
-import { useGoBack } from "@/hooks/useGoBack";
 
 export const Route = createFileRoute("/courses/$id")({
   head: () => ({

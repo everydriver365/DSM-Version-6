@@ -1,3 +1,4 @@
+import { useGoBack } from "@/hooks/useGoBack";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
@@ -6,7 +7,6 @@ import { EmptyState } from "@/components/dsm/EmptyState";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import {
-import { useGoBack } from "@/hooks/useGoBack";
   IconMail,
   IconCheck,
   IconX,

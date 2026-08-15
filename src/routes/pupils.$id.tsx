@@ -1,3 +1,4 @@
+import { useGoBack } from "@/hooks/useGoBack";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -28,7 +29,6 @@ import { deletePaymentRecord } from "./payments";
 import { getPupilBalance, recordPayment, type PupilBalance } from "@/lib/payments";
 import { buildTripReport, type ReportSegment, type Coord } from "@/lib/tripReport";
 import { formatCountdown } from "@/lib/dateHelpers";
-import { useGoBack } from "@/hooks/useGoBack";
 
 export const Route = createFileRoute("/pupils/$id")({
   validateSearch: (search: Record<string, unknown>): { lessonId?: string } => ({

@@ -1,3 +1,4 @@
+import { useGoBack } from "@/hooks/useGoBack";
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
@@ -11,7 +12,6 @@ import hmcaLogoAsset from '@/assets/hmca-logo.png.asset.json';
 import bennendenLogoAsset from '@/assets/bennenden-logo.jpg.asset.json';
 import { IconCamera, IconCar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconCircleCheck, IconGasStation, IconGift, IconHeartHandshake, IconLock, IconRosetteDiscount, IconShieldCheck, IconStethoscope, IconTable, IconTool } from "@tabler/icons-react";
 import {
-import { useGoBack } from "@/hooks/useGoBack";
   createSubscriptionPaymentLink,
   TIERS,
   type PaidTierId,
