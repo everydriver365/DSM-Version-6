@@ -747,9 +747,17 @@ function RootComponent() {
 
     const syncCalendar = async () => {
       try {
+        // Throttle: Google rate-limits (HTTP 429) ICS feeds that are polled
+        // too often. At most one background sync every 15 minutes per device.
+        const THROTTLE_MS = 15 * 60 * 1000;
+        const lastKey = `dsm:calendar-sync:${userId}`;
+        const last = Number(localStorage.getItem(lastKey) || 0);
+        if (Date.now() - last < THROTTLE_MS) return;
+
         const { data: { session } } = await supabase.auth.getSession();
         const token = session?.access_token;
         if (!token) return;
+
 
         const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
         const SUPABASE_ANON_KEY =
