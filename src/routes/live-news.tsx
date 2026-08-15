@@ -47,9 +47,11 @@ function LiveNewsPage() {
       navigate({ to: fallback as never });
     }
   }
-  const [activeTab, setActiveTab] = useState<"live" | "news">("live");
+  const [activeTab, setActiveTab] = useState<"live" | "news" | "podcasts">("live");
   const [sessions, setSessions] = useState<LiveSession[] | null>(null);
   const [articles, setArticles] = useState<any[] | null>(null);
+  const [episodes, setEpisodes] = useState<PodcastEpisode[] | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
