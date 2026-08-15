@@ -14,6 +14,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
 import { sanitizeNewsTitle } from "@/lib/newsText";
 import { getPodcastEpisodes, type PodcastEpisode } from "@/lib/podcasts.functions";
+import { PODCAST_SHOWS } from "@/lib/podcasts";
 
 export const Route = createFileRoute("/live-news")({
   component: LiveNewsPage,
@@ -52,6 +53,8 @@ function LiveNewsPage() {
   const [articles, setArticles] = useState<any[] | null>(null);
   const [episodes, setEpisodes] = useState<PodcastEpisode[] | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [showFilter, setShowFilter] = useState<string>("all");
+
 
   useEffect(() => {
     let cancelled = false;
@@ -92,6 +95,14 @@ function LiveNewsPage() {
   }, []);
 
   const activeSession = sessions?.find((s) => s.is_live) ?? null;
+  const visibleEpisodes = (episodes ?? []).filter((ep) =>
+    showFilter === "all"
+      ? true
+      : showFilter === "featured"
+        ? ep.showFeatured
+        : ep.showId === showFilter,
+  );
+
   const upcomingSessions = sessions?.filter((s) => !s.is_live) ?? [];
   const allSessions = activeSession ? [activeSession, ...upcomingSessions] : upcomingSessions;
 
@@ -457,11 +468,79 @@ function LiveNewsPage() {
                   <IconMicrophone size={14} color="#1877D6" stroke={1.8} />
                   <span>
                     Latest episodes from{" "}
-                    <strong style={{ color: "#0B1F3A" }}>The Instructor Podcast</strong>
+                    <strong style={{ color: "#0B1F3A" }}>
+                      {PODCAST_SHOWS.length} instructor podcasts
+                    </strong>
                   </span>
                 </div>
 
-                {episodes.map((ep) => {
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 6,
+                    overflowX: "auto",
+                    paddingBottom: 10,
+                    marginBottom: 4,
+                    scrollbarWidth: "none",
+                  }}
+                >
+                  {[
+                    { id: "all", name: "All" },
+                    { id: "featured", name: "Featured" },
+                    ...PODCAST_SHOWS.map((s) => ({ id: s.id, name: s.name })),
+                  ].map((chip) => {
+                    const active = showFilter === chip.id;
+                    const count =
+                      chip.id === "all"
+                        ? episodes.length
+                        : chip.id === "featured"
+                          ? episodes.filter((e) => e.showFeatured).length
+                          : episodes.filter((e) => e.showId === chip.id).length;
+                    return (
+                      <button
+                        key={chip.id}
+                        type="button"
+                        onClick={() => setShowFilter(chip.id)}
+                        style={{
+                          flexShrink: 0,
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 6,
+                          padding: "7px 12px",
+                          borderRadius: 999,
+                          border: `1px solid ${active ? "#0B1F3A" : "#E4E8EF"}`,
+                          background: active ? "#0B1F3A" : "#fff",
+                          color: active ? "#fff" : "#0B1F3A",
+                          fontFamily: "Poppins, sans-serif",
+                          fontSize: 12.5,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                        }}
+                      >
+                        {chip.name}
+                        {count > 0 && (
+                          <span
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 700,
+                              color: active ? "#fff" : "#1877D6",
+                              opacity: active ? 0.85 : 1,
+                            }}
+                          >
+                            {count}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {visibleEpisodes.length === 0 && (
+                  <EmptyState message="No episodes for this podcast right now" />
+                )}
+
+                {visibleEpisodes.map((ep) => {
+
                   const isOpen = expandedId === ep.id;
                   return (
                     <div
@@ -516,6 +595,26 @@ function LiveNewsPage() {
 
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div
+                            style={{
+                              display: "inline-block",
+                              maxWidth: "100%",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              background: "#EFF6FF",
+                              color: "#1877D6",
+                              borderRadius: 6,
+                              padding: "2px 6px",
+                              fontSize: 10,
+                              fontWeight: 700,
+                              letterSpacing: "0.02em",
+                              marginBottom: 5,
+                            }}
+                          >
+                            {ep.showName}
+                          </div>
+                          <div
+
                             style={{
                               fontSize: 14,
                               fontWeight: 700,
@@ -611,7 +710,7 @@ function LiveNewsPage() {
                                 textDecoration: "none",
                               }}
                             >
-                              Open in Captivate
+                              Open episode page
                               <IconChevronRight size={13} stroke={2} />
                             </a>
                           )}
