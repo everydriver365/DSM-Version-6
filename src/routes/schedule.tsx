@@ -1032,6 +1032,8 @@ function SchedulePage() {
         }}
         onSelectDate={(key) => {
           setSelectedDate(key);
+          const [y, m, d] = key.split("-").map(Number);
+          setViewMonth(new Date(y, m - 1, d));
           scrollToDate(key);
         }}
         onToday={() => {
