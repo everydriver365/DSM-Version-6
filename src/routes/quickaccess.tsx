@@ -1,52 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import {
-  Search,
-  X,
-  Calendar as CalendarIcon,
-  CalendarCheck,
-  Users,
-  PoundSterling,
-  MessageSquare,
-  TrendingUp,
-  Receipt,
-  Car,
-  Fuel,
-  BarChart2,
-  GraduationCap,
-  Trophy,
-  Star,
-  Inbox,
-  Clock,
-  Gift,
-  BookOpen,
-  ClipboardCheck,
-  Calculator,
-  CheckSquare,
-  FileText,
-  FolderOpen,
-  ClipboardList,
-  Bell,
-  Heart,
-  HelpCircle,
-  LayoutGrid,
-  FileSignature,
-  Navigation,
-  MapPin,
-  Upload,
-  Award,
-  ToggleLeft,
-  Sun,
-  Zap,
-  CalendarDays,
-  Crown,
-  PlayCircle,
-  AlertCircle,
-  RefreshCw,
-  UserCircle,
-  FileSpreadsheet,
-  Globe,
-} from "lucide-react";
+import { IconAlertCircle, IconAward, IconBell, IconBolt, IconBook, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarMonth, IconCar, IconChartBar, IconClipboardCheck, IconClipboardList, IconClock, IconCrown, IconCurrencyPound, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHeart, IconHelpCircle, IconInbox, IconLayoutGrid, IconMapPin, IconMessage, IconNavigation, IconPlayerPlay, IconReceipt, IconRefresh, IconSchool, IconSearch, IconSignature, IconSquareCheck, IconStar, IconSun, IconToggleLeft, IconTrendingUp, IconTrophy, IconUpload, IconUserCircle, IconUsers, IconWorld, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
@@ -55,63 +9,63 @@ export const Route = createFileRoute("/quickaccess")({
 });
 
 const quickAccessTiles = [
-  { icon: <CalendarIcon size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Schedule", route: "/schedule" },
-  { icon: <CalendarCheck size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Month end", route: "/monthend" },
-  { icon: <Users size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
-  { icon: <PoundSterling size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Payments", route: "/payments" },
-  { icon: <MessageSquare size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Messages", route: "/messages" },
-  { icon: <TrendingUp size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Earnings", route: "/earnings" },
-  { icon: <Receipt size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Expenses", route: "/expenses" },
-  { icon: <Car size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Mileage", route: "/mileage" },
-  { icon: <Fuel size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Fuel", route: "/fuel" },
-  { icon: <BarChart2 size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Reports", route: "/reports" },
-  { icon: <TrendingUp size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Performance", route: "/performance" },
-  { icon: <GraduationCap size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Tests", route: "/tests" },
-  { icon: <GraduationCap size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Test day", route: "/testday" },
-  { icon: <Trophy size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Rewards", route: "/rewards" },
-  { icon: <GraduationCap size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
-  { icon: <Globe size={22} color="#FFFFFF" />, bg: "#7C3AED", label: "My Website", route: "/minisite" },
-  { icon: <Star size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Reviews", route: "/reviews" },
-  { icon: <Inbox size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Enquiries", route: "/enquiries" },
-  { icon: <Clock size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Waiting list", route: "/waitinglist" },
-  { icon: <Gift size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Referrals", route: "/referrals" },
-  { icon: <Car size={22} color="#FFFFFF" />, bg: "#6B7280", label: "Vehicle", route: "/vehicle" },
-  { icon: <BookOpen size={22} color="#FFFFFF" />, bg: "#1877D6", label: "CPD", route: "/cpd" },
-  { icon: <ClipboardCheck size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Standards", route: "/standards" },
-  { icon: <Calculator size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Tax", route: "/tax" },
-  { icon: <CheckSquare size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Todos", route: "/todos" },
-  { icon: <FileText size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Notes", route: "/notes" },
-  { icon: <FolderOpen size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Documents", route: "/documents" },
-  { icon: <ClipboardList size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Manifest", route: "/manifest" },
-  { icon: <CheckSquare size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Checklist", route: "/checklist" },
-  { icon: <Bell size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Reminders", route: "/reminder" },
-  { icon: <Heart size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Health", route: "/health" },
-  { icon: <BookOpen size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Resources", route: "/resources" },
-  { icon: <HelpCircle size={22} color="#FFFFFF" />, bg: "#6B7280", label: "Help", route: "/help" },
-  { icon: <LayoutGrid size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Pipeline", route: "/pipeline" },
-  { icon: <FileSignature size={22} color="#FFFFFF" />, bg: "#6B7280", label: "Waivers", route: "/waivers" },
-  { icon: <Search size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Find gaps", route: "/gaps" },
-  { icon: <Users size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Bulk message", route: "/bulkmessage" },
-  { icon: <Navigation size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Sat Nav", route: "/satnav" },
-  { icon: <BarChart2 size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Weekly report", route: "/weeklyreport" },
-  { icon: <MapPin size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Locations", route: "/locations" },
-  { icon: <Upload size={22} color="#FFFFFF" />, bg: "#6B7280", label: "Import", route: "/dataimport" },
-  { icon: <Award size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Certifications", route: "/certifications" },
-  { icon: <ToggleLeft size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Availability", route: "/availability" },
-  { icon: <Sun size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "EOD", route: "/eod" },
-  { icon: <Zap size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Automations", route: "/automations" },
-  { icon: <CalendarDays size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Diary", route: "/diary" },
-  { icon: <Crown size={22} color="#FFFFFF" />, bg: "#1877D6", label: "My plan", route: "/subscription" },
-  { icon: <PlayCircle size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Live session", route: "/livesession" },
-  { icon: <Search size={22} color="#FFFFFF" />, bg: "#6B7280", label: "Search", route: "/search" },
-  { icon: <Bell size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Notifications", route: "/notifications" },
-  { icon: <CalendarDays size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Availability", route: "/quickavailability" },
-  { icon: <RefreshCw size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Calendar sync", route: "/calendarsync" },
-  { icon: <UserCircle size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Profile", route: "/profile" },
-  { icon: <FileSpreadsheet size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "MTD", route: "/mtd" },
-  { icon: <FileText size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Quotes", route: "/quotes" },
-  { icon: <Sun size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Briefing", route: "/briefing" },
-  { icon: <AlertCircle size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Outstanding", route: "/outstanding" },
+  { icon: <IconCalendar size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Schedule", route: "/schedule" },
+  { icon: <IconCalendarCheck size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Month end", route: "/monthend" },
+  { icon: <IconUsers size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
+  { icon: <IconCurrencyPound size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Payments", route: "/payments" },
+  { icon: <IconMessage size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Messages", route: "/messages" },
+  { icon: <IconTrendingUp size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Earnings", route: "/earnings" },
+  { icon: <IconReceipt size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Expenses", route: "/expenses" },
+  { icon: <IconCar size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Mileage", route: "/mileage" },
+  { icon: <IconGasStation size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "IconGasStation", route: "/fuel" },
+  { icon: <IconChartBar size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Reports", route: "/reports" },
+  { icon: <IconTrendingUp size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Performance", route: "/performance" },
+  { icon: <IconSchool size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Tests", route: "/tests" },
+  { icon: <IconSchool size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Test day", route: "/testday" },
+  { icon: <IconTrophy size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Rewards", route: "/rewards" },
+  { icon: <IconSchool size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
+  { icon: <IconWorld size={22} color="#FFFFFF" />, bg: "#7C3AED", label: "My Website", route: "/minisite" },
+  { icon: <IconStar size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Reviews", route: "/reviews" },
+  { icon: <IconInbox size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Enquiries", route: "/enquiries" },
+  { icon: <IconClock size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Waiting list", route: "/waitinglist" },
+  { icon: <IconGift size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Referrals", route: "/referrals" },
+  { icon: <IconCar size={22} color="#FFFFFF" />, bg: "#6B7280", label: "Vehicle", route: "/vehicle" },
+  { icon: <IconBook size={22} color="#FFFFFF" />, bg: "#1877D6", label: "CPD", route: "/cpd" },
+  { icon: <IconClipboardCheck size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Standards", route: "/standards" },
+  { icon: <IconCalculator size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Tax", route: "/tax" },
+  { icon: <IconSquareCheck size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Todos", route: "/todos" },
+  { icon: <IconFileText size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Notes", route: "/notes" },
+  { icon: <IconFolderOpen size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Documents", route: "/documents" },
+  { icon: <IconClipboardList size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Manifest", route: "/manifest" },
+  { icon: <IconSquareCheck size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Checklist", route: "/checklist" },
+  { icon: <IconBell size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Reminders", route: "/reminder" },
+  { icon: <IconHeart size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Health", route: "/health" },
+  { icon: <IconBook size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Resources", route: "/resources" },
+  { icon: <IconHelpCircle size={22} color="#FFFFFF" />, bg: "#6B7280", label: "Help", route: "/help" },
+  { icon: <IconLayoutGrid size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Pipeline", route: "/pipeline" },
+  { icon: <IconSignature size={22} color="#FFFFFF" />, bg: "#6B7280", label: "Waivers", route: "/waivers" },
+  { icon: <IconSearch size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Find gaps", route: "/gaps" },
+  { icon: <IconUsers size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Bulk message", route: "/bulkmessage" },
+  { icon: <IconNavigation size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Sat Nav", route: "/satnav" },
+  { icon: <IconChartBar size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Weekly report", route: "/weeklyreport" },
+  { icon: <IconMapPin size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Locations", route: "/locations" },
+  { icon: <IconUpload size={22} color="#FFFFFF" />, bg: "#6B7280", label: "Import", route: "/dataimport" },
+  { icon: <IconAward size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Certifications", route: "/certifications" },
+  { icon: <IconToggleLeft size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Availability", route: "/availability" },
+  { icon: <IconSun size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "EOD", route: "/eod" },
+  { icon: <IconBolt size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Automations", route: "/automations" },
+  { icon: <IconCalendarMonth size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Diary", route: "/diary" },
+  { icon: <IconCrown size={22} color="#FFFFFF" />, bg: "#1877D6", label: "My plan", route: "/subscription" },
+  { icon: <IconPlayerPlay size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Live session", route: "/livesession" },
+  { icon: <IconSearch size={22} color="#FFFFFF" />, bg: "#6B7280", label: "IconSearch", route: "/search" },
+  { icon: <IconBell size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Notifications", route: "/notifications" },
+  { icon: <IconCalendarMonth size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Availability", route: "/quickavailability" },
+  { icon: <IconRefresh size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Calendar sync", route: "/calendarsync" },
+  { icon: <IconUserCircle size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Profile", route: "/profile" },
+  { icon: <IconFileSpreadsheet size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "MTD", route: "/mtd" },
+  { icon: <IconFileText size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Quotes", route: "/quotes" },
+  { icon: <IconSun size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Briefing", route: "/briefing" },
+  { icon: <IconAlertCircle size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Outstanding", route: "/outstanding" },
 ] as const;
 
 function QuickAccessPage() {
@@ -159,8 +113,8 @@ function QuickAccessPage() {
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
           style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
-          {searchOpen ? <X size={15} /> : <Search size={15} />}
-          {searchOpen ? "Close search" : "Search"}
+          {searchOpen ? <IconX size={15} /> : <IconSearch size={15} />}
+          {searchOpen ? "Close search" : "IconSearch"}
         </button>
       </div>
 
@@ -179,10 +133,10 @@ function QuickAccessPage() {
               borderColor: "#EEF2F7",
             }}
           >
-            <Search size={16} color="#6B7280" />
+            <IconSearch size={16} color="#6B7280" />
             <input
               type="text"
-              placeholder="Search quick access..."
+              placeholder="IconSearch quick access..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1 bg-transparent outline-none text-[14px] text-[#0B1F3A] placeholder-[#9CA3AF]"
@@ -195,7 +149,7 @@ function QuickAccessPage() {
                 style={{ background: "none", border: "none", cursor: "pointer" }}
                 aria-label="Clear search"
               >
-                <X size={16} color="#6B7280" />
+                <IconX size={16} color="#6B7280" />
               </button>
             )}
           </div>
