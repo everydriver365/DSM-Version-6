@@ -739,7 +739,7 @@ function LiveNewsPage() {
                   </span>
                   <div style={{ minWidth: 0 }}>
                     <div style={{ fontSize: 20, fontWeight: 800, color: "#0B1F3A", letterSpacing: "-0.3px" }}>
-                      Podcasts
+                      Listen
                     </div>
                     <div style={{ fontSize: 12.5, color: "#6B7686" }}>
                       {PODCAST_SHOWS.length} podcasts · {episodes.length} episodes
