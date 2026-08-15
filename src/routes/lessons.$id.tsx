@@ -323,7 +323,7 @@ function LessonDetailPage() {
       <InstructorTopBar
         firstName=""
         pageTitle="Lesson"
-        onBack={() => router.history.back()}
+        onBack={() => goBack('/schedule')}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
         onLiveTrack={() => navigate({ to: "/live" as never })}

@@ -313,6 +313,15 @@ function BenefitsPage() {
     })();
   }, []);
 
+  const canGoBack = window.history.length > 1;
+  function goBack(fallback: string) {
+    if (canGoBack) {
+      navigate({ to: -1 as any });
+    } else {
+      navigate({ to: fallback as never });
+    }
+  }
+
   const isPaid = websiteTier !== 'free';
 
   const TIER_RANK: Record<string, number> = { free: 0, website: 1, pro: 2, managed: 3 };
@@ -473,7 +482,7 @@ function BenefitsPage() {
       <InstructorTopBar
         firstName=""
         pageTitle="Benefits"
-        onBack={() => navigate({ to: '/home' as never })}
+        onBack={() => goBack('/more')}
         onBell={() => navigate({ to: '/notifications' as never })}
         onPhone={() => navigate({ to: '/enquiries' as never })}
         onLiveTrack={() => navigate({ to: '/live' as never })}

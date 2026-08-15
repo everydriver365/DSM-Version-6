@@ -288,6 +288,15 @@ function PerksPage() {
     })();
   }, []);
 
+  const canGoBack = window.history.length > 1;
+  function goBack(fallback: string) {
+    if (canGoBack) {
+      navigate({ to: -1 as any });
+    } else {
+      navigate({ to: fallback as never });
+    }
+  }
+
   const isPaid = websiteTier !== 'free';
 
   const filteredPerks = useMemo(() => {
@@ -340,7 +349,7 @@ function PerksPage() {
       <InstructorTopBar
         firstName=""
         pageTitle="My Perks"
-        onBack={() => navigate({ to: '/home' as never })}
+        onBack={() => goBack('/more')}
         onBell={() => navigate({ to: '/notifications' as never })}
         onPhone={() => navigate({ to: '/enquiries' as never })}
         onLiveTrack={() => navigate({ to: '/live' as never })}
