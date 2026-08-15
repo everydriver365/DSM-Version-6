@@ -1,8 +1,7 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { IconCamera, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
-import { Users as UsersIcon } from "lucide-react";
+import { IconCamera, IconPencil, IconPlus, IconTrash, IconUsers, IconX } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useAdminGate } from "./admin";
@@ -732,7 +731,7 @@ function AdminDsmLive() {
                   onClick={() => openBookings(s)}
                   style={actionBtn({ textColor: "#1877D6", borderColor: "#1877D6" })}
                 >
-                  <UsersIcon size={14} /> Bookings
+                  <IconUsers size={14} /> Bookings
                 </button>
                 <button
                   type="button"

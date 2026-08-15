@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
@@ -293,7 +293,7 @@ function MonthEndPage() {
           className="flex items-center justify-center"
           style={{ width: 36, height: 36, borderRadius: 8 }}
         >
-          <ChevronLeft size={20} color="#0B1F3A" />
+          <IconChevronLeft size={20} color="#0B1F3A" />
         </button>
         <div className="text-[16px] font-semibold text-[#0B1F3A]">{monthLabel}</div>
         <button
@@ -303,7 +303,7 @@ function MonthEndPage() {
           className="flex items-center justify-center"
           style={{ width: 36, height: 36, borderRadius: 8 }}
         >
-          <ChevronRight size={20} color="#0B1F3A" />
+          <IconChevronRight size={20} color="#0B1F3A" />
         </button>
       </div>
 

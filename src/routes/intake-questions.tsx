@@ -2,8 +2,7 @@ import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { IconArrowLeft, IconClipboardList, IconMicrophone, IconMicrophoneOff, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
-import { GripVertical } from "lucide-react";
+import { IconArrowLeft, IconClipboardList, IconGripVertical, IconMicrophone, IconMicrophoneOff, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { BottomSheet } from "../components/dsm/BottomSheet";
@@ -430,7 +429,7 @@ function IntakeQuestionsPage() {
                   touchAction: "none",
                 }}
               >
-                <GripVertical size={18} />
+                <IconGripVertical size={18} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div

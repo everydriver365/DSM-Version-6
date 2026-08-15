@@ -1,15 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import {
-  ArrowLeft,
-  Clock,
-  Shield,
-  Repeat,
-  Calendar as CalendarIcon,
-  X,
-  Plus,
-  ChevronDown,
-} from "lucide-react";
+import { IconArrowLeft, IconCalendar, IconChevronDown, IconClock, IconPlus, IconRepeat, IconShield, IconX } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { useSaveState } from "@/hooks/useSaveState";
 import { SaveButton } from "@/components/SaveButton";
@@ -170,7 +161,7 @@ function TimeField({ value, onChange }: { value: string; onChange: (v: string) =
       justifyContent: "space-between", cursor: "pointer", position: "relative",
     }}>
       <span style={{ fontSize: 13, fontWeight: 500, color: NAVY }}>{value}</span>
-      <Clock size={13} color={MUTED} />
+      <IconClock size={13} color={MUTED} />
       <input
         type="time" value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -197,7 +188,7 @@ function SelectField({ value, onChange, options, label }: {
         <span style={{ fontSize: 13, fontWeight: 500, color: NAVY }}>
           {options.find(o => o.v === value)?.label ?? value}
         </span>
-        <ChevronDown size={13} color={MUTED} />
+        <IconChevronDown size={13} color={MUTED} />
         <select
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
@@ -441,7 +432,7 @@ function AvailabilitySettingsPage() {
             background: "rgba(255,255,255,0.08)", border: "none", cursor: "pointer", flexShrink: 0,
           }}
         >
-          <ArrowLeft size={22} color="#fff" />
+          <IconArrowLeft size={22} color="#fff" />
         </button>
         <div style={{ color: "#fff", fontSize: 24, fontWeight: 800, letterSpacing: "-0.4px", ...FONT }}>
           My Availability
@@ -463,7 +454,7 @@ function AvailabilitySettingsPage() {
             width: 38, height: 38, borderRadius: 11, background: "#E7F1FC",
             display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
           }}>
-            <Clock size={18} color="#1877D6" />
+            <IconClock size={18} color="#1877D6" />
           </div>
           <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: "-0.2px", color: "#000", ...FONT }}>
             Working hours
@@ -518,7 +509,7 @@ function AvailabilitySettingsPage() {
                         cursor: "pointer", position: "relative",
                       }}>
                         <span style={{ fontSize: 14, fontWeight: 700, color: "#000", ...FONT }}>{cfg.start}</span>
-                        <Clock size={13} color="#B0B0B5" />
+                        <IconClock size={13} color="#B0B0B5" />
                         <input
                           type="time" value={cfg.start}
                           onChange={(e) => updateDay(d, { start: e.target.value })}
@@ -535,7 +526,7 @@ function AvailabilitySettingsPage() {
                         cursor: "pointer", position: "relative",
                       }}>
                         <span style={{ fontSize: 14, fontWeight: 700, color: "#000", ...FONT }}>{cfg.end}</span>
-                        <Clock size={13} color="#B0B0B5" />
+                        <IconClock size={13} color="#B0B0B5" />
                         <input
                           type="time" value={cfg.end}
                           onChange={(e) => updateDay(d, { end: e.target.value })}
@@ -564,7 +555,7 @@ function AvailabilitySettingsPage() {
                         fontSize: 12.5, fontWeight: 700, color: "#1877D6", padding: 0, ...FONT,
                       }}
                     >
-                      Copy to all weekdays <ChevronDown size={11} />
+                      Copy to all weekdays <IconChevronDown size={11} />
                     </button>
                   </div>
                 )}
@@ -598,7 +589,7 @@ function AvailabilitySettingsPage() {
 
       {/* SECTION 2 — LESSON BUFFER */}
       <Card>
-        <SectionHead icon={<Shield size={16} color={BLUE} />} title="Lesson buffer" tight />
+        <SectionHead icon={<IconShield size={16} color={BLUE} />} title="Lesson buffer" tight />
         <Description>Time between lessons for notes, travel and preparation</Description>
         <SelectField value={bufAfter} onChange={setBufAfter} options={bufferOptions} label="Gap after each lesson" />
         <SaveButton
@@ -610,7 +601,7 @@ function AvailabilitySettingsPage() {
 
       {/* SECTION 3 — RECURRING BLOCKS */}
       <Card>
-        <SectionHead icon={<Repeat size={16} color={BLUE} />} title="Recurring unavailability" tight />
+        <SectionHead icon={<IconRepeat size={16} color={BLUE} />} title="Recurring unavailability" tight />
         <Description>Add times you're regularly unavailable e.g. school run, weekly appointment</Description>
 
         {recurring.map((r, idx) => (
@@ -631,7 +622,7 @@ function AvailabilitySettingsPage() {
             <Toggle on={r.is_active} onChange={() => toggleRecurring(r)} />
             <button type="button" onClick={() => deleteRecurring(r.id)}
               style={{ background: "transparent", border: "none", cursor: "pointer", padding: 4 }}>
-              <X size={16} color={MUTED} />
+              <IconX size={16} color={MUTED} />
             </button>
           </div>
         ))}
@@ -672,14 +663,14 @@ function AvailabilitySettingsPage() {
           </div>
         ) : (
           <DashedButton onClick={() => setAddingRecurring(true)}>
-            <Plus size={15} /> Add recurring block
+            <IconPlus size={15} /> Add recurring block
           </DashedButton>
         )}
       </Card>
 
       {/* SECTION 4 — TIME OFF */}
       <Card>
-        <SectionHead icon={<CalendarIcon size={16} color={BLUE} />} title="Time off & holidays" tight />
+        <SectionHead icon={<IconCalendar size={16} color={BLUE} />} title="Time off & holidays" tight />
         <Description>Add holidays, training days or any time you won't be available</Description>
 
         {timeOff.map((t, idx) => (
@@ -699,7 +690,7 @@ function AvailabilitySettingsPage() {
             </span>
             <button type="button" onClick={() => deleteTimeOff(t.id)}
               style={{ background: "transparent", border: "none", cursor: "pointer", padding: 4 }}>
-              <X size={16} color={MUTED} />
+              <IconX size={16} color={MUTED} />
             </button>
           </div>
         ))}
@@ -751,7 +742,7 @@ function AvailabilitySettingsPage() {
           </div>
         ) : (
           <DashedButton onClick={() => setAddingTimeOff(true)}>
-            <Plus size={15} /> Add time off
+            <IconPlus size={15} /> Add time off
           </DashedButton>
         )}
       </Card>

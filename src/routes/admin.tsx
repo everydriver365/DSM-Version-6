@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
-import { IconBriefcase, IconChevronLeft, IconChevronRight, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconPencil, IconSettings, IconShieldCheck, IconStar, IconTrash, IconUsers } from "@tabler/icons-react";
-import { BookOpen, FileCheck, ShoppingBag, Video, PlayCircle } from "lucide-react";
+import { IconBook, IconBriefcase, IconChevronLeft, IconChevronRight, IconFileCheck, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconPencil, IconPlayerPlay, IconSettings, IconShieldCheck, IconShoppingBag, IconStar, IconTrash, IconUsers, IconVideo } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -1123,7 +1122,7 @@ function AdminHub() {
               onClick={() => navigate({ to: "/admin/featured" })}
             />
             <AdminSectionTile
-              icon={<ShoppingBag size={18} color="#000" />}
+              icon={<IconShoppingBag size={18} color="#000" />}
               label="Marketplace listings"
               onClick={() => navigate({ to: "/admin/listings" as never })}
             />
@@ -1138,7 +1137,7 @@ function AdminHub() {
               onClick={() => navigate({ to: "/admin/job-offers" as never })}
             />
             <AdminSectionTile
-              icon={<FileCheck size={18} color="#000" />}
+              icon={<IconFileCheck size={18} color="#000" />}
               label="Platform terms"
               onClick={() => navigate({ to: "/admin/terms" as never })}
             />
@@ -1148,17 +1147,17 @@ function AdminHub() {
           <AdminGroupCard>
             <AdminSectionTile
               first
-              icon={<Video size={18} color="#000" />}
+              icon={<IconVideo size={18} color="#000" />}
               label="DSM Live"
               onClick={() => navigate({ to: "/admin/dsm-live" as never })}
             />
             <AdminSectionTile
-              icon={<PlayCircle size={18} color="#000" />}
+              icon={<IconPlayerPlay size={18} color="#000" />}
               label="Learn videos"
               onClick={() => navigate({ to: "/admin/learn-videos" as never })}
             />
             <AdminSectionTile
-              icon={<BookOpen size={18} color="#000" />}
+              icon={<IconBook size={18} color="#000" />}
               label="Bitesize videos"
               onClick={() => navigate({ to: "/admin/bitesize" as never })}
             />
@@ -1184,7 +1183,7 @@ function AdminHub() {
           <AdminGroupCard>
             <AdminSectionTile
               first
-              icon={<BookOpen size={18} color="#000" />}
+              icon={<IconBook size={18} color="#000" />}
               label="All bookings"
               onClick={() => navigate({ to: "/bookings" as never })}
             />

@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AlertTriangle, Clock, Eye } from "lucide-react";
+import { IconAlertTriangle, IconClock, IconEye } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 import { toast } from "sonner";
@@ -152,7 +152,7 @@ function NoShowPolicyPage() {
           padding: 16,
         }}
       >
-        <AlertTriangle size={20} color="#D97706" className="shrink-0 mt-0.5" />
+        <IconAlertTriangle size={20} color="#D97706" className="shrink-0 mt-0.5" />
         <div className="text-[13px] text-[#78350F] leading-snug" style={FONT}>
           Set your policy for late cancellations and no-shows. This appears on your DSM mini website and booking
           confirmation emails.
@@ -170,7 +170,7 @@ function NoShowPolicyPage() {
         }}
       >
         <div className="flex items-center gap-2 mb-3">
-          <Clock size={18} color="#0F2044" />
+          <IconClock size={18} color="#0F2044" />
           <div className="text-[15px] font-semibold text-[#0F2044]" style={FONT}>
             Late cancellation
           </div>
@@ -296,7 +296,7 @@ function NoShowPolicyPage() {
         }}
       >
         <div className="flex items-center gap-2 mb-2">
-          <Eye size={18} color="#0F2044" />
+          <IconEye size={18} color="#0F2044" />
           <div className="text-[15px] font-semibold text-[#0F2044]" style={FONT}>
             Policy preview
           </div>

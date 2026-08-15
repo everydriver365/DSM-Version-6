@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Loader2, Plus, X } from "lucide-react";
-import { IconX, IconPlus, IconStar } from "@tabler/icons-react";
+import { IconChevronLeft, IconLoader2, IconPlus, IconStar, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadImage } from "@/lib/uploadFile";
@@ -515,7 +514,7 @@ function AdminListingsPage() {
             color: "#fff",
           }}
         >
-          <ChevronLeft size={18} strokeWidth={2} />
+          <IconChevronLeft size={18} stroke={2} />
         </button>
         <span style={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.5px" }}>Marketplace listings</span>
         <button
@@ -537,7 +536,7 @@ function AdminListingsPage() {
             cursor: "pointer",
           }}
         >
-          <Plus size={14} strokeWidth={2} /> Add listing
+          <IconPlus size={14} stroke={2} /> Add listing
         </button>
       </div>
 
@@ -988,7 +987,7 @@ function SupplierListingSheet({
               color: "#0B1F3A",
             }}
           >
-            <X size={16} />
+            <IconX size={16} />
           </button>
         </div>
 
@@ -1142,7 +1141,7 @@ function SupplierListingSheet({
                   }}
                 >
                   {imageUploading ? (
-                    <Loader2 size={20} className="animate-spin" color="#1877D6" />
+                    <IconLoader2 size={20} className="animate-spin" color="#1877D6" />
                   ) : (
                     <>
                       <IconPlus size={20} color="#1877D6" />

@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Users, MessageSquare, Mic, MicOff } from "lucide-react";
+import { IconArrowLeft, IconMessage, IconMicrophone, IconMicrophoneOff, IconUsers } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
@@ -293,7 +293,7 @@ function BroadcastPage() {
       {/* SECTION 1 — Audience */}
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 16 }}>
         <div className="flex items-center gap-2 mb-3">
-          <Users size={16} color={NAVY} />
+          <IconUsers size={16} color={NAVY} />
           <h2 className="text-[14px] font-semibold" style={{ color: NAVY }}>Who to send to</h2>
         </div>
 
@@ -409,7 +409,7 @@ function BroadcastPage() {
       {/* SECTION 2 — Message */}
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 12 }}>
         <div className="flex items-center gap-2 mb-3">
-          <MessageSquare size={16} color={NAVY} />
+          <IconMessage size={16} color={NAVY} />
           <h2 className="text-[14px] font-semibold" style={{ color: NAVY }}>Message</h2>
         </div>
 
@@ -476,7 +476,7 @@ function BroadcastPage() {
               ...POPPINS,
             }}
           >
-            {listening ? <MicOff size={14} /> : <Mic size={14} />}
+            {listening ? <IconMicrophoneOff size={14} /> : <IconMicrophone size={14} />}
             {listening ? "Stop" : "Dictate"}
           </button>
           <span

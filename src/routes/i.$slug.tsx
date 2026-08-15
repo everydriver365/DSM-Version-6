@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Star, X, ChevronLeft, ChevronRight, BadgeCheck } from "lucide-react";
+import { IconChevronLeft, IconChevronRight, IconRosette, IconStar, IconX } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/i/$slug")({
@@ -399,7 +399,7 @@ function InstructorMiniSite() {
             onClick={() => setLightbox(null)}
             style={{ position: "absolute", top: 16, right: 16, background: "transparent", border: "none", color: "#fff", cursor: "pointer" }}
           >
-            <X size={32} />
+            <IconX size={32} />
           </button>
           {lightbox > 0 && (
             <button
@@ -407,7 +407,7 @@ function InstructorMiniSite() {
               onClick={(e) => { e.stopPropagation(); setLightbox(lightbox - 1); }}
               style={{ position: "absolute", left: 16, background: "transparent", border: "none", color: "#fff", cursor: "pointer" }}
             >
-              <ChevronLeft size={40} />
+              <IconChevronLeft size={40} />
             </button>
           )}
           {lightbox < gallery.length - 1 && (
@@ -416,7 +416,7 @@ function InstructorMiniSite() {
               onClick={(e) => { e.stopPropagation(); setLightbox(lightbox + 1); }}
               style={{ position: "absolute", right: 16, background: "transparent", border: "none", color: "#fff", cursor: "pointer" }}
             >
-              <ChevronRight size={40} />
+              <IconChevronRight size={40} />
             </button>
           )}
           <img
@@ -461,7 +461,7 @@ function Badge({ accent }: { accent: string }) {
         letterSpacing: 0.3,
       }}
     >
-      <BadgeCheck size={14} />
+      <IconRosette size={14} />
       DVSA Approved Instructor
     </span>
   );
@@ -472,7 +472,7 @@ function Rating({ value, count, color }: { value: number; count?: number; color:
   return (
     <div style={{ display: "inline-flex", alignItems: "center", gap: 6, color }}>
       {[1, 2, 3, 4, 5].map((i) => (
-        <Star key={i} size={18} fill={i <= full ? color : "none"} stroke={color} />
+        <IconStar key={i} size={18} fill={i <= full ? color : "none"} stroke={color} />
       ))}
       <span style={{ fontSize: 14, fontWeight: 600 }}>
         {value.toFixed(1)}

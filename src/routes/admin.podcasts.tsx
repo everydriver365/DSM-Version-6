@@ -1,8 +1,7 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { IconEye, IconEyeOff, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
-import { Music } from "lucide-react";
+import { IconEye, IconEyeOff, IconMusic, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { PageHeader } from "@/components/dsm/PageHeader";
 import { useAdminGate } from "./admin";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
@@ -323,7 +322,7 @@ function AdminPodcasts() {
         <PageLoader />
       ) : items.length === 0 ? (
         <div style={{ padding: 32, textAlign: "center", color: "#6B7280" }}>
-          <Music size={40} style={{ margin: "0 auto", opacity: 0.4 }} />
+          <IconMusic size={40} style={{ margin: "0 auto", opacity: 0.4 }} />
           <div style={{ marginTop: 12, fontWeight: 600, color: "#0F2044" }}>No episodes yet</div>
           <div style={{ fontSize: 13, marginTop: 4 }}>Tap "Add episode" to create one.</div>
         </div>
