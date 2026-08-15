@@ -1,4 +1,4 @@
-import { sanitizeNewsTitle } from "@/lib/newsText";
+import { sanitizeNewsTitle, sanitizeNewsContent } from "@/lib/newsText";
 
 export type PodcastShow = {
   id: string;
@@ -13,6 +13,9 @@ export type PodcastEpisode = {
   id: string;
   title: string;
   description: string;
+  showNotes: string;
+  transcriptUrl: string | null;
+  transcriptType: string | null;
   audioUrl: string;
   pubDate: string | null;
   durationSecs: number | null;
@@ -87,6 +90,21 @@ function attr(xml: string, tag: string, name: string): string | null {
   return m ? (m[1] ?? null) : null;
 }
 
+function transcriptTag(item: string): { url: string; type: string } | null {
+  const tags = item.match(/<podcast:transcript[^>]*\/?>/gi) ?? [];
+  const parsed = tags
+    .map((t) => {
+      const url = t.match(/\surl="([^"]*)"/i)?.[1] ?? "";
+      const type = (t.match(/\stype="([^"]*)"/i)?.[1] ?? "").toLowerCase();
+      return { url, type };
+    })
+    .filter((t) => !!t.url);
+  if (parsed.length === 0) return null;
+  const rank = (type: string) =>
+    type.includes("json") ? 0 : type.includes("vtt") ? 1 : type.includes("srt") ? 2 : 3;
+  return parsed.sort((a, b) => rank(a.type) - rank(b.type))[0] ?? null;
+}
+
 function parseDuration(raw: string): number | null {
   if (!raw) return null;
   if (/^\d+$/.test(raw)) return Number(raw);
@@ -109,11 +127,16 @@ export function parseFeed(xml: string, show: PodcastShow, limit: number): Podcas
     const pubDateRaw = tagText(item, "pubDate");
     const pubMs = pubDateRaw ? new Date(pubDateRaw).getTime() : NaN;
     const pubDate = Number.isNaN(pubMs) ? null : new Date(pubMs).toISOString();
+    const transcript = transcriptTag(item);
+    const notesRaw = tagText(item, "content:encoded") || tagText(item, "description");
 
     return {
       id: `${show.id}:${guid || audioUrl || `episode-${index}`}`,
       title: sanitizeNewsTitle(tagText(item, "title")),
       description: sanitizeNewsTitle(tagText(item, "description")).slice(0, 400),
+      showNotes: sanitizeNewsContent(notesRaw).slice(0, 6000),
+      transcriptUrl: transcript?.url ?? null,
+      transcriptType: transcript?.type ?? null,
       audioUrl,
       pubDate,
       durationSecs: parseDuration(tagText(item, "itunes:duration")),
@@ -142,4 +165,46 @@ export async function fetchAllEpisodes(): Promise<PodcastEpisode[]> {
     .flatMap((r) => (r.status === "fulfilled" ? r.value : []))
     .sort((a, b) => (b.pubDate ?? "").localeCompare(a.pubDate ?? ""))
     .slice(0, 60);
+}
+
+export async function fetchTranscriptText(url: string, type: string | null): Promise<string> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Transcript unavailable (${res.status})`);
+  const raw = await res.text();
+
+  if ((type ?? "").includes("json") || raw.trim().startsWith("{")) {
+    try {
+      const data = JSON.parse(raw);
+      const segments: any[] = Array.isArray(data?.segments) ? data.segments : [];
+      if (segments.length > 0) {
+        let out = "";
+        let speaker: string | null = null;
+        for (const seg of segments) {
+          const body = String(seg?.body ?? "").trim();
+          if (!body) continue;
+          const spk = seg?.speaker ? String(seg.speaker) : null;
+          if (spk && spk !== speaker) {
+            speaker = spk;
+            out += `\n\n${spk}: `;
+          } else if (out && !out.endsWith(" ") && !out.endsWith(": ")) {
+            out += " ";
+          }
+          out += body;
+        }
+        return out.trim();
+      }
+    } catch {
+      /* fall through to plain text handling */
+    }
+  }
+
+  // VTT / SRT / plain text
+  return raw
+    .replace(/^WEBVTT.*$/gim, "")
+    .replace(/^\d+$/gm, "")
+    .replace(/^.*-->.*$/gm, "")
+    .replace(/<[^>]*>/g, "")
+    .replace(/\r\n?/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }

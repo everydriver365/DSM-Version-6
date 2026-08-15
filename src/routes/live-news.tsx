@@ -7,7 +7,6 @@ import {
   IconMicrophone,
   IconNews,
   IconPlayerPlayFilled,
-  IconPlayerPauseFilled,
   IconSearch,
   IconX,
 
@@ -16,7 +15,11 @@ import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
 import { sanitizeNewsTitle } from "@/lib/newsText";
-import { getPodcastEpisodes, type PodcastEpisode } from "@/lib/podcasts.functions";
+import {
+  getPodcastEpisodes,
+  getPodcastTranscript,
+  type PodcastEpisode,
+} from "@/lib/podcasts.functions";
 import { PODCAST_SHOWS } from "@/lib/podcasts";
 
 export const Route = createFileRoute("/live-news")({
@@ -55,7 +58,7 @@ function LiveNewsPage() {
   const [sessions, setSessions] = useState<LiveSession[] | null>(null);
   const [articles, setArticles] = useState<any[] | null>(null);
   const [episodes, setEpisodes] = useState<PodcastEpisode[] | null>(null);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [selectedEpisode, setSelectedEpisode] = useState<PodcastEpisode | null>(null);
   const [showFilter, setShowFilter] = useState<string>("all");
   const [podcastQuery, setPodcastQuery] = useState("");
   const [topicFilter, setTopicFilter] = useState<string>("all");
@@ -656,7 +659,7 @@ function LiveNewsPage() {
 
                 {visibleEpisodes.map((ep) => {
 
-                  const isOpen = expandedId === ep.id;
+                  const isOpen = selectedEpisode?.id === ep.id;
                   return (
                     <div
                       key={ep.id}
@@ -672,9 +675,9 @@ function LiveNewsPage() {
                       <div
                         role="button"
                         tabIndex={0}
-                        onClick={() => setExpandedId(isOpen ? null : ep.id)}
+                        onClick={() => setSelectedEpisode(ep)}
                         onKeyDown={(e) => {
-                          if (e.key === "Enter" || e.key === " ") setExpandedId(isOpen ? null : ep.id);
+                          if (e.key === "Enter" || e.key === " ") setSelectedEpisode(ep);
                         }}
                         style={{
                           display: "flex",
@@ -777,60 +780,10 @@ function LiveNewsPage() {
                             alignSelf: "center",
                           }}
                         >
-                          {isOpen ? (
-                            <IconPlayerPauseFilled size={16} color="#fff" />
-                          ) : (
-                            <IconPlayerPlayFilled size={16} color="#1877D6" />
-                          )}
+                          <IconPlayerPlayFilled size={16} color={isOpen ? "#fff" : "#1877D6"} />
                         </div>
                       </div>
 
-                      {isOpen && (
-                        <div style={{ marginTop: 12 }}>
-                          {ep.description && (
-                            <div
-                              style={{
-                                fontSize: 12,
-                                color: "#6B7686",
-                                lineHeight: 1.5,
-                                marginBottom: 10,
-                              }}
-                            >
-                              {ep.description}
-                            </div>
-                          )}
-                          {ep.audioUrl ? (
-                            // eslint-disable-next-line jsx-a11y/media-has-caption
-                            <audio
-                              src={ep.audioUrl}
-                              controls
-                              autoPlay
-                              preload="none"
-                              style={{ width: "100%" }}
-                            />
-                          ) : null}
-                          {ep.link && (
-                            <a
-                              href={ep.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 4,
-                                marginTop: 8,
-                                fontSize: 12,
-                                fontWeight: 600,
-                                color: "#1877D6",
-                                textDecoration: "none",
-                              }}
-                            >
-                              Open episode page
-                              <IconChevronRight size={13} stroke={2} />
-                            </a>
-                          )}
-                        </div>
-                      )}
                     </div>
                   );
                 })}
@@ -838,6 +791,256 @@ function LiveNewsPage() {
             )}
           </section>
         )}
+      </div>
+
+      {selectedEpisode && (
+        <EpisodeModal episode={selectedEpisode} onClose={() => setSelectedEpisode(null)} />
+      )}
+    </div>
+  );
+}
+
+function EpisodeModal({
+  episode,
+  onClose,
+}: {
+  episode: PodcastEpisode;
+  onClose: () => void;
+}) {
+  const [tab, setTab] = useState<"notes" | "transcript">("notes");
+  const [transcript, setTranscript] = useState<string | null>(null);
+  const [transcriptError, setTranscriptError] = useState<string | null>(null);
+  const [loadingTranscript, setLoadingTranscript] = useState(false);
+
+  useEffect(() => {
+    if (tab !== "transcript" || !episode.transcriptUrl || transcript || transcriptError) return;
+    let cancelled = false;
+    setLoadingTranscript(true);
+    (async () => {
+      try {
+        const res = await getPodcastTranscript({
+          data: { url: episode.transcriptUrl!, type: episode.transcriptType },
+        });
+        if (cancelled) return;
+        if (res.error || !res.text) setTranscriptError(res.error || "Transcript unavailable");
+        else setTranscript(res.text);
+      } catch {
+        if (!cancelled) setTranscriptError("Transcript unavailable");
+      } finally {
+        if (!cancelled) setLoadingTranscript(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [tab, episode, transcript, transcriptError]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const modalTab = (key: "notes" | "transcript", label: string, disabled?: boolean) => (
+    <button
+      type="button"
+      onClick={() => !disabled && setTab(key)}
+      disabled={disabled}
+      style={{
+        flex: 1,
+        padding: "9px 8px",
+        borderRadius: 10,
+        border: "none",
+        background: tab === key ? "#fff" : "transparent",
+        boxShadow: tab === key ? "0 1px 3px rgba(11,31,58,0.10)" : "none",
+        color: disabled ? "#C3CAD4" : tab === key ? "#0B1F3A" : "#6B7686",
+        fontSize: 13,
+        fontWeight: 700,
+        cursor: disabled ? "not-allowed" : "pointer",
+        ...POPPINS,
+      }}
+    >
+      {label}
+    </button>
+  );
+
+  return (
+    <div
+      role="presentation"
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 200,
+        background: "rgba(11,31,58,0.45)",
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={episode.title}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "100%",
+          maxWidth: 520,
+          maxHeight: "92vh",
+          background: "#F6F8FB",
+          borderTopLeftRadius: 22,
+          borderTopRightRadius: 22,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          ...POPPINS,
+        }}
+      >
+        <div style={{ padding: "10px 0 0", display: "flex", justifyContent: "center" }}>
+          <div style={{ width: 42, height: 4, borderRadius: 2, background: "#D7DEE8" }} />
+        </div>
+
+        <div style={{ padding: "12px 16px 0", display: "flex", gap: 12 }}>
+          <div
+            style={{
+              width: 68,
+              height: 68,
+              flexShrink: 0,
+              borderRadius: 12,
+              overflow: "hidden",
+              background: "#EEF2F7",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {episode.imageUrl ? (
+              <img
+                src={episode.imageUrl}
+                alt=""
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              <IconMicrophone size={24} color="#6B7686" />
+            )}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                display: "inline-block",
+                background: "#EFF6FF",
+                color: "#1877D6",
+                borderRadius: 6,
+                padding: "2px 6px",
+                fontSize: 10,
+                fontWeight: 700,
+                marginBottom: 5,
+              }}
+            >
+              {episode.showName}
+            </div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.35 }}>
+              {episode.title}
+            </div>
+            <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 4 }}>
+              {formatDate(episode.pubDate)}
+              {episode.durationSecs ? ` · ${formatDuration(episode.durationSecs)}` : ""}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close episode details"
+            style={{
+              width: 32,
+              height: 32,
+              flexShrink: 0,
+              borderRadius: 16,
+              border: "none",
+              background: "#EEF2F7",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            <IconX size={16} color="#6B7686" stroke={2} />
+          </button>
+        </div>
+
+        {episode.audioUrl ? (
+          <div style={{ padding: "12px 16px 0" }}>
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+            <audio src={episode.audioUrl} controls preload="none" style={{ width: "100%" }} />
+          </div>
+        ) : null}
+
+        <div style={{ padding: "12px 16px 0" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: 4,
+              background: "#EAEFF6",
+              borderRadius: 12,
+              padding: 4,
+            }}
+          >
+            {modalTab("notes", "Show notes")}
+            {modalTab(
+              "transcript",
+              episode.transcriptUrl ? "Transcript" : "No transcript",
+              !episode.transcriptUrl,
+            )}
+          </div>
+        </div>
+
+        <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px 24px" }}>
+          <div
+            style={{
+              background: "#fff",
+              border: "1px solid #E4E8EF",
+              borderRadius: 16,
+              padding: 14,
+              fontSize: 13,
+              lineHeight: 1.6,
+              color: "#435063",
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {tab === "notes" ? (
+              episode.showNotes || episode.description || "No show notes for this episode."
+            ) : loadingTranscript ? (
+              "Loading transcript…"
+            ) : transcriptError ? (
+              transcriptError
+            ) : (
+              transcript || "Transcript unavailable."
+            )}
+          </div>
+
+          {episode.link && (
+            <a
+              href={episode.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+                marginTop: 12,
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#1877D6",
+                textDecoration: "none",
+              }}
+            >
+              Open episode page
+              <IconChevronRight size={13} stroke={2} />
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );
