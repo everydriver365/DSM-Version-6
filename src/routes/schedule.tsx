@@ -21,6 +21,7 @@ import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { filterEchoedBlocks } from "@/lib/calendarDedupe";
 
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 
 export const Route = createFileRoute("/schedule")({
   head: () => ({
@@ -1096,11 +1097,6 @@ function SchedulePage() {
             }
             const isToday = row.key === todayKey;
             const isPast = row.key < todayKey;
-            const weekday = row.date
-              .toLocaleDateString("en-GB", { weekday: "short" })
-              .slice(0, 3)
-              .toUpperCase();
-            const dayNum = row.date.getDate();
             return (
               <div
                 key={row.key}
