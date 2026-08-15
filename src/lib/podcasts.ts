@@ -292,11 +292,15 @@ export async function fetchAllEpisodes(): Promise<PodcastEpisode[]> {
     return Number.isNaN(ms) ? 0 : ms;
   };
 
-  return results
+  const fetched = results
     .flatMap((r) => (r.status === "fulfilled" ? r.value : []))
     .sort((a, b) => time(b) - time(a))
     .slice(0, 60);
+
+  const seen = new Set(CURATED_EPISODES.map((ep) => ep.id));
+  return [...CURATED_EPISODES, ...fetched.filter((ep) => !seen.has(ep.id))];
 }
+
 
 export async function fetchTranscriptText(url: string, type: string | null): Promise<string> {
   const res = await fetch(url);
