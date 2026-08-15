@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   IconBroadcast,
   IconChevronRight,
@@ -7,6 +7,8 @@ import {
   IconMicrophone,
   IconNews,
   IconPlayerPlayFilled,
+  IconPlayerPauseFilled,
+  IconPlayerTrackNextFilled,
   IconSearch,
   IconX,
 
@@ -59,6 +61,11 @@ function LiveNewsPage() {
   const [articles, setArticles] = useState<any[] | null>(null);
   const [episodes, setEpisodes] = useState<PodcastEpisode[] | null>(null);
   const [selectedEpisode, setSelectedEpisode] = useState<PodcastEpisode | null>(null);
+  const [playing, setPlaying] = useState<PodcastEpisode | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [showFilter, setShowFilter] = useState<string>("all");
   const [podcastQuery, setPodcastQuery] = useState("");
   const [topicFilter, setTopicFilter] = useState<string>("all");
@@ -126,6 +133,56 @@ function LiveNewsPage() {
     );
   });
 
+
+  const playEpisode = useCallback((ep: PodcastEpisode) => {
+    if (!ep.audioUrl) return;
+    setPlaying((prev) => {
+      if (prev?.id === ep.id) {
+        const el = audioRef.current;
+        if (el) {
+          if (el.paused) void el.play();
+          else el.pause();
+        }
+        return prev;
+      }
+      setCurrentTime(0);
+      setDuration(0);
+      return ep;
+    });
+  }, []);
+
+  const togglePlay = useCallback(() => {
+    const el = audioRef.current;
+    if (!el) return;
+    if (el.paused) void el.play();
+    else el.pause();
+  }, []);
+
+  const seekTo = useCallback((secs: number) => {
+    const el = audioRef.current;
+    if (!el) return;
+    el.currentTime = secs;
+    setCurrentTime(secs);
+  }, []);
+
+  const playNext = useCallback(() => {
+    if (!playing) return;
+    const list = visibleEpisodes.filter((e) => e.audioUrl);
+    const idx = list.findIndex((e) => e.id === playing.id);
+    const next = idx >= 0 ? list[idx + 1] : list[0];
+    if (!next) return;
+    setCurrentTime(0);
+    setDuration(0);
+    setPlaying(next);
+    if (selectedEpisode) setSelectedEpisode(next);
+  }, [playing, visibleEpisodes, selectedEpisode]);
+
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el || !playing) return;
+    el.load();
+    void el.play().catch(() => setIsPlaying(false));
+  }, [playing]);
 
   const upcomingSessions = sessions?.filter((s) => !s.is_live) ?? [];
   const allSessions = activeSession ? [activeSession, ...upcomingSessions] : upcomingSessions;
@@ -767,21 +824,39 @@ function LiveNewsPage() {
                           </div>
                         </div>
 
-                        <div
+                        <button
+                          type="button"
+                          aria-label={
+                            playing?.id === ep.id && isPlaying ? "Pause episode" : "Play episode"
+                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            playEpisode(ep);
+                          }}
+                          disabled={!ep.audioUrl}
                           style={{
                             width: 36,
                             height: 36,
                             flexShrink: 0,
                             borderRadius: 18,
-                            background: isOpen ? "#1877D6" : "#EFF6FF",
+                            border: "none",
+                            background: playing?.id === ep.id ? "#1877D6" : "#EFF6FF",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             alignSelf: "center",
+                            cursor: ep.audioUrl ? "pointer" : "not-allowed",
                           }}
                         >
-                          <IconPlayerPlayFilled size={16} color={isOpen ? "#fff" : "#1877D6"} />
-                        </div>
+                          {playing?.id === ep.id && isPlaying ? (
+                            <IconPlayerPauseFilled size={16} color="#fff" />
+                          ) : (
+                            <IconPlayerPlayFilled
+                              size={16}
+                              color={playing?.id === ep.id ? "#fff" : "#1877D6"}
+                            />
+                          )}
+                        </button>
                       </div>
 
                     </div>
@@ -793,8 +868,50 @@ function LiveNewsPage() {
         )}
       </div>
 
+      {playing ? (
+        // eslint-disable-next-line jsx-a11y/media-has-caption
+        <audio
+          ref={audioRef}
+          src={playing.audioUrl}
+          preload="metadata"
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+          onLoadedMetadata={(e) => setDuration(e.currentTarget.duration || 0)}
+          onEnded={playNext}
+          style={{ display: "none" }}
+        />
+      ) : null}
+
       {selectedEpisode && (
-        <EpisodeModal episode={selectedEpisode} onClose={() => setSelectedEpisode(null)} />
+        <EpisodeModal
+          episode={selectedEpisode}
+          onClose={() => setSelectedEpisode(null)}
+          isCurrent={playing?.id === selectedEpisode.id}
+          isPlaying={playing?.id === selectedEpisode.id && isPlaying}
+          currentTime={playing?.id === selectedEpisode.id ? currentTime : 0}
+          duration={playing?.id === selectedEpisode.id ? duration : 0}
+          onPlay={() => playEpisode(selectedEpisode)}
+          onSeek={seekTo}
+          onNext={playNext}
+        />
+      )}
+
+      {playing && (
+        <MiniPlayer
+          episode={playing}
+          isPlaying={isPlaying}
+          currentTime={currentTime}
+          duration={duration}
+          onToggle={togglePlay}
+          onSeek={seekTo}
+          onNext={playNext}
+          onOpen={() => setSelectedEpisode(playing)}
+          onClose={() => {
+            setPlaying(null);
+            setIsPlaying(false);
+          }}
+        />
       )}
     </div>
   );
