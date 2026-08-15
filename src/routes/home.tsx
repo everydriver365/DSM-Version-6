@@ -3653,41 +3653,24 @@ function HomePage() {
             </button>
           )}
           {isLive ? (
-            <span
-              className="text-[12px] font-medium inline-flex items-center"
-              style={{
-                gap: 6,
-                color: "#1877D6",
-                padding: "3px 8px",
-                borderRadius: 999,
-                backgroundColor: "#FFECEC",
-              }}
-            >
-              <span style={{ width: 6, height: 6, borderRadius: 999, backgroundColor: "#1877D6" }} />
-              In progress
-            </span>
+            <LessonPaymentBadge
+              status={l.payment_status}
+              amountDue={l.amount_due}
+              paidAmount={(l as any).paid_amount}
+              prepaidHours={l.pupils?.prepaid_hours}
+              isLive
+              size="md"
+            />
           ) : (
-            <span
-              className="text-[12px] inline-flex items-center"
-              style={{
-                gap: 6,
-                color: paid ? "#1A7A3C" : "#D33B3B",
-                padding: "3px 8px",
-                borderRadius: 999,
-                backgroundColor: paid ? "#E8F8ED" : "#FFECEC",
-              }}
-            >
-              <span
-                style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: 999,
-                  backgroundColor: paid ? "#1A7A3C" : "#D33B3B",
-                }}
-              />
-              {paid ? "Paid" : "Not paid"}
-            </span>
+            <LessonPaymentBadge
+              status={l.payment_status}
+              amountDue={l.amount_due}
+              paidAmount={(l as any).paid_amount}
+              prepaidHours={l.pupils?.prepaid_hours}
+              size="md"
+            />
           )}
+
         </div>
       </div>
     );
