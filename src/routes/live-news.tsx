@@ -85,7 +85,7 @@ function LiveNewsPage() {
   const playingRef = useRef<PodcastEpisode | null>(null);
   const lastSaveRef = useRef(0);
   const restartRef = useRef<string | null>(null);
-  const resumeDoneRef = useRef<string | null>(null);
+  const resumeTargetRef = useRef<{ id: string; target: number; tries: number } | null>(null);
 
   useEffect(() => {
     const stored = loadProgress();
@@ -285,7 +285,7 @@ function LiveNewsPage() {
   useEffect(() => {
     const el = audioRef.current;
     if (!el || !playing) return;
-    resumeDoneRef.current = null;
+    resumeTargetRef.current = null;
     el.load();
     void el.play().catch(() => setIsPlaying(false));
   }, [playing]);
@@ -1182,7 +1182,9 @@ function LiveNewsPage() {
               force: true,
             });
           }}
+          onPlaying={(e) => applyResume(e.currentTarget)}
           onTimeUpdate={(e) => {
+            applyResume(e.currentTarget);
             setCurrentTime(e.currentTarget.currentTime);
             commitProgress(playing.id, e.currentTarget.currentTime, e.currentTarget.duration || 0);
           }}
