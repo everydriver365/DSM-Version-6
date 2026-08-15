@@ -17,7 +17,7 @@ import {
   SettingsIcon,
 } from "@/components/icons/DrivingIcons";
 import { IconBell, IconCar, IconCurrencyPound, IconMapPin, IconPlus, IconUsers } from "@tabler/icons-react";
-import { Receipt, StickyNote, Inbox, Fuel, BookOpen, BarChart3, Search as SearchIcon, Percent, ClipboardList, ShieldCheck, HelpCircle } from "lucide-react";
+import { IconReceipt, IconNote, IconInbox, IconGasStation, IconBook, IconChartBar, IconSearch as SearchIcon, IconPercentage, IconClipboardList, IconShieldCheck, IconHelpCircle } from "@tabler/icons-react";
 
 import { supabase } from "@/lib/supabaseClient";
 import { haptic } from "@/lib/haptics";
@@ -30,21 +30,21 @@ const NAV: Nav[] = [
   { label: "Schedule", route: "/schedule", icon: ScheduleIcon },
   { label: "Messages", route: "/messages", icon: MessagesIcon },
   { label: "Payments", route: "/payments", icon: PaymentsIcon },
-  { label: "Expenses", route: "/expenses", icon: Receipt },
-  { label: "Notes", route: "/notes", icon: StickyNote },
-  { label: "Enquiries", route: "/enquiries", icon: Inbox },
+  { label: "Expenses", route: "/expenses", icon: IconReceipt },
+  { label: "Notes", route: "/notes", icon: IconNote },
+  { label: "Enquiries", route: "/enquiries", icon: IconInbox },
   { label: "Mileage", route: "/mileage", icon: IconMapPin },
-  { label: "Fuel", route: "/fuel", icon: Fuel },
+  { label: "Fuel", route: "/fuel", icon: IconGasStation },
   { label: "Vehicle", route: "/vehicle", icon: IconCar },
-  { label: "CPD", route: "/cpd", icon: BookOpen, keywords: "learning training" },
-  { label: "Reports", route: "/reports", icon: BarChart3 },
+  { label: "CPD", route: "/cpd", icon: IconBook, keywords: "learning training" },
+  { label: "Reports", route: "/reports", icon: IconChartBar },
   { label: "Earnings", route: "/earnings", icon: IconCurrencyPound },
-  { label: "Tax report", route: "/tax-report", icon: BarChart3 },
-  { label: "Discount codes", route: "/discount-codes", icon: Percent },
-  { label: "Intake questions", route: "/intake-questions", icon: ClipboardList },
-  { label: "Waivers", route: "/waivers", icon: ShieldCheck },
+  { label: "Tax report", route: "/tax-report", icon: IconChartBar },
+  { label: "Discount codes", route: "/discount-codes", icon: IconPercentage },
+  { label: "Intake questions", route: "/intake-questions", icon: IconClipboardList },
+  { label: "Waivers", route: "/waivers", icon: IconShieldCheck },
   { label: "Notifications", route: "/notifications", icon: IconBell },
-  { label: "Help", route: "/help", icon: HelpCircle },
+  { label: "Help", route: "/help", icon: IconHelpCircle },
   { label: "Settings", route: "/settings", icon: SettingsIcon },
 ];
 

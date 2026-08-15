@@ -13,7 +13,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { supabase } from "@/lib/supabaseClient";
 import { recordPayment } from "@/lib/payments";
 import { IconChevronRight, IconCreditCard, IconCurrencyPound, IconFileText, IconMessage, IconTrendingUp, IconUser } from "@tabler/icons-react";
-import { CalendarPlus, History, ClipboardList } from "lucide-react";
+import { IconCalendarPlus, IconHistory, IconClipboardList } from "@tabler/icons-react";
 
 const navy = "#0B1F3A";
 const muted = "#8A93A3";
@@ -308,7 +308,7 @@ export function PupilQuickActionsSheet({
           )}
           <SheetDivider />
           <ActionRow
-            icon={<CalendarPlus size={18} color="#1877D6" />}
+            icon={<IconCalendarPlus size={18} color="#1877D6" />}
             label="Book a lesson"
             onClick={() => {
               onClose();
@@ -443,7 +443,7 @@ export function PupilQuickActionsSheet({
           />
           <SheetDivider />
           <NavRow
-            icon={<History size={18} color={muted} />}
+            icon={<IconHistory size={18} color={muted} />}
             label="History"
             onClick={() => {
               onClose();
@@ -470,7 +470,7 @@ export function PupilQuickActionsSheet({
           />
           <SheetDivider />
           <NavRow
-            icon={<ClipboardList size={18} color={muted} />}
+            icon={<IconClipboardList size={18} color={muted} />}
             label="Syllabus"
             onClick={() => {
               onClose();

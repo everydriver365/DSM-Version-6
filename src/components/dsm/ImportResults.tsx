@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { CheckCircle2, AlertCircle, RefreshCw, Download, X } from "lucide-react";
+import { IconCircleCheck, IconAlertCircle, IconRefresh, IconDownload, IconX } from "@tabler/icons-react";
 import {
   PUPIL_FIELDS,
   FIELD_LABELS,
@@ -108,7 +108,7 @@ export default function ImportResults({
         </div>
         {onDismiss && (
           <button type="button" onClick={onDismiss} aria-label="Dismiss results">
-            <X size={18} color="#9FB6D4" />
+            <IconX size={18} color="#9FB6D4" />
           </button>
         )}
       </div>
@@ -142,7 +142,7 @@ export default function ImportResults({
                   backgroundColor: "#F7F9FC",
                 }}
               >
-                <CheckCircle2 size={16} color="#1877D6" />
+                <IconCircleCheck size={16} color="#1877D6" />
                 <div className="text-[13px] text-[#0B1F3A] font-medium flex-1 truncate">
                   {r.name}
                 </div>
@@ -187,7 +187,7 @@ export default function ImportResults({
                     </div>
 
                     <div className="mt-1 flex items-start" style={{ gap: 6 }}>
-                      <AlertCircle size={14} color="#CC2229" style={{ marginTop: 2 }} />
+                      <IconAlertCircle size={14} color="#CC2229" style={{ marginTop: 2 }} />
                       <div className="text-[12px]" style={{ color: "#7F1D1D" }}>
                         {f.reason}
                       </div>
@@ -246,7 +246,7 @@ export default function ImportResults({
                     opacity: retrying ? 0.7 : 1,
                   }}
                 >
-                  <RefreshCw size={16} />
+                  <IconRefresh size={16} />
                   {retrying ? "Retrying…" : `Retry ${fixableCount} fixed row${fixableCount === 1 ? "" : "s"}`}
                 </button>
                 <button
@@ -261,7 +261,7 @@ export default function ImportResults({
                     backgroundColor: "#F3F5F9",
                   }}
                 >
-                  <Download size={18} color="#0B1F3A" />
+                  <IconDownload size={18} color="#0B1F3A" />
                 </button>
               </div>
             </>

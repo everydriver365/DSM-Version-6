@@ -1,22 +1,6 @@
 import { useState, useRef } from "react";
 import { Link } from "@tanstack/react-router";
-import {
-  Menu,
-  X,
-  ChevronDown,
-  Calendar,
-  CreditCard,
-  Users,
-  GraduationCap,
-  Globe,
-  Gauge,
-  Camera,
-  Newspaper,
-  HelpCircle,
-  Star,
-  PlayCircle,
-  ArrowUpRight,
-} from "lucide-react";
+import { IconMenu2, IconX, IconChevronDown, IconCalendar, IconCreditCard, IconUsers, IconSchool, IconWorld, IconGauge, IconCamera, IconNews, IconHelpCircle, IconStar, IconPlayerPlay, IconArrowUpRight } from "@tabler/icons-react";
 import logoAsset from "../../assets/dsm-logo.png.asset.json";
 
 const NAVY = "#0B1F3A";
@@ -29,8 +13,8 @@ type Featured = { to: string; icon: any; label: string; desc?: string };
 type ListItem = { to: string; label: string };
 
 const productFeatured: Featured[] = [
-  { to: "/features", icon: Calendar, label: "Smart diary", desc: "Bookings, reschedules & reminders in one place." },
-  { to: "/features", icon: CreditCard, label: "Payments & invoicing", desc: "Take card payments and settle balances fast." },
+  { to: "/features", icon: IconCalendar, label: "Smart diary", desc: "Bookings, reschedules & reminders in one place." },
+  { to: "/features", icon: IconCreditCard, label: "Payments & invoicing", desc: "Take card payments and settle balances fast." },
 ];
 const productList: ListItem[] = [
   { to: "/features", label: "Pupil management" },
@@ -41,8 +25,8 @@ const productList: ListItem[] = [
 ];
 
 const workFeatured: Featured[] = [
-  { to: "/features", icon: GraduationCap, label: "Independent instructors" },
-  { to: "/features", icon: Users, label: "Driving schools" },
+  { to: "/features", icon: IconSchool, label: "Independent instructors" },
+  { to: "/features", icon: IconUsers, label: "Driving schools" },
 ];
 const workList: ListItem[] = [
   { to: "/how-it-works", label: "How it works" },
@@ -50,9 +34,9 @@ const workList: ListItem[] = [
 ];
 
 const learnFeatured: Featured[] = [
-  { to: "/how-it-works", icon: Newspaper, label: "How it works" },
-  { to: "/about", icon: Star, label: "About us" },
-  { to: "/contact", icon: HelpCircle, label: "Support" },
+  { to: "/how-it-works", icon: IconNews, label: "How it works" },
+  { to: "/about", icon: IconStar, label: "About us" },
+  { to: "/contact", icon: IconHelpCircle, label: "Support" },
 ];
 const learnList: ListItem[] = [
   { to: "/about", label: "About" },
@@ -60,9 +44,9 @@ const learnList: ListItem[] = [
 ];
 
 const extrasFeatured: Featured[] = [
-  { to: "/features", icon: Globe, label: "Websites & domains" },
-  { to: "/features", icon: Gauge, label: "Telematics" },
-  { to: "/features", icon: Camera, label: "Dashcam" },
+  { to: "/features", icon: IconWorld, label: "Websites & domains" },
+  { to: "/features", icon: IconGauge, label: "Telematics" },
+  { to: "/features", icon: IconCamera, label: "Dashcam" },
 ];
 
 export function MarketingNav() {
@@ -168,7 +152,7 @@ export function MarketingNav() {
           className="ed-nav-burger"
           style={{ display: "none", background: "transparent", border: 0, cursor: "pointer", color: NAVY }}
         >
-          {open ? <X size={24} /> : <Menu size={24} />}
+          {open ? <IconX size={24} /> : <IconMenu2 size={24} />}
         </button>
       </div>
 
@@ -357,9 +341,9 @@ function MenuTrigger({
       style={triggerStyle(active)}
     >
       {label}
-      <ChevronDown
+      <IconChevronDown
         size={14}
-        strokeWidth={2.5}
+        stroke={2.5}
         style={{ transition: "transform .2s ease", transform: active ? "rotate(180deg)" : "rotate(0deg)" }}
       />
     </button>
@@ -490,7 +474,7 @@ function MegaPanel({
               boxShadow: "0 2px 6px rgba(12,35,64,0.08)",
               transition: "background .15s ease, color .15s ease"}}
           >
-            <PlayCircle size={22} />
+            <IconPlayerPlay size={22} />
           </div>
           <div>
             <div
@@ -505,7 +489,7 @@ function MegaPanel({
                 gap: 6,
                 transition: "color .15s ease"}}
             >
-              {rightHeadline} <ArrowUpRight size={14} />
+              {rightHeadline} <IconArrowUpRight size={14} />
             </div>
             <div style={{ color: "#5A6B82", fontSize: 13, lineHeight: 1.5, marginBottom: 14 }}>{rightDesc}</div>
             <span

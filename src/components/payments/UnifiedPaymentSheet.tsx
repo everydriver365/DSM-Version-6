@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { QRCodeSVG } from "qrcode.react";
 import { IconChevronRight, IconClock, IconCopy, IconCreditCard, IconMail, IconMessage, IconPackage, IconSearch } from "@tabler/icons-react";
-import { Banknote, Building2, Landmark, Link2, QrCode, Sparkles, StickyNote } from "lucide-react";
+import { IconCashBanknote, IconBuilding, IconBuildingBank, IconLink, IconQrcode, IconSparkles, IconNote } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { IconCircleCheck, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
@@ -2060,7 +2060,7 @@ export function UnifiedPaymentSheet({
                 setPickerOpen(false);
               }}
             >
-              <Sparkles size={18} color={PURPLE} />
+              <IconSparkles size={18} color={PURPLE} />
               <span style={{ flex: 1, fontSize: 16, fontWeight: 600, color: PURPLE }}>
                 Custom payment
               </span>
@@ -2339,7 +2339,7 @@ export function UnifiedPaymentSheet({
             {/* Notes */}
             <Group>
               <Row>
-                <StickyNote size={18} color={SUBTLE} />
+                <IconNote size={18} color={SUBTLE} />
                 <input
                   value={note}
                   onChange={(e) => setNote(e.target.value)}

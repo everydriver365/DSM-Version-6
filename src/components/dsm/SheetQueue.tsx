@@ -1,17 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import {
-  Briefcase,
-  MessageSquare,
-  Mail,
-  CalendarCheck,
-  CalendarX,
-  CreditCard,
-  Zap,
-  Video,
-  PlayCircle,
-  ShoppingBag,
-} from "lucide-react";
+import { IconBriefcase, IconMessage, IconMail, IconCalendarCheck, IconCalendarX, IconCreditCard, IconBolt, IconVideo, IconPlayerPlay, IconShoppingBag } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { WhatsNewSheet } from "@/components/dsm/WhatsNewSheet";
 import { DailyCatchUpSheet } from "@/components/dsm/DailyCatchUpSheet";
@@ -94,16 +83,16 @@ async function buildCatchUpRows(uid: string, since: Date): Promise<Row[]> {
     rows.push({ key, count: n, label: n === 1 ? labelSingular : labelPlural, icon, tint, to });
   };
 
-  push(jobs?.count, "jobs", "new job", "new jobs", <Briefcase size={18} color="#B5661E" />, "#FBEFDF", "/jobs");
-  push(enquiries?.count, "enquiries", "new enquiry", "new enquiries", <Mail size={18} color={BLUE} />, "#E5EFFA", "/enquiries");
-  push(messages?.count, "messages", "new message", "new messages", <MessageSquare size={18} color={BLUE} />, "#E5EFFA", "/messages");
-  push(lessonsNew?.count, "bookings", "new booking", "new bookings", <CalendarCheck size={18} color="#1B7F3B" />, "#E7F5EE", "/schedule");
-  push(lessonsCanc?.count, "cancellations", "cancellation", "cancellations", <CalendarX size={18} color="#CC2229" />, "#FBE6E7", "/schedule");
-  push(payments?.count, "payments", "payment received", "payments received", <CreditCard size={18} color="#1B7F3B" />, "#E7F5EE", "/payments");
-  push(gapAccepted?.count, "gaps", "slot accepted", "slots accepted", <Zap size={18} color="#1B7F3B" />, "#E7F5EE", "/gaps");
-  push(liveNew?.count, "live", "new live session", "new live sessions", <Video size={18} color="#1877D6" />, "#E6F1FB", "/dsm-live");
-  push(learnNew?.count, "learn", "new tutorial", "new tutorials", <PlayCircle size={18} color="#7C3AED" />, "#F0EBFF", "/learn");
-  push(marketplaceNew?.count, "marketplace", "new listing", "new listings", <ShoppingBag size={18} color="#B5661E" />, "#FBEFDF", "/marketplace");
+  push(jobs?.count, "jobs", "new job", "new jobs", <IconBriefcase size={18} color="#B5661E" />, "#FBEFDF", "/jobs");
+  push(enquiries?.count, "enquiries", "new enquiry", "new enquiries", <IconMail size={18} color={BLUE} />, "#E5EFFA", "/enquiries");
+  push(messages?.count, "messages", "new message", "new messages", <IconMessage size={18} color={BLUE} />, "#E5EFFA", "/messages");
+  push(lessonsNew?.count, "bookings", "new booking", "new bookings", <IconCalendarCheck size={18} color="#1B7F3B" />, "#E7F5EE", "/schedule");
+  push(lessonsCanc?.count, "cancellations", "cancellation", "cancellations", <IconCalendarX size={18} color="#CC2229" />, "#FBE6E7", "/schedule");
+  push(payments?.count, "payments", "payment received", "payments received", <IconCreditCard size={18} color="#1B7F3B" />, "#E7F5EE", "/payments");
+  push(gapAccepted?.count, "gaps", "slot accepted", "slots accepted", <IconBolt size={18} color="#1B7F3B" />, "#E7F5EE", "/gaps");
+  push(liveNew?.count, "live", "new live session", "new live sessions", <IconVideo size={18} color="#1877D6" />, "#E6F1FB", "/dsm-live");
+  push(learnNew?.count, "learn", "new tutorial", "new tutorials", <IconPlayerPlay size={18} color="#7C3AED" />, "#F0EBFF", "/learn");
+  push(marketplaceNew?.count, "marketplace", "new listing", "new listings", <IconShoppingBag size={18} color="#B5661E" />, "#FBEFDF", "/marketplace");
   return rows;
 }
 

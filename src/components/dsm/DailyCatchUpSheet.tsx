@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { IconBriefcase, IconMail, IconMessage, IconX } from "@tabler/icons-react";
-import { CalendarCheck, CalendarX } from "lucide-react";
+import { IconCalendarCheck, IconCalendarX } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 
 const NAVY = "#0F2044";
@@ -219,8 +219,8 @@ async function buildRows(uid: string, since: Date): Promise<Row[]> {
   push(jobs?.count, "jobs", "new job", "new jobs", <IconBriefcase stroke={1.5} size={18} color="#B5661E" />, "#FBEFDF", "/jobs");
   push(enquiries?.count, "enquiries", "new enquiry", "new enquiries", <IconMail stroke={1.5} size={18} color={BLUE} />, "#E5EFFA", "/enquiries");
   push(messages?.count, "messages", "new message", "new messages", <IconMessage stroke={1.5} size={18} color={BLUE} />, "#E5EFFA", "/messages");
-  push(lessonsNew?.count, "bookings", "new booking", "new bookings", <CalendarCheck size={18} color="#1B7F3B" />, "#E7F5EE", "/schedule");
-  push(lessonsCanc?.count, "cancellations", "cancellation", "cancellations", <CalendarX size={18} color="#CC2229" />, "#FBE6E7", "/schedule");
+  push(lessonsNew?.count, "bookings", "new booking", "new bookings", <IconCalendarCheck size={18} color="#1B7F3B" />, "#E7F5EE", "/schedule");
+  push(lessonsCanc?.count, "cancellations", "cancellation", "cancellations", <IconCalendarX size={18} color="#CC2229" />, "#FBE6E7", "/schedule");
 
   return rows;
 }
