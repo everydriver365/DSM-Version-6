@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, Star, Check, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { IconArrowLeft, IconCheck, IconCircleCheck, IconCircleX, IconClock, IconStar } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 
 export const Route = createFileRoute("/marketplace_/apply")({
@@ -198,7 +198,7 @@ function ApplyPage() {
           aria-label="Back"
           style={{ background: "none", border: "none", color: "#FFF", cursor: "pointer", padding: 4, display: "flex" }}
         >
-          <ArrowLeft size={22} />
+          <IconArrowLeft size={22} />
         </button>
         <h1 style={{ fontSize: 17, fontWeight: 700, margin: 0 }}>Get Featured on EveryDriver</h1>
       </div>
@@ -213,7 +213,7 @@ function ApplyPage() {
         <>
           {/* Hero */}
           <div style={{ background: BG_HERO, borderBottom: `0.5px solid ${BORDER_HERO}`, padding: "20px 16px" }}>
-            <Star size={32} color={BLUE} strokeWidth={2} />
+            <IconStar size={32} color={BLUE} stroke={2} />
             <div style={{ fontSize: 18, fontWeight: 700, color: NAVY, marginTop: 8 }}>
               Grow your driving school with EveryDriver
             </div>
@@ -604,7 +604,7 @@ function SuccessScreen({ onBack }: { onBack: () => void }) {
           animation: "pop .4s ease",
         }}
       >
-        <Check size={44} color="#16A34A" strokeWidth={3} />
+        <IconCheck size={44} color="#16A34A" stroke={3} />
       </div>
       <div style={{ fontSize: 22, fontWeight: 700, color: NAVY }}>Application submitted!</div>
       <div style={{ fontSize: 14, color: MUTED, marginTop: 10, lineHeight: 1.5 }}>
@@ -644,7 +644,7 @@ function ExistingStatus({
   if (app.status === "pending") {
     return (
       <Banner
-        icon={<Clock size={40} color="#B45309" />}
+        icon={<IconClock size={40} color="#B45309" />}
         bg="#FEF3C7"
         border="#FCD34D"
         title="Application under review"
@@ -657,7 +657,7 @@ function ExistingStatus({
   if (app.status === "approved") {
     return (
       <Banner
-        icon={<CheckCircle2 size={40} color="#16A34A" />}
+        icon={<IconCircleCheck size={40} color="#16A34A" />}
         bg="#DCFCE7"
         border="#86EFAC"
         title="You're featured! ✓"
@@ -669,7 +669,7 @@ function ExistingStatus({
   }
   return (
     <Banner
-      icon={<XCircle size={40} color="#CC2229" />}
+      icon={<IconCircleX size={40} color="#CC2229" />}
       bg="#FEE2E2"
       border="#FCA5A5"
       title="Application not approved"

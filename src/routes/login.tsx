@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef, type FormEvent } from "react";
-import { Eye, EyeOff, ScanFace, Check } from "lucide-react";
+import { IconCheck, IconEye, IconEyeOff, IconScan } from "@tabler/icons-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
@@ -240,7 +240,7 @@ function LoginPage() {
             fontWeight: 600,
           }}
         >
-          <ScanFace size={20} />
+          <IconScan size={20} />
           {enrolled ? "Sign in with Face ID" : "Set up Face ID"}
         </button>
       )}
@@ -363,7 +363,7 @@ function LoginPage() {
               aria-label={showPassword ? "Hide password" : "Show password"}
               tabIndex={-1}
             >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showPassword ? <IconEyeOff size={18} /> : <IconEye size={18} />}
             </button>
           </div>
 
@@ -391,7 +391,7 @@ function LoginPage() {
                   flexShrink: 0,
                 }}
               >
-                {remember && <Check size={12} strokeWidth={3} color="#fff" />}
+                {remember && <IconCheck size={12} stroke={3} color="#fff" />}
               </div>
               Remember me
             </button>

@@ -1,16 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import {
-  ArrowLeft,
-  BookOpen,
-  ChevronDown,
-  ChevronUp,
-  FileCheck,
-  Navigation,
-  Search,
-  Shield,
-  Trophy,
-} from "lucide-react";
+import { IconArrowLeft, IconBook, IconChevronDown, IconChevronUp, IconFileCheck, IconNavigation, IconSearch, IconShield, IconTrophy } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 
@@ -203,9 +193,9 @@ function QAItem({ type, q, a }: { type: "SHOW" | "TELL"; q: string; a: string })
           {q}
         </span>
         {open ? (
-          <ChevronUp size={16} color="#6B7280" />
+          <IconChevronUp size={16} color="#6B7280" />
         ) : (
-          <ChevronDown size={16} color="#6B7280" />
+          <IconChevronDown size={16} color="#6B7280" />
         )}
       </button>
       {open && (
@@ -450,7 +440,7 @@ function TestDayPage() {
           className="inline-flex items-center justify-center"
           style={{ background: "transparent", border: "none", color: "#FFFFFF" }}
         >
-          <ArrowLeft size={22} color="#FFFFFF" />
+          <IconArrowLeft size={22} color="#FFFFFF" />
         </button>
         <h1 className="text-[16px] font-semibold" style={POPPINS}>
           Test day — {pupil?.name ?? "…"}
@@ -488,7 +478,7 @@ function TestDayPage() {
       {/* Documents */}
       <Card>
         <div className="flex items-center gap-2 mb-2">
-          <FileCheck size={18} color="#1877D6" />
+          <IconFileCheck size={18} color="#1877D6" />
           <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
             Documents to bring
           </h2>
@@ -508,7 +498,7 @@ function TestDayPage() {
       {/* Preparation */}
       <Card>
         <div className="flex items-center gap-2 mb-2">
-          <Shield size={18} color="#1877D6" />
+          <IconShield size={18} color="#1877D6" />
           <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
             Pre-test preparation
           </h2>
@@ -533,7 +523,7 @@ function TestDayPage() {
           className="w-full flex items-center justify-between"
         >
           <span className="flex items-center gap-2">
-            <BookOpen size={18} color="#1877D6" />
+            <IconBook size={18} color="#1877D6" />
             <span
               className="text-[15px] font-semibold"
               style={{ color: "#0B1F3A", ...POPPINS }}
@@ -542,9 +532,9 @@ function TestDayPage() {
             </span>
           </span>
           {qaOpen ? (
-            <ChevronUp size={18} color="#6B7280" />
+            <IconChevronUp size={18} color="#6B7280" />
           ) : (
-            <ChevronDown size={18} color="#6B7280" />
+            <IconChevronDown size={18} color="#6B7280" />
           )}
         </button>
         {!qaOpen && (
@@ -567,7 +557,7 @@ function TestDayPage() {
       {/* Navigate */}
       <Card>
         <div className="flex items-center gap-2 mb-2">
-          <Navigation size={18} color="#1877D6" />
+          <IconNavigation size={18} color="#1877D6" />
           <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
             Navigate to test centre
           </h2>
@@ -594,14 +584,14 @@ function TestDayPage() {
         {showCentrePicker && (
           <div className="mt-2" style={{ position: "relative" }}>
             <div style={{ position: "relative" }}>
-              <Search
+              <IconSearch
                 size={16}
                 color="#64748B"
                 style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}
               />
               <input
                 type="text"
-                placeholder="Search test centres..."
+                placeholder="IconSearch test centres..."
                 value={centreSearch}
                 onChange={(e) => setCentreSearch(e.target.value)}
                 style={{
@@ -711,7 +701,7 @@ function TestDayPage() {
       {/* Post test */}
       <Card>
         <div className="flex items-center gap-2 mb-3">
-          <Trophy size={18} color="#1877D6" />
+          <IconTrophy size={18} color="#1877D6" />
           <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
             Record test result
           </h2>

@@ -1,12 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import {
-  PoundSterling,
-  Receipt,
-  TrendingUp,
-  Car,
-  Download,
-} from "lucide-react";
+import { IconCar, IconCurrencyPound, IconDownload, IconReceipt, IconTrendingUp } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
@@ -318,7 +312,7 @@ function TaxReportPage() {
       {/* INCOME */}
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 16 }}>
         <div className="flex items-center gap-2">
-          <PoundSterling size={18} color="#1877D6" />
+          <IconCurrencyPound size={18} color="#1877D6" />
           <div className="text-[15px] font-semibold text-[#0B1F3A]">Income</div>
         </div>
         <div className="mt-2 text-[26px] font-bold" style={{ color: "#1877D6" }}>
@@ -344,7 +338,7 @@ function TaxReportPage() {
       {/* EXPENSES */}
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 12 }}>
         <div className="flex items-center gap-2">
-          <Receipt size={18} color="#1877D6" />
+          <IconReceipt size={18} color="#1877D6" />
           <div className="text-[15px] font-semibold text-[#0B1F3A]">Allowable expenses</div>
         </div>
         <div className="mt-2 text-[26px] font-bold" style={{ color: "#1877D6" }}>
@@ -366,7 +360,7 @@ function TaxReportPage() {
       {/* PROFIT */}
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 12 }}>
         <div className="flex items-center gap-2">
-          <TrendingUp size={18} color="#0B1F3A" />
+          <IconTrendingUp size={18} color="#0B1F3A" />
           <div className="text-[15px] font-semibold text-[#0B1F3A]">Net profit</div>
         </div>
         <div className="mt-2 text-[26px] font-bold" style={{ color: "#0B1F3A" }}>
@@ -384,7 +378,7 @@ function TaxReportPage() {
       {/* MILEAGE */}
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 12 }}>
         <div className="flex items-center gap-2">
-          <Car size={18} color="#1877D6" />
+          <IconCar size={18} color="#1877D6" />
           <div className="text-[15px] font-semibold text-[#0B1F3A]">Mileage allowance</div>
         </div>
         <div className="mt-2 text-[26px] font-bold" style={{ color: "#1877D6" }}>
@@ -432,7 +426,7 @@ function TaxReportPage() {
           className="mt-4 w-full flex items-center justify-center gap-2 text-white text-[14px] font-semibold"
           style={{ backgroundColor: "#1877D6", height: 44, borderRadius: 10 }}
         >
-          <Download size={16} /> Download summary
+          <IconDownload size={16} /> IconDownload summary
         </button>
       </div>
 

@@ -1,8 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { IconAlertTriangle, IconArrowLeft, IconBolt, IconCalendar, IconChevronDown, IconChevronUp, IconClock, IconCoffee, IconMessage, IconPlus, IconSend, IconUsers } from "@tabler/icons-react";
-import { Check, ChevronRight, RefreshCw, Sparkles, XCircle, X as XIcon } from "lucide-react";
+import { IconAlertTriangle, IconArrowLeft, IconBolt, IconCalendar, IconCheck, IconChevronDown, IconChevronRight, IconChevronUp, IconCircleX, IconClock, IconCoffee, IconMessage, IconPlus, IconRefresh, IconSend, IconSparkles, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -1545,7 +1544,7 @@ function GapsPage() {
             gap: 10,
           }}
         >
-          <XCircle size={16} color="#CC2229" style={{ flexShrink: 0 }} />
+          <IconCircleX size={16} color="#CC2229" style={{ flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontWeight: 600, fontSize: 13, color: "#0B1F3A" }}>
               Lesson cancelled — fill this slot?
@@ -1575,7 +1574,7 @@ function GapsPage() {
               flexShrink: 0,
             }}
           >
-            <XIcon size={16} />
+            <IconX size={16} />
           </button>
         </div>
       )}
@@ -1903,7 +1902,7 @@ function GapsPage() {
                             justifyContent: "center",
                           }}
                         >
-                          <Check size={14} color="#1877D6" strokeWidth={2.5} />
+                          <IconCheck size={14} color="#1877D6" stroke={2.5} />
                         </div>
                       )}
 
@@ -2062,18 +2061,18 @@ function GapsPage() {
                                     flexShrink: 0,
                                   }}
                                 >
-                                  <Check size={10} color="#FFFFFF" strokeWidth={3} />
+                                  <IconCheck size={10} color="#FFFFFF" stroke={3} />
                                 </div>
                               ) : (
                                 !hasMatches && (
-                                  <RefreshCw
+                                  <IconRefresh
                                     size={16}
                                     color="#C7CCD4"
                                     style={{ flexShrink: 0 }}
                                   />
                                 )
                               )}
-                              <ChevronRight
+                              <IconChevronRight
                                 size={16}
                                 color="#C7CCD4"
                                 style={{ flexShrink: 0 }}

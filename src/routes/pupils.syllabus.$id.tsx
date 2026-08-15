@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { IconChevronDown } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -328,7 +328,7 @@ function PupilSyllabusPage() {
                       <span className="text-[11px]" style={{ color: "#6B7280" }}>
                         {completed}/{total} complete
                       </span>
-                      <ChevronDown
+                      <IconChevronDown
                         size={18}
                         color="#0B1F3A"
                         style={{
