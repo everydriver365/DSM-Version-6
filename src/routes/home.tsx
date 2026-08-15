@@ -6416,17 +6416,28 @@ function HomePage() {
                                overflow: 'hidden',
                              }}
                            >
-                              <button
-                                type="button"
-                                style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
-                                onClick={(ev) => {
-                                  ev.stopPropagation();
-                                  setActionsOpenForLesson(null);
-                                  navigate({ to: '/lessons/edit/$id', params: { id: l.id } });
-                                }}
-                              >
-                                Edit lesson
-                              </button>
+                               <button
+                                 type="button"
+                                 style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
+                                 onClick={(ev) => {
+                                   ev.stopPropagation();
+                                   setActionsOpenForLesson(null);
+                                   setDetailsSheetForLesson(l);
+                                 }}
+                               >
+                                 View details
+                               </button>
+                               <button
+                                 type="button"
+                                 style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
+                                 onClick={(ev) => {
+                                   ev.stopPropagation();
+                                   setActionsOpenForLesson(null);
+                                   navigate({ to: '/lessons/edit/$id', params: { id: l.id } });
+                                 }}
+                               >
+                                 Edit lesson
+                               </button>
                               <button
                                 type="button"
                                 style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
