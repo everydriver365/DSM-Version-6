@@ -24,6 +24,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TaxReportRouteImport } from './routes/tax-report'
 import { Route as TaxRouteImport } from './routes/tax'
 import { Route as TakePaymentRouteImport } from './routes/take-payment'
+import { Route as SubscriptionSuccessRouteImport } from './routes/subscription-success'
 import { Route as SubscriptionRouteImport } from './routes/subscription'
 import { Route as StandardsRouteImport } from './routes/standards'
 import { Route as SquareRouteImport } from './routes/square'
@@ -249,6 +250,11 @@ const TaxRoute = TaxRouteImport.update({
 const TakePaymentRoute = TakePaymentRouteImport.update({
   id: '/take-payment',
   path: '/take-payment',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscriptionSuccessRoute = SubscriptionSuccessRouteImport.update({
+  id: '/subscription-success',
+  path: '/subscription-success',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SubscriptionRoute = SubscriptionRouteImport.update({
@@ -1101,6 +1107,7 @@ export interface FileRoutesByFullPath {
   '/square': typeof SquareRoute
   '/standards': typeof StandardsRoute
   '/subscription': typeof SubscriptionRoute
+  '/subscription-success': typeof SubscriptionSuccessRoute
   '/take-payment': typeof TakePaymentRoute
   '/tax': typeof TaxRoute
   '/tax-report': typeof TaxReportRoute
@@ -1265,6 +1272,7 @@ export interface FileRoutesByTo {
   '/square': typeof SquareRoute
   '/standards': typeof StandardsRoute
   '/subscription': typeof SubscriptionRoute
+  '/subscription-success': typeof SubscriptionSuccessRoute
   '/take-payment': typeof TakePaymentRoute
   '/tax': typeof TaxRoute
   '/tax-report': typeof TaxReportRoute
@@ -1434,6 +1442,7 @@ export interface FileRoutesById {
   '/square': typeof SquareRoute
   '/standards': typeof StandardsRoute
   '/subscription': typeof SubscriptionRoute
+  '/subscription-success': typeof SubscriptionSuccessRoute
   '/take-payment': typeof TakePaymentRoute
   '/tax': typeof TaxRoute
   '/tax-report': typeof TaxReportRoute
@@ -1603,6 +1612,7 @@ export interface FileRouteTypes {
     | '/square'
     | '/standards'
     | '/subscription'
+    | '/subscription-success'
     | '/take-payment'
     | '/tax'
     | '/tax-report'
@@ -1767,6 +1777,7 @@ export interface FileRouteTypes {
     | '/square'
     | '/standards'
     | '/subscription'
+    | '/subscription-success'
     | '/take-payment'
     | '/tax'
     | '/tax-report'
@@ -1935,6 +1946,7 @@ export interface FileRouteTypes {
     | '/square'
     | '/standards'
     | '/subscription'
+    | '/subscription-success'
     | '/take-payment'
     | '/tax'
     | '/tax-report'
@@ -2104,6 +2116,7 @@ export interface RootRouteChildren {
   SquareRoute: typeof SquareRoute
   StandardsRoute: typeof StandardsRoute
   SubscriptionRoute: typeof SubscriptionRoute
+  SubscriptionSuccessRoute: typeof SubscriptionSuccessRoute
   TakePaymentRoute: typeof TakePaymentRoute
   TaxRoute: typeof TaxRoute
   TaxReportRoute: typeof TaxReportRoute
@@ -2264,6 +2277,13 @@ declare module '@tanstack/react-router' {
       path: '/take-payment'
       fullPath: '/take-payment'
       preLoaderRoute: typeof TakePaymentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscription-success': {
+      id: '/subscription-success'
+      path: '/subscription-success'
+      fullPath: '/subscription-success'
+      preLoaderRoute: typeof SubscriptionSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/subscription': {
@@ -3510,6 +3530,7 @@ const rootRouteChildren: RootRouteChildren = {
   SquareRoute: SquareRoute,
   StandardsRoute: StandardsRoute,
   SubscriptionRoute: SubscriptionRoute,
+  SubscriptionSuccessRoute: SubscriptionSuccessRoute,
   TakePaymentRoute: TakePaymentRoute,
   TaxRoute: TaxRoute,
   TaxReportRoute: TaxReportRoute,
