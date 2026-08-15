@@ -85,7 +85,7 @@ function LiveNewsPage() {
   const playingRef = useRef<PodcastEpisode | null>(null);
   const lastSaveRef = useRef(0);
   const restartRef = useRef<string | null>(null);
-  const resumeTargetRef = useRef<{ id: string; target: number; tries: number } | null>(null);
+  const resumeTargetRef = useRef<{ id: string; target: number; startedAt: number } | null>(null);
 
   useEffect(() => {
     const stored = loadProgress();
@@ -124,19 +124,19 @@ function LiveNewsPage() {
     if (resumeTargetRef.current?.id !== ep.id) {
       if (restartRef.current === ep.id) {
         restartRef.current = null;
-        resumeTargetRef.current = { id: ep.id, target: 0, tries: Date.now() };
+        resumeTargetRef.current = { id: ep.id, target: 0, startedAt: Date.now() };
         el.currentTime = 0;
         setCurrentTime(0);
         return;
       }
       const resumeAt = resumePosition(progressRef.current[ep.id]);
       const usable = resumeAt > 0 && (!el.duration || resumeAt < el.duration - 30);
-      resumeTargetRef.current = { id: ep.id, target: usable ? resumeAt : 0, tries: Date.now() };
+      resumeTargetRef.current = { id: ep.id, target: usable ? resumeAt : 0, startedAt: Date.now() };
     }
     const pending = resumeTargetRef.current;
     // `tries` holds the moment we started resuming; some CDNs ignore a seek
     // issued before playback is underway, so keep retrying for a short window.
-    if (!pending || pending.target <= 0 || Date.now() - pending.tries > 20000) return;
+    if (!pending || pending.target <= 0 || Date.now() - pending.startedAt > 20000) return;
     if (Math.abs(el.currentTime - pending.target) < 3) {
       pending.target = 0; // resumed — stop tracking so manual seeks stick
       return;
