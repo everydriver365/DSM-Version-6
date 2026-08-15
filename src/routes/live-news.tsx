@@ -95,6 +95,14 @@ function LiveNewsPage() {
   }, []);
 
   const activeSession = sessions?.find((s) => s.is_live) ?? null;
+  const visibleEpisodes = (episodes ?? []).filter((ep) =>
+    showFilter === "all"
+      ? true
+      : showFilter === "featured"
+        ? ep.showFeatured
+        : ep.showId === showFilter,
+  );
+
   const upcomingSessions = sessions?.filter((s) => !s.is_live) ?? [];
   const allSessions = activeSession ? [activeSession, ...upcomingSessions] : upcomingSessions;
 
