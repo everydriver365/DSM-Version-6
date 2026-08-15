@@ -176,6 +176,33 @@ export const PODCAST_SHOWS: PodcastShow[] = [
   },
 ];
 
+/** Hand-picked episodes pinned into the featured list regardless of feed recency. */
+export const CURATED_EPISODES: PodcastEpisode[] = [
+  {
+    id: "ted-talks-daily:68b07a11674c25e0eafd6f7e",
+    title: "Do schools kill creativity? | Sir Ken Robinson",
+    description:
+      "Sir Ken Robinson makes an entertaining and profoundly moving case for creating an education system that nurtures (rather than undermines) creativity.",
+    showNotes:
+      "Sir Ken Robinson makes an entertaining and profoundly moving case for creating an education system that nurtures (rather than undermines) creativity. This episode originally aired in 2006.",
+    transcriptUrl: null,
+    transcriptType: null,
+    audioUrl:
+      "https://sphinx.acast.com/p/open/s/67587e77c705e441797aff96/e/68b07a11674c25e0eafd6f7e/media.mp3",
+    pubDate: "2025-08-30T06:00:00.000Z",
+    durationSecs: 1220,
+    imageUrl: "https://assets.pippa.io/shows/67587e77c705e441797aff96/show-cover.png",
+    link: "https://www.ted.com/talks/sir_ken_robinson_do_schools_kill_creativity",
+    showId: "ted-talks-daily",
+    showName: "TED Talks Daily",
+    showFeatured: true,
+    showRecommended: true,
+    showCategories: ["TED", "Ideas", "Learning", "General"],
+  },
+];
+
+
+
 
 function tagText(xml: string, tag: string): string {
   const m = xml.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, "i"));
@@ -265,11 +292,15 @@ export async function fetchAllEpisodes(): Promise<PodcastEpisode[]> {
     return Number.isNaN(ms) ? 0 : ms;
   };
 
-  return results
+  const fetched = results
     .flatMap((r) => (r.status === "fulfilled" ? r.value : []))
     .sort((a, b) => time(b) - time(a))
     .slice(0, 60);
+
+  const seen = new Set(CURATED_EPISODES.map((ep) => ep.id));
+  return [...CURATED_EPISODES, ...fetched.filter((ep) => !seen.has(ep.id))];
 }
+
 
 export async function fetchTranscriptText(url: string, type: string | null): Promise<string> {
   const res = await fetch(url);
