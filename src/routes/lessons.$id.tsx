@@ -1,3 +1,4 @@
+import { useGoBack } from "@/hooks/useGoBack";
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -320,14 +321,7 @@ function LessonDetailPage() {
       })()
     : null;
 
-  const canGoBack = typeof window !== "undefined" && window.history.length > 1;
-  function goBack(fallback: string) {
-    if (canGoBack) {
-      navigate({ to: -1 as any });
-    } else {
-      navigate({ to: fallback as never });
-    }
-  }
+  const goBack = useGoBack();
 
   return (
     <PageLayout className="pb-8" style={POPPINS}>

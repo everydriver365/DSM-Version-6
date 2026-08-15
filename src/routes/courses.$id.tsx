@@ -1,3 +1,4 @@
+import { useGoBack } from "@/hooks/useGoBack";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
@@ -558,14 +559,7 @@ function CourseDetailPage() {
     );
   }
 
-  const canGoBack = typeof window !== "undefined" && window.history.length > 1;
-  function goBack(fallback: string) {
-    if (canGoBack) {
-      navigate({ to: -1 as any });
-    } else {
-      navigate({ to: fallback as never });
-    }
-  }
+  const goBack = useGoBack();
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>

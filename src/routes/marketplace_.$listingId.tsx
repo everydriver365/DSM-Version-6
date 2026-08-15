@@ -1,3 +1,4 @@
+import { useGoBack } from "@/hooks/useGoBack";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 
@@ -147,14 +148,7 @@ function ListingDetailPage() {
   const { listingId } = Route.useParams();
   const { from } = Route.useSearch();
   const navigate = useNavigate();
-  const canGoBack = typeof window !== "undefined" && window.history.length > 1;
-  function goBack(fallback: string) {
-    if (canGoBack) {
-      navigate({ to: -1 as any });
-    } else {
-      navigate({ to: fallback as never });
-    }
-  }
+  const goBack = useGoBack();
 
 
   const [listing, setListing] = useState<Listing | null>(null);

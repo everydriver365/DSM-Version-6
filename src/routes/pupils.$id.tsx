@@ -1,3 +1,4 @@
+import { useGoBack } from "@/hooks/useGoBack";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -1355,14 +1356,7 @@ function PupilDetailPage() {
   const completedLessonCount = allLessons.filter(l => l.status === 'completed' && l.deleted_at === null).length || 0;
   const confirmedLessonCount = allLessons.filter(l => ['confirmed', 'completed', 'in_progress'].includes(l.status) && l.deleted_at === null).length || 0;
 
-  const canGoBack = typeof window !== "undefined" && window.history.length > 1;
-  function goBack(fallback: string) {
-    if (canGoBack) {
-      navigate({ to: -1 as any });
-    } else {
-      navigate({ to: fallback as never });
-    }
-  }
+  const goBack = useGoBack();
 
 
   return (

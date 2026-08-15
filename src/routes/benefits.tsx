@@ -1,3 +1,4 @@
+import { useGoBack } from "@/hooks/useGoBack";
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
@@ -295,14 +296,7 @@ function BenefitsPage() {
     })();
   }, []);
 
-  const canGoBack = typeof window !== 'undefined' && window.history.length > 1;
-  function goBack(fallback: string) {
-    if (canGoBack) {
-      navigate({ to: -1 as any });
-    } else {
-      navigate({ to: fallback as never });
-    }
-  }
+  const goBack = useGoBack();
 
   const isPaid = websiteTier !== 'free';
 

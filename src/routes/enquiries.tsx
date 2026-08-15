@@ -1,3 +1,4 @@
+import { useGoBack } from "@/hooks/useGoBack";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
@@ -145,14 +146,7 @@ const SECTION_HEADER: React.CSSProperties = {
 
 function EnquiriesPage() {
   const navigate = useNavigate();
-  const canGoBack = typeof window !== "undefined" && window.history.length > 1;
-  function goBack(fallback: string) {
-    if (canGoBack) {
-      navigate({ to: -1 as any });
-    } else {
-      navigate({ to: fallback as never });
-    }
-  }
+  const goBack = useGoBack();
   const [userId, setUserId] = useState<string | null>(null);
   const [enquiries, setEnquiries] = useState<EnquiryRow[]>([]);
   const [loading, setLoading] = useState(true);
