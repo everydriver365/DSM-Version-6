@@ -16,7 +16,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 async function syncToGoogleCalendar(userId: string, token: string) {
   try {
-    await fetch(SUPABASE_URL + '/functions/v1/sync-external-calendar', {
+    const res = await fetch(SUPABASE_URL + '/functions/v1/sync-external-calendar', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -25,6 +25,10 @@ async function syncToGoogleCalendar(userId: string, token: string) {
       },
       body: JSON.stringify({ instructorId: userId }),
     });
+    if (!res.ok) {
+      // Calendar provider rate-limited (429) or errored — don't block the user
+      console.warn('[sync] calendar sync skipped:', res.status);
+    }
   } catch (e) {
     console.warn('[sync] failed', e);
   }
