@@ -3,18 +3,25 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   IconBookmark,
   IconBookmarkFilled,
+  IconBriefcase,
   IconBroadcast,
+  IconCar,
   IconChevronRight,
   IconClock,
+  IconHeart,
+  IconLayoutGrid,
   IconMicrophone,
   IconNews,
   IconPlayerPlayFilled,
   IconPlayerPauseFilled,
   IconPlayerTrackNextFilled,
+  IconSchool,
   IconSearch,
   IconShare,
+  IconTag,
   IconX,
 } from "@tabler/icons-react";
+
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
