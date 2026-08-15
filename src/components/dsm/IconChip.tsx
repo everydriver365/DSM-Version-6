@@ -1,8 +1,8 @@
-import type { LucideIcon } from "lucide-react";
+import type { Icon as TablerIcon } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 
 type IconChipProps = {
-  icon: LucideIcon;
+  icon: TablerIcon;
   size?: "sm" | "lg";
   tone?: "blue" | "navy" | "success";
   className?: string;
@@ -33,7 +33,7 @@ export function IconChip({ icon: Icon, size = "sm", tone = "blue", className }: 
         className,
       )}
     >
-      <Icon size={iconSize} strokeWidth={2} />
+      <Icon size={iconSize} stroke={2} />
     </span>
   );
 }

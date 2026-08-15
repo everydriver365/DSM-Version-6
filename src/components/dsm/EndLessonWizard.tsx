@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { IconCircleCheck, IconGift, IconLoader2, IconPrinter } from "@tabler/icons-react";
-import { Banknote, ArrowLeftRight, PartyPopper, QrCode } from "lucide-react";
+import { IconCashBanknote, IconArrowsLeftRight, IconConfetti, IconQrcode } from "@tabler/icons-react";
 import { QRCodeSVG } from "qrcode.react";
 
 type ProgressLevel =
@@ -1080,8 +1080,8 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             <div className="grid grid-cols-2 gap-2 mt-4">
               {(
                 [
-                  { k: "cash", label: "Cash", icon: <Banknote size={20} /> },
-                  { k: "bank", label: "Bank transfer", icon: <ArrowLeftRight size={20} /> },
+                  { k: "cash", label: "Cash", icon: <IconCashBanknote size={20} /> },
+                  { k: "bank", label: "Bank transfer", icon: <IconArrowsLeftRight size={20} /> },
                   { k: "already_paid", label: "Already paid", icon: <IconCircleCheck stroke={1.5} size={20} /> },
                   { k: "waived", label: "Waived", icon: <IconGift stroke={1.5} size={20} /> },
                 ] as { k: PaymentMethod; label: string; icon: React.ReactNode }[]
@@ -1166,7 +1166,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               {qrGenerating ? (
                 <IconLoader2 stroke={1.5} size={16} className="animate-spin" />
               ) : (
-                <QrCode size={16} />
+                <IconQrcode size={16} />
               )}
               {qrGenerating ? "Generating…" : qrUrl ? "QR code ready" : "Show QR code"}
             </button>
@@ -1406,7 +1406,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             {courseComplete ? (
               <>
                 <div style={{ position: "relative" }}>
-                  <PartyPopper size={64} color="#1877D6" />
+                  <IconConfetti size={64} color="#1877D6" />
                   <div className="confetti-burst" aria-hidden />
                 </div>
                 <div

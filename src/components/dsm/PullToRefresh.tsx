@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RefreshCw } from "lucide-react";
+import { IconRefresh } from "@tabler/icons-react";
 import { haptic } from "@/lib/haptics";
 
 // Wrap any scrollable page section. Triggers onRefresh when user pulls down
@@ -81,7 +81,7 @@ export function PullToRefresh({
             opacity: refreshing ? 1 : progress,
           }}
         >
-          <RefreshCw
+          <IconRefresh
             className={`h-4 w-4 text-[#1877D6] ${refreshing ? "animate-spin" : ""}`}
           />
         </div>

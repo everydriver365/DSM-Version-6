@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { IconCalendar, IconChevronRight, IconClock, IconUsers } from "@tabler/icons-react";
-import { Rocket, UserPlus } from "lucide-react";
+import { IconRocket, IconUserPlus } from "@tabler/icons-react";
 import { supabase } from "../../lib/supabaseClient";
 
 const POPPINS = { fontFamily: "Poppins, system-ui, sans-serif" } as const;
@@ -62,7 +62,7 @@ export function WelcomeOverlay({ userId, instructorName, onDismiss }: WelcomeOve
 
   const steps: Step[] = [
     {
-      icon: <UserPlus size={20} color="#fff" />,
+      icon: <IconUserPlus size={20} color="#fff" />,
       bg: "#1877D6",
       title: "Add your first pupil",
       subtitle: "Start tracking lessons and progress",
@@ -123,7 +123,7 @@ export function WelcomeOverlay({ userId, instructorName, onDismiss }: WelcomeOve
             margin: "0 auto",
           }}
         >
-          <Rocket size={40} color="#fff" />
+          <IconRocket size={40} color="#fff" />
         </div>
         <div style={{ fontSize: 24, fontWeight: 700, color: "#fff", marginTop: 16 }}>
           {`Welcome${firstName ? ", " + firstName : ""}!`}

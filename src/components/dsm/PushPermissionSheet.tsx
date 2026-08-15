@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Bell } from "lucide-react";
+import { IconBell } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { BottomSheet, PrimaryButton, GhostButton } from "./BottomSheetV2";
 import { pushSupported, subscribeToPush } from "../../lib/pushSubscription";
@@ -73,7 +73,7 @@ export function PushPermissionSheet({ userId }: PushPermissionSheetProps) {
           className="flex items-center justify-center rounded-full shrink-0"
           style={{ width: 40, height: 40, backgroundColor: "#EEF4FB" }}
         >
-          <Bell size={20} color="#1877D6" />
+          <IconBell size={20} color="#1877D6" />
         </div>
         <div className="min-w-0">
           <div className="text-[14px] font-semibold" style={{ ...FONT, color: "#0B1F3A" }}>
