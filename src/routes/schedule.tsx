@@ -1,8 +1,15 @@
 import { pupilColour } from "@/components/PupilAvatar";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { format } from "date-fns";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { IconArrowLeft, IconArrowRight, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
-import { IconArrowDown, IconArrowsMove } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowsMove, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
@@ -1025,6 +1032,8 @@ function SchedulePage() {
         }}
         onSelectDate={(key) => {
           setSelectedDate(key);
+          const [y, m, d] = key.split("-").map(Number);
+          setViewMonth(new Date(y, m - 1, d));
           scrollToDate(key);
         }}
         onToday={() => {
@@ -2852,7 +2861,40 @@ function MonthStrip({
           <IconChevronLeft size={18} stroke={2} />
         </button>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{monthLabel}</div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                aria-label="Jump to date"
+                style={{
+                  background: "transparent",
+                  border: 0,
+                  cursor: "pointer",
+                  padding: 4,
+                  color: "#0B1F3A",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{monthLabel}</div>
+                <IconCalendar size={16} stroke={2} />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 pointer-events-auto" align="center">
+              <Calendar
+                mode="single"
+                selected={selectedDate ? new Date(selectedDate + "T12:00:00") : undefined}
+                onSelect={(date) => {
+                  if (date) {
+                    onSelectDate(ymdLocal(date));
+                  }
+                }}
+                initialFocus
+                className="p-3"
+              />
+            </PopoverContent>
+          </Popover>
           <button
             type="button"
             onClick={onToday}
