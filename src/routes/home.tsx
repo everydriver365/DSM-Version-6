@@ -6237,7 +6237,8 @@ function HomePage() {
                                 alignSelf: 'stretch',
                               }}
                             />
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0, paddingTop: 2 }}>
+                            <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
                                 <span style={{ flex: 1, minWidth: 0, fontSize: 15, fontWeight: 600, color: isCancelled ? '#6B7280' : '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none', fontFamily: PF }}>
                                   {name}
                                 </span>
