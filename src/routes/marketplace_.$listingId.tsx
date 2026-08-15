@@ -304,7 +304,7 @@ function ListingDetailPage() {
       >
         <button
           type="button"
-          onClick={goBack}
+          onClick={() => goBack('/marketplace')}
           aria-label="Back"
           style={{
             width: 36,
@@ -347,7 +347,7 @@ function ListingDetailPage() {
           </div>
           <button
             type="button"
-            onClick={goBack}
+            onClick={() => goBack('/marketplace')}
             style={{
               background: "none",
               border: "none",
