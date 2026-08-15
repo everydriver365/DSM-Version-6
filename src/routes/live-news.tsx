@@ -827,6 +827,7 @@ function LiveNewsPage() {
                               WebkitLineClamp: 2,
                               WebkitBoxOrient: "vertical",
                               overflow: "hidden",
+                              whiteSpace: "normal",
                               margin: "2px 0 8px",
                             }}
                           >
@@ -1021,6 +1022,7 @@ function LiveNewsPage() {
                               WebkitLineClamp: 2,
                               WebkitBoxOrient: "vertical",
                               overflow: "hidden",
+                              whiteSpace: "normal",
                             }}
                           >
                             {sh.name}
@@ -1485,9 +1487,12 @@ function MiniPlayer({
                 fontSize: 12.5,
                 fontWeight: 700,
                 color: "#0B1F3A",
-                whiteSpace: "nowrap",
+                lineHeight: 1.35,
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
                 overflow: "hidden",
-                textOverflow: "ellipsis",
+                whiteSpace: "normal",
               }}
             >
               {episode.title}
@@ -1744,7 +1749,19 @@ function EpisodeModal({
             >
               {episode.showName}
             </div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.35 }}>
+            <div
+              style={{
+                fontSize: 15,
+                fontWeight: 700,
+                color: "#0B1F3A",
+                lineHeight: 1.35,
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                whiteSpace: "normal",
+              }}
+            >
               {episode.title}
             </div>
             <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 4 }}>
@@ -2129,7 +2146,6 @@ function EpisodeCard({
           </span>
         ) : null}
           <div
-
             style={{
               fontSize: 14,
               fontWeight: 700,
@@ -2139,6 +2155,7 @@ function EpisodeCard({
               WebkitLineClamp: 2,
               WebkitBoxOrient: "vertical",
               overflow: "hidden",
+              whiteSpace: "normal",
               lineHeight: 1.4,
               marginBottom: 4,
             }}
