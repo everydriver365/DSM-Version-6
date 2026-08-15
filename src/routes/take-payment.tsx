@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronDown, Delete, QrCode, CreditCard, Banknote, Share2, Copy, X, CircleCheck } from "lucide-react";
+import { IconBackspace, IconCashBanknote, IconChevronDown, IconChevronLeft, IconCircleCheck, IconCopy, IconCreditCard, IconQrcode, IconShare, IconX } from "@tabler/icons-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -454,7 +454,7 @@ function TakePaymentPage() {
             cursor: "pointer",
           }}
         >
-          <X size={18} />
+          <IconX size={18} />
         </button>
       </div>
 
@@ -526,7 +526,7 @@ function TakePaymentPage() {
                 </option>
               ))}
             </select>
-            <ChevronDown size={14} color="#8A8A8E" style={{ position: "absolute", right: 12, pointerEvents: "none" }} />
+            <IconChevronDown size={14} color="#8A8A8E" style={{ position: "absolute", right: 12, pointerEvents: "none" }} />
           </div>
           <input
             type="text"
@@ -601,9 +601,9 @@ function TakePaymentPage() {
         >
           {(
             [
-              { k: "qr" as const, label: "QR Code", icon: <QrCode size={15} /> },
-              { k: "card" as const, label: "Card", icon: <CreditCard size={15} /> },
-              { k: "cash" as const, label: "Cash/Transfer", icon: <Banknote size={15} /> },
+              { k: "qr" as const, label: "QR Code", icon: <IconQrcode size={15} /> },
+              { k: "card" as const, label: "Card", icon: <IconCreditCard size={15} /> },
+              { k: "cash" as const, label: "Cash/Transfer", icon: <IconCashBanknote size={15} /> },
             ]
           ).map((t) => {
             const active = tab === t.k;
@@ -660,7 +660,7 @@ function TakePaymentPage() {
                   >
                     {k === "back" ? (
                       <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 22, height: 22 }}>
-                        <Delete size={22} color="#6B6B6F" style={{ display: "block" }} />
+                        <IconBackspace size={22} color="#6B6B6F" style={{ display: "block" }} />
                       </span>
                     ) : k}
                   </button>
@@ -744,7 +744,7 @@ function TakePaymentPage() {
                   >
                     {k === "back" ? (
                       <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 22, height: 22 }}>
-                        <Delete size={22} color="#6B6B6F" style={{ display: "block" }} />
+                        <IconBackspace size={22} color="#6B6B6F" style={{ display: "block" }} />
                       </span>
                     ) : k}
                   </button>
@@ -775,7 +775,7 @@ function TakePaymentPage() {
                     <option value="cash">Cash</option>
                     <option value="bank">Bank transfer</option>
                   </select>
-                  <ChevronDown size={14} color="#8A8A8E" style={{ position: "absolute", right: 12, pointerEvents: "none" }} />
+                  <IconChevronDown size={14} color="#8A8A8E" style={{ position: "absolute", right: 12, pointerEvents: "none" }} />
                 </div>
                 <button
                   type="button"
@@ -832,7 +832,7 @@ function TakePaymentPage() {
                 color: "#fff",
               }}
             >
-              <CircleCheck size={36} />
+              <IconCircleCheck size={36} />
             </div>
             <div
               style={{
@@ -894,7 +894,7 @@ function TakePaymentPage() {
               zIndex: 1,
             }}
           >
-            <X size={18} />
+            <IconX size={18} />
           </button>
 
           {/* Top section (flex 0) */}
@@ -958,7 +958,7 @@ function TakePaymentPage() {
                   gap: 6,
                 }}
               >
-                <CircleCheck size={16} /> Payment received
+                <IconCircleCheck size={16} /> Payment received
               </div>
             ) : (
               <div style={{ fontSize: 12, color: "#fff", opacity: 0.7 }}>
@@ -996,7 +996,7 @@ function TakePaymentPage() {
                 cursor: "pointer",
               }}
             >
-              <Share2 size={16} /> Share link
+              <IconShare size={16} /> Share link
             </button>
 
             <button
@@ -1018,7 +1018,7 @@ function TakePaymentPage() {
                 cursor: "pointer",
               }}
             >
-              <X size={16} /> Close
+              <IconX size={16} /> Close
             </button>
           </div>
         </div>

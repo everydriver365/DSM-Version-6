@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, X, ClipboardCheck } from "lucide-react";
+import { IconClipboardCheck, IconPlus, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -124,7 +124,7 @@ function StandardsPage() {
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
           style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
-          <Plus size={15} />
+          <IconPlus size={15} />
           Add check
         </button>
       </div>
@@ -183,7 +183,7 @@ function StandardsPage() {
             className="flex flex-col items-center justify-center text-[13px]"
             style={{ color: "#6B7280", padding: "32px 0" }}
           >
-            <ClipboardCheck size={28} color="#6B7280" />
+            <IconClipboardCheck size={28} color="#6B7280" />
             <div className="mt-2">No standards checks recorded</div>
           </div>
         ) : (
@@ -307,7 +307,7 @@ function SheetShell({
             className="flex items-center justify-center"
             style={{ width: 32, height: 32 }}
           >
-            <X size={18} color="#6B7280" />
+            <IconX size={18} color="#6B7280" />
           </button>
         </div>
         <div className="px-4 pt-2">{children}</div>
