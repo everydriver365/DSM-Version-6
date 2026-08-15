@@ -460,11 +460,79 @@ function LiveNewsPage() {
                   <IconMicrophone size={14} color="#1877D6" stroke={1.8} />
                   <span>
                     Latest episodes from{" "}
-                    <strong style={{ color: "#0B1F3A" }}>The Instructor Podcast</strong>
+                    <strong style={{ color: "#0B1F3A" }}>
+                      {PODCAST_SHOWS.length} instructor podcasts
+                    </strong>
                   </span>
                 </div>
 
-                {episodes.map((ep) => {
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 6,
+                    overflowX: "auto",
+                    paddingBottom: 10,
+                    marginBottom: 4,
+                    scrollbarWidth: "none",
+                  }}
+                >
+                  {[
+                    { id: "all", name: "All" },
+                    { id: "featured", name: "Featured" },
+                    ...PODCAST_SHOWS.map((s) => ({ id: s.id, name: s.name })),
+                  ].map((chip) => {
+                    const active = showFilter === chip.id;
+                    const count =
+                      chip.id === "all"
+                        ? episodes.length
+                        : chip.id === "featured"
+                          ? episodes.filter((e) => e.showFeatured).length
+                          : episodes.filter((e) => e.showId === chip.id).length;
+                    return (
+                      <button
+                        key={chip.id}
+                        type="button"
+                        onClick={() => setShowFilter(chip.id)}
+                        style={{
+                          flexShrink: 0,
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 6,
+                          padding: "7px 12px",
+                          borderRadius: 999,
+                          border: `1px solid ${active ? "#0B1F3A" : "#E4E8EF"}`,
+                          background: active ? "#0B1F3A" : "#fff",
+                          color: active ? "#fff" : "#0B1F3A",
+                          fontFamily: "Poppins, sans-serif",
+                          fontSize: 12.5,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                        }}
+                      >
+                        {chip.name}
+                        {count > 0 && (
+                          <span
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 700,
+                              color: active ? "#fff" : "#1877D6",
+                              opacity: active ? 0.85 : 1,
+                            }}
+                          >
+                            {count}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {visibleEpisodes.length === 0 && (
+                  <EmptyState message="No episodes for this podcast right now" />
+                )}
+
+                {visibleEpisodes.map((ep) => {
+
                   const isOpen = expandedId === ep.id;
                   return (
                     <div
