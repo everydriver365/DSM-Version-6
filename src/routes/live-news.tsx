@@ -843,15 +843,12 @@ function LiveNewsPage() {
                           )}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 11, fontWeight: 600, color: "#1877D6" }}>
+                          <div style={PODCAST_STYLES.showName}>
                             {ep.showName}
                           </div>
                           <div
                             style={{
-                              fontSize: 14,
-                              fontWeight: 700,
-                              color: "#0B1F3A",
-                              lineHeight: 1.35,
+                              ...PODCAST_STYLES.title,
                               display: "-webkit-box",
                               WebkitLineClamp: 2,
                               WebkitBoxOrient: "vertical",
@@ -1042,11 +1039,8 @@ function LiveNewsPage() {
                           </div>
                           <div
                             style={{
-                              fontSize: 13,
-                              fontWeight: 700,
-                              color: "#0B1F3A",
+                              ...PODCAST_STYLES.title,
                               marginTop: 6,
-                              lineHeight: 1.25,
                               display: "-webkit-box",
                               WebkitLineClamp: 2,
                               WebkitBoxOrient: "vertical",
@@ -1056,7 +1050,7 @@ function LiveNewsPage() {
                           >
                             {sh.name}
                           </div>
-                          <div style={{ fontSize: 11, color: "#9CA3AF" }}>
+                          <div style={PODCAST_STYLES.meta}>
                             {latest?.durationSecs ? formatDuration(latest.durationSecs) : "—"}
                           </div>
                         </div>
@@ -1768,22 +1762,17 @@ function EpisodeModal({
               style={{
                 display: "inline-block",
                 background: "#EFF6FF",
-                color: "#1877D6",
                 borderRadius: 6,
                 padding: "2px 6px",
-                fontSize: 10,
-                fontWeight: 700,
                 marginBottom: 5,
+                ...PODCAST_STYLES.pill,
               }}
             >
               {episode.showName}
             </div>
             <div
               style={{
-                fontSize: 15,
-                fontWeight: 700,
-                color: "#0B1F3A",
-                lineHeight: 1.35,
+                ...PODCAST_STYLES.title,
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
@@ -1793,7 +1782,7 @@ function EpisodeModal({
             >
               {episode.title}
             </div>
-            <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 4 }}>
+            <div style={{ ...PODCAST_STYLES.meta, marginTop: 4 }}>
               {formatDate(episode.pubDate)}
               {episode.durationSecs ? ` · ${formatDuration(episode.durationSecs)}` : ""}
             </div>
@@ -2142,13 +2131,11 @@ function EpisodeCard({
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
               background: "#EFF6FF",
-              color: "#1877D6",
               borderRadius: 6,
               padding: "2px 6px",
-              fontSize: 10,
-              fontWeight: 700,
               letterSpacing: "0.02em",
               marginBottom: 5,
+              ...PODCAST_STYLES.pill,
             }}
           >
             {ep.showName}
@@ -2176,16 +2163,12 @@ function EpisodeCard({
         ) : null}
           <div
             style={{
-              fontSize: 14,
-              fontWeight: 700,
-              color: "#0B1F3A",
-              fontFamily: "Poppins, sans-serif",
+              ...PODCAST_STYLES.title,
               display: "-webkit-box",
               WebkitLineClamp: 2,
               WebkitBoxOrient: "vertical",
               overflow: "hidden",
               whiteSpace: "normal",
-              lineHeight: 1.4,
               marginBottom: 4,
             }}
           >
@@ -2193,8 +2176,7 @@ function EpisodeCard({
           </div>
           <div
             style={{
-              fontSize: 11,
-              color: "#9CA3AF",
+              ...PODCAST_STYLES.meta,
               display: "flex",
               alignItems: "center",
               gap: 6,
