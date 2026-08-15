@@ -260,9 +260,14 @@ export async function fetchAllEpisodes(): Promise<PodcastEpisode[]> {
     }),
   );
 
+  const time = (ep: PodcastEpisode) => {
+    const ms = ep.pubDate ? Date.parse(ep.pubDate) : NaN;
+    return Number.isNaN(ms) ? 0 : ms;
+  };
+
   return results
     .flatMap((r) => (r.status === "fulfilled" ? r.value : []))
-    .sort((a, b) => (b.pubDate ?? "").localeCompare(a.pubDate ?? ""))
+    .sort((a, b) => time(b) - time(a))
     .slice(0, 60);
 }
 
