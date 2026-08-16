@@ -325,6 +325,74 @@ function CalendarSyncPage() {
     }
   }
 
+  async function connectGoogleCalendar() {
+    setConnecting(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const res = await fetch("https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/google-calendar-auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+          apikey: SUPABASE_ANON_KEY,
+        },
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch {
+      toast.error("Could not start Google Calendar connection");
+      setConnecting(false);
+    }
+  }
+
+  async function syncNow() {
+    setSyncing(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      const res = await fetch("https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/sync-google-calendar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`,
+          apikey: SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify({ instructorId: userId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(`Synced ${data.eventsImported} events from Google Calendar`);
+        setLastSynced(new Date().toISOString());
+      } else {
+        toast.error(data.message ?? "Sync failed");
+      }
+    } catch {
+      toast.error("Sync failed");
+    } finally {
+      setSyncing(false);
+    }
+  }
+
+  async function disconnect() {
+    if (!userId) return;
+    await supabase
+      .from("instructors")
+      .update({
+        google_calendar_connected: false,
+        google_access_token: null,
+        google_refresh_token: null,
+        google_calendar_id: null,
+        google_token_expiry: null,
+      })
+      .eq("id", userId);
+    setGoogleConnected(false);
+    toast.success("Google Calendar disconnected");
+  }
+
 
 
   async function runSync(urlToUse: string) {
