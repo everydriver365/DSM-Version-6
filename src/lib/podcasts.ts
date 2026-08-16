@@ -324,7 +324,7 @@ export async function fetchAllEpisodes(): Promise<PodcastEpisode[]> {
   const fetched = results
     .flatMap((r) => (r.status === "fulfilled" ? r.value : []))
     .sort((a, b) => time(b) - time(a))
-    .slice(0, 60);
+    .slice(0, 200);
 
   const seen = new Set(CURATED_EPISODES.map((ep) => ep.id));
   return [...CURATED_EPISODES, ...fetched.filter((ep) => !seen.has(ep.id))];
