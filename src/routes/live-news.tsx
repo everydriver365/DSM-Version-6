@@ -310,7 +310,15 @@ function LiveNewsPage() {
     new Set(PODCAST_SHOWS.flatMap((s) => s.categories)),
   ).sort((a, b) => a.localeCompare(b));
   const podcastSearch = podcastQuery.trim().toLowerCase();
+  const isHiddenFromGeneral = (showId: string) =>
+    showId.startsWith("ted-") ||
+    showId === "diary-of-a-ceo" ||
+    showId === "full-disclosure" ||
+    showId === "nick-abbot";
   const visibleEpisodes = (episodes ?? []).filter((ep) => {
+    const generalView = showFilter === "all" || showFilter === "featured";
+    if (generalView && topicFilter === "all" && isHiddenFromGeneral(ep.showId)) return false;
+
     const showOk =
       showFilter === "all"
         ? true
@@ -322,6 +330,7 @@ function LiveNewsPage() {
 
     if (!showOk) return false;
     if (topicFilter !== "all" && !ep.showCategories.includes(topicFilter)) return false;
+
     if (!podcastSearch) return true;
     return (
       ep.title.toLowerCase().includes(podcastSearch) ||
