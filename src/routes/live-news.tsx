@@ -786,7 +786,7 @@ function LiveNewsPage() {
                           marginBottom: 8,
                         }}
                       >
-                        <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A" }}>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
                           Continue listening
                         </div>
                         {inProgress.length > 1 && (
@@ -940,7 +940,7 @@ function LiveNewsPage() {
                       marginBottom: 8,
                     }}
                   >
-                    <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A" }}>Featured</div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>Featured</div>
                     <button
                       type="button"
                       onClick={() => setShowFilter("featured")}
@@ -988,7 +988,7 @@ function LiveNewsPage() {
                               position: "relative",
                               width: 116,
                               height: 116,
-                              borderRadius: 14,
+                              borderRadius: 16,
                               overflow: "hidden",
                               background: "#EEF2F7",
                               border: `1px solid ${active ? "#1877D6" : "#E4E8EF"}`,
@@ -1080,7 +1080,7 @@ function LiveNewsPage() {
                     marginBottom: searchOpen ? 10 : 8,
                   }}
                 >
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A" }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
                     Browse by category
                   </div>
                   <button
@@ -1265,7 +1265,7 @@ function LiveNewsPage() {
                   })}
                 </div>
 
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A", margin: "8px 0 8px" }}>
+                <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", margin: "8px 0 8px" }}>
                   Latest episodes
                 </div>
 
@@ -1777,7 +1777,7 @@ function EpisodeModal({
               style={{
                 display: "inline-block",
                 background: "#EFF6FF",
-                borderRadius: 6,
+                borderRadius: 20,
                 padding: "2px 6px",
                 marginBottom: 5,
                 ...PODCAST_STYLES.pill,
@@ -1829,7 +1829,7 @@ function EpisodeModal({
               style={{
                 background: "#fff",
                 border: "1px solid #E4E8EF",
-                borderRadius: 14,
+                borderRadius: 16,
                 padding: 12,
                 display: "flex",
                 alignItems: "center",
@@ -2146,7 +2146,7 @@ function EpisodeCard({
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
               background: "#EFF6FF",
-              borderRadius: 6,
+              borderRadius: 20,
               padding: "2px 6px",
               letterSpacing: "0.02em",
               marginBottom: 5,
@@ -2165,7 +2165,7 @@ function EpisodeCard({
               verticalAlign: "middle",
               background: "#EFF6FF",
               color: "#1877D6",
-              borderRadius: 6,
+              borderRadius: 20,
               padding: "2px 6px",
               fontSize: 10,
               fontWeight: 700,

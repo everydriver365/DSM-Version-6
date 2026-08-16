@@ -357,7 +357,7 @@ function PerksPage() {
           style={{
             margin: '12px 16px',
             background: '#fff',
-            borderRadius: 12,
+            borderRadius: 16,
             border: '1px solid #E4E8EF',
             padding: '11px 14px',
             display: 'flex',
@@ -663,7 +663,7 @@ function PerksPage() {
                 {selectedPerk.logo}
               </span>
               <span style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>{selectedPerk.name}</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>{selectedPerk.name}</div>
                 <div style={{ fontSize: 12, color: '#6B7686', marginTop: 2 }}>
                   {selectedPerk.provider} · {selectedPerk.category}
                 </div>
