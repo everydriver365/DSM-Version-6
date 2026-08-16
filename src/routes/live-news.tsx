@@ -310,7 +310,15 @@ function LiveNewsPage() {
     new Set(PODCAST_SHOWS.flatMap((s) => s.categories)),
   ).sort((a, b) => a.localeCompare(b));
   const podcastSearch = podcastQuery.trim().toLowerCase();
+  const isHiddenFromGeneral = (showId: string) =>
+    showId.startsWith("ted-") ||
+    showId === "diary-of-a-ceo" ||
+    showId === "full-disclosure" ||
+    showId === "nick-abbot";
   const visibleEpisodes = (episodes ?? []).filter((ep) => {
+    const generalView = showFilter === "all" || showFilter === "featured";
+    if (generalView && topicFilter === "all" && isHiddenFromGeneral(ep.showId)) return false;
+
     const showOk =
       showFilter === "all"
         ? true
@@ -322,6 +330,7 @@ function LiveNewsPage() {
 
     if (!showOk) return false;
     if (topicFilter !== "all" && !ep.showCategories.includes(topicFilter)) return false;
+
     if (!podcastSearch) return true;
     return (
       ep.title.toLowerCase().includes(podcastSearch) ||
@@ -958,7 +967,10 @@ function LiveNewsPage() {
                       scrollbarWidth: "none",
                     }}
                   >
-                    {PODCAST_SHOWS.filter((sh) => sh.recommended).map((sh) => {
+                    {PODCAST_SHOWS.filter(
+                      (sh) => sh.recommended && !isHiddenFromGeneral(sh.id),
+                    ).map((sh) => {
+
                       const latest =
                         (episodes ?? []).find((e) => e.showId === sh.id && e.audioUrl) ?? null;
                       const active = showFilter === sh.id;
@@ -1205,9 +1217,12 @@ function LiveNewsPage() {
                     const active = showFilter === chip.id;
                     const count =
                       chip.id === "all"
-                        ? episodes.length
+                        ? episodes.filter((e) => !isHiddenFromGeneral(e.showId)).length
                         : chip.id === "featured"
-                          ? episodes.filter((e) => e.showFeatured).length
+                          ? episodes.filter(
+                              (e) => e.showFeatured && !isHiddenFromGeneral(e.showId),
+                            ).length
+
                           : chip.id === "ted"
                             ? episodes.filter((e) => e.showId.startsWith("ted-")).length
                             : episodes.filter((e) => e.showId === chip.id).length;
