@@ -285,9 +285,13 @@ function CalendarSyncPage() {
     setConnecting(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
+      if (!session) {
+        toast.error("Please sign in again to connect Google Calendar");
+        setConnecting(false);
+        return;
+      }
 
-      const res = await fetch("https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/google-calendar-auth", {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/google-calendar-auth`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -295,11 +299,34 @@ function CalendarSyncPage() {
           apikey: SUPABASE_ANON_KEY,
         },
       });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
+      const raw = await res.text();
+      let data: any = {};
+      try { data = JSON.parse(raw); } catch { /* non-JSON body */ }
+      console.log("[calendar-sync] google-calendar-auth", res.status, raw.slice(0, 300));
+
+      if (!res.ok || !data?.url) {
+        toast.error(data?.message ?? data?.error ?? `Could not start Google sign-in (${res.status})`);
+        setConnecting(false);
+        return;
       }
-    } catch {
+
+      // Google blocks its consent screen inside iframes (the Lovable preview
+      // runs in one), which makes the flow flash open and vanish. Break out of
+      // the frame — or fall back to a new tab if that is not allowed.
+      const inIframe = window.self !== window.top;
+      if (inIframe) {
+        try {
+          window.top!.location.href = data.url;
+        } catch {
+          const w = window.open(data.url, "_blank", "noopener,noreferrer");
+          if (!w) toast.error("Please allow pop-ups to connect Google Calendar");
+        }
+        setConnecting(false);
+        return;
+      }
+      window.location.href = data.url;
+    } catch (err) {
+      console.error("[calendar-sync] connect failed", err);
       toast.error("Could not start Google Calendar connection");
       setConnecting(false);
     }
