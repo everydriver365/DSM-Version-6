@@ -262,6 +262,11 @@ function CalendarSyncPage() {
     if (calendarStatus === "connected") {
       toast.success("Google Calendar connected! 🎉");
       setGoogleConnected(true);
+      window.history.replaceState({}, "", window.location.pathname);
+      // Auto-sync after short delay to let state settle
+      setTimeout(() => {
+        syncNow();
+      }, 1500);
     } else if (calendarStatus === "error") {
       toast.error("Could not connect Google Calendar — please try again");
     }
