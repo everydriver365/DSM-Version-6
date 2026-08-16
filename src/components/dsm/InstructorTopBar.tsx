@@ -5,7 +5,7 @@ import {
   IconDownload,
   IconCar,
   IconCurrencyPound,
-  IconBell,
+  
   IconAdjustmentsHorizontal,
 } from "@tabler/icons-react";
 import { useNavigate } from "@tanstack/react-router";
@@ -179,7 +179,23 @@ export default function InstructorTopBar({
           </>
         )}
         <IconBtn ariaLabel="Notifications" onClick={onBell}>
-          <IconBell size={17} stroke={1.8} color="#C7D0DE" />
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="dsmBellGrad" x1="4" y1="2" x2="20" y2="22" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#FFC94A" />
+                <stop offset="1" stopColor="#F08A2E" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M12 2.6c-3.5 0-6.1 2.7-6.1 6.2v3.1c0 .8-.28 1.55-.79 2.15l-.74.88c-.72.86-.13 2.17 1 2.17h13.26c1.13 0 1.72-1.31 1-2.17l-.74-.88a3.35 3.35 0 0 1-.79-2.15V8.8c0-3.5-2.6-6.2-6.1-6.2Z"
+              fill="url(#dsmBellGrad)"
+            />
+            <path
+              d="M9.5 19.4h5a2.5 2.5 0 0 1-5 0Z"
+              fill="url(#dsmBellGrad)"
+            />
+          </svg>
+
           {unreadCount > 0 && (
             <span style={{
               position: "absolute",
