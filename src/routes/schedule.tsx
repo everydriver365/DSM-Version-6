@@ -594,6 +594,7 @@ function SchedulePage() {
       return;
     }
     setSyncing(true);
+    setSyncMessage(null);
 
     try {
       const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -618,16 +619,24 @@ function SchedulePage() {
       let data: any = {};
       try { data = JSON.parse(raw); } catch { /* non-JSON error body */ }
       if (data.success) {
-        toast.success("Calendar synced — " + (data.eventsImported || 0) + " events updated");
+        const msg = "Calendar synced — " + (data.eventsImported || 0) + " events updated";
+        toast.success(msg);
+        setSyncMessage({ type: "success", text: msg });
         setLastSynced(new Date().toISOString());
         await fetchCalendarBlocks();
       } else if (res.status === 429 || raw.includes("429")) {
-        toast.info("Calendar provider is rate-limiting us — try again in a few minutes");
+        const msg = "Calendar provider is rate-limiting us — try again in a few minutes";
+        toast.info(msg);
+        setSyncMessage({ type: "error", text: msg });
       } else {
-        toast.error("Sync failed — check your calendar URL in Settings");
+        const msg = "Sync failed — check your calendar URL in Settings";
+        toast.error(msg);
+        setSyncMessage({ type: "error", text: msg });
       }
     } catch (err) {
-      toast.error("Sync failed");
+      const msg = "Sync failed";
+      toast.error(msg);
+      setSyncMessage({ type: "error", text: msg });
     } finally {
       setSyncing(false);
     }
