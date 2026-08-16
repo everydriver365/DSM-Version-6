@@ -1249,6 +1249,30 @@ type BenefitPartner = {
   sort_order: number;
 };
 
+type BenefitPerk = {
+  id: string;
+  partner_id: string;
+  name: string;
+  description: string | null;
+  detail_text: string | null;
+  category: string | null;
+  saving: string | null;
+  min_tier: string;
+  cta_label: string | null;
+  cta_action: string | null;
+  hero_image_url: string | null;
+  gallery_urls: string[] | null;
+  video_url: string | null;
+  video_embed_url: string | null;
+  bullet_points: string[] | null;
+  links: any[];
+  coming_soon: boolean;
+  active: boolean;
+  sort_order: number;
+  created_at: string;
+};
+
+
 const PARTNER_TIERS: { id: string; label: string }[] = [
   { id: "free", label: "Free" },
   { id: "website", label: "Essential" },
