@@ -309,6 +309,7 @@ function SchedulePage() {
   const [instructor, setInstructor] = useState<{ name: string | null; external_calendar_url: string | null; calendar_last_synced: string | null; google_calendar_connected?: boolean } | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
+  const [syncMessage, setSyncMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
   const [movingLesson, setMovingLesson] = useState<any | null>(null);
   const [moveMode, setMoveMode] = useState(false);
@@ -593,6 +594,7 @@ function SchedulePage() {
       return;
     }
     setSyncing(true);
+    setSyncMessage(null);
 
     try {
       const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -617,16 +619,24 @@ function SchedulePage() {
       let data: any = {};
       try { data = JSON.parse(raw); } catch { /* non-JSON error body */ }
       if (data.success) {
-        toast.success("Calendar synced — " + (data.eventsImported || 0) + " events updated");
+        const msg = "Calendar synced — " + (data.eventsImported || 0) + " events updated";
+        toast.success(msg);
+        setSyncMessage({ type: "success", text: msg });
         setLastSynced(new Date().toISOString());
         await fetchCalendarBlocks();
       } else if (res.status === 429 || raw.includes("429")) {
-        toast.info("Calendar provider is rate-limiting us — try again in a few minutes");
+        const msg = "Calendar provider is rate-limiting us — try again in a few minutes";
+        toast.info(msg);
+        setSyncMessage({ type: "error", text: msg });
       } else {
-        toast.error("Sync failed — check your calendar URL in Settings");
+        const msg = "Sync failed — check your calendar URL in Settings";
+        toast.error(msg);
+        setSyncMessage({ type: "error", text: msg });
       }
     } catch (err) {
-      toast.error("Sync failed");
+      const msg = "Sync failed";
+      toast.error(msg);
+      setSyncMessage({ type: "error", text: msg });
     } finally {
       setSyncing(false);
     }
@@ -1070,9 +1080,9 @@ function SchedulePage() {
           scrollToDate(ymdLocal(today));
         }}
         showSync
-
         onSync={handleSync}
         syncing={syncing}
+        syncMessage={syncMessage}
         lastSynced={lastSynced}
         formatRelativeSync={formatRelativeSync}
       />
@@ -2800,6 +2810,7 @@ function MonthStrip({
   showSync,
   onSync,
   syncing,
+  syncMessage,
   lastSynced,
   formatRelativeSync,
 }: {
@@ -2814,6 +2825,7 @@ function MonthStrip({
   showSync?: boolean;
   onSync?: () => void;
   syncing?: boolean;
+  syncMessage?: { type: "success" | "error"; text: string } | null;
   lastSynced?: string | null;
   formatRelativeSync?: (iso: string) => string;
 }) {
@@ -2961,6 +2973,34 @@ function MonthStrip({
           <IconChevronRight size={18} stroke={2} />
         </button>
       </div>
+
+      {syncMessage && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            marginBottom: 8,
+            padding: "6px 10px",
+            borderRadius: 10,
+            background: syncMessage.type === "success" ? "rgba(34, 197, 94, 0.12)" : "rgba(239, 68, 68, 0.12)",
+            color: syncMessage.type === "success" ? "#16A34A" : "#DC2626",
+            fontSize: 12,
+            fontWeight: 500,
+            ...POPPINS,
+          }}
+        >
+          <div
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: "50%",
+              background: syncMessage.type === "success" ? "#16A34A" : "#DC2626",
+            }}
+          />
+          {syncMessage.text}
+        </div>
+      )}
 
       <div
         ref={scroller}
