@@ -304,7 +304,7 @@ function SchedulePage() {
   const [viewMonth, setViewMonth] = useState<Date>(new Date());
   
   const [selectedDate, setSelectedDate] = useState<string>(() => ymdLocal(today));
-  const [instructor, setInstructor] = useState<{ name: string | null; external_calendar_url: string | null; calendar_last_synced: string | null } | null>(null);
+  const [instructor, setInstructor] = useState<{ name: string | null; external_calendar_url: string | null; calendar_last_synced: string | null; google_calendar_connected?: boolean } | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
@@ -498,7 +498,7 @@ function SchedulePage() {
         const [instrRow, recRes, offRes] = await Promise.all([
           supabase
             .from("instructors")
-            .select("name,working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,external_calendar_url,calendar_last_synced")
+            .select("name,working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,external_calendar_url,calendar_last_synced,google_calendar_connected")
             .eq("id", uid)
             .maybeSingle(),
           fetch(`${SUPABASE_URL}/rest/v1/instructor_recurring_blocks?instructor_id=eq.${uid}&is_active=eq.true`, { headers }),
@@ -515,6 +515,7 @@ function SchedulePage() {
           hourly_rate?: number | null;
           external_calendar_url?: string | null;
           calendar_last_synced?: string | null;
+          google_calendar_connected?: boolean | null;
         };
         if (i.working_hours_start) setWorkStart(String(i.working_hours_start).slice(0, 5));
         if (i.working_hours_end) setWorkEnd(String(i.working_hours_end).slice(0, 5));
@@ -526,6 +527,7 @@ function SchedulePage() {
           name: i.name ?? null,
           external_calendar_url: i.external_calendar_url ?? null,
           calendar_last_synced: i.calendar_last_synced ?? null,
+          google_calendar_connected: i.google_calendar_connected ?? false,
         });
         if (i.calendar_last_synced) setLastSynced(i.calendar_last_synced);
         if (recRes.ok) {
@@ -580,7 +582,11 @@ function SchedulePage() {
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const res = await fetch(SUPABASE_URL + "/functions/v1/sync-external-calendar", {
+      const useGoogleSync = instructor?.google_calendar_connected;
+      const endpoint = useGoogleSync
+        ? "/functions/v1/sync-google-calendar"
+        : "/functions/v1/sync-external-calendar";
+      const res = await fetch(SUPABASE_URL + endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -606,7 +612,7 @@ function SchedulePage() {
     } finally {
       setSyncing(false);
     }
-  }, [userId, fetchCalendarBlocks]);
+  }, [userId, instructor, fetchCalendarBlocks]);
 
   const handleDeleteLesson = useCallback(async (lesson: any) => {
     const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -1044,7 +1050,10 @@ function SchedulePage() {
           setViewMonth(d);
           scrollToDate(ymdLocal(today));
         }}
-        showSync={!!instructor?.external_calendar_url}
+        showSync={
+          !!instructor?.google_calendar_connected ||
+          !!instructor?.external_calendar_url
+        }
         onSync={handleSync}
         syncing={syncing}
         lastSynced={lastSynced}
