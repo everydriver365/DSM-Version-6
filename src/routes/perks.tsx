@@ -31,7 +31,11 @@ type Perk = {
   saving: string;
   minTier: string;
   logo: string;
+  /** Present when the perk comes from the benefit_perks table. */
+  dbId?: string;
+  iconBg?: string | null;
 };
+
 
 const TIER_ORDER = ['free', 'website', 'pro', 'managed'];
 
