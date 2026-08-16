@@ -2650,6 +2650,15 @@ export function BenefitPartnersSection() {
                   }}
                 />
               )}
+              {editingPerk.hero_image_url && (
+                <button
+                  type="button"
+                  onClick={() => patchPerk({ hero_image_url: null })}
+                  style={{ ...removeImageBtnStyle, marginBottom: 8 }}
+                >
+                  Remove
+                </button>
+              )}
               <input
                 type="file"
                 accept="image/*"
@@ -2671,6 +2680,7 @@ export function BenefitPartnersSection() {
                 }}
                 style={{ ...partnerInputStyle, padding: 8 }}
               />
+              {uploadingPerkHero && <div style={uploadHintStyle}>Uploading hero image...</div>}
 
               <div style={partnerLabelStyle}>Gallery photos</div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
@@ -2737,6 +2747,7 @@ export function BenefitPartnersSection() {
                 }}
                 style={{ ...partnerInputStyle, padding: 8 }}
               />
+              {uploadingPerkGallery && <div style={uploadHintStyle}>Uploading photo...</div>}
 
               <div style={partnerLabelStyle}>Video embed code</div>
               <textarea
