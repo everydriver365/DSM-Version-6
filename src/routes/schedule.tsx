@@ -341,6 +341,14 @@ function SchedulePage() {
     return () => document.removeEventListener('mousedown', onDoc);
   }, [actionsOpenFor]);
 
+  // Auto-dismiss inline sync messages after 5 seconds
+  useEffect(() => {
+    if (!syncMessage) return;
+    const t = setTimeout(() => setSyncMessage(null), 5000);
+    return () => clearTimeout(t);
+  }, [syncMessage]);
+
+
   const handleMoveLesson = useCallback(async (newDate: string, newTime: string) => {
     if (!movingLesson) return;
     const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
