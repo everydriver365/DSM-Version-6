@@ -1237,6 +1237,8 @@ type BenefitPartner = {
   icon: string | null;
   icon_bg: string | null;
   icon_color: string | null;
+  logo_url: string | null;
+  hero_image_url: string | null;
   category: string | null;
   perks: string[] | null;
   saving: string | null;
@@ -1287,6 +1289,26 @@ const PARTNER_TIER_STYLE: Record<string, { bg: string; color: string }> = {
   managed: { bg: "#FEF3C7", color: "#92400E" },
 };
 
+const removeImageBtnStyle: React.CSSProperties = {
+  background: "#FEF2F2",
+  color: "#CC2229",
+  border: "none",
+  borderRadius: 20,
+  padding: "6px 12px",
+  fontSize: 11,
+  fontWeight: 700,
+  cursor: "pointer",
+  fontFamily: "Poppins, sans-serif",
+};
+
+const uploadHintStyle: React.CSSProperties = {
+  fontSize: 11,
+  color: "#6B7686",
+  marginTop: -6,
+  marginBottom: 12,
+  fontFamily: "Poppins, sans-serif",
+};
+
 const partnerInputStyle: React.CSSProperties = {
   background: "#fff",
   border: "1px solid #E4E8EF",
@@ -1320,6 +1342,8 @@ export function BenefitPartnersSection() {
   const [editingPerk, setEditingPerk] = useState<any | null>(null);
   const [perkSheetOpen, setPerkSheetOpen] = useState(false);
   const [savingPerk, setSavingPerk] = useState(false);
+  const [uploadingPartnerLogo, setUploadingPartnerLogo] = useState(false);
+  const [uploadingPartnerHero, setUploadingPartnerHero] = useState(false);
   const [uploadingPerkHero, setUploadingPerkHero] = useState(false);
   const [uploadingPerkGallery, setUploadingPerkGallery] = useState(false);
 
@@ -1560,6 +1584,8 @@ export function BenefitPartnersSection() {
               icon: "IconGift",
               icon_bg: "#EEF2F7",
               icon_color: "#0B1F3A",
+              logo_url: null,
+              hero_image_url: null,
               category: "Health",
               perks: [],
               saving: "",
@@ -1794,7 +1820,15 @@ export function BenefitPartnersSection() {
                   flexShrink: 0,
                 }}
               >
-                {(partner.name || "?").charAt(0).toUpperCase()}
+                {partner.logo_url ? (
+                  <img
+                    src={partner.logo_url}
+                    alt=""
+                    style={{ width: 36, height: 36, borderRadius: 8, objectFit: "cover" }}
+                  />
+                ) : (
+                  (partner.name || "?").charAt(0).toUpperCase()
+                )}
               </div>
 
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -2087,6 +2121,90 @@ export function BenefitPartnersSection() {
                 onChange={(e) => patch({ description: e.target.value })}
                 style={{ ...partnerInputStyle, resize: "vertical" }}
               />
+
+              <div style={partnerLabelStyle}>Logo</div>
+              {editingPartner.logo_url && (
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                  <img
+                    src={editingPartner.logo_url}
+                    alt=""
+                    style={{ width: 56, height: 56, borderRadius: 12, objectFit: "cover", border: "1px solid #E4E8EF" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => patch({ logo_url: null })}
+                    style={removeImageBtnStyle}
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                disabled={uploadingPartnerLogo}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setUploadingPartnerLogo(true);
+                  try {
+                    const url = await uploadToBucket("marketplace-images", "benefits/partners/logo/", file);
+                    patch({ logo_url: url });
+                    toast.success("Logo uploaded");
+                  } catch (err: any) {
+                    toast.error(err?.message ?? "Upload failed");
+                  } finally {
+                    setUploadingPartnerLogo(false);
+                    e.target.value = "";
+                  }
+                }}
+                style={{ ...partnerInputStyle, padding: 8 }}
+              />
+              {uploadingPartnerLogo && (
+                <div style={uploadHintStyle}>Uploading logo...</div>
+              )}
+
+              <div style={partnerLabelStyle}>Hero image</div>
+              {editingPartner.hero_image_url && (
+                <div style={{ marginBottom: 8 }}>
+                  <img
+                    src={editingPartner.hero_image_url}
+                    alt=""
+                    style={{ width: "100%", height: 130, borderRadius: 12, objectFit: "cover", border: "1px solid #E4E8EF" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => patch({ hero_image_url: null })}
+                    style={{ ...removeImageBtnStyle, marginTop: 8 }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                disabled={uploadingPartnerHero}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setUploadingPartnerHero(true);
+                  try {
+                    const url = await uploadToBucket("marketplace-images", "benefits/partners/hero/", file);
+                    patch({ hero_image_url: url });
+                    toast.success("Hero image uploaded");
+                  } catch (err: any) {
+                    toast.error(err?.message ?? "Upload failed");
+                  } finally {
+                    setUploadingPartnerHero(false);
+                    e.target.value = "";
+                  }
+                }}
+                style={{ ...partnerInputStyle, padding: 8 }}
+              />
+              {uploadingPartnerHero && (
+                <div style={uploadHintStyle}>Uploading hero image...</div>
+              )}
 
               <div style={partnerLabelStyle}>Minimum tier</div>
               <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
