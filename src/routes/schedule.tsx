@@ -2927,26 +2927,28 @@ function MonthStrip({
               disabled={syncing}
               aria-label={syncing ? "Syncing calendar" : "Sync calendar"}
               style={{
-                background: "none",
+                background: "transparent",
                 border: "none",
                 cursor: syncing ? "not-allowed" : "pointer",
-                width: 36,
-                height: 36,
-                borderRadius: "50%",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "#0B1F3A",
+                gap: 4,
+                padding: "4px 8px",
+                fontSize: 12,
+                fontWeight: 600,
+                color: syncing ? "#9CA3AF" : "#1877D6",
+                ...POPPINS,
               }}
             >
               <IconRefresh
-                size={18}
-                color="#fff"
-                stroke={1.5}
+                size={14}
+                color={syncing ? "#9CA3AF" : "#1877D6"}
+                stroke={2}
                 style={{
                   animation: syncing ? "spin 1s linear infinite" : "none",
                 }}
               />
+              {syncing ? "Syncing..." : "Sync"}
             </button>
           )}
         </div>
