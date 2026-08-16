@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
-import { IconBook, IconBriefcase, IconGift, IconChevronLeft, IconChevronRight, IconFileCheck, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconNews, IconPencil, IconPlayerPlay, IconSettings, IconShieldCheck, IconShoppingBag, IconStar, IconTrash, IconUsers, IconVideo } from "@tabler/icons-react";
+import { IconBook, IconBriefcase, IconGift, IconChevronLeft, IconChevronRight, IconFileCheck, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconNews, IconPencil, IconPlayerPlay, IconSearch, IconSettings, IconShieldCheck, IconShoppingBag, IconStar, IconTrash, IconUsers, IconVideo } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
 import type React from "react";
+
 
 
 export const Route = createFileRoute("/admin")({
@@ -1248,6 +1249,30 @@ type BenefitPartner = {
   sort_order: number;
 };
 
+type BenefitPerk = {
+  id: string;
+  partner_id: string;
+  name: string;
+  description: string | null;
+  detail_text: string | null;
+  category: string | null;
+  saving: string | null;
+  min_tier: string;
+  cta_label: string | null;
+  cta_action: string | null;
+  hero_image_url: string | null;
+  gallery_urls: string[] | null;
+  video_url: string | null;
+  video_embed_url: string | null;
+  bullet_points: string[] | null;
+  links: any[];
+  coming_soon: boolean;
+  active: boolean;
+  sort_order: number;
+  created_at: string;
+};
+
+
 const PARTNER_TIERS: { id: string; label: string }[] = [
   { id: "free", label: "Free" },
   { id: "website", label: "Essential" },
@@ -1298,6 +1323,12 @@ export function BenefitPartnersSection() {
   const [uploadingPerkHero, setUploadingPerkHero] = useState(false);
   const [uploadingPerkGallery, setUploadingPerkGallery] = useState(false);
 
+  // ---- perk search & filter ------------------------------------------------
+  const [perkSearch, setPerkSearch] = useState("");
+  const [perkPartnerFilter, setPerkPartnerFilter] = useState<string | "all">("all");
+  const [allPerks, setAllPerks] = useState<BenefitPerk[]>([]);
+
+
   function patchPerk(changes: Record<string, unknown>) {
     setEditingPerk((prev: any) => (prev ? { ...prev, ...changes } : prev));
   }
@@ -1342,6 +1373,7 @@ export function BenefitPartnersSection() {
       toast.success("Perk saved");
       setPerkSheetOpen(false);
       await loadPartnerPerks(editingPerk.partner_id);
+      await loadAllPerks();
       setEditingPerk(null);
     } catch (e: any) {
       toast.error(e?.message ?? "Save failed");
@@ -1357,10 +1389,24 @@ export function BenefitPartnersSection() {
       return;
     }
     await loadPartnerPerks(perk.partner_id);
+    await loadAllPerks();
     toast.success("Perk removed");
   }
 
 
+
+
+  async function loadAllPerks() {
+    const { data, error } = await supabase
+      .from("benefit_perks")
+      .select("*")
+      .order("sort_order");
+    if (error) {
+      console.error("[admin] all benefit_perks load error", error);
+      return;
+    }
+    setAllPerks((data ?? []) as BenefitPerk[]);
+  }
 
   async function loadPartners() {
     const { data, error } = await supabase
@@ -1376,7 +1422,9 @@ export function BenefitPartnersSection() {
 
   useEffect(() => {
     loadPartners();
+    loadAllPerks();
   }, []);
+
 
   async function savePartner() {
     if (!editingPartner) return;
@@ -1417,6 +1465,18 @@ export function BenefitPartnersSection() {
   function patch(changes: Partial<BenefitPartner>) {
     setEditingPartner((prev) => (prev ? { ...prev, ...changes } : prev));
   }
+
+  const filteredPerks = useMemo(() => {
+    const q = perkSearch.trim().toLowerCase();
+    return allPerks.filter((perk) => {
+      const matchesName = perk.name.toLowerCase().includes(q);
+      const matchesPartner =
+        perkPartnerFilter === "all" || perk.partner_id === perkPartnerFilter;
+      return matchesName && matchesPartner;
+    });
+  }, [allPerks, perkSearch, perkPartnerFilter]);
+
+  const partnerName = (id: string) => partners.find((p) => p.id === id)?.name ?? "Unknown";
 
   return (
     <div style={{ paddingBottom: 32 }}>
@@ -1471,6 +1531,168 @@ export function BenefitPartnersSection() {
           Add partner +
         </button>
       </div>
+
+      {/* Perk search & filter */}
+      <div
+        style={{
+          margin: "0 16px 16px",
+          background: "#fff",
+          borderRadius: 16,
+          border: "1px solid #E4E8EF",
+          padding: 12,
+        }}
+      >
+        <div style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A", marginBottom: 10 }}>
+          Find a perk
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              background: "#F8FAFC",
+              borderRadius: 12,
+              padding: "0 10px",
+              height: 40,
+              border: "1px solid #E4E8EF",
+            }}
+          >
+            <IconSearch size={16} stroke={1.8} color="#6B7686" />
+            <input
+              type="text"
+              value={perkSearch}
+              onChange={(e) => setPerkSearch(e.target.value)}
+              placeholder="Search perks by name…"
+              style={{
+                flex: 1,
+                border: "none",
+                background: "transparent",
+                outline: "none",
+                fontSize: 14,
+                fontFamily: "Poppins, sans-serif",
+                color: "#0B1F3A",
+              }}
+            />
+            {perkSearch && (
+              <button
+                type="button"
+                onClick={() => setPerkSearch("")}
+                style={{
+                  fontSize: 11,
+                  color: "#6B7686",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          <select
+            value={perkPartnerFilter}
+            onChange={(e) => setPerkPartnerFilter(e.target.value)}
+            style={{
+              height: 40,
+              borderRadius: 12,
+              border: "1px solid #E4E8EF",
+              background: "#F8FAFC",
+              padding: "0 10px",
+              fontSize: 14,
+              fontFamily: "Poppins, sans-serif",
+              color: "#0B1F3A",
+              outline: "none",
+            }}
+          >
+            <option value="all">All partners</option>
+            {partners.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {filteredPerks.length > 0 && (
+          <div style={{ marginTop: 12, fontSize: 12, color: "#6B7686" }}>
+            {filteredPerks.length} perk{filteredPerks.length === 1 ? "" : "s"} found
+          </div>
+        )}
+
+        {perkSearch && filteredPerks.length === 0 && (
+          <div style={{ marginTop: 12, fontSize: 12, color: "#9CA3AF" }}>
+            No perks match your search.
+          </div>
+        )}
+
+        {filteredPerks.length > 0 && (
+          <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+            {filteredPerks.map((perk) => (
+              <div
+                key={perk.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "10px 12px",
+                  background: "#F8FAFC",
+                  borderRadius: 12,
+                  border: "1px solid #F0F4F8",
+                }}
+              >
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
+                    {perk.name}
+                  </div>
+                  <div style={{ fontSize: 11, color: "#6B7686", marginTop: 2 }}>
+                    {partnerName(perk.partner_id)}
+                    {perk.category ? ` · ${perk.category}` : ""}
+                  </div>
+                </div>
+                {perk.coming_soon && (
+                  <span
+                    style={{
+                      background: "#FEF3C7",
+                      color: "#92400E",
+                      fontSize: 9,
+                      fontWeight: 700,
+                      borderRadius: 20,
+                      padding: "2px 7px",
+                      flexShrink: 0,
+                    }}
+                  >
+                    Coming soon
+                  </span>
+                )}
+                <button
+                  type="button"
+                  aria-label="Edit perk"
+                  onClick={() => {
+                    setEditingPerk({ ...perk });
+                    setPerkSheetOpen(true);
+                  }}
+                  style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                >
+                  <IconPencil size={15} stroke={1.8} color="#6B7686" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Delete perk"
+                  onClick={() => {
+                    if (confirm(`Delete ${perk.name}?`)) deletePerk(perk);
+                  }}
+                  style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                >
+                  <IconTrash size={15} stroke={1.8} color="#CC2229" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
 
       <div
         style={{
