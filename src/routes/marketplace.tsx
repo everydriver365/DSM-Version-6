@@ -344,7 +344,7 @@ function MarketplacePage() {
             marginBottom: 10,
           }}
         >
-          <h2 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#0B1F3A", fontFamily: POPPINS }}>
+          <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#0B1F3A", fontFamily: POPPINS }}>
             Top marketplace
           </h2>
           <button
@@ -406,7 +406,7 @@ function MarketplacePage() {
                 margin: "22px 0 10px",
               }}
             >
-              <h2 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#0B1F3A", fontFamily: POPPINS }}>
+              <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#0B1F3A", fontFamily: POPPINS }}>
                 For sale by instructors
               </h2>
               <button
@@ -526,7 +526,7 @@ function FeaturedCard({
       <div style={{ padding: 14 }}>
         <div
           style={{
-            fontSize: 15,
+            fontSize: 16,
             fontWeight: 700,
             color: "#0B1F3A",
             fontFamily: POPPINS,

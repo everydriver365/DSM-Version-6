@@ -1369,7 +1369,7 @@ function MessagesIndexPage() {
                   background: "none",
                   border: 0,
                   padding: "14px 20px",
-                  fontSize: 15,
+                  fontSize: 14,
                   color: NAVY,
                   cursor: "pointer",
                   textAlign: "left",
@@ -1472,7 +1472,7 @@ function MessagesIndexPage() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: 600,
                       flexShrink: 0,
                     }}
@@ -1638,7 +1638,7 @@ function InboxRow({
         <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
           <div
             style={{
-              fontSize: 15.5,
+              fontSize: 16,
               fontWeight: unread ? 800 : 700,
               color: NAVY,
               overflow: "hidden",
@@ -1789,7 +1789,7 @@ function RoomBrowser({
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            fontSize: 17,
+            fontSize: 16,
             fontWeight: 500,
             color: NAVY,
             overflow: "hidden",
@@ -2032,7 +2032,7 @@ function LocalChatView(props: {
               right: 16,
               zIndex: 41,
               background: "#FFFFFF",
-              borderRadius: 12,
+              borderRadius: 16,
               border: "0.5px solid #E2E6ED",
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               overflow: "hidden",
@@ -2493,7 +2493,7 @@ function AdminJobThreadSheet({
           }}
         >
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A" }}>Job thread</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>Job thread</div>
             <div style={{ fontSize: 11, color: "#8A93A3" }}>{jobLabel || "…"}</div>
           </div>
           <button
@@ -2538,7 +2538,7 @@ function AdminJobThreadSheet({
                       maxWidth: "78%",
                       background: bg,
                       color,
-                      borderRadius: 14,
+                      borderRadius: 16,
                       padding: "8px 12px",
                       fontSize: 14,
                       boxShadow: mine ? "none" : "0 1px 2px rgba(0,0,0,0.05)",

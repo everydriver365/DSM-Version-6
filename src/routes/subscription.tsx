@@ -143,7 +143,7 @@ function SubscriptionPage() {
         className="mx-4 mt-3"
         style={{
           backgroundColor: "#0B1F3A",
-          borderRadius: 12,
+          borderRadius: 16,
           padding: 16,
         }}
       >
@@ -175,7 +175,7 @@ function SubscriptionPage() {
             fontSize: 11,
             fontWeight: 700,
             padding: "2px 8px",
-            borderRadius: 6,
+            borderRadius: 20,
           }}
         >
           <span style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: "#ffffff" }} />
@@ -212,7 +212,7 @@ function SubscriptionPage() {
         style={{
           backgroundColor: "#ffffff",
           border: "2px solid #1877D6",
-          borderRadius: 12,
+          borderRadius: 16,
           padding: 16,
           position: "relative",
         }}
@@ -251,7 +251,7 @@ function SubscriptionPage() {
             fontSize: 10,
             fontWeight: 700,
             padding: "2px 8px",
-            borderRadius: 6,
+            borderRadius: 20,
           }}
         >
           Coming soon
@@ -266,7 +266,7 @@ function SubscriptionPage() {
         className="mx-4"
         style={{
           backgroundColor: "#ffffff",
-          borderRadius: 12,
+          borderRadius: 16,
           padding: 16,
         }}
       >

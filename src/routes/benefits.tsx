@@ -503,7 +503,7 @@ function BenefitsPage() {
           <IconRosetteDiscount size={28} color="#fff" stroke={1.5} />
           <div
             style={{
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: 800,
               color: '#fff',
               marginTop: 8,
