@@ -5757,32 +5757,101 @@ function HomePage() {
               
               const emptyLabel = tab === 'today' ? 'No lessons today' : tab === 'tomorrow' ? 'No lessons tomorrow' : 'No upcoming lessons';
 
+              const tabs = (
+                <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 3, background: '#EEF2F7', borderRadius: 999, margin: '16px 0' }}>
+                  {(['today', 'tomorrow', 'next'] as const).map((t) => {
+                    const active = tab === t;
+                    const label = t === 'today' ? 'Today' : t === 'tomorrow' ? 'Tomorrow' : 'Next';
+                    const count = scheduleCounts[t];
+                    return (
+                      <button
+                        key={t}
+                        type="button"
+                        role="tab"
+                        aria-selected={active}
+                        onClick={() => {
+                          setTab(t);
+                          window.localStorage.setItem(SCHEDULE_TAB_KEY, t);
+                          navigate({ to: '.', search: (prev: any) => ({ ...prev, tab: t }), replace: true });
+                        }}
+                        style={{
+                          flex: 1,
+                          padding: '8px 0',
+                          borderRadius: 999,
+                          border: 'none',
+                          background: active ? '#FFFFFF' : 'transparent',
+                          color: active ? '#0B1F3A' : '#6B7A90',
+                          fontFamily: PF,
+                          fontSize: 14,
+                          fontWeight: active ? 700 : 500,
+                          cursor: 'pointer',
+                          boxShadow: active ? '0 1px 2px rgba(11,31,58,0.10), 0 1px 3px rgba(11,31,58,0.06)' : 'none',
+                          transition: 'background 120ms ease, color 120ms ease',
+                          textAlign: 'center',
+                          letterSpacing: -0.1,
+                        }}
+                      >
+                        <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                          {label}
+                          {count > 0 && (
+                            <span
+                              style={{
+                                minWidth: 18,
+                                height: 18,
+                                padding: '0 5px',
+                                borderRadius: 9,
+                                background: '#1877D6',
+                                color: '#FFFFFF',
+                                fontSize: 11,
+                                fontWeight: 700,
+                                lineHeight: '18px',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              {count}
+                            </span>
+                          )}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              );
+
               if (lessonRows.length === 0 && calendarRows.length === 0) {
                 const freeMinutes = tab === 'today' ? totalFreeMinutesToday : tab === 'tomorrow' ? totalFreeMinutesTomorrow : 0;
                 if ((tab === 'today' || tab === 'tomorrow') && freeMinutes >= minGapMinutes) {
                   const hours = Math.round(freeMinutes / 60);
                   const dayLabel = tab === 'today' ? 'today' : 'tomorrow';
                   return (
-                    <div style={{ background: '#FFFFFF', borderRadius: 10, border: '1px solid rgba(15,32,68,0.08)', padding: '20px 18px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-                      <div style={{ width: 44, height: 44, borderRadius: 8, background: 'linear-gradient(135deg, #1877D6, #0B1F3A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <IconBolt size={22} color="#FFFFFF" stroke={2} />
+                    <div style={{ fontFamily: PF }}>
+                      {tabs}
+                      <div style={{ background: '#FFFFFF', borderRadius: 10, border: '1px solid rgba(15,32,68,0.08)', padding: '20px 18px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+                        <div style={{ width: 44, height: 44, borderRadius: 8, background: 'linear-gradient(135deg, #1877D6, #0B1F3A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <IconBolt size={22} color="#FFFFFF" stroke={2} />
+                        </div>
+                        <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>Your day is wide open</div>
+                        <div style={{ fontSize: 13, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>{hours} hours free {dayLabel} — fill a gap before it goes to waste.</div>
+                        <button
+                          type="button"
+                          onClick={() => navigate({ to: '/gaps' })}
+                          style={{ marginTop: 4, width: '100%', background: '#0B1F3A', color: '#FFFFFF', border: 'none', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer' }}
+                        >
+                          <IconBolt size={16} color="#FFFFFF" stroke={2} />
+                          Open gap filler
+                        </button>
                       </div>
-                      <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>Your day is wide open</div>
-                      <div style={{ fontSize: 13, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>{hours} hours free {dayLabel} — fill a gap before it goes to waste.</div>
-                      <button
-                        type="button"
-                        onClick={() => navigate({ to: '/gaps' })}
-                        style={{ marginTop: 4, width: '100%', background: '#0B1F3A', color: '#FFFFFF', border: 'none', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer' }}
-                      >
-                        <IconBolt size={16} color="#FFFFFF" stroke={2} />
-                        Open gap filler
-                      </button>
                     </div>
                   );
                 }
                 return (
-                  <div style={{ ...cardBase, padding: 20, textAlign: 'center', color: MUTED, fontSize: 13 }}>
-                    {emptyLabel}
+                  <div style={{ fontFamily: PF }}>
+                    {tabs}
+                    <div style={{ ...cardBase, padding: 20, textAlign: 'center', color: MUTED, fontSize: 13 }}>
+                      {emptyLabel}
+                    </div>
                   </div>
                 );
               }
@@ -5800,67 +5869,7 @@ function HomePage() {
 
               return (
                 <div style={{ fontFamily: PF }}>
-                  {/* Segmented control */}
-                  <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 3, background: '#EEF2F7', borderRadius: 999, margin: '16px 0' }}>
-                    {(['today', 'tomorrow', 'next'] as const).map((t) => {
-                      const active = tab === t;
-                      const label = t === 'today' ? 'Today' : t === 'tomorrow' ? 'Tomorrow' : 'Next';
-                      const count = scheduleCounts[t];
-                      return (
-                        <button
-                          key={t}
-                          type="button"
-                          role="tab"
-                          aria-selected={active}
-                          onClick={() => {
-                            setTab(t);
-                            window.localStorage.setItem(SCHEDULE_TAB_KEY, t);
-                            navigate({ to: '.', search: (prev: any) => ({ ...prev, tab: t }), replace: true });
-                          }}
-                          style={{
-                            flex: 1,
-                            padding: '8px 0',
-                            borderRadius: 999,
-                            border: 'none',
-                            background: active ? '#FFFFFF' : 'transparent',
-                            color: active ? '#0B1F3A' : '#6B7A90',
-                            fontFamily: PF,
-                            fontSize: 14,
-                            fontWeight: active ? 700 : 500,
-                            cursor: 'pointer',
-                            boxShadow: active ? '0 1px 2px rgba(11,31,58,0.10), 0 1px 3px rgba(11,31,58,0.06)' : 'none',
-                            transition: 'background 120ms ease, color 120ms ease',
-                            textAlign: 'center',
-                            letterSpacing: -0.1,
-                          }}
-                        >
-                          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-                            {label}
-                            {count > 0 && (
-                              <span
-                                style={{
-                                  minWidth: 18,
-                                  height: 18,
-                                  padding: '0 5px',
-                                  borderRadius: 9,
-                                  background: '#1877D6',
-                                  color: '#FFFFFF',
-                                  fontSize: 11,
-                                  fontWeight: 700,
-                                  lineHeight: '18px',
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                }}
-                              >
-                                {count}
-                              </span>
-                            )}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                  {tabs}
                   {moveModeHome && movingLessonHome && (
                     <div
                       style={{
