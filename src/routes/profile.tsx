@@ -1396,7 +1396,7 @@ function ProfilePage() {
                 <IconApple size={20} color="#000000" />
               </div>
               <div className="flex-1">
-                <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>IconApple Calendar</div>
+                <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Apple Calendar</div>
                 <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
                   Subscribe to your DSM schedule on iPhone
                 </div>

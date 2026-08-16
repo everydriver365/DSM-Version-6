@@ -72,7 +72,7 @@ function autoName(t: CourseType, hours: number, includesTest: boolean) {
   return includesTest ? `${base} + Test` : base;
 }
 
-const DAY_LABELS = ["IconSun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const WEEKDAYS = [1, 2, 3, 4, 5];
 const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
 
@@ -1095,7 +1095,7 @@ function Step2(props: {
 
       {/* REPEAT */}
       <div>
-        <FieldLabel>IconRepeat</FieldLabel>
+        <FieldLabel>Repeat</FieldLabel>
         
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           {REPEAT_CARDS.map(({ key, label, desc, Icon }) => {

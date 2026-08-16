@@ -2057,7 +2057,7 @@ function MiniSitePage() {
                   opacity: domainChecking || domainQuery.trim().length < 3 ? 0.5 : 1,
                 }}
               >
-                {domainChecking ? "…" : "IconCheck"}
+                {domainChecking ? "…" : "Check"}
               </button>
             </div>
 

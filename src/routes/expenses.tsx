@@ -20,7 +20,7 @@ const BORDER = "0.5px solid #EEF2F7";
 const GREEN = "#1877D6";
 
 const CATEGORIES = [
-  "IconGasStation",
+  "Fuel",
   "Insurance",
   "Marketing",
   "Equipment",
@@ -34,7 +34,7 @@ type Category = (typeof CATEGORIES)[number];
 
 const FILTERS: Array<"All" | Category> = [
   "All",
-  "IconGasStation",
+  "Fuel",
   "Insurance",
   "Marketing",
   "Equipment",
@@ -53,7 +53,7 @@ function hexToRgba(hex: string, alpha: number) {
 
 const categoryIcon = (category: string, size: number = 16): ReactNode => {
   const icons: Record<string, ReactNode> = {
-    'IconGasStation': <IconGasStation size={size} />,
+    'Fuel': <IconGasStation size={size} />,
     'Insurance': <IconShield stroke={1.5} size={size} />,
     'Marketing': <IconSpeakerphone size={size} />,
     'Equipment': <IconTool stroke={1.5} size={size} />,
@@ -68,7 +68,7 @@ const categoryIcon = (category: string, size: number = 16): ReactNode => {
 
 const categoryColour = (category: string) => {
   const colours: Record<string, string> = {
-    'IconGasStation': '#1877D6',
+    'Fuel': '#1877D6',
     'Insurance': '#3B82F6',
     'Marketing': '#8B5CF6',
     'Equipment': '#6B7280',
@@ -561,7 +561,7 @@ function AddEditSheet({
   onClose: () => void;
   onSaved: () => void;
 }) {
-  const [category, setCategory] = useState<Category>((initial?.category as Category) ?? "IconGasStation");
+  const [category, setCategory] = useState<Category>((initial?.category as Category) ?? "Fuel");
   const [description, setDescription] = useState(initial?.description ?? "");
   const [amount, setAmount] = useState<string>(initial ? String(initial.amount) : "");
   const [date, setDate] = useState(initial?.expense_date ?? todayISO());
@@ -670,7 +670,7 @@ function AddEditSheet({
         return;
       }
       toast.success(initial ? "Expense updated" : "Expense added");
-      setCategory("IconGasStation");
+      setCategory("Fuel");
       setDescription("");
       setAmount("");
       setDate(todayISO());
