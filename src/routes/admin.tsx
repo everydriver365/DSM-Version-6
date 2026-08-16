@@ -2185,6 +2185,7 @@ export function BenefitPartnersSection() {
                   if (!file) return;
                   setUploadingPartnerLogo(true);
                   try {
+                    await validateImageFile(file, { minWidth: 200, minHeight: 200, label: "Logo" });
                     const url = await uploadToBucket("marketplace-images", "benefits/partners/logo/", file);
                     patch({ logo_url: url });
                     toast.success("Logo uploaded");
@@ -2227,6 +2228,7 @@ export function BenefitPartnersSection() {
                   if (!file) return;
                   setUploadingPartnerHero(true);
                   try {
+                    await validateImageFile(file, { minWidth: 800, minHeight: 400, label: "Hero image" });
                     const url = await uploadToBucket("marketplace-images", "benefits/partners/hero/", file);
                     patch({ hero_image_url: url });
                     toast.success("Hero image uploaded");
@@ -2705,6 +2707,7 @@ export function BenefitPartnersSection() {
                   if (!file) return;
                   setUploadingPerkHero(true);
                   try {
+                    await validateImageFile(file, { minWidth: 800, minHeight: 400, label: "Hero image" });
                     const url = await uploadToBucket("marketplace-images", "perks/hero/", file);
                     patchPerk({ hero_image_url: url });
                     toast.success("Hero image uploaded");
@@ -2841,6 +2844,7 @@ export function BenefitPartnersSection() {
                   const uploaded: string[] = [];
                   try {
                     for (const file of files) {
+                      await validateImageFile(file, { minWidth: 400, minHeight: 300, label: file.name });
                       const url = await uploadToBucket("marketplace-images", "perks/gallery/", file);
                       uploaded.push(url);
                     }
