@@ -4,6 +4,8 @@ import { IconBook, IconBriefcase, IconChevronLeft, IconChevronRight, IconFileChe
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
+import type React from "react";
+
 
 export const Route = createFileRoute("/admin")({
   component: AdminHub,
@@ -1284,6 +1286,79 @@ function BenefitPartnersSection() {
   const [partnerSheetOpen, setPartnerSheetOpen] = useState(false);
   const [savingPartner, setSavingPartner] = useState(false);
 
+  // ---- perk management ----------------------------------------------------
+  const [expandedPartner, setExpandedPartner] = useState<string | null>(null);
+  const [partnerPerks, setPartnerPerks] = useState<Record<string, any[]>>({});
+  const [editingPerk, setEditingPerk] = useState<any | null>(null);
+  const [perkSheetOpen, setPerkSheetOpen] = useState(false);
+  const [savingPerk, setSavingPerk] = useState(false);
+  const [uploadingPerkHero, setUploadingPerkHero] = useState(false);
+  const [uploadingPerkGallery, setUploadingPerkGallery] = useState(false);
+
+  function patchPerk(changes: Record<string, unknown>) {
+    setEditingPerk((prev: any) => (prev ? { ...prev, ...changes } : prev));
+  }
+
+  async function uploadToBucket(bucket: string, prefix: string, file: File) {
+    const ext = file.name.split(".").pop() || "bin";
+    const path = `${prefix}${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const { error } = await supabase.storage
+      .from(bucket)
+      .upload(path, file, { cacheControl: "3600", upsert: false, contentType: file.type });
+    if (error) throw error;
+    return supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+  }
+
+  async function loadPartnerPerks(partnerId: string) {
+    const { data, error } = await supabase
+      .from("benefit_perks")
+      .select("*")
+      .eq("partner_id", partnerId)
+      .order("sort_order");
+    if (error) {
+      console.error("[admin] benefit_perks load error", error);
+    }
+    setPartnerPerks((prev) => ({ ...prev, [partnerId]: data ?? [] }));
+  }
+
+  async function savePerk() {
+    if (!editingPerk) return;
+    setSavingPerk(true);
+    try {
+      if (editingPerk.id === "new") {
+        const { id: _omit, ...payload } = editingPerk;
+        const { error } = await supabase.from("benefit_perks").insert(payload);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("benefit_perks")
+          .update(editingPerk)
+          .eq("id", editingPerk.id);
+        if (error) throw error;
+      }
+      toast.success("Perk saved");
+      setPerkSheetOpen(false);
+      await loadPartnerPerks(editingPerk.partner_id);
+      setEditingPerk(null);
+    } catch (e: any) {
+      toast.error(e?.message ?? "Save failed");
+    } finally {
+      setSavingPerk(false);
+    }
+  }
+
+  async function deletePerk(perk: any) {
+    const { error } = await supabase.from("benefit_perks").delete().eq("id", perk.id);
+    if (error) {
+      toast.error("Delete failed");
+      return;
+    }
+    await loadPartnerPerks(perk.partner_id);
+    toast.success("Perk removed");
+  }
+
+
+
   async function loadPartners() {
     const { data, error } = await supabase
       .from("benefit_partners")
@@ -1411,14 +1486,17 @@ function BenefitPartnersSection() {
           return (
             <div
               key={partner.id}
+              style={{ borderTop: i === 0 ? "none" : "1px solid #F1F5F9" }}
+            >
+            <div
               style={{
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
                 padding: 12,
-                borderTop: i === 0 ? "none" : "1px solid #F1F5F9",
               }}
             >
+
               <div
                 style={{
                   width: 36,
@@ -1507,6 +1585,142 @@ function BenefitPartnersSection() {
                 </button>
               </div>
             </div>
+
+            <div style={{ padding: "0 12px 10px" }}>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (expandedPartner === partner.id) {
+                    setExpandedPartner(null);
+                  } else {
+                    setExpandedPartner(partner.id);
+                    await loadPartnerPerks(partner.id);
+                  }
+                }}
+                style={{
+                  background: "#EEF2F7",
+                  color: "#6B7686",
+                  borderRadius: 20,
+                  padding: "4px 12px",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                Manage perks ({(partnerPerks[partner.id] ?? []).length})
+              </button>
+            </div>
+
+            {expandedPartner === partner.id && (
+              <div
+                style={{
+                  background: "#F8FAFC",
+                  borderTop: "1px solid #E4E8EF",
+                  padding: "12px 16px",
+                }}
+              >
+                {(partnerPerks[partner.id] ?? []).length === 0 && (
+                  <div style={{ fontSize: 12, color: "#9CA3AF" }}>No perks yet.</div>
+                )}
+                {(partnerPerks[partner.id] ?? []).map((perk: any) => (
+                  <div
+                    key={perk.id}
+                    style={{
+                      display: "flex",
+                      gap: 10,
+                      alignItems: "center",
+                      padding: "8px 0",
+                      borderBottom: "1px solid #F0F4F8",
+                    }}
+                  >
+                    <span style={{ fontSize: 13, fontWeight: 500, color: "#0B1F3A", flex: 1, minWidth: 0 }}>
+                      {perk.name}
+                    </span>
+                    {perk.coming_soon && (
+                      <span
+                        style={{
+                          background: "#FEF3C7",
+                          color: "#92400E",
+                          fontSize: 9,
+                          fontWeight: 700,
+                          borderRadius: 20,
+                          padding: "2px 7px",
+                        }}
+                      >
+                        Coming soon
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      aria-label="Edit perk"
+                      onClick={() => {
+                        setEditingPerk({ ...perk });
+                        setPerkSheetOpen(true);
+                      }}
+                      style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                    >
+                      <IconPencil size={15} stroke={1.8} color="#6B7686" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Delete perk"
+                      onClick={() => {
+                        if (confirm(`Delete ${perk.name}?`)) deletePerk(perk);
+                      }}
+                      style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                    >
+                      <IconTrash size={15} stroke={1.8} color="#CC2229" />
+                    </button>
+                  </div>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingPerk({
+                      id: "new",
+                      partner_id: partner.id,
+                      name: "",
+                      description: "",
+                      detail_text: "",
+                      hero_image_url: null,
+                      gallery_urls: [],
+                      video_url: null,
+                      video_embed_url: null,
+                      bullet_points: [],
+                      links: [],
+                      category: partner.category,
+                      saving: "",
+                      min_tier: partner.min_tier,
+                      cta_label: partner.cta_label,
+                      cta_action: partner.cta_action,
+                      coming_soon: true,
+                      active: true,
+                      sort_order: (partnerPerks[partner.id] ?? []).length,
+                    });
+                    setPerkSheetOpen(true);
+                  }}
+                  style={{
+                    background: "#EFF6FF",
+                    color: "#1877D6",
+                    borderRadius: 20,
+                    padding: "5px 12px",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    border: "none",
+                    cursor: "pointer",
+                    marginTop: 8,
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  Add perk +
+                </button>
+              </div>
+            )}
+            </div>
+
           );
         })}
       </div>
@@ -1759,6 +1973,446 @@ function BenefitPartnersSection() {
           </div>
         </div>
       )}
+
+      {perkSheetOpen && editingPerk && (
+        <div
+          onClick={() => {
+            setPerkSheetOpen(false);
+            setEditingPerk(null);
+          }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 310,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "flex-end",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#EEF2F7",
+              borderRadius: "22px 22px 0 0",
+              padding: "0 0 40px",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              width: "100%",
+            }}
+          >
+            <div style={{ width: 36, height: 5, borderRadius: 999, background: "#D1D1D6", margin: "12px auto 0" }} />
+
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: 16 }}>
+              <span style={{ fontSize: 18, fontWeight: 800, color: "#0B1F3A" }}>
+                {editingPerk.id === "new" ? "Add perk" : "Edit perk"}
+              </span>
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => {
+                  setPerkSheetOpen(false);
+                  setEditingPerk(null);
+                }}
+                style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, color: "#6B7686" }}
+              >
+                ×
+              </button>
+            </div>
+
+            <div style={{ padding: "0 16px" }}>
+              <div style={partnerLabelStyle}>Perk name</div>
+              <input
+                value={editingPerk.name ?? ""}
+                onChange={(e) => patchPerk({ name: e.target.value })}
+                style={partnerInputStyle}
+              />
+
+              <div style={partnerLabelStyle}>Description</div>
+              <textarea
+                rows={4}
+                value={editingPerk.description ?? ""}
+                onChange={(e) => patchPerk({ description: e.target.value })}
+                style={{ ...partnerInputStyle, resize: "vertical" }}
+              />
+
+              <div style={partnerLabelStyle}>Full detail</div>
+              <textarea
+                rows={6}
+                value={editingPerk.detail_text ?? ""}
+                onChange={(e) => patchPerk({ detail_text: e.target.value })}
+                placeholder="Rich detail shown on the perk detail page..."
+                style={{ ...partnerInputStyle, resize: "vertical" }}
+              />
+
+              <div style={partnerLabelStyle}>Minimum tier</div>
+              <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+                {PARTNER_TIERS.filter((t) => t.id !== "free").map((t) => {
+                  const active = editingPerk.min_tier === t.id;
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => patchPerk({ min_tier: t.id })}
+                      style={{
+                        flex: 1,
+                        background: active ? "#0B1F3A" : "#E5E5EA",
+                        color: active ? "#fff" : "#6B6B6F",
+                        border: "none",
+                        borderRadius: 20,
+                        padding: "8px 0",
+                        fontSize: 12,
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div style={partnerLabelStyle}>Category</div>
+              <input
+                value={editingPerk.category ?? ""}
+                onChange={(e) => patchPerk({ category: e.target.value })}
+                placeholder="Health, Shopping, etc"
+                style={partnerInputStyle}
+              />
+
+              <div style={partnerLabelStyle}>Saving text</div>
+              <input
+                value={editingPerk.saving ?? ""}
+                onChange={(e) => patchPerk({ saving: e.target.value })}
+                placeholder="e.g. Worth £50+ per visit"
+                style={partnerInputStyle}
+              />
+
+              <div style={partnerLabelStyle}>CTA label</div>
+              <input
+                value={editingPerk.cta_label ?? ""}
+                onChange={(e) => patchPerk({ cta_label: e.target.value })}
+                placeholder="e.g. Access now →"
+                style={partnerInputStyle}
+              />
+
+              <div style={partnerLabelStyle}>CTA action</div>
+              <input
+                value={editingPerk.cta_action ?? ""}
+                onChange={(e) => patchPerk({ cta_action: e.target.value })}
+                placeholder="URL, /route or pirkx_sso"
+                style={partnerInputStyle}
+              />
+
+              <div style={partnerLabelStyle}>Bullet points</div>
+              {((editingPerk.bullet_points ?? []) as string[]).map((bp, i) => (
+                <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                  <input
+                    value={bp}
+                    onChange={(e) => {
+                      const updated = [...(editingPerk.bullet_points ?? [])];
+                      updated[i] = e.target.value;
+                      patchPerk({ bullet_points: updated });
+                    }}
+                    placeholder={`Point ${i + 1}`}
+                    style={{ ...partnerInputStyle, flex: 1 }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      patchPerk({
+                        bullet_points: (editingPerk.bullet_points ?? []).filter(
+                          (_: string, j: number) => j !== i,
+                        ),
+                      })
+                    }
+                    style={{
+                      background: "#FEE2E2",
+                      border: "none",
+                      borderRadius: 8,
+                      width: 36,
+                      height: 36,
+                      cursor: "pointer",
+                      color: "#CC2229",
+                      fontSize: 16,
+                      flexShrink: 0,
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => patchPerk({ bullet_points: [...(editingPerk.bullet_points ?? []), ""] })}
+                style={{
+                  background: "#fff",
+                  border: "1px solid #E4E8EF",
+                  borderRadius: 20,
+                  padding: "8px 14px",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: "#1877D6",
+                  cursor: "pointer",
+                  marginBottom: 16,
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                Add bullet point
+              </button>
+
+              <div style={partnerLabelStyle}>Links</div>
+              {((editingPerk.links ?? []) as { label: string; url: string }[]).map((link, i) => (
+                <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                  <input
+                    value={link.label ?? ""}
+                    onChange={(e) => {
+                      const updated = [...(editingPerk.links ?? [])];
+                      updated[i] = { ...updated[i], label: e.target.value };
+                      patchPerk({ links: updated });
+                    }}
+                    placeholder="Label"
+                    style={{ ...partnerInputStyle, flex: 1 }}
+                  />
+                  <input
+                    value={link.url ?? ""}
+                    onChange={(e) => {
+                      const updated = [...(editingPerk.links ?? [])];
+                      updated[i] = { ...updated[i], url: e.target.value };
+                      patchPerk({ links: updated });
+                    }}
+                    placeholder="https://"
+                    style={{ ...partnerInputStyle, flex: 1 }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      patchPerk({
+                        links: (editingPerk.links ?? []).filter((_: unknown, j: number) => j !== i),
+                      })
+                    }
+                    style={{
+                      background: "#FEE2E2",
+                      border: "none",
+                      borderRadius: 8,
+                      width: 36,
+                      height: 36,
+                      cursor: "pointer",
+                      color: "#CC2229",
+                      fontSize: 16,
+                      flexShrink: 0,
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => patchPerk({ links: [...(editingPerk.links ?? []), { label: "", url: "" }] })}
+                style={{
+                  background: "#fff",
+                  border: "1px solid #E4E8EF",
+                  borderRadius: 20,
+                  padding: "8px 14px",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: "#1877D6",
+                  cursor: "pointer",
+                  marginBottom: 16,
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                Add link
+              </button>
+
+              <div style={partnerLabelStyle}>Hero image</div>
+              {editingPerk.hero_image_url && (
+                <img
+                  src={editingPerk.hero_image_url}
+                  alt=""
+                  style={{
+                    width: "100%",
+                    height: 120,
+                    objectFit: "cover",
+                    borderRadius: 10,
+                    marginBottom: 8,
+                    display: "block",
+                  }}
+                />
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                disabled={uploadingPerkHero}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setUploadingPerkHero(true);
+                  try {
+                    const url = await uploadToBucket("marketplace-images", "perks/hero/", file);
+                    patchPerk({ hero_image_url: url });
+                    toast.success("Hero image uploaded");
+                  } catch (err: any) {
+                    toast.error(err?.message ?? "Upload failed");
+                  } finally {
+                    setUploadingPerkHero(false);
+                    e.target.value = "";
+                  }
+                }}
+                style={{ ...partnerInputStyle, padding: 8 }}
+              />
+
+              <div style={partnerLabelStyle}>Gallery photos</div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
+                {((editingPerk.gallery_urls ?? []) as string[]).map((url, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      position: "relative",
+                      width: 72,
+                      height: 72,
+                      borderRadius: 8,
+                      overflow: "hidden",
+                      background: "#F8FAFC",
+                    }}
+                  >
+                    <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        patchPerk({
+                          gallery_urls: (editingPerk.gallery_urls ?? []).filter(
+                            (_: string, j: number) => j !== i,
+                          ),
+                        })
+                      }
+                      style={{
+                        position: "absolute",
+                        top: 2,
+                        right: 2,
+                        width: 18,
+                        height: 18,
+                        borderRadius: "50%",
+                        background: "rgba(0,0,0,0.6)",
+                        border: "none",
+                        cursor: "pointer",
+                        color: "#fff",
+                        fontSize: 12,
+                        lineHeight: 1,
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                disabled={uploadingPerkGallery}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setUploadingPerkGallery(true);
+                  try {
+                    const url = await uploadToBucket("marketplace-images", "perks/gallery/", file);
+                    patchPerk({ gallery_urls: [...(editingPerk.gallery_urls ?? []), url] });
+                    toast.success("Photo added");
+                  } catch (err: any) {
+                    toast.error(err?.message ?? "Upload failed");
+                  } finally {
+                    setUploadingPerkGallery(false);
+                    e.target.value = "";
+                  }
+                }}
+                style={{ ...partnerInputStyle, padding: 8 }}
+              />
+
+              <div style={partnerLabelStyle}>Video embed code</div>
+              <textarea
+                rows={3}
+                value={editingPerk.video_embed_url ?? ""}
+                onChange={(e) => patchPerk({ video_embed_url: e.target.value })}
+                placeholder="<iframe ...></iframe>"
+                style={{ ...partnerInputStyle, resize: "vertical" }}
+              />
+
+              <div style={partnerLabelStyle}>Or upload a video</div>
+              {editingPerk.video_url && (
+                <div style={{ fontSize: 11, color: "#6B7686", marginBottom: 6, wordBreak: "break-all" }}>
+                  {editingPerk.video_url}
+                </div>
+              )}
+              <input
+                type="file"
+                accept="video/*"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  try {
+                    const url = await uploadToBucket("marketplace-videos", "perks/video/", file);
+                    patchPerk({ video_url: url });
+                    toast.success("Video uploaded");
+                  } catch (err: any) {
+                    toast.error(err?.message ?? "Upload failed");
+                  } finally {
+                    e.target.value = "";
+                  }
+                }}
+                style={{ ...partnerInputStyle, padding: 8 }}
+              />
+
+              <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A" }}>Coming soon</span>
+                  <DSMToggle
+                    checked={!!editingPerk.coming_soon}
+                    onChange={(v) => patchPerk({ coming_soon: v })}
+                  />
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A" }}>Active</span>
+                  <DSMToggle checked={!!editingPerk.active} onChange={(v) => patchPerk({ active: v })} />
+                </div>
+              </div>
+
+              <div style={partnerLabelStyle}>Sort order</div>
+              <input
+                type="number"
+                min={0}
+                value={editingPerk.sort_order ?? 0}
+                onChange={(e) => patchPerk({ sort_order: Number(e.target.value) || 0 })}
+                style={partnerInputStyle}
+              />
+            </div>
+
+            <button
+              type="button"
+              disabled={savingPerk}
+              onClick={savePerk}
+              style={{
+                margin: "16px 16px 0",
+                width: "calc(100% - 32px)",
+                background: "#1877D6",
+                color: "#fff",
+                borderRadius: 20,
+                padding: 14,
+                fontSize: 15,
+                fontWeight: 800,
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+                boxShadow: "0 4px 0 #0F52A8",
+                opacity: savingPerk ? 0.7 : 1,
+              }}
+            >
+              {savingPerk ? "Saving..." : "Save perk"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
+
   );
 }

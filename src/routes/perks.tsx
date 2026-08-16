@@ -31,7 +31,11 @@ type Perk = {
   saving: string;
   minTier: string;
   logo: string;
+  /** Present when the perk comes from the benefit_perks table. */
+  dbId?: string;
+  iconBg?: string | null;
 };
+
 
 const TIER_ORDER = ['free', 'website', 'pro', 'managed'];
 
@@ -290,31 +294,32 @@ function PerksPage() {
     })();
   }, []);
 
-  // Perks are derived from admin-managed benefit partners; fall back to the
+  // Perks come from the admin-managed benefit_perks table; fall back to the
   // built-in list when the table is empty or unavailable.
   useEffect(() => {
     (async () => {
       const { data, error } = await supabase
-        .from('benefit_partners')
-        .select('*')
+        .from('benefit_perks')
+        .select('*, partner:benefit_partners(name, icon_bg, icon_color)')
         .eq('active', true)
         .order('sort_order');
       if (error || !data || data.length === 0) return;
-      const allPerks: Perk[] = (data as any[]).flatMap((partner) =>
-        ((partner.perks ?? []) as string[]).map((perk) => ({
-          id: `${partner.id}-${perk}`,
-          name: perk,
-          provider: partner.name,
-          category: partner.category ?? 'Other',
-          description: partner.description ?? '',
-          saving: partner.saving ?? '',
-          minTier: partner.min_tier,
-          logo: partner.icon ?? '\u{1F381}',
-        })),
-      );
+      const allPerks: Perk[] = (data as any[]).map((row) => ({
+        id: row.id,
+        dbId: row.id,
+        name: row.name,
+        provider: row.partner?.name ?? 'DSM partner',
+        category: row.category ?? 'Other',
+        description: row.description ?? '',
+        saving: row.saving ?? '',
+        minTier: row.min_tier,
+        logo: (row.partner?.name ?? 'D').charAt(0).toUpperCase(),
+        iconBg: row.partner?.icon_bg ?? null,
+      }));
       if (allPerks.length > 0) setPerks(allPerks);
     })();
   }, []);
+
 
   const goBack = useGoBack();
 
@@ -533,7 +538,12 @@ function PerksPage() {
               key={perk.id}
               type="button"
               onClick={() => {
-                if (accessible) {
+                if (perk.dbId) {
+                  navigate({
+                    to: '/perks_/$perkId' as never,
+                    params: { perkId: perk.dbId } as never,
+                  });
+                } else if (accessible) {
                   toast.info('Coming soon — full perk access launching shortly');
                 } else {
                   setSelectedPerk(perk);
@@ -560,16 +570,19 @@ function PerksPage() {
                   width: 40,
                   height: 40,
                   borderRadius: 10,
-                  background: '#EEF2F7',
+                  background: perk.iconBg ?? '#EEF2F7',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: 20,
+                  fontWeight: perk.dbId ? 800 : 400,
+                  color: '#0B1F3A',
                   flexShrink: 0,
                 }}
               >
                 {perk.logo}
               </span>
+
               <span style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A' }}>{perk.name}</div>
                 <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>
