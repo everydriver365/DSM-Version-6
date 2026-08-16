@@ -681,7 +681,7 @@ function CalendarSyncPage() {
             Connect your Google account so lessons you book in DSM appear in your Google IconCalendar straight away.
           </p>
 
-          {conn ? (
+          {outboundConn ? (
             <>
               <div
                 style={{
@@ -701,9 +701,9 @@ function CalendarSyncPage() {
                     Connected to Google IconCalendar
                   </div>
                   <div style={{ ...POPPINS, color: "#3D8A63", fontSize: 11.5, lineHeight: 1.5 }}>
-                    Connected on: {formatDate(conn.connected_at)}
+                    Connected on: {formatDate(outboundConn.connected_at)}
                     {" · "}
-                    Last synced: {formatDate(conn.last_synced_at)}
+                    Last synced: {formatDate(outboundConn.last_synced_at)}
                   </div>
                 </div>
               </div>
@@ -724,10 +724,10 @@ function CalendarSyncPage() {
             <button
               type="button"
               onClick={connectGoogle}
-              disabled={connecting}
-              style={{ ...BTN_PRIMARY, opacity: connecting ? 0.6 : 1 }}
+              disabled={outboundConnecting}
+              style={{ ...BTN_PRIMARY, opacity: outboundConnecting ? 0.6 : 1 }}
             >
-              {connecting ? (
+              {outboundConnecting ? (
                 <>
                   <IconLoader2 size={16} className="animate-spin" /> Connecting…
                 </>
