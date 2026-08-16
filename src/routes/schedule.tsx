@@ -527,6 +527,7 @@ function SchedulePage() {
           name: i.name ?? null,
           external_calendar_url: i.external_calendar_url ?? null,
           calendar_last_synced: i.calendar_last_synced ?? null,
+          google_calendar_connected: i.google_calendar_connected ?? false,
         });
         if (i.calendar_last_synced) setLastSynced(i.calendar_last_synced);
         if (recRes.ok) {
@@ -581,7 +582,11 @@ function SchedulePage() {
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
-      const res = await fetch(SUPABASE_URL + "/functions/v1/sync-external-calendar", {
+      const useGoogleSync = instructor?.google_calendar_connected;
+      const endpoint = useGoogleSync
+        ? "/functions/v1/sync-google-calendar"
+        : "/functions/v1/sync-external-calendar";
+      const res = await fetch(SUPABASE_URL + endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1045,7 +1050,10 @@ function SchedulePage() {
           setViewMonth(d);
           scrollToDate(ymdLocal(today));
         }}
-        showSync={!!instructor?.external_calendar_url}
+        showSync={
+          !!instructor?.google_calendar_connected ||
+          !!instructor?.external_calendar_url
+        }
         onSync={handleSync}
         syncing={syncing}
         lastSynced={lastSynced}
