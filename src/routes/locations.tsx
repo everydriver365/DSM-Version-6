@@ -232,7 +232,7 @@ function LocationsPage() {
                         e.stopPropagation();
                         copyPostcode(r);
                       }}
-                      aria-label="IconCopy postcode"
+                      aria-label="Copy postcode"
                       className="flex items-center justify-center rounded-md"
                       style={{
                         width: 32,

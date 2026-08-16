@@ -136,7 +136,7 @@ function QuickAccessPage() {
             <IconSearch size={16} color="#6B7280" />
             <input
               type="text"
-              placeholder="IconSearch quick access..."
+              placeholder="Search quick access..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1 bg-transparent outline-none text-[14px] text-[#0B1F3A] placeholder-[#9CA3AF]"

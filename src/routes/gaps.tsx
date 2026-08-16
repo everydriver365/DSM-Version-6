@@ -3098,7 +3098,7 @@ function GapsPage() {
 
       <ConfirmDialog
         open={confirmSendOpen}
-        title="IconSend bulk message?"
+        title="Send bulk message?"
         message={`You are about to send a message to ${selectedPupilIds.size} pupil${selectedPupilIds.size === 1 ? "" : "s"} for ${selectedSlots.length} selected slot${selectedSlots.length === 1 ? "" : "s"}. This will queue SMS messages where phone numbers are available and send an in-app message to all selected pupils.`}
         confirmLabel="IconSend"
         cancelLabel="Cancel"

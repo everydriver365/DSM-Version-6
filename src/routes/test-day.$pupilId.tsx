@@ -591,7 +591,7 @@ function TestDayPage() {
               />
               <input
                 type="text"
-                placeholder="IconSearch test centres..."
+                placeholder="Search test centres..."
                 value={centreSearch}
                 onChange={(e) => setCentreSearch(e.target.value)}
                 style={{

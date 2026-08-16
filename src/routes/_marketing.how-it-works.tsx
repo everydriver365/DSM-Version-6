@@ -45,7 +45,7 @@ const learnerSteps = [
     n: "1",
     icon: IconSearch,
     title: "Find your instructor",
-    description: "IconSearch by location, compare courses and read verified reviews.",
+    description: "Search by location, compare courses and read verified reviews.",
   },
   {
     n: "2",

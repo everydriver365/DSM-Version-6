@@ -394,7 +394,7 @@ function ReflectiveLogPage() {
                         }}
                       >
                         <IconSend size={14} />
-                        {savingResponse ? "Sending…" : "IconSend response"}
+                        {savingResponse ? "Sending…" : "Send response"}
                       </button>
                     </div>
                   </div>

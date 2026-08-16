@@ -1265,7 +1265,7 @@ function Step2(props: {
             </div>
           </div>
           <Input
-            label="IconRepeat until (end date)"
+            label="Repeat until (end date)"
             type="date"
             value={repeatEndDate}
             onChange={(e) => setRepeatEndDate(e.target.value)}

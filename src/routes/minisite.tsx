@@ -765,7 +765,7 @@ function MiniSitePage() {
             </div>
             <button
               onClick={copyUrl}
-              aria-label="IconCopy URL"
+              aria-label="Copy URL"
               style={{
                 width: 32,
                 height: 32,

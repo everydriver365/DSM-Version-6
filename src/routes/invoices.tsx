@@ -155,7 +155,7 @@ function InvoicesPage() {
           <IconSearch size={16} color="#9CA3AF" />
           <input
             type="text"
-            placeholder="IconSearch by pupil name..."
+            placeholder="Search by pupil name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{ flex: 1, border: "none", outline: "none", fontSize: 14, color: "#0B1F3A", background: "transparent", ...POPPINS }}
