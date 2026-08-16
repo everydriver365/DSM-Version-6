@@ -1059,10 +1059,8 @@ function SchedulePage() {
           setViewMonth(d);
           scrollToDate(ymdLocal(today));
         }}
-        showSync={
-          !!instructor?.google_calendar_connected ||
-          !!instructor?.external_calendar_url
-        }
+        showSync
+
         onSync={handleSync}
         syncing={syncing}
         lastSynced={lastSynced}
