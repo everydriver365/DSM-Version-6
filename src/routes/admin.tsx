@@ -1328,10 +1328,59 @@ export function BenefitPartnersSection() {
   const [perkPartnerFilter, setPerkPartnerFilter] = useState<string | "all">("all");
   const [allPerks, setAllPerks] = useState<BenefitPerk[]>([]);
 
+  // ---- perk form validation ------------------------------------------------
+  const [perkErrors, setPerkErrors] = useState<Record<string, string>>({});
+
+  function validatePerk(perk: any): Record<string, string> {
+    const errs: Record<string, string> = {};
+    const name = (perk?.name ?? "").trim();
+    const description = (perk?.description ?? "").trim();
+    const saving = (perk?.saving ?? "").trim();
+    const action = (perk?.cta_action ?? "").trim();
+
+    if (!name) errs.name = "Perk name is required";
+    else if (name.length > 100) errs.name = "Keep the name under 100 characters";
+
+    if (!description) errs.description = "Description is required";
+    else if (description.length > 500) errs.description = "Keep the description under 500 characters";
+
+    if (!saving) errs.saving = "Price / saving text is required";
+    else if (saving.length > 80) errs.saving = "Keep this under 80 characters";
+
+    if (!action) {
+      errs.cta_action = "Link is required (URL, /route or pirkx_sso)";
+    } else if (!/^https?:\/\/\S+$/i.test(action) && !action.startsWith("/") && action !== "pirkx_sso") {
+      errs.cta_action = "Use a full https:// URL, an in-app /route, or pirkx_sso";
+    }
+
+    if (!perk?.min_tier) errs.min_tier = "Choose a minimum tier";
+
+    return errs;
+  }
 
   function patchPerk(changes: Record<string, unknown>) {
     setEditingPerk((prev: any) => (prev ? { ...prev, ...changes } : prev));
+    setPerkErrors((prev) => {
+      const keys = Object.keys(changes).filter((k) => k in prev);
+      if (keys.length === 0) return prev;
+      const next = { ...prev };
+      keys.forEach((k) => delete next[k]);
+      return next;
+    });
   }
+
+  const perkFieldStyle = (field: string): React.CSSProperties =>
+    perkErrors[field]
+      ? { ...partnerInputStyle, borderColor: "#CC2229", marginBottom: 4 }
+      : partnerInputStyle;
+
+  const PerkError = ({ field }: { field: string }) =>
+    perkErrors[field] ? (
+      <div style={{ fontSize: 11, fontWeight: 600, color: "#CC2229", marginBottom: 12 }}>
+        {perkErrors[field]}
+      </div>
+    ) : null;
+
 
   async function uploadToBucket(bucket: string, prefix: string, file: File) {
     const ext = file.name.split(".").pop() || "bin";
@@ -1357,8 +1406,15 @@ export function BenefitPartnersSection() {
 
   async function savePerk() {
     if (!editingPerk) return;
+    const errs = validatePerk(editingPerk);
+    setPerkErrors(errs);
+    if (Object.keys(errs).length > 0) {
+      toast.error("Please fix the highlighted fields");
+      return;
+    }
     setSavingPerk(true);
     try {
+
       if (editingPerk.id === "new") {
         const { id: _omit, ...payload } = editingPerk;
         const { error } = await supabase.from("benefit_perks").insert(payload);
@@ -1371,6 +1427,7 @@ export function BenefitPartnersSection() {
         if (error) throw error;
       }
       toast.success("Perk saved");
+      setPerkErrors({});
       setPerkSheetOpen(false);
       await loadPartnerPerks(editingPerk.partner_id);
       await loadAllPerks();
@@ -2058,6 +2115,7 @@ export function BenefitPartnersSection() {
                   );
                 })}
               </div>
+              <PerkError field="min_tier" />
 
               <div style={partnerLabelStyle}>Category</div>
               <input
@@ -2204,6 +2262,7 @@ export function BenefitPartnersSection() {
           onClick={() => {
             setPerkSheetOpen(false);
             setEditingPerk(null);
+            setPerkErrors({});
           }}
           style={{
             position: "fixed",
@@ -2237,6 +2296,7 @@ export function BenefitPartnersSection() {
                 onClick={() => {
                   setPerkSheetOpen(false);
                   setEditingPerk(null);
+                  setPerkErrors({});
                 }}
                 style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, color: "#6B7686" }}
               >
@@ -2245,20 +2305,24 @@ export function BenefitPartnersSection() {
             </div>
 
             <div style={{ padding: "0 16px" }}>
-              <div style={partnerLabelStyle}>Perk name</div>
+              <div style={partnerLabelStyle}>Perk name *</div>
               <input
                 value={editingPerk.name ?? ""}
                 onChange={(e) => patchPerk({ name: e.target.value })}
-                style={partnerInputStyle}
+                placeholder="e.g. 20% off servicing"
+                style={perkFieldStyle("name")}
               />
+              <PerkError field="name" />
 
-              <div style={partnerLabelStyle}>Description</div>
+              <div style={partnerLabelStyle}>Description *</div>
               <textarea
                 rows={4}
                 value={editingPerk.description ?? ""}
                 onChange={(e) => patchPerk({ description: e.target.value })}
-                style={{ ...partnerInputStyle, resize: "vertical" }}
+                placeholder="Short summary shown on the perk tile"
+                style={{ ...perkFieldStyle("description"), resize: "vertical" }}
               />
+              <PerkError field="description" />
 
               <div style={partnerLabelStyle}>Full detail</div>
               <textarea
@@ -2305,13 +2369,14 @@ export function BenefitPartnersSection() {
                 style={partnerInputStyle}
               />
 
-              <div style={partnerLabelStyle}>Saving text</div>
+              <div style={partnerLabelStyle}>Price / saving *</div>
               <input
                 value={editingPerk.saving ?? ""}
                 onChange={(e) => patchPerk({ saving: e.target.value })}
-                placeholder="e.g. Worth £50+ per visit"
-                style={partnerInputStyle}
+                placeholder="e.g. Worth £50+ per visit, or Free"
+                style={perkFieldStyle("saving")}
               />
+              <PerkError field="saving" />
 
               <div style={partnerLabelStyle}>CTA label</div>
               <input
@@ -2321,13 +2386,14 @@ export function BenefitPartnersSection() {
                 style={partnerInputStyle}
               />
 
-              <div style={partnerLabelStyle}>CTA action</div>
+              <div style={partnerLabelStyle}>Link *</div>
               <input
                 value={editingPerk.cta_action ?? ""}
                 onChange={(e) => patchPerk({ cta_action: e.target.value })}
-                placeholder="URL, /route or pirkx_sso"
-                style={partnerInputStyle}
+                placeholder="https://... , /route or pirkx_sso"
+                style={perkFieldStyle("cta_action")}
               />
+              <PerkError field="cta_action" />
 
               <div style={partnerLabelStyle}>Bullet points</div>
               {((editingPerk.bullet_points ?? []) as string[]).map((bp, i) => (
