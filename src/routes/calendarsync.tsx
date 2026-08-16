@@ -237,7 +237,9 @@ function CalendarSyncPage() {
     })();
   }, [navigate]);
 
-  // Google IconCalendar (outbound) connection state + OAuth return handling
+  // Google Calendar connection state (google_calendar_connections is the
+  // source of truth; instructors.google_calendar_connected is a mirror)
+  // + OAuth return handling.
   useEffect(() => {
     (async () => {
       const { data: userData } = await supabase.auth.getUser();
@@ -249,91 +251,35 @@ function CalendarSyncPage() {
           .select("connected_at, last_synced_at")
           .eq("instructor_id", uid)
           .maybeSingle();
-        setOutboundConn((row as GoogleConnection | null) ?? null);
+        const conn = (row as GoogleConnection | null) ?? null;
+        if (conn) {
+          setGoogleConnected(true);
+          if (conn.last_synced_at) setLastSynced(conn.last_synced_at);
+        }
       } catch {
-        // table may not exist yet
+        // table may not exist yet — fall back to the instructors mirror
       }
     })();
 
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
-    const calendarStatus = params.get("calendar");
-    const connected = params.get("connected");
-    const err = params.get("error");
-    if (calendarStatus === "connected") {
+    const isConnected =
+      params.get("calendar") === "connected" || params.get("connected") === "google";
+    const isError = params.get("calendar") === "error" || params.get("error") !== null;
+
+    if (isConnected) {
       toast.success("Google Calendar connected! 🎉");
       setGoogleConnected(true);
       window.history.replaceState({}, "", window.location.pathname);
-      // Auto-sync after short delay to let state settle
+      // Auto-sync after a short delay to let state settle
       setTimeout(() => {
-        syncNow();
+        void sync();
       }, 1500);
-    } else if (calendarStatus === "error") {
+    } else if (isError) {
       toast.error("Could not connect Google Calendar — please try again");
-    }
-    if (connected === "google") {
-      toast.success("Google Calendar connected");
-    } else if (err === "google_denied") {
-      toast.error("Google Calendar access was denied");
-    } else if (err === "token_failed") {
-      toast.error("Could not complete Google Calendar connection");
-    }
-    if (calendarStatus || connected || err) {
-      params.delete("calendar");
-      params.delete("connected");
-      params.delete("error");
-      const qs = params.toString();
-      window.history.replaceState({}, "", window.location.pathname + (qs ? `?${qs}` : ""));
+      window.history.replaceState({}, "", window.location.pathname);
     }
   }, []);
-
-  async function connectGoogle() {
-    setOutboundConnecting(true);
-    try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const token = sessionData.session?.access_token;
-      if (!token) {
-        toast.error("Please sign in again to connect Google Calendar");
-        return;
-      }
-      const { data, error } = await supabase.functions.invoke("google-calendar-auth", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (error) throw error;
-      const url = (data as { url?: string } | null)?.url;
-      if (url) {
-        window.open(url, "_system");
-        return;
-      }
-      toast.error("Could not start Google sign-in");
-    } catch {
-      toast.error("Could not connect to Google Calendar");
-    } finally {
-      setOutboundConnecting(false);
-    }
-  }
-
-
-
-  async function disconnectGoogle() {
-    if (!userId) return;
-    setDisconnecting(true);
-    try {
-      const today = new Date().toISOString().split("T")[0];
-      await supabase.from("google_calendar_connections").delete().eq("instructor_id", userId);
-      await supabase
-        .from("lessons")
-        .update({ google_event_id: null })
-        .eq("instructor_id", userId)
-        .gte("lesson_date", today);
-      setOutboundConn(null);
-      toast.success("Google Calendar disconnected");
-    } catch {
-      toast.error("Could not disconnect Google IconCalendar");
-    } finally {
-      setDisconnecting(false);
-    }
-  }
 
   async function connectGoogleCalendar() {
     setConnecting(true);
@@ -359,26 +305,34 @@ function CalendarSyncPage() {
     }
   }
 
-  async function syncNow() {
+  /** One sync entry point — routes to Google OAuth sync or the ICS sync. */
+  async function sync() {
     setSyncing(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Please sign in");
+        return;
+      }
 
-      const res = await fetch("https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/sync-google-calendar", {
+      const endpoint = googleConnected ? "sync-google-calendar" : "sync-external-calendar";
+      console.log("[calendar-sync] endpoint:", endpoint, "googleConnected:", googleConnected);
+
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.access_token}`,
           apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({ instructorId: userId }),
       });
-      const data = await res.json();
-      if (data.success) {
-        toast.success(`Synced ${data.eventsImported} events from Google Calendar`);
+      const data = await res.json().catch(() => ({}));
+      if (data.success || data.eventsImported !== undefined) {
+        toast.success(`Synced ${data.eventsImported ?? 0} events`);
         setLastSynced(new Date().toISOString());
       } else {
-        toast.error(data.message ?? "Sync failed");
+        toast.error(data.message ?? data.error ?? "Sync failed");
       }
     } catch {
       toast.error("Sync failed");
@@ -387,20 +341,27 @@ function CalendarSyncPage() {
     }
   }
 
+  /** One disconnect entry point — clears both stores. */
   async function disconnect() {
     if (!userId) return;
-    await supabase
-      .from("instructors")
-      .update({
-        google_calendar_connected: false,
-        google_access_token: null,
-        google_refresh_token: null,
-        google_calendar_id: null,
-        google_token_expiry: null,
-      })
-      .eq("id", userId);
-    setGoogleConnected(false);
-    toast.success("Google Calendar disconnected");
+    try {
+      await supabase.from("google_calendar_connections").delete().eq("instructor_id", userId);
+      await supabase
+        .from("instructors")
+        .update({
+          google_calendar_connected: false,
+          google_access_token: null,
+          google_refresh_token: null,
+          google_calendar_id: null,
+          google_token_expiry: null,
+        })
+        .eq("id", userId);
+      setGoogleConnected(false);
+      setLastSynced(null);
+      toast.success("Google Calendar disconnected");
+    } catch {
+      toast.error("Could not disconnect Google Calendar");
+    }
   }
 
 
