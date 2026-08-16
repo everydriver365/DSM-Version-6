@@ -2115,6 +2115,7 @@ export function BenefitPartnersSection() {
                   );
                 })}
               </div>
+              <PerkError field="min_tier" />
 
               <div style={partnerLabelStyle}>Category</div>
               <input
@@ -2304,20 +2305,24 @@ export function BenefitPartnersSection() {
             </div>
 
             <div style={{ padding: "0 16px" }}>
-              <div style={partnerLabelStyle}>Perk name</div>
+              <div style={partnerLabelStyle}>Perk name *</div>
               <input
                 value={editingPerk.name ?? ""}
                 onChange={(e) => patchPerk({ name: e.target.value })}
-                style={partnerInputStyle}
+                placeholder="e.g. 20% off servicing"
+                style={perkFieldStyle("name")}
               />
+              <PerkError field="name" />
 
-              <div style={partnerLabelStyle}>Description</div>
+              <div style={partnerLabelStyle}>Description *</div>
               <textarea
                 rows={4}
                 value={editingPerk.description ?? ""}
                 onChange={(e) => patchPerk({ description: e.target.value })}
-                style={{ ...partnerInputStyle, resize: "vertical" }}
+                placeholder="Short summary shown on the perk tile"
+                style={{ ...perkFieldStyle("description"), resize: "vertical" }}
               />
+              <PerkError field="description" />
 
               <div style={partnerLabelStyle}>Full detail</div>
               <textarea
@@ -2364,13 +2369,14 @@ export function BenefitPartnersSection() {
                 style={partnerInputStyle}
               />
 
-              <div style={partnerLabelStyle}>Saving text</div>
+              <div style={partnerLabelStyle}>Price / saving *</div>
               <input
                 value={editingPerk.saving ?? ""}
                 onChange={(e) => patchPerk({ saving: e.target.value })}
-                placeholder="e.g. Worth £50+ per visit"
-                style={partnerInputStyle}
+                placeholder="e.g. Worth £50+ per visit, or Free"
+                style={perkFieldStyle("saving")}
               />
+              <PerkError field="saving" />
 
               <div style={partnerLabelStyle}>CTA label</div>
               <input
@@ -2380,13 +2386,14 @@ export function BenefitPartnersSection() {
                 style={partnerInputStyle}
               />
 
-              <div style={partnerLabelStyle}>CTA action</div>
+              <div style={partnerLabelStyle}>Link *</div>
               <input
                 value={editingPerk.cta_action ?? ""}
                 onChange={(e) => patchPerk({ cta_action: e.target.value })}
-                placeholder="URL, /route or pirkx_sso"
-                style={partnerInputStyle}
+                placeholder="https://... , /route or pirkx_sso"
+                style={perkFieldStyle("cta_action")}
               />
+              <PerkError field="cta_action" />
 
               <div style={partnerLabelStyle}>Bullet points</div>
               {((editingPerk.bullet_points ?? []) as string[]).map((bp, i) => (
