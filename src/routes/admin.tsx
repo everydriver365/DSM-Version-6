@@ -1373,6 +1373,7 @@ export function BenefitPartnersSection() {
       toast.success("Perk saved");
       setPerkSheetOpen(false);
       await loadPartnerPerks(editingPerk.partner_id);
+      await loadAllPerks();
       setEditingPerk(null);
     } catch (e: any) {
       toast.error(e?.message ?? "Save failed");
@@ -1388,8 +1389,10 @@ export function BenefitPartnersSection() {
       return;
     }
     await loadPartnerPerks(perk.partner_id);
+    await loadAllPerks();
     toast.success("Perk removed");
   }
+
 
 
 
