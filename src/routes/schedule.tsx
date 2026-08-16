@@ -507,7 +507,17 @@ function SchedulePage() {
           fetch(`${SUPABASE_URL}/rest/v1/instructor_time_off?instructor_id=eq.${uid}&start_date=lte.${endIso}&end_date=gte.${startIso}`, { headers }),
         ]);
         if (cancelled) return;
-        const i = (instrRow.data ?? {}) as {
+        let instrData = instrRow.data as any;
+        if (instrRow.error) {
+          const retry = await supabase
+            .from("instructors")
+            .select("name,working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,external_calendar_url,calendar_last_synced")
+            .eq("id", uid)
+            .maybeSingle();
+          instrData = retry.data as any;
+        }
+        const i = (instrData ?? {}) as {
+
           name?: string | null;
           working_hours_start?: string | null;
           working_hours_end?: string | null;
