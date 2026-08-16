@@ -1466,6 +1466,18 @@ export function BenefitPartnersSection() {
     setEditingPartner((prev) => (prev ? { ...prev, ...changes } : prev));
   }
 
+  const filteredPerks = useMemo(() => {
+    const q = perkSearch.trim().toLowerCase();
+    return allPerks.filter((perk) => {
+      const matchesName = perk.name.toLowerCase().includes(q);
+      const matchesPartner =
+        perkPartnerFilter === "all" || perk.partner_id === perkPartnerFilter;
+      return matchesName && matchesPartner;
+    });
+  }, [allPerks, perkSearch, perkPartnerFilter]);
+
+  const partnerName = (id: string) => partners.find((p) => p.id === id)?.name ?? "Unknown";
+
   return (
     <div style={{ paddingBottom: 32 }}>
       <div
@@ -1519,6 +1531,168 @@ export function BenefitPartnersSection() {
           Add partner +
         </button>
       </div>
+
+      {/* Perk search & filter */}
+      <div
+        style={{
+          margin: "0 16px 16px",
+          background: "#fff",
+          borderRadius: 16,
+          border: "1px solid #E4E8EF",
+          padding: 12,
+        }}
+      >
+        <div style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A", marginBottom: 10 }}>
+          Find a perk
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              background: "#F8FAFC",
+              borderRadius: 12,
+              padding: "0 10px",
+              height: 40,
+              border: "1px solid #E4E8EF",
+            }}
+          >
+            <IconSearch size={16} stroke={1.8} color="#6B7686" />
+            <input
+              type="text"
+              value={perkSearch}
+              onChange={(e) => setPerkSearch(e.target.value)}
+              placeholder="Search perks by name…"
+              style={{
+                flex: 1,
+                border: "none",
+                background: "transparent",
+                outline: "none",
+                fontSize: 14,
+                fontFamily: "Poppins, sans-serif",
+                color: "#0B1F3A",
+              }}
+            />
+            {perkSearch && (
+              <button
+                type="button"
+                onClick={() => setPerkSearch("")}
+                style={{
+                  fontSize: 11,
+                  color: "#6B7686",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          <select
+            value={perkPartnerFilter}
+            onChange={(e) => setPerkPartnerFilter(e.target.value)}
+            style={{
+              height: 40,
+              borderRadius: 12,
+              border: "1px solid #E4E8EF",
+              background: "#F8FAFC",
+              padding: "0 10px",
+              fontSize: 14,
+              fontFamily: "Poppins, sans-serif",
+              color: "#0B1F3A",
+              outline: "none",
+            }}
+          >
+            <option value="all">All partners</option>
+            {partners.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {filteredPerks.length > 0 && (
+          <div style={{ marginTop: 12, fontSize: 12, color: "#6B7686" }}>
+            {filteredPerks.length} perk{filteredPerks.length === 1 ? "" : "s"} found
+          </div>
+        )}
+
+        {perkSearch && filteredPerks.length === 0 && (
+          <div style={{ marginTop: 12, fontSize: 12, color: "#9CA3AF" }}>
+            No perks match your search.
+          </div>
+        )}
+
+        {filteredPerks.length > 0 && (
+          <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+            {filteredPerks.map((perk) => (
+              <div
+                key={perk.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "10px 12px",
+                  background: "#F8FAFC",
+                  borderRadius: 12,
+                  border: "1px solid #F0F4F8",
+                }}
+              >
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
+                    {perk.name}
+                  </div>
+                  <div style={{ fontSize: 11, color: "#6B7686", marginTop: 2 }}>
+                    {partnerName(perk.partner_id)}
+                    {perk.category ? ` · ${perk.category}` : ""}
+                  </div>
+                </div>
+                {perk.coming_soon && (
+                  <span
+                    style={{
+                      background: "#FEF3C7",
+                      color: "#92400E",
+                      fontSize: 9,
+                      fontWeight: 700,
+                      borderRadius: 20,
+                      padding: "2px 7px",
+                      flexShrink: 0,
+                    }}
+                  >
+                    Coming soon
+                  </span>
+                )}
+                <button
+                  type="button"
+                  aria-label="Edit perk"
+                  onClick={() => {
+                    setEditingPerk({ ...perk });
+                    setPerkSheetOpen(true);
+                  }}
+                  style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                >
+                  <IconPencil size={15} stroke={1.8} color="#6B7686" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Delete perk"
+                  onClick={() => {
+                    if (confirm(`Delete ${perk.name}?`)) deletePerk(perk);
+                  }}
+                  style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                >
+                  <IconTrash size={15} stroke={1.8} color="#CC2229" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
 
       <div
         style={{
