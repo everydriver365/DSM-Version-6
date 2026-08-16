@@ -507,7 +507,17 @@ function SchedulePage() {
           fetch(`${SUPABASE_URL}/rest/v1/instructor_time_off?instructor_id=eq.${uid}&start_date=lte.${endIso}&end_date=gte.${startIso}`, { headers }),
         ]);
         if (cancelled) return;
-        const i = (instrRow.data ?? {}) as {
+        let instrData = instrRow.data as any;
+        if (instrRow.error) {
+          const retry = await supabase
+            .from("instructors")
+            .select("name,working_hours_start,working_hours_end,working_days,per_day_hours,lesson_buffer_after,hourly_rate,external_calendar_url,calendar_last_synced")
+            .eq("id", uid)
+            .maybeSingle();
+          instrData = retry.data as any;
+        }
+        const i = (instrData ?? {}) as {
+
           name?: string | null;
           working_hours_start?: string | null;
           working_hours_end?: string | null;
@@ -577,7 +587,13 @@ function SchedulePage() {
 
   const handleSync = useCallback(async () => {
     if (!userId) return;
+    if (!instructor?.google_calendar_connected && !instructor?.external_calendar_url) {
+      toast.info("Connect a calendar first");
+      navigate({ to: "/calendarsync" as never });
+      return;
+    }
     setSyncing(true);
+
     try {
       const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
       const SUPABASE_ANON_KEY =
@@ -614,7 +630,7 @@ function SchedulePage() {
     } finally {
       setSyncing(false);
     }
-  }, [userId, instructor, fetchCalendarBlocks]);
+  }, [userId, instructor, fetchCalendarBlocks, navigate]);
 
   const handleDeleteLesson = useCallback(async (lesson: any) => {
     const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -1053,10 +1069,8 @@ function SchedulePage() {
           setViewMonth(d);
           scrollToDate(ymdLocal(today));
         }}
-        showSync={
-          !!instructor?.google_calendar_connected ||
-          !!instructor?.external_calendar_url
-        }
+        showSync
+
         onSync={handleSync}
         syncing={syncing}
         lastSynced={lastSynced}
