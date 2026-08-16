@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
-import { IconBook, IconBriefcase, IconGift, IconChevronLeft, IconChevronRight, IconFileCheck, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconNews, IconPencil, IconPlayerPlay, IconSettings, IconShieldCheck, IconShoppingBag, IconStar, IconTrash, IconUsers, IconVideo } from "@tabler/icons-react";
+import { IconBook, IconBriefcase, IconGift, IconChevronLeft, IconChevronRight, IconFileCheck, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconNews, IconPencil, IconPlayerPlay, IconSearch, IconSettings, IconShieldCheck, IconShoppingBag, IconStar, IconTrash, IconUsers, IconVideo } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
 import type React from "react";
+
 
 
 export const Route = createFileRoute("/admin")({
