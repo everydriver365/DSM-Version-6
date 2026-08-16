@@ -294,31 +294,32 @@ function PerksPage() {
     })();
   }, []);
 
-  // Perks are derived from admin-managed benefit partners; fall back to the
+  // Perks come from the admin-managed benefit_perks table; fall back to the
   // built-in list when the table is empty or unavailable.
   useEffect(() => {
     (async () => {
       const { data, error } = await supabase
-        .from('benefit_partners')
-        .select('*')
+        .from('benefit_perks')
+        .select('*, partner:benefit_partners(name, icon_bg, icon_color)')
         .eq('active', true)
         .order('sort_order');
       if (error || !data || data.length === 0) return;
-      const allPerks: Perk[] = (data as any[]).flatMap((partner) =>
-        ((partner.perks ?? []) as string[]).map((perk) => ({
-          id: `${partner.id}-${perk}`,
-          name: perk,
-          provider: partner.name,
-          category: partner.category ?? 'Other',
-          description: partner.description ?? '',
-          saving: partner.saving ?? '',
-          minTier: partner.min_tier,
-          logo: partner.icon ?? '\u{1F381}',
-        })),
-      );
+      const allPerks: Perk[] = (data as any[]).map((row) => ({
+        id: row.id,
+        dbId: row.id,
+        name: row.name,
+        provider: row.partner?.name ?? 'DSM partner',
+        category: row.category ?? 'Other',
+        description: row.description ?? '',
+        saving: row.saving ?? '',
+        minTier: row.min_tier,
+        logo: (row.partner?.name ?? 'D').charAt(0).toUpperCase(),
+        iconBg: row.partner?.icon_bg ?? null,
+      }));
       if (allPerks.length > 0) setPerks(allPerks);
     })();
   }, []);
+
 
   const goBack = useGoBack();
 
