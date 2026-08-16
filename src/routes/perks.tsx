@@ -538,7 +538,12 @@ function PerksPage() {
               key={perk.id}
               type="button"
               onClick={() => {
-                if (accessible) {
+                if (perk.dbId) {
+                  navigate({
+                    to: '/perks_/$perkId' as never,
+                    params: { perkId: perk.dbId } as never,
+                  });
+                } else if (accessible) {
                   toast.info('Coming soon — full perk access launching shortly');
                 } else {
                   setSelectedPerk(perk);
@@ -565,16 +570,19 @@ function PerksPage() {
                   width: 40,
                   height: 40,
                   borderRadius: 10,
-                  background: '#EEF2F7',
+                  background: perk.iconBg ?? '#EEF2F7',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: 20,
+                  fontWeight: perk.dbId ? 800 : 400,
+                  color: '#0B1F3A',
                   flexShrink: 0,
                 }}
               >
                 {perk.logo}
               </span>
+
               <span style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A' }}>{perk.name}</div>
                 <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>
