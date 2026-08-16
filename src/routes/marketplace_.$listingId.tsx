@@ -172,6 +172,7 @@ function ListingDetailPage() {
     };
   }, []);
   const [photoIndex, setPhotoIndex] = useState(0);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
     let cancelled = false;
