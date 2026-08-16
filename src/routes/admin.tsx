@@ -1280,7 +1280,7 @@ const partnerLabelStyle: React.CSSProperties = {
   marginBottom: 6,
 };
 
-function BenefitPartnersSection() {
+export function BenefitPartnersSection() {
   const [partners, setPartners] = useState<BenefitPartner[]>([]);
   const [editingPartner, setEditingPartner] = useState<BenefitPartner | null>(null);
   const [partnerSheetOpen, setPartnerSheetOpen] = useState(false);
