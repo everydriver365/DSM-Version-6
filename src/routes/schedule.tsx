@@ -2974,6 +2974,34 @@ function MonthStrip({
         </button>
       </div>
 
+      {syncMessage && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            marginBottom: 8,
+            padding: "6px 10px",
+            borderRadius: 10,
+            background: syncMessage.type === "success" ? "rgba(34, 197, 94, 0.12)" : "rgba(239, 68, 68, 0.12)",
+            color: syncMessage.type === "success" ? "#16A34A" : "#DC2626",
+            fontSize: 12,
+            fontWeight: 500,
+            ...POPPINS,
+          }}
+        >
+          <div
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: "50%",
+              background: syncMessage.type === "success" ? "#16A34A" : "#DC2626",
+            }}
+          />
+          {syncMessage.text}
+        </div>
+      )}
+
       <div
         ref={scroller}
         style={{
