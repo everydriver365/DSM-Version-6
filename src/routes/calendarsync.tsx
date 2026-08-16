@@ -196,7 +196,7 @@ function CalendarSyncPage() {
           Authorization: `Bearer ${token}`,
         };
         const baseSel = "external_calendar_url,external_calendar_last_synced_at";
-        const fullSel = `${baseSel},external_calendar_sync_error`;
+        const fullSel = `${baseSel},external_calendar_sync_error,google_calendar_connected,calendar_last_synced`;
         let rows: unknown = null;
         let res = await fetch(
           `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=${fullSel}`,
@@ -205,7 +205,7 @@ function CalendarSyncPage() {
         if (!res.ok) {
           // Column may not exist yet — retry without sync_error.
           res = await fetch(
-            `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=${baseSel}`,
+            `${SUPABASE_URL}/rest/v1/instructors?id=eq.${user.id}&select=${baseSel},google_calendar_connected,calendar_last_synced`,
             { headers },
           );
         }
@@ -215,17 +215,21 @@ function CalendarSyncPage() {
             external_calendar_url?: string | null;
             external_calendar_last_synced_at?: string | null;
             external_calendar_sync_error?: string | null;
+            google_calendar_connected?: boolean | null;
+            calendar_last_synced?: string | null;
           } : null;
           if (row?.external_calendar_url) {
             setExternalCalendarUrl(row.external_calendar_url);
             setSavedUrl(row.external_calendar_url);
           }
           if (row?.external_calendar_last_synced_at) {
-            setLastSynced(row.external_calendar_last_synced_at);
+            setIcsLastSynced(row.external_calendar_last_synced_at);
           }
           if (row?.external_calendar_sync_error) {
-            setSyncError(row.external_calendar_sync_error);
+            setIcsSyncError(row.external_calendar_sync_error);
           }
+          setGoogleConnected(row?.google_calendar_connected ?? false);
+          setLastSynced(row?.calendar_last_synced ?? null);
         }
       } catch {
         // ignore — first-time or column may not exist
