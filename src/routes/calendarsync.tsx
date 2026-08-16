@@ -1085,7 +1085,7 @@ function CalendarSyncPage() {
                     2
                   </div>
                   <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Click File → New IconCalendar Subscription (Mac) or tap Calendars → Add IconCalendar → Add Subscription IconCalendar (iPhone)
+                    Click File → New Calendar Subscription (Mac) or tap Calendars → Add Calendar → Add Subscription Calendar (iPhone)
                   </p>
                 </li>
                 <li className="flex items-start gap-3">
@@ -1145,7 +1145,7 @@ function CalendarSyncPage() {
                     1
                   </div>
                   <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Go to outlook.com and open IconCalendar
+                    Go to outlook.com and open Calendar
                   </p>
                 </li>
                 <li className="flex items-start gap-3">
