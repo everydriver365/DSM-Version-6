@@ -598,7 +598,7 @@ function BenefitsPage() {
         Included benefits
       </div>
 
-      {BENEFITS.map((benefit) => {
+      {benefits.map((benefit) => {
         const Icon = iconFor(benefit.icon);
         return (
           <div
