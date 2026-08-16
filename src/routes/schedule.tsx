@@ -2903,10 +2903,10 @@ function MonthStrip({
           >
             Today
           </button>
-          {(instructor?.google_calendar_connected || instructor?.external_calendar_url) && (
+          {showSync && (
             <button
               type="button"
-              onClick={handleSync}
+              onClick={onSync}
               disabled={syncing}
               aria-label={syncing ? "Syncing calendar" : "Sync calendar"}
               style={{
