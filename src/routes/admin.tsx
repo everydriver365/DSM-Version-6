@@ -1323,6 +1323,12 @@ export function BenefitPartnersSection() {
   const [uploadingPerkHero, setUploadingPerkHero] = useState(false);
   const [uploadingPerkGallery, setUploadingPerkGallery] = useState(false);
 
+  // ---- perk search & filter ------------------------------------------------
+  const [perkSearch, setPerkSearch] = useState("");
+  const [perkPartnerFilter, setPerkPartnerFilter] = useState<string | "all">("all");
+  const [allPerks, setAllPerks] = useState<BenefitPerk[]>([]);
+
+
   function patchPerk(changes: Record<string, unknown>) {
     setEditingPerk((prev: any) => (prev ? { ...prev, ...changes } : prev));
   }
