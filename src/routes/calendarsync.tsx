@@ -573,54 +573,192 @@ function CalendarSyncPage() {
           </p>
         </div>
 
-        {/* Section 1 — Google events → DSM */}
+        {/* Section 1 — Google Calendar OAuth */}
         <div style={{ marginTop: 24 }}>
-          <SectionLabel>Google events → DSM</SectionLabel>
-        </div>
-        {/* Import external Google IconCalendar */}
-        <div style={SECTION_CARD}>
-          <p style={DESC}>
-            See your personal events in DSM so gap filler knows when you're busy
-          </p>
-
-          <button
-            type="button"
-            onClick={() => setHowToOpen((v) => !v)}
+          <div
             style={{
               ...POPPINS,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 5,
-              color: "#1877D6",
-              fontSize: 13,
-              fontWeight: 700,
+              color: "#9CA3AF",
+              fontSize: 11,
+              fontWeight: 600,
+              textTransform: "uppercase",
+              marginBottom: 12,
             }}
           >
-            <span>How to get your Google IconCalendar URL</span>
-            <IconChevronDown
-              size={11}
-              color="#1877D6"
-              style={{ transform: howToOpen ? "rotate(180deg)" : "none", transition: "transform 150ms" }}
-            />
-          </button>
-          {howToOpen && (
-            <div style={{ marginTop: 10 }}>
-              <ol className="list-decimal pl-5 text-[12px] leading-[1.5]" style={{ ...POPPINS, color: "#0F2044" }}>
-                <li>Open Google IconCalendar on desktop (calendar.google.com)</li>
-                <li>Click the three dots ⋮ next to your calendar name</li>
-                <li>Click 'Settings and sharing'</li>
-                <li>Scroll down to 'Secret address in iCal format'</li>
-                <li>Click the copy icon and paste the URL below</li>
-              </ol>
-              <p className="text-[11px] italic" style={{ ...POPPINS, color: "#6B7280", marginTop: 8 }}>
-                This URL is private — only you have it. No login required.
-              </p>
+            GOOGLE CALENDAR
+          </div>
+        </div>
+
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 16,
+            border: "1px solid #E4E8EF",
+            overflow: "hidden",
+            marginBottom: 16,
+          }}
+        >
+          {googleConnected ? (
+            <>
+              <div
+                style={{
+                  padding: "14px 16px",
+                  display: "flex",
+                  gap: 12,
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 999,
+                    background: "#DCFCE7",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <IconCalendar size={20} color="#15803D" stroke={1.5} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ ...POPPINS, color: "#0B1F3A", fontSize: 14, fontWeight: 600 }}>
+                    Google Calendar connected
+                  </div>
+                  <div style={{ ...POPPINS, color: "#9CA3AF", fontSize: 11, marginTop: 2 }}>
+                    Last synced: {lastSynced ? timeAgo(lastSynced) : "Never synced"}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    background: "#DCFCE7",
+                    color: "#15803D",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    borderRadius: 20,
+                    padding: "2px 8px",
+                  }}
+                >
+                  Connected
+                </div>
+              </div>
+              <div style={{ height: 1, background: "#E4E8EF" }} />
+              <div
+                onClick={syncNow}
+                role="button"
+                tabIndex={0}
+                style={{
+                  padding: "13px 16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  cursor: "pointer",
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") syncNow();
+                }}
+              >
+                <IconRefresh
+                  size={16}
+                  color="#1877D6"
+                  stroke={1.5}
+                  className={syncing ? "animate-spin" : undefined}
+                />
+                <div style={{ ...POPPINS, color: "#0B1F3A", fontSize: 14, fontWeight: 500, flex: 1 }}>
+                  Sync now
+                </div>
+                {syncing && (
+                  <div style={{ ...POPPINS, color: "#9CA3AF", fontSize: 11 }}>Syncing...</div>
+                )}
+              </div>
+              <div style={{ height: 1, background: "#E4E8EF" }} />
+              <div
+                onClick={disconnect}
+                role="button"
+                tabIndex={0}
+                style={{
+                  padding: "13px 16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  cursor: "pointer",
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") disconnect();
+                }}
+              >
+                <IconX size={16} color="#CC2229" stroke={1.5} />
+                <div style={{ ...POPPINS, color: "#CC2229", fontSize: 14, fontWeight: 500 }}>
+                  Disconnect Google Calendar
+                </div>
+              </div>
+            </>
+          ) : (
+            <div
+              onClick={connectGoogleCalendar}
+              role="button"
+              tabIndex={0}
+              style={{
+                padding: "14px 16px",
+                display: "flex",
+                gap: 12,
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") connectGoogleCalendar();
+              }}
+            >
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 999,
+                  background: "#EFF6FF",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <IconCalendar size={20} color="#1877D6" stroke={1.5} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ ...POPPINS, color: "#0B1F3A", fontSize: 14, fontWeight: 600 }}>
+                  Connect Google Calendar
+                </div>
+                <div style={{ ...POPPINS, color: "#9CA3AF", fontSize: 11, marginTop: 2 }}>
+                  Sync your Google Calendar events automatically
+                </div>
+              </div>
+              {connecting ? (
+                <div style={{ ...POPPINS, color: "#1877D6", fontSize: 12 }}>Connecting...</div>
+              ) : (
+                <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+              )}
             </div>
           )}
+        </div>
 
-          <div style={{ marginTop: 16 }}>
-            <label style={FIELD_LABEL}>Your Google IconCalendar ICS URL</label>
+        {/* Secondary ICS option */}
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 16,
+            border: "1px solid #E4E8EF",
+            overflow: "hidden",
+            marginBottom: 16,
+            padding: "14px 16px",
+          }}
+        >
+          <div style={{ ...POPPINS, color: "#0B1F3A", fontSize: 14, fontWeight: 600, marginBottom: 4 }}>
+            Or use a custom ICS URL
+          </div>
+          <p style={{ ...POPPINS, color: "#9CA3AF", fontSize: 12, lineHeight: 1.5, marginBottom: 12 }}>
+            Works with Outlook, Apple Calendar, and other apps that share an ICS feed.
+          </p>
+          <div style={{ marginBottom: 12 }}>
             <input
               ref={inputRef}
               type="url"
@@ -631,11 +769,10 @@ function CalendarSyncPage() {
               style={FIELD_INPUT}
             />
           </div>
-
-          {syncError ? (
+          {icsSyncError ? (
             <div
               style={{
-                marginTop: 12,
+                marginBottom: 12,
                 background: "#FEF2F2",
                 borderRadius: 12,
                 padding: "12px 14px",
@@ -644,11 +781,11 @@ function CalendarSyncPage() {
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <IconAlertCircle size={14} color="#FF3B30" />
                 <span className="text-xs" style={{ ...POPPINS, color: "#FF3B30", fontWeight: 600 }}>
-                  Sync error: {syncError}
+                  Sync error: {icsSyncError}
                 </span>
               </div>
               <div className="text-xs" style={{ ...POPPINS, color: "#8A8A8E", marginTop: 4 }}>
-                This usually means your ICS URL has expired. Get a new one from Google IconCalendar.
+                This usually means your ICS URL has expired. Get a new one from your calendar app.
               </div>
               <button
                 type="button"
@@ -662,74 +799,32 @@ function CalendarSyncPage() {
                 Update URL →
               </button>
             </div>
-          ) : lastSynced ? (
-            (() => {
-              const ageMs = Date.now() - new Date(lastSynced).getTime();
-              const overdue = ageMs > 6 * 60 * 60 * 1000;
-              return (
-                <div
-                  style={{
-                    marginTop: 12,
-                    background: "#E6F7EC",
-                    borderRadius: 14,
-                    padding: "14px 16px",
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: 10,
-                  }}
-                >
-                  <span style={STATUS_DOT}>
-                    <IconCheck size={12} color="#FFFFFF" stroke={3} />
-                  </span>
-                  <div>
-                    <div style={{ ...POPPINS, color: "#0F6B3D", fontSize: 14.5, fontWeight: 800 }}>
-                      Last synced: {timeAgo(lastSynced)}
-                    </div>
-                    {overdue && (
-                      <div style={{ ...POPPINS, color: "#3D8A63", fontSize: 11.5, lineHeight: 1.5 }}>
-                        Sync is overdue — tap Sync now to refresh
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })()
+          ) : icsLastSynced ? (
+            <div style={{ ...POPPINS, color: "#9CA3AF", fontSize: 12, marginTop: 8, marginBottom: 12 }}>
+              Last synced: {timeAgo(icsLastSynced)}
+            </div>
           ) : null}
 
           <button
             type="button"
             onClick={() => runSync(externalCalendarUrl)}
-            disabled={syncing || !externalCalendarUrl.trim()}
+            disabled={icsSyncing || !externalCalendarUrl.trim()}
             style={{
               ...BTN_PRIMARY,
-              marginTop: 16,
-              opacity: syncing || !externalCalendarUrl.trim() ? 0.6 : 1,
+              opacity: icsSyncing || !externalCalendarUrl.trim() ? 0.6 : 1,
             }}
           >
-            {syncing ? (
+            {icsSyncing ? (
               <>
                 <IconLoader2 size={16} className="animate-spin" /> Syncing...
               </>
             ) : (
-              <>Save and sync calendar →</>
+              <>Save and sync ICS URL →</>
             )}
           </button>
 
-          {lastSynced && !syncError && (
-            <div className="flex items-center justify-end" style={{ marginTop: 12 }}>
-              <button
-                type="button"
-                onClick={() => runSync(savedUrl || externalCalendarUrl)}
-                disabled={syncing}
-                style={{ ...POPPINS, color: "#1877D6", fontSize: 13, fontWeight: 700 }}
-              >
-                Sync now
-              </button>
-            </div>
-          )}
-
           {savedUrl && (
-            <div style={{ marginTop: 14, textAlign: "center" }}>
+            <div style={{ marginTop: 12, textAlign: "center" }}>
               <button
                 type="button"
                 onClick={removeCalendar}
