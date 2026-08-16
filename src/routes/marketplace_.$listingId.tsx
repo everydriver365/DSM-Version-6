@@ -5,7 +5,7 @@ import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { IconArrowLeft, IconBook, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronRight, IconCircleCheck, IconHeart, IconMapPin, IconPackage, IconPlayerPlayFilled, IconSchool, IconShieldCheck, IconSpeakerphone, IconStar, IconTag, IconTool, IconX } from "@tabler/icons-react";
+import { IconArrowLeft, IconBook, IconBriefcase, IconCamera, IconCar, IconCheck, IconChevronLeft, IconChevronRight, IconCircleCheck, IconExternalLink, IconHeart, IconMapPin, IconPackage, IconPlayerPlayFilled, IconSchool, IconShieldCheck, IconSpeakerphone, IconStar, IconTag, IconTool, IconX } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import {
   COMPARISON_COLS,
@@ -70,6 +70,11 @@ interface Listing {
   price_type: string | null;
   image_urls: string[] | null;
   image_url: string | null;
+  gallery_urls: string[] | null;
+  bullet_points: string[] | null;
+  links: { label: string; url: string }[] | null;
+  video_url: string | null;
+  video_embed_url: string | null;
   is_featured: boolean;
   is_active: boolean;
   listing_type: string | null;
@@ -167,6 +172,7 @@ function ListingDetailPage() {
     };
   }, []);
   const [photoIndex, setPhotoIndex] = useState(0);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -174,7 +180,7 @@ function ListingDetailPage() {
       setLoading(true);
       try {
         const rows = await sbGet<Listing[]>(
-          `marketplace_listings?id=eq.${listingId}&is_active=eq.true&deleted_at=is.null&select=*,marketplace_suppliers(name,logo_url,website_url,email,phone,is_verified),marketplace_categories(name,slug)`,
+          `marketplace_listings?id=eq.${listingId}&is_active=eq.true&deleted_at=is.null&select=*,gallery_urls,bullet_points,links,video_url,video_embed_url,marketplace_suppliers(name,logo_url,website_url,email,phone,is_verified),marketplace_categories(name,slug)`,
         );
         if (cancelled) return;
         const found = rows[0] ?? null;
@@ -786,6 +792,303 @@ function ListingDetailPage() {
                 </div>
               );
             })()}
+
+            {/* Key points */}
+            {listing.bullet_points && listing.bullet_points.length > 0 && (
+              <div style={CARD}>
+                <div style={LABEL}>Key points</div>
+                <ul
+                  style={{
+                    listStyle: "none",
+                    padding: 0,
+                    margin: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 8,
+                  }}
+                >
+                  {listing.bullet_points.map((bp, i) => (
+                    <li
+                      key={i}
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 8,
+                        color: "#6B7686",
+                        fontSize: 14,
+                        lineHeight: 1.5,
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      <IconCheck size={18} color="#1A9B5C" stroke={2.2} style={{ flexShrink: 0, marginTop: 1 }} />
+                      <span>{bp}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Links */}
+            {(() => {
+              const links = listing.links ?? [];
+              if (links.length === 0) return null;
+              return (
+                <div style={CARD}>
+                  {links.map((link, i) => (
+                    <a
+                      key={i}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        padding: "13px 16px",
+                        borderBottom: i < links.length - 1 ? "1px solid #E4E8EF" : "none",
+                        textDecoration: "none",
+                      }}
+                    >
+                      <IconExternalLink size={18} color="#1877D6" stroke={1.8} />
+                      <span
+                        style={{
+                          flex: 1,
+                          color: "#0B1F3A",
+                          fontSize: 14,
+                          fontWeight: 600,
+                          fontFamily: "Poppins, sans-serif",
+                        }}
+                      >
+                        {link.label}
+                      </span>
+                      <IconChevronRight size={18} color="#B0B0B5" stroke={1.8} />
+                    </a>
+                  ))}
+                </div>
+              );
+            })()}
+
+            {/* Gallery */}
+            {(() => {
+              const galleryPhotos = (listing.gallery_urls ?? []).slice(1);
+              if (galleryPhotos.length === 0) return null;
+              return (
+                <div style={{ margin: "0 16px 16px" }}>
+                  <div
+                    style={{
+                      color: "#9CA3AF",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      marginBottom: 8,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    PHOTOS
+                  </div>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(3, 1fr)",
+                      gap: 4,
+                      borderRadius: 16,
+                      overflow: "hidden",
+                      border: "1px solid #E4E8EF",
+                    }}
+                  >
+                    {galleryPhotos.map((url, i) => (
+                      <div
+                        key={i}
+                        onClick={() => setLightboxIndex(i)}
+                        style={{
+                          aspectRatio: "1",
+                          overflow: "hidden",
+                          cursor: "pointer",
+                          background: `#E7EDF5 url(${url}) center/cover`,
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Video */}
+            {(() => {
+              if (!listing.video_embed_url && !listing.video_url) return null;
+              return (
+                <>
+                  <div
+                    style={{
+                      color: "#9CA3AF",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      margin: "0 16px 8px",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    SEE IT IN ACTION
+                  </div>
+                  <div
+                    style={{
+                      margin: "0 16px 16px",
+                      borderRadius: 16,
+                      overflow: "hidden",
+                      border: "1px solid #E4E8EF",
+                    }}
+                  >
+                    {listing.video_embed_url ? (
+                      <div
+                        dangerouslySetInnerHTML={{ __html: listing.video_embed_url }}
+                        style={{ width: "100%", aspectRatio: "16 / 9", background: "#000" }}
+                      />
+                    ) : (
+                      <video
+                        src={listing.video_url ?? undefined}
+                        controls
+                        style={{
+                          width: "100%",
+                          aspectRatio: "16/9",
+                          display: "block",
+                          background: "#000",
+                        }}
+                      />
+                    )}
+                  </div>
+                </>
+              );
+            })()}
+
+            {/* Lightbox */}
+            {lightboxIndex !== null && (
+              <div
+                onClick={() => setLightboxIndex(null)}
+                style={{
+                  position: "fixed",
+                  inset: 0,
+                  zIndex: 400,
+                  background: "rgba(0,0,0,0.95)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setLightboxIndex(null)}
+                  aria-label="Close"
+                  style={{
+                    position: "absolute",
+                    top: 16,
+                    right: 16,
+                    width: 40,
+                    height: 40,
+                    borderRadius: "50%",
+                    background: "rgba(255,255,255,0.15)",
+                    border: "none",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <IconX size={22} color="#FFFFFF" stroke={2} />
+                </button>
+
+                {(() => {
+                  const galleryPhotos = (listing.gallery_urls ?? []).slice(1);
+                  return (
+                    <img
+                      src={galleryPhotos[lightboxIndex]}
+                      alt={`Photo ${lightboxIndex + 1} of ${galleryPhotos.length}`}
+                      style={{ maxWidth: "100%", maxHeight: "80vh", objectFit: "contain" }}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  );
+                })()}
+
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 32,
+                    color: "rgba(255,255,255,0.6)",
+                    fontSize: 13,
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  {(() => {
+                    const galleryPhotos = (listing.gallery_urls ?? []).slice(1);
+                    return `${lightboxIndex + 1} of ${galleryPhotos.length}`;
+                  })()}
+                </div>
+
+                {(() => {
+                  const galleryPhotos = (listing.gallery_urls ?? []).slice(1);
+                  return lightboxIndex > 0 ? (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setLightboxIndex(lightboxIndex - 1);
+                      }}
+                      aria-label="Previous"
+                      style={{
+                        position: "absolute",
+                        left: 16,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        width: 44,
+                        height: 44,
+                        borderRadius: "50%",
+                        background: "rgba(255,255,255,0.15)",
+                        border: "none",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <IconChevronLeft size={24} color="#FFFFFF" stroke={2} />
+                    </button>
+                  ) : null;
+                })()}
+
+                {(() => {
+                  const galleryPhotos = (listing.gallery_urls ?? []).slice(1);
+                  return lightboxIndex < galleryPhotos.length - 1 ? (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setLightboxIndex(lightboxIndex + 1);
+                      }}
+                      aria-label="Next"
+                      style={{
+                        position: "absolute",
+                        right: 16,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        width: 44,
+                        height: 44,
+                        borderRadius: "50%",
+                        background: "rgba(255,255,255,0.15)",
+                        border: "none",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <IconChevronRight size={24} color="#FFFFFF" stroke={2} />
+                    </button>
+                  ) : null;
+                })()}
+              </div>
+            )}
 
             {/* Enhanced upgrade sections — only for the DSM website listing */}
             {listingId === WEBSITE_LISTING_ID && <WebsiteUpgradeSections />}
