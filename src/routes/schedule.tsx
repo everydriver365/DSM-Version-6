@@ -620,7 +620,7 @@ function SchedulePage() {
     } finally {
       setSyncing(false);
     }
-  }, [userId, instructor, fetchCalendarBlocks]);
+  }, [userId, instructor, fetchCalendarBlocks, navigate]);
 
   const handleDeleteLesson = useCallback(async (lesson: any) => {
     const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
