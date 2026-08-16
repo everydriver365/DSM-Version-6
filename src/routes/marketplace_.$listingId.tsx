@@ -70,6 +70,11 @@ interface Listing {
   price_type: string | null;
   image_urls: string[] | null;
   image_url: string | null;
+  gallery_urls: string[] | null;
+  bullet_points: string[] | null;
+  links: { label: string; url: string }[] | null;
+  video_url: string | null;
+  video_embed_url: string | null;
   is_featured: boolean;
   is_active: boolean;
   listing_type: string | null;
