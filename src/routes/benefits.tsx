@@ -278,6 +278,7 @@ function BenefitsPage() {
   const [chosenDomain, setChosenDomain] = useState<string | null>(null);
   const [chosenTier, setChosenTier] = useState<PaidTierId | null>(null);
   const [showComparison, setShowComparison] = useState(false);
+  const [benefits, setBenefits] = useState<typeof BENEFITS>(BENEFITS);
 
 
   useEffect(() => {
@@ -293,6 +294,43 @@ function BenefitsPage() {
 
       setWebsiteTier(data?.website_tier ?? 'free');
       setLoading(false);
+    })();
+  }, []);
+
+  // Benefit partners are managed from the admin hub; fall back to the built-in
+  // list when the table is empty or unavailable.
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase
+        .from('benefit_partners')
+        .select('*')
+        .eq('active', true)
+        .order('sort_order');
+      if (error || !data || data.length === 0) return;
+      setBenefits(
+        data.map((p: any) => {
+          const preset = BENEFITS.find(
+            (b) => b.id === p.id || b.name.toLowerCase() === String(p.name ?? '').toLowerCase(),
+          );
+          return {
+            ...(preset ?? {}),
+            id: p.id,
+            name: p.name,
+            tagline: p.tagline ?? '',
+            icon: p.icon ?? preset?.icon ?? 'gift',
+            imageUrl: preset?.imageUrl,
+            iconBg: p.icon_bg ?? preset?.iconBg ?? '#EEF2F7',
+            iconColor: p.icon_color ?? preset?.iconColor ?? '#0B1F3A',
+            minTier: p.min_tier ?? 'pro',
+            description: p.description ?? '',
+            perks: p.perks ?? [],
+            ctaLabel: p.cta_label ?? 'Access →',
+            ctaAction: p.cta_action ?? '',
+            comingSoon: !!p.coming_soon,
+            exclusive: !!p.exclusive,
+          };
+        }) as typeof BENEFITS,
+      );
     })();
   }, []);
 
