@@ -971,6 +971,7 @@ function SchedulePage() {
       <InstructorTopBar
         firstName={instructor?.name ?? ""}
         pageTitle="Schedule"
+        unreadCount={unreadCount}
         onBack={() => navigate({ to: "/home" as never })}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}

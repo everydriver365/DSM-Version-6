@@ -1,4 +1,5 @@
 import { useGoBack } from "@/hooks/useGoBack";
+import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";

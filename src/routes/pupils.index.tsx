@@ -1,6 +1,7 @@
 import { SkeletonCard } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -708,6 +709,7 @@ function PupilsIndexPage() {
       <InstructorTopBar
         firstName=""
         pageTitle="Pupils"
+        unreadCount={unreadCount}
         onBack={() => navigate({ to: "/home" as never })}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}

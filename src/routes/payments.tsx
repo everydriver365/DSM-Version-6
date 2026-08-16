@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { IconCreditCard, IconCurrencyPound, IconDotsVertical, IconPlus, IconRotateClockwise2, IconSearch, IconX } from "@tabler/icons-react";
 import { IconCashBanknote, IconBuildingBank, IconQrcode, IconReceipt, IconWallet } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
@@ -361,6 +362,7 @@ function PaymentsPage() {
       <InstructorTopBar
         firstName={instructor?.name ?? ""}
         pageTitle="Payments"
+        unreadCount={unreadCount}
         onBack={() => navigate({ to: "/home" as never })}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
