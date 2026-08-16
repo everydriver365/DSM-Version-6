@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
-import { IconBook, IconBriefcase, IconChevronLeft, IconChevronRight, IconFileCheck, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconNews, IconPencil, IconPlayerPlay, IconSettings, IconShieldCheck, IconShoppingBag, IconStar, IconTrash, IconUsers, IconVideo } from "@tabler/icons-react";
+import { IconBook, IconBriefcase, IconGift, IconChevronLeft, IconChevronRight, IconFileCheck, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconNews, IconPencil, IconPlayerPlay, IconSettings, IconShieldCheck, IconShoppingBag, IconStar, IconTrash, IconUsers, IconVideo } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
@@ -1174,6 +1174,11 @@ function AdminHub() {
               label="News"
               onClick={() => navigate({ to: "/admin/news" as never })}
             />
+            <AdminSectionTile
+              icon={<IconGift stroke={1.6} size={18} color="#000" />}
+              label="Benefits & perks"
+              onClick={() => navigate({ to: "/admin/benefits" as never })}
+            />
 
           </AdminGroupCard>
 
@@ -1217,8 +1222,6 @@ function AdminHub() {
         <div ref={flaggedRef}>
           <FlaggedMessagesSection />
         </div>
-
-        <BenefitPartnersSection />
 
       </div>
     </div>
@@ -1280,7 +1283,7 @@ const partnerLabelStyle: React.CSSProperties = {
   marginBottom: 6,
 };
 
-function BenefitPartnersSection() {
+export function BenefitPartnersSection() {
   const [partners, setPartners] = useState<BenefitPartner[]>([]);
   const [editingPartner, setEditingPartner] = useState<BenefitPartner | null>(null);
   const [partnerSheetOpen, setPartnerSheetOpen] = useState(false);
