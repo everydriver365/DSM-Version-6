@@ -291,6 +291,10 @@ function CalendarSyncPage() {
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData.session?.access_token;
+      if (!token) {
+        toast.error("Please sign in again to connect Google Calendar");
+        return;
+      }
       const { data, error } = await supabase.functions.invoke("google-calendar-auth", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -302,11 +306,12 @@ function CalendarSyncPage() {
       }
       toast.error("Could not start Google sign-in");
     } catch {
-      toast.error("Could not connect to Google IconCalendar");
+      toast.error("Could not connect to Google Calendar");
     } finally {
       setOutboundConnecting(false);
     }
   }
+
 
 
   async function disconnectGoogle() {
