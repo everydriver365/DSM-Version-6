@@ -249,7 +249,7 @@ function CalendarSyncPage() {
           .select("connected_at, last_synced_at")
           .eq("instructor_id", uid)
           .maybeSingle();
-        setConn((row as GoogleConnection | null) ?? null);
+        setOutboundConn((row as GoogleConnection | null) ?? null);
       } catch {
         // table may not exist yet
       }
@@ -257,8 +257,15 @@ function CalendarSyncPage() {
 
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
+    const calendarStatus = params.get("calendar");
     const connected = params.get("connected");
     const err = params.get("error");
+    if (calendarStatus === "connected") {
+      toast.success("Google Calendar connected! 🎉");
+      setGoogleConnected(true);
+    } else if (calendarStatus === "error") {
+      toast.error("Could not connect Google Calendar — please try again");
+    }
     if (connected === "google") {
       toast.success("Google IconCalendar connected");
     } else if (err === "google_denied") {
@@ -266,7 +273,8 @@ function CalendarSyncPage() {
     } else if (err === "token_failed") {
       toast.error("Could not complete Google IconCalendar connection");
     }
-    if (connected || err) {
+    if (calendarStatus || connected || err) {
+      params.delete("calendar");
       params.delete("connected");
       params.delete("error");
       const qs = params.toString();
