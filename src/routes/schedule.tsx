@@ -309,6 +309,7 @@ function SchedulePage() {
   const [instructor, setInstructor] = useState<{ name: string | null; external_calendar_url: string | null; calendar_last_synced: string | null; google_calendar_connected?: boolean } | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
+  const [syncMessage, setSyncMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
   const [movingLesson, setMovingLesson] = useState<any | null>(null);
   const [moveMode, setMoveMode] = useState(false);
