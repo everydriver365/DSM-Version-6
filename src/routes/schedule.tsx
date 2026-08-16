@@ -577,7 +577,13 @@ function SchedulePage() {
 
   const handleSync = useCallback(async () => {
     if (!userId) return;
+    if (!instructor?.google_calendar_connected && !instructor?.external_calendar_url) {
+      toast.info("Connect a calendar first");
+      navigate({ to: "/calendarsync" as never });
+      return;
+    }
     setSyncing(true);
+
     try {
       const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
       const SUPABASE_ANON_KEY =
