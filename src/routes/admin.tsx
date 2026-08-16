@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { PartnerPreview, PerkPreview } from "@/components/admin/BenefitPreview";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
 import { IconBook, IconBriefcase, IconGift, IconChevronLeft, IconChevronRight, IconFileCheck, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconNews, IconPencil, IconPlayerPlay, IconSearch, IconSettings, IconShieldCheck, IconShoppingBag, IconStar, IconTrash, IconUsers, IconVideo } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -2137,6 +2138,7 @@ export function BenefitPartnersSection() {
             </div>
 
             <div style={{ padding: "0 16px" }}>
+              <PartnerPreview partner={editingPartner} />
               <div style={partnerLabelStyle}>Name</div>
               <input
                 value={editingPartner.name}
@@ -2461,6 +2463,7 @@ export function BenefitPartnersSection() {
             </div>
 
             <div style={{ padding: "0 16px" }}>
+              <PerkPreview perk={editingPerk} partnerName={partnerName(editingPerk.partner_id)} />
               <div style={partnerLabelStyle}>Perk name *</div>
               <input
                 value={editingPerk.name ?? ""}
