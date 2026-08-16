@@ -341,7 +341,7 @@ function CalendarSyncPage() {
       return;
     }
     urlToUse = trimmed;
-    setSyncing(true);
+    setIcsSyncing(true);
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData.session?.access_token;
@@ -387,7 +387,7 @@ function CalendarSyncPage() {
             ? `Calendar synced — ${count} event${count !== 1 ? "s" : ""} imported`
             : "Calendar synced — no upcoming events found",
         );
-        setLastSynced(new Date().toISOString());
+        setIcsLastSynced(new Date().toISOString());
       } else if (syncRes.status === 429 || rawErr.includes("429")) {
         toast.error("Your calendar provider is rate-limiting us. Please wait a few minutes and sync again.");
       } else {
@@ -397,7 +397,7 @@ function CalendarSyncPage() {
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Sync failed");
     } finally {
-      setSyncing(false);
+      setIcsSyncing(false);
     }
   }
 
