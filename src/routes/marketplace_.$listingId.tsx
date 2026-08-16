@@ -829,40 +829,44 @@ function ListingDetailPage() {
             )}
 
             {/* Links */}
-            {listing.links && listing.links.length > 0 && (
-              <div style={CARD}>
-                {listing.links.map((link, i) => (
-                  <a
-                    key={i}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      padding: "13px 16px",
-                      borderBottom: i < listing.links.length - 1 ? "1px solid #E4E8EF" : "none",
-                      textDecoration: "none",
-                    }}
-                  >
-                    <IconExternalLink size={18} color="#1877D6" stroke={1.8} />
-                    <span
+            {(() => {
+              const links = listing.links ?? [];
+              if (links.length === 0) return null;
+              return (
+                <div style={CARD}>
+                  {links.map((link, i) => (
+                    <a
+                      key={i}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       style={{
-                        flex: 1,
-                        color: "#0B1F3A",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        fontFamily: "Poppins, sans-serif",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        padding: "13px 16px",
+                        borderBottom: i < links.length - 1 ? "1px solid #E4E8EF" : "none",
+                        textDecoration: "none",
                       }}
                     >
-                      {link.label}
-                    </span>
-                    <IconChevronRight size={18} color="#B0B0B5" stroke={1.8} />
-                  </a>
-                ))}
-              </div>
-            )}
+                      <IconExternalLink size={18} color="#1877D6" stroke={1.8} />
+                      <span
+                        style={{
+                          flex: 1,
+                          color: "#0B1F3A",
+                          fontSize: 14,
+                          fontWeight: 600,
+                          fontFamily: "Poppins, sans-serif",
+                        }}
+                      >
+                        {link.label}
+                      </span>
+                      <IconChevronRight size={18} color="#B0B0B5" stroke={1.8} />
+                    </a>
+                  ))}
+                </div>
+              );
+            })()}
 
             {/* Gallery */}
             {(() => {
