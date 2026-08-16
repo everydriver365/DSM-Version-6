@@ -2953,35 +2953,22 @@ function MonthStrip({
             Today
           </button>
           {showSync && (
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={onSync}
               disabled={syncing}
               aria-label={syncing ? "Syncing calendar" : "Sync calendar"}
-              style={{
-                background: "transparent",
-                border: "none",
-                cursor: syncing ? "not-allowed" : "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 4,
-                padding: "4px 8px",
-                fontSize: 12,
-                fontWeight: 600,
-                color: syncing ? "#9CA3AF" : "#1877D6",
-                ...POPPINS,
-              }}
+              className="h-auto p-1 text-xs font-semibold text-[#1877D6] hover:bg-transparent hover:text-[#1877D6]/80 disabled:text-[#9CA3AF]"
             >
               <IconRefresh
                 size={14}
                 color={syncing ? "#9CA3AF" : "#1877D6"}
                 stroke={2}
-                style={{
-                  animation: syncing ? "spin 1s linear infinite" : "none",
-                }}
+                className={syncing ? "animate-spin" : ""}
               />
               {syncing ? "Syncing..." : "Sync"}
-            </button>
+            </Button>
           )}
           {lastSynced && formatRelativeSync && (
             <span
