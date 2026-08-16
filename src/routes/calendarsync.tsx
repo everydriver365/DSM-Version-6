@@ -168,7 +168,6 @@ function CalendarSyncPage() {
   const [icsSyncing, setIcsSyncing] = useState(false);
   const [icsLastSynced, setIcsLastSynced] = useState<string | null>(null);
   const [icsSyncError, setIcsSyncError] = useState<string | null>(null);
-  const [howToOpen, setHowToOpen] = useState(false);
   const [removing, setRemoving] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [outboundConn, setOutboundConn] = useState<GoogleConnection | null>(null);
