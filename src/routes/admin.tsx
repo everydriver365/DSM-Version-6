@@ -2682,63 +2682,137 @@ export function BenefitPartnersSection() {
               />
               {uploadingPerkHero && <div style={uploadHintStyle}>Uploading hero image...</div>}
 
-              <div style={partnerLabelStyle}>Gallery photos</div>
+              <div style={partnerLabelStyle}>
+                Gallery photos {((editingPerk.gallery_urls ?? []) as string[]).length > 0 && `(${(editingPerk.gallery_urls ?? []).length})`}
+              </div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
-                {((editingPerk.gallery_urls ?? []) as string[]).map((url, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      position: "relative",
-                      width: 72,
-                      height: 72,
-                      borderRadius: 8,
-                      overflow: "hidden",
-                      background: "#F8FAFC",
-                    }}
-                  >
-                    <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        patchPerk({
-                          gallery_urls: (editingPerk.gallery_urls ?? []).filter(
-                            (_: string, j: number) => j !== i,
-                          ),
-                        })
-                      }
+                {((editingPerk.gallery_urls ?? []) as string[]).map((url, i, arr) => (
+                  <div key={`${url}-${i}`} style={{ width: 72 }}>
+                    <div
                       style={{
-                        position: "absolute",
-                        top: 2,
-                        right: 2,
-                        width: 18,
-                        height: 18,
-                        borderRadius: "50%",
-                        background: "rgba(0,0,0,0.6)",
-                        border: "none",
-                        cursor: "pointer",
-                        color: "#fff",
-                        fontSize: 12,
-                        lineHeight: 1,
+                        position: "relative",
+                        width: 72,
+                        height: 72,
+                        borderRadius: 8,
+                        overflow: "hidden",
+                        background: "#F8FAFC",
                       }}
                     >
-                      ×
-                    </button>
+                      <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: 2,
+                          left: 2,
+                          background: "rgba(11,31,58,0.8)",
+                          color: "#fff",
+                          borderRadius: 6,
+                          fontSize: 10,
+                          padding: "1px 5px",
+                          fontFamily: "Poppins, sans-serif",
+                        }}
+                      >
+                        {i + 1}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          patchPerk({
+                            gallery_urls: (editingPerk.gallery_urls ?? []).filter(
+                              (_: string, j: number) => j !== i,
+                            ),
+                          })
+                        }
+                        style={{
+                          position: "absolute",
+                          top: 2,
+                          right: 2,
+                          width: 18,
+                          height: 18,
+                          borderRadius: "50%",
+                          background: "rgba(0,0,0,0.6)",
+                          border: "none",
+                          cursor: "pointer",
+                          color: "#fff",
+                          fontSize: 12,
+                          lineHeight: 1,
+                        }}
+                      >
+                        ×
+                      </button>
+                    </div>
+                    <div style={{ display: "flex", gap: 4, marginTop: 4 }}>
+                      <button
+                        type="button"
+                        disabled={i === 0}
+                        onClick={() => {
+                          const next = [...arr];
+                          [next[i - 1], next[i]] = [next[i], next[i - 1]];
+                          patchPerk({ gallery_urls: next });
+                        }}
+                        style={{
+                          flex: 1,
+                          borderRadius: 6,
+                          border: "1px solid #E2E8F0",
+                          background: i === 0 ? "#F1F5F9" : "#fff",
+                          color: i === 0 ? "#CBD5E1" : "#0B1F3A",
+                          cursor: i === 0 ? "default" : "pointer",
+                          fontSize: 11,
+                          lineHeight: "18px",
+                          padding: 0,
+                        }}
+                        aria-label="Move left"
+                      >
+                        ‹
+                      </button>
+                      <button
+                        type="button"
+                        disabled={i === arr.length - 1}
+                        onClick={() => {
+                          const next = [...arr];
+                          [next[i], next[i + 1]] = [next[i + 1], next[i]];
+                          patchPerk({ gallery_urls: next });
+                        }}
+                        style={{
+                          flex: 1,
+                          borderRadius: 6,
+                          border: "1px solid #E2E8F0",
+                          background: i === arr.length - 1 ? "#F1F5F9" : "#fff",
+                          color: i === arr.length - 1 ? "#CBD5E1" : "#0B1F3A",
+                          cursor: i === arr.length - 1 ? "default" : "pointer",
+                          fontSize: 11,
+                          lineHeight: "18px",
+                          padding: 0,
+                        }}
+                        aria-label="Move right"
+                      >
+                        ›
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
               <input
                 type="file"
                 accept="image/*"
+                multiple
                 disabled={uploadingPerkGallery}
                 onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
+                  const files = Array.from(e.target.files ?? []);
+                  if (files.length === 0) return;
                   setUploadingPerkGallery(true);
+                  const uploaded: string[] = [];
                   try {
-                    const url = await uploadToBucket("marketplace-images", "perks/gallery/", file);
-                    patchPerk({ gallery_urls: [...(editingPerk.gallery_urls ?? []), url] });
-                    toast.success("Photo added");
+                    for (const file of files) {
+                      const url = await uploadToBucket("marketplace-images", "perks/gallery/", file);
+                      uploaded.push(url);
+                    }
+                    patchPerk({ gallery_urls: [...(editingPerk.gallery_urls ?? []), ...uploaded] });
+                    toast.success(uploaded.length === 1 ? "Photo added" : `${uploaded.length} photos added`);
                   } catch (err: any) {
+                    if (uploaded.length > 0) {
+                      patchPerk({ gallery_urls: [...(editingPerk.gallery_urls ?? []), ...uploaded] });
+                    }
                     toast.error(err?.message ?? "Upload failed");
                   } finally {
                     setUploadingPerkGallery(false);
@@ -2747,7 +2821,12 @@ export function BenefitPartnersSection() {
                 }}
                 style={{ ...partnerInputStyle, padding: 8 }}
               />
-              {uploadingPerkGallery && <div style={uploadHintStyle}>Uploading photo...</div>}
+              <div style={uploadHintStyle}>
+                {uploadingPerkGallery
+                  ? "Uploading photos..."
+                  : "Select multiple images at once. Use ‹ › to set display order."}
+              </div>
+
 
               <div style={partnerLabelStyle}>Video embed code</div>
               <textarea
