@@ -1080,9 +1080,9 @@ function SchedulePage() {
           scrollToDate(ymdLocal(today));
         }}
         showSync
-
         onSync={handleSync}
         syncing={syncing}
+        syncMessage={syncMessage}
         lastSynced={lastSynced}
         formatRelativeSync={formatRelativeSync}
       />
