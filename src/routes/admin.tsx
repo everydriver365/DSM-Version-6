@@ -1427,6 +1427,7 @@ export function BenefitPartnersSection() {
         if (error) throw error;
       }
       toast.success("Perk saved");
+      setPerkErrors({});
       setPerkSheetOpen(false);
       await loadPartnerPerks(editingPerk.partner_id);
       await loadAllPerks();
@@ -2260,6 +2261,7 @@ export function BenefitPartnersSection() {
           onClick={() => {
             setPerkSheetOpen(false);
             setEditingPerk(null);
+            setPerkErrors({});
           }}
           style={{
             position: "fixed",
@@ -2293,6 +2295,7 @@ export function BenefitPartnersSection() {
                 onClick={() => {
                   setPerkSheetOpen(false);
                   setEditingPerk(null);
+                  setPerkErrors({});
                 }}
                 style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, color: "#6B7686" }}
               >
