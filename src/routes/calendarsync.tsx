@@ -165,15 +165,19 @@ function CalendarSyncPage() {
   const [copied, setCopied] = useState(false);
   const [externalCalendarUrl, setExternalCalendarUrl] = useState("");
   const [savedUrl, setSavedUrl] = useState("");
-  const [syncing, setSyncing] = useState(false);
-  const [lastSynced, setLastSynced] = useState<string | null>(null);
-  const [syncError, setSyncError] = useState<string | null>(null);
+  const [icsSyncing, setIcsSyncing] = useState(false);
+  const [icsLastSynced, setIcsLastSynced] = useState<string | null>(null);
+  const [icsSyncError, setIcsSyncError] = useState<string | null>(null);
   const [howToOpen, setHowToOpen] = useState(false);
   const [removing, setRemoving] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [conn, setConn] = useState<GoogleConnection | null>(null);
-  const [connecting, setConnecting] = useState(false);
+  const [outboundConn, setOutboundConn] = useState<GoogleConnection | null>(null);
+  const [outboundConnecting, setOutboundConnecting] = useState(false);
   const [disconnecting, setDisconnecting] = useState(false);
+  const [googleConnected, setGoogleConnected] = useState(false);
+  const [connecting, setConnecting] = useState(false);
+  const [lastSynced, setLastSynced] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
 
   useEffect(() => {
     (async () => {
