@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/
 import { IconBook, IconBriefcase, IconChevronLeft, IconChevronRight, IconFileCheck, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconNews, IconPencil, IconPlayerPlay, IconSettings, IconShieldCheck, IconShoppingBag, IconStar, IconTrash, IconUsers, IconVideo } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
+import { DSMToggle } from "@/components/dsm/DSMToggle";
 
 export const Route = createFileRoute("/admin")({
   component: AdminHub,
@@ -1215,7 +1216,549 @@ function AdminHub() {
           <FlaggedMessagesSection />
         </div>
 
+        <BenefitPartnersSection />
+
       </div>
+    </div>
+  );
+}
+
+type BenefitPartner = {
+  id: string;
+  name: string;
+  tagline: string | null;
+  description: string | null;
+  icon: string | null;
+  icon_bg: string | null;
+  icon_color: string | null;
+  category: string | null;
+  perks: string[] | null;
+  saving: string | null;
+  min_tier: string;
+  cta_label: string | null;
+  cta_action: string | null;
+  coming_soon: boolean;
+  exclusive: boolean;
+  active: boolean;
+  sort_order: number;
+};
+
+const PARTNER_TIERS: { id: string; label: string }[] = [
+  { id: "free", label: "Free" },
+  { id: "website", label: "Essential" },
+  { id: "pro", label: "Pro" },
+  { id: "managed", label: "Max" },
+];
+
+const PARTNER_TIER_STYLE: Record<string, { bg: string; color: string }> = {
+  free: { bg: "#F1F5F9", color: "#6B7686" },
+  website: { bg: "#EFF6FF", color: "#1877D6" },
+  pro: { bg: "#EDE9FE", color: "#7C3AED" },
+  managed: { bg: "#FEF3C7", color: "#92400E" },
+};
+
+const partnerInputStyle: React.CSSProperties = {
+  background: "#fff",
+  border: "1px solid #E4E8EF",
+  borderRadius: 10,
+  padding: "10px 12px",
+  fontSize: 14,
+  fontFamily: "Poppins, sans-serif",
+  width: "100%",
+  outline: "none",
+  marginBottom: 12,
+  boxSizing: "border-box",
+};
+
+const partnerLabelStyle: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 600,
+  color: "#9CA3AF",
+  textTransform: "uppercase",
+  marginBottom: 6,
+};
+
+function BenefitPartnersSection() {
+  const [partners, setPartners] = useState<BenefitPartner[]>([]);
+  const [editingPartner, setEditingPartner] = useState<BenefitPartner | null>(null);
+  const [partnerSheetOpen, setPartnerSheetOpen] = useState(false);
+  const [savingPartner, setSavingPartner] = useState(false);
+
+  async function loadPartners() {
+    const { data, error } = await supabase
+      .from("benefit_partners")
+      .select("*")
+      .order("sort_order");
+    if (error) {
+      console.error("[admin] benefit_partners load error", error);
+      return;
+    }
+    setPartners((data ?? []) as BenefitPartner[]);
+  }
+
+  useEffect(() => {
+    loadPartners();
+  }, []);
+
+  async function savePartner() {
+    if (!editingPartner) return;
+    setSavingPartner(true);
+    try {
+      if (editingPartner.id === "new") {
+        const { id: _omit, ...payload } = editingPartner;
+        const { error } = await supabase.from("benefit_partners").insert(payload);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("benefit_partners")
+          .update(editingPartner)
+          .eq("id", editingPartner.id);
+        if (error) throw error;
+      }
+      toast.success("Partner saved");
+      setPartnerSheetOpen(false);
+      setEditingPartner(null);
+      await loadPartners();
+    } catch (e: any) {
+      toast.error(e?.message ?? "Save failed");
+    } finally {
+      setSavingPartner(false);
+    }
+  }
+
+  async function deletePartner(id: string) {
+    const { error } = await supabase.from("benefit_partners").delete().eq("id", id);
+    if (error) {
+      toast.error("Delete failed");
+      return;
+    }
+    setPartners(partners.filter((p) => p.id !== id));
+    toast.success("Partner removed");
+  }
+
+  function patch(changes: Partial<BenefitPartner>) {
+    setEditingPartner((prev) => (prev ? { ...prev, ...changes } : prev));
+  }
+
+  return (
+    <div style={{ paddingBottom: 32 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "0 16px",
+          marginBottom: 8,
+        }}
+      >
+        <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase" }}>
+          Benefits &amp; Perks
+        </span>
+        <button
+          type="button"
+          onClick={() => {
+            setEditingPartner({
+              id: "new",
+              name: "",
+              tagline: "",
+              description: "",
+              icon: "IconGift",
+              icon_bg: "#EEF2F7",
+              icon_color: "#0B1F3A",
+              category: "Health",
+              perks: [],
+              saving: "",
+              min_tier: "pro",
+              cta_label: "Access →",
+              cta_action: "",
+              coming_soon: true,
+              exclusive: false,
+              active: true,
+              sort_order: partners.length,
+            });
+            setPartnerSheetOpen(true);
+          }}
+          style={{
+            background: "#1877D6",
+            color: "#fff",
+            borderRadius: 20,
+            padding: "6px 14px",
+            fontSize: 12,
+            fontWeight: 700,
+            border: "none",
+            cursor: "pointer",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          Add partner +
+        </button>
+      </div>
+
+      <div
+        style={{
+          margin: "0 16px 16px",
+          background: "#fff",
+          borderRadius: 16,
+          border: "1px solid #E4E8EF",
+          overflow: "hidden",
+        }}
+      >
+        {partners.length === 0 && (
+          <div style={{ padding: 16, fontSize: 13, color: "#6B7686" }}>No partners yet.</div>
+        )}
+        {partners.map((partner, i) => {
+          const tierStyle = PARTNER_TIER_STYLE[partner.min_tier] ?? PARTNER_TIER_STYLE.free;
+          return (
+            <div
+              key={partner.id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: 12,
+                borderTop: i === 0 ? "none" : "1px solid #F1F5F9",
+              }}
+            >
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  background: partner.icon_bg ?? "#EEF2F7",
+                  color: partner.icon_color ?? "#0B1F3A",
+                  borderRadius: 8,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 16,
+                  fontWeight: 700,
+                  flexShrink: 0,
+                }}
+              >
+                {(partner.name || "?").charAt(0).toUpperCase()}
+              </div>
+
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{partner.name}</div>
+                {partner.tagline && (
+                  <div style={{ fontSize: 11, color: "#6B7686", marginTop: 2 }}>{partner.tagline}</div>
+                )}
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span
+                  style={{
+                    background: tierStyle.bg,
+                    color: tierStyle.color,
+                    fontSize: 9,
+                    fontWeight: 700,
+                    borderRadius: 20,
+                    padding: "2px 7px",
+                  }}
+                >
+                  {PARTNER_TIERS.find((t) => t.id === partner.min_tier)?.label ?? partner.min_tier}
+                </span>
+                <span
+                  role="button"
+                  onClick={async () => {
+                    const { error } = await supabase
+                      .from("benefit_partners")
+                      .update({ active: !partner.active })
+                      .eq("id", partner.id);
+                    if (error) {
+                      toast.error("Update failed");
+                      return;
+                    }
+                    setPartners(
+                      partners.map((p) => (p.id === partner.id ? { ...p, active: !p.active } : p)),
+                    );
+                  }}
+                  style={{
+                    background: partner.active ? "#DCFCE7" : "#F1F5F9",
+                    color: partner.active ? "#15803D" : "#9CA3AF",
+                    fontSize: 9,
+                    fontWeight: 700,
+                    borderRadius: 20,
+                    padding: "2px 7px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {partner.active ? "Active" : "Inactive"}
+                </span>
+                <button
+                  type="button"
+                  aria-label="Edit partner"
+                  onClick={() => {
+                    setEditingPartner(partner);
+                    setPartnerSheetOpen(true);
+                  }}
+                  style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                >
+                  <IconPencil size={16} stroke={1.8} color="#6B7686" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Delete partner"
+                  onClick={() => {
+                    if (confirm(`Delete ${partner.name}?`)) deletePartner(partner.id);
+                  }}
+                  style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                >
+                  <IconTrash size={16} stroke={1.8} color="#CC2229" />
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {partnerSheetOpen && editingPartner && (
+        <div
+          onClick={() => {
+            setPartnerSheetOpen(false);
+            setEditingPartner(null);
+          }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 300,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "flex-end",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#EEF2F7",
+              borderRadius: "22px 22px 0 0",
+              padding: "0 0 40px",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              width: "100%",
+            }}
+          >
+            <div style={{ width: 36, height: 5, borderRadius: 999, background: "#D1D1D6", margin: "12px auto 0" }} />
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: 16,
+              }}
+            >
+              <span style={{ fontSize: 18, fontWeight: 800, color: "#0B1F3A" }}>
+                {editingPartner.id === "new" ? "Add partner" : "Edit partner"}
+              </span>
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => {
+                  setPartnerSheetOpen(false);
+                  setEditingPartner(null);
+                }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: 20,
+                  color: "#6B7686",
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <div style={{ padding: "0 16px" }}>
+              <div style={partnerLabelStyle}>Name</div>
+              <input
+                value={editingPartner.name}
+                onChange={(e) => patch({ name: e.target.value })}
+                style={partnerInputStyle}
+              />
+
+              <div style={partnerLabelStyle}>Tagline</div>
+              <input
+                value={editingPartner.tagline ?? ""}
+                onChange={(e) => patch({ tagline: e.target.value })}
+                style={partnerInputStyle}
+              />
+
+              <div style={partnerLabelStyle}>Description</div>
+              <textarea
+                rows={4}
+                value={editingPartner.description ?? ""}
+                onChange={(e) => patch({ description: e.target.value })}
+                style={{ ...partnerInputStyle, resize: "vertical" }}
+              />
+
+              <div style={partnerLabelStyle}>Minimum tier</div>
+              <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+                {PARTNER_TIERS.map((t) => {
+                  const active = editingPartner.min_tier === t.id;
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => patch({ min_tier: t.id })}
+                      style={{
+                        flex: 1,
+                        background: active ? "#0B1F3A" : "#E5E5EA",
+                        color: active ? "#fff" : "#6B6B6F",
+                        border: "none",
+                        borderRadius: 20,
+                        padding: "8px 0",
+                        fontSize: 12,
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div style={partnerLabelStyle}>Category</div>
+              <input
+                value={editingPartner.category ?? ""}
+                onChange={(e) => patch({ category: e.target.value })}
+                placeholder="Health, Shopping, etc"
+                style={partnerInputStyle}
+              />
+
+              <div style={partnerLabelStyle}>Saving text</div>
+              <input
+                value={editingPartner.saving ?? ""}
+                onChange={(e) => patch({ saving: e.target.value })}
+                placeholder="e.g. Worth £50+ per visit"
+                style={partnerInputStyle}
+              />
+
+              <div style={partnerLabelStyle}>CTA label</div>
+              <input
+                value={editingPartner.cta_label ?? ""}
+                onChange={(e) => patch({ cta_label: e.target.value })}
+                placeholder="e.g. Access now →"
+                style={partnerInputStyle}
+              />
+
+              <div style={partnerLabelStyle}>CTA action</div>
+              <input
+                value={editingPartner.cta_action ?? ""}
+                onChange={(e) => patch({ cta_action: e.target.value })}
+                placeholder="e.g. pirkx_sso"
+                style={partnerInputStyle}
+              />
+
+              <div style={partnerLabelStyle}>Perks / features</div>
+              {(editingPartner.perks ?? []).map((perk, i) => (
+                <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                  <input
+                    value={perk}
+                    onChange={(e) => {
+                      const updated = [...(editingPartner.perks ?? [])];
+                      updated[i] = e.target.value;
+                      patch({ perks: updated });
+                    }}
+                    placeholder={`Feature ${i + 1}`}
+                    style={{ ...partnerInputStyle, flex: 1 }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => patch({ perks: (editingPartner.perks ?? []).filter((_, j) => j !== i) })}
+                    style={{
+                      background: "#FEE2E2",
+                      border: "none",
+                      borderRadius: 8,
+                      width: 36,
+                      height: 36,
+                      cursor: "pointer",
+                      color: "#CC2229",
+                      fontSize: 16,
+                      flexShrink: 0,
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => patch({ perks: [...(editingPartner.perks ?? []), ""] })}
+                style={{
+                  background: "#fff",
+                  border: "1px solid #E4E8EF",
+                  borderRadius: 20,
+                  padding: "8px 14px",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: "#1877D6",
+                  cursor: "pointer",
+                  marginBottom: 16,
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                Add feature
+              </button>
+
+              <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A" }}>Coming soon</span>
+                  <DSMToggle
+                    checked={editingPartner.coming_soon}
+                    onChange={(v) => patch({ coming_soon: v })}
+                  />
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A" }}>Exclusive</span>
+                  <DSMToggle
+                    checked={editingPartner.exclusive}
+                    onChange={(v) => patch({ exclusive: v })}
+                  />
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A" }}>Active</span>
+                  <DSMToggle checked={editingPartner.active} onChange={(v) => patch({ active: v })} />
+                </div>
+              </div>
+
+              <div style={partnerLabelStyle}>Sort order</div>
+              <input
+                type="number"
+                min={0}
+                value={editingPartner.sort_order}
+                onChange={(e) => patch({ sort_order: Number(e.target.value) || 0 })}
+                style={partnerInputStyle}
+              />
+            </div>
+
+            <button
+              type="button"
+              disabled={savingPartner}
+              onClick={savePartner}
+              style={{
+                margin: "16px 16px 0",
+                width: "calc(100% - 32px)",
+                background: "#1877D6",
+                color: "#fff",
+                borderRadius: 20,
+                padding: 14,
+                fontSize: 15,
+                fontWeight: 800,
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+                boxShadow: "0 4px 0 #0F52A8",
+                opacity: savingPartner ? 0.7 : 1,
+              }}
+            >
+              {savingPartner ? "Saving..." : "Save partner"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

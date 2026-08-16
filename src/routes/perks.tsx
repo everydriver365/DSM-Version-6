@@ -63,7 +63,7 @@ const CATEGORIES = [
   'Finance',
 ];
 
-const PERKS: Perk[] = [
+const FALLBACK_PERKS: Perk[] = [
   {
     id: '1',
     name: '24/7 Private GP',
@@ -273,6 +273,7 @@ function PerksPage() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [upgradeSheetOpen, setUpgradeSheetOpen] = useState(false);
   const [selectedPerk, setSelectedPerk] = useState<Perk | null>(null);
+  const [perks, setPerks] = useState<Perk[]>(FALLBACK_PERKS);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -289,12 +290,38 @@ function PerksPage() {
     })();
   }, []);
 
+  // Perks are derived from admin-managed benefit partners; fall back to the
+  // built-in list when the table is empty or unavailable.
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase
+        .from('benefit_partners')
+        .select('*')
+        .eq('active', true)
+        .order('sort_order');
+      if (error || !data || data.length === 0) return;
+      const allPerks: Perk[] = (data as any[]).flatMap((partner) =>
+        ((partner.perks ?? []) as string[]).map((perk) => ({
+          id: `${partner.id}-${perk}`,
+          name: perk,
+          provider: partner.name,
+          category: partner.category ?? 'Other',
+          description: partner.description ?? '',
+          saving: partner.saving ?? '',
+          minTier: partner.min_tier,
+          logo: partner.icon ?? '\u{1F381}',
+        })),
+      );
+      if (allPerks.length > 0) setPerks(allPerks);
+    })();
+  }, []);
+
   const goBack = useGoBack();
 
   const isPaid = websiteTier !== 'free';
 
   const filteredPerks = useMemo(() => {
-    return PERKS.filter((p) => {
+    return perks.filter((p) => {
       const matchCategory = activeCategory === 'All' || p.category === activeCategory;
       const matchSearch =
         !search.trim() ||
@@ -304,18 +331,18 @@ function PerksPage() {
         p.description.toLowerCase().includes(search.toLowerCase());
       return matchCategory && matchSearch;
     });
-  }, [search, activeCategory]);
+  }, [search, activeCategory, perks]);
 
-  const accessibleCount = PERKS.filter((p) => hasAccess(websiteTier, p.minTier)).length;
+  const accessibleCount = perks.filter((p) => hasAccess(websiteTier, p.minTier)).length;
 
   const unlockedPerks = useMemo(() => {
     if (!selectedPerk) return [];
-    return PERKS.filter(
+    return perks.filter(
       (p) =>
         TIER_ORDER.indexOf(p.minTier) <= TIER_ORDER.indexOf(selectedPerk.minTier) &&
         !hasAccess(websiteTier, p.minTier)
     );
-  }, [selectedPerk, websiteTier]);
+  }, [selectedPerk, websiteTier, perks]);
 
   const planCircle = useMemo(() => {
     if (!selectedPerk) return { bg: '#EFF6FF', color: '#1877D6', letter: 'E' };
@@ -367,7 +394,7 @@ function PerksPage() {
         >
           <IconRosetteDiscount size={16} color="#1877D6" stroke={1.5} />
           <span style={{ flex: 1, fontSize: 12, color: '#6B7686' }}>
-            {accessibleCount} of {PERKS.length} perks available on your plan
+            {accessibleCount} of {perks.length} perks available on your plan
           </span>
           <button
             type="button"
