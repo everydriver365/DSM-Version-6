@@ -967,7 +967,10 @@ function LiveNewsPage() {
                       scrollbarWidth: "none",
                     }}
                   >
-                    {PODCAST_SHOWS.filter((sh) => sh.recommended).map((sh) => {
+                    {PODCAST_SHOWS.filter(
+                      (sh) => sh.recommended && !isHiddenFromGeneral(sh.id),
+                    ).map((sh) => {
+
                       const latest =
                         (episodes ?? []).find((e) => e.showId === sh.id && e.audioUrl) ?? null;
                       const active = showFilter === sh.id;
