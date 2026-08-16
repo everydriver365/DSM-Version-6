@@ -3017,7 +3017,30 @@ function MonthStrip({
               background: syncMessage.type === "success" ? "#16A34A" : "#DC2626",
             }}
           />
-          {syncMessage.text}
+          <span style={{ flex: 1 }}>{syncMessage.text}</span>
+          {syncMessage.type === "error" && onSync && (
+            <button
+              type="button"
+              onClick={onSync}
+              disabled={syncing}
+              aria-label={syncing ? "Retrying sync" : "Retry sync"}
+              style={{
+                marginLeft: "auto",
+                background: "transparent",
+                border: 0,
+                padding: 0,
+                color: "#DC2626",
+                fontSize: 12,
+                fontWeight: 700,
+                textDecoration: "underline",
+                cursor: syncing ? "default" : "pointer",
+                opacity: syncing ? 0.6 : 1,
+                ...POPPINS,
+              }}
+            >
+              {syncing ? "Retrying..." : "Retry"}
+            </button>
+          )}
         </div>
       )}
 
