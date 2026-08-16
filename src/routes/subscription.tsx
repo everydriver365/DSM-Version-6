@@ -35,6 +35,8 @@ function SubscriptionPage() {
   const [cancelling, setCancelling] = useState(false);
   const [websiteTier, setWebsiteTier] = useState<string>("free");
   const [customDomain, setCustomDomain] = useState<string | null>(null);
+  const [diaMembershipPrice, setDiaMembershipPrice] = useState<string>("£99/year");
+  const [diaJoiningFee, setDiaJoiningFee] = useState<string>("£25");
 
   useEffect(() => {
     (async () => {
@@ -51,6 +53,21 @@ function SubscriptionPage() {
         setWebsiteTier(data.website_tier ?? "free");
         setCustomDomain(data.custom_domain ?? null);
         setInstructorName(data.name ?? "");
+      }
+
+      const { data: configRows } = await supabase
+        .from("app_config")
+        .select("key, value")
+        .in("key", ["dia_membership_price", "dia_membership_joining_fee"]);
+      if (configRows) {
+        for (const row of configRows) {
+          if (row.key === "dia_membership_price" && row.value) {
+            setDiaMembershipPrice(row.value);
+          }
+          if (row.key === "dia_membership_joining_fee" && row.value) {
+            setDiaJoiningFee(row.value);
+          }
+        }
       }
     })();
   }, []);
