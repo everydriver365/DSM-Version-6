@@ -1328,10 +1328,59 @@ export function BenefitPartnersSection() {
   const [perkPartnerFilter, setPerkPartnerFilter] = useState<string | "all">("all");
   const [allPerks, setAllPerks] = useState<BenefitPerk[]>([]);
 
+  // ---- perk form validation ------------------------------------------------
+  const [perkErrors, setPerkErrors] = useState<Record<string, string>>({});
+
+  function validatePerk(perk: any): Record<string, string> {
+    const errs: Record<string, string> = {};
+    const name = (perk?.name ?? "").trim();
+    const description = (perk?.description ?? "").trim();
+    const saving = (perk?.saving ?? "").trim();
+    const action = (perk?.cta_action ?? "").trim();
+
+    if (!name) errs.name = "Perk name is required";
+    else if (name.length > 100) errs.name = "Keep the name under 100 characters";
+
+    if (!description) errs.description = "Description is required";
+    else if (description.length > 500) errs.description = "Keep the description under 500 characters";
+
+    if (!saving) errs.saving = "Price / saving text is required";
+    else if (saving.length > 80) errs.saving = "Keep this under 80 characters";
+
+    if (!action) {
+      errs.cta_action = "Link is required (URL, /route or pirkx_sso)";
+    } else if (!/^https?:\/\/\S+$/i.test(action) && !action.startsWith("/") && action !== "pirkx_sso") {
+      errs.cta_action = "Use a full https:// URL, an in-app /route, or pirkx_sso";
+    }
+
+    if (!perk?.min_tier) errs.min_tier = "Choose a minimum tier";
+
+    return errs;
+  }
 
   function patchPerk(changes: Record<string, unknown>) {
     setEditingPerk((prev: any) => (prev ? { ...prev, ...changes } : prev));
+    setPerkErrors((prev) => {
+      const keys = Object.keys(changes).filter((k) => k in prev);
+      if (keys.length === 0) return prev;
+      const next = { ...prev };
+      keys.forEach((k) => delete next[k]);
+      return next;
+    });
   }
+
+  const perkFieldStyle = (field: string): React.CSSProperties =>
+    perkErrors[field]
+      ? { ...partnerInputStyle, borderColor: "#CC2229", marginBottom: 4 }
+      : partnerInputStyle;
+
+  const PerkError = ({ field }: { field: string }) =>
+    perkErrors[field] ? (
+      <div style={{ fontSize: 11, fontWeight: 600, color: "#CC2229", marginBottom: 12 }}>
+        {perkErrors[field]}
+      </div>
+    ) : null;
+
 
   async function uploadToBucket(bucket: string, prefix: string, file: File) {
     const ext = file.name.split(".").pop() || "bin";
