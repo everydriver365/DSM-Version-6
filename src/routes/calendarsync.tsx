@@ -582,7 +582,7 @@ function CalendarSyncPage() {
           </p>
         </div>
 
-        {/* Section 1 — Google Calendar OAuth */}
+        {/* Google Calendar — single connection card */}
         <div style={{ marginTop: 24 }}>
           <div
             style={{
@@ -633,7 +633,7 @@ function CalendarSyncPage() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ ...POPPINS, color: "#0B1F3A", fontSize: 14, fontWeight: 600 }}>
-                    Google Calendar connected
+                    Google Calendar
                   </div>
                   <div style={{ ...POPPINS, color: "#9CA3AF", fontSize: 11, marginTop: 2 }}>
                     Last synced: {lastSynced ? timeAgo(lastSynced) : "Never synced"}
@@ -653,8 +653,51 @@ function CalendarSyncPage() {
                 </div>
               </div>
               <div style={{ height: 1, background: "#E4E8EF" }} />
+
+              {/* Import direction */}
               <div
-                onClick={syncNow}
+                style={{
+                  padding: "13px 16px",
+                  display: "flex",
+                  gap: 12,
+                  alignItems: "center",
+                  borderBottom: "1px solid #E4E8EF",
+                }}
+              >
+                <div style={{ flex: 1 }}>
+                  <div style={{ ...POPPINS, color: "#0B1F3A", fontSize: 14, fontWeight: 500 }}>
+                    Import Google events into DSM
+                  </div>
+                  <div style={{ ...POPPINS, color: "#9CA3AF", fontSize: 11, marginTop: 2 }}>
+                    Google events appear on your schedule
+                  </div>
+                </div>
+                <DSMToggle checked={importEnabled} onChange={setImportEnabled} />
+              </div>
+
+              {/* Push direction */}
+              <div
+                style={{
+                  padding: "13px 16px",
+                  display: "flex",
+                  gap: 12,
+                  alignItems: "center",
+                  borderBottom: "1px solid #E4E8EF",
+                }}
+              >
+                <div style={{ flex: 1 }}>
+                  <div style={{ ...POPPINS, color: "#0B1F3A", fontSize: 14, fontWeight: 500 }}>
+                    Push DSM lessons to Google
+                  </div>
+                  <div style={{ ...POPPINS, color: "#9CA3AF", fontSize: 11, marginTop: 2 }}>
+                    Lessons appear in your Google Calendar
+                  </div>
+                </div>
+                <DSMToggle checked={pushEnabled} onChange={setPushEnabled} />
+              </div>
+
+              <div
+                onClick={sync}
                 role="button"
                 tabIndex={0}
                 style={{
@@ -663,9 +706,10 @@ function CalendarSyncPage() {
                   alignItems: "center",
                   gap: 12,
                   cursor: "pointer",
+                  borderBottom: "1px solid #E4E8EF",
                 }}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") syncNow();
+                  if (e.key === "Enter" || e.key === " ") sync();
                 }}
               >
                 <IconRefresh
@@ -681,7 +725,7 @@ function CalendarSyncPage() {
                   <div style={{ ...POPPINS, color: "#9CA3AF", fontSize: 11 }}>Syncing...</div>
                 )}
               </div>
-              <div style={{ height: 1, background: "#E4E8EF" }} />
+
               <div
                 onClick={disconnect}
                 role="button"
@@ -738,7 +782,7 @@ function CalendarSyncPage() {
                   Connect Google Calendar
                 </div>
                 <div style={{ ...POPPINS, color: "#9CA3AF", fontSize: 11, marginTop: 2 }}>
-                  Sync your Google Calendar events automatically
+                  Import events and push lessons automatically
                 </div>
               </div>
               {connecting ? (
@@ -750,7 +794,32 @@ function CalendarSyncPage() {
           )}
         </div>
 
-        {/* Secondary ICS option */}
+        {/* Advanced — ICS fallback (collapsed) */}
+        <button
+          type="button"
+          onClick={() => setShowICS(!showICS)}
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontSize: 12,
+            color: "#9CA3AF",
+            padding: "8px 0",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          <IconChevronDown
+            size={12}
+            color="#9CA3AF"
+            style={{ transform: showICS ? "rotate(180deg)" : "none" }}
+          />
+          Use a custom ICS link instead
+        </button>
+
+        {showICS && (
         <div
           style={{
             background: "#fff",
@@ -758,6 +827,7 @@ function CalendarSyncPage() {
             border: "1px solid #E4E8EF",
             overflow: "hidden",
             marginBottom: 16,
+            marginTop: 8,
             padding: "14px 16px",
           }}
         >
@@ -845,72 +915,8 @@ function CalendarSyncPage() {
             </div>
           )}
         </div>
+        )}
 
-        {/* Section 2 — DSM lessons → Google */}
-        <SectionLabel>DSM lessons → Google</SectionLabel>
-        <div style={SECTION_CARD}>
-          <p style={DESC}>
-            Connect your Google account so lessons you book in DSM appear in your Google IconCalendar straight away.
-          </p>
-
-          {outboundConn ? (
-            <>
-              <div
-                style={{
-                  background: "#E6F7EC",
-                  borderRadius: 14,
-                  padding: "14px 16px",
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: 10,
-                }}
-              >
-                <span style={STATUS_DOT}>
-                  <IconCheck size={12} color="#FFFFFF" stroke={3} />
-                </span>
-                <div>
-                  <div style={{ ...POPPINS, color: "#0F6B3D", fontSize: 14.5, fontWeight: 800 }}>
-                    Connected to Google IconCalendar
-                  </div>
-                  <div style={{ ...POPPINS, color: "#3D8A63", fontSize: 11.5, lineHeight: 1.5 }}>
-                    Connected on: {formatDate(outboundConn.connected_at)}
-                    {" · "}
-                    Last synced: {formatDate(outboundConn.last_synced_at)}
-                  </div>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={disconnectGoogle}
-                disabled={disconnecting}
-                style={{
-                  ...BTN_OUTLINE_RED,
-                  marginTop: 16,
-                  opacity: disconnecting ? 0.6 : 1,
-                }}
-              >
-                {disconnecting ? "Disconnecting…" : "Disconnect"}
-              </button>
-            </>
-          ) : (
-            <button
-              type="button"
-              onClick={connectGoogle}
-              disabled={outboundConnecting}
-              style={{ ...BTN_PRIMARY, opacity: outboundConnecting ? 0.6 : 1 }}
-            >
-              {outboundConnecting ? (
-                <>
-                  <IconLoader2 size={16} className="animate-spin" /> Connecting…
-                </>
-              ) : (
-                <>
-                  <IconCalendarPlus size={16} /> Connect Google IconCalendar
-                </>
-              )}
-            </button>
-          )}
-        </div>
 
         {/* ICS Feed URL */}
 
