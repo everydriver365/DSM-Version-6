@@ -2919,7 +2919,7 @@ function MonthStrip({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                backgroundColor: "rgba(255,255,255,0.12)",
+                backgroundColor: "#0B1F3A",
               }}
             >
               <IconRefresh
