@@ -1217,9 +1217,12 @@ function LiveNewsPage() {
                     const active = showFilter === chip.id;
                     const count =
                       chip.id === "all"
-                        ? episodes.length
+                        ? episodes.filter((e) => !isHiddenFromGeneral(e.showId)).length
                         : chip.id === "featured"
-                          ? episodes.filter((e) => e.showFeatured).length
+                          ? episodes.filter(
+                              (e) => e.showFeatured && !isHiddenFromGeneral(e.showId),
+                            ).length
+
                           : chip.id === "ted"
                             ? episodes.filter((e) => e.showId.startsWith("ted-")).length
                             : episodes.filter((e) => e.showId === chip.id).length;
