@@ -2903,32 +2903,33 @@ function MonthStrip({
           >
             Today
           </button>
-          {showSync && (
+          {(instructor?.google_calendar_connected || instructor?.external_calendar_url) && (
             <button
               type="button"
-              onClick={onSync}
+              onClick={handleSync}
               disabled={syncing}
               aria-label={syncing ? "Syncing calendar" : "Sync calendar"}
               style={{
-                background: "#F3F8FF",
-                border: "1px solid #EEF2F7",
-                borderRadius: 8,
-                padding: "2px 8px",
+                background: "none",
+                border: "none",
                 cursor: syncing ? "not-allowed" : "pointer",
-                display: "inline-flex",
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                display: "flex",
                 alignItems: "center",
-                gap: 5,
-                color: "#1877D6",
+                justifyContent: "center",
+                backgroundColor: "rgba(255,255,255,0.12)",
               }}
             >
-              <IconRefresh stroke={1.5}
-                size={12}
-                color="#1877D6"
-                style={{ animation: syncing ? "spin 1s linear infinite" : "none" }}
+              <IconRefresh
+                size={18}
+                color="#fff"
+                stroke={1.5}
+                style={{
+                  animation: syncing ? "spin 1s linear infinite" : "none",
+                }}
               />
-              <span style={{ fontSize: 10, fontFamily: "Poppins, sans-serif", fontWeight: 600 }}>
-                {syncing ? "Syncing..." : "Sync"}
-              </span>
             </button>
           )}
         </div>
