@@ -214,6 +214,7 @@ type MethodFilter = "all" | "cash" | "card" | "qr" | "bank_transfer" | "klarna" 
 // ---------- page ----------
 function PaymentsPage() {
   const navigate = useNavigate();
+  const unreadCount = useUnreadCount();
   const [userId, setUserId] = useState<string | null>(null);
   const [allPupils, setAllPupils] = useState<PupilLite[]>([]);
   const [history, setHistory] = useState<HistoryRow[] | null>(null);
