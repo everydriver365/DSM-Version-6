@@ -540,7 +540,7 @@ function CalendarSyncPage() {
         >
           <IconInfoCircle size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
           <p style={{ ...POPPINS, color: "#0B1F3A", fontSize: 13, fontWeight: 500, lineHeight: 1.5 }}>
-            Sync your lessons to any calendar app using an ICS feed. Works with Google IconCalendar, Apple IconCalendar, and Outlook.
+            Sync your lessons to any calendar app using an ICS feed. Works with Google Calendar, Apple Calendar, and Outlook.
           </p>
         </div>
 
@@ -898,7 +898,7 @@ function CalendarSyncPage() {
               </>
             ) : (
               <>
-                <IconCopy size={16} /> IconCopy link
+                <IconCopy size={16} /> Copy link
               </>
             )}
           </button>
@@ -935,10 +935,10 @@ function CalendarSyncPage() {
                 className="text-xs"
                 style={{ ...POPPINS, color: "#6B7280", lineHeight: 1.6 }}
               >
-                <li>✓ Your Google IconCalendar events sync into DSM every 2 hours</li>
-                <li>✓ DSM lessons appear in Google IconCalendar within 24 hours</li>
+                <li>✓ Your Google Calendar events sync into DSM every 2 hours</li>
+                <li>✓ DSM lessons appear in Google Calendar within 24 hours</li>
                 <li>✓ DSM is always up to date — use it as your primary schedule</li>
-                <li>○ Google IconCalendar is a read-only view — manage lessons in DSM</li>
+                <li>○ Google Calendar is a read-only view — manage lessons in DSM</li>
               </ul>
             </div>
           </div>
@@ -979,7 +979,7 @@ function CalendarSyncPage() {
             <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 12 }}>
               <span className="flex items-center gap-3">
                 <IconCalendar size={20} color="#1877D6" />
-                Google IconCalendar
+                Google Calendar
               </span>
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-4">
@@ -992,7 +992,7 @@ function CalendarSyncPage() {
                     1
                   </div>
                   <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Open Google IconCalendar on a computer (not phone)
+                    Open Google Calendar on a computer (not phone)
                   </p>
                 </li>
                 <li className="flex items-start gap-3">
@@ -1061,7 +1061,7 @@ function CalendarSyncPage() {
             <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 12 }}>
               <span className="flex items-center gap-3">
                 <IconCalendar size={20} color="#1877D6" />
-                Apple IconCalendar
+                Apple Calendar
               </span>
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-4">
@@ -1074,7 +1074,7 @@ function CalendarSyncPage() {
                     1
                   </div>
                   <p className="text-[14px] text-[#0B1F3A] leading-[1.4] pt-0.5" style={POPPINS}>
-                    Open the IconCalendar app on Mac or iPhone
+                    Open the Calendar app on Mac or iPhone
                   </p>
                 </li>
                 <li className="flex items-start gap-3">
