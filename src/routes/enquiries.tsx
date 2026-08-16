@@ -1648,6 +1648,7 @@ function EnquiriesPage() {
       <InstructorTopBar
         firstName=""
         pageTitle="Enquiries"
+        unreadCount={unreadCount}
         titleStyle={{
           fontSize: 24,
           fontWeight: 800,
@@ -1661,7 +1662,6 @@ function EnquiriesPage() {
           MozOsxFontSmoothing: "grayscale",
           fontFamily: "Sora, Poppins, sans-serif",
         }}
-
         onBack={() => goBack('/enquiries')}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
