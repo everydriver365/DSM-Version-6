@@ -1,6 +1,7 @@
 import { SkeletonCard } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -126,6 +127,8 @@ function formatRelativeDate(dateString: string) {
 }
 
 function PupilsIndexPage() {
+  const navigate = useNavigate();
+  const unreadCount = useUnreadCount();
   const [pupils, setPupils] = useState<Pupil[] | null>(null);
   const [lessonCountMap, setLessonCountMap] = useState<Record<string, number>>({});
   const [balanceMap, setBalanceMap] = useState<Record<string, number>>({});
@@ -144,7 +147,6 @@ function PupilsIndexPage() {
   const [nextLessonMap, setNextLessonMap] = useState<Record<string, string>>({});
   const [testDateMap, setTestDateMap] = useState<Record<string, string>>({});
   const [sortBy, setSortBy] = useState<"name" | "balance" | "next_lesson">("name");
-  const navigate = useNavigate();
 
   // Refresh balances/owing badges whenever a payment is recorded anywhere.
   useEffect(() => {
@@ -708,6 +710,7 @@ function PupilsIndexPage() {
       <InstructorTopBar
         firstName=""
         pageTitle="Pupils"
+        unreadCount={unreadCount}
         onBack={() => navigate({ to: "/home" as never })}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}

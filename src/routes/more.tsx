@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { IconActivity, IconArrowsLeftRight, IconAward, IconBriefcase, IconCalculator, IconCalendar, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconFileText, IconGasStation, IconMapPin, IconMoon, IconPlayerPlay, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconShoppingBag, IconTrendingUp, IconUsers, IconWorld, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -78,6 +79,7 @@ const GROUP_ORDER = ['Teaching', 'Business', 'Payments', 'Admin', 'Reports', 'Co
 
 function MorePage() {
   const navigate = useNavigate();
+  const unreadCount = useUnreadCount();
   const [searchQuery, setSearchQuery] = useState('');
   const [squareConnected, setSquareConnected] = useState(false);
 
@@ -114,6 +116,7 @@ function MorePage() {
       <InstructorTopBar
         firstName=""
         pageTitle="More"
+        unreadCount={unreadCount}
         onBack={() => navigate({ to: "/home" as never })}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}

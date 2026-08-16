@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { IconChevronRight, IconMapPin, IconPlus, IconSchool } from "@tabler/icons-react";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
@@ -104,6 +105,7 @@ function formatDate(d: string | null) {
 
 function CoursesPage() {
   const navigate = useNavigate();
+  const unreadCount = useUnreadCount();
   const [courses, setCourses] = useState<CourseRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState<Record<string, BookingRow[]>>({});
@@ -205,6 +207,7 @@ function CoursesPage() {
       <InstructorTopBar
         firstName=""
         pageTitle="My courses"
+        unreadCount={unreadCount}
         onBack={() => navigate({ to: "/home" as never })}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}

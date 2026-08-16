@@ -1,4 +1,5 @@
 import { pupilColour } from "@/components/PupilAvatar";
+import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -273,6 +274,7 @@ const FUTURE_DAYS = 180;
 
 function SchedulePage() {
   const navigate = useNavigate();
+  const unreadCount = useUnreadCount();
   const today = useMemo(() => startOfDay(new Date()), []);
   const rangeStart = useMemo(() => addDays(today, -PAST_DAYS), [today]);
   const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today, rangeStart]);
@@ -970,6 +972,7 @@ function SchedulePage() {
       <InstructorTopBar
         firstName={instructor?.name ?? ""}
         pageTitle="Schedule"
+        unreadCount={unreadCount}
         onBack={() => navigate({ to: "/home" as never })}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}

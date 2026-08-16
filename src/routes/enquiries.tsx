@@ -1,4 +1,5 @@
 import { useGoBack } from "@/hooks/useGoBack";
+import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
@@ -147,6 +148,7 @@ const SECTION_HEADER: React.CSSProperties = {
 function EnquiriesPage() {
   const navigate = useNavigate();
   const goBack = useGoBack();
+  const unreadCount = useUnreadCount();
   const [userId, setUserId] = useState<string | null>(null);
   const [enquiries, setEnquiries] = useState<EnquiryRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1646,6 +1648,7 @@ function EnquiriesPage() {
       <InstructorTopBar
         firstName=""
         pageTitle="Enquiries"
+        unreadCount={unreadCount}
         titleStyle={{
           fontSize: 24,
           fontWeight: 800,
@@ -1659,7 +1662,6 @@ function EnquiriesPage() {
           MozOsxFontSmoothing: "grayscale",
           fontFamily: "Sora, Poppins, sans-serif",
         }}
-
         onBack={() => goBack('/enquiries')}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
