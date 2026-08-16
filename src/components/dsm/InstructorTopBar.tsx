@@ -91,7 +91,6 @@ export default function InstructorTopBar({
         alignItems: "center",
         justifyContent: "space-between",
         borderBottom: "none",
-        borderRadius: isSubpage ? "0 0 28px 28px" : undefined,
         boxShadow: "inset 0 -1px 0 rgba(255,255,255,0.04)",
       }}
     >
