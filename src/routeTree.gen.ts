@@ -156,6 +156,7 @@ import { Route as AdminFeaturedRouteImport } from './routes/admin.featured'
 import { Route as AdminDsmLiveRouteImport } from './routes/admin.dsm-live'
 import { Route as AdminChatRoomsRouteImport } from './routes/admin.chat-rooms'
 import { Route as AdminBitesizeRouteImport } from './routes/admin.bitesize'
+import { Route as AdminBenefitsRouteImport } from './routes/admin.benefits'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
 import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricing'
 import { Route as MarketingHowItWorksRouteImport } from './routes/_marketing.how-it-works'
@@ -917,6 +918,11 @@ const AdminBitesizeRoute = AdminBitesizeRouteImport.update({
   path: '/bitesize',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBenefitsRoute = AdminBenefitsRouteImport.update({
+  id: '/benefits',
+  path: '/benefits',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminApplicationsRoute = AdminApplicationsRouteImport.update({
   id: '/applications',
   path: '/applications',
@@ -1160,6 +1166,7 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof MarketingHowItWorksRoute
   '/pricing': typeof MarketingPricingRoute
   '/admin/applications': typeof AdminApplicationsRoute
+  '/admin/benefits': typeof AdminBenefitsRoute
   '/admin/bitesize': typeof AdminBitesizeRoute
   '/admin/chat-rooms': typeof AdminChatRoomsRoute
   '/admin/dsm-live': typeof AdminDsmLiveRoute
@@ -1330,6 +1337,7 @@ export interface FileRoutesByTo {
   '/how-it-works': typeof MarketingHowItWorksRoute
   '/pricing': typeof MarketingPricingRoute
   '/admin/applications': typeof AdminApplicationsRoute
+  '/admin/benefits': typeof AdminBenefitsRoute
   '/admin/bitesize': typeof AdminBitesizeRoute
   '/admin/chat-rooms': typeof AdminChatRoomsRoute
   '/admin/dsm-live': typeof AdminDsmLiveRoute
@@ -1505,6 +1513,7 @@ export interface FileRoutesById {
   '/_marketing/how-it-works': typeof MarketingHowItWorksRoute
   '/_marketing/pricing': typeof MarketingPricingRoute
   '/admin/applications': typeof AdminApplicationsRoute
+  '/admin/benefits': typeof AdminBenefitsRoute
   '/admin/bitesize': typeof AdminBitesizeRoute
   '/admin/chat-rooms': typeof AdminChatRoomsRoute
   '/admin/dsm-live': typeof AdminDsmLiveRoute
@@ -1680,6 +1689,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/pricing'
     | '/admin/applications'
+    | '/admin/benefits'
     | '/admin/bitesize'
     | '/admin/chat-rooms'
     | '/admin/dsm-live'
@@ -1850,6 +1860,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/pricing'
     | '/admin/applications'
+    | '/admin/benefits'
     | '/admin/bitesize'
     | '/admin/chat-rooms'
     | '/admin/dsm-live'
@@ -2024,6 +2035,7 @@ export interface FileRouteTypes {
     | '/_marketing/how-it-works'
     | '/_marketing/pricing'
     | '/admin/applications'
+    | '/admin/benefits'
     | '/admin/bitesize'
     | '/admin/chat-rooms'
     | '/admin/dsm-live'
@@ -3268,6 +3280,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBitesizeRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/benefits': {
+      id: '/admin/benefits'
+      path: '/benefits'
+      fullPath: '/admin/benefits'
+      preLoaderRoute: typeof AdminBenefitsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/applications': {
       id: '/admin/applications'
       path: '/applications'
@@ -3468,6 +3487,7 @@ const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
 
 interface AdminRouteChildren {
   AdminApplicationsRoute: typeof AdminApplicationsRoute
+  AdminBenefitsRoute: typeof AdminBenefitsRoute
   AdminBitesizeRoute: typeof AdminBitesizeRoute
   AdminChatRoomsRoute: typeof AdminChatRoomsRoute
   AdminDsmLiveRoute: typeof AdminDsmLiveRoute
@@ -3483,6 +3503,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminApplicationsRoute: AdminApplicationsRoute,
+  AdminBenefitsRoute: AdminBenefitsRoute,
   AdminBitesizeRoute: AdminBitesizeRoute,
   AdminChatRoomsRoute: AdminChatRoomsRoute,
   AdminDsmLiveRoute: AdminDsmLiveRoute,
