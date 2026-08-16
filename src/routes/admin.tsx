@@ -1406,8 +1406,15 @@ export function BenefitPartnersSection() {
 
   async function savePerk() {
     if (!editingPerk) return;
+    const errs = validatePerk(editingPerk);
+    setPerkErrors(errs);
+    if (Object.keys(errs).length > 0) {
+      toast.error("Please fix the highlighted fields");
+      return;
+    }
     setSavingPerk(true);
     try {
+
       if (editingPerk.id === "new") {
         const { id: _omit, ...payload } = editingPerk;
         const { error } = await supabase.from("benefit_perks").insert(payload);
