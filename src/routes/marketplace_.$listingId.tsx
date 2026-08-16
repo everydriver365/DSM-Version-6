@@ -179,7 +179,7 @@ function ListingDetailPage() {
       setLoading(true);
       try {
         const rows = await sbGet<Listing[]>(
-          `marketplace_listings?id=eq.${listingId}&is_active=eq.true&deleted_at=is.null&select=*,marketplace_suppliers(name,logo_url,website_url,email,phone,is_verified),marketplace_categories(name,slug)`,
+          `marketplace_listings?id=eq.${listingId}&is_active=eq.true&deleted_at=is.null&select=*,gallery_urls,bullet_points,links,video_url,video_embed_url,marketplace_suppliers(name,logo_url,website_url,email,phone,is_verified),marketplace_categories(name,slug)`,
         );
         if (cancelled) return;
         const found = rows[0] ?? null;
