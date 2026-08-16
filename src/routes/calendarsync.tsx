@@ -283,7 +283,7 @@ function CalendarSyncPage() {
   }, []);
 
   async function connectGoogle() {
-    setConnecting(true);
+    setOutboundConnecting(true);
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData.session?.access_token;
@@ -300,7 +300,7 @@ function CalendarSyncPage() {
     } catch {
       toast.error("Could not connect to Google IconCalendar");
     } finally {
-      setConnecting(false);
+      setOutboundConnecting(false);
     }
   }
 
@@ -316,7 +316,7 @@ function CalendarSyncPage() {
         .update({ google_event_id: null })
         .eq("instructor_id", userId)
         .gte("lesson_date", today);
-      setConn(null);
+      setOutboundConn(null);
       toast.success("Google IconCalendar disconnected");
     } catch {
       toast.error("Could not disconnect Google IconCalendar");
