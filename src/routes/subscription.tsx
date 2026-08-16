@@ -384,8 +384,8 @@ function SubscriptionPage() {
                     marginTop: 3,
                   }}
                 >
-                  DIA membership costs £XX/year independently. This is included free with your DSM
-                  subscription.
+                  DIA membership costs £99/year (plus £25 joining fee) independently.
+                  This is included completely free with your DSM subscription.
                 </div>
               </div>
             </div>
