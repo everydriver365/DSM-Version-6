@@ -2115,7 +2115,6 @@ export function BenefitPartnersSection() {
                   );
                 })}
               </div>
-              <PerkError field="min_tier" />
 
               <div style={partnerLabelStyle}>Category</div>
               <input
@@ -2360,6 +2359,7 @@ export function BenefitPartnersSection() {
                   );
                 })}
               </div>
+              <PerkError field="min_tier" />
 
               <div style={partnerLabelStyle}>Category</div>
               <input
