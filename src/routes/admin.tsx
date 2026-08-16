@@ -1174,6 +1174,11 @@ function AdminHub() {
               label="News"
               onClick={() => navigate({ to: "/admin/news" as never })}
             />
+            <AdminSectionTile
+              icon={<IconGift stroke={1.6} size={18} color="#000" />}
+              label="Benefits & perks"
+              onClick={() => navigate({ to: "/admin/benefits" as never })}
+            />
 
           </AdminGroupCard>
 
