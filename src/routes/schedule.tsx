@@ -606,6 +606,13 @@ function SchedulePage() {
       const endpoint = useGoogleSync
         ? "/functions/v1/sync-google-calendar"
         : "/functions/v1/sync-external-calendar";
+      console.log("[schedule] handleSync called", {
+        userId,
+        google_calendar_connected: instructor?.google_calendar_connected,
+        external_calendar_url: instructor?.external_calendar_url,
+        useGoogleSync,
+        endpoint,
+      });
       const res = await fetch(SUPABASE_URL + endpoint, {
         method: "POST",
         headers: {
@@ -614,6 +621,11 @@ function SchedulePage() {
           Authorization: "Bearer " + token,
         },
         body: JSON.stringify({ instructorId: userId }),
+      });
+      console.log("[schedule] handleSync fetch response", {
+        endpoint,
+        status: res.status,
+        ok: res.ok,
       });
       const raw = await res.text();
       let data: any = {};
