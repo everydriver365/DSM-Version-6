@@ -2975,6 +2975,18 @@ function MonthStrip({
               {syncing ? "Syncing..." : "Sync"}
             </button>
           )}
+          {lastSynced && formatRelativeSync && (
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 500,
+                color: "#64748B",
+                ...POPPINS,
+              }}
+            >
+              Synced {formatRelativeSync(lastSynced)}
+            </span>
+          )}
         </div>
         <button
           type="button"
