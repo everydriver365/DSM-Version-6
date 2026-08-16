@@ -1406,7 +1406,44 @@ export function BenefitPartnersSection() {
     ) : null;
 
 
+  const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+  const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+  async function validateImageFile(
+    file: File,
+    opts: { minWidth: number; minHeight: number; label: string },
+  ) {
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      throw new Error(`${opts.label}: use a JPG, PNG, WebP or GIF image.`);
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      throw new Error(
+        `${opts.label}: image is ${(file.size / (1024 * 1024)).toFixed(1)}MB — max 5MB.`,
+      );
+    }
+    const dims = await new Promise<{ w: number; h: number } | null>((resolve) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        resolve({ w: img.naturalWidth, h: img.naturalHeight });
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        resolve(null);
+      };
+      img.src = url;
+    });
+    if (!dims) throw new Error(`${opts.label}: file is not a readable image.`);
+    if (dims.w < opts.minWidth || dims.h < opts.minHeight) {
+      throw new Error(
+        `${opts.label}: image is ${dims.w}×${dims.h}px — minimum ${opts.minWidth}×${opts.minHeight}px.`,
+      );
+    }
+  }
+
   async function uploadToBucket(bucket: string, prefix: string, file: File) {
+
     const ext = file.name.split(".").pop() || "bin";
     const path = `${prefix}${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
     const { error } = await supabase.storage
