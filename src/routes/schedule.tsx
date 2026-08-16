@@ -2810,6 +2810,7 @@ function MonthStrip({
   showSync,
   onSync,
   syncing,
+  syncMessage,
   lastSynced,
   formatRelativeSync,
 }: {
@@ -2824,6 +2825,7 @@ function MonthStrip({
   showSync?: boolean;
   onSync?: () => void;
   syncing?: boolean;
+  syncMessage?: { type: "success" | "error"; text: string } | null;
   lastSynced?: string | null;
   formatRelativeSync?: (iso: string) => string;
 }) {
