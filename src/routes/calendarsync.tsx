@@ -40,7 +40,7 @@ interface GoogleConnection {
 export const Route = createFileRoute("/calendarsync")({
   head: () => ({
     meta: [
-      { title: "IconCalendar sync — DSM by EveryDriver" },
+      { title: "Calendar sync — DSM by EveryDriver" },
       { name: "description", content: "Sync your lessons to any calendar app using an ICS feed." },
     ],
   }),
@@ -271,11 +271,11 @@ function CalendarSyncPage() {
       toast.error("Could not connect Google Calendar — please try again");
     }
     if (connected === "google") {
-      toast.success("Google IconCalendar connected");
+      toast.success("Google Calendar connected");
     } else if (err === "google_denied") {
-      toast.error("Google IconCalendar access was denied");
+      toast.error("Google Calendar access was denied");
     } else if (err === "token_failed") {
-      toast.error("Could not complete Google IconCalendar connection");
+      toast.error("Could not complete Google Calendar connection");
     }
     if (calendarStatus || connected || err) {
       params.delete("calendar");
@@ -321,7 +321,7 @@ function CalendarSyncPage() {
         .eq("instructor_id", userId)
         .gte("lesson_date", today);
       setOutboundConn(null);
-      toast.success("Google IconCalendar disconnected");
+      toast.success("Google Calendar disconnected");
     } catch {
       toast.error("Could not disconnect Google IconCalendar");
     } finally {
@@ -403,7 +403,7 @@ function CalendarSyncPage() {
     if (!userId) return;
     const trimmed = urlToUse.trim();
     if (!trimmed) {
-      toast.error("Paste your Google IconCalendar ICS URL first");
+      toast.error("Paste your Google Calendar ICS URL first");
       return;
     }
     let parsed: URL | null = null;
@@ -532,7 +532,7 @@ function CalendarSyncPage() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "My DSM IconCalendar Feed",
+          title: "My DSM Calendar Feed",
           text: "Sync your lessons to any calendar app using this ICS feed.",
           url: icsUrl,
         });
@@ -548,7 +548,7 @@ function CalendarSyncPage() {
     <PageLayout style={POPPINS}>
       <InstructorTopBar
         firstName=""
-        pageTitle="IconCalendar sync"
+        pageTitle="Calendar sync"
         onBack={() => navigate({ to: "/settings" as never })}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}

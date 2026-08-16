@@ -144,7 +144,7 @@ function MorePage() {
         <input
           type="text"
           autoFocus
-          placeholder="IconSearch features..."
+          placeholder="Search features..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{

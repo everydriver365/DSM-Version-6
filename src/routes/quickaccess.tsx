@@ -57,7 +57,7 @@ const quickAccessTiles = [
   { icon: <IconCalendarMonth size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Diary", route: "/diary" },
   { icon: <IconCrown size={22} color="#FFFFFF" />, bg: "#1877D6", label: "My plan", route: "/subscription" },
   { icon: <IconPlayerPlay size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Live session", route: "/livesession" },
-  { icon: <IconSearch size={22} color="#FFFFFF" />, bg: "#6B7280", label: "IconSearch", route: "/search" },
+  { icon: <IconSearch size={22} color="#FFFFFF" />, bg: "#6B7280", label: "Search", route: "/search" },
   { icon: <IconBell size={22} color="#FFFFFF" />, bg: "#DC2626", label: "Notifications", route: "/notifications" },
   { icon: <IconCalendarMonth size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Availability", route: "/quickavailability" },
   { icon: <IconRefresh size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Calendar sync", route: "/calendarsync" },
@@ -114,7 +114,7 @@ function QuickAccessPage() {
           style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
           {searchOpen ? <IconX size={15} /> : <IconSearch size={15} />}
-          {searchOpen ? "Close search" : "IconSearch"}
+          {searchOpen ? "Close search" : "Search"}
         </button>
       </div>
 
@@ -136,7 +136,7 @@ function QuickAccessPage() {
             <IconSearch size={16} color="#6B7280" />
             <input
               type="text"
-              placeholder="IconSearch quick access..."
+              placeholder="Search quick access..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1 bg-transparent outline-none text-[14px] text-[#0B1F3A] placeholder-[#9CA3AF]"

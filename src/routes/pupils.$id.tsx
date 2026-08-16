@@ -4601,7 +4601,7 @@ function PupilDetailPage() {
               </label>
             </div>
             <label className="block text-[12px] text-[#6B7280] mb-3">
-              IconPhone
+              Phone
               <input
                 type="tel"
                 value={editDraft.phone}

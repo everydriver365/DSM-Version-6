@@ -813,7 +813,7 @@ function SettingsPage() {
           <AccountRow
             icon={<IconCalendar color="#7B4FC9" size={20} />}
             iconBg="#F3EEFB"
-            label="IconCalendar sync"
+            label="Calendar sync"
             onClick={() => navigate({ to: "/calendarsync" })}
             warning={
               calendarLastSynced &&
@@ -2125,7 +2125,7 @@ function SettingsPage() {
                         try {
                           await navigator.clipboard.writeText(referralCode);
                           toast.success("Referral code copied");
-                        } catch { toast.error("IconCopy failed"); }
+                        } catch { toast.error("Copy failed"); }
                       }}
                       className="flex items-center gap-1 text-[13px]"
                       style={{ padding: "10px 14px", borderRadius: 10, background: "#EEF2F7", color: "#0B1F3A", border: "none", cursor: "pointer", ...POPPINS }}

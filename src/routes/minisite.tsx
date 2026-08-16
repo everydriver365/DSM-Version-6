@@ -765,7 +765,7 @@ function MiniSitePage() {
             </div>
             <button
               onClick={copyUrl}
-              aria-label="IconCopy URL"
+              aria-label="Copy URL"
               style={{
                 width: 32,
                 height: 32,
@@ -2057,7 +2057,7 @@ function MiniSitePage() {
                   opacity: domainChecking || domainQuery.trim().length < 3 ? 0.5 : 1,
                 }}
               >
-                {domainChecking ? "…" : "IconCheck"}
+                {domainChecking ? "…" : "Check"}
               </button>
             </div>
 

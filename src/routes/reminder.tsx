@@ -144,7 +144,7 @@ function ReminderPage() {
           />
           <input
             type="text"
-            placeholder="IconSearch pupils"
+            placeholder="Search pupils"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="h-11 w-full rounded-lg pl-9 pr-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"

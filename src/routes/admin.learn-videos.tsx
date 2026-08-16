@@ -671,7 +671,7 @@ function VideoForm({
               color: source === s ? BLUE : GREY,
             }}
           >
-            {s === "upload" ? "IconUpload file" : "YouTube link"}
+            {s === "upload" ? "Upload file" : "YouTube link"}
           </button>
         ))}
       </div>

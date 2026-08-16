@@ -514,7 +514,7 @@ const features = [
     img: paymentsImg,
     title: "Manage Your Diary",
     body: "The ultimate driving instructor diary. Schedule lessons, manage pupils, sync across devices and never miss a booking — all from one beautiful calendar.",
-    bullets: ["Drag-and-drop scheduling", "Pupil availability", "IconCalendar sync", "Lesson reminders"],
+    bullets: ["Drag-and-drop scheduling", "Pupil availability", "Calendar sync", "Lesson reminders"],
   },
   {
     img: flexiblePaymentsImg,
@@ -550,7 +550,7 @@ const features = [
     img: callAnsweringHeroImg,
     title: "Call Answering Service",
     body: "Never miss a new pupil enquiry. Our AI receptionist answers calls, takes messages and books appointments while you teach.",
-    bullets: ["24/7 call handling", "Instant SMS summary", "IconCalendar integration", "Affordable add-on"],
+    bullets: ["24/7 call handling", "Instant SMS summary", "Calendar integration", "Affordable add-on"],
   },
   {
     img: testSwapImg,
@@ -789,7 +789,7 @@ function PricingTiers() {
       price: "Free Forever",
       img: diaryImg,
       desc: "Your complete lesson management hub — scheduling, payments, and gap-filling in one place.",
-      bullets: ["Drag-and-drop calendar", "Google IconCalendar sync", "Gap filling & SMS", "Payment tracking"],
+      bullets: ["Drag-and-drop calendar", "Google Calendar sync", "Gap filling & SMS", "Payment tracking"],
       cta: "Get started free",
       highlight: false,
     },

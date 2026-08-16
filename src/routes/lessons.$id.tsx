@@ -676,7 +676,7 @@ function LessonDetailPage() {
 
                   <button
                     type="button"
-                    onClick={() => toast("IconMap replay coming soon")}
+                    onClick={() => toast("Map replay coming soon")}
                     className="w-full text-center text-[13px] font-semibold"
                     style={{
                       background: "transparent",
