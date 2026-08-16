@@ -171,13 +171,13 @@ function CalendarSyncPage() {
   const [icsSyncError, setIcsSyncError] = useState<string | null>(null);
   const [removing, setRemoving] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [outboundConn, setOutboundConn] = useState<GoogleConnection | null>(null);
-  const [outboundConnecting, setOutboundConnecting] = useState(false);
-  const [disconnecting, setDisconnecting] = useState(false);
   const [googleConnected, setGoogleConnected] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
+  const [importEnabled, setImportEnabled] = useState(true);
+  const [pushEnabled, setPushEnabled] = useState(true);
+  const [showICS, setShowICS] = useState(false);
 
   useEffect(() => {
     (async () => {
