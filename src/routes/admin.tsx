@@ -1393,6 +1393,18 @@ export function BenefitPartnersSection() {
 
 
 
+  async function loadAllPerks() {
+    const { data, error } = await supabase
+      .from("benefit_perks")
+      .select("*")
+      .order("sort_order");
+    if (error) {
+      console.error("[admin] all benefit_perks load error", error);
+      return;
+    }
+    setAllPerks((data ?? []) as BenefitPerk[]);
+  }
+
   async function loadPartners() {
     const { data, error } = await supabase
       .from("benefit_partners")
@@ -1407,7 +1419,9 @@ export function BenefitPartnersSection() {
 
   useEffect(() => {
     loadPartners();
+    loadAllPerks();
   }, []);
+
 
   async function savePartner() {
     if (!editingPartner) return;
