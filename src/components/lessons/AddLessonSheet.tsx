@@ -125,6 +125,10 @@ export function AddLessonSheet({
   const [pickup, setPickup] = useState("");
   const [testCentre, setTestCentre] = useState("");
   const testCentreInputRef = useRef<HTMLInputElement>(null);
+  const [testCentreSearch, setTestCentreSearch] = useState("");
+  const [testCentreResults, setTestCentreResults] = useState<any[]>([]);
+  const [searchingCentres, setSearchingCentres] = useState(false);
+  const [testTime, setTestTime] = useState("");
   const [pickupTouched, setPickupTouched] = useState(false);
   const [notes, setNotes] = useState("");
 
