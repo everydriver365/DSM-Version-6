@@ -6272,7 +6272,6 @@ function HomePage() {
 
                     return (
                       <React.Fragment key={l.id}>
-                        {showDivider && <ScheduleDateDivider date={start} />}
                         {isTestDayRow ? (
                           <TestDetailTrigger
                             detail={{
