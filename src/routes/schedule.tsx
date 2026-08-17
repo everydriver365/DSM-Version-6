@@ -325,6 +325,7 @@ function TestLessonCard({
           testResult,
           onOpenLesson: onClick,
           onNavigate: goNavigate,
+          onEdit: goEdit,
         }}
         onClose={() => setPanelOpen(false)}
       />
