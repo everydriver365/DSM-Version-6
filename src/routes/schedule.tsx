@@ -10,7 +10,7 @@ import {
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { IconArrowDown, IconArrowsMove, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowsMove, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconMapPin, IconNavigation, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
@@ -251,6 +251,155 @@ function lessonStart(l: Lesson) {
 }
 function lessonEnd(l: Lesson) {
   return new Date(lessonStart(l).getTime() + (l.duration_minutes ?? 60) * 60000);
+}
+
+const isTest = (lesson: any) =>
+  lesson.lesson_type === "test" || lesson.is_test_day === true || lesson.duration === "test";
+
+function TestLessonCard({ lesson, onClick }: { lesson: Lesson; onClick: () => void }) {
+  const testResult = (lesson as any).test_result;
+  const testCentre = lesson.pickup_location || (lesson as any).test_centre;
+  const startTime = fmtTime(lessonStart(lesson));
+  return (
+    <div
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      style={{
+        background: "linear-gradient(135deg, #CC2229, #991B1B)",
+        borderRadius: 16,
+        border: "none",
+        boxShadow: "0 4px 0 #7F1D1D",
+        marginBottom: 8,
+        overflow: "hidden",
+        padding: "14px 16px",
+        cursor: "pointer",
+        ...POPPINS,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span
+          style={{
+            background: "rgba(255,255,255,0.2)",
+            color: "#fff",
+            fontSize: 9,
+            fontWeight: 800,
+            borderRadius: 20,
+            padding: "3px 10px",
+            letterSpacing: "0.08em",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          🚗 TEST DAY
+        </span>
+        <span
+          style={{
+            fontSize: 12,
+            color: "rgba(255,255,255,0.8)",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          {startTime}
+        </span>
+      </div>
+      <div
+        style={{
+          fontSize: 18,
+          fontWeight: 800,
+          color: "#fff",
+          marginTop: 8,
+          letterSpacing: -0.3,
+          fontFamily: "Poppins, sans-serif",
+        }}
+      >
+        {pupilDisplayName(lesson.pupil)}
+      </div>
+      <div style={{ display: "flex", gap: 6, alignItems: "center", marginTop: 6 }}>
+        <IconMapPin size={13} color="rgba(255,255,255,0.7)" stroke={1.5} />
+        <span
+          style={{
+            fontSize: 12,
+            color: testCentre ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.5)",
+            fontStyle: testCentre ? "normal" : "italic",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          {testCentre || "Test centre not set"}
+        </span>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12 }}>
+        <div>
+          {testResult === "pass" ? (
+            <span
+              style={{
+                background: "#15803D",
+                color: "#fff",
+                fontSize: 10,
+                fontWeight: 800,
+                borderRadius: 20,
+                padding: "4px 12px",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              ✓ PASSED
+            </span>
+          ) : testResult === "fail" ? (
+            <span
+              style={{
+                background: "rgba(0,0,0,0.3)",
+                color: "rgba(255,255,255,0.8)",
+                fontSize: 10,
+                fontWeight: 800,
+                borderRadius: 20,
+                padding: "4px 12px",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              ✗ FAILED
+            </span>
+          ) : (
+            <span
+              style={{
+                fontSize: 11,
+                color: "rgba(255,255,255,0.6)",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              Result pending
+            </span>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={(ev) => {
+            ev.stopPropagation();
+            const addr = lesson.pickup_location || (lesson as any).test_centre;
+            if (addr) {
+              window.open(`maps://?daddr=${encodeURIComponent(addr)}&dirflg=d`, "_blank");
+            } else {
+              toast.info("No test centre set — add it in the lesson details");
+            }
+          }}
+          style={{
+            background: "rgba(255,255,255,0.2)",
+            borderRadius: 20,
+            padding: "6px 12px",
+            border: "none",
+            cursor: "pointer",
+            display: "flex",
+            gap: 6,
+            alignItems: "center",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          <IconNavigation size={13} color="#fff" stroke={1.5} />
+          <span style={{ fontSize: 12, fontWeight: 600, color: "#fff", fontFamily: "Poppins, sans-serif" }}>
+            Navigate
+          </span>
+        </button>
+      </div>
+    </div>
+  );
 }
 
 // Monday-start week key so "Week of..." labels group by ISO week.
@@ -1479,27 +1628,8 @@ function SchedulePage() {
                           const isBlockRow = e.kind === "block";
                           const clickable = isLessonRow || isBlockRow;
                           const isMovingThis = isLessonRow && movingLesson && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id === movingLesson.id;
-                          const isTestDay = isLessonRow &&
-                            !!(e as Extract<AgendaEntry, { kind: 'lesson' }>)
-                              .lesson.notes?.trim().match(/^Test day:/i);
-                          const testDayNotes = isTestDay
-                            ? (e as Extract<AgendaEntry,
-                                { kind: 'lesson' }>).lesson.notes ?? ''
-                            : '';
-                          const testTimeMatch = testDayNotes
-                            .match(/Test at (\d{2}:\d{2})/);
-                          const testLocationMatch = testDayNotes
-                            .match(/@ (.+)$/);
-                          const testTimeParsed = testTimeMatch?.[1] ?? null;
-                          const testLocation = testLocationMatch?.[1] ?? null;
-                          const testPupilName = isTestDay
-                            ? (e as Extract<AgendaEntry,
-                                { kind: 'lesson' }>).lesson.pupil
-                                ? ((e as any).lesson.pupil.name
-                                    ?? (e as any).lesson.pupil.first_name
-                                    ?? 'Pupil')
-                                : 'Pupil'
-                            : '';
+                          const isTestDay = isLessonRow && isTest((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
+
                           const isDimmed = moveMode && !isMovingThis;
                           const onCardClick = isLessonRow
                             ? () => {
@@ -1534,9 +1664,16 @@ function SchedulePage() {
 
                           return (
                             <div key={e.id} style={{ position: "relative", marginBottom: 8 }}>
-                              <div style={{ position: "relative", overflow: "hidden", borderRadius: 16 }}>
-                                <div
-                                  onClick={onCardClick}
+                              {isLessonRow && isTestDay ? (
+                                <TestLessonCard
+                                  lesson={(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson}
+                                  onClick={onCardClick || (() => {})}
+                                />
+                              ) : (
+                                <div style={{ position: "relative", overflow: "hidden", borderRadius: 16 }}>
+                                  <div
+                                    onClick={onCardClick}
+
                                   role={clickable ? "button" : undefined}
                                   tabIndex={clickable ? 0 : undefined}
                                   style={{
@@ -1647,74 +1784,8 @@ function SchedulePage() {
                                          />
                                       )}
                                         <div style={{ flex: 1, minWidth: 0, paddingTop: isLessonRow ? 2 : 0 }}>
-                                          {isTestDay && (
-                                            <div style={{
-                                              width: '100%',
-                                              marginBottom: 8,
-                                            }}>
-                                              {/* Test day header */}
-                                              <div style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: 6,
-                                                marginBottom: 6,
-                                              }}>
-                                                <span style={{ fontSize: 16 }}>🎯</span>
-                                                <span style={{
-                                                  fontSize: 14, fontWeight: 700,
-                                                  color: '#7C3300',
-                                                  fontFamily: 'Poppins, sans-serif',
-                                                }}>
-                                                  Test Day — {testPupilName}
-                                                </span>
-                                              </div>
-                                              {/* Pills row */}
-                                              <div style={{
-                                                display: 'flex',
-                                                gap: 6,
-                                                flexWrap: 'wrap',
-                                              }}>
-                                                {testTimeParsed && (
-                                                  <div style={{
-                                                    background: '#FF8C00',
-                                                    borderRadius: 20,
-                                                    padding: '3px 10px',
-                                                    display: 'inline-flex',
-                                                    alignItems: 'center',
-                                                    gap: 4,
-                                                  }}>
-                                                    <span style={{
-                                                      fontSize: 11, fontWeight: 700,
-                                                      color: '#fff',
-                                                      fontFamily: 'Poppins, sans-serif',
-                                                    }}>
-                                                      🕐 Test at {testTimeParsed}
-                                                    </span>
-                                                  </div>
-                                                )}
-                                                {testLocation &&
-                                                  testLocation !== 'test centre' && (
-                                                  <div style={{
-                                                    background: 'rgba(255,140,0,0.15)',
-                                                    borderRadius: 20,
-                                                    padding: '3px 10px',
-                                                    display: 'inline-flex',
-                                                    alignItems: 'center',
-                                                    gap: 4,
-                                                  }}>
-                                                    <span style={{
-                                                      fontSize: 11, fontWeight: 600,
-                                                      color: '#7C3300',
-                                                      fontFamily: 'Poppins, sans-serif',
-                                                    }}>
-                                                      📍 {testLocation}
-                                                    </span>
-                                                  </div>
-                                                )}
-                                              </div>
-                                            </div>
-                                          )}
                                           {isLessonRow ? (
+
                                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, minWidth: 0 }}>
                                              <div style={{ flex: 1, minWidth: 0 }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
@@ -1870,13 +1941,17 @@ function SchedulePage() {
                                                 >
                                                   <IconDots stroke={1.5} size={14} color="#D1D5DB" />
                                                 </button>
-                                              </div>
-                                            )}
-                                     </>
-                                  )}
-                                 </div>
+                                </div>
+                              )}
 
-                               </div>
+                                      </>
+                                   )}
+                                  </div>
+
+
+                                </div>
+                              )}
+
                                {isLessonRow && (() => {
 
                                 const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
