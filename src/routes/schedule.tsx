@@ -416,19 +416,45 @@ function TestLessonCard({
             >
               🚗 TEST DAY
             </span>
-            {testTime ? (
-              <span
+            <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+              {testTime ? (
+                <span
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 600,
+                    color: "rgba(255,255,255,0.85)",
+                    fontFamily: "Poppins, sans-serif",
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  Test at {testTime}
+                </span>
+              ) : null}
+              <button
+                type="button"
+                onClick={(ev) => {
+                  ev.stopPropagation();
+                  setPanelOpen(false);
+                  setActionsOpen(true);
+                }}
+                aria-label="More test options"
                 style={{
-                  fontSize: 10,
-                  fontWeight: 600,
-                  color: "rgba(255,255,255,0.85)",
-                  fontFamily: "Poppins, sans-serif",
-                  fontVariantNumeric: "tabular-nums",
+                  width: 24,
+                  height: 24,
+                  borderRadius: "50%",
+                  background: "rgba(255,255,255,0.15)",
+                  border: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  padding: 0,
+                  flexShrink: 0,
                 }}
               >
-                Test at {testTime}
-              </span>
-            ) : null}
+                <IconDots stroke={1.5} size={13} color="#ffffff" />
+              </button>
+            </div>
           </div>
           <div
             style={{
