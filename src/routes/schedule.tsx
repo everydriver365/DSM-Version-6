@@ -875,6 +875,31 @@ function SchedulePage() {
     fetchCalendarBlocks();
   }, [fetchCalendarBlocks]);
 
+  // Private DSM events in the same window.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("calendar_blocks")
+        .select(
+          "id, title, start_datetime, end_datetime, is_all_day, location, notes, colour, blocks_availability, recurrence_group_id",
+        )
+        .eq("source", "personal")
+        .gte("start_datetime", `${ymdLocal(rangeStart)}T00:00:00`)
+        .lte("start_datetime", `${ymdLocal(rangeEnd)}T23:59:59`)
+        .order("start_datetime", { ascending: true });
+      if (cancelled) return;
+      if (error) {
+        console.warn("[schedule] personal events fetch failed", error);
+        return;
+      }
+      setPersonalEvents((data as unknown as PersonalEvent[]) ?? []);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [rangeStart, rangeEnd, personalReloadKey]);
+
   // Fetch instructor working hours + buffers + rate, plus recurring blocks and time off.
   useEffect(() => {
     let cancelled = false;
