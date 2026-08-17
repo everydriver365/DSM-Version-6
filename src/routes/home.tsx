@@ -6436,7 +6436,9 @@ function HomePage() {
                                     onClick={(ev) => {
                                       ev.stopPropagation();
                                       setActionsOpenForLesson(null);
-                                      navigate({ to: '/lessons/edit/$id', params: { id: l.id } });
+                                      setTimeout(() => {
+                                        navigate({ to: '/lessons/edit/$id', params: { id: l.id } });
+                                      }, 0);
                                     }}
                                   >
                                     Edit lesson
@@ -6447,7 +6449,12 @@ function HomePage() {
                                     onClick={(ev) => {
                                       ev.stopPropagation();
                                       setActionsOpenForLesson(null);
-                                      navigate({ to: '/pupils/$id', params: { id: l.pupil_id } });
+                                      const pid = l.pupil_id;
+                                      if (pid) {
+                                        setTimeout(() => {
+                                          navigate({ to: '/pupils/$id', params: { id: pid } });
+                                        }, 0);
+                                      }
                                     }}
                                   >
                                     Full profile
