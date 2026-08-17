@@ -1578,24 +1578,43 @@ function SchedulePage() {
                             return (
                               <div key={e.id} style={{ position: "relative", marginBottom: 8 }}>
                                 <div
-                                  className="focus-within:ring-2 focus-within:ring-[#1A9B5C] focus-within:ring-offset-2"
                                   style={{
-                                    background: "#FFFFFF",
-                                    borderRadius: 14,
-                                    border: "0.5px solid #E4E8EF",
-                                    boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-                                    padding: "12px 14px",
+                                    position: "absolute",
+                                    top: -12,
+                                    left: 12,
+                                    zIndex: 1,
+                                    background: "#0B1F3A",
+                                    color: "#FFFFFF",
+                                    fontSize: 10,
+                                    fontWeight: 800,
+                                    textTransform: "uppercase",
+                                    letterSpacing: "0.5px",
+                                    padding: "4px 10px",
+                                    borderRadius: "8px 8px 8px 0",
+                                    fontFamily: "Poppins, sans-serif",
+                                    lineHeight: 1.2,
+                                  }}
+                                >
+                                  FILL THIS GAP
+                                </div>
+                                <div
+                                  className="focus-within:ring-2 focus-within:ring-[#0B1F3A] focus-within:ring-offset-2"
+                                  style={{
+                                    background: "#FDFBF6",
+                                    borderRadius: 16,
+                                    border: "2px dashed #D4A853",
+                                    padding: "20px 14px 12px",
                                     display: "flex",
                                     alignItems: "stretch",
                                     gap: 12,
                                     ...POPPINS,
                                   }}
                                 >
-                                  <div style={{ width: 48, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "flex-start", paddingTop: 2 }}>
-                                    <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", fontVariantNumeric: "tabular-nums", lineHeight: 1.15 }}>
+                                  <div style={{ width: 54, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "center" }}>
+                                    <div style={{ fontSize: 22, fontWeight: 700, color: "#0B1F3A", fontVariantNumeric: "tabular-nums", lineHeight: 1.1 }}>
                                       {e.startTime}
                                     </div>
-                                    <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
+                                    <div style={{ fontSize: 12, fontWeight: 500, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
                                       {formatMins(e.mins)}
                                     </div>
                                   </div>
@@ -1603,69 +1622,66 @@ function SchedulePage() {
                                     aria-hidden
                                     style={{
                                       width: 4,
-                                      borderRadius: "14px 0 0 14px",
-                                      background: "#1A9B5C",
+                                      borderRadius: "14px",
+                                      background: "#D4A853",
                                       flexShrink: 0,
                                       alignSelf: "stretch",
+                                      marginTop: 4,
+                                      marginBottom: 4,
                                     }}
                                   />
-                                  <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
-                                    <div style={{ display: "flex", alignItems: "flex-start", gap: 8, minWidth: 0 }}>
-                                      <div style={{ flex: 1, minWidth: 0 }}>
-                                        <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0, flexWrap: "wrap" }}>
-                                          <span style={{ fontSize: 14, fontWeight: 500, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", lineHeight: 1.3 }}>
-                                            Free slot
-                                          </span>
-                                          <span style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", fontSize: 10, fontWeight: 700, borderRadius: 20, padding: "2px 7px", lineHeight: 1.4, fontFamily: "Poppins, sans-serif", background: "#E4F5EA", color: "#1A9B5C" }}>
-                                            £{e.potential}
-                                          </span>
-                                        </div>
-                                        {preview.count > 0 && (
-                                          <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2 }}>
-                                            <div style={{ display: "flex", alignItems: "center" }}>
-                                              {preview.topPupils.map((p, idx) => {
-                                                const initials = (p.name ?? p.first_name ?? "P")
-                                                  .split(/\s+/)
-                                                  .map((s) => s.charAt(0))
-                                                  .join("")
-                                                  .slice(0, 2)
-                                                  .toUpperCase();
-                                                return (
-                                                  <div
-                                                    key={idx}
-                                                    style={{
-                                                      width: 18,
-                                                      height: 18,
-                                                      borderRadius: "50%",
-                                                      background: p.calendar_colour ?? "#0B1F3A",
-                                                      border: "1.5px solid #FFFFFF",
-                                                      marginLeft: idx === 0 ? 0 : -5,
-                                                      display: "flex",
-                                                      alignItems: "center",
-                                                      justifyContent: "center",
-                                                      color: "#FFFFFF",
-                                                      fontSize: 7,
-                                                      fontWeight: 800,
-                                                    }}
-                                                  >
-                                                    {initials}
-                                                  </div>
-                                                );
-                                              })}
-                                            </div>
-                                            <div style={{ fontSize: 11, color: "#8A93A3", fontWeight: 500, fontVariantNumeric: "tabular-nums" }}>
-                                              {preview.count} pupil{preview.count === 1 ? "" : "s"} may fit
-                                            </div>
+                                  <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center" }}>
+                                    <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0, flexWrap: "wrap" }}>
+                                      {preview.count > 0 ? (
+                                        <>
+                                          <div style={{ display: "flex", alignItems: "center" }}>
+                                            {preview.topPupils.map((p, idx) => {
+                                              const initials = (p.name ?? p.first_name ?? "P")
+                                                .split(/\s+/)
+                                                .map((s) => s.charAt(0))
+                                                .join("")
+                                                .slice(0, 2)
+                                                .toUpperCase();
+                                              return (
+                                                <div
+                                                  key={idx}
+                                                  style={{
+                                                    width: 34,
+                                                    height: 34,
+                                                    borderRadius: "50%",
+                                                    background: "#0B1F3A",
+                                                    border: "2px solid #FDFBF6",
+                                                    marginLeft: idx === 0 ? 0 : -10,
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    color: "#FFFFFF",
+                                                    fontSize: 11,
+                                                    fontWeight: 700,
+                                                    fontFamily: "Poppins, sans-serif",
+                                                  }}
+                                                >
+                                                  {initials}
+                                                </div>
+                                              );
+                                            })}
                                           </div>
-                                        )}
-                                      </div>
+                                          <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3 }}>
+                                            {preview.count} pupil{preview.count === 1 ? "" : "s"} may fit · £{e.potential} potential
+                                          </div>
+                                        </>
+                                      ) : (
+                                        <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3 }}>
+                                          £{e.potential} potential
+                                        </div>
+                                      )}
                                     </div>
                                   </div>
                                   <div style={{ flexShrink: 0, marginLeft: 4, display: "flex", flexDirection: "row", alignItems: "center" }}>
                                     <button
                                       type="button"
                                       onClick={() => navigate({ to: '/gaps' as never })}
-                                      className="shrink-0 self-center rounded-[9px] bg-[#1A9B5C] px-[15px] py-[8px] text-[12px] font-extrabold text-white hover:bg-[#158F4F] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1A9B5C] focus-visible:ring-offset-2 active:scale-[0.98] transition-transform cursor-pointer"
+                                      className="shrink-0 self-center rounded-[12px] bg-[#1877D6] px-[18px] py-[9px] text-[13px] font-extrabold text-white hover:bg-[#1566B8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877D6] focus-visible:ring-offset-2 active:scale-[0.98] transition-transform cursor-pointer"
                                     >
                                       Fill
                                     </button>
