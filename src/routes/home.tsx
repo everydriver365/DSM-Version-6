@@ -2183,13 +2183,12 @@ function HomePage() {
       if (!notifPollerInitRef.current) {
         notifPollerInitRef.current = true;
         lastSeenNotifIdRef.current = latest?.id ?? null;
-        return;
+      } else if (latest && latest.id !== lastSeenNotifIdRef.current) {
+        lastSeenNotifIdRef.current = latest.id;
       }
-      if (!latest || latest.id === lastSeenNotifIdRef.current) return;
-      lastSeenNotifIdRef.current = latest.id;
       // Alerts themselves are shown once, globally, by the toast controller in
-      // __root.tsx. Here we only keep the bell count in sync so the same
-      // notification can never surface twice.
+      // __root.tsx. Here we always re-read the unread count so the bell goes
+      // grey as soon as notifications are read or cleared elsewhere.
       const { count } = await supabase
         .from("instructor_notifications")
         .select("id", { count: "exact", head: true })
@@ -2199,7 +2198,17 @@ function HomePage() {
     }
     poll();
     const id = setInterval(poll, 30000);
-    return () => { cancelled = true; clearInterval(id); };
+    const onRefresh = () => { void poll(); };
+    window.addEventListener("dsm-notifications-updated", onRefresh);
+    window.addEventListener("focus", onRefresh);
+    document.addEventListener("visibilitychange", onRefresh);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+      window.removeEventListener("dsm-notifications-updated", onRefresh);
+      window.removeEventListener("focus", onRefresh);
+      document.removeEventListener("visibilitychange", onRefresh);
+    };
   }, [navigate]);
 
   // NOTE: there is deliberately no realtime instructor_notifications
