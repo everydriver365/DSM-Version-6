@@ -741,7 +741,10 @@ export function AddLessonSheet({
                   </div>
                   <input
                     value={testCentre}
-                    onChange={(e) => setTestCentre(e.target.value)}
+                    onChange={(e) => {
+                      setTestCentre(e.target.value);
+                      setErrors((prev) => ({ ...prev, testCentre: undefined }));
+                    }}
                     placeholder="e.g. Eastleigh Test Centre, SO50 5JH"
                     style={{
                       width: "100%",
