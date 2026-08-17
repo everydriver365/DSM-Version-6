@@ -1949,7 +1949,9 @@ function SchedulePage() {
                                   </div>
 
 
-                               </div>
+                                </div>
+                              )}
+
                                {isLessonRow && (() => {
 
                                 const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
