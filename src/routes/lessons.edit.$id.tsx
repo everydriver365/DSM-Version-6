@@ -150,10 +150,11 @@ function EditLessonPage() {
           .order("name", { ascending: true, nullsFirst: false }),
         supabase
           .from("lessons")
-          .select("pupil_id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_location, payment_status, amount_due")
+          .select("pupil_id, lesson_type, lesson_date, lesson_time, duration_minutes, status, notes, pickup_location, payment_status, amount_due")
           .eq("id", id)
           .is("deleted_at", null)
           .maybeSingle(),
+
       ]);
 
       if (pupilsRes.error) console.error("[edit-lesson] pupils error", pupilsRes.error);
