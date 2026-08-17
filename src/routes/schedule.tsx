@@ -443,29 +443,30 @@ function TestLessonCard({
                   Test at {testTime}
                 </span>
               ) : null}
-              <button
-                type="button"
-                onClick={(ev) => {
-                  ev.stopPropagation();
-                  setActionsOpen((cur) => !cur);
-                }}
-                aria-label="More test options"
-                style={{
-                  width: 24,
-                  height: 24,
-                  borderRadius: "50%",
-                  background: "rgba(255,255,255,0.15)",
-                  border: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  padding: 0,
-                  flexShrink: 0,
-                }}
-              >
-                <IconDots stroke={1.5} size={13} color="#ffffff" />
-              </button>
+              <div style={{ flexShrink: 0, marginLeft: 4, display: "flex", flexDirection: "row", alignItems: "center" }}>
+                <button
+                  type="button"
+                  onClick={(ev) => {
+                    ev.stopPropagation();
+                    setActionsOpen((cur) => !cur);
+                  }}
+                  aria-label="More test options"
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: "50%",
+                    background: "rgba(255,255,255,0.15)",
+                    border: "0.5px solid rgba(255,255,255,0.28)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    padding: 0,
+                  }}
+                >
+                  <IconDots stroke={1.5} size={14} color="#ffffff" />
+                </button>
+              </div>
             </div>
           </div>
           <div
