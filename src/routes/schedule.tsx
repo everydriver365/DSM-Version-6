@@ -1609,11 +1609,16 @@ function SchedulePage() {
                             markerColor = pupilColour(e.lesson.pupil_id ?? null, e.lesson.pupil?.calendar_colour ?? null, name);
                             title = name;
                             // Subtitle shows the lesson type instead of a duplicated time range.
-                            const typeRaw = (e.lesson.lesson_type ?? "").trim();
-                            const typeLabel = typeRaw
-                              ? typeRaw.charAt(0).toUpperCase() + typeRaw.slice(1)
-                              : "Standard";
-                            timeText = /lesson/i.test(typeLabel) ? typeLabel : `${typeLabel} lesson`;
+                            if (isTest(e.lesson)) {
+                              const centre = testCentreOf(e.lesson);
+                              timeText = centre ? `Test day · ${centre}` : "Test day · Test centre not set";
+                            } else {
+                              const typeRaw = (e.lesson.lesson_type ?? "").trim();
+                              const typeLabel = typeRaw
+                                ? typeRaw.charAt(0).toUpperCase() + typeRaw.slice(1)
+                                : "Standard";
+                              timeText = /lesson/i.test(typeLabel) ? typeLabel : `${typeLabel} lesson`;
+                            }
                           } else if (e.kind === "block") {
                             markerColor = getBlockColour(e.title).border;
                             title = e.title;
