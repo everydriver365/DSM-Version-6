@@ -302,17 +302,6 @@ function TestLessonCard({
   const navigate = useNavigate({ from: Route.fullPath });
   const [panelOpen, setPanelOpen] = useState(false);
   const [actionsOpen, setActionsOpen] = useState(false);
-  const actionsRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!actionsOpen) return;
-    const handle = (ev: MouseEvent) => {
-      if (actionsRef.current && !actionsRef.current.contains(ev.target as Node)) {
-        setActionsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handle);
-    return () => document.removeEventListener('mousedown', handle);
-  }, [actionsOpen]);
   const goNavigate = () => {
     void navigate({
       to: "/lessons/$id",
@@ -321,7 +310,6 @@ function TestLessonCard({
     });
   };
   const goEdit = () => {
-    setActionsOpen(false);
     setTimeout(() => {
       void navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } });
     }, 0);
@@ -329,12 +317,12 @@ function TestLessonCard({
   const goProfile = () => {
     const pid = lesson.pupil_id;
     if (pid) {
-      setActionsOpen(false);
       setTimeout(() => {
         void navigate({ to: '/pupils/$id', params: { id: pid } });
       }, 0);
     }
   };
+
   return (
     <>
     {panelOpen ? (
