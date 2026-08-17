@@ -164,6 +164,9 @@ export function AddLessonSheet({
       setIsTestDay(true);
       setDuration('test');
       setTestCentre(editingLesson.pickup_location ?? '');
+    } else {
+      setIsTestDay(false);
+      setTestCentre('');
     }
   }, [open, editingLesson]);
 
@@ -250,7 +253,7 @@ export function AddLessonSheet({
           lesson_type: isTestDay ? "test" : "lesson",
           status: editingLesson.status ?? "confirmed",
           notes: fullNotes,
-          pickup_location: isTestDay ? testCentre.trim() || null : (editingLesson.pickup_location ?? null),
+          pickup_location: isTestDay ? testCentre.trim() || null : pickup.trim() || null,
         })
         .eq("id", editingLesson.id);
       if (updErr) {
