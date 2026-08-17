@@ -171,8 +171,7 @@ export function AddLessonSheet({
     ? pupils.filter((p) => p.name.toLowerCase().includes(pupilQuery.trim().toLowerCase()))
     : pupils;
 
-  const effectiveDuration =
-    durationMode === "custom" ? Math.max(0, parseInt(customDuration, 10) || 0) : duration;
+  const effectiveDuration = duration === "test" ? 0 : duration * 60;
 
   async function handleSave() {
     const next: typeof errors = {};
