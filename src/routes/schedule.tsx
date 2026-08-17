@@ -31,6 +31,7 @@ import { filterEchoedBlocks } from "@/lib/calendarDedupe";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
+import { TestDetailPanel } from "@/components/lessons/TestDetailPanel";
 
 
 export const Route = createFileRoute("/schedule")({
@@ -300,9 +301,35 @@ function TestLessonCard({
     return `${m}m`;
   })();
   const navigate = useNavigate({ from: Route.fullPath });
+  const [panelOpen, setPanelOpen] = useState(false);
+  const goNavigate = () => {
+    void navigate({
+      to: "/lessons/$id",
+      params: { id: lesson.id },
+      search: testCentre ? { testCentre } : {},
+    });
+  };
   return (
+    <>
+    {panelOpen ? (
+      <TestDetailPanel
+        detail={{
+          pupilName: pupilDisplayName(lesson.pupil),
+          testCentre,
+          startTime,
+          endTime,
+          testTime,
+          durationLabel: durLabel,
+          dateLabel: lessonStart(lesson).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" }),
+          testResult,
+          onOpenLesson: onClick,
+          onNavigate: goNavigate,
+        }}
+        onClose={() => setPanelOpen(false)}
+      />
+    ) : null}
     <div
-      onClick={onClick}
+      onClick={() => setPanelOpen(true)}
       role="button"
       tabIndex={0}
       style={{
@@ -416,12 +443,7 @@ function TestLessonCard({
           type="button"
           onClick={(ev) => {
             ev.stopPropagation();
-            const centre = testCentreOf(lesson);
-            void navigate({
-              to: "/lessons/$id",
-              params: { id: lesson.id },
-              search: centre ? { testCentre: centre } : {},
-            });
+            goNavigate();
           }}
           style={{
             background: "rgba(255,255,255,0.2)",
@@ -442,6 +464,7 @@ function TestLessonCard({
         </button>
       </div>
     </div>
+    </>
   );
 }
 
