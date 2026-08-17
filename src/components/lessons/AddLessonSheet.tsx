@@ -238,6 +238,44 @@ export function AddLessonSheet({
         : `Pickup: ${pickupValue}`
       : baseNotes;
 
+    // Update existing lesson when editing.
+    if (editingLesson) {
+      const { error: updErr } = await supabase
+        .from("lessons")
+        .update({
+          pupil_id: pupilId,
+          lesson_date: date,
+          lesson_time: `${time}:00`,
+          duration_minutes: isTestDay ? null : durationMinutes,
+          lesson_type: isTestDay ? "test" : "lesson",
+          status: editingLesson.status ?? "confirmed",
+          notes: fullNotes,
+          pickup_location: isTestDay ? testCentre.trim() || null : (editingLesson.pickup_location ?? null),
+        })
+        .eq("id", editingLesson.id);
+      if (updErr) {
+        setErrors({ form: updErr.message });
+        toast.error(updErr.message);
+        setSaving(false);
+        return;
+      }
+      const { data: lessonRow } = await supabase
+        .from("lessons")
+        .select("google_event_id")
+        .eq("id", editingLesson.id)
+        .maybeSingle();
+      if (lessonRow?.google_event_id) {
+        void supabase.functions.invoke("google-calendar-sync", {
+          body: { lesson_id: editingLesson.id, instructor_id: user.id, action: "update" },
+        });
+      }
+      toast.success("Lesson updated");
+      setSaving(false);
+      onSaved(editingLesson.id);
+      onClose();
+      return;
+    }
+
     // Resolve the correct base price using pupil custom rates, postcode rates,
     // then the instructor's default hourly rate.
     const { data: sessionData } = await supabase.auth.getSession();
