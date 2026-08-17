@@ -321,11 +321,17 @@ function TestLessonCard({
     });
   };
   const goEdit = () => {
-    void navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } });
+    setActionsOpen(false);
+    setTimeout(() => {
+      void navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } });
+    }, 0);
   };
   const goProfile = () => {
     if (lesson.pupil_id) {
-      void navigate({ to: '/pupils/$id', params: { id: lesson.pupil_id } });
+      setActionsOpen(false);
+      setTimeout(() => {
+        void navigate({ to: '/pupils/$id', params: { id: lesson.pupil_id } });
+      }, 0);
     }
   };
   return (
