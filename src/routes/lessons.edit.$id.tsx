@@ -103,7 +103,7 @@ function EditLessonPage() {
   const [pupilId, setPupilId] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [duration, setDuration] = useState<number | 'test'>(60);
+  const [duration, setDuration] = useState<number>(60);
   const [isTestDay, setIsTestDay] = useState(false);
   const [testCentre, setTestCentre] = useState('');
   const [status, setStatus] = useState("confirmed");
