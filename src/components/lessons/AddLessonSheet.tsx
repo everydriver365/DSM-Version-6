@@ -193,7 +193,9 @@ export function AddLessonSheet({
       setSaving(false);
       return;
     }
-    const durationMinutes = effectiveDuration > 0 ? effectiveDuration : 60;
+    const durationMinutes = isTestDay ? 0 : effectiveDuration > 0 ? effectiveDuration : 60;
+    setIsTestDay(duration === "test");
+
     const selected = pupils.find((p) => p.id === pupilId);
     const pickupValue = pickup.trim() || selected?.address?.trim() || null;
     const baseNotes = notes.trim() || null;
