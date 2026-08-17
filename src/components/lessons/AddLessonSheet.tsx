@@ -263,16 +263,21 @@ export function AddLessonSheet({
       return;
     }
     const durationMinutes = isTestDay ? 0 : effectiveDuration > 0 ? effectiveDuration : 60;
-    const effTime = isTestDay && testTime ? testTime : time;
+    // Test days block out 1 hour before the test time and 90 minutes after it.
+    const effTime =
+      isTestDay && testTime ? testStartTime(testTime) ?? testTime : time;
+    const savedDuration = isTestDay ? TEST_TOTAL_MINUTES : durationMinutes;
 
     const selected = pupils.find((p) => p.id === pupilId);
     const pickupValue = pickup.trim() || selected?.address?.trim() || null;
     const baseNotes = notes.trim() || null;
-    const fullNotes = pickupValue
+    const withPickup = pickupValue
       ? baseNotes
         ? `${baseNotes}\n\nPickup: ${pickupValue}`
         : `Pickup: ${pickupValue}`
       : baseNotes;
+    const fullNotes =
+      isTestDay && testTime ? withTestTimeNote(withPickup, testTime) : withPickup;
 
     // Update existing lesson when editing.
     if (editingLesson) {
