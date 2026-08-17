@@ -274,10 +274,17 @@ const testCentreOf = (lesson: any): string | null => {
   return null;
 };
 
-function TestLessonCard({ lesson, onClick }: { lesson: Lesson; onClick: () => void }) {
+function TestLessonCard({
+  lesson,
+  onClick,
+}: {
+  lesson: Lesson;
+  onClick: () => void;
+}) {
   const testResult = (lesson as any).test_result;
   const testCentre = testCentreOf(lesson);
   const startTime = fmtTime(lessonStart(lesson));
+  const navigate = useNavigate({ from: Route.fullPath });
   return (
     <div
       onClick={onClick}
@@ -391,12 +398,12 @@ function TestLessonCard({ lesson, onClick }: { lesson: Lesson; onClick: () => vo
           type="button"
           onClick={(ev) => {
             ev.stopPropagation();
-            const addr = testCentreOf(lesson);
-            if (addr) {
-              window.open(`maps://?daddr=${encodeURIComponent(addr)}&dirflg=d`, "_blank");
-            } else {
-              toast.info("No test centre set — add it in the lesson details");
-            }
+            const centre = testCentreOf(lesson);
+            void navigate({
+              to: "/lessons/$id",
+              params: { id: lesson.id },
+              search: centre ? { testCentre: centre } : {},
+            });
           }}
           style={{
             background: "rgba(255,255,255,0.2)",
