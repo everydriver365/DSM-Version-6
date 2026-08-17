@@ -181,6 +181,7 @@ function EditLessonPage() {
       } else if (lessonRes.data) {
         const l = lessonRes.data as {
           pupil_id: string;
+          lesson_type: string | null;
           lesson_date: string;
           lesson_time: string;
           duration_minutes: number | null;
@@ -193,14 +194,18 @@ function EditLessonPage() {
         setPupilId(l.pupil_id);
         setDate(l.lesson_date);
         setTime((l.lesson_time ?? "").slice(0, 5));
-        setDuration(l.duration_minutes ?? 60);
+        const testDay = l.lesson_type === 'test';
+        setIsTestDay(testDay);
+        setTestCentre(l.pickup_location ?? '');
+        setDuration(testDay ? 'test' : (l.duration_minutes ?? 60));
         setStatus(l.status ?? "confirmed");
         setPickupLocation(l.pickup_location ?? "");
-        setPickupAddress(l.pickup_location ?? "");
+        setPickupAddress(testDay ? '' : (l.pickup_location ?? ""));
         setPickupPostcode("");
         setNotes(l.notes ?? "");
         setPaymentStatus((l.payment_status as PayStatus) ?? "unpaid");
         setAmountDue(l.amount_due != null ? Number(l.amount_due) : null);
+
 
         // Fetch pupil account_balance for recordPayment reconciliation.
         if (l.pupil_id) {
