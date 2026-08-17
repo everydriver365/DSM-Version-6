@@ -300,6 +300,7 @@ function TestLessonCard({
   })();
   const navigate = useNavigate({ from: Route.fullPath });
   const [panelOpen, setPanelOpen] = useState(false);
+  const [actionsOpen, setActionsOpen] = useState(false);
   const goNavigate = () => {
     void navigate({
       to: "/lessons/$id",
@@ -309,6 +310,11 @@ function TestLessonCard({
   };
   const goEdit = () => {
     void navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } });
+  };
+  const goProfile = () => {
+    if (lesson.pupil_id) {
+      void navigate({ to: '/pupils/$id', params: { id: lesson.pupil_id } });
+    }
   };
   return (
     <>
