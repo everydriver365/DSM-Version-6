@@ -70,9 +70,11 @@ interface Lesson {
   lesson_date: string;
   lesson_time: string;
   duration_minutes: number | null;
+  lesson_type: string | null;
   status: string;
   notes: string | null;
   pickup_address: string | null;
+  pickup_location: string | null;
   pupil_id: string;
   payment_status: string | null;
   amount_due: number | null;
