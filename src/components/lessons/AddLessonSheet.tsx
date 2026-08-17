@@ -106,12 +106,12 @@ export function AddLessonSheet({
   const [pupilListOpen, setPupilListOpen] = useState(false);
   const [date, setDate] = useState(initialDate || todayISO());
   const [time, setTime] = useState("");
-  const [duration, setDuration] = useState(60);
-  const [customDuration, setCustomDuration] = useState("");
-  const [durationMode, setDurationMode] = useState<"preset" | "custom">("preset");
+  const [duration, setDuration] = useState<number | "test">(1);
+  const [isTestDay, setIsTestDay] = useState(false);
   const [pickup, setPickup] = useState("");
   const [pickupTouched, setPickupTouched] = useState(false);
   const [notes, setNotes] = useState("");
+
   const [errors, setErrors] = useState<{
     pupil?: string;
     date?: string;
