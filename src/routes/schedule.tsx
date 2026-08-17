@@ -334,9 +334,11 @@ function TestLessonCard({
         </span>
         <span
           style={{
-            fontSize: 11,
-            color: "rgba(255,255,255,0.8)",
+            fontSize: 15,
+            color: "#FFFFFF",
+            fontWeight: 700,
             fontFamily: "Poppins, sans-serif",
+            fontVariantNumeric: "tabular-nums",
           }}
         >
           {startTime} – {endTime}
