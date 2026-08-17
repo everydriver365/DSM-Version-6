@@ -521,6 +521,11 @@ function testCentreOf(lesson: any): string | null {
   return null;
 }
 
+function testTimeOf(lesson: any): string | null {
+  const m = String(lesson?.notes ?? '').match(/Test at (\d{2}:\d{2})/);
+  return m?.[1] ?? null;
+}
+
 function startOfDay(d: Date) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
@@ -6261,22 +6266,87 @@ function HomePage() {
                     return (
                       <React.Fragment key={l.id}>
                         <ScheduleDateDivider date={start} />
-                        <div style={{ position: 'relative', background: '#FFFFFF', border: '1px solid #E4E8EF', borderRadius: 13, marginBottom: 8 }}>
-                        <div
-                          onClick={() => setDetailsSheetForLesson(l)}
-                          onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
-                          role="button"
-                          tabIndex={0}
-                          style={{
-                            padding: '12px 14px',
-                            display: 'flex',
-                            alignItems: 'stretch',
-                            gap: 12,
-                            cursor: 'pointer',
-                            boxSizing: 'border-box',
-                            opacity: isCancelled ? 0.55 : 1,
-                          }}
-                        >
+                        {isTestDayRow ? (
+                          <div
+                            onClick={() => setDetailsSheetForLesson(l)}
+                            onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
+                            role="button"
+                            tabIndex={0}
+                            style={{
+                              background: 'linear-gradient(135deg, #1877D6, #0B1F3A)',
+                              borderRadius: 13,
+                              marginBottom: 8,
+                              padding: '8px 12px',
+                              cursor: 'pointer',
+                              boxShadow: '0 2px 0 #0B1F3A',
+                              position: 'relative',
+                              overflow: 'hidden',
+                            }}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                              <div style={{ minWidth: 0 }}>
+                                <span style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  background: 'rgba(255,255,255,0.2)',
+                                  color: '#fff',
+                                  fontSize: 9,
+                                  fontWeight: 800,
+                                  borderRadius: 20,
+                                  padding: '2px 8px',
+                                  letterSpacing: '0.08em',
+                                  fontFamily: PF,
+                                }}>
+                                  🚗 TEST DAY
+                                </span>
+                                <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', marginTop: 4, letterSpacing: -0.2, fontFamily: PF, lineHeight: 1.2 }}>
+                                  {name}
+                                </div>
+                                <div style={{ display: 'flex', gap: 4, alignItems: 'center', marginTop: 2 }}>
+                                  <IconMapPin size={11} color="rgba(255,255,255,0.7)" stroke={1.5} />
+                                  <span style={{
+                                    fontSize: 11,
+                                    color: pickupLabel ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.5)',
+                                    fontStyle: pickupLabel ? 'normal' : 'italic',
+                                    fontFamily: PF,
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                  }}>
+                                    {pickupLabel || 'Test centre not set'}
+                                  </span>
+                                </div>
+                              </div>
+                              <div style={{ textAlign: 'right', flexShrink: 0, paddingLeft: 8 }}>
+                                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.9)', fontWeight: 700, fontFamily: PF }}>
+                                  {(() => {
+                                    const tt = testTimeOf(l);
+                                    return tt ? `Test at ${tt}` : timeLabel;
+                                  })()}
+                                </div>
+                                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', fontFamily: PF, marginTop: 2 }}>
+                                  {durLabel}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div style={{ position: 'relative', background: '#FFFFFF', border: '1px solid #E4E8EF', borderRadius: 13, marginBottom: 8 }}>
+                          <div
+                            onClick={() => setDetailsSheetForLesson(l)}
+                            onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
+                            role="button"
+                            tabIndex={0}
+                            style={{
+                              padding: '12px 14px',
+                              display: 'flex',
+                              alignItems: 'stretch',
+                              gap: 12,
+                              cursor: 'pointer',
+                              boxSizing: 'border-box',
+                              opacity: isCancelled ? 0.55 : 1,
+                            }}
+                          >
                             <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
                               <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none' }}>
                                 {timeLabel}
@@ -6479,9 +6549,10 @@ function HomePage() {
                                 Full profile
                               </button>
 
-                           </div>
-                         )}
+                            </div>
+                          )}
                         </div>
+                      )}
                       </React.Fragment>
                     );
 

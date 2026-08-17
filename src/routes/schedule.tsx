@@ -274,6 +274,11 @@ const testCentreOf = (lesson: any): string | null => {
   return null;
 };
 
+const testTimeOf = (lesson: any): string | null => {
+  const m = String(lesson?.notes ?? "").match(/Test at (\d{2}:\d{2})/);
+  return m?.[1] ?? null;
+};
+
 function TestLessonCard({
   lesson,
   onClick,
@@ -283,7 +288,16 @@ function TestLessonCard({
 }) {
   const testResult = (lesson as any).test_result;
   const testCentre = testCentreOf(lesson);
+  const testTime = testTimeOf(lesson);
   const startTime = fmtTime(lessonStart(lesson));
+  const duration = lesson.duration_minutes ?? 150;
+  const durLabel = (() => {
+    const h = Math.floor(duration / 60);
+    const m = duration % 60;
+    if (h > 0 && m > 0) return `${h}h ${m}m`;
+    if (h > 0) return `${h}h`;
+    return `${m}m`;
+  })();
   const navigate = useNavigate({ from: Route.fullPath });
   return (
     <div
@@ -291,13 +305,13 @@ function TestLessonCard({
       role="button"
       tabIndex={0}
       style={{
-        background: "linear-gradient(135deg, #CC2229, #991B1B)",
+        background: "linear-gradient(135deg, #1877D6, #0B1F3A)",
         borderRadius: 16,
         border: "none",
-        boxShadow: "0 4px 0 #7F1D1D",
+        boxShadow: "0 2px 0 #0B1F3A",
         marginBottom: 8,
         overflow: "hidden",
-        padding: "14px 16px",
+        padding: "8px 12px",
         cursor: "pointer",
         ...POPPINS,
       }}
@@ -310,7 +324,7 @@ function TestLessonCard({
             fontSize: 9,
             fontWeight: 800,
             borderRadius: 20,
-            padding: "3px 10px",
+            padding: "2px 8px",
             letterSpacing: "0.08em",
             fontFamily: "Poppins, sans-serif",
           }}
@@ -319,31 +333,31 @@ function TestLessonCard({
         </span>
         <span
           style={{
-            fontSize: 12,
+            fontSize: 11,
             color: "rgba(255,255,255,0.8)",
             fontFamily: "Poppins, sans-serif",
           }}
         >
-          {startTime}
+          {testTime ? `Test at ${testTime}` : startTime} · {durLabel}
         </span>
       </div>
       <div
         style={{
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: 800,
           color: "#fff",
-          marginTop: 8,
+          marginTop: 4,
           letterSpacing: -0.3,
           fontFamily: "Poppins, sans-serif",
         }}
       >
         {pupilDisplayName(lesson.pupil)}
       </div>
-      <div style={{ display: "flex", gap: 6, alignItems: "center", marginTop: 6 }}>
-        <IconMapPin size={13} color="rgba(255,255,255,0.7)" stroke={1.5} />
+      <div style={{ display: "flex", gap: 6, alignItems: "center", marginTop: 2 }}>
+        <IconMapPin size={12} color="rgba(255,255,255,0.7)" stroke={1.5} />
         <span
           style={{
-            fontSize: 12,
+            fontSize: 11,
             color: testCentre ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.5)",
             fontStyle: testCentre ? "normal" : "italic",
             fontFamily: "Poppins, sans-serif",
@@ -352,17 +366,17 @@ function TestLessonCard({
           {testCentre || "Test centre not set"}
         </span>
       </div>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8 }}>
         <div>
           {testResult === "pass" ? (
             <span
               style={{
                 background: "#15803D",
                 color: "#fff",
-                fontSize: 10,
+                fontSize: 9,
                 fontWeight: 800,
                 borderRadius: 20,
-                padding: "4px 12px",
+                padding: "3px 10px",
                 fontFamily: "Poppins, sans-serif",
               }}
             >
@@ -373,10 +387,10 @@ function TestLessonCard({
               style={{
                 background: "rgba(0,0,0,0.3)",
                 color: "rgba(255,255,255,0.8)",
-                fontSize: 10,
+                fontSize: 9,
                 fontWeight: 800,
                 borderRadius: 20,
-                padding: "4px 12px",
+                padding: "3px 10px",
                 fontFamily: "Poppins, sans-serif",
               }}
             >
@@ -385,7 +399,7 @@ function TestLessonCard({
           ) : (
             <span
               style={{
-                fontSize: 11,
+                fontSize: 10,
                 color: "rgba(255,255,255,0.6)",
                 fontFamily: "Poppins, sans-serif",
               }}
@@ -408,17 +422,17 @@ function TestLessonCard({
           style={{
             background: "rgba(255,255,255,0.2)",
             borderRadius: 20,
-            padding: "6px 12px",
+            padding: "4px 10px",
             border: "none",
             cursor: "pointer",
             display: "flex",
-            gap: 6,
+            gap: 4,
             alignItems: "center",
             fontFamily: "Poppins, sans-serif",
           }}
         >
-          <IconNavigation size={13} color="#fff" stroke={1.5} />
-          <span style={{ fontSize: 12, fontWeight: 600, color: "#fff", fontFamily: "Poppins, sans-serif" }}>
+          <IconNavigation size={12} color="#fff" stroke={1.5} />
+          <span style={{ fontSize: 11, fontWeight: 600, color: "#fff", fontFamily: "Poppins, sans-serif" }}>
             Navigate
           </span>
         </button>
