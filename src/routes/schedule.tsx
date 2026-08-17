@@ -341,12 +341,13 @@ function TestLessonCard({
       role="button"
       tabIndex={0}
       style={{
+        position: "relative",
         background: "linear-gradient(135deg, #1877D6, #0B1F3A)",
         borderRadius: 16,
         border: "none",
         boxShadow: "0 2px 0 #0B1F3A",
         marginBottom: 8,
-        overflow: "hidden",
+        overflow: "visible",
         padding: "10px 12px",
         cursor: "pointer",
         ...POPPINS,
