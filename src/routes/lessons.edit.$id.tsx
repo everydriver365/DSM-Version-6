@@ -106,6 +106,7 @@ function EditLessonPage() {
   const [duration, setDuration] = useState<number>(60);
   const [isTestDay, setIsTestDay] = useState(false);
   const [testCentre, setTestCentre] = useState('');
+  const [testCentreError, setTestCentreError] = useState<string | null>(null);
   const [status, setStatus] = useState("confirmed");
   const [pickupLocation, setPickupLocation] = useState("");
   const [pickupAddress, setPickupAddress] = useState("");
