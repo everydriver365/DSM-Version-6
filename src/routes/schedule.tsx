@@ -391,7 +391,7 @@ function TestLessonCard({ lesson, onClick }: { lesson: Lesson; onClick: () => vo
           type="button"
           onClick={(ev) => {
             ev.stopPropagation();
-            const addr = lesson.pickup_location || (lesson as any).test_centre;
+            const addr = testCentreOf(lesson);
             if (addr) {
               window.open(`maps://?daddr=${encodeURIComponent(addr)}&dirflg=d`, "_blank");
             } else {
