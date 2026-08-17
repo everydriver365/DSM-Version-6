@@ -408,59 +408,53 @@ function EditLessonPage() {
 
           <div>
             <FieldLabel htmlFor="duration">Duration</FieldLabel>
-            <div
-              style={{
-                display: 'flex',
-                gap: 8,
-                overflowX: 'auto',
-                paddingBottom: 4,
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none',
-              }}
-            >
-              {DURATIONS.map((d) => {
-                const active = duration === d.value;
-                const isTest = d.value === 'test';
-                return (
-                  <button
-                    key={d.value}
-                    type="button"
-                    onClick={() => {
-                      if (isTest) {
-                        setDuration('test');
-                        setIsTestDay(true);
-                      } else {
-                        setDuration(d.value as number);
-                        setIsTestDay(false);
-                        setTestCentre('');
-                      }
-                    }}
-                    style={{
-                      flex: '0 0 auto',
-                      minWidth: 72,
-                      padding: '8px 14px',
-                      borderRadius: 20,
-                      border: 'none',
-                      fontSize: 13,
-                      fontWeight: 600,
-                      fontFamily: 'Poppins, sans-serif',
-                      background: active
-                        ? (isTest ? '#CC2229' : '#0B1F3A')
-                        : '#F1F5F9',
-                      color: active ? '#fff' : '#6B7686',
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {d.label}
-                  </button>
-                );
-              })}
+            <div style={{
+              display: 'flex',
+              gap: 8,
+              flexWrap: 'wrap',
+              marginBottom: 12,
+            }}>
+              {DURATION_OPTIONS.map(opt => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => {
+                    setDuration(opt.value);
+                    setIsTestDay(opt.value === -1);
+                    if (opt.value !== -1) {
+                      setTestCentre('');
+                    }
+                  }}
+                  style={{
+                    height: 34,
+                    borderRadius: 20,
+                    padding: '0 16px',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    border: duration === opt.value
+                      ? 'none'
+                      : '1px solid #E4E8EF',
+                    background: duration === opt.value
+                      ? opt.value === -1
+                        ? '#CC2229'
+                        : '#0B1F3A'
+                      : '#fff',
+                    color: duration === opt.value
+                      ? '#fff' : '#6B7686',
+                    fontFamily: 'Poppins, sans-serif',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
             </div>
             {isTestDay && (
-              <div style={{ marginTop: 12 }}>
+              <div style={{ marginBottom: 16 }}>
                 <div style={{
-                  fontSize: 11, fontWeight: 600,
+                  fontSize: 11,
+                  fontWeight: 600,
                   color: '#9CA3AF',
                   textTransform: 'uppercase',
                   letterSpacing: '0.08em',
@@ -486,7 +480,8 @@ function EditLessonPage() {
                   }}
                 />
                 <p style={{
-                  fontSize: 11, color: '#9CA3AF',
+                  fontSize: 11,
+                  color: '#9CA3AF',
                   marginTop: 4,
                   fontFamily: 'Poppins, sans-serif',
                 }}>
