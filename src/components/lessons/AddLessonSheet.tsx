@@ -84,7 +84,14 @@ export interface AddLessonSheetProps {
   initialDate?: string;
 }
 
-const PRESET_DURATIONS = [60, 90, 120];
+const DURATION_OPTIONS: { value: number | "test"; label: string }[] = [
+  { value: 0.5, label: "30 min" },
+  { value: 1, label: "1 hr" },
+  { value: 1.5, label: "1.5 hrs" },
+  { value: 2, label: "2 hrs" },
+  { value: 2.5, label: "2.5 hrs" },
+  { value: "test", label: "Test 🚗" },
+];
 
 export function AddLessonSheet({
   open,
