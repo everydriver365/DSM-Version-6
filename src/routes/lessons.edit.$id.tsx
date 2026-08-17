@@ -194,13 +194,18 @@ function EditLessonPage() {
         setPupilId(l.pupil_id);
         setDate(l.lesson_date);
         setTime((l.lesson_time ?? "").slice(0, 5));
-        const testDay = l.lesson_type === 'test';
-        setIsTestDay(testDay);
-        setTestCentre(l.pickup_location ?? '');
-        setDuration(testDay ? 'test' : (l.duration_minutes ?? 60));
+        const isTest = l.lesson_type === 'test';
+        setIsTestDay(isTest);
+        if (isTest) {
+          setDuration(-1);
+          setTestCentre(l.pickup_location ?? '');
+        } else {
+          setDuration(l.duration_minutes ?? 60);
+          setTestCentre('');
+        }
         setStatus(l.status ?? "confirmed");
         setPickupLocation(l.pickup_location ?? "");
-        setPickupAddress(testDay ? '' : (l.pickup_location ?? ""));
+        setPickupAddress(isTest ? '' : (l.pickup_location ?? ""));
         setPickupPostcode("");
         setNotes(l.notes ?? "");
         setPaymentStatus((l.payment_status as PayStatus) ?? "unpaid");
