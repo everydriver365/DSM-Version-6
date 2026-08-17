@@ -2199,34 +2199,49 @@ function SchedulePage() {
                                            </>
                                          )}
                                         </div>
-                                            {isLessonRow && (
-                                              <div style={{ flexShrink: 0, marginLeft: 4, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                                <button
-                                                  type="button"
-                                                  data-lesson-actions-trigger
-                                                  onClick={(ev) => {
-                                                    ev.stopPropagation();
-                                                    const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
-                                                    setActionsOpenFor((cur) => (cur?.id === lesson.id ? null : lesson));
-                                                  }}
-                                                  aria-label="More lesson options"
-                                                  style={{
-                                                    width: 28,
-                                                    height: 28,
-                                                    borderRadius: '50%',
-                                                    background: '#F8F9FB',
-                                                    border: '0.5px solid #E5E7EB',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    cursor: 'pointer',
-                                                    padding: 0,
-                                                  }}
-                                                >
-                                                  <IconDots stroke={1.5} size={14} color="#D1D5DB" />
-                                                </button>
-                                </div>
-                              )}
+                                              {isLessonRow && (
+                                                <div style={{ flexShrink: 0, marginLeft: 4, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                                  <LessonActionsMenu
+                                                    open={actionsOpenFor?.id === lesson.id}
+                                                    onOpenChange={(open) => {
+                                                      const currentLesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                                      setActionsOpenFor(open ? currentLesson : null);
+                                                    }}
+                                                    top={44}
+                                                    right={14}
+                                                    items={[
+                                                      { label: 'Edit lesson', onClick: () => { setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } }), 0); } },
+                                                      { label: 'Take payment', onClick: () => { setUnifiedPayPupilId(lesson.pupil_id ?? undefined); setUnifiedPayOpen(true); } },
+                                                      { label: 'Full profile', onClick: () => { const pid = lesson.pupil_id; if (pid) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: pid } }), 0); } },
+                                                    ]}
+                                                  >
+                                                    <button
+                                                      type="button"
+                                                      data-lesson-actions-trigger
+                                                      onClick={(ev) => {
+                                                        ev.stopPropagation();
+                                                        const currentLesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                                        setActionsOpenFor((cur) => (cur?.id === currentLesson.id ? null : currentLesson));
+                                                      }}
+                                                      aria-label="More lesson options"
+                                                      style={{
+                                                        width: 28,
+                                                        height: 28,
+                                                        borderRadius: '50%',
+                                                        background: '#F8F9FB',
+                                                        border: '0.5px solid #E5E7EB',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        cursor: 'pointer',
+                                                        padding: 0,
+                                                      }}
+                                                    >
+                                                      <IconDots stroke={1.5} size={14} color="#D1D5DB" />
+                                                    </button>
+                                                  </LessonActionsMenu>
+                                                </div>
+                                              )}
 
                                       </>
                                    )}
