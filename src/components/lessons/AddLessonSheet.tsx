@@ -501,7 +501,7 @@ export function AddLessonSheet({
 
   return (
     <BottomSheetV2
-      title="Add Lesson"
+      title={editingLesson ? "Edit Lesson" : "Add Lesson"}
       subtitle={selectedPupil ? selectedPupil.name : "Choose a pupil to get started"}
       onClose={onClose}
       footer={
@@ -519,7 +519,7 @@ export function AddLessonSheet({
             fontFamily: "Poppins, sans-serif",
           }}
         >
-          {saving ? "Saving..." : "Add lesson"}
+          {saving ? "Saving..." : editingLesson ? "Save changes" : "Add lesson"}
         </button>
       }
     >
