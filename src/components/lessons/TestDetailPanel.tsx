@@ -65,14 +65,26 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
           }}>
             🚗 TEST DAY
           </span>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close"
-            style={{ background: '#F2F5F9', border: 'none', borderRadius: 20, width: 30, height: 30, display: 'grid', placeItems: 'center', cursor: 'pointer' }}
-          >
-            <IconX size={16} stroke={2} color="#0B1F3A" />
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {detail.onEdit ? (
+              <button
+                type="button"
+                onClick={() => { onClose(); detail.onEdit?.(); }}
+                aria-label="Edit test day"
+                style={{ background: '#F2F5F9', border: 'none', borderRadius: 20, width: 30, height: 30, display: 'grid', placeItems: 'center', cursor: 'pointer' }}
+              >
+                <IconPencil size={15} stroke={2} color="#1877D6" />
+              </button>
+            ) : null}
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close"
+              style={{ background: '#F2F5F9', border: 'none', borderRadius: 20, width: 30, height: 30, display: 'grid', placeItems: 'center', cursor: 'pointer' }}
+            >
+              <IconX size={16} stroke={2} color="#0B1F3A" />
+            </button>
+          </div>
         </div>
 
         <div style={{ fontSize: 20, fontWeight: 800, color: '#0B1F3A', letterSpacing: -0.3 }}>{detail.pupilName}</div>
