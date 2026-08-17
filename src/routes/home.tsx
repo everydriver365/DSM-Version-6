@@ -1,4 +1,5 @@
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
+import { TestDetailTrigger } from '@/components/lessons/TestDetailPanel';
 import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
 
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
@@ -6268,8 +6269,22 @@ function HomePage() {
                       <React.Fragment key={l.id}>
                         <ScheduleDateDivider date={start} />
                         {isTestDayRow ? (
+                          <TestDetailTrigger
+                            detail={{
+                              pupilName: name,
+                              testCentre: testCentreOf(l),
+                              startTime: timeLabel,
+                              endTime: endTimeLabel,
+                              testTime: testTimeOf(l),
+                              durationLabel: durLabel,
+                              dateLabel: start.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }),
+                              testResult: (l as any).test_result ?? null,
+                              onOpenLesson: () => setDetailsSheetForLesson(l),
+                            }}
+                          >
+                          {(openPanel) => (
                           <div
-                            onClick={() => setDetailsSheetForLesson(l)}
+                            onClick={openPanel}
                             onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
                             role="button"
                             tabIndex={0}
@@ -6331,6 +6346,8 @@ function HomePage() {
                               </div>
                             </div>
                           </div>
+                          )}
+                          </TestDetailTrigger>
                         ) : (
                           <div style={{ position: 'relative', background: '#FFFFFF', border: '1px solid #E4E8EF', borderRadius: 13, marginBottom: 8 }}>
                           <div
