@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconMapPin, IconClock, IconX, IconNavigation } from '@tabler/icons-react';
+import { IconMapPin, IconClock, IconX, IconNavigation, IconPencil } from '@tabler/icons-react';
 
 const PF = 'Poppins, sans-serif';
 
