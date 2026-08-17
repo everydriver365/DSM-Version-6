@@ -337,13 +337,15 @@ export function AddLessonSheet({
         pupil_id: pupilId,
         lesson_date: date,
         lesson_time: `${time}:00`,
-        duration_minutes: durationMinutes,
+        duration_minutes: isTestDay ? null : durationMinutes,
+        lesson_type: isTestDay ? "test" : "lesson",
         status: "confirmed",
         notes: fullNotes,
         amount_due: amountDue,
         payment_status: paymentStatus,
         prepaid_hours_used: prepaidHoursUsed,
         series_id: seriesId,
+        pickup_location: isTestDay ? testCentre.trim() || null : null,
       })
       .select("id")
       .single();
