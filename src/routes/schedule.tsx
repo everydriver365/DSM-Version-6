@@ -2621,7 +2621,7 @@ function SchedulePage() {
           boxShadow: '0 4px 10px rgba(11,31,58,0.3)',
           zIndex: 50,
         }}
-        aria-label="Add lesson"
+        aria-label="Add to schedule"
       >
         <IconPlus stroke={1.5} size={22} color="white" />
       </button>
