@@ -6518,7 +6518,10 @@ function HomePage() {
                                 data-home-lesson-actions-trigger
                                 role="button"
                                 aria-label="Lesson options"
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l));
+                                }}
                                 style={{ flexShrink: 0, display: 'flex', alignItems: 'center', paddingLeft: 2, cursor: 'pointer' }}
                               >
                                 <IconDots size={14} stroke={1.5} color="#D1D5DB" />
