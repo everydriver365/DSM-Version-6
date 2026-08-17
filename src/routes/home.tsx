@@ -6367,7 +6367,7 @@ function HomePage() {
                                       role="button"
                                       aria-label="Lesson options"
                                       onClick={(e) => { e.stopPropagation(); setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l)); }}
-                                      style={{ flexShrink: 0, display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+                                      style={{ flexShrink: 0, display: 'flex', alignItems: 'center', paddingLeft: 2, cursor: 'pointer' }}
                                     >
                                       <IconDotsVertical size={14} stroke={2} color="#ffffff" />
                                     </span>
