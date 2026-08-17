@@ -2407,9 +2407,7 @@ function EntryRow({
     const typeRaw = (l.lesson_type ?? "").trim();
     const showType = typeRaw && typeRaw.toLowerCase() !== "standard";
     const label = showType ? `${name} · ${typeRaw}` : name;
-    const isTestDay = !!(l.notes ?? '')
-      .trim()
-      .match(/^Test day:/i);
+    const isTestDay = isTest(l);
 
     const bg = isTestDay
       ? '#FF8C00'
@@ -2417,16 +2415,13 @@ function EntryRow({
     const cancelled = l.status === 'cancelled';
 
     if (isTestDay) {
-      // Extract test time and location from notes
-      // Notes format: "Test day: Name — Test at HH:MM @ Location"
+      // Test time/location: notes format "Test day: Name — Test at HH:MM @ Location"
       const noteBody = (l.notes ?? '')
         .replace(/^Test day:\s*/, '');
       const testAtMatch = noteBody.match(
         /Test at (\d{2}:\d{2})/);
-      const locationMatch = noteBody.match(
-        /@ (.+)$/);
       const testTime = testAtMatch?.[1] ?? null;
-      const location = locationMatch?.[1] ?? null;
+      const location = testCentreOf(l);
 
       return (
         <button
