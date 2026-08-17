@@ -82,6 +82,18 @@ export interface AddLessonSheetProps {
   onSaved: (lessonId: string) => void;
   initialPupilId?: string;
   initialDate?: string;
+  editingLesson?: {
+    id: string;
+    pupil_id?: string;
+    lesson_date?: string;
+    lesson_time?: string;
+    duration_minutes?: number | null;
+    lesson_type?: string | null;
+    is_test_day?: boolean;
+    pickup_location?: string | null;
+    notes?: string | null;
+    status?: string;
+  };
 }
 
 const DURATION_OPTIONS: { value: number | "test"; label: string }[] = [
@@ -99,6 +111,7 @@ export function AddLessonSheet({
   onSaved,
   initialPupilId,
   initialDate,
+  editingLesson,
 }: AddLessonSheetProps) {
   const [pupils, setPupils] = useState<Pupil[]>([]);
   const [pupilId, setPupilId] = useState(initialPupilId ?? "");
@@ -107,6 +120,7 @@ export function AddLessonSheet({
   const [date, setDate] = useState(initialDate || todayISO());
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState<number | "test">(1);
+  const [isTestDay, setIsTestDay] = useState(false);
   const [pickup, setPickup] = useState("");
   const [testCentre, setTestCentre] = useState("");
   const [pickupTouched, setPickupTouched] = useState(false);
@@ -132,6 +146,26 @@ export function AddLessonSheet({
     setPupilId(initialPupilId ?? "");
     setDate(initialDate || todayISO());
   }, [open, initialPupilId, initialDate]);
+
+  // Populate sheet state when editing an existing lesson.
+  useEffect(() => {
+    if (!open || !editingLesson) return;
+    if (editingLesson.pupil_id) setPupilId(editingLesson.pupil_id);
+    if (editingLesson.lesson_date) setDate(editingLesson.lesson_date);
+    if (editingLesson.lesson_time) setTime((editingLesson.lesson_time).slice(0, 5));
+    if (editingLesson.duration_minutes != null) {
+      setDuration((editingLesson.duration_minutes / 60) || 1);
+    }
+    setNotes(editingLesson.notes ?? "");
+    setPickup(editingLesson.pickup_location ?? "");
+
+    // Set test day state from existing lesson data
+    if (editingLesson.lesson_type === 'test' || editingLesson.is_test_day === true) {
+      setIsTestDay(true);
+      setDuration('test');
+      setTestCentre(editingLesson.pickup_location ?? '');
+    }
+  }, [open, editingLesson]);
 
   useEffect(() => {
     if (!open) return;
@@ -172,7 +206,6 @@ export function AddLessonSheet({
     : pupils;
 
   const effectiveDuration = duration === "test" ? 0 : duration * 60;
-  const isTestDay = duration === "test";
 
   async function handleSave() {
     const next: typeof errors = {};
@@ -204,6 +237,44 @@ export function AddLessonSheet({
         ? `${baseNotes}\n\nPickup: ${pickupValue}`
         : `Pickup: ${pickupValue}`
       : baseNotes;
+
+    // Update existing lesson when editing.
+    if (editingLesson) {
+      const { error: updErr } = await supabase
+        .from("lessons")
+        .update({
+          pupil_id: pupilId,
+          lesson_date: date,
+          lesson_time: `${time}:00`,
+          duration_minutes: isTestDay ? null : durationMinutes,
+          lesson_type: isTestDay ? "test" : "lesson",
+          status: editingLesson.status ?? "confirmed",
+          notes: fullNotes,
+          pickup_location: isTestDay ? testCentre.trim() || null : (editingLesson.pickup_location ?? null),
+        })
+        .eq("id", editingLesson.id);
+      if (updErr) {
+        setErrors({ form: updErr.message });
+        toast.error(updErr.message);
+        setSaving(false);
+        return;
+      }
+      const { data: lessonRow } = await supabase
+        .from("lessons")
+        .select("google_event_id")
+        .eq("id", editingLesson.id)
+        .maybeSingle();
+      if (lessonRow?.google_event_id) {
+        void supabase.functions.invoke("google-calendar-sync", {
+          body: { lesson_id: editingLesson.id, instructor_id: user.id, action: "update" },
+        });
+      }
+      toast.success("Lesson updated");
+      setSaving(false);
+      onSaved(editingLesson.id);
+      onClose();
+      return;
+    }
 
     // Resolve the correct base price using pupil custom rates, postcode rates,
     // then the instructor's default hourly rate.
@@ -430,7 +501,7 @@ export function AddLessonSheet({
 
   return (
     <BottomSheetV2
-      title="Add Lesson"
+      title={editingLesson ? "Edit Lesson" : "Add Lesson"}
       subtitle={selectedPupil ? selectedPupil.name : "Choose a pupil to get started"}
       onClose={onClose}
       footer={
@@ -448,7 +519,7 @@ export function AddLessonSheet({
             fontFamily: "Poppins, sans-serif",
           }}
         >
-          {saving ? "Saving..." : "Add lesson"}
+          {saving ? "Saving..." : editingLesson ? "Save changes" : "Add lesson"}
         </button>
       }
     >
@@ -611,7 +682,10 @@ export function AddLessonSheet({
                       type="button"
                       role="radio"
                       aria-checked={active}
-                      onClick={() => setDuration(opt.value)}
+                      onClick={() => {
+                        setDuration(opt.value);
+                        setIsTestDay(opt.value === "test");
+                      }}
                       style={{
                         height: 34,
                         borderRadius: 20,
