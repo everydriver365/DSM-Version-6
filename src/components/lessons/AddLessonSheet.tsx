@@ -147,6 +147,26 @@ export function AddLessonSheet({
     setDate(initialDate || todayISO());
   }, [open, initialPupilId, initialDate]);
 
+  // Populate sheet state when editing an existing lesson.
+  useEffect(() => {
+    if (!open || !editingLesson) return;
+    if (editingLesson.pupil_id) setPupilId(editingLesson.pupil_id);
+    if (editingLesson.lesson_date) setDate(editingLesson.lesson_date);
+    if (editingLesson.lesson_time) setTime((editingLesson.lesson_time).slice(0, 5));
+    if (editingLesson.duration_minutes != null) {
+      setDuration((editingLesson.duration_minutes / 60) || 1);
+    }
+    setNotes(editingLesson.notes ?? "");
+    setPickup(editingLesson.pickup_location ?? "");
+
+    // Set test day state from existing lesson data
+    if (editingLesson.lesson_type === 'test' || editingLesson.is_test_day === true) {
+      setIsTestDay(true);
+      setDuration('test');
+      setTestCentre(editingLesson.pickup_location ?? '');
+    }
+  }, [open, editingLesson]);
+
   useEffect(() => {
     if (!open) return;
     (async () => {
