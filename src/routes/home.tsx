@@ -6215,9 +6215,6 @@ function HomePage() {
 
                     const l = row.l;
                     const start = lessonDateTime(l);
-                    const rowDate = ymd(start);
-                    const showDivider = rowDate !== lastDividerDate;
-                    if (showDivider) lastDividerDate = rowDate;
                     const dur = l.duration_minutes ?? 60;
                     const end = new Date(start.getTime() + dur * 60000);
                     const endTimeLabel = `${String(end.getHours()).padStart(2, '0')}:${String(end.getMinutes()).padStart(2, '0')}`;
