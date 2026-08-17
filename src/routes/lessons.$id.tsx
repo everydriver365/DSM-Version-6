@@ -441,6 +441,27 @@ function LessonDetailPage() {
                   {lesson.status}
                 </span>
               </div>
+              {isTestDay && (
+                <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #E5E7EB" }}>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="text-[10px] font-extrabold px-2 py-0.5 rounded-full text-white"
+                      style={{ backgroundColor: "#CC2229", fontFamily: "Poppins, sans-serif", letterSpacing: "0.06em" }}
+                    >
+                      🚗 TEST DAY
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2 mt-2">
+                    <IconMapPin size={14} color="#6B7280" stroke={1.5} />
+                    <span
+                      className="text-[13px] font-medium"
+                      style={{ color: testCentre ? "#0B1F3A" : "#9CA3AF", fontFamily: "Poppins, sans-serif" }}
+                    >
+                      {testCentre || "Test centre not set"}
+                    </span>
+                  </div>
+                </div>
+              )}
             </Card>
           </div>
 
