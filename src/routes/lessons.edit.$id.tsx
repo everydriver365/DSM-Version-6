@@ -336,12 +336,18 @@ function EditLessonPage() {
       .update({
         pupil_id: pupilId,
         lesson_date: date,
-        lesson_time: `${isTestDay && testTime ? testTime : time}:00`,
-        duration_minutes: isTestDay ? null : duration,
+        // Test days start 1h before the test time and run 90m after it.
+        lesson_time: `${
+          isTestDay && testTime ? testStartTime(testTime) ?? testTime : time
+        }:00`,
+        duration_minutes: isTestDay ? TEST_TOTAL_MINUTES : duration,
         lesson_type: isTestDay ? 'test' : 'lesson',
         status,
         pickup_location: isTestDay ? testCentre.trim() || null : pickupLocation.trim() || null,
-        notes: notes.trim() || null,
+        notes:
+          isTestDay && testTime
+            ? withTestTimeNote(notes.trim() || null, testTime)
+            : notes.trim() || null,
       })
 
       .eq("id", id);
