@@ -6249,10 +6249,12 @@ function HomePage() {
                       return h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
                     })();
 
-                    const pickupLabel =
-                      l.pickup_location ||
-                      [(l.pupils as any)?.address, (l.pupils as any)?.postcode].filter(Boolean).join(', ') ||
-                      null;
+                    const isTestDayRow = isTestLesson(l);
+                    const pickupLabel = isTestDayRow
+                      ? (testCentreOf(l) ?? 'Test centre not set')
+                      : (l.pickup_location ||
+                        [(l.pupils as any)?.address, (l.pupils as any)?.postcode].filter(Boolean).join(', ') ||
+                        null);
 
 
 
