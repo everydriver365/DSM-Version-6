@@ -498,6 +498,29 @@ function isCustomPickup(
   );
 }
 
+// Test days can be flagged by lesson_type, an is_test_day column, or a legacy
+// "Test day: ..." notes prefix.
+function isTestLesson(lesson: any): boolean {
+  if (!lesson) return false;
+  const type = String(lesson.lesson_type ?? '').toLowerCase().trim();
+  if (type === 'test' || type === 'test day' || type === 'driving test') return true;
+  if (lesson.is_test_day === true) return true;
+  return /^test day:/i.test(String(lesson.notes ?? '').trim());
+}
+
+// Test centre: explicit column first, then pickup, then legacy notes
+// ("Test day: Name — Test at HH:MM @ Location").
+function testCentreOf(lesson: any): string | null {
+  const explicit = String(lesson?.test_centre ?? '').trim();
+  if (explicit) return explicit;
+  const pickup = String(lesson?.pickup_location ?? '').trim();
+  if (pickup) return pickup;
+  const m = String(lesson?.notes ?? '').match(/@\s*(.+)$/);
+  const fromNotes = m?.[1]?.trim();
+  if (fromNotes && fromNotes.toLowerCase() !== 'test centre') return fromNotes;
+  return null;
+}
+
 function startOfDay(d: Date) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
