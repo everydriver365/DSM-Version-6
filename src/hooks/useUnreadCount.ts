@@ -32,9 +32,17 @@ export function useUnreadCount() {
       }, fetch)
       .subscribe();
 
+    const onRefresh = () => { void fetch(); };
+    window.addEventListener("dsm-notifications-updated", onRefresh);
+    window.addEventListener("focus", onRefresh);
+    document.addEventListener("visibilitychange", onRefresh);
+
     return () => {
       mounted = false;
       supabase.removeChannel(channel);
+      window.removeEventListener("dsm-notifications-updated", onRefresh);
+      window.removeEventListener("focus", onRefresh);
+      document.removeEventListener("visibilitychange", onRefresh);
     };
   }, []);
 
