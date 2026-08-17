@@ -174,7 +174,12 @@ export function AddLessonSheet({
       setTestCentre(editingLesson.pickup_location ?? '');
       setTestCentreSearch(editingLesson.pickup_location ?? '');
       setTestCentreResults([]);
-      setTestTime(editingLesson.lesson_time ? editingLesson.lesson_time.slice(0, 5) : '');
+      setTestTime(
+        testTimeFromNotes(editingLesson.notes) ??
+          (editingLesson.lesson_time
+            ? testTimeFromStart(editingLesson.lesson_time.slice(0, 5)) ?? ''
+            : ''),
+      );
     } else {
       setIsTestDay(false);
       setTestCentre('');
