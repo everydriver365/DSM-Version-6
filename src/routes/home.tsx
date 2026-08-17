@@ -5971,6 +5971,17 @@ function HomePage() {
                   {/* Timeline container */}
                   <div style={{ position: 'relative', padding: '12px 0 4px' }}>
                     {rows.map((r, idx) => {
+                    const rowStart = r.kind === 'lesson' ? lessonDateTime(r.l) : r.start;
+                    const rowDay = ymd(rowStart);
+                    const showDayDivider = rowDay !== lastDividerDate;
+                    const isFirstDivider = lastDividerDate === '';
+                    if (showDayDivider) lastDividerDate = rowDay;
+                    const dividerNode = showDayDivider ? (
+                      <div style={{ marginTop: isFirstDivider ? 0 : 18 }}>
+                        <ScheduleDateDivider date={rowStart} />
+                      </div>
+                    ) : null;
+                    const rowContent = (() => {
                     if (r.kind === 'gap') {
                       const gs = r.start;
                       const ge = new Date(gs.getTime() + r.mins * 60000);
@@ -6215,9 +6226,6 @@ function HomePage() {
 
                     const l = row.l;
                     const start = lessonDateTime(l);
-                    const rowDate = ymd(start);
-                    const showDivider = rowDate !== lastDividerDate;
-                    if (showDivider) lastDividerDate = rowDate;
                     const dur = l.duration_minutes ?? 60;
                     const end = new Date(start.getTime() + dur * 60000);
                     const endTimeLabel = `${String(end.getHours()).padStart(2, '0')}:${String(end.getMinutes()).padStart(2, '0')}`;
@@ -6272,7 +6280,6 @@ function HomePage() {
 
                     return (
                       <React.Fragment key={l.id}>
-                        {showDivider && <ScheduleDateDivider date={start} />}
                         {isTestDayRow ? (
                           <TestDetailTrigger
                             detail={{
@@ -6601,7 +6608,13 @@ function HomePage() {
                       )}
                       </React.Fragment>
                     );
-
+                    })();
+                    return (
+                      <React.Fragment key={`row-${idx}`}>
+                        {dividerNode}
+                        {rowContent}
+                      </React.Fragment>
+                    );
                   })}
                   </div>
                 </div>
