@@ -6354,6 +6354,7 @@ function HomePage() {
                                       </span>
                                     ) : null}
                                     <span
+                                      data-home-lesson-actions-trigger
                                       role="button"
                                       aria-label="Lesson options"
                                       onClick={(e) => { e.stopPropagation(); setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l)); }}
