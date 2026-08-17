@@ -626,7 +626,6 @@ function TestLessonCard({
             }}
             onClick={(ev) => {
               ev.stopPropagation();
-              setActionsOpen(false);
               goEdit();
             }}
           >
@@ -648,7 +647,6 @@ function TestLessonCard({
             }}
             onClick={(ev) => {
               ev.stopPropagation();
-              setActionsOpen(false);
               goProfile();
             }}
           >
