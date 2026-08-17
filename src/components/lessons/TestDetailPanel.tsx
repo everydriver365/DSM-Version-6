@@ -14,6 +14,7 @@ export type TestDetail = {
   testResult?: string | null;
   onOpenLesson?: () => void;
   onNavigate?: () => void;
+  onEdit?: () => void;
 };
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
