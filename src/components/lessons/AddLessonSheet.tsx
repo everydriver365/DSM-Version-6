@@ -164,6 +164,9 @@ export function AddLessonSheet({
       setIsTestDay(true);
       setDuration('test');
       setTestCentre(editingLesson.pickup_location ?? '');
+    } else {
+      setIsTestDay(false);
+      setTestCentre('');
     }
   }, [open, editingLesson]);
 
