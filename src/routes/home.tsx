@@ -498,6 +498,29 @@ function isCustomPickup(
   );
 }
 
+// Test days can be flagged by lesson_type, an is_test_day column, or a legacy
+// "Test day: ..." notes prefix.
+function isTestLesson(lesson: any): boolean {
+  if (!lesson) return false;
+  const type = String(lesson.lesson_type ?? '').toLowerCase().trim();
+  if (type === 'test' || type === 'test day' || type === 'driving test') return true;
+  if (lesson.is_test_day === true) return true;
+  return /^test day:/i.test(String(lesson.notes ?? '').trim());
+}
+
+// Test centre: explicit column first, then pickup, then legacy notes
+// ("Test day: Name — Test at HH:MM @ Location").
+function testCentreOf(lesson: any): string | null {
+  const explicit = String(lesson?.test_centre ?? '').trim();
+  if (explicit) return explicit;
+  const pickup = String(lesson?.pickup_location ?? '').trim();
+  if (pickup) return pickup;
+  const m = String(lesson?.notes ?? '').match(/@\s*(.+)$/);
+  const fromNotes = m?.[1]?.trim();
+  if (fromNotes && fromNotes.toLowerCase() !== 'test centre') return fromNotes;
+  return null;
+}
+
 function startOfDay(d: Date) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
@@ -3621,12 +3644,24 @@ function HomePage() {
                 </span>
               )}
             </div>
-            <div className="flex items-center" style={{ gap: 4, fontSize: 12, color: postcode ? "#6B7280" : "#9CA3AF" }}>
-              <IconMapPin stroke={1.5} size={10} />
-              <span>{postcode ?? "No pickup set"}</span>
-            </div>
+            {isTestLesson(l) ? (
+              <div
+                className="flex items-center"
+                style={{ gap: 4, fontSize: 12, color: testCentreOf(l) ? "#92400E" : "#9CA3AF" }}
+              >
+                <IconMapPin stroke={1.5} size={10} />
+                <span style={{ fontWeight: testCentreOf(l) ? 600 : 400 }}>
+                  {testCentreOf(l) ?? "Test centre not set"}
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center" style={{ gap: 4, fontSize: 12, color: postcode ? "#6B7280" : "#9CA3AF" }}>
+                <IconMapPin stroke={1.5} size={10} />
+                <span>{postcode ?? "No pickup set"}</span>
+              </div>
+            )}
             <div style={{ fontSize: 13, color: "#6B7280" }}>
-              {formatDuration(l.duration_minutes)}
+              {isTestLesson(l) ? "Test day" : formatDuration(l.duration_minutes)}
             </div>
           </div>
         </div>
@@ -6214,10 +6249,12 @@ function HomePage() {
                       return h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
                     })();
 
-                    const pickupLabel =
-                      l.pickup_location ||
-                      [(l.pupils as any)?.address, (l.pupils as any)?.postcode].filter(Boolean).join(', ') ||
-                      null;
+                    const isTestDayRow = isTestLesson(l);
+                    const pickupLabel = isTestDayRow
+                      ? (testCentreOf(l) ?? 'Test centre not set')
+                      : (l.pickup_location ||
+                        [(l.pupils as any)?.address, (l.pupils as any)?.postcode].filter(Boolean).join(', ') ||
+                        null);
 
 
 
@@ -6295,7 +6332,7 @@ function HomePage() {
                               {pickupLabel && (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, minWidth: 0 }}>
                                   {(() => {
-                                    const custom = isCustomPickup((l.pupils as any), l.pickup_location);
+                                    const custom = isTestDayRow || isCustomPickup((l.pupils as any), l.pickup_location);
                                     return (
                                       <div style={{
                                         display: 'inline-flex',
@@ -6312,7 +6349,7 @@ function HomePage() {
                                         </span>
                                         {custom && (
                                           <span style={{ fontSize: 9, fontWeight: 700, color: '#92400E', flexShrink: 0 }}>
-                                            CUSTOM
+                                            {isTestDayRow ? 'TEST CENTRE' : 'CUSTOM'}
                                           </span>
                                         )}
                                       </div>
