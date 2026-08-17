@@ -24,6 +24,7 @@ import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { PageLayout } from "@/components/PageLayout";
 import { SheetQueueController } from "@/components/dsm/SheetQueue";
 import { LessonActionsSheet } from "@/components/lessons/LessonActionsSheet";
+import { LessonActionsMenu } from "@/components/lessons/LessonActionsMenu";
 import { LessonDetailsSheet } from "@/components/lessons/LessonDetailsSheet";
 import { WelcomeOverlay } from "@/components/dsm/WelcomeOverlay";
 
