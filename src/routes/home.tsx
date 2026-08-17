@@ -6363,15 +6363,30 @@ function HomePage() {
                                         Test at {testTimeOf(l)}
                                       </span>
                                     ) : null}
-                                    <span
-                                      data-home-lesson-actions-trigger
-                                      role="button"
-                                      aria-label="Lesson options"
-                                      onClick={(e) => { e.stopPropagation(); setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l)); }}
-                                      style={{ flexShrink: 0, display: 'flex', alignItems: 'center', paddingLeft: 2, cursor: 'pointer' }}
-                                    >
-                                      <IconDotsVertical size={14} stroke={2} color="#ffffff" />
-                                    </span>
+                                    <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+                                      <LessonActionsMenu
+                                        open={actionsOpenForLesson?.id === l.id}
+                                        onOpenChange={(open) => setActionsOpenForLesson(open ? l : null)}
+                                        top={40}
+                                        right={12}
+                                        items={[
+                                          { label: 'View test details', onClick: () => openPanel() },
+                                          { label: 'View details', onClick: () => setDetailsSheetForLesson(l) },
+                                          { label: 'Edit lesson', onClick: () => { setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }), 0); } },
+                                          { label: 'Full profile', onClick: () => { const pid = l.pupil_id; if (pid) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: pid } }), 0); } },
+                                        ]}
+                                      >
+                                        <span
+                                          data-home-lesson-actions-trigger
+                                          role="button"
+                                          aria-label="Lesson options"
+                                          onClick={(e) => e.stopPropagation()}
+                                          style={{ flexShrink: 0, display: 'flex', alignItems: 'center', paddingLeft: 2, cursor: 'pointer' }}
+                                        >
+                                          <IconDots size={14} stroke={1.5} color="#ffffff" />
+                                        </span>
+                                      </LessonActionsMenu>
+                                    </div>
                                   </div>
                                 </div>
                                 <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', marginTop: 4, letterSpacing: -0.2, fontFamily: PF, lineHeight: 1.2 }}>
