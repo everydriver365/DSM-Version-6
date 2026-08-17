@@ -1580,7 +1580,7 @@ function SchedulePage() {
                                 <div
                                   style={{
                                     position: "absolute",
-                                    top: -12,
+                                    top: -16,
                                     left: 12,
                                     zIndex: 1,
                                     background: "#0B1F3A",
@@ -1603,18 +1603,18 @@ function SchedulePage() {
                                     background: "#FDFBF6",
                                     borderRadius: 16,
                                     border: "2px dashed #D4A853",
-                                    padding: "20px 14px 12px",
+                                    padding: "12px 14px",
                                     display: "flex",
                                     alignItems: "stretch",
                                     gap: 12,
                                     ...POPPINS,
                                   }}
                                 >
-                                  <div style={{ width: 54, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "center" }}>
-                                    <div style={{ fontSize: 22, fontWeight: 700, color: "#0B1F3A", fontVariantNumeric: "tabular-nums", lineHeight: 1.1 }}>
+                                  <div style={{ width: 48, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "flex-start", paddingTop: 2 }}>
+                                    <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", fontVariantNumeric: "tabular-nums", lineHeight: 1.15 }}>
                                       {e.startTime}
                                     </div>
-                                    <div style={{ fontSize: 12, fontWeight: 500, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
+                                    <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
                                       {formatMins(e.mins)}
                                     </div>
                                   </div>
@@ -1622,15 +1622,13 @@ function SchedulePage() {
                                     aria-hidden
                                     style={{
                                       width: 4,
-                                      borderRadius: "14px",
+                                      borderRadius: "14px 0 0 14px",
                                       background: "#D4A853",
                                       flexShrink: 0,
                                       alignSelf: "stretch",
-                                      marginTop: 4,
-                                      marginBottom: 4,
                                     }}
                                   />
-                                  <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center" }}>
+                                  <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", paddingTop: 2 }}>
                                     <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0, flexWrap: "wrap" }}>
                                       {preview.count > 0 ? (
                                         <>
