@@ -307,6 +307,9 @@ function TestLessonCard({
       search: testCentre ? { testCentre } : {},
     });
   };
+  const goEdit = () => {
+    void navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } });
+  };
   return (
     <>
     {panelOpen ? (
@@ -322,6 +325,7 @@ function TestLessonCard({
           testResult,
           onOpenLesson: onClick,
           onNavigate: goNavigate,
+          onEdit: goEdit,
         }}
         onClose={() => setPanelOpen(false)}
       />

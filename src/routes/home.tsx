@@ -6283,6 +6283,7 @@ function HomePage() {
                               dateLabel: start.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }),
                               testResult: (l as any).test_result ?? null,
                               onOpenLesson: () => setDetailsSheetForLesson(l),
+                              onEdit: () => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }),
                             }}
                           >
                           {(openPanel) => (
