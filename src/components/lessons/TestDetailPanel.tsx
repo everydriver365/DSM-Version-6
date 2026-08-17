@@ -47,6 +47,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
           maxWidth: 480,
           borderRadius: '16px 16px 0 0',
           padding: 16,
+          paddingBottom: 'calc(16px + 80px + env(safe-area-inset-bottom))',
           fontFamily: PF,
           boxShadow: '0 -8px 32px rgba(11,31,58,0.2)',
         }}
