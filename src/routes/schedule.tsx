@@ -1932,9 +1932,11 @@ function SchedulePage() {
                             title = e.title;
                             if (e.allDay) timeText = "All day";
                           } else if (e.kind === "personal") {
-                            markerColor = "#E8B84B";
+                            markerColor = e.colour || "#E8B84B";
                             title = e.title;
                             if (e.allDay) timeText = "All day";
+                            const loc = e.event?.location?.trim();
+                            if (loc) timeText = `${timeText} · ${loc}`;
                           } else if (e.kind === "task") {
                             markerColor = "#6B6BD6";
                             title = e.title;
