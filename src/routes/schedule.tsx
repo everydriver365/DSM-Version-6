@@ -1956,7 +1956,8 @@ function SchedulePage() {
                           const isPaid = payStatus === "paid" || payStatus === "prepaid" || isPrepaidPupil;
                           const dueUnpaid = isLessonRow && amt > 0 && !isPaid;
                           const isBlockRow = e.kind === "block";
-                          const clickable = isLessonRow || isBlockRow;
+                          const isPersonalRow = e.kind === "personal";
+                          const clickable = isLessonRow || isBlockRow || isPersonalRow;
                           const isMovingThis = isLessonRow && movingLesson && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id === movingLesson.id;
                           const isTestDay = isLessonRow && isTest((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
 
