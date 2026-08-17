@@ -401,20 +401,94 @@ function EditLessonPage() {
 
           <div>
             <FieldLabel htmlFor="duration">Duration</FieldLabel>
-            <select
-              id="duration"
-              value={duration}
-              onChange={(e) => setDuration(Number(e.target.value))}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-              style={fieldBorder}
+            <div
+              style={{
+                display: 'flex',
+                gap: 8,
+                overflowX: 'auto',
+                paddingBottom: 4,
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+              }}
             >
-              {DURATIONS.map((d) => (
-                <option key={d.value} value={d.value}>
-                  {d.label}
-                </option>
-              ))}
-            </select>
+              {DURATIONS.map((d) => {
+                const active = duration === d.value;
+                const isTest = d.value === 'test';
+                return (
+                  <button
+                    key={d.value}
+                    type="button"
+                    onClick={() => {
+                      if (isTest) {
+                        setDuration('test');
+                        setIsTestDay(true);
+                      } else {
+                        setDuration(d.value as number);
+                        setIsTestDay(false);
+                        setTestCentre('');
+                      }
+                    }}
+                    style={{
+                      flex: '0 0 auto',
+                      minWidth: 72,
+                      padding: '8px 14px',
+                      borderRadius: 20,
+                      border: 'none',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      fontFamily: 'Poppins, sans-serif',
+                      background: active
+                        ? (isTest ? '#CC2229' : '#0B1F3A')
+                        : '#F1F5F9',
+                      color: active ? '#fff' : '#6B7686',
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {d.label}
+                  </button>
+                );
+              })}
+            </div>
+            {isTestDay && (
+              <div style={{ marginTop: 12 }}>
+                <div style={{
+                  fontSize: 11, fontWeight: 600,
+                  color: '#9CA3AF',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  marginBottom: 6,
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
+                  TEST CENTRE / LOCATION
+                </div>
+                <input
+                  value={testCentre}
+                  onChange={e => setTestCentre(e.target.value)}
+                  placeholder="e.g. Eastleigh Test Centre, SO50 5JH"
+                  style={{
+                    width: '100%',
+                    background: '#fff',
+                    border: '1px solid #E4E8EF',
+                    borderRadius: 10,
+                    padding: '10px 12px',
+                    fontSize: 14,
+                    fontFamily: 'Poppins, sans-serif',
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                  }}
+                />
+                <p style={{
+                  fontSize: 11, color: '#9CA3AF',
+                  marginTop: 4,
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
+                  This will show on your schedule and enable navigation
+                </p>
+              </div>
+            )}
           </div>
+
 
           <div>
             <FieldLabel htmlFor="status">Status</FieldLabel>
