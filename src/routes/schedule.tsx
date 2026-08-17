@@ -1183,6 +1183,24 @@ function SchedulePage() {
     [calendarBlocks, lessons],
   );
 
+  // Private events marked "busy" block free-slot suggestions too.
+  const busyBlocksForGaps = useMemo(
+    () => [
+      ...visibleCalendarBlocks,
+      ...personalEvents
+        .filter((p) => p.blocks_availability !== false)
+        .map((p) => ({
+          id: p.id,
+          title: p.title,
+          start_datetime: p.start_datetime,
+          end_datetime: p.end_datetime,
+          is_all_day: p.is_all_day ?? false,
+        })),
+    ],
+    [visibleCalendarBlocks, personalEvents],
+  );
+
+
   // Group entries by day (YYYY-MM-DD), skipping days with zero entries.
   const entriesByDay = useMemo(() => {
     const map = new Map<string, AgendaEntry[]>();
