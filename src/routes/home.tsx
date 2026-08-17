@@ -6319,7 +6319,7 @@ function HomePage() {
                                 </div>
                               </div>
                               <div style={{ textAlign: 'right', flexShrink: 0, paddingLeft: 8 }}>
-                                <div style={{ fontSize: 16, color: '#FFFFFF', fontWeight: 800, fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
+                                <div style={{ fontSize: 16, color: '#FFFFFF', fontWeight: 700, fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
                                   {(() => {
                                     const tt = testTimeOf(l);
                                     return tt ? `${timeLabel} – ${endTimeLabel} · Test at ${tt}` : `${timeLabel} – ${endTimeLabel}`;

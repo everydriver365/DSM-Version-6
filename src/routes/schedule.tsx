@@ -334,7 +334,7 @@ function TestLessonCard({
         </span>
         <span
           style={{
-            fontSize: 15,
+            fontSize: 16,
             color: "#FFFFFF",
             fontWeight: 700,
             fontFamily: "Poppins, sans-serif",
