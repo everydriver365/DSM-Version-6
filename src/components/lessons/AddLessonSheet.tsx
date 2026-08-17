@@ -130,6 +130,7 @@ export function AddLessonSheet({
     pupil?: string;
     date?: string;
     time?: string;
+    testCentre?: string;
     form?: string;
   }>({});
   const [saving, setSaving] = useState(false);
