@@ -253,12 +253,30 @@ function lessonEnd(l: Lesson) {
   return new Date(lessonStart(l).getTime() + (l.duration_minutes ?? 60) * 60000);
 }
 
-const isTest = (lesson: any) =>
-  lesson.lesson_type === "test" || lesson.is_test_day === true || lesson.duration === "test";
+const isTest = (lesson: any) => {
+  if (!lesson) return false;
+  const type = String(lesson.lesson_type ?? "").toLowerCase().trim();
+  if (type === "test" || type === "test day" || type === "driving test") return true;
+  if (lesson.is_test_day === true || lesson.duration === "test") return true;
+  return /^test day:/i.test(String(lesson.notes ?? "").trim());
+};
+
+// Test centre: explicit column first, then the pickup field, then legacy notes
+// ("Test day: Name — Test at HH:MM @ Location").
+const testCentreOf = (lesson: any): string | null => {
+  const explicit = (lesson?.test_centre ?? "").trim?.() ?? "";
+  if (explicit) return explicit;
+  const pickup = (lesson?.pickup_location ?? "").trim?.() ?? "";
+  if (pickup) return pickup;
+  const m = String(lesson?.notes ?? "").match(/@\s*(.+)$/);
+  const fromNotes = m?.[1]?.trim();
+  if (fromNotes && fromNotes.toLowerCase() !== "test centre") return fromNotes;
+  return null;
+};
 
 function TestLessonCard({ lesson, onClick }: { lesson: Lesson; onClick: () => void }) {
   const testResult = (lesson as any).test_result;
-  const testCentre = lesson.pickup_location || (lesson as any).test_centre;
+  const testCentre = testCentreOf(lesson);
   const startTime = fmtTime(lessonStart(lesson));
   return (
     <div
@@ -373,7 +391,7 @@ function TestLessonCard({ lesson, onClick }: { lesson: Lesson; onClick: () => vo
           type="button"
           onClick={(ev) => {
             ev.stopPropagation();
-            const addr = lesson.pickup_location || (lesson as any).test_centre;
+            const addr = testCentreOf(lesson);
             if (addr) {
               window.open(`maps://?daddr=${encodeURIComponent(addr)}&dirflg=d`, "_blank");
             } else {
@@ -1591,11 +1609,16 @@ function SchedulePage() {
                             markerColor = pupilColour(e.lesson.pupil_id ?? null, e.lesson.pupil?.calendar_colour ?? null, name);
                             title = name;
                             // Subtitle shows the lesson type instead of a duplicated time range.
-                            const typeRaw = (e.lesson.lesson_type ?? "").trim();
-                            const typeLabel = typeRaw
-                              ? typeRaw.charAt(0).toUpperCase() + typeRaw.slice(1)
-                              : "Standard";
-                            timeText = /lesson/i.test(typeLabel) ? typeLabel : `${typeLabel} lesson`;
+                            if (isTest(e.lesson)) {
+                              const centre = testCentreOf(e.lesson);
+                              timeText = centre ? `Test day · ${centre}` : "Test day · Test centre not set";
+                            } else {
+                              const typeRaw = (e.lesson.lesson_type ?? "").trim();
+                              const typeLabel = typeRaw
+                                ? typeRaw.charAt(0).toUpperCase() + typeRaw.slice(1)
+                                : "Standard";
+                              timeText = /lesson/i.test(typeLabel) ? typeLabel : `${typeLabel} lesson`;
+                            }
                           } else if (e.kind === "block") {
                             markerColor = getBlockColour(e.title).border;
                             title = e.title;
@@ -2384,9 +2407,7 @@ function EntryRow({
     const typeRaw = (l.lesson_type ?? "").trim();
     const showType = typeRaw && typeRaw.toLowerCase() !== "standard";
     const label = showType ? `${name} · ${typeRaw}` : name;
-    const isTestDay = !!(l.notes ?? '')
-      .trim()
-      .match(/^Test day:/i);
+    const isTestDay = isTest(l);
 
     const bg = isTestDay
       ? '#FF8C00'
@@ -2394,16 +2415,13 @@ function EntryRow({
     const cancelled = l.status === 'cancelled';
 
     if (isTestDay) {
-      // Extract test time and location from notes
-      // Notes format: "Test day: Name — Test at HH:MM @ Location"
+      // Test time/location: notes format "Test day: Name — Test at HH:MM @ Location"
       const noteBody = (l.notes ?? '')
         .replace(/^Test day:\s*/, '');
       const testAtMatch = noteBody.match(
         /Test at (\d{2}:\d{2})/);
-      const locationMatch = noteBody.match(
-        /@ (.+)$/);
       const testTime = testAtMatch?.[1] ?? null;
-      const location = locationMatch?.[1] ?? null;
+      const location = testCentreOf(l);
 
       return (
         <button
