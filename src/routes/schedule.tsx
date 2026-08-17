@@ -1941,7 +1941,9 @@ function SchedulePage() {
                                                 >
                                                   <IconDots stroke={1.5} size={14} color="#D1D5DB" />
                                                 </button>
-                                              </div>
+                                </div>
+                              )}
+
                                             )}
                                      </>
                                   )}
