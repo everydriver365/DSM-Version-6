@@ -473,7 +473,7 @@ function EditLessonPage() {
                 </div>
                 <input
                   value={testCentre}
-                  onChange={e => setTestCentre(e.target.value)}
+                  onChange={e => { setTestCentre(e.target.value); setTestCentreError(null); }}
                   placeholder="e.g. Eastleigh Test Centre, SO50 5JH"
                   style={{
                     width: '100%',
