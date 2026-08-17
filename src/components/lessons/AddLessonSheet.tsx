@@ -171,11 +171,32 @@ export function AddLessonSheet({
       setIsTestDay(true);
       setDuration('test');
       setTestCentre(editingLesson.pickup_location ?? '');
+      setTestCentreSearch(editingLesson.pickup_location ?? '');
+      setTestCentreResults([]);
+      setTestTime(editingLesson.lesson_time ? editingLesson.lesson_time.slice(0, 5) : '');
     } else {
       setIsTestDay(false);
       setTestCentre('');
+      setTestCentreSearch('');
+      setTestCentreResults([]);
+      setTestTime('');
     }
   }, [open, editingLesson]);
+
+  async function searchTestCentres(query: string) {
+    if (query.trim().length < 2) {
+      setTestCentreResults([]);
+      return;
+    }
+    setSearchingCentres(true);
+    const { data } = await supabase
+      .from("test_centres")
+      .select("*")
+      .ilike("name", `%${query}%`)
+      .limit(8);
+    setTestCentreResults(data ?? []);
+    setSearchingCentres(false);
+  }
 
   useEffect(() => {
     if (!open) return;
