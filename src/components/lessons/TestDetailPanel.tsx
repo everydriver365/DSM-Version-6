@@ -46,11 +46,14 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
           background: '#FFFFFF',
           width: '100%',
           maxWidth: 480,
+          maxHeight: 'calc(100vh - 90px)',
           borderRadius: '16px 16px 0 0',
           padding: 16,
-          paddingBottom: 'calc(16px + 80px + env(safe-area-inset-bottom))',
+          paddingBottom: 'calc(16px + 90px + env(safe-area-inset-bottom))',
           fontFamily: PF,
           boxShadow: '0 -8px 32px rgba(11,31,58,0.2)',
+          overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
