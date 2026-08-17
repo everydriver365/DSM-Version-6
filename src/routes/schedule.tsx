@@ -563,6 +563,7 @@ function TestLessonCard({
       </div>
       {actionsOpen && (
         <div
+          ref={actionsRef}
           onClick={(ev) => ev.stopPropagation()}
           style={{
             position: 'absolute',
