@@ -35,14 +35,15 @@ interface Pupil {
   name: string;
 }
 
-const DURATIONS: { label: string; value: number }[] = [
-  { label: "1h", value: 60 },
-  { label: "1.5h", value: 90 },
-  { label: "2h", value: 120 },
-  { label: "3h", value: 180 },
-  { label: "4h", value: 240 },
-  { label: "5h", value: 300 },
+const DURATIONS: { label: string; value: number | 'test' }[] = [
+  { label: "30 min", value: 30 },
+  { label: "1 hr", value: 60 },
+  { label: "1.5 hrs", value: 90 },
+  { label: "2 hrs", value: 120 },
+  { label: "2.5 hrs", value: 150 },
+  { label: "Test 🚗", value: 'test' },
 ];
+
 
 const STATUSES = [
   { label: "Confirmed", value: "confirmed" },
@@ -102,12 +103,15 @@ function EditLessonPage() {
   const [pupilId, setPupilId] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [duration, setDuration] = useState(60);
+  const [duration, setDuration] = useState<number | 'test'>(60);
+  const [isTestDay, setIsTestDay] = useState(false);
+  const [testCentre, setTestCentre] = useState('');
   const [status, setStatus] = useState("confirmed");
   const [pickupLocation, setPickupLocation] = useState("");
   const [pickupAddress, setPickupAddress] = useState("");
   const [pickupPostcode, setPickupPostcode] = useState("");
   const [notes, setNotes] = useState("");
+
 
   // Payment display + inline form
   const [paymentStatus, setPaymentStatus] = useState<PayStatus>("unpaid");
@@ -146,10 +150,11 @@ function EditLessonPage() {
           .order("name", { ascending: true, nullsFirst: false }),
         supabase
           .from("lessons")
-          .select("pupil_id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_location, payment_status, amount_due")
+          .select("pupil_id, lesson_type, lesson_date, lesson_time, duration_minutes, status, notes, pickup_location, payment_status, amount_due")
           .eq("id", id)
           .is("deleted_at", null)
           .maybeSingle(),
+
       ]);
 
       if (pupilsRes.error) console.error("[edit-lesson] pupils error", pupilsRes.error);
@@ -176,6 +181,7 @@ function EditLessonPage() {
       } else if (lessonRes.data) {
         const l = lessonRes.data as {
           pupil_id: string;
+          lesson_type: string | null;
           lesson_date: string;
           lesson_time: string;
           duration_minutes: number | null;
@@ -188,14 +194,18 @@ function EditLessonPage() {
         setPupilId(l.pupil_id);
         setDate(l.lesson_date);
         setTime((l.lesson_time ?? "").slice(0, 5));
-        setDuration(l.duration_minutes ?? 60);
+        const testDay = l.lesson_type === 'test';
+        setIsTestDay(testDay);
+        setTestCentre(l.pickup_location ?? '');
+        setDuration(testDay ? 'test' : (l.duration_minutes ?? 60));
         setStatus(l.status ?? "confirmed");
         setPickupLocation(l.pickup_location ?? "");
-        setPickupAddress(l.pickup_location ?? "");
+        setPickupAddress(testDay ? '' : (l.pickup_location ?? ""));
         setPickupPostcode("");
         setNotes(l.notes ?? "");
         setPaymentStatus((l.payment_status as PayStatus) ?? "unpaid");
         setAmountDue(l.amount_due != null ? Number(l.amount_due) : null);
+
 
         // Fetch pupil account_balance for recordPayment reconciliation.
         if (l.pupil_id) {
@@ -286,11 +296,13 @@ function EditLessonPage() {
         pupil_id: pupilId,
         lesson_date: date,
         lesson_time: `${time}:00`,
-        duration_minutes: duration,
+        lesson_type: isTestDay ? 'test' : 'lesson',
+        duration_minutes: isTestDay ? null : duration,
         status,
-        pickup_location: pickupLocation.trim() || null,
+        pickup_location: isTestDay ? testCentre.trim() || null : pickupLocation.trim() || null,
         notes: notes.trim() || null,
       })
+
       .eq("id", id);
     if (updErr) {
       console.error("[edit-lesson] update error", updErr);
@@ -391,20 +403,94 @@ function EditLessonPage() {
 
           <div>
             <FieldLabel htmlFor="duration">Duration</FieldLabel>
-            <select
-              id="duration"
-              value={duration}
-              onChange={(e) => setDuration(Number(e.target.value))}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-              style={fieldBorder}
+            <div
+              style={{
+                display: 'flex',
+                gap: 8,
+                overflowX: 'auto',
+                paddingBottom: 4,
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+              }}
             >
-              {DURATIONS.map((d) => (
-                <option key={d.value} value={d.value}>
-                  {d.label}
-                </option>
-              ))}
-            </select>
+              {DURATIONS.map((d) => {
+                const active = duration === d.value;
+                const isTest = d.value === 'test';
+                return (
+                  <button
+                    key={d.value}
+                    type="button"
+                    onClick={() => {
+                      if (isTest) {
+                        setDuration('test');
+                        setIsTestDay(true);
+                      } else {
+                        setDuration(d.value as number);
+                        setIsTestDay(false);
+                        setTestCentre('');
+                      }
+                    }}
+                    style={{
+                      flex: '0 0 auto',
+                      minWidth: 72,
+                      padding: '8px 14px',
+                      borderRadius: 20,
+                      border: 'none',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      fontFamily: 'Poppins, sans-serif',
+                      background: active
+                        ? (isTest ? '#CC2229' : '#0B1F3A')
+                        : '#F1F5F9',
+                      color: active ? '#fff' : '#6B7686',
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {d.label}
+                  </button>
+                );
+              })}
+            </div>
+            {isTestDay && (
+              <div style={{ marginTop: 12 }}>
+                <div style={{
+                  fontSize: 11, fontWeight: 600,
+                  color: '#9CA3AF',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  marginBottom: 6,
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
+                  TEST CENTRE / LOCATION
+                </div>
+                <input
+                  value={testCentre}
+                  onChange={e => setTestCentre(e.target.value)}
+                  placeholder="e.g. Eastleigh Test Centre, SO50 5JH"
+                  style={{
+                    width: '100%',
+                    background: '#fff',
+                    border: '1px solid #E4E8EF',
+                    borderRadius: 10,
+                    padding: '10px 12px',
+                    fontSize: 14,
+                    fontFamily: 'Poppins, sans-serif',
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                  }}
+                />
+                <p style={{
+                  fontSize: 11, color: '#9CA3AF',
+                  marginTop: 4,
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
+                  This will show on your schedule and enable navigation
+                </p>
+              </div>
+            )}
           </div>
+
 
           <div>
             <FieldLabel htmlFor="status">Status</FieldLabel>
