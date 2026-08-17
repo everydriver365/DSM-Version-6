@@ -35,14 +35,15 @@ interface Pupil {
   name: string;
 }
 
-const DURATIONS: { label: string; value: number }[] = [
-  { label: "1h", value: 60 },
-  { label: "1.5h", value: 90 },
-  { label: "2h", value: 120 },
-  { label: "3h", value: 180 },
-  { label: "4h", value: 240 },
-  { label: "5h", value: 300 },
+const DURATIONS: { label: string; value: number | 'test' }[] = [
+  { label: "30 min", value: 30 },
+  { label: "1 hr", value: 60 },
+  { label: "1.5 hrs", value: 90 },
+  { label: "2 hrs", value: 120 },
+  { label: "2.5 hrs", value: 150 },
+  { label: "Test 🚗", value: 'test' },
 ];
+
 
 const STATUSES = [
   { label: "Confirmed", value: "confirmed" },
