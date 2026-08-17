@@ -24,11 +24,12 @@ import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { PageLayout } from "@/components/PageLayout";
 import { SheetQueueController } from "@/components/dsm/SheetQueue";
 import { LessonActionsSheet } from "@/components/lessons/LessonActionsSheet";
+import { LessonActionsMenu } from "@/components/lessons/LessonActionsMenu";
 import { LessonDetailsSheet } from "@/components/lessons/LessonDetailsSheet";
 import { WelcomeOverlay } from "@/components/dsm/WelcomeOverlay";
 
 
-import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconArrowsLeftRight, IconArrowsMove, IconAward, IconBell, IconBolt, IconBook, IconBuilding, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarOff, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconChartBar, IconCheckbox, IconChecks, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDots, IconDotsVertical, IconFileCheck, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHeadphones, IconHeart, IconHelpCircle, IconInbox, IconInfinity, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPlay, IconPlus, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconSend, IconSettings, IconShield, IconShieldExclamation, IconSignature, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconToggleLeft, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserCircle, IconUserPlus, IconUsers, IconVideo, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
+import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconArrowsLeftRight, IconArrowsMove, IconAward, IconBell, IconBolt, IconBook, IconBuilding, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarOff, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconChartBar, IconCheckbox, IconChecks, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDots, IconFileCheck, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHeadphones, IconHeart, IconHelpCircle, IconInbox, IconInfinity, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPlay, IconPlus, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconSend, IconSettings, IconShield, IconShieldExclamation, IconSignature, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconToggleLeft, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserCircle, IconUserPlus, IconUsers, IconVideo, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
 
 
 
@@ -1430,17 +1431,6 @@ function HomePage() {
   const [movingLessonHome, setMovingLessonHome] = useState<LessonRow | null>(null);
   const [moveModeHome, setMoveModeHome] = useState(false);
   const [confirmMoveHome, setConfirmMoveHome] = useState<{ date: string; time: string } | null>(null);
-  useEffect(() => {
-    if (!actionsOpenForLesson) return;
-    const onDoc = (ev: MouseEvent) => {
-      const target = ev.target as HTMLElement | null;
-      if (target && target.closest('[data-home-lesson-actions-popover]')) return;
-      if (target && target.closest('[data-home-lesson-actions-trigger]')) return;
-      setActionsOpenForLesson(null);
-    };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, [actionsOpenForLesson]);
   const handleMoveLessonHome = useCallback(async (newDate: string, newTime: string) => {
     if (!movingLessonHome) return;
     const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
@@ -6362,15 +6352,33 @@ function HomePage() {
                                         Test at {testTimeOf(l)}
                                       </span>
                                     ) : null}
-                                    <span
-                                      data-home-lesson-actions-trigger
-                                      role="button"
-                                      aria-label="Lesson options"
-                                      onClick={(e) => { e.stopPropagation(); setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l)); }}
-                                      style={{ flexShrink: 0, display: 'flex', alignItems: 'center', paddingLeft: 2, cursor: 'pointer' }}
-                                    >
-                                      <IconDotsVertical size={14} stroke={2} color="#ffffff" />
-                                    </span>
+                                    <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+                                      <LessonActionsMenu
+                                        open={actionsOpenForLesson?.id === l.id}
+                                        onOpenChange={(open) => setActionsOpenForLesson(open ? l : null)}
+                                        top={40}
+                                        right={12}
+                                        items={[
+                                          { label: 'View test details', onClick: () => openPanel() },
+                                          { label: 'View details', onClick: () => setDetailsSheetForLesson(l) },
+                                          { label: 'Edit lesson', onClick: () => { setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }), 0); } },
+                                          { label: 'Full profile', onClick: () => { const pid = l.pupil_id; if (pid) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: pid } }), 0); } },
+                                        ]}
+                                      >
+                                        <span
+                                          data-home-lesson-actions-trigger
+                                          role="button"
+                                          aria-label="Lesson options"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l));
+                                          }}
+                                          style={{ flexShrink: 0, display: 'flex', alignItems: 'center', paddingLeft: 2, cursor: 'pointer' }}
+                                        >
+                                          <IconDots size={14} stroke={1.5} color="#ffffff" />
+                                        </span>
+                                      </LessonActionsMenu>
+                                    </div>
                                   </div>
                                 </div>
                                 <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', marginTop: 4, letterSpacing: -0.2, fontFamily: PF, lineHeight: 1.2 }}>
@@ -6391,76 +6399,6 @@ function HomePage() {
                                   </span>
                                 </div>
                               </div>
-                              {actionsOpenForLesson?.id === l.id && (
-                                <div
-                                  data-home-lesson-actions-popover
-                                  onClick={(ev) => ev.stopPropagation()}
-                                  style={{
-                                    position: 'absolute',
-                                    top: 40,
-                                    right: 12,
-                                    minWidth: 140,
-                                    background: '#FFFFFF',
-                                    border: '1px solid #E5E7EB',
-                                    borderRadius: 10,
-                                    boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-                                    zIndex: 40,
-                                    overflow: 'hidden',
-                                  }}
-                                >
-                                  <button
-                                    type="button"
-                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
-                                    onClick={(ev) => {
-                                      ev.stopPropagation();
-                                      setActionsOpenForLesson(null);
-                                      openPanel();
-                                    }}
-                                  >
-                                    View test details
-                                  </button>
-                                  <button
-                                    type="button"
-                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
-                                    onClick={(ev) => {
-                                      ev.stopPropagation();
-                                      setActionsOpenForLesson(null);
-                                      setDetailsSheetForLesson(l);
-                                    }}
-                                  >
-                                    View details
-                                  </button>
-                                  <button
-                                    type="button"
-                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
-                                    onClick={(ev) => {
-                                      ev.stopPropagation();
-                                      setActionsOpenForLesson(null);
-                                      setTimeout(() => {
-                                        navigate({ to: '/lessons/edit/$id', params: { id: l.id } });
-                                      }, 0);
-                                    }}
-                                  >
-                                    Edit lesson
-                                  </button>
-                                  <button
-                                    type="button"
-                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
-                                    onClick={(ev) => {
-                                      ev.stopPropagation();
-                                      setActionsOpenForLesson(null);
-                                      const pid = l.pupil_id;
-                                      if (pid) {
-                                        setTimeout(() => {
-                                          navigate({ to: '/pupils/$id', params: { id: pid } });
-                                        }, 0);
-                                      }
-                                    }}
-                                  >
-                                    Full profile
-                                  </button>
-                                </div>
-                              )}
                             </div>
                           </div>
                           )}
@@ -6564,15 +6502,31 @@ function HomePage() {
                               )}
                             </div>
 
-                            <span
-                              data-home-lesson-actions-trigger
-                              role="button"
-                              aria-label="Lesson options"
-                              onClick={(e) => { e.stopPropagation(); setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l)); }}
-                              style={{ flexShrink: 0, display: 'flex', alignItems: 'center', paddingLeft: 2, cursor: 'pointer' }}
+                            <LessonActionsMenu
+                              open={actionsOpenForLesson?.id === l.id}
+                              onOpenChange={(open) => setActionsOpenForLesson(open ? l : null)}
+                              top={40}
+                              right={12}
+                              items={[
+                                { label: 'View details', onClick: () => setDetailsSheetForLesson(l) },
+                                { label: 'Edit lesson', onClick: () => { setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }), 0); } },
+                                { label: 'Take payment', onClick: () => { setUnifiedPayPupilId(l.pupil_id); setUnifiedPayOpen(true); } },
+                                { label: 'Full profile', onClick: () => { const pid = l.pupil_id; if (pid) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: pid } }), 0); } },
+                              ]}
                             >
-                              <IconDotsVertical size={14} stroke={2} color="#D1D5DB" />
-                            </span>
+                              <span
+                                data-home-lesson-actions-trigger
+                                role="button"
+                                aria-label="Lesson options"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l));
+                                }}
+                                style={{ flexShrink: 0, display: 'flex', alignItems: 'center', paddingLeft: 2, cursor: 'pointer' }}
+                              >
+                                <IconDots size={14} stroke={1.5} color="#D1D5DB" />
+                              </span>
+                            </LessonActionsMenu>
                          </div>
                          {(() => {
                            const st = (l.status ?? '').toLowerCase();
@@ -6620,72 +6574,6 @@ function HomePage() {
                              </div>
                            );
                          })()}
-                         {actionsOpenForLesson?.id === l.id && (
-
-                           <div
-                             data-home-lesson-actions-popover
-                             onClick={(ev) => ev.stopPropagation()}
-                             style={{
-                               position: 'absolute',
-                               top: 40,
-                               right: 12,
-                               minWidth: 140,
-                               background: '#FFFFFF',
-                               border: '1px solid #E5E7EB',
-                               borderRadius: 10,
-                               boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-                               zIndex: 40,
-                               overflow: 'hidden',
-                             }}
-                           >
-                               <button
-                                 type="button"
-                                 style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
-                                 onClick={(ev) => {
-                                   ev.stopPropagation();
-                                   setActionsOpenForLesson(null);
-                                   setDetailsSheetForLesson(l);
-                                 }}
-                               >
-                                 View details
-                               </button>
-                               <button
-                                 type="button"
-                                 style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
-                                 onClick={(ev) => {
-                                   ev.stopPropagation();
-                                   setActionsOpenForLesson(null);
-                                   navigate({ to: '/lessons/edit/$id', params: { id: l.id } });
-                                 }}
-                               >
-                                 Edit lesson
-                               </button>
-                              <button
-                                type="button"
-                                style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
-                                onClick={(ev) => {
-                                  ev.stopPropagation();
-                                  setActionsOpenForLesson(null);
-                                  setUnifiedPayPupilId(l.pupil_id);
-                                  setUnifiedPayOpen(true);
-                                }}
-                              >
-                                Take payment
-                              </button>
-                              <button
-                                type="button"
-                                style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
-                                onClick={(ev) => {
-                                  ev.stopPropagation();
-                                  setActionsOpenForLesson(null);
-                                  navigate({ to: '/pupils/$id', params: { id: l.pupil_id } });
-                                }}
-                              >
-                                Full profile
-                              </button>
-
-                            </div>
-                          )}
                         </div>
                       )}
                       </React.Fragment>

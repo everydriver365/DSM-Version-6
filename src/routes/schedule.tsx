@@ -33,6 +33,8 @@ import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
 import { TestDetailPanel } from "@/components/lessons/TestDetailPanel";
+import { LessonActionsMenu } from "@/components/lessons/LessonActionsMenu";
+
 
 
 export const Route = createFileRoute("/schedule")({
@@ -302,17 +304,6 @@ function TestLessonCard({
   const navigate = useNavigate({ from: Route.fullPath });
   const [panelOpen, setPanelOpen] = useState(false);
   const [actionsOpen, setActionsOpen] = useState(false);
-  const actionsRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!actionsOpen) return;
-    const handle = (ev: MouseEvent) => {
-      if (actionsRef.current && !actionsRef.current.contains(ev.target as Node)) {
-        setActionsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handle);
-    return () => document.removeEventListener('mousedown', handle);
-  }, [actionsOpen]);
   const goNavigate = () => {
     void navigate({
       to: "/lessons/$id",
@@ -321,7 +312,6 @@ function TestLessonCard({
     });
   };
   const goEdit = () => {
-    setActionsOpen(false);
     setTimeout(() => {
       void navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } });
     }, 0);
@@ -329,12 +319,12 @@ function TestLessonCard({
   const goProfile = () => {
     const pid = lesson.pupil_id;
     if (pid) {
-      setActionsOpen(false);
       setTimeout(() => {
         void navigate({ to: '/pupils/$id', params: { id: pid } });
       }, 0);
     }
   };
+
   return (
     <>
     {panelOpen ? (
@@ -451,28 +441,40 @@ function TestLessonCard({
                 </span>
               ) : null}
               <div style={{ flexShrink: 0, marginLeft: 4, display: "flex", flexDirection: "row", alignItems: "center" }}>
-                <button
-                  type="button"
-                  onClick={(ev) => {
-                    ev.stopPropagation();
-                    setActionsOpen((cur) => !cur);
-                  }}
-                  aria-label="More test options"
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: "50%",
-                    background: "rgba(255,255,255,0.15)",
-                    border: "0.5px solid rgba(255,255,255,0.28)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    padding: 0,
-                  }}
+                <LessonActionsMenu
+                  open={actionsOpen}
+                  onOpenChange={setActionsOpen}
+                  top={40}
+                  right={10}
+                  items={[
+                    { label: "View test details", onClick: () => setPanelOpen(true) },
+                    { label: "Edit lesson", onClick: goEdit },
+                    { label: "Full profile", onClick: goProfile },
+                  ]}
                 >
-                  <IconDots stroke={1.5} size={14} color="#ffffff" />
-                </button>
+                  <button
+                    type="button"
+                    onClick={(ev) => {
+                      ev.stopPropagation();
+                      setActionsOpen((cur) => !cur);
+                    }}
+                    aria-label="More test options"
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: "50%",
+                      background: "rgba(255,255,255,0.15)",
+                      border: "0.5px solid rgba(255,255,255,0.28)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      padding: 0,
+                    }}
+                  >
+                    <IconDots stroke={1.5} size={14} color="#ffffff" />
+                  </button>
+                </LessonActionsMenu>
               </div>
             </div>
           </div>
@@ -570,90 +572,6 @@ function TestLessonCard({
           </div>
         </div>
       </div>
-      {actionsOpen && (
-        <div
-          ref={actionsRef}
-          onClick={(ev) => ev.stopPropagation()}
-          style={{
-            position: 'absolute',
-            top: 40,
-            right: 10,
-            minWidth: 140,
-            background: '#FFFFFF',
-            border: '1px solid #E5E7EB',
-            borderRadius: 10,
-            boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-            zIndex: 60,
-            overflow: 'hidden',
-            ...POPPINS,
-          }}
-        >
-          <button
-            type="button"
-            style={{
-              display: 'block',
-              width: '100%',
-              textAlign: 'left',
-              padding: '10px 14px',
-              fontSize: 13,
-              fontFamily: 'Poppins, sans-serif',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              color: '#0B1F3A',
-            }}
-            onClick={(ev) => {
-              ev.stopPropagation();
-              setActionsOpen(false);
-              setPanelOpen(true);
-            }}
-          >
-            View test details
-          </button>
-          <button
-            type="button"
-            style={{
-              display: 'block',
-              width: '100%',
-              textAlign: 'left',
-              padding: '10px 14px',
-              fontSize: 13,
-              fontFamily: 'Poppins, sans-serif',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              color: '#0B1F3A',
-            }}
-            onClick={(ev) => {
-              ev.stopPropagation();
-              goEdit();
-            }}
-          >
-            Edit lesson
-          </button>
-          <button
-            type="button"
-            style={{
-              display: 'block',
-              width: '100%',
-              textAlign: 'left',
-              padding: '10px 14px',
-              fontSize: 13,
-              fontFamily: 'Poppins, sans-serif',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              color: '#0B1F3A',
-            }}
-            onClick={(ev) => {
-              ev.stopPropagation();
-              goProfile();
-            }}
-          >
-            Full profile
-          </button>
-        </div>
-      )}
     </div>
     </>
   );
@@ -741,18 +659,6 @@ function SchedulePage() {
 
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
 
-  // Close popover on outside click
-  useEffect(() => {
-    if (!actionsOpenFor) return;
-    const onDoc = (ev: MouseEvent) => {
-      const target = ev.target as HTMLElement | null;
-      if (target && target.closest('[data-lesson-actions-popover]')) return;
-      if (target && target.closest('[data-lesson-actions-trigger]')) return;
-      setActionsOpenFor(null);
-    };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, [actionsOpenFor]);
 
   // Auto-dismiss inline sync messages after 5 seconds
   useEffect(() => {
@@ -2281,34 +2187,48 @@ function SchedulePage() {
                                            </>
                                          )}
                                         </div>
-                                            {isLessonRow && (
-                                              <div style={{ flexShrink: 0, marginLeft: 4, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                                <button
-                                                  type="button"
-                                                  data-lesson-actions-trigger
-                                                  onClick={(ev) => {
-                                                    ev.stopPropagation();
-                                                    const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
-                                                    setActionsOpenFor((cur) => (cur?.id === lesson.id ? null : lesson));
-                                                  }}
-                                                  aria-label="More lesson options"
-                                                  style={{
-                                                    width: 28,
-                                                    height: 28,
-                                                    borderRadius: '50%',
-                                                    background: '#F8F9FB',
-                                                    border: '0.5px solid #E5E7EB',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    cursor: 'pointer',
-                                                    padding: 0,
-                                                  }}
-                                                >
-                                                  <IconDots stroke={1.5} size={14} color="#D1D5DB" />
-                                                </button>
-                                </div>
-                              )}
+                                              {isLessonRow && (() => {
+                                                const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                                return (
+                                                <div style={{ flexShrink: 0, marginLeft: 4, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                                  <LessonActionsMenu
+                                                    open={actionsOpenFor?.id === lesson.id}
+                                                    onOpenChange={(open) => setActionsOpenFor(open ? lesson : null)}
+                                                    top={44}
+                                                    right={14}
+                                                    items={[
+                                                      { label: 'Edit lesson', onClick: () => { setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } }), 0); } },
+                                                      { label: 'Take payment', onClick: () => { setUnifiedPayPupilId(lesson.pupil_id ?? undefined); setUnifiedPayOpen(true); } },
+                                                      { label: 'Full profile', onClick: () => { const pid = lesson.pupil_id; if (pid) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: pid } }), 0); } },
+                                                    ]}
+                                                  >
+                                                    <button
+                                                      type="button"
+                                                      data-lesson-actions-trigger
+                                                      onClick={(ev) => {
+                                                        ev.stopPropagation();
+                                                        setActionsOpenFor((cur) => (cur?.id === lesson.id ? null : lesson));
+                                                      }}
+                                                      aria-label="More lesson options"
+                                                      style={{
+                                                        width: 28,
+                                                        height: 28,
+                                                        borderRadius: '50%',
+                                                        background: '#F8F9FB',
+                                                        border: '0.5px solid #E5E7EB',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        cursor: 'pointer',
+                                                        padding: 0,
+                                                      }}
+                                                    >
+                                                      <IconDots stroke={1.5} size={14} color="#D1D5DB" />
+                                                    </button>
+                                                  </LessonActionsMenu>
+                                                </div>
+                                                );
+                                              })()}
 
                                       </>
                                    )}
@@ -2318,83 +2238,6 @@ function SchedulePage() {
                                 </div>
                               )}
 
-                               {isLessonRow && (() => {
-
-                                const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
-                                return actionsOpenFor?.id === lesson.id ? (
-                                  <div
-                                    data-lesson-actions-popover
-                                    onClick={(ev) => ev.stopPropagation()}
-                                    style={{
-                                      position: 'absolute',
-                                      top: 44,
-                                      right: 14,
-                                      minWidth: 140,
-                                      background: '#FFFFFF',
-                                      border: '1px solid #E5E7EB',
-                                      borderRadius: 10,
-                                      boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-                                      zIndex: 60,
-                                      overflow: 'hidden',
-                                      ...POPPINS,
-                                    }}
-                                  >
-                                    {(() => {
-                                      const itemStyle: React.CSSProperties = {
-                                        display: 'block',
-                                        width: '100%',
-                                        textAlign: 'left',
-                                        padding: '10px 14px',
-                                        fontSize: 13,
-                                        fontFamily: 'Poppins, sans-serif',
-                                        background: 'transparent',
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        color: '#0B1F3A',
-                                      };
-                                      return (
-                                        <>
-                                          <button
-                                            type="button"
-                                            style={itemStyle}
-                                            onClick={(ev) => {
-                                              ev.stopPropagation();
-                                              setActionsOpenFor(null);
-                                              navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } });
-                                            }}
-                                          >
-                                            Edit lesson
-                                          </button>
-                                          <button
-                                            type="button"
-                                            style={itemStyle}
-                                            onClick={(ev) => {
-                                              ev.stopPropagation();
-                                              setActionsOpenFor(null);
-                                              setUnifiedPayPupilId(lesson.pupil_id ?? undefined);
-                                              setUnifiedPayOpen(true);
-                                            }}
-                                          >
-                                            Take payment
-                                          </button>
-                                          <button
-                                            type="button"
-                                            style={itemStyle}
-                                            onClick={(ev) => {
-                                              ev.stopPropagation();
-                                              setActionsOpenFor(null);
-                                              if (lesson.pupil_id) navigate({ to: '/pupils/$id', params: { id: lesson.pupil_id } });
-                                            }}
-                                          >
-                                            Full profile
-                                          </button>
-                                        </>
-                                      );
-
-                                    })()}
-                                  </div>
-                                ) : null;
-                              })()}
                             </div>
                           );
                         })}
