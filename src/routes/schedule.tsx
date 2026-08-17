@@ -1422,7 +1422,7 @@ function SchedulePage() {
       if (dots.length > 0) map.set(key, dots);
     }
     return map;
-  }, [lessons, visibleCalendarBlocks, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
+  }, [lessons, visibleCalendarBlocks, busyBlocksForGaps, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
 
   const scrollToDate = useCallback(
     (key: string) => {
