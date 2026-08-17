@@ -55,9 +55,9 @@ export function DeleteLessonSheet({
         style={{
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
-          maxHeight: "92vh",
+          maxHeight: "calc(100vh - 90px)",
           overflowY: "auto",
-          paddingBottom: 24,
+          paddingBottom: "calc(16px + 90px + env(safe-area-inset-bottom))",
         }}
       >
         <div className="flex items-center justify-between px-4 pt-4">
