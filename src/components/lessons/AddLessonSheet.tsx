@@ -216,6 +216,9 @@ export function AddLessonSheet({
     if (!pupilId) next.pupil = "Pupil is required";
     if (!date) next.date = "Date is required";
     if (!time) next.time = "Time is required";
+    if (isTestDay && !testCentre.trim()) {
+      next.testCentre = "Enter a test centre or location for a test day";
+    }
     if (Object.keys(next).length) {
       setErrors(next);
       return;
