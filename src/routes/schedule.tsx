@@ -307,6 +307,9 @@ function TestLessonCard({
       search: testCentre ? { testCentre } : {},
     });
   };
+  const goEdit = () => {
+    void navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } });
+  };
   return (
     <>
     {panelOpen ? (
