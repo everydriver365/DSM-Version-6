@@ -6332,7 +6332,7 @@ function HomePage() {
                               {pickupLabel && (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, minWidth: 0 }}>
                                   {(() => {
-                                    const custom = isCustomPickup((l.pupils as any), l.pickup_location);
+                                    const custom = isTestDayRow || isCustomPickup((l.pupils as any), l.pickup_location);
                                     return (
                                       <div style={{
                                         display: 'inline-flex',
