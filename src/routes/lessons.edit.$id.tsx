@@ -296,6 +296,21 @@ function EditLessonPage() {
     }
   }
 
+  async function searchTestCentres(query: string) {
+    if (query.trim().length < 2) {
+      setTestCentreResults([]);
+      return;
+    }
+    setSearchingCentres(true);
+    const { data } = await supabase
+      .from("test_centres")
+      .select("*")
+      .ilike("name", `%${query}%`)
+      .limit(8);
+    setTestCentreResults(data ?? []);
+    setSearchingCentres(false);
+  }
+
   async function handleSave() {
     if (saving || showCancelConfirm) return;
     setSaving(true);
