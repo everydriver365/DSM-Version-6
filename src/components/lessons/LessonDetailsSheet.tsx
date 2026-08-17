@@ -107,7 +107,8 @@ export function LessonDetailsSheet({
         style={{
           backgroundColor: "#F5F7FA",
           boxShadow: "0 -4px 24px rgba(0,0,0,0.15)",
-          maxHeight: "88vh",
+          maxHeight: "calc(100vh - 90px)",
+          paddingBottom: "calc(16px + 90px + env(safe-area-inset-bottom))",
         }}
       >
         {/* Drag handle */}

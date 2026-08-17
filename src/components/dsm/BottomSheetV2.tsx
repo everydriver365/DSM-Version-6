@@ -61,7 +61,8 @@ export function BottomSheet({ title, subtitle, onClose, children, footer }: Bott
         style={{
           backgroundColor: canvas,
           boxShadow: "0 -4px 24px rgba(0,0,0,0.15)",
-          maxHeight: "88vh",
+          maxHeight: "calc(100vh - 90px)",
+          paddingBottom: "calc(16px + 90px + env(safe-area-inset-bottom))",
         }}
       >
         <div className="flex justify-center pt-3 pb-1 shrink-0">
