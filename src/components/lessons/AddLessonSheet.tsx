@@ -764,6 +764,18 @@ export function AddLessonSheet({
                   >
                     This will show on your schedule and enable navigation
                   </p>
+                  {errors.testCentre && (
+                    <p
+                      style={{
+                        fontSize: 12,
+                        color: "#CC2229",
+                        marginTop: 6,
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      {errors.testCentre}
+                    </p>
+                  )}
                 </div>
               )}
             </div>
