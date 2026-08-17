@@ -56,8 +56,9 @@ export const Route = createFileRoute("/lessons/$id")({
   head: () => ({
     meta: [{ title: "Lesson — DSM by EveryDriver" }],
   }),
-  validateSearch: (search: Record<string, unknown>): { action?: "cancel" } => ({
+  validateSearch: (search: Record<string, unknown>): { action?: "cancel"; testCentre?: string } => ({
     action: search.action === "cancel" ? ("cancel" as const) : undefined,
+    testCentre: typeof search.testCentre === "string" && search.testCentre.trim() ? search.testCentre.trim() : undefined,
   }),
   component: LessonDetailPage,
 });
