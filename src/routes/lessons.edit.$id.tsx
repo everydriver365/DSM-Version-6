@@ -108,6 +108,10 @@ function EditLessonPage() {
   const [testCentre, setTestCentre] = useState('');
   const testCentreInputRef = useRef<HTMLInputElement>(null);
   const [testCentreError, setTestCentreError] = useState<string | null>(null);
+  const [testCentreSearch, setTestCentreSearch] = useState("");
+  const [testCentreResults, setTestCentreResults] = useState<any[]>([]);
+  const [searchingCentres, setSearchingCentres] = useState(false);
+  const [testTime, setTestTime] = useState("");
   const [status, setStatus] = useState("confirmed");
   const [pickupLocation, setPickupLocation] = useState("");
   const [pickupAddress, setPickupAddress] = useState("");
