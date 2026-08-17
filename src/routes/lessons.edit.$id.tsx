@@ -359,19 +359,30 @@ function EditLessonPage() {
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       {/* Action bar */}
-      <div className="flex items-center justify-between px-4 py-2">
+      <div className="flex items-start justify-between px-4 py-2">
         {isTestDay ? (
-          <span
-            className="inline-flex items-center gap-1.5 px-3 h-7 rounded-full text-[12px] font-semibold"
-            style={{
-              background: "linear-gradient(135deg, #CC2229 0%, #A51C22 100%)",
-              color: "#fff",
-              fontFamily: "Poppins, sans-serif",
-            }}
-          >
-            <span aria-hidden="true">🚗</span>
-            TEST DAY
-          </span>
+          <div className="flex flex-col gap-1">
+            <span
+              className="inline-flex items-center gap-1.5 px-3 h-7 rounded-full text-[12px] font-semibold"
+              style={{
+                background: "linear-gradient(135deg, #CC2229 0%, #A51C22 100%)",
+                color: "#fff",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              <span aria-hidden="true">🚗</span>
+              TEST DAY
+            </span>
+            <span
+              className="text-[12px] font-medium pl-1"
+              style={{
+                color: testCentre.trim() ? "#0B1F3A" : "#9CA3AF",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              {testCentre.trim() || "Test centre not set"}
+            </span>
+          </div>
         ) : (
           <span />
         )}
