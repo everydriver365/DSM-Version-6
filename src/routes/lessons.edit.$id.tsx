@@ -357,7 +357,22 @@ function EditLessonPage() {
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       {/* Action bar */}
-      <div className="flex items-center justify-end px-4 py-2">
+      <div className="flex items-center justify-between px-4 py-2">
+        {isTestDay ? (
+          <span
+            className="inline-flex items-center gap-1.5 px-3 h-7 rounded-full text-[12px] font-semibold"
+            style={{
+              background: "linear-gradient(135deg, #CC2229 0%, #A51C22 100%)",
+              color: "#fff",
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            <span aria-hidden="true">🚗</span>
+            TEST DAY
+          </span>
+        ) : (
+          <span />
+        )}
         <button
           type="button"
           aria-label="Save"
@@ -368,7 +383,6 @@ function EditLessonPage() {
         >
           {saving ? "Saving…" : "Save"}
         </button>
-
       </div>
 
       {loading ? (
