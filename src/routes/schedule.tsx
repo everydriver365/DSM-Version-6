@@ -1944,10 +1944,10 @@ function SchedulePage() {
                                 </div>
                               )}
 
-                                            )}
-                                     </>
-                                  )}
-                                 </div>
+                                      </>
+                                   )}
+                                  </div>
+
 
                                </div>
                                {isLessonRow && (() => {
