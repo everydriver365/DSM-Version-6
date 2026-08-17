@@ -25,6 +25,7 @@ import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
+import { PersonalEventSheet, type PersonalEvent } from "@/components/schedule/PersonalEventSheet";
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { filterEchoedBlocks } from "@/lib/calendarDedupe";
 
@@ -181,7 +182,7 @@ type AgendaEntry =
   | { kind: "block"; id: string; start: Date; end: Date; allDay: false; title: string }
   // Reserved for future wiring:
   | { kind: "external"; id: string; start: Date; end: Date; allDay: boolean; title: string; colour?: string | null }
-  | { kind: "personal"; id: string; start: Date; end: Date; allDay: boolean; title: string }
+  | { kind: "personal"; id: string; start: Date; end: Date; allDay: boolean; title: string; colour?: string | null; event?: PersonalEvent }
   | { kind: "task"; id: string; start: Date; end: Date; allDay: boolean; title: string; completed?: boolean }
   | { kind: "holiday"; id: string; start: Date; end: Date; allDay: true; title: string };
 
@@ -671,6 +672,13 @@ function SchedulePage() {
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
   const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; is_all_day?: boolean | null }>>([]);
+  // Private events created in DSM (no pupil, no payment) — the Google-style
+  // "add anything to my day" flow.
+  const [personalEvents, setPersonalEvents] = useState<PersonalEvent[]>([]);
+  const [personalReloadKey, setPersonalReloadKey] = useState(0);
+  const [personalSheetOpen, setPersonalSheetOpen] = useState(false);
+  const [editingPersonal, setEditingPersonal] = useState<PersonalEvent | null>(null);
+  const [addChooserOpen, setAddChooserOpen] = useState(false);
   const [recurringBlocks, setRecurringBlocks] = useState<Array<{ day_of_week: string; start_time: string; end_time: string; is_active: boolean }>>([]);
   const [timeOff, setTimeOff] = useState<Array<{ start_date: string; end_date: string; all_day: boolean }>>([]);
   const [workStart, setWorkStart] = useState<string>("09:00");
@@ -866,6 +874,31 @@ function SchedulePage() {
   useEffect(() => {
     fetchCalendarBlocks();
   }, [fetchCalendarBlocks]);
+
+  // Private DSM events in the same window.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("calendar_blocks")
+        .select(
+          "id, title, start_datetime, end_datetime, is_all_day, location, notes, colour, blocks_availability, recurrence_group_id",
+        )
+        .eq("source", "personal")
+        .gte("start_datetime", `${ymdLocal(rangeStart)}T00:00:00`)
+        .lte("start_datetime", `${ymdLocal(rangeEnd)}T23:59:59`)
+        .order("start_datetime", { ascending: true });
+      if (cancelled) return;
+      if (error) {
+        console.warn("[schedule] personal events fetch failed", error);
+        return;
+      }
+      setPersonalEvents((data as unknown as PersonalEvent[]) ?? []);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [rangeStart, rangeEnd, personalReloadKey]);
 
   // Fetch instructor working hours + buffers + rate, plus recurring blocks and time off.
   useEffect(() => {
@@ -1150,6 +1183,24 @@ function SchedulePage() {
     [calendarBlocks, lessons],
   );
 
+  // Private events marked "busy" block free-slot suggestions too.
+  const busyBlocksForGaps = useMemo(
+    () => [
+      ...visibleCalendarBlocks,
+      ...personalEvents
+        .filter((p) => p.blocks_availability !== false)
+        .map((p) => ({
+          id: p.id,
+          title: p.title,
+          start_datetime: p.start_datetime,
+          end_datetime: p.end_datetime,
+          is_all_day: p.is_all_day ?? false,
+        })),
+    ],
+    [visibleCalendarBlocks, personalEvents],
+  );
+
+
   // Group entries by day (YYYY-MM-DD), skipping days with zero entries.
   const entriesByDay = useMemo(() => {
     const map = new Map<string, AgendaEntry[]>();
@@ -1183,6 +1234,25 @@ function SchedulePage() {
       });
       map.set(key, arr);
     }
+    // Merge private DSM events.
+    for (const p of personalEvents) {
+      if (!p.start_datetime || !p.end_datetime) continue;
+      const start = new Date(p.start_datetime);
+      const end = new Date(p.end_datetime);
+      const key = ymdLocal(start);
+      const arr = map.get(key) ?? [];
+      arr.push({
+        kind: "personal",
+        id: `personal-${p.id}`,
+        start,
+        end,
+        allDay: !!p.is_all_day,
+        title: p.title || "Private event",
+        colour: p.colour ?? null,
+        event: p,
+      });
+      map.set(key, arr);
+    }
     for (const [k, arr] of map) {
       arr.sort((a, b) => {
         if (a.allDay && !b.allDay) return -1;
@@ -1192,7 +1262,7 @@ function SchedulePage() {
       map.set(k, arr);
     }
     return map;
-  }, [lessons, visibleCalendarBlocks]);
+  }, [lessons, visibleCalendarBlocks, personalEvents]);
 
   // Ordered list of day keys that actually have entries.
   const orderedDayKeys = useMemo(() => {
@@ -1337,7 +1407,7 @@ function SchedulePage() {
             dayStart,
             dayEnd,
             bufferAfter,
-            visibleCalendarBlocks,
+            busyBlocksForGaps,
             recurringBlocks,
             timeOff,
             key,
@@ -1352,7 +1422,7 @@ function SchedulePage() {
       if (dots.length > 0) map.set(key, dots);
     }
     return map;
-  }, [lessons, visibleCalendarBlocks, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
+  }, [lessons, visibleCalendarBlocks, busyBlocksForGaps, recurringBlocks, timeOff, workingDaysList, perDayHours, workingDayKeysInRange, workStart, workEnd, bufferAfter, hourlyRate, minGapMinutes]);
 
   const scrollToDate = useCallback(
     (key: string) => {
@@ -1591,7 +1661,7 @@ function SchedulePage() {
                           dayStart,
                           dayEnd,
                           bufferAfter,
-                          visibleCalendarBlocks,
+                          busyBlocksForGaps,
                           recurringBlocks,
                           timeOff,
                           row.key,
@@ -1862,9 +1932,11 @@ function SchedulePage() {
                             title = e.title;
                             if (e.allDay) timeText = "All day";
                           } else if (e.kind === "personal") {
-                            markerColor = "#E8B84B";
+                            markerColor = e.colour || "#E8B84B";
                             title = e.title;
                             if (e.allDay) timeText = "All day";
+                            const loc = e.event?.location?.trim();
+                            if (loc) timeText = `${timeText} · ${loc}`;
                           } else if (e.kind === "task") {
                             markerColor = "#6B6BD6";
                             title = e.title;
@@ -1884,7 +1956,8 @@ function SchedulePage() {
                           const isPaid = payStatus === "paid" || payStatus === "prepaid" || isPrepaidPupil;
                           const dueUnpaid = isLessonRow && amt > 0 && !isPaid;
                           const isBlockRow = e.kind === "block";
-                          const clickable = isLessonRow || isBlockRow;
+                          const isPersonalRow = e.kind === "personal";
+                          const clickable = isLessonRow || isBlockRow || isPersonalRow;
                           const isMovingThis = isLessonRow && movingLesson && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id === movingLesson.id;
                           const isTestDay = isLessonRow && isTest((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
 
@@ -1917,7 +1990,14 @@ function SchedulePage() {
                                     },
                                   );
                                 }
-                              : undefined;
+                              : isPersonalRow
+                                ? () => {
+                                    const ev = (e as Extract<AgendaEntry, { kind: 'personal' }>).event;
+                                    if (!ev) return;
+                                    setEditingPersonal(ev);
+                                    setPersonalSheetOpen(true);
+                                  }
+                                : undefined;
 
 
                           return (
@@ -2445,9 +2525,86 @@ function SchedulePage() {
 
 
 
+      <PersonalEventSheet
+        open={personalSheetOpen}
+        defaultDate={selectedDate}
+        event={editingPersonal}
+        onClose={() => { setPersonalSheetOpen(false); setEditingPersonal(null); }}
+        onSaved={() => setPersonalReloadKey((k) => k + 1)}
+      />
+
+      {addChooserOpen && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ fontFamily: 'Poppins, sans-serif' }}>
+          <div className="absolute inset-0 bg-black/30" onClick={() => setAddChooserOpen(false)} />
+          <div
+            className="relative w-full max-w-md"
+            style={{
+              background: '#fff',
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              padding: '18px 16px calc(18px + 90px + env(safe-area-inset-bottom))',
+              display: 'grid',
+              gap: 10,
+            }}
+          >
+            <div style={{ fontSize: 17, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Sora, sans-serif', marginBottom: 4 }}>
+              Add to your schedule
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setAddChooserOpen(false);
+                setAddLessonPupilId(undefined);
+                setAddLessonDate(selectedDate);
+                setAddLessonOpen(true);
+              }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
+                border: '1px solid #E4E8EF', borderRadius: 16, padding: '14px 14px', background: '#fff',
+              }}
+            >
+              <span style={{ width: 38, height: 38, borderRadius: 19, background: '#E7F0FB', display: 'grid', placeItems: 'center' }}>
+                <IconPlus size={19} stroke={1.8} color="#1877D6" />
+              </span>
+              <span>
+                <span style={{ display: 'block', fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>Lesson</span>
+                <span style={{ fontSize: 12, color: '#6B7686' }}>Pupil, duration and payment</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setAddChooserOpen(false);
+                setEditingPersonal(null);
+                setPersonalSheetOpen(true);
+              }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
+                border: '1px solid #E4E8EF', borderRadius: 16, padding: '14px 14px', background: '#fff',
+              }}
+            >
+              <span style={{ width: 38, height: 38, borderRadius: 19, background: '#FBF1DA', display: 'grid', placeItems: 'center' }}>
+                <IconCalendar size={19} stroke={1.8} color="#B8860B" />
+              </span>
+              <span>
+                <span style={{ display: 'block', fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>Private event</span>
+                <span style={{ fontSize: 12, color: '#6B7686' }}>Your own name, times, place and notes</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setAddChooserOpen(false)}
+              style={{ marginTop: 4, padding: '12px', borderRadius: 20, border: 'none', background: '#EEF2F7', color: '#0B1F3A', fontSize: 14, fontWeight: 700 }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       <button
         type="button"
-        onClick={() => { setAddLessonPupilId(undefined); setAddLessonDate(selectedDate); setAddLessonOpen(true); }}
+        onClick={() => setAddChooserOpen(true)}
         style={{
           position: 'fixed',
           bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
@@ -2464,7 +2621,7 @@ function SchedulePage() {
           boxShadow: '0 4px 10px rgba(11,31,58,0.3)',
           zIndex: 50,
         }}
-        aria-label="Add lesson"
+        aria-label="Add to schedule"
       >
         <IconPlus stroke={1.5} size={22} color="white" />
       </button>
