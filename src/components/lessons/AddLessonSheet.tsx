@@ -644,7 +644,10 @@ export function AddLessonSheet({
                       type="button"
                       role="radio"
                       aria-checked={active}
-                      onClick={() => setDuration(opt.value)}
+                      onClick={() => {
+                        setDuration(opt.value);
+                        setIsTestDay(opt.value === "test");
+                      }}
                       style={{
                         height: 34,
                         borderRadius: 20,
