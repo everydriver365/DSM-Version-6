@@ -290,6 +290,13 @@ function EditLessonPage() {
   async function handleSave() {
     if (saving || showCancelConfirm) return;
     setSaving(true);
+    setTestCentreError(null);
+
+    if (isTestDay && !testCentre.trim()) {
+      setTestCentreError("Enter a test centre or location for a test day");
+      setSaving(false);
+      return;
+    }
 
     const {
       data: { user },
