@@ -6347,11 +6347,21 @@ function HomePage() {
                                   }}>
                                     🚗 TEST DAY
                                   </span>
-                                  {testTimeOf(l) ? (
-                                    <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.85)', fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
-                                      Test at {testTimeOf(l)}
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                                    {testTimeOf(l) ? (
+                                      <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.85)', fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
+                                        Test at {testTimeOf(l)}
+                                      </span>
+                                    ) : null}
+                                    <span
+                                      role="button"
+                                      aria-label="Lesson options"
+                                      onClick={(e) => { e.stopPropagation(); setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l)); }}
+                                      style={{ flexShrink: 0, display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+                                    >
+                                      <IconDotsVertical size={14} stroke={2} color="#ffffff" />
                                     </span>
-                                  ) : null}
+                                  </div>
                                 </div>
                                 <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', marginTop: 4, letterSpacing: -0.2, fontFamily: PF, lineHeight: 1.2 }}>
                                   {name}
