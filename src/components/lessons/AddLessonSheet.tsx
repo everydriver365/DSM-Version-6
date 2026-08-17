@@ -263,6 +263,7 @@ export function AddLessonSheet({
       return;
     }
     const durationMinutes = isTestDay ? 0 : effectiveDuration > 0 ? effectiveDuration : 60;
+    const effTime = isTestDay && testTime ? testTime : time;
 
     const selected = pupils.find((p) => p.id === pupilId);
     const pickupValue = pickup.trim() || selected?.address?.trim() || null;
@@ -280,7 +281,7 @@ export function AddLessonSheet({
         .update({
           pupil_id: pupilId,
           lesson_date: date,
-          lesson_time: `${time}:00`,
+          lesson_time: `${effTime}:00`,
           duration_minutes: isTestDay ? null : durationMinutes,
           lesson_type: isTestDay ? "test" : "lesson",
           status: editingLesson.status ?? "confirmed",
@@ -416,7 +417,7 @@ export function AddLessonSheet({
           instructor_id: user.id,
           pupil_id: pupilId,
           day_of_week: dayOfWeek,
-          lesson_time: `${time}:00`,
+          lesson_time: `${effTime}:00`,
           duration_minutes: isTestDay ? null : durationMinutes,
           frequency: recurringFreq,
           start_date: date,
@@ -442,7 +443,7 @@ export function AddLessonSheet({
         instructor_id: user.id,
         pupil_id: pupilId,
         lesson_date: date,
-        lesson_time: `${time}:00`,
+        lesson_time: `${effTime}:00`,
         duration_minutes: isTestDay ? null : durationMinutes,
         lesson_type: isTestDay ? "test" : "lesson",
         status: "confirmed",
@@ -490,7 +491,7 @@ export function AddLessonSheet({
         instructor_id: user.id,
         pupil_id: pupilId,
         lesson_date: d,
-        lesson_time: `${time}:00`,
+        lesson_time: `${effTime}:00`,
         duration_minutes: isTestDay ? null : durationMinutes,
         lesson_type: isTestDay ? "test" : "lesson",
         status: "confirmed",
