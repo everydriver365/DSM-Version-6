@@ -435,8 +435,7 @@ function TestLessonCard({
                 type="button"
                 onClick={(ev) => {
                   ev.stopPropagation();
-                  setPanelOpen(false);
-                  setActionsOpen(true);
+                  setActionsOpen((cur) => !cur);
                 }}
                 aria-label="More test options"
                 style={{
