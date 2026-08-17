@@ -82,6 +82,18 @@ export interface AddLessonSheetProps {
   onSaved: (lessonId: string) => void;
   initialPupilId?: string;
   initialDate?: string;
+  editingLesson?: {
+    id: string;
+    pupil_id?: string;
+    lesson_date?: string;
+    lesson_time?: string;
+    duration_minutes?: number | null;
+    lesson_type?: string | null;
+    is_test_day?: boolean;
+    pickup_location?: string | null;
+    notes?: string | null;
+    status?: string;
+  };
 }
 
 const DURATION_OPTIONS: { value: number | "test"; label: string }[] = [
@@ -99,6 +111,7 @@ export function AddLessonSheet({
   onSaved,
   initialPupilId,
   initialDate,
+  editingLesson,
 }: AddLessonSheetProps) {
   const [pupils, setPupils] = useState<Pupil[]>([]);
   const [pupilId, setPupilId] = useState(initialPupilId ?? "");
@@ -107,6 +120,7 @@ export function AddLessonSheet({
   const [date, setDate] = useState(initialDate || todayISO());
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState<number | "test">(1);
+  const [isTestDay, setIsTestDay] = useState(false);
   const [pickup, setPickup] = useState("");
   const [testCentre, setTestCentre] = useState("");
   const [pickupTouched, setPickupTouched] = useState(false);
