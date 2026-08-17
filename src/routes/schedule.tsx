@@ -439,28 +439,40 @@ function TestLessonCard({
                 </span>
               ) : null}
               <div style={{ flexShrink: 0, marginLeft: 4, display: "flex", flexDirection: "row", alignItems: "center" }}>
-                <button
-                  type="button"
-                  onClick={(ev) => {
-                    ev.stopPropagation();
-                    setActionsOpen((cur) => !cur);
-                  }}
-                  aria-label="More test options"
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: "50%",
-                    background: "rgba(255,255,255,0.15)",
-                    border: "0.5px solid rgba(255,255,255,0.28)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    padding: 0,
-                  }}
+                <LessonActionsMenu
+                  open={actionsOpen}
+                  onOpenChange={setActionsOpen}
+                  top={40}
+                  right={10}
+                  items={[
+                    { label: "View test details", onClick: () => setPanelOpen(true) },
+                    { label: "Edit lesson", onClick: goEdit },
+                    { label: "Full profile", onClick: goProfile },
+                  ]}
                 >
-                  <IconDots stroke={1.5} size={14} color="#ffffff" />
-                </button>
+                  <button
+                    type="button"
+                    onClick={(ev) => {
+                      ev.stopPropagation();
+                      setActionsOpen((cur) => !cur);
+                    }}
+                    aria-label="More test options"
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: "50%",
+                      background: "rgba(255,255,255,0.15)",
+                      border: "0.5px solid rgba(255,255,255,0.28)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      padding: 0,
+                    }}
+                  >
+                    <IconDots stroke={1.5} size={14} color="#ffffff" />
+                  </button>
+                </LessonActionsMenu>
               </div>
             </div>
           </div>
