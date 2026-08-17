@@ -5994,23 +5994,26 @@ function HomePage() {
                       const gapStartTime = fmtT(gs);
                       const durLabel = formatMins(r.mins);
                       return (
-                        <div key={`gap-${idx}`} style={{ marginBottom: 8 }}>
-                          {/* FILL THIS GAP pill, sitting above the card */}
-                          <div>
-                            <span
-                              style={{
-                                display: 'inline-block',
-                                background: '#0B1F3A',
-                                color: '#FFFFFF',
-                                fontSize: 11,
-                                fontWeight: 700,
-                                letterSpacing: 0.3,
-                                padding: '3px 9px',
-                                borderRadius: '6px 6px 0 0',
-                              }}
-                            >
-                              FILL THIS GAP
-                            </span>
+                        <div key={`gap-${idx}`} style={{ position: "relative", marginBottom: 8 }}>
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: -12,
+                              left: 12,
+                              zIndex: 1,
+                              background: "#0B1F3A",
+                              color: "#FFFFFF",
+                              fontSize: 10,
+                              fontWeight: 800,
+                              textTransform: "uppercase",
+                              letterSpacing: "0.5px",
+                              padding: "4px 10px",
+                              borderRadius: "8px 8px 8px 0",
+                              fontFamily: PF,
+                              lineHeight: 1.2,
+                            }}
+                          >
+                            FILL THIS GAP
                           </div>
                           <div
                             onClick={() => {
@@ -6023,83 +6026,71 @@ function HomePage() {
                             role="button"
                             tabIndex={0}
                             style={{
-                              background: moveModeHome ? '#F4F8FE' : '#FFFBF3',
-                              border: '1px dashed #F0B93A',
-                              borderRadius: '0 13px 13px 13px',
-                              padding: '12px 14px',
+                              background: moveModeHome ? '#F4F8FE' : '#FDFBF6',
+                              border: '2px dashed #D4A853',
+                              borderRadius: 16,
+                              padding: '20px 14px 12px',
                               display: 'flex',
                               alignItems: 'stretch',
                               gap: 12,
                               cursor: 'pointer',
+                              fontFamily: PF,
                             }}
                           >
-                            <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
-                              <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                            <div style={{ width: 54, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
+                              <div style={{ fontSize: 22, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.1 }}>
                                 {fmtT(gs)}
                               </div>
-                              <div style={{ fontSize: 11.5, fontWeight: 500, color: '#8A93A3', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
+                              <div style={{ fontSize: 12, fontWeight: 500, color: '#8A93A3', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
                                 {durLabel}
                               </div>
                             </div>
-                            <div aria-hidden style={{ width: 3, borderRadius: 2, background: '#E8A23D', flexShrink: 0, alignSelf: 'stretch' }} />
-                            <div style={{ flex: 1, minWidth: 0, paddingTop: 2, display: 'flex', alignItems: 'center', gap: 8 }}>
-                              {preview.count > 0 && (
-                                <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-                                  {preview.topPupils.map((p, i) => {
-                                    const initials = (p.name ?? p.first_name ?? "P")
-                                      .split(/\s+/)
-                                      .map((s) => s.charAt(0))
-                                      .join("")
-                                      .slice(0, 2)
-                                      .toUpperCase();
-                                    return (
-                                      <div
-                                        key={i}
-                                        style={{
-                                          width: 24,
-                                          height: 24,
-                                          borderRadius: '50%',
-                                          background: pupilColour((p as any).id ?? null, p.calendar_colour ?? null, p.name ?? null),
-                                          border: '2px solid #FFFFFF',
-                                          display: 'flex',
-                                          alignItems: 'center',
-                                          justifyContent: 'center',
-                                          fontSize: 9,
-                                          fontWeight: 700,
-                                          color: '#FFFFFF',
-                                          marginRight: i === preview.topPupils.length - 1 ? 0 : -8,
-                                        }}
-                                      >
-                                        {initials}
-                                      </div>
-                                    );
-                                  })}
-                                  {preview.count > preview.topPupils.length && (
-                                    <div
-                                      style={{
-                                        width: 24,
-                                        height: 24,
-                                        borderRadius: '50%',
-                                        background: '#94A3B8',
-                                        border: '2px solid #FFFFFF',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        fontSize: 9,
-                                        fontWeight: 700,
-                                        color: '#FFFFFF',
-                                        marginLeft: -8,
-                                      }}
-                                    >
-                                      +{preview.count - preview.topPupils.length}
+                            <div aria-hidden style={{ width: 4, borderRadius: '14px', background: '#D4A853', flexShrink: 0, alignSelf: 'stretch', marginTop: 4, marginBottom: 4 }} />
+                            <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, flexWrap: 'wrap' }}>
+                                {preview.count > 0 ? (
+                                  <>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                      {preview.topPupils.map((p, i) => {
+                                        const initials = (p.name ?? p.first_name ?? "P")
+                                          .split(/\s+/)
+                                          .map((s) => s.charAt(0))
+                                          .join("")
+                                          .slice(0, 2)
+                                          .toUpperCase();
+                                        return (
+                                          <div
+                                            key={i}
+                                            style={{
+                                              width: 34,
+                                              height: 34,
+                                              borderRadius: '50%',
+                                              background: '#0B1F3A',
+                                              border: '2px solid #FDFBF6',
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              justifyContent: 'center',
+                                              fontSize: 11,
+                                              fontWeight: 700,
+                                              color: '#FFFFFF',
+                                              marginRight: i === preview.topPupils.length - 1 ? 0 : -10,
+                                              fontFamily: PF,
+                                            }}
+                                          >
+                                            {initials}
+                                          </div>
+                                        );
+                                      })}
                                     </div>
-                                  )}
-                                </div>
-                              )}
-                              <div style={{ fontSize: 13.5, fontWeight: 500, color: '#0B1F3A', minWidth: 0 }}>
-                                {preview.count > 0
-                                  ? `${preview.count} pupil${preview.count === 1 ? '' : 's'} may fit · £${potential} potential`
-                                  : `${durLabel} free · £${potential} potential`}
+                                    <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', lineHeight: 1.3 }}>
+                                      {preview.count} pupil{preview.count === 1 ? '' : 's'} may fit · £{potential} potential
+                                    </div>
+                                  </>
+                                ) : (
+                                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', lineHeight: 1.3 }}>
+                                    {durLabel} free · £{potential} potential
+                                  </div>
+                                )}
                               </div>
                             </div>
                             {moveModeHome ? (
@@ -6113,7 +6104,7 @@ function HomePage() {
                                   fontSize: 12.5,
                                   fontWeight: 600,
                                   padding: '8px 14px',
-                                  borderRadius: 9,
+                                  borderRadius: 12,
                                   border: 'none',
                                   cursor: 'pointer',
                                   fontFamily: PF,
@@ -6130,10 +6121,10 @@ function HomePage() {
                                   alignSelf: 'center',
                                   background: '#1877D6',
                                   color: '#FFFFFF',
-                                  fontSize: 12.5,
-                                  fontWeight: 600,
-                                  padding: '8px 16px',
-                                  borderRadius: 9,
+                                  fontSize: 13,
+                                  fontWeight: 700,
+                                  padding: '9px 18px',
+                                  borderRadius: 12,
                                   border: 'none',
                                   cursor: 'pointer',
                                   fontFamily: PF,
