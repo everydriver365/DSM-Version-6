@@ -327,10 +327,11 @@ function TestLessonCard({
     }, 0);
   };
   const goProfile = () => {
-    if (lesson.pupil_id) {
+    const pid = lesson.pupil_id;
+    if (pid) {
       setActionsOpen(false);
       setTimeout(() => {
-        void navigate({ to: '/pupils/$id', params: { id: lesson.pupil_id } });
+        void navigate({ to: '/pupils/$id', params: { id: pid } });
       }, 0);
     }
   };
