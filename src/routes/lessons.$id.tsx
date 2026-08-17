@@ -2,7 +2,7 @@ import { useGoBack } from "@/hooks/useGoBack";
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconAlertTriangle, IconChevronRight, IconMap, IconNavigation, IconPencil, IconX } from "@tabler/icons-react";
+import { IconAlertTriangle, IconChevronRight, IconMap, IconMapPin, IconNavigation, IconPencil, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -56,8 +56,9 @@ export const Route = createFileRoute("/lessons/$id")({
   head: () => ({
     meta: [{ title: "Lesson — DSM by EveryDriver" }],
   }),
-  validateSearch: (search: Record<string, unknown>): { action?: "cancel" } => ({
+  validateSearch: (search: Record<string, unknown>): { action?: "cancel"; testCentre?: string } => ({
     action: search.action === "cancel" ? ("cancel" as const) : undefined,
+    testCentre: typeof search.testCentre === "string" && search.testCentre.trim() ? search.testCentre.trim() : undefined,
   }),
   component: LessonDetailPage,
 });
@@ -69,9 +70,11 @@ interface Lesson {
   lesson_date: string;
   lesson_time: string;
   duration_minutes: number | null;
+  lesson_type: string | null;
   status: string;
   notes: string | null;
   pickup_address: string | null;
+  pickup_location: string | null;
   pupil_id: string;
   payment_status: string | null;
   amount_due: number | null;
@@ -179,7 +182,7 @@ function LessonDetailPage() {
     supabase
       .from("lessons")
       .select(
-        "id, lesson_date, lesson_time, duration_minutes, status, notes, pickup_address, pupil_id, payment_status, amount_due, cancellation_reason, cancellation_notes, cancelled_at, pupils(id, name, phone)",
+        "id, lesson_date, lesson_time, duration_minutes, lesson_type, status, notes, pickup_address, pickup_location, pupil_id, payment_status, amount_due, cancellation_reason, cancellation_notes, cancelled_at, pupils(id, name, phone)",
       )
       .eq("id", id)
       .is("deleted_at", null)
@@ -276,13 +279,16 @@ function LessonDetailPage() {
     await updateStatus("completed");
   };
 
+  const isTestDay = lesson?.lesson_type === "test" || lesson?.lesson_type === "test day" || lesson?.lesson_type === "driving test";
+  const testCentre = search.testCentre || lesson?.pickup_location || lesson?.pickup_address || lesson?.notes || "";
+
   const handleNavigate = () => {
-    const address = lesson?.pickup_address || lesson?.notes || "";
-    if (!address) {
-      toast("No pickup address set for this lesson");
+    const address = testCentre || lesson?.pickup_address || lesson?.notes || "";
+    if (!address.trim()) {
+      toast("No pickup address or test centre set for this lesson");
       return;
     }
-    const encodedAddress = encodeURIComponent(address);
+    const encodedAddress = encodeURIComponent(address.trim());
     const isIOS = /iPhone|iPad/.test(navigator.userAgent);
     if (isIOS) {
       window.open(`maps://maps.apple.com/?daddr=${encodedAddress}`, "_blank");
@@ -435,6 +441,27 @@ function LessonDetailPage() {
                   {lesson.status}
                 </span>
               </div>
+              {isTestDay && (
+                <div className="mt-3 pt-3" style={{ borderTop: "0.5px solid #E5E7EB" }}>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="text-[10px] font-extrabold px-2 py-0.5 rounded-full text-white"
+                      style={{ backgroundColor: "#CC2229", fontFamily: "Poppins, sans-serif", letterSpacing: "0.06em" }}
+                    >
+                      🚗 TEST DAY
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2 mt-2">
+                    <IconMapPin size={14} color="#6B7280" stroke={1.5} />
+                    <span
+                      className="text-[13px] font-medium"
+                      style={{ color: testCentre ? "#0B1F3A" : "#9CA3AF", fontFamily: "Poppins, sans-serif" }}
+                    >
+                      {testCentre || "Test centre not set"}
+                    </span>
+                  </div>
+                </div>
+              )}
             </Card>
           </div>
 
