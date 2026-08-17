@@ -551,6 +551,69 @@ function TestLessonCard({
           </div>
         </div>
       </div>
+      {actionsOpen && (
+        <div
+          onClick={(ev) => ev.stopPropagation()}
+          style={{
+            position: 'absolute',
+            top: 40,
+            right: 10,
+            minWidth: 140,
+            background: '#FFFFFF',
+            border: '1px solid #E5E7EB',
+            borderRadius: 10,
+            boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+            zIndex: 60,
+            overflow: 'hidden',
+            ...POPPINS,
+          }}
+        >
+          <button
+            type="button"
+            style={{
+              display: 'block',
+              width: '100%',
+              textAlign: 'left',
+              padding: '10px 14px',
+              fontSize: 13,
+              fontFamily: 'Poppins, sans-serif',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              color: '#0B1F3A',
+            }}
+            onClick={(ev) => {
+              ev.stopPropagation();
+              setActionsOpen(false);
+              goEdit();
+            }}
+          >
+            Edit lesson
+          </button>
+          <button
+            type="button"
+            style={{
+              display: 'block',
+              width: '100%',
+              textAlign: 'left',
+              padding: '10px 14px',
+              fontSize: 13,
+              fontFamily: 'Poppins, sans-serif',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              color: '#0B1F3A',
+            }}
+            onClick={(ev) => {
+              ev.stopPropagation();
+              setActionsOpen(false);
+              goProfile();
+            }}
+          >
+            Full profile
+          </button>
+        </div>
+      )}
     </div>
     </>
   );
