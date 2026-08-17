@@ -640,6 +640,47 @@ export function AddLessonSheet({
                   Test day — no lesson duration recorded
                 </p>
               )}
+              {isTestDay && (
+                <div style={{ marginTop: 12 }}>
+                  <div
+                    style={{
+                      marginBottom: 6,
+                      fontFamily: "Poppins, sans-serif",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: "#9CA3AF",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    TEST CENTRE / LOCATION
+                  </div>
+                  <input
+                    value={testCentre}
+                    onChange={(e) => setTestCentre(e.target.value)}
+                    placeholder="e.g. Eastleigh Test Centre, SO50 5JH"
+                    style={{
+                      width: "100%",
+                      background: "#fff",
+                      border: "1px solid #E4E8EF",
+                      borderRadius: 10,
+                      padding: "10px 12px",
+                      fontSize: 14,
+                      fontFamily: "Poppins, sans-serif",
+                      outline: "none",
+                    }}
+                  />
+                  <p
+                    style={{
+                      fontSize: 11,
+                      color: "#9CA3AF",
+                      marginTop: 4,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    This will show on your schedule and enable navigation
+                  </p>
+                </div>
+              )}
             </div>
           </SheetRow>
 
