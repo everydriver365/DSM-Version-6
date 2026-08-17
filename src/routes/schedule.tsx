@@ -1990,7 +1990,14 @@ function SchedulePage() {
                                     },
                                   );
                                 }
-                              : undefined;
+                              : isPersonalRow
+                                ? () => {
+                                    const ev = (e as Extract<AgendaEntry, { kind: 'personal' }>).event;
+                                    if (!ev) return;
+                                    setEditingPersonal(ev);
+                                    setPersonalSheetOpen(true);
+                                  }
+                                : undefined;
 
 
                           return (
