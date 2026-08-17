@@ -6292,29 +6292,63 @@ function HomePage() {
                               background: 'linear-gradient(135deg, #1877D6, #0B1F3A)',
                               borderRadius: 13,
                               marginBottom: 8,
-                              padding: '8px 12px',
+                              padding: '10px 12px',
                               cursor: 'pointer',
                               boxShadow: '0 2px 0 #0B1F3A',
                               position: 'relative',
                               overflow: 'hidden',
                             }}
                           >
-                            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                              <div style={{ minWidth: 0 }}>
-                                <span style={{
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  background: 'rgba(255,255,255,0.2)',
-                                  color: '#fff',
-                                  fontSize: 9,
-                                  fontWeight: 800,
-                                  borderRadius: 20,
-                                  padding: '2px 8px',
-                                  letterSpacing: '0.08em',
-                                  fontFamily: PF,
-                                }}>
-                                  🚗 TEST DAY
-                                </span>
+                            <div style={{ display: 'flex', alignItems: 'stretch', gap: 12 }}>
+                              <div
+                                style={{
+                                  width: 52,
+                                  flexShrink: 0,
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  alignItems: 'flex-start',
+                                  paddingTop: 2,
+                                }}
+                              >
+                                <div style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, fontFamily: PF }}>
+                                  {timeLabel}
+                                </div>
+                                <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.75)', marginTop: 3, fontVariantNumeric: 'tabular-nums', fontFamily: PF }}>
+                                  {durLabel}
+                                </div>
+                              </div>
+                              <div
+                                aria-hidden
+                                style={{
+                                  width: 3,
+                                  borderRadius: 2,
+                                  background: 'rgba(255,255,255,0.3)',
+                                  flexShrink: 0,
+                                  alignSelf: 'stretch',
+                                }}
+                              />
+                              <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
+                                  <span style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    background: 'rgba(255,255,255,0.2)',
+                                    color: '#fff',
+                                    fontSize: 9,
+                                    fontWeight: 800,
+                                    borderRadius: 20,
+                                    padding: '2px 8px',
+                                    letterSpacing: '0.08em',
+                                    fontFamily: PF,
+                                  }}>
+                                    🚗 TEST DAY
+                                  </span>
+                                  {testTimeOf(l) ? (
+                                    <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.85)', fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
+                                      Test at {testTimeOf(l)}
+                                    </span>
+                                  ) : null}
+                                </div>
                                 <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', marginTop: 4, letterSpacing: -0.2, fontFamily: PF, lineHeight: 1.2 }}>
                                   {name}
                                 </div>
@@ -6331,17 +6365,6 @@ function HomePage() {
                                   }}>
                                     {pickupLabel || 'Test centre not set'}
                                   </span>
-                                </div>
-                              </div>
-                              <div style={{ textAlign: 'right', flexShrink: 0, paddingLeft: 8 }}>
-                                <div style={{ fontSize: 16, color: '#FFFFFF', fontWeight: 700, fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
-                                  {(() => {
-                                    const tt = testTimeOf(l);
-                                    return tt ? `${timeLabel} – ${endTimeLabel} · Test at ${tt}` : `${timeLabel} – ${endTimeLabel}`;
-                                  })()}
-                                </div>
-                                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', fontFamily: PF, marginTop: 2 }}>
-                                  {durLabel}
                                 </div>
                               </div>
                             </div>
