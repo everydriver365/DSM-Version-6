@@ -1,3 +1,4 @@
+import { testStartTime, testTimeFromNotes, testTimeFromStart, withTestTimeNote, TEST_TOTAL_MINUTES } from "@/lib/testDay";
 import { useEffect, useRef, useState } from "react";
 import { IconSearch } from "@tabler/icons-react";
 import {
@@ -287,7 +288,7 @@ export function AddLessonSheet({
           pupil_id: pupilId,
           lesson_date: date,
           lesson_time: `${effTime}:00`,
-          duration_minutes: isTestDay ? null : durationMinutes,
+          duration_minutes: savedDuration,
           lesson_type: isTestDay ? "test" : "lesson",
           status: editingLesson.status ?? "confirmed",
           notes: fullNotes,
@@ -423,7 +424,7 @@ export function AddLessonSheet({
           pupil_id: pupilId,
           day_of_week: dayOfWeek,
           lesson_time: `${effTime}:00`,
-          duration_minutes: isTestDay ? null : durationMinutes,
+          duration_minutes: savedDuration,
           frequency: recurringFreq,
           start_date: date,
           end_date: recurringUntil || null,
@@ -449,7 +450,7 @@ export function AddLessonSheet({
         pupil_id: pupilId,
         lesson_date: date,
         lesson_time: `${effTime}:00`,
-        duration_minutes: isTestDay ? null : durationMinutes,
+        duration_minutes: savedDuration,
         lesson_type: isTestDay ? "test" : "lesson",
         status: "confirmed",
         notes: fullNotes,
@@ -497,7 +498,7 @@ export function AddLessonSheet({
         pupil_id: pupilId,
         lesson_date: d,
         lesson_time: `${effTime}:00`,
-        duration_minutes: isTestDay ? null : durationMinutes,
+        duration_minutes: savedDuration,
         lesson_type: isTestDay ? "test" : "lesson",
         status: "confirmed",
         payment_status: isPrepaidPricing ? "prepaid" : "unpaid",
