@@ -1216,6 +1216,25 @@ function SchedulePage() {
       });
       map.set(key, arr);
     }
+    // Merge private DSM events.
+    for (const p of personalEvents) {
+      if (!p.start_datetime || !p.end_datetime) continue;
+      const start = new Date(p.start_datetime);
+      const end = new Date(p.end_datetime);
+      const key = ymdLocal(start);
+      const arr = map.get(key) ?? [];
+      arr.push({
+        kind: "personal",
+        id: `personal-${p.id}`,
+        start,
+        end,
+        allDay: !!p.is_all_day,
+        title: p.title || "Private event",
+        colour: p.colour ?? null,
+        event: p,
+      });
+      map.set(key, arr);
+    }
     for (const [k, arr] of map) {
       arr.sort((a, b) => {
         if (a.allDay && !b.allDay) return -1;
@@ -1225,7 +1244,7 @@ function SchedulePage() {
       map.set(k, arr);
     }
     return map;
-  }, [lessons, visibleCalendarBlocks]);
+  }, [lessons, visibleCalendarBlocks, personalEvents]);
 
   // Ordered list of day keys that actually have entries.
   const orderedDayKeys = useMemo(() => {
