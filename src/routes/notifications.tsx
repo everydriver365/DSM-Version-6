@@ -100,6 +100,7 @@ function NotificationsPage() {
       .update({ read: true })
       .eq("id", id);
     if (error) console.error("[notifications] mark read error", error);
+    window.dispatchEvent(new Event("dsm-notifications-updated"));
   }
 
   async function markAllRead() {
@@ -116,6 +117,7 @@ function NotificationsPage() {
     } else {
       toast.success("All marked as read");
     }
+    window.dispatchEvent(new Event("dsm-notifications-updated"));
   }
 
   async function deleteOne(id: string) {
@@ -130,6 +132,7 @@ function NotificationsPage() {
     } else {
       toast("Notification removed");
     }
+    window.dispatchEvent(new Event("dsm-notifications-updated"));
   }
 
   async function clearAllRead() {
@@ -146,6 +149,7 @@ function NotificationsPage() {
     } else {
       toast.success("Read notifications cleared");
     }
+    window.dispatchEvent(new Event("dsm-notifications-updated"));
   }
 
   const today = startOfDay(new Date());
