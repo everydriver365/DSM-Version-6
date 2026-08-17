@@ -279,13 +279,16 @@ function LessonDetailPage() {
     await updateStatus("completed");
   };
 
+  const isTestDay = lesson?.lesson_type === "test" || lesson?.lesson_type === "test day" || lesson?.lesson_type === "driving test";
+  const testCentre = search.testCentre || lesson?.pickup_location || lesson?.pickup_address || lesson?.notes || "";
+
   const handleNavigate = () => {
-    const address = lesson?.pickup_address || lesson?.notes || "";
-    if (!address) {
-      toast("No pickup address set for this lesson");
+    const address = testCentre || lesson?.pickup_address || lesson?.notes || "";
+    if (!address.trim()) {
+      toast("No pickup address or test centre set for this lesson");
       return;
     }
-    const encodedAddress = encodeURIComponent(address);
+    const encodedAddress = encodeURIComponent(address.trim());
     const isIOS = /iPhone|iPad/.test(navigator.userAgent);
     if (isIOS) {
       window.open(`maps://maps.apple.com/?daddr=${encodedAddress}`, "_blank");
