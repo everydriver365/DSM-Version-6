@@ -6300,7 +6300,7 @@ function HomePage() {
                               cursor: 'pointer',
                               boxShadow: '0 2px 0 #0B1F3A',
                               position: 'relative',
-                              overflow: 'hidden',
+                              overflow: 'visible',
                             }}
                           >
                             <div style={{ display: 'flex', alignItems: 'stretch', gap: 12 }}>
