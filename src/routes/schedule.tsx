@@ -2199,14 +2199,13 @@ function SchedulePage() {
                                            </>
                                          )}
                                         </div>
-                                              {isLessonRow && (
+                                              {isLessonRow && (() => {
+                                                const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                                return (
                                                 <div style={{ flexShrink: 0, marginLeft: 4, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                                   <LessonActionsMenu
                                                     open={actionsOpenFor?.id === lesson.id}
-                                                    onOpenChange={(open) => {
-                                                      const currentLesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
-                                                      setActionsOpenFor(open ? currentLesson : null);
-                                                    }}
+                                                    onOpenChange={(open) => setActionsOpenFor(open ? lesson : null)}
                                                     top={44}
                                                     right={14}
                                                     items={[
@@ -2220,8 +2219,7 @@ function SchedulePage() {
                                                       data-lesson-actions-trigger
                                                       onClick={(ev) => {
                                                         ev.stopPropagation();
-                                                        const currentLesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
-                                                        setActionsOpenFor((cur) => (cur?.id === currentLesson.id ? null : currentLesson));
+                                                        setActionsOpenFor((cur) => (cur?.id === lesson.id ? null : lesson));
                                                       }}
                                                       aria-label="More lesson options"
                                                       style={{
@@ -2241,7 +2239,8 @@ function SchedulePage() {
                                                     </button>
                                                   </LessonActionsMenu>
                                                 </div>
-                                              )}
+                                                );
+                                              })()}
 
                                       </>
                                    )}
