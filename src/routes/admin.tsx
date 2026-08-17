@@ -1355,9 +1355,11 @@ export function BenefitPartnersSection() {
 
   // ---- perk form validation ------------------------------------------------
   const [perkErrors, setPerkErrors] = useState<Record<string, string>>({});
+  const [perkVideoMode, setPerkVideoMode] = useState<"embed" | "upload">("upload");
   const perkHeroInputRef = useRef<HTMLInputElement>(null);
   const perkGalleryInputRef = useRef<HTMLInputElement>(null);
   const perkVideoInputRef = useRef<HTMLInputElement>(null);
+
 
   function validatePerk(perk: any): Record<string, string> {
     const errs: Record<string, string> = {};
@@ -2910,65 +2912,171 @@ export function BenefitPartnersSection() {
               </div>
 
 
-              <div style={partnerLabelStyle}>Video embed code</div>
-              <textarea
-                rows={3}
-                value={editingPerk.video_embed_url ?? ""}
-                onChange={(e) => patchPerk({ video_embed_url: e.target.value })}
-                placeholder="<iframe ...></iframe>"
-                style={{ ...partnerInputStyle, resize: "vertical" }}
-              />
+              <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", marginBottom: 8 }}>
+                VIDEO
+              </div>
 
-              <div style={partnerLabelStyle}>Or upload a video</div>
-              <input
-                type="file"
-                accept="video/mp4,video/webm,video/quicktime"
-                style={{ display: "none" }}
-                ref={perkVideoInputRef}
-                onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  if (file.size > 500 * 1024 * 1024) {
-                    toast.error("Video must be under 500MB");
-                    return;
-                  }
-                  const path = `perks/${Date.now()}-${Math.random().toString(36).slice(2)}.${file.name.split(".").pop()}`;
-                  const { error } = await supabase.storage.from("marketplace-videos").upload(path, file, { upsert: true });
-                  if (!error) {
-                    const { data: { publicUrl } } = supabase.storage.from("marketplace-videos").getPublicUrl(path);
-                    patchPerk({ video_url: publicUrl });
-                    toast.success("Video uploaded");
-                  } else {
-                    toast.error("Upload failed");
-                  }
-                  e.target.value = "";
-                }}
-              />
-              {editingPerk.video_url ? (
-                <div style={{ fontSize: 11, color: "#6B7686", marginBottom: 6, wordBreak: "break-all" }}>
-                  {editingPerk.video_url}
-                </div>
-              ) : null}
               <div
-                onClick={() => perkVideoInputRef.current?.click()}
                 style={{
-                  border: "1px dashed #E2E8F0",
-                  borderRadius: 10,
-                  padding: 16,
+                  background: "#E5E5EA",
+                  borderRadius: 12,
+                  padding: 4,
                   display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 6,
-                  cursor: "pointer",
-                  marginBottom: 8,
-                  background: "#F8FAFC",
+                  gap: 4,
+                  marginBottom: 12,
                 }}
               >
-                <IconVideo size={24} color="#9CA3AF" />
-                <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>Add video</span>
-                <span style={{ fontSize: 11, color: "#9CA3AF" }}>MP4, WebM, or QuickTime under 500MB</span>
+                <button
+                  type="button"
+                  onClick={() => setPerkVideoMode("upload")}
+                  style={{
+                    flex: 1,
+                    borderRadius: 10,
+                    border: "none",
+                    padding: "6px 12px",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    fontFamily: "Poppins, sans-serif",
+                    cursor: "pointer",
+                    background: perkVideoMode === "upload" ? "#fff" : "transparent",
+                    color: perkVideoMode === "upload" ? "#0B1F3A" : "#6B6B6F",
+                    boxShadow: perkVideoMode === "upload" ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+                  }}
+                >
+                  Upload
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPerkVideoMode("embed")}
+                  style={{
+                    flex: 1,
+                    borderRadius: 10,
+                    border: "none",
+                    padding: "6px 12px",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    fontFamily: "Poppins, sans-serif",
+                    cursor: "pointer",
+                    background: perkVideoMode === "embed" ? "#fff" : "transparent",
+                    color: perkVideoMode === "embed" ? "#0B1F3A" : "#6B6B6F",
+                    boxShadow: perkVideoMode === "embed" ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+                  }}
+                >
+                  Embed URL
+                </button>
               </div>
+
+              {perkVideoMode === "embed" ? (
+                <>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", marginBottom: 6 }}>Embed URL</div>
+                  <textarea
+                    rows={3}
+                    value={editingPerk.video_embed_url ?? ""}
+                    onChange={(e) => patchPerk({ video_embed_url: e.target.value })}
+                    placeholder="YouTube embed URL e.g. https://www.youtube.com/embed/xxxxx"
+                    style={{
+                      width: "100%",
+                      border: "1px solid #E4E8EF",
+                      borderRadius: 10,
+                      padding: "10px 12px",
+                      fontSize: 13,
+                      fontFamily: "Poppins, sans-serif",
+                      resize: "vertical",
+                    }}
+                  />
+                  {editingPerk.video_embed_url ? (
+                    <iframe
+                      src={editingPerk.video_embed_url}
+                      title="Video preview"
+                      allowFullScreen
+                      style={{
+                        width: "100%",
+                        aspectRatio: "16/9",
+                        borderRadius: 10,
+                        border: "1px solid #E4E8EF",
+                        marginTop: 8,
+                      }}
+                    />
+                  ) : null}
+                </>
+              ) : (
+                <>
+                  <input
+                    type="file"
+                    accept="video/mp4,video/webm,video/quicktime"
+                    style={{ display: "none" }}
+                    ref={perkVideoInputRef}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      if (file.size > 500 * 1024 * 1024) {
+                        toast.error("Video must be under 500MB");
+                        return;
+                      }
+                      const path = `perks/${Date.now()}-${Math.random().toString(36).slice(2)}.${file.name.split(".").pop()}`;
+                      const { error } = await supabase.storage.from("marketplace-videos").upload(path, file, { upsert: true });
+                      if (!error) {
+                        const { data: { publicUrl } } = supabase.storage.from("marketplace-videos").getPublicUrl(path);
+                        patchPerk({ video_url: publicUrl });
+                        toast.success("Video uploaded");
+                      } else {
+                        toast.error("Upload failed");
+                      }
+                      e.target.value = "";
+                    }}
+                  />
+                  {editingPerk.video_url ? (
+                    <>
+                      <video
+                        src={editingPerk.video_url}
+                        controls
+                        style={{
+                          width: "100%",
+                          borderRadius: 10,
+                          maxHeight: 200,
+                          marginBottom: 8,
+                          border: "1px solid #E4E8EF",
+                        }}
+                      />
+                      <div
+                        onClick={() => perkVideoInputRef.current?.click()}
+                        style={{
+                          display: "flex",
+                          gap: 8,
+                          alignItems: "center",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <IconVideo size={14} color="#1877D6" />
+                        <span style={{ fontSize: 13, color: "#1877D6" }}>Change video</span>
+                      </div>
+                      <div
+                        onClick={() => patchPerk({ video_url: null })}
+                        style={{ fontSize: 12, color: "#CC2229", cursor: "pointer", marginTop: 4 }}
+                      >
+                        Remove
+                      </div>
+                    </>
+                  ) : (
+                    <div
+                      onClick={() => perkVideoInputRef.current?.click()}
+                      style={{
+                        border: "2px dashed #E4E8EF",
+                        borderRadius: 12,
+                        padding: 24,
+                        textAlign: "center",
+                        cursor: "pointer",
+                        background: "#F8FAFC",
+                      }}
+                    >
+                      <IconVideo size={28} color="#9CA3AF" stroke={1.5} />
+                      <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", marginTop: 8 }}>Upload video</div>
+                      <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 4 }}>MP4, WebM or MOV · max 500MB</div>
+                    </div>
+                  )}
+                </>
+              )}
+
 
               <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
