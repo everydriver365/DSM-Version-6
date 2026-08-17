@@ -301,6 +301,17 @@ function TestLessonCard({
   const navigate = useNavigate({ from: Route.fullPath });
   const [panelOpen, setPanelOpen] = useState(false);
   const [actionsOpen, setActionsOpen] = useState(false);
+  const actionsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!actionsOpen) return;
+    const handle = (ev: MouseEvent) => {
+      if (actionsRef.current && !actionsRef.current.contains(ev.target as Node)) {
+        setActionsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handle);
+    return () => document.removeEventListener('mousedown', handle);
+  }, [actionsOpen]);
   const goNavigate = () => {
     void navigate({
       to: "/lessons/$id",
