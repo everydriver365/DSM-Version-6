@@ -5908,6 +5908,8 @@ function HomePage() {
                 return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
               };
 
+              let lastDividerDate = '';
+
               return (
                 <div style={{ fontFamily: PF }}>
                   {tabs}
@@ -6213,6 +6215,9 @@ function HomePage() {
 
                     const l = row.l;
                     const start = lessonDateTime(l);
+                    const rowDate = ymd(start);
+                    const showDivider = rowDate !== lastDividerDate;
+                    if (showDivider) lastDividerDate = rowDate;
                     const dur = l.duration_minutes ?? 60;
                     const end = new Date(start.getTime() + dur * 60000);
                     const endTimeLabel = `${String(end.getHours()).padStart(2, '0')}:${String(end.getMinutes()).padStart(2, '0')}`;
@@ -6267,7 +6272,7 @@ function HomePage() {
 
                     return (
                       <React.Fragment key={l.id}>
-                        <ScheduleDateDivider date={start} />
+                        {showDivider && <ScheduleDateDivider date={start} />}
                         {isTestDayRow ? (
                           <TestDetailTrigger
                             detail={{
