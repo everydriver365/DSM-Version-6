@@ -742,6 +742,7 @@ export function AddLessonSheet({
                     TEST CENTRE / LOCATION
                   </div>
                   <input
+                    ref={testCentreInputRef}
                     value={testCentre}
                     onChange={(e) => {
                       setTestCentre(e.target.value);

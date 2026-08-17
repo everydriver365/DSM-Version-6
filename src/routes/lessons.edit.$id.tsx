@@ -488,6 +488,7 @@ function EditLessonPage() {
                   TEST CENTRE / LOCATION
                 </div>
                 <input
+                  ref={testCentreInputRef}
                   value={testCentre}
                   onChange={e => { setTestCentre(e.target.value); setTestCentreError(null); }}
                   placeholder="e.g. Eastleigh Test Centre, SO50 5JH"
