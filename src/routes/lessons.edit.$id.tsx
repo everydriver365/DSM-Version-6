@@ -1,3 +1,4 @@
+import { testStartTime, testTimeFromNotes, testTimeFromStart, withTestTimeNote, TEST_TOTAL_MINUTES } from "@/lib/testDay";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
@@ -206,7 +207,10 @@ function EditLessonPage() {
           setDuration(-1);
           setTestCentre(l.pickup_location ?? '');
           setTestCentreSearch(l.pickup_location ?? '');
-          setTestTime(l.lesson_time ? l.lesson_time.slice(0, 5) : '');
+          setTestTime(
+            testTimeFromNotes(l.notes) ??
+              (l.lesson_time ? testTimeFromStart(l.lesson_time.slice(0, 5)) ?? '' : ''),
+          );
         } else {
           setDuration(l.duration_minutes ?? 60);
           setTestCentre('');
@@ -333,12 +337,18 @@ function EditLessonPage() {
       .update({
         pupil_id: pupilId,
         lesson_date: date,
-        lesson_time: `${isTestDay && testTime ? testTime : time}:00`,
-        duration_minutes: isTestDay ? null : duration,
+        // Test days start 1h before the test time and run 90m after it.
+        lesson_time: `${
+          isTestDay && testTime ? testStartTime(testTime) ?? testTime : time
+        }:00`,
+        duration_minutes: isTestDay ? TEST_TOTAL_MINUTES : duration,
         lesson_type: isTestDay ? 'test' : 'lesson',
         status,
         pickup_location: isTestDay ? testCentre.trim() || null : pickupLocation.trim() || null,
-        notes: notes.trim() || null,
+        notes:
+          isTestDay && testTime
+            ? withTestTimeNote(notes.trim() || null, testTime)
+            : notes.trim() || null,
       })
 
       .eq("id", id);

@@ -1,3 +1,4 @@
+import { testStartTime, testTimeFromNotes, testTimeFromStart, withTestTimeNote, TEST_TOTAL_MINUTES } from "@/lib/testDay";
 import { useEffect, useRef, useState } from "react";
 import { IconSearch } from "@tabler/icons-react";
 import {
@@ -173,7 +174,12 @@ export function AddLessonSheet({
       setTestCentre(editingLesson.pickup_location ?? '');
       setTestCentreSearch(editingLesson.pickup_location ?? '');
       setTestCentreResults([]);
-      setTestTime(editingLesson.lesson_time ? editingLesson.lesson_time.slice(0, 5) : '');
+      setTestTime(
+        testTimeFromNotes(editingLesson.notes) ??
+          (editingLesson.lesson_time
+            ? testTimeFromStart(editingLesson.lesson_time.slice(0, 5)) ?? ''
+            : ''),
+      );
     } else {
       setIsTestDay(false);
       setTestCentre('');
@@ -263,16 +269,21 @@ export function AddLessonSheet({
       return;
     }
     const durationMinutes = isTestDay ? 0 : effectiveDuration > 0 ? effectiveDuration : 60;
-    const effTime = isTestDay && testTime ? testTime : time;
+    // Test days block out 1 hour before the test time and 90 minutes after it.
+    const effTime =
+      isTestDay && testTime ? testStartTime(testTime) ?? testTime : time;
+    const savedDuration = isTestDay ? TEST_TOTAL_MINUTES : durationMinutes;
 
     const selected = pupils.find((p) => p.id === pupilId);
     const pickupValue = pickup.trim() || selected?.address?.trim() || null;
     const baseNotes = notes.trim() || null;
-    const fullNotes = pickupValue
+    const withPickup = pickupValue
       ? baseNotes
         ? `${baseNotes}\n\nPickup: ${pickupValue}`
         : `Pickup: ${pickupValue}`
       : baseNotes;
+    const fullNotes =
+      isTestDay && testTime ? withTestTimeNote(withPickup, testTime) : withPickup;
 
     // Update existing lesson when editing.
     if (editingLesson) {
@@ -282,7 +293,7 @@ export function AddLessonSheet({
           pupil_id: pupilId,
           lesson_date: date,
           lesson_time: `${effTime}:00`,
-          duration_minutes: isTestDay ? null : durationMinutes,
+          duration_minutes: savedDuration,
           lesson_type: isTestDay ? "test" : "lesson",
           status: editingLesson.status ?? "confirmed",
           notes: fullNotes,
@@ -418,7 +429,7 @@ export function AddLessonSheet({
           pupil_id: pupilId,
           day_of_week: dayOfWeek,
           lesson_time: `${effTime}:00`,
-          duration_minutes: isTestDay ? null : durationMinutes,
+          duration_minutes: savedDuration,
           frequency: recurringFreq,
           start_date: date,
           end_date: recurringUntil || null,
@@ -444,7 +455,7 @@ export function AddLessonSheet({
         pupil_id: pupilId,
         lesson_date: date,
         lesson_time: `${effTime}:00`,
-        duration_minutes: isTestDay ? null : durationMinutes,
+        duration_minutes: savedDuration,
         lesson_type: isTestDay ? "test" : "lesson",
         status: "confirmed",
         notes: fullNotes,
@@ -492,7 +503,7 @@ export function AddLessonSheet({
         pupil_id: pupilId,
         lesson_date: d,
         lesson_time: `${effTime}:00`,
-        duration_minutes: isTestDay ? null : durationMinutes,
+        duration_minutes: savedDuration,
         lesson_type: isTestDay ? "test" : "lesson",
         status: "confirmed",
         payment_status: isPrepaidPricing ? "prepaid" : "unpaid",
