@@ -107,7 +107,6 @@ export function AddLessonSheet({
   const [date, setDate] = useState(initialDate || todayISO());
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState<number | "test">(1);
-  const [isTestDay, setIsTestDay] = useState(false);
   const [pickup, setPickup] = useState("");
   const [pickupTouched, setPickupTouched] = useState(false);
   const [notes, setNotes] = useState("");
