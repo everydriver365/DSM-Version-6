@@ -295,6 +295,7 @@ function EditLessonPage() {
 
     if (isTestDay && !testCentre.trim()) {
       setTestCentreError("Enter a test centre or location for a test day");
+      testCentreInputRef.current?.focus();
       setSaving(false);
       return;
     }

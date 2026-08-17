@@ -222,6 +222,7 @@ export function AddLessonSheet({
     }
     if (Object.keys(next).length) {
       setErrors(next);
+      if (next.testCentre) testCentreInputRef.current?.focus();
       return;
     }
     setErrors({});
