@@ -1,7 +1,7 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { IconCurrencyPound } from "@tabler/icons-react";
+import { IconCheck, IconCurrencyPound, IconMapPin } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
 import { Input } from "../components/dsm/Input";
@@ -108,6 +108,10 @@ function EditLessonPage() {
   const [testCentre, setTestCentre] = useState('');
   const testCentreInputRef = useRef<HTMLInputElement>(null);
   const [testCentreError, setTestCentreError] = useState<string | null>(null);
+  const [testCentreSearch, setTestCentreSearch] = useState("");
+  const [testCentreResults, setTestCentreResults] = useState<any[]>([]);
+  const [searchingCentres, setSearchingCentres] = useState(false);
+  const [testTime, setTestTime] = useState("");
   const [status, setStatus] = useState("confirmed");
   const [pickupLocation, setPickupLocation] = useState("");
   const [pickupAddress, setPickupAddress] = useState("");
@@ -201,9 +205,13 @@ function EditLessonPage() {
         if (isTest) {
           setDuration(-1);
           setTestCentre(l.pickup_location ?? '');
+          setTestCentreSearch(l.pickup_location ?? '');
+          setTestTime(l.lesson_time ? l.lesson_time.slice(0, 5) : '');
         } else {
           setDuration(l.duration_minutes ?? 60);
           setTestCentre('');
+          setTestCentreSearch('');
+          setTestTime('');
         }
         setStatus(l.status ?? "confirmed");
         setPickupLocation(l.pickup_location ?? "");
@@ -288,6 +296,21 @@ function EditLessonPage() {
     }
   }
 
+  async function searchTestCentres(query: string) {
+    if (query.trim().length < 2) {
+      setTestCentreResults([]);
+      return;
+    }
+    setSearchingCentres(true);
+    const { data } = await supabase
+      .from("test_centres")
+      .select("*")
+      .ilike("name", `%${query}%`)
+      .limit(8);
+    setTestCentreResults(data ?? []);
+    setSearchingCentres(false);
+  }
+
   async function handleSave() {
     if (saving || showCancelConfirm) return;
     setSaving(true);
@@ -310,7 +333,7 @@ function EditLessonPage() {
       .update({
         pupil_id: pupilId,
         lesson_date: date,
-        lesson_time: `${time}:00`,
+        lesson_time: `${isTestDay && testTime ? testTime : time}:00`,
         duration_minutes: isTestDay ? null : duration,
         lesson_type: isTestDay ? 'test' : 'lesson',
         status,
@@ -496,13 +519,119 @@ function EditLessonPage() {
                   marginBottom: 6,
                   fontFamily: 'Poppins, sans-serif',
                 }}>
-                  TEST CENTRE / LOCATION
+                  TEST CENTRE
+                </div>
+                <div style={{ position: 'relative' }}>
+                  <IconMapPin size={16} color="#9CA3AF" stroke={2} style={{ position: 'absolute', left: 12, top: 12 }} />
+                  <input
+                    ref={testCentreInputRef}
+                    value={testCentreSearch}
+                    onChange={e => {
+                      setTestCentreSearch(e.target.value);
+                      setTestCentre(e.target.value);
+                      setTestCentreError(null);
+                      void searchTestCentres(e.target.value);
+                    }}
+                    placeholder="Search test centres..."
+                    style={{
+                      width: '100%',
+                      background: '#fff',
+                      border: '1px solid #E4E8EF',
+                      borderRadius: 10,
+                      padding: '10px 12px 10px 34px',
+                      fontSize: 14,
+                      fontFamily: 'Poppins, sans-serif',
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+                {testCentreResults.length > 0 && (
+                  <div style={{
+                    background: '#fff',
+                    borderRadius: 12,
+                    border: '1px solid #E4E8EF',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                    maxHeight: 200,
+                    overflowY: 'auto',
+                    marginTop: 4,
+                  }}>
+                    {testCentreResults.map((r: any) => (
+                      <div
+                        key={r.id ?? r.name}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          const addr = [r.address, r.town, r.postcode].filter(Boolean).join(', ');
+                          setTestCentre(addr ? `${r.name}, ${addr}` : r.name);
+                          setTestCentreSearch(r.name);
+                          setTestCentreResults([]);
+                          setTestCentreError(null);
+                        }}
+                        style={{
+                          padding: '11px 14px',
+                          borderBottom: '1px solid #E4E8EF',
+                          cursor: 'pointer',
+                          fontFamily: 'Poppins, sans-serif',
+                        }}
+                      >
+                        <div style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A' }}>{r.name}</div>
+                        <div style={{ fontSize: 11, color: '#6B7686', marginTop: 2 }}>
+                          {[r.address, r.town, r.postcode].filter(Boolean).join(', ')}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {testCentreSearch.trim().length >= 2 && testCentreResults.length === 0 && !searchingCentres && (
+                  <p style={{ fontSize: 11, color: '#9CA3AF', marginTop: 6, fontFamily: 'Poppins, sans-serif' }}>
+                    No centres found — type the address manually
+                  </p>
+                )}
+                {testCentre.trim() && (
+                  <div style={{
+                    background: '#DCFCE7',
+                    color: '#15803D',
+                    fontSize: 11,
+                    fontWeight: 700,
+                    borderRadius: 20,
+                    padding: '4px 12px',
+                    display: 'flex',
+                    gap: 6,
+                    alignItems: 'center',
+                    marginTop: 6,
+                    width: 'fit-content',
+                    maxWidth: '100%',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    <IconCheck size={12} color="#15803D" stroke={2} />
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{testCentre}</span>
+                    <button
+                      type="button"
+                      aria-label="Clear test centre"
+                      onClick={() => { setTestCentre(''); setTestCentreSearch(''); setTestCentreResults([]); }}
+                      style={{ background: 'none', border: 'none', color: '#15803D', cursor: 'pointer', fontSize: 13, lineHeight: 1, padding: 0 }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
+                <div style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: '#9CA3AF',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  marginTop: 12,
+                  marginBottom: 6,
+                  fontFamily: 'Poppins, sans-serif',
+                }}>
+                  TEST APPOINTMENT TIME
                 </div>
                 <input
-                  ref={testCentreInputRef}
-                  value={testCentre}
-                  onChange={e => { setTestCentre(e.target.value); setTestCentreError(null); }}
-                  placeholder="e.g. Eastleigh Test Centre, SO50 5JH"
+                  type="time"
+                  value={testTime}
+                  onChange={e => setTestTime(e.target.value)}
                   style={{
                     width: '100%',
                     background: '#fff',
@@ -515,13 +644,8 @@ function EditLessonPage() {
                     boxSizing: 'border-box',
                   }}
                 />
-                <p style={{
-                  fontSize: 11,
-                  color: '#9CA3AF',
-                  marginTop: 4,
-                  fontFamily: 'Poppins, sans-serif',
-                }}>
-                  This will show on your schedule and enable navigation
+                <p style={{ fontSize: 10, color: '#9CA3AF', marginTop: 4, fontFamily: 'Poppins, sans-serif' }}>
+                  Standard test: 38-40 mins. Extended test: 70 mins.
                 </p>
                 {testCentreError && (
                   <p style={{
