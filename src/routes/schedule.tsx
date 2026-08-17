@@ -572,6 +572,7 @@ function TestLessonCard({
           </div>
         </div>
       </div>
+    </div>
     </>
   );
 }
