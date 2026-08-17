@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IconSearch } from "@tabler/icons-react";
 import {
   IconCalendar,
@@ -123,6 +123,7 @@ export function AddLessonSheet({
   const [isTestDay, setIsTestDay] = useState(false);
   const [pickup, setPickup] = useState("");
   const [testCentre, setTestCentre] = useState("");
+  const testCentreInputRef = useRef<HTMLInputElement>(null);
   const [pickupTouched, setPickupTouched] = useState(false);
   const [notes, setNotes] = useState("");
 
@@ -221,6 +222,7 @@ export function AddLessonSheet({
     }
     if (Object.keys(next).length) {
       setErrors(next);
+      if (next.testCentre) testCentreInputRef.current?.focus();
       return;
     }
     setErrors({});
@@ -740,6 +742,7 @@ export function AddLessonSheet({
                     TEST CENTRE / LOCATION
                   </div>
                   <input
+                    ref={testCentreInputRef}
                     value={testCentre}
                     onChange={(e) => {
                       setTestCentre(e.target.value);

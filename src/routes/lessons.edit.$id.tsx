@@ -1,6 +1,6 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IconCurrencyPound } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
@@ -106,6 +106,7 @@ function EditLessonPage() {
   const [duration, setDuration] = useState<number>(60);
   const [isTestDay, setIsTestDay] = useState(false);
   const [testCentre, setTestCentre] = useState('');
+  const testCentreInputRef = useRef<HTMLInputElement>(null);
   const [testCentreError, setTestCentreError] = useState<string | null>(null);
   const [status, setStatus] = useState("confirmed");
   const [pickupLocation, setPickupLocation] = useState("");
@@ -294,6 +295,7 @@ function EditLessonPage() {
 
     if (isTestDay && !testCentre.trim()) {
       setTestCentreError("Enter a test centre or location for a test day");
+      testCentreInputRef.current?.focus();
       setSaving(false);
       return;
     }
@@ -486,6 +488,7 @@ function EditLessonPage() {
                   TEST CENTRE / LOCATION
                 </div>
                 <input
+                  ref={testCentreInputRef}
                   value={testCentre}
                   onChange={e => { setTestCentre(e.target.value); setTestCentreError(null); }}
                   placeholder="e.g. Eastleigh Test Centre, SO50 5JH"
