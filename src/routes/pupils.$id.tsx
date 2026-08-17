@@ -2796,17 +2796,8 @@ function PupilDetailPage() {
               {(() => {
                 const prepaid = Number(pupil.prepaid_hours ?? 0);
                 if (!(total > 0 || prepaid > 0)) return null;
-                const effectiveRate =
-                  total > 0 && prepaid > 0
-                    ? total / prepaid
-                    : instructorRate ?? 0;
-                const hoursPurchased =
-                  prepaid > 0
-                    ? prepaid
-                    : effectiveRate > 0
-                    ? total / effectiveRate
-                    : 0;
-                const hoursRemaining = hoursPurchased - hoursCompleted;
+                const hoursPurchased = Number(pupil.prepaid_hours ?? 0);
+                const hoursRemaining = Math.max(0, hoursPurchased - hoursCompleted);
                 let remainColor = "#1877D6";
                 if (hoursRemaining > 5) remainColor = "#1877D6";
                 else if (hoursRemaining >= 1) remainColor = "#1877D6";
