@@ -495,6 +495,16 @@ function EditLessonPage() {
                 }}>
                   This will show on your schedule and enable navigation
                 </p>
+                {testCentreError && (
+                  <p style={{
+                    fontSize: 12,
+                    color: '#CC2229',
+                    marginTop: 6,
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    {testCentreError}
+                  </p>
+                )}
               </div>
             )}
           </div>
