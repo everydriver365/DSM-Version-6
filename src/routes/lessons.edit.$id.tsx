@@ -296,11 +296,13 @@ function EditLessonPage() {
         pupil_id: pupilId,
         lesson_date: date,
         lesson_time: `${time}:00`,
-        duration_minutes: duration,
+        lesson_type: isTestDay ? 'test' : 'lesson',
+        duration_minutes: isTestDay ? null : duration,
         status,
-        pickup_location: pickupLocation.trim() || null,
+        pickup_location: isTestDay ? testCentre.trim() || null : pickupLocation.trim() || null,
         notes: notes.trim() || null,
       })
+
       .eq("id", id);
     if (updErr) {
       console.error("[edit-lesson] update error", updErr);
