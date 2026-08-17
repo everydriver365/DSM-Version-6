@@ -253,12 +253,30 @@ function lessonEnd(l: Lesson) {
   return new Date(lessonStart(l).getTime() + (l.duration_minutes ?? 60) * 60000);
 }
 
-const isTest = (lesson: any) =>
-  lesson.lesson_type === "test" || lesson.is_test_day === true || lesson.duration === "test";
+const isTest = (lesson: any) => {
+  if (!lesson) return false;
+  const type = String(lesson.lesson_type ?? "").toLowerCase().trim();
+  if (type === "test" || type === "test day" || type === "driving test") return true;
+  if (lesson.is_test_day === true || lesson.duration === "test") return true;
+  return /^test day:/i.test(String(lesson.notes ?? "").trim());
+};
+
+// Test centre: explicit column first, then the pickup field, then legacy notes
+// ("Test day: Name — Test at HH:MM @ Location").
+const testCentreOf = (lesson: any): string | null => {
+  const explicit = (lesson?.test_centre ?? "").trim?.() ?? "";
+  if (explicit) return explicit;
+  const pickup = (lesson?.pickup_location ?? "").trim?.() ?? "";
+  if (pickup) return pickup;
+  const m = String(lesson?.notes ?? "").match(/@\s*(.+)$/);
+  const fromNotes = m?.[1]?.trim();
+  if (fromNotes && fromNotes.toLowerCase() !== "test centre") return fromNotes;
+  return null;
+};
 
 function TestLessonCard({ lesson, onClick }: { lesson: Lesson; onClick: () => void }) {
   const testResult = (lesson as any).test_result;
-  const testCentre = lesson.pickup_location || (lesson as any).test_centre;
+  const testCentre = testCentreOf(lesson);
   const startTime = fmtTime(lessonStart(lesson));
   return (
     <div
