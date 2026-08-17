@@ -311,7 +311,7 @@ export function AddLessonSheet({
           pupil_id: pupilId,
           day_of_week: dayOfWeek,
           lesson_time: `${time}:00`,
-          duration_minutes: durationMinutes,
+          duration_minutes: isTestDay ? null : durationMinutes,
           frequency: recurringFreq,
           start_date: date,
           end_date: recurringUntil || null,
