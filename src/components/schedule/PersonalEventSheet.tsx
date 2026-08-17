@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { IconX, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabaseClient";
 
 const navy = "#0B1F3A";
 const blue = "#1877D6";
