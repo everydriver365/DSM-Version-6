@@ -6349,7 +6349,7 @@ function HomePage() {
                                         </span>
                                         {custom && (
                                           <span style={{ fontSize: 9, fontWeight: 700, color: '#92400E', flexShrink: 0 }}>
-                                            CUSTOM
+                                            {isTestDayRow ? 'TEST CENTRE' : 'CUSTOM'}
                                           </span>
                                         )}
                                       </div>
