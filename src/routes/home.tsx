@@ -6214,6 +6214,7 @@ function HomePage() {
                     const start = lessonDateTime(l);
                     const dur = l.duration_minutes ?? 60;
                     const end = new Date(start.getTime() + dur * 60000);
+                    const endTimeLabel = `${String(end.getHours()).padStart(2, '0')}:${String(end.getMinutes()).padStart(2, '0')}`;
                     const isLive = nowT >= start && nowT < end;
                     const isCancelled = (l.status ?? '').toLowerCase() === 'cancelled';
                     const payStatus = (l.payment_status ?? '').toLowerCase();
@@ -6321,7 +6322,7 @@ function HomePage() {
                                 <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.9)', fontWeight: 700, fontFamily: PF }}>
                                   {(() => {
                                     const tt = testTimeOf(l);
-                                    return tt ? `Test at ${tt}` : timeLabel;
+                                    return tt ? `${timeLabel} – ${endTimeLabel} · Test at ${tt}` : `${timeLabel} – ${endTimeLabel}`;
                                   })()}
                                 </div>
                                 <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', fontFamily: PF, marginTop: 2 }}>
