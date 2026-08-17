@@ -339,129 +339,182 @@ function TestLessonCard({
         boxShadow: "0 2px 0 #0B1F3A",
         marginBottom: 8,
         overflow: "hidden",
-        padding: "8px 12px",
+        padding: "10px 12px",
         cursor: "pointer",
         ...POPPINS,
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span
+      <div style={{ display: "flex", alignItems: "stretch", gap: 12 }}>
+        <div
           style={{
-            background: "rgba(255,255,255,0.2)",
-            color: "#fff",
-            fontSize: 9,
-            fontWeight: 800,
-            borderRadius: 20,
-            padding: "2px 8px",
-            letterSpacing: "0.08em",
-            fontFamily: "Poppins, sans-serif",
+            width: 52,
+            flexShrink: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            paddingTop: 2,
           }}
         >
-          🚗 TEST DAY
-        </span>
-        <span
+          <div
+            style={{
+              fontSize: 16,
+              color: "#FFFFFF",
+              fontWeight: 700,
+              fontFamily: "Poppins, sans-serif",
+              fontVariantNumeric: "tabular-nums",
+              lineHeight: 1.15,
+            }}
+          >
+            {startTime}
+          </div>
+          <div
+            style={{
+              fontSize: 11,
+              color: "rgba(255,255,255,0.75)",
+              fontWeight: 600,
+              marginTop: 3,
+              fontFamily: "Poppins, sans-serif",
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
+            {durLabel}
+          </div>
+        </div>
+
+        <div
+          aria-hidden
           style={{
-            fontSize: 16,
-            color: "#FFFFFF",
-            fontWeight: 700,
-            fontFamily: "Poppins, sans-serif",
-            fontVariantNumeric: "tabular-nums",
+            width: 3,
+            borderRadius: 2,
+            background: "rgba(255,255,255,0.3)",
+            flexShrink: 0,
+            alignSelf: "stretch",
           }}
-        >
-          {startTime} – {endTime}
-          {testTime ? ` · Test at ${testTime}` : ""}
-        </span>
-      </div>
-      <div
-        style={{
-          fontSize: 16,
-          fontWeight: 800,
-          color: "#fff",
-          marginTop: 4,
-          letterSpacing: -0.3,
-          fontFamily: "Poppins, sans-serif",
-        }}
-      >
-        {pupilDisplayName(lesson.pupil)}
-      </div>
-      <div style={{ display: "flex", gap: 6, alignItems: "center", marginTop: 2 }}>
-        <IconMapPin size={12} color="rgba(255,255,255,0.7)" stroke={1.5} />
-        <span
-          style={{
-            fontSize: 11,
-            color: testCentre ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.5)",
-            fontStyle: testCentre ? "normal" : "italic",
-            fontFamily: "Poppins, sans-serif",
-          }}
-        >
-          {testCentre || "Test centre not set"}
-        </span>
-      </div>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8 }}>
-        <div>
-          {testResult === "pass" ? (
+        />
+
+        <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
             <span
               style={{
-                background: "#15803D",
+                background: "rgba(255,255,255,0.2)",
                 color: "#fff",
                 fontSize: 9,
                 fontWeight: 800,
                 borderRadius: 20,
-                padding: "3px 10px",
+                padding: "2px 8px",
+                letterSpacing: "0.08em",
                 fontFamily: "Poppins, sans-serif",
               }}
             >
-              ✓ PASSED
+              🚗 TEST DAY
             </span>
-          ) : testResult === "fail" ? (
+            {testTime ? (
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 600,
+                  color: "rgba(255,255,255,0.85)",
+                  fontFamily: "Poppins, sans-serif",
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                Test at {testTime}
+              </span>
+            ) : null}
+          </div>
+          <div
+            style={{
+              fontSize: 16,
+              fontWeight: 800,
+              color: "#fff",
+              marginTop: 4,
+              letterSpacing: -0.3,
+              fontFamily: "Poppins, sans-serif",
+              lineHeight: 1.2,
+            }}
+          >
+            {pupilDisplayName(lesson.pupil)}
+          </div>
+          <div style={{ display: "flex", gap: 6, alignItems: "center", marginTop: 2 }}>
+            <IconMapPin size={12} color="rgba(255,255,255,0.7)" stroke={1.5} />
             <span
               style={{
-                background: "rgba(0,0,0,0.3)",
-                color: "rgba(255,255,255,0.8)",
-                fontSize: 9,
-                fontWeight: 800,
+                fontSize: 11,
+                color: testCentre ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.5)",
+                fontStyle: testCentre ? "normal" : "italic",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              {testCentre || "Test centre not set"}
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 8 }}>
+            <div>
+              {testResult === "pass" ? (
+                <span
+                  style={{
+                    background: "#15803D",
+                    color: "#fff",
+                    fontSize: 9,
+                    fontWeight: 800,
+                    borderRadius: 20,
+                    padding: "3px 10px",
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  ✓ PASSED
+                </span>
+              ) : testResult === "fail" ? (
+                <span
+                  style={{
+                    background: "rgba(0,0,0,0.3)",
+                    color: "rgba(255,255,255,0.8)",
+                    fontSize: 9,
+                    fontWeight: 800,
+                    borderRadius: 20,
+                    padding: "3px 10px",
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  ✗ FAILED
+                </span>
+              ) : (
+                <span
+                  style={{
+                    fontSize: 10,
+                    color: "rgba(255,255,255,0.6)",
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  Result pending
+                </span>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={(ev) => {
+                ev.stopPropagation();
+                goNavigate();
+              }}
+              style={{
+                background: "rgba(255,255,255,0.2)",
                 borderRadius: 20,
-                padding: "3px 10px",
+                padding: "4px 10px",
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                gap: 4,
+                alignItems: "center",
                 fontFamily: "Poppins, sans-serif",
               }}
             >
-              ✗ FAILED
-            </span>
-          ) : (
-            <span
-              style={{
-                fontSize: 10,
-                color: "rgba(255,255,255,0.6)",
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              Result pending
-            </span>
-          )}
+              <IconNavigation size={12} color="#fff" stroke={1.5} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: "#fff", fontFamily: "Poppins, sans-serif" }}>
+                Navigate
+              </span>
+            </button>
+          </div>
         </div>
-        <button
-          type="button"
-          onClick={(ev) => {
-            ev.stopPropagation();
-            goNavigate();
-          }}
-          style={{
-            background: "rgba(255,255,255,0.2)",
-            borderRadius: 20,
-            padding: "4px 10px",
-            border: "none",
-            cursor: "pointer",
-            display: "flex",
-            gap: 4,
-            alignItems: "center",
-            fontFamily: "Poppins, sans-serif",
-          }}
-        >
-          <IconNavigation size={12} color="#fff" stroke={1.5} />
-          <span style={{ fontSize: 11, fontWeight: 600, color: "#fff", fontFamily: "Poppins, sans-serif" }}>
-            Navigate
-          </span>
-        </button>
       </div>
     </div>
     </>
