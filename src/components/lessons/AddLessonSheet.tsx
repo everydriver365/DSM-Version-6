@@ -186,7 +186,6 @@ export function AddLessonSheet({
     : pupils;
 
   const effectiveDuration = duration === "test" ? 0 : duration * 60;
-  const isTestDay = duration === "test";
 
   async function handleSave() {
     const next: typeof errors = {};
