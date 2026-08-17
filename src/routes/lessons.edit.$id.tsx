@@ -333,7 +333,7 @@ function EditLessonPage() {
       .update({
         pupil_id: pupilId,
         lesson_date: date,
-        lesson_time: `${time}:00`,
+        lesson_time: `${isTestDay && testTime ? testTime : time}:00`,
         duration_minutes: isTestDay ? null : duration,
         lesson_type: isTestDay ? 'test' : 'lesson',
         status,
