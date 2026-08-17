@@ -206,7 +206,10 @@ function EditLessonPage() {
           setDuration(-1);
           setTestCentre(l.pickup_location ?? '');
           setTestCentreSearch(l.pickup_location ?? '');
-          setTestTime(l.lesson_time ? l.lesson_time.slice(0, 5) : '');
+          setTestTime(
+            testTimeFromNotes(l.notes) ??
+              (l.lesson_time ? testTimeFromStart(l.lesson_time.slice(0, 5)) ?? '' : ''),
+          );
         } else {
           setDuration(l.duration_minutes ?? 60);
           setTestCentre('');
