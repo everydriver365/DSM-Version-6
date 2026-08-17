@@ -2,7 +2,7 @@ import { useGoBack } from "@/hooks/useGoBack";
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconAlertTriangle, IconChevronRight, IconMap, IconNavigation, IconPencil, IconX } from "@tabler/icons-react";
+import { IconAlertTriangle, IconChevronRight, IconMap, IconMapPin, IconNavigation, IconPencil, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
