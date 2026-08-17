@@ -103,12 +103,15 @@ function EditLessonPage() {
   const [pupilId, setPupilId] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [duration, setDuration] = useState(60);
+  const [duration, setDuration] = useState<number | 'test'>(60);
+  const [isTestDay, setIsTestDay] = useState(false);
+  const [testCentre, setTestCentre] = useState('');
   const [status, setStatus] = useState("confirmed");
   const [pickupLocation, setPickupLocation] = useState("");
   const [pickupAddress, setPickupAddress] = useState("");
   const [pickupPostcode, setPickupPostcode] = useState("");
   const [notes, setNotes] = useState("");
+
 
   // Payment display + inline form
   const [paymentStatus, setPaymentStatus] = useState<PayStatus>("unpaid");
