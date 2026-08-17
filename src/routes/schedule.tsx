@@ -182,7 +182,7 @@ type AgendaEntry =
   | { kind: "block"; id: string; start: Date; end: Date; allDay: false; title: string }
   // Reserved for future wiring:
   | { kind: "external"; id: string; start: Date; end: Date; allDay: boolean; title: string; colour?: string | null }
-  | { kind: "personal"; id: string; start: Date; end: Date; allDay: boolean; title: string }
+  | { kind: "personal"; id: string; start: Date; end: Date; allDay: boolean; title: string; colour?: string | null; event?: PersonalEvent }
   | { kind: "task"; id: string; start: Date; end: Date; allDay: boolean; title: string; completed?: boolean }
   | { kind: "holiday"; id: string; start: Date; end: Date; allDay: true; title: string };
 
