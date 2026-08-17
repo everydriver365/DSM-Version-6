@@ -1664,9 +1664,16 @@ function SchedulePage() {
 
                           return (
                             <div key={e.id} style={{ position: "relative", marginBottom: 8 }}>
-                              <div style={{ position: "relative", overflow: "hidden", borderRadius: 16 }}>
-                                <div
-                                  onClick={onCardClick}
+                              {isLessonRow && isTestDay ? (
+                                <TestLessonCard
+                                  lesson={(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson}
+                                  onClick={onCardClick || (() => {})}
+                                />
+                              ) : (
+                                <div style={{ position: "relative", overflow: "hidden", borderRadius: 16 }}>
+                                  <div
+                                    onClick={onCardClick}
+
                                   role={clickable ? "button" : undefined}
                                   tabIndex={clickable ? 0 : undefined}
                                   style={{
