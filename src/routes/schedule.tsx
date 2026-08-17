@@ -659,18 +659,6 @@ function SchedulePage() {
 
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
 
-  // Close popover on outside click
-  useEffect(() => {
-    if (!actionsOpenFor) return;
-    const onDoc = (ev: MouseEvent) => {
-      const target = ev.target as HTMLElement | null;
-      if (target && target.closest('[data-lesson-actions-popover]')) return;
-      if (target && target.closest('[data-lesson-actions-trigger]')) return;
-      setActionsOpenFor(null);
-    };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, [actionsOpenFor]);
 
   // Auto-dismiss inline sync messages after 5 seconds
   useEffect(() => {
