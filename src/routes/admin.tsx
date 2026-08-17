@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PartnerPreview, PerkPreview } from "@/components/admin/BenefitPreview";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
-import { IconBook, IconBriefcase, IconGift, IconChevronLeft, IconChevronRight, IconFileCheck, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconNews, IconPencil, IconPlayerPlay, IconSearch, IconSettings, IconShieldCheck, IconShoppingBag, IconStar, IconTrash, IconUsers, IconVideo } from "@tabler/icons-react";
+import { IconBook, IconBriefcase, IconGift, IconChevronLeft, IconChevronRight, IconFileCheck, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconNews, IconPencil, IconPhoto, IconPlayerPlay, IconSearch, IconSettings, IconShieldCheck, IconShoppingBag, IconStar, IconTrash, IconUsers, IconVideo } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
@@ -1355,6 +1355,9 @@ export function BenefitPartnersSection() {
 
   // ---- perk form validation ------------------------------------------------
   const [perkErrors, setPerkErrors] = useState<Record<string, string>>({});
+  const perkHeroInputRef = useRef<HTMLInputElement>(null);
+  const perkGalleryInputRef = useRef<HTMLInputElement>(null);
+  const perkVideoInputRef = useRef<HTMLInputElement>(null);
 
   function validatePerk(perk: any): Record<string, string> {
     const errs: Record<string, string> = {};
@@ -2678,56 +2681,104 @@ export function BenefitPartnersSection() {
               </button>
 
               <div style={partnerLabelStyle}>Hero image</div>
-              {editingPerk.hero_image_url && (
-                <img
-                  src={editingPerk.hero_image_url}
-                  alt=""
-                  style={{
-                    width: "100%",
-                    height: 120,
-                    objectFit: "cover",
-                    borderRadius: 10,
-                    marginBottom: 8,
-                    display: "block",
-                  }}
-                />
-              )}
-              {editingPerk.hero_image_url && (
-                <button
-                  type="button"
-                  onClick={() => patchPerk({ hero_image_url: null })}
-                  style={{ ...removeImageBtnStyle, marginBottom: 8 }}
-                >
-                  Remove
-                </button>
-              )}
               <input
                 type="file"
                 accept="image/*"
-                disabled={uploadingPerkHero}
+                style={{ display: "none" }}
+                ref={perkHeroInputRef}
                 onChange={async (e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
                   setUploadingPerkHero(true);
-                  try {
-                    await validateImageFile(file, { minWidth: 800, minHeight: 400, label: "Hero image" });
-                    const url = await uploadToBucket("marketplace-images", "perks/hero/", file);
-                    patchPerk({ hero_image_url: url });
+                  const path = `perks/hero/${Date.now()}-${Math.random().toString(36).slice(2)}`;
+                  const { error } = await supabase.storage.from("marketplace-images").upload(path, file, { upsert: true });
+                  if (!error) {
+                    const { data: { publicUrl } } = supabase.storage.from("marketplace-images").getPublicUrl(path);
+                    patchPerk({ hero_image_url: publicUrl });
                     toast.success("Hero image uploaded");
-                  } catch (err: any) {
-                    toast.error(err?.message ?? "Upload failed");
-                  } finally {
-                    setUploadingPerkHero(false);
-                    e.target.value = "";
+                  } else {
+                    toast.error("Upload failed");
                   }
+                  setUploadingPerkHero(false);
+                  e.target.value = "";
                 }}
-                style={{ ...partnerInputStyle, padding: 8 }}
               />
+              {editingPerk.hero_image_url ? (
+                <div style={{ marginBottom: 8 }}>
+                  <img
+                    src={editingPerk.hero_image_url}
+                    alt=""
+                    style={{
+                      width: "100%",
+                      height: 120,
+                      objectFit: "cover",
+                      borderRadius: 10,
+                      marginBottom: 8,
+                      display: "block",
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => perkHeroInputRef.current?.click()}
+                    style={{ ...removeImageBtnStyle, marginBottom: 0 }}
+                  >
+                    Change
+                  </button>
+                </div>
+              ) : (
+                <div
+                  onClick={() => perkHeroInputRef.current?.click()}
+                  style={{
+                    border: "1px dashed #E2E8F0",
+                    borderRadius: 10,
+                    padding: 16,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 6,
+                    cursor: "pointer",
+                    marginBottom: 8,
+                    background: "#F8FAFC",
+                  }}
+                >
+                  <IconPhoto size={24} color="#9CA3AF" />
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>Add hero image</span>
+                  <span style={{ fontSize: 11, color: "#9CA3AF" }}>Shown at top of perk detail page</span>
+                </div>
+              )}
               {uploadingPerkHero && <div style={uploadHintStyle}>Uploading hero image...</div>}
 
               <div style={partnerLabelStyle}>
                 Gallery photos {((editingPerk.gallery_urls ?? []) as string[]).length > 0 && `(${(editingPerk.gallery_urls ?? []).length})`}
               </div>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                style={{ display: "none" }}
+                ref={perkGalleryInputRef}
+                onChange={async (e) => {
+                  const files = e.target.files;
+                  if (!files) return;
+                  setUploadingPerkGallery(true);
+                  const uploaded: string[] = [];
+                  for (const file of Array.from(files)) {
+                    const path = `perks/gallery/${Date.now()}-${Math.random().toString(36).slice(2)}`;
+                    const { error } = await supabase.storage.from("marketplace-images").upload(path, file, { upsert: true });
+                    if (!error) {
+                      const { data: { publicUrl } } = supabase.storage.from("marketplace-images").getPublicUrl(path);
+                      uploaded.push(publicUrl);
+                    }
+                  }
+                  patchPerk({
+                    gallery_urls: [...(editingPerk?.gallery_urls ?? []), ...uploaded],
+                  });
+                  setUploadingPerkGallery(false);
+                  toast.success(`${uploaded.length} photo${uploaded.length > 1 ? "s" : ""} added`);
+                  e.target.value = "";
+                }}
+              />
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
                 {((editingPerk.gallery_urls ?? []) as string[]).map((url, i, arr) => (
                   <div key={`${url}-${i}`} style={{ width: 72 }}>
@@ -2834,37 +2885,24 @@ export function BenefitPartnersSection() {
                     </div>
                   </div>
                 ))}
+                <div
+                  onClick={() => perkGalleryInputRef.current?.click()}
+                  style={{
+                    width: 72,
+                    height: 72,
+                    borderRadius: 8,
+                    border: "1px dashed #E2E8F0",
+                    background: "#F8FAFC",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                >
+                  <IconPhoto size={24} color="#9CA3AF" />
+                </div>
               </div>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                disabled={uploadingPerkGallery}
-                onChange={async (e) => {
-                  const files = Array.from(e.target.files ?? []);
-                  if (files.length === 0) return;
-                  setUploadingPerkGallery(true);
-                  const uploaded: string[] = [];
-                  try {
-                    for (const file of files) {
-                      await validateImageFile(file, { minWidth: 400, minHeight: 300, label: file.name });
-                      const url = await uploadToBucket("marketplace-images", "perks/gallery/", file);
-                      uploaded.push(url);
-                    }
-                    patchPerk({ gallery_urls: [...(editingPerk.gallery_urls ?? []), ...uploaded] });
-                    toast.success(uploaded.length === 1 ? "Photo added" : `${uploaded.length} photos added`);
-                  } catch (err: any) {
-                    if (uploaded.length > 0) {
-                      patchPerk({ gallery_urls: [...(editingPerk.gallery_urls ?? []), ...uploaded] });
-                    }
-                    toast.error(err?.message ?? "Upload failed");
-                  } finally {
-                    setUploadingPerkGallery(false);
-                    e.target.value = "";
-                  }
-                }}
-                style={{ ...partnerInputStyle, padding: 8 }}
-              />
               <div style={uploadHintStyle}>
                 {uploadingPerkGallery
                   ? "Uploading photos..."
@@ -2882,29 +2920,55 @@ export function BenefitPartnersSection() {
               />
 
               <div style={partnerLabelStyle}>Or upload a video</div>
-              {editingPerk.video_url && (
-                <div style={{ fontSize: 11, color: "#6B7686", marginBottom: 6, wordBreak: "break-all" }}>
-                  {editingPerk.video_url}
-                </div>
-              )}
               <input
                 type="file"
-                accept="video/*"
+                accept="video/mp4,video/webm,video/quicktime"
+                style={{ display: "none" }}
+                ref={perkVideoInputRef}
                 onChange={async (e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
-                  try {
-                    const url = await uploadToBucket("marketplace-videos", "perks/video/", file);
-                    patchPerk({ video_url: url });
-                    toast.success("Video uploaded");
-                  } catch (err: any) {
-                    toast.error(err?.message ?? "Upload failed");
-                  } finally {
-                    e.target.value = "";
+                  if (file.size > 500 * 1024 * 1024) {
+                    toast.error("Video must be under 500MB");
+                    return;
                   }
+                  const path = `perks/${Date.now()}-${Math.random().toString(36).slice(2)}.${file.name.split(".").pop()}`;
+                  const { error } = await supabase.storage.from("marketplace-videos").upload(path, file, { upsert: true });
+                  if (!error) {
+                    const { data: { publicUrl } } = supabase.storage.from("marketplace-videos").getPublicUrl(path);
+                    patchPerk({ video_url: publicUrl });
+                    toast.success("Video uploaded");
+                  } else {
+                    toast.error("Upload failed");
+                  }
+                  e.target.value = "";
                 }}
-                style={{ ...partnerInputStyle, padding: 8 }}
               />
+              {editingPerk.video_url ? (
+                <div style={{ fontSize: 11, color: "#6B7686", marginBottom: 6, wordBreak: "break-all" }}>
+                  {editingPerk.video_url}
+                </div>
+              ) : null}
+              <div
+                onClick={() => perkVideoInputRef.current?.click()}
+                style={{
+                  border: "1px dashed #E2E8F0",
+                  borderRadius: 10,
+                  padding: 16,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                  cursor: "pointer",
+                  marginBottom: 8,
+                  background: "#F8FAFC",
+                }}
+              >
+                <IconVideo size={24} color="#9CA3AF" />
+                <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>Add video</span>
+                <span style={{ fontSize: 11, color: "#9CA3AF" }}>MP4, WebM, or QuickTime under 500MB</span>
+              </div>
 
               <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
