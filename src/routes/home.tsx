@@ -5971,6 +5971,17 @@ function HomePage() {
                   {/* Timeline container */}
                   <div style={{ position: 'relative', padding: '12px 0 4px' }}>
                     {rows.map((r, idx) => {
+                    const rowStart = r.kind === 'lesson' ? lessonDateTime(r.l) : r.start;
+                    const rowDay = ymd(rowStart);
+                    const showDayDivider = rowDay !== lastDividerDate;
+                    const isFirstDivider = lastDividerDate === '';
+                    if (showDayDivider) lastDividerDate = rowDay;
+                    const dividerNode = showDayDivider ? (
+                      <div style={{ marginTop: isFirstDivider ? 0 : 18 }}>
+                        <ScheduleDateDivider date={rowStart} />
+                      </div>
+                    ) : null;
+                    const rowContent = (() => {
                     if (r.kind === 'gap') {
                       const gs = r.start;
                       const ge = new Date(gs.getTime() + r.mins * 60000);
