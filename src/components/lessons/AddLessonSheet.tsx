@@ -130,6 +130,7 @@ export function AddLessonSheet({
     pupil?: string;
     date?: string;
     time?: string;
+    testCentre?: string;
     form?: string;
   }>({});
   const [saving, setSaving] = useState(false);
@@ -215,6 +216,9 @@ export function AddLessonSheet({
     if (!pupilId) next.pupil = "Pupil is required";
     if (!date) next.date = "Date is required";
     if (!time) next.time = "Time is required";
+    if (isTestDay && !testCentre.trim()) {
+      next.testCentre = "Enter a test centre or location for a test day";
+    }
     if (Object.keys(next).length) {
       setErrors(next);
       return;
@@ -737,7 +741,10 @@ export function AddLessonSheet({
                   </div>
                   <input
                     value={testCentre}
-                    onChange={(e) => setTestCentre(e.target.value)}
+                    onChange={(e) => {
+                      setTestCentre(e.target.value);
+                      setErrors((prev) => ({ ...prev, testCentre: undefined }));
+                    }}
                     placeholder="e.g. Eastleigh Test Centre, SO50 5JH"
                     style={{
                       width: "100%",
@@ -760,6 +767,18 @@ export function AddLessonSheet({
                   >
                     This will show on your schedule and enable navigation
                   </p>
+                  {errors.testCentre && (
+                    <p
+                      style={{
+                        fontSize: 12,
+                        color: "#CC2229",
+                        marginTop: 6,
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      {errors.testCentre}
+                    </p>
+                  )}
                 </div>
               )}
             </div>

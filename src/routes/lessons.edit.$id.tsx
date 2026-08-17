@@ -106,6 +106,7 @@ function EditLessonPage() {
   const [duration, setDuration] = useState<number>(60);
   const [isTestDay, setIsTestDay] = useState(false);
   const [testCentre, setTestCentre] = useState('');
+  const [testCentreError, setTestCentreError] = useState<string | null>(null);
   const [status, setStatus] = useState("confirmed");
   const [pickupLocation, setPickupLocation] = useState("");
   const [pickupAddress, setPickupAddress] = useState("");
@@ -289,6 +290,13 @@ function EditLessonPage() {
   async function handleSave() {
     if (saving || showCancelConfirm) return;
     setSaving(true);
+    setTestCentreError(null);
+
+    if (isTestDay && !testCentre.trim()) {
+      setTestCentreError("Enter a test centre or location for a test day");
+      setSaving(false);
+      return;
+    }
 
     const {
       data: { user },
@@ -465,7 +473,7 @@ function EditLessonPage() {
                 </div>
                 <input
                   value={testCentre}
-                  onChange={e => setTestCentre(e.target.value)}
+                  onChange={e => { setTestCentre(e.target.value); setTestCentreError(null); }}
                   placeholder="e.g. Eastleigh Test Centre, SO50 5JH"
                   style={{
                     width: '100%',
@@ -487,6 +495,16 @@ function EditLessonPage() {
                 }}>
                   This will show on your schedule and enable navigation
                 </p>
+                {testCentreError && (
+                  <p style={{
+                    fontSize: 12,
+                    color: '#CC2229',
+                    marginTop: 6,
+                    fontFamily: 'Poppins, sans-serif',
+                  }}>
+                    {testCentreError}
+                  </p>
+                )}
               </div>
             )}
           </div>
