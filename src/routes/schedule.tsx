@@ -2525,9 +2525,86 @@ function SchedulePage() {
 
 
 
+      <PersonalEventSheet
+        open={personalSheetOpen}
+        defaultDate={selectedDate}
+        event={editingPersonal}
+        onClose={() => { setPersonalSheetOpen(false); setEditingPersonal(null); }}
+        onSaved={() => setPersonalReloadKey((k) => k + 1)}
+      />
+
+      {addChooserOpen && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ fontFamily: 'Poppins, sans-serif' }}>
+          <div className="absolute inset-0 bg-black/30" onClick={() => setAddChooserOpen(false)} />
+          <div
+            className="relative w-full max-w-md"
+            style={{
+              background: '#fff',
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              padding: '18px 16px calc(18px + 90px + env(safe-area-inset-bottom))',
+              display: 'grid',
+              gap: 10,
+            }}
+          >
+            <div style={{ fontSize: 17, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Sora, sans-serif', marginBottom: 4 }}>
+              Add to your schedule
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setAddChooserOpen(false);
+                setAddLessonPupilId(undefined);
+                setAddLessonDate(selectedDate);
+                setAddLessonOpen(true);
+              }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
+                border: '1px solid #E4E8EF', borderRadius: 16, padding: '14px 14px', background: '#fff',
+              }}
+            >
+              <span style={{ width: 38, height: 38, borderRadius: 19, background: '#E7F0FB', display: 'grid', placeItems: 'center' }}>
+                <IconPlus size={19} stroke={1.8} color="#1877D6" />
+              </span>
+              <span>
+                <span style={{ display: 'block', fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>Lesson</span>
+                <span style={{ fontSize: 12, color: '#6B7686' }}>Pupil, duration and payment</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setAddChooserOpen(false);
+                setEditingPersonal(null);
+                setPersonalSheetOpen(true);
+              }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
+                border: '1px solid #E4E8EF', borderRadius: 16, padding: '14px 14px', background: '#fff',
+              }}
+            >
+              <span style={{ width: 38, height: 38, borderRadius: 19, background: '#FBF1DA', display: 'grid', placeItems: 'center' }}>
+                <IconCalendar size={19} stroke={1.8} color="#B8860B" />
+              </span>
+              <span>
+                <span style={{ display: 'block', fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>Private event</span>
+                <span style={{ fontSize: 12, color: '#6B7686' }}>Your own name, times, place and notes</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setAddChooserOpen(false)}
+              style={{ marginTop: 4, padding: '12px', borderRadius: 20, border: 'none', background: '#EEF2F7', color: '#0B1F3A', fontSize: 14, fontWeight: 700 }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       <button
         type="button"
-        onClick={() => { setAddLessonPupilId(undefined); setAddLessonDate(selectedDate); setAddLessonOpen(true); }}
+        onClick={() => setAddChooserOpen(true)}
         style={{
           position: 'fixed',
           bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
