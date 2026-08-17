@@ -108,6 +108,7 @@ export function AddLessonSheet({
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState<number | "test">(1);
   const [pickup, setPickup] = useState("");
+  const [testCentre, setTestCentre] = useState("");
   const [pickupTouched, setPickupTouched] = useState(false);
   const [notes, setNotes] = useState("");
 
@@ -310,7 +311,7 @@ export function AddLessonSheet({
           pupil_id: pupilId,
           day_of_week: dayOfWeek,
           lesson_time: `${time}:00`,
-          duration_minutes: durationMinutes,
+          duration_minutes: isTestDay ? null : durationMinutes,
           frequency: recurringFreq,
           start_date: date,
           end_date: recurringUntil || null,
@@ -336,13 +337,15 @@ export function AddLessonSheet({
         pupil_id: pupilId,
         lesson_date: date,
         lesson_time: `${time}:00`,
-        duration_minutes: durationMinutes,
+        duration_minutes: isTestDay ? null : durationMinutes,
+        lesson_type: isTestDay ? "test" : "lesson",
         status: "confirmed",
         notes: fullNotes,
         amount_due: amountDue,
         payment_status: paymentStatus,
         prepaid_hours_used: prepaidHoursUsed,
         series_id: seriesId,
+        pickup_location: isTestDay ? testCentre.trim() || null : null,
       })
       .select("id")
       .single();
@@ -382,11 +385,13 @@ export function AddLessonSheet({
         pupil_id: pupilId,
         lesson_date: d,
         lesson_time: `${time}:00`,
-        duration_minutes: durationMinutes,
+        duration_minutes: isTestDay ? null : durationMinutes,
+        lesson_type: isTestDay ? "test" : "lesson",
         status: "confirmed",
         payment_status: isPrepaidPricing ? "prepaid" : "unpaid",
         amount_due: amountDue,
         series_id: seriesId,
+        pickup_location: isTestDay ? testCentre.trim() || null : null,
       }));
       try {
         for (let i = 0; i < lessonsPayload.length; i += 50) {
@@ -638,6 +643,47 @@ export function AddLessonSheet({
                 >
                   Test day — no lesson duration recorded
                 </p>
+              )}
+              {isTestDay && (
+                <div style={{ marginTop: 12 }}>
+                  <div
+                    style={{
+                      marginBottom: 6,
+                      fontFamily: "Poppins, sans-serif",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: "#9CA3AF",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    TEST CENTRE / LOCATION
+                  </div>
+                  <input
+                    value={testCentre}
+                    onChange={(e) => setTestCentre(e.target.value)}
+                    placeholder="e.g. Eastleigh Test Centre, SO50 5JH"
+                    style={{
+                      width: "100%",
+                      background: "#fff",
+                      border: "1px solid #E4E8EF",
+                      borderRadius: 10,
+                      padding: "10px 12px",
+                      fontSize: 14,
+                      fontFamily: "Poppins, sans-serif",
+                      outline: "none",
+                    }}
+                  />
+                  <p
+                    style={{
+                      fontSize: 11,
+                      color: "#9CA3AF",
+                      marginTop: 4,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    This will show on your schedule and enable navigation
+                  </p>
+                </div>
               )}
             </div>
           </SheetRow>
