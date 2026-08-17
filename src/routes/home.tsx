@@ -3644,12 +3644,24 @@ function HomePage() {
                 </span>
               )}
             </div>
-            <div className="flex items-center" style={{ gap: 4, fontSize: 12, color: postcode ? "#6B7280" : "#9CA3AF" }}>
-              <IconMapPin stroke={1.5} size={10} />
-              <span>{postcode ?? "No pickup set"}</span>
-            </div>
+            {isTestLesson(l) ? (
+              <div
+                className="flex items-center"
+                style={{ gap: 4, fontSize: 12, color: testCentreOf(l) ? "#92400E" : "#9CA3AF" }}
+              >
+                <IconMapPin stroke={1.5} size={10} />
+                <span style={{ fontWeight: testCentreOf(l) ? 600 : 400 }}>
+                  {testCentreOf(l) ?? "Test centre not set"}
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center" style={{ gap: 4, fontSize: 12, color: postcode ? "#6B7280" : "#9CA3AF" }}>
+                <IconMapPin stroke={1.5} size={10} />
+                <span>{postcode ?? "No pickup set"}</span>
+              </div>
+            )}
             <div style={{ fontSize: 13, color: "#6B7280" }}>
-              {formatDuration(l.duration_minutes)}
+              {isTestLesson(l) ? "Test day" : formatDuration(l.duration_minutes)}
             </div>
           </div>
         </div>
