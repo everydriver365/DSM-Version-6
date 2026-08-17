@@ -300,6 +300,18 @@ function TestLessonCard({
   })();
   const navigate = useNavigate({ from: Route.fullPath });
   const [panelOpen, setPanelOpen] = useState(false);
+  const [actionsOpen, setActionsOpen] = useState(false);
+  const actionsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!actionsOpen) return;
+    const handle = (ev: MouseEvent) => {
+      if (actionsRef.current && !actionsRef.current.contains(ev.target as Node)) {
+        setActionsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handle);
+    return () => document.removeEventListener('mousedown', handle);
+  }, [actionsOpen]);
   const goNavigate = () => {
     void navigate({
       to: "/lessons/$id",
@@ -309,6 +321,11 @@ function TestLessonCard({
   };
   const goEdit = () => {
     void navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } });
+  };
+  const goProfile = () => {
+    if (lesson.pupil_id) {
+      void navigate({ to: '/pupils/$id', params: { id: lesson.pupil_id } });
+    }
   };
   return (
     <>
@@ -335,12 +352,13 @@ function TestLessonCard({
       role="button"
       tabIndex={0}
       style={{
+        position: "relative",
         background: "linear-gradient(135deg, #1877D6, #0B1F3A)",
         borderRadius: 16,
         border: "none",
         boxShadow: "0 2px 0 #0B1F3A",
         marginBottom: 8,
-        overflow: "hidden",
+        overflow: "visible",
         padding: "10px 12px",
         cursor: "pointer",
         ...POPPINS,
@@ -410,19 +428,44 @@ function TestLessonCard({
             >
               🚗 TEST DAY
             </span>
-            {testTime ? (
-              <span
+            <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+              {testTime ? (
+                <span
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 600,
+                    color: "rgba(255,255,255,0.85)",
+                    fontFamily: "Poppins, sans-serif",
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  Test at {testTime}
+                </span>
+              ) : null}
+              <button
+                type="button"
+                onClick={(ev) => {
+                  ev.stopPropagation();
+                  setActionsOpen((cur) => !cur);
+                }}
+                aria-label="More test options"
                 style={{
-                  fontSize: 10,
-                  fontWeight: 600,
-                  color: "rgba(255,255,255,0.85)",
-                  fontFamily: "Poppins, sans-serif",
-                  fontVariantNumeric: "tabular-nums",
+                  width: 24,
+                  height: 24,
+                  borderRadius: "50%",
+                  background: "rgba(255,255,255,0.15)",
+                  border: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  padding: 0,
+                  flexShrink: 0,
                 }}
               >
-                Test at {testTime}
-              </span>
-            ) : null}
+                <IconDots stroke={1.5} size={13} color="#ffffff" />
+              </button>
+            </div>
           </div>
           <div
             style={{
@@ -518,6 +561,70 @@ function TestLessonCard({
           </div>
         </div>
       </div>
+      {actionsOpen && (
+        <div
+          ref={actionsRef}
+          onClick={(ev) => ev.stopPropagation()}
+          style={{
+            position: 'absolute',
+            top: 40,
+            right: 10,
+            minWidth: 140,
+            background: '#FFFFFF',
+            border: '1px solid #E5E7EB',
+            borderRadius: 10,
+            boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+            zIndex: 60,
+            overflow: 'hidden',
+            ...POPPINS,
+          }}
+        >
+          <button
+            type="button"
+            style={{
+              display: 'block',
+              width: '100%',
+              textAlign: 'left',
+              padding: '10px 14px',
+              fontSize: 13,
+              fontFamily: 'Poppins, sans-serif',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              color: '#0B1F3A',
+            }}
+            onClick={(ev) => {
+              ev.stopPropagation();
+              setActionsOpen(false);
+              goEdit();
+            }}
+          >
+            Edit lesson
+          </button>
+          <button
+            type="button"
+            style={{
+              display: 'block',
+              width: '100%',
+              textAlign: 'left',
+              padding: '10px 14px',
+              fontSize: 13,
+              fontFamily: 'Poppins, sans-serif',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              color: '#0B1F3A',
+            }}
+            onClick={(ev) => {
+              ev.stopPropagation();
+              setActionsOpen(false);
+              goProfile();
+            }}
+          >
+            Full profile
+          </button>
+        </div>
+      )}
     </div>
     </>
   );

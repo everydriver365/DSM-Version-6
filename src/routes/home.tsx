@@ -6300,7 +6300,7 @@ function HomePage() {
                               cursor: 'pointer',
                               boxShadow: '0 2px 0 #0B1F3A',
                               position: 'relative',
-                              overflow: 'hidden',
+                              overflow: 'visible',
                             }}
                           >
                             <div style={{ display: 'flex', alignItems: 'stretch', gap: 12 }}>
@@ -6347,11 +6347,22 @@ function HomePage() {
                                   }}>
                                     🚗 TEST DAY
                                   </span>
-                                  {testTimeOf(l) ? (
-                                    <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.85)', fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
-                                      Test at {testTimeOf(l)}
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                                    {testTimeOf(l) ? (
+                                      <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.85)', fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
+                                        Test at {testTimeOf(l)}
+                                      </span>
+                                    ) : null}
+                                    <span
+                                      data-home-lesson-actions-trigger
+                                      role="button"
+                                      aria-label="Lesson options"
+                                      onClick={(e) => { e.stopPropagation(); setActionsOpenForLesson((cur) => (cur?.id === l.id ? null : l)); }}
+                                      style={{ flexShrink: 0, display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+                                    >
+                                      <IconDotsVertical size={14} stroke={2} color="#ffffff" />
                                     </span>
-                                  ) : null}
+                                  </div>
                                 </div>
                                 <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', marginTop: 4, letterSpacing: -0.2, fontFamily: PF, lineHeight: 1.2 }}>
                                   {name}
@@ -6371,6 +6382,58 @@ function HomePage() {
                                   </span>
                                 </div>
                               </div>
+                              {actionsOpenForLesson?.id === l.id && (
+                                <div
+                                  data-home-lesson-actions-popover
+                                  onClick={(ev) => ev.stopPropagation()}
+                                  style={{
+                                    position: 'absolute',
+                                    top: 40,
+                                    right: 12,
+                                    minWidth: 140,
+                                    background: '#FFFFFF',
+                                    border: '1px solid #E5E7EB',
+                                    borderRadius: 10,
+                                    boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                                    zIndex: 40,
+                                    overflow: 'hidden',
+                                  }}
+                                >
+                                  <button
+                                    type="button"
+                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
+                                    onClick={(ev) => {
+                                      ev.stopPropagation();
+                                      setActionsOpenForLesson(null);
+                                      setDetailsSheetForLesson(l);
+                                    }}
+                                  >
+                                    View details
+                                  </button>
+                                  <button
+                                    type="button"
+                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
+                                    onClick={(ev) => {
+                                      ev.stopPropagation();
+                                      setActionsOpenForLesson(null);
+                                      navigate({ to: '/lessons/edit/$id', params: { id: l.id } });
+                                    }}
+                                  >
+                                    Edit lesson
+                                  </button>
+                                  <button
+                                    type="button"
+                                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 14px', fontSize: 13, fontFamily: 'Poppins, sans-serif', background: 'transparent', border: 'none', cursor: 'pointer', color: '#0B1F3A' }}
+                                    onClick={(ev) => {
+                                      ev.stopPropagation();
+                                      setActionsOpenForLesson(null);
+                                      navigate({ to: '/pupils/$id', params: { id: l.pupil_id } });
+                                    }}
+                                  >
+                                    Full profile
+                                  </button>
+                                </div>
+                              )}
                             </div>
                           </div>
                           )}
