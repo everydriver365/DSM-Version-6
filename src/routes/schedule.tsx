@@ -290,6 +290,7 @@ function TestLessonCard({
   const testCentre = testCentreOf(lesson);
   const testTime = testTimeOf(lesson);
   const startTime = fmtTime(lessonStart(lesson));
+  const endTime = fmtTime(lessonEnd(lesson));
   const duration = lesson.duration_minutes ?? 150;
   const durLabel = (() => {
     const h = Math.floor(duration / 60);
@@ -338,7 +339,8 @@ function TestLessonCard({
             fontFamily: "Poppins, sans-serif",
           }}
         >
-          {testTime ? `Test at ${testTime}` : startTime} · {durLabel}
+          {startTime} – {endTime}
+          {testTime ? ` · Test at ${testTime}` : ""}
         </span>
       </div>
       <div
