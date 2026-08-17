@@ -69,9 +69,7 @@ function timeToMins(t: string): number {
 function minsToTime(m: number): string {
   const h = Math.floor(m / 60);
   const min = m % 60;
-  const period = h >= 12 ? "pm" : "am";
-  const dh = h > 12 ? h - 12 : h === 0 ? 12 : h;
-  return dh + ":" + String(min).padStart(2, "0") + period;
+  return `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
 }
 function formatMins(mins: number) {
   const h = Math.floor(mins / 60);
