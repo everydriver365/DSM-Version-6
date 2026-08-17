@@ -574,75 +574,74 @@ export function AddLessonSheet({
             />
           </SheetRow>
           <SheetRow>
-            <IconHourglass size={20} stroke={1.8} color={BLUE} />
-            <span style={labelStyle}>Duration</span>
             <div
-              id="al-duration"
-              role="radiogroup"
-              className="flex items-center gap-1.5"
-              style={{ marginLeft: "auto" }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+                width: "100%",
+              }}
             >
-              {PRESET_DURATIONS.map((m) => {
-                const active = durationMode === "preset" && duration === m;
-                return (
-                  <button
-                    key={m}
-                    type="button"
-                    role="radio"
-                    aria-checked={active}
-                    onClick={() => {
-                      setDurationMode("preset");
-                      setDuration(m);
-                    }}
-                    style={{
-                      padding: "6px 10px",
-                      borderRadius: 999,
-                      fontSize: 13,
-                      fontWeight: 600,
-                      fontFamily: "Poppins, sans-serif",
-                      background: active ? BLUE : "#F3F6FA",
-                      color: active ? "#FFFFFF" : "#0B1F3A",
-                    }}
-                  >
-                    {m === 60 ? "1hr" : m === 90 ? "1.5hr" : m === 120 ? "2hr" : `${m}m`}
-                  </button>
-                );
-              })}
-              <button
-                type="button"
-                role="radio"
-                aria-checked={durationMode === "custom"}
-                onClick={() => setDurationMode("custom")}
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <IconHourglass size={20} stroke={1.8} color={BLUE} />
+                <span style={labelStyle}>Duration</span>
+              </div>
+              <div
+                id="al-duration"
+                role="radiogroup"
                 style={{
-                  padding: "6px 10px",
-                  borderRadius: 999,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  fontFamily: "Poppins, sans-serif",
-                  background: durationMode === "custom" ? BLUE : "#F3F6FA",
-                  color: durationMode === "custom" ? "#FFFFFF" : "#0B1F3A",
+                  display: "flex",
+                  gap: 8,
+                  overflowX: "auto",
+                  paddingBottom: 4,
+                  scrollbarWidth: "none",
                 }}
               >
-                Other
-              </button>
+                {DURATION_OPTIONS.map((opt) => {
+                  const active = duration === opt.value;
+                  const isTest = opt.value === "test";
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      onClick={() => setDuration(opt.value)}
+                      style={{
+                        height: 34,
+                        borderRadius: 20,
+                        padding: "0 16px",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        border: active ? "none" : "1px solid #E4E8EF",
+                        whiteSpace: "nowrap",
+                        fontFamily: "Poppins, sans-serif",
+                        background: active ? (isTest ? "#CC2229" : "#0B1F3A") : "#fff",
+                        color: active ? "#fff" : "#6B7686",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
+              {isTestDay && (
+                <p
+                  style={{
+                    fontSize: 11,
+                    color: "#9CA3AF",
+                    marginTop: 6,
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  Test day — no lesson duration recorded
+                </p>
+              )}
             </div>
           </SheetRow>
-          {durationMode === "custom" && (
-            <SheetRow>
-              <span style={labelStyle}>Minutes</span>
-              <input
-                type="number"
-                inputMode="numeric"
-                min={15}
-                step={15}
-                value={customDuration}
-                onChange={(e) => setCustomDuration(e.target.value)}
-                placeholder="90"
-                className="bg-transparent focus:outline-none text-right"
-                style={{ ...valueStyle, marginLeft: "auto", width: 90 }}
-              />
-            </SheetRow>
-          )}
+
         </SheetGroup>
         {(errors.date || errors.time) && <ErrorText>{errors.date ?? errors.time}</ErrorText>}
 
