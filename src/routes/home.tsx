@@ -1431,17 +1431,6 @@ function HomePage() {
   const [movingLessonHome, setMovingLessonHome] = useState<LessonRow | null>(null);
   const [moveModeHome, setMoveModeHome] = useState(false);
   const [confirmMoveHome, setConfirmMoveHome] = useState<{ date: string; time: string } | null>(null);
-  useEffect(() => {
-    if (!actionsOpenForLesson) return;
-    const onDoc = (ev: MouseEvent) => {
-      const target = ev.target as HTMLElement | null;
-      if (target && target.closest('[data-home-lesson-actions-popover]')) return;
-      if (target && target.closest('[data-home-lesson-actions-trigger]')) return;
-      setActionsOpenForLesson(null);
-    };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, [actionsOpenForLesson]);
   const handleMoveLessonHome = useCallback(async (newDate: string, newTime: string) => {
     if (!movingLessonHome) return;
     const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
