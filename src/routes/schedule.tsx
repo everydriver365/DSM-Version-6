@@ -1601,11 +1601,11 @@ function SchedulePage() {
                                     alignSelf: "stretch",
                                   }}
                                 />
-                                <div style={{ minWidth: 66, flexShrink: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0B1F3A", fontVariantNumeric: "tabular-nums", lineHeight: 1.2 }}>
+                                <div style={{ width: 48, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "flex-start", paddingTop: 2 }}>
+                                  <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", fontVariantNumeric: "tabular-nums", lineHeight: 1.15 }}>
                                     {e.startTime}
                                   </div>
-                                  <div style={{ fontSize: 10.5, color: "#B0B0B5", marginTop: 1, lineHeight: 1.2 }}>
+                                  <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
                                     {formatMins(e.mins)}
                                   </div>
                                 </div>
