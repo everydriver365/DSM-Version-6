@@ -74,13 +74,15 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
         </div>
 
         <div style={{ fontSize: 20, fontWeight: 800, color: '#0B1F3A', letterSpacing: -0.3 }}>{detail.pupilName}</div>
-        {detail.dateLabel ? (
-          <div style={{ fontSize: 12, color: '#6B7686', marginTop: 2, fontWeight: 500 }}>{detail.dateLabel}</div>
-        ) : null}
 
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 12, background: '#F2F7FD', borderRadius: 16, padding: '10px 12px' }}>
-          <IconClock size={18} stroke={1.8} color="#1877D6" />
-          <span style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums' }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'space-between', marginTop: 12, background: '#F2F7FD', borderRadius: 16, padding: '10px 12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <IconClock size={18} stroke={1.8} color="#1877D6" />
+            <span style={{ fontSize: 13, fontWeight: 600, color: '#1877D6', fontFamily: PF }}>
+              {detail.dateLabel || 'Test date'}
+            </span>
+          </div>
+          <span style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
             {detail.startTime} – {detail.endTime}
           </span>
         </div>
