@@ -5908,6 +5908,8 @@ function HomePage() {
                 return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
               };
 
+              let lastDividerDate = '';
+
               return (
                 <div style={{ fontFamily: PF }}>
                   {tabs}
