@@ -6601,7 +6601,13 @@ function HomePage() {
                       )}
                       </React.Fragment>
                     );
-
+                    })();
+                    return (
+                      <React.Fragment key={`row-${idx}`}>
+                        {dividerNode}
+                        {rowContent}
+                      </React.Fragment>
+                    );
                   })}
                   </div>
                 </div>
