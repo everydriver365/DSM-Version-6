@@ -4373,63 +4373,84 @@ function HomePage() {
                   })()
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    {todayLessons.map((l) => {
-                      const isEvent = l.lesson_type === 'event' || (!l.pupil_id && l.event_title);
-                      const [hh, mm] = (l.lesson_time ?? "00:00").split(":").map(Number);
+                    {(() => {
+                      const sortedLessons = [
+                        ...todayLessons.filter((l) =>
+                          !isLessonPast(l.lesson_date, l.lesson_time, l.duration_minutes ?? 60)
+                        ),
+                        ...todayLessons.filter((l) =>
+                          isLessonPast(l.lesson_date, l.lesson_time, l.duration_minutes ?? 60)
+                        ),
+                      ];
+                      return sortedLessons.map((l) => {
+                        const isEvent = l.lesson_type === 'event' || (!l.pupil_id && l.event_title);
+                        const [hh, mm] = (l.lesson_time ?? "00:00").split(":").map(Number);
 
-                      const endMinutes = hh * 60 + mm + (l.duration_minutes ?? 60);
-                      const nowMinutes = new Date().getHours() * 60 + new Date().getMinutes();
-                      const eolDue = !isEvent && !l.eol_completed && l.lesson_date === todayISO && endMinutes <= nowMinutes;
-                      return (
-                        <button
-                          key={l.id}
-                          onClick={() => {
-                            if (isEvent) {
-                              toast.info(`Event: ${l.event_title || 'No title'}`, { duration: 3000 });
-                              return;
-                            }
-                            navigate({ to: "/pupils/$id", params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any });
-                          }}
-                          style={{
-                            display: "grid", gridTemplateColumns: "70px 1fr auto auto auto",
-                            gap: 12, alignItems: "center", padding: "10px 12px",
-                            borderRadius: 8, border: "0.5px solid #E2E6ED",
-                            background: "#FFFFFF", cursor: "pointer", textAlign: "left",
-                            fontFamily: "Poppins, sans-serif",
-                          }}
-                        >
-                          <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{formatTime(l)}</span>
-                          <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{isEvent ? (l.event_title || "Event") : pupilName(l)}</span>
-                          <span style={{ fontSize: 12, color: "#6B7280" }}>{isEvent ? "Event" : formatDuration(l.duration_minutes)}</span>
-                          {!isEvent && (
-                            <LessonPaymentBadge
-                              status={l.payment_status}
-                              amountDue={l.amount_due}
-                              paidAmount={(l as any).paid_amount}
-                              prepaidHours={(l.pupils as any)?.prepaid_hours}
-                              size="md"
-                            />
-                          )}
+                        const endMinutes = hh * 60 + mm + (l.duration_minutes ?? 60);
+                        const nowMinutes = new Date().getHours() * 60 + new Date().getMinutes();
+                        const eolDue = !isEvent && !l.eol_completed && l.lesson_date === todayISO && endMinutes <= nowMinutes;
+                        const past = isLessonPast(l.lesson_date, l.lesson_time, l.duration_minutes ?? 60);
+                        const now = isLessonNow(l.lesson_date, l.lesson_time, l.duration_minutes ?? 60);
+                        return (
+                          <button
+                            key={l.id}
+                            onClick={() => {
+                              if (isEvent) {
+                                toast.info(`Event: ${l.event_title || 'No title'}`, { duration: 3000 });
+                                return;
+                              }
+                              navigate({ to: "/pupils/$id", params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any });
+                            }}
+                            style={{
+                              display: "grid", gridTemplateColumns: "70px 1fr auto auto auto auto",
+                              gap: 12, alignItems: "center", padding: "10px 12px",
+                              borderRadius: 8, border: now ? "2px solid #15803D" : "0.5px solid #E2E6ED",
+                              background: "#FFFFFF", cursor: "pointer", textAlign: "left",
+                              fontFamily: "Poppins, sans-serif",
+                              opacity: past ? 0.45 : 1,
+                              transition: 'opacity 0.2s',
+                            }}
+                          >
+                            <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{formatTime(l)}</span>
+                            <span style={{ fontSize: 14, fontWeight: 600, color: past ? "#9CA3AF" : "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textDecoration: past ? 'line-through' : 'none' }}>{isEvent ? (l.event_title || "Event") : pupilName(l)}</span>
+                            <span style={{ fontSize: 12, color: "#6B7280" }}>{isEvent ? "Event" : formatDuration(l.duration_minutes)}</span>
+                            {!isEvent && (
+                              <LessonPaymentBadge
+                                status={l.payment_status}
+                                amountDue={l.amount_due}
+                                paidAmount={(l as any).paid_amount}
+                                prepaidHours={(l.pupils as any)?.prepaid_hours}
+                                size="md"
+                              />
+                            )}
 
-                          {eolDue && (
-                            <span
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                navigate({ to: "/end-of-day" });
-                              }}
-                              style={{
-                                fontSize: 10, fontWeight: 700, textTransform: "uppercase",
-                                padding: "3px 8px", borderRadius: 8,
-                                background: "#FEF3C7", color: "#B45309",
-                                cursor: "pointer",
-                              }}
-                            >
-                              EOL due
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
+                            {(past || l.status === 'completed') && (
+                              <span style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", padding: "2px 7px", borderRadius: 20, background: "#EEF2F7", color: "#9CA3AF" }}>Done</span>
+                            )}
+                            {now && (
+                              <span style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", padding: "2px 7px", borderRadius: 20, background: "#DCFCE7", color: "#15803D" }}>Now</span>
+                            )}
+
+                            {eolDue && (
+                              <span
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate({ to: "/end-of-day" });
+                                }}
+                                style={{
+                                  fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+                                  padding: "3px 8px", borderRadius: 8,
+                                  background: "#FEF3C7", color: "#B45309",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                EOL due
+                              </span>
+                            )}
+                          </button>
+                        );
+                      });
+                    })()}
                   </div>
                 )}
                 <div style={{ display: "flex", gap: 8, marginTop: 12, alignItems: "stretch" }}>
