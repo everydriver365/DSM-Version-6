@@ -75,12 +75,13 @@ interface Lesson {
   notes: string | null;
   pickup_address: string | null;
   pickup_location: string | null;
-  pupil_id: string;
+  pupil_id: string | null;
   payment_status: string | null;
   amount_due: number | null;
   cancellation_reason?: string | null;
   cancellation_notes?: string | null;
   cancelled_at?: string | null;
+  event_title: string | null;
   pupils: { id: string; name: string; phone: string | null } | null;
 
 }
@@ -182,7 +183,7 @@ function LessonDetailPage() {
     supabase
       .from("lessons")
       .select(
-        "id, lesson_date, lesson_time, duration_minutes, lesson_type, status, notes, pickup_address, pickup_location, pupil_id, payment_status, amount_due, cancellation_reason, cancellation_notes, cancelled_at, pupils(id, name, phone)",
+        "id, lesson_date, lesson_time, duration_minutes, lesson_type, status, notes, pickup_address, pickup_location, pupil_id, payment_status, amount_due, cancellation_reason, cancellation_notes, cancelled_at, event_title, pupils(id, name, phone)",
       )
       .eq("id", id)
       .is("deleted_at", null)
@@ -206,6 +207,7 @@ function LessonDetailPage() {
       setCancelOutcome(null);
       return;
     }
+    if (!lesson.pupil_id) return;
     let stop = false;
     (async () => {
       const { data } = await supabase
@@ -280,6 +282,7 @@ function LessonDetailPage() {
   };
 
   const isTestDay = lesson?.lesson_type === "test" || lesson?.lesson_type === "test day" || lesson?.lesson_type === "driving test";
+  const isEvent = lesson?.lesson_type === "event" || (!lesson?.pupil_id && lesson?.event_title);
   const testCentre = search.testCentre || lesson?.pickup_location || lesson?.pickup_address || lesson?.notes || "";
 
   const handleNavigate = () => {
@@ -299,7 +302,7 @@ function LessonDetailPage() {
 
   const dateObj = lesson ? new Date(`${lesson.lesson_date}T00:00:00`) : null;
   const badge = lesson ? statusColor(lesson.status) : "#6B7280";
-  const pupilName = lesson?.pupils?.name ?? "Unknown pupil";
+  const pupilName = lesson?.pupils?.name ?? lesson?.event_title ?? "Event";
   const phone = lesson?.pupils?.phone ?? "";
 
   const lessonInsight = lesson
@@ -412,7 +415,101 @@ function LessonDetailPage() {
 
       {lesson && dateObj && (
         <>
-          {/* Header card */}
+          {isEvent && (
+            <>
+              {/* Event header card */}
+              <div className="mx-4 mt-3">
+                <div
+                  style={{
+                    background: "#fff",
+                    borderRadius: 16,
+                    border: "1px solid #E4E8EF",
+                    padding: 16,
+                  }}
+                >
+                  <span
+                    style={{
+                      background: "#EFF6FF",
+                      color: "#1877D6",
+                      fontSize: 10,
+                      fontWeight: 800,
+                      borderRadius: 20,
+                      padding: "3px 10px",
+                      display: "inline-block",
+                      marginBottom: 8,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    📅 EVENT
+                  </span>
+                  <div
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 800,
+                      color: "#0B1F3A",
+                      marginBottom: 8,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    {lesson.event_title}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      color: "#6B7686",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    {formatDateLong(dateObj)} at {formatTime(lesson.lesson_time)}
+                  </div>
+                  {lesson.pickup_location && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                        marginTop: 8,
+                        fontSize: 13,
+                        color: "#6B7686",
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      <IconMapPin size={14} color="#6B7686" stroke={1.5} />
+                      {lesson.pickup_location}
+                    </div>
+                  )}
+                  {lesson.notes && (
+                    <div
+                      style={{
+                        fontSize: 13,
+                        color: "#6B7686",
+                        marginTop: 8,
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      {lesson.notes}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Event actions */}
+              <div className="px-4 mt-3">
+                <Card className="!p-0">
+                  <ActionRow
+                    label="Delete event"
+                    disabled={deleting}
+                    onClick={() => setDeleteOpen(true)}
+                    color="#1877D6"
+                    isFirst
+                  />
+                </Card>
+              </div>
+            </>
+          )}
+          {!isEvent && (
+            <>
+              {/* Header card */}
           <div className="mx-4 mt-3">
             <Card>
               <div
@@ -753,7 +850,7 @@ function LessonDetailPage() {
               />
             </Card>
           </div>
-        </>
+        </>)}</>
       )}
 
       <ConfirmDialog
@@ -774,12 +871,12 @@ function LessonDetailPage() {
       />
 
 
-      {lesson && dateObj && (
+      {lesson && dateObj && !isEvent && (
         <CancelLessonSheet
           open={cancelOpen}
           onClose={() => setCancelOpen(false)}
           pupilName={pupilName}
-          pupilId={lesson.pupil_id}
+          pupilId={lesson.pupil_id ?? ""}
           lessonId={lesson.id}
           lessonDate={lesson.lesson_date}
           lessonTime={lesson.lesson_time}
