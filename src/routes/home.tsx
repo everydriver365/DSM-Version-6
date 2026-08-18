@@ -5802,7 +5802,7 @@ function HomePage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <button
                     type="button"
-                    onClick={() => { setAddLessonPupilId(undefined); setAddLessonDate(tab === 'tomorrow' ? tomorrowISO : undefined); setAddLessonOpen(true); }}
+                    onClick={() => { setAddLessonPupilId(undefined); setAddLessonDate(tab === 'tomorrow' ? tomorrowISO : todayISO); setAddChooserOpen(true); }}
                     style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: '#CC2229', cursor: 'pointer', lineHeight: 1 }}
                   >
                     Add +
