@@ -585,8 +585,66 @@ export function AddLessonSheet({
       }
     >
       <div style={{ fontFamily: "Poppins, sans-serif" }}>
+        {/* Lesson / Event toggle */}
+        <div
+          style={{
+            display: "flex",
+            gap: 0,
+            background: "#E5E5EA",
+            borderRadius: 8,
+            padding: 4,
+            margin: "0 0 16px",
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              setIsEvent(false);
+            }}
+            style={{
+              flex: 1,
+              padding: "8px 0",
+              borderRadius: 8,
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: 13,
+              fontWeight: 600,
+              background: !isEvent ? "#fff" : "transparent",
+              color: !isEvent ? "#0B1F3A" : "#6B6B6F",
+              boxShadow: !isEvent ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+            }}
+          >
+            Lesson
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setIsEvent(true);
+              setIsTestDay(false);
+              if (duration === "test") setDuration(1);
+            }}
+            style={{
+              flex: 1,
+              padding: "8px 0",
+              borderRadius: 8,
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: 13,
+              fontWeight: 600,
+              background: isEvent ? "#fff" : "transparent",
+              color: isEvent ? "#0B1F3A" : "#6B6B6F",
+              boxShadow: isEvent ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+            }}
+          >
+            Event
+          </button>
+        </div>
+
         {/* SECTION 1 — Pupil */}
-        <SheetGroup>
+        {!isEvent ? (
+          <SheetGroup>
           <SheetRow
             onClick={() => {
               setPupilQuery("");
