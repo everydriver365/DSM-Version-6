@@ -1171,14 +1171,251 @@ function Step2(props: {
                   fontFamily: "Poppins, sans-serif",
                 }}
               >
-                <Icon size={18} color={active ? "#fff" : "#0B1F3A"} />
+              <Icon size={18} color={active ? "#fff" : "#0B1F3A"} />
                 <div style={{ fontSize: 13, fontWeight: 700 }}>{label}</div>
                 <div style={{ fontSize: 11, color: active ? "#cbd5e1" : "#6B7280" }}>{desc}</div>
               </button>
             );
           })}
         </div>
+
+        {/* Custom schedule toggle */}
+        <div
+          onClick={() => setUseCustomSessions((prev) => !prev)}
+          style={{
+            background: "#fff",
+            borderRadius: 16,
+            border: "1px solid #E4E8EF",
+            padding: "14px 16px",
+            display: "flex",
+            gap: 12,
+            alignItems: "center",
+            marginTop: 8,
+            cursor: "pointer",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              background: useCustomSessions ? "#EFF6FF" : "#EEF2F7",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <IconCalendarPlus size={20} color="#1877D6" />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>Set custom session dates</div>
+            <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>Define exact dates and times for each session</div>
+          </div>
+          <DSMToggle value={useCustomSessions} onChange={setUseCustomSessions} />
+        </div>
       </div>
+
+      {useCustomSessions && (
+        <div>
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: "#9CA3AF",
+              textTransform: "uppercase",
+              padding: "8px 0 6px",
+              fontFamily: "Poppins, sans-serif",
+              letterSpacing: 0.6,
+            }}
+          >
+            Sessions
+          </div>
+
+          {customSessions.length > 0 && (
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 16,
+                border: "1px solid #E4E8EF",
+                overflow: "hidden",
+                marginBottom: 12,
+              }}
+            >
+              {[...customSessions]
+                .sort((a, b) => a.date.localeCompare(b.date))
+                .map((session, i) => (
+                  <div
+                    key={session.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      padding: "12px 16px",
+                      borderBottom: "1px solid #EEF2F7",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: "50%",
+                        background: "#EFF6FF",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 12,
+                        fontWeight: 700,
+                        color: "#1877D6",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {i + 1}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{fmtDate(session.date)}</div>
+                      <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>
+                        {session.time} · {session.duration} min
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setCustomSessions((prev) => prev.filter((s) => s.id !== session.id))}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: 4,
+                        color: "#CC2229",
+                      }}
+                    >
+                      <IconTrash size={18} />
+                    </button>
+                  </div>
+                ))}
+            </div>
+          )}
+
+          <div
+            style={{
+              background: "#EEF2F7",
+              borderRadius: 16,
+              padding: "14px 16px",
+              marginBottom: 12,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: "#9CA3AF",
+                textTransform: "uppercase",
+                marginBottom: 10,
+                fontFamily: "Poppins, sans-serif",
+                letterSpacing: 0.6,
+              }}
+            >
+              Add session
+            </div>
+
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", marginBottom: 4, fontFamily: "Poppins, sans-serif" }}>DATE</div>
+              <input
+                type="date"
+                value={newSessionDate}
+                min={new Date().toISOString().split("T")[0]}
+                onChange={(e) => setNewSessionDate(e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 8 }}>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", marginBottom: 4, fontFamily: "Poppins, sans-serif" }}>TIME</div>
+                <input
+                  type="time"
+                  value={newSessionTime}
+                  onChange={(e) => setNewSessionTime(e.target.value)}
+                  style={inputStyle}
+                />
+              </div>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", marginBottom: 4, fontFamily: "Poppins, sans-serif" }}>DURATION</div>
+                <select
+                  value={newSessionDuration}
+                  onChange={(e) => setNewSessionDuration(Number(e.target.value))}
+                  style={inputStyle}
+                >
+                  <option value={30}>30 min</option>
+                  <option value={60}>1 hr</option>
+                  <option value={90}>1.5 hrs</option>
+                  <option value={120}>2 hrs</option>
+                  <option value={150}>2.5 hrs</option>
+                </select>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              disabled={!newSessionDate}
+              onClick={() => {
+                if (!newSessionDate) return;
+                setCustomSessions((prev) => [
+                  ...prev,
+                  {
+                    id: crypto.randomUUID(),
+                    date: newSessionDate,
+                    time: newSessionTime,
+                    duration: newSessionDuration,
+                  },
+                ]);
+                setNewSessionDate("");
+                setNewSessionTime("09:00");
+                setNewSessionDuration(60);
+              }}
+              style={{
+                marginTop: 10,
+                width: "100%",
+                background: "#1877D6",
+                color: "#fff",
+                borderRadius: 20,
+                padding: 11,
+                fontSize: 13,
+                fontWeight: 700,
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+                opacity: !newSessionDate ? 0.5 : 1,
+              }}
+            >
+              + Add session
+            </button>
+          </div>
+
+          {customSessions.length > 0 && (
+            <div
+              style={{
+                fontSize: 12,
+                color: "#15803D",
+                fontWeight: 600,
+                marginTop: 4,
+                display: "flex",
+                gap: 6,
+                alignItems: "center",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              <IconCheck size={16} />
+              {customSessions.length} session{customSessions.length > 1 ? "s" : ""} added
+            </div>
+          )}
+        </div>
+      )}
 
       {repeatType === "weekly" && (
         <div>
