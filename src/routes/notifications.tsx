@@ -550,6 +550,7 @@ function NotificationsPage() {
       return;
     }
 
+    if (action.isOverduePayment) hapticWarning();
     setActionSheet({ notif, notifType: notif.type, options: action.options ?? [], ...action });
   }
 
