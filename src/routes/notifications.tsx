@@ -384,6 +384,74 @@ function NotificationsPage() {
     window.dispatchEvent(new Event("dsm-notifications-updated"));
   }
 
+  async function handleNotificationTap(notif: any) {
+    if (!notif.read) {
+      await markAsRead(notif.id);
+    }
+    const action: any = getNotificationAction(notif);
+
+    if (notif.reference_type === "lesson" && notif.reference_id) {
+      const { data: lesson } = await supabase
+        .from("lessons")
+        .select("id, pupil_id, pickup_location, lesson_date, lesson_time, pupils ( id, name, phone, email )")
+        .eq("id", notif.reference_id)
+        .single();
+      const l = lesson as any;
+      if (l) {
+        const p = Array.isArray(l.pupils) ? l.pupils[0] : l.pupils;
+        if (action.isLessonStarting) {
+          action.pupilId = l.pupil_id;
+          action.pupilName = p?.name ?? action.pupilName;
+          action.pupilPhone = p?.phone ?? null;
+          action.pickupLocation = l.pickup_location ?? null;
+          action.lessonTime = action.lessonTime ?? l.lesson_time ?? null;
+        }
+        if (action.isCancellation) {
+          action.pupilId = l.pupil_id;
+          action.pupilName = p?.name ?? action.pupilName;
+          action.pupilPhone = p?.phone ?? null;
+        }
+        if (action.isOverduePayment) {
+          action.pupilId = l.pupil_id;
+          action.pupilName = p?.name ?? action.pupilName;
+          action.pupilPhone = p?.phone ?? null;
+          action.pupilEmail = p?.email ?? null;
+        }
+      }
+    }
+
+    if (notif.reference_type === "pupil" && notif.reference_id) {
+      const { data: pupil } = await supabase
+        .from("pupils")
+        .select("id, name, phone, email")
+        .eq("id", notif.reference_id)
+        .single();
+      const p = pupil as any;
+      if (p) {
+        action.pupilId = p.id;
+        action.pupilName = p.name ?? action.pupilName;
+        action.pupilPhone = p.phone ?? null;
+        action.pupilEmail = p.email ?? null;
+      }
+    }
+
+    if (action.directNav) {
+      const direct = action.directNav as string;
+      if (direct.startsWith("/lessons/") && direct !== "/lessons") {
+        navigate({ to: "/lessons/$id", params: { id: direct.split("/")[2] } });
+      } else if (direct.startsWith("/pupils/") && direct !== "/pupils") {
+        navigate({ to: "/pupils/$id", params: { id: direct.split("/")[2] } });
+      } else {
+        navigate({ to: direct as never });
+      }
+      return;
+    }
+
+    setActionSheet({ notif, notifType: notif.type, options: action.options ?? [], ...action });
+  }
+
+
+
   async function markAllRead() {
     if (!userId) return;
     setItems((prev) => (prev ?? []).map((n) => ({ ...n, read: true })));
