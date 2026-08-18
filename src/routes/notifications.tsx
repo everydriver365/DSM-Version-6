@@ -677,8 +677,6 @@ function NotificationsPage() {
                               jobId: action.jobId,
                               jobTitle: action.jobTitle,
                               area: action.area,
-                              lessonDate: action.lessonDate,
-                              lessonTime: action.lessonTime,
                               duration: action.duration,
                               rate: action.rate,
                               description: action.description,
