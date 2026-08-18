@@ -423,3 +423,9 @@ time,
 .live-pupil-search::placeholder {
   color: #B0B0B5;
 }
+
+/* DSM shared header — keeps content clear of the iOS status bar / Dynamic Island
+   while allowing the navy background to bleed up behind it. */
+.dsm-header {
+  padding-top: env(safe-area-inset-top);
+}
