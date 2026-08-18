@@ -417,6 +417,7 @@ export function AddLessonSheet({
       if (updErr) {
         setErrors({ form: updErr.message });
         toast.error(updErr.message);
+        hapticError();
         setSaving(false);
         return;
       }
@@ -429,6 +430,7 @@ export function AddLessonSheet({
         pushLessonToGoogle({ lesson_id: editingLesson.id, instructor_id: user.id, action: "update" });
       }
       toast.success("Lesson updated");
+      hapticSuccess();
       setSaving(false);
       onSaved(editingLesson.id);
       onClose();
