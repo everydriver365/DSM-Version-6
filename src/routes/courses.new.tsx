@@ -1035,6 +1035,16 @@ function Step2(props: {
   setRepeatEndDate: (v: string) => void;
   repeatCount: string;
   setRepeatCount: (v: string) => void;
+  useCustomSessions: boolean;
+  setUseCustomSessions: (v: boolean) => void;
+  customSessions: CourseSession[];
+  setCustomSessions: React.Dispatch<React.SetStateAction<CourseSession[]>>;
+  newSessionDate: string;
+  setNewSessionDate: (v: string) => void;
+  newSessionTime: string;
+  setNewSessionTime: (v: string) => void;
+  newSessionDuration: number;
+  setNewSessionDuration: (n: number) => void;
   pickup: PickupItem | null;
   setPickup: (v: PickupItem | null) => void;
   pickupError: string | null;
@@ -1053,6 +1063,11 @@ function Step2(props: {
     repeatType, setRepeatType, repeatDays, setRepeatDays,
     weekdaysOnlyDaily, setWeekdaysOnlyDaily,
     repeatEndDate, setRepeatEndDate, repeatCount, setRepeatCount,
+    useCustomSessions, setUseCustomSessions,
+    customSessions, setCustomSessions,
+    newSessionDate, setNewSessionDate,
+    newSessionTime, setNewSessionTime,
+    newSessionDuration, setNewSessionDuration,
     pickup, setPickup,
     pickupError, setPickupError, radiusMiles, setRadiusMiles,
     timePref, setTimePref,
