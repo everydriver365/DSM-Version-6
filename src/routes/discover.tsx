@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { IconBroadcast, IconPlayerPlay, IconChevronRight } from "@tabler/icons-react";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { supabase } from "@/lib/supabaseClient";
 
 type DiscoverTab = "live" | "learn" | "market";
@@ -480,7 +480,7 @@ function DiscoverPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
       <div style={{ padding: "8px 16px 0" }}>
         <h1 style={{ fontSize: 26, fontWeight: 700, color: NAVY, margin: 0, lineHeight: 1.15 }}>

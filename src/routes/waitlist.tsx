@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { IconCheck, IconCircleX, IconClock, IconPlus, IconSend, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
@@ -141,7 +141,7 @@ function WaitlistPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
 
       {/* Tabs */}

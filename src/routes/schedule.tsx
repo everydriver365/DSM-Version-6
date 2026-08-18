@@ -30,7 +30,7 @@ import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { filterEchoedBlocks } from "@/lib/calendarDedupe";
 import { resolveEventColour } from "@/lib/googleCalendarColours";
 
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
 import { TestDetailPanel } from "@/components/lessons/TestDetailPanel";
@@ -1415,7 +1415,7 @@ function SchedulePage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
       <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
 
       {moveMode && movingLesson && (

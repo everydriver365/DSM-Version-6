@@ -9,7 +9,7 @@ import {
   setPushEnabled as persistPushEnabled,
 } from "@/lib/calendarSyncPrefs";
 import { toast } from "sonner";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
@@ -576,7 +576,7 @@ function CalendarSyncPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
       <div className="px-4 pb-12">
         {/* IconInfoCircle card */}

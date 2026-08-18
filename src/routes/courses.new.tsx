@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { IconCalendar, IconCalendarCheck, IconCalendarMonth, IconCalendarPlus, IconCheck, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMoon, IconPhoto, IconRepeat, IconSchool, IconSettings, IconSun, IconSunrise, IconTrash } from "@tabler/icons-react";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import DSMToggle from "@/components/dsm/DSMToggle";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
@@ -512,7 +512,7 @@ function NewCoursePage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
       {/* Action bar */}
       <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 16px" }}>

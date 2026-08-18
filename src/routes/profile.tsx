@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { IconAlertTriangle, IconApple, IconBell, IconBriefcase, IconCalendar, IconCamera, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconCreditCard, IconDeviceMobile, IconExternalLink, IconLoader2, IconMail, IconPhoto, IconPuzzle, IconShield, IconTrash, IconUser } from "@tabler/icons-react";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -785,7 +785,7 @@ function ProfilePage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
       {/* Actions row */}
       <div className="flex justify-end px-4 pt-3">

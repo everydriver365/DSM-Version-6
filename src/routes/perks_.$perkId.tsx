@@ -11,7 +11,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { useGoBack } from "@/hooks/useGoBack";
 import { createSubscriptionPaymentLink, type PaidTierId } from "@/lib/websiteUpgrade";
@@ -174,7 +174,7 @@ function PerkDetailPage() {
           onMenu={() => navigate({ to: "/more" as never })}
           onMicPress={() => toast.info("Voice commands coming soon!")}
         />
-        <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+        <div style={{ height: TOP_BAR_SPACER }} />
         <div style={{ ...CARD, textAlign: "center", color: "#6B7686", fontSize: 14 }}>
           This perk is no longer available.
         </div>
@@ -208,7 +208,7 @@ function PerkDetailPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
       {/* HERO */}
       {perk.hero_image_url ? (

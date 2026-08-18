@@ -9,7 +9,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { buildPickup, getPickupParts } from "@/lib/pickup";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { QuickActionsMenu, type QuickAction } from "@/components/dsm/QuickActionsMenu";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard.tsx";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
@@ -4174,7 +4174,7 @@ function HomePage() {
       fontSize: 12, fontWeight: 600, color: "#0B1F3A",
     };
     return (
-      <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: "calc(60px + env(safe-area-inset-top, 0px))" }}>
+      <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: TOP_BAR_SPACER }}>
         {notifBanner}
         <InstructorTopBar
           firstName={firstName}
@@ -4588,7 +4588,7 @@ function HomePage() {
   }
 
   return (
-    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: 'calc(60px + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
+    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: TOP_BAR_SPACER, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
       {showWelcome && userId && (
         <WelcomeOverlay
           userId={userId}
@@ -4641,8 +4641,8 @@ function HomePage() {
       <div
         style={{
           backgroundColor: '#0B1F3A',
-          marginTop: 'calc(-1 * (60px + env(safe-area-inset-top, 0px)))',
-          padding: 'calc(60px + env(safe-area-inset-top, 0px) + 16px) 16px 34px',
+          marginTop: `calc(-1 * ${TOP_BAR_SPACER})`,
+          padding: `calc(${TOP_BAR_SPACER} + 16px) 16px 34px`,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',

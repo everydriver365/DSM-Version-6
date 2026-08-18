@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconAward, IconBook, IconCalendar, IconCar, IconCloud, IconExternalLink, IconId, IconMapPin, IconNavigation } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { PageLayout } from "@/components/PageLayout";
 
@@ -106,7 +106,7 @@ function ResourcesPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
 
       {/* DVSA RESOURCES */}

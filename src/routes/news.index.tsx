@@ -4,6 +4,7 @@ import { IconAlertTriangle, IconChevronLeft, IconClock, IconMapPin, IconNews, Ic
 import { sanitizeNewsTitle } from "../lib/newsText";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import {
   NEWS_CATEGORIES,
   categoryOf,
@@ -375,8 +376,8 @@ function NewsIndexPage() {
         className="flex items-center px-4"
         style={{
           gap: 12,
-          height: "calc(60px + env(safe-area-inset-top, 0px))",
-          paddingTop: "env(safe-area-inset-top, 0px)",
+          height: TOP_BAR_SPACER,
+          paddingTop: "max(env(safe-area-inset-top, 0px), 24px)",
           backgroundColor: "#0B1F3A",
           borderRadius: "0 0 28px 28px",
         }}

@@ -5,6 +5,7 @@ import { IconCalendar, IconChevronLeft, IconClock, IconExternalLink, IconUser } 
 import { sanitizeNewsContent, sanitizeNewsTitle } from "../lib/newsText";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import { categoryOf } from "@/lib/newsCategories";
 import { getLearnItem } from "@/lib/learnLibrary";
@@ -421,8 +422,8 @@ function NewsArticlePage() {
       <div
         className="flex items-center justify-between px-4"
         style={{
-          height: "calc(60px + env(safe-area-inset-top, 0px))",
-          paddingTop: "env(safe-area-inset-top, 0px)",
+          height: TOP_BAR_SPACER,
+          paddingTop: "max(env(safe-area-inset-top, 0px), 24px)",
           backgroundColor: "#0B1F3A",
         }}
       >
