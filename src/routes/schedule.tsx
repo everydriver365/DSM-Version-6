@@ -842,11 +842,12 @@ function SchedulePage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      // Select * so the query still succeeds on databases that have not yet
+      // applied every optional calendar_blocks column (e.g. location).
       const { data, error } = await supabase
         .from("calendar_blocks")
-        .select(
-          "id, title, start_datetime, end_datetime, is_all_day, location, notes, colour, blocks_availability, recurrence_group_id",
-        )
+        .select("*")
+
         .eq("source", "personal")
         .gte("start_datetime", `${ymdLocal(rangeStart)}T00:00:00`)
         .lte("start_datetime", `${ymdLocal(rangeEnd)}T23:59:59`)
