@@ -783,7 +783,6 @@ function SchedulePage() {
         )
 
         .is("deleted_at", null)
-        .or("pupil_id.is.null,and(pupil.status.eq.active,pupil.deleted_at.is.null)")
         .gte("lesson_date", ymdLocal(rangeStart))
         .lte("lesson_date", ymdLocal(rangeEnd))
         .order("lesson_date", { ascending: true })
@@ -794,7 +793,17 @@ function SchedulePage() {
         setLessons([]);
         return;
       }
-      setLessons((data as unknown as Lesson[]) ?? []);
+      // Keep events (no pupil) plus lessons whose linked pupil is active and
+      // not soft-deleted. Applied client-side because PostgREST cannot OR
+      // across an embedded table without a referencedTable filter.
+      const rows = ((data as unknown as Lesson[]) ?? []).filter((l) => {
+        if (!l.pupil_id) return true;
+        const p = l.pupil as { status?: string | null; deleted_at?: string | null } | null;
+        if (!p) return false;
+        return p.status === "active" && !p.deleted_at;
+      });
+      setLessons(rows);
+
     })();
     return () => {
       cancelled = true;
@@ -833,11 +842,12 @@ function SchedulePage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      // Select * so the query still succeeds on databases that have not yet
+      // applied every optional calendar_blocks column (e.g. location).
       const { data, error } = await supabase
         .from("calendar_blocks")
-        .select(
-          "id, title, start_datetime, end_datetime, is_all_day, location, notes, colour, blocks_availability, recurrence_group_id",
-        )
+        .select("*")
+
         .eq("source", "personal")
         .gte("start_datetime", `${ymdLocal(rangeStart)}T00:00:00`)
         .lte("start_datetime", `${ymdLocal(rangeEnd)}T23:59:59`)
