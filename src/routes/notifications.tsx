@@ -495,6 +495,47 @@ function NotificationsPage() {
       }
     }
 
+    if (notif.reference_type === "enquiry" && notif.reference_id) {
+      const { data: enquiry } = await supabase
+        .from("instructor_enquiries")
+        .select("*")
+        .eq("id", notif.reference_id)
+        .single();
+      if (enquiry) {
+        action.enquiryId = enquiry.id;
+        action.enquirerName = enquiry.name ?? action.enquirerName;
+        action.enquirerPhone = enquiry.phone ?? null;
+        action.enquirerEmail = enquiry.email ?? null;
+        action.enquirerPostcode = enquiry.postcode ?? null;
+        action.transmission = enquiry.transmission ?? null;
+        action.message = enquiry.message ?? enquiry.notes ?? action.message;
+      }
+    }
+
+    if (
+      (notif.reference_type === "job_offer" || notif.reference_type === "instructor_job") &&
+      notif.reference_id
+    ) {
+      const { data: job } = await supabase
+        .from("instructor_jobs")
+        .select("*")
+        .eq("id", notif.reference_id)
+        .single();
+      if (job) {
+        action.jobId = job.id;
+        action.jobTitle = job.title ?? action.jobTitle;
+        action.area = job.area ?? job.postcode ?? null;
+        action.transmission = job.transmission ?? job.car_type ?? null;
+        action.lessonDate = job.lesson_date ?? job.date ?? null;
+        action.lessonTime = job.lesson_time ?? job.time ?? null;
+        action.duration = job.duration ?? job.hours ?? null;
+        action.rate = job.rate ?? job.hourly_rate ?? null;
+        action.description = job.description ?? job.notes ?? null;
+        action.postedBy = job.posted_by ?? job.instructor_name ?? null;
+        action.expiresAt = job.expires_at ?? null;
+      }
+    }
+
     if (action.directNav) {
       const direct = action.directNav as string;
       if (direct.startsWith("/lessons/") && direct !== "/lessons") {
