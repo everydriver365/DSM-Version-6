@@ -1089,34 +1089,38 @@ export function AddLessonSheet({
           </SheetRow>
         </SheetGroup>
 
-        {/* SECTION 4 — Payment (auto-priced, read only) */}
-        <SheetGroup>
-          <SheetRow>
-            <IconCurrencyPound size={20} stroke={1.8} color={BLUE} />
-            <span style={labelStyle}>Amount</span>
-            <span style={{ ...valueStyle, marginLeft: "auto", color: "#6B7686", fontWeight: 500, fontSize: 13 }}>
-              Auto from your rates
-            </span>
-          </SheetRow>
-          <SheetRow>
-            <IconCreditCard size={20} stroke={1.8} color={BLUE} />
-            <span style={labelStyle}>Payment status</span>
-            <span
-              style={{
-                marginLeft: "auto",
-                fontFamily: "Poppins, sans-serif",
-                fontSize: 12,
-                fontWeight: 600,
-                borderRadius: 999,
-                padding: "4px 12px",
-                color: willBePrepaid ? "#1F6B2E" : "#8A5A00",
-                background: willBePrepaid ? "#E8F5E9" : "#FEF3D7",
-              }}
-            >
-              {willBePrepaid ? "Prepaid" : "Unpaid"}
-            </span>
-          </SheetRow>
-        </SheetGroup>
+        {!isEvent && (
+          <>
+            {/* SECTION 4 — Payment (auto-priced, read only) */}
+            <SheetGroup>
+              <SheetRow>
+                <IconCurrencyPound size={20} stroke={1.8} color={BLUE} />
+                <span style={labelStyle}>Amount</span>
+                <span style={{ ...valueStyle, marginLeft: "auto", color: "#6B7686", fontWeight: 500, fontSize: 13 }}>
+                  Auto from your rates
+                </span>
+              </SheetRow>
+              <SheetRow>
+                <IconCreditCard size={20} stroke={1.8} color={BLUE} />
+                <span style={labelStyle}>Payment status</span>
+                <span
+                  style={{
+                    marginLeft: "auto",
+                    fontFamily: "Poppins, sans-serif",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    borderRadius: 999,
+                    padding: "4px 12px",
+                    color: willBePrepaid ? "#1F6B2E" : "#8A5A00",
+                    background: willBePrepaid ? "#E8F5E9" : "#FEF3D7",
+                  }}
+                >
+                  {willBePrepaid ? "Prepaid" : "Unpaid"}
+                </span>
+              </SheetRow>
+            </SheetGroup>
+          </>
+        )}
 
         {/* SECTION 5 — Notes */}
         <SheetGroup>
