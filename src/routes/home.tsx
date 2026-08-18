@@ -1323,7 +1323,38 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
   );
 }
 
+function isLessonPast(
+  lessonDate: string,
+  lessonTime: string,
+  durationMinutes: number = 60
+): boolean {
+  try {
+    const [hours, minutes] = lessonTime.split(':').map(Number);
+    const lessonStart = new Date(lessonDate);
+    lessonStart.setHours(hours, minutes, 0, 0);
+    const lessonEnd = new Date(lessonStart.getTime() + durationMinutes * 60000);
+    return lessonEnd < new Date();
+  } catch {
+    return false;
+  }
+}
 
+function isLessonNow(
+  lessonDate: string,
+  lessonTime: string,
+  durationMinutes: number = 60
+): boolean {
+  try {
+    const [hours, minutes] = lessonTime.split(':').map(Number);
+    const lessonStart = new Date(lessonDate);
+    lessonStart.setHours(hours, minutes, 0, 0);
+    const lessonEnd = new Date(lessonStart.getTime() + durationMinutes * 60000);
+    const now = new Date();
+    return now >= lessonStart && now < lessonEnd;
+  } catch {
+    return false;
+  }
+}
 
 function HomePage() {
   const navigate = useNavigate();
