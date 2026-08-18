@@ -247,12 +247,33 @@ function getNotificationAction(
     };
   }
 
-  if (type === "lesson" || type === "lesson_reminder") {
+  if (
+    type === "lesson_reminder" ||
+    type === "lesson_starting" ||
+    type === "lesson_soon" ||
+    type === "starting_soon"
+  ) {
+    return {
+      isLessonStarting: true,
+      lessonId: meta.lesson_id ?? null,
+      pupilId: meta.pupil_id ?? null,
+      pupilName: meta.pupil_name ?? meta.pupil ?? null,
+      pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
+      pickupLocation: meta.pickup_location ?? meta.address ?? meta.location ?? null,
+      lessonTime: meta.lesson_time ?? meta.time ?? null,
+      lessonDate: meta.lesson_date ?? meta.date ?? null,
+      minutesUntil: meta.minutes_until ?? meta.minutes ?? null,
+      options: [],
+    };
+  }
+
+  if (type === "lesson") {
     if (meta.lesson_id) {
       return { directNav: `/lessons/${meta.lesson_id}` };
     }
     return { directNav: "/schedule" };
   }
+
 
   if (type === "pupil" || type === "new_pupil") {
     const pupilId = meta.pupil_id ?? notif.reference_id;
