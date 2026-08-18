@@ -433,7 +433,7 @@ function LoginPage() {
 
           {error && (
             <div
-              className="rounded-lg] bg-[#FDECEC] border border-[#F5C2C4] px-3 py-2.5"
+              className="rounded-lg bg-[#FDECEC] border border-[#F5C2C4] px-3 py-2.5"
               role="alert"
               aria-live="assertive"
             >

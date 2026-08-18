@@ -103,7 +103,7 @@ export function LessonDetailsSheet({
     >
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
       <div
-        className="relative w-full max-w-md rounded-t-lg] overflow-hidden flex flex-col"
+        className="relative w-full max-w-md rounded-t-lg overflow-hidden flex flex-col"
         style={{
           backgroundColor: "#F5F7FA",
           boxShadow: "0 -4px 24px rgba(0,0,0,0.15)",

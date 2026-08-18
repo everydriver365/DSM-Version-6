@@ -1584,7 +1584,7 @@ function LogResultSheet({
       }
     >
       <div className="flex flex-col" style={{ gap: 12 }}>
-        <div className="rounded-lg] p-3" style={{ backgroundColor: "#F3F4F6" }}>
+        <div className="rounded-lg p-3" style={{ backgroundColor: "#F3F4F6" }}>
           <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A" }}>
             {test.pupils?.name ?? "Pupil"}
           </div>
