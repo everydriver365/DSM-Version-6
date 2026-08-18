@@ -417,7 +417,106 @@ function LessonDetailPage() {
 
       {lesson && dateObj && (
         <>
-          {/* Header card */}
+          {isEvent && (
+            <>
+              {/* Event header card */}
+              <div className="mx-4 mt-3">
+                <div
+                  style={{
+                    background: "#fff",
+                    borderRadius: 16,
+                    border: "1px solid #E4E8EF",
+                    padding: 16,
+                  }}
+                >
+                  <span
+                    style={{
+                      background: "#EFF6FF",
+                      color: "#1877D6",
+                      fontSize: 10,
+                      fontWeight: 800,
+                      borderRadius: 20,
+                      padding: "3px 10px",
+                      display: "inline-block",
+                      marginBottom: 8,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    📅 EVENT
+                  </span>
+                  <div
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 800,
+                      color: "#0B1F3A",
+                      marginBottom: 8,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    {lesson.event_title}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      color: "#6B7686",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    {formatDateLong(dateObj)} at {formatTime(lesson.lesson_time)}
+                  </div>
+                  {lesson.pickup_location && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                        marginTop: 8,
+                        fontSize: 13,
+                        color: "#6B7686",
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      <IconMapPin size={14} color="#6B7686" stroke={1.5} />
+                      {lesson.pickup_location}
+                    </div>
+                  )}
+                  {lesson.notes && (
+                    <div
+                      style={{
+                        fontSize: 13,
+                        color: "#6B7686",
+                        marginTop: 8,
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      {lesson.notes}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Event actions */}
+              <div className="px-4 mt-3">
+                <Card className="!p-0">
+                  <ActionRow
+                    label="Edit event"
+                    onClick={() => navigate({ to: "/lessons/edit/$id", params: { id } })}
+                    color="#1877D6"
+                    isFirst
+                  />
+                  <ActionRow
+                    label="Delete event"
+                    disabled={deleting}
+                    onClick={() => setDeleteOpen(true)}
+                    color="#1877D6"
+                  />
+                </Card>
+              </div>
+            </>
+          )}
+          {!isEvent && (
+            <>
+              {/* Header card */}
           <div className="mx-4 mt-3">
             <Card>
               <div
