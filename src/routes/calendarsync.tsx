@@ -7,8 +7,6 @@ import {
   getPushEnabled,
   setImportEnabled as persistImportEnabled,
   setPushEnabled as persistPushEnabled,
-  getColourBackfillDone,
-  setColourBackfillDone,
 } from "@/lib/calendarSyncPrefs";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { toast } from "sonner";
