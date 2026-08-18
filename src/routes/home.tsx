@@ -4641,8 +4641,8 @@ function HomePage() {
       <div
         style={{
           backgroundColor: '#0B1F3A',
-          marginTop: 'calc(-1 * (60px + env(safe-area-inset-top, 0px)))',
-          padding: 'calc(60px + env(safe-area-inset-top, 0px) + 16px) 16px 34px',
+          marginTop: `calc(-1 * ${TOP_BAR_SPACER})`,
+          padding: `calc(${TOP_BAR_SPACER} + 16px) 16px 34px`,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
