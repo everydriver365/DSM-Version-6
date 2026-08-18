@@ -1955,7 +1955,38 @@ function SchedulePage() {
 
                           return (
                             <div key={e.id} style={{ position: "relative", marginBottom: 8 }}>
-                              {isLessonRow && isTestDay ? (
+                              {isLessonRow && isEventRow ? (
+                                <div
+                                  onClick={onCardClick}
+                                  role="button"
+                                  tabIndex={0}
+                                  style={{
+                                    background: '#fff',
+                                    borderRadius: 16,
+                                    border: '2px solid #1877D6',
+                                    padding: '14px 16px',
+                                    marginBottom: 8,
+                                    cursor: 'pointer',
+                                    ...POPPINS,
+                                  }}
+                                >
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ background: '#EFF6FF', color: '#1877D6', fontSize: 9, fontWeight: 800, borderRadius: 20, padding: '3px 10px' }}>
+                                      📅 EVENT
+                                    </span>
+                                    <span style={{ fontSize: 12, color: '#9CA3AF' }}>{fmtTime(e.start)}</span>
+                                  </div>
+                                  <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', marginTop: 8 }}>
+                                    {(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.event_title}
+                                  </div>
+                                  {(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pickup_location && (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, fontSize: 12, color: '#6B7686' }}>
+                                      <IconMapPin size={12} color="#9CA3AF" stroke={1.5} />
+                                      {(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pickup_location}
+                                    </div>
+                                  )}
+                                </div>
+                              ) : isLessonRow && isTestDay ? (
                                 <TestLessonCard
                                   lesson={(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson}
                                   onClick={onCardClick || (() => {})}
