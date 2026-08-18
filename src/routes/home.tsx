@@ -53,6 +53,7 @@ import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
+import { PersonalEventSheet, type PersonalEvent } from "@/components/schedule/PersonalEventSheet";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
 import { LogMileageSheet } from "@/components/mileage/LogMileageSheet";
@@ -1422,6 +1423,9 @@ function HomePage() {
   const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
+  const [addChooserOpen, setAddChooserOpen] = useState(false);
+  const [personalSheetOpen, setPersonalSheetOpen] = useState(false);
+  const [editingPersonal, setEditingPersonal] = useState<PersonalEvent | null>(null);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
   const [autoTrackLessons, setAutoTrackLessons] = useState<boolean>(false);
   const [actionsOpenForLesson, setActionsOpenForLesson] = useState<LessonRow | null>(null);
@@ -5798,7 +5802,7 @@ function HomePage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <button
                     type="button"
-                    onClick={() => { setAddLessonPupilId(undefined); setAddLessonDate(tab === 'tomorrow' ? tomorrowISO : undefined); setAddLessonOpen(true); }}
+                    onClick={() => { setAddLessonPupilId(undefined); setAddLessonDate(tab === 'tomorrow' ? tomorrowISO : todayISO); setAddChooserOpen(true); }}
                     style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: '#CC2229', cursor: 'pointer', lineHeight: 1 }}
                   >
                     Add +
@@ -8611,6 +8615,82 @@ function HomePage() {
           setReloadKey((k) => k + 1);
         }}
       />
+
+      <PersonalEventSheet
+        open={personalSheetOpen}
+        defaultDate={addLessonDate}
+        event={editingPersonal}
+        onClose={() => { setPersonalSheetOpen(false); setEditingPersonal(null); }}
+        onSaved={() => setReloadKey((k) => k + 1)}
+      />
+
+      {addChooserOpen && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ fontFamily: 'Poppins, sans-serif' }}>
+          <div className="absolute inset-0 bg-black/30" onClick={() => setAddChooserOpen(false)} />
+          <div
+            className="relative w-full max-w-md"
+            style={{
+              background: '#fff',
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              padding: '18px 16px calc(18px + 90px + env(safe-area-inset-bottom))',
+              display: 'grid',
+              gap: 10,
+            }}
+          >
+            <div style={{ fontSize: 17, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Sora, sans-serif', marginBottom: 4 }}>
+              Add to your schedule
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setAddChooserOpen(false);
+                setAddLessonPupilId(undefined);
+                setAddLessonOpen(true);
+              }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
+                border: '1px solid #E4E8EF', borderRadius: 8, padding: '14px 14px', background: '#fff',
+              }}
+            >
+              <span style={{ width: 38, height: 38, borderRadius: 8, background: '#E7F0FB', display: 'grid', placeItems: 'center' }}>
+                <IconPlus size={19} stroke={1.8} color="#1877D6" />
+              </span>
+              <span>
+                <span style={{ display: 'block', fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>Lesson</span>
+                <span style={{ fontSize: 12, color: '#6B7686' }}>Pupil, duration and payment</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setAddChooserOpen(false);
+                setEditingPersonal(null);
+                setPersonalSheetOpen(true);
+              }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
+                border: '1px solid #E4E8EF', borderRadius: 8, padding: '14px 14px', background: '#fff',
+              }}
+            >
+              <span style={{ width: 38, height: 38, borderRadius: 8, background: '#FBF1DA', display: 'grid', placeItems: 'center' }}>
+                <IconCalendar size={19} stroke={1.8} color="#B8860B" />
+              </span>
+              <span>
+                <span style={{ display: 'block', fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>Private event</span>
+                <span style={{ fontSize: 12, color: '#6B7686' }}>Your own name, times, place and notes</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setAddChooserOpen(false)}
+              style={{ marginTop: 4, padding: '12px', borderRadius: 8, border: 'none', background: '#EEF2F7', color: '#0B1F3A', fontSize: 14, fontWeight: 700 }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
 
       <UnifiedPaymentSheet
         open={unifiedPayOpen}
