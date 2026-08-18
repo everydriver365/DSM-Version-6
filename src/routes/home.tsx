@@ -53,6 +53,7 @@ import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
 import { DeleteLessonSheet } from "@/components/lessons/DeleteLessonSheet";
 import { PaymentDetailsSheet } from "@/components/payments/PaymentDetailsSheet";
 import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
+import { PersonalEventSheet, type PersonalEvent } from "@/components/schedule/PersonalEventSheet";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
 import { LogMileageSheet } from "@/components/mileage/LogMileageSheet";
