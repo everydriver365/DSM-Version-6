@@ -238,7 +238,7 @@ function Segmented<T extends number>({
             key={o.value}
             type="button"
             onClick={() => onChange(o.value)}
-            className="flex-1 h-9 rounded-md text-[12px] font-medium transition-colors"
+            className="flex-1 h-9 rounded-lg text-[12px] font-medium transition-colors"
             style={{
               backgroundColor: active ? "#1877D6" : "transparent",
               color: active ? "#FFFFFF" : "#6B7280",

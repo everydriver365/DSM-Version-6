@@ -356,7 +356,7 @@ export function BottomNav({
             justifyContent: "center",
             gap: 2,
             padding: "6px 12px",
-            borderRadius: 12,
+            borderRadius: 8,
             background: isActive ? "#E6F1FB" : "transparent",
           }}
         >
@@ -417,7 +417,7 @@ export function BottomNav({
             justifyContent: "center",
             gap: 2,
             padding: "6px 12px",
-            borderRadius: 12,
+            borderRadius: 8,
             background: isActive ? "#E6F1FB" : "transparent",
           }}
         >
@@ -465,7 +465,7 @@ export function BottomNav({
       className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white flex items-center justify-around"
       style={{
         fontFamily: "Poppins, sans-serif",
-        borderRadius: "20px 20px 0 0",
+        borderRadius: "8px 8px 0 0",
         boxShadow: "0 -4px 24px rgba(15,32,68,0.08)",
         paddingTop: 8,
         paddingBottom: "max(env(safe-area-inset-bottom), 8px)",

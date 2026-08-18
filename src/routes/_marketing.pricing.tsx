@@ -42,7 +42,7 @@ function PricingPage() {
       <section className="bg-white">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto px-6 pb-16">
           {/* STARTER */}
-          <div className="border border-gray-200 rounded-2xl p-8 bg-white flex flex-col">
+          <div className="border border-gray-200 rounded-lg p-8 bg-white flex flex-col">
             <h3 className="font-black text-[#133155] text-2xl mb-2">Starter</h3>
             <div className="mb-1">
               <span className="text-4xl font-black text-[#133155]">Free</span>
@@ -67,14 +67,14 @@ function PricingPage() {
             </ul>
             <Link
               to="/register"
-              className="border-2 border-[#133155] text-[#133155] hover:bg-[#133155] hover:text-white font-semibold py-3 px-6 rounded-xl w-full text-center mt-8 block transition-colors no-underline"
+              className="border-2 border-[#133155] text-[#133155] hover:bg-[#133155] hover:text-white font-semibold py-3 px-6 rounded-lg w-full text-center mt-8 block transition-colors no-underline"
             >
               Get started free →
             </Link>
           </div>
 
           {/* PLUS */}
-          <div className="border-2 border-[#1877D6] rounded-2xl p-8 bg-white relative flex flex-col">
+          <div className="border-2 border-[#1877D6] rounded-lg p-8 bg-white relative flex flex-col">
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1877D6] text-white text-xs font-bold px-4 py-1 rounded-full">
               Most popular
             </span>
@@ -96,14 +96,14 @@ function PricingPage() {
             </ul>
             <Link
               to="/register"
-              className="bg-[#1877D6] hover:bg-[#009E8F] text-white font-semibold py-3 px-6 rounded-xl w-full text-center mt-8 block transition-colors no-underline"
+              className="bg-[#1877D6] hover:bg-[#009E8F] text-white font-semibold py-3 px-6 rounded-lg w-full text-center mt-8 block transition-colors no-underline"
             >
               Start free trial →
             </Link>
           </div>
 
           {/* MAX */}
-          <div className="bg-[#133155] rounded-2xl p-8 relative flex flex-col">
+          <div className="bg-[#133155] rounded-lg p-8 relative flex flex-col">
             <h3 className="font-black text-white text-2xl mb-2">Max</h3>
             <div className="mb-1">
               <span className="text-4xl font-black text-white">£29.99</span>
@@ -122,7 +122,7 @@ function PricingPage() {
             </ul>
             <Link
               to="/register"
-              className="bg-[#1877D6] hover:bg-[#009E8F] text-white font-semibold py-3 px-6 rounded-xl w-full text-center mt-8 block transition-colors no-underline"
+              className="bg-[#1877D6] hover:bg-[#009E8F] text-white font-semibold py-3 px-6 rounded-lg w-full text-center mt-8 block transition-colors no-underline"
             >
               Start free trial →
             </Link>
@@ -139,7 +139,7 @@ function PricingPage() {
           Available on any plan. No contract on GPS, 36-month term on dashcams.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          <div className="bg-white border border-gray-200 rounded-2xl p-6">
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
             <IconMapPin className="text-[#1877D6] w-8 h-8 mb-4" />
             <h3 className="font-bold text-[#133155] text-lg mb-1">GPS Tracker</h3>
             <div className="text-2xl font-black text-[#133155]">£14.99/month</div>
@@ -152,7 +152,7 @@ function PricingPage() {
             </ul>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-2xl p-6">
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
             <IconCamera className="text-[#1877D6] w-8 h-8 mb-4" />
             <h3 className="font-bold text-[#133155] text-lg mb-1">Front Dashcam</h3>
             <div className="text-2xl font-black text-[#133155]">£19.99/month</div>
@@ -165,7 +165,7 @@ function PricingPage() {
             </ul>
           </div>
 
-          <div className="bg-[#133155] rounded-2xl p-6">
+          <div className="bg-[#133155] rounded-lg p-6">
             <IconCamera className="text-[#1877D6] w-8 h-8 mb-4" />
             <h3 className="font-bold text-white text-lg mb-1">Front &amp; Rear Dashcam</h3>
             <div className="text-2xl font-black text-white">£39.99/month</div>
@@ -186,7 +186,7 @@ function PricingPage() {
           Compare plans
         </h2>
         <div className="max-w-4xl mx-auto overflow-x-auto">
-          <table className="w-full text-sm bg-white rounded-2xl overflow-hidden">
+          <table className="w-full text-sm bg-white rounded-lg overflow-hidden">
             <thead>
               <tr className="border-b-2 border-gray-200">
                 <th className="text-left p-4 text-[#133155] font-bold">Feature</th>
@@ -235,7 +235,7 @@ function PricingPage() {
         </p>
         <Link
           to="/register"
-          className="bg-white text-[#1877D6] font-black px-10 py-4 rounded-xl text-lg inline-block no-underline hover:bg-gray-50 transition-colors"
+          className="bg-white text-[#1877D6] font-black px-10 py-4 rounded-lg text-lg inline-block no-underline hover:bg-gray-50 transition-colors"
         >
           Get started free →
         </Link>
@@ -322,7 +322,7 @@ const FAQS = [
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="bg-white border border-gray-200 rounded-xl">
+    <div className="bg-white border border-gray-200 rounded-lg">
       <button
         onClick={() => setOpen((v) => !v)}
         className="w-full flex items-center justify-between p-5 text-left"

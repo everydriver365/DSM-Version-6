@@ -13,7 +13,7 @@ const Toaster = ({ ...props }) => (
         background: '#0B1F3A',
         color: '#ffffff',
         border: 'none',
-        borderRadius: 16,
+        borderRadius: 8,
         padding: '12px 14px',
         boxShadow: '0 4px 24px rgba(11,31,58,0.35)',
         fontFamily: 'Poppins, sans-serif',

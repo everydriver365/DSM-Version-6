@@ -143,7 +143,7 @@ function InvoicesPage() {
       <div style={{ height: TOP_BAR_SPACER }} />
 
       {/* Summary */}
-      <div style={{ background: "white", borderRadius: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.06)", padding: 16, margin: 16 }}>
+      <div style={{ background: "white", borderRadius: 8, boxShadow: "0 1px 3px rgba(0,0,0,0.06)", padding: 16, margin: 16 }}>
         <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600, letterSpacing: "0.05em" }}>INVOICED THIS MONTH</div>
         <div style={{ fontSize: 28, fontWeight: 700, color: NAVY, marginTop: 4 }}>{formatGBP(monthTotal)}</div>
         <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>{filtered.length} record{filtered.length === 1 ? "" : "s"}</div>
@@ -151,7 +151,7 @@ function InvoicesPage() {
 
       {/* IconSearch */}
       <div style={{ margin: "0 16px 12px" }}>
-        <div style={{ background: "white", borderRadius: 12, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,0.06)", display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ background: "white", borderRadius: 8, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,0.06)", display: "flex", alignItems: "center", gap: 8 }}>
           <IconSearch size={16} color="#9CA3AF" />
           <input
             type="text"
@@ -189,7 +189,7 @@ function InvoicesPage() {
                   onClick={() => setSelectedId(row.id)}
                   style={{
                     background: "white",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                     padding: 14,
                     border: "none",

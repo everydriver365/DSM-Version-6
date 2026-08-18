@@ -139,7 +139,7 @@ function HighlightedBody({ body, query }: { body: string; query: string }) {
         style={{
           backgroundColor: "#FACC15",
           color: "#0B1F3A",
-          borderRadius: 2,
+          borderRadius: 8,
           padding: "0 1px",
         }}
       >
@@ -795,7 +795,7 @@ function PupilThreadPage() {
                   alignItems: "center",
                   gap: 8,
                   background: "rgba(255,255,255,0.1)",
-                  borderRadius: 10,
+                  borderRadius: 8,
                   padding: "0 10px",
                   height: 36,
                 }}
@@ -980,7 +980,7 @@ function PupilThreadPage() {
 
       {noAccount && (
         <div
-          className="mx-3 mt-3 rounded-xl p-3 flex items-start gap-3"
+          className="mx-3 mt-3 rounded-lg p-3 flex items-start gap-3"
           style={{
             backgroundColor: "#FEF3C7",
             borderWidth: "1px",
@@ -1180,7 +1180,7 @@ function PupilThreadPage() {
                       style={{
                         background: mine ? "#1877D6" : "#EEF2F7",
                         color: mine ? "#FFFFFF" : "#0B1F3A",
-                        borderRadius: mine ? "16px 4px 16px 16px" : "4px 16px 16px 16px",
+                        borderRadius: mine ? "8px 8px 8px 8px" : "8px 8px 8px 8px",
                         padding: "9px 12px",
                         fontSize: 13,
                         fontWeight: 400,
@@ -1258,7 +1258,7 @@ function PupilThreadPage() {
             style={{
               background: "#ECFDF5",
               border: "1px solid #A7F3D0",
-              borderRadius: 14,
+              borderRadius: 8,
               padding: "10px 12px",
               display: "flex",
               alignItems: "flex-start",
@@ -1371,7 +1371,7 @@ function PupilThreadPage() {
             flex: 1,
             background: "#EEF2F7",
             border: "none",
-            borderRadius: 22,
+            borderRadius: 8,
             padding: "10px 16px",
             fontSize: 13,
             color: "#0B1F3A",

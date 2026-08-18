@@ -192,7 +192,7 @@ function PerformancePage() {
       {/* Period tabs */}
       <div
         className="mx-4 mt-3 flex"
-        style={{ backgroundColor: "#F3F4F6", borderRadius: 10, padding: 4, gap: 4 }}
+        style={{ backgroundColor: "#F3F4F6", borderRadius: 8, padding: 4, gap: 4 }}
       >
         {TABS.map((t) => {
           const active = period === t.key;
@@ -244,7 +244,7 @@ function PerformancePage() {
 
         <SectionHeader>TEST RESULTS</SectionHeader>
         <div
-          className="rounded-xl p-4 flex flex-col"
+          className="rounded-lg p-4 flex flex-col"
           style={{
             backgroundColor: "#F8F9FB",
             border: "0.5px solid #EEF2F7",
@@ -285,7 +285,7 @@ function ResultBar({
       </div>
       <div
         className="mt-1 overflow-hidden"
-        style={{ height: 8, borderRadius: 4, backgroundColor: "#EEF2F7" }}
+        style={{ height: 8, borderRadius: 8, backgroundColor: "#EEF2F7" }}
       >
         <div style={{ width: `${pct}%`, height: "100%", backgroundColor: color }} />
       </div>

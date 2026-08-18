@@ -207,7 +207,7 @@ function WaitlistPage() {
                     <div className="flex flex-col items-end gap-1 shrink-0 self-center">
                       <button
                         onClick={() => setOfferOpen(w)}
-                        className="flex items-center gap-1 px-3 py-1.5 rounded-md text-[12px] font-semibold text-white"
+                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[12px] font-semibold text-white"
                         style={{ backgroundColor: BLUE, ...POPPINS }}
                       >
                         <IconSend stroke={1.5} size={12} /> Offer
@@ -254,7 +254,7 @@ function WaitlistPage() {
                     <div className="flex items-stretch" style={{ gap: 12, padding: "12px 16px" }}>
                       <div
                         className="shrink-0"
-                        style={{ width: 3, borderRadius: 2, backgroundColor: color, alignSelf: "stretch" }}
+                        style={{ width: 3, borderRadius: 8, backgroundColor: color, alignSelf: "stretch" }}
                       />
                       <div className="min-w-0 flex-1 flex flex-col justify-center">
                         <div className="text-[14px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>
@@ -402,7 +402,7 @@ function AddWaitlistModal({
       style={{ backgroundColor: "rgba(11,31,58,0.55)" }}
     >
       <div
-        className="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col"
+        className="bg-white w-full sm:max-w-md rounded-t-lg sm:rounded-lg overflow-hidden flex flex-col"
         style={{ maxHeight: "90vh" }}
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB]">
@@ -422,11 +422,11 @@ function AddWaitlistModal({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search pupils…"
-            className="w-full mb-2 px-3 py-2 border border-[#E5E7EB] rounded-md text-[14px]"
+            className="w-full mb-2 px-3 py-2 border border-[#E5E7EB] rounded-lg text-[14px]"
             style={POPPINS}
           />
           <div
-            className="border border-[#E5E7EB] rounded-md mb-3 overflow-y-auto"
+            className="border border-[#E5E7EB] rounded-lg mb-3 overflow-y-auto"
             style={{ maxHeight: 160 }}
           >
             {filtered.length === 0 ? (
@@ -506,7 +506,7 @@ function AddWaitlistModal({
             onChange={(e) => setNotes(e.target.value)}
             rows={3}
             placeholder="Any extra info…"
-            className="w-full px-3 py-2 border border-[#E5E7EB] rounded-md text-[14px]"
+            className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg text-[14px]"
             style={POPPINS}
           />
         </div>
@@ -514,7 +514,7 @@ function AddWaitlistModal({
         <div className="border-t border-[#E5E7EB] p-3 flex gap-2">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-md text-[14px] font-semibold"
+            className="flex-1 py-2.5 rounded-lg text-[14px] font-semibold"
             style={{ backgroundColor: "#F3F4F6", color: "#374151", ...POPPINS }}
           >
             Cancel
@@ -522,7 +522,7 @@ function AddWaitlistModal({
           <button
             onClick={save}
             disabled={!pupilId || saving}
-            className="flex-1 py-2.5 rounded-md text-[14px] font-semibold text-white disabled:opacity-50"
+            className="flex-1 py-2.5 rounded-lg text-[14px] font-semibold text-white disabled:opacity-50"
             style={{ backgroundColor: BLUE, ...POPPINS }}
           >
             {saving ? "Saving…" : "Add"}
@@ -579,7 +579,7 @@ function OfferSlotModal({
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
       style={{ backgroundColor: "rgba(11,31,58,0.55)" }}
     >
-      <div className="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl overflow-hidden">
+      <div className="bg-white w-full sm:max-w-md rounded-t-lg sm:rounded-lg overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB]">
           <div className="text-[15px] font-semibold text-[#0B1F3A]" style={POPPINS}>
             Offer slot to {pupilName}
@@ -599,7 +599,7 @@ function OfferSlotModal({
               value={date}
               min={today}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-3 py-2 border border-[#E5E7EB] rounded-md text-[14px]"
+              className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg text-[14px]"
               style={POPPINS}
             />
           </div>
@@ -612,7 +612,7 @@ function OfferSlotModal({
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full px-3 py-2 border border-[#E5E7EB] rounded-md text-[14px]"
+                className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg text-[14px]"
                 style={POPPINS}
               />
             </div>
@@ -623,7 +623,7 @@ function OfferSlotModal({
               <select
                 value={duration}
                 onChange={(e) => setDuration(Number(e.target.value))}
-                className="w-full px-3 py-2 border border-[#E5E7EB] rounded-md text-[14px] bg-white"
+                className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg text-[14px] bg-white"
                 style={POPPINS}
               >
                 {[60, 90, 120, 180].map((m) => (
@@ -641,7 +641,7 @@ function OfferSlotModal({
             <select
               value={expiresHours}
               onChange={(e) => setExpiresHours(Number(e.target.value))}
-              className="w-full px-3 py-2 border border-[#E5E7EB] rounded-md text-[14px] bg-white"
+              className="w-full px-3 py-2 border border-[#E5E7EB] rounded-lg text-[14px] bg-white"
               style={POPPINS}
             >
               {[2, 6, 12, 24, 48, 72].map((h) => (
@@ -656,7 +656,7 @@ function OfferSlotModal({
         <div className="border-t border-[#E5E7EB] p-3 flex gap-2">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-md text-[14px] font-semibold"
+            className="flex-1 py-2.5 rounded-lg text-[14px] font-semibold"
             style={{ backgroundColor: "#F3F4F6", color: "#374151", ...POPPINS }}
           >
             Cancel
@@ -664,7 +664,7 @@ function OfferSlotModal({
           <button
             onClick={save}
             disabled={saving}
-            className="flex-1 py-2.5 rounded-md text-[14px] font-semibold text-white disabled:opacity-50"
+            className="flex-1 py-2.5 rounded-lg text-[14px] font-semibold text-white disabled:opacity-50"
             style={{ backgroundColor: BLUE, ...POPPINS }}
           >
             {saving ? "Sending…" : "Send offer"}

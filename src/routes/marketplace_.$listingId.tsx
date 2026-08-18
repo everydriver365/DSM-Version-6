@@ -246,7 +246,7 @@ function ListingDetailPage() {
 
   const CARD: React.CSSProperties = {
     background: "#fff",
-    borderRadius: 16,
+    borderRadius: 8,
     border: "1px solid #E4E8EF",
     padding: 16,
     boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
@@ -404,7 +404,7 @@ function ListingDetailPage() {
                     aspectRatio: "1 / 1.95",
                     background: "#FFFFFF",
                     border: "3px solid #0B1F3A",
-                    borderRadius: 14,
+                    borderRadius: 8,
                     overflow: "hidden",
                     marginRight: -10,
                     zIndex: 1,
@@ -417,9 +417,9 @@ function ListingDetailPage() {
                     ))}
                   </div>
                   <div style={{ padding: 8, display: "flex", flexDirection: "column", gap: 5 }}>
-                    <span style={{ height: 6, borderRadius: 3, background: "#E7EDF5" }} />
-                    <span style={{ height: 6, width: "70%", borderRadius: 3, background: "#E7EDF5" }} />
-                    <span style={{ height: 6, width: "45%", borderRadius: 3, background: "#E7EDF5" }} />
+                    <span style={{ height: 6, borderRadius: 8, background: "#E7EDF5" }} />
+                    <span style={{ height: 6, width: "70%", borderRadius: 8, background: "#E7EDF5" }} />
+                    <span style={{ height: 6, width: "45%", borderRadius: 8, background: "#E7EDF5" }} />
                   </div>
                 </div>
                 {/* Browser mock */}
@@ -429,7 +429,7 @@ function ListingDetailPage() {
                     aspectRatio: "1 / 0.68",
                     background: "#FFFFFF",
                     border: "3px solid #0B1F3A",
-                    borderRadius: 10,
+                    borderRadius: 8,
                     overflow: "hidden",
                     marginTop: 22,
                     boxShadow: "0 12px 28px rgba(0,0,0,0.3)",
@@ -441,9 +441,9 @@ function ListingDetailPage() {
                     ))}
                   </div>
                   <div style={{ padding: 10, display: "flex", flexDirection: "column", gap: 6 }}>
-                    <span style={{ height: 7, borderRadius: 3, background: "#E7EDF5" }} />
-                    <span style={{ height: 7, width: "80%", borderRadius: 3, background: "#E7EDF5" }} />
-                    <span style={{ height: 7, width: "55%", borderRadius: 3, background: "#E7EDF5" }} />
+                    <span style={{ height: 7, borderRadius: 8, background: "#E7EDF5" }} />
+                    <span style={{ height: 7, width: "80%", borderRadius: 8, background: "#E7EDF5" }} />
+                    <span style={{ height: 7, width: "55%", borderRadius: 8, background: "#E7EDF5" }} />
                   </div>
                 </div>
               </div>
@@ -505,7 +505,7 @@ function ListingDetailPage() {
                 fontSize: 11,
                 fontWeight: 700,
                 padding: "4px 10px",
-                borderRadius: 20,
+                borderRadius: 8,
                 fontFamily: "Poppins, sans-serif",
               }}
             >
@@ -526,7 +526,7 @@ function ListingDetailPage() {
                   fontSize: 11,
                   fontWeight: 700,
                   padding: "4px 10px",
-                  borderRadius: 20,
+                  borderRadius: 8,
                   fontFamily: "Poppins, sans-serif",
                 }}
               >
@@ -575,7 +575,7 @@ function ListingDetailPage() {
               zIndex: 2,
               marginTop: -26,
               background: "#F5F6F8",
-              borderRadius: "26px 26px 0 0",
+              borderRadius: "8px 8px 0 0",
             }}
           >
             {/* Title + price */}
@@ -659,7 +659,7 @@ function ListingDetailPage() {
                             fontSize: 11,
                             fontWeight: 700,
                             padding: "4px 10px",
-                            borderRadius: 20,
+                            borderRadius: 8,
                             marginTop: 8,
                             whiteSpace: "nowrap",
                             textTransform: "capitalize",
@@ -892,7 +892,7 @@ function ListingDetailPage() {
                       display: "grid",
                       gridTemplateColumns: "repeat(3, 1fr)",
                       gap: 4,
-                      borderRadius: 16,
+                      borderRadius: 8,
                       overflow: "hidden",
                       border: "1px solid #E4E8EF",
                     }}
@@ -935,7 +935,7 @@ function ListingDetailPage() {
                   <div
                     style={{
                       margin: "0 16px 16px",
-                      borderRadius: 16,
+                      borderRadius: 8,
                       overflow: "hidden",
                       border: "1px solid #E4E8EF",
                     }}
@@ -1106,7 +1106,7 @@ function ListingDetailPage() {
                       color: "#6B7686",
                       background: "#EEF2F7",
                       padding: "5px 11px",
-                      borderRadius: 20,
+                      borderRadius: 8,
                     }}
                   >
                     #{t}
@@ -1262,7 +1262,7 @@ function ContactActions({
     fontSize: 14,
     fontWeight: 700,
     padding: 13,
-    borderRadius: 20,
+    borderRadius: 8,
     boxShadow: "0 3px 0 #0F52A8",
     cursor: "pointer",
     width: "100%",
@@ -1279,7 +1279,7 @@ function ContactActions({
     fontSize: 14,
     fontWeight: 700,
     padding: 13,
-    borderRadius: 20,
+    borderRadius: 8,
     boxShadow: "none",
     cursor: "pointer",
     width: "100%",
@@ -1465,7 +1465,7 @@ function EnquirySheet({
           background: "#FFFFFF",
           width: "100%",
           maxWidth: 520,
-          borderRadius: "16px 16px 0 0",
+          borderRadius: "8px 8px 0 0",
           padding: 20,
           maxHeight: "85vh",
           overflowY: "auto",
@@ -1517,7 +1517,7 @@ function EnquirySheet({
           style={{
             width: "100%",
             border: "0.5px solid #E2E6ED",
-            borderRadius: 10,
+            borderRadius: 8,
             padding: 10,
             fontSize: 14,
             fontFamily: "inherit",
@@ -1545,7 +1545,7 @@ function EnquirySheet({
           style={{
             width: "100%",
             border: "0.5px solid #E2E6ED",
-            borderRadius: 10,
+            borderRadius: 8,
             padding: 10,
             fontSize: 14,
             marginBottom: 12,
@@ -1571,7 +1571,7 @@ function EnquirySheet({
           style={{
             width: "100%",
             border: "0.5px solid #E2E6ED",
-            borderRadius: 10,
+            borderRadius: 8,
             padding: 10,
             fontSize: 14,
             marginBottom: 16,
@@ -1591,7 +1591,7 @@ function EnquirySheet({
             fontSize: 14,
             fontWeight: 700,
             padding: "12px 16px",
-            borderRadius: 10,
+            borderRadius: 8,
             cursor: sending ? "not-allowed" : "pointer",
             opacity: sending ? 0.7 : 1,
           }}
@@ -1614,7 +1614,7 @@ function CategoryPill({ name }: { name: string }) {
         color: "#1877D6",
         background: "#EFF6FF",
         padding: "3px 10px",
-        borderRadius: 20,
+        borderRadius: 8,
       }}
     >
       {name}
@@ -1685,7 +1685,7 @@ function SellerListingRow({
         gap: 12,
         background: "#fff",
         border: "1px solid #E4E8EF",
-        borderRadius: 16,
+        borderRadius: 8,
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
         padding: 12,
         marginBottom: 10,
@@ -1698,7 +1698,7 @@ function SellerListingRow({
           width: 72,
           height: 72,
           flexShrink: 0,
-          borderRadius: 10,
+          borderRadius: 8,
           background: img
             ? `#EEF2F7 url(${img}) center/cover`
             : "#0B1F3A",
@@ -1748,7 +1748,7 @@ function SellerListingRow({
         style={{
           background: "#1877D6",
           color: "#fff",
-          borderRadius: 20,
+          borderRadius: 8,
           padding: "6px 14px",
           fontSize: 12,
           fontWeight: 700,
@@ -1784,7 +1784,7 @@ function MiniListingCard({
         width: "100%",
         background: "#fff",
         border: "1px solid #E4E8EF",
-        borderRadius: 16,
+        borderRadius: 8,
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
         overflow: "hidden",
         fontFamily: "Poppins, sans-serif",
@@ -1852,7 +1852,7 @@ function ListingPeek({ listing }: { listing: Listing }) {
       <div
         style={{
           background: "#fff",
-          borderRadius: 20,
+          borderRadius: 8,
           overflow: "hidden",
           boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
         }}
@@ -2009,7 +2009,7 @@ function WebsiteUpgradeSections() {
   const managed = TIERS.find((t) => t.id === "managed");
 
   const cardBase: React.CSSProperties = {
-    borderRadius: 12,
+    borderRadius: 8,
     padding: 16,
     marginBottom: 10,
     position: "relative",
@@ -2017,7 +2017,7 @@ function WebsiteUpgradeSections() {
   const pill: React.CSSProperties = {
     fontSize: 12,
     fontWeight: 700,
-    borderRadius: 20,
+    borderRadius: 8,
     padding: "3px 10px",
     whiteSpace: "nowrap",
   };
@@ -2061,7 +2061,7 @@ function WebsiteUpgradeSections() {
         style={{
           background: "#EFF6FF",
           border: "1px solid #1877D6",
-          borderRadius: 10,
+          borderRadius: 8,
           padding: "10px 14px",
           display: "flex",
           alignItems: "center",
@@ -2111,7 +2111,7 @@ function WebsiteUpgradeSections() {
               color: "#fff",
               fontSize: 9,
               fontWeight: 800,
-              borderRadius: 20,
+              borderRadius: 8,
               padding: "3px 8px",
             }}
           >
@@ -2153,7 +2153,7 @@ function WebsiteUpgradeSections() {
               color: "#fff",
               fontSize: 9,
               fontWeight: 800,
-              borderRadius: 20,
+              borderRadius: 8,
               padding: "3px 8px",
             }}
           >
@@ -2233,7 +2233,7 @@ function WebsiteUpgradeSections() {
         <div
           style={{
             marginTop: 10,
-            borderRadius: 12,
+            borderRadius: 8,
             padding: 14,
             border: `1px solid ${domainResult.available ? "#BBF7D0" : "#FECACA"}`,
             background: domainResult.available ? "#F0FDF4" : "#FEF2F2",
@@ -2289,7 +2289,7 @@ function WebsiteUpgradeSections() {
           style={{
             background: "#fff",
             border: "1px solid #E4E8EF",
-            borderRadius: 12,
+            borderRadius: 8,
             overflow: "hidden",
           }}
         >
@@ -2382,7 +2382,7 @@ function WebsiteUpgradeSections() {
           key={site.url}
           style={{
             background: "#fff",
-            borderRadius: 12,
+            borderRadius: 8,
             border: "1px solid #E4E8EF",
             marginBottom: 10,
             overflow: "hidden",
@@ -2443,7 +2443,7 @@ function WebsiteUpgradeSections() {
           paddingTop: "56.25%",
           position: "relative",
           background: "linear-gradient(135deg,#0B1F3A,#1877D6)",
-          borderRadius: 12,
+          borderRadius: 8,
           overflow: "hidden",
         }}
       >

@@ -219,7 +219,7 @@ function JobCard({
       onClick={() => setDetailJob(job)}
       style={{
         background: "#FFFFFF",
-        borderRadius: 18,
+        borderRadius: 8,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         overflow: "hidden",
         cursor: "pointer",
@@ -300,7 +300,7 @@ function JobCard({
                 color: badge.color,
                 background: badge.bg,
                 padding: "6px 12px",
-                borderRadius: 20,
+                borderRadius: 8,
                 whiteSpace: "nowrap",
                 ...POPPINS,
               }}
@@ -330,7 +330,7 @@ function JobCard({
                 background: "#F2F2F7",
                 color: "#000",
                 height: "auto",
-                borderRadius: 14,
+                borderRadius: 8,
                 padding: 14,
                 border: "none",
                 fontSize: 14.5,
@@ -354,7 +354,7 @@ function JobCard({
               background: BLUE,
               color: "#FFF",
               height: "auto",
-              borderRadius: 14,
+              borderRadius: 8,
               padding: 14,
               border: "none",
               fontSize: 14.5,
@@ -556,7 +556,7 @@ function JobsPage() {
             style={{
               display: "inline-flex",
               background: "#E5E5EA",
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 3,
             }}
           >
@@ -570,7 +570,7 @@ function JobsPage() {
                   style={{
                     background: active ? "#fff" : "transparent",
                     border: "none",
-                    borderRadius: 9,
+                    borderRadius: 8,
                     padding: "8px 18px",
                     fontSize: 13.5,
                     fontWeight: 600,
@@ -797,7 +797,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
                     maxWidth: "78%",
                     background: mine ? BLUE : "#FFFFFF",
                     color: mine ? "#FFFFFF" : NAVY,
-                    borderRadius: 14,
+                    borderRadius: 8,
                     padding: "8px 12px",
                     fontSize: 14,
                     boxShadow: mine ? "none" : "0 1px 2px rgba(0,0,0,0.05)",
@@ -823,7 +823,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
             onKeyDown={(e) => { if (e.key === "Enter") send(); }}
             placeholder="Type a message…"
             style={{
-              flex: 1, background: "#F3F4F6", border: "none", borderRadius: 20,
+              flex: 1, background: "#F3F4F6", border: "none", borderRadius: 8,
               padding: "10px 14px", fontSize: 16, outline: "none", ...POPPINS,
             }}
           />
@@ -831,7 +831,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
             onClick={send}
             disabled={!draft.trim() || sending}
             style={{
-              background: BLUE, color: "#FFF", border: "none", borderRadius: 20,
+              background: BLUE, color: "#FFF", border: "none", borderRadius: 8,
               width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center",
               cursor: draft.trim() ? "pointer" : "not-allowed", opacity: draft.trim() ? 1 : 0.5,
             }}
@@ -976,7 +976,7 @@ function JobDetailSheet({
           )}
 
           {job.test_booked && (
-            <div style={{ marginTop: 16, padding: 12, background: "#F3F8FF", borderRadius: 10, border: "1px solid #CCE0FA" }}>
+            <div style={{ marginTop: 16, padding: 12, background: "#F3F8FF", borderRadius: 8, border: "1px solid #CCE0FA" }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: BLUE, textTransform: "uppercase", letterSpacing: 0.3, marginBottom: 6 }}>
                 Test booked
               </div>
@@ -1017,7 +1017,7 @@ function JobDetailSheet({
               background: "#F3F8FF",
               color: BLUE,
               border: "1px solid #CCE0FA",
-              borderRadius: 10,
+              borderRadius: 8,
               padding: "12px 16px",
               fontSize: 14,
               fontWeight: 600,
@@ -1037,7 +1037,7 @@ function JobDetailSheet({
           <button
             onClick={onDecline}
             style={{
-              flex: 1, background: "#F3F4F6", color: NAVY, border: "none", borderRadius: 10,
+              flex: 1, background: "#F3F4F6", color: NAVY, border: "none", borderRadius: 8,
               padding: "12px 16px", fontSize: 14, fontWeight: 600, cursor: "pointer",
             }}
           >
@@ -1046,7 +1046,7 @@ function JobDetailSheet({
           <button
             onClick={onAccept}
             style={{
-              flex: 1, background: BLUE, color: "#FFF", border: "none", borderRadius: 10,
+              flex: 1, background: BLUE, color: "#FFF", border: "none", borderRadius: 8,
               padding: "12px 16px", fontSize: 14, fontWeight: 700, cursor: "pointer",
             }}
           >

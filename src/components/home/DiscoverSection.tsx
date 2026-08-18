@@ -39,7 +39,7 @@ const FONT = "Poppins, sans-serif";
 
 const MUTED = "#6B7280";
 const tileBase: React.CSSProperties = {
-  borderRadius: 16,
+  borderRadius: 8,
   overflow: "hidden",
   cursor: "pointer",
   position: "relative",
@@ -59,7 +59,7 @@ const chipBase: React.CSSProperties = {
   justifyContent: "center",
   width: 32,
   height: 32,
-  borderRadius: 9,
+  borderRadius: 8,
 };
 
 
@@ -547,7 +547,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               width: 3,
               height: 12,
               background: BLUE,
-              borderRadius: 2,
+              borderRadius: 8,
               display: "inline-block",
             }}
           />
@@ -613,7 +613,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     }}
                     style={{
                       position: "relative",
-                      borderRadius: 20,
+                      borderRadius: 8,
                       overflow: "hidden",
                       height: 172,
                       background: "linear-gradient(135deg, #14509E, #0B1F3A)",
@@ -639,7 +639,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                         fontWeight: 900,
                         letterSpacing: "0.4px",
                         padding: "5px 12px",
-                        borderRadius: 7,
+                        borderRadius: 8,
                         boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
                         fontFamily: FONT,
                       }}
@@ -718,7 +718,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     }}
                     style={{
                       position: "relative",
-                      borderRadius: 20,
+                      borderRadius: 8,
                       overflow: "hidden",
                       height: 172,
                       background: "#fff",
@@ -796,7 +796,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                         fontWeight: 900,
                         letterSpacing: "0.4px",
                         padding: "5px 12px",
-                        borderRadius: 7,
+                        borderRadius: 8,
                         boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
                         fontFamily: FONT,
                       }}
@@ -830,7 +830,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                               letterSpacing: "0.3px",
                               textTransform: "uppercase",
                               padding: "3px 9px",
-                              borderRadius: 20,
+                              borderRadius: 8,
                               width: "fit-content",
                             }}
                           >
@@ -906,7 +906,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                             fontSize: 9,
                             fontWeight: 700,
                             padding: "4px 9px",
-                            borderRadius: 7,
+                            borderRadius: 8,
                             boxShadow: "0 2px 0 #050D1C",
                             whiteSpace: "nowrap",
                             flexShrink: 0,
@@ -938,7 +938,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               paddingRight: 10,
               pointerEvents: "none",
               background: "linear-gradient(90deg, transparent, rgba(11,31,58,0.06))",
-              borderRadius: 20,
+              borderRadius: 8,
             }}
           >
             <IconChevronRight size={14} color="#B0B0B5" stroke={2.5} />
@@ -962,7 +962,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             width: 3,
             height: 12,
             background: BLUE,
-            borderRadius: 2,
+            borderRadius: 8,
             display: "inline-block",
           }}
         />
@@ -1233,7 +1233,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     gap: 4,
                     background: "#FDECEC",
                     color: RED,
-                    borderRadius: 20,
+                    borderRadius: 8,
                     padding: "2px 8px",
                     fontSize: 9,
                     fontWeight: 800,

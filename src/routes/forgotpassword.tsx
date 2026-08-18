@@ -48,7 +48,7 @@ function ForgotPasswordPage() {
 
       <div
         className="w-full max-w-[360px] bg-white flex flex-col"
-        style={{ borderRadius: "20px", padding: "28px", boxShadow: "0 8px 32px rgba(0,0,0,0.3)" }}
+        style={{ borderRadius: "8px", padding: "28px", boxShadow: "0 8px 32px rgba(0,0,0,0.3)" }}
       >
         {sent ? (
           <div className="flex flex-col items-center text-center">

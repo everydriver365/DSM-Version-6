@@ -49,7 +49,7 @@ function PayPage() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 16,
+              borderRadius: 8,
               boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
               padding: 24,
               textAlign: "center",

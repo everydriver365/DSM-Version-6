@@ -261,7 +261,7 @@ function TestDayPage() {
             className="mx-4 mt-3"
             style={{
               backgroundColor: "#0B1F3A",
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 16,
               color: "#FFFFFF",
             }}
@@ -390,7 +390,7 @@ function TestDayPage() {
                       className="flex-1 text-[15px] font-semibold"
                       style={{
                         height: 52,
-                        borderRadius: 10,
+                        borderRadius: 8,
                         backgroundColor: active ? activeBg : "#F3F8FF",
                         color: active ? "#FFFFFF" : "#0B1F3A",
                         borderWidth: "0.5px",

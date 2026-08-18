@@ -144,7 +144,7 @@ function ContactPage() {
             </h2>
 
             {status === "success" ? (
-              <div className="rounded-2xl border border-green-200 bg-green-50 text-green-800 p-6">
+              <div className="rounded-lg border border-green-200 bg-green-50 text-green-800 p-6">
                 <p className="font-semibold mb-1">Message sent!</p>
                 <p className="text-sm">We'll be in touch within 24 hours.</p>
                 <button
@@ -166,7 +166,7 @@ function ContactPage() {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] focus:outline-none focus:border-[#1877D6]"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-3 text-[#133155] focus:outline-none focus:border-[#1877D6]"
                   />
                 </div>
                 <div>
@@ -178,7 +178,7 @@ function ContactPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] focus:outline-none focus:border-[#1877D6]"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-3 text-[#133155] focus:outline-none focus:border-[#1877D6]"
                   />
                 </div>
                 <div>
@@ -188,7 +188,7 @@ function ContactPage() {
                   <select
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] bg-white focus:outline-none focus:border-[#1877D6]"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-3 text-[#133155] bg-white focus:outline-none focus:border-[#1877D6]"
                   >
                     {SUBJECTS.map((s) => (
                       <option key={s} value={s}>
@@ -206,12 +206,12 @@ function ContactPage() {
                     rows={4}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-[#133155] focus:outline-none focus:border-[#1877D6]"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-3 text-[#133155] focus:outline-none focus:border-[#1877D6]"
                   />
                 </div>
 
                 {status === "error" && (
-                  <div className="rounded-xl border border-red-200 bg-red-50 text-red-700 p-4 text-sm">
+                  <div className="rounded-lg border border-red-200 bg-red-50 text-red-700 p-4 text-sm">
                     {errorMsg}
                   </div>
                 )}
@@ -219,7 +219,7 @@ function ContactPage() {
                 <button
                   type="submit"
                   disabled={status === "sending"}
-                  className="bg-[#1877D6] text-white font-semibold px-8 py-3 rounded-xl w-full hover:opacity-90 disabled:opacity-60 transition"
+                  className="bg-[#1877D6] text-white font-semibold px-8 py-3 rounded-lg w-full hover:opacity-90 disabled:opacity-60 transition"
                 >
                   {status === "sending" ? "Sending…" : "Send message →"}
                 </button>
@@ -233,7 +233,7 @@ function ContactPage() {
               Other ways to reach us
             </h2>
 
-            <div className="border border-gray-100 rounded-2xl p-6 mb-4 flex gap-4">
+            <div className="border border-gray-100 rounded-lg p-6 mb-4 flex gap-4">
               <IconMail className="text-[#1877D6] shrink-0" size={24} />
               <div>
                 <p className="font-bold text-[#133155] mb-1">Email</p>
@@ -249,7 +249,7 @@ function ContactPage() {
               </div>
             </div>
 
-            <div className="border border-gray-100 rounded-2xl p-6 mb-4 flex gap-4">
+            <div className="border border-gray-100 rounded-lg p-6 mb-4 flex gap-4">
               <IconMapPin className="text-[#1877D6] shrink-0" size={24} />
               <div>
                 <p className="font-bold text-[#133155] mb-1">Based in</p>
@@ -260,7 +260,7 @@ function ContactPage() {
               </div>
             </div>
 
-            <div className="border border-gray-100 rounded-2xl p-6 mb-6 flex gap-4">
+            <div className="border border-gray-100 rounded-lg p-6 mb-6 flex gap-4">
               <IconClock className="text-[#1877D6] shrink-0" size={24} />
               <div>
                 <p className="font-bold text-[#133155] mb-1">Support hours</p>
@@ -306,7 +306,7 @@ function ContactPage() {
         </p>
         <Link
           to="/how-it-works"
-          className="inline-block border-2 border-[#133155] text-[#133155] font-semibold px-8 py-4 rounded-xl hover:bg-[#133155] hover:text-white transition"
+          className="inline-block border-2 border-[#133155] text-[#133155] font-semibold px-8 py-4 rounded-lg hover:bg-[#133155] hover:text-white transition"
         >
           View FAQ →
         </Link>

@@ -370,7 +370,7 @@ function ActionTile({
     </div>
   );
   const cls =
-    "bg-white p-3 rounded-xl border border-[#E2E6ED] active:scale-[0.98] transition-transform";
+    "bg-white p-3 rounded-lg border border-[#E2E6ED] active:scale-[0.98] transition-transform";
   if (href) {
     return (
       <a href={href} className={cls}>
@@ -1375,10 +1375,10 @@ function PupilDetailPage() {
 
       {/* Profile header card */}
       {pupil && (
-        <div className="mt-0 overflow-hidden rounded-b-[28px]">
+        <div className="mt-0 overflow-hidden rounded-b-lg]">
             {/* Hero band matching header */}
             <div
-              className="relative px-4 rounded-b-[28px]"
+              className="relative px-4 rounded-b-lg]"
               style={{ backgroundColor: "#0B1F3A", paddingTop: 22, paddingBottom: 76 }}
             >
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 relative z-10">
@@ -1471,7 +1471,7 @@ function PupilDetailPage() {
                           onChange={(e) => setEmailDraft(e.target.value)}
                           placeholder="Email address"
                           disabled={savingEmail}
-                          className="w-full rounded-md px-2 py-1 text-[13px] text-[#0B1F3A] focus:outline-none focus:ring-2 focus:ring-white/60"
+                          className="w-full rounded-lg px-2 py-1 text-[13px] text-[#0B1F3A] focus:outline-none focus:ring-2 focus:ring-white/60"
                           style={{ background: "rgba(255,255,255,0.95)", ...POPPINS }}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") saveEmail();
@@ -1483,7 +1483,7 @@ function PupilDetailPage() {
                             type="button"
                             onClick={saveEmail}
                             disabled={savingEmail}
-                            className="flex-1 h-8 rounded-md text-[12px] font-semibold text-[#1877D6] bg-white disabled:opacity-60"
+                            className="flex-1 h-8 rounded-lg text-[12px] font-semibold text-[#1877D6] bg-white disabled:opacity-60"
                             style={POPPINS}
                           >
                             {savingEmail ? "Saving…" : "Save"}
@@ -1492,7 +1492,7 @@ function PupilDetailPage() {
                             type="button"
                             onClick={() => setEmailEditing(false)}
                             disabled={savingEmail}
-                            className="h-8 px-3 rounded-md text-[12px] font-semibold text-white border border-white/40"
+                            className="h-8 px-3 rounded-lg text-[12px] font-semibold text-white border border-white/40"
                             style={{ background: "transparent", ...POPPINS }}
                           >
                             Cancel
@@ -1557,7 +1557,7 @@ function PupilDetailPage() {
             {/* Floating white information card */}
             <div className="mx-4 -mt-16 relative z-20">
               <div
-                className="rounded-2xl p-5 space-y-5"
+                className="rounded-lg p-5 space-y-5"
                 style={{
                   backgroundColor: "#FFFFFF",
                   boxShadow: "0 8px 24px rgba(15,32,68,0.12)",
@@ -1565,13 +1565,13 @@ function PupilDetailPage() {
               >
                 {/* Actions row */}
                 <div className="flex items-center justify-end gap-2">
-                  <a href={pupil?.phone ? `tel:${pupil.phone}` : undefined} aria-label="Call pupil" className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A", textDecoration: "none" }}>
+                  <a href={pupil?.phone ? `tel:${pupil.phone}` : undefined} aria-label="Call pupil" className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A", textDecoration: "none" }}>
                     <IconPhone stroke={1.5} size={15} /> Call
                   </a>
-                  <button type="button" onClick={openEditSheet} className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A", textDecoration: "none" }}>
+                  <button type="button" onClick={openEditSheet} className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A", textDecoration: "none" }}>
                     <IconPencil stroke={1.5} size={15} /> Edit
                   </button>
-                  <button type="button" onClick={() => setRemoveOpen(true)} className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#CC2229" }}>
+                  <button type="button" onClick={() => setRemoveOpen(true)} className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#CC2229" }}>
                     <IconTrash stroke={1.5} size={15} /> Remove
                   </button>
                 </div>
@@ -1580,7 +1580,7 @@ function PupilDetailPage() {
                 <div
                   style={{
                     background: "#FFFFFF",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     boxShadow: "0 4px 0 #E4E4E8",
                     overflow: "hidden",
                   }}
@@ -1759,7 +1759,7 @@ function PupilDetailPage() {
                           {Array.from({ length: segments }).map((_, i) => (
                             <div
                               key={i}
-                              className={"flex-1 " + (i === 0 ? "rounded-l-full " : "") + (i === segments - 1 ? "rounded-r-full" : "")}
+                              className={"flex-1 " + (i === 0 ? "rounded-l-lg " : "") + (i === segments - 1 ? "rounded-r-lg" : "")}
                               style={{ backgroundColor: i < filled ? "#00B5A5" : "#E5E7EB" }}
                             />
                           ))}
@@ -1782,7 +1782,7 @@ function PupilDetailPage() {
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div
-                          className="flex items-center gap-3 p-3 rounded-xl border"
+                          className="flex items-center gap-3 p-3 rounded-lg border"
                           style={{
                             backgroundColor: theoryPassed ? "rgba(0,181,165,0.05)" : "#F9FAFB",
                             borderColor: theoryPassed ? "rgba(0,181,165,0.2)" : "#F1F5F9",
@@ -1810,7 +1810,7 @@ function PupilDetailPage() {
                             setPracticalQuickCentrePickerOpen(false);
                             setPracticalQuickOpen(true);
                           }}
-                          className="flex items-center gap-3 p-3 rounded-xl border text-left active:scale-[0.98] transition-transform"
+                          className="flex items-center gap-3 p-3 rounded-lg border text-left active:scale-[0.98] transition-transform"
                           style={{
                             backgroundColor:
                               practStatus === "Passed"
@@ -1890,7 +1890,7 @@ function PupilDetailPage() {
                     </h3>
                     <div
                       className="flex flex-col"
-                      style={{ background: "#FFFFFF", borderRadius: 16, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
+                      style={{ background: "#FFFFFF", borderRadius: 8, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
                     >
                       {paymentHistory.map((p, pi) => {
                         const isRefund = p.payment_status === "refunded" || Number(p.lesson_cost ?? 0) < 0;
@@ -2038,7 +2038,7 @@ function PupilDetailPage() {
           return (
             <div
               className="grid grid-cols-5 mt-4"
-              style={{ background: "#FFFFFF", borderRadius: 16, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
+              style={{ background: "#FFFFFF", borderRadius: 8, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
             >
               {actions.map((a, i) => {
                 const inner = (
@@ -2075,14 +2075,14 @@ function PupilDetailPage() {
         {/* Tab bar — iOS segmented control */}
         <div
           className="mt-4 mb-2 flex gap-1"
-          style={{ background: "#E5E5EA", borderRadius: 12, padding: 3, ...POPPINS }}
+          style={{ background: "#E5E5EA", borderRadius: 8, padding: 3, ...POPPINS }}
         >
           {(["overview", "lessons", "payments", "profile"] as const).map((t) => (
             <button
               key={t}
               type="button"
               onClick={() => setActiveTab(t)}
-              className="flex-1 h-9 rounded-[9px] text-[13px] font-semibold capitalize transition-colors"
+              className="flex-1 h-9 rounded-lg] text-[13px] font-semibold capitalize transition-colors"
               style={{
                 background: activeTab === t ? "#FFFFFF" : "transparent",
                 color: activeTab === t ? "#0B1F3A" : "#6B7280",
@@ -2106,7 +2106,7 @@ function PupilDetailPage() {
             </p>
           </div>
         ) : (
-          <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid rgba(11,31,58,0.10)" }}>
+          <div style={{ background: "#FFFFFF", borderRadius: 8, overflow: "hidden", border: "0.5px solid rgba(11,31,58,0.10)" }}>
             {lessons.map((l, idx) => {
               const d = new Date(`${l.lesson_date}T00:00:00`);
               const prev = idx > 0 ? lessons[idx - 1] : null;
@@ -2191,7 +2191,7 @@ function PupilDetailPage() {
                         className="flex flex-col bg-white"
                         style={{
                           position: "absolute", zIndex: 60, top: 46, right: 14,
-                          borderRadius: 12, border: "0.5px solid #E2E6ED",
+                          borderRadius: 8, border: "0.5px solid #E2E6ED",
                           boxShadow: "0 10px 25px rgba(0,0,0,0.12)", overflow: "hidden", minWidth: 180,
                         }}
                         onClick={(e) => e.stopPropagation()}
@@ -2227,7 +2227,7 @@ function PupilDetailPage() {
         )}
 
 
-        <div style={{ background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 12, padding: 0, overflow: "hidden", margin: "12px 0 0 0" }}>
+        <div style={{ background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 8, padding: 0, overflow: "hidden", margin: "12px 0 0 0" }}>
           <div style={{ padding: "14px 16px", borderBottom: "0.5px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div className="flex items-center gap-2">
               <IconRefresh stroke={1.5} size={14} color="#1A52A0" />
@@ -2280,7 +2280,7 @@ function PupilDetailPage() {
             </p>
           </div>
         ) : (
-          <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid rgba(11,31,58,0.10)" }}>
+          <div style={{ background: "#FFFFFF", borderRadius: 8, overflow: "hidden", border: "0.5px solid rgba(11,31,58,0.10)" }}>
             {(() => {
               const visible = pastExpanded ? pastLessons : pastLessons.slice(0, 5);
               const colour = pupil?.calendar_colour || "#1A52A0";
@@ -2348,7 +2348,7 @@ function PupilDetailPage() {
                               className="flex flex-col bg-white"
                               style={{
                                 position: "absolute", zIndex: 60, top: 46, right: 14,
-                                borderRadius: 12, border: "0.5px solid #E2E6ED",
+                                borderRadius: 8, border: "0.5px solid #E2E6ED",
                                 boxShadow: "0 10px 25px rgba(0,0,0,0.12)", overflow: "hidden", minWidth: 180,
                               }}
                               onClick={(e) => e.stopPropagation()}
@@ -2404,7 +2404,7 @@ function PupilDetailPage() {
         )}
 
         <SectionHeader>LESSON TRACKS</SectionHeader>
-        <div style={{ background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 12, padding: 0, overflow: "hidden" }}>
+        <div style={{ background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 8, padding: 0, overflow: "hidden" }}>
           <div style={{ padding: "14px 16px", borderBottom: "0.5px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div className="flex items-center gap-2">
               <IconMapPin stroke={1.5} size={14} color="#1A52A0" />
@@ -2549,7 +2549,7 @@ function PupilDetailPage() {
                 <img
                   src={routeStaticMapUrl(viewingReport.coords) ?? undefined}
                   alt="Lesson route map"
-                  style={{ width: "100%", borderRadius: 12, marginBottom: 12 }}
+                  style={{ width: "100%", borderRadius: 8, marginBottom: 12 }}
                 />
               )}
 
@@ -2586,14 +2586,14 @@ function PupilDetailPage() {
                 <button
                   type="button"
                   onClick={() => setViewingReport(null)}
-                  style={{ flex: 1, padding: "14px 16px", borderRadius: 16, border: "none", background: "#FFFFFF", color: "#0B1F3A", fontSize: 15, fontWeight: 700, boxShadow: "0 2px 8px rgba(15,32,68,0.06)" }}
+                  style={{ flex: 1, padding: "14px 16px", borderRadius: 8, border: "none", background: "#FFFFFF", color: "#0B1F3A", fontSize: 15, fontWeight: 700, boxShadow: "0 2px 8px rgba(15,32,68,0.06)" }}
                 >
                   Close
                 </button>
                 <button
                   type="button"
                   onClick={exportReportText}
-                  style={{ flex: 1, padding: "14px 16px", borderRadius: 16, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 15, fontWeight: 700 }}
+                  style={{ flex: 1, padding: "14px 16px", borderRadius: 8, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 15, fontWeight: 700 }}
                 >
                   Export
                 </button>
@@ -2655,7 +2655,7 @@ function PupilDetailPage() {
               <button
                 type="button"
                 onClick={() => setSelectedOverspeedEvent(null)}
-                style={{ width: "100%", padding: "14px 16px", borderRadius: 16, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 15, fontWeight: 700 }}
+                style={{ width: "100%", padding: "14px 16px", borderRadius: 8, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 15, fontWeight: 700 }}
               >
                 Close
               </button>
@@ -2678,7 +2678,7 @@ function PupilDetailPage() {
                 display: 'flex', alignItems: 'center', gap: 8,
                 width: '100%', padding: '12px 16px',
                 background: '#fff', border: '0.5px solid #E2E8F0',
-                borderRadius: 10, marginBottom: 12, cursor: 'pointer',
+                borderRadius: 8, marginBottom: 12, cursor: 'pointer',
               }}
             >
               <IconCreditCard stroke={1.5} size={16} color="#1877D6" />
@@ -2693,7 +2693,7 @@ function PupilDetailPage() {
               className="mt-3 w-full flex items-center justify-center gap-2"
               style={{
                 height: 44,
-                borderRadius: 12,
+                borderRadius: 8,
                 background: "#1877D6",
                 color: "#FFFFFF",
                 fontSize: 14,
@@ -2725,7 +2725,7 @@ function PupilDetailPage() {
               style={{
                 marginTop: 12,
                 padding: 16,
-                borderRadius: 12,
+                borderRadius: 8,
                 borderWidth: "0.5px",
                 borderStyle: "solid",
                 borderColor: "#EEF2F7",
@@ -2830,7 +2830,7 @@ function PupilDetailPage() {
                       style={{
                         marginTop: 10,
                         height: 8,
-                        borderRadius: 6,
+                        borderRadius: 8,
                         backgroundColor: "#F3F8FF",
                         overflow: "hidden",
                       }}
@@ -2840,7 +2840,7 @@ function PupilDetailPage() {
                           width: `${pct}%`,
                           height: "100%",
                           backgroundColor: "#1877D6",
-                          borderRadius: 6,
+                          borderRadius: 8,
                         }}
                       />
                     </div>
@@ -3098,7 +3098,7 @@ function PupilDetailPage() {
             <div
               style={{
                 background: "#FFFFFF",
-                borderRadius: 16,
+                borderRadius: 8,
                 boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
                 overflow: "hidden",
               }}
@@ -3235,7 +3235,7 @@ function PupilDetailPage() {
                             type="button"
                             disabled={savingMockResult}
                             onClick={() => updateMockResult("Passed")}
-                            style={{ flex: 1, padding: "10px 12px", borderRadius: 10, border: "none", background: "#1E8E5A", color: "#FFFFFF", fontSize: 13, fontWeight: 600 }}
+                            style={{ flex: 1, padding: "10px 12px", borderRadius: 8, border: "none", background: "#1E8E5A", color: "#FFFFFF", fontSize: 13, fontWeight: 600 }}
                           >
                             Passed
                           </button>
@@ -3243,7 +3243,7 @@ function PupilDetailPage() {
                             type="button"
                             disabled={savingMockResult}
                             onClick={() => updateMockResult("Failed")}
-                            style={{ flex: 1, padding: "10px 12px", borderRadius: 10, border: "none", background: "#CC2229", color: "#FFFFFF", fontSize: 13, fontWeight: 600 }}
+                            style={{ flex: 1, padding: "10px 12px", borderRadius: 8, border: "none", background: "#CC2229", color: "#FFFFFF", fontSize: 13, fontWeight: 600 }}
                           >
                             Failed
                           </button>
@@ -3277,7 +3277,7 @@ function PupilDetailPage() {
                       <button
                         type="button"
                         onClick={() => setViewingDl25(mt)}
-                        style={{ width: "100%", padding: "10px 12px", borderRadius: 10, border: "1px solid #1877D6", background: "#FFFFFF", color: "#1877D6", fontSize: 13, fontWeight: 600, marginBottom: 16, ...POPPINS }}
+                        style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #1877D6", background: "#FFFFFF", color: "#1877D6", fontSize: 13, fontWeight: 600, marginBottom: 16, ...POPPINS }}
                       >
                         View DL25
                       </button>
@@ -3291,14 +3291,14 @@ function PupilDetailPage() {
                       onChange={(e) => setMockNotesDraft(e.target.value)}
                       rows={4}
                       placeholder="Add notes for this mock test…"
-                      style={{ width: "100%", padding: 10, borderRadius: 10, border: "0.5px solid #E2E6ED", fontSize: 13, color: "#0B1F3A", resize: "vertical", ...POPPINS }}
+                      style={{ width: "100%", padding: 10, borderRadius: 8, border: "0.5px solid #E2E6ED", fontSize: 13, color: "#0B1F3A", resize: "vertical", ...POPPINS }}
                     />
                     <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
                       <button
                         type="button"
                         disabled={savingMockNotes || mockNotesDraft === (mt.notes ?? "")}
                         onClick={saveMockNotes}
-                        style={{ padding: "8px 14px", borderRadius: 10, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 13, fontWeight: 600, opacity: (savingMockNotes || mockNotesDraft === (mt.notes ?? "")) ? 0.6 : 1 }}
+                        style={{ padding: "8px 14px", borderRadius: 8, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 13, fontWeight: 600, opacity: (savingMockNotes || mockNotesDraft === (mt.notes ?? "")) ? 0.6 : 1 }}
                       >
                         {savingMockNotes ? "Saving…" : "Save"}
                       </button>
@@ -3308,14 +3308,14 @@ function PupilDetailPage() {
                       <button
                         type="button"
                         onClick={() => setViewingMock(null)}
-                        style={{ flex: 1, padding: "12px 16px", borderRadius: 10, border: "0.5px solid #E2E6ED", background: "#FFFFFF", color: "#0B1F3A", fontSize: 14, fontWeight: 600 }}
+                        style={{ flex: 1, padding: "12px 16px", borderRadius: 8, border: "0.5px solid #E2E6ED", background: "#FFFFFF", color: "#0B1F3A", fontSize: 14, fontWeight: 600 }}
                       >
                         Close
                       </button>
                       <button
                         type="button"
                         onClick={shareMockText}
-                        style={{ flex: 1, padding: "12px 16px", borderRadius: 10, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 14, fontWeight: 600 }}
+                        style={{ flex: 1, padding: "12px 16px", borderRadius: 8, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 14, fontWeight: 600 }}
                       >
                         Share
                       </button>
@@ -3339,7 +3339,7 @@ function PupilDetailPage() {
               <div
                 style={{
                   background: "#FFFFFF",
-                  borderRadius: 16,
+                  borderRadius: 8,
                   border: "0.5px solid rgba(11,31,58,0.10)",
                   padding: "20px 16px",
                   marginTop: 12,
@@ -3504,7 +3504,7 @@ function PupilDetailPage() {
           };
 
           const segBase: React.CSSProperties = {
-            flex: 1, borderRadius: 12, border: 'none', padding: '9px 0',
+            flex: 1, borderRadius: 8, border: 'none', padding: '9px 0',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             cursor: 'pointer', fontFamily: 'Poppins, sans-serif', fontSize: 13, fontWeight: 600,
           };
@@ -3523,7 +3523,7 @@ function PupilDetailPage() {
             margin: "16px 0 8px", fontFamily: 'Poppins, sans-serif',
           };
           const groupCard: React.CSSProperties = {
-            background: "#FFFFFF", borderRadius: 16,
+            background: "#FFFFFF", borderRadius: 8,
             boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden",
           };
           const hairline = <div style={{ height: 1, background: "#E9E9EC" }} />;
@@ -3594,7 +3594,7 @@ function PupilDetailPage() {
                     </div>
                   )}
                   {!isPast && !isCancelled && (
-                    <div style={{ display: 'flex', gap: 3, background: '#F2F2F7', borderRadius: 12, padding: 3, marginTop: 12 }}>
+                    <div style={{ display: 'flex', gap: 3, background: '#F2F2F7', borderRadius: 8, padding: 3, marginTop: 12 }}>
                       {([
                         { key: "here" as const, label: "Here", icon: <IconMapPin stroke={1.5} size={15} />, msg: `Hi ${firstName}, I'm outside whenever you're ready 👋` },
                         { key: "going" as const, label: "Going", icon: <IconSend stroke={1.5} size={15} />, msg: `Hi ${firstName}, on the way!` },
@@ -3672,7 +3672,7 @@ function PupilDetailPage() {
                 </div>
                 <div
                   style={{
-                    background: "#F2F2F7", borderRadius: 12, padding: "10px 12px",
+                    background: "#F2F2F7", borderRadius: 8, padding: "10px 12px",
                     fontSize: 13.5, color: lastMessage ? "#0B1F3A" : "#8A8A8E", ...POPPINS,
                     overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                   }}
@@ -3686,7 +3686,7 @@ function PupilDetailPage() {
 
               {/* Outstanding balance card */}
               {balance > 0 && !isPaid && (
-                <div style={{ background: "#FFF8E8", borderRadius: 16, border: "0.5px solid #F0D28A", padding: 14, marginTop: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ background: "#FFF8E8", borderRadius: 8, border: "0.5px solid #F0D28A", padding: 14, marginTop: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div>
                     <div style={{ fontSize: 12, color: "#8A5A00", fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.3, ...POPPINS }}>Outstanding</div>
                     <div style={{ fontSize: 22, fontWeight: 700, color: "#0B1F3A", ...POPPINS }}>£{balance.toFixed(2)}</div>
@@ -3731,7 +3731,7 @@ function PupilDetailPage() {
 
 
         <div className="flex items-center gap-2" style={{ marginBottom: 8 }}>
-          <span style={{ width: 3, height: 14, borderRadius: 2, background: "#1877D6", display: "inline-block" }} />
+          <span style={{ width: 3, height: 14, borderRadius: 8, background: "#1877D6", display: "inline-block" }} />
           <span style={{ color: "#1877D6", fontSize: 12, fontWeight: 800, letterSpacing: "0.6px", textTransform: "uppercase", ...POPPINS }}>
             Notes
           </span>
@@ -3742,7 +3742,7 @@ function PupilDetailPage() {
           className="w-full text-left focus:outline-none"
           style={{
             background: "#fff",
-            borderRadius: 16,
+            borderRadius: 8,
             border: "none",
             padding: "14px 16px",
             boxShadow: "0 4px 0 #E4E4E8",
@@ -3796,7 +3796,7 @@ function PupilDetailPage() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 16,
+              borderRadius: 8,
               padding: 16,
               marginBottom: 14,
               boxShadow: "0 4px 0 #E4E4E8",
@@ -3849,7 +3849,7 @@ function PupilDetailPage() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 16,
+            borderRadius: 8,
             padding: 16,
             marginBottom: 14,
             boxShadow: "0 4px 0 #E4E4E8",
@@ -3909,7 +3909,7 @@ function PupilDetailPage() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 16,
+            borderRadius: 8,
             padding: 16,
             marginBottom: 14,
             boxShadow: "0 4px 0 #E4E4E8",
@@ -3985,7 +3985,7 @@ function PupilDetailPage() {
                 <div
                   style={{
                     background: "#FDEDEC",
-                    borderRadius: 12,
+                    borderRadius: 8,
                     padding: "10px 12px",
                     marginTop: 12,
                     color: "#B02318",
@@ -4013,7 +4013,7 @@ function PupilDetailPage() {
           <div
             className="bg-white"
             style={{
-              borderRadius: 12,
+              borderRadius: 8,
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: "#EEF2F7",
@@ -4071,7 +4071,7 @@ function PupilDetailPage() {
           <div
             className="bg-white"
             style={{
-              borderRadius: 12,
+              borderRadius: 8,
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: "#F3D2D3",
@@ -4089,7 +4089,7 @@ function PupilDetailPage() {
               className="w-full inline-flex items-center justify-center gap-2 text-[14px] font-semibold disabled:opacity-50"
               style={{
                 height: 44,
-                borderRadius: 10,
+                borderRadius: 8,
                 border: "none",
                 background: "#CC2229",
                 color: "#FFFFFF",
@@ -4176,7 +4176,7 @@ function PupilDetailPage() {
                 type="button"
                 disabled={adjSaving}
                 onClick={saveAdjustment}
-                className="w-full h-12 rounded-xl text-[15px] font-semibold text-white"
+                className="w-full h-12 rounded-lg text-[15px] font-semibold text-white"
                 style={{
                   background: adjSaving ? "#7BA6DA" : "#1877D6",
                   ...POPPINS,
@@ -4248,7 +4248,7 @@ function PupilDetailPage() {
               </div>
 
               <div
-                className="text-[12px] leading-snug rounded-2xl px-4 py-3"
+                className="text-[12px] leading-snug rounded-lg px-4 py-3"
                 style={{ background: "#F0F7FF", color: "#1A52A0", ...POPPINS }}
               >
                 Saves the adjustment and applies the same change to prepaid hours ({(Number(pupil.prepaid_hours ?? 0)).toFixed(1)}h → {(Number(pupil.prepaid_hours ?? 0) + deltaHours).toFixed(1)}h).
@@ -4418,7 +4418,7 @@ function PupilDetailPage() {
         <div className="fixed inset-0 z-[60] flex flex-col justify-end">
           <div className="absolute inset-0 bg-black/40" onClick={() => setCertOpen(false)} />
           <div
-            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl px-4 pt-5 pb-8"
+            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-lg px-4 pt-5 pb-8"
             style={{ ...POPPINS, animation: "slideUp 0.25s ease-out" }}
           >
             <div className="flex items-center justify-between mb-4">
@@ -4555,7 +4555,7 @@ function PupilDetailPage() {
         <div className="fixed inset-0 z-[60] flex flex-col justify-end">
           <div className="absolute inset-0 bg-black/40" onClick={() => !editSaving && setEditSheetOpen(false)} />
           <div
-            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl px-4 pt-5 pb-8 max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-lg px-4 pt-5 pb-8 max-h-[90vh] overflow-y-auto"
             style={{ ...POPPINS, animation: "slideUp 0.25s ease-out" }}
           >
             <div className="flex items-center justify-between mb-4">
@@ -5026,7 +5026,7 @@ function NIRow({
 const RELATIONS = ["Parent", "Spouse", "Partner", "Sibling", "Friend", "Guardian", "Other"];
 const CAL_COLOURS = ["#1A52A0", "#16A34A", "#CC2229", "#D97706", "#7C3AED", "#0891B2", "#EC4899", "#0B1F3A"];
 const EXTRAS_CARD: React.CSSProperties = {
-  borderRadius: 12,
+  borderRadius: 8,
   border: "0.5px solid #E2E6ED",
   padding: 16,
   marginTop: 12,
@@ -5137,7 +5137,7 @@ function PupilExtras({
         <div
           style={{
             background: "#fff",
-            borderRadius: 16,
+            borderRadius: 8,
             boxShadow: "0 4px 0 #E4E4E8",
             overflow: "hidden",
             marginBottom: 14,
@@ -5227,7 +5227,7 @@ function PupilExtras({
         <div
           style={{
             background: "#fff",
-            borderRadius: 16,
+            borderRadius: 8,
             boxShadow: "0 4px 0 #E4E4E8",
             overflow: "hidden",
           }}
@@ -5290,7 +5290,7 @@ function PupilExtras({
                       style={{
                         width: 22,
                         height: 22,
-                        borderRadius: 6,
+                        borderRadius: 8,
                         flexShrink: 0,
                         background: pupil.driving_licence_checked ? "#1877D6" : "#FFFFFF",
                         border: pupil.driving_licence_checked ? "none" : "1.5px solid #D8D8DE",
@@ -5571,7 +5571,7 @@ function PupilRatesAndColour({
   return (
     <>
       {/* Gap after lesson */}
-      <div className="flex justify-between items-center" style={{ margin: "8px 16px 0", borderRadius: 12, border: "0.5px solid #E2E6ED", padding: "14px 16px", backgroundColor: "#fff" }}>
+      <div className="flex justify-between items-center" style={{ margin: "8px 16px 0", borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "14px 16px", backgroundColor: "#fff" }}>
         <div className="flex items-center gap-2">
           <IconClock stroke={1.5} size={16} color="#9CA3AF" />
           <div className="flex flex-col">
@@ -6098,7 +6098,7 @@ function UnavailablePeriodsCard({ pupilId }: { pupilId: string }) {
               type="button"
               disabled={saving}
               onClick={save}
-              className="w-full h-[52px] rounded-2xl text-white text-[16px] font-bold"
+              className="w-full h-[52px] rounded-lg text-white text-[16px] font-bold"
               style={{ background: "#1877D6", ...POPPINS, opacity: saving ? 0.6 : 1 }}
             >
               {saving ? "Saving…" : "Save"}

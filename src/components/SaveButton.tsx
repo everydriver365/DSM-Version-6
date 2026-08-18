@@ -68,7 +68,7 @@ export function SaveButton({
         background: bg,
         color,
         width: "100%",
-        borderRadius: 12,
+        borderRadius: 8,
         padding: "13px 0",
         border: "none",
         fontSize: 14,

@@ -175,13 +175,13 @@ function HowItWorksPage() {
             When an instructor creates a course in DSM and publishes it to EveryDriver, learners can find and book it instantly. The booking appears in DSM automatically — no manual work needed.
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <span className="bg-[#1877D6] text-white px-6 py-3 rounded-xl font-bold">DSM</span>
+            <span className="bg-[#1877D6] text-white px-6 py-3 rounded-lg font-bold">DSM</span>
             <IconChevronRight className="text-white/50" size={24} />
-            <span className="bg-white/10 text-white px-6 py-3 rounded-xl">Course published</span>
+            <span className="bg-white/10 text-white px-6 py-3 rounded-lg">Course published</span>
             <IconChevronRight className="text-white/50" size={24} />
-            <span className="bg-white/10 text-white px-6 py-3 rounded-xl">Learner books</span>
+            <span className="bg-white/10 text-white px-6 py-3 rounded-lg">Learner books</span>
             <IconChevronRight className="text-white/50" size={24} />
-            <span className="bg-[#1877D6] text-white px-6 py-3 rounded-xl font-bold">Booking in DSM</span>
+            <span className="bg-[#1877D6] text-white px-6 py-3 rounded-lg font-bold">Booking in DSM</span>
           </div>
         </div>
       </section>
@@ -212,7 +212,7 @@ function HowItWorksPage() {
           <p className="text-white/80 mb-8">Join hundreds of driving instructors already using DSM.</p>
           <Link
             to="/register"
-            className="inline-flex items-center bg-white text-[#1877D6] font-black px-10 py-4 rounded-xl no-underline transition hover:bg-gray-100"
+            className="inline-flex items-center bg-white text-[#1877D6] font-black px-10 py-4 rounded-lg no-underline transition hover:bg-gray-100"
           >
             Create free account →
           </Link>

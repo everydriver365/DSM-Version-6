@@ -260,7 +260,7 @@ function TaxReportPage() {
 
   const cardStyle = {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
+    borderRadius: 8,
     padding: 16,
     borderWidth: "0.5px",
     borderStyle: "solid" as const,
@@ -404,7 +404,7 @@ function TaxReportPage() {
       <div
         style={{
           backgroundColor: "#0B1F3A",
-          borderRadius: 12,
+          borderRadius: 8,
           marginLeft: 16,
           marginRight: 16,
           marginTop: 12,
@@ -424,7 +424,7 @@ function TaxReportPage() {
           type="button"
           onClick={downloadSummary}
           className="mt-4 w-full flex items-center justify-center gap-2 text-white text-[14px] font-semibold"
-          style={{ backgroundColor: "#1877D6", height: 44, borderRadius: 10 }}
+          style={{ backgroundColor: "#1877D6", height: 44, borderRadius: 8}}
         >
           <IconDownload size={16} /> IconDownload summary
         </button>

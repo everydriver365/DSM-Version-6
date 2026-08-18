@@ -219,7 +219,7 @@ function VehiclePage() {
             gap: 8,
             backgroundColor: "#FEE2E2",
             border: "0.5px solid #FECACA",
-            borderRadius: 12,
+            borderRadius: 8,
             padding: "10px 12px",
           }}
         >
@@ -300,7 +300,7 @@ function VehiclePage() {
       {/* Odometer */}
       <div
         className="mx-4"
-        style={{ backgroundColor: "#FFFFFF", border: BORDER, borderRadius: 12, padding: 16 }}
+        style={{ backgroundColor: "#FFFFFF", border: BORDER, borderRadius: 8, padding: 16 }}
       >
         <div className="flex items-center" style={{ gap: 8 }}>
           <IconGauge size={18} color={NAVY} />
@@ -318,7 +318,7 @@ function VehiclePage() {
             className="flex-1 px-3 bg-white"
             style={{
               height: 48,
-              borderRadius: 10,
+              borderRadius: 8,
               border: BORDER,
               color: NAVY,
               fontSize: 22,
@@ -335,7 +335,7 @@ function VehiclePage() {
             type="button"
             onClick={saveOdo}
             className="text-white text-[13px] font-semibold"
-            style={{ height: 40, borderRadius: 10, backgroundColor: NAVY }}
+            style={{ height: 40, borderRadius: 8, backgroundColor: NAVY }}
           >
             Update mileage
           </button>
@@ -343,7 +343,7 @@ function VehiclePage() {
             type="button"
             onClick={() => setAddOpen(true)}
             className="text-[13px] font-semibold"
-            style={{ height: 40, borderRadius: 10, backgroundColor: "#FFFFFF", border: BORDER, color: NAVY }}
+            style={{ height: 40, borderRadius: 8, backgroundColor: "#FFFFFF", border: BORDER, color: NAVY }}
           >
             Log journey
           </button>
@@ -353,7 +353,7 @@ function VehiclePage() {
       {/* Mileage log */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: "#FFFFFF", border: BORDER, borderRadius: 12, padding: 16 }}
+        style={{ backgroundColor: "#FFFFFF", border: BORDER, borderRadius: 8, padding: 16 }}
       >
         <div className="text-[14px] font-semibold mb-2" style={{ color: NAVY }}>
           Recent journeys
@@ -368,7 +368,7 @@ function VehiclePage() {
               <div
                 key={j.id}
                 className="flex items-center justify-between"
-                style={{ border: BORDER, borderRadius: 10, padding: "10px 12px" }}
+                style={{ border: BORDER, borderRadius: 8, padding: "10px 12px" }}
               >
                 <div className="min-w-0">
                   <div className="text-[13px] font-semibold" style={{ color: NAVY }}>
@@ -458,7 +458,7 @@ function StatusCard({
       style={{
         backgroundColor: "#FFFFFF",
         border: BORDER,
-        borderRadius: 12,
+        borderRadius: 8,
         padding: 12,
       }}
     >
@@ -546,7 +546,7 @@ function EditFieldModal({
               type="button"
               onClick={onClose}
               className="text-[13px] font-semibold"
-              style={{ height: 40, borderRadius: 10, backgroundColor: "#FFFFFF", border: BORDER, color: NAVY }}
+              style={{ height: 40, borderRadius: 8, backgroundColor: "#FFFFFF", border: BORDER, color: NAVY }}
             >
               Cancel
             </button>
@@ -559,7 +559,7 @@ function EditFieldModal({
                 setSaving(false);
               }}
               className="text-white text-[13px] font-semibold"
-              style={{ height: 40, borderRadius: 10, backgroundColor: NAVY, opacity: saving ? 0.7 : 1 }}
+              style={{ height: 40, borderRadius: 8, backgroundColor: NAVY, opacity: saving ? 0.7 : 1 }}
             >
               {saving ? "Saving…" : "Save"}
             </button>
@@ -744,7 +744,7 @@ function AddJourneyModal({
               type="button"
               onClick={onClose}
               className="text-[13px] font-semibold"
-              style={{ height: 40, borderRadius: 10, backgroundColor: "#FFFFFF", border: BORDER, color: NAVY }}
+              style={{ height: 40, borderRadius: 8, backgroundColor: "#FFFFFF", border: BORDER, color: NAVY }}
             >
               Cancel
             </button>
@@ -753,7 +753,7 @@ function AddJourneyModal({
               disabled={saving}
               onClick={save}
               className="text-white text-[13px] font-semibold"
-              style={{ height: 40, borderRadius: 10, backgroundColor: NAVY, opacity: saving ? 0.7 : 1 }}
+              style={{ height: 40, borderRadius: 8, backgroundColor: NAVY, opacity: saving ? 0.7 : 1 }}
             >
               {saving ? "Saving…" : "Save journey"}
             </button>

@@ -122,7 +122,7 @@ export function MarketingNav() {
               fontSize: 14,
               fontWeight: 700,
               padding: "12px 22px",
-              borderRadius: 6,
+              borderRadius: 8,
               lineHeight: 1,
               border: `1.5px solid ${ACCENT}`,
               boxShadow: "0 1px 2px rgba(12,35,64,0.08)"}}
@@ -138,7 +138,7 @@ export function MarketingNav() {
               fontSize: 14,
               fontWeight: 700,
               padding: "12px 22px",
-              borderRadius: 6,
+              borderRadius: 8,
               border: `1.5px solid ${ACCENT}`,
               lineHeight: 1}}
           >
@@ -252,7 +252,7 @@ export function MarketingNav() {
                 color: "#fff",
                 textAlign: "center",
                 padding: "12px 16px",
-                borderRadius: 6,
+                borderRadius: 8,
                 fontWeight: 700,
                 textDecoration: "none",
                 fontSize: 14}}
@@ -268,7 +268,7 @@ export function MarketingNav() {
                 color: ACCENT,
                 textAlign: "center",
                 padding: "12px 16px",
-                borderRadius: 6,
+                borderRadius: 8,
                 fontWeight: 700,
                 textDecoration: "none",
                 fontSize: 14,
@@ -452,7 +452,7 @@ function MegaPanel({
         </div>
       </div>
 
-      <div style={{ background: PANEL_BG, borderRadius: 12, padding: "24px 26px", marginLeft: -8 }}>
+      <div style={{ background: PANEL_BG, borderRadius: 8, padding: "24px 26px", marginLeft: -8 }}>
         <SectionLabel>{rightTitle}</SectionLabel>
         <Link
           to={rightHref}
@@ -498,7 +498,7 @@ function MegaPanel({
                 background: ACCENT,
                 color: "#fff",
                 padding: "9px 16px",
-                borderRadius: 6,
+                borderRadius: 8,
                 fontSize: 13,
                 fontWeight: 700}}
             >

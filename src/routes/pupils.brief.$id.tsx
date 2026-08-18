@@ -53,7 +53,7 @@ function Card({
     <div
       style={{
         background: "#FFFFFF",
-        borderRadius: 16,
+        borderRadius: 8,
         border: BORDER,
         padding: 16,
         ...POPPINS,
@@ -297,7 +297,7 @@ function PupilBriefPage() {
                   style={{
                     marginTop: 12,
                     padding: "8px 10px",
-                    borderRadius: 10,
+                    borderRadius: 8,
                     background: "rgba(255,255,255,0.14)",
                     fontSize: 12.5,
                     fontWeight: 600,
@@ -359,7 +359,7 @@ function PupilBriefPage() {
                     style={{
                       marginTop: 10,
                       padding: 10,
-                      borderRadius: 10,
+                      borderRadius: 8,
                       background: "#F3FAE9",
                       fontSize: 13,
                       color: "#3F6212",
@@ -504,7 +504,7 @@ function PupilBriefPage() {
                   marginTop: 12,
                   width: "100%",
                   padding: "10px 12px",
-                  borderRadius: 10,
+                  borderRadius: 8,
                   border: `1px solid ${BLUE}`,
                   background: "#FFFFFF",
                   color: BLUE,
@@ -559,7 +559,7 @@ function PupilBriefPage() {
                       style={{
                         marginTop: 12,
                         padding: 10,
-                        borderRadius: 10,
+                        borderRadius: 8,
                         background: "#FFF8EB",
                         color: "#92400E",
                         fontSize: 13,
@@ -584,7 +584,7 @@ function PupilBriefPage() {
                       marginTop: 12,
                       width: "100%",
                       padding: "10px 12px",
-                      borderRadius: 10,
+                      borderRadius: 8,
                       border: "none",
                       background: BLUE,
                       color: "#FFFFFF",

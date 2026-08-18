@@ -112,7 +112,7 @@ function PaymentCompletePage() {
           background: "#1877D6",
           color: "#fff",
           border: "none",
-          borderRadius: 20,
+          borderRadius: 8,
           padding: "12px 24px",
           fontSize: 14,
           fontWeight: 700,

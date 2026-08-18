@@ -129,7 +129,7 @@ function metaFor(status: string | null) {
 
 const CARD: React.CSSProperties = {
   background: "#fff",
-  borderRadius: 16,
+  borderRadius: 8,
   boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
   overflow: "hidden",
 };
@@ -539,7 +539,7 @@ function EnquiriesPage() {
           background: "#fff",
           border: "none",
           textAlign: "left",
-          borderRadius: 16,
+          borderRadius: 8,
           marginBottom: 10,
           boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
         }}
@@ -548,7 +548,7 @@ function EnquiriesPage() {
           style={{
             width: 42,
             height: 42,
-            borderRadius: 21,
+            borderRadius: 8,
             background: "#E7F1FC",
             display: "flex",
             alignItems: "center",
@@ -600,7 +600,7 @@ function EnquiriesPage() {
                 fontSize: 11,
                 fontWeight: 700,
                 padding: "3px 9px",
-                borderRadius: 20,
+                borderRadius: 8,
                 marginTop: 5,
                 width: "fit-content",
                 ...POPPINS,
@@ -633,7 +633,7 @@ function EnquiriesPage() {
                   gap: 5,
                   background: "#E7F1FC",
                   color: "#1877D6",
-                  borderRadius: 20,
+                  borderRadius: 8,
                   padding: "6px 12px",
                   fontSize: 12.5,
                   fontWeight: 800,
@@ -697,7 +697,7 @@ function EnquiriesPage() {
           alignItems: "center",
           gap: 12,
           background: "linear-gradient(100deg, #0B1F3A, #14509E)",
-          borderRadius: 16,
+          borderRadius: 8,
           padding: "14px 16px",
           marginTop: 20,
           marginBottom: 16,
@@ -710,7 +710,7 @@ function EnquiriesPage() {
           style={{
             width: 34,
             height: 34,
-            borderRadius: 10,
+            borderRadius: 8,
             background: "rgba(255,255,255,0.15)",
             display: "flex",
             alignItems: "center",
@@ -863,7 +863,7 @@ function EnquiriesPage() {
           style={{
             width: 34,
             height: 34,
-            borderRadius: 10,
+            borderRadius: 8,
             background: chipBg,
             display: "flex",
             alignItems: "center",
@@ -912,7 +912,7 @@ function EnquiriesPage() {
             style={{
               width: 38,
               height: 38,
-              borderRadius: 19,
+              borderRadius: 8,
               flexShrink: 0,
               display: "flex",
               alignItems: "center",
@@ -997,7 +997,7 @@ function EnquiriesPage() {
             style={{
               width: 34,
               height: 34,
-              borderRadius: 17,
+              borderRadius: 8,
               background: "rgba(255,255,255,0.08)",
               border: "none",
               flexShrink: 0,
@@ -1025,7 +1025,7 @@ function EnquiriesPage() {
             style={{
               background: "#1877D6",
               color: "#fff",
-              borderRadius: 20,
+              borderRadius: 8,
               padding: "6px 14px",
               fontSize: 12,
               fontWeight: 800,
@@ -1071,7 +1071,7 @@ function EnquiriesPage() {
                     style={{
                       width: 10,
                       height: 10,
-                      borderRadius: 5,
+                      borderRadius: 8,
                       background: banner.dot,
                       flexShrink: 0,
                     }}
@@ -1164,7 +1164,7 @@ function EnquiriesPage() {
                   style={{
                     background: "#F7F9FC",
                     padding: 12,
-                    borderRadius: 10,
+                    borderRadius: 8,
                     color: "#0B1F3A",
                     fontSize: 13.5,
                     fontWeight: 500,
@@ -1227,7 +1227,7 @@ function EnquiriesPage() {
                           padding: "9px 13px",
                           fontSize: 13,
                           lineHeight: 1.45,
-                          borderRadius: 14,
+                          borderRadius: 8,
                           background: m.outgoing ? "#1877D6" : "#F2F2F7",
                           color: m.outgoing ? "#fff" : "#0B1F3A",
                           ...(m.outgoing
@@ -1255,7 +1255,7 @@ function EnquiriesPage() {
                         background: "#1877D6",
                         color: "#fff",
                         border: "none",
-                        borderRadius: 10,
+                        borderRadius: 8,
                         padding: "9px 14px",
                         fontSize: 12.5,
                         fontWeight: 700,
@@ -1399,7 +1399,7 @@ function EnquiriesPage() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 18,
+              borderRadius: 8,
               overflow: "hidden",
               boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
               opacity: busy ? 0.6 : 1,
@@ -1441,7 +1441,7 @@ function EnquiriesPage() {
                       style={{
                         width: "100%",
                         border: "1px solid #E4E4E8",
-                        borderRadius: 12,
+                        borderRadius: 8,
                         padding: 10,
                         fontSize: 14,
                         color: "#0B1F3A",
@@ -1461,7 +1461,7 @@ function EnquiriesPage() {
                           background: smsText.trim() ? "#1877D6" : "#E5E5EA",
                           color: "#fff",
                           border: "none",
-                          borderRadius: 12,
+                          borderRadius: 8,
                           padding: "10px 12px",
                           fontSize: 14,
                           fontWeight: 700,
@@ -1482,7 +1482,7 @@ function EnquiriesPage() {
                           background: "#F2F2F7",
                           color: "#0B1F3A",
                           border: "none",
-                          borderRadius: 12,
+                          borderRadius: 8,
                           padding: "10px 12px",
                           fontSize: 14,
                           fontWeight: 700,
@@ -1619,7 +1619,7 @@ function EnquiriesPage() {
                 background: noteText.trim() ? "#1877D6" : "#E5E5EA",
                 color: "#fff",
                 border: "none",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: "8px 12px",
                 fontSize: 13,
                 fontWeight: 700,

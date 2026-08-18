@@ -235,7 +235,7 @@ function BookingsPage() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 20,
+              borderRadius: 8,
               padding: 16,
               boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
               display: "flex",
@@ -290,7 +290,7 @@ function BookingsPage() {
               style={{
                 alignSelf: "flex-start",
                 padding: "6px 12px",
-                borderRadius: 20,
+                borderRadius: 8,
                 fontSize: 12,
                 fontWeight: 700,
                 background: `${statusColour(selectedBooking.status ?? "")}15`,
@@ -383,7 +383,7 @@ function SectionHeader({ label }: { label: string }) {
           display: "inline-block",
           width: 3,
           height: 12,
-          borderRadius: 2,
+          borderRadius: 8,
           backgroundColor: "#1877D6",
         }}
       />
@@ -406,7 +406,7 @@ function GroupedCard({ children }: { children: React.ReactNode }) {
     <div
       style={{
         background: "#fff",
-        borderRadius: 16,
+        borderRadius: 8,
         overflow: "hidden",
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
       }}

@@ -1500,7 +1500,7 @@ function GapsPage() {
         maxWidth: 430,
         margin: "0 auto",
         border: "1px solid #E2E6ED",
-        borderRadius: 16,
+        borderRadius: 8,
         overflow: "hidden",
       }}
     >
@@ -1536,7 +1536,7 @@ function GapsPage() {
           style={{
             background: "#FEF2F2",
             border: "0.5px solid #FECACA",
-            borderRadius: 12,
+            borderRadius: 8,
             padding: "14px 16px",
             margin: "12px 16px 0",
             display: "flex",
@@ -1641,7 +1641,7 @@ function GapsPage() {
           <div
             style={{
               background: "#FFFFFF",
-              borderRadius: 16,
+              borderRadius: 8,
               padding: 24,
               margin: "0 16px 14px",
               textAlign: "center",
@@ -1712,7 +1712,7 @@ function GapsPage() {
                     background: isSelected ? "#1877D6" : "#FFFFFF",
                     color: isSelected ? "#FFFFFF" : "#0B1F3A",
                     border: "none",
-                    borderRadius: 12,
+                    borderRadius: 8,
                     padding: "8px 0 6px",
                     display: "flex",
                     flexDirection: "column",
@@ -1807,7 +1807,7 @@ function GapsPage() {
                   <div
                     style={{
                       background: "#F9FAFB",
-                      borderRadius: 10,
+                      borderRadius: 8,
                       padding: "8px 12px",
                       margin: "0 16px 10px",
                       display: "flex",
@@ -1884,7 +1884,7 @@ function GapsPage() {
                       style={{
                         position: "relative",
                         background: anySelected ? "#F0F7FF" : "#FFFFFF",
-                        borderRadius: 16,
+                        borderRadius: 8,
                         border: anySelected ? "1.5px solid #1877D6" : "1px solid #DCEAF7",
                         boxShadow: "0 4px 14px rgba(24,95,165,0.12)",
                         margin: "0 16px 18px",
@@ -2010,7 +2010,7 @@ function GapsPage() {
                                   style={{
                                     width: 42,
                                     height: 42,
-                                    borderRadius: 12,
+                                    borderRadius: 8,
                                     background:
                                       "linear-gradient(135deg, #1877D6, #0B1F3A)",
                                     display: "flex",
@@ -2086,7 +2086,7 @@ function GapsPage() {
                         <div
                           style={{
                             background: "#E6F1FB",
-                            borderRadius: 10,
+                            borderRadius: 8,
                             padding: "10px 14px",
                             marginTop: 10,
                             display: "flex",
@@ -2217,7 +2217,7 @@ function GapsPage() {
             style={{
               background: "#FFFFFF",
               border: `0.5px solid ${BORDER}`,
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 16,
               marginTop: 8,
             }}
@@ -2272,7 +2272,7 @@ function GapsPage() {
                 marginTop: 16,
                 width: "100%",
                 height: 48,
-                borderRadius: 12,
+                borderRadius: 8,
                 background: NAVY,
                 color: "#FFFFFF",
                 fontWeight: 600,
@@ -2293,7 +2293,7 @@ function GapsPage() {
           style={{
             background: "#E0FFF4",
             border: "1px solid #86EFAC",
-            borderRadius: 12,
+            borderRadius: 8,
             padding: 16,
             margin: "12px 16px 0",
             color: "#065F46",
@@ -2322,7 +2322,7 @@ function GapsPage() {
                 padding: 24,
                 textAlign: "center",
                 border: `0.5px solid ${BORDER}`,
-                borderRadius: 12,
+                borderRadius: 8,
                 background: "#FFFFFF",
               }}
             >
@@ -2343,7 +2343,7 @@ function GapsPage() {
                 padding: 16,
                 background: "#FEF3C7",
                 border: "1px solid #FCD34D",
-                borderRadius: 12,
+                borderRadius: 8,
               }}
             >
               <div
@@ -2369,7 +2369,7 @@ function GapsPage() {
                   background: "#0B1F3A",
                   color: "#FFFFFF",
                   border: "none",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   padding: "8px 14px",
                   fontSize: 13,
                   fontWeight: 600,
@@ -2468,7 +2468,7 @@ function GapsPage() {
             width: "100%",
             background: "#FFFFFF",
             border: `1px solid ${BORDER}`,
-            borderRadius: 16,
+            borderRadius: 8,
             padding: "14px 16px",
             display: "flex",
             alignItems: "center",
@@ -2564,7 +2564,7 @@ function GapsPage() {
                 key={o.id}
                 style={{
                   background: "#F8FAFC",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   padding: "10px 12px",
                   marginBottom: 6,
                   display: "flex",
@@ -2600,7 +2600,7 @@ function GapsPage() {
             bottom: 80,
             width: "70%",
             background: NAVY,
-            borderRadius: 20,
+            borderRadius: 8,
             padding: 12,
             boxShadow: "0 8px 24px rgba(11,31,58,0.3)",
             display: "flex",
@@ -2618,7 +2618,7 @@ function GapsPage() {
               color: NAVY,
               fontWeight: 700,
               fontSize: 15,
-              borderRadius: 16,
+              borderRadius: 8,
               border: "none",
               padding: "14px 20px",
               cursor: "pointer",
@@ -2657,7 +2657,7 @@ function GapsPage() {
               color: "#FFFFFF",
               fontWeight: 700,
               fontSize: 15,
-              borderRadius: 16,
+              borderRadius: 8,
               border: "none",
               padding: "14px 20px",
               cursor: "pointer",
@@ -2699,7 +2699,7 @@ function GapsPage() {
                     gap: 12,
                     width: "100%",
                     background: "#F5F7FA",
-                    borderRadius: 10,
+                    borderRadius: 8,
                     padding: 12,
                     border: "none",
                     cursor: "pointer",
@@ -2804,7 +2804,7 @@ function GapsPage() {
                               style={{
                                 width: 20,
                                 height: 20,
-                                borderRadius: 4,
+                                borderRadius: 8,
                                 border: checked ? "none" : "1.5px solid #9CA3AF",
                                 background: checked ? "#1877D6" : "#FFFFFF",
                                 display: "flex",
@@ -2967,7 +2967,7 @@ function GapsPage() {
                               color: "#FFFFFF",
                               fontWeight: 700,
                               fontSize: 15,
-                              borderRadius: 14,
+                              borderRadius: 8,
                               border: "none",
                               padding: "14px 20px",
                               cursor: "pointer",
@@ -3003,7 +3003,7 @@ function GapsPage() {
               style={{
                 width: "100%",
                 border: "1px solid #D5DDE8",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: 12,
                 fontSize: 14,
                 color: "#0B1F3A",
@@ -3034,7 +3034,7 @@ function GapsPage() {
               style={{
                 width: "100%",
                 border: "1px solid #D5DDE8",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: "10px 12px",
                 fontSize: 14,
                 color: "#0B1F3A",
@@ -3079,7 +3079,7 @@ function GapsPage() {
 
               width: "100%",
               height: 48,
-              borderRadius: 12,
+              borderRadius: 8,
               background: BLUE_BRIGHT,
               color: "#FFFFFF",
               fontWeight: 700,
@@ -3147,7 +3147,7 @@ function SummaryStats({
       style={{
         background: "#FFFFFF",
         border: `0.5px solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: 8,
         padding: 14,
         margin: "12px 16px 0",
       }}
@@ -3202,7 +3202,7 @@ function SummaryStats({
 const inputStyle: React.CSSProperties = {
   width: "100%",
   height: 44,
-  borderRadius: 10,
+  borderRadius: 8,
   border: `0.5px solid ${BORDER}`,
   padding: "0 12px",
   fontSize: 14,
@@ -3284,7 +3284,7 @@ function PupilCard({
       style={{
         background: "#FFFFFF",
         border: `0.5px solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: 8,
         padding: "14px 16px",
         margin: "0 16px 8px",
       }}

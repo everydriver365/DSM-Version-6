@@ -298,7 +298,7 @@ function CoverageAreasPage() {
           padding: 16,
           backgroundColor: "#F0F4FF",
           border: "0.5px solid #BFDBFE",
-          borderRadius: 12,
+          borderRadius: 8,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -328,7 +328,7 @@ function CoverageAreasPage() {
                 backgroundColor: "#0F2044",
                 color: "#fff",
                 width: "100%",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: "12px 0",
                 border: "none",
                 fontSize: 14,
@@ -359,7 +359,7 @@ function CoverageAreasPage() {
                 backgroundColor: "#0F2044",
                 color: "#fff",
                 width: "100%",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: "12px 0",
                 border: "none",
                 fontSize: 14,
@@ -416,7 +416,7 @@ function AreaCard({
         margin: "8px 16px 0",
         backgroundColor: "#fff",
         border: "0.5px solid #E2E6ED",
-        borderRadius: 12,
+        borderRadius: 8,
         padding: 16,
       }}
     >
@@ -764,7 +764,7 @@ function AreaEditor({
             backgroundColor: "#0F2044",
             color: "#fff",
             width: "100%",
-            borderRadius: 12,
+            borderRadius: 8,
             padding: "12px 0",
             border: "none",
             fontSize: 14,
@@ -820,7 +820,7 @@ function AreaEditor({
             padding: "0 12px",
             marginTop: 6,
             border: "0.5px solid #E2E6ED",
-            borderRadius: 10,
+            borderRadius: 8,
             fontSize: 14,
             background: isNationwide ? "#F3F4F6" : "#fff",
             color: "#0F2044",
@@ -842,7 +842,7 @@ function AreaEditor({
               marginTop: 4,
               background: "#fff",
               border: "0.5px solid #EEF2F7",
-              borderRadius: 10,
+              borderRadius: 8,
               boxShadow: "0 4px 12px rgba(11,31,58,0.08)",
               maxHeight: 220,
               overflowY: "auto",
@@ -900,7 +900,7 @@ function AreaEditor({
               height: 40,
               padding: "0 12px",
               border: "0.5px solid #E2E6ED",
-              borderRadius: 10,
+              borderRadius: 8,
               fontSize: 14,
               textTransform: "uppercase",
               ...POPPINS,
@@ -914,7 +914,7 @@ function AreaEditor({
               backgroundColor: "#0F2044",
               color: "#fff",
               border: "none",
-              borderRadius: 10,
+              borderRadius: 8,
               fontSize: 13,
               fontWeight: 600,
               cursor: "pointer",
@@ -1073,7 +1073,7 @@ function AreaEditor({
 
       {/* Map preview */}
       {lat != null && lng != null && (
-        <div style={{ marginTop: 16, height: 150, borderRadius: 10, overflow: "hidden", background: "#F3F4F6" }}>
+        <div style={{ marginTop: 16, height: 150, borderRadius: 8, overflow: "hidden", background: "#F3F4F6" }}>
           <img
             src={previewUrl}
             alt="Coverage preview"

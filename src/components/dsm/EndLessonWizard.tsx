@@ -963,7 +963,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               rows={4}
               className="w-full p-3 text-[14px]"
               style={{
-                borderRadius: 10,
+                borderRadius: 8,
                 border: "0.5px solid #EEF2F7",
                 ...POPPINS,
                 color: "#0B1F3A",
@@ -975,7 +975,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               <div
                 className="mt-4 p-3"
                 style={{
-                  borderRadius: 10,
+                  borderRadius: 8,
                   backgroundColor: "#F8F9FB",
                   border: "0.5px solid #EEF2F7",
                 }}
@@ -1036,7 +1036,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             <div
               className="mt-3 p-3 flex items-center justify-between"
               style={{
-                borderRadius: 10,
+                borderRadius: 8,
                 backgroundColor: "#F8F9FB",
                 border: "0.5px solid #EEF2F7",
               }}
@@ -1095,7 +1095,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                     onClick={() => setPaymentMethod(m.k)}
                     className="flex flex-col items-center justify-center gap-1 p-3"
                     style={{
-                      borderRadius: 10,
+                      borderRadius: 8,
                       backgroundColor: active ? "#F0FDF4" : "#F8F9FB",
                       border: `1px solid ${active ? "#1877D6" : "#EEF2F7"}`,
                       color: active ? "#1877D6" : "#0B1F3A",
@@ -1125,7 +1125,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               onChange={(e) => setAmount(e.target.value)}
               className="w-full p-3 text-[14px]"
               style={{
-                borderRadius: 10,
+                borderRadius: 8,
                 border: "0.5px solid #EEF2F7",
                 ...POPPINS,
                 color: "#0B1F3A",
@@ -1176,7 +1176,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               <div
                 className="mt-3 p-4 flex flex-col items-center"
                 style={{
-                  borderRadius: 10,
+                  borderRadius: 8,
                   backgroundColor: "#F8F9FB",
                   border: "0.5px solid #EEF2F7",
                 }}
@@ -1215,7 +1215,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             </div>
 
             {sortedRefunds.length > 0 && (
-              <div className="mt-3 p-3" style={{ borderRadius: 10, backgroundColor: "#FEF2F2", border: "0.5px solid #FBD5D5" }}>
+              <div className="mt-3 p-3" style={{ borderRadius: 8, backgroundColor: "#FEF2F2", border: "0.5px solid #FBD5D5" }}>
                 <div className="text-[13px] mb-2" style={{ color: "#CC2229", fontWeight: 700 }}>
                   Refund activity
                 </div>
@@ -1232,7 +1232,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
 
             {paymentRecorded && lastPaymentResult && (
 
-              <div className="mt-3 p-3" style={{ borderRadius: 10, backgroundColor: "#F8F9FB", border: "0.5px solid #EEF2F7" }}>
+              <div className="mt-3 p-3" style={{ borderRadius: 8, backgroundColor: "#F8F9FB", border: "0.5px solid #EEF2F7" }}>
                 <div className="text-[13px] mb-2" style={{ color: "#0B1F3A", fontWeight: 700 }}>
                   Payment activity
                 </div>
@@ -1289,7 +1289,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                     key={c}
                     className="p-2"
                     style={{
-                      borderRadius: 10,
+                      borderRadius: 8,
                       backgroundColor: "#F8F9FB",
                       border: "0.5px solid #EEF2F7",
                     }}
@@ -1390,7 +1390,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
               rows={3}
               className="w-full p-3 text-[14px]"
               style={{
-                borderRadius: 10,
+                borderRadius: 8,
                 border: "0.5px solid #EEF2F7",
                 ...POPPINS,
                 color: "#0B1F3A",
@@ -1438,7 +1438,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
             <div
               className="w-full mt-4 p-3"
               style={{
-                borderRadius: 10,
+                borderRadius: 8,
                 backgroundColor: "#F8F9FB",
                 border: "0.5px solid #EEF2F7",
                 textAlign: "left",

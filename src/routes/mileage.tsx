@@ -190,7 +190,7 @@ function MileagePage() {
         {/* SUMMARY CARD */}
         <div
           className="mx-4 mt-3"
-          style={{ backgroundColor: "#0B1F3A", borderRadius: 12, padding: 16 }}
+          style={{ backgroundColor: "#0B1F3A", borderRadius: 8, padding: 16 }}
         >
           <div className="flex">
             <div className="flex-1 pr-3">
@@ -294,7 +294,7 @@ function MileagePage() {
             onClick={() => setShowSheet(false)}
           />
           <div
-            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl px-4 pt-5 pb-8"
+            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-lg px-4 pt-5 pb-8"
             style={{
               animation: "slideUp 0.25s ease-out",
             }}
@@ -359,7 +359,7 @@ function MileagePage() {
                   <button
                     type="button"
                     onClick={() => setPurpose("business")}
-                    className="flex-1 h-10 rounded-md text-[13px] font-medium transition-colors"
+                    className="flex-1 h-10 rounded-lg text-[13px] font-medium transition-colors"
                     style={{
                       backgroundColor: purpose === "business" ? "#1877D6" : "transparent",
                       color: purpose === "business" ? "#FFFFFF" : "#6B7280",
@@ -374,7 +374,7 @@ function MileagePage() {
                   <button
                     type="button"
                     onClick={() => setPurpose("personal")}
-                    className="flex-1 h-10 rounded-md text-[13px] font-medium transition-colors"
+                    className="flex-1 h-10 rounded-lg text-[13px] font-medium transition-colors"
                     style={{
                       backgroundColor: purpose === "personal" ? "#6B7280" : "transparent",
                       color: purpose === "personal" ? "#FFFFFF" : "#6B7280",

@@ -399,7 +399,7 @@ function PaymentsPage() {
             fontSize: 14,
             fontWeight: 800,
             padding: "11px 20px",
-            borderRadius: 12,
+            borderRadius: 8,
             border: 0,
             boxShadow: "0 4px 0 #0F6B3D",
             cursor: "pointer",
@@ -415,7 +415,7 @@ function PaymentsPage() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 20,
+            borderRadius: 8,
             boxShadow: "0 4px 0 #D9D2C2",
             display: "flex",
             overflow: "hidden",
@@ -444,7 +444,7 @@ function PaymentsPage() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 20,
+              borderRadius: 8,
               padding: 18,
               boxShadow: "0 4px 0 #E4E4E8",
             }}
@@ -462,7 +462,7 @@ function PaymentsPage() {
             <div
               style={{
                 height: 8,
-                borderRadius: 6,
+                borderRadius: 8,
                 background: "#F2F2F7",
                 overflow: "hidden",
                 marginBottom: 14,
@@ -503,7 +503,7 @@ function PaymentsPage() {
         onClick={() => setPupilPickerOpen(true)}
         style={{
           background: "#fff",
-          borderRadius: 16,
+          borderRadius: 8,
           padding: "14px 16px",
           boxShadow: "0 4px 0 #E4E4E8",
 
@@ -558,7 +558,7 @@ function PaymentsPage() {
                 padding: "10px 18px",
                 fontSize: 13.5,
                 fontWeight: 700,
-                borderRadius: 20,
+                borderRadius: 8,
                 border: 0,
                 background: active ? "#0B1F3A" : "#fff",
                 color: active ? "#fff" : "#0B1F3A",
@@ -612,7 +612,7 @@ function PaymentsPage() {
                       key={row.id}
                       style={{
                         background: "#fff",
-                        borderRadius: 16,
+                        borderRadius: 8,
                         marginBottom: 10,
                         opacity: isNonRevenue ? 0.65 : 1,
                         boxShadow: "0 4px 0 #E4E4E8",

@@ -410,7 +410,7 @@ function EndOfDayPage() {
               fontSize: 13,
               fontFamily: "Poppins, sans-serif",
               border: "1px solid #EEF2F7",
-              borderRadius: 10,
+              borderRadius: 8,
               resize: "vertical",
               outline: "none",
               color: "#0B1F3A",
@@ -461,7 +461,7 @@ function EndOfDayPage() {
             style={{
               width: 34,
               height: 34,
-              borderRadius: 10,
+              borderRadius: 8,
               background: "#FBE2E2",
               display: "inline-flex",
               alignItems: "center",
@@ -499,7 +499,7 @@ function EndOfDayPage() {
             style={{
               width: 34,
               height: 34,
-              borderRadius: 10,
+              borderRadius: 8,
               background: "#E6F1FB",
               display: "inline-flex",
               alignItems: "center",
@@ -551,7 +551,7 @@ function Card({ children }: { children: React.ReactNode }) {
         padding: 16,
         backgroundColor: "#FFFFFF",
         border: "0.5px solid #EEF2F7",
-        borderRadius: 12,
+        borderRadius: 8,
       }}
     >
       {children}
@@ -622,7 +622,7 @@ function Stat({ label, value, color, hint }: { label: string; value: string; col
       style={{
         padding: 14,
         border: "0.5px solid #EEF2F7",
-        borderRadius: 12,
+        borderRadius: 8,
         backgroundColor: "#FFFFFF",
       }}
     >

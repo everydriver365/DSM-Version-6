@@ -196,7 +196,7 @@ function AutomationsPage() {
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: "#1877D6",
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 16,
             }}
           >
@@ -291,7 +291,7 @@ function AutomationsPage() {
             onClick={() => setShowSheet(false)}
           />
           <div
-            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl px-4 pt-5 pb-8"
+            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-lg px-4 pt-5 pb-8"
             style={{ animation: "slideUp 0.25s ease-out", maxHeight: "90vh", overflowY: "auto" }}
           >
             <div className="flex items-center justify-between mb-4">
@@ -368,7 +368,7 @@ function AutomationsPage() {
                       key={v}
                       type="button"
                       onClick={() => insertVar(v)}
-                      className="text-[11px] rounded-md px-2 py-1"
+                      className="text-[11px] rounded-lg px-2 py-1"
                       style={{
                         backgroundColor: "#EEF4FB",
                         color: "#1877D6",

@@ -284,7 +284,7 @@ function DiaryPage() {
             type="button"
             onClick={prevMonth}
             aria-label="Previous month"
-            className="flex items-center justify-center rounded-md"
+            className="flex items-center justify-center rounded-lg"
             style={{ width: 32, height: 32 }}
           >
             <IconChevronLeft size={20} color="#1877D6" />
@@ -296,7 +296,7 @@ function DiaryPage() {
             type="button"
             onClick={nextMonth}
             aria-label="Next month"
-            className="flex items-center justify-center rounded-md"
+            className="flex items-center justify-center rounded-lg"
             style={{ width: 32, height: 32 }}
           >
             <IconChevronRight size={20} color="#1877D6" />
@@ -473,7 +473,7 @@ function DiaryPage() {
             onClick={() => setShowSheet(false)}
           />
           <div
-            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl px-4 pt-5 pb-8"
+            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-lg px-4 pt-5 pb-8"
             style={{
               animation: "slideUp 0.25s ease-out",
               maxHeight: "90vh",
@@ -578,7 +578,7 @@ function DiaryPage() {
             onClick={() => setViewEntry(null)}
           />
           <div
-            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl px-4 pt-5 pb-8"
+            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-lg px-4 pt-5 pb-8"
             style={{
               animation: "slideUp 0.25s ease-out",
               maxHeight: "90vh",

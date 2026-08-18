@@ -318,7 +318,7 @@ function PupilPaymentsPage() {
         {(() => {
           return (
             <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="rounded-xl p-4" style={{ backgroundColor: "#0F2044" }}>
+              <div className="rounded-lg p-4" style={{ backgroundColor: "#0F2044" }}>
                 <p
                   className="text-[10px] font-bold uppercase tracking-widest"
                   style={{ color: "rgba(255,255,255,0.5)", ...POPPINS }}
@@ -329,7 +329,7 @@ function PupilPaymentsPage() {
                   {formatGBP(Math.abs(net))}
                 </p>
               </div>
-              <div className="rounded-xl p-4" style={{ backgroundColor: "#F1F5F9" }}>
+              <div className="rounded-lg p-4" style={{ backgroundColor: "#F1F5F9" }}>
                 <p
                   className="text-[10px] font-bold uppercase tracking-widest"
                   style={{ color: "#64748B", ...POPPINS }}
@@ -352,7 +352,7 @@ function PupilPaymentsPage() {
             <div className="grid grid-cols-2 gap-2">
               <a
                 href={smsHref}
-                className="flex items-center justify-center gap-2 rounded-xl border border-[#E2E8F0] bg-white py-3 text-[13px] font-semibold text-[#0B1F3A]"
+                className="flex items-center justify-center gap-2 rounded-lg border border-[#E2E8F0] bg-white py-3 text-[13px] font-semibold text-[#0B1F3A]"
                 style={POPPINS}
               >
                 <IconMessage size={16} color="#1877D6" />
@@ -360,7 +360,7 @@ function PupilPaymentsPage() {
               </a>
               <a
                 href={mailHref}
-                className="flex items-center justify-center gap-2 rounded-xl border border-[#E2E8F0] bg-white py-3 text-[13px] font-semibold text-[#0B1F3A]"
+                className="flex items-center justify-center gap-2 rounded-lg border border-[#E2E8F0] bg-white py-3 text-[13px] font-semibold text-[#0B1F3A]"
                 style={POPPINS}
               >
                 <IconMail size={16} color="#1877D6" />
@@ -376,7 +376,7 @@ function PupilPaymentsPage() {
             setRecAmount(net > 0 ? net.toFixed(2) : "");
             setShowRecord(true);
           }}
-          className="w-full flex items-center justify-center gap-2 rounded-xl py-3 mb-4 text-[14px] font-semibold text-white"
+          className="w-full flex items-center justify-center gap-2 rounded-lg py-3 mb-4 text-[14px] font-semibold text-white"
           style={{ backgroundColor: "#1877D6", ...POPPINS }}
         >
           <IconPlus size={18} color="#FFFFFF" />
@@ -456,7 +456,7 @@ function PupilPaymentsPage() {
           onClick={() => !editSaving && setEditing(null)}
         >
           <div
-            className="w-full sm:max-w-[420px] bg-white rounded-t-2xl sm:rounded-2xl p-5 overflow-y-auto"
+            className="w-full sm:max-w-[420px] bg-white rounded-t-lg sm:rounded-lg p-5 overflow-y-auto"
             style={{ ...POPPINS, maxHeight: "85dvh", paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 96px)" }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -484,7 +484,7 @@ function PupilPaymentsPage() {
               min="0"
               value={editAmount}
               onChange={(e) => setEditAmount(e.target.value)}
-              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[16px] text-[#0B1F3A] mb-4"
+              className="w-full rounded-lg border border-[#E2E8F0] px-3 py-3 text-[16px] text-[#0B1F3A] mb-4"
               style={POPPINS}
             />
 
@@ -495,7 +495,7 @@ function PupilPaymentsPage() {
               type="date"
               value={editDate}
               onChange={(e) => setEditDate(e.target.value)}
-              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[16px] text-[#0B1F3A] mb-4"
+              className="w-full rounded-lg border border-[#E2E8F0] px-3 py-3 text-[16px] text-[#0B1F3A] mb-4"
               style={POPPINS}
             />
 
@@ -514,7 +514,7 @@ function PupilPaymentsPage() {
                     key={opt.k}
                     type="button"
                     onClick={() => setEditMethod(opt.k)}
-                    className="rounded-xl py-2 text-[13px] font-semibold border"
+                    className="rounded-lg py-2 text-[13px] font-semibold border"
                     style={{
                       backgroundColor: active ? "#0F2044" : "#FFFFFF",
                       color: active ? "#FFFFFF" : "#0B1F3A",
@@ -535,7 +535,7 @@ function PupilPaymentsPage() {
               type="text"
               value={editBaseNotes}
               onChange={(e) => setEditBaseNotes(e.target.value)}
-              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[14px] text-[#0B1F3A] mb-4"
+              className="w-full rounded-lg border border-[#E2E8F0] px-3 py-3 text-[14px] text-[#0B1F3A] mb-4"
               style={POPPINS}
             />
 
@@ -547,7 +547,7 @@ function PupilPaymentsPage() {
               value={editReason}
               onChange={(e) => setEditReason(e.target.value)}
               placeholder="e.g. corrected amount"
-              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[14px] text-[#0B1F3A] mb-4"
+              className="w-full rounded-lg border border-[#E2E8F0] px-3 py-3 text-[14px] text-[#0B1F3A] mb-4"
               style={POPPINS}
             />
 
@@ -559,7 +559,7 @@ function PupilPaymentsPage() {
               type="button"
               disabled={editSaving}
               onClick={submitEditPayment}
-              className="w-full rounded-xl py-3 text-[14px] font-semibold text-white"
+              className="w-full rounded-lg py-3 text-[14px] font-semibold text-white"
               style={{ backgroundColor: "#1877D6", opacity: editSaving ? 0.6 : 1, ...POPPINS }}
             >
               {editSaving ? "Saving..." : "Save changes"}
@@ -574,7 +574,7 @@ function PupilPaymentsPage() {
           onClick={() => !recSaving && setShowRecord(false)}
         >
           <div
-            className="w-full sm:max-w-[420px] bg-white rounded-t-2xl sm:rounded-2xl p-5 overflow-y-auto"
+            className="w-full sm:max-w-[420px] bg-white rounded-t-lg sm:rounded-lg p-5 overflow-y-auto"
             style={{ ...POPPINS, maxHeight: "85dvh", paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 96px)" }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -603,7 +603,7 @@ function PupilPaymentsPage() {
               value={recAmount}
               onChange={(e) => setRecAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[16px] text-[#0B1F3A] mb-4"
+              className="w-full rounded-lg border border-[#E2E8F0] px-3 py-3 text-[16px] text-[#0B1F3A] mb-4"
               style={POPPINS}
             />
 
@@ -618,7 +618,7 @@ function PupilPaymentsPage() {
               value={recHours}
               onChange={(e) => setRecHours(e.target.value)}
               placeholder="e.g. 10"
-              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[16px] text-[#0B1F3A] mb-4"
+              className="w-full rounded-lg border border-[#E2E8F0] px-3 py-3 text-[16px] text-[#0B1F3A] mb-4"
               style={POPPINS}
             />
 
@@ -637,7 +637,7 @@ function PupilPaymentsPage() {
                     key={opt.k}
                     type="button"
                     onClick={() => setRecMethod(opt.k)}
-                    className="rounded-xl py-2 text-[13px] font-semibold border"
+                    className="rounded-lg py-2 text-[13px] font-semibold border"
                     style={{
                       backgroundColor: active ? "#0F2044" : "#FFFFFF",
                       color: active ? "#FFFFFF" : "#0B1F3A",
@@ -659,7 +659,7 @@ function PupilPaymentsPage() {
               value={recNotes}
               onChange={(e) => setRecNotes(e.target.value)}
               placeholder="e.g. 10-hour package"
-              className="w-full rounded-xl border border-[#E2E8F0] px-3 py-3 text-[14px] text-[#0B1F3A] mb-5"
+              className="w-full rounded-lg border border-[#E2E8F0] px-3 py-3 text-[14px] text-[#0B1F3A] mb-5"
               style={POPPINS}
             />
 
@@ -667,7 +667,7 @@ function PupilPaymentsPage() {
               type="button"
               disabled={recSaving}
               onClick={submitRecordPayment}
-              className="w-full rounded-xl py-3 text-[14px] font-semibold text-white"
+              className="w-full rounded-lg py-3 text-[14px] font-semibold text-white"
               style={{ backgroundColor: "#1877D6", opacity: recSaving ? 0.6 : 1, ...POPPINS }}
             >
               {recSaving ? "Saving..." : "Save payment"}

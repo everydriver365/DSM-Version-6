@@ -10,7 +10,7 @@ export function Card({ className = "", style, children, interactive, onClick, ..
     <div
       {...rest}
       onClick={onClick}
-      className={`bg-white rounded-2xl p-5 ${tap} ${className}`}
+      className={`bg-white rounded-lg p-5 ${tap} ${className}`}
       style={{
         borderWidth: "1px",
         borderStyle: "solid",

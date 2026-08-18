@@ -102,7 +102,7 @@ export function PushPermissionCard() {
   return (
     <div className="px-4 mt-3">
       <div
-        className="rounded-xl p-3"
+        className="rounded-lg p-3"
         style={{
           backgroundColor: "#FFFFFF",
           border: "0.5px solid #EEF2F7",
@@ -161,7 +161,7 @@ export function PushPermissionCard() {
                   type="button"
                   onClick={enable}
                   disabled={busy}
-                  className="text-[13px] font-semibold rounded-md px-3 py-1.5 disabled:opacity-60"
+                  className="text-[13px] font-semibold rounded-lg px-3 py-1.5 disabled:opacity-60"
                   style={{ ...POPPINS, backgroundColor: "#1877D6", color: "#FFFFFF" }}
                 >
                   {busy ? "Enabling…" : "Enable notifications"}

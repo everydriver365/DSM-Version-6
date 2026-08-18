@@ -38,7 +38,7 @@ export function ConfirmSheet({
         <div
           style={{
             background: "#fff",
-            borderRadius: 16,
+            borderRadius: 8,
             boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
             padding: "15px 16px",
           }}
@@ -64,7 +64,7 @@ export function ConfirmSheet({
             background: destructive ? "#CC2229" : "#1877D6",
             color: "#fff",
             border: "none",
-            borderRadius: 16,
+            borderRadius: 8,
             fontSize: 16,
             fontWeight: 700,
             cursor: "pointer",
@@ -82,7 +82,7 @@ export function ConfirmSheet({
             background: "#EEF2F7",
             color: "#6B7686",
             border: "none",
-            borderRadius: 16,
+            borderRadius: 8,
             fontSize: 16,
             fontWeight: 600,
             cursor: "pointer",

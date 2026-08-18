@@ -77,7 +77,7 @@ type PerkDetail = {
 const CARD: React.CSSProperties = {
   margin: "0 16px 16px",
   background: "#fff",
-  borderRadius: 16,
+  borderRadius: 8,
   border: "1px solid #E4E8EF",
   padding: 16,
   boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
@@ -239,7 +239,7 @@ function PerkDetailPage() {
         style={{
           margin: 16,
           background: canAccess ? "#F0FDF4" : "#FEF3C7",
-          borderRadius: 16,
+          borderRadius: 8,
           border: `1px solid ${canAccess ? "#DCFCE7" : "#FDE68A"}`,
           padding: "14px 16px",
           display: "flex",
@@ -295,7 +295,7 @@ function PerkDetailPage() {
             style={{
               background: "#1877D6",
               color: "#fff",
-              borderRadius: 20,
+              borderRadius: 8,
               padding: "7px 14px",
               fontSize: 12,
               fontWeight: 700,
@@ -319,7 +319,7 @@ function PerkDetailPage() {
             color: "#1877D6",
             fontSize: 10,
             fontWeight: 700,
-            borderRadius: 20,
+            borderRadius: 8,
             padding: "3px 10px",
             marginBottom: 8,
           }}
@@ -335,7 +335,7 @@ function PerkDetailPage() {
               color: "#15803D",
               fontSize: 11,
               fontWeight: 700,
-              borderRadius: 20,
+              borderRadius: 8,
               padding: "4px 12px",
               marginTop: 8,
             }}
@@ -429,7 +429,7 @@ function PerkDetailPage() {
               display: "grid",
               gridTemplateColumns: "repeat(3, 1fr)",
               gap: 4,
-              borderRadius: 16,
+              borderRadius: 8,
               overflow: "hidden",
               border: "1px solid #E4E8EF",
             }}
@@ -457,7 +457,7 @@ function PerkDetailPage() {
           <div
             style={{
               margin: "0 16px 16px",
-              borderRadius: 16,
+              borderRadius: 8,
               overflow: "hidden",
               border: "1px solid #E4E8EF",
             }}
@@ -490,7 +490,7 @@ function PerkDetailPage() {
               style={{
                 background: "#1877D6",
                 color: "#fff",
-                borderRadius: 20,
+                borderRadius: 8,
                 padding: 14,
                 fontSize: 15,
                 fontWeight: 800,
@@ -514,7 +514,7 @@ function PerkDetailPage() {
                     color: "#1877D6",
                     fontSize: 10,
                     fontWeight: 700,
-                    borderRadius: 20,
+                    borderRadius: 8,
                     padding: "3px 10px",
                   }}
                 >
@@ -544,7 +544,7 @@ function PerkDetailPage() {
             style={{
               background: "#15803D",
               color: "#fff",
-              borderRadius: 20,
+              borderRadius: 8,
               padding: 14,
               fontSize: 15,
               fontWeight: 800,
@@ -566,7 +566,7 @@ function PerkDetailPage() {
         style={{
           margin: "0 16px 16px",
           background: "#fff",
-          borderRadius: 16,
+          borderRadius: 8,
           border: "1px solid #E4E8EF",
           padding: "14px 16px",
           display: "flex",
@@ -579,7 +579,7 @@ function PerkDetailPage() {
           style={{
             width: 40,
             height: 40,
-            borderRadius: 10,
+            borderRadius: 8,
             background: perk.partner?.icon_bg ?? "#EEF2F7",
             color: perk.partner?.icon_color ?? "#0B1F3A",
             display: "flex",

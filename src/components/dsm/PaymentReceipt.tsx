@@ -118,7 +118,7 @@ export function PaymentReceipt({
           className="flex items-center gap-2"
           style={{
             padding: "8px 14px",
-            borderRadius: 20,
+            borderRadius: 8,
             backgroundColor: "#1877D6",
             color: "#fff",
             border: "none",
@@ -154,7 +154,7 @@ export function PaymentReceipt({
           maxWidth: 420,
           background: "#fff",
           border: "1px dashed #E4E8EF",
-          borderRadius: 12,
+          borderRadius: 8,
           padding: "24px 20px",
           boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
         }}
@@ -248,7 +248,7 @@ export function PaymentReceipt({
         <div
           style={{
             backgroundColor: "#F8F9FB",
-            borderRadius: 10,
+            borderRadius: 8,
             padding: "14px 16px",
             marginBottom: 16,
           }}

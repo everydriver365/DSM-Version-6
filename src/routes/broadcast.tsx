@@ -260,7 +260,7 @@ function BroadcastPage() {
     borderWidth: "0.5px",
     borderStyle: "solid" as const,
     borderColor: BORDER,
-    borderRadius: 12,
+    borderRadius: 8,
     padding: 16,
     backgroundColor: "#FFFFFF",
   };
@@ -304,7 +304,7 @@ function BroadcastPage() {
             width: "100%",
             fontSize: 13,
             padding: "10px 12px",
-            borderRadius: 10,
+            borderRadius: 8,
             backgroundColor: "#F8F9FB",
             color: NAVY,
             borderWidth: "0.5px",
@@ -357,7 +357,7 @@ function BroadcastPage() {
                   style={{ borderBottom: `0.5px solid #F3F4F6` }}
                 >
                   <span
-                    className="flex items-center justify-center rounded"
+                    className="flex items-center justify-center rounded-lg"
                     style={{
                       width: 18,
                       height: 18,
@@ -424,7 +424,7 @@ function BroadcastPage() {
             width: "100%",
             fontSize: 13,
             padding: "10px 12px",
-            borderRadius: 10,
+            borderRadius: 8,
             backgroundColor: "#F8F9FB",
             color: NAVY,
             borderWidth: "0.5px",

@@ -239,7 +239,7 @@ function AdminFeatured() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 16,
+              borderRadius: 8,
               boxShadow: CARD_SHADOW,
               display: "flex",
             }}
@@ -257,7 +257,7 @@ function AdminFeatured() {
               alignItems: "center",
               gap: 9,
               background: "#fff",
-              borderRadius: 14,
+              borderRadius: 8,
               padding: "13px 16px",
               boxShadow: CARD_SHADOW,
             }}
@@ -289,7 +289,7 @@ function AdminFeatured() {
             <div
               style={{
                 background: "#fff",
-                borderRadius: 16,
+                borderRadius: 8,
                 overflow: "hidden",
                 boxShadow: CARD_SHADOW,
               }}
@@ -340,7 +340,7 @@ function AdminFeatured() {
                               color: "#B8860B",
                               background: "#FFF6DC",
                               padding: "3px 9px",
-                              borderRadius: 20,
+                              borderRadius: 8,
                               letterSpacing: "0.3px",
                             }}
                           >

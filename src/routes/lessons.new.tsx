@@ -463,7 +463,7 @@ function NewLessonPage() {
                     role="radio"
                     aria-checked={selected}
                     onClick={() => setDuration(minutes)}
-                    className="cf-tap rounded-[12px] text-[14px] font-medium transition-colors"
+                    className="cf-tap rounded-lg] text-[14px] font-medium transition-colors"
                     style={{
                       padding: "14px 2px",
                       fontFamily: "Poppins, sans-serif",
@@ -520,7 +520,7 @@ function NewLessonPage() {
               padding: "14px 16px",
               background: "#F7FAFC",
               border: "0.5px solid #E2E6ED",
-              borderRadius: 10,
+              borderRadius: 8,
             }}
           >
             <div className="flex items-center" style={{ flex: 1, gap: 8 }}>
@@ -557,7 +557,7 @@ function NewLessonPage() {
           </div>
 
           {isRecurring && (
-            <div style={{ marginTop: 8, padding: "12px 16px", background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 10 }}>
+            <div style={{ marginTop: 8, padding: "12px 16px", background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 8}}>
               <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6 }}>Repeat</label>
               <div className="grid grid-cols-2 gap-2">
                 {(["weekly", "fortnightly"] as const).map((f) => {
@@ -569,7 +569,7 @@ function NewLessonPage() {
                       onClick={() => setRecurringFreq(f)}
                       style={{
                         padding: "10px 0",
-                        borderRadius: 10,
+                        borderRadius: 8,
                         fontSize: 13,
                         fontWeight: 600,
                         background: active ? "#0F2044" : "#F7FAFC",
@@ -591,7 +591,7 @@ function NewLessonPage() {
                 style={{
                   width: "100%",
                   height: 44,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   border: "0.5px solid #E2E6ED",
                   padding: "0 12px",
                   fontSize: 14,

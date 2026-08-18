@@ -449,7 +449,7 @@ function LiveNewsPage() {
             color: isActive ? "#fff" : "#9CA3AF",
             fontSize: 10,
             fontWeight: 700,
-            borderRadius: 20,
+            borderRadius: 8,
             padding: "1px 6px",
             marginLeft: 6,
             minWidth: 18,
@@ -466,7 +466,7 @@ function LiveNewsPage() {
               right: 0,
               height: 2,
               background: "#1877D6",
-              borderRadius: "2px 2px 0 0",
+              borderRadius: "8px 8px 0 0",
             }}
           />
         )}
@@ -564,7 +564,7 @@ function LiveNewsPage() {
                           }
                           style={{
                             background: "#fff",
-                            borderRadius: 16,
+                            borderRadius: 8,
                             border: "1px solid #E4E8EF",
                             boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                             padding: 12,
@@ -593,7 +593,7 @@ function LiveNewsPage() {
                               width: 4,
                               alignSelf: "stretch",
                               minHeight: 48,
-                              borderRadius: 4,
+                              borderRadius: 8,
                               background: s.is_live ? "#CC2229" : "#1877D6",
                               flexShrink: 0,
                             }}
@@ -638,7 +638,7 @@ function LiveNewsPage() {
                                   color: "#CC2229",
                                   fontSize: 10,
                                   fontWeight: 700,
-                                  borderRadius: 20,
+                                  borderRadius: 8,
                                   padding: "2px 8px",
                                   display: "inline-block",
                                   marginTop: 6,
@@ -656,7 +656,7 @@ function LiveNewsPage() {
                               width: 76,
                               height: 76,
                               flexShrink: 0,
-                              borderRadius: 12,
+                              borderRadius: 8,
                               overflow: "hidden",
                               background: img ? undefined : "#0B1F3A",
                               display: "flex",
@@ -711,7 +711,7 @@ function LiveNewsPage() {
                     }
                     style={{
                       background: "#fff",
-                      borderRadius: 16,
+                      borderRadius: 8,
                       border: "1px solid #E4E8EF",
                       boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                       padding: 12,
@@ -727,7 +727,7 @@ function LiveNewsPage() {
                         width: 76,
                         height: 76,
                         flexShrink: 0,
-                        borderRadius: 10,
+                        borderRadius: 8,
                         overflow: "hidden",
                         background: a.image_url ? undefined : "#EEF2F7",
                         display: "flex",
@@ -761,7 +761,7 @@ function LiveNewsPage() {
                           color: "#1877D6",
                           fontSize: 10,
                           fontWeight: 700,
-                          borderRadius: 20,
+                          borderRadius: 8,
                           padding: "2px 8px",
                           display: "inline-block",
                           alignSelf: "flex-start",
@@ -868,7 +868,7 @@ function LiveNewsPage() {
                           gap: 12,
                           background: "#fff",
                           border: "1px solid #E4E8EF",
-                          borderRadius: 16,
+                          borderRadius: 8,
                           boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                           padding: 12,
                           cursor: "pointer",
@@ -878,7 +878,7 @@ function LiveNewsPage() {
                           style={{
                             width: 64,
                             height: 64,
-                            borderRadius: 12,
+                            borderRadius: 8,
                             overflow: "hidden",
                             flexShrink: 0,
                             background: "#EEF2F7",
@@ -920,7 +920,7 @@ function LiveNewsPage() {
                               style={{
                                 flex: 1,
                                 height: 4,
-                                borderRadius: 2,
+                                borderRadius: 8,
                                 background: "#E4E8EF",
                                 overflow: "hidden",
                               }}
@@ -945,7 +945,7 @@ function LiveNewsPage() {
                             style={{
                               width: 48,
                               height: 48,
-                              borderRadius: 24,
+                              borderRadius: 8,
                               border: "none",
                               background: "#1877D6",
                               display: "flex",
@@ -1035,7 +1035,7 @@ function LiveNewsPage() {
                               position: "relative",
                               width: 116,
                               height: 116,
-                              borderRadius: 16,
+                              borderRadius: 8,
                               overflow: "hidden",
                               background: "#EEF2F7",
                               border: `1px solid ${active ? "#1877D6" : "#E4E8EF"}`,
@@ -1078,7 +1078,7 @@ function LiveNewsPage() {
                                 bottom: 8,
                                 width: 34,
                                 height: 34,
-                                borderRadius: 17,
+                                borderRadius: 8,
                                 border: "none",
                                 background: "#fff",
                                 display: "flex",
@@ -1137,7 +1137,7 @@ function LiveNewsPage() {
                     style={{
                       width: 32,
                       height: 32,
-                      borderRadius: 16,
+                      borderRadius: 8,
                       border: "none",
                       background: searchOpen ? "#0B1F3A" : "#EEF2F7",
                       display: "flex",
@@ -1603,7 +1603,7 @@ function MiniPlayer({
           style={{
             width: 38,
             height: 38,
-            borderRadius: 19,
+            borderRadius: 8,
             border: "none",
             background: "#1877D6",
             display: "flex",
@@ -1625,7 +1625,7 @@ function MiniPlayer({
           style={{
             width: 34,
             height: 34,
-            borderRadius: 17,
+            borderRadius: 8,
             border: "none",
             background: "#EFF6FF",
             display: "flex",
@@ -1643,7 +1643,7 @@ function MiniPlayer({
           style={{
             width: 28,
             height: 28,
-            borderRadius: 14,
+            borderRadius: 8,
             border: "none",
             background: "transparent",
             display: "flex",
@@ -1744,7 +1744,7 @@ function EpisodeModal({
       style={{
         flex: 1,
         padding: "9px 8px",
-        borderRadius: 10,
+        borderRadius: 8,
         border: "none",
         background: tab === key ? "#fff" : "transparent",
         boxShadow: tab === key ? "0 1px 3px rgba(11,31,58,0.10)" : "none",
@@ -1792,7 +1792,7 @@ function EpisodeModal({
         }}
       >
         <div style={{ padding: "10px 0 0", display: "flex", justifyContent: "center" }}>
-          <div style={{ width: 42, height: 4, borderRadius: 2, background: "#D7DEE8" }} />
+          <div style={{ width: 42, height: 4, borderRadius: 8, background: "#D7DEE8" }} />
         </div>
 
         <div style={{ padding: "12px 16px 0", display: "flex", gap: 12 }}>
@@ -1801,7 +1801,7 @@ function EpisodeModal({
               width: 68,
               height: 68,
               flexShrink: 0,
-              borderRadius: 12,
+              borderRadius: 8,
               overflow: "hidden",
               background: "#EEF2F7",
               display: "flex",
@@ -1824,7 +1824,7 @@ function EpisodeModal({
               style={{
                 display: "inline-block",
                 background: "#EFF6FF",
-                borderRadius: 20,
+                borderRadius: 8,
                 padding: "2px 6px",
                 marginBottom: 5,
                 ...PODCAST_STYLES.pill,
@@ -1857,7 +1857,7 @@ function EpisodeModal({
               width: 32,
               height: 32,
               flexShrink: 0,
-              borderRadius: 16,
+              borderRadius: 8,
               border: "none",
               background: "#EEF2F7",
               display: "flex",
@@ -1876,7 +1876,7 @@ function EpisodeModal({
               style={{
                 background: "#fff",
                 border: "1px solid #E4E8EF",
-                borderRadius: 16,
+                borderRadius: 8,
                 padding: 12,
                 display: "flex",
                 alignItems: "center",
@@ -1890,7 +1890,7 @@ function EpisodeModal({
                 style={{
                   width: 52,
                   height: 52,
-                  borderRadius: 26,
+                  borderRadius: 8,
                   border: "none",
                   background: "#1877D6",
                   display: "flex",
@@ -1937,7 +1937,7 @@ function EpisodeModal({
                 style={{
                   width: 36,
                   height: 36,
-                  borderRadius: 18,
+                  borderRadius: 8,
                   border: "none",
                   background: "#EFF6FF",
                   display: "flex",
@@ -2044,7 +2044,7 @@ function EpisodeModal({
               display: "flex",
               gap: 4,
               background: "#EAEFF6",
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 4,
             }}
           >
@@ -2062,7 +2062,7 @@ function EpisodeModal({
             style={{
               background: "#fff",
               border: "1px solid #E4E8EF",
-              borderRadius: 16,
+              borderRadius: 8,
               padding: 14,
               fontSize: 13,
               lineHeight: 1.6,
@@ -2099,7 +2099,7 @@ function EmptyState({ message }: { message: string }) {
       style={{
         background: "#fff",
         border: "1px solid #E4E8EF",
-        borderRadius: 16,
+        borderRadius: 8,
         padding: 32,
         textAlign: "center",
         color: "#9CA3AF",
@@ -2138,7 +2138,7 @@ function EpisodeCard({
       key={ep.id}
       style={{
         background: "#fff",
-        borderRadius: 16,
+        borderRadius: 8,
         border: `1px solid ${isOpen ? "#1877D6" : "#E4E8EF"}`,
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
         padding: 12,
@@ -2164,7 +2164,7 @@ function EpisodeCard({
             width: 76,
             height: 76,
             flexShrink: 0,
-            borderRadius: 10,
+            borderRadius: 8,
             overflow: "hidden",
             background: ep.imageUrl ? undefined : "#EEF2F7",
             display: "flex",
@@ -2193,7 +2193,7 @@ function EpisodeCard({
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
               background: "#EFF6FF",
-              borderRadius: 20,
+              borderRadius: 8,
               padding: "2px 6px",
               letterSpacing: "0.02em",
               marginBottom: 5,
@@ -2212,7 +2212,7 @@ function EpisodeCard({
               verticalAlign: "middle",
               background: "#EFF6FF",
               color: "#1877D6",
-              borderRadius: 20,
+              borderRadius: 8,
               padding: "2px 6px",
               fontSize: 10,
               fontWeight: 700,
@@ -2266,7 +2266,7 @@ function EpisodeCard({
                 <div
                   style={{
                     height: 3,
-                    borderRadius: 2,
+                    borderRadius: 8,
                     background: "#E4E8EF",
                     overflow: "hidden",
                   }}
@@ -2306,7 +2306,7 @@ function EpisodeCard({
             width: 36,
             height: 36,
             flexShrink: 0,
-            borderRadius: 18,
+            borderRadius: 8,
             border: `1px solid ${isSaved ? "#1877D6" : "#E4E8EF"}`,
             background: isSaved ? "#EFF6FF" : "#fff",
             display: "flex",
@@ -2337,7 +2337,7 @@ function EpisodeCard({
             width: 48,
             height: 48,
             flexShrink: 0,
-            borderRadius: 24,
+            borderRadius: 8,
             border: "none",
             background: "#1877D6",
             display: "flex",

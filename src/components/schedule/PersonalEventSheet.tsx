@@ -63,7 +63,7 @@ const label: React.CSSProperties = {
 const inputStyle: React.CSSProperties = {
   width: "100%",
   border: `1px solid ${hairline}`,
-  borderRadius: 12,
+  borderRadius: 8,
   padding: "11px 12px",
   fontSize: 15,
   fontFamily: font,
@@ -303,7 +303,7 @@ export function PersonalEventSheet({
               style={{
                 width: 34,
                 height: 34,
-                borderRadius: 17,
+                borderRadius: 8,
                 background: "#FDECEC",
                 border: "none",
                 display: "grid",
@@ -320,7 +320,7 @@ export function PersonalEventSheet({
             style={{
               width: 34,
               height: 34,
-              borderRadius: 17,
+              borderRadius: 8,
               background: "#EEF2F7",
               border: "none",
               display: "grid",
@@ -355,7 +355,7 @@ export function PersonalEventSheet({
               alignItems: "center",
               justifyContent: "space-between",
               border: `1px solid ${hairline}`,
-              borderRadius: 12,
+              borderRadius: 8,
               padding: "10px 12px",
               background: "#fff",
             }}
@@ -365,7 +365,7 @@ export function PersonalEventSheet({
               style={{
                 width: 44,
                 height: 26,
-                borderRadius: 13,
+                borderRadius: 8,
                 background: allDay ? blue : "#D6DDE7",
                 position: "relative",
                 transition: "background 150ms",
@@ -378,7 +378,7 @@ export function PersonalEventSheet({
                   left: allDay ? 21 : 3,
                   width: 20,
                   height: 20,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   background: "#fff",
                   transition: "left 150ms",
                 }}
@@ -525,7 +525,7 @@ export function PersonalEventSheet({
                   style={{
                     width: 30,
                     height: 30,
-                    borderRadius: 15,
+                    borderRadius: 8,
                     background: c.value,
                     border: colour === c.value ? `3px solid ${navy}` : "2px solid #fff",
                     boxShadow: "0 1px 3px rgba(11,31,58,0.18)",
@@ -543,7 +543,7 @@ export function PersonalEventSheet({
               alignItems: "center",
               justifyContent: "space-between",
               border: `1px solid ${hairline}`,
-              borderRadius: 12,
+              borderRadius: 8,
               padding: "10px 12px",
               background: "#fff",
               textAlign: "left",
@@ -561,7 +561,7 @@ export function PersonalEventSheet({
               style={{
                 width: 44,
                 height: 26,
-                borderRadius: 13,
+                borderRadius: 8,
                 background: busy ? blue : "#D6DDE7",
                 position: "relative",
                 flexShrink: 0,
@@ -574,7 +574,7 @@ export function PersonalEventSheet({
                   left: busy ? 21 : 3,
                   width: 20,
                   height: 20,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   background: "#fff",
                   transition: "left 150ms",
                 }}
@@ -593,7 +593,7 @@ export function PersonalEventSheet({
             style={{
               width: "100%",
               padding: "13px 16px",
-              borderRadius: 20,
+              borderRadius: 8,
               border: "none",
               background: saving ? "#8FB6E4" : blue,
               color: "#fff",

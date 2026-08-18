@@ -151,7 +151,7 @@ export function SwipeableDetailShell<T>({
               style={{
                 flex: 1,
                 height: 3,
-                borderRadius: 2,
+                borderRadius: 8,
                 background: i <= index ? "#fff" : "rgba(255,255,255,0.3)",
               }}
             />
@@ -172,7 +172,7 @@ export function SwipeableDetailShell<T>({
             fontWeight: 700,
             background: "rgba(0,0,0,0.3)",
             padding: "6px 12px",
-            borderRadius: 20,
+            borderRadius: 8,
             ...POPPINS,
           }}
         >

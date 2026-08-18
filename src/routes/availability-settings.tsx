@@ -67,7 +67,7 @@ function Card({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
       background: "#fff",
-      borderRadius: 16,
+      borderRadius: 8,
       boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
       padding: 16,
       margin: "0 16px 14px",
@@ -78,7 +78,7 @@ function Card({ children }: { children: React.ReactNode }) {
 function IconChip({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
-      width: 32, height: 32, borderRadius: 9, background: CHIP_BG,
+      width: 32, height: 32, borderRadius: 8, background: CHIP_BG,
       display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
     }}>{children}</div>
   );
@@ -107,7 +107,7 @@ function PrimaryButton({ onClick, children, disabled }: { onClick: () => void; c
       disabled={disabled}
       style={{
         background: NAVY, color: "#fff", width: "100%",
-        borderRadius: 12, padding: "13px 0", border: "none",
+        borderRadius: 8, padding: "13px 0", border: "none",
         fontSize: 14, fontWeight: 500, marginTop: 14,
         opacity: disabled ? 0.6 : 1, cursor: disabled ? "default" : "pointer",
         ...FONT,
@@ -124,7 +124,7 @@ function DashedButton({ onClick, children }: { onClick: () => void; children: Re
       style={{
         background: "transparent", color: BLUE, width: "100%",
         border: `1.5px dashed ${DASHED_BORDER}`,
-        borderRadius: 12, padding: "12px 0",
+        borderRadius: 8, padding: "12px 0",
         fontSize: 14, fontWeight: 500, marginTop: 8, cursor: "pointer",
         display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
         ...FONT,
@@ -182,7 +182,7 @@ function SelectField({ value, onChange, options, label }: {
     <div style={{ flex: 1 }}>
       <div style={{ fontSize: 11, color: MUTED, marginBottom: 6 }}>{label}</div>
       <div style={{
-        position: "relative", background: FIELD_BG, borderRadius: 10,
+        position: "relative", background: FIELD_BG, borderRadius: 8,
         padding: "10px 12px", display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <span style={{ fontSize: 13, fontWeight: 500, color: NAVY }}>
@@ -451,7 +451,7 @@ function AvailabilitySettingsPage() {
       <div style={{ padding: "0 16px", marginBottom: 14 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
           <div style={{
-            width: 38, height: 38, borderRadius: 11, background: "#E7F1FC",
+            width: 38, height: 38, borderRadius: 8, background: "#E7F1FC",
             display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
           }}>
             <IconClock size={18} color="#1877D6" />
@@ -462,7 +462,7 @@ function AvailabilitySettingsPage() {
         </div>
 
         <div style={{
-          background: "#fff", borderRadius: 20, overflow: "hidden",
+          background: "#fff", borderRadius: 8, overflow: "hidden",
           boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.07)",
         }}>
           {DAY_NAMES.map((d, idx) => {
@@ -483,7 +483,7 @@ function AvailabilitySettingsPage() {
                     aria-label={`${d} working`}
                     onClick={() => updateDay(d, { active: !cfg.active })}
                     style={{
-                      width: 44, height: 26, borderRadius: 20, position: "relative",
+                      width: 44, height: 26, borderRadius: 8, position: "relative",
                       background: cfg.active ? "#1877D6" : "#E5E5EA", border: "none", cursor: "pointer",
                       flexShrink: 0, padding: 0,
                     }}
@@ -504,7 +504,7 @@ function AvailabilitySettingsPage() {
                   {cfg.active ? (
                     <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1 }}>
                       <label style={{
-                        flex: 1, background: "#F2F2F7", borderRadius: 10,
+                        flex: 1, background: "#F2F2F7", borderRadius: 8,
                         padding: "9px 11px", display: "flex", alignItems: "center", justifyContent: "space-between",
                         cursor: "pointer", position: "relative",
                       }}>
@@ -521,7 +521,7 @@ function AvailabilitySettingsPage() {
                       </label>
                       <span style={{ fontSize: 12.5, fontWeight: 500, color: "#B0B0B5", ...FONT }}>to</span>
                       <label style={{
-                        flex: 1, background: "#F2F2F7", borderRadius: 10,
+                        flex: 1, background: "#F2F2F7", borderRadius: 8,
                         padding: "9px 11px", display: "flex", alignItems: "center", justifyContent: "space-between",
                         cursor: "pointer", position: "relative",
                       }}>
@@ -628,7 +628,7 @@ function AvailabilitySettingsPage() {
         ))}
 
         {addingRecurring ? (
-          <div style={{ marginTop: 12, padding: 12, background: FIELD_BG, borderRadius: 10 }}>
+          <div style={{ marginTop: 12, padding: 12, background: FIELD_BG, borderRadius: 8}}>
             <div style={{ marginBottom: 8 }}>
               <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Day</div>
               <select value={rDay} onChange={(e) => setRDay(e.target.value)}
@@ -696,7 +696,7 @@ function AvailabilitySettingsPage() {
         ))}
 
         {addingTimeOff ? (
-          <div style={{ marginTop: 12, padding: 12, background: FIELD_BG, borderRadius: 10 }}>
+          <div style={{ marginTop: 12, padding: 12, background: FIELD_BG, borderRadius: 8}}>
             <div style={{ marginBottom: 8 }}>
               <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Reason</div>
               <input type="text" value={toReason} onChange={(e) => setToReason(e.target.value)}

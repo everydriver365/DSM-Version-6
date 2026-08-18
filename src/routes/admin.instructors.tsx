@@ -221,7 +221,7 @@ function AdminInstructorsPage() {
           className="flex items-center gap-2"
           style={{
             backgroundColor: "#fff",
-            borderRadius: 16,
+            borderRadius: 8,
             padding: "14px 16px",
             boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.06)",
           }}
@@ -242,7 +242,7 @@ function AdminInstructorsPage() {
         <div
           style={{
             backgroundColor: "#fff",
-            borderRadius: 20,
+            borderRadius: 8,
             overflow: "hidden",
             boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
           }}
@@ -332,7 +332,7 @@ function AdminInstructorsPage() {
                 style={{
                   width: 32,
                   height: 32,
-                  borderRadius: 9,
+                  borderRadius: 8,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -346,7 +346,7 @@ function AdminInstructorsPage() {
                 <>
                   <div className="fixed inset-0 z-30" onClick={() => setMenuFor(null)} />
                   <div
-                    className="absolute z-40 rounded-xl overflow-hidden bg-white"
+                    className="absolute z-40 rounded-lg overflow-hidden bg-white"
                     style={{
                       right: 12,
                       top: 46,
@@ -396,7 +396,7 @@ function AdminInstructorsPage() {
               gap: 12,
               padding: 16,
               background: "#fff",
-              borderRadius: 20,
+              borderRadius: 8,
               boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.05)",
               cursor: "pointer",
             }}
@@ -405,7 +405,7 @@ function AdminInstructorsPage() {
               style={{
                 width: 36,
                 height: 36,
-                borderRadius: 10,
+                borderRadius: 8,
                 background: "#F2F2F7",
                 display: "flex",
                 alignItems: "center",
@@ -428,7 +428,7 @@ function AdminInstructorsPage() {
 
           {/* Archived list */}
           {showArchive && (
-            <div style={{ marginTop: 10, backgroundColor: "#fff", borderRadius: 20, boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)", overflow: "hidden" }}>
+            <div style={{ marginTop: 10, backgroundColor: "#fff", borderRadius: 8, boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)", overflow: "hidden" }}>
 
               {archived.map((instructor) => (
                 <div
@@ -577,7 +577,7 @@ function AdminInstructorsPage() {
             className="mb-3"
             style={{
               padding: 14,
-              borderRadius: 16,
+              borderRadius: 8,
               backgroundColor: "#FEF3C7",
               color: "#92400E",
               fontSize: 13,
@@ -630,7 +630,7 @@ function AdminInstructorsPage() {
 
           {/* Profile card */}
           <div
-            className="mx-4 mt-4 rounded-2xl p-4"
+            className="mx-4 mt-4 rounded-lg p-4"
             style={{ backgroundColor: "#fff", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
           >
             {/* Avatar + name */}
@@ -708,7 +708,7 @@ function AdminInstructorsPage() {
 
           {/* Stats card */}
           <div
-            className="mx-4 mt-4 rounded-2xl p-4"
+            className="mx-4 mt-4 rounded-lg p-4"
             style={{ backgroundColor: "#fff", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
           >
             <div style={{ fontSize: 14, fontWeight: 700, color: NAVY, marginBottom: 12 }}>
@@ -729,7 +729,7 @@ function AdminInstructorsPage() {
                 ].map(({ label, value, color, bg }) => (
                   <div
                     key={label}
-                    className="rounded-xl p-3"
+                    className="rounded-lg p-3"
                     style={{ backgroundColor: bg }}
                   >
                     <div style={{ fontSize: 11, color, fontWeight: 600, marginBottom: 4 }}>
@@ -756,7 +756,7 @@ function AdminInstructorsPage() {
                 background: "#1877D6",
                 color: "#fff",
                 border: "none",
-                borderRadius: 10,
+                borderRadius: 8,
                 fontSize: 14,
                 fontWeight: 700,
                 cursor: "pointer",
@@ -781,7 +781,7 @@ function AdminInstructorsPage() {
                 background: "#FCE9E9",
                 color: "#CC2229",
                 border: "none",
-                borderRadius: 10,
+                borderRadius: 8,
                 fontSize: 14,
                 fontWeight: 700,
                 cursor: "pointer",

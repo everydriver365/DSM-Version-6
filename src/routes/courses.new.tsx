@@ -557,7 +557,7 @@ function NewCoursePage() {
                 background: active ? "#1877D6" : done ? "#e8eefb" : "#fff",
                 color: active ? "#fff" : "#1877D6",
                 border: "1px solid #e3e6ec",
-                borderRadius: 10,
+                borderRadius: 8,
                 padding: "8px 6px",
                 fontSize: 12,
                 fontWeight: 700,
@@ -668,7 +668,7 @@ function NewCoursePage() {
             <div
               style={{
                 background: "#fff",
-                borderRadius: 16,
+                borderRadius: 8,
                 boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                 overflow: "hidden",
                 marginBottom: 12,
@@ -775,7 +775,7 @@ function NewCoursePage() {
                 background: "#fff",
                 color: "#1877D6",
                 border: "1px solid #1877D6",
-                borderRadius: 10,
+                borderRadius: 8,
                 fontWeight: 600,
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
@@ -791,7 +791,7 @@ function NewCoursePage() {
                 background: "#1877D6",
                 color: "#fff",
                 border: "none",
-                borderRadius: 10,
+                borderRadius: 8,
                 fontWeight: 600,
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
@@ -808,7 +808,7 @@ function NewCoursePage() {
                   background: "#fff",
                   color: "#1877D6",
                   border: "1px solid #1877D6",
-                  borderRadius: 10,
+                  borderRadius: 8,
                   fontWeight: 600,
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
@@ -823,7 +823,7 @@ function NewCoursePage() {
                   background: "#1877D6",
                   color: "#fff",
                   border: "none",
-                  borderRadius: 10,
+                  borderRadius: 8,
                   fontWeight: 700,
                   cursor: saving ? "not-allowed" : "pointer",
                   fontFamily: "Poppins, sans-serif",
@@ -887,7 +887,7 @@ function Step1(props: {
               style={{
                 textAlign: "left",
                 padding: 12,
-                borderRadius: 12,
+                borderRadius: 8,
                 border: `2px solid ${active ? meta.color : "#e3e6ec"}`,
                 background: active ? meta.bg : "#fff",
                 cursor: "pointer",
@@ -910,7 +910,7 @@ function Step1(props: {
           padding: 12,
           background: "#fff",
           border: "0.5px solid #EEF2F7",
-          borderRadius: 10,
+          borderRadius: 8,
           fontFamily: "Poppins, sans-serif",
         }}
       >
@@ -925,7 +925,7 @@ function Step1(props: {
                 style={{
                   background: active ? "#1877D6" : "#EEF2F7",
                   color: active ? "#fff" : "#6B7686",
-                  borderRadius: 20,
+                  borderRadius: 8,
                   padding: "6px 14px",
                   fontSize: 12,
                   fontWeight: 700,
@@ -992,7 +992,7 @@ function Step1(props: {
           rows={4}
           style={{
             width: "100%",
-            borderRadius: 10,
+            borderRadius: 8,
             border: "0.5px solid #EEF2F7",
             padding: 10,
             fontSize: 14,
@@ -1106,7 +1106,7 @@ function Step2(props: {
   const inputStyle: React.CSSProperties = {
     width: "100%",
     height: 44,
-    borderRadius: 10,
+    borderRadius: 8,
     border: "1px solid #E4E8EF",
     background: "#fff",
     padding: "0 12px",
@@ -1143,7 +1143,7 @@ function Step2(props: {
             padding: "0 12px",
             background: "#F3F8FF",
             border: "0.5px solid #EEF2F7",
-            borderRadius: 10,
+            borderRadius: 8,
             color: "#0B1F3A",
             fontSize: 14,
             fontFamily: "Poppins, sans-serif",
@@ -1175,7 +1175,7 @@ function Step2(props: {
                   alignItems: "flex-start",
                   gap: 4,
                   padding: 12,
-                  borderRadius: 12,
+                  borderRadius: 8,
                   border: `2px solid ${active ? "#0B1F3A" : "#e3e6ec"}`,
                   background: active ? "#0B1F3A" : "#fff",
                   color: active ? "#fff" : "#0B1F3A",
@@ -1197,7 +1197,7 @@ function Step2(props: {
           onClick={() => setUseCustomSessions(!useCustomSessions)}
           style={{
             background: "#fff",
-            borderRadius: 16,
+            borderRadius: 8,
             border: "1px solid #E4E8EF",
             padding: "14px 16px",
             display: "flex",
@@ -1250,7 +1250,7 @@ function Step2(props: {
             <div
               style={{
                 background: "#fff",
-                borderRadius: 16,
+                borderRadius: 8,
                 border: "1px solid #E4E8EF",
                 overflow: "hidden",
                 marginBottom: 12,
@@ -1317,7 +1317,7 @@ function Step2(props: {
           <div
             style={{
               background: "#EEF2F7",
-              borderRadius: 16,
+              borderRadius: 8,
               padding: "14px 16px",
               marginBottom: 12,
             }}
@@ -1396,7 +1396,7 @@ function Step2(props: {
                 width: "100%",
                 background: "#1877D6",
                 color: "#fff",
-                borderRadius: 20,
+                borderRadius: 8,
                 padding: 11,
                 fontSize: 13,
                 fontWeight: 700,
@@ -1446,7 +1446,7 @@ function Step2(props: {
                     flex: "1 1 calc(14% - 6px)",
                     minWidth: 44,
                     height: 40,
-                    borderRadius: 20,
+                    borderRadius: 8,
                     border: `1.5px solid ${active ? "#0B1F3A" : "#EEF2F7"}`,
                     background: active ? "#0B1F3A" : "#fff",
                     color: active ? "#fff" : "#0B1F3A",
@@ -1469,7 +1469,7 @@ function Step2(props: {
               style={{
                 flex: 1,
                 height: 40,
-                borderRadius: 10,
+                borderRadius: 8,
                 border: "1px solid #EEF2F7",
                 background:
                   repeatDays.length === 5 && WEEKDAYS.every((d) => repeatDays.includes(d))
@@ -1493,7 +1493,7 @@ function Step2(props: {
               style={{
                 flex: 1,
                 height: 40,
-                borderRadius: 10,
+                borderRadius: 8,
                 border: "1px solid #EEF2F7",
                 background:
                   repeatDays.length === 2 && [6, 0].every((d) => repeatDays.includes(d))
@@ -1517,7 +1517,7 @@ function Step2(props: {
               style={{
                 flex: 1,
                 height: 40,
-                borderRadius: 10,
+                borderRadius: 8,
                 border: "1px solid #EEF2F7",
                 background:
                   repeatDays.length === 7 && ALL_DAYS.every((d) => repeatDays.includes(d))
@@ -1544,7 +1544,7 @@ function Step2(props: {
           <div
             style={{
               background: "#FEF3C7",
-              borderRadius: 12,
+              borderRadius: 8,
               padding: "10px 14px",
               display: "flex",
               alignItems: "flex-start",
@@ -1589,7 +1589,7 @@ function Step2(props: {
           padding: 12,
           background: "#F8F9FB",
           border: "0.5px solid #EEF2F7",
-          borderRadius: 10,
+          borderRadius: 8,
           fontSize: 13,
           color: "#0B1F3A",
           fontFamily: "Poppins, sans-serif",
@@ -1622,7 +1622,7 @@ function Step2(props: {
           style={{
             width: "100%",
             height: 44,
-            borderRadius: 10,
+            borderRadius: 8,
             border: "0.5px solid #EEF2F7",
             padding: "0 10px",
             fontSize: 14,
@@ -1663,7 +1663,7 @@ function Step2(props: {
                   alignItems: "center",
                   gap: 10,
                   padding: "10px 12px",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   border: `1.5px solid ${active ? color : "#e3e6ec"}`,
                   background: active ? `${color}10` : "#fff",
                   cursor: "pointer",
@@ -1696,7 +1696,7 @@ function Step2(props: {
                 value={lessonTimeFrom}
                 onChange={(e) => setLessonTimeFrom(e.target.value)}
                 style={{
-                  height: 44, borderRadius: 10, border: "1px solid #e3e6ec",
+                  height: 44, borderRadius: 8, border: "1px solid #e3e6ec",
                   padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
                   color: "#0B1F3A", background: "#fff",
                 }}
@@ -1709,7 +1709,7 @@ function Step2(props: {
                 value={lessonTimeTo}
                 onChange={(e) => setLessonTimeTo(e.target.value)}
                 style={{
-                  height: 44, borderRadius: 10, border: "1px solid #e3e6ec",
+                  height: 44, borderRadius: 8, border: "1px solid #e3e6ec",
                   padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
                   color: "#0B1F3A", background: "#fff",
                 }}
@@ -1746,7 +1746,7 @@ function Step3(props: {
               alignItems: "center",
               justifyContent: "center",
               height: 52,
-              borderRadius: 12,
+              borderRadius: 8,
               background: "#E7F6EC",
               border: "1.5px solid #34C759",
               color: "#34C759",
@@ -1782,7 +1782,7 @@ function Step3(props: {
             padding: 12,
             background: "#fff",
             border: "0.5px solid #EEF2F7",
-            borderRadius: 10,
+            borderRadius: 8,
             cursor: "pointer",
             textAlign: "left",
             fontFamily: "Poppins, sans-serif",
@@ -1899,7 +1899,7 @@ function ToggleRow({
         padding: 12,
         background: "#fff",
         border: "0.5px solid #EEF2F7",
-        borderRadius: 10,
+        borderRadius: 8,
         cursor: "pointer",
         textAlign: "left",
         fontFamily: "Poppins, sans-serif",
@@ -1915,7 +1915,7 @@ function ToggleRow({
         style={{
           width: 40,
           height: 24,
-          borderRadius: 12,
+          borderRadius: 8,
           background: value ? "#1877D6" : "#EEF2F7",
           position: "relative",
           transition: "background 150ms",
@@ -1959,7 +1959,7 @@ function CheckRow({
         padding: "10px 12px",
         background: "#fff",
         border: "0.5px solid #EEF2F7",
-        borderRadius: 10,
+        borderRadius: 8,
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.5 : 1,
         textAlign: "left",
@@ -1972,7 +1972,7 @@ function CheckRow({
         style={{
           width: 20,
           height: 20,
-          borderRadius: 4,
+          borderRadius: 8,
           border: `1.5px solid ${checked ? "#1877D6" : "#9CA3AF"}`,
           background: checked ? "#1877D6" : "#fff",
           display: "flex",

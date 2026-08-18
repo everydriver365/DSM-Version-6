@@ -200,7 +200,7 @@ function DiscountCodesPage() {
         style={{
           margin: "16px 16px 0",
           padding: 16,
-          borderRadius: 12,
+          borderRadius: 8,
           backgroundColor: "#F0F4FF",
           border: "0.5px solid #BFDBFE",
         }}
@@ -281,7 +281,7 @@ function CodeCard({
       style={{
         margin: "0 16px 8px",
         padding: 16,
-        borderRadius: 12,
+        borderRadius: 8,
         backgroundColor: "#FFFFFF",
         border: "0.5px solid #EEF2F7",
         opacity: code.active ? 1 : 0.6,
@@ -303,7 +303,7 @@ function CodeCard({
               style={{
                 width: 28,
                 height: 28,
-                borderRadius: 6,
+                borderRadius: 8,
                 backgroundColor: "#F3F4F6",
                 display: "flex",
                 alignItems: "center",
@@ -320,7 +320,7 @@ function CodeCard({
                 color: typeColor,
                 backgroundColor: typeBg,
                 padding: "3px 8px",
-                borderRadius: 6,
+                borderRadius: 8,
               }}
             >
               {isPct ? "% OFF" : "£ OFF"}
@@ -565,7 +565,7 @@ function AddSheet({
             style={{
               backgroundColor: "#1877D6",
               height: 46,
-              borderRadius: 10,
+              borderRadius: 8,
               opacity: saving ? 0.6 : 1,
             }}
           >

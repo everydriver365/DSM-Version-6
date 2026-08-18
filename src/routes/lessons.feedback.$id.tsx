@@ -189,7 +189,7 @@ function LessonFeedbackPage() {
                   style={{
                     height: 32,
                     padding: "0 12px",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     backgroundColor: selected ? "#1877D6" : "#F8F9FB",
                     color: selected ? "#FFFFFF" : "#0B1F3A",
                     border: selected ? "0.5px solid #1877D6" : "0.5px solid #EEF2F7",

@@ -21,7 +21,7 @@ function PreviewShell({
     <div
       style={{
         background: "#fff",
-        borderRadius: 16,
+        borderRadius: 8,
         border: "1px solid #E4E8EF",
         marginBottom: 16,
         overflow: "hidden",
@@ -63,7 +63,7 @@ function SavingBadge({ text }: { text?: string | null }) {
         color: "#15803D",
         fontSize: 9,
         fontWeight: 700,
-        borderRadius: 20,
+        borderRadius: 8,
         padding: "2px 7px",
         marginTop: 4,
       }}
@@ -82,7 +82,7 @@ function TierBadge({ tier }: { tier?: string | null }) {
         color: "#1877D6",
         fontSize: 9,
         fontWeight: 700,
-        borderRadius: 20,
+        borderRadius: 8,
         padding: "2px 7px",
       }}
     >
@@ -118,7 +118,7 @@ function ListRow({
         gap: 12,
         padding: "13px 16px",
         background: "#fff",
-        borderRadius: 16,
+        borderRadius: 8,
         border: "1px solid #E4E8EF",
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
       }}
@@ -127,7 +127,7 @@ function ListRow({
         style={{
           width: 40,
           height: 40,
-          borderRadius: 10,
+          borderRadius: 8,
           background: iconBg || "#EEF2F7",
           display: "flex",
           alignItems: "center",
@@ -160,7 +160,7 @@ function ListRow({
               color: "#92400E",
               fontSize: 9,
               fontWeight: 700,
-              borderRadius: 20,
+              borderRadius: 8,
               padding: "2px 7px",
             }}
           >
@@ -186,7 +186,7 @@ export function PartnerPreview({ partner }: { partner: any }) {
             width: "100%",
             height: 110,
             objectFit: "cover",
-            borderRadius: 16,
+            borderRadius: 8,
             marginBottom: 10,
             display: "block",
           }}
@@ -206,7 +206,7 @@ export function PartnerPreview({ partner }: { partner: any }) {
         <div
           style={{
             background: "#fff",
-            borderRadius: 16,
+            borderRadius: 8,
             border: "1px solid #E4E8EF",
             padding: 14,
             marginTop: 10,
@@ -256,7 +256,7 @@ export function PerkPreview({ perk, partnerName }: { perk: any; partnerName?: st
       <div
         style={{
           background: "#fff",
-          borderRadius: 16,
+          borderRadius: 8,
           border: "1px solid #E4E8EF",
           overflow: "hidden",
           marginTop: 10,
@@ -309,7 +309,7 @@ export function PerkPreview({ perk, partnerName }: { perk: any; partnerName?: st
                     width: 96,
                     height: 72,
                     objectFit: "cover",
-                    borderRadius: 10,
+                    borderRadius: 8,
                     flexShrink: 0,
                   }}
                 />
@@ -341,7 +341,7 @@ export function PerkPreview({ perk, partnerName }: { perk: any; partnerName?: st
               marginTop: 14,
               background: "#1877D6",
               color: "#fff",
-              borderRadius: 20,
+              borderRadius: 8,
               padding: "10px 16px",
               textAlign: "center",
               fontSize: 13,

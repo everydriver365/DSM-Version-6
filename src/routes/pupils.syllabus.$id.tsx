@@ -255,7 +255,7 @@ function PupilSyllabusPage() {
           className="bg-white"
           style={{
             padding: 14,
-            borderRadius: 12,
+            borderRadius: 8,
             borderWidth: "0.5px",
             borderStyle: "solid",
             borderColor: "#EEF2F7",
@@ -304,7 +304,7 @@ function PupilSyllabusPage() {
                 key={cat.key}
                 className="bg-white"
                 style={{
-                  borderRadius: 10,
+                  borderRadius: 8,
                   borderWidth: "0.5px",
                   borderStyle: "solid",
                   borderColor: "#EEF2F7",
@@ -359,7 +359,7 @@ function PupilSyllabusPage() {
                           className="bg-white"
                           style={{
                             padding: 12,
-                            borderRadius: 10,
+                            borderRadius: 8,
                             borderWidth: "0.5px",
                             borderStyle: "solid",
                             borderColor: "#EEF2F7",
@@ -432,7 +432,7 @@ function PupilSyllabusPage() {
           className="w-full text-[14px] font-semibold text-white flex items-center justify-center gap-2"
           style={{
             height: 44,
-            borderRadius: 10,
+            borderRadius: 8,
             backgroundColor: justSaved
               ? "#1877D6"
               : !dirty || saving

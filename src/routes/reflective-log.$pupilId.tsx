@@ -297,7 +297,7 @@ function ReflectiveLogPage() {
                 style={{
                   backgroundColor: "#FFFFFF",
                   border: "0.5px solid #E2E6ED",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   padding: 16,
                   marginBottom: 12,
                 }}
@@ -509,7 +509,7 @@ function ReflectiveLogPage() {
                 className="w-full text-white text-[14px] font-semibold inline-flex items-center justify-center gap-2"
                 style={{
                   height: 46,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   backgroundColor: "#7C3AED",
                   border: "none",
                   opacity: saving ? 0.7 : 1,

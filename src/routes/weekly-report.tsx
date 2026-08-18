@@ -442,7 +442,7 @@ function WeeklyReportPage() {
                       style={{
                         width: `${pct}%`,
                         height: 6,
-                        borderRadius: 3,
+                        borderRadius: 8,
                         background: hasLessons ? "#1877D6" : "#E5E7EB",
                         minWidth: hasLessons ? 8 : 0,
                       }}
@@ -633,7 +633,7 @@ function WeeklyReportPage() {
           style={{
             ...POPPINS,
             padding: "12px",
-            borderRadius: 10,
+            borderRadius: 8,
             border: "0.5px solid #1877D6",
             color: "#1877D6",
             background: "#FFFFFF",
@@ -682,7 +682,7 @@ function StatTile({
       style={{
         background: "#FFFFFF",
         border: "0.5px solid #EEF2F7",
-        borderRadius: 12,
+        borderRadius: 8,
         padding: 14,
       }}
     >
@@ -702,7 +702,7 @@ function CardBox({ children }: { children: React.ReactNode }) {
       style={{
         background: "#FFFFFF",
         border: "0.5px solid #EEF2F7",
-        borderRadius: 12,
+        borderRadius: 8,
         padding: 16,
       }}
     >

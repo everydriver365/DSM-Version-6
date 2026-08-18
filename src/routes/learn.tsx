@@ -169,7 +169,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
           position: "relative",
           width: "100%",
           aspectRatio: "1 / 1",
-          borderRadius: 16,
+          borderRadius: 8,
           overflow: "hidden",
           background: color,
           ...(thumb
@@ -227,7 +227,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
             bottom: 8,
             right: 8,
             padding: "3px 8px",
-            borderRadius: 20,
+            borderRadius: 8,
             background: "rgba(0,0,0,0.6)",
             color: "#fff",
             fontSize: 10.5,
@@ -330,7 +330,7 @@ function ArticleRow({ onGo, isLast }: { onGo: () => void; isLast: boolean }) {
         style={{
           width: 36,
           height: 36,
-          borderRadius: 10,
+          borderRadius: 8,
           background: "#E6F1FB",
           display: "flex",
           alignItems: "center",
@@ -377,7 +377,7 @@ function GuideRow({ g, onGo, isLast }: { g: Guide; onGo: () => void; isLast: boo
         style={{
           width: 34,
           height: 34,
-          borderRadius: 10,
+          borderRadius: 8,
           background: "#E5EFFA",
           display: "flex",
           alignItems: "center",
@@ -514,7 +514,7 @@ function LearnPage() {
           style={{
             margin: "0 16px",
             background: "white",
-            borderRadius: 16,
+            borderRadius: 8,
             boxShadow: CARD_SHADOW,
             overflow: "hidden",
           }}
@@ -544,7 +544,7 @@ function LearnPage() {
             style={{
               margin: "0 16px",
               background: "white",
-              borderRadius: 16,
+              borderRadius: 8,
               boxShadow: CARD_SHADOW,
               overflow: "hidden",
             }}
@@ -629,7 +629,7 @@ function LearnPage() {
                       maxHeight: "80vh",
                       aspectRatio: "16 / 9",
                       border: "none",
-                      borderRadius: 16,
+                      borderRadius: 8,
                       boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                       background: "#000",
                     }}
@@ -639,7 +639,7 @@ function LearnPage() {
                     style={{
                       width: "100%",
                       aspectRatio: "16 / 9",
-                      borderRadius: 16,
+                      borderRadius: 8,
                       background: "#000",
                     }}
                   />
@@ -665,7 +665,7 @@ function LearnPage() {
                   style={{
                     width: "100%",
                     maxHeight: "80vh",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                     background: "#000",
                   }}

@@ -467,7 +467,7 @@ function MiniSitePage() {
         key={t.id}
         style={{
           background: "#fff",
-          borderRadius: 16,
+          borderRadius: 8,
           boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
           padding: 16,
           marginBottom: 10,
@@ -480,7 +480,7 @@ function MiniSitePage() {
               color: t.pillColor,
               fontSize: 12,
               fontWeight: 700,
-              borderRadius: 20,
+              borderRadius: 8,
               padding: "4px 10px",
             }}
           >
@@ -495,7 +495,7 @@ function MiniSitePage() {
                 color: "#92400E",
                 fontSize: 10,
                 fontWeight: 700,
-                borderRadius: 20,
+                borderRadius: 8,
                 padding: "3px 8px",
               }}
             >
@@ -541,7 +541,7 @@ function MiniSitePage() {
             width: "100%",
             background: t.btnBg,
             color: "#fff",
-            borderRadius: 12,
+            borderRadius: 8,
             padding: 12,
             fontSize: 14,
             fontWeight: 700,
@@ -580,7 +580,7 @@ function MiniSitePage() {
   function Eyebrow({ label }: { label: string }) {
     return (
       <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "18px 0 10px" }}>
-        <span style={{ width: 3, height: 14, borderRadius: 2, background: "#1877D6" }} />
+        <span style={{ width: 3, height: 14, borderRadius: 8, background: "#1877D6" }} />
         <span
           style={{
             color: "#1877D6",
@@ -614,7 +614,7 @@ function MiniSitePage() {
       <div
         style={{
           background: "#fff",
-          borderRadius: 16,
+          borderRadius: 8,
           padding: "14px 16px",
           boxShadow: rowShadow,
           marginBottom: 10,
@@ -640,7 +640,7 @@ function MiniSitePage() {
             style={{
               width: 34,
               height: 34,
-              borderRadius: 10,
+              borderRadius: 8,
               background: "#E7F1FC",
               color: "#1877D6",
               display: "flex",
@@ -735,7 +735,7 @@ function MiniSitePage() {
 
       <div className="px-4 pt-4">
         {/* URL / STATUS CARD */}
-        <div style={{ background: "#fff", borderRadius: 18, padding: 18, boxShadow: cardShadow }}>
+        <div style={{ background: "#fff", borderRadius: 8, padding: 18, boxShadow: cardShadow }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div
@@ -769,7 +769,7 @@ function MiniSitePage() {
               style={{
                 width: 32,
                 height: 32,
-                borderRadius: 10,
+                borderRadius: 8,
                 background: "#F2F2F7",
                 border: "none",
                 cursor: "pointer",
@@ -796,7 +796,7 @@ function MiniSitePage() {
               fontSize: 14,
               fontWeight: 700,
               padding: 13,
-              borderRadius: 12,
+              borderRadius: 8,
               border: "none",
               cursor: originalSlug ? "pointer" : "not-allowed",
               opacity: originalSlug ? 1 : 0.5,
@@ -865,7 +865,7 @@ function MiniSitePage() {
             gridTemplateColumns: "1fr 1fr 1fr",
             gap: 4,
             background: "#E5E5EA",
-            borderRadius: 14,
+            borderRadius: 8,
             padding: 4,
             marginTop: 14,
           }}
@@ -895,7 +895,7 @@ function MiniSitePage() {
                       ? "0 2px 6px rgba(0,0,0,0.08)"
                       : "none",
                   border: "none",
-                  borderRadius: isUpgrade ? 10 : 11,
+                  borderRadius: isUpgrade ? 8 : 8,
                   padding: "9px 6px",
                   fontSize: 13,
                   fontWeight: 800,
@@ -987,7 +987,7 @@ function MiniSitePage() {
               summary={heroUrl ? "Set ✓" : "Not set"}
             >
               {heroUrl ? (
-                <div className="relative" style={{ borderRadius: 12, overflow: "hidden" }}>
+                <div className="relative" style={{ borderRadius: 8, overflow: "hidden" }}>
                   <img src={heroUrl} alt="Hero" style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} />
                   <button
                     onClick={() => heroInputRef.current?.click()}
@@ -1008,7 +1008,7 @@ function MiniSitePage() {
                   className="w-full flex flex-col items-center justify-center"
                   style={{
                     borderWidth: "1px", borderStyle: "dashed", borderColor: "#EEF2F7",
-                    borderRadius: 12, padding: 24, background: "#FAFBFC", cursor: "pointer",
+                    borderRadius: 8, padding: 24, background: "#FAFBFC", cursor: "pointer",
                   }}
                 >
                   {uploadingHero ? (
@@ -1067,7 +1067,7 @@ function MiniSitePage() {
                   className="w-full flex flex-col items-center justify-center"
                   style={{
                     borderWidth: "1px", borderStyle: "dashed", borderColor: "#EEF2F7",
-                    borderRadius: 12, padding: 16, background: "#FAFBFC", cursor: "pointer",
+                    borderRadius: 8, padding: 16, background: "#FAFBFC", cursor: "pointer",
                   }}
                 >
                   {uploadingGallery ? (
@@ -1107,13 +1107,13 @@ function MiniSitePage() {
                       style={{
                         borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
                         borderColor: selected ? "#1877D6" : "#EEF2F7",
-                        borderRadius: 12, padding: 10, background: "#fff",
+                        borderRadius: 8, padding: 10, background: "#fff",
                         cursor: "pointer", textAlign: "left",
                       }}
                     >
                       <div className="flex gap-1 mb-2">
                         {t.swatch.map((c) => (
-                          <span key={c} style={{ width: 18, height: 18, borderRadius: 4, background: c, border: "0.5px solid #EEF2F7" }} />
+                          <span key={c} style={{ width: 18, height: 18, borderRadius: 8, background: c, border: "0.5px solid #EEF2F7" }} />
                         ))}
                       </div>
                       <div className="text-[13px] font-medium" style={{ color: "#0B1F3A" }}>{t.label}</div>
@@ -1140,7 +1140,7 @@ function MiniSitePage() {
                       style={{
                         borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
                         borderColor: selected ? "#1877D6" : "#EEF2F7",
-                        borderRadius: 10, padding: "10px 12px", background: "#fff",
+                        borderRadius: 8, padding: "10px 12px", background: "#fff",
                         cursor: "pointer", textAlign: "left",
                         fontFamily: `${f}, sans-serif`, fontSize: 14, color: "#0B1F3A",
                       }}
@@ -1169,7 +1169,7 @@ function MiniSitePage() {
                       style={{
                         borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
                         borderColor: selected ? "#1877D6" : "#EEF2F7",
-                        borderRadius: 10, padding: "10px 8px", background: "#fff",
+                        borderRadius: 8, padding: "10px 8px", background: "#fff",
                         cursor: "pointer", textAlign: "center",
                         fontSize: 12, color: "#0B1F3A",
                       }}
@@ -1231,7 +1231,7 @@ function MiniSitePage() {
               fontSize: 15,
               fontWeight: 800,
               padding: 16,
-              borderRadius: 14,
+              borderRadius: 8,
               border: "none",
               cursor: "pointer",
               boxShadow: "0 4px 0 #0F52A8",
@@ -1254,7 +1254,7 @@ function MiniSitePage() {
               style={{
                 background: "#E7F1FC",
                 border: "1.5px solid #1877D6",
-                borderRadius: 18,
+                borderRadius: 8,
                 padding: 16,
                 display: "flex",
                 gap: 12,
@@ -1302,7 +1302,7 @@ function MiniSitePage() {
               <div
                 style={{
                   background: "#fff",
-                  borderRadius: 18,
+                  borderRadius: 8,
                   padding: 18,
                   boxShadow: cardShadow,
                   marginBottom: 12,
@@ -1316,7 +1316,7 @@ function MiniSitePage() {
                       color: "#6B6B6F",
                       fontSize: 12,
                       fontWeight: 700,
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: "4px 12px",
                     }}
                   >
@@ -1329,7 +1329,7 @@ function MiniSitePage() {
                         color: "#fff",
                         fontSize: 10,
                         fontWeight: 800,
-                        borderRadius: 20,
+                        borderRadius: 8,
                         padding: "3px 10px",
                       }}
                     >
@@ -1362,7 +1362,7 @@ function MiniSitePage() {
               <div
                 style={{
                   background: "#fff",
-                  borderRadius: 18,
+                  borderRadius: 8,
                   padding: 18,
                   boxShadow: cardShadow,
                   marginBottom: 12,
@@ -1375,7 +1375,7 @@ function MiniSitePage() {
                       color: "#1877D6",
                       fontSize: 12,
                       fontWeight: 700,
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: "4px 12px",
                     }}
                   >
@@ -1388,7 +1388,7 @@ function MiniSitePage() {
                         color: "#fff",
                         fontSize: 10,
                         fontWeight: 800,
-                        borderRadius: 20,
+                        borderRadius: 8,
                         padding: "3px 10px",
                       }}
                     >
@@ -1424,7 +1424,7 @@ function MiniSitePage() {
                       width: "100%",
                       background: "#1877D6",
                       color: "#fff",
-                      borderRadius: 12,
+                      borderRadius: 8,
                       padding: 13,
                       fontSize: 14,
                       fontWeight: 800,
@@ -1446,7 +1446,7 @@ function MiniSitePage() {
               <div
                 style={{
                   background: "linear-gradient(150deg, #14509E, #0B1F3A)",
-                  borderRadius: 18,
+                  borderRadius: 8,
                   padding: 18,
                   position: "relative",
                   overflow: "hidden",
@@ -1487,7 +1487,7 @@ function MiniSitePage() {
                       color: "#fff",
                       fontSize: 12,
                       fontWeight: 700,
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: "4px 12px",
                     }}
                   >
@@ -1502,7 +1502,7 @@ function MiniSitePage() {
                         color: "#fff",
                         fontSize: 10,
                         fontWeight: 800,
-                        borderRadius: 20,
+                        borderRadius: 8,
                         padding: "3px 10px",
                       }}
                     >
@@ -1555,7 +1555,7 @@ function MiniSitePage() {
                         width: "100%",
                         background: "#fff",
                         color: "#0B1F3A",
-                        borderRadius: 12,
+                        borderRadius: 8,
                         padding: 13,
                         fontSize: 14,
                         fontWeight: 800,
@@ -1577,7 +1577,7 @@ function MiniSitePage() {
             <div
               style={{
                 background: "linear-gradient(150deg, #1a1a1a, #000)",
-                borderRadius: 18,
+                borderRadius: 8,
                 padding: 18,
                 position: "relative",
                 overflow: "hidden",
@@ -1604,7 +1604,7 @@ function MiniSitePage() {
                     fontSize: 9,
                     fontWeight: 900,
                     padding: "3px 10px",
-                    borderRadius: 20,
+                    borderRadius: 8,
                   }}
                 >
                   WHITE GLOVE
@@ -1618,7 +1618,7 @@ function MiniSitePage() {
                       color: "#fff",
                       fontSize: 10,
                       fontWeight: 800,
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: "3px 10px",
                     }}
                   >
@@ -1669,7 +1669,7 @@ function MiniSitePage() {
                     width: "100%",
                     background: "#D68A1B",
                     color: "#fff",
-                    borderRadius: 12,
+                    borderRadius: 8,
                     padding: 13,
                     fontSize: 14,
                     fontWeight: 800,
@@ -1690,7 +1690,7 @@ function MiniSitePage() {
             <div
               style={{
                 background: "#fff",
-                borderRadius: 18,
+                borderRadius: 8,
                 overflow: "hidden",
                 boxShadow: cardShadow,
               }}
@@ -1726,7 +1726,7 @@ function MiniSitePage() {
                           color: "#fff",
                           fontSize: 9,
                           fontWeight: 800,
-                          borderRadius: 20,
+                          borderRadius: 8,
                           padding: "2px 7px",
                           marginTop: 4,
                         }}
@@ -1830,7 +1830,7 @@ function MiniSitePage() {
                             color: "#9CA3AF",
                             fontSize: 10,
                             fontWeight: 800,
-                            borderRadius: 10,
+                            borderRadius: 8,
                             padding: "6px 8px",
                           }}
                         >
@@ -1845,7 +1845,7 @@ function MiniSitePage() {
                             color: "#fff",
                             fontSize: 10,
                             fontWeight: 800,
-                            borderRadius: 10,
+                            borderRadius: 8,
                             padding: "6px 8px",
                             border: "none",
                             cursor: "pointer",
@@ -1863,7 +1863,7 @@ function MiniSitePage() {
                             color: "#fff",
                             fontSize: 10,
                             fontWeight: 800,
-                            borderRadius: 10,
+                            borderRadius: 8,
                             padding: "6px 8px",
                             border: "none",
                             cursor: "pointer",
@@ -1911,7 +1911,7 @@ function MiniSitePage() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 20,
+              borderRadius: 8,
               padding: 24,
               maxWidth: 400,
               width: "100%",
@@ -1928,7 +1928,7 @@ function MiniSitePage() {
             <div
               style={{
                 background: "#F3F8FF",
-                borderRadius: 14,
+                borderRadius: 8,
                 padding: 16,
                 marginBottom: 20,
               }}
@@ -1953,7 +1953,7 @@ function MiniSitePage() {
                   flex: 1,
                   background: "#F3F8FF",
                   color: "#0B1F3A",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   padding: 13,
                   fontSize: 14,
                   fontWeight: 700,
@@ -1971,7 +1971,7 @@ function MiniSitePage() {
                   flex: 1,
                   background: "#1877D6",
                   color: "#fff",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   padding: 13,
                   fontSize: 14,
                   fontWeight: 800,
@@ -2006,7 +2006,7 @@ function MiniSitePage() {
             <div
               style={{
                 background: "#fff",
-                borderRadius: 16,
+                borderRadius: 8,
                 padding: 16,
                 marginBottom: 16,
                 boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
@@ -2033,7 +2033,7 @@ function MiniSitePage() {
                   flex: 1,
                   background: "#fff",
                   border: "0.5px solid #E4E8EF",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   padding: "12px 14px",
                   fontSize: 14,
                   fontFamily: "Poppins, sans-serif",
@@ -2048,7 +2048,7 @@ function MiniSitePage() {
                   background: "#1877D6",
                   color: "#fff",
                   border: "none",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   padding: "0 18px",
                   fontSize: 14,
                   fontWeight: 700,
@@ -2067,7 +2067,7 @@ function MiniSitePage() {
                   marginTop: 12,
                   background: "#FEF2F2",
                   border: "0.5px solid #FECACA",
-                  borderRadius: 16,
+                  borderRadius: 8,
                   padding: 16,
                   fontSize: 13,
                   color: "#CC2229",
@@ -2084,7 +2084,7 @@ function MiniSitePage() {
                   marginTop: 12,
                   background: "#F0FDF4",
                   border: "0.5px solid #BBF7D0",
-                  borderRadius: 16,
+                  borderRadius: 8,
                   padding: 16,
                 }}
               >
@@ -2102,7 +2102,7 @@ function MiniSitePage() {
                     width: "100%",
                     background: "#15803D",
                     color: "#fff",
-                    borderRadius: 12,
+                    borderRadius: 8,
                     padding: 12,
                     fontSize: 14,
                     fontWeight: 700,
@@ -2170,7 +2170,7 @@ function MiniSitePage() {
                     color: "#15803D",
                     fontSize: 11,
                     fontWeight: 700,
-                    borderRadius: 20,
+                    borderRadius: 8,
                     padding: "4px 12px",
                   }}
                 >
@@ -2186,7 +2186,7 @@ function MiniSitePage() {
                 justifyContent: "center",
                 gap: 0,
                 background: "#E5E5EA",
-                borderRadius: 14,
+                borderRadius: 8,
                 padding: 4,
                 margin: "0 0 16px",
               }}
@@ -2197,7 +2197,7 @@ function MiniSitePage() {
                 style={{
                   flex: 1,
                   padding: "8px 0",
-                  borderRadius: 10,
+                  borderRadius: 8,
                   border: "none",
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
@@ -2217,7 +2217,7 @@ function MiniSitePage() {
                 style={{
                   flex: 1,
                   padding: "8px 0",
-                  borderRadius: 10,
+                  borderRadius: 8,
                   border: "none",
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
@@ -2238,7 +2238,7 @@ function MiniSitePage() {
                     color: "#fff",
                     fontSize: 9,
                     fontWeight: 800,
-                    borderRadius: 20,
+                    borderRadius: 8,
                     padding: "2px 6px",
                     verticalAlign: "middle",
                   }}

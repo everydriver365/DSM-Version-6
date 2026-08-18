@@ -202,7 +202,7 @@ function QuotesPage() {
             background: "#fff",
             color: "#1877D6",
             border: "1px solid #e3e6ec",
-            borderRadius: 10,
+            borderRadius: 8,
             padding: "10px 12px",
             fontSize: 14,
             fontWeight: 700,
@@ -242,7 +242,7 @@ function QuotesPage() {
             <button onClick={() => navigate({ to: "/quotes/new" })}
               style={{
                 marginTop: 8, background: "#1877D6", color: "#fff", border: "none",
-                borderRadius: 10, padding: "10px 16px", fontWeight: 600, fontSize: 14,
+                borderRadius: 8, padding: "10px 16px", fontWeight: 600, fontSize: 14,
                 cursor: "pointer", fontFamily: "Poppins, sans-serif",
               }}>
               + New quote
@@ -273,13 +273,13 @@ function QuotesPage() {
                         {isRev && (
                           <span style={{
                             background: "#1877D6", color: "#fff", fontSize: 10, fontWeight: 700,
-                            padding: "2px 6px", borderRadius: 6, letterSpacing: 0.4,
+                            padding: "2px 6px", borderRadius: 8, letterSpacing: 0.4,
                           }}>REVISION</span>
                         )}
                         {isResent && (
                           <span style={{
                             background: "#1877D6", color: "#fff", fontSize: 10, fontWeight: 700,
-                            padding: "2px 6px", borderRadius: 6, letterSpacing: 0.4,
+                            padding: "2px 6px", borderRadius: 8, letterSpacing: 0.4,
                           }}>FOLLOWED UP ✓</span>
                         )}
                       </div>
@@ -306,7 +306,7 @@ function QuotesPage() {
                     </div>
                     <span style={{
                       background: statusColor(displayStatus), color: "#fff", fontSize: 10, fontWeight: 700,
-                      padding: "2px 6px", borderRadius: 6, textTransform: "uppercase", letterSpacing: 0.4,
+                      padding: "2px 6px", borderRadius: 8, textTransform: "uppercase", letterSpacing: 0.4,
                     }}>
                       {displayStatus}
                     </span>

@@ -364,7 +364,7 @@ function LessonDetailPage() {
         <div className="px-4 mt-3 space-y-3">
           <div
             className="animate-pulse"
-            style={{ height: 120, borderRadius: 12, backgroundColor: "#E5E7EB" }}
+            style={{ height: 120, borderRadius: 8, backgroundColor: "#E5E7EB" }}
           />
           <div
             className="animate-pulse"
@@ -372,11 +372,11 @@ function LessonDetailPage() {
           />
           <div
             className="animate-pulse"
-            style={{ height: 280, borderRadius: 12, backgroundColor: "#E5E7EB" }}
+            style={{ height: 280, borderRadius: 8, backgroundColor: "#E5E7EB" }}
           />
           <div
             className="animate-pulse"
-            style={{ height: 180, borderRadius: 12, backgroundColor: "#E5E7EB" }}
+            style={{ height: 180, borderRadius: 8, backgroundColor: "#E5E7EB" }}
           />
         </div>
       )}
@@ -422,7 +422,7 @@ function LessonDetailPage() {
                 <div
                   style={{
                     background: "#fff",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     border: "1px solid #E4E8EF",
                     padding: 16,
                   }}
@@ -433,7 +433,7 @@ function LessonDetailPage() {
                       color: "#1877D6",
                       fontSize: 10,
                       fontWeight: 800,
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: "3px 10px",
                       display: "inline-block",
                       marginBottom: 8,
@@ -612,8 +612,8 @@ function LessonDetailPage() {
             const MUTED = '#64748B';
             const ACCENT = '#1A52A0';
             return (
-              <div className="mx-4 mt-3" style={{ position: 'relative', background: '#FFFFFF', border: `0.5px solid ${BORDER}`, borderRadius: 10, padding: '13px 16px 13px 19px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, fontFamily: 'Poppins, sans-serif' }}>
-                <span aria-hidden style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: ACCENT_INSIGHT, borderRadius: '10px 0 0 10px' }} />
+              <div className="mx-4 mt-3" style={{ position: 'relative', background: '#FFFFFF', border: `0.5px solid ${BORDER}`, borderRadius: 8, padding: '13px 16px 13px 19px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, fontFamily: 'Poppins, sans-serif' }}>
+                <span aria-hidden style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: ACCENT_INSIGHT, borderRadius: '8px 0 0 8px'}} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 11, fontWeight: 500, color: ACCENT_INSIGHT, letterSpacing: '0.02em', marginBottom: 3 }}>AI INSIGHT</div>
                   <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, lineHeight: 1.4, marginBottom: 8 }}>{lessonInsight.text}</div>
@@ -670,7 +670,7 @@ function LessonDetailPage() {
                   marginTop: 12,
                   background: "#FDF2F2",
                   border: "1px solid #F3C9CB",
-                  borderRadius: 10,
+                  borderRadius: 8,
                   padding: 12,
                 }}
               >
@@ -706,7 +706,7 @@ function LessonDetailPage() {
                   className="bg-white"
                   style={{
                     border: "0.5px solid #EEF2F7",
-                    borderRadius: 12,
+                    borderRadius: 8,
                     padding: 16,
                   }}
                 >

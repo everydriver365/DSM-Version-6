@@ -219,7 +219,7 @@ function AdminTermsPage() {
               style={{
                 width: "100%",
                 minHeight: 360,
-                borderRadius: 10,
+                borderRadius: 8,
                 border: `1px solid ${BORDER}`,
                 padding: 14,
                 fontSize: 14,
@@ -239,7 +239,7 @@ function AdminTermsPage() {
               style={{
                 width: "100%",
                 height: 44,
-                borderRadius: 10,
+                borderRadius: 8,
                 background: BLUE,
                 color: "#fff",
                 border: "none",

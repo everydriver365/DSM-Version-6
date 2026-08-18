@@ -128,7 +128,7 @@ function SubscriptionSuccessPage() {
     <div
       style={{
         background: "linear-gradient(135deg, #15803D, #166534)",
-        borderRadius: 24,
+        borderRadius: 8,
         padding: "28px 24px",
         textAlign: "center",
         marginBottom: 20,
@@ -152,7 +152,7 @@ function SubscriptionSuccessPage() {
           style={{
             marginTop: 12,
             backgroundColor: "rgba(255,255,255,0.2)",
-            borderRadius: 20,
+            borderRadius: 8,
             padding: "6px 16px",
             display: "inline-flex",
             alignItems: "center",
@@ -174,7 +174,7 @@ function SubscriptionSuccessPage() {
       <div
         style={{
           background: "#fff",
-          borderRadius: 16,
+          borderRadius: 8,
           border: "1px solid #E4E8EF",
           overflow: "hidden",
           marginBottom: 16,
@@ -203,7 +203,7 @@ function SubscriptionSuccessPage() {
 
   const actionCardBase: React.CSSProperties = {
     background: "#fff",
-    borderRadius: 16,
+    borderRadius: 8,
     border: "1px solid #E4E8EF",
     padding: "14px 16px",
     display: "flex",
@@ -300,7 +300,7 @@ function SubscriptionSuccessPage() {
     <div
       style={{
         background: "#FEF3C7",
-        borderRadius: 16,
+        borderRadius: 8,
         padding: "14px 16px",
         display: "flex",
         gap: 12,
@@ -340,7 +340,7 @@ function SubscriptionSuccessPage() {
         width: "100%",
         background: "#0B1F3A",
         color: "#fff",
-        borderRadius: 20,
+        borderRadius: 8,
         padding: 15,
         fontSize: 15,
         fontWeight: 800,
@@ -359,7 +359,7 @@ function SubscriptionSuccessPage() {
     <div
       style={{
         background: "#fff",
-        borderRadius: 16,
+        borderRadius: 8,
         border: "1px solid #E4E8EF",
         padding: 20,
         textAlign: "center",

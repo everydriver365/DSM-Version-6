@@ -32,7 +32,7 @@ export function EmptyState({ icon, title, subtitle, description, action }: Empty
       <button
         type="button"
         onClick={(action as { label: string; onClick: () => void }).onClick}
-        className="inline-flex items-center justify-center h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
+        className="inline-flex items-center justify-center h-10 px-4 rounded-lg] text-[13px] font-semibold text-white"
         style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif", border: "none" }}
       >
         {(action as { label: string }).label}

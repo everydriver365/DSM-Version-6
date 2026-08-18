@@ -32,7 +32,7 @@ export function CopyableId({
       type="button"
       onClick={handleCopy}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-md border border-[#EEF2F7] bg-[#F3F8FF] px-2 py-0.5 font-mono text-xs text-[#0B1F3A] hover:bg-[#EAF3FB] transition-colors",
+        "inline-flex items-center gap-1.5 rounded-lg border border-[#EEF2F7] bg-[#F3F8FF] px-2 py-0.5 font-mono text-xs text-[#0B1F3A] hover:bg-[#EAF3FB] transition-colors",
         className,
       )}
       title={`Copy ${label ?? "ID"}`}

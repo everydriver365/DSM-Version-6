@@ -64,8 +64,8 @@ export function LessonPaymentBadge({
 
   const sizeStyle: React.CSSProperties =
     size === "sm"
-      ? { fontSize: 10, padding: "2px 7px", borderRadius: 20 }
-      : { fontSize: 11, padding: "3px 8px", borderRadius: 20 };
+      ? { fontSize: 10, padding: "2px 7px", borderRadius: 8}
+      : { fontSize: 11, padding: "3px 8px", borderRadius: 8};
 
   const style: React.CSSProperties = {
     display: "inline-flex",

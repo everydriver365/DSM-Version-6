@@ -148,7 +148,7 @@ function ChecklistPage() {
             <div
               className="bg-white"
               style={{
-                borderRadius: 10,
+                borderRadius: 8,
                 border: "0.5px solid #EEF2F7",
                 overflow: "hidden",
               }}
@@ -173,7 +173,7 @@ function ChecklistPage() {
                       style={{
                         width: 22,
                         height: 22,
-                        borderRadius: 6,
+                        borderRadius: 8,
                         backgroundColor: on ? "#1877D6" : "#FFFFFF",
                         border: on ? "1px solid #1877D6" : "1.5px solid #CBD5E1",
                       }}

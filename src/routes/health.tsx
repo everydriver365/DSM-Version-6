@@ -219,7 +219,7 @@ function HealthPage() {
                     style={{
                       width: 28,
                       height: 32,
-                      borderRadius: 6,
+                      borderRadius: 8,
                       backgroundColor: filled ? "#DBEAFE" : "#F8F9FB",
                       border: "0.5px solid #EEF2F7",
                     }}
@@ -281,7 +281,7 @@ function HealthPage() {
                 style={{
                   width: 6,
                   height: 6,
-                  borderRadius: 3,
+                  borderRadius: 8,
                   backgroundColor: i === tipIndex ? "#1877D6" : "#EEF2F7",
                 }}
               />
@@ -308,7 +308,7 @@ function HealthPage() {
                   style={{
                     width: 56,
                     height: 56,
-                    borderRadius: 28,
+                    borderRadius: 8,
                     backgroundColor: active ? "#DBEAFE" : "#F8F9FB",
                     border: active
                       ? "1px solid #1877D6"
@@ -357,7 +357,7 @@ function QuickLog({
       style={{
         gap: 10,
         padding: 12,
-        borderRadius: 10,
+        borderRadius: 8,
         border: "0.5px solid #EEF2F7",
         backgroundColor: "#FFFFFF",
       }}
@@ -367,7 +367,7 @@ function QuickLog({
         style={{
           width: 32,
           height: 32,
-          borderRadius: 16,
+          borderRadius: 8,
           backgroundColor: tint,
         }}
       >

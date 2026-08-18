@@ -326,7 +326,7 @@ function ApplyPage() {
                   style={{
                     background: "#F8FAFC",
                     border: `1px solid ${BORDER}`,
-                    borderRadius: 12,
+                    borderRadius: 8,
                     padding: 14,
                     marginTop: 8,
                     fontSize: 13,
@@ -359,7 +359,7 @@ function ApplyPage() {
                   style={{
                     flex: 1,
                     padding: "12px",
-                    borderRadius: 10,
+                    borderRadius: 8,
                     border: `1px solid ${BORDER}`,
                     background: "#FFF",
                     color: NAVY,
@@ -379,7 +379,7 @@ function ApplyPage() {
                   style={{
                     flex: 2,
                     padding: "12px",
-                    borderRadius: 10,
+                    borderRadius: 8,
                     border: "none",
                     background: canNext ? BLUE : "#94A3B8",
                     color: "#FFF",
@@ -398,7 +398,7 @@ function ApplyPage() {
                   style={{
                     flex: 2,
                     padding: "12px",
-                    borderRadius: 10,
+                    borderRadius: 8,
                     border: "none",
                     background: confirm && !submitting ? BLUE : "#94A3B8",
                     color: "#FFF",
@@ -456,7 +456,7 @@ function Input({
       style={{
         width: "100%",
         padding: "11px 12px",
-        borderRadius: 10,
+        borderRadius: 8,
         border: `1px solid ${BORDER}`,
         fontSize: 14,
         color: NAVY,
@@ -488,7 +488,7 @@ function Textarea({
       style={{
         width: "100%",
         padding: "11px 12px",
-        borderRadius: 10,
+        borderRadius: 8,
         border: `1px solid ${BORDER}`,
         fontSize: 14,
         color: NAVY,
@@ -519,7 +519,7 @@ function Select({
       style={{
         width: "100%",
         padding: "11px 12px",
-        borderRadius: 10,
+        borderRadius: 8,
         border: `1px solid ${BORDER}`,
         fontSize: 14,
         color: NAVY,
@@ -616,7 +616,7 @@ function SuccessScreen({ onBack }: { onBack: () => void }) {
         style={{
           marginTop: 28,
           padding: "12px 20px",
-          borderRadius: 10,
+          borderRadius: 8,
           border: "none",
           background: BLUE,
           color: "#FFF",
@@ -703,7 +703,7 @@ function Banner({
         style={{
           background: bg,
           border: `1px solid ${border}`,
-          borderRadius: 14,
+          borderRadius: 8,
           padding: 20,
           textAlign: "center",
         }}
@@ -717,7 +717,7 @@ function Banner({
           style={{
             marginTop: 16,
             padding: "10px 18px",
-            borderRadius: 10,
+            borderRadius: 8,
             border: "none",
             background: BLUE,
             color: "#FFF",

@@ -493,7 +493,7 @@ function WhatsChangedPage() {
                       textAlign: "left",
                       background: "#FFFFFF",
                       border: `0.5px solid ${BORDER}`,
-                      borderRadius: 12,
+                      borderRadius: 8,
                       padding: "12px 14px",
                       cursor: "pointer",
                       fontFamily: "Poppins, sans-serif",
@@ -696,7 +696,7 @@ function DetailSheet({
               alt={r.title || "Tutorial thumbnail"}
               style={{
                 width: "100%",
-                borderRadius: 12,
+                borderRadius: 8,
                 marginBottom: 12,
                 objectFit: "cover",
                 maxHeight: 180,
@@ -719,7 +719,7 @@ function DetailSheet({
               alt={r.title || "Listing image"}
               style={{
                 width: "100%",
-                borderRadius: 12,
+                borderRadius: 8,
                 marginBottom: 12,
                 objectFit: "cover",
                 maxHeight: 180,
@@ -739,7 +739,7 @@ function DetailSheet({
       <div
         style={{
           background: "#FFFFFF",
-          borderRadius: 14,
+          borderRadius: 8,
           border: `0.5px solid ${BORDER}`,
           padding: "4px 14px 14px",
           fontFamily: "Poppins, sans-serif",
@@ -754,7 +754,7 @@ function DetailSheet({
           width: "100%",
           marginTop: 14,
           padding: "14px 16px",
-          borderRadius: 12,
+          borderRadius: 8,
           background: BLUE,
           color: "#FFFFFF",
           fontWeight: 600,

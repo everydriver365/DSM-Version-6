@@ -101,7 +101,7 @@ function DetailRow({
         style={{
           width: 36,
           height: 36,
-          borderRadius: 10,
+          borderRadius: 8,
           background: "#F8FAFC",
           display: "flex",
           alignItems: "center",
@@ -292,7 +292,7 @@ export function PaymentDetailsSheet({
             marginBottom: 12,
             padding: "14px 16px",
             background: "#FFFFFF",
-            borderRadius: 14,
+            borderRadius: 8,
             boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
           }}
         >
@@ -300,7 +300,7 @@ export function PaymentDetailsSheet({
             style={{
               width: 44,
               height: 44,
-              borderRadius: 12,
+              borderRadius: 8,
               background: colors.bg,
               display: "flex",
               alignItems: "center",
@@ -403,7 +403,7 @@ export function PaymentDetailsSheet({
             <div
               style={{
                 background: "#FFFFFF",
-                borderRadius: 12,
+                borderRadius: 8,
                 boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                 overflow: "hidden",
               }}

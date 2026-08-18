@@ -160,7 +160,7 @@ function SubscriptionPage() {
         className="mx-4 mt-3"
         style={{
           backgroundColor: "#0B1F3A",
-          borderRadius: 16,
+          borderRadius: 8,
           padding: 16,
         }}
       >
@@ -192,10 +192,10 @@ function SubscriptionPage() {
             fontSize: 11,
             fontWeight: 700,
             padding: "2px 8px",
-            borderRadius: 20,
+            borderRadius: 8,
           }}
         >
-          <span style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: "#ffffff" }} />
+          <span style={{ width: 6, height: 6, borderRadius: 8, backgroundColor: "#ffffff" }} />
           Active
         </div>
       </div>
@@ -229,7 +229,7 @@ function SubscriptionPage() {
         style={{
           backgroundColor: "#ffffff",
           border: "2px solid #1877D6",
-          borderRadius: 16,
+          borderRadius: 8,
           padding: 16,
           position: "relative",
         }}
@@ -268,7 +268,7 @@ function SubscriptionPage() {
             fontSize: 10,
             fontWeight: 700,
             padding: "2px 8px",
-            borderRadius: 20,
+            borderRadius: 8,
           }}
         >
           Coming soon
@@ -283,7 +283,7 @@ function SubscriptionPage() {
         className="mx-4"
         style={{
           backgroundColor: "#ffffff",
-          borderRadius: 16,
+          borderRadius: 8,
           padding: 16,
         }}
       >
@@ -315,7 +315,7 @@ function SubscriptionPage() {
           <div
             style={{
               background: "#EEF2F7",
-              borderRadius: "22px 22px 0 0",
+              borderRadius: "8px 8px 0 0",
               padding: "0 0 40px",
               maxHeight: "90vh",
               overflowY: "auto",
@@ -329,7 +329,7 @@ function SubscriptionPage() {
                 width: 36,
                 height: 5,
                 background: "#D1D1D6",
-                borderRadius: 3,
+                borderRadius: 8,
                 margin: "12px auto 0",
               }}
             />
@@ -350,7 +350,7 @@ function SubscriptionPage() {
               style={{
                 margin: "16px 16px 0",
                 background: "#fff",
-                borderRadius: 16,
+                borderRadius: 8,
                 border: "1px solid #E4E8EF",
                 overflow: "hidden",
               }}
@@ -379,7 +379,7 @@ function SubscriptionPage() {
               style={{
                 margin: "12px 16px 0",
                 background: "#FEF3C7",
-                borderRadius: 16,
+                borderRadius: 8,
                 padding: "14px 16px",
                 border: "1px solid #FDE68A",
                 display: "flex",
@@ -417,7 +417,7 @@ function SubscriptionPage() {
                 width: "calc(100% - 32px)",
                 background: "#0B1F3A",
                 color: "#fff",
-                borderRadius: 20,
+                borderRadius: 8,
                 padding: 15,
                 fontSize: 15,
                 fontWeight: 800,

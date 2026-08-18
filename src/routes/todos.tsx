@@ -166,7 +166,7 @@ function TodosPage() {
           type="button"
           onClick={() => toggleCompleted(t)}
           aria-label={t.completed ? "Mark incomplete" : "Mark complete"}
-          className="flex items-center justify-center rounded"
+          className="flex items-center justify-center rounded-lg"
           style={{
             width: 22,
             height: 22,
@@ -240,7 +240,7 @@ function TodosPage() {
           type="button"
           onClick={openSheet}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
           <IconPlus stroke={1.5} size={15} />
           Add to-do
@@ -296,7 +296,7 @@ function TodosPage() {
             onClick={() => setShowSheet(false)}
           />
           <div
-            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl px-4 pt-5 pb-8"
+            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-lg px-4 pt-5 pb-8"
             style={{ animation: "slideUp 0.25s ease-out" }}
           >
             <div className="flex items-center justify-between mb-4">
@@ -354,7 +354,7 @@ function TodosPage() {
                         key={p}
                         type="button"
                         onClick={() => setPriority(p)}
-                        className="flex-1 h-10 rounded-md text-[13px] font-medium capitalize transition-colors"
+                        className="flex-1 h-10 rounded-lg text-[13px] font-medium capitalize transition-colors"
                         style={{
                           backgroundColor: active ? priorityColor(p) : "transparent",
                           color: active ? "#FFFFFF" : "#6B7280",

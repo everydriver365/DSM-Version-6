@@ -446,7 +446,7 @@ function FuelPage() {
                 background: NAVY,
                 color: "#FFFFFF",
                 border: "none",
-                borderRadius: 10,
+                borderRadius: 8,
                 fontWeight: 600,
                 fontSize: 14,
                 cursor: "pointer",
@@ -565,7 +565,7 @@ function FuelPage() {
 function pill(active: boolean): React.CSSProperties {
   return {
     padding: "6px 14px",
-    borderRadius: 20,
+    borderRadius: 8,
     fontSize: 12,
     fontWeight: 500,
     cursor: "pointer",
@@ -766,7 +766,7 @@ function FindCheapFuel({
             style={{
               marginTop: 12,
               padding: "8px 18px",
-              borderRadius: 10,
+              borderRadius: 8,
               border: "none",
               background: "#1877D6",
               color: "#FFFFFF",
@@ -809,7 +809,7 @@ function FindCheapFuel({
               style={{
                 background: "#FFFFFF",
                 border: BORDER,
-                borderRadius: 10,
+                borderRadius: 8,
                 padding: 16,
                 fontSize: 12,
                 color: "#6B7686",
@@ -819,7 +819,7 @@ function FindCheapFuel({
               No stations found within {radiusKm}km.
             </div>
           ) : (
-            <div style={{ background: "#FFFFFF", border: BORDER, borderRadius: 10, overflow: "hidden" }}>
+            <div style={{ background: "#FFFFFF", border: BORDER, borderRadius: 8, overflow: "hidden" }}>
               {stations.map((s, i) => {
                 const bs = brandStyle(s?.brand || s?.name || "");
                 const initial = String(s?.brand || s?.name || "?").trim().charAt(0).toUpperCase();
@@ -954,7 +954,7 @@ function TopCard({
   bg: string;
 }) {
   return (
-    <div style={{ background: bg, border: `1px solid ${accent}`, borderRadius: 10, padding: 12, minWidth: 0 }}>
+    <div style={{ background: bg, border: `1px solid ${accent}`, borderRadius: 8, padding: 12, minWidth: 0 }}>
       <div style={{ fontSize: 9, fontWeight: 600, color: accent, textTransform: "uppercase", letterSpacing: "0.06em" }}>
         {eyebrow}
       </div>
@@ -1002,7 +1002,7 @@ function cardStyle({ mt }: { mt: number }): React.CSSProperties {
   return {
     background: "#FFFFFF",
     border: BORDER,
-    borderRadius: 10,
+    borderRadius: 8,
     padding: 16,
     marginLeft: 16,
     marginRight: 16,
@@ -1043,7 +1043,7 @@ function SectionHeading({ icon, title }: { icon?: React.ReactNode; title: string
 
 function Stat({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
-    <div style={{ background: "#F8FAFC", border: BORDER, borderRadius: 10, padding: 10 }}>
+    <div style={{ background: "#F8FAFC", border: BORDER, borderRadius: 8, padding: 10 }}>
       <div style={{ fontSize: 11, color: "#6B7280", fontWeight: 500 }}>{label}</div>
       <div style={{ fontSize: 16, fontWeight: 700, color: color || NAVY, marginTop: 2 }}>{value}</div>
     </div>

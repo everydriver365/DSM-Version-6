@@ -125,7 +125,7 @@ export function LogMileageSheet({ open, onClose, onSaved }: LogMileageSheetProps
             <button
               type="button"
               onClick={() => setPurpose("business")}
-              className="flex-1 h-10 rounded-md text-[13px] font-medium transition-colors"
+              className="flex-1 h-10 rounded-lg text-[13px] font-medium transition-colors"
               style={{
                 backgroundColor: purpose === "business" ? "#0B1F3A" : "transparent",
                 color: purpose === "business" ? "#FFFFFF" : "#6B7280",
@@ -140,7 +140,7 @@ export function LogMileageSheet({ open, onClose, onSaved }: LogMileageSheetProps
             <button
               type="button"
               onClick={() => setPurpose("personal")}
-              className="flex-1 h-10 rounded-md text-[13px] font-medium transition-colors"
+              className="flex-1 h-10 rounded-lg text-[13px] font-medium transition-colors"
               style={{
                 backgroundColor: purpose === "personal" ? "#6B7280" : "transparent",
                 color: purpose === "personal" ? "#FFFFFF" : "#6B7280",

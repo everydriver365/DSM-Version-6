@@ -327,7 +327,7 @@ function IntakeQuestionsPage() {
           margin: "16px",
           backgroundColor: "#F0F4FF",
           border: "1px solid #BFDBFE",
-          borderRadius: 12,
+          borderRadius: 8,
           padding: 16,
           display: "flex",
           gap: 12,
@@ -361,7 +361,7 @@ function IntakeQuestionsPage() {
               style={{
                 backgroundColor: "#FFFFFF",
                 border: "0.5px solid #EEF2F7",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: "12px 14px",
                 marginBottom: 8,
                 display: "flex",
@@ -412,7 +412,7 @@ function IntakeQuestionsPage() {
               style={{
                 backgroundColor: "#FFFFFF",
                 border: "0.5px solid #EEF2F7",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: "14px 16px",
                 margin: "0 16px 8px",
                 display: "flex",
@@ -447,7 +447,7 @@ function IntakeQuestionsPage() {
                     style={{
                       fontSize: 11,
                       padding: "2px 8px",
-                      borderRadius: 6,
+                      borderRadius: 8,
                       backgroundColor: "#EEF2FF",
                       color: "#1877D6",
                       fontWeight: 500,
@@ -460,7 +460,7 @@ function IntakeQuestionsPage() {
                       style={{
                         fontSize: 11,
                         padding: "2px 8px",
-                        borderRadius: 6,
+                        borderRadius: 8,
                         backgroundColor: "#FEECEE",
                         color: "#1877D6",
                         fontWeight: 500,
@@ -559,7 +559,7 @@ function IntakeQuestionsPage() {
             onClick={(e) => e.stopPropagation()}
             style={{
               backgroundColor: "#FFFFFF",
-              borderRadius: 14,
+              borderRadius: 8,
               padding: 20,
               maxWidth: 380,
               width: "100%",
@@ -625,7 +625,7 @@ function Toggle({
       style={{
         width: 42,
         height: 24,
-        borderRadius: 12,
+        borderRadius: 8,
         border: "none",
         backgroundColor: checked ? "#1877D6" : "#D1D5DB",
         position: "relative",
@@ -744,7 +744,7 @@ function QuestionSheet({
               style={{
                 width: "100%",
                 border: "1px solid #EEF2F7",
-                borderRadius: 10,
+                borderRadius: 8,
                 padding: "10px 40px 10px 12px",
                 fontSize: 14,
                 fontFamily: "Poppins, sans-serif",
@@ -783,7 +783,7 @@ function QuestionSheet({
               marginTop: 6,
               marginBottom: 16,
               border: "1px solid #EEF2F7",
-              borderRadius: 10,
+              borderRadius: 8,
               padding: "10px 12px",
               fontSize: 14,
               fontFamily: "Poppins, sans-serif",
@@ -818,7 +818,7 @@ function QuestionSheet({
                       style={{
                         flex: 1,
                         border: "1px solid #EEF2F7",
-                        borderRadius: 10,
+                        borderRadius: 8,
                         padding: "8px 12px",
                         fontSize: 14,
                         fontFamily: "Poppins, sans-serif",
@@ -852,7 +852,7 @@ function QuestionSheet({
                     background: "transparent",
                     border: "1px dashed #BFDBFE",
                     color: "#1877D6",
-                    borderRadius: 10,
+                    borderRadius: 8,
                     padding: "8px 12px",
                     fontSize: 13,
                     fontWeight: 500,
@@ -898,7 +898,7 @@ function QuestionSheet({
             style={{
               width: "100%",
               height: 48,
-              borderRadius: 10,
+              borderRadius: 8,
               backgroundColor: "#0B1F3A",
               color: "#FFFFFF",
               border: "none",

@@ -385,7 +385,7 @@ const SECTION_TITLE_BAR_STYLE: React.CSSProperties = {
   display: 'inline-block',
   width: 3,
   height: 12,
-  borderRadius: 2,
+  borderRadius: 8,
   backgroundColor: '#1877D6',
   flexShrink: 0,
 };
@@ -659,7 +659,7 @@ function TodayLessonsTile({
         width: "100%",
         background: "#FFFFFF",
         border: "0.5px solid rgba(15,32,68,0.10)",
-        borderRadius: 16,
+        borderRadius: 8,
         padding: "14px 16px",
         display: "flex",
         alignItems: "center",
@@ -673,7 +673,7 @@ function TodayLessonsTile({
         style={{
           width: 36,
           height: 36,
-          borderRadius: 12,
+          borderRadius: 8,
           background: "#E6F1FB",
           color: "#1877D6",
           display: "flex",
@@ -700,7 +700,7 @@ function TodayLessonsTile({
               style={{
                 width: 22,
                 height: 22,
-                borderRadius: 6,
+                borderRadius: 8,
                 background: "#1877D6",
                 color: "#FFFFFF",
                 border: "none",
@@ -811,7 +811,7 @@ function SwipeableStatsCard({
       style={{
         position: "relative",
         background: "#FFFFFF",
-        borderRadius: 16,
+        borderRadius: 8,
         padding: 16,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         marginBottom: 14,
@@ -844,7 +844,7 @@ function SwipeableStatsCard({
           style={{
             width: 40,
             height: 40,
-            borderRadius: 12,
+            borderRadius: 8,
             background: "#EEF2F7",
             display: "flex",
             alignItems: "center",
@@ -903,7 +903,7 @@ function SwipeableStatsCard({
                   cursor: "pointer",
                   height: 6,
                   width: active ? 16 : 6,
-                  borderRadius: active ? 6 : "50%",
+                  borderRadius: active ? 8 : "8%",
                   background: active ? "#1877D6" : "#D0D5DD",
                 }}
               />
@@ -987,7 +987,7 @@ function TileCard({
         position: "relative",
         background: "#FFFFFF",
         border: "1px solid #ECEFF3",
-        borderRadius: 12,
+        borderRadius: 8,
         padding: image ? "0 0 18px" : "20px 20px 18px",
         minHeight: image ? 0 : 148,
         display: "flex",
@@ -1052,7 +1052,7 @@ function TileCard({
           style={{
             width: 44,
             height: 44,
-            borderRadius: 12,
+            borderRadius: 8,
             background: chipBg,
             border: `1px solid ${resolvedBorder}`,
             display: "flex",
@@ -1164,7 +1164,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
       style={{
         position: 'relative',
         background: '#FFFFFF',
-        borderRadius: 12,
+        borderRadius: 8,
         padding: '12px 6px 10px',
         border: '0.5px solid #E4E8EF',
         cursor: 'pointer',
@@ -1183,7 +1183,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
         style={{
           width: 42,
           height: 42,
-          borderRadius: 12,
+          borderRadius: 8,
           background: t.chipBg,
           display: 'inline-flex',
           alignItems: 'center',
@@ -1218,7 +1218,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
           style={{
             width: 36,
             height: 36,
-            borderRadius: 12,
+            borderRadius: 8,
             background: '#fff',
             boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
             border: 'none',
@@ -1236,7 +1236,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
         <div
           style={{
             background: '#fff',
-            borderRadius: 12,
+            borderRadius: 8,
             padding: '9px 12px',
             boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
             display: 'flex',
@@ -1306,7 +1306,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
                 style={{
                   width: active ? 16 : 6,
                   height: 6,
-                  borderRadius: active ? 6 : 999,
+                  borderRadius: active ? 8 : 999,
                   background: active ? '#1877D6' : '#D0D5DD',
                   border: 'none',
                   padding: 0,
@@ -3631,7 +3631,7 @@ function HomePage() {
           overflow: "hidden",
           padding: 12,
           paddingLeft: 16,
-          borderRadius: 12,
+          borderRadius: 8,
           borderWidth: "0.5px",
           borderStyle: "solid",
           borderColor: "#EEF2F7",
@@ -3698,7 +3698,7 @@ function HomePage() {
                 fontSize: 12,
                 fontWeight: 700,
                 textTransform: "uppercase",
-                borderRadius: 6,
+                borderRadius: 8,
                 padding: "2px 8px",
                 cursor: "pointer",
               }}
@@ -3784,7 +3784,7 @@ function HomePage() {
     const cardBase: React.CSSProperties = {
       minHeight: 56,
       padding: "8px 12px",
-      borderRadius: 12,
+      borderRadius: 8,
       backgroundColor: "#FFFFFF",
       display: "flex",
       alignItems: "center",
@@ -4149,7 +4149,7 @@ function HomePage() {
     });
     const cardStyle: React.CSSProperties = {
       background: "#FFFFFF", border: "0.5px solid #E2E6ED",
-      borderRadius: 12, padding: 16, boxShadow: '0 4px 0 #E4E4E8',
+      borderRadius: 8, padding: 16, boxShadow: '0 4px 0 #E4E4E8',
     };
     const statLabel: React.CSSProperties = {
       fontSize: 12, fontWeight: 600, color: "#6B7280",
@@ -4168,7 +4168,7 @@ function HomePage() {
     };
     const quickBtn: React.CSSProperties = {
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      gap: 6, padding: "14px 8px", borderRadius: 12,
+      gap: 6, padding: "14px 8px", borderRadius: 8,
       border: "0.5px solid #E2E6ED", background: "#F8FAFF",
       cursor: "pointer", fontFamily: "Poppins, sans-serif",
       fontSize: 12, fontWeight: 600, color: "#0B1F3A",
@@ -4258,7 +4258,7 @@ function HomePage() {
                     return (
                       <div style={{
                         background: "#FFFFFF", border: "0.5px solid #E2E6ED",
-                        borderRadius: 16, overflow: "hidden", margin: "12px 16px 0", boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
+                        borderRadius: 8, overflow: "hidden", margin: "12px 16px 0", boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                         fontFamily: "Poppins, sans-serif",
                       }}>
                         <div style={{ height: 4, background: "linear-gradient(90deg, #00B5A5, #1877D6)" }} />
@@ -4275,7 +4275,7 @@ function HomePage() {
                             ].map((s) => (
                               <div key={s.label} style={{
                                 flex: 1, background: "#F7FAFC", border: "0.5px solid #E2E6ED",
-                                borderRadius: 12, padding: "10px 14px", textAlign: "center",
+                                borderRadius: 8, padding: "10px 14px", textAlign: "center",
                               }}>
                                 <div style={{ fontWeight: 700, fontSize: 18, color: s.color }}>{s.value}</div>
                                 <div style={{ fontSize: 12, color: "#9CA3AF" }}>{s.label}</div>
@@ -4318,14 +4318,14 @@ function HomePage() {
                           <div style={{ display: "flex", gap: 8 }}>
                             <button onClick={() => navigate({ to: "/gaps" })} style={{
                               flex: 1, background: "#0B1F3A", color: "#FFFFFF",
-                              padding: "12px 0", borderRadius: 12, fontWeight: 600, fontSize: 14,
+                              padding: "12px 0", borderRadius: 8, fontWeight: 600, fontSize: 14,
                               border: "none", cursor: "pointer", fontFamily: "Poppins, sans-serif",
                             }}>Fill My Slots →</button>
                             <button onClick={() => {
                               window.location.href = `sms:?body=${encodeURIComponent("Hi everyone, I have lesson availability today. Reply to book!")}`;
                             }} style={{
                               flex: 1, background: "#00B5A5", color: "#FFFFFF",
-                              padding: "12px 0", borderRadius: 12, fontWeight: 600, fontSize: 14,
+                              padding: "12px 0", borderRadius: 8, fontWeight: 600, fontSize: 14,
                               border: "none", cursor: "pointer", fontFamily: "Poppins, sans-serif",
                             }}>Broadcast message</button>
                           </div>
@@ -4355,7 +4355,7 @@ function HomePage() {
                           style={{
                             display: "grid", gridTemplateColumns: "70px 1fr auto auto auto",
                             gap: 12, alignItems: "center", padding: "10px 12px",
-                            borderRadius: 12, border: "0.5px solid #E2E6ED",
+                            borderRadius: 8, border: "0.5px solid #E2E6ED",
                             background: "#FFFFFF", cursor: "pointer", textAlign: "left",
                             fontFamily: "Poppins, sans-serif",
                           }}
@@ -4381,7 +4381,7 @@ function HomePage() {
                               }}
                               style={{
                                 fontSize: 10, fontWeight: 700, textTransform: "uppercase",
-                                padding: "3px 8px", borderRadius: 6,
+                                padding: "3px 8px", borderRadius: 8,
                                 background: "#FEF3C7", color: "#B45309",
                                 cursor: "pointer",
                               }}
@@ -4399,7 +4399,7 @@ function HomePage() {
                     onClick={() => navigate({ to: "/schedule" })}
                     style={{
                       flex: 1, padding: "10px 12px",
-                      borderRadius: 12, border: "1px dashed #1877D6",
+                      borderRadius: 8, border: "1px dashed #1877D6",
                       background: "transparent", color: "#1877D6",
                       fontSize: 13, fontWeight: 600, cursor: "pointer",
                       fontFamily: "Poppins, sans-serif",
@@ -4410,7 +4410,7 @@ function HomePage() {
                     style={{
                       background: 'white',
                       border: '0.5px solid #E2E6ED',
-                      borderRadius: 6,
+                      borderRadius: 8,
                       padding: '6px 10px',
                       cursor: 'pointer',
                       display: 'flex',
@@ -4446,7 +4446,7 @@ function HomePage() {
                         style={{
                           display: "grid", gridTemplateColumns: "1fr auto auto",
                           gap: 12, alignItems: "center", padding: "10px 12px",
-                          borderRadius: 16, border: "0.5px solid #E2E6ED", boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
+                          borderRadius: 8, border: "0.5px solid #E2E6ED", boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                           fontFamily: "Poppins, sans-serif",
                         }}
                       >
@@ -4459,7 +4459,7 @@ function HomePage() {
                           <a
                             href={`sms:${p.phone}?body=${encodeURIComponent(`Hi ${p.firstName}, just a reminder that £${p.amount.toFixed(2)} is outstanding on your lesson account. Thanks!`)}`}
                             style={{
-                              padding: "6px 10px", borderRadius: 6,
+                              padding: "6px 10px", borderRadius: 8,
                               background: "#1877D6", color: "#FFFFFF",
                               fontSize: 12, fontWeight: 600, textDecoration: "none",
                             }}
@@ -4492,7 +4492,7 @@ function HomePage() {
                       <div key={n.id}
                         style={{
                           display: "flex", gap: 10, alignItems: "flex-start",
-                          padding: "10px 12px", borderRadius: 12,
+                          padding: "10px 12px", borderRadius: 8,
                           border: "0.5px solid #E2E6ED",
                           background: n.read ? "#FFFFFF" : "#F0F7FF",
                           fontFamily: "Poppins, sans-serif",
@@ -4534,7 +4534,7 @@ function HomePage() {
                         style={{
                           display: "grid", gridTemplateColumns: "1fr auto",
                           gap: 12, alignItems: "center", padding: "10px 12px",
-                          borderRadius: 12, border: "0.5px solid #E2E6ED",
+                          borderRadius: 8, border: "0.5px solid #E2E6ED",
                           fontFamily: "Poppins, sans-serif",
                         }}
                       >
@@ -4689,7 +4689,7 @@ function HomePage() {
             type="button"
             onClick={() => navigate({ to: s.route as never })}
             style={{
-              flex: 1, background: '#FFFFFF', borderRadius: 12,
+              flex: 1, background: '#FFFFFF', borderRadius: 8,
               boxShadow: '0 4px 0 #E4E4E8', padding: 12, minWidth: 0,
               border: 'none', textAlign: 'left', cursor: 'pointer', fontFamily: 'Poppins, sans-serif',
             }}
@@ -4728,7 +4728,7 @@ function HomePage() {
           style={{
             margin: 0,
             background: '#FFFFFF',
-            borderRadius: upcoming && heroExpanded ? '20px 20px 0 0' : 20,
+            borderRadius: upcoming && heroExpanded ? '8px 8px 0 0' : 20,
             boxShadow: '0 8px 24px rgba(15,32,68,0.12)',
             overflow: 'hidden',
             fontFamily: 'Poppins, sans-serif',
@@ -4906,7 +4906,7 @@ function HomePage() {
                       position: 'relative',
                       height: 160,
                       overflow: 'hidden',
-                      borderRadius: '20px 20px 0 0',
+                      borderRadius: '8px 8px 0 0',
                     }}
                   >
                     {/* RIGHT PANEL — map */}
@@ -5064,7 +5064,7 @@ function HomePage() {
                           background: '#FFFFFF',
                           color: '#0B1F3A',
                           padding: '5px 12px',
-                          borderRadius: 12,
+                          borderRadius: 8,
                           border: '1px solid #E5E8EE',
                           boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
                           fontSize: 12,
@@ -5104,7 +5104,7 @@ function HomePage() {
                     position: 'relative',
                     flex: 1,
                     height: 38,
-                    borderRadius: 12,
+                    borderRadius: 8,
                     border: 'none',
                     background: '#1877D6',
                     color: '#FFFFFF',
@@ -5160,7 +5160,7 @@ function HomePage() {
                   style={{
                     flex: 1,
                     height: 38,
-                    borderRadius: 12,
+                    borderRadius: 8,
                     border: 'none',
                     background: '#F3F6FA',
                     color: '#0B1F3A',
@@ -5189,7 +5189,7 @@ function HomePage() {
                   style={{
                     flex: 1,
                     height: 38,
-                    borderRadius: 12,
+                    borderRadius: 8,
                     border: 'none',
                     background: '#F3F6FA',
                     color: '#0B1F3A',
@@ -5418,7 +5418,7 @@ function HomePage() {
                     }
                     setLateOpen(false);
                   }}
-                  style={{ height: 44, borderRadius: 12, border: '1px solid #e3e6ec', background: '#fff', fontFamily: 'Poppins, sans-serif', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}
+                  style={{ height: 44, borderRadius: 8, border: '1px solid #e3e6ec', background: '#fff', fontFamily: 'Poppins, sans-serif', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}
                 >{m}m</button>
               ))}
             </div>
@@ -5614,7 +5614,7 @@ function HomePage() {
         const cardBase: React.CSSProperties = {
           background: '#FFFFFF',
           border: `0.5px solid ${BORDER}`,
-          borderRadius: 12,
+          borderRadius: 8,
           fontFamily: PF,
         };
         const rowTap: React.CSSProperties = {
@@ -5632,7 +5632,7 @@ function HomePage() {
             tabIndex={onClick ? 0 : undefined}
             style={{
               ...cardBase,
-              borderRadius: 12,
+              borderRadius: 8,
               padding: '12px 14px',
               minHeight: 66,
               display: 'flex',
@@ -5749,7 +5749,7 @@ function HomePage() {
                       background: '#FFFBEB',
                       border: '0.5px solid #D97706',
                       borderLeft: '4px solid #D97706',
-                      borderRadius: 12,
+                      borderRadius: 8,
                       padding: '14px 16px',
                       fontFamily: PF,
                       display: 'flex',
@@ -5757,7 +5757,7 @@ function HomePage() {
                       alignItems: 'center',
                     }}
                   >
-                    <div style={{ width: 40, height: 40, borderRadius: 6, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 8, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <IconBolt stroke={1.5} size={20} color="#D97706" />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -5775,7 +5775,7 @@ function HomePage() {
                         to: '/gaps',
                         search: { date: freedSlot.lesson_date, time, duration: String(duration) } as any,
                       })}
-                      style={{ background: '#D97706', color: '#FFFFFF', border: 'none', borderRadius: 12, padding: '8px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
+                      style={{ background: '#D97706', color: '#FFFFFF', border: 'none', borderRadius: 8, padding: '8px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
                     >
                       Fill slot →
                     </button>
@@ -5863,7 +5863,7 @@ function HomePage() {
                                 minWidth: 18,
                                 height: 18,
                                 padding: '0 5px',
-                                borderRadius: 6,
+                                borderRadius: 8,
                                 background: '#1877D6',
                                 color: '#FFFFFF',
                                 fontSize: 11,
@@ -5892,8 +5892,8 @@ function HomePage() {
                   return (
                     <div style={{ fontFamily: PF }}>
                       {tabs}
-                      <div style={{ background: '#FFFFFF', borderRadius: 12, border: '1px solid rgba(15,32,68,0.08)', padding: '20px 18px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-                        <div style={{ width: 44, height: 44, borderRadius: 6, background: 'linear-gradient(135deg, #1877D6, #0B1F3A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ background: '#FFFFFF', borderRadius: 8, border: '1px solid rgba(15,32,68,0.08)', padding: '20px 18px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+                        <div style={{ width: 44, height: 44, borderRadius: 8, background: 'linear-gradient(135deg, #1877D6, #0B1F3A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           <IconBolt size={22} color="#FFFFFF" stroke={2} />
                         </div>
                         <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>Your day is wide open</div>
@@ -5901,7 +5901,7 @@ function HomePage() {
                         <button
                           type="button"
                           onClick={() => navigate({ to: '/gaps' })}
-                          style={{ marginTop: 4, width: '100%', background: '#0B1F3A', color: '#FFFFFF', border: 'none', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer' }}
+                          style={{ marginTop: 4, width: '100%', background: '#0B1F3A', color: '#FFFFFF', border: 'none', borderRadius: 8, padding: 12, fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer' }}
                         >
                           <IconBolt size={16} color="#FFFFFF" stroke={2} />
                           Open gap filler
@@ -5945,7 +5945,7 @@ function HomePage() {
                         gap: 12,
                         background: '#0B1F3A',
                         color: '#FFFFFF',
-                        borderRadius: 12,
+                        borderRadius: 8,
                         padding: '10px 14px',
                         margin: '0 0 12px',
 
@@ -5978,7 +5978,7 @@ function HomePage() {
                           background: 'transparent',
                           border: '1px solid rgba(255,255,255,0.3)',
                           color: '#FFFFFF',
-                          borderRadius: 6,
+                          borderRadius: 8,
                           padding: '4px 10px',
                           fontSize: 12,
                           fontWeight: 500,
@@ -6031,7 +6031,7 @@ function HomePage() {
                               textTransform: "uppercase",
                               letterSpacing: "0.5px",
                               padding: "4px 10px",
-                              borderRadius: "6px 6px 6px 0",
+                              borderRadius: "8px 8px 8px 0",
                               fontFamily: PF,
                               lineHeight: 1.2,
                             }}
@@ -6051,7 +6051,7 @@ function HomePage() {
                             style={{
                               background: moveModeHome ? '#F4F8FE' : '#FDFBF6',
                               border: '2px dashed #D4A853',
-                              borderRadius: 16,
+                              borderRadius: 8,
                               boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                               padding: '20px 14px 12px',
                               display: 'flex',
@@ -6069,7 +6069,7 @@ function HomePage() {
                                 {durLabel}
                               </div>
                             </div>
-                            <div aria-hidden style={{ width: 4, borderRadius: '14px', background: '#D4A853', flexShrink: 0, alignSelf: 'stretch', marginTop: 4, marginBottom: 4 }} />
+                            <div aria-hidden style={{ width: 4, borderRadius: '8px', background: '#D4A853', flexShrink: 0, alignSelf: 'stretch', marginTop: 4, marginBottom: 4 }} />
                             <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, flexWrap: 'wrap' }}>
                                 {preview.count > 0 ? (
@@ -6128,7 +6128,7 @@ function HomePage() {
                                   fontSize: 12.5,
                                   fontWeight: 600,
                                   padding: '8px 14px',
-                                  borderRadius: 12,
+                                  borderRadius: 8,
                                   border: 'none',
                                   cursor: 'pointer',
                                   fontFamily: PF,
@@ -6148,7 +6148,7 @@ function HomePage() {
                                   fontSize: 13,
                                   fontWeight: 700,
                                   padding: '9px 18px',
-                                  borderRadius: 12,
+                                  borderRadius: 8,
                                   border: 'none',
                                   cursor: 'pointer',
                                   fontFamily: PF,
@@ -6196,7 +6196,7 @@ function HomePage() {
                           style={{
                             background: '#FFFFFF',
                             border: '1px solid #E4E8EF',
-                            borderRadius: 12,
+                            borderRadius: 8,
                             marginBottom: 8,
                             padding: '12px 14px',
                             display: 'flex',
@@ -6212,7 +6212,7 @@ function HomePage() {
                               {durLabel}
                             </div>
                           </div>
-                          <div aria-hidden style={{ width: 3, borderRadius: 2, background: resolveEventColour(r.colour, '#D9DEE7'), flexShrink: 0, alignSelf: 'stretch' }} />
+                          <div aria-hidden style={{ width: 3, borderRadius: 8, background: resolveEventColour(r.colour, '#D9DEE7'), flexShrink: 0, alignSelf: 'stretch' }} />
                           <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                             <div
                               style={{
@@ -6318,7 +6318,7 @@ function HomePage() {
                             tabIndex={0}
                             style={{
                               background: 'linear-gradient(135deg, #1877D6, #0B1F3A)',
-                              borderRadius: 12,
+                              borderRadius: 8,
                               marginBottom: 8,
                               padding: '10px 12px',
                               cursor: 'pointer',
@@ -6349,7 +6349,7 @@ function HomePage() {
                                 aria-hidden
                                 style={{
                                   width: 3,
-                                  borderRadius: 2,
+                                  borderRadius: 8,
                                   background: 'rgba(255,255,255,0.3)',
                                   flexShrink: 0,
                                   alignSelf: 'stretch',
@@ -6429,7 +6429,7 @@ function HomePage() {
                           )}
                           </TestDetailTrigger>
                         ) : (
-                          <div style={{ position: 'relative', background: '#FFFFFF', border: '1px solid #E4E8EF', borderRadius: 12, marginBottom: 8 }}>
+                          <div style={{ position: 'relative', background: '#FFFFFF', border: '1px solid #E4E8EF', borderRadius: 8, marginBottom: 8 }}>
                           <div
                             onClick={() => setDetailsSheetForLesson(l)}
                             onContextMenu={(e) => { e.preventDefault(); setActionsOpenForLesson(l); }}
@@ -6457,7 +6457,7 @@ function HomePage() {
                               aria-hidden
                               style={{
                                 width: 3,
-                                borderRadius: 2,
+                                borderRadius: 8,
                                 background: isCancelled ? '#9CA3AF' : '#1877D6',
                                 flexShrink: 0,
                                 alignSelf: 'stretch',
@@ -6507,7 +6507,7 @@ function HomePage() {
                                         alignItems: 'center',
                                         gap: 4,
                                         background: custom ? '#FEF3C7' : 'transparent',
-                                        borderRadius: custom ? 6 : 0,
+                                        borderRadius: custom ? 8 : 0,
                                         padding: custom ? '2px 6px' : '0',
                                         minWidth: 0,
                                       }}>
@@ -6566,7 +6566,7 @@ function HomePage() {
                                style={{
                                  background: '#FFFBEB',
                                  border: '1px solid #FDE68A',
-                                 borderRadius: 6,
+                                 borderRadius: 8,
                                  padding: '6px 10px',
                                  margin: '0 14px 8px',
                                  display: 'flex',
@@ -6676,7 +6676,7 @@ function HomePage() {
               style={{
                 background: '#FFFFFF',
                 border: '1px solid #E3E8F0',
-                borderRadius: 16,
+                borderRadius: 8,
                 padding: '14px 16px',
                 cursor: 'pointer',
                 fontFamily: 'Poppins, sans-serif',
@@ -6689,7 +6689,7 @@ function HomePage() {
                   style={{
                     width: 40,
                     height: 40,
-                    borderRadius: 12,
+                    borderRadius: 8,
                     background: '#0B1F3A',
                     color: '#FFFFFF',
                     display: 'flex',
@@ -6922,7 +6922,7 @@ function HomePage() {
                         style={{
                           width: '100%',
                           background: '#fff',
-                          borderRadius: 12,
+                          borderRadius: 8,
                           padding: '12px 10px',
                           boxShadow: '0 4px 0 #E4E4E8',
                           display: 'flex',
@@ -6944,7 +6944,7 @@ function HomePage() {
                           style={{
                             width: 34,
                             height: 34,
-                            borderRadius: 12,
+                            borderRadius: 8,
                             background: tint.chip,
                             display: 'flex',
                             alignItems: 'center',
@@ -7071,7 +7071,7 @@ function HomePage() {
                               background: '#fff',
                               border: 'none',
                               boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
-                              borderRadius: 12,
+                              borderRadius: 8,
                               padding: '10px 12px 10px 34px',
                               fontSize: 13,
                               color: '#0B1F3A',
@@ -7173,10 +7173,10 @@ function HomePage() {
                     >
                       <div
                         onClick={(e) => e.stopPropagation()}
-                        style={{ background: '#FFFFFF', borderRadius: '20px 20px 0 0', padding: 20, width: '100%' }}
+                        style={{ background: '#FFFFFF', borderRadius: '8px 8px 0 0', padding: 20, width: '100%' }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                          <div style={{ width: 36, height: 36, borderRadius: 6, background: '#FBE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <div style={{ width: 36, height: 36, borderRadius: 8, background: '#FBE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <IconClock stroke={1.5} size={20} color="#C23B3B" />
                           </div>
                           <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Running late</div>
@@ -7188,14 +7188,14 @@ function HomePage() {
                           <button
                             type="button"
                             onClick={() => setRunningLateOpen(false)}
-                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
+                            style={{ flex: 1, padding: '12px', borderRadius: 8, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
                           >
                             Cancel
                           </button>
                           <button
                             type="button"
                             onClick={() => { setRunningLateOpen(false); navigate({ to: '/broadcast' as never }); }}
-                            style={{ flex: 1, padding: '12px', borderRadius: 12, border: 'none', background: '#C23B3B', color: '#FFFFFF', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
+                            style={{ flex: 1, padding: '12px', borderRadius: 8, border: 'none', background: '#C23B3B', color: '#FFFFFF', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
                           >
                             Notify pupils
                           </button>
@@ -7316,7 +7316,7 @@ function HomePage() {
                       >
                         <div
                           onClick={(e) => e.stopPropagation()}
-                          style={{ background: '#FFFFFF', borderRadius: '20px 20px 0 0', padding: 20, width: '100%', maxHeight: '80vh', overflowY: 'auto' }}
+                          style={{ background: '#FFFFFF', borderRadius: '8px 8px 0 0', padding: 20, width: '100%', maxHeight: '80vh', overflowY: 'auto' }}
                         >
                           {activeCat ? (
                             <>
@@ -7325,7 +7325,7 @@ function HomePage() {
                                   type="button"
                                   aria-label="Back to categories"
                                   onClick={() => { setNearbyCategory(null); setNearbyResults([]); setNearbyError(null); setNearbyLoading(null); }}
-                                  style={{ width: 32, height: 32, borderRadius: 6, border: '1px solid #E2E8F0', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0, flexShrink: 0 }}
+                                  style={{ width: 32, height: 32, borderRadius: 8, border: '1px solid #E2E8F0', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0, flexShrink: 0 }}
                                 >
                                   <IconChevronLeft stroke={1.5} size={16} color="#0B1F3A" />
                                 </button>
@@ -7397,7 +7397,7 @@ function HomePage() {
                           ) : (
                             <>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                                <div style={{ width: 36, height: 36, borderRadius: 6, background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{ width: 36, height: 36, borderRadius: 8, background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                   <IconMapPin size={20} color="#1877D6" stroke={1.8} />
                                 </div>
                                 <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Find nearby</div>
@@ -7413,7 +7413,7 @@ function HomePage() {
                                     disabled={!!nearbyLoading}
                                     onClick={() => openCat(c)}
                                     style={{
-                                      background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 12, height: 56,
+                                      background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, height: 56,
                                       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
                                       cursor: nearbyLoading ? 'default' : 'pointer', opacity: nearbyLoading && nearbyLoading !== c.label ? 0.5 : 1,
                                       fontFamily: 'Poppins, sans-serif', padding: 0,
@@ -7429,7 +7429,7 @@ function HomePage() {
                           <button
                             type="button"
                             onClick={closeSheet}
-                            style={{ marginTop: 14, width: '100%', padding: '12px', borderRadius: 12, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
+                            style={{ marginTop: 14, width: '100%', padding: '12px', borderRadius: 8, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
                           >
                             Close
                           </button>
@@ -7614,7 +7614,7 @@ function HomePage() {
           const Badge = ({ colour, value }: { colour: string; value: number }) => (
             <span style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              minWidth: 16, height: 16, borderRadius: 6, background: colour,
+              minWidth: 16, height: 16, borderRadius: 8, background: colour,
               color: '#FFFFFF', fontSize: 9, fontWeight: 700, fontFamily: PF_C,
               padding: '0 3px', marginLeft: 2,
             }}>
@@ -7644,7 +7644,7 @@ function HomePage() {
                   fontWeight: count > 0 ? 600 : 400,
                   padding: active ? '2px 4px' : 0,
                   margin: active ? '-2px -4px' : 0,
-                  borderRadius: 6,
+                  borderRadius: 8,
                   cursor: active ? 'pointer' : 'inherit',
                   WebkitTapHighlightColor: 'transparent',
                 }}
@@ -7682,7 +7682,7 @@ function HomePage() {
                 </button>
               </div>
               <div style={{
-                margin: 0, background: '#FFFFFF', borderRadius: 16,
+                margin: 0, background: '#FFFFFF', borderRadius: 8,
                  boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                 border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
               }}>
@@ -8404,7 +8404,7 @@ function HomePage() {
             <div
               onClick={() => navigate({ to: '/community', search: { tab: 'uk' } })}
               style={{
-                margin: 0, background: 'white', borderRadius: 16,
+                margin: 0, background: 'white', borderRadius: 8,
                 boxShadow: '0 2px 8px rgba(15,32,68,0.06)', padding: '13px 14px',
                 display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
                 fontFamily: 'Poppins, sans-serif',
@@ -8413,7 +8413,7 @@ function HomePage() {
             >
             <div style={{ position: 'relative', flexShrink: 0 }}>
               <div style={{
-                width: 36, height: 36, borderRadius: 12,
+                width: 36, height: 36, borderRadius: 8,
                 background: unreadUkChat > 0 ? '#1877D6' : '#E6F1FB',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
@@ -8448,7 +8448,7 @@ function HomePage() {
             </div>
             {unreadUkChat > 0 && (
               <div style={{
-                width: 16, height: 16, borderRadius: 6, flexShrink: 0,
+                width: 16, height: 16, borderRadius: 8, flexShrink: 0,
                 background: '#1877D6', color: '#FFFFFF', fontSize: 10, fontWeight: 700,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontFamily: 'Poppins, sans-serif',
@@ -8664,7 +8664,7 @@ function HomePage() {
                   navigate({ to: '/messages/$pupilId', params: { pupilId: pid } });
                 }}
                 style={{
-                  flex: 1, padding: '12px 14px', borderRadius: 12,
+                  flex: 1, padding: '12px 14px', borderRadius: 8,
                   border: '1px solid #D9E0EA', background: '#FFFFFF',
                   color: '#0B1F3A', fontSize: 14, fontWeight: 600,
                   fontFamily: 'Poppins, sans-serif', cursor: 'pointer',
@@ -8680,7 +8680,7 @@ function HomePage() {
                   setSendMessageOpen(true);
                 }}
                 style={{
-                  flex: 1, padding: '12px 14px', borderRadius: 12,
+                  flex: 1, padding: '12px 14px', borderRadius: 8,
                   border: 'none', background: '#1877D6',
                   color: '#FFFFFF', fontSize: 14, fontWeight: 600,
                   fontFamily: 'Poppins, sans-serif', cursor: 'pointer',
@@ -8713,7 +8713,7 @@ function HomePage() {
                       background: '#FFFFFF',
                       border: '1px solid #E4E8EF',
                       borderLeft: `3px solid ${fromPupil ? (isSms ? '#CC2229' : '#1877D6') : '#D9E0EA'}`,
-                      borderRadius: 12,
+                      borderRadius: 8,
                       padding: '10px 12px',
                       boxShadow: '0 4px 0 #E4E4E8',
                     }}
@@ -8994,7 +8994,7 @@ function HomePage() {
       {birthdaySheetOpen && (
         <div className="fixed inset-0 z-[70] flex flex-col justify-end" style={{ fontFamily: 'Poppins, sans-serif' }}>
           <div className="absolute inset-0 bg-black/40" onClick={() => setBirthdaySheetOpen(false)} />
-          <div className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl pt-5 pb-6 max-h-[85vh] overflow-y-auto" style={{ animation: 'slideUp 0.25s ease-out' }}>
+          <div className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-lg pt-5 pb-6 max-h-[85vh] overflow-y-auto" style={{ animation: 'slideUp 0.25s ease-out' }}>
             <div className="flex items-center justify-between px-4 mb-3">
               <div className="flex items-center gap-2">
                 <IconGift stroke={1.5} size={20} color="#6B4FD6" />
@@ -9032,7 +9032,7 @@ function HomePage() {
                   <div className="flex gap-2 px-4 pb-3">
                     <a
                       href={p.phone ? `sms:${p.phone}?body=${giftMsg}` : `sms:?body=${giftMsg}`}
-                      className="flex-1 text-center rounded-xl py-2.5 px-4 text-[13px] font-semibold"
+                      className="flex-1 text-center rounded-lg py-2.5 px-4 text-[13px] font-semibold"
                       style={{ background: '#7C3AED', color: '#FFFFFF', textDecoration: 'none' }}
                     >
                       🎁 Send gift message
@@ -9040,7 +9040,7 @@ function HomePage() {
                     <button
                       type="button"
                       onClick={() => { setBirthdaySheetOpen(false); navigate({ to: '/messages/$pupilId' as never, params: { pupilId: p.id } as never }); }}
-                      className="flex-1 rounded-xl py-2.5 px-4 text-[13px] font-semibold"
+                      className="flex-1 rounded-lg py-2.5 px-4 text-[13px] font-semibold"
                       style={{ background: '#0B1F3A', color: '#FFFFFF', border: 'none', cursor: 'pointer' }}
                     >
                       💬 Message
@@ -9053,7 +9053,7 @@ function HomePage() {
               <button
                 type="button"
                 onClick={() => setBirthdaySheetOpen(false)}
-                className="w-full rounded-xl py-2.5 text-[13px] font-semibold"
+                className="w-full rounded-lg py-2.5 text-[13px] font-semibold"
                 style={{ background: '#F3F4F6', color: '#6B7280', border: 'none', cursor: 'pointer' }}
               >
                 ✓ Done
@@ -9106,7 +9106,7 @@ function HeroExpandedPanel({
   const pillBase: React.CSSProperties = {
     background: '#F2F2F7',
     border: 'none',
-    borderRadius: 6,
+    borderRadius: 8,
     padding: '8px 4px',
     display: 'flex',
     flexDirection: 'column',
@@ -9258,7 +9258,7 @@ function HeroExpandedPanel({
   const gridBtn: React.CSSProperties = {
     background: '#F5F7FA',
     border: '1px solid #E2E8F0',
-    borderRadius: 12,
+    borderRadius: 8,
     padding: '10px 4px',
     display: 'flex',
     flexDirection: 'column',
@@ -9282,7 +9282,7 @@ function HeroExpandedPanel({
     minWidth: 0,
     background: '#FFFFFF',
     border: '1px solid #E2E8F0',
-    borderRadius: 12,
+    borderRadius: 8,
     padding: '9px 12px',
     fontFamily: 'Poppins, sans-serif',
     fontSize: 13,
@@ -9318,7 +9318,7 @@ function HeroExpandedPanel({
   };
 
   return (
-    <div style={{ background: '#F3F8FF', borderRadius: 16, padding: 12 }}>
+    <div style={{ background: '#F3F8FF', borderRadius: 8, padding: 12 }}>
       {/* Quick Actions */}
       <div style={sectionLabel}>Quick Actions</div>
       {/* Row 1 — Navigate / Text / Call */}
@@ -9415,7 +9415,7 @@ function HeroExpandedPanel({
               style={{
                 width: 34,
                 height: 34,
-                borderRadius: 12,
+                borderRadius: 8,
                 border: '1px solid #B7E4C7',
                 background: pickupState === 'checking' ? '#F5F7FA' : '#E8F5E9',
                 color: '#1F6B2E',
@@ -9430,7 +9430,7 @@ function HeroExpandedPanel({
             </button>
           </div>
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 12, padding: '9px 12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '9px 12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
               <IconMapPin stroke={1.5} size={14} color="#8E8E93" />
               <span style={{ fontFamily: 'Poppins, sans-serif', fontSize: 13, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -9509,17 +9509,17 @@ function HeroExpandedPanel({
         return (
           <div style={{ marginTop: 14 }}>
             <div style={sectionLabel}>Account</div>
-            <div style={{ background: bg, borderRadius: 6, padding: '11px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
+            <div style={{ background: bg, borderRadius: 8, padding: '11px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
               <span style={{ fontSize: 14, fontWeight: 600, color: fg }}>{label}</span>
               {showActions && (
                 <div style={{ display: 'flex', gap: 6 }}>
                   <button
                     onClick={() => sendSms(`Hi ${firstName}, just a quick reminder that £${amount.toFixed(2)} is outstanding on your lesson account. Thanks!`)}
-                    style={{ background: '#FFFFFF', color: '#0B1F3A', fontSize: 11, fontWeight: 500, padding: '0 10px', height: 26, borderRadius: 6, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+                    style={{ background: '#FFFFFF', color: '#0B1F3A', fontSize: 11, fontWeight: 500, padding: '0 10px', height: 26, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
                   >Chase</button>
                   <button
                     onClick={() => navigateTo('/payments')}
-                    style={{ background: '#3B6D11', color: '#FFFFFF', fontSize: 11, fontWeight: 500, padding: '0 10px', height: 26, borderRadius: 6, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+                    style={{ background: '#3B6D11', color: '#FFFFFF', fontSize: 11, fontWeight: 500, padding: '0 10px', height: 26, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
                   >Mark paid</button>
                 </div>
               )}
@@ -9532,7 +9532,7 @@ function HeroExpandedPanel({
       <div style={{ marginTop: 14 }}>
         <div style={sectionLabel}>Last Lesson</div>
         {prev ? (
-          <div style={{ background: '#F2F2F7', borderRadius: 6, padding: '10px 12px', fontFamily: 'Poppins, sans-serif' }}>
+          <div style={{ background: '#F2F2F7', borderRadius: 8, padding: '10px 12px', fontFamily: 'Poppins, sans-serif' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontSize: 12, fontWeight: 600, color: '#0B1F3A' }}>
                 {new Date(prev.lesson_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
@@ -9546,7 +9546,7 @@ function HeroExpandedPanel({
             )}
           </div>
         ) : (
-          <div style={{ background: '#F2F2F7', borderRadius: 6, padding: '10px 12px', color: '#8A93A3', fontFamily: 'Poppins, sans-serif', fontSize: 12 }}>No previous lesson</div>
+          <div style={{ background: '#F2F2F7', borderRadius: 8, padding: '10px 12px', color: '#8A93A3', fontFamily: 'Poppins, sans-serif', fontSize: 12 }}>No previous lesson</div>
         )}
       </div>
 
@@ -9595,7 +9595,7 @@ function QuickTile({
         borderWidth: "0.5px",
         borderStyle: "solid",
         borderColor: "#EEF2F7",
-        borderRadius: 12,
+        borderRadius: 8,
         padding: 10,
       }}
     >
@@ -9629,7 +9629,7 @@ function TabBtn({
       style={{
         backgroundColor: active ? "#ffffff" : "transparent",
         color: active ? "#0B1F3A" : "#6B7280",
-        borderRadius: 6,
+        borderRadius: 8,
         padding: "8px 6px",
         fontWeight: 500,
         fontSize: 13,
@@ -9702,7 +9702,7 @@ function AccessTile({
         borderWidth: "0.5px",
         borderStyle: "solid",
         borderColor: "#EEF2F7",
-        borderRadius: 12,
+        borderRadius: 8,
         gap: 6,
         padding: 12,
         scrollSnapAlign: "start",
@@ -9711,7 +9711,7 @@ function AccessTile({
     >
       <span
         className="flex items-center justify-center"
-        style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: iconTint(color) }}
+        style={{ width: 40, height: 40, borderRadius: 8, backgroundColor: iconTint(color) }}
       >
         {coloredIcon}
       </span>
@@ -9745,7 +9745,7 @@ function EndOfDayBanner() {
         backgroundColor: "#F0F4FF",
         border: "1px solid #BFDBFE",
         padding: "10px 16px",
-        borderRadius: 12,
+        borderRadius: 8,
         fontFamily: "Poppins, sans-serif",
       }}
     >
@@ -9808,7 +9808,7 @@ function TodayTile({
         flex: 1,
         backgroundColor: '#FFFFFF',
         border: '1px solid #e0e3ea',
-        borderRadius: 12,
+        borderRadius: 8,
         padding: '12px 8px',
         minHeight: 70,
         display: 'flex',
@@ -9932,7 +9932,7 @@ function OutstandingBreakdownModal({
                         fontSize: 10,
                         fontWeight: 600,
                         padding: "2px 6px",
-                        borderRadius: 6,
+                        borderRadius: 8,
                         backgroundColor: r.type === "NI Course" ? "#EEF2F7" : "#DBEAFE",
                         color: r.type === "NI Course" ? "#0B1F3A" : "#1E40AF",
                       }}
@@ -9961,7 +9961,7 @@ function OutstandingBreakdownModal({
                       backgroundColor: r.phone ? "#F3F8FF" : "#F3F4F6",
                       color: r.phone ? "#0B1F3A" : "#9CA3AF",
                       border: `1px solid ${r.phone ? "#A7F3D0" : "#E5E7EB"}`,
-                      borderRadius: 6,
+                      borderRadius: 8,
                       cursor: r.phone ? "pointer" : "not-allowed",
                     }}
                   >
@@ -9982,7 +9982,7 @@ function OutstandingBreakdownModal({
                       backgroundColor: r.email ? "#EFF6FF" : "#F3F4F6",
                       color: r.email ? "#1D4ED8" : "#9CA3AF",
                       border: `1px solid ${r.email ? "#BFDBFE" : "#E5E7EB"}`,
-                      borderRadius: 6,
+                      borderRadius: 8,
                       cursor: r.email ? "pointer" : "not-allowed",
                     }}
                   >
@@ -10002,7 +10002,7 @@ function OutstandingBreakdownModal({
                       backgroundColor: "#F1F5F9",
                       color: "#0B1F3A",
                       border: "1px solid #CBD5E1",
-                      borderRadius: 6,
+                      borderRadius: 8,
                       cursor: "pointer",
                     }}
                   >
@@ -10026,7 +10026,7 @@ function OutstandingBreakdownModal({
               backgroundColor: rows.length === 0 ? "#E5E7EB" : "#1877D6",
               color: rows.length === 0 ? "#9CA3AF" : "#FFFFFF",
               border: "none",
-              borderRadius: 6,
+              borderRadius: 8,
               cursor: rows.length === 0 ? "not-allowed" : "pointer",
             }}
           >
@@ -10041,7 +10041,7 @@ function OutstandingBreakdownModal({
               backgroundColor: "#F3F4F6",
               color: "#374151",
               border: "1px solid #D1D5DB",
-              borderRadius: 6,
+              borderRadius: 8,
               cursor: "pointer",
             }}
           >
@@ -10140,7 +10140,7 @@ function EarningsBreakdownModal({
                       </div>
                       <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{fmtDate(r.date)}</div>
                     </div>
-                    <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 6, backgroundColor: "#EFF6FF", color: "#1E40AF", textTransform: "capitalize" }}>
+                    <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 8, backgroundColor: "#EFF6FF", color: "#1E40AF", textTransform: "capitalize" }}>
                       {r.method}
                     </span>
                     <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", minWidth: 60, textAlign: "right" }}>
@@ -10152,7 +10152,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={() => startEdit(r)}
                           aria-label="Edit payment"
-                          style={{ background: "none", border: "1px solid #E5E7EB", borderRadius: 6, padding: "4px 6px", cursor: "pointer", color: "#374151", fontSize: 11 }}
+                          style={{ background: "none", border: "1px solid #E5E7EB", borderRadius: 8, padding: "4px 6px", cursor: "pointer", color: "#374151", fontSize: 11 }}
                         >
                           Edit
                         </button>
@@ -10160,7 +10160,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={() => setConfirmDeleteId(r.id)}
                           aria-label="Delete payment"
-                          style={{ background: "none", border: "1px solid #FCA5A5", borderRadius: 6, padding: "4px 6px", cursor: "pointer", color: "#B91C1C", fontSize: 11 }}
+                          style={{ background: "none", border: "1px solid #FCA5A5", borderRadius: 8, padding: "4px 6px", cursor: "pointer", color: "#B91C1C", fontSize: 11 }}
                         >
                           Delete
                         </button>
@@ -10178,7 +10178,7 @@ function EarningsBreakdownModal({
                             min="0"
                             value={editAmount}
                             onChange={(e) => setEditAmount(e.target.value)}
-                            style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 6, fontSize: 13 }}
+                            style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 8, fontSize: 13 }}
                           />
                         </label>
                         <label style={{ flex: 1, fontSize: 11, color: "#6B7280" }}>
@@ -10187,7 +10187,7 @@ function EarningsBreakdownModal({
                             type="date"
                             value={editDate}
                             onChange={(e) => setEditDate(e.target.value)}
-                            style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 6, fontSize: 13 }}
+                            style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 8, fontSize: 13 }}
                           />
                         </label>
                       </div>
@@ -10196,7 +10196,7 @@ function EarningsBreakdownModal({
                         <select
                           value={editMethod}
                           onChange={(e) => setEditMethod(e.target.value)}
-                          style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 6, fontSize: 13, backgroundColor: "#fff" }}
+                          style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 8, fontSize: 13, backgroundColor: "#fff" }}
                         >
                           <option value="cash">Cash</option>
                           <option value="bank_transfer">Bank transfer</option>
@@ -10208,7 +10208,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={cancelEdit}
                           disabled={isBusy}
-                          style={{ padding: "6px 10px", fontSize: 12, background: "#F3F4F6", border: "1px solid #D1D5DB", borderRadius: 6, cursor: "pointer" }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: "#F3F4F6", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
                         >
                           Cancel
                         </button>
@@ -10229,7 +10229,7 @@ function EarningsBreakdownModal({
                               setBusyId(null);
                             }
                           }}
-                          style={{ padding: "6px 10px", fontSize: 12, background: "#1877D6", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: "#1877D6", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
                         >
                           {isBusy ? "Saving..." : "Save"}
                         </button>
@@ -10246,7 +10246,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={() => setConfirmDeleteId(null)}
                           disabled={isBusy}
-                          style={{ padding: "6px 10px", fontSize: 12, background: "#F3F4F6", border: "1px solid #D1D5DB", borderRadius: 6, cursor: "pointer" }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: "#F3F4F6", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
                         >
                           Cancel
                         </button>
@@ -10262,7 +10262,7 @@ function EarningsBreakdownModal({
                               setBusyId(null);
                             }
                           }}
-                          style={{ padding: "6px 10px", fontSize: 12, background: "#DC2626", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: "#DC2626", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
                         >
                           {isBusy ? "Deleting..." : "Delete"}
                         </button>
@@ -10283,13 +10283,13 @@ function EarningsBreakdownModal({
           <div style={{ display: "flex", gap: 8 }}>
             <button
               onClick={onViewMTD}
-              style={{ flex: 1, padding: "10px 12px", fontSize: 13, fontWeight: 700, backgroundColor: "#1877D6", color: "#FFFFFF", border: "none", borderRadius: 6, cursor: "pointer" }}
+              style={{ flex: 1, padding: "10px 12px", fontSize: 13, fontWeight: 700, backgroundColor: "#1877D6", color: "#FFFFFF", border: "none", borderRadius: 8, cursor: "pointer" }}
             >
               View MTD →
             </button>
             <button
               onClick={onClose}
-              style={{ padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 6, cursor: "pointer" }}
+              style={{ padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
             >
               Close
             </button>
@@ -10391,10 +10391,10 @@ function LessonsBreakdownModal({
                   <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 600, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {r.pupilName}
                   </div>
-                  <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 6, backgroundColor: "#F1F5F9", color: "#0B1F3A" }}>
+                  <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 8, backgroundColor: "#F1F5F9", color: "#0B1F3A" }}>
                     {r.duration_minutes ?? 60}m
                   </span>
-                  <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 6, backgroundColor: colors.bg, color: colors.fg, textTransform: "capitalize" }}>
+                  <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 8, backgroundColor: colors.bg, color: colors.fg, textTransform: "capitalize" }}>
                     {r.status}
                   </span>
                 </button>
@@ -10432,7 +10432,7 @@ function LessonsBreakdownModal({
           </div>
           <button
             onClick={onClose}
-            style={{ marginTop: 4, padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 6, cursor: "pointer" }}
+            style={{ marginTop: 4, padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
           >
             Close
           </button>
@@ -10451,7 +10451,7 @@ function LessonsBreakdownModal({
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: 13, border: "1px solid #D1D5DB", borderRadius: 6, background: "#fff" }}
+              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: 13, border: "1px solid #D1D5DB", borderRadius: 8, background: "#fff" }}
             >
               <option>Created in error</option>
               <option>Duplicate entry</option>
@@ -10465,7 +10465,7 @@ function LessonsBreakdownModal({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: 13, border: "1px solid #D1D5DB", borderRadius: 6, resize: "vertical", fontFamily: "inherit" }}
+              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: 13, border: "1px solid #D1D5DB", borderRadius: 8, resize: "vertical", fontFamily: "inherit" }}
             />
           </label>
         </div>
@@ -10473,7 +10473,7 @@ function LessonsBreakdownModal({
           <button
             onClick={closeConfirm}
             disabled={deleting}
-            style={{ padding: "8px 14px", fontSize: 13, fontWeight: 600, background: "transparent", color: "#374151", border: "none", borderRadius: 6, cursor: "pointer" }}
+            style={{ padding: "8px 14px", fontSize: 13, fontWeight: 600, background: "transparent", color: "#374151", border: "none", borderRadius: 8, cursor: "pointer" }}
           >
             Cancel
           </button>
@@ -10489,7 +10489,7 @@ function LessonsBreakdownModal({
               }
             }}
             disabled={deleting}
-            style={{ padding: "8px 14px", fontSize: 13, fontWeight: 700, backgroundColor: "#DC2626", color: "#fff", border: "none", borderRadius: 6, cursor: deleting ? "not-allowed" : "pointer", opacity: deleting ? 0.7 : 1 }}
+            style={{ padding: "8px 14px", fontSize: 13, fontWeight: 700, backgroundColor: "#DC2626", color: "#fff", border: "none", borderRadius: 8, cursor: deleting ? "not-allowed" : "pointer", opacity: deleting ? 0.7 : 1 }}
           >
             {deleting ? "Deleting…" : "Delete lesson"}
           </button>
@@ -10626,7 +10626,7 @@ function TestsBreakdownModal({
                     style={{
                       background: "#fff",
                       border: "0.5px solid #EEF2F7",
-                      borderRadius: 12,
+                      borderRadius: 8,
                       padding: "10px 12px",
                       display: "flex",
                       alignItems: "center",
@@ -10675,7 +10675,7 @@ function TestsBreakdownModal({
         <div style={{ padding: 12, borderTop: "1px solid #e5e7eb" }}>
           <button
             onClick={onClose}
-            style={{ width: "100%", padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 6, cursor: "pointer" }}
+            style={{ width: "100%", padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
           >
             Close
           </button>
@@ -10798,7 +10798,7 @@ function DiscoverSection() {
 
   const cardShell: React.CSSProperties = {
     background: "#FFFFFF",
-    borderRadius: 16,
+    borderRadius: 8,
     boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
     overflow: "hidden",
     cursor: "pointer",
@@ -10877,7 +10877,7 @@ function DiscoverSection() {
                     }}
                   >
                     {isToday && (
-                      <span style={{ position: 'absolute', top: 4, left: 4, background: '#CC2229', color: '#FFFFFF', fontSize: 7, fontWeight: 700, padding: '2px 5px', borderRadius: 6, letterSpacing: 0.4 }}>
+                      <span style={{ position: 'absolute', top: 4, left: 4, background: '#CC2229', color: '#FFFFFF', fontSize: 7, fontWeight: 700, padding: '2px 5px', borderRadius: 8, letterSpacing: 0.4 }}>
                         LIVE
                       </span>
                     )}
@@ -10890,7 +10890,7 @@ function DiscoverSection() {
                     <div style={{ fontSize: 9, fontWeight: 600, color: '#3B6D11', marginTop: 3 }}>Free</div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px', flexShrink: 0 }}>
-                    <span style={{ background: '#1877D6', color: '#FFFFFF', fontSize: 11, fontWeight: 600, padding: '6px 10px', borderRadius: 6 }}>Join</span>
+                    <span style={{ background: '#1877D6', color: '#FFFFFF', fontSize: 11, fontWeight: 600, padding: '6px 10px', borderRadius: 8}}>Join</span>
                   </div>
                 </div>
               );

@@ -100,7 +100,7 @@ function QuickAvailabilityPage() {
           <div
             className="mx-4 mt-4"
             style={{
-              borderRadius: 16,
+              borderRadius: 8,
               padding: 24,
               backgroundColor: isActive ? "#F3F8FF" : "#FEF2F2",
               borderWidth: 1,

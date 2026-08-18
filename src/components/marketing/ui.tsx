@@ -110,7 +110,7 @@ export function PrimaryBtn({ to, children, className, onClick }: { to: string; c
         alignItems: "center",
         gap: 8,
         padding: "10px 24px",
-        borderRadius: 12,
+        borderRadius: 8,
         background: BLUE,
         color: "#fff",
         fontWeight: 600,
@@ -137,7 +137,7 @@ export function SecondaryBtn({ to, children, className, onClick }: { to: string;
         alignItems: "center",
         gap: 8,
         padding: "10px 24px",
-        borderRadius: 12,
+        borderRadius: 8,
         background: "#fff",
         color: BLUE,
         fontWeight: 600,
@@ -172,7 +172,7 @@ export function FeatureCard({
     <div
       style={{
         padding: 26,
-        borderRadius: 20,
+        borderRadius: 8,
         border: `1px solid ${HAIRLINE}`,
         background: "#fff",
         boxShadow: SHADOW_SOFT,
@@ -191,7 +191,7 @@ export function FeatureCard({
         style={{
           width: 44,
           height: 44,
-          borderRadius: 12,
+          borderRadius: 8,
           background: BLUE_TINT,
           color: BLUE_DARK,
           display: "grid",

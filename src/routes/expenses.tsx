@@ -203,7 +203,7 @@ function ExpensesPage() {
               border: 0,
               color: "#fff",
               padding: "8px 12px",
-              borderRadius: 10,
+              borderRadius: 8,
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
@@ -370,7 +370,7 @@ function SummaryCard({
       style={{
         background: "#fff",
         border: BORDER,
-        borderRadius: 14,
+        borderRadius: 8,
         padding: 14,
       }}
     >
@@ -401,7 +401,7 @@ function ExpenseRow({
       style={{
         background: "#fff",
         border: BORDER,
-        borderRadius: 12,
+        borderRadius: 8,
         padding: "14px 16px",
         marginBottom: 8,
       }}
@@ -487,7 +487,7 @@ function ExpenseRow({
             style={{
               flex: 1,
               padding: "8px 12px",
-              borderRadius: 10,
+              borderRadius: 8,
               border: BORDER,
               background: "#fff",
               color: NAVY,
@@ -508,7 +508,7 @@ function ExpenseRow({
             style={{
               flex: 1,
               padding: "8px 12px",
-              borderRadius: 10,
+              borderRadius: 8,
               border: `1px solid #FCA5A5`,
               background: "#FEF2F2",
               color: "#B91C1C",
@@ -531,7 +531,7 @@ function ExpenseRow({
               style={{
                 flex: 1,
                 padding: "8px 12px",
-                borderRadius: 10,
+                borderRadius: 8,
                 border: BORDER,
                 background: "#fff",
                 color: NAVY,
@@ -780,7 +780,7 @@ function AddEditSheet({
               gap: 8,
               padding: "10px 12px",
               border: BORDER,
-              borderRadius: 10,
+              borderRadius: 8,
               cursor: "pointer",
               color: NAVY,
               fontSize: 13,
@@ -809,7 +809,7 @@ function AddEditSheet({
             color: "#fff",
             padding: "14px 16px",
             border: 0,
-            borderRadius: 12,
+            borderRadius: 8,
             fontWeight: 700,
             cursor: saving ? "not-allowed" : "pointer",
             opacity: saving ? 0.7 : 1,
@@ -825,7 +825,7 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   padding: "12px 14px",
   border: BORDER,
-  borderRadius: 10,
+  borderRadius: 8,
   fontSize: 15,
   color: NAVY,
   background: "#fff",

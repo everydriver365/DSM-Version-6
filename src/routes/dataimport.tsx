@@ -301,7 +301,7 @@ function DataImportPage() {
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: "#1877D6",
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 16,
               display: "flex",
               gap: 12,
@@ -329,7 +329,7 @@ function DataImportPage() {
               borderWidth: "1px",
               borderStyle: "dashed",
               borderColor: "#EEF2F7",
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 32,
               gap: 8,
               backgroundColor: "#FAFBFC",
@@ -370,7 +370,7 @@ function DataImportPage() {
                   borderWidth: "0.5px",
                   borderStyle: "solid",
                   borderColor: "#EEF2F7",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   overflow: "hidden",
                 }}
               >
@@ -433,7 +433,7 @@ function DataImportPage() {
                 borderWidth: "0.5px",
                 borderStyle: "solid",
                 borderColor: invalidRowCount > 0 ? "#CC2229" : "#EEF2F7",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: 14,
               }}
             >
@@ -573,7 +573,7 @@ function DataImportPage() {
                     borderWidth: "0.5px",
                     borderStyle: "solid",
                     borderColor: "#EEF2F7",
-                    borderRadius: 12,
+                    borderRadius: 8,
                     padding: 14,
                   }}
                 >
@@ -647,7 +647,7 @@ function DataImportPage() {
               borderWidth: "0.5px",
               borderStyle: "dashed",
               borderColor: "#EEF2F7",
-              borderRadius: 12,
+              borderRadius: 8,
             }}
           >
             Import history coming soon

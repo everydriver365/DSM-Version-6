@@ -103,7 +103,7 @@ export function LessonDetailsSheet({
     >
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
       <div
-        className="relative w-full max-w-md rounded-t-[24px] overflow-hidden flex flex-col"
+        className="relative w-full max-w-md rounded-t-lg] overflow-hidden flex flex-col"
         style={{
           backgroundColor: "#F5F7FA",
           boxShadow: "0 -4px 24px rgba(0,0,0,0.15)",
@@ -142,7 +142,7 @@ export function LessonDetailsSheet({
         <div className="overflow-y-auto px-4 pb-2 flex-1">
           {/* Pupil row */}
           <div
-            className="flex items-center gap-4 p-4 mb-4 rounded-2xl bg-white"
+            className="flex items-center gap-4 p-4 mb-4 rounded-lg bg-white"
             style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
           >
             <div
@@ -163,7 +163,7 @@ export function LessonDetailsSheet({
             <button
               type="button"
               onClick={handleCall}
-              className="p-2.5 rounded-xl active:bg-black/5"
+              className="p-2.5 rounded-lg active:bg-black/5"
               style={{ backgroundColor: "#E8F1FA", color: blue }}
               aria-label="Call pupil"
             >
@@ -173,7 +173,7 @@ export function LessonDetailsSheet({
 
           {/* Stats */}
           <div
-            className="grid grid-cols-3 mb-4 rounded-2xl bg-white overflow-hidden"
+            className="grid grid-cols-3 mb-4 rounded-lg bg-white overflow-hidden"
             style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
           >
             <div className="flex flex-col items-center py-4 px-2">
@@ -203,7 +203,7 @@ export function LessonDetailsSheet({
                 {priceText ?? "—"}
               </div>
               <div
-                className="text-[10px] font-semibold px-1.5 py-0.5 rounded"
+                className="text-[10px] font-semibold px-1.5 py-0.5 rounded-lg"
                 style={{ backgroundColor: paymentBg, color: paymentFg }}
               >
                 {paymentLabel}
@@ -213,10 +213,10 @@ export function LessonDetailsSheet({
 
           {/* Date & time */}
           <div
-            className="flex items-start gap-3 p-4 mb-3 rounded-2xl bg-white"
+            className="flex items-start gap-3 p-4 mb-3 rounded-lg bg-white"
             style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
           >
-            <div className="p-2 rounded-xl shrink-0" style={{ backgroundColor: "#E8F1FA" }}>
+            <div className="p-2 rounded-lg shrink-0" style={{ backgroundColor: "#E8F1FA" }}>
               <IconCalendar stroke={1.5} size={18} color={blue} />
             </div>
             <div className="flex-1">
@@ -235,10 +235,10 @@ export function LessonDetailsSheet({
 
           {/* Pickup */}
           <div
-            className="flex items-start gap-3 p-4 mb-3 rounded-2xl bg-white"
+            className="flex items-start gap-3 p-4 mb-3 rounded-lg bg-white"
             style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
           >
-            <div className="p-2 rounded-xl shrink-0" style={{ backgroundColor: "#E8F1FA" }}>
+            <div className="p-2 rounded-lg shrink-0" style={{ backgroundColor: "#E8F1FA" }}>
               <IconMapPin stroke={1.5} size={18} color={blue} />
             </div>
             <div className="flex-1 min-w-0">
@@ -262,10 +262,10 @@ export function LessonDetailsSheet({
 
           {/* Payment */}
           <div
-            className="flex items-start gap-3 p-4 mb-4 rounded-2xl bg-white"
+            className="flex items-start gap-3 p-4 mb-4 rounded-lg bg-white"
             style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
           >
-            <div className="p-2 rounded-xl shrink-0" style={{ backgroundColor: "#E8F1FA" }}>
+            <div className="p-2 rounded-lg shrink-0" style={{ backgroundColor: "#E8F1FA" }}>
               <IconCurrencyPound stroke={1.5} size={18} color={blue} />
             </div>
             <div className="flex-1">
@@ -274,7 +274,7 @@ export function LessonDetailsSheet({
               </div>
               <div className="flex items-center gap-2 mb-1">
                 <span
-                  className="text-xs font-semibold px-2 py-0.5 rounded"
+                  className="text-xs font-semibold px-2 py-0.5 rounded-lg"
                   style={{ backgroundColor: paymentBg, color: paymentFg }}
                 >
                   {paymentLabel}
@@ -297,7 +297,7 @@ export function LessonDetailsSheet({
           {/* Notes */}
           {lesson.notes && (
             <div
-              className="p-4 mb-4 rounded-2xl bg-white"
+              className="p-4 mb-4 rounded-lg bg-white"
               style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
             >
               <div className="text-xs font-semibold mb-1" style={{ color: "#8A93A3" }}>
@@ -319,7 +319,7 @@ export function LessonDetailsSheet({
             <button
               type="button"
               onClick={onViewPupil}
-              className="py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
+              className="py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2"
               style={{ backgroundColor: navy, color: "#FFFFFF" }}
             >
               <IconUser stroke={1.5} size={16} />
@@ -328,7 +328,7 @@ export function LessonDetailsSheet({
             <button
               type="button"
               onClick={handleSms}
-              className="py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
+              className="py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2"
               style={{ backgroundColor: "#FFFFFF", color: navy, border: "1px solid #E2E8F0" }}
             >
               <IconMessage stroke={1.5} size={16} />
@@ -340,7 +340,7 @@ export function LessonDetailsSheet({
               <button
                 type="button"
                 onClick={onOpenLive}
-                className="py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
+                className="py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2"
                 style={{ backgroundColor: blue, color: "#FFFFFF" }}
               >
                 Start lesson
@@ -350,7 +350,7 @@ export function LessonDetailsSheet({
               <button
                 type="button"
                 onClick={onCancelLesson}
-                className="py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
+                className="py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2"
                 style={{ backgroundColor: "#FDEEEE", color: red }}
               >
                 Cancel

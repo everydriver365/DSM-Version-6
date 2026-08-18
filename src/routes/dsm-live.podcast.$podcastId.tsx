@@ -139,7 +139,7 @@ function PodcastDetailPage() {
             fontSize: 10,
             fontWeight: 800,
             padding: "4px 8px",
-            borderRadius: 4,
+            borderRadius: 8,
             textTransform: "uppercase",
             letterSpacing: "0.04em",
           }}
@@ -165,7 +165,7 @@ function PodcastDetailPage() {
             style={{
               width: "100%",
               aspectRatio: "16 / 9",
-              borderRadius: 14,
+              borderRadius: 8,
               overflow: "hidden",
               background: `url(${podcast.image_url}) center/cover no-repeat`,
               marginBottom: 16,
@@ -178,7 +178,7 @@ function PodcastDetailPage() {
             style={{
               background: "#fff",
               border: "0.5px solid #E2E6ED",
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 16,
               marginBottom: 12,
             }}
@@ -214,7 +214,7 @@ function PodcastDetailPage() {
           style={{
             background: "#fff",
             border: "0.5px solid #E2E6ED",
-            borderRadius: 12,
+            borderRadius: 8,
             padding: 16,
             fontSize: 13,
             color: "#374151",
@@ -235,7 +235,7 @@ function PodcastDetailPage() {
             style={{
               background: "#F7FAFC",
               border: "0.5px solid #E2E6ED",
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 16,
             }}
           >

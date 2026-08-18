@@ -558,7 +558,7 @@ function NotificationsPage() {
           type="button"
           onClick={clearAllRead}
           disabled={!(items ?? []).some((n) => n.read)}
-          className="inline-flex items-center gap-1 text-[12px] font-medium px-2 py-1 rounded disabled:opacity-50"
+          className="inline-flex items-center gap-1 text-[12px] font-medium px-2 py-1 rounded-lg disabled:opacity-50"
           style={{ color: "#6B7280", ...POPPINS }}
           aria-label="Clear read notifications"
         >
@@ -569,7 +569,7 @@ function NotificationsPage() {
           type="button"
           onClick={markAllRead}
           disabled={!hasAnyUnread}
-          className="inline-flex items-center gap-1 text-[12px] font-semibold px-2 py-1 rounded disabled:opacity-50"
+          className="inline-flex items-center gap-1 text-[12px] font-semibold px-2 py-1 rounded-lg disabled:opacity-50"
           style={{ color: "#1877D6", ...POPPINS }}
           aria-label="Mark all as read"
         >
@@ -606,7 +606,7 @@ function NotificationsPage() {
               <div
                 style={{
                   background: "#FFFFFF",
-                  borderRadius: 16,
+                  borderRadius: 8,
                   boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
                   overflow: "hidden",
                 }}
@@ -816,7 +816,7 @@ function NotificationsPage() {
                                 e.stopPropagation();
                                 deleteOne(n.id);
                               }}
-                              className="flex items-center justify-center p-1 rounded hover:bg-black/5"
+                              className="flex items-center justify-center p-1 rounded-lg hover:bg-black/5"
                             >
                               <IconX stroke={1.5} size={16} color="#9CA3AF" />
                             </button>
@@ -862,7 +862,7 @@ function NotificationsPage() {
           <div
             style={{
               background: "#EEF2F7",
-              borderRadius: "22px 22px 0 0",
+              borderRadius: "8px 8px 0 0",
               padding: "0 0 32px",
               width: "100%",
             }}
@@ -873,7 +873,7 @@ function NotificationsPage() {
                 width: 36,
                 height: 5,
                 background: "#D1D1D6",
-                borderRadius: 3,
+                borderRadius: 8,
                 margin: "12px auto 0",
               }}
             />
@@ -882,7 +882,7 @@ function NotificationsPage() {
                 style={{
                   margin: "16px 16px 8px",
                   background: "#fff",
-                  borderRadius: 16,
+                  borderRadius: 8,
                   border: "1px solid #E4E8EF",
                   overflow: "hidden",
                 }}
@@ -974,7 +974,7 @@ function NotificationsPage() {
                       flex: 1,
                       background: "#EEF2F7",
                       border: "none",
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: "8px 14px",
                       fontSize: 13,
                       fontFamily: "Poppins, sans-serif",
@@ -1012,7 +1012,7 @@ function NotificationsPage() {
                   style={{
                     margin: "16px 16px 8px",
                     background: "#FEE2E2",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     border: "1px solid #FECACA",
                     padding: "14px 16px",
                   }}
@@ -1075,7 +1075,7 @@ function NotificationsPage() {
                       style={{
                         marginTop: 8,
                         background: "rgba(255,255,255,0.6)",
-                        borderRadius: 10,
+                        borderRadius: 8,
                         padding: "10px 12px",
                       }}
                     >
@@ -1131,7 +1131,7 @@ function NotificationsPage() {
                   style={{
                     margin: "0 16px",
                     background: "#fff",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     border: "1px solid #E4E8EF",
                     overflow: "hidden",
                   }}
@@ -1324,7 +1324,7 @@ function NotificationsPage() {
                     width: "calc(100% - 32px)",
                     background: "#fff",
                     color: "#0B1F3A",
-                    borderRadius: 20,
+                    borderRadius: 8,
                     padding: 13,
                     fontSize: 14,
                     fontWeight: 700,
@@ -1354,7 +1354,7 @@ function NotificationsPage() {
                     background: actionSheet.isLiveNow
                       ? "linear-gradient(135deg, #CC2229, #991B1B)"
                       : "linear-gradient(135deg, #14509E, #0B1F3A)",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     padding: 16,
                     boxShadow: "0 4px 0 rgba(0,0,0,0.2)",
                   }}
@@ -1373,7 +1373,7 @@ function NotificationsPage() {
                           gap: 6,
                           alignItems: "center",
                           background: "rgba(255,255,255,0.2)",
-                          borderRadius: 20,
+                          borderRadius: 8,
                           padding: "4px 10px",
                         }}
                       >
@@ -1401,7 +1401,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.2)",
-                          borderRadius: 20,
+                          borderRadius: 8,
                           padding: "4px 10px",
                         }}
                       >
@@ -1458,7 +1458,7 @@ function NotificationsPage() {
                       width: "100%",
                       background: "#fff",
                       color: actionSheet.isLiveNow ? "#CC2229" : "#14509E",
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: 12,
                       fontSize: 14,
                       fontWeight: 800,
@@ -1506,7 +1506,7 @@ function NotificationsPage() {
                   style={{
                     margin: "0 16px",
                     background: "#fff",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     border: "1px solid #E4E8EF",
                     overflow: "hidden",
                   }}
@@ -1636,7 +1636,7 @@ function NotificationsPage() {
                     width: "calc(100% - 32px)",
                     background: "#fff",
                     color: "#0B1F3A",
-                    borderRadius: 20,
+                    borderRadius: 8,
                     padding: 13,
                     fontSize: 14,
                     fontWeight: 700,
@@ -1663,7 +1663,7 @@ function NotificationsPage() {
                 <div
                   style={{
                     margin: "16px 16px 8px",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     overflow: "hidden",
                     background:
                       actionSheet.testResult === "pass"
@@ -1695,7 +1695,7 @@ function NotificationsPage() {
                     <div
                       style={{
                         background: "rgba(255,255,255,0.2)",
-                        borderRadius: 20,
+                        borderRadius: 8,
                         padding: "4px 10px",
                         fontSize: 10,
                         fontWeight: 800,
@@ -1765,7 +1765,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 10,
+                          borderRadius: 8,
                           padding: "10px 12px",
                         }}
                       >
@@ -1797,7 +1797,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 10,
+                          borderRadius: 8,
                           padding: "10px 12px",
                         }}
                       >
@@ -1838,7 +1838,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 10,
+                          borderRadius: 8,
                           padding: "10px 12px",
                           gridColumn: "span 2 / span 2",
                         }}
@@ -1872,7 +1872,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 10,
+                          borderRadius: 8,
                           padding: "10px 12px",
                           gridColumn: "span 2 / span 2",
                         }}
@@ -1909,7 +1909,7 @@ function NotificationsPage() {
                         marginTop: 12,
                         width: "100%",
                         background: "rgba(255,255,255,0.2)",
-                        borderRadius: 20,
+                        borderRadius: 8,
                         padding: 11,
                         border: "none",
                         cursor: "pointer",
@@ -1947,7 +1947,7 @@ function NotificationsPage() {
                   style={{
                     margin: "0 16px",
                     background: "#fff",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     border: "1px solid #E4E8EF",
                     overflow: "hidden",
                   }}
@@ -2129,7 +2129,7 @@ function NotificationsPage() {
                     width: "calc(100% - 32px)",
                     background: "#fff",
                     color: "#0B1F3A",
-                    borderRadius: 20,
+                    borderRadius: 8,
                     padding: 13,
                     fontSize: 14,
                     fontWeight: 700,
@@ -2151,7 +2151,7 @@ function NotificationsPage() {
                   style={{
                     margin: "16px 16px 8px",
                     background: "linear-gradient(135deg, #14509E, #0B1F3A)",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     padding: 16,
                     boxShadow: "0 4px 0 #091628",
                   }}
@@ -2166,7 +2166,7 @@ function NotificationsPage() {
                     <div
                       style={{
                         background: "rgba(255,255,255,0.2)",
-                        borderRadius: 20,
+                        borderRadius: 8,
                         padding: "4px 10px",
                       }}
                     >
@@ -2217,7 +2217,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 10,
+                          borderRadius: 8,
                           padding: "10px 12px",
                         }}
                       >
@@ -2249,7 +2249,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 10,
+                          borderRadius: 8,
                           padding: "10px 12px",
                         }}
                       >
@@ -2282,7 +2282,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 10,
+                          borderRadius: 8,
                           padding: "10px 12px",
                         }}
                       >
@@ -2314,7 +2314,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 10,
+                          borderRadius: 8,
                           padding: "10px 12px",
                           gridColumn: actionSheet.enquirerPhone ? undefined : "span 2 / span 2",
                         }}
@@ -2350,7 +2350,7 @@ function NotificationsPage() {
                       style={{
                         marginTop: 10,
                         background: "rgba(255,255,255,0.12)",
-                        borderRadius: 10,
+                        borderRadius: 8,
                         padding: "10px 12px",
                       }}
                     >
@@ -2396,7 +2396,7 @@ function NotificationsPage() {
                   style={{
                     margin: "0 16px",
                     background: "#fff",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     border: "1px solid #E4E8EF",
                     overflow: "hidden",
                   }}
@@ -2574,7 +2574,7 @@ function NotificationsPage() {
                     width: "calc(100% - 32px)",
                     background: "#fff",
                     color: "#0B1F3A",
-                    borderRadius: 20,
+                    borderRadius: 8,
                     padding: 13,
                     fontSize: 14,
                     fontWeight: 700,
@@ -2596,7 +2596,7 @@ function NotificationsPage() {
                   style={{
                     margin: "16px 16px 8px",
                     background: "#fff",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     border: "1px solid #E4E8EF",
                     overflow: "hidden",
                   }}
@@ -2622,7 +2622,7 @@ function NotificationsPage() {
                           color: "#1877D6",
                           fontSize: 10,
                           fontWeight: 800,
-                          borderRadius: 20,
+                          borderRadius: 8,
                           padding: "3px 10px",
                           ...POPPINS,
                         }}
@@ -2665,7 +2665,7 @@ function NotificationsPage() {
                         <div
                           style={{
                             background: "#EEF2F7",
-                            borderRadius: 10,
+                            borderRadius: 8,
                             padding: "10px 12px",
                           }}
                         >
@@ -2702,7 +2702,7 @@ function NotificationsPage() {
                         <div
                           style={{
                             background: "#EEF2F7",
-                            borderRadius: 10,
+                            borderRadius: 8,
                             padding: "10px 12px",
                           }}
                         >
@@ -2735,7 +2735,7 @@ function NotificationsPage() {
                         <div
                           style={{
                             background: "#EEF2F7",
-                            borderRadius: 10,
+                            borderRadius: 8,
                             padding: "10px 12px",
                           }}
                         >
@@ -2768,7 +2768,7 @@ function NotificationsPage() {
                         <div
                           style={{
                             background: "#EEF2F7",
-                            borderRadius: 10,
+                            borderRadius: 8,
                             padding: "10px 12px",
                           }}
                         >
@@ -2801,7 +2801,7 @@ function NotificationsPage() {
                         <div
                           style={{
                             background: "#EEF2F7",
-                            borderRadius: 10,
+                            borderRadius: 8,
                             padding: "10px 12px",
                           }}
                         >
@@ -2837,7 +2837,7 @@ function NotificationsPage() {
                           style={{
                             background: "#F0FDF4",
                             border: "1px solid #DCFCE7",
-                            borderRadius: 10,
+                            borderRadius: 8,
                             padding: "10px 12px",
                           }}
                         >
@@ -2871,7 +2871,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "#F8FAFC",
-                          borderRadius: 10,
+                          borderRadius: 8,
                           padding: "10px 12px",
                           marginBottom: 8,
                         }}
@@ -2940,7 +2940,7 @@ function NotificationsPage() {
                     style={{
                       background: "#fff",
                       border: "1px solid #E4E8EF",
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: 13,
                       fontSize: 14,
                       fontWeight: 700,
@@ -2967,7 +2967,7 @@ function NotificationsPage() {
                     style={{
                       background: "#1877D6",
                       border: "none",
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: 13,
                       fontSize: 14,
                       fontWeight: 700,
@@ -3015,7 +3015,7 @@ function NotificationsPage() {
                   style={{
                     margin: "16px 16px 8px",
                     background: "#fff",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     border: "1px solid #E4E8EF",
                     padding: "14px 16px",
                   }}
@@ -3059,7 +3059,7 @@ function NotificationsPage() {
                   style={{
                     margin: "0 16px",
                     background: "#fff",
-                    borderRadius: 16,
+                    borderRadius: 8,
                     border: "1px solid #E4E8EF",
                     overflow: "hidden",
                   }}
@@ -3155,7 +3155,7 @@ function NotificationsPage() {
                     width: "calc(100% - 32px)",
                     background: "#fff",
                     color: "#0B1F3A",
-                    borderRadius: 20,
+                    borderRadius: 8,
                     padding: 13,
                     fontSize: 14,
                     fontWeight: 700,

@@ -297,7 +297,7 @@ function SearchPage() {
       <div className="px-3 pt-3">
         <div
           className="flex items-center"
-          style={{ backgroundColor: "#FFFFFF", borderRadius: 10, height: 38, paddingLeft: 10, paddingRight: 10, gap: 8, border: "1px solid #E2E8F0" }}
+          style={{ backgroundColor: "#FFFFFF", borderRadius: 8, height: 38, paddingLeft: 10, paddingRight: 10, gap: 8, border: "1px solid #E2E8F0" }}
         >
           <IconSearch size={16} color="#6B7280" />
           <input
@@ -540,7 +540,7 @@ function Row({
       className="bg-white text-left flex items-center"
       style={{
         padding: 12,
-        borderRadius: 10,
+        borderRadius: 8,
         borderWidth: "0.5px",
         borderStyle: "solid",
         borderColor: "#EEF2F7",

@@ -56,7 +56,7 @@ export function CancelSummaryPanel({
     <div
       style={{
         border: "1px solid #E4E8EF",
-        borderRadius: 10,
+        borderRadius: 8,
         background: "#F8FAFC",
         padding: 12,
         marginTop: 12,
