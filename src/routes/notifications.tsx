@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMail, IconMapPin, IconMessage, IconNavigation, IconPhone, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconExternalLink, IconHome, IconInbox, IconMail, IconMapPin, IconMessage, IconNavigation, IconPhone, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -272,6 +272,41 @@ function getNotificationAction(
       options: pupilId
         ? [{ label: "View pupil", route: `/pupils/${pupilId}`, icon: "user" }]
         : [{ label: "Go to Pupils", route: "/pupils", icon: "user" }],
+    };
+  }
+
+  // Enquiry — "New enquiry from Sarah Johnson"
+  if (type === "new_enquiry" || type === "enquiry") {
+    return {
+      isEnquiry: true,
+      enquiryId: refType === "enquiry" ? refId : null,
+      enquirerName: title.replace("New enquiry from ", "").replace("Enquiry from ", "") || null,
+      enquirerPhone: null,
+      enquirerEmail: null,
+      enquirerPostcode: null,
+      transmission: null,
+      message: body || null,
+      receivedAt: notif.created_at,
+      options: [],
+    };
+  }
+
+  // Job offer — "New job offer" or "Job offer: Manual lessons in SO30"
+  if (type === "job_offer" || type === "new_job") {
+    return {
+      isJobOffer: true,
+      jobId: refType === "job_offer" || refType === "instructor_job" ? refId : null,
+      jobTitle: title.replace("New job offer: ", "").replace("New job offer", "Job offer") || "Job offer",
+      area: null,
+      transmission: null,
+      lessonDate: null,
+      lessonTime: null,
+      duration: null,
+      rate: null,
+      description: body || null,
+      postedBy: null,
+      expiresAt: null,
+      options: [],
     };
   }
 
