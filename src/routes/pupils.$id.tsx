@@ -460,6 +460,12 @@ function PupilDetailPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "lessons" | "payments" | "profile">("overview");
   const [moreOpen, setMoreOpen] = useState(false);
   const [mockTests, setMockTests] = useState<MockTestResult[]>([]);
+  const [latestTestResult, setLatestTestResult] = useState<{
+    test_date: string | null;
+    result: string | null;
+    fault_count: number | null;
+    serious_faults: number | null;
+  } | null>(null);
   const [lessonRoutes, setLessonRoutes] = useState<LessonRoute[]>([]);
   interface OverspeedEvent {
     id: string;
@@ -827,6 +833,16 @@ function PupilDetailPage() {
         if (cancelled) return;
         const row = (data as any[])?.[0];
         setLastMessage(row ?? null);
+      });
+    supabase
+      .from("driving_test_results")
+      .select("test_date, result, fault_count, serious_faults")
+      .eq("pupil_id", id)
+      .order("test_date", { ascending: false })
+      .limit(1)
+      .then(({ data }) => {
+        if (cancelled) return;
+        setLatestTestResult(((data as any[]) ?? [])[0] ?? null);
       });
     supabase
       .from("mock_test_results")
@@ -3879,6 +3895,94 @@ function PupilDetailPage() {
             </div>
           ) : (
             <div style={{ marginTop: 10, ...POPPINS }}>
+              {(() => {
+                const st = String(pupil.test_status ?? "").toLowerCase();
+                const passed = st.startsWith("pass");
+                const failed = st.startsWith("fail");
+                if (!passed && !failed) return null;
+                const resultDate = latestTestResult?.test_date ?? pupil.test_date ?? null;
+                const minor = latestTestResult?.fault_count;
+                const serious = latestTestResult?.serious_faults;
+                return (
+                  <div
+                    style={{
+                      position: "relative",
+                      overflow: "hidden",
+                      background: passed ? "#DDEFE1" : "#FDEDEC",
+                      border: `1px solid ${passed ? "#15803D" : "#CC2229"}`,
+                      borderRadius: 8,
+                      padding: "12px 14px",
+                      marginBottom: 12,
+                    }}
+                  >
+                    {passed && <div className="pupil-pass-confetti" aria-hidden />}
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontSize: 14, fontWeight: 800, color: passed ? "#15803D" : "#B02318" }}>
+                        {passed ? "🎉 Test passed!" : "❌ Test not passed"}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 10.5,
+                          fontWeight: 800,
+                          borderRadius: 999,
+                          padding: "3px 10px",
+                          background: passed ? "#15803D" : "#CC2229",
+                          color: "#FFFFFF",
+                        }}
+                      >
+                        {passed ? "Passed" : "Failed"}
+                      </span>
+                    </div>
+                    {resultDate && (
+                      <div style={{ fontSize: 12.5, color: "#4B5563", marginTop: 6, fontWeight: 600 }}>
+                        {passed ? "Passed on " : "Test date: "}
+                        {fmtUKDate(resultDate)}
+                      </div>
+                    )}
+                    {!passed && (minor != null || serious != null) && (
+                      <div style={{ fontSize: 12.5, color: "#4B5563", marginTop: 4, fontWeight: 600 }}>
+                        Minor: {minor ?? 0}&nbsp;&nbsp;Serious: {serious ?? 0}
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        passed
+                          ? navigate({ to: "/certificates" as never })
+                          : navigate({ to: "/driving-test/$pupilId", params: { pupilId: pupil.id } } as never)
+                      }
+                      style={{
+                        marginTop: 10,
+                        background: "none",
+                        border: "none",
+                        padding: 0,
+                        fontSize: 13,
+                        fontWeight: 800,
+                        color: passed ? "#15803D" : "#CC2229",
+                        cursor: "pointer",
+                        ...POPPINS,
+                      }}
+                    >
+                      {passed ? "Generate certificate →" : "Book retest →"}
+                    </button>
+                    <style>{`
+                      @keyframes pupil-pass-pop {
+                        0% { transform: translateY(-10px) scale(0.6); opacity: 0; }
+                        40% { opacity: 1; }
+                        100% { transform: translateY(40px) scale(1.1); opacity: 0; }
+                      }
+                      .pupil-pass-confetti {
+                        position: absolute;
+                        top: 0; right: 12px;
+                        width: 10px; height: 10px;
+                        border-radius: 2px;
+                        background: #15803D;
+                        animation: pupil-pass-pop 1.6s ease-out infinite;
+                      }
+                    `}</style>
+                  </div>
+                );
+              })()}
               <div>
                 <span style={{ color: "#6B6B6F", fontSize: 13.5, fontWeight: 500 }}>Status: </span>
                 <span style={{ fontSize: 13.5, fontWeight: 800, color: testStatusColour(pupil.theory_status || "Not started") }}>
