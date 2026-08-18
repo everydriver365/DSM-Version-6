@@ -207,6 +207,7 @@ function LessonDetailPage() {
       setCancelOutcome(null);
       return;
     }
+    if (!lesson.pupil_id) return;
     let stop = false;
     (async () => {
       const { data } = await supabase
