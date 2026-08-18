@@ -1577,6 +1577,7 @@ function HomePage() {
     test_date: string;
     test_time: string | null;
     test_centre: string | null;
+    test_status?: string | null;
   }>>([]);
   const [pendingSwapCount, setPendingSwapCount] = useState(0);
   const [openJobsCount, setOpenJobsCount] = useState(0);
@@ -2155,6 +2156,7 @@ function HomePage() {
           test_date: p.test_date,
           test_time: p.test_time ?? null,
           test_centre: p.test_centre ?? null,
+          test_status: p.test_status ?? null,
         })),
       );
     }
@@ -10598,7 +10600,7 @@ function TestsBreakdownModal({
 }: {
   open: boolean;
   onClose: () => void;
-  tests: Array<{ id: string; name: string; test_date: string; test_time: string | null; test_centre: string | null }>;
+  tests: Array<{ id: string; name: string; test_date: string; test_time: string | null; test_centre: string | null; test_status?: string | null }>;
   swapRequests: Array<{ id: string; name: string; test_centre: string | null; current_test_date: string | null; current_test_time: string | null; status: string; created_at: string }>;
   onOpenPupil: (id: string) => void;
 }) {
@@ -10649,6 +10651,8 @@ function TestsBreakdownModal({
           {tests.map((t) => {
             const days = daysUntil(t.test_date);
             const colors = badgeColors(days);
+            const st = String(t.test_status ?? "").toLowerCase();
+            const resultState = st.startsWith("pass") ? "passed" : st.startsWith("fail") ? "failed" : null;
             return (
               <div key={t.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
                 <button
@@ -10675,19 +10679,51 @@ function TestsBreakdownModal({
                       {t.test_centre ? ` · ${t.test_centre}` : ""}
                     </div>
                   </div>
-                  <span
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 700,
-                      padding: "3px 8px",
-                      borderRadius: 999,
-                      backgroundColor: colors.bg,
-                      color: colors.fg,
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {days <= 0 ? "Today" : `In ${days} day${days === 1 ? "" : "s"}`}
-                  </span>
+                  {resultState === "passed" ? (
+                    <span
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        padding: "3px 8px",
+                        borderRadius: 999,
+                        backgroundColor: "#DDEFE1",
+                        color: "#15803D",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Passed ✅
+                    </span>
+                  ) : resultState === "failed" ? (
+                    <span
+                      onClick={(e) => { e.stopPropagation(); onOpenPupil(t.id); }}
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        padding: "3px 8px",
+                        borderRadius: 999,
+                        backgroundColor: "#FEF3C7",
+                        color: "#92400E",
+                        whiteSpace: "nowrap",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Retest needed →
+                    </span>
+                  ) : (
+                    <span
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        padding: "3px 8px",
+                        borderRadius: 999,
+                        backgroundColor: colors.bg,
+                        color: colors.fg,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {days <= 0 ? "Today" : `In ${days} day${days === 1 ? "" : "s"}`}
+                    </span>
+                  )}
                 </button>
               </div>
             );
