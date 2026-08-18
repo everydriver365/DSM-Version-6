@@ -760,10 +760,9 @@ function SchedulePage() {
     let cancelled = false;
     setLessons(null);
     (async () => {
-      // `pupil:pupils!inner(...)` promotes the join to an INNER JOIN so the
-      // pupil-level filters below actually drop lessons whose pupil is
-      // inactive/archived/deleted. Without !inner, PostgREST returns the
-      // lesson with pupil=null instead of filtering the lesson out.
+      // Use a left join so events with no pupil are still returned, and
+      // filter to active pupils only when a pupil is linked.
+      .or("pupil_id.is.null,and(pupil.status.eq.active,pupil.deleted_at.is.null)")
       const { data, error } = await supabase
         .from("lessons")
         .select(
