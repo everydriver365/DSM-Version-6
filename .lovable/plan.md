@@ -1,33 +1,44 @@
-# Fix the build after the Capacitor splash screen change
+Capacitor build fix: replace `capacitor.config.ts` and guard native plugin calls in `src/routes/__root.tsx`
 
-I couldn't see the exact build error, so this plan starts by reproducing it, then applies the fixes that are most likely needed based on what the splash-screen change added.
+## Current state
+- `capacitor.config.ts` exists but has the wrong `appId`, `appName`, and `webDir`, plus the legacy `androidSplashResourceName` / `androidScaleType` fields that are causing the build error.
+- `src/routes/__root.tsx` runs `StatusBar`, `Keyboard`, and `App` plugin calls unconditionally on startup, which triggers the browser/SSR error: **"Keyboard plugin is not implemented on web"**.
 
-## What changed last time
+## Proposed fix
 
-- A new `capacitor.config.ts` was created at the project root (plain untyped object, `webDir: 'dist'`).
-- `@capacitor/splash-screen` was added as a dependency.
+### 1. Replace `capacitor.config.ts`
+Replace the entire file with the exact config provided, preserving:
+- `appId: 'co.uk.drivingschoolmanager.dsm'`
+- `webDir: '.output/public'`
+- `server.url: 'https://drivingschoolmanager.co.uk'`
+- `cleartext: false`
+- SplashScreen plugin config
 
-Two things in that are suspect:
+Remove the Android-only fields that break the build.
 
-1. `capacitor.config.ts` sits at the repo root but is not listed in `tsconfig.json`'s `include`, while `eslint.config.js` lints the whole folder. A stray root TS file with no types can trip the lint/typecheck stage of the build.
-2. `webDir: 'dist'` does not match what this app actually builds to (TanStack Start does not emit a plain `dist/`), so `npx cap sync` fails with "Could not find the web assets directory".
+### 2. Guard native plugin calls in `src/routes/__root.tsx`
+After reading the full file:
+- Import `Capacitor` from `@capacitor/core`.
+- In the startup `useEffect` that initializes native features, add an early return when not on a native platform:
+  ```ts
+  if (!Capacitor.isNativePlatform()) return;
+  ```
+- Wrap all native calls inside the effect in `try { ... } catch { ... }` blocks:
+  - `StatusBar.setStyle({ style: Style.Dark })`
+  - `StatusBar.setBackgroundColor({ color: "#0B1F3A" })`
+  - `Keyboard.setAccessoryBarVisible({ isVisible: true })`
+  - `Keyboard.setScroll({ isDisabled: false })`
+  - `Keyboard.addListener(...)` for `keyboardWillShow` and `keyboardWillHide`
+  - `App.addListener("appStateChange", ...)`
+  - `App.addListener("backButton", ...)`
+- Keep the cleanup `return () => { ... }` so listeners are removed when the effect re-runs or unmounts.
+- Do not change any other imports, routes, components, or logic.
 
-## Steps
+## Expected outcome
+- The Lovable / Capacitor build no longer fails on the splash screen configuration.
+- The browser preview and SSR no longer log "plugin not implemented on web" for Keyboard, StatusBar, or App.
+- Native iOS/Android builds continue to get the navy status bar, keyboard accessory bar, and app-state listeners.
 
-1. Run the production build and capture the real error output before changing anything.
-2. Fix `capacitor.config.ts`:
-   - Type it properly with `CapacitorConfig` from `@capacitor/cli` (added as a dev dependency), or keep it as a plain object and explicitly exclude it from lint/typecheck — whichever the actual error points to.
-   - Point `webDir` at the directory the build really produces (confirmed in step 1).
-   - Keep the SplashScreen plugin block exactly as it is today.
-3. If the failure is in the app bundle rather than tooling, guard the splash-screen call behind `Capacitor.isNativePlatform()` so the web build/SSR never touches a native-only plugin.
-4. Re-run the build and confirm it passes, and check the preview still loads.
-
-## Also worth fixing while in here
-
-The preview logs a repeating runtime error: `"Keyboard" plugin is not implemented on web`. The keyboard listeners added earlier run unguarded in the browser. I'll wrap them in the same native-platform guard so the console stays clean. Say the word if you'd rather I leave that alone.
-
-## Files touched
-
+## Files to change
 - `capacitor.config.ts`
-- `package.json` (dev dependency only, if needed)
-- `src/routes/__root.tsx` (only the native plugin guards)
+- `src/routes/__root.tsx`
