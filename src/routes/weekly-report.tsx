@@ -367,7 +367,7 @@ function WeeklyReportPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "TOP_BAR_SPACER" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
 
       {/* Week navigation */}

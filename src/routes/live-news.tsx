@@ -486,7 +486,7 @@ function LiveNewsPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => {}}
       />
-      <div style={{ height: "TOP_BAR_SPACER" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
       <div
         style={{

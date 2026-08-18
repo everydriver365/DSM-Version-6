@@ -4174,7 +4174,7 @@ function HomePage() {
       fontSize: 12, fontWeight: 600, color: "#0B1F3A",
     };
     return (
-      <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: "TOP_BAR_SPACER" }}>
+      <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: TOP_BAR_SPACER }}>
         {notifBanner}
         <InstructorTopBar
           firstName={firstName}

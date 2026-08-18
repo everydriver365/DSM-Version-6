@@ -125,7 +125,7 @@ function DsmLivePage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "TOP_BAR_SPACER" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
       {/* Live status pill */}
       <div style={{ background: "#0B1F3A", padding: "0 16px 12px", display: "flex" }}>

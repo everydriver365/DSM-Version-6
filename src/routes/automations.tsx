@@ -171,7 +171,7 @@ function AutomationsPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "TOP_BAR_SPACER" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
       {/* Action bar */}
       <div className="flex items-center justify-end px-4 py-2">

@@ -465,7 +465,7 @@ function LearnPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "TOP_BAR_SPACER" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
       <div style={{ padding: "8px 16px 0" }}>
         <p style={{ fontSize: 14, fontWeight: 500, color: "#8A8A8E", margin: "0 0 22px" }}>

@@ -215,7 +215,7 @@ function CoursesPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "TOP_BAR_SPACER" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
       {/* Action bar */}
       <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 16px" }}>

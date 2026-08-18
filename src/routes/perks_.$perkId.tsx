@@ -174,7 +174,7 @@ function PerkDetailPage() {
           onMenu={() => navigate({ to: "/more" as never })}
           onMicPress={() => toast.info("Voice commands coming soon!")}
         />
-        <div style={{ height: "TOP_BAR_SPACER" }} />
+        <div style={{ height: TOP_BAR_SPACER }} />
         <div style={{ ...CARD, textAlign: "center", color: "#6B7686", fontSize: 14 }}>
           This perk is no longer available.
         </div>
@@ -208,7 +208,7 @@ function PerkDetailPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "TOP_BAR_SPACER" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
       {/* HERO */}
       {perk.hero_image_url ? (

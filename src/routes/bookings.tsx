@@ -225,7 +225,7 @@ function BookingsPage() {
         onMenu={() => window.dispatchEvent(new Event("dsm-open-menu"))}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "TOP_BAR_SPACER" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
       {loading ? (
         <PageLoader />

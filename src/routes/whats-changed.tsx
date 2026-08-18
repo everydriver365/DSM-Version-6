@@ -431,7 +431,7 @@ function WhatsChangedPage() {
         onMenu={() => navigate({ to: "/more" } as never)}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "TOP_BAR_SPACER" }} />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
       <div style={{ padding: "8px 16px 12px", fontSize: 12, color: GRAY, textAlign: "right" }}>
         Last updated: {formatLastUpdated(lastUpdated)}
