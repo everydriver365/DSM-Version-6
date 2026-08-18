@@ -164,6 +164,9 @@ function getNotificationAction(
   description?: string | null;
   postedBy?: string | null;
   expiresAt?: string | null;
+  isGoneQuiet?: boolean;
+  daysSinceLesson?: number | null;
+  lastLessonDate?: string | null;
 } {
   const type = notif.type ?? "";
   const title = String(notif.title ?? "");
