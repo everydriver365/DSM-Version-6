@@ -878,12 +878,12 @@ function LessonDetailPage() {
       />
 
 
-      {lesson && dateObj && (
+      {lesson && dateObj && !isEvent && (
         <CancelLessonSheet
           open={cancelOpen}
           onClose={() => setCancelOpen(false)}
           pupilName={pupilName}
-          pupilId={lesson.pupil_id}
+          pupilId={lesson.pupil_id ?? ""}
           lessonId={lesson.id}
           lessonDate={lesson.lesson_date}
           lessonTime={lesson.lesson_time}
