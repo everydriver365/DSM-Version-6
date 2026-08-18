@@ -347,6 +347,7 @@ function NotificationsPage() {
   const [quickReply, setQuickReply] = useState("");
   const [sendingReply, setSendingReply] = useState(false);
   const [replyFocused, setReplyFocused] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const replyInputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -357,6 +358,30 @@ function NotificationsPage() {
       return () => clearTimeout(timer);
     }
   }, [actionSheet?.isMessage]);
+
+  useEffect(() => {
+    const onFocus = () => {
+      setTimeout(() => {
+        if (window.visualViewport) {
+          const keyboardH = window.innerHeight - window.visualViewport.height;
+          setKeyboardHeight(Math.max(0, keyboardH));
+        } else {
+          setKeyboardHeight(320);
+        }
+      }, 300);
+    };
+    const onBlur = () => {
+      setTimeout(() => {
+        setKeyboardHeight(0);
+      }, 100);
+    };
+    window.addEventListener("focusin", onFocus);
+    window.addEventListener("focusout", onBlur);
+    return () => {
+      window.removeEventListener("focusin", onFocus);
+      window.removeEventListener("focusout", onBlur);
+    };
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -860,10 +885,12 @@ function NotificationsPage() {
             style={{
               position: "relative",
               background: "#EEF2F7",
-              borderRadius: "8px 8px 0 0",
-              padding: "0 0 32px",
-              paddingBottom: replyFocused ? 320 : 40,
+              borderRadius: "22px 22px 0 0",
               width: "100%",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              transition: "transform 0.3s ease",
+              transform: keyboardHeight > 0 ? `translateY(-${keyboardHeight}px)` : "translateY(0)",
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -970,9 +997,12 @@ function NotificationsPage() {
                 )}
                 <div
                   style={{
-                    padding: "16px",
+                    position: "sticky",
+                    bottom: 0,
+                    background: "#fff",
                     borderTop: "1px solid #E4E8EF",
-                    background: "#F8FAFC",
+                    padding: "12px 16px",
+                    paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
                   }}
                 >
                   <div
