@@ -81,6 +81,7 @@ type GEvent = {
 
 export async function backfillGoogleEventColours(
   accessToken: string,
+  window?: { daysBack?: number; daysForward?: number },
 ): Promise<BackfillResult> {
   const empty = { updated: 0, scanned: 0, blocks: 0 };
   const supabase = createAuthenticatedSupabaseClient(accessToken);
