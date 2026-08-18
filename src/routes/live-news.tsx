@@ -103,6 +103,15 @@ function formatDate(iso: string | null | undefined): string {
   return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 }
 
+function parseISODateLocal(iso: string): Date {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, (m ?? 1) - 1, d ?? 1);
+}
+
+function dateKeyFromSession(iso: string | null | undefined): string {
+  return iso || "";
+}
+
 function formatSessionDay(iso: string | null | undefined): string {
   if (!iso) return "—";
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric" });
