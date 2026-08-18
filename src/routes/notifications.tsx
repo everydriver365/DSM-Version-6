@@ -891,7 +891,10 @@ function NotificationsPage() {
                 cursor: "pointer",
                 ...POPPINS,
               }}
-              onClick={() => setActionSheet(null)}
+              onClick={() => {
+                setActionSheet(null);
+                setQuickReply("");
+              }}
             >
               Cancel
             </button>
