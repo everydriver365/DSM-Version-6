@@ -72,8 +72,11 @@ function timeAgo(iso: string) {
 }
 function formatTime12hr(timeStr: string | null | undefined): string {
   if (!timeStr) return "";
-  const d = timeStr.includes("T") ? new Date(timeStr) : new Date(`2000-01-01T${timeStr}`);
+  const clean = String(timeStr).trim();
+  const d = clean.includes("T") ? new Date(clean) : new Date(`2000-01-01T${clean}`);
+  if (isNaN(d.getTime())) return clean;
   return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: true });
+
 }
 
 function typeIcon(type: string | null) {
@@ -217,19 +220,28 @@ function getNotificationAction(
     };
   }
 
+  const rawText = `${notif.title ?? ""} ${notif.body ?? notif.message ?? ""}`;
+
   if (type === "payment" || type === "payment_received") {
     return { directNav: "/payments" };
   }
 
-  if (type === "payment_overdue") {
+
+  if (
+    type === "payment_overdue" ||
+    /overdue|unpaid lessons|owes\s*£/i.test(rawText)
+  ) {
+    const owedMatch = rawText.match(/£\s*([0-9]+(?:\.[0-9]{1,2})?)/);
+    const nameMatch = rawText.match(/^\s*(?:[^A-Za-z]*)([A-Za-z' -]+?)\s+(?:owes|has unpaid)/im);
     return {
       isOverduePayment: true,
-      pupilId: meta.pupil_id ?? null,
-      pupilName: meta.pupil_name ?? meta.pupil ?? null,
+      pupilId: meta.pupil_id ?? notif.reference_id ?? null,
+      pupilName: meta.pupil_name ?? meta.pupil ?? (nameMatch ? nameMatch[1].trim() : null),
       pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
       pupilEmail: meta.pupil_email ?? meta.email ?? null,
-      amountOwed: meta.amount_owed ?? meta.amount ?? meta.total ?? null,
+      amountOwed: meta.amount_owed ?? meta.amount ?? meta.total ?? (owedMatch ? owedMatch[1] : null),
       lessonCount: meta.lesson_count ?? meta.unpaid_lessons ?? null,
+
     };
   }
 
@@ -247,25 +259,42 @@ function getNotificationAction(
     };
   }
 
+  const titleText = String(notif.title ?? "");
+  const bodyText = String(notif.body ?? notif.message ?? "");
+  const combined = `${titleText} ${bodyText}`;
+  const looksLikeLessonStarting =
+    /lesson starting soon/i.test(titleText) ||
+    /lesson starts at/i.test(combined) ||
+    /start tracking/i.test(combined);
+
   if (
     type === "lesson_reminder" ||
     type === "lesson_starting" ||
     type === "lesson_soon" ||
-    type === "starting_soon"
+    type === "starting_soon" ||
+    type.includes("lesson_start") ||
+    looksLikeLessonStarting
   ) {
+    const nameMatch = combined.match(/([A-Za-z][A-Za-z'’-]*)(?:'s|’s)\s+lesson/i);
+    const timeMatch = combined.match(/starts?\s+at\s+([0-9]{1,2}[:.][0-9]{2})\s*(am|pm)?/i);
+    const parsedTime = timeMatch
+      ? `${timeMatch[1].replace(".", ":")}${timeMatch[2] ? ` ${timeMatch[2]}` : ""}`.trim()
+      : null;
+
     return {
       isLessonStarting: true,
-      lessonId: meta.lesson_id ?? null,
+      lessonId: meta.lesson_id ?? notif.reference_id ?? null,
       pupilId: meta.pupil_id ?? null,
-      pupilName: meta.pupil_name ?? meta.pupil ?? null,
+      pupilName: meta.pupil_name ?? meta.pupil ?? (nameMatch ? nameMatch[1].trim() : null),
       pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
       pickupLocation: meta.pickup_location ?? meta.address ?? meta.location ?? null,
-      lessonTime: meta.lesson_time ?? meta.time ?? null,
+      lessonTime: meta.lesson_time ?? meta.time ?? parsedTime,
       lessonDate: meta.lesson_date ?? meta.date ?? null,
       minutesUntil: meta.minutes_until ?? meta.minutes ?? null,
       options: [],
     };
   }
+
 
   if (type === "lesson") {
     if (meta.lesson_id) {
