@@ -8,7 +8,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, useRef, useCallback, type ReactNode } from "react";
 import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMenu2, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconSearch, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconX } from "@tabler/icons-react";
 import { IconCalculator, IconCalendarPlus, IconHelpCircle, IconListCheck, IconReceipt, IconSettings, IconSignature, IconSparkles, IconSpeakerphone } from "@tabler/icons-react";
 
@@ -21,6 +21,8 @@ import { CommandPalette } from "../components/dsm/CommandPalette";
 import { PushPermissionSheet } from "../components/dsm/PushPermissionSheet";
 import { supabase } from "../lib/supabaseClient";
 import { setupEdgeToEdgeStatusBar } from "../lib/statusBar";
+import { isBiometricAvailable, authenticate } from "@/lib/biometric";
+import { IconFingerprint } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { EventToastController, emitLiveEvent, type LiveEventKind } from "../components/dsm/EventToast";
@@ -583,6 +585,67 @@ function RootComponent() {
     setupEdgeToEdgeStatusBar();
   }, []);
 
+  // ---- Face ID / Touch ID app lock ----
+  const [locked, setLocked] = useState(false);
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const lastActiveRef = useRef<number>(Date.now());
+
+  const unlock = useCallback(async () => {
+    const success = await authenticate("Unlock DSM");
+    if (success) {
+      setLocked(false);
+      lastActiveRef.current = Date.now();
+    }
+  }, []);
+
+  useEffect(() => {
+    let cleanup: (() => void) | undefined;
+    let cancelled = false;
+
+    (async () => {
+      const available = await isBiometricAvailable();
+      if (cancelled) return;
+      setBiometricEnabled(available);
+
+      let pref: string | null = null;
+      try {
+        pref = localStorage.getItem("dsm_biometric_lock");
+      } catch {
+        /* ignore */
+      }
+      if (pref !== "true") return;
+
+      const handleVisibilityChange = () => {
+        if (document.hidden) {
+          lastActiveRef.current = Date.now();
+        } else {
+          const elapsed = Date.now() - lastActiveRef.current;
+          if (elapsed > 5 * 60 * 1000 && available) {
+            setLocked(true);
+          }
+        }
+      };
+
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+      cleanup = () =>
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+    })();
+
+    return () => {
+      cancelled = true;
+      cleanup?.();
+    };
+  }, []);
+
+  // Prompt automatically as soon as the lock screen appears.
+  useEffect(() => {
+    if (!locked) return;
+    const t = setTimeout(() => { void unlock(); }, 500);
+    return () => clearTimeout(t);
+  }, [locked, unlock]);
+
+
+
 
   // Register the service worker only. Permission is requested by the
   // in-app PushPermissionCard so the user sees a clear prompt first.
@@ -814,6 +877,73 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {locked && biometricEnabled && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 100000,
+            background: "#0B1F3A",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 12,
+            padding: 24,
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          <div
+            style={{
+              width: 72,
+              height: 72,
+              borderRadius: 20,
+              background: "#1877D6",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 8,
+            }}
+          >
+            <span style={{ fontSize: 24, fontWeight: 800, color: "#fff" }}>DSM</span>
+          </div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: "#fff" }}>
+            DSM by EveryDriver
+          </div>
+          <div
+            style={{
+              fontSize: 14,
+              color: "rgba(255,255,255,0.5)",
+              marginTop: -12,
+            }}
+          >
+            Locked
+          </div>
+          <button
+            type="button"
+            onClick={() => { void unlock(); }}
+            style={{
+              marginTop: 16,
+              background: "#1877D6",
+              color: "#fff",
+              borderRadius: 20,
+              padding: "14px 40px",
+              fontSize: 15,
+              fontWeight: 800,
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "Poppins, sans-serif",
+              boxShadow: "0 4px 0 #0F52A8",
+              display: "flex",
+              gap: 10,
+              alignItems: "center",
+            }}
+          >
+            <IconFingerprint size={20} />
+            Unlock with Face ID
+          </button>
+        </div>
+      )}
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <div style={Object.keys(wrapperStyle).length ? wrapperStyle : undefined}>
         <Outlet />

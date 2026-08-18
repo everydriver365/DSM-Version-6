@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { IconAlertTriangle, IconBell, IconBolt, IconBuildingBank, IconBuildingStore, IconCalculator, IconCalendar, IconCheck, IconChevronDown, IconChevronRight, IconClipboardList, IconClock, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconGift, IconHelpCircle, IconLogout, IconMapPin, IconPlus, IconShield, IconTag, IconTrash, IconUser, IconWorld } from "@tabler/icons-react";
+import { IconAlertTriangle, IconBell, IconBolt, IconBuildingBank, IconBuildingStore, IconCalculator, IconCalendar, IconCheck, IconChevronDown, IconChevronRight, IconClipboardList, IconClock, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconFingerprint, IconGift, IconHelpCircle, IconLogout, IconMapPin, IconPlus, IconShield, IconTag, IconTrash, IconUser, IconWorld } from "@tabler/icons-react";
+import { isBiometricAvailable, authenticate } from "@/lib/biometric";
 import squareLogo from "../assets/square-logo.png.asset.json";
 
 
@@ -60,6 +61,31 @@ function initials(name: string) {
 function SettingsPage() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
+  const [biometricLockEnabled, setBiometricLockEnabled] = useState(false);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+
+  useEffect(() => {
+    try {
+      setBiometricLockEnabled(localStorage.getItem("dsm_biometric_lock") === "true");
+    } catch {
+      /* ignore */
+    }
+    isBiometricAvailable().then(setBiometricAvailable).catch(() => {});
+  }, []);
+
+  async function toggleBiometricLock(val: boolean) {
+    if (val) {
+      const success = await authenticate("Enable biometric lock");
+      if (!success) return;
+      setBiometricLockEnabled(true);
+      try { localStorage.setItem("dsm_biometric_lock", "true"); } catch { /* ignore */ }
+      toast.success("Face ID lock enabled");
+    } else {
+      setBiometricLockEnabled(false);
+      try { localStorage.removeItem("dsm_biometric_lock"); } catch { /* ignore */ }
+      toast.success("Face ID lock disabled");
+    }
+  }
   const [email, setEmail] = useState<string>("");
   const [instructorName, setInstructorName] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
@@ -1728,6 +1754,50 @@ function SettingsPage() {
             <IconChevronRight size={18} color="#6B7280" />
           </button>
         </SectionCard>
+
+        {biometricAvailable && (
+          <>
+            <Label>SECURITY</Label>
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 16,
+                border: "1px solid #E4E8EF",
+                overflow: "hidden",
+                marginBottom: 16,
+              }}
+            >
+              <div className="flex items-center gap-3" style={{ padding: "14px 16px" }}>
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 999,
+                    background: "#EFF6FF",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <IconFingerprint size={20} color="#1877D6" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-semibold text-[#0B1F3A]" style={POPPINS}>
+                    Face ID / Touch ID
+                  </div>
+                  <div className="text-[11px] text-[#9CA3AF]" style={{ marginTop: 2, ...POPPINS }}>
+                    Lock DSM after 5 minutes in background
+                  </div>
+                </div>
+                <ToggleSwitch
+                  checked={biometricLockEnabled}
+                  onChange={(v) => { void toggleBiometricLock(v); }}
+                />
+              </div>
+            </div>
+          </>
+        )}
 
         {/* ============ NEW SECTIONS ============ */}
         <Label>POLICY & AUTOMATION</Label>
