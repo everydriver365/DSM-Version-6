@@ -1194,7 +1194,7 @@ function Step2(props: {
 
         {/* Custom schedule toggle */}
         <div
-          onClick={() => setUseCustomSessions((prev) => !prev)}
+          onClick={() => setUseCustomSessions(!useCustomSessions)}
           style={{
             background: "#fff",
             borderRadius: 16,
@@ -1226,7 +1226,7 @@ function Step2(props: {
             <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>Set custom session dates</div>
             <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>Define exact dates and times for each session</div>
           </div>
-          <DSMToggle value={useCustomSessions} onChange={setUseCustomSessions} />
+          <DSMToggle checked={useCustomSessions} onChange={setUseCustomSessions} />
         </div>
       </div>
 
