@@ -26,6 +26,7 @@ import { IconFingerprint } from "@tabler/icons-react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { Keyboard } from "@capacitor/keyboard";
 import { App } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { EventToastController, emitLiveEvent, type LiveEventKind } from "../components/dsm/EventToast";
@@ -585,6 +586,8 @@ function RootComponent() {
 
   // Native wrappers: extend the webview under the iOS status bar.
   useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+
     setupEdgeToEdgeStatusBar();
 
     // Set navy status bar on native
@@ -603,40 +606,48 @@ function RootComponent() {
         await Keyboard.setScroll({ isDisabled: false });
       } catch {}
     })();
-    keyboardListeners.push(
-      Keyboard.addListener("keyboardWillShow", (info) => {
-        document.documentElement.style.setProperty("--keyboard-height", `${info.keyboardHeight}px`);
-      }),
-    );
-    keyboardListeners.push(
-      Keyboard.addListener("keyboardWillHide", () => {
-        document.documentElement.style.setProperty("--keyboard-height", "0px");
-      }),
-    );
+    try {
+      keyboardListeners.push(
+        Keyboard.addListener("keyboardWillShow", (info) => {
+          document.documentElement.style.setProperty("--keyboard-height", `${info.keyboardHeight}px`);
+        }),
+      );
+      keyboardListeners.push(
+        Keyboard.addListener("keyboardWillHide", () => {
+          document.documentElement.style.setProperty("--keyboard-height", "0px");
+        }),
+      );
+    } catch {}
 
     // App state changes: refresh unread count and clear badge on resume
-    const appStateSub = App.addListener("appStateChange", async ({ isActive }) => {
-      if (isActive) {
-        window.dispatchEvent(new Event("dsm-notifications-updated"));
-        try {
-          await (App as any).clearBadge?.();
-        } catch {}
-      }
-    });
+    let appStateSub: Promise<{ remove: () => void }> | undefined;
+    try {
+      appStateSub = App.addListener("appStateChange", async ({ isActive }) => {
+        if (isActive) {
+          window.dispatchEvent(new Event("dsm-notifications-updated"));
+          try {
+            await (App as any).clearBadge?.();
+          } catch {}
+        }
+      });
+    } catch {}
 
     // Android back button
-    const backSub = App.addListener("backButton", ({ canGoBack }) => {
-      if (canGoBack) {
-        window.history.back();
-      } else {
-        void App.exitApp();
-      }
-    });
+    let backSub: Promise<{ remove: () => void }> | undefined;
+    try {
+      backSub = App.addListener("backButton", ({ canGoBack }) => {
+        if (canGoBack) {
+          window.history.back();
+        } else {
+          void App.exitApp();
+        }
+      });
+    } catch {}
 
     return () => {
       keyboardListeners.forEach((l) => void l.then((s) => s.remove()));
-      void appStateSub.then((s) => s.remove());
-      void backSub.then((s) => s.remove());
+      if (appStateSub) void appStateSub.then((s) => s.remove());
+      if (backSub) void backSub.then((s) => s.remove());
     };
   }, []);
 
