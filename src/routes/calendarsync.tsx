@@ -7,7 +7,10 @@ import {
   getPushEnabled,
   setImportEnabled as persistImportEnabled,
   setPushEnabled as persistPushEnabled,
+  getColourBackfillDone,
+  setColourBackfillDone,
 } from "@/lib/calendarSyncPrefs";
+import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { toast } from "sonner";
 import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
