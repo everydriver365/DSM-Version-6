@@ -1183,7 +1183,7 @@ function EditLessonPage() {
           </div>
 
           <div>
-            <FieldLabel htmlFor="pickupLocation">Pickup location</FieldLabel>
+            <FieldLabel htmlFor="pickupLocation">{isEvent ? "Location (optional)" : "Pickup location"}</FieldLabel>
             <AddressLookup
               initialAddress={pickupAddress}
               initialPostcode={pickupPostcode}
