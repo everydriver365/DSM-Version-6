@@ -518,22 +518,13 @@ function RootComponent() {
   const active = getActiveNav(router.state.location.pathname);
   const pathname = router.state.location.pathname;
   const hideNavExact = new Set([
-    "/",
-    "/satnav",
-    "/weeklyreport",
     "/login",
     "/register",
-    "/livesession",
-    "/live",
-    "/gaps",
-    "/community",
-    "/subscription",
-    "/onboarding",
     "/forgotpassword",
     "/resetpassword",
-    "/search",
-    "/messages",
-    "/take-payment",
+    "/onboarding",
+    "/livesession",
+    "/satnav",
     "/features",
     "/pricing",
     "/how-it-works",
@@ -559,9 +550,8 @@ function RootComponent() {
     !pathname.startsWith("/pupils/");
   const hideNav =
     hideNavExact.has(pathname) ||
-    isMessageThread ||
-    pathname === "/courses" ||
-    pathname.startsWith("/courses/");
+    pathname.startsWith("/i/") ||
+    pathname.startsWith("/quote/");
 
 
   const whiteBgPaths = new Set([
@@ -576,7 +566,10 @@ function RootComponent() {
   const useWhiteBg = whiteBgPaths.has(pathname);
 
   const wrapperStyle: Record<string, string | number> = {};
-  if (!hideNav) wrapperStyle.paddingBottom = 80;
+  if (!hideNav) {
+    wrapperStyle.paddingBottom =
+      'calc(80px + env(safe-area-inset-bottom, 0px))';
+  }
   if (!useWhiteBg) wrapperStyle.backgroundColor = "#EEF2F7";
 
   // Track recent screens for the search screen's "Recent" list.
