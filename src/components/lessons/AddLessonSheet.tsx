@@ -569,7 +569,7 @@ export function AddLessonSheet({
         <button
           type="button"
           onClick={handleSave}
-          disabled={saving || !pupilId || !date}
+          disabled={saving || !date || (!isEvent && !pupilId)}
           className="w-full text-white active:opacity-90 disabled:opacity-40"
           style={{
             backgroundColor: "#1877D6",
