@@ -19,6 +19,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
+import { tapLight, tapMedium } from "@/lib/haptics";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { useAdminGate } from "./admin";
