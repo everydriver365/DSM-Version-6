@@ -310,6 +310,7 @@ function MessagesIndexPage() {
   }, [searchQuery, searchOpen, userId]);
 
   async function startConversation(otherInstructorId: string) {
+    tapLight();
     if (!userId) return;
     const { data: existing } = await supabase
       .from("instructor_conversations")
@@ -815,6 +816,7 @@ function MessagesIndexPage() {
     const text = newMessage.trim();
     if (!text) return;
     setNewMessage("");
+    tapMedium();
     const { error } = await supabase.from("local_chat_messages").insert({
       room_id: room.id,
       instructor_id: userId,
@@ -2722,6 +2724,7 @@ function AdminJobThreadSheet({
     const text = draft.trim();
     if (!text || !uid || sending) return;
     setSending(true);
+    tapMedium();
     const { error } = await supabase.from("job_offer_messages").insert({
       job_offer_id: jobId,
       sender_type: "admin",
