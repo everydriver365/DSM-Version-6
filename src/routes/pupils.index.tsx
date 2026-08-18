@@ -873,6 +873,68 @@ function PupilsIndexPage() {
         </div>
       </div>
 
+      {/* Status filter tabs */}
+      <div
+        style={{
+          margin: "12px 16px",
+          display: "flex",
+          background: "#FFFFFF",
+          borderRadius: 10,
+          boxShadow: "0 4px 0 #E4E4E8",
+          padding: 3,
+          overflowX: "auto",
+          scrollbarWidth: "none",
+        }}
+      >
+        {STATUS_TABS.map((tab) => {
+          const active = statusFilter === tab.key;
+          const count = statusCounts?.[tab.key] ?? 0;
+          return (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setStatusFilter(tab.key)}
+              style={{
+                flex: 1,
+                flexShrink: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 4,
+                textAlign: "center",
+                padding: "8px 4px",
+                fontSize: 12,
+                fontFamily: "Poppins, sans-serif",
+                cursor: "pointer",
+                border: "none",
+                outline: "none",
+                background: active ? "#0B1F3A" : "transparent",
+                color: active ? "#FFFFFF" : "#8A94A6",
+                borderRadius: active ? 7 : 0,
+                fontWeight: active ? 600 : 500,
+                whiteSpace: "nowrap",
+              }}
+            >
+              <span>{tab.label}</span>
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  padding: "2px 6px",
+                  borderRadius: 999,
+                  background: active ? "rgba(255,255,255,0.2)" : "#F3F4F6",
+                  color: active ? "#FFFFFF" : "#6B7280",
+                  minWidth: 16,
+                  lineHeight: "14px",
+                }}
+              >
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
       {/* IconSearch input */}
       {searchOpen && (
         <div
