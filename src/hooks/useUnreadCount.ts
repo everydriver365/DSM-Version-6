@@ -1,8 +1,21 @@
 import { useEffect, useState } from "react";
+import { App } from "@capacitor/app";
 import { supabase } from "../lib/supabaseClient";
 
 export function useUnreadCount() {
   const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (unreadCount > 0) {
+          await App.setBadge?.({ count: unreadCount });
+        } else {
+          await App.clearBadge?.();
+        }
+      } catch {}
+    })();
+  }, [unreadCount]);
 
   useEffect(() => {
     let mounted = true;
@@ -21,6 +34,7 @@ export function useUnreadCount() {
     }
 
     fetch();
+
 
     // Realtime subscription
     const channel = supabase

@@ -62,7 +62,9 @@
 }
 
 :root {
+  --keyboard-height: 0px;
   --radius: 0.5rem;
+
   /* Checkfront palette: navy #0B1F3A, blue #1877D6, bg #F3F8FF */
   --background: #DCE4F0;
   --foreground: oklch(0.200 0.050 258);
