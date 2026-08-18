@@ -1,14 +1,28 @@
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { IconAdjustmentsHorizontal, IconBell, IconBellOff, IconChecks, IconChevronLeft, IconChevronRight, IconEdit, IconFlag, IconMessageCircle, IconPin, IconPinFilled, IconPlus, IconSearch, IconSend, IconSpeakerphone, IconX } from "@tabler/icons-react";
-import { PageHeader } from "@/components/dsm/PageHeader";
+import {
+  IconAdjustmentsHorizontal,
+  IconArchive,
+  IconBell,
+  IconBellOff,
+  IconChevronLeft,
+  IconChevronRight,
+  IconDots,
+  IconEdit,
+  IconFlag,
+  IconMail,
+  IconMessageCircle,
+  IconPlus,
+  IconSearch,
+  IconSend,
+  IconSpeakerphone,
+  IconX,
+} from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { useAdminGate } from "./admin";
 import { pupilColour } from "@/components/PupilAvatar";
-
-
 
 export const Route = createFileRoute("/messages/")({
   validateSearch: (search: Record<string, unknown>): { jobOfferId?: string } => ({
@@ -38,7 +52,7 @@ const GREY = "#6B7686";
 const BORDER = "#E4E8EF";
 const CANVAS = "#EEF2F7";
 
-const PIN_KEY = "dsm_msg_pinned";
+const ARCHIVE_KEY = "dsm_msg_archived";
 const MUTE_KEY = "dsm_msg_muted";
 
 function readKeySet(key: string): Set<string> {
@@ -138,7 +152,6 @@ interface JobThreadRow {
   last_sender_instructor_name: string | null;
   unread: boolean;
 }
-
 
 function initials(p?: Pupil) {
   const n = (p?.name || p?.first_name || "?").trim();
@@ -245,7 +258,7 @@ function MessagesIndexPage() {
         .is("read_at", null);
       if (cancelled) return;
       const map: Record<string, number> = {};
-      for (const m of ((data as any[]) ?? [])) {
+      for (const m of (data as any[]) ?? []) {
         const cid = m.conversation_id as string;
         map[cid] = (map[cid] ?? 0) + 1;
       }
@@ -275,20 +288,22 @@ function MessagesIndexPage() {
     };
   }, [userId]);
 
-
   useEffect(() => {
     if (!searchOpen) return;
     const q = searchQuery.trim();
-    const t = setTimeout(() => {
-      supabase
-        .from("instructors")
-        .select("id, name, profile_image_url, home_postcode")
-        .neq("id", userId ?? "")
-        .ilike("name", q.length >= 2 ? `%${q}%` : "%%")
-        .order("name", { ascending: true })
-        .limit(20)
-        .then(({ data }) => setSearchResults((data as any[]) ?? []));
-    }, q.length >= 2 ? 300 : 0);
+    const t = setTimeout(
+      () => {
+        supabase
+          .from("instructors")
+          .select("id, name, profile_image_url, home_postcode")
+          .neq("id", userId ?? "")
+          .ilike("name", q.length >= 2 ? `%${q}%` : "%%")
+          .order("name", { ascending: true })
+          .limit(20)
+          .then(({ data }) => setSearchResults((data as any[]) ?? []));
+      },
+      q.length >= 2 ? 300 : 0,
+    );
     return () => clearTimeout(t);
   }, [searchQuery, searchOpen, userId]);
 
@@ -512,11 +527,11 @@ function MessagesIndexPage() {
     };
   }, [userId, homeOutcode, joinedCount]);
 
-  // Pin / mute preferences (localStorage)
-  const [pinned, setPinned] = useState<Set<string>>(new Set());
+  // Archive / mute preferences (localStorage)
+  const [archived, setArchived] = useState<Set<string>>(new Set());
   const [muted, setMuted] = useState<Set<string>>(new Set());
   useEffect(() => {
-    setPinned(readKeySet(PIN_KEY));
+    setArchived(readKeySet(ARCHIVE_KEY));
     setMuted(readKeySet(MUTE_KEY));
   }, []);
 
@@ -586,8 +601,6 @@ function MessagesIndexPage() {
     };
   }, [joinedRooms, userId, localMessages.length]);
 
-
-
   // Fetch messages + realtime once we have a room
   useEffect(() => {
     if (!room) return;
@@ -611,7 +624,12 @@ function MessagesIndexPage() {
       .channel(`local_chat_${room.id}`)
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "local_chat_messages", filter: `room_id=eq.${room.id}` },
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "local_chat_messages",
+          filter: `room_id=eq.${room.id}`,
+        },
         async (payload) => {
           const row = payload.new as LocalMessage;
           // fetch instructor info for the new message
@@ -689,7 +707,11 @@ function MessagesIndexPage() {
         .from("job_offers")
         .select("id, pupil_name, postcode_area")
         .in("id", ids);
-      for (const j of (jobs || []) as { id: string; pupil_name: string | null; postcode_area: string | null }[]) {
+      for (const j of (jobs || []) as {
+        id: string;
+        pupil_name: string | null;
+        postcode_area: string | null;
+      }[]) {
         const row = grouped.get(j.id);
         if (row) {
           row.pupil_name = j.pupil_name;
@@ -737,7 +759,12 @@ function MessagesIndexPage() {
       .channel("admin_job_offer_messages")
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "job_offer_messages", filter: "sender_type=eq.instructor" },
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "job_offer_messages",
+          filter: "sender_type=eq.instructor",
+        },
         async (payload) => {
           const row = payload.new as { job_offer_id: string; sender_id: string | null };
           const [{ data: job }, { data: instructor }] = await Promise.all([
@@ -747,11 +774,7 @@ function MessagesIndexPage() {
               .eq("id", row.job_offer_id)
               .maybeSingle(),
             row.sender_id
-              ? supabase
-                  .from("instructors")
-                  .select("name")
-                  .eq("id", row.sender_id)
-                  .maybeSingle()
+              ? supabase.from("instructors").select("name").eq("id", row.sender_id).maybeSingle()
               : Promise.resolve({ data: null }),
           ]);
           const pupilName = (job as { pupil_name: string | null } | null)?.pupil_name ?? "pupil";
@@ -771,9 +794,6 @@ function MessagesIndexPage() {
       supabase.removeChannel(channel);
     };
   }, [isAdmin]);
-
-
-
 
   async function sendLocalMessage() {
     if (!room || !userId) return;
@@ -957,28 +977,25 @@ function MessagesIndexPage() {
     userId,
   ]);
 
-
   const visibleItems = useMemo(() => {
     const q = query.trim().toLowerCase();
     return items
-      .filter((i) => (filter === "all" ? true : i.kind === filter.replace(/s$/, "") || i.kind === filter))
+      .filter((i) => !archived.has(i.key))
+      .filter((i) =>
+        filter === "all" ? true : i.kind === filter.replace(/s$/, "") || i.kind === filter,
+      )
       .filter((i) => !q || i.name.toLowerCase().includes(q) || i.preview.toLowerCase().includes(q))
-      .sort((a, b) => {
-        const pa = pinned.has(a.key) ? 1 : 0;
-        const pb = pinned.has(b.key) ? 1 : 0;
-        if (pa !== pb) return pb - pa;
-        return new Date(b.ts).getTime() - new Date(a.ts).getTime();
-      });
-  }, [items, filter, query, pinned]);
+      .sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime());
+  }, [items, filter, query, archived]);
 
   const [menuItem, setMenuItem] = useState<InboxItem | null>(null);
 
-  function togglePin(key: string) {
-    setPinned((prev) => {
+  function toggleArchive(key: string) {
+    setArchived((prev) => {
       const next = new Set(prev);
       if (next.has(key)) next.delete(key);
       else next.add(key);
-      writeKeySet(PIN_KEY, next);
+      writeKeySet(ARCHIVE_KEY, next);
       return next;
     });
   }
@@ -990,6 +1007,30 @@ function MessagesIndexPage() {
       writeKeySet(MUTE_KEY, next);
       return next;
     });
+  }
+
+  function markUnread(item: InboxItem) {
+    if (item.kind === "pupil") {
+      const pupilId = item.key.split(":")[1];
+      setConvos((prev) => prev.map((c) => (c.pupil_id === pupilId ? { ...c, read_at: null } : c)));
+    } else if (item.kind === "local") {
+      const roomId = item.key.split(":")[1];
+      if (roomId) {
+        localStorage.setItem(`local_chat_last_seen_${roomId}`, "0");
+        setRoomPreviews((prev) => {
+          if (!prev[roomId]) return prev;
+          return { ...prev, [roomId]: { ...prev[roomId], unread: 1 } };
+        });
+      }
+    } else if (item.kind === "admin") {
+      const jobId = item.key.split(":")[1];
+      setAdminThreads((prev) =>
+        prev.map((t) => (t.job_offer_id === jobId ? { ...t, unread: true } : t)),
+      );
+    } else if (item.kind === "instructor") {
+      const convoId = item.key.split(":")[1];
+      if (convoId) setDmUnread((prev) => ({ ...prev, [convoId]: 1 }));
+    }
   }
 
   async function joinRoom(r: LocalChatRoom) {
@@ -1009,54 +1050,101 @@ function MessagesIndexPage() {
   const router = useRouter();
 
   return (
-    <PageLayout style={{ ...FONT, background: "#DCE4F0", paddingBottom: 24 }}>
-      <PageHeader
-        title="Messages"
-        showBack
-        backTo="/home"
-        right={
-          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-            <button
-              type="button"
-              aria-label="Notifications"
-              onClick={() => navigate({ to: "/notifications" as never })}
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.08)",
-                border: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                padding: 0,
-              }}
-            >
-              <IconBell size={17} stroke={1.8} color="#C7D0DE" />
-            </button>
-            <button
-              type="button"
-              aria-label="Menu"
-              onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.08)",
-                border: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                padding: 0,
-              }}
-            >
-              <IconAdjustmentsHorizontal size={17} stroke={1.8} color="#C7D0DE" />
-            </button>
-          </div>
-        }
-      />
+    <PageLayout style={{ ...FONT, background: "#EEF2F7", paddingBottom: 24 }}>
+      <div
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 30,
+          background: NAVY,
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 12px) 16px 12px",
+          borderBottom: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: 0,
+        }}
+      >
+        <button
+          type="button"
+          aria-label="Back"
+          onClick={() => navigate({ to: "/home" as never })}
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.15)",
+            border: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#fff",
+            cursor: "pointer",
+            padding: 0,
+            flexShrink: 0,
+          }}
+        >
+          <IconChevronLeft size={18} />
+        </button>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1
+            style={{
+              fontSize: 16,
+              fontWeight: 700,
+              color: "#fff",
+              margin: 0,
+              fontFamily: "Poppins, sans-serif",
+              lineHeight: 1.25,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            Messages
+          </h1>
+        </div>
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <button
+            type="button"
+            aria-label="Notifications"
+            onClick={() => navigate({ to: "/notifications" as never })}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.08)",
+              border: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              padding: 0,
+            }}
+          >
+            <IconBell size={17} stroke={1.8} color="#C7D0DE" />
+          </button>
+          <button
+            type="button"
+            aria-label="Menu"
+            onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.08)",
+              border: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              padding: 0,
+            }}
+          >
+            <IconAdjustmentsHorizontal size={17} stroke={1.8} color="#C7D0DE" />
+          </button>
+        </div>
+      </div>
 
       {view === "chat" ? (
         <LocalChatView
@@ -1092,67 +1180,66 @@ function MessagesIndexPage() {
         />
       ) : (
         <>
-          {/* Filter chips + search */}
+          {/* Segmented filter control + search */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: 8,
-              padding: "8px 16px",
+              padding: "12px 16px",
               background: "transparent",
             }}
           >
             <div
               style={{
                 display: "flex",
-                gap: 8,
+                flex: 1,
+                background: "#FFFFFF",
+                borderRadius: 10,
+                boxShadow: "0 3px 0 #E4E4E8",
+                padding: 3,
                 overflowX: "auto",
                 scrollbarWidth: "none",
-                flex: 1,
               }}
             >
-              {([
-                "all",
-                "pupils",
-                "local",
-                ...(isAdmin ? (["admin"] as const) : []),
-                "instructors",
-              ] as const).map(
-                (f) => {
-                  const active = filter === f;
-                  const label =
-                    f === "all"
-                      ? "All"
-                      : f === "pupils"
-                        ? "Pupils"
-                        : f === "local"
-                          ? "Local"
-                          : f === "instructors"
-                            ? "Instructors"
-                            : "Admin";
+              {(
+                [
+                  { key: "all", label: "All" },
+                  { key: "pupils", label: "Pupils" },
+                  { key: "local", label: "Local" },
+                  { key: "admin", label: "Admin" },
+                  { key: "instructors", label: "ADIs" },
+                ] as const
+              )
+                .filter((f) => f.key !== "admin" || isAdmin)
+                .map((f) => {
+                  const active = filter === f.key;
                   return (
                     <button
-                      key={f}
+                      key={f.key}
                       type="button"
-                      onClick={() => setFilter(f)}
+                      onClick={() => setFilter(f.key as Filter)}
                       style={{
+                        flex: 1,
                         flexShrink: 0,
-                        background: active ? NAVY : "#FFFFFF",
-                        color: active ? "#FFFFFF" : NAVY,
-                        border: active ? "0.5px solid " + NAVY : `0.5px solid ${BORDER}`,
-                        borderRadius: 20,
-                        padding: "5px 14px",
+                        textAlign: "center",
+                        padding: "7px 12px",
                         fontSize: 12,
-                        fontWeight: 500,
+                        fontFamily: "Poppins, sans-serif",
                         cursor: "pointer",
-                        ...FONT,
+                        border: "none",
+                        outline: "none",
+                        background: active ? "#0B1F3A" : "transparent",
+                        color: active ? "#FFFFFF" : "#8A94A6",
+                        borderRadius: active ? 7 : 0,
+                        fontWeight: active ? 600 : 500,
+                        whiteSpace: "nowrap",
                       }}
                     >
-                      {label}
+                      {f.label}
                     </button>
                   );
-                },
-              )}
+                })}
             </div>
             <button
               type="button"
@@ -1228,7 +1315,13 @@ function MessagesIndexPage() {
                     type="button"
                     aria-label="Clear search"
                     onClick={() => setQuery("")}
-                    style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
+                    style={{
+                      background: "none",
+                      border: 0,
+                      padding: 0,
+                      cursor: "pointer",
+                      display: "flex",
+                    }}
                   >
                     <IconX stroke={1.5} size={15} color={GREY} />
                   </button>
@@ -1266,40 +1359,104 @@ function MessagesIndexPage() {
           {/* Unified list */}
           <div style={{ padding: "0 16px" }}>
             {loading && items.length === 0 ? (
-              <div style={{ padding: 32, textAlign: "center", color: GREY, fontSize: 13 }}>Loading…</div>
+              <div style={{ padding: 32, textAlign: "center", color: GREY, fontSize: 13 }}>
+                Loading…
+              </div>
             ) : visibleItems.length === 0 ? (
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  gap: 6,
-                  padding: "56px 24px",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  padding: "48px 24px",
                 }}
               >
-                <IconMessageCircle stroke={1.5} size={40} color="#D0D5DD" />
-                <div style={{ fontSize: 14, color: GREY }}>No conversations</div>
+                <IconMessageCircle
+                  size={48}
+                  color="#D1D5DB"
+                  stroke={1.5}
+                  style={{ marginBottom: 12 }}
+                />
+                <div
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 600,
+                    color: NAVY,
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  No messages yet
+                </div>
+                <div
+                  style={{
+                    fontSize: 14,
+                    color: "#8A94A6",
+                    marginTop: 4,
+                    lineHeight: 1.5,
+                    maxWidth: 280,
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  Messages from pupils and your local ADI community will appear here
+                </div>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                {visibleItems.map((item) => (
-                  <div
-                    key={item.key}
-                    style={{
-                      background: item.unread > 0 ? '#F0F7FF' : '#fff',
-                      borderRadius: 16,
-                      marginBottom: 10,
-                      boxShadow: '0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)',
-                    }}
-                  >
-                    <InboxRow
-                      item={item}
-                      pinned={pinned.has(item.key)}
-                      muted={muted.has(item.key)}
-                      onLongPress={() => setMenuItem(item)}
-                    />
-                  </div>
-                ))}
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                {(() => {
+                  const today: InboxItem[] = [];
+                  const yesterday: InboxItem[] = [];
+                  const earlier: InboxItem[] = [];
+                  const now = new Date();
+                  const yest = new Date(now);
+                  yest.setDate(now.getDate() - 1);
+                  for (const item of visibleItems) {
+                    const d = new Date(item.ts);
+                    if (d.toDateString() === now.toDateString()) today.push(item);
+                    else if (d.toDateString() === yest.toDateString()) yesterday.push(item);
+                    else earlier.push(item);
+                  }
+                  const sections = [
+                    { label: "TODAY", items: today },
+                    { label: "YESTERDAY", items: yesterday },
+                    { label: "EARLIER", items: earlier },
+                  ] as const;
+                  return (
+                    <>
+                      {sections.map(
+                        (s) =>
+                          s.items.length > 0 && (
+                            <div key={s.label}>
+                              <div
+                                style={{
+                                  fontSize: 10,
+                                  fontWeight: 600,
+                                  textTransform: "uppercase",
+                                  letterSpacing: "0.12em",
+                                  color: "#8A94A6",
+                                  margin: "16px 16px 8px",
+                                  fontFamily: "Poppins, sans-serif",
+                                }}
+                              >
+                                {s.label}
+                              </div>
+                              <div style={{ display: "flex", flexDirection: "column" }}>
+                                {s.items.map((item) => (
+                                  <InboxRow
+                                    key={item.key}
+                                    item={item}
+                                    muted={muted.has(item.key)}
+                                    onMenu={() => setMenuItem(item)}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          ),
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             )}
           </div>
@@ -1312,7 +1469,7 @@ function MessagesIndexPage() {
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(11,31,58,0.35)",
+            background: "rgba(0,0,0,0.3)",
             zIndex: 120,
             display: "flex",
             alignItems: "flex-end",
@@ -1323,36 +1480,49 @@ function MessagesIndexPage() {
             style={{
               background: "#FFFFFF",
               width: "100%",
-              borderTopLeftRadius: 16,
-              borderTopRightRadius: 16,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
               padding: "8px 0 calc(8px + env(safe-area-inset-bottom, 0px))",
-              ...FONT,
+              fontFamily: "Poppins, sans-serif",
             }}
           >
             <div
               style={{
-                padding: "10px 20px",
-                fontSize: 13,
-                color: GREY,
-                borderBottom: `0.5px solid ${BORDER}`,
+                width: 36,
+                height: 4,
+                borderRadius: 999,
+                background: "#E5E7EB",
+                margin: "8px auto 16px",
               }}
-            >
-              {menuItem.name}
-            </div>
+            />
             {(
               [
                 {
-                  label: pinned.has(menuItem.key) ? "Unpin" : "Pin",
-                  icon: pinned.has(menuItem.key) ? IconPin : IconPinFilled,
-                  run: () => togglePin(menuItem.key),
+                  label: "Archive",
+                  icon: IconArchive,
+                  color: "#5A6270",
+                  run: () => toggleArchive(menuItem.key),
                 },
                 {
                   label: muted.has(menuItem.key) ? "Unmute notifications" : "Mute notifications",
                   icon: muted.has(menuItem.key) ? IconBell : IconBellOff,
+                  color: "#5A6270",
                   run: () => toggleMute(menuItem.key),
                 },
-                { label: "Mark as read", icon: IconChecks, run: () => menuItem.markRead() },
-              ] as { label: string; icon: typeof IconPin; run: () => void }[]
+                {
+                  label: "Mark as unread",
+                  icon: IconMail,
+                  color: "#1877D6",
+                  bold: true,
+                  run: () => markUnread(menuItem),
+                },
+              ] as {
+                label: string;
+                icon: typeof IconArchive;
+                color: string;
+                bold?: boolean;
+                run: () => void;
+              }[]
             ).map((a) => (
               <button
                 key={a.label}
@@ -1364,22 +1534,43 @@ function MessagesIndexPage() {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 12,
+                  gap: 14,
                   width: "100%",
                   background: "none",
                   border: 0,
                   padding: "14px 20px",
                   fontSize: 14,
-                  color: NAVY,
+                  color: a.bold ? a.color : "#0B1F3A",
+                  fontWeight: a.bold ? 600 : 500,
                   cursor: "pointer",
                   textAlign: "left",
-                  ...FONT,
+                  borderBottom: "0.5px solid #F3F4F6",
+                  fontFamily: "Poppins, sans-serif",
                 }}
               >
-                <a.icon size={19} color={NAVY} stroke={1.8} />
+                <a.icon size={20} color={a.color} stroke={1.8} />
                 {a.label}
               </button>
             ))}
+            <button
+              type="button"
+              onClick={() => setMenuItem(null)}
+              style={{
+                display: "block",
+                width: "100%",
+                background: "none",
+                border: 0,
+                padding: "14px 20px",
+                fontSize: 14,
+                color: RED,
+                fontWeight: 600,
+                cursor: "pointer",
+                textAlign: "center",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       )}
@@ -1415,7 +1606,13 @@ function MessagesIndexPage() {
                 setSearchQuery("");
                 setSearchResults([]);
               }}
-              style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
+              style={{
+                background: "none",
+                border: 0,
+                padding: 0,
+                cursor: "pointer",
+                display: "flex",
+              }}
             >
               <IconX stroke={1.5} size={20} color={GREY} />
             </button>
@@ -1459,7 +1656,13 @@ function MessagesIndexPage() {
                   <img
                     src={r.profile_image_url}
                     alt={r.name ?? "Instructor"}
-                    style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      flexShrink: 0,
+                    }}
                   />
                 ) : (
                   <div
@@ -1529,183 +1732,174 @@ interface InboxItem {
 
 function InboxRow({
   item,
-  pinned,
   muted,
-  onLongPress,
+  onMenu,
 }: {
   item: InboxItem;
-  pinned: boolean;
   muted: boolean;
-  onLongPress: () => void;
+  onMenu: () => void;
 }) {
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const longPressed = useRef(false);
-
-  const start = () => {
-    longPressed.current = false;
-    timer.current = setTimeout(() => {
-      longPressed.current = true;
-      onLongPress();
-    }, 450);
-  };
-  const clear = () => {
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = null;
-  };
-
   const unread = item.unread > 0;
+
+  const tag = (() => {
+    switch (item.kind) {
+      case "local":
+        return { label: "Local", bg: "#EAF7EE", color: "#1C9950" };
+      case "admin":
+        return { label: "Admin", bg: "#EDEBFB", color: "#5B3FD9" };
+      case "instructor":
+        return { label: "DSM", bg: "#E7F0FD", color: "#1877D6" };
+      case "pupil":
+      default:
+        return { label: "Pupil", bg: "#E7F0FD", color: "#1877D6" };
+    }
+  })();
 
   return (
     <div
       role="button"
       tabIndex={0}
-      onClick={() => {
-        if (longPressed.current) return;
-        item.open();
-      }}
-      onContextMenu={(e) => {
-        e.preventDefault();
-        onLongPress();
-      }}
-      onTouchStart={start}
-      onTouchEnd={clear}
-      onTouchMove={clear}
-      onMouseDown={start}
-      onMouseUp={clear}
-      onMouseLeave={clear}
+      onClick={item.open}
       style={{
         display: "flex",
         alignItems: "center",
-        gap: 13,
-        padding: "18px 16px",
-        borderRadius: 16,
+        gap: 12,
+        padding: "14px 16px",
+        background: "#FFFFFF",
+        borderRadius: 8,
+        boxShadow: "0 4px 0 #E4E4E8",
+        marginBottom: 8,
         cursor: "pointer",
+        borderLeft: unread ? "3px solid #1877D6" : "3px solid transparent",
         WebkitTapHighlightColor: "transparent",
       }}
     >
       {/* Avatar */}
-      <div style={{ position: "relative", width: 46, height: 46, flexShrink: 0 }}>
+      <div
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: "50%",
+          flexShrink: 0,
+          overflow: "hidden",
+          background: item.bg,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "#FFFFFF",
+          fontSize: 16,
+          fontWeight: 700,
+        }}
+      >
         {item.photo ? (
           <img
             src={item.photo}
             alt={item.name}
-            style={{ width: 46, height: 46, borderRadius: "50%", objectFit: "cover" }}
+            style={{ width: 44, height: 44, objectFit: "cover" }}
           />
+        ) : item.system ? (
+          <IconSpeakerphone size={22} color="#FFFFFF" stroke={1.8} />
         ) : (
-          <div
-            style={{
-              width: 46,
-              height: 46,
-              borderRadius: "50%",
-              background: item.bg,
-              color: "#FFFFFF",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 18,
-              fontWeight: 500,
-            }}
-          >
-            {item.system ? (
-              <IconSpeakerphone size={24} color="#FFFFFF" stroke={1.8} />
-            ) : (
-              item.initials
-            )}
-          </div>
-        )}
-        {pinned && (
-          <span
-            style={{
-              position: "absolute",
-              top: -2,
-              left: -2,
-              width: 16,
-              height: 16,
-              borderRadius: "50%",
-              background: "#FFFFFF",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <IconPinFilled size={11} color="#BA7517" />
-          </span>
+          item.initials
         )}
       </div>
 
-      {/* Content */}
+      {/* Centre */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 8,
+            minWidth: 0,
+          }}
+        >
           <div
             style={{
-              fontSize: 16,
-              fontWeight: unread ? 800 : 700,
+              fontSize: 14,
+              fontWeight: unread ? 700 : 500,
               color: NAVY,
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
+              fontFamily: "Poppins, sans-serif",
             }}
           >
             {item.name}
           </div>
-          {item.badge && (
-            <span
-              style={{
-                flexShrink: 0,
-                fontSize: 9.5,
-                fontWeight: 800,
-                color: BLUE,
-                background: "#E7F1FC",
-                borderRadius: 20,
-                padding: "2px 8px",
-                letterSpacing: 0.4,
-              }}
-            >
-              {item.badge}
-            </span>
-          )}
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: unread ? 700 : 500,
+              color: unread ? BLUE : "#8A94A6",
+              flexShrink: 0,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
+          </div>
         </div>
         <div
           style={{
-            fontSize: 13.5,
-            fontWeight: unread ? 600 : 400,
-            color: unread ? NAVY : "#8A8A8E",
+            fontSize: 13,
+            color: "#5A6270",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
-            marginTop: 3,
+            fontFamily: "Poppins, sans-serif",
           }}
         >
           {item.preview}
         </div>
+        <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
+          <span
+            style={{
+              borderRadius: 8,
+              fontSize: 10,
+              fontWeight: 600,
+              padding: "2px 8px",
+              fontFamily: "Poppins, sans-serif",
+              background: tag.bg,
+              color: tag.color,
+            }}
+          >
+            {tag.label}
+          </span>
+        </div>
       </div>
 
-      {/* Timestamp / unread dot */}
-      <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-        {muted && <IconBellOff size={14} color={GREY} stroke={1.8} style={{ marginRight: 6 }} />}
-        <span
+      {/* Right */}
+      <div style={{ display: "flex", alignItems: "center", flexShrink: 0, gap: 8 }}>
+        {unread && (
+          <span
+            style={{
+              width: 7,
+              height: 7,
+              borderRadius: "50%",
+              background: "#1877D6",
+              flexShrink: 0,
+            }}
+          />
+        )}
+        <button
+          type="button"
+          aria-label="Message options"
+          onClick={(e) => {
+            e.stopPropagation();
+            onMenu();
+          }}
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            fontSize: 12,
-            fontWeight: unread ? 700 : 400,
-            color: unread ? BLUE : "#B0B0B5",
+            background: "none",
+            border: 0,
+            padding: 4,
+            cursor: "pointer",
+            display: "flex",
+            flexShrink: 0,
           }}
         >
-          {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
-          {unread && (
-            <span
-              style={{
-                width: 9,
-                height: 9,
-                borderRadius: "50%",
-                background: BLUE,
-                flexShrink: 0,
-              }}
-            />
-          )}
-        </span>
+          <IconDots size={18} color="#8A94A6" stroke={1.8} />
+        </button>
       </div>
     </div>
   );
@@ -1799,9 +1993,19 @@ function RoomBrowser({
         >
           {r.area_name || r.outcode}
         </div>
-        <div style={{ fontSize: 14, color: GREY, marginTop: 2, display: "flex", alignItems: "center", gap: 6 }}>
+        <div
+          style={{
+            fontSize: 14,
+            color: GREY,
+            marginTop: 2,
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
           <span>
-            {r.instructor_count ?? 1} member{(r.instructor_count ?? 1) === 1 ? "" : "s"} · {r.outcode}
+            {r.instructor_count ?? 1} member{(r.instructor_count ?? 1) === 1 ? "" : "s"} ·{" "}
+            {r.outcode}
           </span>
           {joinedRoomIds.has(r.id) && (
             <span style={{ fontSize: 11, fontWeight: 600, color: BLUE }}>Joined</span>
@@ -1978,7 +2182,13 @@ function LocalChatView(props: {
   const totalRooms = joinedRooms.length + otherRooms.length;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 60px - 45px - 64px)" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "calc(100vh - 60px - 45px - 64px)",
+      }}
+    >
       {/* Room header */}
       <div
         style={{
@@ -2013,7 +2223,9 @@ function LocalChatView(props: {
           }}
         >
           <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{areaName} ▾</div>
-          <div style={{ fontSize: 11, color: "#9CA3AF" }}>{room?.instructor_count ?? 1} members</div>
+          <div style={{ fontSize: 11, color: "#9CA3AF" }}>
+            {room?.instructor_count ?? 1} members
+          </div>
         </button>
         <button
           type="button"
@@ -2071,7 +2283,13 @@ function LocalChatView(props: {
                   type="button"
                   aria-label="Clear room search"
                   onClick={() => setRoomSearch("")}
-                  style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
+                  style={{
+                    background: "none",
+                    border: 0,
+                    padding: 0,
+                    cursor: "pointer",
+                    display: "flex",
+                  }}
                 >
                   <IconX stroke={1.5} size={14} color="#8A93A3" />
                 </button>
@@ -2079,12 +2297,16 @@ function LocalChatView(props: {
             </div>
             <div style={{ overflowY: "auto" }}>
               {totalRooms === 0 ? (
-                <div style={{ padding: "12px 14px", fontSize: 12, color: "#9CA3AF" }}>No rooms found</div>
+                <div style={{ padding: "12px 14px", fontSize: 12, color: "#9CA3AF" }}>
+                  No rooms found
+                </div>
               ) : (
-                ([
-                  ["Your rooms", joinedRooms],
-                  ["All rooms", otherRooms],
-                ] as [string, LocalChatRoom[]][]).map(([label, list]) =>
+                (
+                  [
+                    ["Your rooms", joinedRooms],
+                    ["All rooms", otherRooms],
+                  ] as [string, LocalChatRoom[]][]
+                ).map(([label, list]) =>
                   list.length === 0 ? null : (
                     <div key={label}>
                       <div
@@ -2135,7 +2357,9 @@ function LocalChatView(props: {
                             }}
                           >
                             {r.area_name || r.outcode}
-                            <span style={{ color: "#9CA3AF", fontSize: 11, marginLeft: 6 }}>{r.outcode}</span>
+                            <span style={{ color: "#9CA3AF", fontSize: 11, marginLeft: 6 }}>
+                              {r.outcode}
+                            </span>
                           </span>
                           {r.is_opt_in && (
                             <span
@@ -2159,11 +2383,9 @@ function LocalChatView(props: {
                 )
               )}
             </div>
-
           </div>
         )}
       </div>
-
 
       {/* Messages list */}
       <div
@@ -2179,7 +2401,9 @@ function LocalChatView(props: {
         }}
       >
         {loading ? (
-          <div style={{ padding: 40, textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>Loading…</div>
+          <div style={{ padding: 40, textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>
+            Loading…
+          </div>
         ) : messages.length === 0 ? (
           <div style={{ padding: 40, textAlign: "center" }}>
             <div style={{ fontSize: 14, fontWeight: 600, color: "#6B7280" }}>
@@ -2194,7 +2418,8 @@ function LocalChatView(props: {
             const mine = msg.instructor_id === userId;
             const prev = messages[i - 1];
             const showDate =
-              !prev || new Date(prev.created_at).toDateString() !== new Date(msg.created_at).toDateString();
+              !prev ||
+              new Date(prev.created_at).toDateString() !== new Date(msg.created_at).toDateString();
             const time = new Date(msg.created_at).toLocaleTimeString("en-GB", {
               hour: "2-digit",
               minute: "2-digit",
@@ -2229,7 +2454,11 @@ function LocalChatView(props: {
                       >
                         {highlight(msg.message)}
                       </div>
-                      <div style={{ fontSize: 10, color: "#9CA3AF", textAlign: "right", marginTop: 2 }}>{time}</div>
+                      <div
+                        style={{ fontSize: 10, color: "#9CA3AF", textAlign: "right", marginTop: 2 }}
+                      >
+                        {time}
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -2238,7 +2467,13 @@ function LocalChatView(props: {
                       <img
                         src={msg.instructors.profile_image_url}
                         alt={msg.instructors?.name ?? "ADI"}
-                        style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                          flexShrink: 0,
+                        }}
                       />
                     ) : (
                       <div
@@ -2260,7 +2495,9 @@ function LocalChatView(props: {
                       </div>
                     )}
                     <div style={{ maxWidth: "75%" }}>
-                      <div style={{ fontSize: 10, color: "#9CA3AF", fontWeight: 600, marginBottom: 2 }}>
+                      <div
+                        style={{ fontSize: 10, color: "#9CA3AF", fontWeight: 600, marginBottom: 2 }}
+                      >
                         {firstName(msg.instructors?.name)}
                       </div>
                       <div
@@ -2555,7 +2792,9 @@ function AdminJobThreadSheet({
                     >
                       {m.sender_type}
                     </div>
-                    <div style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{m.message}</div>
+                    <div style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                      {m.message}
+                    </div>
                     <div style={{ fontSize: 10, opacity: 0.7, marginTop: 2, textAlign: "right" }}>
                       {fmtTime(m.created_at)}
                     </div>
@@ -2617,4 +2856,3 @@ function AdminJobThreadSheet({
     </div>
   );
 }
-
