@@ -204,6 +204,15 @@ function CourseDetailPage() {
     console.log("[courses.$id] bookings fetch result:", bs, bErr);
     if (bErr) console.error("[courses.$id] load bookings", bErr);
     setBookings((bs ?? []) as Booking[]);
+
+    const { data: sessionData } = await supabase
+      .from("course_sessions")
+      .select("*")
+      .eq("course_id", id)
+      .order("session_date", { ascending: true })
+      .order("session_time", { ascending: true });
+    setSessions((sessionData ?? []) as CourseSession[]);
+
     setLoading(false);
   }
 
