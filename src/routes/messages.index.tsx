@@ -1,13 +1,28 @@
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { IconAdjustmentsHorizontal, IconArchive, IconBell, IconBellOff, IconChevronLeft, IconChevronRight, IconDots, IconEdit, IconFlag, IconMail, IconMessageCircle, IconPlus, IconSearch, IconSend, IconSpeakerphone, IconX } from "@tabler/icons-react";
+import {
+  IconAdjustmentsHorizontal,
+  IconArchive,
+  IconBell,
+  IconBellOff,
+  IconChevronLeft,
+  IconChevronRight,
+  IconDots,
+  IconEdit,
+  IconFlag,
+  IconMail,
+  IconMessageCircle,
+  IconPlus,
+  IconSearch,
+  IconSend,
+  IconSpeakerphone,
+  IconX,
+} from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { useAdminGate } from "./admin";
 import { pupilColour } from "@/components/PupilAvatar";
-
-
 
 export const Route = createFileRoute("/messages/")({
   validateSearch: (search: Record<string, unknown>): { jobOfferId?: string } => ({
@@ -138,7 +153,6 @@ interface JobThreadRow {
   unread: boolean;
 }
 
-
 function initials(p?: Pupil) {
   const n = (p?.name || p?.first_name || "?").trim();
   const parts = n.split(/\s+/);
@@ -244,7 +258,7 @@ function MessagesIndexPage() {
         .is("read_at", null);
       if (cancelled) return;
       const map: Record<string, number> = {};
-      for (const m of ((data as any[]) ?? [])) {
+      for (const m of (data as any[]) ?? []) {
         const cid = m.conversation_id as string;
         map[cid] = (map[cid] ?? 0) + 1;
       }
@@ -274,20 +288,22 @@ function MessagesIndexPage() {
     };
   }, [userId]);
 
-
   useEffect(() => {
     if (!searchOpen) return;
     const q = searchQuery.trim();
-    const t = setTimeout(() => {
-      supabase
-        .from("instructors")
-        .select("id, name, profile_image_url, home_postcode")
-        .neq("id", userId ?? "")
-        .ilike("name", q.length >= 2 ? `%${q}%` : "%%")
-        .order("name", { ascending: true })
-        .limit(20)
-        .then(({ data }) => setSearchResults((data as any[]) ?? []));
-    }, q.length >= 2 ? 300 : 0);
+    const t = setTimeout(
+      () => {
+        supabase
+          .from("instructors")
+          .select("id, name, profile_image_url, home_postcode")
+          .neq("id", userId ?? "")
+          .ilike("name", q.length >= 2 ? `%${q}%` : "%%")
+          .order("name", { ascending: true })
+          .limit(20)
+          .then(({ data }) => setSearchResults((data as any[]) ?? []));
+      },
+      q.length >= 2 ? 300 : 0,
+    );
     return () => clearTimeout(t);
   }, [searchQuery, searchOpen, userId]);
 
@@ -585,8 +601,6 @@ function MessagesIndexPage() {
     };
   }, [joinedRooms, userId, localMessages.length]);
 
-
-
   // Fetch messages + realtime once we have a room
   useEffect(() => {
     if (!room) return;
@@ -610,7 +624,12 @@ function MessagesIndexPage() {
       .channel(`local_chat_${room.id}`)
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "local_chat_messages", filter: `room_id=eq.${room.id}` },
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "local_chat_messages",
+          filter: `room_id=eq.${room.id}`,
+        },
         async (payload) => {
           const row = payload.new as LocalMessage;
           // fetch instructor info for the new message
@@ -688,7 +707,11 @@ function MessagesIndexPage() {
         .from("job_offers")
         .select("id, pupil_name, postcode_area")
         .in("id", ids);
-      for (const j of (jobs || []) as { id: string; pupil_name: string | null; postcode_area: string | null }[]) {
+      for (const j of (jobs || []) as {
+        id: string;
+        pupil_name: string | null;
+        postcode_area: string | null;
+      }[]) {
         const row = grouped.get(j.id);
         if (row) {
           row.pupil_name = j.pupil_name;
@@ -736,7 +759,12 @@ function MessagesIndexPage() {
       .channel("admin_job_offer_messages")
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "job_offer_messages", filter: "sender_type=eq.instructor" },
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "job_offer_messages",
+          filter: "sender_type=eq.instructor",
+        },
         async (payload) => {
           const row = payload.new as { job_offer_id: string; sender_id: string | null };
           const [{ data: job }, { data: instructor }] = await Promise.all([
@@ -746,11 +774,7 @@ function MessagesIndexPage() {
               .eq("id", row.job_offer_id)
               .maybeSingle(),
             row.sender_id
-              ? supabase
-                  .from("instructors")
-                  .select("name")
-                  .eq("id", row.sender_id)
-                  .maybeSingle()
+              ? supabase.from("instructors").select("name").eq("id", row.sender_id).maybeSingle()
               : Promise.resolve({ data: null }),
           ]);
           const pupilName = (job as { pupil_name: string | null } | null)?.pupil_name ?? "pupil";
@@ -770,9 +794,6 @@ function MessagesIndexPage() {
       supabase.removeChannel(channel);
     };
   }, [isAdmin]);
-
-
-
 
   async function sendLocalMessage() {
     if (!room || !userId) return;
@@ -956,12 +977,13 @@ function MessagesIndexPage() {
     userId,
   ]);
 
-
   const visibleItems = useMemo(() => {
     const q = query.trim().toLowerCase();
     return items
       .filter((i) => !archived.has(i.key))
-      .filter((i) => (filter === "all" ? true : i.kind === filter.replace(/s$/, "") || i.kind === filter))
+      .filter((i) =>
+        filter === "all" ? true : i.kind === filter.replace(/s$/, "") || i.kind === filter,
+      )
       .filter((i) => !q || i.name.toLowerCase().includes(q) || i.preview.toLowerCase().includes(q))
       .sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime());
   }, [items, filter, query, archived]);
@@ -1002,7 +1024,9 @@ function MessagesIndexPage() {
       }
     } else if (item.kind === "admin") {
       const jobId = item.key.split(":")[1];
-      setAdminThreads((prev) => prev.map((t) => (t.job_offer_id === jobId ? { ...t, unread: true } : t)));
+      setAdminThreads((prev) =>
+        prev.map((t) => (t.job_offer_id === jobId ? { ...t, unread: true } : t)),
+      );
     } else if (item.kind === "instructor") {
       const convoId = item.key.split(":")[1];
       if (convoId) setDmUnread((prev) => ({ ...prev, [convoId]: 1 }));
@@ -1178,13 +1202,15 @@ function MessagesIndexPage() {
                 scrollbarWidth: "none",
               }}
             >
-              {([
-                { key: "all", label: "All" },
-                { key: "pupils", label: "Pupils" },
-                { key: "local", label: "Local" },
-                { key: "admin", label: "Admin" },
-                { key: "instructors", label: "ADIs" },
-              ] as const)
+              {(
+                [
+                  { key: "all", label: "All" },
+                  { key: "pupils", label: "Pupils" },
+                  { key: "local", label: "Local" },
+                  { key: "admin", label: "Admin" },
+                  { key: "instructors", label: "ADIs" },
+                ] as const
+              )
                 .filter((f) => f.key !== "admin" || isAdmin)
                 .map((f) => {
                   const active = filter === f.key;
@@ -1289,7 +1315,13 @@ function MessagesIndexPage() {
                     type="button"
                     aria-label="Clear search"
                     onClick={() => setQuery("")}
-                    style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
+                    style={{
+                      background: "none",
+                      border: 0,
+                      padding: 0,
+                      cursor: "pointer",
+                      display: "flex",
+                    }}
                   >
                     <IconX stroke={1.5} size={15} color={GREY} />
                   </button>
@@ -1327,7 +1359,9 @@ function MessagesIndexPage() {
           {/* Unified list */}
           <div style={{ padding: "0 16px" }}>
             {loading && items.length === 0 ? (
-              <div style={{ padding: 32, textAlign: "center", color: GREY, fontSize: 13 }}>Loading…</div>
+              <div style={{ padding: 32, textAlign: "center", color: GREY, fontSize: 13 }}>
+                Loading…
+              </div>
             ) : visibleItems.length === 0 ? (
               <div
                 style={{
@@ -1339,8 +1373,20 @@ function MessagesIndexPage() {
                   padding: "48px 24px",
                 }}
               >
-                <IconMessageCircle size={48} color="#D1D5DB" stroke={1.5} style={{ marginBottom: 12 }} />
-                <div style={{ fontSize: 16, fontWeight: 600, color: NAVY, fontFamily: "Poppins, sans-serif" }}>
+                <IconMessageCircle
+                  size={48}
+                  color="#D1D5DB"
+                  stroke={1.5}
+                  style={{ marginBottom: 12 }}
+                />
+                <div
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 600,
+                    color: NAVY,
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
                   No messages yet
                 </div>
                 <div
@@ -1449,27 +1495,35 @@ function MessagesIndexPage() {
                 margin: "8px auto 16px",
               }}
             />
-            {([
-              {
-                label: "Archive",
-                icon: IconArchive,
-                color: "#5A6270",
-                run: () => toggleArchive(menuItem.key),
-              },
-              {
-                label: muted.has(menuItem.key) ? "Unmute notifications" : "Mute notifications",
-                icon: muted.has(menuItem.key) ? IconBell : IconBellOff,
-                color: "#5A6270",
-                run: () => toggleMute(menuItem.key),
-              },
-              {
-                label: "Mark as unread",
-                icon: IconMail,
-                color: "#1877D6",
-                bold: true,
-                run: () => markUnread(menuItem),
-              },
-            ] as { label: string; icon: typeof IconArchive; color: string; bold?: boolean; run: () => void }[]).map((a) => (
+            {(
+              [
+                {
+                  label: "Archive",
+                  icon: IconArchive,
+                  color: "#5A6270",
+                  run: () => toggleArchive(menuItem.key),
+                },
+                {
+                  label: muted.has(menuItem.key) ? "Unmute notifications" : "Mute notifications",
+                  icon: muted.has(menuItem.key) ? IconBell : IconBellOff,
+                  color: "#5A6270",
+                  run: () => toggleMute(menuItem.key),
+                },
+                {
+                  label: "Mark as unread",
+                  icon: IconMail,
+                  color: "#1877D6",
+                  bold: true,
+                  run: () => markUnread(menuItem),
+                },
+              ] as {
+                label: string;
+                icon: typeof IconArchive;
+                color: string;
+                bold?: boolean;
+                run: () => void;
+              }[]
+            ).map((a) => (
               <button
                 key={a.label}
                 type="button"
@@ -1552,7 +1606,13 @@ function MessagesIndexPage() {
                 setSearchQuery("");
                 setSearchResults([]);
               }}
-              style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
+              style={{
+                background: "none",
+                border: 0,
+                padding: 0,
+                cursor: "pointer",
+                display: "flex",
+              }}
             >
               <IconX stroke={1.5} size={20} color={GREY} />
             </button>
@@ -1596,7 +1656,13 @@ function MessagesIndexPage() {
                   <img
                     src={r.profile_image_url}
                     alt={r.name ?? "Instructor"}
-                    style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      flexShrink: 0,
+                    }}
                   />
                 ) : (
                   <div
@@ -1740,7 +1806,15 @@ function InboxRow({
 
       {/* Centre */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, minWidth: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 8,
+            minWidth: 0,
+          }}
+        >
           <div
             style={{
               fontSize: 14,
@@ -1798,7 +1872,15 @@ function InboxRow({
       {/* Right */}
       <div style={{ display: "flex", alignItems: "center", flexShrink: 0, gap: 8 }}>
         {unread && (
-          <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#1877D6", flexShrink: 0 }} />
+          <span
+            style={{
+              width: 7,
+              height: 7,
+              borderRadius: "50%",
+              background: "#1877D6",
+              flexShrink: 0,
+            }}
+          />
         )}
         <button
           type="button"
@@ -1807,7 +1889,14 @@ function InboxRow({
             e.stopPropagation();
             onMenu();
           }}
-          style={{ background: "none", border: 0, padding: 4, cursor: "pointer", display: "flex", flexShrink: 0 }}
+          style={{
+            background: "none",
+            border: 0,
+            padding: 4,
+            cursor: "pointer",
+            display: "flex",
+            flexShrink: 0,
+          }}
         >
           <IconDots size={18} color="#8A94A6" stroke={1.8} />
         </button>
@@ -1904,9 +1993,19 @@ function RoomBrowser({
         >
           {r.area_name || r.outcode}
         </div>
-        <div style={{ fontSize: 14, color: GREY, marginTop: 2, display: "flex", alignItems: "center", gap: 6 }}>
+        <div
+          style={{
+            fontSize: 14,
+            color: GREY,
+            marginTop: 2,
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
           <span>
-            {r.instructor_count ?? 1} member{(r.instructor_count ?? 1) === 1 ? "" : "s"} · {r.outcode}
+            {r.instructor_count ?? 1} member{(r.instructor_count ?? 1) === 1 ? "" : "s"} ·{" "}
+            {r.outcode}
           </span>
           {joinedRoomIds.has(r.id) && (
             <span style={{ fontSize: 11, fontWeight: 600, color: BLUE }}>Joined</span>
@@ -2083,7 +2182,13 @@ function LocalChatView(props: {
   const totalRooms = joinedRooms.length + otherRooms.length;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 60px - 45px - 64px)" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "calc(100vh - 60px - 45px - 64px)",
+      }}
+    >
       {/* Room header */}
       <div
         style={{
@@ -2118,7 +2223,9 @@ function LocalChatView(props: {
           }}
         >
           <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{areaName} ▾</div>
-          <div style={{ fontSize: 11, color: "#9CA3AF" }}>{room?.instructor_count ?? 1} members</div>
+          <div style={{ fontSize: 11, color: "#9CA3AF" }}>
+            {room?.instructor_count ?? 1} members
+          </div>
         </button>
         <button
           type="button"
@@ -2176,7 +2283,13 @@ function LocalChatView(props: {
                   type="button"
                   aria-label="Clear room search"
                   onClick={() => setRoomSearch("")}
-                  style={{ background: "none", border: 0, padding: 0, cursor: "pointer", display: "flex" }}
+                  style={{
+                    background: "none",
+                    border: 0,
+                    padding: 0,
+                    cursor: "pointer",
+                    display: "flex",
+                  }}
                 >
                   <IconX stroke={1.5} size={14} color="#8A93A3" />
                 </button>
@@ -2184,12 +2297,16 @@ function LocalChatView(props: {
             </div>
             <div style={{ overflowY: "auto" }}>
               {totalRooms === 0 ? (
-                <div style={{ padding: "12px 14px", fontSize: 12, color: "#9CA3AF" }}>No rooms found</div>
+                <div style={{ padding: "12px 14px", fontSize: 12, color: "#9CA3AF" }}>
+                  No rooms found
+                </div>
               ) : (
-                ([
-                  ["Your rooms", joinedRooms],
-                  ["All rooms", otherRooms],
-                ] as [string, LocalChatRoom[]][]).map(([label, list]) =>
+                (
+                  [
+                    ["Your rooms", joinedRooms],
+                    ["All rooms", otherRooms],
+                  ] as [string, LocalChatRoom[]][]
+                ).map(([label, list]) =>
                   list.length === 0 ? null : (
                     <div key={label}>
                       <div
@@ -2240,7 +2357,9 @@ function LocalChatView(props: {
                             }}
                           >
                             {r.area_name || r.outcode}
-                            <span style={{ color: "#9CA3AF", fontSize: 11, marginLeft: 6 }}>{r.outcode}</span>
+                            <span style={{ color: "#9CA3AF", fontSize: 11, marginLeft: 6 }}>
+                              {r.outcode}
+                            </span>
                           </span>
                           {r.is_opt_in && (
                             <span
@@ -2264,11 +2383,9 @@ function LocalChatView(props: {
                 )
               )}
             </div>
-
           </div>
         )}
       </div>
-
 
       {/* Messages list */}
       <div
@@ -2284,7 +2401,9 @@ function LocalChatView(props: {
         }}
       >
         {loading ? (
-          <div style={{ padding: 40, textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>Loading…</div>
+          <div style={{ padding: 40, textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>
+            Loading…
+          </div>
         ) : messages.length === 0 ? (
           <div style={{ padding: 40, textAlign: "center" }}>
             <div style={{ fontSize: 14, fontWeight: 600, color: "#6B7280" }}>
@@ -2299,7 +2418,8 @@ function LocalChatView(props: {
             const mine = msg.instructor_id === userId;
             const prev = messages[i - 1];
             const showDate =
-              !prev || new Date(prev.created_at).toDateString() !== new Date(msg.created_at).toDateString();
+              !prev ||
+              new Date(prev.created_at).toDateString() !== new Date(msg.created_at).toDateString();
             const time = new Date(msg.created_at).toLocaleTimeString("en-GB", {
               hour: "2-digit",
               minute: "2-digit",
@@ -2334,7 +2454,11 @@ function LocalChatView(props: {
                       >
                         {highlight(msg.message)}
                       </div>
-                      <div style={{ fontSize: 10, color: "#9CA3AF", textAlign: "right", marginTop: 2 }}>{time}</div>
+                      <div
+                        style={{ fontSize: 10, color: "#9CA3AF", textAlign: "right", marginTop: 2 }}
+                      >
+                        {time}
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -2343,7 +2467,13 @@ function LocalChatView(props: {
                       <img
                         src={msg.instructors.profile_image_url}
                         alt={msg.instructors?.name ?? "ADI"}
-                        style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                          flexShrink: 0,
+                        }}
                       />
                     ) : (
                       <div
@@ -2365,7 +2495,9 @@ function LocalChatView(props: {
                       </div>
                     )}
                     <div style={{ maxWidth: "75%" }}>
-                      <div style={{ fontSize: 10, color: "#9CA3AF", fontWeight: 600, marginBottom: 2 }}>
+                      <div
+                        style={{ fontSize: 10, color: "#9CA3AF", fontWeight: 600, marginBottom: 2 }}
+                      >
                         {firstName(msg.instructors?.name)}
                       </div>
                       <div
@@ -2660,7 +2792,9 @@ function AdminJobThreadSheet({
                     >
                       {m.sender_type}
                     </div>
-                    <div style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{m.message}</div>
+                    <div style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                      {m.message}
+                    </div>
                     <div style={{ fontSize: 10, opacity: 0.7, marginTop: 2, textAlign: "right" }}>
                       {fmtTime(m.created_at)}
                     </div>
@@ -2722,4 +2856,3 @@ function AdminJobThreadSheet({
     </div>
   );
 }
-
