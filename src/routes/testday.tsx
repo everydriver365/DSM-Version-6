@@ -128,7 +128,9 @@ function TestDayPage() {
       setTest(t);
 
       if (t) {
-        setResult((t.test_status as "Pass" | "Fail" | null) ?? null);
+        const st = (t.test_status ?? "").toLowerCase();
+        setResult(st.startsWith("pass") ? "Pass" : st.startsWith("fail") ? "Fail" : null);
+
         setFaults(t.minor_faults != null ? String(t.minor_faults) : "");
         setNotes("");
 
@@ -204,22 +206,80 @@ function TestDayPage() {
     }
     setSaving(true);
     const faultsNum = faults.trim() === "" ? null : Number(faults);
+    const passed = result === "Pass";
+    const lessonResult = passed ? "pass" : "fail";
+    const pupilStatus = passed ? "Passed" : "Failed";
+
+    // 1) Pupil record
     const { error } = await supabase
       .from("pupils")
       .update({
-        test_status: result,
+        test_status: pupilStatus,
         minor_faults: faultsNum,
       })
       .eq("id", test.id);
-    setSaving(false);
     if (error) {
+      setSaving(false);
       toast.error("Failed to save result");
       console.error(error);
       return;
     }
-    toast.success("Result saved");
-    setTest({ ...test, test_status: result, minor_faults: faultsNum });
+
+    // 2) Test-day lesson for that date (best effort — column may be absent)
+    try {
+      const { error: lessonErr } = await supabase
+        .from("lessons")
+        .update({ test_result: lessonResult } as never)
+        .eq("pupil_id", test.id)
+        .eq("lesson_type", "test")
+        .gte("lesson_date", `${test.test_date}T00:00:00`)
+        .lt("lesson_date", `${test.test_date}T23:59:59`);
+      if (lessonErr) console.warn("[testday] lesson test_result", lessonErr);
+    } catch (e) {
+      console.warn("[testday] lesson test_result", e);
+    }
+
+    // 3) Driving test results history (insert or update the row for this date)
+    try {
+      const examiner =
+        [test.examiner_first_name, test.examiner_surname].filter(Boolean).join(" ").trim() ||
+        null;
+      const payload: Record<string, unknown> = {
+        pupil_id: test.id,
+        instructor_id: userId,
+        test_type: "practical",
+        test_date: test.test_date,
+        test_centre_name: test.test_centre ?? null,
+        examiner_name: examiner,
+        result: lessonResult,
+        fault_count: faultsNum ?? test.minor_faults ?? 0,
+        serious_faults: test.serious_faults ?? 0,
+        dangerous_faults: test.dangerous_faults ?? 0,
+      };
+      const { data: existing } = await supabase
+        .from("driving_test_results")
+        .select("id")
+        .eq("pupil_id", test.id)
+        .eq("test_date", test.test_date)
+        .limit(1);
+      const existingId = (existing ?? [])[0]?.id as string | undefined;
+      if (existingId) {
+        await supabase
+          .from("driving_test_results")
+          .update(payload as never)
+          .eq("id", existingId);
+      } else {
+        await supabase.from("driving_test_results").insert(payload as never);
+      }
+    } catch (e) {
+      console.warn("[testday] driving_test_results", e);
+    }
+
+    setSaving(false);
+    toast.success(passed ? "Pass recorded 🎉" : "Result saved");
+    setTest({ ...test, test_status: pupilStatus, minor_faults: faultsNum });
   }
+
 
   return (
     <PageLayout className="pb-12" style={POPPINS}>

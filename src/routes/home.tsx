@@ -1577,6 +1577,7 @@ function HomePage() {
     test_date: string;
     test_time: string | null;
     test_centre: string | null;
+    test_status?: string | null;
   }>>([]);
   const [pendingSwapCount, setPendingSwapCount] = useState(0);
   const [openJobsCount, setOpenJobsCount] = useState(0);
@@ -2143,7 +2144,7 @@ function HomePage() {
       const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
       const { data: testRows } = await supabase
         .from("pupils")
-        .select("id, name, first_name, test_date, test_time, test_centre")
+        .select("id, name, first_name, test_date, test_time, test_centre, test_status")
         .eq("instructor_id", user.id)
         .not("test_date", "is", null)
         .gte("test_date", todayStr)
@@ -2155,6 +2156,7 @@ function HomePage() {
           test_date: p.test_date,
           test_time: p.test_time ?? null,
           test_centre: p.test_centre ?? null,
+          test_status: p.test_status ?? null,
         })),
       );
     }
@@ -2581,7 +2583,7 @@ function HomePage() {
       const { data: allLessonsRaw, error: lessonsErr } = await supabase
         .from("lessons")
         .select(
-          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, event_title, notes, payment_status, paid_amount, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, photo_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120)"
+          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, event_title, notes, payment_status, paid_amount, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, photo_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120, test_status)"
         )
         .eq("instructor_id", userId)
         .is("deleted_at", null)
@@ -6309,7 +6311,14 @@ function HomePage() {
                               testTime: testTimeOf(l),
                               durationLabel: durLabel,
                               dateLabel: start.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }),
-                              testResult: (l as any).test_result ?? null,
+                              testResult: (() => {
+                                const direct = String((l as any).test_result ?? '').toLowerCase();
+                                if (direct === 'pass' || direct === 'fail') return direct;
+                                const ps = String((l.pupils as any)?.test_status ?? '').toLowerCase();
+                                if (ps.startsWith('pass')) return 'pass';
+                                if (ps.startsWith('fail')) return 'fail';
+                                return null;
+                              })(),
                               onOpenLesson: () => setDetailsSheetForLesson(l),
                               onEdit: () => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }),
                             }}
@@ -10591,7 +10600,7 @@ function TestsBreakdownModal({
 }: {
   open: boolean;
   onClose: () => void;
-  tests: Array<{ id: string; name: string; test_date: string; test_time: string | null; test_centre: string | null }>;
+  tests: Array<{ id: string; name: string; test_date: string; test_time: string | null; test_centre: string | null; test_status?: string | null }>;
   swapRequests: Array<{ id: string; name: string; test_centre: string | null; current_test_date: string | null; current_test_time: string | null; status: string; created_at: string }>;
   onOpenPupil: (id: string) => void;
 }) {
@@ -10642,6 +10651,8 @@ function TestsBreakdownModal({
           {tests.map((t) => {
             const days = daysUntil(t.test_date);
             const colors = badgeColors(days);
+            const st = String(t.test_status ?? "").toLowerCase();
+            const resultState = st.startsWith("pass") ? "passed" : st.startsWith("fail") ? "failed" : null;
             return (
               <div key={t.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
                 <button
@@ -10668,19 +10679,51 @@ function TestsBreakdownModal({
                       {t.test_centre ? ` · ${t.test_centre}` : ""}
                     </div>
                   </div>
-                  <span
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 700,
-                      padding: "3px 8px",
-                      borderRadius: 999,
-                      backgroundColor: colors.bg,
-                      color: colors.fg,
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {days <= 0 ? "Today" : `In ${days} day${days === 1 ? "" : "s"}`}
-                  </span>
+                  {resultState === "passed" ? (
+                    <span
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        padding: "3px 8px",
+                        borderRadius: 999,
+                        backgroundColor: "#DDEFE1",
+                        color: "#15803D",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Passed ✅
+                    </span>
+                  ) : resultState === "failed" ? (
+                    <span
+                      onClick={(e) => { e.stopPropagation(); onOpenPupil(t.id); }}
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        padding: "3px 8px",
+                        borderRadius: 999,
+                        backgroundColor: "#FEF3C7",
+                        color: "#92400E",
+                        whiteSpace: "nowrap",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Retest needed →
+                    </span>
+                  ) : (
+                    <span
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        padding: "3px 8px",
+                        borderRadius: 999,
+                        backgroundColor: colors.bg,
+                        color: colors.fg,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {days <= 0 ? "Today" : `In ${days} day${days === 1 ? "" : "s"}`}
+                    </span>
+                  )}
                 </button>
               </div>
             );

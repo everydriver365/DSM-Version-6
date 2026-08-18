@@ -156,6 +156,8 @@ interface Pupil {
   prepaid_hours?: number | null;
   address?: string | null;
   postcode?: string | null;
+  test_status?: string | null;
+
 }
 
 interface Lesson {
@@ -299,7 +301,16 @@ function TestLessonCard({
   lesson: Lesson;
   onClick: () => void;
 }) {
-  const testResult = (lesson as any).test_result;
+  // Priority: the lesson's own result, then the pupil's recorded test status.
+  const testResult = (() => {
+    const direct = String((lesson as any).test_result ?? "").toLowerCase();
+    if (direct === "pass" || direct === "fail") return direct;
+    const pupilStatus = String((lesson as any).pupil?.test_status ?? (lesson as any).pupils?.test_status ?? "").toLowerCase();
+    if (pupilStatus.startsWith("pass")) return "pass";
+    if (pupilStatus.startsWith("fail")) return "fail";
+    return null;
+  })();
+
   const testCentre = testCentreOf(lesson);
   const testTime = testTimeOf(lesson);
   const startTime = fmtTime(lessonStart(lesson));
@@ -767,7 +778,7 @@ function SchedulePage() {
       const { data, error } = await supabase
         .from("lessons")
         .select(
-          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, notes, pickup_location, event_title, pupil:pupils(id, name, first_name, last_name, address, postcode, calendar_colour, prepaid_hours, status, deleted_at)",
+          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, notes, pickup_location, event_title, pupil:pupils(id, name, first_name, last_name, address, postcode, calendar_colour, prepaid_hours, status, test_status, deleted_at)",
         )
 
         .is("deleted_at", null)

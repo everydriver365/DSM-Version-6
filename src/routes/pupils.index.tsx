@@ -42,6 +42,7 @@ interface Pupil {
   status: string | null;
   pricing_type: string | null;
   test_date: string | null;
+  test_status: string | null;
   profile_image_url: string | null;
   calendar_colour: string | null;
 }
@@ -363,7 +364,7 @@ function PupilsIndexPage() {
       }
       let q = supabase
         .from("pupils")
-        .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, pricing_type, test_date, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120, profile_image_url, photo_url, calendar_colour")
+        .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, pricing_type, test_date, test_status, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120, profile_image_url, photo_url, calendar_colour")
         .eq("instructor_id", uid)
         .is("deleted_at", null)
         .or("status.is.null,and(status.neq.inactive,status.neq.cancelled)")
@@ -632,6 +633,12 @@ function PupilsIndexPage() {
     const testDate = testDateMap[p.id];
     const testDays = testDate ? daysUntil(testDate) : null;
     const testSoon = testDays !== null && testDays >= 0 && testDays <= 7;
+    const testStatusRaw = String(p.test_status ?? "").toLowerCase();
+    const testResultState = testStatusRaw.startsWith("pass")
+      ? "passed"
+      : testStatusRaw.startsWith("fail")
+        ? "failed"
+        : null;
     const nextLesson = nextLessonMap[p.id];
     const hasBalance = balanceOwed > 0;
 
@@ -692,7 +699,16 @@ function PupilsIndexPage() {
                   All paid
                 </span>
               )}
-              {testSoon && testDate && (
+              {testResultState === "passed" ? (
+                <span style={{ ...PILL_BASE, backgroundColor: "#DDEFE1", color: "#15803D" }}>
+                  ✓ Passed
+                </span>
+              ) : testResultState === "failed" ? (
+                <span style={{ ...PILL_BASE, backgroundColor: "#FEF3C7", color: "#92400E" }}>
+                  Retest
+                </span>
+              ) : null}
+              {!testResultState && testSoon && testDate && (
                 <span style={{ ...PILL_BASE, backgroundColor: "#FEF3C7", color: "#92400E" }}>
                   🎯 Test {formatShortDate(testDate)}
                 </span>
