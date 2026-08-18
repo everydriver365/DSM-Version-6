@@ -128,7 +128,9 @@ function TestDayPage() {
       setTest(t);
 
       if (t) {
-        setResult((t.test_status as "Pass" | "Fail" | null) ?? null);
+        const st = (t.test_status ?? "").toLowerCase();
+        setResult(st.startsWith("pass") ? "Pass" : st.startsWith("fail") ? "Fail" : null);
+
         setFaults(t.minor_faults != null ? String(t.minor_faults) : "");
         setNotes("");
 
