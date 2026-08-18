@@ -54,6 +54,7 @@ const CANVAS = "#EEF2F7";
 
 const ARCHIVE_KEY = "dsm_msg_archived";
 const MUTE_KEY = "dsm_msg_muted";
+const UNREAD_KEY = "dsm_msg_forced_unread";
 
 function readKeySet(key: string): Set<string> {
   if (typeof window === "undefined") return new Set();
@@ -530,9 +531,22 @@ function MessagesIndexPage() {
   // Archive / mute preferences (localStorage)
   const [archived, setArchived] = useState<Set<string>>(new Set());
   const [muted, setMuted] = useState<Set<string>>(new Set());
+  // Rows the user explicitly toggled back to unread (persisted across reloads).
+  const [forcedUnread, setForcedUnread] = useState<Set<string>>(new Set());
   useEffect(() => {
     setArchived(readKeySet(ARCHIVE_KEY));
     setMuted(readKeySet(MUTE_KEY));
+    setForcedUnread(readKeySet(UNREAD_KEY));
+  }, []);
+
+  const setForced = useCallback((key: string, on: boolean) => {
+    setForcedUnread((prev) => {
+      const next = new Set(prev);
+      if (on) next.add(key);
+      else next.delete(key);
+      writeKeySet(UNREAD_KEY, next);
+      return next;
+    });
   }, []);
 
   // Latest message preview + unread count for each joined room
@@ -871,6 +885,18 @@ function MessagesIndexPage() {
     );
   }
 
+  async function markInstructorDmRead(conversationId: string) {
+    setDmUnread((prev) => (prev[conversationId] ? { ...prev, [conversationId]: 0 } : prev));
+    if (!userId) return;
+    await supabase
+      .from("instructor_messages")
+      .update({ read_at: new Date().toISOString() })
+      .eq("conversation_id", conversationId)
+      .eq("to_instructor_id", userId)
+      .is("read_at", null);
+    window.dispatchEvent(new Event("dsm-messages-read"));
+  }
+
   function openRoom(r: LocalChatRoom) {
     setRoom(r);
     setAreaName(r.area_name || r.outcode);
@@ -956,14 +982,28 @@ function MessagesIndexPage() {
             to: "/messages/instructor/$conversationId" as never,
             params: { conversationId: dm.id } as never,
           }),
-        markRead: () => {
-          setDmUnread((prev) => (prev[dm.id] ? { ...prev, [dm.id]: 0 } : prev));
-        },
+        markRead: () => void markInstructorDmRead(dm.id),
       });
     }
 
-    return list;
+    return list.map((i) => {
+      const origMarkRead = i.markRead;
+      return {
+        ...i,
+        unread: forcedUnread.has(i.key) ? Math.max(1, i.unread) : i.unread,
+        open: () => {
+          setForced(i.key, false);
+          i.open();
+        },
+        markRead: () => {
+          setForced(i.key, false);
+          origMarkRead();
+        },
+      };
+    });
   }, [
+    forcedUnread,
+    setForced,
     convos,
     joinedRooms,
     roomPreviews,
@@ -1010,6 +1050,7 @@ function MessagesIndexPage() {
   }
 
   function markUnread(item: InboxItem) {
+    setForced(item.key, true);
     if (item.kind === "pupil") {
       const pupilId = item.key.split(":")[1];
       setConvos((prev) => prev.map((c) => (c.pupil_id === pupilId ? { ...c, read_at: null } : c)));
@@ -1508,6 +1549,12 @@ function MessagesIndexPage() {
                   icon: muted.has(menuItem.key) ? IconBell : IconBellOff,
                   color: "#5A6270",
                   run: () => toggleMute(menuItem.key),
+                },
+                {
+                  label: "Mark as read",
+                  icon: IconMail,
+                  color: "#1C9950",
+                  run: () => menuItem.markRead(),
                 },
                 {
                   label: "Mark as unread",
