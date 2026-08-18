@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconNavigation, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconNavigation, IconPhone, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -55,6 +55,20 @@ function formatTime(iso: string) {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+function timeAgo(iso: string) {
+  const now = new Date().getTime();
+  const then = new Date(iso).getTime();
+  const diffMs = now - then;
+  const seconds = Math.floor(diffMs / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  if (seconds < 60) return "Just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  if (days < 7) return `${days}d ago`;
+  return formatDate(iso);
 }
 function typeIcon(type: string | null) {
   switch (type) {
@@ -115,6 +129,15 @@ function getNotificationAction(
   testTime?: string | null;
   testResult?: string | null;
   isToday?: boolean;
+  isEnquiry?: boolean;
+  enquiryId?: string | null;
+  enquirerName?: string | null;
+  enquirerPhone?: string | null;
+  enquirerEmail?: string | null;
+  enquirerPostcode?: string | null;
+  transmission?: string | null;
+  message?: string | null;
+  receivedAt?: string | null;
 } {
   const type = notif.type ?? "";
   const meta = notif.metadata ?? {};
@@ -156,8 +179,19 @@ function getNotificationAction(
     };
   }
 
-  if (type === "enquiry" || type === "new_enquiry") {
-    return { directNav: "/enquiries" };
+  if (type === "enquiry" || type === "new_enquiry" || type === "enquiry_received") {
+    return {
+      isEnquiry: true,
+      enquiryId: meta.enquiry_id ?? meta.id ?? null,
+      enquirerName: meta.name ?? meta.enquirer_name ?? meta.from ?? null,
+      enquirerPhone: meta.phone ?? meta.enquirer_phone ?? null,
+      enquirerEmail: meta.email ?? meta.enquirer_email ?? null,
+      enquirerPostcode: meta.postcode ?? meta.area ?? null,
+      transmission: meta.transmission ?? meta.car_type ?? null,
+      message: meta.message ?? meta.notes ?? null,
+      receivedAt: meta.received_at ?? notif.created_at ?? null,
+      options: [],
+    };
   }
 
   if (type === "payment" || type === "payment_received" || type === "payment_overdue") {
@@ -280,6 +314,15 @@ function NotificationsPage() {
     testTime?: string | null;
     testResult?: string | null;
     isToday?: boolean;
+    isEnquiry?: boolean;
+    enquiryId?: string | null;
+    enquirerName?: string | null;
+    enquirerPhone?: string | null;
+    enquirerEmail?: string | null;
+    enquirerPostcode?: string | null;
+    transmission?: string | null;
+    message?: string | null;
+    receivedAt?: string | null;
   } | null>(null);
 
   const [quickReply, setQuickReply] = useState("");
@@ -585,6 +628,15 @@ function NotificationsPage() {
                               testTime: action.testTime,
                               testResult: action.testResult,
                               isToday: action.isToday,
+                              isEnquiry: action.isEnquiry,
+                              enquiryId: action.enquiryId,
+                              enquirerName: action.enquirerName,
+                              enquirerPhone: action.enquirerPhone,
+                              enquirerEmail: action.enquirerEmail,
+                              enquirerPostcode: action.enquirerPostcode,
+                              transmission: action.transmission,
+                              message: action.message,
+                              receivedAt: action.receivedAt,
                             });
                           }
                         }}
@@ -2046,6 +2098,451 @@ function NotificationsPage() {
                   }}
                 >
                   Dismiss
+                </button>
+              </>
+            ) : actionSheet.isEnquiry ? (
+              <>
+                <div
+                  style={{
+                    margin: "16px 16px 8px",
+                    background: "linear-gradient(135deg, #14509E, #0B1F3A)",
+                    borderRadius: 16,
+                    padding: 16,
+                    boxShadow: "0 4px 0 #091628",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        background: "rgba(255,255,255,0.2)",
+                        borderRadius: 20,
+                        padding: "4px 10px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: 10,
+                          fontWeight: 800,
+                          color: "#fff",
+                          ...POPPINS,
+                        }}
+                      >
+                        🎉 NEW ENQUIRY
+                      </span>
+                    </div>
+                    {actionSheet.receivedAt && (
+                      <span
+                        style={{
+                          fontSize: 11,
+                          color: "rgba(255,255,255,0.6)",
+                          ...POPPINS,
+                        }}
+                      >
+                        {timeAgo(actionSheet.receivedAt)}
+                      </span>
+                    )}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 22,
+                      fontWeight: 800,
+                      color: "#fff",
+                      marginTop: 10,
+                      letterSpacing: -0.3,
+                      ...POPPINS,
+                    }}
+                  >
+                    {actionSheet.enquirerName ?? "New enquiry"}
+                  </div>
+                  <div
+                    style={{
+                      marginTop: 12,
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: 8,
+                    }}
+                  >
+                    {actionSheet.enquirerPostcode && (
+                      <div
+                        style={{
+                          background: "rgba(255,255,255,0.15)",
+                          borderRadius: 10,
+                          padding: "10px 12px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 700,
+                            color: "rgba(255,255,255,0.6)",
+                            letterSpacing: "0.08em",
+                            marginBottom: 4,
+                            ...POPPINS,
+                          }}
+                        >
+                          AREA
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: "#fff",
+                            ...POPPINS,
+                          }}
+                        >
+                          {actionSheet.enquirerPostcode}
+                        </div>
+                      </div>
+                    )}
+                    {actionSheet.transmission && (
+                      <div
+                        style={{
+                          background: "rgba(255,255,255,0.15)",
+                          borderRadius: 10,
+                          padding: "10px 12px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 700,
+                            color: "rgba(255,255,255,0.6)",
+                            letterSpacing: "0.08em",
+                            marginBottom: 4,
+                            ...POPPINS,
+                          }}
+                        >
+                          TRANSMISSION
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: "#fff",
+                            ...POPPINS,
+                          }}
+                        >
+                          {actionSheet.transmission.charAt(0).toUpperCase() +
+                            actionSheet.transmission.slice(1)}
+                        </div>
+                      </div>
+                    )}
+                    {actionSheet.enquirerPhone && (
+                      <div
+                        style={{
+                          background: "rgba(255,255,255,0.15)",
+                          borderRadius: 10,
+                          padding: "10px 12px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 700,
+                            color: "rgba(255,255,255,0.6)",
+                            letterSpacing: "0.08em",
+                            marginBottom: 4,
+                            ...POPPINS,
+                          }}
+                        >
+                          PHONE
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: "#fff",
+                            ...POPPINS,
+                          }}
+                        >
+                          {actionSheet.enquirerPhone}
+                        </div>
+                      </div>
+                    )}
+                    {actionSheet.enquirerEmail && (
+                      <div
+                        style={{
+                          background: "rgba(255,255,255,0.15)",
+                          borderRadius: 10,
+                          padding: "10px 12px",
+                          gridColumn: actionSheet.enquirerPhone ? undefined : "span 2 / span 2",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 700,
+                            color: "rgba(255,255,255,0.6)",
+                            letterSpacing: "0.08em",
+                            marginBottom: 4,
+                            ...POPPINS,
+                          }}
+                        >
+                          EMAIL
+                        </div>
+                        <div
+                          style={{
+                            fontSize:
+                              actionSheet.enquirerEmail.length > 24 ? 11 : 13,
+                            fontWeight: 700,
+                            color: "#fff",
+                            ...POPPINS,
+                          }}
+                        >
+                          {actionSheet.enquirerEmail}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {actionSheet.message && (
+                    <div
+                      style={{
+                        marginTop: 10,
+                        background: "rgba(255,255,255,0.12)",
+                        borderRadius: 10,
+                        padding: "10px 12px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: 9,
+                          fontWeight: 700,
+                          color: "rgba(255,255,255,0.6)",
+                          letterSpacing: "0.08em",
+                          marginBottom: 4,
+                          ...POPPINS,
+                        }}
+                      >
+                        MESSAGE
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          color: "rgba(255,255,255,0.85)",
+                          lineHeight: 1.5,
+                          fontStyle: "italic",
+                          ...POPPINS,
+                        }}
+                      >
+                        {actionSheet.message}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#9CA3AF",
+                    textTransform: "uppercase",
+                    padding: "8px 16px 6px",
+                    ...POPPINS,
+                  }}
+                >
+                  RESPOND
+                </div>
+                <div
+                  style={{
+                    margin: "0 16px",
+                    background: "#fff",
+                    borderRadius: 16,
+                    border: "1px solid #E4E8EF",
+                    overflow: "hidden",
+                  }}
+                >
+                  {actionSheet.enquirerPhone && (
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 12,
+                        alignItems: "center",
+                        padding: "14px 16px",
+                        borderBottom: "1px solid #E4E8EF",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        window.open(`tel:${actionSheet.enquirerPhone}`, "_blank");
+                        setActionSheet(null);
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 36,
+                          height: 36,
+                          borderRadius: "50%",
+                          background: "#DCFCE7",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <IconPhone size={18} color="#15803D" stroke={1.5} />
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 600,
+                            color: "#0B1F3A",
+                            ...POPPINS,
+                          }}
+                        >
+                          Call now 📞
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 11,
+                            color: "#9CA3AF",
+                            marginTop: 2,
+                            ...POPPINS,
+                          }}
+                        >
+                          {actionSheet.enquirerPhone}
+                        </div>
+                      </div>
+                      <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                    </div>
+                  )}
+                  {actionSheet.enquirerPhone && (
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 12,
+                        alignItems: "center",
+                        padding: "14px 16px",
+                        borderBottom: "1px solid #E4E8EF",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        const name = actionSheet.enquirerName ?? "";
+                        window.open(
+                          `sms:${actionSheet.enquirerPhone}?body=${encodeURIComponent(
+                            `Hi ${name}, thanks for your enquiry about driving lessons! I'd love to help. When would be a good time for a quick chat? 🚗`
+                          )}`,
+                          "_blank"
+                        );
+                        setActionSheet(null);
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 36,
+                          height: 36,
+                          borderRadius: "50%",
+                          background: "#EFF6FF",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <IconMessage size={18} color="#1877D6" stroke={1.5} />
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 600,
+                            color: "#0B1F3A",
+                            ...POPPINS,
+                          }}
+                        >
+                          Send a text
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 11,
+                            color: "#9CA3AF",
+                            marginTop: 2,
+                            ...POPPINS,
+                          }}
+                        >
+                          Reply to their enquiry
+                        </div>
+                      </div>
+                      <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                    </div>
+                  )}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setActionSheet(null);
+                      navigate({ to: "/enquiries" as never });
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: "#FEF3C7",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconInbox size={18} color="#D68A1B" stroke={1.5} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          ...POPPINS,
+                        }}
+                      >
+                        View full enquiry
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                          marginTop: 2,
+                          ...POPPINS,
+                        }}
+                      >
+                        See all details in the enquiries pipeline
+                      </div>
+                    </div>
+                    <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  style={{
+                    margin: "12px 16px 0",
+                    width: "calc(100% - 32px)",
+                    background: "#fff",
+                    color: "#0B1F3A",
+                    borderRadius: 20,
+                    padding: 13,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    border: "1px solid #E4E8EF",
+                    cursor: "pointer",
+                    ...POPPINS,
+                  }}
+                  onClick={() => {
+                    setActionSheet(null);
+                    setQuickReply("");
+                  }}
+                >
+                  Cancel
                 </button>
               </>
             ) : (
