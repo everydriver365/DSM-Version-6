@@ -783,7 +783,6 @@ function SchedulePage() {
         )
 
         .is("deleted_at", null)
-        .or("pupil_id.is.null,and(pupil.status.eq.active,pupil.deleted_at.is.null)")
         .gte("lesson_date", ymdLocal(rangeStart))
         .lte("lesson_date", ymdLocal(rangeEnd))
         .order("lesson_date", { ascending: true })
@@ -794,7 +793,17 @@ function SchedulePage() {
         setLessons([]);
         return;
       }
-      setLessons((data as unknown as Lesson[]) ?? []);
+      // Keep events (no pupil) plus lessons whose linked pupil is active and
+      // not soft-deleted. Applied client-side because PostgREST cannot OR
+      // across an embedded table without a referencedTable filter.
+      const rows = ((data as unknown as Lesson[]) ?? []).filter((l) => {
+        if (!l.pupil_id) return true;
+        const p = l.pupil as { status?: string | null; deleted_at?: string | null } | null;
+        if (!p) return false;
+        return p.status === "active" && !p.deleted_at;
+      });
+      setLessons(rows);
+
     })();
     return () => {
       cancelled = true;
