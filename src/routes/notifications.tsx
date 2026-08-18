@@ -718,7 +718,11 @@ function NotificationsPage() {
                               cancellationReason: action.cancellationReason,
                               lessonDate: action.lessonDate,
                               lessonTime: action.lessonTime,
+                              pickupLocation: action.pickupLocation,
+                              minutesUntil: action.minutesUntil,
+                              isLessonStarting: action.isLessonStarting,
                               isDSMLive: action.isDSMLive,
+
                               sessionId: action.sessionId,
                               sessionTitle: action.sessionTitle,
                               sessionUrl: action.sessionUrl,
