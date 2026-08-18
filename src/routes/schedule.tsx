@@ -776,7 +776,7 @@ function SchedulePage() {
       const { data, error } = await supabase
         .from("lessons")
         .select(
-          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, notes, pickup_location, event_title, pupil:pupils(id, name, first_name, last_name, address, postcode, calendar_colour, prepaid_hours, status, deleted_at)",
+          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, notes, pickup_location, event_title, pupil:pupils(id, name, first_name, last_name, address, postcode, calendar_colour, prepaid_hours, status, test_status, deleted_at)",
         )
 
         .is("deleted_at", null)
