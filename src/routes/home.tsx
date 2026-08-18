@@ -3354,7 +3354,7 @@ function HomePage() {
   const nextLessons = lessons.filter((l) => lessonDateTime(l) >= now && l.status !== "cancelled");
   const nextTabLessons = nextLessons.slice(0, 5);
 
-  const weekLessons = lessons.filter((l) => {
+  const weekLessons = nonEventLessons.filter((l: any) => {
     const d = lessonDateTime(l);
     return d >= weekStart && d < weekEnd;
   });
