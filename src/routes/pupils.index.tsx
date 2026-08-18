@@ -975,25 +975,58 @@ function PupilsIndexPage() {
         {filtered === null ? (
           <SkeletonCard rows={5} />
         ) : filtered.length === 0 ? (
-          <div style={{ margin: '0 16px', background: '#fff', borderRadius: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
-            <EmptyState
-              icon={IconUsers}
-              title="No active pupils"
-              description="Add your first pupil to start tracking lessons."
-              action={
-                <Link
-                  to="/pupils/new"
-                  className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
-                  style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
-                >
-                  <IconPlus stroke={1.5} size={16} /> Add pupil
-                </Link>
-              }
-            />
-          </div>
+          (() => {
+            const emptyConfig: Record<StatusKey, { title: string; description: string; action?: React.ReactNode }> = {
+              active: {
+                title: "No active pupils",
+                description: "Add your first pupil to start tracking lessons.",
+                action: (
+                  <Link
+                    to="/pupils/new"
+                    className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
+                    style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
+                  >
+                    <IconPlus stroke={1.5} size={16} /> Add pupil
+                  </Link>
+                ),
+              },
+              passed: {
+                title: "No pupils have passed yet",
+                description: "Passed pupils will appear here once they pass their test.",
+              },
+              waiting: {
+                title: "No pupils on the waiting list",
+                description: "Add pupils on the waiting list or from enquiries to see them here.",
+                action: (
+                  <Link
+                    to="/pupils/new"
+                    className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
+                    style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
+                  >
+                    <IconPlus stroke={1.5} size={16} /> Add pupil
+                  </Link>
+                ),
+              },
+              lapsed: {
+                title: "No lapsed pupils",
+                description: "Lapsed pupils appear after 60 days without a lesson.",
+              },
+            };
+            const config = emptyConfig[statusFilter];
+            return (
+              <div style={{ margin: '0 16px', background: '#fff', borderRadius: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+                <EmptyState
+                  icon={IconUsers}
+                  title={config.title}
+                  description={config.description}
+                  action={config.action}
+                />
+              </div>
+            );
+          })()
         ) : (
           <>
-            {needsAttention.length > 0 && (
+            {statusFilter === "active" && needsAttention.length > 0 && (
               <>
                 <div
                   style={{
@@ -1026,21 +1059,23 @@ function PupilsIndexPage() {
                 </div>
               </>
             )}
-            <div
-              style={{
-                fontSize: 12,
-                fontWeight: 700,
-                color: '#8A8A8E',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                padding: '16px 16px 6px',
-                fontFamily: 'Poppins, sans-serif',
-              }}
-            >
-              Active · {activePupils.length}
-            </div>
+            {statusFilter === "active" && (
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: '#8A8A8E',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  padding: '16px 16px 6px',
+                  fontFamily: 'Poppins, sans-serif',
+                }}
+              >
+                Active · {activePupils.length}
+              </div>
+            )}
             <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {activePupils.map((p) => (
+              {(statusFilter === "active" ? activePupils : filtered).map((p) => (
                 <div
                   key={p.id}
                   style={{
@@ -1050,7 +1085,7 @@ function PupilsIndexPage() {
                     overflow: 'hidden',
                   }}
                 >
-                  {renderRow(p, 0, activePupils.length)}
+                  {renderRow(p, 0, 1)}
                 </div>
               ))}
             </div>
