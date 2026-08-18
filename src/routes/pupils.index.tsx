@@ -1,6 +1,6 @@
 import { SkeletonCard } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -47,7 +47,14 @@ interface Pupil {
 }
 
 
-type StatusKey = "active" | "passed" | "archived";
+type StatusKey = "active" | "passed" | "waiting" | "lapsed";
+
+const STATUS_TABS: { key: StatusKey; label: string }[] = [
+  { key: "active", label: "Active" },
+  { key: "passed", label: "Passed" },
+  { key: "waiting", label: "Waiting" },
+  { key: "lapsed", label: "Lapsed" },
+];
 
 function displayName(n: string | null | undefined) {
   return (n ?? "").replace(/\s*\.\s*$/, "").trim();
@@ -58,15 +65,33 @@ function displayName(n: string | null | undefined) {
 function statusBadgeColor(status: StatusKey) {
   if (status === "active") return "#1877D6";
   if (status === "passed") return "#1877D6";
-  if (status === "archived") return "#9CA3AF";
+  if (status === "waiting") return "#F59E0B";
+  if (status === "lapsed") return "#9CA3AF";
   return "#6B7280";
 }
 
-function accentColor(status: StatusKey) {
-  if (status === "active") return "#1877D6";
-  if (status === "passed") return "#1877D6";
-  if (status === "archived") return "#9CA3AF";
-  return "#9CA3AF";
+function pupilMatchesStatus(
+  p: Pupil,
+  filter: StatusKey,
+  lastLessonMap: Record<string, string>,
+): boolean {
+  const s = (p.status ?? "active").toLowerCase();
+  if (filter === "active") return s === "active";
+  if (filter === "passed") return s === "passed";
+  if (filter === "waiting") return ["waitlist", "waiting", "enquiry"].includes(s);
+  if (filter === "lapsed") {
+    if (["lapsed", "paused", "archived"].includes(s)) return true;
+    if (s === "active") {
+      const last = lastLessonMap[p.id];
+      if (!last) return true;
+      const days = Math.floor(
+        (new Date().getTime() - new Date(last).getTime()) / 86400000,
+      );
+      return days > 60;
+    }
+    return false;
+  }
+  return false;
 }
 
 const PILL_BASE = {
@@ -146,7 +171,9 @@ function PupilsIndexPage() {
   const [unreadMap, setUnreadMap] = useState<Record<string, number>>({});
   const [nextLessonMap, setNextLessonMap] = useState<Record<string, string>>({});
   const [testDateMap, setTestDateMap] = useState<Record<string, string>>({});
+  const [lastLessonMap, setLastLessonMap] = useState<Record<string, string>>({});
   const [sortBy, setSortBy] = useState<"name" | "balance" | "next_lesson">("name");
+  const [statusFilter, setStatusFilter] = useState<StatusKey>("active");
 
   // Refresh balances/owing badges whenever a payment is recorded anywhere.
   useEffect(() => {
@@ -339,7 +366,7 @@ function PupilsIndexPage() {
         .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, pricing_type, test_date, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120, profile_image_url, photo_url, calendar_colour")
         .eq("instructor_id", uid)
         .is("deleted_at", null)
-        .or("status.is.null,and(status.neq.inactive,status.neq.passed,status.neq.cancelled)")
+        .or("status.is.null,and(status.neq.inactive,status.neq.cancelled)")
         .order("name", { ascending: true, nullsFirst: false });
 
       const { data, error } = await q;
@@ -439,6 +466,25 @@ function PupilsIndexPage() {
       }
 
       try {
+        const { data: lastLessonRows, error: llErr } = await supabase
+          .from("lessons")
+          .select("pupil_id, lesson_date")
+          .in("pupil_id", pupilIds)
+          .in("status", ["confirmed", "completed"])
+          .is("deleted_at", null)
+          .order("lesson_date", { ascending: false });
+        if (llErr) console.error("[pupils] last lesson error", llErr);
+        const llMap: Record<string, string> = {};
+        for (const row of (lastLessonRows ?? []) as { pupil_id: string; lesson_date: string }[]) {
+          if (!llMap[row.pupil_id]) llMap[row.pupil_id] = row.lesson_date;
+        }
+        setLastLessonMap(llMap);
+      } catch (e) {
+        console.error("[pupils] last lesson fetch crashed", e);
+        setLastLessonMap({});
+      }
+
+      try {
         // Canonical per-pupil balance (handles block/NI packages and credit).
         const balances = await Promise.all(
           normalized.map(async (p) => {
@@ -515,7 +561,7 @@ function PupilsIndexPage() {
     const q = query.trim().toLowerCase();
     const base = pupils.filter((p) => {
       if (q && !p.name.toLowerCase().includes(q)) return false;
-      return true;
+      return pupilMatchesStatus(p, statusFilter, lastLessonMap);
     });
 
     const withIndex = base.map((p, i) => ({ p, i }));
@@ -551,7 +597,25 @@ function PupilsIndexPage() {
     });
 
     return withIndex.map((x) => x.p);
-  }, [pupils, query, unreadMap, sortBy, balanceMap, nextLessonMap]);
+  }, [pupils, query, statusFilter, lastLessonMap, unreadMap, sortBy, balanceMap, nextLessonMap]);
+
+  const statusCounts = useMemo(() => {
+    if (!pupils) return null;
+    const counts: Record<StatusKey, number> = {
+      active: 0,
+      passed: 0,
+      waiting: 0,
+      lapsed: 0,
+    };
+    for (const p of pupils) {
+      for (const tab of STATUS_TABS) {
+        if (pupilMatchesStatus(p, tab.key, lastLessonMap)) {
+          counts[tab.key]++;
+        }
+      }
+    }
+    return counts;
+  }, [pupils, lastLessonMap]);
 
   // Visual grouping only — derived from the same data already fetched.
   const needsAttention = (filtered ?? []).filter((p: any) => (balanceMap[p.id] || 0) > 0);
@@ -809,6 +873,68 @@ function PupilsIndexPage() {
         </div>
       </div>
 
+      {/* Status filter tabs */}
+      <div
+        style={{
+          margin: "12px 16px",
+          display: "flex",
+          background: "#FFFFFF",
+          borderRadius: 10,
+          boxShadow: "0 4px 0 #E4E4E8",
+          padding: 3,
+          overflowX: "auto",
+          scrollbarWidth: "none",
+        }}
+      >
+        {STATUS_TABS.map((tab) => {
+          const active = statusFilter === tab.key;
+          const count = statusCounts?.[tab.key] ?? 0;
+          return (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setStatusFilter(tab.key)}
+              style={{
+                flex: 1,
+                flexShrink: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 4,
+                textAlign: "center",
+                padding: "8px 4px",
+                fontSize: 12,
+                fontFamily: "Poppins, sans-serif",
+                cursor: "pointer",
+                border: "none",
+                outline: "none",
+                background: active ? "#0B1F3A" : "transparent",
+                color: active ? "#FFFFFF" : "#8A94A6",
+                borderRadius: active ? 7 : 0,
+                fontWeight: active ? 600 : 500,
+                whiteSpace: "nowrap",
+              }}
+            >
+              <span>{tab.label}</span>
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  padding: "2px 6px",
+                  borderRadius: 999,
+                  background: active ? "rgba(255,255,255,0.2)" : "#F3F4F6",
+                  color: active ? "#FFFFFF" : "#6B7280",
+                  minWidth: 16,
+                  lineHeight: "14px",
+                }}
+              >
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
       {/* IconSearch input */}
       {searchOpen && (
         <div
@@ -849,25 +975,58 @@ function PupilsIndexPage() {
         {filtered === null ? (
           <SkeletonCard rows={5} />
         ) : filtered.length === 0 ? (
-          <div style={{ margin: '0 16px', background: '#fff', borderRadius: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
-            <EmptyState
-              icon={IconUsers}
-              title="No active pupils"
-              description="Add your first pupil to start tracking lessons."
-              action={
-                <Link
-                  to="/pupils/new"
-                  className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
-                  style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
-                >
-                  <IconPlus stroke={1.5} size={16} /> Add pupil
-                </Link>
-              }
-            />
-          </div>
+          (() => {
+            const emptyConfig: Record<StatusKey, { title: string; description: string; action?: ReactNode }> = {
+              active: {
+                title: "No active pupils",
+                description: "Add your first pupil to start tracking lessons.",
+                action: (
+                  <Link
+                    to="/pupils/new"
+                    className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
+                    style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
+                  >
+                    <IconPlus stroke={1.5} size={16} /> Add pupil
+                  </Link>
+                ),
+              },
+              passed: {
+                title: "No pupils have passed yet",
+                description: "Passed pupils will appear here once they pass their test.",
+              },
+              waiting: {
+                title: "No pupils on the waiting list",
+                description: "Add pupils on the waiting list or from enquiries to see them here.",
+                action: (
+                  <Link
+                    to="/pupils/new"
+                    className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
+                    style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
+                  >
+                    <IconPlus stroke={1.5} size={16} /> Add pupil
+                  </Link>
+                ),
+              },
+              lapsed: {
+                title: "No lapsed pupils",
+                description: "Lapsed pupils appear after 60 days without a lesson.",
+              },
+            };
+            const config = emptyConfig[statusFilter];
+            return (
+              <div style={{ margin: '0 16px', background: '#fff', borderRadius: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+                <EmptyState
+                  icon={IconUsers}
+                  title={config.title}
+                  description={config.description}
+                  action={config.action}
+                />
+              </div>
+            );
+          })()
         ) : (
           <>
-            {needsAttention.length > 0 && (
+            {statusFilter === "active" && needsAttention.length > 0 && (
               <>
                 <div
                   style={{
@@ -900,21 +1059,23 @@ function PupilsIndexPage() {
                 </div>
               </>
             )}
-            <div
-              style={{
-                fontSize: 12,
-                fontWeight: 700,
-                color: '#8A8A8E',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                padding: '16px 16px 6px',
-                fontFamily: 'Poppins, sans-serif',
-              }}
-            >
-              Active · {activePupils.length}
-            </div>
+            {statusFilter === "active" && (
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: '#8A8A8E',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  padding: '16px 16px 6px',
+                  fontFamily: 'Poppins, sans-serif',
+                }}
+              >
+                Active · {activePupils.length}
+              </div>
+            )}
             <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {activePupils.map((p) => (
+              {(statusFilter === "active" ? activePupils : filtered).map((p) => (
                 <div
                   key={p.id}
                   style={{
@@ -924,7 +1085,7 @@ function PupilsIndexPage() {
                     overflow: 'hidden',
                   }}
                 >
-                  {renderRow(p, 0, activePupils.length)}
+                  {renderRow(p, 0, 1)}
                 </div>
               ))}
             </div>
