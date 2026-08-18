@@ -775,40 +775,40 @@ function LivePage() {
     startWatching();
   }
 
-  function startWatching() {
-    if (!("geolocation" in navigator)) return;
-
-    // Guard — clear any existing watch before starting new one
+  async function startWatching() {
+    // Capacitor Geolocation is always available — no need to check.
+    // Guard — clear any existing watch before starting new one.
     if (watchIdRef.current !== null) {
-      navigator.geolocation.clearWatch(watchIdRef.current);
+      await Geolocation.clearWatch({ id: watchIdRef.current as string });
       watchIdRef.current = null;
     }
 
     console.log("[live] starting geolocation watch");
-    watchIdRef.current = navigator.geolocation.watchPosition(
-      (pos) => handlePosition(pos),
-      (err) => {
-        console.error("[live] geo error:", err.code, err.message);
-        if (err.code === 2) {
-          // Signal lost temporarily — reconnect in 3s
-          setTimeout(() => {
-            if (watchIdRef.current !== null) {
-              navigator.geolocation.clearWatch(watchIdRef.current);
-              watchIdRef.current = null;
-            }
-            startWatching();
-          }, 3000);
+    watchIdRef.current = await Geolocation.watchPosition(
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+      },
+      (position, err) => {
+        if (err) {
+          console.error("[live] geolocation error:", err);
           return;
         }
-        // Permission denied / unavailable — permanent error
-        setGeoError(
-          err.code === 1
-            ? "Location permission is off — tap to open settings, then try again"
-            : "GPS unavailable — tap to open settings, then try again",
-        );
-
-      },
-      { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 },
+        if (position) {
+          handlePosition({
+            coords: {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              accuracy: position.coords.accuracy,
+              speed: position.coords.speed,
+              heading: position.coords.heading,
+              altitude: null,
+              altitudeAccuracy: null,
+            },
+            timestamp: position.timestamp,
+          } as GeolocationPosition);
+        }
+      }
     );
   }
 
