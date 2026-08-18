@@ -385,17 +385,16 @@ function CalendarSyncPage() {
       if (data.success || data.eventsImported !== undefined) {
         toast.success(`Synced ${data.eventsImported ?? 0} events`);
         setLastSynced(new Date().toISOString());
-        // One-off: colour in past imported Google events that predate colour
-        // support. Silent, and never allowed to break a normal sync.
-        if (googleConnected && userId && !getColourBackfillDone(userId)) {
+        // After every Google sync: copy each event's Google colour onto the
+        // imported rows. Silent, and never allowed to break a normal sync.
+        if (googleConnected && userId) {
           void (async () => {
             try {
               const result = await backfillGoogleColours({
-                data: { accessToken: session.access_token },
+                data: { accessToken: session.access_token, daysBack: 90, daysForward: 180 },
               });
               if (result.success) {
-                setColourBackfillDone(userId);
-                console.log("[calendar-sync] colour backfill", result);
+                console.log("[calendar-sync] colour pass", result);
               } else {
                 console.warn("[calendar-sync] colour backfill failed", result.error);
               }
