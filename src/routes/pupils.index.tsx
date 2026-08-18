@@ -976,7 +976,7 @@ function PupilsIndexPage() {
           <SkeletonCard rows={5} />
         ) : filtered.length === 0 ? (
           (() => {
-            const emptyConfig: Record<StatusKey, { title: string; description: string; action?: React.ReactNode }> = {
+            const emptyConfig: Record<StatusKey, { title: string; description: string; action?: ReactNode }> = {
               active: {
                 title: "No active pupils",
                 description: "Add your first pupil to start tracking lessons.",
