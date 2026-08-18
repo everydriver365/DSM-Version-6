@@ -828,6 +828,7 @@ export function AddLessonSheet({
                 {DURATION_OPTIONS.map((opt) => {
                   const active = duration === opt.value;
                   const isTest = opt.value === "test";
+                  if (isEvent && isTest) return null;
                   return (
                     <button
                       key={opt.value}
