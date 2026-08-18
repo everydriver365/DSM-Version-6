@@ -399,7 +399,7 @@ function PaymentsPage() {
             fontSize: 14,
             fontWeight: 800,
             padding: "11px 20px",
-            borderRadius: 14,
+            borderRadius: 12,
             border: 0,
             boxShadow: "0 4px 0 #0F6B3D",
             cursor: "pointer",
@@ -416,7 +416,7 @@ function PaymentsPage() {
           style={{
             background: "#fff",
             borderRadius: 20,
-            boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
+            boxShadow: "0 4px 0 #D9D2C2",
             display: "flex",
             overflow: "hidden",
           }}
@@ -446,7 +446,7 @@ function PaymentsPage() {
               background: "#fff",
               borderRadius: 20,
               padding: 18,
-              boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
+              boxShadow: "0 4px 0 #E4E4E8",
             }}
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
@@ -462,7 +462,7 @@ function PaymentsPage() {
             <div
               style={{
                 height: 8,
-                borderRadius: 4,
+                borderRadius: 6,
                 background: "#F2F2F7",
                 overflow: "hidden",
                 marginBottom: 14,
@@ -505,7 +505,7 @@ function PaymentsPage() {
           background: "#fff",
           borderRadius: 16,
           padding: "14px 16px",
-          boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.06)",
+          boxShadow: "0 4px 0 #E4E4E8",
 
           display: "flex",
           alignItems: "center",
@@ -558,11 +558,11 @@ function PaymentsPage() {
                 padding: "10px 18px",
                 fontSize: 13.5,
                 fontWeight: 700,
-                borderRadius: 24,
+                borderRadius: 20,
                 border: 0,
                 background: active ? "#0B1F3A" : "#fff",
                 color: active ? "#fff" : "#0B1F3A",
-                boxShadow: active ? "0 3px 0 #050D1C" : "0 3px 0 #E4E4E8",
+                boxShadow: active ? "0 4px 0 #050D1C" : "0 4px 0 #E4E4E8",
                 whiteSpace: "nowrap",
                 cursor: "pointer",
                 flexShrink: 0,
@@ -615,7 +615,7 @@ function PaymentsPage() {
                         borderRadius: 16,
                         marginBottom: 10,
                         opacity: isNonRevenue ? 0.65 : 1,
-                        boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
+                        boxShadow: "0 4px 0 #E4E4E8",
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: 13, padding: 16 }}>

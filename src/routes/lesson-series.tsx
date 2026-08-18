@@ -649,7 +649,7 @@ function LessonSeriesPage() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{ background: "#FFFFFF", borderRadius: 14, padding: 20, width: "100%", maxWidth: 360 }}
+            style={{ background: "#FFFFFF", borderRadius: 12, padding: 20, width: "100%", maxWidth: 360 }}
           >
             <p style={{ fontSize: 15, fontWeight: 600, color: "#0F2044", marginBottom: 8 }}>End series</p>
             <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 12 }}>

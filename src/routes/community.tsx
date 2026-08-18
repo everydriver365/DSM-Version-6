@@ -486,7 +486,7 @@ function CommunityPage() {
       <div style={{
         background: "#0B1F3A", padding: "16px", display: "flex",
         alignItems: "center", gap: 12, color: "white",
-        borderRadius: "0 0 28px 28px",
+        borderRadius: "0 0 20px 20px",
       }}>
         <button
           type="button"
@@ -652,7 +652,7 @@ function CommunityPage() {
           ) : (
             <div style={{
               margin: '0 16px', background: '#fff', borderRadius: 16,
-              boxShadow: '0 1px 3px rgba(11,31,58,0.06)', overflow: 'hidden',
+              boxShadow: '0 2px 8px rgba(15,32,68,0.06)', overflow: 'hidden',
             }}>
               {dmConversations.map((dm, index) => {
                 const other = dm.other;
@@ -900,9 +900,9 @@ function RoomsTab({
   }
 
   const rowStyle: React.CSSProperties = {
-    background: "#fff", borderRadius: 18, padding: 14,
+    background: "#fff", borderRadius: 16, padding: 14,
     display: "flex", alignItems: "center", gap: 13,
-    boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+    boxShadow: "0 4px 0 #E4E4E8",
   };
 
   function RoomRow({ room, action }: { room: BrowseRoom; action: React.ReactNode }) {
@@ -1007,7 +1007,7 @@ function RoomsTab({
         <div style={{
           display: "flex", alignItems: "center", gap: 8, background: "#fff",
           borderRadius: 16, padding: "13px 16px", marginBottom: 12,
-          boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.05)",
+          boxShadow: "0 4px 0 #E4E4E8",
         }}>
           <IconSearch stroke={1.5} size={16} color="#8A8A8E" />
           <input
@@ -1277,7 +1277,7 @@ function AlertsTab({
         style={{
           background: "#fff", borderRadius: 16, marginBottom: 10,
           padding: "13px 14px", display: "flex", alignItems: "center", gap: 12,
-          boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)", cursor: "pointer",
+          boxShadow: "0 4px 0 #E4E4E8", cursor: "pointer",
         }}
       >
         <div style={{
@@ -1349,7 +1349,7 @@ function AlertsTab({
                   background: "#fff", borderRadius: 16, marginBottom: 10,
                   padding: "13px 14px 13px 13px", borderLeft: "3px solid #1877D6",
                   display: "flex", alignItems: "center", gap: 12,
-                  boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.05)", cursor: "pointer",
+                  boxShadow: "0 4px 0 #E4E4E8", cursor: "pointer",
                 }}
               >
                 <div style={{
@@ -1464,7 +1464,7 @@ function AlertsTab({
               borderRadius: 16,
               padding: "14px 16px",
               cursor: "pointer",
-              boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
+              boxShadow: "0 4px 0 #E4E4E8",
               WebkitTapHighlightColor: "transparent",
             }}
             className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877D6]/40 focus-visible:ring-offset-2"
@@ -1543,7 +1543,7 @@ function AlertsTab({
                       border: "none",
                       background: active ? "#0B1F3A" : "#fff",
                       color: active ? "#fff" : "#0B1F3A",
-                      boxShadow: active ? "0 2px 0 #050D1C" : "0 2px 0 #E4E4E8",
+                      boxShadow: active ? "0 4px 0 #050D1C" : "0 4px 0 #E4E4E8",
                       borderRadius: 20, padding: "9px 16px",
                       fontSize: 13, fontWeight: 700, cursor: "pointer",
                       whiteSpace: "nowrap",
@@ -1661,7 +1661,7 @@ function AlertsTab({
             }
           >
             <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Details</div>
-            <div style={{ background: "white", borderRadius: 14, overflow: "hidden", marginBottom: 14 }}>
+            <div style={{ background: "white", borderRadius: 12, overflow: "hidden", marginBottom: 14 }}>
               {metaRows.map((r, i) => {
                 const isReportedTomTom = r.label === "Reported" && selectedAlert.source === 'tomtom';
                 return (
@@ -1685,7 +1685,7 @@ function AlertsTab({
               <>
                 <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Affected roads</div>
                 <div style={{
-                  background: "white", borderRadius: 14, padding: "12px 14px", marginBottom: 14,
+                  background: "white", borderRadius: 12, padding: "12px 14px", marginBottom: 14,
                   display: "flex", flexWrap: "wrap", gap: 6,
                 }}>
                   {affectedRoads.map((road) => (
@@ -1704,7 +1704,7 @@ function AlertsTab({
 
             <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Description</div>
             <div style={{
-              background: "white", borderRadius: 14, padding: "12px 14px",
+              background: "white", borderRadius: 12, padding: "12px 14px",
               fontSize: 13.5, color: "#0B1F3A", lineHeight: 1.45, marginBottom: 14,
             }}>
               {selectedAlert.description}
@@ -1714,7 +1714,7 @@ function AlertsTab({
               Comments · {comments.length}
             </div>
             {comments.length > 0 && (
-              <div style={{ background: "white", borderRadius: 14, overflow: "hidden", marginBottom: 10 }}>
+              <div style={{ background: "white", borderRadius: 12, overflow: "hidden", marginBottom: 10 }}>
                 {comments.map((c, i) => (
                   <div
                     key={c.id}
@@ -1746,7 +1746,7 @@ function AlertsTab({
             )}
 
             <div style={{
-              background: "white", borderRadius: 14, padding: 8, marginBottom: 6,
+              background: "white", borderRadius: 12, padding: 8, marginBottom: 6,
               display: "flex", alignItems: "center", gap: 8,
             }}>
               <div style={{
@@ -1802,7 +1802,7 @@ function AlertCard({
 
   return (
     <div onClick={() => onSelect?.(alert)} style={{
-      background: "white", borderRadius: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+      background: "white", borderRadius: 16, boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
       padding: "14px 16px", marginBottom: 8, cursor: "pointer",
     }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
@@ -2702,7 +2702,7 @@ function ChatTab({
                 <div style={{
                   position: "absolute", top: 32, right: 0, zIndex: 41,
                   background: "white", border: "0.5px solid #E2E6ED", borderRadius: 12,
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.06)", overflow: "hidden", minWidth: 190,
+                  boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden", minWidth: 190,
                 }}>
                   {[
                     { label: "Mute for 1 hour", hours: 1 },
@@ -2771,7 +2771,7 @@ function ChatTab({
               <div style={{
                 position: "absolute", top: 34, left: 16, right: 16, zIndex: 41,
                 background: "white", border: "0.5px solid #E2E6ED", borderRadius: 12,
-                boxShadow: "0 1px 3px rgba(0,0,0,0.06)", overflow: "hidden", maxHeight: 260, overflowY: "auto",
+                boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden", maxHeight: 260, overflowY: "auto",
               }}>
                 {myRooms.map((r) => (
                   <button
@@ -2998,8 +2998,8 @@ function ChatTab({
           <div style={{
             position: "fixed", left: 16, right: 16,
             bottom: "calc(24px + env(safe-area-inset-bottom, 0px))", zIndex: 61,
-            background: "white", borderRadius: 14, overflow: "hidden",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            background: "white", borderRadius: 12, overflow: "hidden",
+            boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
           }}>
             <div style={{
               padding: "12px 16px", fontSize: 12, color: "#8A93A3",
