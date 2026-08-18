@@ -3,6 +3,7 @@ import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { tapLight, tapMedium, hapticSuccess } from "@/lib/haptics";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";

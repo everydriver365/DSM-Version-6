@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { recordPayment, recordRefund, correctPaymentRecord, getPupilBalance, type PupilBalance } from "@/lib/payments";
+import { hapticSuccess, hapticError } from "@/lib/haptics";
 import { calculateOutstandingOwed, calculatePaidOutstandingBreakdown } from "@/lib/paymentsOwed";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";

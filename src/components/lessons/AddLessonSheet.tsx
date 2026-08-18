@@ -20,6 +20,7 @@ import { supabase } from "../../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
 import { computeLessonAmount, fetchPostcodeRates } from "../../lib/pricing/resolveRate";
 import { pushLessonToGoogle } from "@/lib/calendarSyncPrefs";
+import { tapLight, tapMedium, hapticSuccess, hapticError } from "@/lib/haptics";
 
 const BLUE = "#1877D6";
 
