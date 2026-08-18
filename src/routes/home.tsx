@@ -6641,6 +6641,7 @@ function HomePage() {
               
 
               const goTile = (tile: QuickTile) => {
+                tapLight();
                 navigate({ to: tile.route as never });
               };
 
