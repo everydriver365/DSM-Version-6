@@ -2559,7 +2559,10 @@ function SchedulePage() {
 
       <button
         type="button"
-        onClick={() => setAddChooserOpen(true)}
+        onClick={() => {
+          tapMedium();
+          setAddChooserOpen(true);
+        }}
         style={{
           position: 'fixed',
           bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
