@@ -2198,7 +2198,7 @@ function HomePage() {
     }
     poll();
     const id = setInterval(poll, 30000);
-    const onRefresh = () => { void poll(); };
+    const onRefresh = () => { void poll().then(hapticSuccess); };
     window.addEventListener("dsm-notifications-updated", onRefresh);
     window.addEventListener("focus", onRefresh);
     document.addEventListener("visibilitychange", onRefresh);
