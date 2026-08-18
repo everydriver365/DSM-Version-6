@@ -459,8 +459,8 @@ function LivePage() {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (watchIdRef.current != null && "geolocation" in navigator) {
-        navigator.geolocation.clearWatch(watchIdRef.current);
+      if (watchIdRef.current != null) {
+        Geolocation.clearWatch({ id: watchIdRef.current as string });
         watchIdRef.current = null;
       }
       despiaCall("backgroundlocationoff://");
