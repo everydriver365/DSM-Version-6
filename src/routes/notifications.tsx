@@ -965,57 +965,77 @@ function NotificationsPage() {
                 )}
                 <div
                   style={{
-                    padding: "12px 16px",
+                    padding: "16px",
                     borderTop: "1px solid #E4E8EF",
-                    display: "flex",
-                    gap: 8,
-                    alignItems: "center",
+                    background: "#F8FAFC",
                   }}
                 >
-                  <input
-                    placeholder="Quick reply..."
-                    value={quickReply}
-                    onChange={(e) => setQuickReply(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && quickReply.trim() && !sendingReply) {
-                        sendQuickReply();
-                      }
-                    }}
-                    disabled={sendingReply}
+                  <div
                     style={{
-                      flex: 1,
-                      background: "#EEF2F7",
-                      border: "none",
-                      borderRadius: 8,
-                      padding: "8px 14px",
-                      fontSize: 13,
-                      fontFamily: "Poppins, sans-serif",
-                      outline: "none",
-                    }}
-                  />
-                  <button
-                    type="button"
-                    disabled={!quickReply.trim() || sendingReply}
-                    onClick={sendQuickReply}
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: "50%",
-                      background: quickReply.trim() ? "#1877D6" : "#E4E8EF",
-                      border: "none",
-                      cursor: quickReply.trim() && !sendingReply ? "pointer" : "default",
                       display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
+                      gap: 10,
+                      alignItems: "flex-end",
                     }}
                   >
-                    <IconSend
-                      size={16}
-                      color={quickReply.trim() ? "#fff" : "#9CA3AF"}
-                      stroke={1.5}
+                    <textarea
+                      ref={replyInputRef}
+                      placeholder="Quick reply..."
+                      value={quickReply}
+                      rows={1}
+                      onChange={(e) => {
+                        setQuickReply(e.target.value);
+                        const el = e.target;
+                        el.style.height = "auto";
+                        el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
+                      }}
+                      onFocus={() => setReplyFocused(true)}
+                      onBlur={() => setReplyFocused(false)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey && quickReply.trim() && !sendingReply) {
+                          e.preventDefault();
+                          sendQuickReply();
+                        }
+                      }}
+                      disabled={sendingReply}
+                      style={{
+                        flex: 1,
+                        minHeight: 44,
+                        maxHeight: 120,
+                        borderRadius: 22,
+                        padding: "12px 16px",
+                        fontSize: 15,
+                        fontFamily: "Poppins, sans-serif",
+                        background: "#fff",
+                        border: "1px solid #E4E8EF",
+                        outline: "none",
+                        resize: "none",
+                        lineHeight: 1.4,
+                      }}
                     />
-                  </button>
+                    <button
+                      type="button"
+                      disabled={!quickReply.trim() || sendingReply}
+                      onClick={sendQuickReply}
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: "50%",
+                        flexShrink: 0,
+                        background: quickReply.trim() ? "#1877D6" : "#E4E8EF",
+                        border: "none",
+                        cursor: quickReply.trim() && !sendingReply ? "pointer" : "default",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <IconSend
+                        size={18}
+                        color={quickReply.trim() ? "#fff" : "#9CA3AF"}
+                        stroke={1.5}
+                      />
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : actionSheet.isCancellation ? (
