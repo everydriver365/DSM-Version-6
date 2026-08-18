@@ -347,6 +347,7 @@ function NotificationsPage() {
   const [quickReply, setQuickReply] = useState("");
   const [sendingReply, setSendingReply] = useState(false);
   const [replyFocused, setReplyFocused] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const replyInputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
