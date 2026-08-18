@@ -72,8 +72,11 @@ function timeAgo(iso: string) {
 }
 function formatTime12hr(timeStr: string | null | undefined): string {
   if (!timeStr) return "";
-  const d = timeStr.includes("T") ? new Date(timeStr) : new Date(`2000-01-01T${timeStr}`);
+  const clean = String(timeStr).trim();
+  const d = clean.includes("T") ? new Date(clean) : new Date(`2000-01-01T${clean}`);
+  if (isNaN(d.getTime())) return clean;
   return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: true });
+
 }
 
 function typeIcon(type: string | null) {
