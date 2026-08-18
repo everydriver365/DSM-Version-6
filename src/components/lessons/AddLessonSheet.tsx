@@ -88,6 +88,7 @@ export interface AddLessonSheetProps {
   editingLesson?: {
     id: string;
     pupil_id?: string;
+    event_title?: string | null;
     lesson_date?: string;
     lesson_time?: string;
     duration_minutes?: number | null;
