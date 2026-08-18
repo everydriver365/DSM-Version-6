@@ -360,6 +360,30 @@ function NotificationsPage() {
   }, [actionSheet?.isMessage]);
 
   useEffect(() => {
+    const onFocus = () => {
+      setTimeout(() => {
+        if (window.visualViewport) {
+          const keyboardH = window.innerHeight - window.visualViewport.height;
+          setKeyboardHeight(Math.max(0, keyboardH));
+        } else {
+          setKeyboardHeight(320);
+        }
+      }, 300);
+    };
+    const onBlur = () => {
+      setTimeout(() => {
+        setKeyboardHeight(0);
+      }, 100);
+    };
+    window.addEventListener("focusin", onFocus);
+    window.addEventListener("focusout", onBlur);
+    return () => {
+      window.removeEventListener("focusin", onFocus);
+      window.removeEventListener("focusout", onBlur);
+    };
+  }, []);
+
+  useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
       const uid = data.user?.id ?? null;
