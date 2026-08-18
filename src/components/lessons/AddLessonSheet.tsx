@@ -622,6 +622,7 @@ export function AddLessonSheet({
             onClick={() => {
               setIsEvent(true);
               setIsTestDay(false);
+              setIsRecurring(false);
               if (duration === "test") setDuration(1);
             }}
             style={{
