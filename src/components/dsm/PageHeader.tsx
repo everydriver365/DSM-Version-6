@@ -34,7 +34,6 @@ export function PageHeader({
 
   return (
     <div
-      className="dsm-header"
       style={{
         position: "sticky",
         top: 0,
@@ -44,7 +43,7 @@ export function PageHeader({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        padding: "12px 16px 12px",
+        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px",
         borderRadius: 0,
       }}
     >
