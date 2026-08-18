@@ -1015,12 +1015,13 @@ function PupilsIndexPage() {
             const config = emptyConfig[statusFilter];
             return (
               <div style={{ margin: '0 16px', background: '#fff', borderRadius: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
-                <EmptyState
-                  icon={IconUsers}
-                  title={config.title}
-                  description={config.description}
-                  action={config.action}
-                />
+                <div className="flex flex-col items-center justify-center text-center px-6 py-12">
+                  <IconUsers size={48} color="#D1D5DB" stroke={1.5} style={{ marginBottom: 12 }} />
+                  <p className="font-semibold" style={{ fontSize: 14, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>
+                    {config.title}
+                  </p>
+                  {config.action && <div className="mt-5">{config.action}</div>}
+                </div>
               </div>
             );
           })()
