@@ -673,6 +673,17 @@ function NotificationsPage() {
                               transmission: action.transmission,
                               message: action.message,
                               receivedAt: action.receivedAt,
+                              isJobOffer: action.isJobOffer,
+                              jobId: action.jobId,
+                              jobTitle: action.jobTitle,
+                              area: action.area,
+                              lessonDate: action.lessonDate,
+                              lessonTime: action.lessonTime,
+                              duration: action.duration,
+                              rate: action.rate,
+                              description: action.description,
+                              postedBy: action.postedBy,
+                              expiresAt: action.expiresAt,
                             });
                           }
                         }}
