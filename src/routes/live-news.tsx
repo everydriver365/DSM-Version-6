@@ -107,10 +107,6 @@ function formatSessionDay(iso: string | null | undefined): string {
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric" });
 }
 
-function formatSessionMonth(iso: string | null | undefined): string {
-  if (!iso) return "";
-  return new Date(iso).toLocaleDateString("en-GB", { month: "short" });
-}
 
 async function handleShareEpisode(episode: PodcastEpisode) {
   const url = episode.link || episode.audioUrl;
