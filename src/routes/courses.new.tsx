@@ -416,6 +416,26 @@ function NewCoursePage() {
       return;
     }
 
+    const course = insertData?.[0];
+    if (useCustomSessions && customSessions.length > 0 && course?.id) {
+      const { error: sessionsError } = await supabase
+        .from("course_sessions")
+        .insert(
+          customSessions.map((s) => ({
+            course_id: course.id,
+            instructor_id: uid,
+            session_date: s.date,
+            session_time: s.time,
+            duration_minutes: s.duration,
+            status: "scheduled",
+          }))
+        );
+      if (sessionsError) {
+        console.error("[courses.new] course_sessions insert error:", sessionsError.code, sessionsError.message);
+        toast.error("Course saved but sessions failed to save");
+      }
+    }
+
     if (status === "active") {
       toast.success(rows.length === 1 ? "Course published!" : `${rows.length} courses published!`);
     } else {
