@@ -6322,7 +6322,7 @@ function HomePage() {
                               marginBottom: 8,
                               padding: '10px 12px',
                               cursor: 'pointer',
-                              boxShadow: '0 2px 0 #0B1F3A',
+                              boxShadow: '0 4px 0 #E4E4E8',
                               position: 'relative',
                               overflow: 'visible',
                             }}
