@@ -718,7 +718,7 @@ function LivePage() {
           altitudeAccuracy: null,
         },
         timestamp: position.timestamp,
-      });
+      } as GeolocationPosition);
     } catch (err) {
       console.error("[live] initial fix failed", err);
       // Continue — the watch will deliver the first fix.
