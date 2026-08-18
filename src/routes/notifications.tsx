@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconCalendar, IconChecks, IconChevronRight, IconCircleX, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconRefresh, IconReply, IconSend, IconTrash, IconUsers, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconChecks, IconChevronRight, IconCircleX, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconRefresh, IconSend, IconTrash, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
