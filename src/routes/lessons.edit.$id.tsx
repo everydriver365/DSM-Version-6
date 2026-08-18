@@ -342,14 +342,25 @@ function EditLessonPage() {
     const { error: updErr } = await supabase
       .from("lessons")
       .update({
-        pupil_id: pupilId,
+        ...(isEvent
+          ? {
+              pupil_id: null,
+              event_title: eventTitle.trim() || null,
+              lesson_type: 'event' as const,
+              amount_due: 0,
+              payment_status: 'paid' as const,
+              duration_minutes: duration,
+            }
+          : {
+              pupil_id: pupilId,
+              event_title: null,
+              lesson_type: isTestDay ? ('test' as const) : ('lesson' as const),
+              duration_minutes: isTestDay ? TEST_TOTAL_MINUTES : duration,
+            }),
         lesson_date: date,
-        // Test days start 1h before the test time and run 90m after it.
         lesson_time: `${
           isTestDay && testTime ? testStartTime(testTime) ?? testTime : time
         }:00`,
-        duration_minutes: isTestDay ? TEST_TOTAL_MINUTES : duration,
-        lesson_type: isTestDay ? 'test' : 'lesson',
         status,
         pickup_location: isTestDay ? testCentre.trim() || null : pickupLocation.trim() || null,
         notes:
@@ -357,6 +368,7 @@ function EditLessonPage() {
             ? withTestTimeNote(notes.trim() || null, testTime)
             : notes.trim() || null,
       })
+
 
       .eq("id", id);
     if (updErr) {
