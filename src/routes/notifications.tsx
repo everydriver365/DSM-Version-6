@@ -406,7 +406,14 @@ function NotificationsPage() {
                             return;
                           }
                           if (action.options) {
-                            setActionSheet({ notif: n, options: action.options });
+                            setActionSheet({
+                              notif: n,
+                              options: action.options,
+                              isMessage: action.isMessage,
+                              threadId: action.threadId,
+                              senderName: action.senderName,
+                              messagePreview: action.messagePreview,
+                            });
                           }
                         }}
                         className="w-full text-left cursor-pointer"
