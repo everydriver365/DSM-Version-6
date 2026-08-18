@@ -4327,15 +4327,22 @@ function HomePage() {
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     {todayLessons.map((l) => {
+                      const isEvent = l.lesson_type === 'event' || (!l.pupil_id && l.event_title);
                       const [hh, mm] = (l.lesson_time ?? "00:00").split(":").map(Number);
 
                       const endMinutes = hh * 60 + mm + (l.duration_minutes ?? 60);
                       const nowMinutes = new Date().getHours() * 60 + new Date().getMinutes();
-                      const eolDue = !l.eol_completed && l.lesson_date === todayISO && endMinutes <= nowMinutes;
+                      const eolDue = !isEvent && !l.eol_completed && l.lesson_date === todayISO && endMinutes <= nowMinutes;
                       return (
                         <button
                           key={l.id}
-                          onClick={() => navigate({ to: "/pupils/$id", params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any })}
+                          onClick={() => {
+                            if (isEvent) {
+                              toast.info(`Event: ${l.event_title || 'No title'}`, { duration: 3000 });
+                              return;
+                            }
+                            navigate({ to: "/pupils/$id", params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any });
+                          }}
                           style={{
                             display: "grid", gridTemplateColumns: "70px 1fr auto auto auto",
                             gap: 12, alignItems: "center", padding: "10px 12px",
@@ -4345,15 +4352,17 @@ function HomePage() {
                           }}
                         >
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{formatTime(l)}</span>
-                          <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{pupilName(l)}</span>
-                          <span style={{ fontSize: 12, color: "#6B7280" }}>{formatDuration(l.duration_minutes)}</span>
-                          <LessonPaymentBadge
-                            status={l.payment_status}
-                            amountDue={l.amount_due}
-                            paidAmount={(l as any).paid_amount}
-                            prepaidHours={(l.pupils as any)?.prepaid_hours}
-                            size="md"
-                          />
+                          <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{isEvent ? (l.event_title || "Event") : pupilName(l)}</span>
+                          <span style={{ fontSize: 12, color: "#6B7280" }}>{isEvent ? "Event" : formatDuration(l.duration_minutes)}</span>
+                          {!isEvent && (
+                            <LessonPaymentBadge
+                              status={l.payment_status}
+                              amountDue={l.amount_due}
+                              paidAmount={(l as any).paid_amount}
+                              prepaidHours={(l.pupils as any)?.prepaid_hours}
+                              size="md"
+                            />
+                          )}
 
                           {eolDue && (
                             <span
