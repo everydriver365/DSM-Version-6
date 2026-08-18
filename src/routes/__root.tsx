@@ -566,7 +566,10 @@ function RootComponent() {
   const useWhiteBg = whiteBgPaths.has(pathname);
 
   const wrapperStyle: Record<string, string | number> = {};
-  if (!hideNav) wrapperStyle.paddingBottom = 80;
+  if (!hideNav) {
+    wrapperStyle.paddingBottom =
+      'calc(80px + env(safe-area-inset-bottom, 0px))';
+  }
   if (!useWhiteBg) wrapperStyle.backgroundColor = "#EEF2F7";
 
   // Track recent screens for the search screen's "Recent" list.
