@@ -1951,6 +1951,7 @@ function SchedulePage() {
                                   toast.info(`Event: ${lesson.event_title || 'No title'}`, { duration: 3000 });
                                   return;
                                 }
+                                tapLight();
                                 setActionsOpenFor(lesson);
                               }
                             : isBlockRow
