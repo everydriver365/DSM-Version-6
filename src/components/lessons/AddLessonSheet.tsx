@@ -843,10 +843,12 @@ export function AddLessonSheet({
                       type="button"
                       role="radio"
                       aria-checked={active}
-                      onClick={() => {
-                        setDuration(opt.value);
-                        setIsTestDay(opt.value === "test");
-                      }}
+                  onClick={() => {
+                    if (opt.value === "test") tapMedium();
+                    else tapLight();
+                    setDuration(opt.value);
+                    setIsTestDay(opt.value === "test");
+                  }}
                       style={{
                         height: 34,
                         borderRadius: 8,
