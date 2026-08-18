@@ -4,7 +4,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { toast } from "sonner";
-import { IconArchive, IconCalendar, IconCalendarStats, IconCalendarMonth, IconCamera, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMessage, IconMoon, IconPencil, IconPhone, IconPhoto, IconSchool, IconSettings, IconShield, IconSun, IconSunrise, IconTrash, IconX } from "@tabler/icons-react";
+import { IconArchive, IconCalendar, IconCalendarStats, IconCalendarMonth, IconCamera, IconCheck, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMessage, IconMoon, IconPencil, IconPhone, IconPhoto, IconSchool, IconSettings, IconShield, IconSun, IconSunrise, IconTrash, IconX } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 
 import { Card } from "../components/dsm/Card";
@@ -93,6 +93,17 @@ interface Booking {
   booked_at: string;
 }
 
+interface CourseSession {
+  id: string;
+  course_id: string;
+  session_date: string;
+  session_time: string;
+  duration_minutes: number;
+  status: "scheduled" | "completed" | "cancelled";
+  notes: string | null;
+}
+
+
 function typeColor(t: string) {
   if (t === "intensive") return "#1877D6";
   if (t === "semi-intensive") return "#1877D6";
@@ -128,6 +139,17 @@ function formatDateWithDay(d: string | null) {
     year: "numeric",
   });
 }
+function formatTime12hr(t: string | null) {
+  if (!t) return "—";
+  const [h, m] = t.split(":").map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return t;
+  const suffix = h >= 12 ? "pm" : "am";
+  const hour = h % 12 === 0 ? 12 : h % 12;
+  const minute = String(m).padStart(2, "0");
+  return `${hour}:${minute}${suffix}`;
+}
+
+
 
 function CourseDetailPage() {
   const { id } = Route.useParams();
@@ -135,6 +157,7 @@ function CourseDetailPage() {
 
   const [course, setCourse] = useState<Course | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [sessions, setSessions] = useState<CourseSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -181,6 +204,15 @@ function CourseDetailPage() {
     console.log("[courses.$id] bookings fetch result:", bs, bErr);
     if (bErr) console.error("[courses.$id] load bookings", bErr);
     setBookings((bs ?? []) as Booking[]);
+
+    const { data: sessionData } = await supabase
+      .from("course_sessions")
+      .select("*")
+      .eq("course_id", id)
+      .order("session_date", { ascending: true })
+      .order("session_time", { ascending: true });
+    setSessions((sessionData ?? []) as CourseSession[]);
+
     setLoading(false);
   }
 
@@ -1130,6 +1162,200 @@ function CourseDetailPage() {
                 </>
               )}
             </Card>
+
+            {/* COURSE SESSIONS */}
+            {sessions.length > 0 && (
+              <>
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                    color: "#9CA3AF",
+                    padding: "8px 16px 6px",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  Course sessions
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      background: "#EFF6FF",
+                      color: "#1877D6",
+                      fontSize: 11,
+                      fontWeight: 700,
+                      borderRadius: 20,
+                      padding: "3px 10px",
+                      marginLeft: 8,
+                    }}
+                  >
+                    {sessions.length} session{sessions.length > 1 ? "s" : ""}
+                  </span>
+                </div>
+                <div
+                  style={{
+                    margin: "0 16px 16px",
+                    background: "#fff",
+                    borderRadius: 16,
+                    border: "1px solid #E4E8EF",
+                    overflow: "hidden",
+                    boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                  }}
+                >
+                  {sessions.map((session, i) => {
+                    const sessionDateTime = new Date(session.session_date + "T" + session.session_time);
+                    const isPast = sessionDateTime < new Date();
+                    const isToday = session.session_date === new Date().toISOString().split("T")[0];
+
+                    let statusBg: string;
+                    let statusColor: string;
+                    let statusLabel: string;
+
+                    if (session.status === "completed") {
+                      statusBg = "#DCFCE7";
+                      statusColor = "#15803D";
+                      statusLabel = "Completed";
+                    } else if (session.status === "cancelled") {
+                      statusBg = "#FEE2E2";
+                      statusColor = "#CC2229";
+                      statusLabel = "Cancelled";
+                    } else if (isToday) {
+                      statusBg = "#FEF3C7";
+                      statusColor = "#92400E";
+                      statusLabel = "Today";
+                    } else if (isPast) {
+                      statusBg = "#EEF2F7";
+                      statusColor = "#9CA3AF";
+                      statusLabel = "Past";
+                    } else {
+                      statusBg = "#EFF6FF";
+                      statusColor = "#1877D6";
+                      statusLabel = "Upcoming";
+                    }
+
+                    let numberBg: string;
+                    let numberColor: string;
+                    let numberContent: React.ReactNode;
+
+                    if (session.status === "completed") {
+                      numberBg = "#DCFCE7";
+                      numberColor = "#15803D";
+                      numberContent = <IconCheck size={16} />;
+                    } else if (session.status === "cancelled") {
+                      numberBg = "#FEE2E2";
+                      numberColor = "#CC2229";
+                      numberContent = <IconX size={16} />;
+                    } else if (isToday) {
+                      numberBg = "#FEF3C7";
+                      numberColor = "#92400E";
+                      numberContent = i + 1;
+                    } else {
+                      numberBg = "#EFF6FF";
+                      numberColor = "#1877D6";
+                      numberContent = i + 1;
+                    }
+
+                    return (
+                      <div
+                        key={session.id}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                          padding: "12px 16px",
+                          borderBottom: i < sessions.length - 1 ? "1px solid #E4E8EF" : undefined,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: "50%",
+                            flexShrink: 0,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: 12,
+                            fontWeight: 800,
+                            background: numberBg,
+                            color: numberColor,
+                          }}
+                        >
+                          {numberContent}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                            <span style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A" }}>
+                              {formatDate(session.session_date)}
+                            </span>
+                            {isToday && (
+                              <span
+                                style={{
+                                  background: "#FEF3C7",
+                                  color: "#92400E",
+                                  fontSize: 9,
+                                  fontWeight: 800,
+                                  borderRadius: 20,
+                                  padding: "2px 6px",
+                                  textTransform: "uppercase",
+                                }}
+                              >
+                                Today
+                              </span>
+                            )}
+                          </div>
+                          <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>
+                            {formatTime12hr(session.session_time)} · {session.duration_minutes} min
+                          </div>
+                          {session.notes && (
+                            <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2, fontStyle: "italic" }}>
+                              {session.notes}
+                            </div>
+                          )}
+                        </div>
+                        <span
+                          style={{
+                            background: statusBg,
+                            color: statusColor,
+                            fontSize: 10,
+                            fontWeight: 700,
+                            borderRadius: 20,
+                            padding: "3px 8px",
+                            flexShrink: 0,
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {statusLabel}
+                        </span>
+                      </div>
+                    );
+                  })}
+                  <div
+                    style={{
+                      borderTop: "1px solid #E4E8EF",
+                      padding: "12px 16px",
+                      display: "flex",
+                      gap: 16,
+                      justifyContent: "center",
+                    }}
+                  >
+                    <div style={{ display: "flex", gap: 4, alignItems: "center", fontSize: 11, color: "#15803D" }}>
+                      <IconCheck size={14} />
+                      {sessions.filter((s) => s.status === "completed").length} completed
+                    </div>
+                    <div style={{ display: "flex", gap: 4, alignItems: "center", fontSize: 11, color: "#1877D6" }}>
+                      <IconCalendar size={14} />
+                      {
+                        sessions.filter((s) => s.status === "scheduled" && new Date(s.session_date) >= new Date()).length
+                      } upcoming
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
 
             {/* PRICING */}
             <CourseSectionBar>Pricing</CourseSectionBar>
