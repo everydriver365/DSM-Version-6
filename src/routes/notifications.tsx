@@ -997,9 +997,12 @@ function NotificationsPage() {
                 )}
                 <div
                   style={{
-                    padding: "16px",
+                    position: "sticky",
+                    bottom: 0,
+                    background: "#fff",
                     borderTop: "1px solid #E4E8EF",
-                    background: "#F8FAFC",
+                    padding: "12px 16px",
+                    paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
                   }}
                 >
                   <div
