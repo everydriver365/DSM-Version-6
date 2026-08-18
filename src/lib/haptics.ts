@@ -41,3 +41,24 @@ export async function hapticError() {
     await Haptics.notification({ type: NotificationType.Error });
   } catch {}
 }
+
+// Legacy dispatcher kept for existing callers (CommandPalette, Button, etc.)
+export function haptic(kind: "selection" | "tap" | "success" | "warning" | "error") {
+  switch (kind) {
+    case "selection":
+      tapLight();
+      break;
+    case "tap":
+      tapLight();
+      break;
+    case "success":
+      hapticSuccess();
+      break;
+    case "warning":
+      hapticWarning();
+      break;
+    case "error":
+      hapticError();
+      break;
+  }
+}
