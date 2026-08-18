@@ -145,7 +145,7 @@ function AccordionCard({
   return (
     <div
       className="bg-white mb-3"
-      style={{ borderRadius: 16, boxShadow: '0 1px 3px rgba(11,31,58,0.06)', border: 'none' }}
+      style={{ borderRadius: 8, boxShadow: '0 1px 3px rgba(11,31,58,0.06)', border: 'none' }}
     >
       <button
         type="button"
@@ -794,7 +794,7 @@ function ProfilePage() {
           onClick={saveAll}
           disabled={saving || loading}
           className="inline-flex items-center text-[13px] font-semibold disabled:opacity-50"
-          style={{ height: 34, padding: "0 14px", borderRadius: 10, border: "none", background: "#1877D6", color: "#FFFFFF" }}
+          style={{ height: 34, padding: "0 14px", borderRadius: 8, border: "none", background: "#1877D6", color: "#FFFFFF" }}
         >
           {saving ? "Saving…" : "Save"}
         </button>
@@ -1154,7 +1154,7 @@ function ProfilePage() {
                 <img
                   src={vehiclePhotoUrl}
                   alt="Vehicle"
-                  style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 8 }}
+                  style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 8}}
                 />
                 <div className="mt-2 flex items-center justify-between">
                   <button
@@ -1187,7 +1187,7 @@ function ProfilePage() {
                   borderWidth: "1px",
                   borderStyle: "dashed",
                   borderColor: "#EEF2F7",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   padding: 24,
                 }}
               >
@@ -1276,7 +1276,7 @@ function ProfilePage() {
                   <div
                     style={{
                       background: "#fff",
-                      borderRadius: 16,
+                      borderRadius: 8,
                       border: "1px solid #E4E8EF",
                       overflow: "hidden",
                     }}
@@ -1409,13 +1409,13 @@ function ProfilePage() {
             </div>
 
             <div
-              className="overflow-hidden rounded-2xl bg-white"
+              className="overflow-hidden rounded-lg bg-white"
               style={{ boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)" }}
             >
               {squareConnected ? (
                 <div className="flex items-center gap-3" style={{ padding: "14px 16px" }}>
                   <div
-                    className="flex items-center justify-center rounded-[11px]"
+                    className="flex items-center justify-center rounded-lg]"
                     style={{ width: 38, height: 38, backgroundColor: "#E6F6EE" }}
                   >
                     <IconCheck size={20} stroke={2} color="#1A9B5C" />
@@ -1471,7 +1471,7 @@ function ProfilePage() {
                     }}
                   >
                     <div
-                      className="flex items-center justify-center rounded-[11px]"
+                      className="flex items-center justify-center rounded-lg]"
                       style={{ width: 38, height: 38, backgroundColor: "#E7F1FC" }}
                     >
                       <IconCreditCard size={20} stroke={1.7} color="#1877D6" />
@@ -1504,7 +1504,7 @@ function ProfilePage() {
                     }}
                   >
                     <div
-                      className="flex items-center justify-center rounded-[11px]"
+                      className="flex items-center justify-center rounded-lg]"
                       style={{ width: 38, height: 38, backgroundColor: "#F3F4F6" }}
                     >
                       <IconExternalLink size={20} stroke={1.7} color="#0B1F3A" />
@@ -1525,7 +1525,7 @@ function ProfilePage() {
 
             {!squareConnected && (
               <div
-                className="flex items-start gap-2 rounded-xl p-3"
+                className="flex items-start gap-2 rounded-lg p-3"
                 style={{ backgroundColor: "#FFFBEB", borderWidth: "1px", borderStyle: "solid", borderColor: "#FCD34D" }}
               >
                 <IconAlertTriangle size={18} stroke={1.6} color="#B45309" style={{ flexShrink: 0 }} />

@@ -226,7 +226,7 @@ function Hero() {
               <div className="mt-8 flex flex-row gap-3">
                 <Link
                   to="/register"
-                  className="group inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl px-5 sm:px-7 py-3.5 font-semibold no-underline transition-all"
+                  className="group inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-lg px-5 sm:px-7 py-3.5 font-semibold no-underline transition-all"
                   style={{
                     background: BLUE,
                     color: "#fff",
@@ -245,7 +245,7 @@ function Hero() {
                 </Link>
                 <Link
                   to="/features"
-                  className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl px-5 sm:px-7 py-3.5 font-semibold no-underline transition-colors"
+                  className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-lg px-5 sm:px-7 py-3.5 font-semibold no-underline transition-colors"
                   style={{
                     background: "#fff",
                     color: NAVY,
@@ -283,14 +283,14 @@ function Hero() {
             <div className="relative">
               <div
                 aria-hidden
-                className="absolute -inset-6 rounded-[40px]"
+                className="absolute -inset-6 rounded-lg]"
                 style={{
                   background:
                     "linear-gradient(135deg, rgba(14,124,206,0.18), rgba(19,49,85,0.10))",
                   filter: "blur(40px)"}}
               />
               <div
-                className="relative rounded-[28px] overflow-hidden bg-white"
+                className="relative rounded-lg] overflow-hidden bg-white"
                 style={{ boxShadow: SHADOW_LIFT, border: `1px solid ${HAIRLINE}` }}
               >
                 <img
@@ -322,7 +322,7 @@ function StatsBar() {
       <div className="max-w-[1180px] mx-auto">
         <Reveal>
           <div
-            className="rounded-3xl bg-white px-6 sm:px-10 py-7 sm:py-9 grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4"
+            className="rounded-lg bg-white px-6 sm:px-10 py-7 sm:py-9 grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4"
             style={{ boxShadow: SHADOW_SOFT, border: `1px solid ${HAIRLINE}` }}
           >
             {stats.map((s, i) => (
@@ -459,13 +459,13 @@ function DiarySection() {
             <div id="explainer-video" className="relative">
               <div
                 aria-hidden
-                className="absolute -inset-8 rounded-[40px] opacity-60"
+                className="absolute -inset-8 rounded-lg] opacity-60"
                 style={{
                   background:
                     "radial-gradient(600px 400px at 70% 40%, rgba(14,124,206,0.14), transparent 60%), radial-gradient(500px 300px at 20% 80%, rgba(19,49,85,0.08), transparent 60%)"}}
               />
               <div
-                className="relative rounded-[24px] overflow-hidden bg-white"
+                className="relative rounded-lg] overflow-hidden bg-white"
                 style={{
                   boxShadow: SHADOW_LIFT,
                   border: `1px solid ${HAIRLINE}`}}
@@ -599,14 +599,14 @@ function FeaturesShowcase() {
                   <div className="relative">
                     <div
                       aria-hidden
-                      className="absolute -inset-4 rounded-[36px]"
+                      className="absolute -inset-4 rounded-lg]"
                       style={{
                         background:
                           "linear-gradient(135deg, rgba(14,124,206,0.10), rgba(19,49,85,0.06))",
                         filter: "blur(28px)"}}
                     />
                     <div
-                      className="relative rounded-[24px] overflow-hidden bg-white"
+                      className="relative rounded-lg] overflow-hidden bg-white"
                       style={{
                         boxShadow: SHADOW_LIFT,
                         border: `1px solid ${HAIRLINE}`}}
@@ -733,7 +733,7 @@ function HowItWorks() {
           {steps.map(({ n, t, b, Icon }, i) => (
             <Reveal key={n} delay={i * 80}>
               <div
-                className="h-full rounded-2xl bg-white p-7 sm:p-8 transition-all"
+                className="h-full rounded-lg bg-white p-7 sm:p-8 transition-all"
                 style={{
                   border: `1px solid ${HAIRLINE}`,
                   boxShadow: SHADOW_SOFT}}
@@ -748,7 +748,7 @@ function HowItWorks() {
               >
                 <div className="flex items-start justify-between mb-6">
                   <span
-                    className="w-12 h-12 rounded-xl grid place-items-center"
+                    className="w-12 h-12 rounded-lg grid place-items-center"
                     style={{ background: BLUE_TINT, color: BLUE_DARK }}
                   >
                     <Icon className="w-6 h-6" />
@@ -840,7 +840,7 @@ function PricingTiers() {
             return (
               <Reveal key={p.name} delay={i * 70}>
                 <div
-                  className="relative h-full rounded-3xl overflow-hidden transition-all"
+                  className="relative h-full rounded-lg overflow-hidden transition-all"
                   style={{
                     background: "#fff",
                     border: isPro ? `2px solid ${BLUE}` : `1px solid ${HAIRLINE}`,
@@ -932,7 +932,7 @@ function PricingTiers() {
         <div className="text-center mt-12">
           <Link
             to="/pricing"
-            className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-xl no-underline"
+            className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-lg no-underline"
             style={{
               background: BG,
               border: `1px solid ${HAIRLINE}`,
@@ -977,7 +977,7 @@ function Testimonials() {
           {items.map((t, i) => (
             <Reveal key={t.n} delay={i * 80}>
               <div
-                className="h-full rounded-2xl bg-white p-7 transition-all"
+                className="h-full rounded-lg bg-white p-7 transition-all"
                 style={{
                   border: `1px solid ${HAIRLINE}`,
                   boxShadow: SHADOW_SOFT}}
@@ -1060,7 +1060,7 @@ function ComparisonFormula() {
 
         <Reveal>
           <div
-            className="rounded-3xl overflow-hidden"
+            className="rounded-lg overflow-hidden"
             style={{
               background: BG,
               border: `1px solid ${HAIRLINE}`,
@@ -1118,7 +1118,7 @@ function ComparisonFormula() {
             </p>
             <Link
               to="/register"
-              className="inline-flex items-center gap-2 font-semibold px-7 py-3.5 rounded-xl no-underline transition-all"
+              className="inline-flex items-center gap-2 font-semibold px-7 py-3.5 rounded-lg no-underline transition-all"
               style={{
                 background: BLUE,
                 color: "#fff",
@@ -1154,7 +1154,7 @@ function FinalCTA() {
       <div className="max-w-[1180px] mx-auto">
         <Reveal>
           <div
-            className="relative overflow-hidden rounded-[32px] px-6 sm:px-10 lg:px-16 py-16 sm:py-20 lg:py-24 text-center"
+            className="relative overflow-hidden rounded-lg] px-6 sm:px-10 lg:px-16 py-16 sm:py-20 lg:py-24 text-center"
             style={{
               background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY_SOFT} 100%)`,
               boxShadow: SHADOW_LIFT}}
@@ -1199,7 +1199,7 @@ function FinalCTA() {
               <div className="flex flex-row sm:flex-wrap justify-center gap-3">
                 <Link
                   to="/register"
-                  className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-xl no-underline transition-all"
+                  className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-lg no-underline transition-all"
                   style={{
                     background: BLUE,
                     color: "#fff",
@@ -1217,7 +1217,7 @@ function FinalCTA() {
                 </Link>
                 <Link
                   to="/pricing"
-                  className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-xl no-underline"
+                  className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 font-semibold px-7 py-3.5 rounded-lg no-underline"
                   style={{
                     background: "rgba(255,255,255,0.08)",
                     border: "1px solid rgba(255,255,255,0.25)",

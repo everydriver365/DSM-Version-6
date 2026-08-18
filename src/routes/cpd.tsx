@@ -283,7 +283,7 @@ function CpdPage() {
         <div className="px-4 mt-3">
           <div
             style={{
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 14,
               backgroundColor:
                 renewalDaysLeft > 90
@@ -338,7 +338,7 @@ function CpdPage() {
                 style={{
                   height: 32,
                   padding: "0 12px",
-                  borderRadius: 16,
+                  borderRadius: 8,
                   backgroundColor: active ? "#0B1F3A" : "#F3F4F6",
                   color: active ? "#FFFFFF" : "#6B7280",
                 }}
@@ -390,7 +390,7 @@ function CpdPage() {
             type="button"
             onClick={exportCsv}
             className="w-full flex items-center justify-center gap-2 text-white text-[14px] font-semibold"
-            style={{ backgroundColor: "#1877D6", height: 44, borderRadius: 10 }}
+            style={{ backgroundColor: "#1877D6", height: 44, borderRadius: 8}}
           >
             <IconDownload stroke={1.5} size={16} /> Export CPD log
           </button>
@@ -445,7 +445,7 @@ function StatCard({
       style={{
         backgroundColor: "#FFFFFF",
         border: "0.5px solid #EEF2F7",
-        borderRadius: 12,
+        borderRadius: 8,
         padding: 12,
       }}
     >
@@ -481,7 +481,7 @@ function EntryCard({
       style={{
         backgroundColor: "#FFFFFF",
         border: "0.5px solid #EEF2F7",
-        borderRadius: 12,
+        borderRadius: 8,
         padding: "14px 16px",
       }}
     >
@@ -504,7 +504,7 @@ function EntryCard({
                   color,
                   backgroundColor: `${color}1A`,
                   padding: "3px 8px",
-                  borderRadius: 6,
+                  borderRadius: 8,
                 }}
               >
                 {cat}
@@ -515,7 +515,7 @@ function EntryCard({
                   color: "#0B1F3A",
                   backgroundColor: "#F3F4F6",
                   padding: "3px 8px",
-                  borderRadius: 6,
+                  borderRadius: 8,
                 }}
               >
                 {Number(log.hours).toFixed(1)}h
@@ -850,7 +850,7 @@ function AddSheet({
             style={{
               backgroundColor: "#1877D6",
               height: 46,
-              borderRadius: 10,
+              borderRadius: 8,
               opacity: saving ? 0.6 : 1,
             }}
           >

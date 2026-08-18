@@ -78,7 +78,7 @@ export function DeleteLessonSheet({
 
         <div className="px-4 mt-2">
           <div
-            className="rounded-[12px] p-3"
+            className="rounded-lg] p-3"
             style={{ backgroundColor: "#FEF2F2", border: "0.5px solid #FECACA" }}
           >
             <div className="text-[13px]" style={{ color: "#0F2044", ...POPPINS }}>

@@ -423,7 +423,7 @@ function MtdPage() {
             borderWidth: "0.5px",
             borderStyle: "solid",
             borderColor: "#1877D6",
-            borderRadius: 12,
+            borderRadius: 8,
             padding: 16,
             fontSize: 13,
             color: VALUE,
@@ -611,7 +611,7 @@ function MtdPage() {
                     borderWidth: "1px",
                     borderStyle: "solid",
                     borderColor: "#EEF2F7",
-                    borderRadius: 12,
+                    borderRadius: 8,
                     padding: 16,
                     background: "#fff",
                   }}

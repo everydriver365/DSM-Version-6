@@ -233,7 +233,7 @@ function LocationsPage() {
                         copyPostcode(r);
                       }}
                       aria-label="Copy postcode"
-                      className="flex items-center justify-center rounded-md"
+                      className="flex items-center justify-center rounded-lg"
                       style={{
                         width: 32,
                         height: 32,
@@ -251,7 +251,7 @@ function LocationsPage() {
                         openMaps(r);
                       }}
                       aria-label="Navigate"
-                      className="flex items-center rounded-md px-2"
+                      className="flex items-center rounded-lg px-2"
                       style={{
                         height: 32,
                         gap: 4,
@@ -278,7 +278,7 @@ function LocationsPage() {
             onClick={() => setShowSheet(false)}
           />
           <div
-            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-2xl px-4 pt-5 pb-8"
+            className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-lg px-4 pt-5 pb-8"
             style={{ animation: "slideUp 0.25s ease-out" }}
           >
             <div className="flex items-center justify-between mb-4">

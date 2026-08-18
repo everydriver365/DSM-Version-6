@@ -250,7 +250,7 @@ function AdminPodcasts() {
               color: "#0B1F3A",
               border: 0,
               padding: "9px 15px",
-              borderRadius: 20,
+              borderRadius: 8,
               fontWeight: 800,
               fontSize: 13,
               boxShadow: "0 3px 0 #B0B8C4",
@@ -270,7 +270,7 @@ function AdminPodcasts() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 20,
+            borderRadius: 8,
             boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
             display: "flex",
             overflow: "hidden",
@@ -332,7 +332,7 @@ function AdminPodcasts() {
             key={p.id}
             style={{
               background: "#fff",
-              borderRadius: 20,
+              borderRadius: 8,
               padding: 18,
               margin: "0 16px 16px",
               boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.07)",
@@ -347,7 +347,7 @@ function AdminPodcasts() {
                   fontSize: 11,
                   fontWeight: 800,
                   padding: "5px 12px",
-                  borderRadius: 20,
+                  borderRadius: 8,
                   background: p.is_published ? "#E6F7EC" : "#FFF6DC",
                   color: p.is_published ? "#248A3D" : "#B8860B",
                   whiteSpace: "nowrap",
@@ -373,7 +373,7 @@ function AdminPodcasts() {
                 style={{
                   flex: 1,
                   padding: 12,
-                  borderRadius: 13,
+                  borderRadius: 8,
                   border: 0,
                   background: "#0B1F3A",
                   color: "#fff",
@@ -395,7 +395,7 @@ function AdminPodcasts() {
                 style={{
                   flex: 1,
                   padding: 12,
-                  borderRadius: 13,
+                  borderRadius: 8,
                   border: 0,
                   background: "#F2F2F7",
                   color: "#6B6B6F",
@@ -417,7 +417,7 @@ function AdminPodcasts() {
                 style={{
                   flex: 1,
                   padding: 12,
-                  borderRadius: 13,
+                  borderRadius: 8,
                   background: "#fff",
                   color: "#FF3B30",
                   border: "1.5px solid #FF3B30",
@@ -604,7 +604,7 @@ function AdminPodcasts() {
                 color: "#fff",
                 border: 0,
                 padding: "12px",
-                borderRadius: 10,
+                borderRadius: 8,
                 fontWeight: 700,
                 fontSize: 14,
                 marginTop: 12,

@@ -175,7 +175,7 @@ function DocumentsPage() {
           style={{
             gap: 10,
             padding: 12,
-            borderRadius: 10,
+            borderRadius: 8,
             backgroundColor: "#EEF2F7",
             border: "0.5px solid #1877D6",
           }}
@@ -219,7 +219,7 @@ function DocumentsPage() {
                         style={{
                           width: 36,
                           height: 36,
-                          borderRadius: 18,
+                          borderRadius: 8,
                           backgroundColor: meta.tint,
                         }}
                       >

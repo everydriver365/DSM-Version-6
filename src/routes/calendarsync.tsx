@@ -59,7 +59,7 @@ const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const SECTION_CARD: React.CSSProperties = {
   background: "#fff",
-  borderRadius: 20,
+  borderRadius: 8,
   padding: 18,
   boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
   marginBottom: 24,
@@ -86,7 +86,7 @@ const FIELD_LABEL: React.CSSProperties = {
 const FIELD_INPUT: React.CSSProperties = {
   ...POPPINS,
   background: "#F2F2F7",
-  borderRadius: 12,
+  borderRadius: 8,
   padding: "13px 15px",
   border: "none",
   outline: "none",
@@ -113,7 +113,7 @@ const BTN_BASE: React.CSSProperties = {
   ...POPPINS,
   width: "100%",
   padding: 15,
-  borderRadius: 14,
+  borderRadius: 8,
   fontSize: 14.5,
   fontWeight: 800,
   display: "flex",
@@ -147,7 +147,7 @@ const BTN_OUTLINE_RED: React.CSSProperties = {
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 12 }}>
-      <span style={{ width: 3, height: 14, background: "#1877D6", borderRadius: 2, flexShrink: 0 }} />
+      <span style={{ width: 3, height: 14, background: "#1877D6", borderRadius: 8, flexShrink: 0 }} />
       <span
         style={{
           ...POPPINS,
@@ -603,7 +603,7 @@ function CalendarSyncPage() {
           className="mx-0 mt-3"
           style={{
             backgroundColor: "#E7F1FC",
-            borderRadius: 16,
+            borderRadius: 8,
             padding: "14px 16px",
             display: "flex",
             flexDirection: "row",
@@ -635,7 +635,7 @@ function CalendarSyncPage() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 16,
+            borderRadius: 8,
             border: "1px solid #E4E8EF",
             overflow: "hidden",
             marginBottom: 16,
@@ -679,7 +679,7 @@ function CalendarSyncPage() {
                     color: "#15803D",
                     fontSize: 10,
                     fontWeight: 700,
-                    borderRadius: 20,
+                    borderRadius: 8,
                     padding: "2px 8px",
                   }}
                 >
@@ -857,7 +857,7 @@ function CalendarSyncPage() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 16,
+            borderRadius: 8,
             border: "1px solid #E4E8EF",
             overflow: "hidden",
             marginBottom: 16,
@@ -887,7 +887,7 @@ function CalendarSyncPage() {
               style={{
                 marginBottom: 12,
                 background: "#FEF2F2",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: "12px 14px",
               }}
             >
@@ -987,7 +987,7 @@ function CalendarSyncPage() {
             borderWidth: "0.5px",
             borderStyle: "solid",
             borderColor: "#BFDBFE",
-            borderRadius: 12,
+            borderRadius: 8,
             padding: 16,
             marginLeft: 16,
             marginRight: 16,
@@ -1041,14 +1041,14 @@ function CalendarSyncPage() {
             className="border-0"
             style={{
               backgroundColor: "#F8F9FB",
-              borderRadius: 12,
+              borderRadius: 8,
               marginBottom: 12,
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: "#EEF2F7",
             }}
           >
-            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 12 }}>
+            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 8}}>
               <span className="flex items-center gap-3">
                 <IconCalendar size={20} color="#1877D6" />
                 Google Calendar
@@ -1123,14 +1123,14 @@ function CalendarSyncPage() {
             className="border-0"
             style={{
               backgroundColor: "#F8F9FB",
-              borderRadius: 12,
+              borderRadius: 8,
               marginBottom: 12,
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: "#EEF2F7",
             }}
           >
-            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 12 }}>
+            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 8}}>
               <span className="flex items-center gap-3">
                 <IconCalendar size={20} color="#1877D6" />
                 Apple Calendar
@@ -1194,14 +1194,14 @@ function CalendarSyncPage() {
             className="border-0"
             style={{
               backgroundColor: "#F8F9FB",
-              borderRadius: 12,
+              borderRadius: 8,
               marginBottom: 12,
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: "#EEF2F7",
             }}
           >
-            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 12 }}>
+            <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 8}}>
               <span className="flex items-center gap-3">
                 <IconCalendar size={20} color="#1877D6" />
                 Outlook

@@ -230,7 +230,7 @@ function Row({
       style={{
         background: "#FFFFFF",
         border: `1px solid ${HAIRLINE}`,
-        borderRadius: 16,
+        borderRadius: 8,
         boxShadow: SHADOW,
         padding: 10,
         display: "flex",
@@ -246,7 +246,7 @@ function Row({
           width: 68,
           height: 52,
           flexShrink: 0,
-          borderRadius: 10,
+          borderRadius: 8,
           overflow: "hidden",
           display: "flex",
           alignItems: "center",
@@ -287,7 +287,7 @@ function Row({
         style={{
           background: NAVY,
           color: "#FFFFFF",
-          borderRadius: 7,
+          borderRadius: 8,
           padding: "7px 12px",
           fontSize: 11,
           fontWeight: 700,
@@ -307,7 +307,7 @@ function Empty({ label }: { label: string }) {
     <div
       style={{
         border: `1px dashed ${HAIRLINE}`,
-        borderRadius: 14,
+        borderRadius: 8,
         padding: "18px 12px",
         textAlign: "center",
         fontFamily: FONT,
@@ -354,7 +354,7 @@ function TabBar({
             style={{
               flex: 1,
               padding: "10px 8px",
-              borderRadius: 10,
+              borderRadius: 8,
               border: "none",
               background: isActive ? NAVY : "#FFFFFF",
               color: isActive ? "#FFFFFF" : NAVY,
@@ -381,7 +381,7 @@ function TabBar({
                   minWidth: 18,
                   height: 18,
                   padding: "0 5px",
-                  borderRadius: 9,
+                  borderRadius: 8,
                   background: isActive ? "rgba(255,255,255,0.22)" : "#EAF2FC",
                   color: isActive ? "#FFFFFF" : "#1877D6",
                   fontSize: 11,
@@ -538,7 +538,7 @@ function DiscoverPage() {
                           fontWeight: 700,
                           letterSpacing: "0.04em",
                           padding: "2px 5px",
-                          borderRadius: 5,
+                          borderRadius: 8,
                         }}
                       >
                         LIVE

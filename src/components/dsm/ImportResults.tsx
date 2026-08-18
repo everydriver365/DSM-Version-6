@@ -90,7 +90,7 @@ export default function ImportResults({
       className="mt-4"
       style={{
         backgroundColor: "#FFFFFF",
-        borderRadius: 16,
+        borderRadius: 8,
         boxShadow: "0 2px 10px rgba(11,31,58,0.08)",
         overflow: "hidden",
       }}
@@ -138,7 +138,7 @@ export default function ImportResults({
                 style={{
                   gap: 10,
                   padding: "10px 12px",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   backgroundColor: "#F7F9FC",
                 }}
               >
@@ -168,7 +168,7 @@ export default function ImportResults({
                   <div
                     key={f.row}
                     style={{
-                      borderRadius: 14,
+                      borderRadius: 8,
                       backgroundColor: v.valid ? "#F3F8FF" : "#FEF2F7",
                       padding: 12,
                     }}
@@ -211,7 +211,7 @@ export default function ImportResults({
                               style={{
                                 marginTop: 2,
                                 height: 36,
-                                borderRadius: 10,
+                                borderRadius: 8,
                                 backgroundColor: "#FFFFFF",
                                 borderWidth: "0.5px",
                                 borderStyle: "solid",
@@ -241,7 +241,7 @@ export default function ImportResults({
                   style={{
                     gap: 8,
                     height: 48,
-                    borderRadius: 14,
+                    borderRadius: 8,
                     backgroundColor: fixableCount === 0 ? "#9AA3AF" : "#1877D6",
                     opacity: retrying ? 0.7 : 1,
                   }}
@@ -257,7 +257,7 @@ export default function ImportResults({
                   style={{
                     width: 48,
                     height: 48,
-                    borderRadius: 14,
+                    borderRadius: 8,
                     backgroundColor: "#F3F5F9",
                   }}
                 >

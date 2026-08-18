@@ -114,7 +114,7 @@ function WaitingListPage() {
           type="button"
           onClick={() => setAddOpen(true)}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
           <IconPlus size={15} />
           Add entry
@@ -144,7 +144,7 @@ function WaitingListPage() {
                       style={{
                         width: 36,
                         height: 36,
-                        borderRadius: 18,
+                        borderRadius: 8,
                         backgroundColor: "#1877D614",
                         color: "#1877D6",
                         fontSize: 18,
@@ -178,7 +178,7 @@ function WaitingListPage() {
                           style={{
                             color: "#1877D6",
                             backgroundColor: "#EEF2F7",
-                            borderRadius: 6,
+                            borderRadius: 8,
                           }}
                         >
                           {days} {days === 1 ? "day" : "days"}

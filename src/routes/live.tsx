@@ -1210,7 +1210,7 @@ function LivePage() {
               { label: "Max speed", value: `${Math.round(r.overallMaxSpeed)} mph` },
               { label: "Overspeed", value: `${r.overspeedCount}`, red: r.overspeedCount > 0 },
             ].map((s) => (
-              <div key={s.label} style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB", borderRadius: 10, padding: 12, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+              <div key={s.label} style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB", borderRadius: 8, padding: 12, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
                 <div style={{ fontSize: 11, letterSpacing: 0.5, color: "#6B7280", textTransform: "uppercase" }}>{s.label}</div>
                 <div style={{ fontSize: 20, fontWeight: 700, color: s.red ? "#CC2229" : "#0B1F3A", marginTop: 4 }}>{s.value}</div>
               </div>
@@ -1223,14 +1223,14 @@ function LivePage() {
           </div>
           <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 8 }}>
             {r.segments.length === 0 && (
-              <div style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB", borderRadius: 10, padding: 16, textAlign: "center", color: "#6B7280", fontSize: 13 }}>
+              <div style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB", borderRadius: 8, padding: 16, textAlign: "center", color: "#6B7280", fontSize: 13 }}>
                 No segments recorded.
               </div>
             )}
             {r.segments.map((seg, i) => {
               const isOpen = expandedSegments.has(i);
               return (
-              <div key={i} style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.06)", overflow: "hidden" }}>
+              <div key={i} style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB", borderRadius: 8, boxShadow: "0 1px 3px rgba(0,0,0,0.06)", overflow: "hidden" }}>
                 <button
                   onClick={() => setExpandedSegments((prev) => { const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n; })}
                   style={{ width: "100%", background: "transparent", border: "none", padding: 12, textAlign: "left", cursor: "pointer" }}
@@ -1281,7 +1281,7 @@ function LivePage() {
               marginTop: 24,
               width: "100%",
               padding: "14px 16px",
-              borderRadius: 10,
+              borderRadius: 8,
               border: "1px solid #1877D6",
               backgroundColor: "#fff",
               color: "#1877D6",
@@ -1299,7 +1299,7 @@ function LivePage() {
               marginTop: 10,
               width: "100%",
               padding: "14px 16px",
-              borderRadius: 10,
+              borderRadius: 8,
               border: "1px solid #1877D6",
               backgroundColor: "#1877D6",
               color: "#fff",
@@ -1317,7 +1317,7 @@ function LivePage() {
               marginTop: 10,
               width: "100%",
               padding: "14px 16px",
-              borderRadius: 10,
+              borderRadius: 8,
               border: "none",
               backgroundColor: "#1877D6",
               color: "#fff",
@@ -1403,7 +1403,7 @@ function LivePage() {
           className="flex items-center justify-center"
           style={{
             padding: "8px 16px",
-            borderRadius: 10,
+            borderRadius: 8,
             background: "#FF3B30",
             color: "#FFFFFF",
             fontSize: 13,
@@ -1451,7 +1451,7 @@ function LivePage() {
             background: "#EF4444",
             color: "#fff",
             padding: "10px 16px",
-            borderRadius: 10,
+            borderRadius: 8,
             fontSize: 13,
             fontWeight: 700,
             letterSpacing: "0.02em",
@@ -1474,7 +1474,7 @@ function LivePage() {
             transform: "translate(-50%, -50%)",
             background: "#fff",
             padding: "16px 20px",
-            borderRadius: 12,
+            borderRadius: 8,
             maxWidth: 300,
             width: "calc(100% - 40px)",
             textAlign: "center",
@@ -1491,7 +1491,7 @@ function LivePage() {
               style={{
                 flex: 1,
                 height: 42,
-                borderRadius: 10,
+                borderRadius: 8,
                 background: "#fff",
                 border: "1px solid #E2E8F0",
                 color: "#0B1F3A",
@@ -1511,7 +1511,7 @@ function LivePage() {
               style={{
                 flex: 1,
                 height: 42,
-                borderRadius: 10,
+                borderRadius: 8,
                 background: "#1877D6",
                 border: "none",
                 color: "#fff",
@@ -1556,7 +1556,7 @@ function LivePage() {
               bottom: "calc(env(safe-area-inset-bottom, 0px) + 100px)",
               background: "rgba(10,22,40,0.9)",
               backdropFilter: "blur(8px)",
-              borderRadius: 16,
+              borderRadius: 8,
               padding: "14px 16px",
               fontFamily: "Poppins, sans-serif",
             }}
@@ -1626,7 +1626,7 @@ function LivePage() {
                     fontSize: 11,
                     fontWeight: 700,
                     padding: "4px 8px",
-                    borderRadius: 6,
+                    borderRadius: 8,
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -1693,7 +1693,7 @@ function LivePage() {
             maxWidth: 340,
             background: "#fff",
             border: "0.5px solid #EEF2F7",
-            borderRadius: 16,
+            borderRadius: 8,
             padding: 24,
             textAlign: "center",
             boxShadow: "0 12px 40px rgba(0,0,0,0.25)",
@@ -1716,7 +1716,7 @@ function LivePage() {
             style={{
               width: "100%",
               height: 46,
-              borderRadius: 10,
+              borderRadius: 8,
               background: "#1877D6",
               border: "none",
               color: "#fff",
@@ -1735,7 +1735,7 @@ function LivePage() {
             style={{
               width: "100%",
               height: 46,
-              borderRadius: 10,
+              borderRadius: 8,
               background: "#fff",
               border: "1.5px solid #1877D6",
               color: "#1877D6",
@@ -1753,7 +1753,7 @@ function LivePage() {
             style={{
               width: "100%",
               height: 42,
-              borderRadius: 10,
+              borderRadius: 8,
               background: "transparent",
               border: "none",
               color: "#6B7280",
@@ -1773,7 +1773,7 @@ function LivePage() {
       <div
         className="absolute left-0 right-0 bottom-0 z-[1000] bg-white"
         style={{
-          borderRadius: "16px 16px 0 0",
+          borderRadius: "8px 8px 0 0",
           padding: "10px 20px",
           paddingBottom: "calc(20px + env(safe-area-inset-bottom, 0px))",
           boxShadow: "0 -4px 20px rgba(0,0,0,0.15)",
@@ -1838,7 +1838,7 @@ function LivePage() {
               className="flex items-center"
               style={{
                 background: "#EEF2F7",
-                borderRadius: 10,
+                borderRadius: 8,
                 padding: "6px 10px",
                 gap: 10,
                 flexShrink: 0,
@@ -1887,7 +1887,7 @@ function LivePage() {
             style={{
               background: "#fff",
               width: "100%",
-              borderRadius: "16px 16px 0 0",
+              borderRadius: "8px 8px 0 0",
               padding: "16px 20px",
               paddingBottom: "calc(20px + env(safe-area-inset-bottom, 0px))",
               maxHeight: "70%",
@@ -1926,7 +1926,7 @@ function LivePage() {
                       key={i}
                       style={{
                         background: "#F3F4F6",
-                        borderRadius: 10,
+                        borderRadius: 8,
                         padding: "10px 12px",
                       }}
                     >
@@ -1971,13 +1971,13 @@ function LivePage() {
             className="relative w-full max-w-md flex flex-col"
             style={{
               background: "#F2F2F7",
-              borderRadius: "22px 22px 0 0",
+              borderRadius: "8px 8px 0 0",
               maxHeight: "80vh",
               paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
             }}
           >
             <div className="flex justify-center pb-1" style={{ marginTop: 10 }}>
-              <div style={{ width: 36, height: 5, borderRadius: 3, background: "#D1D1D6" }} />
+              <div style={{ width: 36, height: 5, borderRadius: 8, background: "#D1D1D6" }} />
             </div>
             <div className="flex items-center justify-between px-5 pt-2 pb-3">
               <div style={{ fontSize: 20, fontWeight: 800, color: "#0B1F3A", letterSpacing: "-0.3px" }}>
@@ -1990,7 +1990,7 @@ function LivePage() {
                   setPupilSearchQuery("");
                 }}
                 className="flex items-center justify-center active:opacity-70"
-                style={{ width: 30, height: 30, borderRadius: 15, background: "#E5E5EA", border: "none" }}
+                style={{ width: 30, height: 30, borderRadius: 8, background: "#E5E5EA", border: "none" }}
                 aria-label="Close"
               >
                 <IconX stroke={2} size={13} color="#6B6B6F" />
@@ -2001,7 +2001,7 @@ function LivePage() {
                 className="flex items-center"
                 style={{
                   background: "#fff",
-                  borderRadius: 14,
+                  borderRadius: 8,
                   padding: "13px 16px",
                   gap: 10,
                   boxShadow: "0 3px 0 #E4E4E8",
@@ -2070,7 +2070,7 @@ function LivePage() {
                       background: "#fff",
                       border: "none",
                       textAlign: "left",
-                      borderRadius: 16,
+                      borderRadius: 8,
                       padding: "14px 16px",
                       marginBottom: 10,
                       gap: 13,

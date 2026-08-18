@@ -31,7 +31,7 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         background: "#0B1F3A",
         color: "#fff",
         padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 16px",
-        borderRadius: "0 0 28px 28px",
+        borderRadius: "0 0 8px 8px",
         display: "flex",
         alignItems: "center",
         gap: 12,
@@ -64,7 +64,7 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
 
 const inputStyle: React.CSSProperties = {
   background: "#F2F2F7",
-  borderRadius: 12,
+  borderRadius: 8,
   border: "none",
   padding: "13px 15px",
   fontSize: 14,
@@ -79,7 +79,7 @@ const segmentWrapStyle: React.CSSProperties = {
   display: "flex",
   flexDirection: "row",
   background: "#F2F2F7",
-  borderRadius: 14,
+  borderRadius: 8,
   padding: 4,
 };
 
@@ -87,7 +87,7 @@ function segmentStyle(active: boolean): React.CSSProperties {
   return {
     flex: 1,
     padding: "11px 4px",
-    borderRadius: 10,
+    borderRadius: 8,
     fontSize: 14,
     fontWeight: 700,
     textAlign: "center",
@@ -113,7 +113,7 @@ function DSMCheckbox({ checked, onChange }: { checked: boolean; onChange: (v: bo
         style={{
           width: 22,
           height: 22,
-          borderRadius: 7,
+          borderRadius: 8,
           border: `1.5px solid ${checked ? "#1877D6" : "#D1D1D6"}`,
           background: checked ? "#1877D6" : "transparent",
           display: "inline-flex",
@@ -286,7 +286,7 @@ function AdminChatRooms() {
           style={{
             background: "#fff",
             border: "none",
-            borderRadius: 20,
+            borderRadius: 8,
             padding: 18,
             display: "flex",
             flexDirection: "column",
@@ -341,7 +341,7 @@ function AdminChatRooms() {
             style={{
               width: "100%",
               padding: 15,
-              borderRadius: 14,
+              borderRadius: 8,
               background: "#1877D6",
               color: "#fff",
               border: "none",
@@ -376,7 +376,7 @@ function AdminChatRooms() {
             style={{
               background: "#fff",
               border: "none",
-              borderRadius: 16,
+              borderRadius: 8,
               padding: "13px 16px",
               fontSize: 14,
               fontFamily: "Poppins, sans-serif",
@@ -405,7 +405,7 @@ function AdminChatRooms() {
               cursor: "pointer",
               background: "#fff",
               border: "none",
-              borderRadius: 16,
+              borderRadius: 8,
               padding: "13px 16px",
               boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.05)",
             }}
@@ -431,7 +431,7 @@ function AdminChatRooms() {
                 style={{
                   background: "#fff",
                   border: "none",
-                  borderRadius: 18,
+                  borderRadius: 8,
                   padding: 16,
                   boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
                 }}
@@ -451,7 +451,7 @@ function AdminChatRooms() {
                       fontWeight: 800,
                       color: "#1877D6",
                       background: "#E7F1FC",
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: "5px 11px",
                       whiteSpace: "nowrap",
                     }}
@@ -477,7 +477,7 @@ function AdminChatRooms() {
                       textTransform: "uppercase",
                       color: room.room_type === "uk" ? "#1877D6" : "#248A3D",
                       background: room.room_type === "uk" ? "#E7F1FC" : "#E6F7EC",
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: "4px 10px",
                     }}
                   >
@@ -490,7 +490,7 @@ function AdminChatRooms() {
                         fontWeight: 800,
                         color: "#92400E",
                         background: "#FEF3C7",
-                        borderRadius: 20,
+                        borderRadius: 8,
                         padding: "4px 10px",
                       }}
                     >
@@ -510,7 +510,7 @@ function AdminChatRooms() {
                       alignItems: "center",
                       gap: 6,
                       padding: "8px 14px",
-                      borderRadius: 11,
+                      borderRadius: 8,
                       border: "1.5px solid #FF3B30",
                       background: "#fff",
                       color: "#FF3B30",

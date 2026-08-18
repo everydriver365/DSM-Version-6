@@ -139,7 +139,7 @@ function StatusPill({ type, label }: { type: "instructor" | "live" | "pending" |
         fontSize: 11.5,
         fontWeight: 800,
         padding: "6px 12px",
-        borderRadius: 20,
+        borderRadius: 8,
         display: "inline-flex",
         alignItems: "center",
         gap: 4,
@@ -490,7 +490,7 @@ function AdminListingsPage() {
           zIndex: 40,
           background: "#0B1F3A",
           color: "#fff",
-          borderRadius: "0 0 28px 28px",
+          borderRadius: "0 0 8px 8px",
           padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
           display: "flex",
           alignItems: "center",
@@ -545,7 +545,7 @@ function AdminListingsPage() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 20,
+              borderRadius: 8,
               boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
               display: "flex",
               overflow: "hidden",
@@ -597,7 +597,7 @@ function AdminListingsPage() {
                   whiteSpace: "nowrap",
                   flexShrink: 0,
                   padding: "10px 18px",
-                  borderRadius: 24,
+                  borderRadius: 8,
                   border: "none",
                   background: active ? "#1877D6" : "#fff",
                   color: active ? "#fff" : "#0B1F3A",
@@ -633,7 +633,7 @@ function AdminListingsPage() {
                 key={l.id}
                 style={{
                   background: "#fff",
-                  borderRadius: 20,
+                  borderRadius: 8,
                   padding: 18,
                   marginLeft: 16,
                   marginRight: 16,
@@ -749,7 +749,7 @@ function AdminListingsPage() {
                             <img
                               src={newImageUrl || firstImage}
                               alt={l.title}
-                              style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 8 }}
+                              style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 8}}
                             />
                             <span style={{ fontSize: 12, color: "#6B7280" }}>
                               {newImageUrl ? "New image (saves with the listing)" : "Current image"}
@@ -1255,7 +1255,7 @@ function StatCard({ label, value }: { label: string; value: number; color?: stri
       style={{
         background: "#fff",
         border: "0.5px solid #E2E6ED",
-        borderRadius: 12,
+        borderRadius: 8,
         padding: 12,
         fontFamily: "Poppins, sans-serif",
       }}

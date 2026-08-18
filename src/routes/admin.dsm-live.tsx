@@ -609,7 +609,7 @@ function AdminDsmLive() {
             background: "#1877D6",
             color: "#fff",
             border: "none",
-            borderRadius: 14,
+            borderRadius: 8,
             padding: "11px 20px",
             fontSize: 14,
             fontWeight: 800,
@@ -630,7 +630,7 @@ function AdminDsmLive() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 20,
+            borderRadius: 8,
             boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
             display: "flex",
             overflow: "hidden",
@@ -677,7 +677,7 @@ function AdminDsmLive() {
               key={s.id}
               style={{
                 background: "#fff",
-                borderRadius: 20,
+                borderRadius: 8,
                 padding: 18,
                 marginLeft: 16,
                 marginRight: 16,
@@ -690,7 +690,7 @@ function AdminDsmLive() {
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 12 }}>
                 {s.category && (
-                  <span style={{ fontSize: 11.5, fontWeight: 700, background: "#F2F2F7", color: "#6B6B6F", padding: "6px 12px", borderRadius: 20 }}>
+                  <span style={{ fontSize: 11.5, fontWeight: 700, background: "#F2F2F7", color: "#6B6B6F", padding: "6px 12px", borderRadius: 8}}>
                     {sentenceCase(s.category)}
                   </span>
                 )}
@@ -699,7 +699,7 @@ function AdminDsmLive() {
                     fontSize: 11.5,
                     fontWeight: 700,
                     padding: "6px 12px",
-                    borderRadius: 20,
+                    borderRadius: 8,
                     background: isUpcoming ? "#1877D6" : isPast ? "#E5E5EA" : "#E5E5EA",
                     color: isUpcoming ? "#fff" : "#8A8A8E",
                   }}
@@ -806,7 +806,7 @@ function AdminDsmLive() {
                   style={{
                     width: "100%",
                     height: 120,
-                    borderRadius: 10,
+                    borderRadius: 8,
                     border: "1px solid #E2E6ED",
                     overflow: "hidden",
                     cursor: "pointer",
@@ -854,7 +854,7 @@ function AdminDsmLive() {
                   width: "100%",
                   height: 120,
                   border: "1.5px dashed #CBD5E1",
-                  borderRadius: 10,
+                  borderRadius: 8,
                   background: "#F9FAFB",
                   color: "#6B7280",
                   display: "flex",
@@ -878,7 +878,7 @@ function AdminDsmLive() {
             </select>
           </FormField>
           {!editing && (
-            <div style={{ marginTop: 8, padding: 12, background: "#F9FAFB", border: "0.5px solid #E2E6ED", borderRadius: 10 }}>
+            <div style={{ marginTop: 8, padding: 12, background: "#F9FAFB", border: "0.5px solid #E2E6ED", borderRadius: 8}}>
               <Toggle
                 label="This is a recurring session"
                 checked={isRecurring}
@@ -914,7 +914,7 @@ function AdminDsmLive() {
             </div>
           )}
           {editing && !editing.is_recurring && (
-            <div style={{ marginTop: 8, padding: 12, background: "#F9FAFB", border: "0.5px solid #E2E6ED", borderRadius: 10 }}>
+            <div style={{ marginTop: 8, padding: 12, background: "#F9FAFB", border: "0.5px solid #E2E6ED", borderRadius: 8}}>
               <Toggle
                 label="Convert to recurring series"
                 checked={convertToRecurring}
@@ -958,7 +958,7 @@ function AdminDsmLive() {
               background: "#CC2229",
               color: "#fff",
               border: "none",
-              borderRadius: 10,
+              borderRadius: 8,
               padding: "12px 16px",
               fontSize: 14,
               fontWeight: 600,
@@ -1002,7 +1002,7 @@ function AdminDsmLive() {
               background: "#1877D6",
               color: "#fff",
               border: "none",
-              borderRadius: 10,
+              borderRadius: 8,
               padding: "12px 16px",
               fontSize: 14,
               fontWeight: 600,
@@ -1064,7 +1064,7 @@ function AdminDsmLive() {
               height: 200,
               overflow: "hidden",
               position: "relative",
-              borderRadius: 12,
+              borderRadius: 8,
               background: "#000",
               cursor: "crosshair",
               touchAction: "none",
@@ -1117,7 +1117,7 @@ function AdminDsmLive() {
               background: "#0F2044",
               color: "#fff",
               border: "none",
-              borderRadius: 10,
+              borderRadius: 8,
               padding: "12px 16px",
               fontSize: 14,
               fontWeight: 600,
@@ -1172,7 +1172,7 @@ function AdminDsmLive() {
             background: "#0B1F3A",
             color: "#fff",
             padding: "10px 16px",
-            borderRadius: 10,
+            borderRadius: 8,
             fontSize: 13,
             zIndex: 60,
           }}
@@ -1199,7 +1199,7 @@ function AdminDsmLive() {
             onClick={(e) => e.stopPropagation()}
             style={{
               background: "#fff",
-              borderRadius: 14,
+              borderRadius: 8,
               padding: 20,
               width: "100%",
               maxWidth: 420,
@@ -1225,7 +1225,7 @@ function AdminDsmLive() {
                   gap: 10,
                   padding: "10px 12px",
                   border: `1px solid ${recurringUpdateChoice === opt.v ? "#0B1F3A" : "#E2E6ED"}`,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   marginBottom: 8,
                   cursor: "pointer",
                   background: recurringUpdateChoice === opt.v ? "#F5F7FB" : "#fff",
@@ -1253,7 +1253,7 @@ function AdminDsmLive() {
                   background: "#fff",
                   color: "#0B1F3A",
                   border: "1px solid #E2E6ED",
-                  borderRadius: 10,
+                  borderRadius: 8,
                   padding: "10px 14px",
                   fontSize: 13,
                   fontWeight: 600,
@@ -1270,7 +1270,7 @@ function AdminDsmLive() {
                   background: "#0B1F3A",
                   color: "#fff",
                   border: "none",
-                  borderRadius: 10,
+                  borderRadius: 8,
                   padding: "10px 14px",
                   fontSize: 13,
                   fontWeight: 600,
@@ -1311,7 +1311,7 @@ function actionBtn({ textColor, borderColor }: { textColor: string; borderColor:
     background: "#fff",
     color: textColor,
     border: `1.5px solid ${borderColor}`,
-    borderRadius: 13,
+    borderRadius: 8,
     padding: 12,
     fontSize: 13.5,
     fontWeight: 700,

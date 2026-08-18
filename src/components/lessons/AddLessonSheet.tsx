@@ -554,7 +554,7 @@ export function AddLessonSheet({
           className="w-full text-white active:opacity-90 disabled:opacity-40"
           style={{
             backgroundColor: "#1877D6",
-            borderRadius: 16,
+            borderRadius: 8,
             height: 52,
             fontSize: 16,
             fontWeight: 700,
@@ -730,7 +730,7 @@ export function AddLessonSheet({
                       }}
                       style={{
                         height: 34,
-                        borderRadius: 20,
+                        borderRadius: 8,
                         padding: "0 16px",
                         fontSize: 13,
                         fontWeight: 600,
@@ -788,7 +788,7 @@ export function AddLessonSheet({
                       width: "100%",
                       background: "#fff",
                       border: "1px solid #E4E8EF",
-                      borderRadius: 10,
+                      borderRadius: 8,
                       padding: "10px 12px",
                       fontSize: 14,
                       fontFamily: "Poppins, sans-serif",
@@ -799,7 +799,7 @@ export function AddLessonSheet({
                     <div
                       style={{
                         background: "#fff",
-                        borderRadius: 12,
+                        borderRadius: 8,
                         border: "1px solid #E4E8EF",
                         boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                         maxHeight: 200,
@@ -857,7 +857,7 @@ export function AddLessonSheet({
                         color: "#15803D",
                         fontSize: 11,
                         fontWeight: 700,
-                        borderRadius: 20,
+                        borderRadius: 8,
                         padding: "4px 12px",
                         display: "flex",
                         gap: 6,
@@ -921,7 +921,7 @@ export function AddLessonSheet({
                       width: "100%",
                       background: "#fff",
                       border: "1px solid #E4E8EF",
-                      borderRadius: 10,
+                      borderRadius: 8,
                       padding: "10px 12px",
                       fontSize: 14,
                       fontFamily: "Poppins, sans-serif",

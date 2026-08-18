@@ -65,7 +65,7 @@ const labelStyle: React.CSSProperties = {
 const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #E4E8EF",
-  borderRadius: 10,
+  borderRadius: 8,
   padding: "10px 12px",
   fontSize: 14,
   color: "#0B1F3A",
@@ -398,7 +398,7 @@ function AdminBitesizePage() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 20,
+            borderRadius: 8,
             boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
             display: "flex",
             overflow: "hidden",
@@ -492,7 +492,7 @@ function AdminBitesizePage() {
               key={video.id}
               style={{
                 background: "#fff",
-                borderRadius: 20,
+                borderRadius: 8,
                 padding: 18,
                 marginBottom: 14,
                 boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
@@ -504,7 +504,7 @@ function AdminBitesizePage() {
                   style={{
                     width: 64,
                     height: 64,
-                    borderRadius: 14,
+                    borderRadius: 8,
                     overflow: "hidden",
                     flexShrink: 0,
                     background: "#F3EEFB",
@@ -558,7 +558,7 @@ function AdminBitesizePage() {
                         flexShrink: 0,
                         fontSize: 10,
                         fontWeight: 800,
-                        borderRadius: 20,
+                        borderRadius: 8,
                         padding: "4px 10px",
                         background: video.is_published ? "#E6F7EC" : "#FFF6DC",
                         color: video.is_published ? "#248A3D" : "#B8860B",
@@ -615,7 +615,7 @@ function AdminBitesizePage() {
                   style={{
                     flex: 1,
                     height: 40,
-                    borderRadius: 12,
+                    borderRadius: 8,
                     background: "#fff",
                     border: "none",
                     boxShadow: "0 3px 0 #E4E4E8",
@@ -644,7 +644,7 @@ function AdminBitesizePage() {
                   style={{
                     flex: 1,
                     height: 40,
-                    borderRadius: 12,
+                    borderRadius: 8,
                     background: "#fff",
                     border: "none",
                     boxShadow: "0 3px 0 #E4E4E8",
@@ -669,7 +669,7 @@ function AdminBitesizePage() {
                   style={{
                     flex: 1,
                     height: 40,
-                    borderRadius: 12,
+                    borderRadius: 8,
                     background: "#fff",
                     border: "none",
                     boxShadow: "0 3px 0 #F7C9C6",
@@ -727,7 +727,7 @@ function AdminBitesizePage() {
                   justifyContent: "center",
                   gap: 6,
                   border: "2px dashed #DDD6FE",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   padding: "24px 16px",
                   cursor: "pointer",
                   background: "#FAF8FF",
@@ -780,7 +780,7 @@ function AdminBitesizePage() {
                   style={{
                     width: 64,
                     height: 64,
-                    borderRadius: 10,
+                    borderRadius: 8,
                     border: thumbPreview
                       ? "1px solid #E4E8EF"
                       : "2px dashed #E4E8EF",
@@ -846,7 +846,7 @@ function AdminBitesizePage() {
                 background: "#7C3AED",
                 color: "#fff",
                 border: "none",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: "14px 16px",
                 fontSize: 15,
                 fontWeight: 700,
@@ -899,7 +899,7 @@ function AdminBitesizePage() {
                 background: "#1877D6",
                 color: "#fff",
                 border: "none",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: "14px 16px",
                 fontSize: 15,
                 fontWeight: 700,

@@ -105,7 +105,7 @@ function HelpPage() {
               href={c.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center bg-[#F8F9FB] rounded-xl p-4"
+              className="flex items-center bg-[#F8F9FB] rounded-lg p-4"
               style={{
                 borderWidth: "0.5px",
                 borderStyle: "solid",

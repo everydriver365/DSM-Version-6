@@ -87,7 +87,7 @@ export function VideoPlayer({
       style={{
         position: 'relative',
         background: '#000',
-        borderRadius: 12,
+        borderRadius: 8,
         overflow: 'hidden',
         width: '100%',
       }}
@@ -174,7 +174,7 @@ export function VideoPlayer({
           style={{
             height: 3,
             background: 'rgba(255,255,255,0.3)',
-            borderRadius: 2,
+            borderRadius: 8,
             marginBottom: 8,
             cursor: 'pointer',
             position: 'relative',
@@ -185,7 +185,7 @@ export function VideoPlayer({
               width: `${progress}%`,
               height: '100%',
               background: '#fff',
-              borderRadius: 2,
+              borderRadius: 8,
             }}
           />
         </div>

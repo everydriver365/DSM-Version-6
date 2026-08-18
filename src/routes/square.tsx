@@ -60,7 +60,7 @@ function Card({ children }: { children: React.ReactNode }) {
     <div
       style={{
         background: "#fff",
-        borderRadius: 16,
+        borderRadius: 8,
         overflow: "hidden",
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
       }}
@@ -207,7 +207,7 @@ function SquarePage() {
           alignItems: "center",
           gap: 12,
           padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
-          borderRadius: "0 0 28px 28px",
+          borderRadius: "0 0 8px 8px",
         }}
       >
         <button
@@ -333,7 +333,7 @@ function SquarePage() {
             <div
               style={{
                 background: "linear-gradient(135deg, #F59E0B, #D97706)",
-                borderRadius: 20,
+                borderRadius: 8,
                 padding: 20,
                 display: "flex",
                 flexDirection: "column",
@@ -346,7 +346,7 @@ function SquarePage() {
                 style={{
                   width: 44,
                   height: 44,
-                  borderRadius: 14,
+                  borderRadius: 8,
                   background: "#fff",
                   display: "flex",
                   alignItems: "center",
@@ -492,7 +492,7 @@ function SquarePage() {
                 alignItems: "flex-start",
                 background: "#FEF3C7",
                 border: "1px solid #FDE68A",
-                borderRadius: 14,
+                borderRadius: 8,
                 padding: 14,
               }}
             >

@@ -149,7 +149,7 @@ function WaiversPage() {
           type="button"
           onClick={() => setCreateOpen(true)}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
         >
           <IconPlus stroke={1.5} size={15} />
           Create waiver
@@ -526,7 +526,7 @@ function SendToPupilSheet({
             style={{
               backgroundColor: "#EEF4FB",
               border: "0.5px solid #1877D6",
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 12,
             }}
           >

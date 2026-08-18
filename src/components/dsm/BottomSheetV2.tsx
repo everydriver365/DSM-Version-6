@@ -57,7 +57,7 @@ export function BottomSheet({ title, subtitle, onClose, children, footer }: Bott
     >
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
       <div
-        className="relative w-full max-w-md rounded-t-3xl overflow-hidden flex flex-col"
+        className="relative w-full max-w-md rounded-t-lg overflow-hidden flex flex-col"
         style={{
           backgroundColor: canvas,
           boxShadow: "0 -4px 24px rgba(0,0,0,0.15)",
@@ -140,7 +140,7 @@ export interface StatRowProps {
 export function StatRow({ stats }: StatRowProps) {
   return (
     <div
-      className="rounded-2xl bg-white grid mb-5"
+      className="rounded-lg bg-white grid mb-5"
       style={{ boxShadow: cardShadow, gridTemplateColumns: `repeat(${stats.length}, 1fr)` }}
     >
       {stats.map((s, i) => (
@@ -228,7 +228,7 @@ export function PrimaryButton({
       disabled={disabled}
       onClick={onClick}
       className="w-full py-4 text-white font-semibold text-base active:opacity-90 disabled:opacity-40"
-      style={{ backgroundColor: color, borderRadius: 16 }}
+      style={{ backgroundColor: color, borderRadius: 8}}
     >
       {children}
     </button>
@@ -258,7 +258,7 @@ export function GhostButton({
       type={type}
       onClick={onClick}
       className="w-full py-3 font-medium text-base mt-2"
-      style={{ color, backgroundColor: bg, borderRadius: 16 }}
+      style={{ color, backgroundColor: bg, borderRadius: 8}}
     >
       {children}
     </button>
@@ -279,7 +279,7 @@ export function SheetGroup({
   return (
     <div
       className={`bg-white overflow-hidden ${className}`}
-      style={{ borderRadius: 16, border: "none", boxShadow: cardShadow, marginBottom: 12 }}
+      style={{ borderRadius: 8, border: "none", boxShadow: cardShadow, marginBottom: 12 }}
     >
       {items.map((child, i) => (
         <React.Fragment key={i}>

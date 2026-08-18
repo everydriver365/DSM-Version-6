@@ -319,7 +319,7 @@ function PupilProgressPage() {
                 {section.title.toUpperCase()} ({done}/{section.items.length})
               </SectionHeader>
               <div
-                className="rounded-xl bg-white"
+                className="rounded-lg bg-white"
                 style={{
                   borderWidth: "0.5px",
                   borderStyle: "solid",

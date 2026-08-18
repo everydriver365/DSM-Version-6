@@ -140,7 +140,7 @@ export function ChangeDateTimeSheet({
                     role="radio"
                     aria-checked={selected}
                     onClick={() => setNewDuration(minutes)}
-                    className="rounded-[12px] text-[14px] font-medium transition-colors"
+                    className="rounded-lg] text-[14px] font-medium transition-colors"
                     style={{
                       padding: "14px 2px",
                       fontFamily: "Poppins, sans-serif",

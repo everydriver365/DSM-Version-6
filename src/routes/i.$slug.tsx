@@ -171,7 +171,7 @@ function InstructorMiniSite() {
   const btnPrimary: React.CSSProperties = {
     display: "inline-block",
     padding: "14px 28px",
-    borderRadius: 10,
+    borderRadius: 8,
     background: accent,
     color: theme.isDark && accent === "#FFFFFF" ? "#000" : "#FFFFFF",
     fontWeight: 600,
@@ -280,7 +280,7 @@ function InstructorMiniSite() {
                 style={{
                   padding: 0,
                   border: "none",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   overflow: "hidden",
                   cursor: "pointer",
                   aspectRatio: "1 / 1",
@@ -305,7 +305,7 @@ function InstructorMiniSite() {
                 style={{
                   background: theme.surface,
                   border: `1px solid ${theme.border}`,
-                  borderRadius: 14,
+                  borderRadius: 8,
                   padding: 20,
                 }}
               >
@@ -342,7 +342,7 @@ function InstructorMiniSite() {
                 style={{
                   background: theme.bg,
                   border: `1px solid ${theme.border}`,
-                  borderRadius: 14,
+                  borderRadius: 8,
                   padding: 20,
                 }}
               >
@@ -423,7 +423,7 @@ function InstructorMiniSite() {
             src={gallery[lightbox]}
             alt={`Gallery ${lightbox + 1}`}
             onClick={(e) => e.stopPropagation()}
-            style={{ maxWidth: "90vw", maxHeight: "85vh", objectFit: "contain", borderRadius: 8 }}
+            style={{ maxWidth: "90vw", maxHeight: "85vh", objectFit: "contain", borderRadius: 8}}
           />
         </div>
       )}

@@ -240,7 +240,7 @@ function TestsPage() {
           className="inline-flex items-center gap-2"
           style={{
             background: "#fff", color: "#0B1F3A", fontSize: 13.5, fontWeight: 800,
-            padding: "10px 18px", borderRadius: 14, border: "none",
+            padding: "10px 18px", borderRadius: 8, border: "none",
             boxShadow: "0 3px 0 #C7D0DC", ...POPPINS,
           }}
         >
@@ -256,7 +256,7 @@ function TestsPage() {
         {sections.map((section) => (
           <div key={section.key}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "18px 0 10px" }}>
-              <span style={{ width: 3, height: 14, background: "#1877D6", borderRadius: 2, flexShrink: 0 }} />
+              <span style={{ width: 3, height: 14, background: "#1877D6", borderRadius: 8, flexShrink: 0 }} />
               <span style={{
                 color: "#1877D6", fontSize: 12, fontWeight: 800,
                 letterSpacing: "0.6px", textTransform: "uppercase", ...POPPINS,
@@ -394,7 +394,7 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
     <div
       className="mb-4"
       style={{
-        borderRadius: 20, background: "#FFFFFF", overflow: "hidden",
+        borderRadius: 8, background: "#FFFFFF", overflow: "hidden",
         boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.08)",
       }}
     >
@@ -532,7 +532,7 @@ function TestCard({
   return (
     <div
       style={{
-        position: "relative", background: "#fff", borderRadius: 18, padding: 16,
+        position: "relative", background: "#fff", borderRadius: 8, padding: 16,
         boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
       }}
     >
@@ -557,7 +557,7 @@ function TestCard({
                   fontSize: 12,
                   fontWeight: 800,
                   padding: "5px 12px",
-                  borderRadius: 20,
+                  borderRadius: 8,
                   ...POPPINS,
                 }}
               >
@@ -616,7 +616,7 @@ function TestCard({
                 width: "100%",
                 marginTop: 14,
                 padding: 12,
-                borderRadius: 12,
+                borderRadius: 8,
                 background: "#fff",
                 border: "1.5px solid #1877D6",
                 color: "#1877D6",
@@ -662,7 +662,7 @@ function TestCard({
                 minWidth: 150,
                 background: "#fff",
                 border: "1px solid #E2E8F0",
-                borderRadius: 10,
+                borderRadius: 8,
                 boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                 zIndex: 20,
                 overflow: "hidden",
@@ -832,7 +832,7 @@ function EditTestSheet({
             background: saving ? "#9CA3AF" : "#1877D6",
             color: "#fff",
             border: "none",
-            borderRadius: 10,
+            borderRadius: 8,
             fontSize: 14,
             fontWeight: 700,
             cursor: saving ? "not-allowed" : "pointer",
@@ -905,7 +905,7 @@ function CancelTestSheet({
             gap: 12,
             padding: 14,
             background: "#FEF3C7",
-            borderRadius: 10,
+            borderRadius: 8,
             color: "#92400E",
           }}
         >
@@ -950,7 +950,7 @@ function CancelTestSheet({
             background: "#CC2229",
             color: "#fff",
             border: "none",
-            borderRadius: 10,
+            borderRadius: 8,
             fontSize: 14,
             fontWeight: 700,
             cursor: "pointer",
@@ -968,7 +968,7 @@ function CancelTestSheet({
             background: "#F1F5F9",
             color: "#6B7686",
             border: "none",
-            borderRadius: 10,
+            borderRadius: 8,
             fontSize: 14,
             fontWeight: 600,
             cursor: "pointer",
@@ -1046,7 +1046,7 @@ function computeExaminerStats(tests: DrivingTest[]): ExaminerStat[] {
 function ExaminerStatsCard({ stats }: { stats: ExaminerStat[] }) {
   const [openKey, setOpenKey] = useState<string | null>(null);
   return (
-    <div className="mb-4" style={{ borderRadius: 12, background: "#FFFFFF", border: "0.5px solid #EEF2F7", overflow: "hidden" }}>
+    <div className="mb-4" style={{ borderRadius: 8, background: "#FFFFFF", border: "0.5px solid #EEF2F7", overflow: "hidden" }}>
       <div className="px-3 py-3" style={{ background: "#0B1F3A" }}>
         <div className="text-[13px] font-semibold text-white" style={POPPINS}>Examiner stats</div>
         <div className="text-[11px] text-white/80 mt-0.5" style={POPPINS}>Completed tests grouped by examiner</div>
@@ -1325,7 +1325,7 @@ function AddTestSheet({
             className="w-full flex items-center justify-center text-[13px] font-semibold"
             style={{
               height: 44,
-              borderRadius: 10,
+              borderRadius: 8,
               border: "1px dashed #1877D6",
               color: "#1877D6",
               background: "#F4F8FE",
@@ -1584,7 +1584,7 @@ function LogResultSheet({
       }
     >
       <div className="flex flex-col" style={{ gap: 12 }}>
-        <div className="rounded-[12px] p-3" style={{ backgroundColor: "#F3F4F6" }}>
+        <div className="rounded-lg] p-3" style={{ backgroundColor: "#F3F4F6" }}>
           <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A" }}>
             {test.pupils?.name ?? "Pupil"}
           </div>
@@ -1707,7 +1707,7 @@ function LogResultSheet({
           className="w-full flex items-center justify-center text-[13px] font-semibold"
           style={{
             height: 44,
-            borderRadius: 10,
+            borderRadius: 8,
             border: "1px dashed #1877D6",
             color: "#1877D6",
             background: "#F4F8FE",
@@ -1750,7 +1750,7 @@ function ToggleRow({
       onClick={() => onChange(!value)}
       className="w-full flex items-center justify-between p-3"
       style={{
-        borderRadius: 10,
+        borderRadius: 8,
         border: "0.5px solid #EEF2F7",
         background: "#FFFFFF",
         textAlign: "left",
@@ -2245,7 +2245,7 @@ function DL25ItemRow({
       className="flex items-center justify-between"
       style={{
         padding: "8px 10px",
-        borderRadius: 10,
+        borderRadius: 8,
         border: "0.5px solid #EEF2F7",
         background: "#FFFFFF",
       }}

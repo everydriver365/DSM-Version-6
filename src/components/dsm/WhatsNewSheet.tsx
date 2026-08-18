@@ -20,7 +20,7 @@ function Thumb({ size = 72 }: { size?: number }) {
       style={{
         width: size,
         height: size,
-        borderRadius: 12,
+        borderRadius: 8,
         background: `linear-gradient(135deg, ${NAVY} 0%, ${BLUE} 100%)`,
         display: "flex",
         alignItems: "center",
@@ -141,7 +141,7 @@ export function WhatsNewSheet({
           style={{
             width: "100%",
             padding: "14px 16px",
-            borderRadius: 12,
+            borderRadius: 8,
             background: NAVY,
             color: "white",
             fontWeight: 600,

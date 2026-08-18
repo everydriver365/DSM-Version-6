@@ -264,7 +264,7 @@ function MarketplacePage() {
                 height: 44,
                 background: "#FFFFFF",
                 border: "1px solid #E4E8EF",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: "0 14px 0 38px",
                 outline: "none",
                 fontSize: 14,
@@ -278,7 +278,7 @@ function MarketplacePage() {
         {/* Categories */}
         <style>{`.mkt-cat-row::-webkit-scrollbar{display:none}.mkt-search-input::placeholder{color:#9CA3AF}`}</style>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, padding: "0 16px" }}>
-          <span style={{ width: 4, height: 14, borderRadius: 2, background: "#1877D6" }} />
+          <span style={{ width: 4, height: 14, borderRadius: 8, background: "#1877D6" }} />
           <span
             style={{
               fontSize: 12,
@@ -315,7 +315,7 @@ function MarketplacePage() {
                   height: 34,
                   background: isActive ? "#0B1F3A" : "#FFFFFF",
                   border: isActive ? "none" : "1px solid #E4E8EF",
-                  borderRadius: 20,
+                  borderRadius: 8,
                   padding: "0 14px",
                   fontSize: 12,
                   fontWeight: 600,
@@ -373,7 +373,7 @@ function MarketplacePage() {
                 style={{
                   height: 100,
                   background: "#FFFFFF",
-                  borderRadius: 16,
+                  borderRadius: 8,
                   border: "1px solid #E4E8EF",
                 }}
               />
@@ -452,14 +452,14 @@ const CATEGORY_PILL: React.CSSProperties = {
   color: "#1877D6",
   fontSize: 10,
   fontWeight: 700,
-  borderRadius: 20,
+  borderRadius: 8,
   fontFamily: POPPINS,
 };
 
 const VIEW_BUTTON: React.CSSProperties = {
   background: "#1877D6",
   color: "#FFFFFF",
-  borderRadius: 20,
+  borderRadius: 8,
   padding: "7px 16px",
   fontSize: 13,
   fontWeight: 700,
@@ -505,7 +505,7 @@ function FeaturedCard({
       style={{
         margin: "0 16px 10px",
         background: "#fff",
-        borderRadius: 16,
+        borderRadius: 8,
         border: "1px solid #E4E8EF",
         overflow: "hidden",
         boxShadow: CARD_SHADOW,
@@ -599,7 +599,7 @@ function ProductCard({
       style={{
         margin: "0 16px 10px",
         background: "#fff",
-        borderRadius: 16,
+        borderRadius: 8,
         border: "1px solid #E4E8EF",
         boxShadow: CARD_SHADOW,
         padding: 12,
@@ -616,7 +616,7 @@ function ProductCard({
           width: 76,
           height: 76,
           flexShrink: 0,
-          borderRadius: 10,
+          borderRadius: 8,
           background: image
             ? `#EEF2F7 url(${image}) center/cover no-repeat`
             : "#EEF2F7",

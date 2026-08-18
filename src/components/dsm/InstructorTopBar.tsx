@@ -211,7 +211,7 @@ export default function InstructorTopBar({
               fontWeight: 600,
               minWidth: 17,
               height: 17,
-              borderRadius: 9,
+              borderRadius: 8,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",

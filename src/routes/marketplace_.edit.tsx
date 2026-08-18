@@ -190,7 +190,7 @@ function MarketplaceEditPage() {
     width: "100%",
     padding: "8px 10px",
     border: "1px solid #e2e8f0",
-    borderRadius: 6,
+    borderRadius: 8,
     fontSize: 14,
     background: "#fff",
     color: "#0f172a",
@@ -254,7 +254,7 @@ function MarketplaceEditPage() {
                   key={key}
                   style={{
                     border: "1px solid #e2e8f0",
-                    borderRadius: 10,
+                    borderRadius: 8,
                     padding: 14,
                     marginBottom: 14,
                     background: "#fff",
@@ -270,7 +270,7 @@ function MarketplaceEditPage() {
                           width: "100%",
                           maxHeight: 140,
                           objectFit: "cover",
-                          borderRadius: 6,
+                          borderRadius: 8,
                           marginBottom: 6,
                         }}
                       />
@@ -403,7 +403,7 @@ function MarketplaceEditPage() {
                         color: "#fff",
                         border: "none",
                         padding: "10px 14px",
-                        borderRadius: 6,
+                        borderRadius: 8,
                         fontWeight: 600,
                         cursor: "pointer",
                       }}
@@ -417,7 +417,7 @@ function MarketplaceEditPage() {
                         color: "#b91c1c",
                         border: "1px solid #fecaca",
                         padding: "10px 14px",
-                        borderRadius: 6,
+                        borderRadius: 8,
                         fontWeight: 600,
                         cursor: "pointer",
                       }}
@@ -437,7 +437,7 @@ function MarketplaceEditPage() {
                 color: "#0B1F3A",
                 border: "2px dashed #0B1F3A",
                 padding: "14px",
-                borderRadius: 10,
+                borderRadius: 8,
                 fontWeight: 600,
                 cursor: "pointer",
                 marginTop: 8,

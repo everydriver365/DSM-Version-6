@@ -228,7 +228,7 @@ function SummaryBar({ cells }: { cells: { label: string; value: string; color?: 
         display: "grid",
         gridTemplateColumns: `repeat(${cells.length}, 1fr)`,
         border: `1px solid ${BORDER}`,
-        borderRadius: 10,
+        borderRadius: 8,
         background: WHITE,
         marginBottom: 12,
         overflow: "hidden",
@@ -263,7 +263,7 @@ const SUBTLE = "#6B7686";
 
 const cardStyle: React.CSSProperties = {
   background: WHITE,
-  borderRadius: 16,
+  borderRadius: 8,
   border: "none",
   boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
   overflow: "hidden",
@@ -1512,7 +1512,7 @@ export function UnifiedPaymentSheet({
         style={{
           width: "100%",
           height: 52,
-          borderRadius: 16,
+          borderRadius: 8,
           border: "none",
           background: BLUE,
           color: WHITE,
@@ -1534,7 +1534,7 @@ export function UnifiedPaymentSheet({
           style={{
             width: "100%",
             height: 52,
-            borderRadius: 16,
+            borderRadius: 8,
             border: "none",
             background: BLUE,
             color: WHITE,
@@ -1554,7 +1554,7 @@ export function UnifiedPaymentSheet({
           style={{
             width: "100%",
             height: 52,
-            borderRadius: 16,
+            borderRadius: 8,
             border: `1.5px solid ${BLUE}`,
             background: "#fff",
             color: BLUE,
@@ -1576,7 +1576,7 @@ export function UnifiedPaymentSheet({
         style={{
           width: "100%",
           height: 52,
-          borderRadius: 16,
+          borderRadius: 8,
           border: "none",
           background: BLUE,
           color: WHITE,
@@ -1617,7 +1617,7 @@ export function UnifiedPaymentSheet({
           <div
             style={{
               background: "#fff",
-              borderRadius: 20,
+              borderRadius: 8,
               padding: 24,
               textAlign: "center",
               maxWidth: 320,
@@ -1635,7 +1635,7 @@ export function UnifiedPaymentSheet({
               alt="Square payment QR code"
               width={250}
               height={250}
-              style={{ borderRadius: 12, maxWidth: "100%" }}
+              style={{ borderRadius: 8, maxWidth: "100%" }}
             />
             <div style={{ fontSize: 13, color: "#6B7686", marginTop: 12 }}>
               Pupil scans this with their camera
@@ -1647,7 +1647,7 @@ export function UnifiedPaymentSheet({
                 width: "100%",
                 marginTop: 16,
                 height: 46,
-                borderRadius: 12,
+                borderRadius: 8,
                 border: "none",
                 background: "#EEF2F7",
                 color: "#6B7686",
@@ -2197,7 +2197,7 @@ export function UnifiedPaymentSheet({
                 style={{
                   border: `1px solid ${BORDER}`,
                   background: GREEN_BG,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   padding: "9px 12px",
                   fontSize: 11,
                   color: GREEN,
@@ -2215,7 +2215,7 @@ export function UnifiedPaymentSheet({
             {!customMode && !isPackage && unpaidLessons.length > 0 && (
               <div style={{ marginBottom: 14 }}>
                 <Label>Unpaid lessons</Label>
-                <div style={{ border: `1px solid ${BORDER}`, borderRadius: 10, overflow: "hidden" }}>
+                <div style={{ border: `1px solid ${BORDER}`, borderRadius: 8, overflow: "hidden" }}>
                   {unpaidLessons.map((l, i) => {
                     const due = Number(l.amount_due ?? 0) - Number(l.paid_amount ?? 0);
                     return (
@@ -2396,7 +2396,7 @@ export function UnifiedPaymentSheet({
               <div
                 style={{
                   background: "#FEF3C7",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   padding: "12px 14px",
                   marginBottom: 12,
                   fontSize: 13,
@@ -2415,7 +2415,7 @@ export function UnifiedPaymentSheet({
               <div
                 style={{
                   border: `1px solid ${BORDER}`,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   padding: 14,
                   marginBottom: 12,
                   textAlign: "center",
@@ -2450,7 +2450,7 @@ export function UnifiedPaymentSheet({
               <div
                 style={{
                   border: `1px solid ${BORDER}`,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   padding: 12,
                   marginBottom: 12,
                 }}
@@ -2778,7 +2778,7 @@ export function UnifiedPaymentSheet({
                                 style={{
                                   height: 24,
                                   padding: "0 8px",
-                                  borderRadius: 6,
+                                  borderRadius: 8,
                                   border: `1px solid ${blocked ? BORDER : RED}`,
                                   background: WHITE,
                                   color: blocked ? MUTED : RED,
@@ -2800,7 +2800,7 @@ export function UnifiedPaymentSheet({
                             style={{
                               height: 24,
                               padding: "0 8px",
-                              borderRadius: 6,
+                              borderRadius: 8,
                               border: `1px solid ${BORDER}`,
                               background: WHITE,
                               color: NAVY,
@@ -2825,7 +2825,7 @@ export function UnifiedPaymentSheet({
                             style={{
                               height: 24,
                               padding: "0 8px",
-                              borderRadius: 6,
+                              borderRadius: 8,
                               border: `1px solid ${RED}`,
                               background: WHITE,
                               color: RED,
@@ -2897,7 +2897,7 @@ export function UnifiedPaymentSheet({
                       alignItems: "flex-start",
                       gap: 4,
                       padding: 12,
-                      borderRadius: 10,
+                      borderRadius: 8,
                       border: `1px solid ${active ? accent : BORDER}`,
                       background: active ? accentBg : WHITE,
                       cursor: "pointer",
@@ -2965,7 +2965,7 @@ export function UnifiedPaymentSheet({
                         style={{
                           border: `1px solid ${BORDER}`,
                           background: AMBER_BG,
-                          borderRadius: 10,
+                          borderRadius: 8,
                           padding: 12,
                         }}
                       >
@@ -3026,7 +3026,7 @@ export function UnifiedPaymentSheet({
                     style={{
                       border: `1px solid ${BORDER}`,
                       background: AMBER_BG,
-                      borderRadius: 10,
+                      borderRadius: 8,
                       padding: 12,
                       marginBottom: 12,
                     }}
@@ -3146,7 +3146,7 @@ export function UnifiedPaymentSheet({
               <div
                 style={{
                   border: `1px solid ${BORDER}`,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   padding: 12,
                   marginBottom: 12,
                 }}

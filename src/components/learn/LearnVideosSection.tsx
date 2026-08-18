@@ -121,7 +121,7 @@ export function VideoPlayerSheet({
               aspectRatio: "16 / 9",
               maxHeight: "70vh",
               border: "none",
-              borderRadius: 16,
+              borderRadius: 8,
               background: "#000",
             }}
           />
@@ -132,7 +132,7 @@ export function VideoPlayerSheet({
             controls
             autoPlay
             playsInline
-            style={{ width: "100%", maxHeight: "70vh", borderRadius: 16, background: "#000" }}
+            style={{ width: "100%", maxHeight: "70vh", borderRadius: 8, background: "#000" }}
           />
         ) : (
           <div style={{ color: "#fff", textAlign: "center" }}>This video isn't available yet.</div>
@@ -185,7 +185,7 @@ function VideoCard({
         width: wide ? 250 : undefined,
         flexShrink: wide ? 0 : undefined,
         background: "#FFFFFF",
-        borderRadius: 14,
+        borderRadius: 8,
         boxShadow: CARD_SHADOW,
         overflow: "hidden",
         display: "flex",
@@ -244,7 +244,7 @@ function VideoCard({
               bottom: 6,
               right: 6,
               padding: "2px 7px",
-              borderRadius: 20,
+              borderRadius: 8,
               background: "rgba(0,0,0,0.65)",
               color: "#fff",
               fontSize: 10.5,
@@ -292,7 +292,7 @@ function VideoCard({
           style={{
             marginTop: 2,
             border: "none",
-            borderRadius: 10,
+            borderRadius: 8,
             background: "#E8F1FC",
             color: BLUE,
             fontWeight: 700,
@@ -380,7 +380,7 @@ export default function LearnVideosSection() {
             alignItems: "center",
             gap: 8,
             background: "#FFFFFF",
-            borderRadius: 12,
+            borderRadius: 8,
             padding: "9px 12px",
             boxShadow: CARD_SHADOW,
           }}

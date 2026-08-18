@@ -363,7 +363,7 @@ function TestLessonCard({
       style={{
         position: "relative",
         background: "linear-gradient(135deg, #1877D6, #0B1F3A)",
-        borderRadius: 16,
+        borderRadius: 8,
         border: "none",
         boxShadow: "0 2px 0 #0B1F3A",
         marginBottom: 8,
@@ -414,7 +414,7 @@ function TestLessonCard({
           aria-hidden
           style={{
             width: 3,
-            borderRadius: 2,
+            borderRadius: 8,
             background: "rgba(255,255,255,0.3)",
             flexShrink: 0,
             alignSelf: "stretch",
@@ -429,7 +429,7 @@ function TestLessonCard({
                 color: "#fff",
                 fontSize: 9,
                 fontWeight: 800,
-                borderRadius: 20,
+                borderRadius: 8,
                 padding: "2px 8px",
                 letterSpacing: "0.08em",
                 fontFamily: "Poppins, sans-serif",
@@ -524,7 +524,7 @@ function TestLessonCard({
                     color: "#fff",
                     fontSize: 9,
                     fontWeight: 800,
-                    borderRadius: 20,
+                    borderRadius: 8,
                     padding: "3px 10px",
                     fontFamily: "Poppins, sans-serif",
                   }}
@@ -538,7 +538,7 @@ function TestLessonCard({
                     color: "rgba(255,255,255,0.8)",
                     fontSize: 9,
                     fontWeight: 800,
-                    borderRadius: 20,
+                    borderRadius: 8,
                     padding: "3px 10px",
                     fontFamily: "Poppins, sans-serif",
                   }}
@@ -565,7 +565,7 @@ function TestLessonCard({
               }}
               style={{
                 background: "rgba(255,255,255,0.2)",
-                borderRadius: 20,
+                borderRadius: 8,
                 padding: "4px 10px",
                 border: "none",
                 cursor: "pointer",
@@ -1518,15 +1518,15 @@ function SchedulePage() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px 4px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#1877D6' }} />
+          <div style={{ width: 8, height: 8, borderRadius: 8, background: '#1877D6' }} />
           <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>DSM lesson</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#9CA3AF' }} />
+          <div style={{ width: 8, height: 8, borderRadius: 8, background: '#9CA3AF' }} />
           <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Google Calendar</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 2, background: '#D97706' }} />
+          <div style={{ width: 8, height: 8, borderRadius: 8, background: '#D97706' }} />
           <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Free slot</span>
         </div>
       </div>
@@ -1589,7 +1589,7 @@ function SchedulePage() {
                     style={{
                       background: "#EEF2F7",
                       border: "1.5px dashed #D0D5DD",
-                      borderRadius: 12,
+                      borderRadius: 8,
                       padding: "10px 14px",
                       textAlign: "center",
                       fontSize: 12,
@@ -1742,7 +1742,7 @@ function SchedulePage() {
                                   className="focus-within:ring-2 focus-within:ring-[#0B1F3A] focus-within:ring-offset-2"
                                   style={{
                                     background: "#FDFBF6",
-                                    borderRadius: 16,
+                                    borderRadius: 8,
                                     border: "2px dashed #D4A853",
                                     padding: "12px 14px",
                                     display: "flex",
@@ -1763,7 +1763,7 @@ function SchedulePage() {
                                     aria-hidden
                                     style={{
                                       width: 4,
-                                      borderRadius: "12px 0 0 12px",
+                                      borderRadius: "8px 0 0 8px",
                                       background: "#D4A853",
                                       flexShrink: 0,
                                       alignSelf: "stretch",
@@ -1820,7 +1820,7 @@ function SchedulePage() {
                                     <button
                                       type="button"
                                       onClick={() => navigate({ to: '/gaps' as never })}
-                                      className="shrink-0 self-center rounded-[12px] bg-[#1877D6] px-[18px] py-[9px] text-[13px] font-extrabold text-white hover:bg-[#1566B8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877D6] focus-visible:ring-offset-2 active:scale-[0.98] transition-transform cursor-pointer"
+                                      className="shrink-0 self-center rounded-lg] bg-[#1877D6] px-[18px] py-[9px] text-[13px] font-extrabold text-white hover:bg-[#1566B8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877D6] focus-visible:ring-offset-2 active:scale-[0.98] transition-transform cursor-pointer"
                                     >
                                       Fill
                                     </button>
@@ -1984,7 +1984,7 @@ function SchedulePage() {
                                   tabIndex={0}
                                   style={{
                                     background: '#fff',
-                                    borderRadius: 16,
+                                    borderRadius: 8,
                                     border: '2px solid #1877D6',
                                     padding: '14px 16px',
                                     marginBottom: 8,
@@ -1993,7 +1993,7 @@ function SchedulePage() {
                                   }}
                                 >
                                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ background: '#EFF6FF', color: '#1877D6', fontSize: 9, fontWeight: 800, borderRadius: 20, padding: '3px 10px' }}>
+                                    <span style={{ background: '#EFF6FF', color: '#1877D6', fontSize: 9, fontWeight: 800, borderRadius: 8, padding: '3px 10px' }}>
                                       📅 EVENT
                                     </span>
                                     <span style={{ fontSize: 12, color: '#9CA3AF' }}>{fmtTime(e.start)}</span>
@@ -2014,7 +2014,7 @@ function SchedulePage() {
                                   onClick={onCardClick || (() => {})}
                                 />
                               ) : (
-                                <div style={{ position: "relative", overflow: "hidden", borderRadius: 16 }}>
+                                <div style={{ position: "relative", overflow: "hidden", borderRadius: 8}}>
                                   <div
                                     onClick={onCardClick}
 
@@ -2022,7 +2022,7 @@ function SchedulePage() {
                                   tabIndex={clickable ? 0 : undefined}
                                   style={{
                                     background: isTestDay ? '#FFF3E0' : '#FFFFFF',
-                                    borderRadius: 12,
+                                    borderRadius: 8,
                                     boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
                                     padding: "12px 14px",
                                     display: "flex",
@@ -2061,7 +2061,7 @@ function SchedulePage() {
                                         aria-hidden
                                         style={{
                                           width: 3,
-                                          borderRadius: 2,
+                                          borderRadius: 8,
                                           background: Date.now() >= e.end.getTime() ? '#34A853' : '#1877D6',
                                           flexShrink: 0,
                                           alignSelf: 'stretch',
@@ -2108,7 +2108,7 @@ function SchedulePage() {
                                              aria-hidden
                                              style={{
                                                width: 4,
-                                               borderRadius: '12px 0 0 12px',
+                                               borderRadius: '8px 0 0 8px',
                                                background: markerColor,
                                                flexShrink: 0,
                                                alignSelf: 'stretch',
@@ -2120,7 +2120,7 @@ function SchedulePage() {
                                            aria-hidden
                                            style={{
                                              width: 4,
-                                             borderRadius: '12px 0 0 12px',
+                                             borderRadius: '8px 0 0 8px',
                                              background: markerColor,
                                              flexShrink: 0,
                                              alignSelf: 'stretch',
@@ -2156,7 +2156,7 @@ function SchedulePage() {
                                                         alignItems: 'center',
                                                         fontSize: 10,
                                                         fontWeight: 700,
-                                                        borderRadius: 20,
+                                                        borderRadius: 8,
                                                         padding: '2px 7px',
                                                         lineHeight: 1.4,
                                                         fontFamily: 'Poppins, sans-serif',
@@ -2503,10 +2503,10 @@ function SchedulePage() {
               }}
               style={{
                 display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
-                border: '1px solid #E4E8EF', borderRadius: 16, padding: '14px 14px', background: '#fff',
+                border: '1px solid #E4E8EF', borderRadius: 8, padding: '14px 14px', background: '#fff',
               }}
             >
-              <span style={{ width: 38, height: 38, borderRadius: 16, background: '#E7F0FB', display: 'grid', placeItems: 'center' }}>
+              <span style={{ width: 38, height: 38, borderRadius: 8, background: '#E7F0FB', display: 'grid', placeItems: 'center' }}>
                 <IconPlus size={19} stroke={1.8} color="#1877D6" />
               </span>
               <span>
@@ -2523,10 +2523,10 @@ function SchedulePage() {
               }}
               style={{
                 display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
-                border: '1px solid #E4E8EF', borderRadius: 16, padding: '14px 14px', background: '#fff',
+                border: '1px solid #E4E8EF', borderRadius: 8, padding: '14px 14px', background: '#fff',
               }}
             >
-              <span style={{ width: 38, height: 38, borderRadius: 16, background: '#FBF1DA', display: 'grid', placeItems: 'center' }}>
+              <span style={{ width: 38, height: 38, borderRadius: 8, background: '#FBF1DA', display: 'grid', placeItems: 'center' }}>
                 <IconCalendar size={19} stroke={1.8} color="#B8860B" />
               </span>
               <span>
@@ -2537,7 +2537,7 @@ function SchedulePage() {
             <button
               type="button"
               onClick={() => setAddChooserOpen(false)}
-              style={{ marginTop: 4, padding: '12px', borderRadius: 20, border: 'none', background: '#EEF2F7', color: '#0B1F3A', fontSize: 14, fontWeight: 700 }}
+              style={{ marginTop: 4, padding: '12px', borderRadius: 8, border: 'none', background: '#EEF2F7', color: '#0B1F3A', fontSize: 14, fontWeight: 700 }}
             >
               Cancel
             </button>
@@ -2621,7 +2621,7 @@ function SchedulePage() {
                 fontWeight: 600,
                 fontSize: 14,
                 padding: '12px 0',
-                borderRadius: 12,
+                borderRadius: 8,
                 border: 'none',
                 cursor: 'pointer',
                 ...POPPINS,
@@ -2640,7 +2640,7 @@ function SchedulePage() {
                 fontWeight: 500,
                 fontSize: 14,
                 padding: '12px 0',
-                borderRadius: 12,
+                borderRadius: 8,
                 cursor: 'pointer',
                 marginTop: 8,
                 ...POPPINS,
@@ -2659,7 +2659,7 @@ function SchedulePage() {
 const iconBtn: React.CSSProperties = {
   width: 40,
   height: 40,
-  borderRadius: 10,
+  borderRadius: 8,
   border: 0,
   background: "transparent",
   display: "inline-flex",
@@ -2816,7 +2816,7 @@ function EntryRow({
                   alignItems: 'center',
                   gap: 3,
                   background: '#FF8C00',
-                  borderRadius: 20,
+                  borderRadius: 8,
                   padding: '2px 8px',
                 }}>
                   <span style={{
@@ -2834,7 +2834,7 @@ function EntryRow({
                   alignItems: 'center',
                   gap: 3,
                   background: 'rgba(255,140,0,0.15)',
-                  borderRadius: 20,
+                  borderRadius: 8,
                   padding: '2px 8px',
                 }}>
                   <span style={{
@@ -2873,7 +2873,7 @@ function EntryRow({
                 alignItems: 'center',
                 gap: 4,
                 background: custom ? '#FEF3C7' : 'transparent',
-                borderRadius: custom ? 6 : 0,
+                borderRadius: custom ? 8 : 0,
                 padding: custom ? '2px 6px' : '0',
               }}>
                 <span style={{
@@ -2993,7 +2993,7 @@ function rowBase(bg: string, cancelled: boolean): React.CSSProperties {
     width: "100%",
     textAlign: "left",
     border: 0,
-    borderRadius: 12,
+    borderRadius: 8,
     padding: "12px 14px",
     background: bg,
     color: "#FFFFFF",
@@ -3063,7 +3063,7 @@ function MonthCalendar({
         top: 0,
         zIndex: 5,
         background: "#FFFFFF",
-        borderRadius: 16,
+        borderRadius: 8,
         boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
         padding: 12,
         boxSizing: "border-box",
@@ -3430,7 +3430,7 @@ function MonthStrip({
             gap: 6,
             marginBottom: 8,
             padding: "6px 10px",
-            borderRadius: 10,
+            borderRadius: 8,
             background: syncMessage.type === "success" ? "rgba(34, 197, 94, 0.12)" : "rgba(239, 68, 68, 0.12)",
             color: syncMessage.type === "success" ? "#16A34A" : "#DC2626",
             fontSize: 12,

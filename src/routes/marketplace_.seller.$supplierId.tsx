@@ -50,7 +50,7 @@ interface Listing {
 
 const CARD: React.CSSProperties = {
   background: "#fff",
-  borderRadius: 20,
+  borderRadius: 8,
   padding: 18,
   boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
 };
@@ -245,7 +245,7 @@ function SellerProfilePage() {
                       style={{
                         width: 62,
                         height: 62,
-                        borderRadius: 14,
+                        borderRadius: 8,
                         flexShrink: 0,
                         background: img
                           ? `#EEF2F7 url(${img}) center/cover`

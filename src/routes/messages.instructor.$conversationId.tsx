@@ -900,7 +900,7 @@ function InstructorDMThread() {
             <div
               style={{
                 background: "#EEF2F7",
-                borderRadius: "6px 16px 16px 16px",
+                borderRadius: "8px 8px 8px 8px",
                 padding: "11px 14px",
                 display: "flex",
                 alignItems: "center",
@@ -981,7 +981,7 @@ function InstructorDMThread() {
             background: "#EEF2F7",
             border: 0,
             outline: "none",
-            borderRadius: 22,
+            borderRadius: 8,
             padding: "10px 14px",
             fontSize: 13,
             color: NAVY,

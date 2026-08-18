@@ -88,7 +88,7 @@ export default function RecommendedLearning({ faults }: { faults: FaultMap | nul
     <div
       style={{
         background: "#FFFFFF",
-        borderRadius: 16,
+        borderRadius: 8,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         padding: 14,
         fontFamily: FONT,
@@ -157,7 +157,7 @@ export default function RecommendedLearning({ faults }: { faults: FaultMap | nul
                 textAlign: "left",
                 background: "#F7F9FC",
                 border: "none",
-                borderRadius: 10,
+                borderRadius: 8,
                 padding: "9px 10px",
                 marginBottom: 6,
                 cursor: "pointer",
@@ -185,7 +185,7 @@ export default function RecommendedLearning({ faults }: { faults: FaultMap | nul
         style={{
           width: "100%",
           height: 40,
-          borderRadius: 10,
+          borderRadius: 8,
           border: "0.5px solid #E2E6ED",
           background: "#FFFFFF",
           color: BLUE,

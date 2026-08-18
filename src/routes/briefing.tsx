@@ -249,7 +249,7 @@ function BriefingPage() {
 
       {/* Greeting */}
       <div style={{
-        backgroundColor: "#0B1F3A", margin: "12px 16px 0", borderRadius: 12, padding: 16,
+        backgroundColor: "#0B1F3A", margin: "12px 16px 0", borderRadius: 8, padding: 16,
       }}>
         <div style={{ color: "#fff", fontSize: 20, fontWeight: 600 }}>
           {greetingFor(now)}, {firstName}
@@ -273,7 +273,7 @@ function BriefingPage() {
             <>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <div style={{
-                  width: 44, height: 44, borderRadius: 10, background: "#EEF4FB",
+                  width: 44, height: 44, borderRadius: 8, background: "#EEF4FB",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <W.Icon size={26} color="#1877D6" />
@@ -338,7 +338,7 @@ function BriefingPage() {
                   </div>
                   <span style={{
                     background: statusColor(l.status), color: "#fff", fontSize: 10, fontWeight: 700,
-                    padding: "2px 6px", borderRadius: 6, textTransform: "uppercase", letterSpacing: 0.4,
+                    padding: "2px 6px", borderRadius: 8, textTransform: "uppercase", letterSpacing: 0.4,
                   }}>
                     {l.status}
                   </span>
@@ -398,7 +398,7 @@ function BriefingPage() {
                 {r.label}
               </div>
               <span style={{
-                minWidth: 24, height: 22, padding: "0 8px", borderRadius: 11,
+                minWidth: 24, height: 22, padding: "0 8px", borderRadius: 8,
                 background: r.count > 0 ? "#1877D6" : "#EEF2F7",
                 color: r.count > 0 ? "#fff" : "#6B7280",
                 fontSize: 12, fontWeight: 700,

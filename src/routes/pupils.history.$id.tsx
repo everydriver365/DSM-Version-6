@@ -114,7 +114,7 @@ function PupilHistoryPage() {
           groups.map((g) => (
             <div key={g.key}>
               <SectionHeader>{g.label}</SectionHeader>
-              <div style={{ background: "#FFFFFF", borderRadius: 16, overflow: "hidden", border: "0.5px solid rgba(15,32,68,0.10)" }}>
+              <div style={{ background: "#FFFFFF", borderRadius: 8, overflow: "hidden", border: "0.5px solid rgba(15,32,68,0.10)" }}>
                 {g.items.map((l, idx) => {
                   const d = new Date(`${l.lesson_date}T00:00:00`);
                   const isCompleted = l.status === "completed";

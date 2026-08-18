@@ -148,7 +148,7 @@ function NoShowPolicyPage() {
         style={{
           backgroundColor: "#FFFBEB",
           border: "1px solid #FDE68A",
-          borderRadius: 12,
+          borderRadius: 8,
           padding: 16,
         }}
       >
@@ -165,7 +165,7 @@ function NoShowPolicyPage() {
         style={{
           backgroundColor: "#FFFFFF",
           border: "0.5px solid #E2E6ED",
-          borderRadius: 12,
+          borderRadius: 8,
           padding: 16,
         }}
       >
@@ -291,7 +291,7 @@ function NoShowPolicyPage() {
         style={{
           backgroundColor: "#F7FAFC",
           border: "1px solid #E2E6ED",
-          borderRadius: 12,
+          borderRadius: 8,
           padding: 16,
         }}
       >
@@ -311,7 +311,7 @@ function NoShowPolicyPage() {
           type="button"
           onClick={save}
           disabled={saving}
-          className="w-full rounded-xl text-white text-[15px] font-semibold disabled:opacity-60"
+          className="w-full rounded-lg text-white text-[15px] font-semibold disabled:opacity-60"
           style={{
             backgroundColor: "#0F2044",
             padding: "12px 16px",

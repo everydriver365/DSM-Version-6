@@ -159,7 +159,7 @@ function SatNavPage() {
       <div
         className="shrink-0 bg-white relative z-10"
         style={{
-          borderRadius: "16px 16px 0 0",
+          borderRadius: "8px 8px 0 0",
           padding: 16,
           paddingBottom: 28,
           boxShadow: "0 -4px 20px rgba(0,0,0,0.08)",

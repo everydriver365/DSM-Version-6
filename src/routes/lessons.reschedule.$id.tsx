@@ -321,7 +321,7 @@ function RescheduleLessonPage() {
             className="w-full mt-6 text-white font-semibold"
             style={{
               height: 52,
-              borderRadius: 10,
+              borderRadius: 8,
               backgroundColor: canSubmit ? "#1877D6" : "#9CA3AF",
               fontSize: 15,
               ...POPPINS,

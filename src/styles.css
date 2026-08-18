@@ -19,13 +19,13 @@
  */
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: var(--radius);
+  --radius-md: var(--radius);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --radius-xl: var(--radius);
+  --radius-2xl: var(--radius);
+  --radius-3xl: var(--radius);
+  --radius-4xl: var(--radius);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -62,7 +62,7 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.5rem;
   /* Checkfront palette: navy #0B1F3A, blue #1877D6, bg #F3F8FF */
   --background: #DCE4F0;
   --foreground: oklch(0.200 0.050 258);
@@ -165,7 +165,7 @@
 @utility cf-card {
   background-color: #ffffff;
   border: 1px solid #EEF2F7;
-  border-radius: 16px;
+  border-radius: 8px;
   box-shadow: 0 1px 2px rgba(11, 31, 58, 0.04);
 }
 
@@ -177,7 +177,7 @@
   background-color: #1877D6;
   color: #ffffff;
   font-weight: 600;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 12px 20px;
   transition: background-color 0.15s ease;
 }
@@ -194,7 +194,7 @@
   background-color: #ffffff;
   color: #0B1F3A;
   font-weight: 600;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 12px 20px;
   border: 1px solid #EEF2F7;
 }
@@ -204,7 +204,7 @@
   position: relative;
   overflow: hidden;
   background-color: #EEF2F7;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 @keyframes cf-shimmer {
@@ -283,7 +283,7 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  border-radius: 10px;
+  border-radius: 8px;
   background-color: #EAF3FB;
   color: #1877D6;
   flex-shrink: 0;
@@ -342,7 +342,7 @@ textarea:focus-visible {
 @utility cf-card-elevated {
   background-color: #ffffff;
   border: 1px solid #EEF2F7;
-  border-radius: 16px;
+  border-radius: 8px;
   box-shadow:
     0 1px 2px rgba(11, 31, 58, 0.05),
     0 8px 24px -12px rgba(11, 31, 58, 0.12);
@@ -402,7 +402,7 @@ time,
     transform: translateY(-50%);
     width: 3px;
     height: 16px;
-    border-radius: 2px;
+    border-radius: 8px;
     background-color: #1877D6;
   }
 }

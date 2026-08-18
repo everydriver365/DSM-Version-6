@@ -189,7 +189,7 @@ function MarketplaceProductPage() {
                   fontSize: 11,
                   fontWeight: 700,
                   padding: "4px 8px",
-                  borderRadius: 6,
+                  borderRadius: 8,
                 }}
               >
                 {tile.badge}
@@ -235,7 +235,7 @@ function MarketplaceProductPage() {
               style={{
                 background: "#fff",
                 border: "0.5px solid #EEF2F7",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: 16,
                 marginTop: 16,
               }}

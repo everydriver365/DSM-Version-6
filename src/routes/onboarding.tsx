@@ -459,7 +459,7 @@ function OnboardingPage() {
         {step === 8 && (
           <div>
             <StepHeader title="Your free mini website" subtitle="Bio, photos and contact info — ready to publish" />
-            <div style={{ background: "#fff", borderRadius: 16, boxShadow: "0 1px 3px rgba(11,31,58,0.06)", padding: 20, marginBottom: 12, textAlign: "center" }}>
+            <div style={{ background: "#fff", borderRadius: 8, boxShadow: "0 1px 3px rgba(11,31,58,0.06)", padding: 20, marginBottom: 12, textAlign: "center" }}>
               <div className="h-16 w-16 rounded-full bg-[#E6F1FB] flex items-center justify-center mx-auto mb-3">
                 <IconWorld stroke={1.5} size={30} color="#1877D6" />
               </div>
@@ -532,7 +532,7 @@ function OnboardingPage() {
                 gap: 10,
                 background: "#FEF3C7",
                 border: "1px solid #FDE68A",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: "12px 14px",
                 marginBottom: 4,
               }}
@@ -663,7 +663,7 @@ function GroupCard({ children }: { children: ReactNode }) {
     <div
       style={{
         background: "#fff",
-        borderRadius: 16,
+        borderRadius: 8,
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
         overflow: "hidden",
         marginBottom: 12,
@@ -726,7 +726,7 @@ function Cta({
         background: disabled ? "#9CA3AF" : "#1877D6",
         color: "#fff",
         border: "none",
-        borderRadius: 16,
+        borderRadius: 8,
         fontSize: 16,
         fontWeight: 700,
         cursor: disabled ? "not-allowed" : "pointer",
@@ -792,7 +792,7 @@ function ChoiceCard({
       className="w-full flex items-start gap-3 p-4 text-left transition-colors mb-3"
       style={{
         ...POPPINS,
-        borderRadius: 16,
+        borderRadius: 8,
         border: selected ? "2px solid #1877D6" : "2px solid transparent",
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
         background: "#FFFFFF",

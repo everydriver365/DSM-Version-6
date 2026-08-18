@@ -106,7 +106,7 @@ function AboutPage() {
               return (
                 <div
                   key={v.title}
-                  className="bg-[#F7FAFC] rounded-2xl p-8"
+                  className="bg-[#F7FAFC] rounded-lg p-8"
                 >
                   <div className="text-[#1877D6] mb-5">
                     <Icon size={32} strokeWidth={2} />
@@ -141,7 +141,7 @@ function AboutPage() {
           <p className="text-[#718096] mb-8">Questions, feedback or just want to say hello?</p>
           <Link
             to="/contact"
-            className="inline-flex items-center bg-[#1877D6] text-white font-semibold px-8 py-4 rounded-xl no-underline transition hover:bg-[#009E8F]"
+            className="inline-flex items-center bg-[#1877D6] text-white font-semibold px-8 py-4 rounded-lg no-underline transition hover:bg-[#009E8F]"
           >
             Contact us →
           </Link>

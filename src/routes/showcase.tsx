@@ -141,7 +141,7 @@ const labelStyle: React.CSSProperties = {
 const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #E4E8EF",
-  borderRadius: 10,
+  borderRadius: 8,
   padding: "10px 12px",
   fontSize: 14,
   color: NAVY,
@@ -706,7 +706,7 @@ function ShowcasePage() {
                 flexShrink: 0,
                 border: "none",
                 cursor: "pointer",
-                borderRadius: 20,
+                borderRadius: 8,
                 padding: "6px 14px",
                 fontSize: 12,
                 fontWeight: 600,
@@ -780,7 +780,7 @@ function ShowcasePage() {
                 !isActive ? (
                   <div
                     style={{
-                      borderRadius: 12,
+                      borderRadius: 8,
                       overflow: "hidden",
                       background: "#000",
                       aspectRatio: "16 / 9",
@@ -805,7 +805,7 @@ function ShowcasePage() {
               style={{
                 gridColumn: "1 / -1",
                 background: "#000",
-                borderRadius: 12,
+                borderRadius: 8,
                 overflow: "hidden",
                 marginBottom: 12,
                 position: "relative",
@@ -906,7 +906,7 @@ function ShowcasePage() {
                       display: "flex",
                       alignItems: "center",
                       background: "#F2F2F7",
-                      borderRadius: 20,
+                      borderRadius: 8,
                       overflow: "hidden",
                     }}
                   >
@@ -978,7 +978,7 @@ function ShowcasePage() {
                       alignItems: "center",
                       gap: 6,
                       background: "#F2F2F7",
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: "9px 14px",
                       border: "none",
                       cursor: "pointer",
@@ -1041,7 +1041,7 @@ function ShowcasePage() {
                       margin: "8px 0 0",
                       background: "#fff",
                       border: "none",
-                      borderRadius: 12,
+                      borderRadius: 8,
                       boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                       padding: "10px 12px",
                       display: "flex",
@@ -1058,7 +1058,7 @@ function ShowcasePage() {
                       style={{
                         width: 52,
                         height: 36,
-                        borderRadius: 6,
+                        borderRadius: 8,
                         overflow: "hidden",
                         flexShrink: 0,
                         background: "linear-gradient(135deg, #CC2229, #7C1D1D)",
@@ -1125,7 +1125,7 @@ function ShowcasePage() {
                 style={{
                   background: "#fff",
                   border: "none",
-                  borderRadius: 16,
+                  borderRadius: 8,
                   boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                   overflow: "hidden",
                 }}
@@ -1196,7 +1196,7 @@ function ShowcasePage() {
                         color: "#92400E",
                         fontSize: 8,
                         fontWeight: 700,
-                        borderRadius: 20,
+                        borderRadius: 8,
                         padding: "2px 6px",
                         ...POPPINS,
                       }}
@@ -1231,7 +1231,7 @@ function ShowcasePage() {
                         fontWeight: 600,
                         color: RED,
                         background: "#FCE9E9",
-                        borderRadius: 20,
+                        borderRadius: 8,
                         padding: "2px 6px",
                         ...POPPINS,
                       }}
@@ -1337,7 +1337,7 @@ function ShowcasePage() {
               left: 0,
               right: 0,
               background: "#fff",
-              borderRadius: "20px 20px 0 0",
+              borderRadius: "8px 8px 0 0",
               maxHeight: "78vh",
               display: "flex",
               flexDirection: "column",
@@ -1372,7 +1372,7 @@ function ShowcasePage() {
                     type="button"
                     onClick={() => setCommentSort(s)}
                     style={{
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: "5px 12px",
                       fontSize: 12,
                       fontWeight: 700,
@@ -1822,7 +1822,7 @@ function ShowcasePage() {
                   background: "#F2F2F7",
                   border: "none",
                   outline: "none",
-                  borderRadius: 20,
+                  borderRadius: 8,
                   padding: "9px 16px",
                   color: NAVY,
                   fontSize: 13.5,
@@ -2033,7 +2033,7 @@ function ShowcasePage() {
                   justifyContent: "center",
                   gap: 6,
                   border: "2px dashed #F5C9CB",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   padding: "24px 16px",
                   cursor: "pointer",
                   background: "#FFF7F7",
@@ -2081,7 +2081,7 @@ function ShowcasePage() {
                   style={{
                     width: 64,
                     height: 64,
-                    borderRadius: 10,
+                    borderRadius: 8,
                     border: thumbPreview
                       ? "1px solid #E4E8EF"
                       : "2px dashed #E4E8EF",
@@ -2171,7 +2171,7 @@ function ShowcasePage() {
                 background: RED,
                 color: "#fff",
                 border: "none",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: "14px 16px",
                 fontSize: 15,
                 fontWeight: 700,

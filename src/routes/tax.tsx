@@ -140,7 +140,7 @@ function TaxPage() {
       {/* SUMMARY CARD */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: "#0B1F3A", borderRadius: 12, padding: 16 }}
+        style={{ backgroundColor: "#0B1F3A", borderRadius: 8, padding: 16 }}
       >
         <div className="text-[10px] uppercase" style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}>
           GROSS INCOME
@@ -196,7 +196,7 @@ function TaxPage() {
           </div>
           <div
             className="mt-2 overflow-hidden"
-            style={{ height: 6, borderRadius: 3, backgroundColor: "#F3F4F6" }}
+            style={{ height: 6, borderRadius: 8, backgroundColor: "#F3F4F6" }}
           >
             <div style={{ height: "100%", width: `${progressPct}%`, backgroundColor: "#1877D6" }} />
           </div>

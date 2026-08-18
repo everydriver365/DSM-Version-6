@@ -93,7 +93,7 @@ const labelStyle: React.CSSProperties = {
 const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #E4E8EF",
-  borderRadius: 10,
+  borderRadius: 8,
   padding: "10px 12px",
   fontSize: 14,
   color: "#0B1F3A",
@@ -363,7 +363,7 @@ function BitesizePage() {
                 flexShrink: 0,
                 border: "none",
                 cursor: "pointer",
-                borderRadius: 20,
+                borderRadius: 8,
                 padding: "6px 14px",
                 fontSize: 12,
                 fontWeight: 600,
@@ -530,7 +530,7 @@ function BitesizePage() {
                         style={{
                           background: "#fff",
                           border: "0.5px solid #E4E8EF",
-                          borderRadius: 12,
+                          borderRadius: 8,
                           padding: 12,
                           marginTop: 8,
                         }}
@@ -580,7 +580,7 @@ function BitesizePage() {
                   ) : (
                     <div
                       style={{
-                        borderRadius: 12,
+                        borderRadius: 8,
                         overflow: "hidden",
                         background: "#000",
                         aspectRatio: "16 / 9",
@@ -615,7 +615,7 @@ function BitesizePage() {
               style={{
                 background: "#fff",
                 border: "0.5px solid #E4E8EF",
-                borderRadius: 12,
+                borderRadius: 8,
                 overflow: "hidden",
                 cursor: "pointer",
                 position: "relative",
@@ -684,7 +684,7 @@ function BitesizePage() {
                       color: "#fff",
                       fontSize: 9,
                       fontWeight: 600,
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: "2px 6px",
                       ...POPPINS,
                     }}
@@ -702,7 +702,7 @@ function BitesizePage() {
                       color: "#92400E",
                       fontSize: 8,
                       fontWeight: 700,
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: "2px 6px",
                       ...POPPINS,
                     }}
@@ -737,7 +737,7 @@ function BitesizePage() {
                       fontWeight: 600,
                       color: "#7C3AED",
                       background: "#EFE7FB",
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: "2px 6px",
                       ...POPPINS,
                     }}
@@ -995,7 +995,7 @@ function BitesizePage() {
                   justifyContent: "center",
                   gap: 6,
                   border: "2px dashed #DDD6FE",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   padding: "24px 16px",
                   cursor: "pointer",
                   background: "#FAF8FF",
@@ -1048,7 +1048,7 @@ function BitesizePage() {
                   style={{
                     width: 64,
                     height: 64,
-                    borderRadius: 10,
+                    borderRadius: 8,
                     border: thumbPreview
                       ? "1px solid #E4E8EF"
                       : "2px dashed #E4E8EF",
@@ -1142,7 +1142,7 @@ function BitesizePage() {
                 background: "#7C3AED",
                 color: "#fff",
                 border: "none",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: "14px 16px",
                 fontSize: 15,
                 fontWeight: 700,

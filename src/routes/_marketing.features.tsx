@@ -55,7 +55,7 @@ function FeatureSection({
           className={`grid md:grid-cols-2 gap-12 items-center ${reversed ? "md:grid-flow-dense" : ""}`}
         >
           <div className={reversed ? "md:col-start-2" : ""}>
-            <div className="w-12 h-12 rounded-xl bg-[#1877D6]/10 flex items-center justify-center mb-5">
+            <div className="w-12 h-12 rounded-lg bg-[#1877D6]/10 flex items-center justify-center mb-5">
               <Icon size={24} color={TEAL} strokeWidth={2} />
             </div>
             <h3 className="text-3xl font-black text-[#133155] mb-4">{heading}</h3>
@@ -76,7 +76,7 @@ function FeatureSection({
 function MockupCard({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="bg-[#F7FAFC] rounded-2xl p-8 min-h-[320px] flex items-center justify-center"
+      className="bg-[#F7FAFC] rounded-lg p-8 min-h-[320px] flex items-center justify-center"
       
     >
       {children}
@@ -230,7 +230,7 @@ function FeaturesPage() {
             href="https://everydriver.co.uk"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center bg-[#1877D6] text-white font-semibold px-8 py-4 rounded-xl no-underline transition hover:bg-[#009E8F]"
+            className="inline-flex items-center bg-[#1877D6] text-white font-semibold px-8 py-4 rounded-lg no-underline transition hover:bg-[#009E8F]"
           >
             See EveryDriver →
           </a>
@@ -244,7 +244,7 @@ function FeaturesPage() {
           <p className="text-white/80 mb-8">Free forever. No card required.</p>
           <Link
             to="/register"
-            className="inline-flex items-center bg-white text-[#1877D6] font-black px-10 py-4 rounded-xl no-underline transition hover:bg-gray-100"
+            className="inline-flex items-center bg-white text-[#1877D6] font-black px-10 py-4 rounded-lg no-underline transition hover:bg-gray-100"
           >
             Get started free →
           </Link>

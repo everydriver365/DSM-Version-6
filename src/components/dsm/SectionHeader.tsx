@@ -15,7 +15,7 @@ export function SectionHeader({ children, className = "", style }: Props) {
           display: "inline-block",
           width: 3,
           height: 12,
-          borderRadius: 2,
+          borderRadius: 8,
           backgroundColor: "#1877D6",
         }}
       />

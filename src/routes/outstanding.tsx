@@ -231,7 +231,7 @@ function OutstandingPage() {
           <span
             style={{
               background: "#1877D6", color: "#fff", fontSize: 11, fontWeight: 700,
-              padding: "2px 7px", borderRadius: 10, minWidth: 22, textAlign: "center",
+              padding: "2px 7px", borderRadius: 8, minWidth: 22, textAlign: "center",
             }}
           >
             {total}
@@ -280,7 +280,7 @@ function OutstandingPage() {
                       {s.label}
                     </div>
                     <span style={{
-                      minWidth: 24, height: 22, padding: "0 8px", borderRadius: 11,
+                      minWidth: 24, height: 22, padding: "0 8px", borderRadius: 8,
                       background: "#1877D6", color: "#fff",
                       fontSize: 12, fontWeight: 700,
                       display: "flex", alignItems: "center", justifyContent: "center",

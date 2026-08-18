@@ -258,7 +258,7 @@ function PublicQuotePage() {
           <div style={{ fontSize: 13, opacity: 0.85, marginTop: 4 }}>Your driving lesson quote</div>
         </div>
 
-        <div style={{ margin: 16, padding: 24, background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 16 }}>
+        <div style={{ margin: 16, padding: 24, background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 8}}>
           <div style={{ fontSize: 20, fontWeight: 700, color: "#0B1F3A", marginBottom: 16 }}>
             Quote for {quote.recipient_name}
           </div>
@@ -284,7 +284,7 @@ function PublicQuotePage() {
           </div>
 
           {quote.personal_message && (
-            <div style={{ marginTop: 16, padding: 12, background: "#EFF6FF", borderRadius: 10, fontStyle: "italic", color: "#475569", fontSize: 14 }}>
+            <div style={{ marginTop: 16, padding: 12, background: "#EFF6FF", borderRadius: 8, fontStyle: "italic", color: "#475569", fontSize: 14 }}>
               {quote.personal_message}
             </div>
           )}
@@ -318,7 +318,7 @@ function PublicQuotePage() {
               )}
 
               {needsDeposit && (
-                <div style={{ width: "100%", marginTop: 16, padding: 20, background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 12, textAlign: "left" }}>
+                <div style={{ width: "100%", marginTop: 16, padding: 20, background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 8, textAlign: "left" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                     <IconLock size={18} color="#1877D6" />
                     <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>Secure your booking</div>
@@ -356,7 +356,7 @@ function PublicQuotePage() {
                       onClick={startDepositPayment}
                       style={{
                         width: "100%", height: 48, background: "#1877D6", color: "#fff",
-                        border: "none", borderRadius: 10, fontSize: 15, fontWeight: 600,
+                        border: "none", borderRadius: 8, fontSize: 15, fontWeight: 600,
                         fontFamily: "Poppins, sans-serif", cursor: "pointer",
                         opacity: payStatus === "creating" ? 0.6 : 1,
                       }}
@@ -370,7 +370,7 @@ function PublicQuotePage() {
                         style={{
                           display: "flex", alignItems: "center", justifyContent: "center",
                           width: "100%", height: 48, background: "#1877D6", color: "#fff",
-                          borderRadius: 10, fontSize: 15, fontWeight: 600, textDecoration: "none",
+                          borderRadius: 8, fontSize: 15, fontWeight: 600, textDecoration: "none",
                         }}
                       >
                         Pay now
@@ -382,7 +382,7 @@ function PublicQuotePage() {
                           alt="QR code to pay your deposit"
                           width={250}
                           height={250}
-                          style={{ borderRadius: 8 }}
+                          style={{ borderRadius: 8}}
                         />
                       </div>
                       <p style={{ textAlign: "center", color: "#94a3b8", fontSize: 12, marginTop: 12 }}>
@@ -400,7 +400,7 @@ function PublicQuotePage() {
                     href="https://everydriver.co.uk/courses"
                     style={{
                       marginTop: 8, display: "flex", alignItems: "center", justifyContent: "center",
-                      height: 52, width: "100%", borderRadius: 12, background: "#1877D6", color: "#fff",
+                      height: 52, width: "100%", borderRadius: 8, background: "#1877D6", color: "#fff",
                       fontWeight: 600, fontSize: 15, textDecoration: "none",
                     }}
                   >
@@ -417,7 +417,7 @@ function PublicQuotePage() {
               disabled={accepting}
               onClick={accept}
               style={{
-                height: 52, borderRadius: 12, border: "none",
+                height: 52, borderRadius: 8, border: "none",
                 background: "#1877D6", color: "#fff", fontWeight: 600, fontSize: 15,
                 fontFamily: "Poppins, sans-serif", cursor: "pointer", opacity: accepting ? 0.6 : 1,
               }}
@@ -429,7 +429,7 @@ function PublicQuotePage() {
           <button
             onClick={askQuestion}
             style={{
-              height: 48, borderRadius: 12, background: "#fff",
+              height: 48, borderRadius: 8, background: "#fff",
               border: "1px solid #0B1F3A", color: "#0B1F3A",
               fontWeight: 600, fontSize: 14, fontFamily: "Poppins, sans-serif", cursor: "pointer",
             }}

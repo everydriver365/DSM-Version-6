@@ -100,7 +100,7 @@ function NewsCard({
         gap: 12,
         background: "#FFFFFF",
         border: important ? "1px solid #F3C0C2" : "1px solid #E3E8F0",
-        borderRadius: 16,
+        borderRadius: 8,
         padding: 12,
         cursor: "pointer",
         minWidth: compact ? 268 : undefined,
@@ -112,7 +112,7 @@ function NewsCard({
         style={{
           width: compact ? "100%" : 78,
           height: compact ? 96 : 78,
-          borderRadius: 12,
+          borderRadius: 8,
           flexShrink: 0,
           overflow: "hidden",
           background: article.image_url ? undefined : "#0B1F3A",
@@ -143,7 +143,7 @@ function NewsCard({
               fontWeight: 800,
               textTransform: "uppercase",
               letterSpacing: "0.3px",
-              borderRadius: 20,
+              borderRadius: 8,
               padding: "4px 9px",
               ...POPPINS,
             }}
@@ -191,7 +191,7 @@ function NewsCard({
             style={{
               background: "#FFF8E7",
               border: "1px solid #F3E3BC",
-              borderRadius: 10,
+              borderRadius: 8,
               padding: "6px 9px",
               fontSize: 11.5,
               color: "#7A5B10",
@@ -230,7 +230,7 @@ function NewsCard({
               fontSize: 12,
               fontWeight: 600,
               padding: "7px 13px",
-              borderRadius: 9,
+              borderRadius: 8,
               flexShrink: 0,
               ...POPPINS,
             }}
@@ -379,7 +379,7 @@ function NewsIndexPage() {
           height: TOP_BAR_SPACER,
           paddingTop: "max(env(safe-area-inset-top, 0px), 24px)",
           backgroundColor: "#0B1F3A",
-          borderRadius: "0 0 28px 28px",
+          borderRadius: "0 0 8px 8px",
         }}
       >
         <button
@@ -427,7 +427,7 @@ function NewsIndexPage() {
                 fontSize: 12,
                 fontWeight: 600,
                 whiteSpace: "nowrap",
-                borderRadius: 20,
+                borderRadius: 8,
                 padding: "6px 14px",
                 border: "none",
                 cursor: "pointer",
@@ -551,7 +551,7 @@ function NewsIndexPage() {
                   gap: 10,
                   background: "#FFF3F3",
                   border: "1px solid #F3C0C2",
-                  borderRadius: 14,
+                  borderRadius: 8,
                   padding: "12px 14px",
                   ...POPPINS,
                 }}

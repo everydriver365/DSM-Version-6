@@ -461,7 +461,7 @@ function NewMockTestSheet({
               className="w-full flex items-center justify-center text-[13px] font-semibold"
               style={{
                 height: 44,
-                borderRadius: 10,
+                borderRadius: 8,
                 border: "1px dashed #1877D6",
                 color: "#1877D6",
                 background: "#F4F8FE",

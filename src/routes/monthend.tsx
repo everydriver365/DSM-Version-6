@@ -291,7 +291,7 @@ function MonthEndPage() {
           aria-label="Previous month"
           onClick={() => shiftMonth(-1)}
           className="flex items-center justify-center"
-          style={{ width: 36, height: 36, borderRadius: 8 }}
+          style={{ width: 36, height: 36, borderRadius: 8}}
         >
           <IconChevronLeft size={20} color="#0B1F3A" />
         </button>
@@ -301,7 +301,7 @@ function MonthEndPage() {
           aria-label="Next month"
           onClick={() => shiftMonth(1)}
           className="flex items-center justify-center"
-          style={{ width: 36, height: 36, borderRadius: 8 }}
+          style={{ width: 36, height: 36, borderRadius: 8}}
         >
           <IconChevronRight size={20} color="#0B1F3A" />
         </button>
@@ -310,7 +310,7 @@ function MonthEndPage() {
       {/* Summary card */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: "#0B1F3A", borderRadius: 12, padding: 16 }}
+        style={{ backgroundColor: "#0B1F3A", borderRadius: 8, padding: 16 }}
       >
         <div
           className="text-[10px] uppercase"
@@ -439,7 +439,7 @@ function MonthEndPage() {
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Reflections on the month, wins, things to improve…"
           rows={5}
-          className="w-full rounded-xl px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
+          className="w-full rounded-lg px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
           style={{
             fontFamily: "Poppins, sans-serif",
             borderWidth: "0.5px",
@@ -479,7 +479,7 @@ function PanelCard({ children }: { children: React.ReactNode }) {
     <div
       className="bg-white"
       style={{
-        borderRadius: 12,
+        borderRadius: 8,
         borderWidth: "0.5px",
         borderStyle: "solid",
         borderColor: "#EEF2F7",

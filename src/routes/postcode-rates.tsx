@@ -99,7 +99,7 @@ function PostcodeRatesPage() {
     height: 44,
     padding: "0 12px",
     border: "0.5px solid #E2E6ED",
-    borderRadius: 10,
+    borderRadius: 8,
     fontSize: 14,
     color: "#0B1F3A",
     background: "#fff",
@@ -125,7 +125,7 @@ function PostcodeRatesPage() {
         <p className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
           Set different hourly rates for different postcode areas. The outward code is the first part of the postcode (e.g. SO22, PO15, GU11).
         </p>
-        <div className="mt-3 rounded-xl px-3 py-2" style={{ background: "#E0F2FE", color: "#0B1F3A", ...POPPINS, fontSize: 13 }}>
+        <div className="mt-3 rounded-lg px-3 py-2" style={{ background: "#E0F2FE", color: "#0B1F3A", ...POPPINS, fontSize: 13 }}>
           Your default rate: {defaultRate != null ? `£${defaultRate}/hr` : "not set"} — applies where no postcode rule exists.
         </div>
 
@@ -136,8 +136,8 @@ function PostcodeRatesPage() {
             <div className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>No postcode rules yet.</div>
           ) : (
             rules.map((r) => (
-              <div key={r.id} className="flex items-center gap-3 bg-white rounded-xl px-3 py-3" style={{ border: "0.5px solid #E2E6ED" }}>
-                <span className="text-[12px] font-bold px-2 py-1 rounded-md" style={{ background: "#E0F2FE", color: "#0369A1", ...POPPINS }}>
+              <div key={r.id} className="flex items-center gap-3 bg-white rounded-lg px-3 py-3" style={{ border: "0.5px solid #E2E6ED" }}>
+                <span className="text-[12px] font-bold px-2 py-1 rounded-lg" style={{ background: "#E0F2FE", color: "#0369A1", ...POPPINS }}>
                   {r.outward_code}
                 </span>
                 <div className="flex-1 min-w-0">
@@ -152,7 +152,7 @@ function PostcodeRatesPage() {
           )}
         </div>
 
-        <div className="mt-6 bg-white rounded-xl p-4" style={{ border: "0.5px solid #E2E6ED" }}>
+        <div className="mt-6 bg-white rounded-lg p-4" style={{ border: "0.5px solid #E2E6ED" }}>
           <div className="flex items-center gap-2 mb-3">
             <IconMapPin size={18} color="#1877D6" />
             <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Add rule</span>
@@ -163,7 +163,7 @@ function PostcodeRatesPage() {
           <input style={{ ...inputStyle, marginTop: 6, marginBottom: 10 }} type="number" step="0.5" inputMode="decimal" value={rate} onChange={(e) => setRate(e.target.value)} placeholder="45" />
           <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Label (optional)</label>
           <input style={{ ...inputStyle, marginTop: 6, marginBottom: 14 }} value={label} onChange={(e) => setLabel(e.target.value)} placeholder="e.g. Winchester area" maxLength={60} />
-          <button type="button" onClick={addRule} disabled={saving} className="w-full text-white text-[14px] font-semibold" style={{ height: 48, borderRadius: 10, background: "#1877D6", opacity: saving ? 0.5 : 1, ...POPPINS }}>
+          <button type="button" onClick={addRule} disabled={saving} className="w-full text-white text-[14px] font-semibold" style={{ height: 48, borderRadius: 8, background: "#1877D6", opacity: saving ? 0.5 : 1, ...POPPINS }}>
             {saving ? "Saving…" : "Add rule"}
           </button>
           <p className="mt-3 text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>

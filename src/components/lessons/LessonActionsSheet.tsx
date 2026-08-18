@@ -116,7 +116,7 @@ const ACTION_ROW_LABEL: React.CSSProperties = {
 
 const ACTION_CARD: React.CSSProperties = {
   background: "#fff",
-  borderRadius: 18,
+  borderRadius: 8,
   overflow: "hidden",
   boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
   marginBottom: 10,
@@ -167,7 +167,7 @@ function TintedIcon({
       style={{
         width: 34,
         height: 34,
-        borderRadius: 10,
+        borderRadius: 8,
         background: bg,
         display: "flex",
         alignItems: "center",
@@ -301,7 +301,7 @@ export function LessonActionsSheet({
     background: "#1877D6",
     color: "#FFFFFF",
     border: "none",
-    borderRadius: 10,
+    borderRadius: 8,
     padding: "12px 0",
     fontFamily: "Poppins, sans-serif",
     fontSize: 13,
@@ -314,7 +314,7 @@ export function LessonActionsSheet({
     background: "#F5F7FA",
     color: NAVY,
     border: "1px solid #E2E8F0",
-    borderRadius: 10,
+    borderRadius: 8,
     padding: "12px 0",
     fontFamily: "Poppins, sans-serif",
     fontSize: 13,
@@ -490,7 +490,7 @@ export function LessonActionsSheet({
   const gridBtn: React.CSSProperties = {
     background: "#F5F7FA",
     border: "1px solid #E2E8F0",
-    borderRadius: 12,
+    borderRadius: 8,
     padding: "10px 4px",
     display: "flex",
     flexDirection: "column",
@@ -512,7 +512,7 @@ export function LessonActionsSheet({
   const iconBg = (bg: string): React.CSSProperties => ({
     width: 30,
     height: 30,
-    borderRadius: 9,
+    borderRadius: 8,
     background: bg,
     display: "flex",
     alignItems: "center",
@@ -524,7 +524,7 @@ export function LessonActionsSheet({
     minWidth: 0,
     background: "#FFFFFF",
     border: "1px solid #E2E8F0",
-    borderRadius: 10,
+    borderRadius: 8,
     padding: "9px 12px",
     fontFamily: "Poppins, sans-serif",
     fontSize: 13,
@@ -772,7 +772,7 @@ export function LessonActionsSheet({
                     style={{
                       background: sel ? "#0B1F3A" : "#F1F5F9",
                       color: sel ? "#fff" : "#6B7686",
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: "6px 14px",
                       fontFamily: "Poppins, sans-serif",
                       fontSize: 12,
@@ -1124,7 +1124,7 @@ export function LessonActionsSheet({
                     style={{
                       width: 34,
                       height: 34,
-                      borderRadius: 10,
+                      borderRadius: 8,
                       border: "1px solid #B7E4C7",
                       background: pickupState === "checking" ? "#F5F7FA" : "#E8F5E9",
                       color: "#1F6B2E",
@@ -1152,7 +1152,7 @@ export function LessonActionsSheet({
                       fontWeight: 800,
                       color: payPill.fg,
                       background: "#E6F7EC",
-                      borderRadius: 20,
+                      borderRadius: 8,
                       padding: "5px 12px",
                       whiteSpace: "nowrap",
                     }}

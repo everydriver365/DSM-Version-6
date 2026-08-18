@@ -47,7 +47,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
           width: '100%',
           maxWidth: 480,
           maxHeight: 'calc(100vh - 90px)',
-          borderRadius: '16px 16px 0 0',
+          borderRadius: '8px 8px 0 0',
           padding: 16,
           paddingBottom: 'calc(16px + 90px + env(safe-area-inset-bottom))',
           fontFamily: PF,
@@ -62,7 +62,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
             color: '#fff',
             fontSize: 9,
             fontWeight: 800,
-            borderRadius: 20,
+            borderRadius: 8,
             padding: '3px 10px',
             letterSpacing: '0.08em',
           }}>
@@ -74,7 +74,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
                 type="button"
                 onClick={() => { onClose(); detail.onEdit?.(); }}
                 aria-label="Edit test day"
-                style={{ background: '#F2F5F9', border: 'none', borderRadius: 20, width: 30, height: 30, display: 'grid', placeItems: 'center', cursor: 'pointer' }}
+                style={{ background: '#F2F5F9', border: 'none', borderRadius: 8, width: 30, height: 30, display: 'grid', placeItems: 'center', cursor: 'pointer' }}
               >
                 <IconPencil size={15} stroke={2} color="#1877D6" />
               </button>
@@ -83,7 +83,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
               type="button"
               onClick={onClose}
               aria-label="Close"
-              style={{ background: '#F2F5F9', border: 'none', borderRadius: 20, width: 30, height: 30, display: 'grid', placeItems: 'center', cursor: 'pointer' }}
+              style={{ background: '#F2F5F9', border: 'none', borderRadius: 8, width: 30, height: 30, display: 'grid', placeItems: 'center', cursor: 'pointer' }}
             >
               <IconX size={16} stroke={2} color="#0B1F3A" />
             </button>
@@ -92,7 +92,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
 
         <div style={{ fontSize: 20, fontWeight: 800, color: '#0B1F3A', letterSpacing: -0.3 }}>{detail.pupilName}</div>
 
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'space-between', marginTop: 12, background: '#F2F7FD', borderRadius: 16, padding: '10px 12px' }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'space-between', marginTop: 12, background: '#F2F7FD', borderRadius: 8, padding: '10px 12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <IconClock size={18} stroke={1.8} color="#1877D6" />
             <span style={{ fontSize: 13, fontWeight: 600, color: '#1877D6', fontFamily: PF }}>
@@ -130,7 +130,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
             <button
               type="button"
               onClick={() => { onClose(); detail.onNavigate?.(); }}
-              style={{ flex: 1, background: '#F2F5F9', color: '#0B1F3A', border: 'none', borderRadius: 20, padding: '11px 14px', fontFamily: PF, fontWeight: 700, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+              style={{ flex: 1, background: '#F2F5F9', color: '#0B1F3A', border: 'none', borderRadius: 8, padding: '11px 14px', fontFamily: PF, fontWeight: 700, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
             >
               <IconNavigation size={15} stroke={1.8} /> Navigate
             </button>
@@ -139,7 +139,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
             <button
               type="button"
               onClick={() => { onClose(); detail.onOpenLesson?.(); }}
-              style={{ flex: 1, background: 'linear-gradient(135deg, #1877D6, #0B1F3A)', color: '#fff', border: 'none', borderRadius: 20, padding: '11px 14px', fontFamily: PF, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}
+              style={{ flex: 1, background: 'linear-gradient(135deg, #1877D6, #0B1F3A)', color: '#fff', border: 'none', borderRadius: 8, padding: '11px 14px', fontFamily: PF, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}
             >
               Open lesson
             </button>

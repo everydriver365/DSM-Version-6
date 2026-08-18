@@ -6,7 +6,7 @@ interface Props {
 export function StatTile({ value, label }: Props) {
   return (
     <div
-      className="bg-[#F8F9FB] rounded-xl p-4"
+      className="bg-[#F8F9FB] rounded-lg p-4"
       style={{
         borderWidth: "0.5px",
         borderStyle: "solid",

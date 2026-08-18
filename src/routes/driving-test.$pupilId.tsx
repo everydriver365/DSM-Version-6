@@ -493,7 +493,7 @@ function DrivingTestPage() {
             className="flex-1 text-[13px] font-semibold"
             style={{
               height: 40,
-              borderRadius: 10,
+              borderRadius: 8,
               backgroundColor: tab === t ? "#0F2044" : "#F1F4F9",
               color: tab === t ? "#FFFFFF" : "#0F2044",
               border: "none",
@@ -592,7 +592,7 @@ function DrivingTestPage() {
             className="w-full text-[14px] font-semibold"
             style={{
               height: 52,
-              borderRadius: 12,
+              borderRadius: 8,
               backgroundColor: "#0F2044",
               color: "#FFFFFF",
               border: "none",
@@ -616,7 +616,7 @@ function Card({ children }: { children: React.ReactNode }) {
       style={{
         backgroundColor: "#FFFFFF",
         border: "0.5px solid #E2E6ED",
-        borderRadius: 12,
+        borderRadius: 8,
         padding: 16,
       }}
     >
@@ -963,7 +963,7 @@ function RecordTab(props: any) {
         <div
           className="mt-3 text-[12px] font-medium px-3 py-2"
           style={{
-            borderRadius: 10,
+            borderRadius: 8,
             backgroundColor: testType === "mock" ? "#FEF3C7" : "#DCE6F5",
             color: testType === "mock" ? "#92400E" : "#0F2044",
           }}
@@ -1101,7 +1101,7 @@ function RecordTab(props: any) {
               className="text-[13px] font-bold text-white"
               style={{
                 height: 52,
-                borderRadius: 10,
+                borderRadius: 8,
                 backgroundColor: r.bg,
                 border: "none",
                 opacity: result === r.k ? 1 : 0.55,
@@ -1220,7 +1220,7 @@ function RecordTab(props: any) {
               width: "100%",
               padding: 12,
               paddingRight: 44,
-              borderRadius: 10,
+              borderRadius: 8,
               border: "0.5px solid #E2E6ED",
               fontSize: 14,
               color: "#0F2044",
@@ -1277,7 +1277,7 @@ function NumBox({
           fontSize: 18,
           fontWeight: 700,
           color,
-          borderRadius: 10,
+          borderRadius: 8,
           border: `1px solid ${color}33`,
           backgroundColor: `${color}0D`,
           fontFamily: "Poppins, sans-serif",
@@ -1327,7 +1327,7 @@ function HistoryTab({
             style={{
               backgroundColor: "#FFFFFF",
               border: "0.5px solid #E2E6ED",
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 16,
             }}
           >

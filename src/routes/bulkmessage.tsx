@@ -267,7 +267,7 @@ function BulkMessagePage() {
                     style={idx === 0 ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
                   >
                     <div
-                      className="flex items-center justify-center rounded shrink-0"
+                      className="flex items-center justify-center rounded-lg shrink-0"
                       style={{
                         width: 20,
                         height: 20,

@@ -173,7 +173,7 @@ function ReminderPage() {
                   className="bg-white flex items-center text-left"
                   style={{
                     padding: 10,
-                    borderRadius: 10,
+                    borderRadius: 8,
                     gap: 10,
                     borderWidth: "0.5px",
                     borderStyle: "solid",
@@ -185,7 +185,7 @@ function ReminderPage() {
                     style={{
                       width: 18,
                       height: 18,
-                      borderRadius: 4,
+                      borderRadius: 8,
                       backgroundColor: isSel ? "#1877D6" : "#ffffff",
                       borderWidth: "0.5px",
                       borderStyle: "solid",

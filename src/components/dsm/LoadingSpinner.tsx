@@ -91,7 +91,7 @@ export function SkeletonRow() {
               height: 14,
               width: "60%",
               backgroundColor: "#EEF2F7",
-              borderRadius: 4,
+              borderRadius: 8,
               animation: "dsm-pulse 1.6s ease-in-out infinite",
             }}
           />
@@ -100,7 +100,7 @@ export function SkeletonRow() {
               height: 11,
               width: "40%",
               backgroundColor: "#EEF2F7",
-              borderRadius: 4,
+              borderRadius: 8,
               animation: "dsm-pulse 1.6s ease-in-out infinite",
             }}
           />
@@ -116,7 +116,7 @@ export function SkeletonCard({ rows = 3 }: { rows?: number }) {
       style={{
         margin: "0 16px",
         background: "#FFFFFF",
-        borderRadius: 16,
+        borderRadius: 8,
         overflow: "hidden",
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
       }}

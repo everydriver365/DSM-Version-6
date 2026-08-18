@@ -99,7 +99,7 @@ function Card({ children }: { children: React.ReactNode }) {
       style={{
         backgroundColor: "#FFFFFF",
         border: "0.5px solid #EEF2F7",
-        borderRadius: 12,
+        borderRadius: 8,
         padding: 16,
         marginLeft: 16,
         marginRight: 16,
@@ -131,7 +131,7 @@ function Checkbox({
         style={{
           width: 22,
           height: 22,
-          borderRadius: 6,
+          borderRadius: 8,
           border: "1.5px solid #1877D6",
           backgroundColor: checked ? "#1877D6" : "#FFFFFF",
           color: "#FFFFFF",
@@ -181,7 +181,7 @@ function QAItem({ type, q, a }: { type: "SHOW" | "TELL"; q: string; a: string })
             fontSize: 10,
             fontWeight: 700,
             padding: "2px 6px",
-            borderRadius: 4,
+            borderRadius: 8,
             flexShrink: 0,
             marginTop: 2,
             ...POPPINS,
@@ -713,7 +713,7 @@ function TestDayPage() {
             className="inline-flex items-center justify-center text-[15px] font-semibold text-white"
             style={{
               height: 56,
-              borderRadius: 10,
+              borderRadius: 8,
               backgroundColor: "#1877D6",
               border: "none",
               ...POPPINS,
@@ -727,7 +727,7 @@ function TestDayPage() {
             className="inline-flex items-center justify-center text-[15px] font-semibold text-white"
             style={{
               height: 56,
-              borderRadius: 10,
+              borderRadius: 8,
               backgroundColor: "#1877D6",
               border: "none",
               ...POPPINS,
@@ -756,7 +756,7 @@ function TestDayPage() {
                   setAskRetest(false);
                 }}
                 className="text-[12px] font-medium text-white px-3 py-1.5"
-                style={{ borderRadius: 6, backgroundColor: "#1877D6", border: "none" }}
+                style={{ borderRadius: 8, backgroundColor: "#1877D6", border: "none" }}
               >
                 Yes, claim
               </button>
@@ -765,7 +765,7 @@ function TestDayPage() {
                 onClick={() => setAskRetest(false)}
                 className="text-[12px] font-medium px-3 py-1.5"
                 style={{
-                  borderRadius: 6,
+                  borderRadius: 8,
                   backgroundColor: "#FFFFFF",
                   color: "#0B1F3A",
                   border: "1px solid #EEF2F7",
@@ -820,7 +820,7 @@ function Confetti() {
                 width: size,
                 height: size * 1.6,
                 backgroundColor: color,
-                borderRadius: 2,
+                borderRadius: 8,
                 animation: `td-fall ${dur}s linear ${delay}s forwards`,
               }}
             />

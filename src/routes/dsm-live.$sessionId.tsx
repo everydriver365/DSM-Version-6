@@ -275,7 +275,7 @@ END:VCALENDAR`;
             fontSize: 10,
             fontWeight: 800,
             padding: "4px 8px",
-            borderRadius: 4,
+            borderRadius: 8,
             textTransform: "uppercase",
             letterSpacing: "0.04em",
           }}
@@ -303,7 +303,7 @@ END:VCALENDAR`;
             style={{
               background: "#DCFCE7",
               border: "1px solid #86EFAC",
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 16,
               color: "#166534",
             }}
@@ -370,7 +370,7 @@ END:VCALENDAR`;
                 style={{
                   background: "#fff",
                   border: "0.5px solid #E2E6ED",
-                  borderRadius: 12,
+                  borderRadius: 8,
                   padding: 16,
                 }}
               >
@@ -402,7 +402,7 @@ END:VCALENDAR`;
               style={{
                 background: "#fff",
                 border: "0.5px solid #E2E6ED",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: 16,
                 marginTop: 12,
                 fontSize: 13,
@@ -423,7 +423,7 @@ END:VCALENDAR`;
               style={{
                 background: "#fff",
                 border: "0.5px solid #E2E6ED",
-                borderRadius: 12,
+                borderRadius: 8,
                 padding: 16,
                 marginTop: 12,
               }}
@@ -472,7 +472,7 @@ END:VCALENDAR`;
                   background: remaining <= 0 ? "#9CA3AF" : "#CC2229",
                   color: "#fff",
                   border: 0,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   fontWeight: 700,
                   fontSize: 15,
                   cursor: submitting ? "wait" : "pointer",

@@ -224,7 +224,7 @@ function MarketplaceListPage() {
               fontSize: 14,
               fontWeight: 700,
               padding: "12px 20px",
-              borderRadius: 10,
+              borderRadius: 8,
               cursor: "pointer",
             }}
           >
@@ -543,7 +543,7 @@ function MarketplaceListPage() {
               fontSize: 14,
               fontWeight: 700,
               padding: "12px 16px",
-              borderRadius: 10,
+              borderRadius: 8,
               cursor: "pointer",
             }}
           >
@@ -561,7 +561,7 @@ function MarketplaceListPage() {
               fontSize: 14,
               fontWeight: 700,
               padding: "12px 16px",
-              borderRadius: 10,
+              borderRadius: 8,
               cursor: submitting ? "not-allowed" : "pointer",
               opacity: submitting ? 0.7 : 1,
             }}
@@ -683,7 +683,7 @@ function TypePill({
         justifyContent: "center",
         gap: 6,
         padding: "14px 8px",
-        borderRadius: 12,
+        borderRadius: 8,
         border: active ? "1px solid #0F2044" : "0.5px solid #E2E6ED",
         background: active ? "#0F2044" : "#FFFFFF",
         color: active ? "#FFFFFF" : "#0F2044",
@@ -730,7 +730,7 @@ function PricePill({
 const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "0.5px solid #E2E6ED",
-  borderRadius: 10,
+  borderRadius: 8,
   padding: "10px 12px",
   fontSize: 14,
   color: "#0F2044",
@@ -773,7 +773,7 @@ function PreviewSheet({
           background: "#FFFFFF",
           width: "100%",
           maxWidth: 520,
-          borderRadius: "16px 16px 0 0",
+          borderRadius: "8px 8px 0 0",
           padding: 16,
           maxHeight: "85vh",
           overflowY: "auto",
@@ -810,7 +810,7 @@ function PreviewSheet({
         <div
           style={{
             border: "0.5px solid #E2E6ED",
-            borderRadius: 12,
+            borderRadius: 8,
             overflow: "hidden",
           }}
         >

@@ -97,7 +97,7 @@ function pupilMatchesStatus(
 const PILL_BASE = {
   fontSize: 9.5,
   fontWeight: 700,
-  borderRadius: 20,
+  borderRadius: 8,
   padding: "3px 8px",
   fontFamily: "Poppins, sans-serif",
   whiteSpace: "nowrap" as const,
@@ -819,7 +819,7 @@ function PupilsIndexPage() {
             className="inline-flex items-center gap-1.5"
             style={{
               padding: "6px 12px",
-              borderRadius: 20,
+              borderRadius: 8,
               backgroundColor: "#F3F8FF",
               border: "1px solid #EEF2F7",
             }}
@@ -879,7 +879,7 @@ function PupilsIndexPage() {
           margin: "12px 16px",
           display: "flex",
           background: "#FFFFFF",
-          borderRadius: 10,
+          borderRadius: 8,
           boxShadow: "0 4px 0 #E4E4E8",
           padding: 3,
           overflowX: "auto",
@@ -910,7 +910,7 @@ function PupilsIndexPage() {
                 outline: "none",
                 background: active ? "#0B1F3A" : "transparent",
                 color: active ? "#FFFFFF" : "#8A94A6",
-                borderRadius: active ? 7 : 0,
+                borderRadius: active ? 8 : 0,
                 fontWeight: active ? 600 : 500,
                 whiteSpace: "nowrap",
               }}
@@ -941,7 +941,7 @@ function PupilsIndexPage() {
           style={{
             margin: '12px 16px',
             background: '#fff',
-            borderRadius: 16,
+            borderRadius: 8,
             boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
             padding: '10px 14px',
             display: 'flex',
@@ -983,7 +983,7 @@ function PupilsIndexPage() {
                 action: (
                   <Link
                     to="/pupils/new"
-                    className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
+                    className="inline-flex items-center gap-1.5 h-10 px-4 rounded-lg] text-[13px] font-semibold text-white"
                     style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
                   >
                     <IconPlus stroke={1.5} size={16} /> Add pupil
@@ -1000,7 +1000,7 @@ function PupilsIndexPage() {
                 action: (
                   <Link
                     to="/pupils/new"
-                    className="inline-flex items-center gap-1.5 h-10 px-4 rounded-[10px] text-[13px] font-semibold text-white"
+                    className="inline-flex items-center gap-1.5 h-10 px-4 rounded-lg] text-[13px] font-semibold text-white"
                     style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
                   >
                     <IconPlus stroke={1.5} size={16} /> Add pupil
@@ -1014,7 +1014,7 @@ function PupilsIndexPage() {
             };
             const config = emptyConfig[statusFilter];
             return (
-              <div style={{ margin: '0 16px', background: '#fff', borderRadius: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+              <div style={{ margin: '0 16px', background: '#fff', borderRadius: 8, boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
                 <div className="flex flex-col items-center justify-center text-center px-6 py-12">
                   <IconUsers size={48} color="#D1D5DB" stroke={1.5} style={{ marginBottom: 12 }} />
                   <p className="font-semibold" style={{ fontSize: 14, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>
@@ -1048,7 +1048,7 @@ function PupilsIndexPage() {
                       key={p.id}
                       style={{
                         background: '#fff',
-                        borderRadius: 16,
+                        borderRadius: 8,
                         padding: 14,
                         boxShadow: '0 3px 0 #F7C9C6, 0 8px 18px rgba(255,59,48,0.1)',
                         border: '1.5px solid #FDEDEC',
@@ -1081,7 +1081,7 @@ function PupilsIndexPage() {
                   key={p.id}
                   style={{
                     background: '#fff',
-                    borderRadius: 16,
+                    borderRadius: 8,
                     boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
                     overflow: 'hidden',
                   }}

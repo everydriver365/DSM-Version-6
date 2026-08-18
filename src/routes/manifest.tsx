@@ -199,7 +199,7 @@ function ManifestPage() {
                   className="bg-white"
                   style={{
                     padding: 12,
-                    borderRadius: 10,
+                    borderRadius: 8,
                     borderWidth: "0.5px",
                     borderStyle: "solid",
                     borderColor: "#EEF2F7",

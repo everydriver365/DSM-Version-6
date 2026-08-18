@@ -171,7 +171,7 @@ async function captureVideoFrame(file: File): Promise<File | null> {
 const inputStyle: React.CSSProperties = {
   width: "100%",
   height: 44,
-  borderRadius: 10,
+  borderRadius: 8,
   border: `1px solid ${BORDER}`,
   padding: "0 12px",
   fontSize: 14,
@@ -360,7 +360,7 @@ function VideoForm({
       style={{
         background: "#fff",
         border: `1px solid ${BORDER}`,
-        borderRadius: 12,
+        borderRadius: 8,
         padding: 16,
         marginBottom: 16,
       }}
@@ -445,7 +445,7 @@ function VideoForm({
             style={{
               flex: 1,
               padding: "10px 12px",
-              borderRadius: 10,
+              borderRadius: 8,
               fontSize: 13,
               fontWeight: 600,
               cursor: "pointer",
@@ -503,7 +503,7 @@ function VideoForm({
                   }
                   style={{
                     padding: "6px 10px",
-                    borderRadius: 20,
+                    borderRadius: 8,
                     fontSize: 12,
                     fontWeight: 600,
                     cursor: "pointer",
@@ -528,7 +528,7 @@ function VideoForm({
                 style={{
                   flex: 1,
                   padding: "10px 12px",
-                  borderRadius: 10,
+                  borderRadius: 8,
                   fontSize: 13,
                   fontWeight: 600,
                   textTransform: "capitalize",
@@ -586,7 +586,7 @@ function VideoForm({
               onClick={() => setIsBitesize((b) => !b)}
               style={{
                 padding: "10px 14px",
-                borderRadius: 10,
+                borderRadius: 8,
                 fontSize: 13,
                 fontWeight: 600,
                 cursor: "pointer",
@@ -620,7 +620,7 @@ function VideoForm({
               style={{
                 flex: 1,
                 padding: "10px 12px",
-                borderRadius: 10,
+                borderRadius: 8,
                 fontSize: 13,
                 fontWeight: 600,
                 cursor: "pointer",
@@ -637,7 +637,7 @@ function VideoForm({
               style={{
                 flex: 1,
                 padding: "10px 12px",
-                borderRadius: 10,
+                borderRadius: 8,
                 fontSize: 13,
                 fontWeight: 600,
                 cursor: "pointer",
@@ -662,7 +662,7 @@ function VideoForm({
             style={{
               flex: 1,
               padding: "10px 12px",
-              borderRadius: 10,
+              borderRadius: 8,
               fontSize: 13,
               fontWeight: 600,
               cursor: "pointer",
@@ -856,7 +856,7 @@ function VideoForm({
           <div
             style={{
               height: 6,
-              borderRadius: 3,
+              borderRadius: 8,
               background: "#E2E6ED",
               overflow: "hidden",
               position: "relative",
@@ -868,7 +868,7 @@ function VideoForm({
                 height: "100%",
                 width: "40%",
                 background: BLUE,
-                borderRadius: 3,
+                borderRadius: 8,
                 position: "absolute",
                 left: 0,
                 top: 0,
@@ -933,7 +933,7 @@ function VideoForm({
           style={{
             flex: 1,
             height: 44,
-            borderRadius: 10,
+            borderRadius: 8,
             background: BLUE,
             color: "#fff",
             border: "none",
@@ -963,7 +963,7 @@ function VideoForm({
           style={{
             height: 44,
             padding: "0 18px",
-            borderRadius: 10,
+            borderRadius: 8,
             background: "#fff",
             color: NAVY,
             border: `1px solid ${BORDER}`,
@@ -1083,7 +1083,7 @@ function AdminLearnVideosPage() {
             onClick={() => setAdding(true)}
             style={{
               width: "100%",
-              borderRadius: 16,
+              borderRadius: 8,
               background: BLUE,
               color: "#fff",
               border: "none",
@@ -1133,7 +1133,7 @@ function AdminLearnVideosPage() {
                 key={v.id}
                 style={{
                   background: "#fff",
-                  borderRadius: 18,
+                  borderRadius: 8,
                   padding: 14,
                   marginBottom: 0,
                   display: "flex",
@@ -1209,7 +1209,7 @@ function AdminLearnVideosPage() {
                   style={{
                     width: 38,
                     height: 38,
-                    borderRadius: 11,
+                    borderRadius: 8,
                     border: "none",
                     background: "#fff",
                     color: NAVY,
@@ -1230,7 +1230,7 @@ function AdminLearnVideosPage() {
                   style={{
                     width: 38,
                     height: 38,
-                    borderRadius: 11,
+                    borderRadius: 8,
                     border: "none",
                     background: "#fff",
                     color: "#FF3B30",

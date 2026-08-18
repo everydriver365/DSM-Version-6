@@ -486,7 +486,7 @@ function CommunityPage() {
       <div style={{
         background: "#0B1F3A", padding: "16px", display: "flex",
         alignItems: "center", gap: 12, color: "white",
-        borderRadius: "0 0 20px 20px",
+        borderRadius: "0 0 8px 8px",
       }}>
         <button
           type="button"
@@ -548,7 +548,7 @@ function CommunityPage() {
               type="button"
               onClick={() => setActiveTab(t.id)}
               style={{
-                flexShrink: 0, padding: "9px 16px", borderRadius: 20,
+                flexShrink: 0, padding: "9px 16px", borderRadius: 8,
                 fontSize: 13.5, fontWeight: 700, border: "none", cursor: "pointer",
                 background: active ? "#0B1F3A" : "transparent",
                 color: active ? "#fff" : "#6B6B6F",
@@ -631,7 +631,7 @@ function CommunityPage() {
               onClick={() => setDmSearchOpen(true)}
               style={{
                 width: "100%", padding: "10px 14px", background: "#1877D6", color: "#fff",
-                border: "none", borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: "pointer",
+                border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer",
                 fontFamily: "Poppins, sans-serif", display: "flex", alignItems: "center",
                 justifyContent: "center", gap: 8,
               }}
@@ -651,7 +651,7 @@ function CommunityPage() {
             </div>
           ) : (
             <div style={{
-              margin: '0 16px', background: '#fff', borderRadius: 16,
+              margin: '0 16px', background: '#fff', borderRadius: 8,
               boxShadow: '0 2px 8px rgba(15,32,68,0.06)', overflow: 'hidden',
             }}>
               {dmConversations.map((dm, index) => {
@@ -900,7 +900,7 @@ function RoomsTab({
   }
 
   const rowStyle: React.CSSProperties = {
-    background: "#fff", borderRadius: 16, padding: 14,
+    background: "#fff", borderRadius: 8, padding: 14,
     display: "flex", alignItems: "center", gap: 13,
     boxShadow: "0 4px 0 #E4E4E8",
   };
@@ -931,14 +931,14 @@ function RoomsTab({
             </div>
             <span style={{
               background: "#E7F1FC", color: "#1877D6", fontSize: 10.5, fontWeight: 800,
-              borderRadius: 20, padding: "3px 9px", whiteSpace: "nowrap", flexShrink: 0,
+              borderRadius: 8, padding: "3px 9px", whiteSpace: "nowrap", flexShrink: 0,
             }}>
               {room.outcode}
             </span>
             {room.is_opt_in && (
               <span style={{
                 background: "#F1F3F7", color: "#6B7280", fontSize: 10.5, fontWeight: 800,
-                borderRadius: 20, padding: "3px 9px", whiteSpace: "nowrap", flexShrink: 0,
+                borderRadius: 8, padding: "3px 9px", whiteSpace: "nowrap", flexShrink: 0,
               }}>
                 Private
               </span>
@@ -963,7 +963,7 @@ function RoomsTab({
   }
 
   const btn = (bg: string, shadow: string): React.CSSProperties => ({
-    padding: "10px 18px", borderRadius: 12, border: "none",
+    padding: "10px 18px", borderRadius: 8, border: "none",
     background: bg, color: "#fff", fontSize: 13.5, fontWeight: 800,
     cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap", boxShadow: shadow,
   });
@@ -1006,7 +1006,7 @@ function RoomsTab({
         </div>
         <div style={{
           display: "flex", alignItems: "center", gap: 8, background: "#fff",
-          borderRadius: 16, padding: "13px 16px", marginBottom: 12,
+          borderRadius: 8, padding: "13px 16px", marginBottom: 12,
           boxShadow: "0 4px 0 #E4E4E8",
         }}>
           <IconSearch stroke={1.5} size={16} color="#8A8A8E" />
@@ -1275,7 +1275,7 @@ function AlertsTab({
         key={a.id}
         onClick={() => setSelectedAlert(a)}
         style={{
-          background: "#fff", borderRadius: 16, marginBottom: 10,
+          background: "#fff", borderRadius: 8, marginBottom: 10,
           padding: "13px 14px", display: "flex", alignItems: "center", gap: 12,
           boxShadow: "0 4px 0 #E4E4E8", cursor: "pointer",
         }}
@@ -1303,7 +1303,7 @@ function AlertsTab({
         <div style={{
           flexShrink: 0, background: "#F2F2F7",
           color: suspicious ? "#CC2229" : "#6B6B6F",
-          fontSize: 11, fontWeight: 700, padding: "5px 10px", borderRadius: 20,
+          fontSize: 11, fontWeight: 700, padding: "5px 10px", borderRadius: 8,
           whiteSpace: "nowrap",
         }}>
           {formatCountdown(a.expires_at)}
@@ -1346,7 +1346,7 @@ function AlertsTab({
                 key={a.id}
                 onClick={() => setSelectedAlert(a)}
                 style={{
-                  background: "#fff", borderRadius: 16, marginBottom: 10,
+                  background: "#fff", borderRadius: 8, marginBottom: 10,
                   padding: "13px 14px 13px 13px", borderLeft: "3px solid #1877D6",
                   display: "flex", alignItems: "center", gap: 12,
                   boxShadow: "0 4px 0 #E4E4E8", cursor: "pointer",
@@ -1388,7 +1388,7 @@ function AlertsTab({
                 ) : (
                   <div style={{
                     flexShrink: 0, background: "#F2F2F7", color: "#6B6B6F",
-                    fontSize: 11, fontWeight: 700, padding: "5px 10px", borderRadius: 20,
+                    fontSize: 11, fontWeight: 700, padding: "5px 10px", borderRadius: 8,
                     whiteSpace: "nowrap",
                   }}>
                     {formatCountdown(a.expires_at)}
@@ -1414,7 +1414,7 @@ function AlertsTab({
                 setReportSheetOpenWithEvent(true);
               }}
               style={{
-                background: "#CC2229", color: "white", border: "none", borderRadius: 12,
+                background: "#CC2229", color: "white", border: "none", borderRadius: 8,
                 padding: "10px 24px", marginTop: 16, fontWeight: 600, cursor: "pointer",
               }}
             >
@@ -1424,7 +1424,7 @@ function AlertsTab({
         ) : myAlerts.length === 0 ? (
           <div style={{
             padding: 20, textAlign: "center", background: "#fff",
-            border: "1.5px dashed #D1D1D6", borderRadius: 16,
+            border: "1.5px dashed #D1D1D6", borderRadius: 8,
             fontSize: 14, fontWeight: 500, color: "#B0B0B5",
           }}>
             No instructor reports in your area
@@ -1461,7 +1461,7 @@ function AlertsTab({
               minHeight: 56,
               background: "#fff",
               border: "none",
-              borderRadius: 16,
+              borderRadius: 8,
               padding: "14px 16px",
               cursor: "pointer",
               boxShadow: "0 4px 0 #E4E4E8",
@@ -1474,7 +1474,7 @@ function AlertsTab({
                 style={{
                   width: 34,
                   height: 34,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -1544,7 +1544,7 @@ function AlertsTab({
                       background: active ? "#0B1F3A" : "#fff",
                       color: active ? "#fff" : "#0B1F3A",
                       boxShadow: active ? "0 4px 0 #050D1C" : "0 4px 0 #E4E4E8",
-                      borderRadius: 20, padding: "9px 16px",
+                      borderRadius: 8, padding: "9px 16px",
                       fontSize: 13, fontWeight: 700, cursor: "pointer",
                       whiteSpace: "nowrap",
                     }}
@@ -1558,7 +1558,7 @@ function AlertsTab({
             {filteredOfficialAlerts.length === 0 ? (
               <div style={{
                 padding: 20, textAlign: "center", background: "#fff",
-                border: "1.5px dashed #D1D1D6", borderRadius: 16,
+                border: "1.5px dashed #D1D1D6", borderRadius: 8,
                 fontSize: 14, fontWeight: 500, color: "#B0B0B5",
               }}>
                 No matching incidents
@@ -1661,7 +1661,7 @@ function AlertsTab({
             }
           >
             <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Details</div>
-            <div style={{ background: "white", borderRadius: 12, overflow: "hidden", marginBottom: 14 }}>
+            <div style={{ background: "white", borderRadius: 8, overflow: "hidden", marginBottom: 14 }}>
               {metaRows.map((r, i) => {
                 const isReportedTomTom = r.label === "Reported" && selectedAlert.source === 'tomtom';
                 return (
@@ -1685,13 +1685,13 @@ function AlertsTab({
               <>
                 <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Affected roads</div>
                 <div style={{
-                  background: "white", borderRadius: 12, padding: "12px 14px", marginBottom: 14,
+                  background: "white", borderRadius: 8, padding: "12px 14px", marginBottom: 14,
                   display: "flex", flexWrap: "wrap", gap: 6,
                 }}>
                   {affectedRoads.map((road) => (
                     <span key={road} style={{
                       background: "#E7F1FC", color: "#1877D6", fontSize: 12, fontWeight: 700,
-                      padding: "5px 11px", borderRadius: 20,
+                      padding: "5px 11px", borderRadius: 8,
                     }}>
                       {road}
                     </span>
@@ -1704,7 +1704,7 @@ function AlertsTab({
 
             <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Description</div>
             <div style={{
-              background: "white", borderRadius: 12, padding: "12px 14px",
+              background: "white", borderRadius: 8, padding: "12px 14px",
               fontSize: 13.5, color: "#0B1F3A", lineHeight: 1.45, marginBottom: 14,
             }}>
               {selectedAlert.description}
@@ -1714,7 +1714,7 @@ function AlertsTab({
               Comments · {comments.length}
             </div>
             {comments.length > 0 && (
-              <div style={{ background: "white", borderRadius: 12, overflow: "hidden", marginBottom: 10 }}>
+              <div style={{ background: "white", borderRadius: 8, overflow: "hidden", marginBottom: 10 }}>
                 {comments.map((c, i) => (
                   <div
                     key={c.id}
@@ -1746,7 +1746,7 @@ function AlertsTab({
             )}
 
             <div style={{
-              background: "white", borderRadius: 12, padding: 8, marginBottom: 6,
+              background: "white", borderRadius: 8, padding: 8, marginBottom: 6,
               display: "flex", alignItems: "center", gap: 8,
             }}>
               <div style={{
@@ -1802,7 +1802,7 @@ function AlertCard({
 
   return (
     <div onClick={() => onSelect?.(alert)} style={{
-      background: "white", borderRadius: 16, boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
+      background: "white", borderRadius: 8, boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
       padding: "14px 16px", marginBottom: 8, cursor: "pointer",
     }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
@@ -1829,7 +1829,7 @@ function AlertCard({
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2, flexShrink: 0 }}>
           <div style={{ fontSize: 10, color: "#9CA3AF" }}>{formatCountdown(alert.expires_at)}</div>
           {source === 'tomtom' ? (
-            <div style={{ background: '#E3EEFC', color: '#1877D6', fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 20 }}>
+            <div style={{ background: '#E3EEFC', color: '#1877D6', fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 8}}>
               TomTom
             </div>
           ) : (
@@ -2166,7 +2166,7 @@ function ReportSheet({
                         right: -16,
                         background: "#FFFFFF",
                         border: `1px solid ${hairline}`,
-                        borderRadius: 12,
+                        borderRadius: 8,
                         boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
                         overflow: "hidden",
                         zIndex: 20,
@@ -2701,7 +2701,7 @@ function ChatTab({
                 />
                 <div style={{
                   position: "absolute", top: 32, right: 0, zIndex: 41,
-                  background: "white", border: "0.5px solid #E2E6ED", borderRadius: 12,
+                  background: "white", border: "0.5px solid #E2E6ED", borderRadius: 8,
                   boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden", minWidth: 190,
                 }}>
                   {[
@@ -2770,7 +2770,7 @@ function ChatTab({
               />
               <div style={{
                 position: "absolute", top: 34, left: 16, right: 16, zIndex: 41,
-                background: "white", border: "0.5px solid #E2E6ED", borderRadius: 12,
+                background: "white", border: "0.5px solid #E2E6ED", borderRadius: 8,
                 boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden", maxHeight: 260, overflowY: "auto",
               }}>
                 {myRooms.map((r) => (
@@ -2875,7 +2875,7 @@ function ChatTab({
                     <div style={{ maxWidth: "75%" }}>
                       <div style={{
                         background: "#0F2044", color: "white",
-                        borderRadius: "16px 16px 4px 16px", padding: "10px 14px",
+                        borderRadius: "8px 8px 8px 8px", padding: "10px 14px",
                         fontSize: 13, whiteSpace: "pre-wrap", wordBreak: "break-word",
                       }}>
                         {messageNode}
@@ -2904,7 +2904,7 @@ function ChatTab({
                         onContextMenu={(e) => { e.preventDefault(); setContextMsg(m); }}
                         style={{
                           background: "white", border: "0.5px solid #E2E6ED",
-                          borderRadius: "4px 16px 16px 16px", padding: "10px 14px",
+                          borderRadius: "8px 8px 8px 8px", padding: "10px 14px",
                           fontSize: 13, color: "#0F2044", whiteSpace: "pre-wrap", wordBreak: "break-word",
                           userSelect: "none", WebkitUserSelect: "none", cursor: "pointer",
                         }}
@@ -2967,7 +2967,7 @@ function ChatTab({
             placeholder={noRoom ? "No room available yet" : `Message ${areaLabel} ADIs...`}
             style={{
               flex: 1, background: "#F7FAFC", border: "0.5px solid #E2E6ED",
-              borderRadius: 20, padding: "10px 14px", fontSize: 13, outline: "none",
+              borderRadius: 8, padding: "10px 14px", fontSize: 13, outline: "none",
               opacity: noRoom || !room ? 0.6 : 1,
             }}
           />
@@ -2998,7 +2998,7 @@ function ChatTab({
           <div style={{
             position: "fixed", left: 16, right: 16,
             bottom: "calc(24px + env(safe-area-inset-bottom, 0px))", zIndex: 61,
-            background: "white", borderRadius: 12, overflow: "hidden",
+            background: "white", borderRadius: 8, overflow: "hidden",
             boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
           }}>
             <div style={{
