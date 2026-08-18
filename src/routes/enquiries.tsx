@@ -409,6 +409,7 @@ function EnquiriesPage() {
 
       updateEnquiry(enquiry.id, { status: "accepted" });
       toast.success(pupilId ? "Accepted — pupil created" : "Enquiry accepted");
+      hapticSuccess();
     } catch {
       toast.error("Couldn't accept");
     } finally {
