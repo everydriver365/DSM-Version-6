@@ -739,7 +739,40 @@ export function AddLessonSheet({
             </div>
           )}
         </SheetGroup>
-        {errors.pupil && <ErrorText>{errors.pupil}</ErrorText>}
+      ) : (
+        <div style={{ marginBottom: 16 }}>
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: "#9CA3AF",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              marginBottom: 6,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            EVENT TITLE
+          </div>
+          <input
+            value={eventTitle}
+            onChange={(e) => setEventTitle(e.target.value)}
+            placeholder="e.g. Team meeting, CPD training, Admin day"
+            style={{
+              width: "100%",
+              background: "#fff",
+              border: "1px solid #E4E8EF",
+              borderRadius: 8,
+              padding: "10px 12px",
+              fontSize: 14,
+              fontFamily: "Poppins, sans-serif",
+              outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
+        </div>
+      )}
+      {errors.pupil && !isEvent && <ErrorText>{errors.pupil}</ErrorText>}
 
         {/* SECTION 2 — Date & Time */}
         <SheetGroup>
