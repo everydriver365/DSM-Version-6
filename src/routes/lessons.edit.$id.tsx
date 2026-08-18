@@ -784,7 +784,7 @@ function EditLessonPage() {
               value={status}
               onChange={(e) => {
                 const val = e.target.value;
-                if (val === "cancelled") {
+                if (val === "cancelled" && !isEvent) {
                   setPreviousStatus(status);
                   setStatus("cancelled");
                   setShowCancelConfirm(true);
