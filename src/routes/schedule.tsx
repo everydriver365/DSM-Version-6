@@ -767,12 +767,11 @@ function SchedulePage() {
       const { data, error } = await supabase
         .from("lessons")
         .select(
-          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, notes, pickup_location, pupil:pupils!inner(id, name, first_name, last_name, address, postcode, calendar_colour, prepaid_hours, status, deleted_at)",
+          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, notes, pickup_location, event_title, pupil:pupils(id, name, first_name, last_name, address, postcode, calendar_colour, prepaid_hours, status, deleted_at)",
         )
 
         .is("deleted_at", null)
-        .eq("pupil.status", "active")
-        .is("pupil.deleted_at", null)
+        .or("pupil_id.is.null,and(pupil.status.eq.active,pupil.deleted_at.is.null)")
         .gte("lesson_date", ymdLocal(rangeStart))
         .lte("lesson_date", ymdLocal(rangeEnd))
         .order("lesson_date", { ascending: true })
