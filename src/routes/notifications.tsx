@@ -70,6 +70,12 @@ function timeAgo(iso: string) {
   if (days < 7) return `${days}d ago`;
   return formatDate(iso);
 }
+function formatTime12hr(timeStr: string | null | undefined): string {
+  if (!timeStr) return "";
+  const d = timeStr.includes("T") ? new Date(timeStr) : new Date(`2000-01-01T${timeStr}`);
+  return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: true });
+}
+
 function typeIcon(type: string | null) {
   switch (type) {
     case "lesson":
