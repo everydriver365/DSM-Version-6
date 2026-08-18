@@ -12,10 +12,10 @@ import { AddressLookup } from "@/components/dsm/AddressLookup";
 export const Route = createFileRoute("/upcoming-tests")({
   head: () => ({
     meta: [
-      { title: "Upcoming driving tests — DSM by EveryDriver" },
-      { name: "description", content: "All upcoming driving tests for your pupils." },
-      { property: "og:title", content: "Upcoming driving tests — DSM by EveryDriver" },
-      { property: "og:description", content: "All upcoming driving tests for your pupils." },
+      { title: "Driving tests — DSM by EveryDriver" },
+      { name: "description", content: "Upcoming, passed and failed driving tests for your pupils." },
+      { property: "og:title", content: "Driving tests — DSM by EveryDriver" },
+      { property: "og:description", content: "Upcoming, passed and failed driving tests for your pupils." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
