@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { IconBell, IconCalendar, IconClock, IconDotsVertical, IconMapPin, IconPencil, IconX } from "@tabler/icons-react";
 import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { toast } from "sonner";
@@ -12,10 +12,10 @@ import { AddressLookup } from "@/components/dsm/AddressLookup";
 export const Route = createFileRoute("/upcoming-tests")({
   head: () => ({
     meta: [
-      { title: "Upcoming driving tests — DSM by EveryDriver" },
-      { name: "description", content: "All upcoming driving tests for your pupils." },
-      { property: "og:title", content: "Upcoming driving tests — DSM by EveryDriver" },
-      { property: "og:description", content: "All upcoming driving tests for your pupils." },
+      { title: "Driving tests — DSM by EveryDriver" },
+      { name: "description", content: "Upcoming, passed and failed driving tests for your pupils." },
+      { property: "og:title", content: "Driving tests — DSM by EveryDriver" },
+      { property: "og:description", content: "Upcoming, passed and failed driving tests for your pupils." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -31,7 +31,16 @@ interface PupilTestRow {
   test_date: string;
   test_time: string | null;
   test_centre: string | null;
+  test_status: string | null;
 }
+
+type TestTabKey = "upcoming" | "passed" | "failed";
+
+const TEST_TABS: { key: TestTabKey; label: string }[] = [
+  { key: "upcoming", label: "Upcoming" },
+  { key: "passed", label: "Passed" },
+  { key: "failed", label: "Failed" },
+];
 
 function todayYmd() {
   const parts = new Intl.DateTimeFormat("en-GB", {
@@ -81,6 +90,8 @@ function UpcomingTestsPage() {
   const [cancelReason, setCancelReason] = useState("");
   const [saving, setSaving] = useState(false);
 
+  const [activeTab, setActiveTab] = useState<TestTabKey>("upcoming");
+
   useEffect(() => {
     (async () => {
       const { data: userData } = await supabase.auth.getUser();
@@ -92,14 +103,13 @@ function UpcomingTestsPage() {
       }
       const { data, error } = await supabase
         .from("pupils")
-        .select("id, name, first_name, test_date, test_time, test_centre")
+        .select("id, name, first_name, test_date, test_time, test_centre, test_status")
         .eq("instructor_id", uid)
         .not("test_date", "is", null)
-        .gte("test_date", todayYmd())
         .order("test_date", { ascending: true });
       if (error) {
         console.error("[upcoming-tests] fetch error", error);
-        toast.error("Could not load upcoming tests");
+        toast.error("Could not load driving tests");
       }
       setTests(
         ((data ?? []) as any[]).map((p) => ({
@@ -108,18 +118,28 @@ function UpcomingTestsPage() {
           test_date: p.test_date,
           test_time: p.test_time ?? null,
           test_centre: p.test_centre ?? null,
+          test_status: p.test_status ?? null,
         })),
       );
       setLoading(false);
     })();
   }, []);
 
+  const filteredTests = useMemo(() => {
+    if (activeTab === "upcoming") {
+      return tests.filter((t) => (t.test_status == null || t.test_status === "upcoming") && t.test_date >= todayYmd());
+    }
+    if (activeTab === "passed") return tests.filter((t) => t.test_status === "passed");
+    if (activeTab === "failed") return tests.filter((t) => t.test_status === "failed");
+    return tests;
+  }, [tests, activeTab]);
+
   return (
     <PageLayout className="pb-8" style={POPPINS}>
       {/* Header */}
       <InstructorTopBar
         firstName=""
-        pageTitle="Upcoming tests"
+        pageTitle="Driving tests"
         onBack={() => navigate({ to: "/home" } as never)}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
@@ -128,6 +148,53 @@ function UpcomingTestsPage() {
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
       <div style={{ height: TOP_BAR_SPACER }} />
+
+      {/* Tabs */}
+      <div className="px-4 pt-3">
+        <div
+          className="flex"
+          style={{
+            background: "#FFFFFF",
+            borderRadius: 10,
+            boxShadow: "0 4px 0 #E4E4E8",
+            padding: 3,
+            overflowX: "auto",
+            scrollbarWidth: "none",
+          }}
+        >
+          {TEST_TABS.map((tab) => {
+            const active = activeTab === tab.key;
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setActiveTab(tab.key)}
+                style={{
+                  flex: 1,
+                  flexShrink: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  padding: "8px 4px",
+                  fontSize: 12,
+                  fontFamily: "Poppins, sans-serif",
+                  cursor: "pointer",
+                  border: "none",
+                  outline: "none",
+                  background: active ? "#0B1F3A" : "transparent",
+                  color: active ? "#FFFFFF" : "#8A94A6",
+                  borderRadius: active ? 7 : 0,
+                  fontWeight: active ? 600 : 500,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Actions row */}
       <div className="flex justify-end px-4 pt-3">
@@ -145,21 +212,28 @@ function UpcomingTestsPage() {
       <div className="px-4 pt-4">
         {loading ? (
           <div className="py-8 text-center text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>
-            Loading upcoming tests…
+            Loading driving tests…
           </div>
-        ) : tests.length === 0 ? (
-          <div
-            className="py-8 text-center text-[13px]"
-            style={{ color: "#6B7280", ...POPPINS }}
-          >
-            No upcoming tests. Add a test from the Driving tests page.
+        ) : filteredTests.length === 0 ? (
+          <div className="py-10 text-center" style={{ color: "#6B7280", ...POPPINS }}>
+            <div className="text-[14px] font-semibold mb-1">
+              {activeTab === "upcoming" && "No upcoming tests"}
+              {activeTab === "passed" && "No passed tests yet"}
+              {activeTab === "failed" && "No failed tests yet"}
+            </div>
+            <div className="text-[13px]">
+              {activeTab === "upcoming" && "Add a test from the Driving tests page."}
+              {activeTab === "passed" && "Results will appear here once recorded."}
+              {activeTab === "failed" && "Results will appear here once recorded."}
+            </div>
           </div>
         ) : (
           <div className="flex flex-col" style={{ gap: 10 }}>
-            {tests.map((t) => (
+            {filteredTests.map((t) => (
               <TestRow
                 key={t.id}
                 test={t}
+                activeTab={activeTab}
                 onEdit={() => {
                   setEditDate(t.test_date);
                   setEditTime(t.test_time ?? "");
@@ -378,10 +452,12 @@ function UpcomingTestsPage() {
 
 function TestRow({
   test,
+  activeTab,
   onEdit,
   onCancel,
 }: {
   test: PupilTestRow;
+  activeTab: TestTabKey;
   onEdit: () => void;
   onCancel: () => void;
 }) {
@@ -389,6 +465,11 @@ function TestRow({
   const daysLabel = days === 0 ? "Today" : days === 1 ? "Tomorrow" : `${days} days away`;
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
+
+  const isCompleted = activeTab === "passed" || activeTab === "failed";
+  const statusLabel = activeTab === "passed" ? "Passed" : activeTab === "failed" ? "Failed" : daysLabel;
+  const statusColor = activeTab === "passed" ? "#1E8E5A" : activeTab === "failed" ? "#CC2229" : days === 0 ? "#CC2229" : "#1877D6";
+  const statusBg = activeTab === "passed" ? "#DDEFE1" : activeTab === "failed" ? "#FCE9E9" : days === 0 ? "#FCE9E9" : "#E6F1FB";
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -416,7 +497,7 @@ function TestRow({
       <div className="flex items-start" style={{ gap: 12 }}>
         <div
           className="flex items-center justify-center text-white text-[13px] font-semibold shrink-0"
-          style={{ width: 42, height: 42, borderRadius: 999, backgroundColor: "#1877D6", ...POPPINS }}
+          style={{ width: 42, height: 42, borderRadius: 999, backgroundColor: isCompleted ? "#0B1F3A" : "#1877D6", ...POPPINS }}
         >
           {initials(test.name)}
         </div>
@@ -428,14 +509,14 @@ function TestRow({
             <span
               className="text-[11px] font-semibold shrink-0"
               style={{
-                color: days === 0 ? "#CC2229" : "#1877D6",
-                backgroundColor: days === 0 ? "#FCE9E9" : "#E6F1FB",
+                color: statusColor,
+                backgroundColor: statusBg,
                 padding: "3px 10px",
                 borderRadius: 999,
                 ...POPPINS,
               }}
             >
-              {daysLabel}
+              {statusLabel}
             </span>
           </div>
 
@@ -455,102 +536,104 @@ function TestRow({
             </span>
           </div>
 
-          <div className="text-[11px] font-medium mt-2" style={{ color: "#1877D6", ...POPPINS }}>
-            <IconCalendar stroke={1.5} size={12} strokeWidth={2} className="inline mr-1" color="#1877D6" />
-            {formatCountdown(test.test_date, test.test_time) ?? "Overdue"}
+          <div className="text-[11px] font-medium mt-2" style={{ color: isCompleted ? "#6B7280" : "#1877D6", ...POPPINS }}>
+            <IconCalendar stroke={1.5} size={12} strokeWidth={2} className="inline mr-1" color={isCompleted ? "#6B7280" : "#1877D6"} />
+            {isCompleted ? "Completed" : (formatCountdown(test.test_date, test.test_time) ?? "Overdue")}
           </div>
         </div>
       </div>
 
-      {/* Dots menu trigger */}
-      <div ref={menuRef} style={{ position: "absolute", top: 12, right: 12 }}>
-        <button
-          type="button"
-          onClick={() => setMenuOpen((v) => !v)}
-          style={{
-            display: "grid",
-            placeItems: "center",
-            width: 28,
-            height: 28,
-            borderRadius: 8,
-            background: "transparent",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          <IconDotsVertical size={16} color="#9CA3AF" />
-        </button>
-
-        {menuOpen && (
-          <div
+      {/* Dots menu trigger — only for upcoming tests */}
+      {!isCompleted && (
+        <div ref={menuRef} style={{ position: "absolute", top: 12, right: 12 }}>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((v) => !v)}
             style={{
-              position: "absolute",
-              top: "100%",
-              right: 0,
-              marginTop: 4,
-              minWidth: 150,
-              background: "#fff",
-              border: "1px solid #E2E8F0",
-              borderRadius: 10,
-              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-              zIndex: 20,
-              overflow: "hidden",
+              display: "grid",
+              placeItems: "center",
+              width: 28,
+              height: 28,
+              borderRadius: 8,
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
             }}
           >
-            <button
-              type="button"
-              onClick={() => {
-                setMenuOpen(false);
-                onEdit();
-              }}
+            <IconDotsVertical size={16} color="#9CA3AF" />
+          </button>
+
+          {menuOpen && (
+            <div
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                width: "100%",
-                padding: "10px 12px",
+                position: "absolute",
+                top: "100%",
+                right: 0,
+                marginTop: 4,
+                minWidth: 150,
                 background: "#fff",
-                border: "none",
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#0B1F3A",
-                cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
-                textAlign: "left",
+                border: "1px solid #E2E8F0",
+                borderRadius: 10,
+                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                zIndex: 20,
+                overflow: "hidden",
               }}
             >
-              <IconPencil size={14} color="#0B1F3A" />
-              Edit test
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMenuOpen(false);
-                onCancel();
-              }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                width: "100%",
-                padding: "10px 12px",
-                background: "#fff",
-                border: "none",
-                borderTop: "1px solid #F1F5F9",
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#CC2229",
-                cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
-                textAlign: "left",
-              }}
-            >
-              <IconX size={14} color="#CC2229" />
-              Cancel test
-            </button>
-          </div>
-        )}
-      </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  onEdit();
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  width: "100%",
+                  padding: "10px 12px",
+                  background: "#fff",
+                  border: "none",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#0B1F3A",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                  textAlign: "left",
+                }}
+              >
+                <IconPencil size={14} color="#0B1F3A" />
+                Edit test
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  onCancel();
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  width: "100%",
+                  padding: "10px 12px",
+                  background: "#fff",
+                  border: "none",
+                  borderTop: "1px solid #F1F5F9",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#CC2229",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                  textAlign: "left",
+                }}
+              >
+                <IconX size={14} color="#CC2229" />
+                Cancel test
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
