@@ -43,7 +43,7 @@ export function PageHeader({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px",
+        padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 12px) 16px 12px",
         borderRadius: 0,
       }}
     >
