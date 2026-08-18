@@ -282,6 +282,7 @@ function LessonDetailPage() {
   };
 
   const isTestDay = lesson?.lesson_type === "test" || lesson?.lesson_type === "test day" || lesson?.lesson_type === "driving test";
+  const isEvent = lesson?.lesson_type === "event" || (!lesson?.pupil_id && lesson?.event_title);
   const testCentre = search.testCentre || lesson?.pickup_location || lesson?.pickup_address || lesson?.notes || "";
 
   const handleNavigate = () => {
@@ -301,7 +302,7 @@ function LessonDetailPage() {
 
   const dateObj = lesson ? new Date(`${lesson.lesson_date}T00:00:00`) : null;
   const badge = lesson ? statusColor(lesson.status) : "#6B7280";
-  const pupilName = lesson?.pupils?.name ?? "Unknown pupil";
+  const pupilName = lesson?.pupils?.name ?? lesson?.event_title ?? "Event";
   const phone = lesson?.pupils?.phone ?? "";
 
   const lessonInsight = lesson
