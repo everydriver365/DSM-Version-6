@@ -2,6 +2,12 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { IconAlertCircle, IconAlertTriangle, IconCalendar, IconCheck, IconChevronDown, IconChevronRight, IconCopy, IconInfoCircle, IconLoader2, IconRefresh, IconX } from "@tabler/icons-react";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
+import {
+  getImportEnabled,
+  getPushEnabled,
+  setImportEnabled as persistImportEnabled,
+  setPushEnabled as persistPushEnabled,
+} from "@/lib/calendarSyncPrefs";
 import { toast } from "sonner";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
@@ -175,9 +181,25 @@ function CalendarSyncPage() {
   const [connecting, setConnecting] = useState(false);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
-  const [importEnabled, setImportEnabled] = useState(true);
-  const [pushEnabled, setPushEnabled] = useState(true);
+  const [importEnabled, setImportEnabledState] = useState(true);
+  const [pushEnabled, setPushEnabledState] = useState(true);
   const [showICS, setShowICS] = useState(false);
+
+  // Load saved sync-direction preferences (client-only).
+  useEffect(() => {
+    setImportEnabledState(getImportEnabled());
+    setPushEnabledState(getPushEnabled());
+  }, []);
+
+  function setImportEnabled(v: boolean) {
+    setImportEnabledState(v);
+    persistImportEnabled(v);
+  }
+
+  function setPushEnabled(v: boolean) {
+    setPushEnabledState(v);
+    persistPushEnabled(v);
+  }
 
   useEffect(() => {
     (async () => {
@@ -334,6 +356,10 @@ function CalendarSyncPage() {
 
   /** One sync entry point — routes to Google OAuth sync or the ICS sync. */
   async function sync() {
+    if (!importEnabled) {
+      toast.error("Importing Google events is turned off");
+      return;
+    }
     setSyncing(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();

@@ -290,8 +290,7 @@ function NewLessonPage() {
 
     const newLessonId = (insertedLesson as any)?.id as string | undefined;
     if (newLessonId) {
-      void supabase.functions.invoke("google-calendar-sync", {
-        body: { action: "push", lesson_id: newLessonId, instructor_id: user.id },
+      pushLessonToGoogle(supabase,  { action: "push", lesson_id: newLessonId, instructor_id: user.id },
       });
 
       const pupilName = selected?.name ?? "Pupil";
@@ -353,8 +352,7 @@ function NewLessonPage() {
           const rows = (await res.json().catch(() => [])) as Array<{ id?: string }>;
           for (const r of rows) {
             if (r?.id) {
-              void supabase.functions.invoke("google-calendar-sync", {
-                body: { action: "push", lesson_id: r.id, instructor_id: user.id },
+              pushLessonToGoogle(supabase,  { action: "push", lesson_id: r.id, instructor_id: user.id },
               });
             }
           }

@@ -312,8 +312,7 @@ export function AddLessonSheet({
         .eq("id", editingLesson.id)
         .maybeSingle();
       if (lessonRow?.google_event_id) {
-        void supabase.functions.invoke("google-calendar-sync", {
-          body: { lesson_id: editingLesson.id, instructor_id: user.id, action: "update" },
+        pushLessonToGoogle(supabase,  { lesson_id: editingLesson.id, instructor_id: user.id, action: "update" },
         });
       }
       toast.success("Lesson updated");
@@ -476,8 +475,7 @@ export function AddLessonSheet({
 
     const newLessonId = (insertedLesson as any)?.id as string | undefined;
     if (newLessonId) {
-      void supabase.functions.invoke("google-calendar-sync", {
-        body: { action: "push", lesson_id: newLessonId, instructor_id: user.id },
+      pushLessonToGoogle(supabase,  { action: "push", lesson_id: newLessonId, instructor_id: user.id },
       });
     }
 
@@ -527,8 +525,7 @@ export function AddLessonSheet({
           const rows = (await res.json().catch(() => [])) as Array<{ id?: string }>;
           for (const r of rows) {
             if (r?.id) {
-              void supabase.functions.invoke("google-calendar-sync", {
-                body: { action: "push", lesson_id: r.id, instructor_id: user.id },
+              pushLessonToGoogle(supabase,  { action: "push", lesson_id: r.id, instructor_id: user.id },
               });
             }
           }

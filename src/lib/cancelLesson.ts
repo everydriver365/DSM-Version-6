@@ -90,8 +90,7 @@ export async function cancelLessonWithUndo(input: {
 
   // 3. Remove the calendar event.
   if (googleEventId) {
-    void supabase.functions.invoke("google-calendar-sync", {
-      body: { lesson_id: lessonId, instructor_id: instructorId ?? "", action: "delete" },
+    pushLessonToGoogle(supabase,  { lesson_id: lessonId, instructor_id: instructorId ?? "", action: "delete" },
     });
   }
 
@@ -126,8 +125,7 @@ export async function cancelLessonWithUndo(input: {
       }
 
       if (googleEventId) {
-        void supabase.functions.invoke("google-calendar-sync", {
-          body: { lesson_id: lessonId, instructor_id: instructorId ?? "", action: "upsert" },
+        pushLessonToGoogle(supabase,  { lesson_id: lessonId, instructor_id: instructorId ?? "", action: "upsert" },
         });
       }
 

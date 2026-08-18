@@ -384,8 +384,7 @@ function EditLessonPage() {
       .eq("id", id)
       .maybeSingle();
     if (lessonRow?.google_event_id) {
-      void supabase.functions.invoke("google-calendar-sync", {
-        body: {
+      pushLessonToGoogle(supabase,  {
           lesson_id: id,
           instructor_id: user?.id ?? "",
           action: "update",
