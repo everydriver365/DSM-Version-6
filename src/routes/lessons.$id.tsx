@@ -75,12 +75,13 @@ interface Lesson {
   notes: string | null;
   pickup_address: string | null;
   pickup_location: string | null;
-  pupil_id: string;
+  pupil_id: string | null;
   payment_status: string | null;
   amount_due: number | null;
   cancellation_reason?: string | null;
   cancellation_notes?: string | null;
   cancelled_at?: string | null;
+  event_title: string | null;
   pupils: { id: string; name: string; phone: string | null } | null;
 
 }
