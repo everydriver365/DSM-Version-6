@@ -186,6 +186,7 @@ function NotificationsPage() {
   const [items, setItems] = useState<Notification[] | null>(null);
   const [actionSheet, setActionSheet] = useState<{
     notif: any;
+    notifType?: string | null;
     options: { label: string; route: string; icon: string }[];
     isMessage?: boolean;
     threadId?: string | null;
