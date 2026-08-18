@@ -166,220 +166,116 @@ function getNotificationAction(
   expiresAt?: string | null;
 } {
   const type = notif.type ?? "";
-  const meta = notif.metadata ?? {};
+  const title = String(notif.title ?? "");
+  const body = String(notif.body ?? "");
+  const refId = notif.reference_id ?? null;
+  const refType = notif.reference_type ?? null;
 
-  // Message notifications show a richer bottom sheet with a quick reply option.
-  // Pupil messages use type "pupil_message" and reference_id is the pupil_id.
-  // Instructor DMs use type "instructor_dm" and reference_id is the conversation_id.
-  if (
-    type === "message" ||
-    type === "new_message" ||
-    type === "message_received" ||
-    type === "pupil_message" ||
-    type === "instructor_dm"
-  ) {
-    const threadId =
-      meta.thread_id ?? meta.conversation_id ?? notif.reference_id ?? null;
-    const senderName =
-      meta.sender_name ?? meta.from ?? extractNameFromTitle(notif.title) ?? null;
-    const messagePreview = meta.preview ?? meta.body ?? notif.body ?? null;
-    const isInstructorDm = type === "instructor_dm";
-    const isPupilMessage = type === "pupil_message";
-    const replyRoute =
-      isInstructorDm && threadId
-        ? `/messages/instructor/${threadId}`
-        : isPupilMessage && threadId
-          ? `/messages/${threadId}`
-          : threadId
-            ? `/messages/${threadId}`
-            : "/messages";
-    return {
-      isMessage: true,
-      threadId,
-      senderName,
-      messagePreview,
-      options: [
-        { label: "Reply to message", route: replyRoute, icon: "reply" },
-        { label: "Go to Messages", route: "/messages", icon: "message" },
-      ],
-    };
-  }
-
-  if (type === "enquiry" || type === "new_enquiry" || type === "enquiry_received") {
-    return {
-      isEnquiry: true,
-      enquiryId: meta.enquiry_id ?? meta.id ?? null,
-      enquirerName: meta.name ?? meta.enquirer_name ?? meta.from ?? null,
-      enquirerPhone: meta.phone ?? meta.enquirer_phone ?? null,
-      enquirerEmail: meta.email ?? meta.enquirer_email ?? null,
-      enquirerPostcode: meta.postcode ?? meta.area ?? null,
-      transmission: meta.transmission ?? meta.car_type ?? null,
-      message: meta.message ?? meta.notes ?? null,
-      receivedAt: meta.received_at ?? notif.created_at ?? null,
-      options: [],
-    };
-  }
-
-  const rawText = `${notif.title ?? ""} ${notif.body ?? notif.message ?? ""}`;
-
-  if (type === "payment" || type === "payment_received") {
-    return { directNav: "/payments" };
-  }
-
-
-  if (
-    type === "payment_overdue" ||
-    /overdue|unpaid lessons|owes\s*£/i.test(rawText)
-  ) {
-    const owedMatch = rawText.match(/£\s*([0-9]+(?:\.[0-9]{1,2})?)/);
-    const nameMatch = rawText.match(/^\s*(?:[^A-Za-z]*)([A-Za-z' -]+?)\s+(?:owes|has unpaid)/im);
-    return {
-      isOverduePayment: true,
-      pupilId: meta.pupil_id ?? notif.reference_id ?? null,
-      pupilName: meta.pupil_name ?? meta.pupil ?? (nameMatch ? nameMatch[1].trim() : null),
-      pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
-      pupilEmail: meta.pupil_email ?? meta.email ?? null,
-      amountOwed: meta.amount_owed ?? meta.amount ?? meta.total ?? (owedMatch ? owedMatch[1] : null),
-      lessonCount: meta.lesson_count ?? meta.unpaid_lessons ?? null,
-
-    };
-  }
-
-  if (type === "lesson_cancelled" || type === "cancellation") {
-    return {
-      isCancellation: true,
-      pupilId: meta.pupil_id ?? null,
-      lessonId: meta.lesson_id ?? null,
-      pupilName: meta.pupil_name ?? meta.pupil ?? null,
-      pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
-      cancellationReason: meta.cancellation_reason ?? meta.reason ?? null,
-      lessonDate: meta.lesson_date ?? null,
-      lessonTime: meta.lesson_time ?? null,
-      options: [],
-    };
-  }
-
-  const titleText = String(notif.title ?? "");
-  const bodyText = String(notif.body ?? notif.message ?? "");
-  const combined = `${titleText} ${bodyText}`;
-  const looksLikeLessonStarting =
-    /lesson starting soon/i.test(titleText) ||
-    /lesson starts at/i.test(combined) ||
-    /start tracking/i.test(combined);
-
-  if (
-    type === "lesson_reminder" ||
-    type === "lesson_starting" ||
-    type === "lesson_soon" ||
-    type === "starting_soon" ||
-    type.includes("lesson_start") ||
-    looksLikeLessonStarting
-  ) {
-    const nameMatch = combined.match(/([A-Za-z][A-Za-z'’-]*)(?:'s|’s)\s+lesson/i);
-    const timeMatch = combined.match(/starts?\s+at\s+([0-9]{1,2}[:.][0-9]{2})\s*(am|pm)?/i);
-    const parsedTime = timeMatch
-      ? `${timeMatch[1].replace(".", ":")}${timeMatch[2] ? ` ${timeMatch[2]}` : ""}`.trim()
-      : null;
-
+  // Lesson starting soon — "Sarah's lesson starts at 14:30 — tap to start tracking"
+  if (type === "tracking") {
     return {
       isLessonStarting: true,
-      lessonId: meta.lesson_id ?? notif.reference_id ?? null,
-      pupilId: meta.pupil_id ?? null,
-      pupilName: meta.pupil_name ?? meta.pupil ?? (nameMatch ? nameMatch[1].trim() : null),
-      pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
-      pickupLocation: meta.pickup_location ?? meta.address ?? meta.location ?? null,
-      lessonTime: meta.lesson_time ?? meta.time ?? parsedTime,
-      lessonDate: meta.lesson_date ?? meta.date ?? null,
-      minutesUntil: meta.minutes_until ?? meta.minutes ?? null,
+      lessonId: refType === "lesson" ? refId : null,
+      pupilId: null,
+      pupilName: body.split("'s")[0]?.trim() || null,
+      pupilPhone: null,
+      lessonTime: body.match(/\d{1,2}:\d{2}/)?.[0] || null,
+      pickupLocation: null,
+      minutesUntil: null,
       options: [],
     };
   }
 
-
-  if (type === "lesson") {
-    if (meta.lesson_id) {
-      return { directNav: `/lessons/${meta.lesson_id}` };
-    }
-    return { directNav: "/schedule" };
+  // Overdue payment — "Luke Shaw owes £40.00 — lesson was on 2026-07-02"
+  if (type === "overdue_payment") {
+    return {
+      isOverduePayment: true,
+      lessonId: refType === "lesson" ? refId : null,
+      pupilName: body.split(" owes")[0]?.trim() || null,
+      amountOwed: body.match(/£[\d.]+/)?.[0]?.replace("£", "") || null,
+      pupilPhone: null,
+      pupilEmail: null,
+      pupilId: null,
+      lessonCount: null,
+      options: [],
+    };
   }
 
-
-  if (type === "pupil" || type === "new_pupil") {
-    const pupilId = meta.pupil_id ?? notif.reference_id;
-    if (pupilId) {
-      return { directNav: `/pupils/${pupilId}` };
-    }
-    return { directNav: "/pupils" };
+  // Message — "Message from Richard Chapman"
+  if (type === "instructor_dm") {
+    return {
+      isMessage: true,
+      threadId: refType === "instructor_conversation" ? refId : null,
+      senderName: title.replace("Message from ", "").trim() || null,
+      messagePreview: body || null,
+      options: [],
+    };
   }
 
-  if (type === "calendar" || type === "calendar_sync") {
-    return { directNav: "/calendarsync" };
+  // Lesson cancelled — "Aimee Colliss cancelled their lesson on 17 Aug"
+  if (type === "lesson_cancelled") {
+    return {
+      isCancellation: true,
+      lessonId: refType === "lesson" ? refId : null,
+      pupilId: null,
+      pupilName: body.split(" cancelled")[0]?.trim() || null,
+      pupilPhone: null,
+      cancellationReason: null,
+      lessonDate: body.match(/\d{1,2}\s\w+/)?.[0] || null,
+      lessonTime: null,
+      options: [],
+    };
   }
 
-  if (type === "subscription" || type === "billing") {
-    return { directNav: "/subscription" };
-  }
-
-  if (type === "dsm_live" || type === "live_session" || type === "live_starting" || type === "live_now" || type === "webinar" || type === "podcast") {
+  // DSM Live — "The Waiting Room starts in 30 minutes"
+  if (type === "live_starting_soon") {
     return {
       isDSMLive: true,
-      sessionId: meta.session_id ?? meta.live_id ?? null,
-      sessionTitle: meta.title ?? meta.session_title ?? "DSM Live",
-      sessionUrl: meta.url ?? meta.join_url ?? null,
-      startTime: meta.start_time ?? meta.time ?? null,
-      isLiveNow: type === "live_now" || meta.live_now === true || meta.status === "live",
+      sessionId: refType === "dsm_live_session" ? refId : null,
+      sessionTitle: body.split(" starts")[0]?.trim() || "DSM Live",
+      sessionUrl: null,
+      isLiveNow: false,
+      startTime: null,
       options: [],
     };
   }
 
-  if (type === "test" || type === "driving_test" || type === "test_reminder" || type === "test_booked" || type === "test_result" || type === "test_today") {
+  // Test tomorrow — "Aimee Colliss has their test tomorrow at 14:10:00 at Southampton Maybush"
+  if (type === "test_tomorrow") {
     return {
       isDrivingTest: true,
-      pupilId: meta.pupil_id ?? null,
-      pupilName: meta.pupil_name ?? meta.pupil ?? null,
-      pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
-      lessonId: meta.lesson_id ?? null,
-      testCentre: meta.test_centre ?? meta.pickup_location ?? meta.location ?? null,
-      testDate: meta.test_date ?? meta.lesson_date ?? null,
-      testTime: meta.test_time ?? meta.lesson_time ?? null,
-      testResult: meta.test_result ?? meta.result ?? null,
-      isToday: type === "test_today" || meta.is_today === true,
+      pupilId: refType === "pupil" ? refId : null,
+      pupilName: body.split(" has their")[0]?.trim() || null,
+      testCentre: body.split(" at ").slice(-1)[0]?.trim() || null,
+      testTime: body.match(/\d{1,2}:\d{2}/)?.[0] || null,
+      testDate: "Tomorrow",
+      testResult: null,
+      isToday: false,
+      pupilPhone: null,
       options: [],
     };
   }
 
-  if (type === "managed_enquiry" || type === "cancellation_request") {
-    return { directNav: "/more" };
-  }
-
-  if (type === "google_calendar" || type === "calendar_connected") {
-    return { directNav: "/calendarsync" };
-  }
-
-  if (type === "job_offer" || type === "new_job" || type === "job" || type === "cover_request") {
+  // Pupil gone quiet — "Sabrina Evans hasn't had a lesson in 30 days"
+  if (type === "pupil_churn") {
+    const pupilId = refType === "pupil" ? refId : null;
     return {
-      isJobOffer: true,
-      jobId: meta.job_id ?? meta.id ?? null,
-      jobTitle: meta.title ?? meta.job_title ?? "Job offer",
-      area: meta.area ?? meta.postcode ?? meta.location ?? null,
-      transmission: meta.transmission ?? meta.car_type ?? null,
-      lessonDate: meta.lesson_date ?? meta.date ?? null,
-      lessonTime: meta.lesson_time ?? meta.time ?? null,
-      duration: meta.duration ?? meta.hours ?? null,
-      rate: meta.rate ?? meta.hourly_rate ?? null,
-      description: meta.description ?? meta.notes ?? null,
-      postedBy: meta.posted_by ?? meta.instructor_name ?? null,
-      expiresAt: meta.expires_at ?? null,
-      options: [],
+      isGoneQuiet: true,
+      pupilId,
+      pupilName: body.split("hasn't")[0]?.trim() || null,
+      daysSinceLesson: Number(body.match(/\d+/)?.[0]) || null,
+      lastLessonDate: null,
+      pupilPhone: null,
+      options: pupilId
+        ? [{ label: "View pupil", route: `/pupils/${pupilId}`, icon: "user" }]
+        : [{ label: "Go to Pupils", route: "/pupils", icon: "user" }],
     };
   }
 
-  // Bottom sheet with options for anything else
   return {
     options: [
       { label: "Go to Schedule", route: "/schedule", icon: "calendar" },
-      { label: "Go to Messages", route: "/messages", icon: "message" },
-      { label: "Go to Dashboard", route: "/home", icon: "home" },
+      { label: "Go to Dashboard", route: "/", icon: "home" },
     ],
   };
 }
