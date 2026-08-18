@@ -114,7 +114,10 @@ function EditLessonPage() {
   const [searchingCentres, setSearchingCentres] = useState(false);
   const [testTime, setTestTime] = useState("");
   const [status, setStatus] = useState("confirmed");
+  const [isEvent, setIsEvent] = useState(false);
+  const [eventTitle, setEventTitle] = useState("");
   const [pickupLocation, setPickupLocation] = useState("");
+
   const [pickupAddress, setPickupAddress] = useState("");
   const [pickupPostcode, setPickupPostcode] = useState("");
   const [notes, setNotes] = useState("");
@@ -157,7 +160,7 @@ function EditLessonPage() {
           .order("name", { ascending: true, nullsFirst: false }),
         supabase
           .from("lessons")
-          .select("pupil_id, lesson_type, lesson_date, lesson_time, duration_minutes, status, notes, pickup_location, payment_status, amount_due")
+          .select("pupil_id, event_title, lesson_type, lesson_date, lesson_time, duration_minutes, status, notes, pickup_location, payment_status, amount_due")
           .eq("id", id)
           .is("deleted_at", null)
           .maybeSingle(),
@@ -187,7 +190,8 @@ function EditLessonPage() {
         setError(lessonRes.error.message);
       } else if (lessonRes.data) {
         const l = lessonRes.data as {
-          pupil_id: string;
+          pupil_id: string | null;
+          event_title: string | null;
           lesson_type: string | null;
           lesson_date: string;
           lesson_time: string;
@@ -198,7 +202,10 @@ function EditLessonPage() {
           payment_status: string | null;
           amount_due: number | null;
         };
-        setPupilId(l.pupil_id);
+        const isEventLesson = l.lesson_type === 'event';
+        setIsEvent(isEventLesson);
+        setEventTitle(l.event_title ?? "");
+        setPupilId(l.pupil_id ?? "");
         setDate(l.lesson_date);
         setTime((l.lesson_time ?? "").slice(0, 5));
         const isTest = l.lesson_type === 'test';
@@ -225,7 +232,6 @@ function EditLessonPage() {
         setPaymentStatus((l.payment_status as PayStatus) ?? "unpaid");
         setAmountDue(l.amount_due != null ? Number(l.amount_due) : null);
 
-
         // Fetch pupil account_balance for recordPayment reconciliation.
         if (l.pupil_id) {
           const { data: pRow } = await supabase
@@ -241,6 +247,7 @@ function EditLessonPage() {
       setLoading(false);
     })();
   }, [id]);
+
 
   async function refreshPayment(pupil: string) {
     const [{ data: lRow }, { data: pRow }] = await Promise.all([
@@ -335,14 +342,25 @@ function EditLessonPage() {
     const { error: updErr } = await supabase
       .from("lessons")
       .update({
-        pupil_id: pupilId,
+        ...(isEvent
+          ? {
+              pupil_id: null,
+              event_title: eventTitle.trim() || null,
+              lesson_type: 'event' as const,
+              amount_due: 0,
+              payment_status: 'paid' as const,
+              duration_minutes: duration,
+            }
+          : {
+              pupil_id: pupilId,
+              event_title: null,
+              lesson_type: isTestDay ? ('test' as const) : ('lesson' as const),
+              duration_minutes: isTestDay ? TEST_TOTAL_MINUTES : duration,
+            }),
         lesson_date: date,
-        // Test days start 1h before the test time and run 90m after it.
         lesson_time: `${
           isTestDay && testTime ? testStartTime(testTime) ?? testTime : time
         }:00`,
-        duration_minutes: isTestDay ? TEST_TOTAL_MINUTES : duration,
-        lesson_type: isTestDay ? 'test' : 'lesson',
         status,
         pickup_location: isTestDay ? testCentre.trim() || null : pickupLocation.trim() || null,
         notes:
@@ -350,6 +368,7 @@ function EditLessonPage() {
             ? withTestTimeNote(notes.trim() || null, testTime)
             : notes.trim() || null,
       })
+
 
       .eq("id", id);
     if (updErr) {
@@ -441,23 +460,116 @@ function EditLessonPage() {
           }}
           className="flex flex-col gap-4 px-4 pt-4"
         >
-          <div>
-            <FieldLabel htmlFor="pupil">Pupil</FieldLabel>
-            <select
-              id="pupil"
-              value={pupilId}
-              onChange={(e) => setPupilId(e.target.value)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-              style={fieldBorder}
+          {/* Lesson / Event toggle */}
+          <div
+            style={{
+              display: "flex",
+              gap: 0,
+              background: "#E5E5EA",
+              borderRadius: 14,
+              padding: 4,
+              margin: "0 16px 16px",
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setIsEvent(false);
+                if (duration === -1) setIsTestDay(true);
+              }}
+              style={{
+                flex: 1,
+                padding: "8px 0",
+                borderRadius: 10,
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: 13,
+                fontWeight: 600,
+                background: !isEvent ? "#fff" : "transparent",
+                color: !isEvent ? "#0B1F3A" : "#6B6B6F",
+                boxShadow: !isEvent ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+              }}
             >
-              <option value="">Select a pupil</option>
-              {pupils.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
+              Lesson
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsEvent(true);
+                setIsTestDay(false);
+                if (duration === -1) setDuration(60);
+              }}
+              style={{
+                flex: 1,
+                padding: "8px 0",
+                borderRadius: 10,
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: 13,
+                fontWeight: 600,
+                background: isEvent ? "#fff" : "transparent",
+                color: isEvent ? "#0B1F3A" : "#6B6B6F",
+                boxShadow: isEvent ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+              }}
+            >
+              Event
+            </button>
           </div>
+
+          {!isEvent ? (
+            <div>
+              <FieldLabel htmlFor="pupil">Pupil</FieldLabel>
+              <select
+                id="pupil"
+                value={pupilId}
+                onChange={(e) => setPupilId(e.target.value)}
+                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
+                style={fieldBorder}
+              >
+                <option value="">Select a pupil</option>
+                {pupils.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <div>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#9CA3AF",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  marginBottom: 6,
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                EVENT TITLE
+              </div>
+              <input
+                value={eventTitle}
+                onChange={(e) => setEventTitle(e.target.value)}
+                placeholder="e.g. Team meeting, CPD training, Admin day"
+                style={{
+                  width: "100%",
+                  background: "#fff",
+                  border: "1px solid #E4E8EF",
+                  borderRadius: 10,
+                  padding: "10px 12px",
+                  fontSize: 14,
+                  fontFamily: "Poppins, sans-serif",
+                  outline: "none",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+          )}
+
 
           <Input
             label="Date"
@@ -482,41 +594,46 @@ function EditLessonPage() {
               flexWrap: 'wrap',
               marginBottom: 12,
             }}>
-              {DURATION_OPTIONS.map(opt => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => {
-                    setDuration(opt.value);
-                    setIsTestDay(opt.value === -1);
-                    if (opt.value !== -1) {
-                      setTestCentre('');
-                    }
-                  }}
-                  style={{
-                    height: 34,
-                    borderRadius: 20,
-                    padding: '0 16px',
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    border: duration === opt.value
-                      ? 'none'
-                      : '1px solid #E4E8EF',
-                    background: duration === opt.value
-                      ? opt.value === -1
-                        ? '#CC2229'
-                        : '#0B1F3A'
-                      : '#fff',
-                    color: duration === opt.value
-                      ? '#fff' : '#6B7686',
-                    fontFamily: 'Poppins, sans-serif',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {opt.label}
-                </button>
-              ))}
+              {DURATION_OPTIONS.map((opt) => {
+                if (isEvent && opt.value === -1) return null;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => {
+                      setDuration(opt.value);
+                      setIsTestDay(opt.value === -1);
+                      setIsEvent(false);
+                      if (opt.value !== -1) {
+                        setTestCentre('');
+                      }
+                    }}
+                    style={{
+                      height: 34,
+                      borderRadius: 20,
+                      padding: '0 16px',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      border: duration === opt.value
+                        ? 'none'
+                        : '1px solid #E4E8EF',
+                      background: duration === opt.value
+                        ? opt.value === -1
+                          ? '#CC2229'
+                          : '#0B1F3A'
+                        : '#fff',
+                      color: duration === opt.value
+                        ? '#fff' : '#6B7686',
+                      fontFamily: 'Poppins, sans-serif',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+
             </div>
             {isTestDay && (
               <div style={{ marginBottom: 16 }}>
@@ -679,7 +796,7 @@ function EditLessonPage() {
               value={status}
               onChange={(e) => {
                 const val = e.target.value;
-                if (val === "cancelled") {
+                if (val === "cancelled" && !isEvent) {
                   setPreviousStatus(status);
                   setStatus("cancelled");
                   setShowCancelConfirm(true);
@@ -1078,7 +1195,7 @@ function EditLessonPage() {
           </div>
 
           <div>
-            <FieldLabel htmlFor="pickupLocation">Pickup location</FieldLabel>
+            <FieldLabel htmlFor="pickupLocation">{isEvent ? "Location (optional)" : "Pickup location"}</FieldLabel>
             <AddressLookup
               initialAddress={pickupAddress}
               initialPostcode={pickupPostcode}
@@ -1092,90 +1209,93 @@ function EditLessonPage() {
           </div>
 
           {/* Payment status + Log payment */}
-          <div>
-            <FieldLabel htmlFor="paymentStatus">Payment status</FieldLabel>
-            <div
-              className="h-11 w-full rounded-lg px-3 bg-white flex items-center justify-between"
-              style={fieldBorder}
-            >
-              <div className="flex items-center gap-2">
-                <PaymentStatusBadge status={paymentStatus} />
-                {amountDue != null && (
-                  <span className="text-[12px] text-[#6B7280]">
-                    £{amountDue.toFixed(2)} due
-                  </span>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={() => setPayOpen((v) => !v)}
-                className="text-[13px] font-semibold"
-                style={{ color: "#1877D6" }}
-              >
-                {payOpen ? "Cancel" : "Log payment"}
-              </button>
-            </div>
-
-            {payOpen && (
+          {!isEvent && (
+            <div>
+              <FieldLabel htmlFor="paymentStatus">Payment status</FieldLabel>
               <div
-                className="mt-2 rounded-lg bg-white p-3 flex flex-col gap-2"
+                className="h-11 w-full rounded-lg px-3 bg-white flex items-center justify-between"
                 style={fieldBorder}
               >
-                <div className="flex gap-2">
-                  <div
-                    className="flex items-center rounded-lg px-3 flex-1"
-                    style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
-                  >
-                    <IconCurrencyPound stroke={1.5} size={16} color="#8A93A3" />
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      value={payAmount}
-                      onChange={(e) => setPayAmount(e.target.value)}
-                      placeholder="Amount"
-                      className="w-full py-2 px-2 text-[14px] focus:outline-none bg-transparent text-[#0B1F3A]"
-                    />
-                  </div>
-                  <select
-                    value={payMethod}
-                    onChange={(e) => setPayMethod(e.target.value)}
-                    className="rounded-lg px-3 py-2 text-[14px] focus:outline-none text-[#0B1F3A]"
-                    style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
-                  >
-                    <option value="cash">Cash</option>
-                    <option value="bank_transfer">Bank</option>
-                    <option value="card">Card</option>
-                    <option value="other">Other</option>
-                  </select>
+                <div className="flex items-center gap-2">
+                  <PaymentStatusBadge status={paymentStatus} />
+                  {amountDue != null && (
+                    <span className="text-[12px] text-[#6B7280]">
+                      £{amountDue.toFixed(2)} due
+                    </span>
+                  )}
                 </div>
-                <textarea
-                  value={payNotes}
-                  onChange={(e) => setPayNotes(e.target.value)}
-                  placeholder="Notes (optional)"
-                  rows={2}
-                  className="w-full px-3 py-2 rounded-lg text-[14px] resize-none focus:outline-none text-[#0B1F3A]"
-                  style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
-                />
                 <button
                   type="button"
-                  disabled={savingPayment || !payAmount || Number(payAmount) <= 0}
-                  onClick={submitPayment}
-                  className="h-10 rounded-lg text-white text-[14px] font-semibold"
-                  style={{
-                    backgroundColor: "#1877D6",
-                    opacity:
-                      savingPayment || !payAmount || Number(payAmount) <= 0 ? 0.5 : 1,
-                  }}
+                  onClick={() => setPayOpen((v) => !v)}
+                  className="text-[13px] font-semibold"
+                  style={{ color: "#1877D6" }}
                 >
-                  {savingPayment
-                    ? "Recording…"
-                    : !payAmount || Number(payAmount) <= 0
-                      ? "Enter amount"
-                      : `Record £${Number(payAmount).toFixed(2)}`}
+                  {payOpen ? "Cancel" : "Log payment"}
                 </button>
               </div>
-            )}
-          </div>
+
+              {payOpen && (
+                <div
+                  className="mt-2 rounded-lg bg-white p-3 flex flex-col gap-2"
+                  style={fieldBorder}
+                >
+                  <div className="flex gap-2">
+                    <div
+                      className="flex items-center rounded-lg px-3 flex-1"
+                      style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
+                    >
+                      <IconCurrencyPound stroke={1.5} size={16} color="#8A93A3" />
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        value={payAmount}
+                        onChange={(e) => setPayAmount(e.target.value)}
+                        placeholder="Amount"
+                        className="w-full py-2 px-2 text-[14px] focus:outline-none bg-transparent text-[#0B1F3A]"
+                      />
+                    </div>
+                    <select
+                      value={payMethod}
+                      onChange={(e) => setPayMethod(e.target.value)}
+                      className="rounded-lg px-3 py-2 text-[14px] focus:outline-none text-[#0B1F3A]"
+                      style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
+                    >
+                      <option value="cash">Cash</option>
+                      <option value="bank_transfer">Bank</option>
+                      <option value="card">Card</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <textarea
+                    value={payNotes}
+                    onChange={(e) => setPayNotes(e.target.value)}
+                    placeholder="Notes (optional)"
+                    rows={2}
+                    className="w-full px-3 py-2 rounded-lg text-[14px] resize-none focus:outline-none text-[#0B1F3A]"
+                    style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
+                  />
+                  <button
+                    type="button"
+                    disabled={savingPayment || !payAmount || Number(payAmount) <= 0}
+                    onClick={submitPayment}
+                    className="h-10 rounded-lg text-white text-[14px] font-semibold"
+                    style={{
+                      backgroundColor: "#1877D6",
+                      opacity:
+                        savingPayment || !payAmount || Number(payAmount) <= 0 ? 0.5 : 1,
+                    }}
+                  >
+                    {savingPayment
+                      ? "Recording…"
+                      : !payAmount || Number(payAmount) <= 0
+                        ? "Enter amount"
+                        : `Record £${Number(payAmount).toFixed(2)}`}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
 
           <div>
             <FieldLabel htmlFor="notes">Notes</FieldLabel>
