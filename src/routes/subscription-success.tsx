@@ -400,7 +400,7 @@ function SubscriptionSuccessPage() {
       <div
         style={{
           backgroundColor: "#0B1F3A",
-          borderRadius: "0 0 28px 28px",
+          borderRadius: "0 0 8px 8px",
           padding: "20px 16px",
           textAlign: "center",
           color: "#fff",

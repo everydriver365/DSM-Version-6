@@ -30,7 +30,7 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         display: "flex",
         alignItems: "center",
         gap: 12,
-        borderRadius: "0 0 28px 28px",
+        borderRadius: "0 0 8px 8px",
       }}
     >
       <button

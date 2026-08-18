@@ -486,7 +486,7 @@ function CommunityPage() {
       <div style={{
         background: "#0B1F3A", padding: "16px", display: "flex",
         alignItems: "center", gap: 12, color: "white",
-        borderRadius: "0 0 20px 20px",
+        borderRadius: "0 0 8px 8px",
       }}>
         <button
           type="button"

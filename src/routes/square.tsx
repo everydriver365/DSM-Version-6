@@ -207,7 +207,7 @@ function SquarePage() {
           alignItems: "center",
           gap: 12,
           padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
-          borderRadius: "0 0 28px 28px",
+          borderRadius: "0 0 8px 8px",
         }}
       >
         <button

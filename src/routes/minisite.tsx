@@ -704,7 +704,7 @@ function MiniSitePage() {
       <div
         style={{
           background: "#0B1F3A",
-          borderRadius: "0 0 28px 28px",
+          borderRadius: "0 0 8px 8px",
           padding: "calc(16px + env(safe-area-inset-top, 0px)) 16px 22px",
           display: "flex",
           alignItems: "center",

@@ -31,7 +31,7 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         background: "#0B1F3A",
         color: "#fff",
         padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 16px",
-        borderRadius: "0 0 28px 28px",
+        borderRadius: "0 0 8px 8px",
         display: "flex",
         alignItems: "center",
         gap: 12,

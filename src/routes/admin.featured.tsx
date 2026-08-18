@@ -37,7 +37,7 @@ function TopBar({ onBack }: { onBack: () => void }) {
         zIndex: 40,
         background: "#0B1F3A",
         color: "#fff",
-        borderRadius: "0 0 28px 28px",
+        borderRadius: "0 0 8px 8px",
         padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 18px",
         display: "flex",
         alignItems: "center",

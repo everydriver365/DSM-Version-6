@@ -4728,7 +4728,7 @@ function HomePage() {
           style={{
             margin: 0,
             background: '#FFFFFF',
-            borderRadius: upcoming && heroExpanded ? '8px 8px 0 0' : 20,
+            borderRadius: upcoming && heroExpanded ? '8px 8px 0 0' : 8,
             boxShadow: '0 8px 24px rgba(15,32,68,0.12)',
             overflow: 'hidden',
             fontFamily: 'Poppins, sans-serif',

@@ -421,7 +421,7 @@ function AvailabilitySettingsPage() {
     <div style={{ minHeight: "100vh", background: "#F5F7FA", paddingBottom: 40, ...FONT }}>
       <div style={{
         position: "sticky", top: 0, zIndex: 40, display: "flex", alignItems: "center", gap: 12,
-        background: "#0B1F3A", height: 52, padding: "0 16px", borderRadius: "0 0 28px 28px",
+        background: "#0B1F3A", height: 52, padding: "0 16px", borderRadius: "0 0 8px 8px",
       }}>
         <button
           type="button"

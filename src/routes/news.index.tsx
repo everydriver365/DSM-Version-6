@@ -379,7 +379,7 @@ function NewsIndexPage() {
           height: TOP_BAR_SPACER,
           paddingTop: "max(env(safe-area-inset-top, 0px), 24px)",
           backgroundColor: "#0B1F3A",
-          borderRadius: "0 0 28px 28px",
+          borderRadius: "0 0 8px 8px",
         }}
       >
         <button

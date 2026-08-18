@@ -983,7 +983,7 @@ function EnquiriesPage() {
             zIndex: 2,
             background: "#0B1F3A",
             padding: "calc(12px + env(safe-area-inset-top, 0px)) 16px 16px",
-            borderRadius: "0 0 28px 28px",
+            borderRadius: "0 0 8px 8px",
             display: "flex",
             alignItems: "center",
             gap: 12,
