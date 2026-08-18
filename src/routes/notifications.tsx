@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconCalendar, IconChecks, IconChevronRight, IconCircleX, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconRefresh, IconSend, IconTrash, IconUsers, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -42,6 +42,13 @@ function dateGroupLabel(d: Date, today: Date, yesterday: Date) {
   return d
     .toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })
     .toUpperCase();
+}
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
 }
 function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("en-GB", {
@@ -88,6 +95,14 @@ function getNotificationAction(
   threadId?: string | null;
   senderName?: string | null;
   messagePreview?: string | null;
+  isCancellation?: boolean;
+  pupilId?: string | null;
+  lessonId?: string | null;
+  pupilName?: string | null;
+  pupilPhone?: string | null;
+  cancellationReason?: string | null;
+  lessonDate?: string | null;
+  lessonTime?: string | null;
 } {
   const type = notif.type ?? "";
   const meta = notif.metadata ?? {};
@@ -137,10 +152,23 @@ function getNotificationAction(
     return { directNav: "/payments" };
   }
 
-  if (type === "lesson" || type === "lesson_reminder" || type === "lesson_cancelled") {
-    const lessonId = meta.lesson_id ?? notif.reference_id;
-    if (lessonId) {
-      return { directNav: `/lessons/${lessonId}` };
+  if (type === "lesson_cancelled" || type === "cancellation") {
+    return {
+      isCancellation: true,
+      pupilId: meta.pupil_id ?? null,
+      lessonId: meta.lesson_id ?? null,
+      pupilName: meta.pupil_name ?? meta.pupil ?? null,
+      pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
+      cancellationReason: meta.cancellation_reason ?? meta.reason ?? null,
+      lessonDate: meta.lesson_date ?? null,
+      lessonTime: meta.lesson_time ?? null,
+      options: [],
+    };
+  }
+
+  if (type === "lesson" || type === "lesson_reminder") {
+    if (meta.lesson_id) {
+      return { directNav: `/lessons/${meta.lesson_id}` };
     }
     return { directNav: "/schedule" };
   }
@@ -192,6 +220,14 @@ function NotificationsPage() {
     threadId?: string | null;
     senderName?: string | null;
     messagePreview?: string | null;
+    isCancellation?: boolean;
+    pupilId?: string | null;
+    lessonId?: string | null;
+    pupilName?: string | null;
+    pupilPhone?: string | null;
+    cancellationReason?: string | null;
+    lessonDate?: string | null;
+    lessonTime?: string | null;
   } | null>(null);
 
   const [quickReply, setQuickReply] = useState("");
@@ -477,6 +513,14 @@ function NotificationsPage() {
                               threadId: action.threadId,
                               senderName: action.senderName,
                               messagePreview: action.messagePreview,
+                              isCancellation: action.isCancellation,
+                              pupilId: action.pupilId,
+                              lessonId: action.lessonId,
+                              pupilName: action.pupilName,
+                              pupilPhone: action.pupilPhone,
+                              cancellationReason: action.cancellationReason,
+                              lessonDate: action.lessonDate,
+                              lessonTime: action.lessonTime,
                             });
                           }
                         }}
@@ -801,113 +845,160 @@ function NotificationsPage() {
                   </button>
                 </div>
               </div>
-            ) : (
-              <div
-                style={{
-                  margin: "16px 16px 8px",
-                  background: "#fff",
-                  borderRadius: 16,
-                  border: "1px solid #E4E8EF",
-                  padding: "14px 16px",
-                }}
-              >
+            ) : actionSheet.isCancellation ? (
+              <>
                 <div
                   style={{
-                    fontSize: 14,
-                    fontWeight: 700,
-                    color: "#0B1F3A",
+                    margin: "16px 16px 8px",
+                    background: "#FEE2E2",
+                    borderRadius: 16,
+                    border: "1px solid #FECACA",
+                    padding: "14px 16px",
+                  }}
+                >
+                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: "#FEE2E2",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconCalendarOff size={18} color="#CC2229" stroke={1.5} />
+                    </div>
+                    <div>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 700,
+                          color: "#CC2229",
+                          ...POPPINS,
+                        }}
+                      >
+                        Lesson cancelled
+                      </div>
+                      {actionSheet.lessonDate && actionSheet.lessonTime && (
+                        <div
+                          style={{
+                            fontSize: 11,
+                            color: "rgba(204, 34, 41, 0.7)",
+                            marginTop: 2,
+                            ...POPPINS,
+                          }}
+                        >
+                          {formatDate(actionSheet.lessonDate)} at {actionSheet.lessonTime}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {actionSheet.pupilName && (
+                    <div
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "#0B1F3A",
+                        marginTop: 10,
+                        ...POPPINS,
+                      }}
+                    >
+                      Cancelled by {actionSheet.pupilName}
+                    </div>
+                  )}
+                  {actionSheet.cancellationReason ? (
+                    <div
+                      style={{
+                        marginTop: 8,
+                        background: "rgba(255,255,255,0.6)",
+                        borderRadius: 10,
+                        padding: "10px 12px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: 11,
+                          fontWeight: 600,
+                          color: "#CC2229",
+                          marginBottom: 4,
+                          ...POPPINS,
+                        }}
+                      >
+                        Reason:
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 13,
+                          color: "#991B1B",
+                          lineHeight: 1.5,
+                          ...POPPINS,
+                        }}
+                      >
+                        {actionSheet.cancellationReason}
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        fontSize: 13,
+                        color: "rgba(204, 34, 41, 0.6)",
+                        fontStyle: "italic",
+                        marginTop: 8,
+                        ...POPPINS,
+                      }}
+                    >
+                      No reason provided
+                    </div>
+                  )}
+                </div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#9CA3AF",
+                    textTransform: "uppercase",
+                    padding: "8px 16px 6px",
                     ...POPPINS,
                   }}
                 >
-                  {typeTitle(actionSheet.notif.type, actionSheet.notif.title)}
+                  WHAT WOULD YOU LIKE TO DO?
                 </div>
-                {actionSheet.notif.body && (
+                <div
+                  style={{
+                    margin: "0 16px",
+                    background: "#fff",
+                    borderRadius: 16,
+                    border: "1px solid #E4E8EF",
+                    overflow: "hidden",
+                  }}
+                >
                   <div
-                    style={{
-                      fontSize: 12,
-                      color: "#6B7686",
-                      marginTop: 4,
-                      ...POPPINS,
-                    }}
-                  >
-                    {actionSheet.notif.body}
-                  </div>
-                )}
-              </div>
-            )}
-            <div
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                color: "#9CA3AF",
-                textTransform: "uppercase",
-                padding: "8px 16px 6px",
-                ...POPPINS,
-              }}
-            >
-              GO TO
-            </div>
-            <div
-              style={{
-                margin: "0 16px",
-                background: "#fff",
-                borderRadius: 16,
-                border: "1px solid #E4E8EF",
-                overflow: "hidden",
-              }}
-            >
-              {actionSheet.options.map((option, idx) => {
-                const isLast = idx === actionSheet.options.length - 1;
-                let iconNode: ReactNode;
-                let iconBg: string;
-                switch (option.icon) {
-                  case "reply":
-                    iconNode = <IconSend size={20} color="#1877D6" />;
-                    iconBg = "#EFF6FF";
-                    break;
-                  case "calendar":
-                    iconNode = <IconCalendar size={20} color="#1877D6" />;
-                    iconBg = "#EFF6FF";
-                    break;
-                  case "message":
-                    iconNode = <IconMessage size={20} color="#7C3AED" />;
-                    iconBg = "#EDE9FE";
-                    break;
-                  case "home":
-                    iconNode = <IconHome size={20} color="#15803D" />;
-                    iconBg = "#DCFCE7";
-                    break;
-                  case "pupils":
-                    iconNode = <IconUsers size={20} color="#1877D6" />;
-                    iconBg = "#EFF6FF";
-                    break;
-                  case "payments":
-                    iconNode = <IconCurrencyPound size={20} color="#D68A1B" />;
-                    iconBg = "#FEF3C7";
-                    break;
-                  case "enquiries":
-                    iconNode = <IconInbox size={20} color="#CC2229" />;
-                    iconBg = "#FEE2E2";
-                    break;
-                  default:
-                    iconNode = <IconBell size={20} color="#6B7280" />;
-                    iconBg = "#F3F4F6";
-                }
-                return (
-                  <div
-                    key={option.route}
                     style={{
                       display: "flex",
                       gap: 12,
                       alignItems: "center",
                       padding: "14px 16px",
-                      borderBottom: isLast ? undefined : "1px solid #E4E8EF",
+                      borderBottom: "1px solid #E4E8EF",
                       cursor: "pointer",
                     }}
                     onClick={() => {
+                      if (actionSheet.pupilPhone) {
+                        window.open(
+                          `sms:${actionSheet.pupilPhone}?body=${encodeURIComponent(
+                            "Hi " +
+                              (actionSheet.pupilName ?? "") +
+                              ", sorry to hear you need to cancel. Would you like to reschedule?"
+                          )}`,
+                          "_blank"
+                        );
+                      } else {
+                        toast.error("No phone number on record");
+                      }
                       setActionSheet(null);
                       setQuickReply("");
-                      navigate({ to: option.route as never });
                     }}
                   >
                     <div
@@ -915,53 +1006,342 @@ function NotificationsPage() {
                         width: 36,
                         height: 36,
                         borderRadius: "50%",
-                        background: iconBg,
+                        background: "#DCFCE7",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         flexShrink: 0,
                       }}
                     >
-                      {iconNode}
+                      <IconMessage size={18} color="#15803D" stroke={1.5} />
                     </div>
-                    <div
-                      style={{
-                        fontSize: 14,
-                        fontWeight: 600,
-                        color: "#0B1F3A",
-                        flex: 1,
-                        ...POPPINS,
-                      }}
-                    >
-                      {option.label}
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          ...POPPINS,
+                        }}
+                      >
+                        Send a text
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                          marginTop: 2,
+                          ...POPPINS,
+                        }}
+                      >
+                        Message {actionSheet.pupilName ?? "pupil"} about rescheduling
+                      </div>
                     </div>
                     <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
                   </div>
-                );
-              })}
-            </div>
-            <button
-              type="button"
-              style={{
-                margin: "12px 16px 0",
-                width: "calc(100% - 32px)",
-                background: "#fff",
-                color: "#0B1F3A",
-                borderRadius: 20,
-                padding: 13,
-                fontSize: 14,
-                fontWeight: 700,
-                border: "1px solid #E4E8EF",
-                cursor: "pointer",
-                ...POPPINS,
-              }}
-              onClick={() => {
-                setActionSheet(null);
-                setQuickReply("");
-              }}
-            >
-              Cancel
-            </button>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      borderBottom: "1px solid #E4E8EF",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setActionSheet(null);
+                      setQuickReply("");
+                      navigate({
+                        to: "/lessons/new" as never,
+                        search: (actionSheet.pupilId
+                          ? { pupilId: actionSheet.pupilId }
+                          : undefined) as any,
+                      });
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: "#EFF6FF",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconCalendarPlus size={18} color="#1877D6" stroke={1.5} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          ...POPPINS,
+                        }}
+                      >
+                        Reschedule lesson
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                          marginTop: 2,
+                          ...POPPINS,
+                        }}
+                      >
+                        Book a new lesson for {actionSheet.pupilName ?? "this pupil"}
+                      </div>
+                    </div>
+                    <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setActionSheet(null);
+                      setQuickReply("");
+                      if (actionSheet.pupilId) {
+                        navigate({
+                          to: `/pupils/${actionSheet.pupilId}` as never,
+                        });
+                      } else {
+                        navigate({ to: "/pupils" as never });
+                      }
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: "#EDE9FE",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconUser size={18} color="#7C3AED" stroke={1.5} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          ...POPPINS,
+                        }}
+                      >
+                        View pupil's lessons
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                          marginTop: 2,
+                          ...POPPINS,
+                        }}
+                      >
+                        {actionSheet.pupilName ?? "Pupil"}'s lesson history
+                      </div>
+                    </div>
+                    <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  style={{
+                    margin: "12px 16px 0",
+                    width: "calc(100% - 32px)",
+                    background: "#fff",
+                    color: "#0B1F3A",
+                    borderRadius: 20,
+                    padding: 13,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    border: "1px solid #E4E8EF",
+                    cursor: "pointer",
+                    ...POPPINS,
+                  }}
+                  onClick={() => {
+                    setActionSheet(null);
+                    setQuickReply("");
+                  }}
+                >
+                  Dismiss
+                </button>
+              </>
+            ) : (
+              <>
+                <div
+                  style={{
+                    margin: "16px 16px 8px",
+                    background: "#fff",
+                    borderRadius: 16,
+                    border: "1px solid #E4E8EF",
+                    padding: "14px 16px",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: "#0B1F3A",
+                      ...POPPINS,
+                    }}
+                  >
+                    {typeTitle(actionSheet.notif.type, actionSheet.notif.title)}
+                  </div>
+                  {actionSheet.notif.body && (
+                    <div
+                      style={{
+                        fontSize: 12,
+                        color: "#6B7686",
+                        marginTop: 4,
+                        ...POPPINS,
+                      }}
+                    >
+                      {actionSheet.notif.body}
+                    </div>
+                  )}
+                </div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#9CA3AF",
+                    textTransform: "uppercase",
+                    padding: "8px 16px 6px",
+                    ...POPPINS,
+                  }}
+                >
+                  GO TO
+                </div>
+                <div
+                  style={{
+                    margin: "0 16px",
+                    background: "#fff",
+                    borderRadius: 16,
+                    border: "1px solid #E4E8EF",
+                    overflow: "hidden",
+                  }}
+                >
+                  {actionSheet.options.map((option, idx) => {
+                    const isLast = idx === actionSheet.options.length - 1;
+                    let iconNode: ReactNode;
+                    let iconBg: string;
+                    switch (option.icon) {
+                      case "reply":
+                        iconNode = <IconSend size={20} color="#1877D6" />;
+                        iconBg = "#EFF6FF";
+                        break;
+                      case "calendar":
+                        iconNode = <IconCalendar size={20} color="#1877D6" />;
+                        iconBg = "#EFF6FF";
+                        break;
+                      case "message":
+                        iconNode = <IconMessage size={20} color="#7C3AED" />;
+                        iconBg = "#EDE9FE";
+                        break;
+                      case "home":
+                        iconNode = <IconHome size={20} color="#15803D" />;
+                        iconBg = "#DCFCE7";
+                        break;
+                      case "pupils":
+                        iconNode = <IconUsers size={20} color="#1877D6" />;
+                        iconBg = "#EFF6FF";
+                        break;
+                      case "payments":
+                        iconNode = <IconCurrencyPound size={20} color="#D68A1B" />;
+                        iconBg = "#FEF3C7";
+                        break;
+                      case "enquiries":
+                        iconNode = <IconInbox size={20} color="#CC2229" />;
+                        iconBg = "#FEE2E2";
+                        break;
+                      default:
+                        iconNode = <IconBell size={20} color="#6B7280" />;
+                        iconBg = "#F3F4F6";
+                    }
+                    return (
+                      <div
+                        key={option.route}
+                        style={{
+                          display: "flex",
+                          gap: 12,
+                          alignItems: "center",
+                          padding: "14px 16px",
+                          borderBottom: isLast ? undefined : "1px solid #E4E8EF",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => {
+                          setActionSheet(null);
+                          setQuickReply("");
+                          navigate({ to: option.route as never });
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 36,
+                            height: 36,
+                            borderRadius: "50%",
+                            background: iconBg,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                          }}
+                        >
+                          {iconNode}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 600,
+                            color: "#0B1F3A",
+                            flex: 1,
+                            ...POPPINS,
+                          }}
+                        >
+                          {option.label}
+                        </div>
+                        <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                      </div>
+                    );
+                  })}
+                </div>
+                <button
+                  type="button"
+                  style={{
+                    margin: "12px 16px 0",
+                    width: "calc(100% - 32px)",
+                    background: "#fff",
+                    color: "#0B1F3A",
+                    borderRadius: 20,
+                    padding: 13,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    border: "1px solid #E4E8EF",
+                    cursor: "pointer",
+                    ...POPPINS,
+                  }}
+                  onClick={() => {
+                    setActionSheet(null);
+                    setQuickReply("");
+                  }}
+                >
+                  Cancel
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
