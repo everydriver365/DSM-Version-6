@@ -492,6 +492,250 @@ function NewPupilPage() {
           </div>
         </form>
       </div>
+
+      {showContactPicker && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 300,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "flex-end",
+            fontFamily: "Poppins, sans-serif",
+          }}
+          onClick={() => setShowContactPicker(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#EEF2F7",
+              borderRadius: "22px 22px 0 0",
+              padding: "0 0 32px",
+              maxHeight: "85vh",
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div
+              style={{
+                width: 36,
+                height: 5,
+                borderRadius: 3,
+                background: "#D1D1D6",
+                margin: "12px auto 0",
+              }}
+            />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "16px",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: 18,
+                  fontWeight: 800,
+                  color: "#0B1F3A",
+                  margin: 0,
+                }}
+              >
+                Select contact
+              </p>
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => setShowContactPicker(false)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  padding: 4,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconX size={20} color="#6B7686" stroke={2} />
+              </button>
+            </div>
+
+            <div style={{ position: "relative", margin: "0 16px 8px" }}>
+              <IconSearch
+                size={16}
+                color="#9CA3AF"
+                stroke={2}
+                style={{
+                  position: "absolute",
+                  left: 12,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  pointerEvents: "none",
+                }}
+              />
+              <input
+                type="text"
+                placeholder="Search contacts..."
+                value={contactSearch}
+                onChange={(e) => setContactSearch(e.target.value)}
+                style={{
+                  background: "#fff",
+                  border: "1px solid #E4E8EF",
+                  borderRadius: 12,
+                  padding: "10px 14px 10px 38px",
+                  fontSize: 14,
+                  fontFamily: "Poppins, sans-serif",
+                  outline: "none",
+                  width: "calc(100% - 32px)",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+
+            <div
+              style={{
+                flex: 1,
+                overflowY: "auto",
+                padding: "0 16px",
+              }}
+            >
+              {(() => {
+                const filteredContacts = contactsList
+                  .filter((c) => {
+                    const name =
+                      c.name?.display ??
+                      `${c.name?.given ?? ""} ${c.name?.family ?? ""}`.trim();
+                    return name.toLowerCase().includes(contactSearch.toLowerCase());
+                  })
+                  .sort((a, b) => {
+                    const nameA = a.name?.display ?? a.name?.family ?? "";
+                    const nameB = b.name?.display ?? b.name?.family ?? "";
+                    return nameA.localeCompare(nameB);
+                  });
+
+                if (filteredContacts.length === 0) {
+                  return (
+                    <div style={{ padding: "32px", textAlign: "center" }}>
+                      <p
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#6B7686",
+                          margin: 0,
+                        }}
+                      >
+                        No contacts found
+                      </p>
+                      <p
+                        style={{
+                          fontSize: 12,
+                          color: "#9CA3AF",
+                          marginTop: 4,
+                          margin: 0,
+                        }}
+                      >
+                        Try a different search
+                      </p>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div
+                    style={{
+                      background: "#fff",
+                      borderRadius: 16,
+                      border: "1px solid #E4E8EF",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {filteredContacts.map((contact, idx) => {
+                      const fullName =
+                        contact.name?.display ??
+                        `${contact.name?.given ?? ""} ${contact.name?.family ?? ""}`.trim();
+                      const phone = contact.phones?.[0]?.number ?? "";
+                      const initial = (fullName[0] ?? "").toUpperCase();
+                      return (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => applyContact(contact)}
+                          style={{
+                            display: "flex",
+                            gap: 12,
+                            alignItems: "center",
+                            width: "100%",
+                            padding: "13px 16px",
+                            borderBottom:
+                              idx === filteredContacts.length - 1
+                                ? "none"
+                                : "1px solid #E4E8EF",
+                            background: "transparent",
+                            cursor: "pointer",
+                            textAlign: "left",
+                            borderLeft: "none",
+                            borderRight: "none",
+                            borderTop: "none",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: 40,
+                              height: 40,
+                              borderRadius: "50%",
+                              background: "#EFF6FF",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              flexShrink: 0,
+                              fontSize: 15,
+                              fontWeight: 700,
+                              color: "#1877D6",
+                            }}
+                          >
+                            {initial}
+                          </div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p
+                              style={{
+                                fontSize: 14,
+                                fontWeight: 600,
+                                color: "#0B1F3A",
+                                margin: 0,
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {fullName || "Unnamed contact"}
+                            </p>
+                            {phone && (
+                              <p
+                                style={{
+                                  fontSize: 12,
+                                  color: "#9CA3AF",
+                                  marginTop: 2,
+                                  margin: 0,
+                                }}
+                              >
+                                {phone}
+                              </p>
+                            )}
+                          </div>
+                          <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      )}
     </PageLayout>
   );
 }
