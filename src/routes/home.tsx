@@ -10890,7 +10890,7 @@ function DiscoverSection() {
                     <div style={{ fontSize: 9, fontWeight: 600, color: '#3B6D11', marginTop: 3 }}>Free</div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px', flexShrink: 0 }}>
-                    <span style={{ background: '#1877D6', color: '#FFFFFF', fontSize: 11, fontWeight: 600, padding: '6px 10px', borderRadius: 7 }}>Join</span>
+                    <span style={{ background: '#1877D6', color: '#FFFFFF', fontSize: 11, fontWeight: 600, padding: '6px 10px', borderRadius: 6 }}>Join</span>
                   </div>
                 </div>
               );
