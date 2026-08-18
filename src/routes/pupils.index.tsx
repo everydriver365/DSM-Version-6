@@ -342,7 +342,7 @@ function PupilsIndexPage() {
         .select("id, name, first_name, last_name, phone, email, lesson_count, account_balance, prepaid_hours, ni_amount_total, ni_amount_paid, lead_source, status, pricing_type, test_date, deleted_at, postcode, custom_rate, custom_rate_90, custom_rate_120, profile_image_url, photo_url, calendar_colour")
         .eq("instructor_id", uid)
         .is("deleted_at", null)
-        .or("status.is.null,and(status.neq.inactive,status.neq.passed,status.neq.cancelled)")
+        .or("status.is.null,and(status.neq.inactive,status.neq.cancelled)")
         .order("name", { ascending: true, nullsFirst: false });
 
       const { data, error } = await q;
