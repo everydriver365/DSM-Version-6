@@ -1499,6 +1499,7 @@ function HomePage() {
     }
   }, [movingLessonHome, userId]);
   const [allLessons, setAllLessons] = useState<any[]>([]);
+  const [nonEventLessons, setNonEventLessons] = useState<any[]>([]);
   const [expandedLessonId, setExpandedLessonId] = useState<string | null>(null);
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
   const [outstanding, setOutstanding] = useState(0);
@@ -2596,6 +2597,12 @@ function HomePage() {
         (l: any) => !l.pupils || l.pupils.deleted_at == null,
       );
 
+      // Events and test days should not count in lesson / earnings / hours stats.
+      const nonEventLessons = allLessons.filter(
+        (l: any) => l.lesson_type !== 'event' && l.lesson_type !== 'test',
+      );
+      setNonEventLessons(nonEventLessons);
+
       // Today timeline shows every lesson for today regardless of status.
       const todayLessons = allLessons.filter((l: any) => l.lesson_date === todayYmd);
 
@@ -2794,7 +2801,7 @@ function HomePage() {
       // of truth (paid_amount is unreliable in historic data).
       // ============================================================
       const nowMs = Date.now();
-      const weekLessonRowsForEarnings = allLessons.filter(
+      const weekLessonRowsForEarnings = nonEventLessons.filter(
         (l: any) =>
           l.lesson_date >= weekStartYmd &&
           l.lesson_date < weekEndYmd &&
@@ -2809,7 +2816,7 @@ function HomePage() {
       // Today earnings + breakdown modal rows keep their existing
       // "delivered lessons" shape so the modal shows the same list
       // it always has — only the headline weekEarnings changes.
-      const weekLessonRowsForList = allLessons.filter(
+      const weekLessonRowsForList = nonEventLessons.filter(
         (l: any) =>
           l.status !== "cancelled" &&
           l.lesson_date >= weekStartYmd &&
@@ -2876,7 +2883,7 @@ function HomePage() {
 
       // Full week lesson list for the breakdown modal (all statuses,
       // derived from the single fetch above).
-      const weekLessonData = allLessons.filter(
+      const weekLessonData = nonEventLessons.filter(
         (l: any) =>
           l.lesson_date >= weekStartYmd && l.lesson_date < weekEndYmd,
       );
@@ -3347,7 +3354,7 @@ function HomePage() {
   const nextLessons = lessons.filter((l) => lessonDateTime(l) >= now && l.status !== "cancelled");
   const nextTabLessons = nextLessons.slice(0, 5);
 
-  const weekLessons = lessons.filter((l) => {
+  const weekLessons = nonEventLessons.filter((l: any) => {
     const d = lessonDateTime(l);
     return d >= weekStart && d < weekEnd;
   });
@@ -5643,33 +5650,34 @@ function HomePage() {
         const todayYmdStr = new Date().toISOString().slice(0, 10);
         const yearStr = todayYmdStr.slice(0, 4);
         const monthStr = todayYmdStr.slice(0, 7);
-        const monthEarnings = (allLessons ?? []).reduce((s: number, l: any) => {
+        const monthEarnings = (nonEventLessons ?? []).reduce((s: number, l: any) => {
           if (typeof l.lesson_date === 'string' && l.lesson_date.startsWith(monthStr) &&
               (l.status === 'completed' || l.status === 'confirmed')) {
             return s + Number(l.amount_due ?? 0);
           }
           return s;
         }, 0);
-        const monthLessonsCompleted = (allLessons ?? []).filter(
+        const monthLessonsCompleted = (nonEventLessons ?? []).filter(
           (l: any) => typeof l.lesson_date === 'string' && l.lesson_date.startsWith(monthStr) && l.status === 'completed',
         ).length;
-        const ytdEarnings = (allLessons ?? []).reduce((s: number, l: any) => {
+        const ytdEarnings = (nonEventLessons ?? []).reduce((s: number, l: any) => {
           if (typeof l.lesson_date === 'string' && l.lesson_date.startsWith(yearStr) &&
               (l.status === 'completed' || l.status === 'confirmed')) {
             return s + Number(l.amount_due ?? 0);
           }
           return s;
         }, 0);
-        const ytdLessonsCompleted = (allLessons ?? []).filter(
+        const ytdLessonsCompleted = (nonEventLessons ?? []).filter(
           (l: any) => typeof l.lesson_date === 'string' && l.lesson_date.startsWith(yearStr) && l.status === 'completed',
         ).length;
-        const todayUpcoming = todayLessons.filter((l: any) => ['confirmed', 'pending', 'in_progress'].includes(l.status)).length;
-        const todayCompleted = todayLessons.filter((l: any) => l.status === 'completed').length;
+        const nonEventTodayLessons = (nonEventLessons ?? []).filter((l: any) => l.lesson_date === todayYmdStr);
+        const todayUpcoming = nonEventTodayLessons.filter((l: any) => ['confirmed', 'pending', 'in_progress'].includes(l.status)).length;
+        const todayCompleted = nonEventTodayLessons.filter((l: any) => l.status === 'completed').length;
         const weekStartStr = (() => {
           const d = new Date(weekStart);
           return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         })();
-        const weekCompletedForAvg = (allLessons ?? []).filter(
+        const weekCompletedForAvg = (nonEventLessons ?? []).filter(
           (l: any) => l.status === 'completed' && typeof l.lesson_date === 'string' && l.lesson_date >= weekStartStr,
         ).length;
         const weekAvg = weekCompletedForAvg > 0 ? weekEarnings / weekCompletedForAvg : 0;
@@ -5679,10 +5687,10 @@ function HomePage() {
           {
             key: 'today',
             title: "Today's lessons",
-            subtitleTop: todayLessons.length === 0 ? 'No lessons today' : `${todayUpcoming} upcoming · ${todayCompleted} completed`,
+            subtitleTop: nonEventTodayLessons.length === 0 ? 'No lessons today' : `${todayUpcoming} upcoming · ${todayCompleted} completed`,
             subtitleBottom: `£${Math.round(todayEarnings)} earned today`,
             icon: <IconCalendar size={20} stroke={1.75} />,
-            right: { kind: 'circle', value: todayLessons.length, active: todayLessons.length > 0 },
+            right: { kind: 'circle', value: nonEventTodayLessons.length, active: nonEventTodayLessons.length > 0 },
           },
           {
             key: 'week',
