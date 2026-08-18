@@ -3539,7 +3539,11 @@ function HomePage() {
   const earningsPct = Math.min(100, (weekEarnings / (weeklyEarningsGoal || 1)) * 100);
   const lessonsPct = Math.min(100, (weekLessonsTotal / (weeklyLessonGoal || 1)) * 100);
 
-  const pupilName = (l?: LessonRow) => l?.pupils?.name ?? "Pupil";
+  const pupilName = (l?: LessonRow) => {
+    if (!l) return "Pupil";
+    if (l.lesson_type === 'event' || (!l.pupil_id && l.event_title)) return l.event_title || "Event";
+    return l.pupils?.name ?? "Pupil";
+  };
 
   async function markLessonPaid(l: LessonRow) {
     if (!userId) {
