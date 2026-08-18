@@ -582,41 +582,46 @@ function EditLessonPage() {
               flexWrap: 'wrap',
               marginBottom: 12,
             }}>
-              {DURATION_OPTIONS.map(opt => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => {
-                    setDuration(opt.value);
-                    setIsTestDay(opt.value === -1);
-                    if (opt.value !== -1) {
-                      setTestCentre('');
-                    }
-                  }}
-                  style={{
-                    height: 34,
-                    borderRadius: 20,
-                    padding: '0 16px',
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    border: duration === opt.value
-                      ? 'none'
-                      : '1px solid #E4E8EF',
-                    background: duration === opt.value
-                      ? opt.value === -1
-                        ? '#CC2229'
-                        : '#0B1F3A'
-                      : '#fff',
-                    color: duration === opt.value
-                      ? '#fff' : '#6B7686',
-                    fontFamily: 'Poppins, sans-serif',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {opt.label}
-                </button>
-              ))}
+              {DURATION_OPTIONS.map((opt) => {
+                if (isEvent && opt.value === -1) return null;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => {
+                      setDuration(opt.value);
+                      setIsTestDay(opt.value === -1);
+                      setIsEvent(false);
+                      if (opt.value !== -1) {
+                        setTestCentre('');
+                      }
+                    }}
+                    style={{
+                      height: 34,
+                      borderRadius: 20,
+                      padding: '0 16px',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      border: duration === opt.value
+                        ? 'none'
+                        : '1px solid #E4E8EF',
+                      background: duration === opt.value
+                        ? opt.value === -1
+                          ? '#CC2229'
+                          : '#0B1F3A'
+                        : '#fff',
+                      color: duration === opt.value
+                        ? '#fff' : '#6B7686',
+                      fontFamily: 'Poppins, sans-serif',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+
             </div>
             {isTestDay && (
               <div style={{ marginBottom: 16 }}>
