@@ -334,6 +334,7 @@ function NotificationsPage() {
     notifType?: string | null;
     options: { label: string; route: string; icon: string }[];
     isMessage?: boolean;
+    isOverduePayment?: boolean;
     threadId?: string | null;
     senderName?: string | null;
     messagePreview?: string | null;
@@ -342,6 +343,7 @@ function NotificationsPage() {
     lessonId?: string | null;
     pupilName?: string | null;
     pupilPhone?: string | null;
+    pupilEmail?: string | null;
     cancellationReason?: string | null;
     lessonDate?: string | null;
     lessonTime?: string | null;
@@ -367,6 +369,8 @@ function NotificationsPage() {
     message?: string | null;
     receivedAt?: string | null;
     isJobOffer?: boolean;
+    amountOwed?: string | number | null;
+    lessonCount?: number | null;
     jobId?: string | null;
     jobTitle?: string | null;
     area?: string | null;
@@ -701,6 +705,9 @@ function NotificationsPage() {
                               message: action.message,
                               receivedAt: action.receivedAt,
                               isJobOffer: action.isJobOffer,
+                              isOverduePayment: action.isOverduePayment,
+                              amountOwed: action.amountOwed,
+                              lessonCount: action.lessonCount,
                               jobId: action.jobId,
                               jobTitle: action.jobTitle,
                               area: action.area,
@@ -709,6 +716,7 @@ function NotificationsPage() {
                               description: action.description,
                               postedBy: action.postedBy,
                               expiresAt: action.expiresAt,
+                              pupilEmail: action.pupilEmail,
                             });
                           }
                         }}
