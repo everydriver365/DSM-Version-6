@@ -280,6 +280,24 @@ function getNotificationAction(
     return { directNav: "/calendarsync" };
   }
 
+  if (type === "job_offer" || type === "new_job" || type === "job" || type === "cover_request") {
+    return {
+      isJobOffer: true,
+      jobId: meta.job_id ?? meta.id ?? null,
+      jobTitle: meta.title ?? meta.job_title ?? "Job offer",
+      area: meta.area ?? meta.postcode ?? meta.location ?? null,
+      transmission: meta.transmission ?? meta.car_type ?? null,
+      lessonDate: meta.lesson_date ?? meta.date ?? null,
+      lessonTime: meta.lesson_time ?? meta.time ?? null,
+      duration: meta.duration ?? meta.hours ?? null,
+      rate: meta.rate ?? meta.hourly_rate ?? null,
+      description: meta.description ?? meta.notes ?? null,
+      postedBy: meta.posted_by ?? meta.instructor_name ?? null,
+      expiresAt: meta.expires_at ?? null,
+      options: [],
+    };
+  }
+
   // Bottom sheet with options for anything else
   return {
     options: [
