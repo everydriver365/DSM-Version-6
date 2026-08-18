@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -103,6 +103,12 @@ function getNotificationAction(
   cancellationReason?: string | null;
   lessonDate?: string | null;
   lessonTime?: string | null;
+  isDSMLive?: boolean;
+  sessionId?: string | null;
+  sessionTitle?: string | null;
+  sessionUrl?: string | null;
+  startTime?: string | null;
+  isLiveNow?: boolean;
 } {
   const type = notif.type ?? "";
   const meta = notif.metadata ?? {};
@@ -189,6 +195,18 @@ function getNotificationAction(
     return { directNav: "/subscription" };
   }
 
+  if (type === "dsm_live" || type === "live_session" || type === "live_starting" || type === "live_now" || type === "webinar" || type === "podcast") {
+    return {
+      isDSMLive: true,
+      sessionId: meta.session_id ?? meta.live_id ?? null,
+      sessionTitle: meta.title ?? meta.session_title ?? "DSM Live",
+      sessionUrl: meta.url ?? meta.join_url ?? null,
+      startTime: meta.start_time ?? meta.time ?? null,
+      isLiveNow: type === "live_now" || meta.live_now === true || meta.status === "live",
+      options: [],
+    };
+  }
+
   if (type === "managed_enquiry" || type === "cancellation_request") {
     return { directNav: "/more" };
   }
@@ -228,6 +246,12 @@ function NotificationsPage() {
     cancellationReason?: string | null;
     lessonDate?: string | null;
     lessonTime?: string | null;
+    isDSMLive?: boolean;
+    sessionId?: string | null;
+    sessionTitle?: string | null;
+    sessionUrl?: string | null;
+    startTime?: string | null;
+    isLiveNow?: boolean;
   } | null>(null);
 
   const [quickReply, setQuickReply] = useState("");
@@ -521,6 +545,12 @@ function NotificationsPage() {
                               cancellationReason: action.cancellationReason,
                               lessonDate: action.lessonDate,
                               lessonTime: action.lessonTime,
+                              isDSMLive: action.isDSMLive,
+                              sessionId: action.sessionId,
+                              sessionTitle: action.sessionTitle,
+                              sessionUrl: action.sessionUrl,
+                              startTime: action.startTime,
+                              isLiveNow: action.isLiveNow,
                             });
                           }
                         }}
