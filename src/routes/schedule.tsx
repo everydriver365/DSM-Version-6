@@ -1007,6 +1007,7 @@ function SchedulePage() {
         toast.success(msg);
         setSyncMessage({ type: "success", text: msg });
         setLastSynced(new Date().toISOString());
+        hapticSuccess();
         await fetchCalendarBlocks();
         // Copy each Google event's colour onto the imported rows. Silent, and
         // never allowed to break a normal sync.
