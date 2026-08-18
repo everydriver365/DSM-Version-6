@@ -21,6 +21,8 @@ import { CommandPalette } from "../components/dsm/CommandPalette";
 import { PushPermissionSheet } from "../components/dsm/PushPermissionSheet";
 import { supabase } from "../lib/supabaseClient";
 import { setupEdgeToEdgeStatusBar } from "../lib/statusBar";
+import { isBiometricAvailable, authenticate } from "@/lib/biometric";
+import { IconFingerprint } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { EventToastController, emitLiveEvent, type LiveEventKind } from "../components/dsm/EventToast";
