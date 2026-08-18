@@ -1197,90 +1197,93 @@ function EditLessonPage() {
           </div>
 
           {/* Payment status + Log payment */}
-          <div>
-            <FieldLabel htmlFor="paymentStatus">Payment status</FieldLabel>
-            <div
-              className="h-11 w-full rounded-lg px-3 bg-white flex items-center justify-between"
-              style={fieldBorder}
-            >
-              <div className="flex items-center gap-2">
-                <PaymentStatusBadge status={paymentStatus} />
-                {amountDue != null && (
-                  <span className="text-[12px] text-[#6B7280]">
-                    £{amountDue.toFixed(2)} due
-                  </span>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={() => setPayOpen((v) => !v)}
-                className="text-[13px] font-semibold"
-                style={{ color: "#1877D6" }}
-              >
-                {payOpen ? "Cancel" : "Log payment"}
-              </button>
-            </div>
-
-            {payOpen && (
+          {!isEvent && (
+            <div>
+              <FieldLabel htmlFor="paymentStatus">Payment status</FieldLabel>
               <div
-                className="mt-2 rounded-lg bg-white p-3 flex flex-col gap-2"
+                className="h-11 w-full rounded-lg px-3 bg-white flex items-center justify-between"
                 style={fieldBorder}
               >
-                <div className="flex gap-2">
-                  <div
-                    className="flex items-center rounded-lg px-3 flex-1"
-                    style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
-                  >
-                    <IconCurrencyPound stroke={1.5} size={16} color="#8A93A3" />
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      value={payAmount}
-                      onChange={(e) => setPayAmount(e.target.value)}
-                      placeholder="Amount"
-                      className="w-full py-2 px-2 text-[14px] focus:outline-none bg-transparent text-[#0B1F3A]"
-                    />
-                  </div>
-                  <select
-                    value={payMethod}
-                    onChange={(e) => setPayMethod(e.target.value)}
-                    className="rounded-lg px-3 py-2 text-[14px] focus:outline-none text-[#0B1F3A]"
-                    style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
-                  >
-                    <option value="cash">Cash</option>
-                    <option value="bank_transfer">Bank</option>
-                    <option value="card">Card</option>
-                    <option value="other">Other</option>
-                  </select>
+                <div className="flex items-center gap-2">
+                  <PaymentStatusBadge status={paymentStatus} />
+                  {amountDue != null && (
+                    <span className="text-[12px] text-[#6B7280]">
+                      £{amountDue.toFixed(2)} due
+                    </span>
+                  )}
                 </div>
-                <textarea
-                  value={payNotes}
-                  onChange={(e) => setPayNotes(e.target.value)}
-                  placeholder="Notes (optional)"
-                  rows={2}
-                  className="w-full px-3 py-2 rounded-lg text-[14px] resize-none focus:outline-none text-[#0B1F3A]"
-                  style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
-                />
                 <button
                   type="button"
-                  disabled={savingPayment || !payAmount || Number(payAmount) <= 0}
-                  onClick={submitPayment}
-                  className="h-10 rounded-lg text-white text-[14px] font-semibold"
-                  style={{
-                    backgroundColor: "#1877D6",
-                    opacity:
-                      savingPayment || !payAmount || Number(payAmount) <= 0 ? 0.5 : 1,
-                  }}
+                  onClick={() => setPayOpen((v) => !v)}
+                  className="text-[13px] font-semibold"
+                  style={{ color: "#1877D6" }}
                 >
-                  {savingPayment
-                    ? "Recording…"
-                    : !payAmount || Number(payAmount) <= 0
-                      ? "Enter amount"
-                      : `Record £${Number(payAmount).toFixed(2)}`}
+                  {payOpen ? "Cancel" : "Log payment"}
                 </button>
               </div>
-            )}
-          </div>
+
+              {payOpen && (
+                <div
+                  className="mt-2 rounded-lg bg-white p-3 flex flex-col gap-2"
+                  style={fieldBorder}
+                >
+                  <div className="flex gap-2">
+                    <div
+                      className="flex items-center rounded-lg px-3 flex-1"
+                      style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
+                    >
+                      <IconCurrencyPound stroke={1.5} size={16} color="#8A93A3" />
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        value={payAmount}
+                        onChange={(e) => setPayAmount(e.target.value)}
+                        placeholder="Amount"
+                        className="w-full py-2 px-2 text-[14px] focus:outline-none bg-transparent text-[#0B1F3A]"
+                      />
+                    </div>
+                    <select
+                      value={payMethod}
+                      onChange={(e) => setPayMethod(e.target.value)}
+                      className="rounded-lg px-3 py-2 text-[14px] focus:outline-none text-[#0B1F3A]"
+                      style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
+                    >
+                      <option value="cash">Cash</option>
+                      <option value="bank_transfer">Bank</option>
+                      <option value="card">Card</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <textarea
+                    value={payNotes}
+                    onChange={(e) => setPayNotes(e.target.value)}
+                    placeholder="Notes (optional)"
+                    rows={2}
+                    className="w-full px-3 py-2 rounded-lg text-[14px] resize-none focus:outline-none text-[#0B1F3A]"
+                    style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
+                  />
+                  <button
+                    type="button"
+                    disabled={savingPayment || !payAmount || Number(payAmount) <= 0}
+                    onClick={submitPayment}
+                    className="h-10 rounded-lg text-white text-[14px] font-semibold"
+                    style={{
+                      backgroundColor: "#1877D6",
+                      opacity:
+                        savingPayment || !payAmount || Number(payAmount) <= 0 ? 0.5 : 1,
+                    }}
+                  >
+                    {savingPayment
+                      ? "Recording…"
+                      : !payAmount || Number(payAmount) <= 0
+                        ? "Enter amount"
+                        : `Record £${Number(payAmount).toFixed(2)}`}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
 
           <div>
             <FieldLabel htmlFor="notes">Notes</FieldLabel>
