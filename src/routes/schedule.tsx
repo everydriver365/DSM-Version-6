@@ -299,7 +299,16 @@ function TestLessonCard({
   lesson: Lesson;
   onClick: () => void;
 }) {
-  const testResult = (lesson as any).test_result;
+  // Priority: the lesson's own result, then the pupil's recorded test status.
+  const testResult = (() => {
+    const direct = String((lesson as any).test_result ?? "").toLowerCase();
+    if (direct === "pass" || direct === "fail") return direct;
+    const pupilStatus = String((lesson as any).pupil?.test_status ?? (lesson as any).pupils?.test_status ?? "").toLowerCase();
+    if (pupilStatus.startsWith("pass")) return "pass";
+    if (pupilStatus.startsWith("fail")) return "fail";
+    return null;
+  })();
+
   const testCentre = testCentreOf(lesson);
   const testTime = testTimeOf(lesson);
   const startTime = fmtTime(lessonStart(lesson));
