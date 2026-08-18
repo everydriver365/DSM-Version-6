@@ -131,7 +131,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
-      { name: "viewport", content: "width=device-width, initial-scale=1.0" },
+      { name: "viewport", content: "width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" },
       { charSet: "utf-8" },
       { title: "Driving School Manager — Free forever for UK driving instructors" },
       { name: "description", content: "Manage lessons, take payments, track pupils and grow your driving school — all from one free app. Built for UK ADIs & PDIs." },
