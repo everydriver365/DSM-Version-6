@@ -607,6 +607,16 @@ function NewCoursePage() {
             setRepeatEndDate={setRepeatEndDate}
             repeatCount={repeatCount}
             setRepeatCount={setRepeatCount}
+            useCustomSessions={useCustomSessions}
+            setUseCustomSessions={setUseCustomSessions}
+            customSessions={customSessions}
+            setCustomSessions={setCustomSessions}
+            newSessionDate={newSessionDate}
+            setNewSessionDate={setNewSessionDate}
+            newSessionTime={newSessionTime}
+            setNewSessionTime={setNewSessionTime}
+            newSessionDuration={newSessionDuration}
+            setNewSessionDuration={setNewSessionDuration}
             pickup={pickup}
             setPickup={setPickup}
             pickupError={pickupError}
