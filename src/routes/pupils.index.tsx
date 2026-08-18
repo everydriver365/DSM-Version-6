@@ -47,7 +47,14 @@ interface Pupil {
 }
 
 
-type StatusKey = "active" | "passed" | "archived";
+type StatusKey = "active" | "passed" | "waiting" | "lapsed";
+
+const STATUS_TABS: { key: StatusKey; label: string }[] = [
+  { key: "active", label: "Active" },
+  { key: "passed", label: "Passed" },
+  { key: "waiting", label: "Waiting" },
+  { key: "lapsed", label: "Lapsed" },
+];
 
 function displayName(n: string | null | undefined) {
   return (n ?? "").replace(/\s*\.\s*$/, "").trim();
@@ -58,15 +65,9 @@ function displayName(n: string | null | undefined) {
 function statusBadgeColor(status: StatusKey) {
   if (status === "active") return "#1877D6";
   if (status === "passed") return "#1877D6";
-  if (status === "archived") return "#9CA3AF";
+  if (status === "waiting") return "#F59E0B";
+  if (status === "lapsed") return "#9CA3AF";
   return "#6B7280";
-}
-
-function accentColor(status: StatusKey) {
-  if (status === "active") return "#1877D6";
-  if (status === "passed") return "#1877D6";
-  if (status === "archived") return "#9CA3AF";
-  return "#9CA3AF";
 }
 
 const PILL_BASE = {
