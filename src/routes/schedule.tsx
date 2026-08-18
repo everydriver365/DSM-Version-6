@@ -12,6 +12,7 @@ import { format } from "date-fns";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { IconArrowDown, IconArrowsMove, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconMapPin, IconNavigation, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
+import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
 import { supabase } from "../lib/supabaseClient";
@@ -995,6 +996,25 @@ function SchedulePage() {
         setSyncMessage({ type: "success", text: msg });
         setLastSynced(new Date().toISOString());
         await fetchCalendarBlocks();
+        // Copy each Google event's colour onto the imported rows. Silent, and
+        // never allowed to break a normal sync.
+        if (useGoogleSync && token) {
+          void (async () => {
+            try {
+              const result = await backfillGoogleColours({
+                data: { accessToken: token, daysBack: 90, daysForward: 180 },
+              });
+              if (result.success) {
+                console.log("[schedule] colour pass", result);
+                await fetchCalendarBlocks();
+              } else {
+                console.warn("[schedule] colour pass failed", result.error);
+              }
+            } catch (err) {
+              console.warn("[schedule] colour pass error", err);
+            }
+          })();
+        }
       } else if (res.status === 429 || raw.includes("429")) {
         const msg = "Calendar provider is rate-limiting us — try again in a few minutes";
         toast.info(msg);

@@ -1,15 +1,16 @@
 /**
- * One-off backfill of Google Calendar event colours onto already-imported
- * `calendar_blocks` rows (source = 'external_calendar').
+ * Colour pass over imported Google events: copies each event's colour onto the
+ * matching `calendar_blocks` row (source = 'external_calendar').
  *
- * Server-only: talks to Google with the instructor's stored OAuth token and
- * writes ONLY the `colour` column on matching rows.
+ * Runs after every Google sync. Server-only: talks to Google with the
+ * instructor's stored OAuth token and writes ONLY the `colour` column.
  */
 
 import process from "node:process";
 import { createAuthenticatedSupabaseClient } from "./carplay-auth.server";
 
-const DAYS_BACK = 90;
+const DEFAULT_DAYS_BACK = 90;
+const DEFAULT_DAYS_FORWARD = 180;
 
 // Google's standard event colour palette (colorId 1-11).
 const EVENT_COLOURS: Record<string, string> = {
@@ -80,6 +81,7 @@ type GEvent = {
 
 export async function backfillGoogleEventColours(
   accessToken: string,
+  window?: { daysBack?: number; daysForward?: number },
 ): Promise<BackfillResult> {
   const empty = { updated: 0, scanned: 0, blocks: 0 };
   const supabase = createAuthenticatedSupabaseClient(accessToken);
@@ -136,9 +138,12 @@ export async function backfillGoogleEventColours(
     return { success: false, ...empty, error: "Could not obtain a Google access token" };
   }
 
-  // --- Fetch the last 90 days of Google events ---------------------------
-  const timeMax = new Date();
-  const timeMin = new Date(timeMax.getTime() - DAYS_BACK * 24 * 3600_000);
+  // --- Fetch Google events across the requested window --------------------
+  const daysBack = Math.max(0, window?.daysBack ?? DEFAULT_DAYS_BACK);
+  const daysForward = Math.max(0, window?.daysForward ?? DEFAULT_DAYS_FORWARD);
+  const now = Date.now();
+  const timeMin = new Date(now - daysBack * 24 * 3600_000);
+  const timeMax = new Date(now + daysForward * 24 * 3600_000);
   const events: GEvent[] = [];
 
   try {
