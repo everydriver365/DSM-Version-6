@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { IconCalendar, IconCalendarCheck, IconCalendarMonth, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMoon, IconPhoto, IconRepeat, IconSchool, IconSettings, IconSun, IconSunrise } from "@tabler/icons-react";
+import { IconCalendar, IconCalendarCheck, IconCalendarMonth, IconCalendarPlus, IconCheck, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMoon, IconPhoto, IconRepeat, IconSchool, IconSettings, IconSun, IconSunrise, IconTrash } from "@tabler/icons-react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import DSMToggle from "@/components/dsm/DSMToggle";
 import { Input } from "../components/dsm/Input";
