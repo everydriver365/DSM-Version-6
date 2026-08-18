@@ -59,6 +59,7 @@ import { LogMileageSheet } from "@/components/mileage/LogMileageSheet";
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { filterEchoedBlocks } from "@/lib/calendarDedupe";
+import { resolveEventColour } from "@/lib/googleCalendarColours";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
@@ -3301,7 +3302,7 @@ function HomePage() {
     };
   }, [heroExpanded, upcoming?.pupil_id, userId, todayStart]);
 
-  const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null }>>([]);
+  const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; colour?: string | null }>>([]);
 
   const todayISO = ymd(todayStart);
   const tomorrowISO = ymd(tomorrowStart);
@@ -3314,7 +3315,7 @@ function HomePage() {
     const fetchCalendarBlocks = async () => {
       const { data, error } = await supabase
         .from("calendar_blocks")
-        .select("id, start_datetime, end_datetime, title")
+        .select("id, start_datetime, end_datetime, title, colour")
         .eq("instructor_id", userId)
         .eq("source", "external_calendar")
         .gte("start_datetime", todayISO)
@@ -3410,10 +3411,11 @@ function HomePage() {
           start: timeToMins(localStartTime),
           end: timeToMins(localEndTime),
           title: b.title ?? 'Busy',
+          colour: (b as { colour?: string | null }).colour ?? null,
         };
       })
-      .filter((b): b is { localDate: string; start: number; end: number; title: string } => b !== null && b.localDate === dateStr)
-      .map((b) => ({ start: b.start, end: b.end, title: b.title }))
+      .filter((b): b is { localDate: string; start: number; end: number; title: string; colour: string | null } => b !== null && b.localDate === dateStr)
+      .map((b) => ({ start: b.start, end: b.end, title: b.title, colour: b.colour }))
       .sort((a, b) => a.start - b.start);
   const todayBlocks = blocksForDate(todayISO);
   const tomorrowBlocks = blocksForDate(tomorrowISO);
@@ -5461,7 +5463,7 @@ function HomePage() {
         type Row =
           | { kind: 'lesson'; l: LessonRow }
           | { kind: 'gap'; start: Date; mins: number }
-          | { kind: 'calendar'; title: string; start: Date; end: Date };
+          | { kind: 'calendar'; title: string; start: Date; end: Date; colour?: string | null };
         const rows: Row[] = [];
         const whStartStr = workingHours?.start_time ? String(workingHours.start_time) : '09:00';
         const whEndStr = workingHours?.end_time ? String(workingHours.end_time) : '18:00';
@@ -5554,7 +5556,7 @@ function HomePage() {
             const e = new Date(baseDate);
             e.setHours(0, 0, 0, 0);
             e.setMinutes(b.end);
-            rows.push({ kind: 'calendar', title: b.title, start: s, end: e });
+            rows.push({ kind: 'calendar', title: b.title, start: s, end: e, colour: (b as { colour?: string | null }).colour ?? null });
           }
         }
 
@@ -5815,7 +5817,7 @@ function HomePage() {
 
             {(() => {
               const lessonRows = rows.filter((r): r is { kind: 'lesson'; l: LessonRow } => r.kind === 'lesson');
-              const calendarRows = rows.filter((r): r is { kind: 'calendar'; title: string; start: Date; end: Date } => r.kind === 'calendar');
+              const calendarRows = rows.filter((r): r is { kind: 'calendar'; title: string; start: Date; end: Date; colour?: string | null } => r.kind === 'calendar');
               
               const emptyLabel = tab === 'today' ? 'No lessons today' : tab === 'tomorrow' ? 'No lessons tomorrow' : 'No upcoming lessons';
 
@@ -6209,7 +6211,7 @@ function HomePage() {
                               {durLabel}
                             </div>
                           </div>
-                          <div aria-hidden style={{ width: 3, borderRadius: 2, background: '#D9DEE7', flexShrink: 0, alignSelf: 'stretch' }} />
+                          <div aria-hidden style={{ width: 3, borderRadius: 2, background: resolveEventColour(r.colour, '#D9DEE7'), flexShrink: 0, alignSelf: 'stretch' }} />
                           <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                             <div
                               style={{
