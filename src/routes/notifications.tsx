@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMapPin, IconMessage, IconNavigation, IconPhone, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMail, IconMapPin, IconMessage, IconNavigation, IconPhone, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -106,6 +106,7 @@ function getNotificationAction(
   directNav?: string;
   options?: { label: string; route: string; icon: string }[];
   isMessage?: boolean;
+  isOverduePayment?: boolean;
   threadId?: string | null;
   senderName?: string | null;
   messagePreview?: string | null;
@@ -114,6 +115,7 @@ function getNotificationAction(
   lessonId?: string | null;
   pupilName?: string | null;
   pupilPhone?: string | null;
+  pupilEmail?: string | null;
   cancellationReason?: string | null;
   lessonDate?: string | null;
   lessonTime?: string | null;
@@ -139,6 +141,8 @@ function getNotificationAction(
   message?: string | null;
   receivedAt?: string | null;
   isJobOffer?: boolean;
+  amountOwed?: string | number | null;
+  lessonCount?: number | null;
   jobId?: string | null;
   jobTitle?: string | null;
   area?: string | null;
@@ -203,8 +207,20 @@ function getNotificationAction(
     };
   }
 
-  if (type === "payment" || type === "payment_received" || type === "payment_overdue") {
+  if (type === "payment" || type === "payment_received") {
     return { directNav: "/payments" };
+  }
+
+  if (type === "payment_overdue") {
+    return {
+      isOverduePayment: true,
+      pupilId: meta.pupil_id ?? null,
+      pupilName: meta.pupil_name ?? meta.pupil ?? null,
+      pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
+      pupilEmail: meta.pupil_email ?? meta.email ?? null,
+      amountOwed: meta.amount_owed ?? meta.amount ?? meta.total ?? null,
+      lessonCount: meta.lesson_count ?? meta.unpaid_lessons ?? null,
+    };
   }
 
   if (type === "lesson_cancelled" || type === "cancellation") {
@@ -318,6 +334,7 @@ function NotificationsPage() {
     notifType?: string | null;
     options: { label: string; route: string; icon: string }[];
     isMessage?: boolean;
+    isOverduePayment?: boolean;
     threadId?: string | null;
     senderName?: string | null;
     messagePreview?: string | null;
@@ -326,6 +343,7 @@ function NotificationsPage() {
     lessonId?: string | null;
     pupilName?: string | null;
     pupilPhone?: string | null;
+    pupilEmail?: string | null;
     cancellationReason?: string | null;
     lessonDate?: string | null;
     lessonTime?: string | null;
@@ -351,6 +369,8 @@ function NotificationsPage() {
     message?: string | null;
     receivedAt?: string | null;
     isJobOffer?: boolean;
+    amountOwed?: string | number | null;
+    lessonCount?: number | null;
     jobId?: string | null;
     jobTitle?: string | null;
     area?: string | null;
@@ -685,6 +705,9 @@ function NotificationsPage() {
                               message: action.message,
                               receivedAt: action.receivedAt,
                               isJobOffer: action.isJobOffer,
+                              isOverduePayment: action.isOverduePayment,
+                              amountOwed: action.amountOwed,
+                              lessonCount: action.lessonCount,
                               jobId: action.jobId,
                               jobTitle: action.jobTitle,
                               area: action.area,
@@ -693,6 +716,7 @@ function NotificationsPage() {
                               description: action.description,
                               postedBy: action.postedBy,
                               expiresAt: action.expiresAt,
+                              pupilEmail: action.pupilEmail,
                             });
                           }
                         }}
@@ -3042,6 +3066,410 @@ function NotificationsPage() {
                   >
                     View more →
                   </button>
+                </div>
+                <div
+                  style={{
+                    textAlign: "center",
+                    marginTop: 10,
+                    fontSize: 12,
+                    color: "#9CA3AF",
+                    cursor: "pointer",
+                    ...POPPINS,
+                  }}
+                  onClick={() => {
+                    setActionSheet(null);
+                    setQuickReply("");
+                  }}
+                >
+                  Dismiss
+                </div>
+              </>
+            ) : actionSheet.isOverduePayment ? (
+              <>
+                {/* Overdue payment header card */}
+                <div
+                  style={{
+                    margin: "16px 16px 8px",
+                    background: "#fff",
+                    borderRadius: 16,
+                    border: "1px solid #E4E8EF",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      height: 6,
+                      background: "linear-gradient(90deg, #F59E0B, #D68A1B)",
+                    }}
+                  />
+                  <div style={{ padding: "14px 16px" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 10,
+                        alignItems: "center",
+                        marginBottom: 12,
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: "50%",
+                          background: "#FEF3C7",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 18,
+                          fontWeight: 700,
+                          color: "#92400E",
+                          ...POPPINS,
+                        }}
+                      >
+                        {actionSheet.pupilName?.[0] ?? "£"}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 800,
+                            color: "#0B1F3A",
+                            ...POPPINS,
+                          }}
+                        >
+                          {actionSheet.pupilName ?? "Pupil"}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 11,
+                            color: "#9CA3AF",
+                            marginTop: 2,
+                            ...POPPINS,
+                          }}
+                        >
+                          Outstanding balance
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        background: "#FEF3C7",
+                        borderRadius: 12,
+                        padding: "14px 16px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: 10,
+                      }}
+                    >
+                      <div>
+                        <div
+                          style={{
+                            fontSize: 11,
+                            fontWeight: 600,
+                            color: "#92400E",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.08em",
+                            ...POPPINS,
+                          }}
+                        >
+                          Amount owed
+                        </div>
+                        {actionSheet.lessonCount && (
+                          <div
+                            style={{
+                              fontSize: 11,
+                              color: "rgba(146, 64, 14, 0.7)",
+                              marginTop: 2,
+                              ...POPPINS,
+                            }}
+                          >
+                            {actionSheet.lessonCount} unpaid lesson
+                            {actionSheet.lessonCount > 1 ? "s" : ""}
+                          </div>
+                        )}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 26,
+                          fontWeight: 800,
+                          color: "#92400E",
+                          ...POPPINS,
+                        }}
+                      >
+                        £{Number(actionSheet.amountOwed || 0).toFixed(2)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#9CA3AF",
+                    textTransform: "uppercase",
+                    padding: "8px 16px 6px",
+                    ...POPPINS,
+                  }}
+                >
+                  WHAT WOULD YOU LIKE TO DO?
+                </div>
+                <div
+                  style={{
+                    margin: "0 16px",
+                    background: "#fff",
+                    borderRadius: 16,
+                    border: "1px solid #E4E8EF",
+                    overflow: "hidden",
+                  }}
+                >
+                  {/* Take a payment */}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      borderBottom: "1px solid #E4E8EF",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setActionSheet(null);
+                      if (actionSheet.pupilId) {
+                        navigate({ to: `/pupils/${actionSheet.pupilId}` as never });
+                      } else {
+                        navigate({ to: "/payments" as never });
+                      }
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: "#DCFCE7",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconCurrencyPound size={18} color="#15803D" stroke={1.5} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          ...POPPINS,
+                        }}
+                      >
+                        Take a payment 💳
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                          marginTop: 2,
+                          ...POPPINS,
+                        }}
+                      >
+                        Record payment from {actionSheet.pupilName ?? "pupil"}
+                      </div>
+                    </div>
+                    <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                  </div>
+                  {/* Send text reminder */}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      borderBottom: "1px solid #E4E8EF",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      if (!actionSheet.pupilPhone) {
+                        toast.error("No phone number on record");
+                        return;
+                      }
+                      const name = actionSheet.pupilName ?? "";
+                      const amount = actionSheet.amountOwed
+                        ? `£${Number(actionSheet.amountOwed).toFixed(2)}`
+                        : "an outstanding balance";
+                      window.open(
+                        `sms:${actionSheet.pupilPhone}?body=${encodeURIComponent(
+                          `Hi ${name}, just a friendly reminder that you have ${amount} outstanding for your driving lessons. Please arrange payment at your earliest convenience. Thanks!`
+                        )}`,
+                        "_blank"
+                      );
+                      setActionSheet(null);
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: "#EFF6FF",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconMessage size={18} color="#1877D6" stroke={1.5} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          ...POPPINS,
+                        }}
+                      >
+                        Send text reminder 💬
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                          marginTop: 2,
+                          ...POPPINS,
+                        }}
+                      >
+                        SMS {actionSheet.pupilName ?? "pupil"} about payment
+                      </div>
+                    </div>
+                    <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                  </div>
+                  {/* Send email reminder */}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      borderBottom: "1px solid #E4E8EF",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      if (!actionSheet.pupilEmail) {
+                        toast.error("No email address on record");
+                        return;
+                      }
+                      const name = actionSheet.pupilName ?? "";
+                      const amount = actionSheet.amountOwed
+                        ? `£${Number(actionSheet.amountOwed).toFixed(2)}`
+                        : "an outstanding balance";
+                      window.open(
+                        `mailto:${actionSheet.pupilEmail}?subject=${encodeURIComponent(
+                          "Driving lesson payment reminder"
+                        )}&body=${encodeURIComponent(
+                          `Hi ${name},\n\nThis is a friendly reminder that you have ${amount} outstanding for your driving lessons.\n\nPlease arrange payment at your earliest convenience.\n\nThank you!\n\nKind regards`
+                        )}`,
+                        "_blank"
+                      );
+                      setActionSheet(null);
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: "#EDE9FE",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconMail size={18} color="#7C3AED" stroke={1.5} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          ...POPPINS,
+                        }}
+                      >
+                        Send email reminder 📧
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: actionSheet.pupilEmail ? "#9CA3AF" : "#CC2229",
+                          marginTop: 2,
+                          ...POPPINS,
+                        }}
+                      >
+                        {actionSheet.pupilEmail ?? "No email on record"}
+                      </div>
+                    </div>
+                    <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                  </div>
+                  {/* View pupil record */}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setActionSheet(null);
+                      if (actionSheet.pupilId) {
+                        navigate({ to: `/pupils/${actionSheet.pupilId}` as never });
+                      } else {
+                        navigate({ to: "/pupils" as never });
+                      }
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: "#FEF3C7",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconUser size={18} color="#D68A1B" stroke={1.5} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          ...POPPINS,
+                        }}
+                      >
+                        View pupil record
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                          marginTop: 2,
+                          ...POPPINS,
+                        }}
+                      >
+                        See full payment history
+                      </div>
+                    </div>
+                    <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                  </div>
                 </div>
                 <div
                   style={{
