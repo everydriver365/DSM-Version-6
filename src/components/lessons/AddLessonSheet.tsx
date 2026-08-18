@@ -1221,6 +1221,8 @@ export function AddLessonSheet({
             </SheetRow>
           ) : null}
         </SheetGroup>
+          </>
+        )}
 
         {errors.form && <ErrorText>{errors.form}</ErrorText>}
       </div>
