@@ -689,7 +689,7 @@ function LivePage() {
     }
 
     const permission = await Geolocation.requestPermissions();
-    if (permission.location !== "granted" && permission.location !== "limited") {
+    if (permission.location !== "granted") {
       toast.error("Location permission required for Live Track");
       setGeoError("Location permission is off — tap to open settings, then try again");
       setActivePupilId(null);
