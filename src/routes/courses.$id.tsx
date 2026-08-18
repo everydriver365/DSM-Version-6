@@ -146,6 +146,7 @@ function CourseDetailPage() {
 
   const [course, setCourse] = useState<Course | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [sessions, setSessions] = useState<CourseSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
