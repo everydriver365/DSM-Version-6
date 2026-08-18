@@ -284,6 +284,7 @@ export function AddLessonSheet({
     if (!user) {
       setErrors({ form: "You must be signed in to add a lesson" });
       toast.error("You must be signed in to add a lesson");
+      hapticError();
       setSaving(false);
       return;
     }
@@ -462,6 +463,7 @@ export function AddLessonSheet({
       if (seriesErr) {
         setErrors({ form: seriesErr.message });
         toast.error(seriesErr.message);
+        hapticError();
         setSaving(false);
         return;
       }
@@ -491,6 +493,7 @@ export function AddLessonSheet({
     if (error) {
       setErrors({ form: error.message });
       toast.error(error.message);
+      hapticError();
       setSaving(false);
       return;
     }
@@ -556,6 +559,7 @@ export function AddLessonSheet({
     }
 
     toast.success("Lesson added");
+    hapticSuccess();
     setSaving(false);
     onSaved((insertedLesson as any)?.id as string);
     onClose();
