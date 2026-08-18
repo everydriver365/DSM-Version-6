@@ -376,8 +376,8 @@ function NewsIndexPage() {
         className="flex items-center px-4"
         style={{
           gap: 12,
-          height: "calc(60px + env(safe-area-inset-top, 0px))",
-          paddingTop: "env(safe-area-inset-top, 0px)",
+          height: TOP_BAR_SPACER,
+          paddingTop: "max(env(safe-area-inset-top, 0px), 24px)",
           backgroundColor: "#0B1F3A",
           borderRadius: "0 0 28px 28px",
         }}
