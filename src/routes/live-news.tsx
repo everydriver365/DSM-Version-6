@@ -1,5 +1,5 @@
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
   IconBookmark,
   IconBookmarkFilled,
@@ -23,6 +23,7 @@ import {
 } from "@tabler/icons-react";
 
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 import { typography } from "@/lib/typography";
@@ -100,6 +101,15 @@ function formatDate(iso: string | null | undefined): string {
   if (!iso) return "—";
   const d = new Date(iso);
   return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+function parseISODateLocal(iso: string): Date {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, (m ?? 1) - 1, d ?? 1);
+}
+
+function dateKeyFromSession(iso: string | null | undefined): string {
+  return iso || "";
 }
 
 function formatSessionDay(iso: string | null | undefined): string {
@@ -512,153 +522,169 @@ function LiveNewsPage() {
               <EmptyState message="No live sessions scheduled" />
             ) : (
               <div style={{ display: "flex", flexDirection: "column" }}>
-                {allSessions.map((s) => {
-                  const subtitle = (s as any).description || s.category;
-                  const img = (s as any).image_url as string | null | undefined;
-                  const startLabel = (() => {
-                    const [h, m] = (s.session_time || "").split(":");
-                    if (!h) return "--:--";
-                    return `${String(Number(h)).padStart(2, "0")}:${(m ?? "00").slice(0, 2)}`;
-                  })();
-                  const mins = s.duration_minutes ?? 0;
-                  const durLabel = !mins
-                    ? null
-                    : mins % 60 === 0
-                      ? `${mins / 60}h`
-                      : mins > 60
-                        ? `${Math.floor(mins / 60)}h${mins % 60}`
-                        : `${mins}m`;
-                  return (
-                    <div
-                      key={s.id}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() =>
-                        navigate({
-                          to: "/dsm-live/$sessionId",
-                          params: { sessionId: s.id },
-                        })
-                      }
-                      style={{
-                        background: "#fff",
-                        borderRadius: 16,
-                        border: "1px solid #E4E8EF",
-                        boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-                        padding: 12,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 12,
-                        marginBottom: 10,
-                        cursor: "pointer",
-                      }}
-                    >
-                      {/* Time + duration */}
-                      <div style={{ width: 46, flexShrink: 0 }}>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.1 }}>
-                          {startLabel}
-                        </div>
-                        {durLabel && (
-                          <div style={{ fontSize: 12, fontWeight: 600, color: "#8792A2", marginTop: 2 }}>
-                            {durLabel}
+                {(() => {
+                  let lastDateKey = "";
+                  return allSessions.map((s) => {
+                    const dateKey = dateKeyFromSession(s.session_date);
+                    const showDivider = dateKey !== lastDateKey;
+                    if (showDivider) lastDateKey = dateKey;
+                    const dividerDate = s.session_date
+                      ? parseISODateLocal(s.session_date)
+                      : undefined;
+
+                    const subtitle = (s as any).description || s.category;
+                    const img = (s as any).image_url as string | null | undefined;
+                    const startLabel = (() => {
+                      const [h, m] = (s.session_time || "").split(":");
+                      if (!h) return "--:--";
+                      return `${String(Number(h)).padStart(2, "0")}:${(m ?? "00").slice(0, 2)}`;
+                    })();
+                    const mins = s.duration_minutes ?? 0;
+                    const durLabel = !mins
+                      ? null
+                      : mins % 60 === 0
+                        ? `${mins / 60}h`
+                        : mins > 60
+                          ? `${Math.floor(mins / 60)}h${mins % 60}`
+                          : `${mins}m`;
+                    return (
+                      <Fragment key={s.id}>
+                        {showDivider && dividerDate && (
+                          <div style={{ marginTop: 4, marginBottom: 4 }}>
+                            <ScheduleDateDivider date={dividerDate} />
                           </div>
                         )}
-                      </div>
-
-                      {/* Accent bar */}
-                      <div
-                        style={{
-                          width: 4,
-                          alignSelf: "stretch",
-                          minHeight: 48,
-                          borderRadius: 4,
-                          background: s.is_live ? "#CC2229" : "#1877D6",
-                          flexShrink: 0,
-                        }}
-                      />
-
-                      {/* Details */}
-                      <div style={{ flex: 1, minWidth: 0 }}>
                         <div
+                          role="button"
+                          tabIndex={0}
+                          onClick={() =>
+                            navigate({
+                              to: "/dsm-live/$sessionId",
+                              params: { sessionId: s.id },
+                            })
+                          }
                           style={{
-                            fontSize: 14,
-                            fontWeight: 700,
-                            color: "#0B1F3A",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
+                            background: "#fff",
+                            borderRadius: 16,
+                            border: "1px solid #E4E8EF",
+                            boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                            padding: 12,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 12,
+                            marginBottom: 10,
+                            cursor: "pointer",
                           }}
                         >
-                          {s.title}
-                        </div>
-                        {subtitle && (
+                          {/* Time + duration */}
+                          <div style={{ width: 46, flexShrink: 0 }}>
+                            <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.1 }}>
+                              {startLabel}
+                            </div>
+                            {durLabel && (
+                              <div style={{ fontSize: 12, fontWeight: 600, color: "#8792A2", marginTop: 2 }}>
+                                {durLabel}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Accent bar */}
                           <div
                             style={{
-                              fontSize: 12,
-                              color: "#6B7686",
-                              marginTop: 2,
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
+                              width: 4,
+                              alignSelf: "stretch",
+                              minHeight: 48,
+                              borderRadius: 4,
+                              background: s.is_live ? "#CC2229" : "#1877D6",
+                              flexShrink: 0,
                             }}
-                          >
-                            {subtitle}
-                          </div>
-                        )}
-                        {s.is_live ? (
-                          <span
-                            style={{
-                              background: "#FEE2E2",
-                              color: "#CC2229",
-                              fontSize: 10,
-                              fontWeight: 700,
-                              borderRadius: 20,
-                              padding: "2px 8px",
-                              display: "inline-block",
-                              marginTop: 6,
-                            }}
-                          >
-                            🔴 Live now
-                          </span>
-                        ) : (
-                          <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 6 }}>
-                            <IconClock size={11} color="#9CA3AF" stroke={1.5} />
-                            <span style={{ fontSize: 11, color: "#9CA3AF" }}>
-                              {formatSessionTime(s.session_time)}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Hero image — far right */}
-                      <div
-                        style={{
-                          width: 76,
-                          height: 76,
-                          flexShrink: 0,
-                          borderRadius: 12,
-                          overflow: "hidden",
-                          background: img ? undefined : "#0B1F3A",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        {img ? (
-                          <img
-                            src={img}
-                            alt=""
-                            loading="lazy"
-                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
                           />
-                        ) : (
-                          <span style={{ fontSize: 20, fontWeight: 800, color: "rgba(255,255,255,0.7)" }}>
-                            {formatSessionDay(s.session_date)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+
+                          {/* Details */}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div
+                              style={{
+                                fontSize: 14,
+                                fontWeight: 700,
+                                color: "#0B1F3A",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {s.title}
+                            </div>
+                            {subtitle && (
+                              <div
+                                style={{
+                                  fontSize: 12,
+                                  color: "#6B7686",
+                                  marginTop: 2,
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                }}
+                              >
+                                {subtitle}
+                              </div>
+                            )}
+                            {s.is_live ? (
+                              <span
+                                style={{
+                                  background: "#FEE2E2",
+                                  color: "#CC2229",
+                                  fontSize: 10,
+                                  fontWeight: 700,
+                                  borderRadius: 20,
+                                  padding: "2px 8px",
+                                  display: "inline-block",
+                                  marginTop: 6,
+                                }}
+                              >
+                                🔴 Live now
+                              </span>
+                            ) : (
+                              <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 6 }}>
+                                <IconClock size={11} color="#9CA3AF" stroke={1.5} />
+                                <span style={{ fontSize: 11, color: "#9CA3AF" }}>
+                                  {formatSessionTime(s.session_time)}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Hero image — far right */}
+                          <div
+                            style={{
+                              width: 76,
+                              height: 76,
+                              flexShrink: 0,
+                              borderRadius: 12,
+                              overflow: "hidden",
+                              background: img ? undefined : "#0B1F3A",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            {img ? (
+                              <img
+                                src={img}
+                                alt=""
+                                loading="lazy"
+                                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                              />
+                            ) : (
+                              <span style={{ fontSize: 20, fontWeight: 800, color: "rgba(255,255,255,0.7)" }}>
+                                {formatSessionDay(s.session_date)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </Fragment>
+                    );
+                  });
+                })()}
                 {playing ? <div style={{ height: 96 }} /> : null}
               </div>
             )}
