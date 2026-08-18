@@ -5,6 +5,7 @@ import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import { tapLight, tapMedium, hapticSuccess } from "@/lib/haptics";
 import { getPupilBalance } from "@/lib/payments";
 
 import { PageLayout } from "@/components/PageLayout";

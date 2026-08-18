@@ -17,6 +17,7 @@ import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
+import { tapLight, tapMedium, hapticSuccess, hapticError } from "@/lib/haptics";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
 
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard.tsx";

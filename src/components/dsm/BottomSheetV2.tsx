@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { IconSearch, IconX } from "@tabler/icons-react";
+import { tapLight } from "@/lib/haptics";
 
 // ---------------------------------------------------------------------------
 // DSM DESIGN TOKENS

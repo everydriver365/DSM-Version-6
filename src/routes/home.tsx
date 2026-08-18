@@ -18,6 +18,7 @@ import { getLessonDriveTime, type LessonDriveTime } from "@/lib/lesson-drive-tim
 import { verifyAddress } from "@/lib/geocode.functions";
 import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { readBadgePrefs, DEFAULT_BADGE_PREFS } from "@/lib/badgePrefs";
+import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { DiscoverSection as DiscoverGrid } from "@/components/home/DiscoverSection";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
