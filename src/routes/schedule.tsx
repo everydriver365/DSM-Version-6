@@ -264,6 +264,14 @@ const isTest = (lesson: any) => {
   return /^test day:/i.test(String(lesson.notes ?? "").trim());
 };
 
+const isEvent = (lesson: any) => {
+  if (!lesson) return false;
+  const type = String(lesson.lesson_type ?? "").toLowerCase().trim();
+  if (type === "event") return true;
+  if (!lesson.pupil_id && lesson.event_title) return true;
+  return false;
+};
+
 // Test centre: explicit column first, then the pickup field, then legacy notes
 // ("Test day: Name — Test at HH:MM @ Location").
 const testCentreOf = (lesson: any): string | null => {
