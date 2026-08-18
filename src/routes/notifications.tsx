@@ -77,13 +77,34 @@ function getNotificationAction(
 ): {
   directNav?: string;
   options?: { label: string; route: string; icon: string }[];
+  isMessage?: boolean;
+  threadId?: string | null;
+  senderName?: string | null;
+  messagePreview?: string | null;
 } {
   const type = notif.type ?? "";
   const meta = notif.metadata ?? {};
 
-  // Direct navigation — go straight to the relevant page
+  // Message notifications show a richer bottom sheet with a quick reply option
   if (type === "message" || type === "new_message" || type === "message_received") {
-    return { directNav: "/messages" };
+    return {
+      isMessage: true,
+      threadId: meta.thread_id ?? meta.conversation_id ?? null,
+      senderName: meta.sender_name ?? meta.from ?? null,
+      messagePreview: meta.preview ?? meta.body ?? null,
+      options: [
+        {
+          label: "Reply to message",
+          route: meta.thread_id ? `/messages/${meta.thread_id}` : "/messages",
+          icon: "reply",
+        },
+        {
+          label: "Go to Messages",
+          route: "/messages",
+          icon: "message",
+        },
+      ],
+    };
   }
 
   if (type === "enquiry" || type === "new_enquiry") {
