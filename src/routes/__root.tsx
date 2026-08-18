@@ -518,22 +518,13 @@ function RootComponent() {
   const active = getActiveNav(router.state.location.pathname);
   const pathname = router.state.location.pathname;
   const hideNavExact = new Set([
-    "/",
-    "/satnav",
-    "/weeklyreport",
     "/login",
     "/register",
-    "/livesession",
-    "/live",
-    "/gaps",
-    "/community",
-    "/subscription",
-    "/onboarding",
     "/forgotpassword",
     "/resetpassword",
-    "/search",
-    "/messages",
-    "/take-payment",
+    "/onboarding",
+    "/livesession",
+    "/satnav",
     "/features",
     "/pricing",
     "/how-it-works",
@@ -559,9 +550,8 @@ function RootComponent() {
     !pathname.startsWith("/pupils/");
   const hideNav =
     hideNavExact.has(pathname) ||
-    isMessageThread ||
-    pathname === "/courses" ||
-    pathname.startsWith("/courses/");
+    pathname.startsWith("/i/") ||
+    pathname.startsWith("/quote/");
 
 
   const whiteBgPaths = new Set([
