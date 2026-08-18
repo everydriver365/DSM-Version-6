@@ -460,6 +460,7 @@ function EnquiriesPage() {
         sent_to_jobs_at: sendToJobs ? now : null,
       });
 
+      tapMedium();
       toast.success(sendToJobs ? "Sent to Jobs board" : "Enquiry declined", {
         duration: 6000,
         action: {
@@ -528,6 +529,7 @@ function EnquiriesPage() {
       <button
         type="button"
         onClick={() => {
+          tapLight();
           setSelectedId(enquiry.id);
           setNoteText("");
           void loadActivities(enquiry.id);
