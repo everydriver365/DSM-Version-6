@@ -190,7 +190,8 @@ function EditLessonPage() {
         setError(lessonRes.error.message);
       } else if (lessonRes.data) {
         const l = lessonRes.data as {
-          pupil_id: string;
+          pupil_id: string | null;
+          event_title: string | null;
           lesson_type: string | null;
           lesson_date: string;
           lesson_time: string;
@@ -201,7 +202,10 @@ function EditLessonPage() {
           payment_status: string | null;
           amount_due: number | null;
         };
-        setPupilId(l.pupil_id);
+        const isEventLesson = l.lesson_type === 'event';
+        setIsEvent(isEventLesson);
+        setEventTitle(l.event_title ?? "");
+        setPupilId(l.pupil_id ?? "");
         setDate(l.lesson_date);
         setTime((l.lesson_time ?? "").slice(0, 5));
         const isTest = l.lesson_type === 'test';
@@ -228,7 +232,6 @@ function EditLessonPage() {
         setPaymentStatus((l.payment_status as PayStatus) ?? "unpaid");
         setAmountDue(l.amount_due != null ? Number(l.amount_due) : null);
 
-
         // Fetch pupil account_balance for recordPayment reconciliation.
         if (l.pupil_id) {
           const { data: pRow } = await supabase
@@ -244,6 +247,7 @@ function EditLessonPage() {
       setLoading(false);
     })();
   }, [id]);
+
 
   async function refreshPayment(pupil: string) {
     const [{ data: lRow }, { data: pRow }] = await Promise.all([
