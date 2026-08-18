@@ -1423,6 +1423,9 @@ function HomePage() {
   const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
+  const [addChooserOpen, setAddChooserOpen] = useState(false);
+  const [personalSheetOpen, setPersonalSheetOpen] = useState(false);
+  const [editingPersonal, setEditingPersonal] = useState<PersonalEvent | null>(null);
   const [lessons, setLessons] = useState<LessonRow[]>([]);
   const [autoTrackLessons, setAutoTrackLessons] = useState<boolean>(false);
   const [actionsOpenForLesson, setActionsOpenForLesson] = useState<LessonRow | null>(null);
