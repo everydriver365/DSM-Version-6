@@ -2883,7 +2883,7 @@ function HomePage() {
 
       // Full week lesson list for the breakdown modal (all statuses,
       // derived from the single fetch above).
-      const weekLessonData = allLessons.filter(
+      const weekLessonData = nonEventLessons.filter(
         (l: any) =>
           l.lesson_date >= weekStartYmd && l.lesson_date < weekEndYmd,
       );
