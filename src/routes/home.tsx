@@ -2597,6 +2597,12 @@ function HomePage() {
         (l: any) => !l.pupils || l.pupils.deleted_at == null,
       );
 
+      // Events and test days should not count in lesson / earnings / hours stats.
+      const nonEventLessons = allLessons.filter(
+        (l: any) => l.lesson_type !== 'event' && l.lesson_type !== 'test',
+      );
+      setNonEventLessons(nonEventLessons);
+
       // Today timeline shows every lesson for today regardless of status.
       const todayLessons = allLessons.filter((l: any) => l.lesson_date === todayYmd);
 
