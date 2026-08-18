@@ -469,18 +469,19 @@ export function AddLessonSheet({
       .from("lessons")
       .insert({
         instructor_id: user.id,
-        pupil_id: pupilId,
+        pupil_id: isEvent ? null : pupilId,
         lesson_date: date,
         lesson_time: `${effTime}:00`,
         duration_minutes: savedDuration,
-        lesson_type: isTestDay ? "test" : "lesson",
+        lesson_type: isEvent ? "event" : isTestDay ? "test" : "lesson",
+        event_title: isEvent ? eventTitle.trim() || null : null,
         status: "confirmed",
         notes: fullNotes,
-        amount_due: amountDue,
-        payment_status: paymentStatus,
-        prepaid_hours_used: prepaidHoursUsed,
+        amount_due: isEvent ? 0 : amountDue,
+        payment_status: isEvent ? "paid" : paymentStatus,
+        prepaid_hours_used: isEvent ? 0 : prepaidHoursUsed,
         series_id: seriesId,
-        pickup_location: isTestDay ? testCentre.trim() || null : null,
+        pickup_location: isTestDay ? testCentre.trim() || null : pickup.trim() || null,
       })
       .select("id")
       .single();
