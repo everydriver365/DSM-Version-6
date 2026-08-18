@@ -687,9 +687,11 @@ function LivePage() {
       console.log("[live] startTracking ignored — already tracking");
       return;
     }
-    if (!("geolocation" in navigator)) {
-      setGeoError("GPS access required — please enable location in your settings");
-      toast.error("GPS not available on this device");
+
+    const permission = await Geolocation.requestPermissions();
+    if (permission.location !== "granted" && permission.location !== "limited") {
+      toast.error("Location permission required for Live Track");
+      setGeoError("Location permission is off — tap to open settings, then try again");
       setActivePupilId(null);
       setTrackingPupilName(null);
       return;
@@ -699,25 +701,27 @@ function LivePage() {
     // Guarded — a missing/throwing bridge must never abort tracking.
     despiaCall("backgroundlocationon://");
 
-    // Ask for a one-shot fix first so the native permission prompt appears
-    // and we know immediately whether GPS is usable.
-    const ok = await new Promise<boolean>((resolve) => {
-      navigator.geolocation.getCurrentPosition(
-        () => resolve(true),
-        (err) => {
-          console.error("[live] initial fix failed", err.code, err.message);
-          resolve(err.code === 1 ? false : true);
+    // Ask for a one-shot fix first so we get an immediate position.
+    try {
+      const position = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 10000,
+      });
+      handlePosition({
+        coords: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy,
+          speed: position.coords.speed,
+          heading: position.coords.heading,
+          altitude: null,
+          altitudeAccuracy: null,
         },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 5000 },
-      );
-    });
-    if (!ok) {
-      despiaCall("backgroundlocationoff://");
-      setGeoError("Location permission is off — tap to open settings, then try again");
-      toast.error("Location permission is off");
-      setActivePupilId(null);
-      setTrackingPupilName(null);
-      return;
+        timestamp: position.timestamp,
+      });
+    } catch (err) {
+      console.error("[live] initial fix failed", err);
+      // Continue — the watch will deliver the first fix.
     }
 
     setGeoError(null);
