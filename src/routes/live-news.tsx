@@ -23,6 +23,7 @@ import {
 } from "@tabler/icons-react";
 
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 import { typography } from "@/lib/typography";
