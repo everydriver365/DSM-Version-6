@@ -70,6 +70,12 @@ function timeAgo(iso: string) {
   if (days < 7) return `${days}d ago`;
   return formatDate(iso);
 }
+function formatTime12hr(timeStr: string | null | undefined): string {
+  if (!timeStr) return "";
+  const d = timeStr.includes("T") ? new Date(timeStr) : new Date(`2000-01-01T${timeStr}`);
+  return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: true });
+}
+
 function typeIcon(type: string | null) {
   switch (type) {
     case "lesson":
@@ -107,6 +113,7 @@ function getNotificationAction(
   options?: { label: string; route: string; icon: string }[];
   isMessage?: boolean;
   isOverduePayment?: boolean;
+  isLessonStarting?: boolean;
   threadId?: string | null;
   senderName?: string | null;
   messagePreview?: string | null;
@@ -119,7 +126,10 @@ function getNotificationAction(
   cancellationReason?: string | null;
   lessonDate?: string | null;
   lessonTime?: string | null;
+  pickupLocation?: string | null;
+  minutesUntil?: number | null;
   isDSMLive?: boolean;
+
   sessionId?: string | null;
   sessionTitle?: string | null;
   sessionUrl?: string | null;
@@ -237,12 +247,33 @@ function getNotificationAction(
     };
   }
 
-  if (type === "lesson" || type === "lesson_reminder") {
+  if (
+    type === "lesson_reminder" ||
+    type === "lesson_starting" ||
+    type === "lesson_soon" ||
+    type === "starting_soon"
+  ) {
+    return {
+      isLessonStarting: true,
+      lessonId: meta.lesson_id ?? null,
+      pupilId: meta.pupil_id ?? null,
+      pupilName: meta.pupil_name ?? meta.pupil ?? null,
+      pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
+      pickupLocation: meta.pickup_location ?? meta.address ?? meta.location ?? null,
+      lessonTime: meta.lesson_time ?? meta.time ?? null,
+      lessonDate: meta.lesson_date ?? meta.date ?? null,
+      minutesUntil: meta.minutes_until ?? meta.minutes ?? null,
+      options: [],
+    };
+  }
+
+  if (type === "lesson") {
     if (meta.lesson_id) {
       return { directNav: `/lessons/${meta.lesson_id}` };
     }
     return { directNav: "/schedule" };
   }
+
 
   if (type === "pupil" || type === "new_pupil") {
     const pupilId = meta.pupil_id ?? notif.reference_id;
@@ -335,6 +366,7 @@ function NotificationsPage() {
     options: { label: string; route: string; icon: string }[];
     isMessage?: boolean;
     isOverduePayment?: boolean;
+    isLessonStarting?: boolean;
     threadId?: string | null;
     senderName?: string | null;
     messagePreview?: string | null;
@@ -347,7 +379,10 @@ function NotificationsPage() {
     cancellationReason?: string | null;
     lessonDate?: string | null;
     lessonTime?: string | null;
+    pickupLocation?: string | null;
+    minutesUntil?: number | null;
     isDSMLive?: boolean;
+
     sessionId?: string | null;
     sessionTitle?: string | null;
     sessionUrl?: string | null;
@@ -683,7 +718,11 @@ function NotificationsPage() {
                               cancellationReason: action.cancellationReason,
                               lessonDate: action.lessonDate,
                               lessonTime: action.lessonTime,
+                              pickupLocation: action.pickupLocation,
+                              minutesUntil: action.minutesUntil,
+                              isLessonStarting: action.isLessonStarting,
                               isDSMLive: action.isDSMLive,
+
                               sessionId: action.sessionId,
                               sessionTitle: action.sessionTitle,
                               sessionUrl: action.sessionUrl,
@@ -3488,7 +3527,386 @@ function NotificationsPage() {
                   Dismiss
                 </div>
               </>
+            ) : actionSheet.isLessonStarting ? (
+              <>
+                {/* Lesson starting header card */}
+                <div
+                  style={{
+                    margin: "16px 16px 8px",
+                    background: "linear-gradient(135deg, #14509E, #0B1F3A)",
+                    borderRadius: 16,
+                    padding: 16,
+                    boxShadow: "0 4px 0 #091628",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        background: "rgba(255,255,255,0.2)",
+                        borderRadius: 20,
+                        padding: "4px 10px",
+                        fontSize: 10,
+                        fontWeight: 800,
+                        color: "#fff",
+                        ...POPPINS,
+                      }}
+                    >
+                      {typeof actionSheet.minutesUntil === "number" && actionSheet.minutesUntil <= 10
+                        ? "🔔 STARTING SOON"
+                        : "📅 UPCOMING LESSON"}
+                    </div>
+                    {actionSheet.lessonTime && (
+                      <span
+                        style={{
+                          fontSize: 11,
+                          color: "rgba(255,255,255,0.6)",
+                          ...POPPINS,
+                        }}
+                      >
+                        {formatTime12hr(actionSheet.lessonTime)}
+                      </span>
+                    )}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 22,
+                      fontWeight: 800,
+                      color: "#fff",
+                      marginTop: 10,
+                      letterSpacing: -0.3,
+                      ...POPPINS,
+                    }}
+                  >
+                    {actionSheet.pupilName ?? "Next lesson"}
+                  </div>
+                  {typeof actionSheet.minutesUntil === "number" && (
+                    <div
+                      style={{
+                        marginTop: 6,
+                        display: "flex",
+                        gap: 6,
+                        alignItems: "center",
+                      }}
+                    >
+                      <IconClock size={13} color="rgba(255,255,255,0.7)" stroke={1.5} />
+                      <span
+                        style={{
+                          fontSize: 12,
+                          color: "rgba(255,255,255,0.8)",
+                          ...POPPINS,
+                        }}
+                      >
+                        Starting in {actionSheet.minutesUntil} minutes
+                      </span>
+                    </div>
+                  )}
+                  {actionSheet.pickupLocation && (
+                    <div
+                      style={{
+                        marginTop: 8,
+                        background: "rgba(255,255,255,0.12)",
+                        borderRadius: 10,
+                        padding: "10px 12px",
+                        display: "flex",
+                        gap: 8,
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <IconMapPin
+                        size={14}
+                        color="rgba(255,255,255,0.7)"
+                        stroke={1.5}
+                        style={{ flexShrink: 0, marginTop: 1 }}
+                      />
+                      <div>
+                        <div
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 700,
+                            color: "rgba(255,255,255,0.5)",
+                            letterSpacing: "0.08em",
+                            marginBottom: 3,
+                            ...POPPINS,
+                          }}
+                        >
+                          PICKUP LOCATION
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 600,
+                            color: "#fff",
+                            lineHeight: 1.4,
+                            ...POPPINS,
+                          }}
+                        >
+                          {actionSheet.pickupLocation}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {actionSheet.pickupLocation && (
+                    <button
+                      type="button"
+                      style={{
+                        marginTop: 12,
+                        width: "100%",
+                        background: "rgba(255,255,255,0.2)",
+                        borderRadius: 20,
+                        padding: 11,
+                        border: "none",
+                        cursor: "pointer",
+                        display: "flex",
+                        gap: 8,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                      onClick={() => {
+                        const addr = encodeURIComponent(actionSheet.pickupLocation ?? "");
+                        window.open(`maps://?daddr=${addr}&dirflg=d`, "_blank");
+                      }}
+                    >
+                      <IconNavigation size={16} color="#fff" stroke={1.5} />
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "#fff", ...POPPINS }}>
+                        Navigate to pickup
+                      </span>
+                    </button>
+                  )}
+                </div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#9CA3AF",
+                    textTransform: "uppercase",
+                    padding: "8px 16px 6px",
+                    ...POPPINS,
+                  }}
+                >
+                  Quick actions
+                </div>
+                <div
+                  style={{
+                    margin: "0 16px",
+                    background: "#fff",
+                    borderRadius: 16,
+                    border: "1px solid #E4E8EF",
+                    overflow: "hidden",
+                  }}
+                >
+                  {/* Call pupil */}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      borderBottom: "1px solid #E4E8EF",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      if (!actionSheet.pupilPhone) {
+                        toast.error("No phone number on record");
+                        return;
+                      }
+                      window.open(`tel:${actionSheet.pupilPhone}`, "_blank");
+                      setActionSheet(null);
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: "#DCFCE7",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconPhone size={18} color="#15803D" stroke={1.5} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          ...POPPINS,
+                        }}
+                      >
+                        Call {actionSheet.pupilName ?? "pupil"} 📞
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                          marginTop: 2,
+                          ...POPPINS,
+                        }}
+                      >
+                        {actionSheet.pupilPhone ?? "No number on record"}
+                      </div>
+                    </div>
+                    <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                  </div>
+                  {/* Send text */}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      borderBottom: "1px solid #E4E8EF",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      if (!actionSheet.pupilPhone) {
+                        toast.error("No phone number on record");
+                        return;
+                      }
+                      window.open(
+                        `sms:${actionSheet.pupilPhone}?body=${encodeURIComponent(
+                          `Hi ${actionSheet.pupilName ?? ""}! Just a reminder ` +
+                            `your driving lesson is ` +
+                            (actionSheet.minutesUntil
+                              ? `in ${actionSheet.minutesUntil} minutes. `
+                              : "coming up soon. ") +
+                            `See you shortly! 🚗`
+                        )}`,
+                        "_blank"
+                      );
+                      setActionSheet(null);
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: "#EFF6FF",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconMessage size={18} color="#1877D6" stroke={1.5} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          ...POPPINS,
+                        }}
+                      >
+                        Send reminder text 💬
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                          marginTop: 2,
+                          ...POPPINS,
+                        }}
+                      >
+                        Let {actionSheet.pupilName ?? "them"} know you're on your way
+                      </div>
+                    </div>
+                    <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                  </div>
+                  {/* View lesson */}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setActionSheet(null);
+                      if (actionSheet.lessonId) {
+                        navigate({ to: `/lessons/${actionSheet.lessonId}` as never });
+                      } else {
+                        navigate({ to: "/schedule" as never });
+                      }
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: "#EDE9FE",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconCalendar size={18} color="#7C3AED" stroke={1.5} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          ...POPPINS,
+                        }}
+                      >
+                        View lesson details
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                          marginTop: 2,
+                          ...POPPINS,
+                        }}
+                      >
+                        See full lesson information
+                      </div>
+                    </div>
+                    <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  style={{
+                    margin: "12px 16px 0",
+                    width: "calc(100% - 32px)",
+                    background: "#fff",
+                    color: "#0B1F3A",
+                    borderRadius: 20,
+                    padding: 13,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    border: "1px solid #E4E8EF",
+                    cursor: "pointer",
+                    ...POPPINS,
+                  }}
+                  onClick={() => {
+                    setActionSheet(null);
+                    setQuickReply("");
+                  }}
+                >
+                  Dismiss
+                </button>
+              </>
             ) : (
+
               <>
                 <div
                   style={{
