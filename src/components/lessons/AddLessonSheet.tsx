@@ -124,6 +124,8 @@ export function AddLessonSheet({
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState<number | "test">(1);
   const [isTestDay, setIsTestDay] = useState(false);
+  const [isEvent, setIsEvent] = useState(false);
+  const [eventTitle, setEventTitle] = useState("");
   const [pickup, setPickup] = useState("");
   const [testCentre, setTestCentre] = useState("");
   const testCentreInputRef = useRef<HTMLInputElement>(null);
