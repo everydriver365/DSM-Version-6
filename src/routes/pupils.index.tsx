@@ -147,7 +147,9 @@ function PupilsIndexPage() {
   const [unreadMap, setUnreadMap] = useState<Record<string, number>>({});
   const [nextLessonMap, setNextLessonMap] = useState<Record<string, string>>({});
   const [testDateMap, setTestDateMap] = useState<Record<string, string>>({});
+  const [lastLessonMap, setLastLessonMap] = useState<Record<string, string>>({});
   const [sortBy, setSortBy] = useState<"name" | "balance" | "next_lesson">("name");
+  const [statusFilter, setStatusFilter] = useState<StatusKey>("active");
 
   // Refresh balances/owing badges whenever a payment is recorded anywhere.
   useEffect(() => {
