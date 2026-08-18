@@ -139,7 +139,7 @@ function UpcomingTestsPage() {
       {/* Header */}
       <InstructorTopBar
         firstName=""
-        pageTitle="Upcoming tests"
+        pageTitle="Driving tests"
         onBack={() => navigate({ to: "/home" } as never)}
         onBell={() => navigate({ to: "/notifications" as never })}
         onPhone={() => navigate({ to: "/enquiries" as never })}
@@ -148,6 +148,53 @@ function UpcomingTestsPage() {
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
       <div style={{ height: TOP_BAR_SPACER }} />
+
+      {/* Tabs */}
+      <div className="px-4 pt-3">
+        <div
+          className="flex"
+          style={{
+            background: "#FFFFFF",
+            borderRadius: 10,
+            boxShadow: "0 4px 0 #E4E4E8",
+            padding: 3,
+            overflowX: "auto",
+            scrollbarWidth: "none",
+          }}
+        >
+          {TEST_TABS.map((tab) => {
+            const active = activeTab === tab.key;
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setActiveTab(tab.key)}
+                style={{
+                  flex: 1,
+                  flexShrink: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  padding: "8px 4px",
+                  fontSize: 12,
+                  fontFamily: "Poppins, sans-serif",
+                  cursor: "pointer",
+                  border: "none",
+                  outline: "none",
+                  background: active ? "#0B1F3A" : "transparent",
+                  color: active ? "#FFFFFF" : "#8A94A6",
+                  borderRadius: active ? 7 : 0,
+                  fontWeight: active ? 600 : 500,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Actions row */}
       <div className="flex justify-end px-4 pt-3">
@@ -165,21 +212,28 @@ function UpcomingTestsPage() {
       <div className="px-4 pt-4">
         {loading ? (
           <div className="py-8 text-center text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>
-            Loading upcoming tests…
+            Loading driving tests…
           </div>
-        ) : tests.length === 0 ? (
-          <div
-            className="py-8 text-center text-[13px]"
-            style={{ color: "#6B7280", ...POPPINS }}
-          >
-            No upcoming tests. Add a test from the Driving tests page.
+        ) : filteredTests.length === 0 ? (
+          <div className="py-10 text-center" style={{ color: "#6B7280", ...POPPINS }}>
+            <div className="text-[14px] font-semibold mb-1">
+              {activeTab === "upcoming" && "No upcoming tests"}
+              {activeTab === "passed" && "No passed tests yet"}
+              {activeTab === "failed" && "No failed tests yet"}
+            </div>
+            <div className="text-[13px]">
+              {activeTab === "upcoming" && "Add a test from the Driving tests page."}
+              {activeTab === "passed" && "Results will appear here once recorded."}
+              {activeTab === "failed" && "Results will appear here once recorded."}
+            </div>
           </div>
         ) : (
           <div className="flex flex-col" style={{ gap: 10 }}>
-            {tests.map((t) => (
+            {filteredTests.map((t) => (
               <TestRow
                 key={t.id}
                 test={t}
+                activeTab={activeTab}
                 onEdit={() => {
                   setEditDate(t.test_date);
                   setEditTime(t.test_time ?? "");
