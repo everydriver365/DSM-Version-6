@@ -217,19 +217,23 @@ function getNotificationAction(
     };
   }
 
-  if (type === "payment" || type === "payment_received") {
-    return { directNav: "/payments" };
-  }
+  const rawText = `${notif.title ?? ""} ${notif.body ?? notif.message ?? ""}`;
 
-  if (type === "payment_overdue") {
+  if (
+    type === "payment_overdue" ||
+    /overdue|unpaid lessons|owes\s*£/i.test(rawText)
+  ) {
+    const owedMatch = rawText.match(/£\s*([0-9]+(?:\.[0-9]{1,2})?)/);
+    const nameMatch = rawText.match(/^\s*(?:[^A-Za-z]*)([A-Za-z' -]+?)\s+(?:owes|has unpaid)/im);
     return {
       isOverduePayment: true,
-      pupilId: meta.pupil_id ?? null,
-      pupilName: meta.pupil_name ?? meta.pupil ?? null,
+      pupilId: meta.pupil_id ?? notif.reference_id ?? null,
+      pupilName: meta.pupil_name ?? meta.pupil ?? (nameMatch ? nameMatch[1].trim() : null),
       pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
       pupilEmail: meta.pupil_email ?? meta.email ?? null,
-      amountOwed: meta.amount_owed ?? meta.amount ?? meta.total ?? null,
+      amountOwed: meta.amount_owed ?? meta.amount ?? meta.total ?? (owedMatch ? owedMatch[1] : null),
       lessonCount: meta.lesson_count ?? meta.unpaid_lessons ?? null,
+
     };
   }
 
