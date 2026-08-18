@@ -2683,7 +2683,7 @@ function NotificationsPage() {
                         flexShrink: 0,
                       }}
                     >
-                      <IconInbox size={18} color="#D68A1B" stroke={1.5} />
+                      <IconExternalLink size={18} color="#D68A1B" stroke={1.5} />
                     </div>
                     <div style={{ flex: 1 }}>
                       <div
@@ -2694,7 +2694,7 @@ function NotificationsPage() {
                           ...POPPINS,
                         }}
                       >
-                        View full enquiry
+                        More details →
                       </div>
                       <div
                         style={{
@@ -2704,7 +2704,7 @@ function NotificationsPage() {
                           ...POPPINS,
                         }}
                       >
-                        See all details in the enquiries pipeline
+                        Open full enquiry record
                       </div>
                     </div>
                     <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
