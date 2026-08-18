@@ -157,6 +157,8 @@ export function AddLessonSheet({
     if (!open) return;
     setPupilId(initialPupilId ?? "");
     setDate(initialDate || todayISO());
+    setIsEvent(false);
+    setEventTitle("");
   }, [open, initialPupilId, initialDate]);
 
   // Populate sheet state when editing an existing lesson.
