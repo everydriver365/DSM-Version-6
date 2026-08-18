@@ -219,6 +219,11 @@ function getNotificationAction(
 
   const rawText = `${notif.title ?? ""} ${notif.body ?? notif.message ?? ""}`;
 
+  if (type === "payment" || type === "payment_received") {
+    return { directNav: "/payments" };
+  }
+
+
   if (
     type === "payment_overdue" ||
     /overdue|unpaid lessons|owes\s*£/i.test(rawText)
