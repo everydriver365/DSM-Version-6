@@ -857,7 +857,7 @@ function LessonDetailPage() {
               />
             </Card>
           </div>
-        </>)}
+        </>)}</>
       )}
 
       <ConfirmDialog
