@@ -95,15 +95,17 @@ function getNotificationAction(
   }
 
   if (type === "lesson" || type === "lesson_reminder" || type === "lesson_cancelled") {
-    if (meta.lesson_id) {
-      return { directNav: `/lessons/${meta.lesson_id}` };
+    const lessonId = meta.lesson_id ?? notif.reference_id;
+    if (lessonId) {
+      return { directNav: `/lessons/${lessonId}` };
     }
     return { directNav: "/schedule" };
   }
 
   if (type === "pupil" || type === "new_pupil") {
-    if (meta.pupil_id) {
-      return { directNav: `/pupils/${meta.pupil_id}` };
+    const pupilId = meta.pupil_id ?? notif.reference_id;
+    if (pupilId) {
+      return { directNav: `/pupils/${pupilId}` };
     }
     return { directNav: "/pupils" };
   }
