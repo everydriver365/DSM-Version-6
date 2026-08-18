@@ -3944,12 +3944,11 @@ function PupilDetailPage() {
                         Minor: {minor ?? 0}&nbsp;&nbsp;Serious: {serious ?? 0}
                       </div>
                     )}
+                    {!passed && (
                     <button
                       type="button"
                       onClick={() =>
-                        passed
-                          ? navigate({ to: "/certificates" as never })
-                          : navigate({ to: "/driving-test/$pupilId", params: { pupilId: pupil.id } } as never)
+                        navigate({ to: "/driving-test/$pupilId", params: { pupilId: pupil.id } } as never)
                       }
                       style={{
                         marginTop: 10,
@@ -3963,8 +3962,9 @@ function PupilDetailPage() {
                         ...POPPINS,
                       }}
                     >
-                      {passed ? "Generate certificate →" : "Book retest →"}
+                      Book retest →
                     </button>
+                    )}
                     <style>{`
                       @keyframes pupil-pass-pop {
                         0% { transform: translateY(-10px) scale(0.6); opacity: 0; }
