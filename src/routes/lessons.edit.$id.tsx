@@ -114,7 +114,10 @@ function EditLessonPage() {
   const [searchingCentres, setSearchingCentres] = useState(false);
   const [testTime, setTestTime] = useState("");
   const [status, setStatus] = useState("confirmed");
+  const [isEvent, setIsEvent] = useState(false);
+  const [eventTitle, setEventTitle] = useState("");
   const [pickupLocation, setPickupLocation] = useState("");
+
   const [pickupAddress, setPickupAddress] = useState("");
   const [pickupPostcode, setPickupPostcode] = useState("");
   const [notes, setNotes] = useState("");
