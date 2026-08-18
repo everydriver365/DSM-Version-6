@@ -608,38 +608,169 @@ function NotificationsPage() {
                 margin: "12px auto 0",
               }}
             />
-            <div
-              style={{
-                margin: "16px 16px 8px",
-                background: "#fff",
-                borderRadius: 16,
-                border: "1px solid #E4E8EF",
-                padding: "14px 16px",
-              }}
-            >
+            {actionSheet.isMessage ? (
               <div
                 style={{
-                  fontSize: 14,
-                  fontWeight: 700,
-                  color: "#0B1F3A",
-                  ...POPPINS,
+                  margin: "16px 16px 8px",
+                  background: "#fff",
+                  borderRadius: 16,
+                  border: "1px solid #E4E8EF",
+                  overflow: "hidden",
                 }}
               >
-                {typeTitle(actionSheet.notif.type, actionSheet.notif.title)}
-              </div>
-              {actionSheet.notif.body && (
                 <div
                   style={{
-                    fontSize: 12,
-                    color: "#6B7686",
-                    marginTop: 4,
+                    display: "flex",
+                    gap: 10,
+                    alignItems: "center",
+                    padding: "14px 16px",
+                    borderBottom: "1px solid #E4E8EF",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: "50%",
+                      background: "#EDE9FE",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: "#7C3AED",
+                      ...POPPINS,
+                    }}
+                  >
+                    {actionSheet.senderName?.[0] ?? "?"}
+                  </div>
+                  <div>
+                    <div
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 700,
+                        color: "#0B1F3A",
+                        ...POPPINS,
+                      }}
+                    >
+                      {actionSheet.senderName ?? "Unknown sender"}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 11,
+                        color: "#9CA3AF",
+                        marginTop: 2,
+                        ...POPPINS,
+                      }}
+                    >
+                      Sent you a message
+                    </div>
+                  </div>
+                </div>
+                {actionSheet.messagePreview && (
+                  <div
+                    style={{
+                      padding: "12px 16px",
+                      fontSize: 13,
+                      color: "#6B7686",
+                      lineHeight: 1.5,
+                      fontStyle: "italic",
+                      ...POPPINS,
+                    }}
+                  >
+                    "{actionSheet.messagePreview}"
+                  </div>
+                )}
+                <div
+                  style={{
+                    padding: "12px 16px",
+                    borderTop: "1px solid #E4E8EF",
+                    display: "flex",
+                    gap: 8,
+                    alignItems: "center",
+                  }}
+                >
+                  <input
+                    placeholder="Quick reply..."
+                    value={quickReply}
+                    onChange={(e) => setQuickReply(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && quickReply.trim() && !sendingReply) {
+                        sendQuickReply();
+                      }
+                    }}
+                    disabled={sendingReply}
+                    style={{
+                      flex: 1,
+                      background: "#EEF2F7",
+                      border: "none",
+                      borderRadius: 20,
+                      padding: "8px 14px",
+                      fontSize: 13,
+                      fontFamily: "Poppins, sans-serif",
+                      outline: "none",
+                    }}
+                  />
+                  <button
+                    type="button"
+                    disabled={!quickReply.trim() || sendingReply}
+                    onClick={sendQuickReply}
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: "50%",
+                      background: quickReply.trim() ? "#1877D6" : "#E4E8EF",
+                      border: "none",
+                      cursor: quickReply.trim() && !sendingReply ? "pointer" : "default",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <IconSend
+                      size={16}
+                      color={quickReply.trim() ? "#fff" : "#9CA3AF"}
+                      stroke={1.5}
+                    />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div
+                style={{
+                  margin: "16px 16px 8px",
+                  background: "#fff",
+                  borderRadius: 16,
+                  border: "1px solid #E4E8EF",
+                  padding: "14px 16px",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: "#0B1F3A",
                     ...POPPINS,
                   }}
                 >
-                  {actionSheet.notif.body}
+                  {typeTitle(actionSheet.notif.type, actionSheet.notif.title)}
                 </div>
-              )}
-            </div>
+                {actionSheet.notif.body && (
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: "#6B7686",
+                      marginTop: 4,
+                      ...POPPINS,
+                    }}
+                  >
+                    {actionSheet.notif.body}
+                  </div>
+                )}
+              </div>
+            )}
             <div
               style={{
                 fontSize: 11,
