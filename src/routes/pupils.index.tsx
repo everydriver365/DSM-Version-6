@@ -442,6 +442,25 @@ function PupilsIndexPage() {
       }
 
       try {
+        const { data: lastLessonRows, error: llErr } = await supabase
+          .from("lessons")
+          .select("pupil_id, lesson_date")
+          .in("pupil_id", pupilIds)
+          .in("status", ["confirmed", "completed"])
+          .is("deleted_at", null)
+          .order("lesson_date", { ascending: false });
+        if (llErr) console.error("[pupils] last lesson error", llErr);
+        const llMap: Record<string, string> = {};
+        for (const row of (lastLessonRows ?? []) as { pupil_id: string; lesson_date: string }[]) {
+          if (!llMap[row.pupil_id]) llMap[row.pupil_id] = row.lesson_date;
+        }
+        setLastLessonMap(llMap);
+      } catch (e) {
+        console.error("[pupils] last lesson fetch crashed", e);
+        setLastLessonMap({});
+      }
+
+      try {
         // Canonical per-pupil balance (handles block/NI packages and credit).
         const balances = await Promise.all(
           normalized.map(async (p) => {
