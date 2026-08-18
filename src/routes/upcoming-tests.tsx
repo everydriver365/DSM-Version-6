@@ -90,6 +90,8 @@ function UpcomingTestsPage() {
   const [cancelReason, setCancelReason] = useState("");
   const [saving, setSaving] = useState(false);
 
+  const [activeTab, setActiveTab] = useState<TestTabKey>("upcoming");
+
   useEffect(() => {
     (async () => {
       const { data: userData } = await supabase.auth.getUser();
@@ -101,14 +103,13 @@ function UpcomingTestsPage() {
       }
       const { data, error } = await supabase
         .from("pupils")
-        .select("id, name, first_name, test_date, test_time, test_centre")
+        .select("id, name, first_name, test_date, test_time, test_centre, test_status")
         .eq("instructor_id", uid)
         .not("test_date", "is", null)
-        .gte("test_date", todayYmd())
         .order("test_date", { ascending: true });
       if (error) {
         console.error("[upcoming-tests] fetch error", error);
-        toast.error("Could not load upcoming tests");
+        toast.error("Could not load driving tests");
       }
       setTests(
         ((data ?? []) as any[]).map((p) => ({
@@ -117,11 +118,21 @@ function UpcomingTestsPage() {
           test_date: p.test_date,
           test_time: p.test_time ?? null,
           test_centre: p.test_centre ?? null,
+          test_status: p.test_status ?? null,
         })),
       );
       setLoading(false);
     })();
   }, []);
+
+  const filteredTests = useMemo(() => {
+    if (activeTab === "upcoming") {
+      return tests.filter((t) => (t.test_status == null || t.test_status === "upcoming") && t.test_date >= todayYmd());
+    }
+    if (activeTab === "passed") return tests.filter((t) => t.test_status === "passed");
+    if (activeTab === "failed") return tests.filter((t) => t.test_status === "failed");
+    return tests;
+  }, [tests, activeTab]);
 
   return (
     <PageLayout className="pb-8" style={POPPINS}>
