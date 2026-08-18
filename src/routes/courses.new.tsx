@@ -1103,6 +1103,19 @@ function Step2(props: {
     );
   }
 
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    height: 44,
+    borderRadius: 10,
+    border: "1px solid #E4E8EF",
+    background: "#fff",
+    padding: "0 12px",
+    fontSize: 14,
+    color: "#0B1F3A",
+    fontFamily: "Poppins, sans-serif",
+    outline: "none",
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <Input
