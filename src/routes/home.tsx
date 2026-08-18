@@ -2816,7 +2816,7 @@ function HomePage() {
       // Today earnings + breakdown modal rows keep their existing
       // "delivered lessons" shape so the modal shows the same list
       // it always has — only the headline weekEarnings changes.
-      const weekLessonRowsForList = allLessons.filter(
+      const weekLessonRowsForList = nonEventLessons.filter(
         (l: any) =>
           l.status !== "cancelled" &&
           l.lesson_date >= weekStartYmd &&
