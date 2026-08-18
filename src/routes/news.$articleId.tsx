@@ -5,6 +5,7 @@ import { IconCalendar, IconChevronLeft, IconClock, IconExternalLink, IconUser } 
 import { sanitizeNewsContent, sanitizeNewsTitle } from "../lib/newsText";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import { categoryOf } from "@/lib/newsCategories";
 import { getLearnItem } from "@/lib/learnLibrary";
