@@ -1,3 +1,4 @@
+import { pushLessonToGoogle } from "@/lib/calendarSyncPrefs";
 import { supabase } from "@/lib/supabaseClient";
 
 /**
@@ -90,9 +91,7 @@ export async function cancelLessonWithUndo(input: {
 
   // 3. Remove the calendar event.
   if (googleEventId) {
-    void supabase.functions.invoke("google-calendar-sync", {
-      body: { lesson_id: lessonId, instructor_id: instructorId ?? "", action: "delete" },
-    });
+    pushLessonToGoogle({ lesson_id: lessonId, instructor_id: instructorId ?? "", action: "delete" });
   }
 
   let settled = false;
@@ -126,9 +125,7 @@ export async function cancelLessonWithUndo(input: {
       }
 
       if (googleEventId) {
-        void supabase.functions.invoke("google-calendar-sync", {
-          body: { lesson_id: lessonId, instructor_id: instructorId ?? "", action: "upsert" },
-        });
+        pushLessonToGoogle({ lesson_id: lessonId, instructor_id: instructorId ?? "", action: "upsert" });
       }
 
       await onUndo?.();

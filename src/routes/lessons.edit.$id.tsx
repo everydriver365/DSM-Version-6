@@ -20,6 +20,7 @@ import {
   feeCap,
   normalizePayState,
 } from "@/lib/cancelCharge";
+import { pushLessonToGoogle } from "@/lib/calendarSyncPrefs";
 
 
 export const Route = createFileRoute("/lessons/edit/$id")({
@@ -384,13 +385,12 @@ function EditLessonPage() {
       .eq("id", id)
       .maybeSingle();
     if (lessonRow?.google_event_id) {
-      void supabase.functions.invoke("google-calendar-sync", {
-        body: {
+      pushLessonToGoogle({
           lesson_id: id,
           instructor_id: user?.id ?? "",
           action: "update",
-        },
-      });
+        }
+      );
     }
     toast.success("Lesson updated");
     navigate({ to: "/home" });

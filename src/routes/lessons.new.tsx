@@ -8,6 +8,7 @@ import { supabase } from "../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../lib/pricingRules";
 import { computeLessonAmount, fetchPostcodeRates } from "../lib/pricing/resolveRate";
 import { PageLayout } from "@/components/PageLayout";
+import { pushLessonToGoogle } from "@/lib/calendarSyncPrefs";
 
 
 const UK_POSTCODE_RE = /([A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})/i;
@@ -290,9 +291,7 @@ function NewLessonPage() {
 
     const newLessonId = (insertedLesson as any)?.id as string | undefined;
     if (newLessonId) {
-      void supabase.functions.invoke("google-calendar-sync", {
-        body: { action: "push", lesson_id: newLessonId, instructor_id: user.id },
-      });
+      pushLessonToGoogle({ action: "push", lesson_id: newLessonId, instructor_id: user.id });
 
       const pupilName = selected?.name ?? "Pupil";
       void supabase.from("instructor_notifications").insert({
@@ -353,9 +352,7 @@ function NewLessonPage() {
           const rows = (await res.json().catch(() => [])) as Array<{ id?: string }>;
           for (const r of rows) {
             if (r?.id) {
-              void supabase.functions.invoke("google-calendar-sync", {
-                body: { action: "push", lesson_id: r.id, instructor_id: user.id },
-              });
+              pushLessonToGoogle({ action: "push", lesson_id: r.id, instructor_id: user.id });
             }
           }
         }
