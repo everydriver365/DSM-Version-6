@@ -253,28 +253,9 @@ function NotificationsPage() {
                         tabIndex={0}
                         onClick={() => {
                           markRead(n.id);
-                          if (n.reference_type === "job_offer" && n.reference_id) {
-                            navigate({ to: "/messages", search: { jobOfferId: n.reference_id } as never });
-          } else if (n.type === "booking" || n.reference_type === "course_booking") {
-            navigate({ to: "/bookings" });
-                          } else if (n.type === "enquiry") {
-                            navigate({ to: "/enquiries" });
-                          } else if (n.type === "message") {
-                            navigate({ to: "/messages" });
-                          } else if (n.type === "tracking") {
-                            navigate({ to: "/live" });
-                          } else if (n.type === "quote_accepted") {
-                            navigate({ to: "/quotes" });
-                          } else if (n.type === "pupil_reply") {
-                            if (n.reference_id) {
-                              navigate({ to: "/messages/$pupilId", params: { pupilId: n.reference_id } as never });
-                            } else {
-                              navigate({ to: "/messages" });
-                            }
-                          } else if (n.type === "gap_accepted" || n.type === "gap_message_sent") {
-                            navigate({ to: "/gaps" });
-                          }
+                          openTarget(n);
                         }}
+
                         className="w-full text-left cursor-pointer"
                         style={{
                           background: n.read ? "#FFFFFF" : "#F5F9FF",
