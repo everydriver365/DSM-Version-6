@@ -584,6 +584,12 @@ function RootComponent() {
     import("./search").then((m) => m.recordRecentScreen(pathname)).catch(() => {});
   }, [pathname]);
 
+  // Native wrappers: extend the webview under the iOS status bar.
+  useEffect(() => {
+    setupEdgeToEdgeStatusBar();
+  }, []);
+
+
   // Register the service worker only. Permission is requested by the
   // in-app PushPermissionCard so the user sees a clear prompt first.
   useEffect(() => {
