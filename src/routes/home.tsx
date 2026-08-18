@@ -2143,7 +2143,7 @@ function HomePage() {
       const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
       const { data: testRows } = await supabase
         .from("pupils")
-        .select("id, name, first_name, test_date, test_time, test_centre")
+        .select("id, name, first_name, test_date, test_time, test_centre, test_status")
         .eq("instructor_id", user.id)
         .not("test_date", "is", null)
         .gte("test_date", todayStr)
@@ -2581,7 +2581,7 @@ function HomePage() {
       const { data: allLessonsRaw, error: lessonsErr } = await supabase
         .from("lessons")
         .select(
-          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, event_title, notes, payment_status, paid_amount, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, photo_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120)"
+          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, event_title, notes, payment_status, paid_amount, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, photo_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120, test_status)"
         )
         .eq("instructor_id", userId)
         .is("deleted_at", null)
@@ -6309,7 +6309,14 @@ function HomePage() {
                               testTime: testTimeOf(l),
                               durationLabel: durLabel,
                               dateLabel: start.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }),
-                              testResult: (l as any).test_result ?? null,
+                              testResult: (() => {
+                                const direct = String((l as any).test_result ?? '').toLowerCase();
+                                if (direct === 'pass' || direct === 'fail') return direct;
+                                const ps = String((l.pupils as any)?.test_status ?? '').toLowerCase();
+                                if (ps.startsWith('pass')) return 'pass';
+                                if (ps.startsWith('fail')) return 'fail';
+                                return null;
+                              })(),
                               onOpenLesson: () => setDetailsSheetForLesson(l),
                               onEdit: () => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }),
                             }}
