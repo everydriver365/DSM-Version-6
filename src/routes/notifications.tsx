@@ -74,6 +74,72 @@ function typeTitle(type: string | null, fallback: string) {
 
 function NotificationsPage() {
   const navigate = useNavigate();
+
+  function openTarget(n: Notification) {
+    const ref = n.reference_id;
+    const refType = (n.reference_type || "").toLowerCase();
+    const type = (n.type || "").toLowerCase();
+    const go = (opts: any) => navigate(opts as never);
+
+    // Reference-based routing first (most precise)
+    if (ref) {
+      switch (refType) {
+        case "job_offer":
+          return go({ to: "/messages", search: { jobOfferId: ref } });
+        case "lesson":
+          return go({ to: "/lessons/$id", params: { id: ref } });
+        case "pupil":
+          return go({ to: "/pupils/$id", params: { id: ref } });
+        case "chat_room":
+          return go({ to: "/community", search: { roomId: ref } });
+        case "marketplace_listing":
+          return go({ to: "/marketplace/$listingId", params: { listingId: ref } });
+        case "course":
+        case "course_booking":
+          return go({ to: "/bookings" });
+        case "payment":
+          return go({ to: "/payments" });
+        case "quote":
+          return go({ to: "/quotes" });
+        case "live_session":
+          return go({ to: "/dsm-live/$sessionId", params: { sessionId: ref } });
+        default:
+          break;
+      }
+    }
+
+    // Type-based routing
+    if (type === "pupil_reply" || type === "message") {
+      if (ref) return go({ to: "/messages/$pupilId", params: { pupilId: ref } });
+      return go({ to: "/messages" });
+    }
+    if (type === "chat_message") return go({ to: "/community" });
+    if (type.startsWith("lesson")) {
+      if (ref) return go({ to: "/lessons/$id", params: { id: ref } });
+      return go({ to: "/schedule" });
+    }
+    if (type === "reschedule_request") {
+      if (ref) return go({ to: "/lessons/reschedule/$id", params: { id: ref } });
+      return go({ to: "/messages" });
+    }
+    if (type.startsWith("payment")) return go({ to: "/payments" });
+    if (type === "booking") return go({ to: "/bookings" });
+    if (type === "enquiry") return go({ to: "/enquiries" });
+    if (type === "tracking") return go({ to: "/live" });
+    if (type === "quote_accepted" || type === "quote") return go({ to: "/quotes" });
+    if (type === "pupil_added" || type === "pupil") {
+      if (ref) return go({ to: "/pupils/$id", params: { id: ref } });
+      return go({ to: "/pupils" });
+    }
+    if (type === "test") return go({ to: "/tests" });
+    if (type === "marketplace_enquiry") return go({ to: "/marketplace" });
+    if (type === "featured_application") return go({ to: "/admin/applications" });
+    if (type.startsWith("gap")) return go({ to: "/gaps" });
+    if (type === "review") return go({ to: "/reviews" });
+
+    toast("Nothing more to show for this notification");
+  }
+
   const [userId, setUserId] = useState<string | null>(null);
   const [items, setItems] = useState<Notification[] | null>(null);
 
@@ -253,28 +319,9 @@ function NotificationsPage() {
                         tabIndex={0}
                         onClick={() => {
                           markRead(n.id);
-                          if (n.reference_type === "job_offer" && n.reference_id) {
-                            navigate({ to: "/messages", search: { jobOfferId: n.reference_id } as never });
-          } else if (n.type === "booking" || n.reference_type === "course_booking") {
-            navigate({ to: "/bookings" });
-                          } else if (n.type === "enquiry") {
-                            navigate({ to: "/enquiries" });
-                          } else if (n.type === "message") {
-                            navigate({ to: "/messages" });
-                          } else if (n.type === "tracking") {
-                            navigate({ to: "/live" });
-                          } else if (n.type === "quote_accepted") {
-                            navigate({ to: "/quotes" });
-                          } else if (n.type === "pupil_reply") {
-                            if (n.reference_id) {
-                              navigate({ to: "/messages/$pupilId", params: { pupilId: n.reference_id } as never });
-                            } else {
-                              navigate({ to: "/messages" });
-                            }
-                          } else if (n.type === "gap_accepted" || n.type === "gap_message_sent") {
-                            navigate({ to: "/gaps" });
-                          }
+                          openTarget(n);
                         }}
+
                         className="w-full text-left cursor-pointer"
                         style={{
                           background: n.read ? "#FFFFFF" : "#F5F9FF",
