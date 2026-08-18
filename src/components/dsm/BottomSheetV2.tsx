@@ -65,45 +65,62 @@ export function BottomSheet({ title, subtitle, onClose, children, footer }: Bott
           paddingBottom: "calc(16px + 90px + env(safe-area-inset-bottom))",
         }}
       >
-        <div className="flex justify-center pt-3 pb-1 shrink-0">
+        <div
+          style={{
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "12px 16px 0",
+          }}
+        >
           <div
-            className="rounded-full"
-            style={{ width: 40, height: 5, backgroundColor: "#C7CDD6" }}
+            style={{ width: 36, height: 5, borderRadius: 3, backgroundColor: "#D1D1D6" }}
           />
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            type="button"
+            style={{
+              position: "absolute",
+              right: 16,
+              top: 8,
+              width: 30,
+              height: 30,
+              borderRadius: "50%",
+              background: "#EEF2F7",
+              border: "none",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <IconX size={16} color="#6B7686" stroke={2} />
+          </button>
         </div>
 
         <div className="px-5 pt-2 pb-4 shrink-0">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-                <h2
-                  style={{
-                    color: navy,
-                    fontSize: 26,
-                    fontWeight: 800,
-                    letterSpacing: "-0.5px",
-                    lineHeight: 1.15,
-                  }}
-                >
-                  {title}
-                </h2>
-                {subtitle && (
-                  <div
-                    className="mt-1"
-                    style={{ color: "#8A8A8E", fontSize: 13.5, fontWeight: 500 }}
-                  >
-                    {subtitle}
-                  </div>
-                )}
-            </div>
-            <button
-              onClick={onClose}
-              className="flex items-center justify-center rounded-full shrink-0 active:opacity-80"
-              aria-label="Close"
-              type="button"
-              style={{ width: 30, height: 30, backgroundColor: "#E5E5EA" }}
+          <div className="min-w-0">
+            <h2
+              style={{
+                color: navy,
+                fontSize: 26,
+                fontWeight: 800,
+                letterSpacing: "-0.5px",
+                lineHeight: 1.15,
+              }}
             >
-              <IconX stroke={1.5} size={13} color="#6B6B6F" />
-            </button>
+              {title}
+            </h2>
+            {subtitle && (
+              <div
+                className="mt-1"
+                style={{ color: "#8A8A8E", fontSize: 13.5, fontWeight: 500 }}
+              >
+                {subtitle}
+              </div>
+            )}
           </div>
         </div>
 
