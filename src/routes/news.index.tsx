@@ -4,6 +4,7 @@ import { IconAlertTriangle, IconChevronLeft, IconClock, IconMapPin, IconNews, Ic
 import { sanitizeNewsTitle } from "../lib/newsText";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import {
   NEWS_CATEGORIES,
   categoryOf,
