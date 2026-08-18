@@ -1755,6 +1755,50 @@ function SettingsPage() {
           </button>
         </SectionCard>
 
+        {biometricAvailable && (
+          <>
+            <Label>SECURITY</Label>
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 16,
+                border: "1px solid #E4E8EF",
+                overflow: "hidden",
+                marginBottom: 16,
+              }}
+            >
+              <div className="flex items-center gap-3" style={{ padding: "14px 16px" }}>
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 999,
+                    background: "#EFF6FF",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <IconFingerprint size={20} color="#1877D6" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[14px] font-semibold text-[#0B1F3A]" style={POPPINS}>
+                    Face ID / Touch ID
+                  </div>
+                  <div className="text-[11px] text-[#9CA3AF]" style={{ marginTop: 2, ...POPPINS }}>
+                    Lock DSM after 5 minutes in background
+                  </div>
+                </div>
+                <ToggleSwitch
+                  checked={biometricLockEnabled}
+                  onChange={(v) => { void toggleBiometricLock(v); }}
+                />
+              </div>
+            </div>
+          </>
+        )}
+
         {/* ============ NEW SECTIONS ============ */}
         <Label>POLICY & AUTOMATION</Label>
 
