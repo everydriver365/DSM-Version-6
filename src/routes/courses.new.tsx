@@ -193,6 +193,11 @@ function NewCoursePage() {
   const [weekdaysOnlyDaily, setWeekdaysOnlyDaily] = useState(false);
   const [repeatEndDate, setRepeatEndDate] = useState<string>("");
   const [repeatCount, setRepeatCount] = useState<string>("");
+  const [useCustomSessions, setUseCustomSessions] = useState(false);
+  const [customSessions, setCustomSessions] = useState<CourseSession[]>([]);
+  const [newSessionDate, setNewSessionDate] = useState<string>("");
+  const [newSessionTime, setNewSessionTime] = useState<string>("09:00");
+  const [newSessionDuration, setNewSessionDuration] = useState<number>(60);
   const [pickup, setPickup] = useState<PickupItem | null>(null);
   const [pickupError, setPickupError] = useState<string | null>(null);
 
