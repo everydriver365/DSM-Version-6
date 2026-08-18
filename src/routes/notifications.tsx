@@ -318,7 +318,7 @@ function NotificationsPage() {
                         role="button"
                         tabIndex={0}
                         onClick={() => {
-                          markRead(n.id);
+                          if (!n.read) markRead(n.id);
                           openTarget(n);
                         }}
 
