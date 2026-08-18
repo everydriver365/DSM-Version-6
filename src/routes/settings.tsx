@@ -60,6 +60,31 @@ function initials(name: string) {
 function SettingsPage() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
+  const [biometricLockEnabled, setBiometricLockEnabled] = useState(false);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+
+  useEffect(() => {
+    try {
+      setBiometricLockEnabled(localStorage.getItem("dsm_biometric_lock") === "true");
+    } catch {
+      /* ignore */
+    }
+    isBiometricAvailable().then(setBiometricAvailable).catch(() => {});
+  }, []);
+
+  async function toggleBiometricLock(val: boolean) {
+    if (val) {
+      const success = await authenticate("Enable biometric lock");
+      if (!success) return;
+      setBiometricLockEnabled(true);
+      try { localStorage.setItem("dsm_biometric_lock", "true"); } catch { /* ignore */ }
+      toast.success("Face ID lock enabled");
+    } else {
+      setBiometricLockEnabled(false);
+      try { localStorage.removeItem("dsm_biometric_lock"); } catch { /* ignore */ }
+      toast.success("Face ID lock disabled");
+    }
+  }
   const [email, setEmail] = useState<string>("");
   const [instructorName, setInstructorName] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
