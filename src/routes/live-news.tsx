@@ -107,10 +107,6 @@ function formatSessionDay(iso: string | null | undefined): string {
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric" });
 }
 
-function formatSessionMonth(iso: string | null | undefined): string {
-  if (!iso) return "";
-  return new Date(iso).toLocaleDateString("en-GB", { month: "short" });
-}
 
 async function handleShareEpisode(episode: PodcastEpisode) {
   const url = episode.link || episode.audioUrl;
@@ -518,6 +514,20 @@ function LiveNewsPage() {
               <div style={{ display: "flex", flexDirection: "column" }}>
                 {allSessions.map((s) => {
                   const subtitle = (s as any).description || s.category;
+                  const img = (s as any).image_url as string | null | undefined;
+                  const startLabel = (() => {
+                    const [h, m] = (s.session_time || "").split(":");
+                    if (!h) return "--:--";
+                    return `${String(Number(h)).padStart(2, "0")}:${(m ?? "00").slice(0, 2)}`;
+                  })();
+                  const mins = s.duration_minutes ?? 0;
+                  const durLabel = !mins
+                    ? null
+                    : mins % 60 === 0
+                      ? `${mins / 60}h`
+                      : mins > 60
+                        ? `${Math.floor(mins / 60)}h${mins % 60}`
+                        : `${mins}m`;
                   return (
                     <div
                       key={s.id}
@@ -534,7 +544,7 @@ function LiveNewsPage() {
                         borderRadius: 16,
                         border: "1px solid #E4E8EF",
                         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-                        padding: "14px 16px",
+                        padding: 12,
                         display: "flex",
                         alignItems: "center",
                         gap: 12,
@@ -542,52 +552,40 @@ function LiveNewsPage() {
                         cursor: "pointer",
                       }}
                     >
-                      <div
-                        style={{
-                          width: 44,
-                          flexShrink: 0,
-                          background: "#EFF6FF",
-                          borderRadius: 10,
-                          padding: "8px 4px",
-                          textAlign: "center",
-                        }}
-                      >
-                        <div
-                          style={{ fontSize: 20, fontWeight: 800, color: "#1877D6", lineHeight: 1 }}
-                        >
-                          {formatSessionDay(s.session_date)}
+                      {/* Time + duration */}
+                      <div style={{ width: 46, flexShrink: 0 }}>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.1 }}>
+                          {startLabel}
                         </div>
-                        <div
-                          style={{
-                            fontSize: 9,
-                            fontWeight: 700,
-                            color: "#1877D6",
-                            textTransform: "uppercase",
-                            marginTop: 2,
-                          }}
-                        >
-                          {formatSessionMonth(s.session_date)}
-                        </div>
+                        {durLabel && (
+                          <div style={{ fontSize: 12, fontWeight: 600, color: "#8792A2", marginTop: 2 }}>
+                            {durLabel}
+                          </div>
+                        )}
                       </div>
 
+                      {/* Accent bar */}
                       <div
                         style={{
-                          flex: 1,
-                          minWidth: 0,
-                          display: "flex",
-                          flexDirection: "column",
+                          width: 4,
+                          alignSelf: "stretch",
+                          minHeight: 48,
+                          borderRadius: 4,
+                          background: s.is_live ? "#CC2229" : "#1877D6",
+                          flexShrink: 0,
                         }}
-                      >
+                      />
+
+                      {/* Details */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
                         <div
                           style={{
                             fontSize: 14,
                             fontWeight: 700,
                             color: "#0B1F3A",
-                            fontFamily: "Poppins, sans-serif",
                             whiteSpace: "nowrap",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
-                            marginBottom: subtitle ? 2 : 0,
                           }}
                         >
                           {s.title}
@@ -597,10 +595,10 @@ function LiveNewsPage() {
                             style={{
                               fontSize: 12,
                               color: "#6B7686",
+                              marginTop: 2,
                               whiteSpace: "nowrap",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
-                              marginBottom: 4,
                             }}
                           >
                             {subtitle}
@@ -616,13 +614,13 @@ function LiveNewsPage() {
                               borderRadius: 20,
                               padding: "2px 8px",
                               display: "inline-block",
-                              alignSelf: "flex-start",
+                              marginTop: 6,
                             }}
                           >
                             🔴 Live now
                           </span>
                         ) : (
-                          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 6 }}>
                             <IconClock size={11} color="#9CA3AF" stroke={1.5} />
                             <span style={{ fontSize: 11, color: "#9CA3AF" }}>
                               {formatSessionTime(s.session_time)}
@@ -631,7 +629,33 @@ function LiveNewsPage() {
                         )}
                       </div>
 
-                      <IconChevronRight size={16} color="#C7D0DC" strokeWidth={2} />
+                      {/* Hero image — far right */}
+                      <div
+                        style={{
+                          width: 76,
+                          height: 76,
+                          flexShrink: 0,
+                          borderRadius: 12,
+                          overflow: "hidden",
+                          background: img ? undefined : "#0B1F3A",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {img ? (
+                          <img
+                            src={img}
+                            alt=""
+                            loading="lazy"
+                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                          />
+                        ) : (
+                          <span style={{ fontSize: 20, fontWeight: 800, color: "rgba(255,255,255,0.7)" }}>
+                            {formatSessionDay(s.session_date)}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
