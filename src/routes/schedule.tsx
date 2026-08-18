@@ -170,6 +170,7 @@ interface Lesson {
   cancellation_reason?: string | null;
   notes?: string | null;
   pickup_location?: string | null;
+  event_title?: string | null;
 
   pupil: Pupil | null;
 
