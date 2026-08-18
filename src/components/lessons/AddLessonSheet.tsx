@@ -308,13 +308,16 @@ export function AddLessonSheet({
       const { error: updErr } = await supabase
         .from("lessons")
         .update({
-          pupil_id: pupilId,
+          pupil_id: isEvent ? null : pupilId,
           lesson_date: date,
           lesson_time: `${effTime}:00`,
           duration_minutes: savedDuration,
-          lesson_type: isTestDay ? "test" : "lesson",
+          lesson_type: isEvent ? "event" : isTestDay ? "test" : "lesson",
+          event_title: isEvent ? eventTitle.trim() || null : null,
           status: editingLesson.status ?? "confirmed",
           notes: fullNotes,
+          amount_due: isEvent ? 0 : amountDue,
+          payment_status: isEvent ? "paid" : paymentStatus,
           pickup_location: isTestDay ? testCentre.trim() || null : pickup.trim() || null,
         })
         .eq("id", editingLesson.id);
