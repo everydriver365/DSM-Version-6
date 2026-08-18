@@ -983,7 +983,7 @@ function PupilsIndexPage() {
                 action: (
                   <Link
                     to="/pupils/new"
-                    className="inline-flex items-center gap-1.5 h-10 px-4 rounded-lg] text-[13px] font-semibold text-white"
+                    className="inline-flex items-center gap-1.5 h-10 px-4 rounded-lg text-[13px] font-semibold text-white"
                     style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
                   >
                     <IconPlus stroke={1.5} size={16} /> Add pupil
@@ -1000,7 +1000,7 @@ function PupilsIndexPage() {
                 action: (
                   <Link
                     to="/pupils/new"
-                    className="inline-flex items-center gap-1.5 h-10 px-4 rounded-lg] text-[13px] font-semibold text-white"
+                    className="inline-flex items-center gap-1.5 h-10 px-4 rounded-lg text-[13px] font-semibold text-white"
                     style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
                   >
                     <IconPlus stroke={1.5} size={16} /> Add pupil

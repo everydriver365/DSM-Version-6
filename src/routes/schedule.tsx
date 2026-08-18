@@ -1820,7 +1820,7 @@ function SchedulePage() {
                                     <button
                                       type="button"
                                       onClick={() => navigate({ to: '/gaps' as never })}
-                                      className="shrink-0 self-center rounded-lg] bg-[#1877D6] px-[18px] py-[9px] text-[13px] font-extrabold text-white hover:bg-[#1566B8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877D6] focus-visible:ring-offset-2 active:scale-[0.98] transition-transform cursor-pointer"
+                                      className="shrink-0 self-center rounded-lg bg-[#1877D6] px-[18px] py-[9px] text-[13px] font-extrabold text-white hover:bg-[#1566B8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877D6] focus-visible:ring-offset-2 active:scale-[0.98] transition-transform cursor-pointer"
                                     >
                                       Fill
                                     </button>

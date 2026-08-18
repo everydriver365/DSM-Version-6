@@ -283,14 +283,14 @@ function Hero() {
             <div className="relative">
               <div
                 aria-hidden
-                className="absolute -inset-6 rounded-lg]"
+                className="absolute -inset-6 rounded-lg"
                 style={{
                   background:
                     "linear-gradient(135deg, rgba(14,124,206,0.18), rgba(19,49,85,0.10))",
                   filter: "blur(40px)"}}
               />
               <div
-                className="relative rounded-lg] overflow-hidden bg-white"
+                className="relative rounded-lg overflow-hidden bg-white"
                 style={{ boxShadow: SHADOW_LIFT, border: `1px solid ${HAIRLINE}` }}
               >
                 <img
@@ -459,13 +459,13 @@ function DiarySection() {
             <div id="explainer-video" className="relative">
               <div
                 aria-hidden
-                className="absolute -inset-8 rounded-lg] opacity-60"
+                className="absolute -inset-8 rounded-lg opacity-60"
                 style={{
                   background:
                     "radial-gradient(600px 400px at 70% 40%, rgba(14,124,206,0.14), transparent 60%), radial-gradient(500px 300px at 20% 80%, rgba(19,49,85,0.08), transparent 60%)"}}
               />
               <div
-                className="relative rounded-lg] overflow-hidden bg-white"
+                className="relative rounded-lg overflow-hidden bg-white"
                 style={{
                   boxShadow: SHADOW_LIFT,
                   border: `1px solid ${HAIRLINE}`}}
@@ -599,14 +599,14 @@ function FeaturesShowcase() {
                   <div className="relative">
                     <div
                       aria-hidden
-                      className="absolute -inset-4 rounded-lg]"
+                      className="absolute -inset-4 rounded-lg"
                       style={{
                         background:
                           "linear-gradient(135deg, rgba(14,124,206,0.10), rgba(19,49,85,0.06))",
                         filter: "blur(28px)"}}
                     />
                     <div
-                      className="relative rounded-lg] overflow-hidden bg-white"
+                      className="relative rounded-lg overflow-hidden bg-white"
                       style={{
                         boxShadow: SHADOW_LIFT,
                         border: `1px solid ${HAIRLINE}`}}
@@ -1154,7 +1154,7 @@ function FinalCTA() {
       <div className="max-w-[1180px] mx-auto">
         <Reveal>
           <div
-            className="relative overflow-hidden rounded-lg] px-6 sm:px-10 lg:px-16 py-16 sm:py-20 lg:py-24 text-center"
+            className="relative overflow-hidden rounded-lg px-6 sm:px-10 lg:px-16 py-16 sm:py-20 lg:py-24 text-center"
             style={{
               background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY_SOFT} 100%)`,
               boxShadow: SHADOW_LIFT}}

@@ -463,7 +463,7 @@ function NewLessonPage() {
                     role="radio"
                     aria-checked={selected}
                     onClick={() => setDuration(minutes)}
-                    className="cf-tap rounded-lg] text-[14px] font-medium transition-colors"
+                    className="cf-tap rounded-lg text-[14px] font-medium transition-colors"
                     style={{
                       padding: "14px 2px",
                       fontFamily: "Poppins, sans-serif",

@@ -21,7 +21,7 @@ export function IconChip({ icon: Icon, size = "sm", tone = "blue", className }: 
         : "bg-[#EAF3FB] text-[#1877D6]";
 
   const sizeClasses =
-    size === "lg" ? "w-10 h-10 rounded-lg]" : "w-8 h-8 rounded-lg";
+    size === "lg" ? "w-10 h-10 rounded-lg" : "w-8 h-8 rounded-lg";
   const iconSize = size === "lg" ? 20 : 16;
 
   return (

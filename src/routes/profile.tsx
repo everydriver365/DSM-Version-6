@@ -1415,7 +1415,7 @@ function ProfilePage() {
               {squareConnected ? (
                 <div className="flex items-center gap-3" style={{ padding: "14px 16px" }}>
                   <div
-                    className="flex items-center justify-center rounded-lg]"
+                    className="flex items-center justify-center rounded-lg"
                     style={{ width: 38, height: 38, backgroundColor: "#E6F6EE" }}
                   >
                     <IconCheck size={20} stroke={2} color="#1A9B5C" />
@@ -1471,7 +1471,7 @@ function ProfilePage() {
                     }}
                   >
                     <div
-                      className="flex items-center justify-center rounded-lg]"
+                      className="flex items-center justify-center rounded-lg"
                       style={{ width: 38, height: 38, backgroundColor: "#E7F1FC" }}
                     >
                       <IconCreditCard size={20} stroke={1.7} color="#1877D6" />
@@ -1504,7 +1504,7 @@ function ProfilePage() {
                     }}
                   >
                     <div
-                      className="flex items-center justify-center rounded-lg]"
+                      className="flex items-center justify-center rounded-lg"
                       style={{ width: 38, height: 38, backgroundColor: "#F3F4F6" }}
                     >
                       <IconExternalLink size={20} stroke={1.7} color="#0B1F3A" />

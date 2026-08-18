@@ -1375,10 +1375,10 @@ function PupilDetailPage() {
 
       {/* Profile header card */}
       {pupil && (
-        <div className="mt-0 overflow-hidden rounded-b-lg]">
+        <div className="mt-0 overflow-hidden rounded-b-lg">
             {/* Hero band matching header */}
             <div
-              className="relative px-4 rounded-b-lg]"
+              className="relative px-4 rounded-b-lg"
               style={{ backgroundColor: "#0B1F3A", paddingTop: 22, paddingBottom: 76 }}
             >
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 relative z-10">
@@ -2082,7 +2082,7 @@ function PupilDetailPage() {
               key={t}
               type="button"
               onClick={() => setActiveTab(t)}
-              className="flex-1 h-9 rounded-lg] text-[13px] font-semibold capitalize transition-colors"
+              className="flex-1 h-9 rounded-lg text-[13px] font-semibold capitalize transition-colors"
               style={{
                 background: activeTab === t ? "#FFFFFF" : "transparent",
                 color: activeTab === t ? "#0B1F3A" : "#6B7280",
