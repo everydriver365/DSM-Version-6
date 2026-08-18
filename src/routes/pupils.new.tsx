@@ -198,44 +198,64 @@ function NewPupilPage() {
           }}
           className="flex flex-col gap-4 mt-2"
         >
-          {typeof navigator !== "undefined" &&
-            "contacts" in navigator &&
-            !!(navigator as unknown as Navigator & { contacts?: { select?: unknown } }).contacts?.select && (
-              <button
-                type="button"
-                onClick={async () => {
-                  try {
-                    const contacts = await (navigator as unknown as Navigator & {
-                      contacts: { select: (props: string[], opts: { multiple: boolean }) => Promise<{ name?: string[]; tel?: string[]; email?: string[] }[]> };
-                    }).contacts.select(["name", "tel", "email"], { multiple: false });
-                    if (contacts && contacts.length > 0) {
-                      const c = contacts[0];
-                      if (c.name && c.name.length > 0) {
-                        const [first, last] = splitName(c.name[0]);
-                        setFirstName(first);
-                        setLastName(last);
-                      }
-                      if (c.tel && c.tel.length > 0) {
-                        setPhone(c.tel[0]);
-                      }
-                      // Email field is not present in this form; skipped intentionally.
-                    }
-                  } catch {
-                    // Graceful degradation — ignore contact-picker errors.
-                  }
-                }}
-                className="self-start flex items-center gap-2 rounded-lg px-3 py-2 text-[13px] font-medium border"
+          <button
+            type="button"
+            onClick={importFromContacts}
+            disabled={importingContact}
+            style={{
+              width: "100%",
+              background: "#fff",
+              border: "1px solid #E4E8EF",
+              borderRadius: 16,
+              padding: "13px 16px",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              cursor: "pointer",
+              marginBottom: 16,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                background: "#EFF6FF",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <IconAddressBook size={20} color="#1877D6" stroke={1.5} />
+            </div>
+            <div style={{ flex: 1, textAlign: "left" }}>
+              <p
                 style={{
-                  color: "#1877D6",
-                  borderColor: "#1877D6",
-                  backgroundColor: "transparent",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#0B1F3A",
                   fontFamily: "Poppins, sans-serif",
+                  margin: 0,
                 }}
               >
-                <IconUserPlus size={16} color="#1877D6" />
-                Import from contacts
-              </button>
-            )}
+                Import from Contacts
+              </p>
+              <p
+                style={{
+                  fontSize: 11,
+                  color: "#9CA3AF",
+                  marginTop: 2,
+                  fontFamily: "Poppins, sans-serif",
+                  margin: 0,
+                }}
+              >
+                Auto-fill pupil details
+              </p>
+            </div>
+            <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+          </button>
           <div>
             <Input
               label="First name"
