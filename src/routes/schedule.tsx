@@ -1850,13 +1850,20 @@ function SchedulePage() {
                           let title = "";
                           let timeText = `${fmtTime(e.start)} – ${fmtTime(e.end)}`;
                           if (e.kind === "lesson") {
-                            const name = pupilDisplayName(e.lesson.pupil);
-                            markerColor = pupilColour(e.lesson.pupil_id ?? null, e.lesson.pupil?.calendar_colour ?? null, name);
+                            const eventLesson = isEvent(e.lesson);
+                            const name = eventLesson
+                              ? (e.lesson.event_title || "Event")
+                              : pupilDisplayName(e.lesson.pupil);
+                            markerColor = eventLesson
+                              ? "#1877D6"
+                              : pupilColour(e.lesson.pupil_id ?? null, e.lesson.pupil?.calendar_colour ?? null, name);
                             title = name;
                             // Subtitle shows the lesson type instead of a duplicated time range.
                             if (isTest(e.lesson)) {
                               const centre = testCentreOf(e.lesson);
                               timeText = centre ? `Test day · ${centre}` : "Test day · Test centre not set";
+                            } else if (eventLesson) {
+                              timeText = "";
                             } else {
                               const typeRaw = (e.lesson.lesson_type ?? "").trim();
                               const typeLabel = typeRaw
