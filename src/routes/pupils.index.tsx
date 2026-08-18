@@ -561,7 +561,7 @@ function PupilsIndexPage() {
     const q = query.trim().toLowerCase();
     const base = pupils.filter((p) => {
       if (q && !p.name.toLowerCase().includes(q)) return false;
-      return true;
+      return pupilMatchesStatus(p, statusFilter, lastLessonMap);
     });
 
     const withIndex = base.map((p, i) => ({ p, i }));
@@ -597,7 +597,25 @@ function PupilsIndexPage() {
     });
 
     return withIndex.map((x) => x.p);
-  }, [pupils, query, unreadMap, sortBy, balanceMap, nextLessonMap]);
+  }, [pupils, query, statusFilter, lastLessonMap, unreadMap, sortBy, balanceMap, nextLessonMap]);
+
+  const statusCounts = useMemo(() => {
+    if (!pupils) return null;
+    const counts: Record<StatusKey, number> = {
+      active: 0,
+      passed: 0,
+      waiting: 0,
+      lapsed: 0,
+    };
+    for (const p of pupils) {
+      for (const tab of STATUS_TABS) {
+        if (pupilMatchesStatus(p, tab.key, lastLessonMap)) {
+          counts[tab.key]++;
+        }
+      }
+    }
+    return counts;
+  }, [pupils, lastLessonMap]);
 
   // Visual grouping only — derived from the same data already fetched.
   const needsAttention = (filtered ?? []).filter((p: any) => (balanceMap[p.id] || 0) > 0);
