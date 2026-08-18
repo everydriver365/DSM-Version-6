@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMapPin, IconMessage, IconNavigation, IconPhone, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMail, IconMapPin, IconMessage, IconNavigation, IconPhone, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -106,6 +106,7 @@ function getNotificationAction(
   directNav?: string;
   options?: { label: string; route: string; icon: string }[];
   isMessage?: boolean;
+  isOverduePayment?: boolean;
   threadId?: string | null;
   senderName?: string | null;
   messagePreview?: string | null;
@@ -114,6 +115,7 @@ function getNotificationAction(
   lessonId?: string | null;
   pupilName?: string | null;
   pupilPhone?: string | null;
+  pupilEmail?: string | null;
   cancellationReason?: string | null;
   lessonDate?: string | null;
   lessonTime?: string | null;
@@ -139,6 +141,8 @@ function getNotificationAction(
   message?: string | null;
   receivedAt?: string | null;
   isJobOffer?: boolean;
+  amountOwed?: string | number | null;
+  lessonCount?: number | null;
   jobId?: string | null;
   jobTitle?: string | null;
   area?: string | null;
@@ -203,8 +207,20 @@ function getNotificationAction(
     };
   }
 
-  if (type === "payment" || type === "payment_received" || type === "payment_overdue") {
+  if (type === "payment" || type === "payment_received") {
     return { directNav: "/payments" };
+  }
+
+  if (type === "payment_overdue") {
+    return {
+      isOverduePayment: true,
+      pupilId: meta.pupil_id ?? null,
+      pupilName: meta.pupil_name ?? meta.pupil ?? null,
+      pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
+      pupilEmail: meta.pupil_email ?? meta.email ?? null,
+      amountOwed: meta.amount_owed ?? meta.amount ?? meta.total ?? null,
+      lessonCount: meta.lesson_count ?? meta.unpaid_lessons ?? null,
+    };
   }
 
   if (type === "lesson_cancelled" || type === "cancellation") {
