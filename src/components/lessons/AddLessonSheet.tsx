@@ -88,6 +88,7 @@ export interface AddLessonSheetProps {
   editingLesson?: {
     id: string;
     pupil_id?: string;
+    event_title?: string | null;
     lesson_date?: string;
     lesson_time?: string;
     duration_minutes?: number | null;
@@ -124,6 +125,8 @@ export function AddLessonSheet({
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState<number | "test">(1);
   const [isTestDay, setIsTestDay] = useState(false);
+  const [isEvent, setIsEvent] = useState(false);
+  const [eventTitle, setEventTitle] = useState("");
   const [pickup, setPickup] = useState("");
   const [testCentre, setTestCentre] = useState("");
   const testCentreInputRef = useRef<HTMLInputElement>(null);
@@ -154,6 +157,8 @@ export function AddLessonSheet({
     if (!open) return;
     setPupilId(initialPupilId ?? "");
     setDate(initialDate || todayISO());
+    setIsEvent(false);
+    setEventTitle("");
   }, [open, initialPupilId, initialDate]);
 
   // Populate sheet state when editing an existing lesson.
@@ -168,8 +173,18 @@ export function AddLessonSheet({
     setNotes(editingLesson.notes ?? "");
     setPickup(editingLesson.pickup_location ?? "");
 
-    // Set test day state from existing lesson data
-    if (editingLesson.lesson_type === 'test' || editingLesson.is_test_day === true) {
+    // Set event / test day state from existing lesson data
+    if (editingLesson.lesson_type === 'event') {
+      setIsEvent(true);
+      setEventTitle(editingLesson.event_title ?? "");
+      setIsTestDay(false);
+      setTestCentre('');
+      setTestCentreSearch('');
+      setTestCentreResults([]);
+      setTestTime('');
+    } else if (editingLesson.lesson_type === 'test' || editingLesson.is_test_day === true) {
+      setIsEvent(false);
+      setEventTitle('');
       setIsTestDay(true);
       setDuration('test');
       setTestCentre(editingLesson.pickup_location ?? '');
@@ -182,6 +197,8 @@ export function AddLessonSheet({
             : ''),
       );
     } else {
+      setIsEvent(false);
+      setEventTitle('');
       setIsTestDay(false);
       setTestCentre('');
       setTestCentreSearch('');
@@ -247,10 +264,10 @@ export function AddLessonSheet({
 
   async function handleSave() {
     const next: typeof errors = {};
-    if (!pupilId) next.pupil = "Pupil is required";
+    if (!isEvent && !pupilId) next.pupil = "Pupil is required";
     if (!date) next.date = "Date is required";
     if (!time) next.time = "Time is required";
-    if (isTestDay && !testCentre.trim()) {
+    if (!isEvent && isTestDay && !testCentre.trim()) {
       next.testCentre = "Enter a test centre or location for a test day";
     }
     if (Object.keys(next).length) {
@@ -285,42 +302,6 @@ export function AddLessonSheet({
       : baseNotes;
     const fullNotes =
       isTestDay && testTime ? withTestTimeNote(withPickup, testTime) : withPickup;
-
-    // Update existing lesson when editing.
-    if (editingLesson) {
-      const { error: updErr } = await supabase
-        .from("lessons")
-        .update({
-          pupil_id: pupilId,
-          lesson_date: date,
-          lesson_time: `${effTime}:00`,
-          duration_minutes: savedDuration,
-          lesson_type: isTestDay ? "test" : "lesson",
-          status: editingLesson.status ?? "confirmed",
-          notes: fullNotes,
-          pickup_location: isTestDay ? testCentre.trim() || null : pickup.trim() || null,
-        })
-        .eq("id", editingLesson.id);
-      if (updErr) {
-        setErrors({ form: updErr.message });
-        toast.error(updErr.message);
-        setSaving(false);
-        return;
-      }
-      const { data: lessonRow } = await supabase
-        .from("lessons")
-        .select("google_event_id")
-        .eq("id", editingLesson.id)
-        .maybeSingle();
-      if (lessonRow?.google_event_id) {
-        pushLessonToGoogle({ lesson_id: editingLesson.id, instructor_id: user.id, action: "update" });
-      }
-      toast.success("Lesson updated");
-      setSaving(false);
-      onSaved(editingLesson.id);
-      onClose();
-      return;
-    }
 
     // Resolve the correct base price using pupil custom rates, postcode rates,
     // then the instructor's default hourly rate.
@@ -414,7 +395,44 @@ export function AddLessonSheet({
       pricingType === "block" || pricingType === "national_intensives";
     if (isPrepaidPricing) paymentStatus = "prepaid";
 
-
+    // Update existing lesson when editing.
+    if (editingLesson) {
+      const { error: updErr } = await supabase
+        .from("lessons")
+        .update({
+          pupil_id: isEvent ? null : pupilId,
+          lesson_date: date,
+          lesson_time: `${effTime}:00`,
+          duration_minutes: savedDuration,
+          lesson_type: isEvent ? "event" : isTestDay ? "test" : "lesson",
+          event_title: isEvent ? eventTitle.trim() || null : null,
+          status: editingLesson.status ?? "confirmed",
+          notes: fullNotes,
+          amount_due: isEvent ? 0 : amountDue,
+          payment_status: isEvent ? "paid" : paymentStatus,
+          pickup_location: isTestDay ? testCentre.trim() || null : pickup.trim() || null,
+        })
+        .eq("id", editingLesson.id);
+      if (updErr) {
+        setErrors({ form: updErr.message });
+        toast.error(updErr.message);
+        setSaving(false);
+        return;
+      }
+      const { data: lessonRow } = await supabase
+        .from("lessons")
+        .select("google_event_id")
+        .eq("id", editingLesson.id)
+        .maybeSingle();
+      if (lessonRow?.google_event_id) {
+        pushLessonToGoogle({ lesson_id: editingLesson.id, instructor_id: user.id, action: "update" });
+      }
+      toast.success("Lesson updated");
+      setSaving(false);
+      onSaved(editingLesson.id);
+      onClose();
+      return;
+    }
 
     // If recurring, create a lesson_series first so the initial lesson can link to it
     let seriesId: string | null = null;
@@ -451,18 +469,19 @@ export function AddLessonSheet({
       .from("lessons")
       .insert({
         instructor_id: user.id,
-        pupil_id: pupilId,
+        pupil_id: isEvent ? null : pupilId,
         lesson_date: date,
         lesson_time: `${effTime}:00`,
         duration_minutes: savedDuration,
-        lesson_type: isTestDay ? "test" : "lesson",
+        lesson_type: isEvent ? "event" : isTestDay ? "test" : "lesson",
+        event_title: isEvent ? eventTitle.trim() || null : null,
         status: "confirmed",
         notes: fullNotes,
-        amount_due: amountDue,
-        payment_status: paymentStatus,
-        prepaid_hours_used: prepaidHoursUsed,
+        amount_due: isEvent ? 0 : amountDue,
+        payment_status: isEvent ? "paid" : paymentStatus,
+        prepaid_hours_used: isEvent ? 0 : prepaidHoursUsed,
         series_id: seriesId,
-        pickup_location: isTestDay ? testCentre.trim() || null : null,
+        pickup_location: isTestDay ? testCentre.trim() || null : pickup.trim() || null,
       })
       .select("id")
       .single();
@@ -550,7 +569,7 @@ export function AddLessonSheet({
         <button
           type="button"
           onClick={handleSave}
-          disabled={saving || !pupilId || !date}
+          disabled={saving || !date || (!isEvent && !pupilId)}
           className="w-full text-white active:opacity-90 disabled:opacity-40"
           style={{
             backgroundColor: "#1877D6",
@@ -566,8 +585,67 @@ export function AddLessonSheet({
       }
     >
       <div style={{ fontFamily: "Poppins, sans-serif" }}>
+        {/* Lesson / Event toggle */}
+        <div
+          style={{
+            display: "flex",
+            gap: 0,
+            background: "#E5E5EA",
+            borderRadius: 8,
+            padding: 4,
+            margin: "0 0 16px",
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              setIsEvent(false);
+            }}
+            style={{
+              flex: 1,
+              padding: "8px 0",
+              borderRadius: 8,
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: 13,
+              fontWeight: 600,
+              background: !isEvent ? "#fff" : "transparent",
+              color: !isEvent ? "#0B1F3A" : "#6B6B6F",
+              boxShadow: !isEvent ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+            }}
+          >
+            Lesson
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setIsEvent(true);
+              setIsTestDay(false);
+              setIsRecurring(false);
+              if (duration === "test") setDuration(1);
+            }}
+            style={{
+              flex: 1,
+              padding: "8px 0",
+              borderRadius: 8,
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: 13,
+              fontWeight: 600,
+              background: isEvent ? "#fff" : "transparent",
+              color: isEvent ? "#0B1F3A" : "#6B6B6F",
+              boxShadow: isEvent ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+            }}
+          >
+            Event
+          </button>
+        </div>
+
         {/* SECTION 1 — Pupil */}
-        <SheetGroup>
+        {!isEvent ? (
+          <SheetGroup>
           <SheetRow
             onClick={() => {
               setPupilQuery("");
@@ -662,7 +740,40 @@ export function AddLessonSheet({
             </div>
           )}
         </SheetGroup>
-        {errors.pupil && <ErrorText>{errors.pupil}</ErrorText>}
+      ) : (
+        <div style={{ marginBottom: 16 }}>
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: "#9CA3AF",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              marginBottom: 6,
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            EVENT TITLE
+          </div>
+          <input
+            value={eventTitle}
+            onChange={(e) => setEventTitle(e.target.value)}
+            placeholder="e.g. Team meeting, CPD training, Admin day"
+            style={{
+              width: "100%",
+              background: "#fff",
+              border: "1px solid #E4E8EF",
+              borderRadius: 8,
+              padding: "10px 12px",
+              fontSize: 14,
+              fontFamily: "Poppins, sans-serif",
+              outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
+        </div>
+      )}
+      {errors.pupil && !isEvent && <ErrorText>{errors.pupil}</ErrorText>}
 
         {/* SECTION 2 — Date & Time */}
         <SheetGroup>
@@ -718,6 +829,7 @@ export function AddLessonSheet({
                 {DURATION_OPTIONS.map((opt) => {
                   const active = duration === opt.value;
                   const isTest = opt.value === "test";
+                  if (isEvent && isTest) return null;
                   return (
                     <button
                       key={opt.value}
@@ -962,7 +1074,7 @@ export function AddLessonSheet({
         <SheetGroup>
           <SheetRow>
             <IconMapPin size={20} stroke={1.8} color={BLUE} />
-            <span style={labelStyle}>Pickup</span>
+            <span style={labelStyle}>{isEvent ? "Location (optional)" : "Pickup"}</span>
             <input
               id="al-pickup"
               type="text"
@@ -971,41 +1083,45 @@ export function AddLessonSheet({
                 setPickupTouched(true);
                 setPickup(e.target.value);
               }}
-              placeholder={pupilId ? "Pupil's home address" : "Select a pupil first"}
+              placeholder={isEvent ? "Event location" : pupilId ? "Pupil's home address" : "Select a pupil first"}
               className="flex-1 bg-transparent focus:outline-none text-right"
               style={{ ...valueStyle, marginLeft: "auto", minWidth: 0 }}
             />
           </SheetRow>
         </SheetGroup>
 
-        {/* SECTION 4 — Payment (auto-priced, read only) */}
-        <SheetGroup>
-          <SheetRow>
-            <IconCurrencyPound size={20} stroke={1.8} color={BLUE} />
-            <span style={labelStyle}>Amount</span>
-            <span style={{ ...valueStyle, marginLeft: "auto", color: "#6B7686", fontWeight: 500, fontSize: 13 }}>
-              Auto from your rates
-            </span>
-          </SheetRow>
-          <SheetRow>
-            <IconCreditCard size={20} stroke={1.8} color={BLUE} />
-            <span style={labelStyle}>Payment status</span>
-            <span
-              style={{
-                marginLeft: "auto",
-                fontFamily: "Poppins, sans-serif",
-                fontSize: 12,
-                fontWeight: 600,
-                borderRadius: 999,
-                padding: "4px 12px",
-                color: willBePrepaid ? "#1F6B2E" : "#8A5A00",
-                background: willBePrepaid ? "#E8F5E9" : "#FEF3D7",
-              }}
-            >
-              {willBePrepaid ? "Prepaid" : "Unpaid"}
-            </span>
-          </SheetRow>
-        </SheetGroup>
+        {!isEvent && (
+          <>
+            {/* SECTION 4 — Payment (auto-priced, read only) */}
+            <SheetGroup>
+              <SheetRow>
+                <IconCurrencyPound size={20} stroke={1.8} color={BLUE} />
+                <span style={labelStyle}>Amount</span>
+                <span style={{ ...valueStyle, marginLeft: "auto", color: "#6B7686", fontWeight: 500, fontSize: 13 }}>
+                  Auto from your rates
+                </span>
+              </SheetRow>
+              <SheetRow>
+                <IconCreditCard size={20} stroke={1.8} color={BLUE} />
+                <span style={labelStyle}>Payment status</span>
+                <span
+                  style={{
+                    marginLeft: "auto",
+                    fontFamily: "Poppins, sans-serif",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    borderRadius: 999,
+                    padding: "4px 12px",
+                    color: willBePrepaid ? "#1F6B2E" : "#8A5A00",
+                    background: willBePrepaid ? "#E8F5E9" : "#FEF3D7",
+                  }}
+                >
+                  {willBePrepaid ? "Prepaid" : "Unpaid"}
+                </span>
+              </SheetRow>
+            </SheetGroup>
+          </>
+        )}
 
         {/* SECTION 5 — Notes */}
         <SheetGroup>
@@ -1023,8 +1139,10 @@ export function AddLessonSheet({
           </SheetRow>
         </SheetGroup>
 
-        {/* SECTION 6 — Recurring */}
-        <SheetGroup>
+        {!isEvent && (
+          <>
+            {/* SECTION 6 — Recurring */}
+            <SheetGroup>
           <SheetRow>
             <IconRepeat size={20} stroke={1.8} color={BLUE} />
             <span style={valueStyle}>Recurring lesson</span>
@@ -1104,6 +1222,8 @@ export function AddLessonSheet({
             </SheetRow>
           ) : null}
         </SheetGroup>
+          </>
+        )}
 
         {errors.form && <ErrorText>{errors.form}</ErrorText>}
       </div>
