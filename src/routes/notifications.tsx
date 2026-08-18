@@ -872,6 +872,7 @@ function NotificationsPage() {
         >
           <div
             style={{
+              position: "relative",
               background: "#EEF2F7",
               borderRadius: "8px 8px 0 0",
               padding: "0 0 32px",
@@ -880,15 +881,33 @@ function NotificationsPage() {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div
-              style={{
-                width: 36,
-                height: 5,
-                background: "#D1D1D6",
-                borderRadius: 8,
-                margin: "12px auto 0",
-              }}
-            />
+            <div style={{ position: "relative", padding: "12px 16px 0" }}>
+              <div style={{ width: 36, height: 5, borderRadius: 8, background: "#D1D1D6", margin: "0 auto" }} />
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => {
+                  setActionSheet(null);
+                  setQuickReply("");
+                }}
+                style={{
+                  position: "absolute",
+                  right: 16,
+                  top: 8,
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  background: "#EEF2F7",
+                  border: "1px solid #E4E8EF",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconX size={16} color="#6B7686" stroke={2} />
+              </button>
+            </div>
             {actionSheet.isMessage ? (
               <div
                 style={{

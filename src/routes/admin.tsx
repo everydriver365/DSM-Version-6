@@ -2102,6 +2102,7 @@ export function BenefitPartnersSection() {
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
+              position: "relative",
               background: "#EEF2F7",
               borderRadius: "8px 8px 0 0",
               padding: "0 0 40px",
@@ -2110,7 +2111,33 @@ export function BenefitPartnersSection() {
               width: "100%",
             }}
           >
-            <div style={{ width: 36, height: 5, borderRadius: 999, background: "#D1D1D6", margin: "12px auto 0" }} />
+            <div style={{ position: "relative", padding: "12px 16px 0" }}>
+              <div style={{ width: 36, height: 5, borderRadius: 999, background: "#D1D1D6", margin: "0 auto" }} />
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => {
+                  setPartnerSheetOpen(false);
+                  setEditingPartner(null);
+                }}
+                style={{
+                  position: "absolute",
+                  right: 16,
+                  top: 8,
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  background: "#EEF2F7",
+                  border: "1px solid #E4E8EF",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconX size={16} color="#6B7686" stroke={2} />
+              </button>
+            </div>
 
             <div
               style={{
@@ -2439,6 +2466,7 @@ export function BenefitPartnersSection() {
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
+              position: "relative",
               background: "#EEF2F7",
               borderRadius: "8px 8px 0 0",
               padding: "0 0 40px",
@@ -2447,7 +2475,34 @@ export function BenefitPartnersSection() {
               width: "100%",
             }}
           >
-            <div style={{ width: 36, height: 5, borderRadius: 999, background: "#D1D1D6", margin: "12px auto 0" }} />
+            <div style={{ position: "relative", padding: "12px 16px 0" }}>
+              <div style={{ width: 36, height: 5, borderRadius: 999, background: "#D1D1D6", margin: "0 auto" }} />
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => {
+                  setPerkSheetOpen(false);
+                  setEditingPerk(null);
+                  setPerkErrors({});
+                }}
+                style={{
+                  position: "absolute",
+                  right: 16,
+                  top: 8,
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  background: "#EEF2F7",
+                  border: "1px solid #E4E8EF",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconX size={16} color="#6B7686" stroke={2} />
+              </button>
+            </div>
 
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: 16 }}>
               <span style={{ fontSize: 18, fontWeight: 800, color: "#0B1F3A" }}>
