@@ -285,7 +285,7 @@ function getNotificationAction(
       pupilName: meta.pupil_name ?? meta.pupil ?? (nameMatch ? nameMatch[1].trim() : null),
       pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
       pickupLocation: meta.pickup_location ?? meta.address ?? meta.location ?? null,
-      lessonTime: meta.lesson_time ?? meta.time ?? (timeMatch ? timeMatch[1] : null),
+      lessonTime: meta.lesson_time ?? meta.time ?? parsedTime,
       lessonDate: meta.lesson_date ?? meta.date ?? null,
       minutesUntil: meta.minutes_until ?? meta.minutes ?? null,
       options: [],
