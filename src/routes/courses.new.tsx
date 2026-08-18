@@ -24,6 +24,7 @@ type CourseType = "intensive" | "semi-intensive" | "weekly" | "custom";
 type Transmission = "Manual" | "Automatic" | "Both";
 type RepeatType = "one-off" | "daily" | "weekly" | "monthly";
 type TimePref = "flexible" | "morning" | "afternoon" | "evening" | "daytime" | "school" | "custom";
+type CourseSession = { id: string; date: string; time: string; duration: number; };
 
 const HOUR_OPTIONS = [8, 10, 15, 20, 25, 28, 30, 35, 40];
 const RADIUS_OPTIONS = [1, 3, 5, 10, 15, 20, 30];
