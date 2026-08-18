@@ -173,8 +173,18 @@ export function AddLessonSheet({
     setNotes(editingLesson.notes ?? "");
     setPickup(editingLesson.pickup_location ?? "");
 
-    // Set test day state from existing lesson data
-    if (editingLesson.lesson_type === 'test' || editingLesson.is_test_day === true) {
+    // Set event / test day state from existing lesson data
+    if (editingLesson.lesson_type === 'event') {
+      setIsEvent(true);
+      setEventTitle(editingLesson.event_title ?? "");
+      setIsTestDay(false);
+      setTestCentre('');
+      setTestCentreSearch('');
+      setTestCentreResults([]);
+      setTestTime('');
+    } else if (editingLesson.lesson_type === 'test' || editingLesson.is_test_day === true) {
+      setIsEvent(false);
+      setEventTitle('');
       setIsTestDay(true);
       setDuration('test');
       setTestCentre(editingLesson.pickup_location ?? '');
@@ -187,6 +197,8 @@ export function AddLessonSheet({
             : ''),
       );
     } else {
+      setIsEvent(false);
+      setEventTitle('');
       setIsTestDay(false);
       setTestCentre('');
       setTestCentreSearch('');
