@@ -23,6 +23,9 @@ import { supabase } from "../lib/supabaseClient";
 import { setupEdgeToEdgeStatusBar } from "../lib/statusBar";
 import { isBiometricAvailable, authenticate } from "@/lib/biometric";
 import { IconFingerprint } from "@tabler/icons-react";
+import { StatusBar, Style } from "@capacitor/status-bar";
+import { Keyboard } from "@capacitor/keyboard";
+import { App } from "@capacitor/app";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { EventToastController, emitLiveEvent, type LiveEventKind } from "../components/dsm/EventToast";
@@ -583,6 +586,58 @@ function RootComponent() {
   // Native wrappers: extend the webview under the iOS status bar.
   useEffect(() => {
     setupEdgeToEdgeStatusBar();
+
+    // Set navy status bar on native
+    (async () => {
+      try {
+        await StatusBar.setStyle({ style: Style.Dark });
+        await StatusBar.setBackgroundColor({ color: "#0B1F3A" });
+      } catch {}
+    })();
+
+    // Keyboard handling
+    const keyboardListeners: Promise<{ remove: () => void }>[] = [];
+    (async () => {
+      try {
+        await Keyboard.setAccessoryBarVisible({ isVisible: true });
+        await Keyboard.setScroll({ isDisabled: false });
+      } catch {}
+    })();
+    keyboardListeners.push(
+      Keyboard.addListener("keyboardWillShow", (info) => {
+        document.documentElement.style.setProperty("--keyboard-height", `${info.keyboardHeight}px`);
+      }),
+    );
+    keyboardListeners.push(
+      Keyboard.addListener("keyboardWillHide", () => {
+        document.documentElement.style.setProperty("--keyboard-height", "0px");
+      }),
+    );
+
+    // App state changes: refresh unread count and clear badge on resume
+    const appStateSub = App.addListener("appStateChange", async ({ isActive }) => {
+      if (isActive) {
+        window.dispatchEvent(new Event("dsm-notifications-updated"));
+        try {
+          await (App as any).clearBadge?.();
+        } catch {}
+      }
+    });
+
+    // Android back button
+    const backSub = App.addListener("backButton", ({ canGoBack }) => {
+      if (canGoBack) {
+        window.history.back();
+      } else {
+        void App.exitApp();
+      }
+    });
+
+    return () => {
+      keyboardListeners.forEach((l) => void l.then((s) => s.remove()));
+      void appStateSub.then((s) => s.remove());
+      void backSub.then((s) => s.remove());
+    };
   }, []);
 
   // ---- Face ID / Touch ID app lock ----
