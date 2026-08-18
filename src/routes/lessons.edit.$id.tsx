@@ -385,7 +385,7 @@ function EditLessonPage() {
       .eq("id", id)
       .maybeSingle();
     if (lessonRow?.google_event_id) {
-      pushLessonToGoogle(supabase, {
+      pushLessonToGoogle({
           lesson_id: id,
           instructor_id: user?.id ?? "",
           action: "update",

@@ -313,7 +313,7 @@ export function AddLessonSheet({
         .eq("id", editingLesson.id)
         .maybeSingle();
       if (lessonRow?.google_event_id) {
-        pushLessonToGoogle(supabase, { lesson_id: editingLesson.id, instructor_id: user.id, action: "update" });
+        pushLessonToGoogle({ lesson_id: editingLesson.id, instructor_id: user.id, action: "update" });
       }
       toast.success("Lesson updated");
       setSaving(false);
@@ -475,7 +475,7 @@ export function AddLessonSheet({
 
     const newLessonId = (insertedLesson as any)?.id as string | undefined;
     if (newLessonId) {
-      pushLessonToGoogle(supabase, { action: "push", lesson_id: newLessonId, instructor_id: user.id });
+      pushLessonToGoogle({ action: "push", lesson_id: newLessonId, instructor_id: user.id });
     }
 
     if (isRecurring && seriesId) {
@@ -524,7 +524,7 @@ export function AddLessonSheet({
           const rows = (await res.json().catch(() => [])) as Array<{ id?: string }>;
           for (const r of rows) {
             if (r?.id) {
-              pushLessonToGoogle(supabase, { action: "push", lesson_id: r.id, instructor_id: user.id });
+              pushLessonToGoogle({ action: "push", lesson_id: r.id, instructor_id: user.id });
             }
           }
         }

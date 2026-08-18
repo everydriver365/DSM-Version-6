@@ -5,6 +5,8 @@
  * by every place that pushes a lesson to Google Calendar.
  */
 
+import { supabase } from "@/lib/supabaseClient";
+
 const IMPORT_KEY = "dsm.calendarSync.importEnabled";
 const PUSH_KEY = "dsm.calendarSync.pushEnabled";
 
@@ -49,7 +51,6 @@ type PushAction = "push" | "update" | "delete" | "upsert";
  * No-ops when the instructor has turned "Push DSM lessons to Google" off.
  */
 export function pushLessonToGoogle(
-  supabase: { functions: { invoke: (name: string, opts: { body: unknown }) => unknown } },
   body: { lesson_id: string; instructor_id: string; action: PushAction },
 ) {
   if (!getPushEnabled()) return;
