@@ -452,10 +452,12 @@ function UpcomingTestsPage() {
 
 function TestRow({
   test,
+  activeTab,
   onEdit,
   onCancel,
 }: {
   test: PupilTestRow;
+  activeTab: TestTabKey;
   onEdit: () => void;
   onCancel: () => void;
 }) {
@@ -463,6 +465,11 @@ function TestRow({
   const daysLabel = days === 0 ? "Today" : days === 1 ? "Tomorrow" : `${days} days away`;
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
+
+  const isCompleted = activeTab === "passed" || activeTab === "failed";
+  const statusLabel = activeTab === "passed" ? "Passed" : activeTab === "failed" ? "Failed" : daysLabel;
+  const statusColor = activeTab === "passed" ? "#1E8E5A" : activeTab === "failed" ? "#CC2229" : days === 0 ? "#CC2229" : "#1877D6";
+  const statusBg = activeTab === "passed" ? "#DDEFE1" : activeTab === "failed" ? "#FCE9E9" : days === 0 ? "#FCE9E9" : "#E6F1FB";
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -490,7 +497,7 @@ function TestRow({
       <div className="flex items-start" style={{ gap: 12 }}>
         <div
           className="flex items-center justify-center text-white text-[13px] font-semibold shrink-0"
-          style={{ width: 42, height: 42, borderRadius: 999, backgroundColor: "#1877D6", ...POPPINS }}
+          style={{ width: 42, height: 42, borderRadius: 999, backgroundColor: isCompleted ? "#0B1F3A" : "#1877D6", ...POPPINS }}
         >
           {initials(test.name)}
         </div>
@@ -502,14 +509,14 @@ function TestRow({
             <span
               className="text-[11px] font-semibold shrink-0"
               style={{
-                color: days === 0 ? "#CC2229" : "#1877D6",
-                backgroundColor: days === 0 ? "#FCE9E9" : "#E6F1FB",
+                color: statusColor,
+                backgroundColor: statusBg,
                 padding: "3px 10px",
                 borderRadius: 999,
                 ...POPPINS,
               }}
             >
-              {daysLabel}
+              {statusLabel}
             </span>
           </div>
 
@@ -529,102 +536,104 @@ function TestRow({
             </span>
           </div>
 
-          <div className="text-[11px] font-medium mt-2" style={{ color: "#1877D6", ...POPPINS }}>
-            <IconCalendar stroke={1.5} size={12} strokeWidth={2} className="inline mr-1" color="#1877D6" />
-            {formatCountdown(test.test_date, test.test_time) ?? "Overdue"}
+          <div className="text-[11px] font-medium mt-2" style={{ color: isCompleted ? "#6B7280" : "#1877D6", ...POPPINS }}>
+            <IconCalendar stroke={1.5} size={12} strokeWidth={2} className="inline mr-1" color={isCompleted ? "#6B7280" : "#1877D6"} />
+            {isCompleted ? "Completed" : (formatCountdown(test.test_date, test.test_time) ?? "Overdue")}
           </div>
         </div>
       </div>
 
-      {/* Dots menu trigger */}
-      <div ref={menuRef} style={{ position: "absolute", top: 12, right: 12 }}>
-        <button
-          type="button"
-          onClick={() => setMenuOpen((v) => !v)}
-          style={{
-            display: "grid",
-            placeItems: "center",
-            width: 28,
-            height: 28,
-            borderRadius: 8,
-            background: "transparent",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          <IconDotsVertical size={16} color="#9CA3AF" />
-        </button>
-
-        {menuOpen && (
-          <div
+      {/* Dots menu trigger — only for upcoming tests */}
+      {!isCompleted && (
+        <div ref={menuRef} style={{ position: "absolute", top: 12, right: 12 }}>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((v) => !v)}
             style={{
-              position: "absolute",
-              top: "100%",
-              right: 0,
-              marginTop: 4,
-              minWidth: 150,
-              background: "#fff",
-              border: "1px solid #E2E8F0",
-              borderRadius: 10,
-              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-              zIndex: 20,
-              overflow: "hidden",
+              display: "grid",
+              placeItems: "center",
+              width: 28,
+              height: 28,
+              borderRadius: 8,
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
             }}
           >
-            <button
-              type="button"
-              onClick={() => {
-                setMenuOpen(false);
-                onEdit();
-              }}
+            <IconDotsVertical size={16} color="#9CA3AF" />
+          </button>
+
+          {menuOpen && (
+            <div
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                width: "100%",
-                padding: "10px 12px",
+                position: "absolute",
+                top: "100%",
+                right: 0,
+                marginTop: 4,
+                minWidth: 150,
                 background: "#fff",
-                border: "none",
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#0B1F3A",
-                cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
-                textAlign: "left",
+                border: "1px solid #E2E8F0",
+                borderRadius: 10,
+                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                zIndex: 20,
+                overflow: "hidden",
               }}
             >
-              <IconPencil size={14} color="#0B1F3A" />
-              Edit test
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMenuOpen(false);
-                onCancel();
-              }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                width: "100%",
-                padding: "10px 12px",
-                background: "#fff",
-                border: "none",
-                borderTop: "1px solid #F1F5F9",
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#CC2229",
-                cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
-                textAlign: "left",
-              }}
-            >
-              <IconX size={14} color="#CC2229" />
-              Cancel test
-            </button>
-          </div>
-        )}
-      </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  onEdit();
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  width: "100%",
+                  padding: "10px 12px",
+                  background: "#fff",
+                  border: "none",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#0B1F3A",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                  textAlign: "left",
+                }}
+              >
+                <IconPencil size={14} color="#0B1F3A" />
+                Edit test
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  onCancel();
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  width: "100%",
+                  padding: "10px 12px",
+                  background: "#fff",
+                  border: "none",
+                  borderTop: "1px solid #F1F5F9",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#CC2229",
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                  textAlign: "left",
+                }}
+              >
+                <IconX size={14} color="#CC2229" />
+                Cancel test
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
