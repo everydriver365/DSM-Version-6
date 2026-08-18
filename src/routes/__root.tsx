@@ -877,6 +877,73 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {locked && biometricEnabled && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 100000,
+            background: "#0B1F3A",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 12,
+            padding: 24,
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          <div
+            style={{
+              width: 72,
+              height: 72,
+              borderRadius: 20,
+              background: "#1877D6",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 8,
+            }}
+          >
+            <span style={{ fontSize: 24, fontWeight: 800, color: "#fff" }}>DSM</span>
+          </div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: "#fff" }}>
+            DSM by EveryDriver
+          </div>
+          <div
+            style={{
+              fontSize: 14,
+              color: "rgba(255,255,255,0.5)",
+              marginTop: -12,
+            }}
+          >
+            Locked
+          </div>
+          <button
+            type="button"
+            onClick={() => { void unlock(); }}
+            style={{
+              marginTop: 16,
+              background: "#1877D6",
+              color: "#fff",
+              borderRadius: 20,
+              padding: "14px 40px",
+              fontSize: 15,
+              fontWeight: 800,
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "Poppins, sans-serif",
+              boxShadow: "0 4px 0 #0F52A8",
+              display: "flex",
+              gap: 10,
+              alignItems: "center",
+            }}
+          >
+            <IconFingerprint size={20} />
+            Unlock with Face ID
+          </button>
+        </div>
+      )}
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <div style={Object.keys(wrapperStyle).length ? wrapperStyle : undefined}>
         <Outlet />
