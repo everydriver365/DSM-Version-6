@@ -85,24 +85,39 @@ function getNotificationAction(
   const type = notif.type ?? "";
   const meta = notif.metadata ?? {};
 
-  // Message notifications show a richer bottom sheet with a quick reply option
-  if (type === "message" || type === "new_message" || type === "message_received") {
+  // Message notifications show a richer bottom sheet with a quick reply option.
+  // Pupil messages use type "pupil_message" and reference_id is the pupil_id.
+  // Instructor DMs use type "instructor_dm" and reference_id is the conversation_id.
+  if (
+    type === "message" ||
+    type === "new_message" ||
+    type === "message_received" ||
+    type === "pupil_message" ||
+    type === "instructor_dm"
+  ) {
+    const threadId =
+      meta.thread_id ?? meta.conversation_id ?? notif.reference_id ?? null;
+    const senderName =
+      meta.sender_name ?? meta.from ?? extractNameFromTitle(notif.title) ?? null;
+    const messagePreview = meta.preview ?? meta.body ?? notif.body ?? null;
+    const isInstructorDm = type === "instructor_dm";
+    const isPupilMessage = type === "pupil_message";
+    const replyRoute =
+      isInstructorDm && threadId
+        ? `/messages/instructor/${threadId}`
+        : isPupilMessage && threadId
+          ? `/messages/${threadId}`
+          : threadId
+            ? `/messages/${threadId}`
+            : "/messages";
     return {
       isMessage: true,
-      threadId: meta.thread_id ?? meta.conversation_id ?? null,
-      senderName: meta.sender_name ?? meta.from ?? null,
-      messagePreview: meta.preview ?? meta.body ?? null,
+      threadId,
+      senderName,
+      messagePreview,
       options: [
-        {
-          label: "Reply to message",
-          route: meta.thread_id ? `/messages/${meta.thread_id}` : "/messages",
-          icon: "reply",
-        },
-        {
-          label: "Go to Messages",
-          route: "/messages",
-          icon: "message",
-        },
+        { label: "Reply to message", route: replyRoute, icon: "reply" },
+        { label: "Go to Messages", route: "/messages", icon: "message" },
       ],
     };
   }
