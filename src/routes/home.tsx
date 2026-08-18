@@ -1499,6 +1499,7 @@ function HomePage() {
     }
   }, [movingLessonHome, userId]);
   const [allLessons, setAllLessons] = useState<any[]>([]);
+  const [nonEventLessons, setNonEventLessons] = useState<any[]>([]);
   const [expandedLessonId, setExpandedLessonId] = useState<string | null>(null);
   const [nextLesson, setNextLesson] = useState<LessonRow | null>(null);
   const [outstanding, setOutstanding] = useState(0);
