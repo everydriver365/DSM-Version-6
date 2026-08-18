@@ -1355,45 +1355,85 @@ function LivePage() {
         }
       `}</style>
 
-      {/* CLOSE / BACK BUTTON — does not stop tracking */}
-      <button
-        type="button"
-        onClick={() => navigate({
-          to: '/home' as never,
-          replace: true,
-        })}
-        style={{
-          position: 'absolute',
-          top: 'calc(env(safe-area-inset-top, 0px) + 12px)',
-          left: 16,
-          zIndex: 50,
-          width: 36, height: 36,
-          borderRadius: '50%',
-          background: 'rgba(0,0,0,0.45)',
-          backdropFilter: 'blur(6px)',
-          border: 'none',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-        }}
-      >
-        <IconChevronLeft size={20} color="#fff" stroke={2} />
-      </button>
-
-      {/* TOP BAR */}
+      {/* HEADER */}
       <div
         className="absolute top-0 left-0 right-0 z-[1000] flex items-center"
         style={{
-          height: 52,
-          paddingLeft: 16,
           paddingTop: "env(safe-area-inset-top, 0px)",
-          background:
-            "linear-gradient(180deg, rgba(11,31,58,0.85) 0%, rgba(11,31,58,0.3) 100%)",
-          backdropFilter: "blur(8px)",
-          WebkitBackdropFilter: "blur(8px)",
+          paddingLeft: 16,
+          paddingRight: 16,
+          paddingBottom: 12,
+          background: "#0B1F3A",
+          borderRadius: "0 0 28px 28px",
+          gap: 12,
         }}
       >
+        <button
+          type="button"
+          aria-label="Back"
+          onClick={() =>
+            navigate({
+              to: "/home" as never,
+              replace: true,
+            })
+          }
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.15)",
+            border: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            flexShrink: 0,
+          }}
+        >
+          <IconChevronLeft size={18} color="#fff" stroke={2} />
+        </button>
+
+        <div
+          className="flex-1"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            minWidth: 0,
+          }}
+        >
+          <span
+            aria-label={
+              tracking ? (((currentSpeed ?? 0) > 1) ? "Tracking movement" : "Tracking paused") : "Not tracking"
+            }
+            title={
+              tracking ? (((currentSpeed ?? 0) > 1) ? "Tracking movement" : "Tracking paused") : "Not tracking"
+            }
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              background: tracking ? (((currentSpeed ?? 0) > 1) ? "#34C759" : "#FF3B30") : "#8A8A8E",
+              animation: tracking && ((currentSpeed ?? 0) > 1) ? "liveDotPulse 1.4s ease-in-out infinite" : undefined,
+              flexShrink: 0,
+            }}
+          />
+          <div
+            style={{
+              color: "#fff",
+              fontSize: 16,
+              fontWeight: 700,
+              fontFamily: "Poppins, sans-serif",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            Live tracking
+          </div>
+        </div>
+
         <button
           type="button"
           aria-label="End tracking"
@@ -1407,40 +1447,22 @@ function LivePage() {
           }}
           className="flex items-center justify-center"
           style={{
-            padding: "8px 16px",
-            borderRadius: 8,
-            background: "#FF3B30",
+            height: 32,
+            padding: "0 14px",
+            borderRadius: 999,
+            background: "#CC2229",
             color: "#FFFFFF",
             fontSize: 13,
-            fontWeight: 800,
-            letterSpacing: "0.3px",
-            boxShadow: "0 3px 0 #B02318",
+            fontWeight: 700,
+            letterSpacing: "0.02em",
             border: "none",
             cursor: "pointer",
+            flexShrink: 0,
+            fontFamily: "Poppins, sans-serif",
           }}
         >
           END
         </button>
-        <div className="flex-1 text-center" style={{ color: "#fff", fontSize: 17, fontWeight: 800 }}>
-          Live tracking
-        </div>
-        <div className="flex items-center justify-center" style={{ width: 52, height: 52 }}>
-          <span
-            aria-label={
-              tracking ? (((currentSpeed ?? 0) > 1) ? "Tracking movement" : "Tracking paused") : "Not tracking"
-            }
-            title={
-              tracking ? (((currentSpeed ?? 0) > 1) ? "Tracking movement" : "Tracking paused") : "Not tracking"
-            }
-            style={{
-              width: 9,
-              height: 9,
-              borderRadius: "50%",
-              background: tracking ? (((currentSpeed ?? 0) > 1) ? "#34C759" : "#FF3B30") : "#8A8A8E",
-              animation: tracking && ((currentSpeed ?? 0) > 1) ? "liveDotPulse 1.4s ease-in-out infinite" : undefined,
-            }}
-          />
-        </div>
       </div>
 
       {/* MAP */}
