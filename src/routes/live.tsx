@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconChevronLeft, IconChevronRight, IconMap, IconSearch, IconX } from "@tabler/icons-react";
+import { Geolocation } from "@capacitor/geolocation";
 import { supabase } from "../lib/supabaseClient";
 import { PupilAvatar } from "../components/PupilAvatar";
 import { buildTripReport } from "../lib/tripReport";
@@ -268,7 +269,7 @@ function LivePage() {
   const mapInstanceRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
   const polylineRef = useRef<any>(null);
-  const watchIdRef = useRef<number | null>(null);
+  const watchIdRef = useRef<string | null>(null);
   const silentAudioRef = useRef<HTMLAudioElement | null>(null);
   const isStoppingRef = useRef(false);
   const centeredRef = useRef(false);
@@ -458,8 +459,8 @@ function LivePage() {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (watchIdRef.current != null && "geolocation" in navigator) {
-        navigator.geolocation.clearWatch(watchIdRef.current);
+      if (watchIdRef.current != null) {
+        Geolocation.clearWatch({ id: watchIdRef.current as string });
         watchIdRef.current = null;
       }
       despiaCall("backgroundlocationoff://");
@@ -686,9 +687,11 @@ function LivePage() {
       console.log("[live] startTracking ignored — already tracking");
       return;
     }
-    if (!("geolocation" in navigator)) {
-      setGeoError("GPS access required — please enable location in your settings");
-      toast.error("GPS not available on this device");
+
+    const permission = await Geolocation.requestPermissions();
+    if (permission.location !== "granted") {
+      toast.error("Location permission required for Live Track");
+      setGeoError("Location permission is off — tap to open settings, then try again");
       setActivePupilId(null);
       setTrackingPupilName(null);
       return;
@@ -698,25 +701,27 @@ function LivePage() {
     // Guarded — a missing/throwing bridge must never abort tracking.
     despiaCall("backgroundlocationon://");
 
-    // Ask for a one-shot fix first so the native permission prompt appears
-    // and we know immediately whether GPS is usable.
-    const ok = await new Promise<boolean>((resolve) => {
-      navigator.geolocation.getCurrentPosition(
-        () => resolve(true),
-        (err) => {
-          console.error("[live] initial fix failed", err.code, err.message);
-          resolve(err.code === 1 ? false : true);
+    // Ask for a one-shot fix first so we get an immediate position.
+    try {
+      const position = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 10000,
+      });
+      handlePosition({
+        coords: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy,
+          speed: position.coords.speed,
+          heading: position.coords.heading,
+          altitude: null,
+          altitudeAccuracy: null,
         },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 5000 },
-      );
-    });
-    if (!ok) {
-      despiaCall("backgroundlocationoff://");
-      setGeoError("Location permission is off — tap to open settings, then try again");
-      toast.error("Location permission is off");
-      setActivePupilId(null);
-      setTrackingPupilName(null);
-      return;
+        timestamp: position.timestamp,
+      } as GeolocationPosition);
+    } catch (err) {
+      console.error("[live] initial fix failed", err);
+      // Continue — the watch will deliver the first fix.
     }
 
     setGeoError(null);
@@ -770,40 +775,40 @@ function LivePage() {
     startWatching();
   }
 
-  function startWatching() {
-    if (!("geolocation" in navigator)) return;
-
-    // Guard — clear any existing watch before starting new one
+  async function startWatching() {
+    // Capacitor Geolocation is always available — no need to check.
+    // Guard — clear any existing watch before starting new one.
     if (watchIdRef.current !== null) {
-      navigator.geolocation.clearWatch(watchIdRef.current);
+      await Geolocation.clearWatch({ id: watchIdRef.current as string });
       watchIdRef.current = null;
     }
 
     console.log("[live] starting geolocation watch");
-    watchIdRef.current = navigator.geolocation.watchPosition(
-      (pos) => handlePosition(pos),
-      (err) => {
-        console.error("[live] geo error:", err.code, err.message);
-        if (err.code === 2) {
-          // Signal lost temporarily — reconnect in 3s
-          setTimeout(() => {
-            if (watchIdRef.current !== null) {
-              navigator.geolocation.clearWatch(watchIdRef.current);
-              watchIdRef.current = null;
-            }
-            startWatching();
-          }, 3000);
+    watchIdRef.current = await Geolocation.watchPosition(
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+      },
+      (position, err) => {
+        if (err) {
+          console.error("[live] geolocation error:", err);
           return;
         }
-        // Permission denied / unavailable — permanent error
-        setGeoError(
-          err.code === 1
-            ? "Location permission is off — tap to open settings, then try again"
-            : "GPS unavailable — tap to open settings, then try again",
-        );
-
-      },
-      { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 },
+        if (position) {
+          handlePosition({
+            coords: {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              accuracy: position.coords.accuracy,
+              speed: position.coords.speed,
+              heading: position.coords.heading,
+              altitude: null,
+              altitudeAccuracy: null,
+            },
+            timestamp: position.timestamp,
+          } as GeolocationPosition);
+        }
+      }
     );
   }
 
@@ -965,8 +970,8 @@ function LivePage() {
     if (isStoppingRef.current) return;
     isStoppingRef.current = true;
     try {
-      if (watchIdRef.current != null && "geolocation" in navigator) {
-        navigator.geolocation.clearWatch(watchIdRef.current);
+      if (watchIdRef.current != null) {
+        await Geolocation.clearWatch({ id: watchIdRef.current as string });
         watchIdRef.current = null;
       }
       despiaCall("backgroundlocationoff://");
