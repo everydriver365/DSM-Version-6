@@ -497,16 +497,11 @@ function LessonDetailPage() {
               <div className="px-4 mt-3">
                 <Card className="!p-0">
                   <ActionRow
-                    label="Edit event"
-                    onClick={() => navigate({ to: "/lessons/edit/$id", params: { id } })}
-                    color="#1877D6"
-                    isFirst
-                  />
-                  <ActionRow
                     label="Delete event"
                     disabled={deleting}
                     onClick={() => setDeleteOpen(true)}
                     color="#1877D6"
+                    isFirst
                   />
                 </Card>
               </div>
