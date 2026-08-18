@@ -1907,11 +1907,17 @@ function SchedulePage() {
                           const clickable = isLessonRow || isBlockRow || isPersonalRow;
                           const isMovingThis = isLessonRow && movingLesson && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id === movingLesson.id;
                           const isTestDay = isLessonRow && isTest((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
+                          const isEventRow = isLessonRow && isEvent((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
 
                           const isDimmed = moveMode && !isMovingThis;
                           const onCardClick = isLessonRow
                             ? () => {
-                                setActionsOpenFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
+                                const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                if (isEvent(lesson)) {
+                                  toast.info(`Event: ${lesson.event_title || 'No title'}`, { duration: 3000 });
+                                  return;
+                                }
+                                setActionsOpenFor(lesson);
                               }
                             : isBlockRow
                               ? () => {
