@@ -113,6 +113,7 @@ function getNotificationAction(
   options?: { label: string; route: string; icon: string }[];
   isMessage?: boolean;
   isOverduePayment?: boolean;
+  isLessonStarting?: boolean;
   threadId?: string | null;
   senderName?: string | null;
   messagePreview?: string | null;
@@ -125,7 +126,10 @@ function getNotificationAction(
   cancellationReason?: string | null;
   lessonDate?: string | null;
   lessonTime?: string | null;
+  pickupLocation?: string | null;
+  minutesUntil?: number | null;
   isDSMLive?: boolean;
+
   sessionId?: string | null;
   sessionTitle?: string | null;
   sessionUrl?: string | null;
