@@ -247,25 +247,38 @@ function getNotificationAction(
     };
   }
 
+  const titleText = String(notif.title ?? "");
+  const bodyText = String(notif.body ?? notif.message ?? "");
+  const combined = `${titleText} ${bodyText}`;
+  const looksLikeLessonStarting =
+    /lesson starting soon/i.test(titleText) ||
+    /lesson starts at/i.test(combined) ||
+    /start tracking/i.test(combined);
+
   if (
     type === "lesson_reminder" ||
     type === "lesson_starting" ||
     type === "lesson_soon" ||
-    type === "starting_soon"
+    type === "starting_soon" ||
+    type.includes("lesson_start") ||
+    looksLikeLessonStarting
   ) {
+    const nameMatch = combined.match(/([A-Za-z' -]+?)(?:'s|’s)\s+lesson/i);
+    const timeMatch = combined.match(/starts?\s+at\s+([0-9]{1,2}[:.][0-9]{2}\s*(?:am|pm)?)/i);
     return {
       isLessonStarting: true,
-      lessonId: meta.lesson_id ?? null,
+      lessonId: meta.lesson_id ?? notif.reference_id ?? null,
       pupilId: meta.pupil_id ?? null,
-      pupilName: meta.pupil_name ?? meta.pupil ?? null,
+      pupilName: meta.pupil_name ?? meta.pupil ?? (nameMatch ? nameMatch[1].trim() : null),
       pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
       pickupLocation: meta.pickup_location ?? meta.address ?? meta.location ?? null,
-      lessonTime: meta.lesson_time ?? meta.time ?? null,
+      lessonTime: meta.lesson_time ?? meta.time ?? (timeMatch ? timeMatch[1] : null),
       lessonDate: meta.lesson_date ?? meta.date ?? null,
       minutesUntil: meta.minutes_until ?? meta.minutes ?? null,
       options: [],
     };
   }
+
 
   if (type === "lesson") {
     if (meta.lesson_id) {
