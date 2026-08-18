@@ -20,6 +20,7 @@ import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
 import { PushPermissionSheet } from "../components/dsm/PushPermissionSheet";
 import { supabase } from "../lib/supabaseClient";
+import { setupEdgeToEdgeStatusBar } from "../lib/statusBar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { EventToastController, emitLiveEvent, type LiveEventKind } from "../components/dsm/EventToast";
@@ -583,6 +584,12 @@ function RootComponent() {
     if (pathname === "/search") return;
     import("./search").then((m) => m.recordRecentScreen(pathname)).catch(() => {});
   }, [pathname]);
+
+  // Native wrappers: extend the webview under the iOS status bar.
+  useEffect(() => {
+    setupEdgeToEdgeStatusBar();
+  }, []);
+
 
   // Register the service worker only. Permission is requested by the
   // in-app PushPermissionCard so the user sees a clear prompt first.

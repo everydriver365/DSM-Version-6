@@ -423,3 +423,28 @@ time,
 .live-pupil-search::placeholder {
   color: #B0B0B5;
 }
+
+/* ============================================================
+ * Native wrappers (Despia / Capacitor): edge-to-edge webview.
+ * The webview paints under the iOS status bar, so we paint a
+ * navy strip behind it and expose --dsm-safe-top for layout.
+ * ============================================================ */
+:root {
+  --dsm-safe-top: env(safe-area-inset-top, 0px);
+}
+
+html.dsm-native {
+  background-color: #0B1F3A;
+}
+
+html.dsm-native body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--dsm-safe-top, 0px);
+  background-color: #0B1F3A;
+  z-index: 2147483000;
+  pointer-events: none;
+}
