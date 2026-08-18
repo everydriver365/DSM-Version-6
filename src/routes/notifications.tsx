@@ -3058,6 +3058,37 @@ function NotificationsPage() {
                     )}
                   </div>
                 </div>
+                <button
+                  type="button"
+                  style={{
+                    margin: "12px 16px 0",
+                    width: "calc(100% - 32px)",
+                    background: "#15803D",
+                    color: "#fff",
+                    borderRadius: 20,
+                    padding: 13,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    border: "none",
+                    cursor: "pointer",
+                    ...POPPINS,
+                    boxShadow: "0 3px 0 #14532D",
+                  }}
+                  onClick={async () => {
+                    if (actionSheet.jobId) {
+                      await supabase
+                        .from("instructor_jobs")
+                        .update({ status: "accepted" })
+                        .eq("id", actionSheet.jobId);
+                    }
+                    toast.success("Job accepted! ✓");
+                    setActionSheet(null);
+                    setQuickReply("");
+                    navigate({ to: "/jobs" as never });
+                  }}
+                >
+                  Accept job ✓
+                </button>
                 <div
                   style={{
                     fontSize: 11,
@@ -3122,17 +3153,10 @@ function NotificationsPage() {
                     onClick={() => {
                       setActionSheet(null);
                       setQuickReply("");
-                      if (actionSheet.jobId) {
-                        navigate({
-                          to: "/jobs" as never,
-                          search: { jobId: actionSheet.jobId } as any,
-                        });
-                      } else {
-                        navigate({ to: "/jobs" as never });
-                      }
+                      navigate({ to: "/jobs" as never });
                     }}
                   >
-                    View more →
+                    View full details →
                   </button>
                 </div>
                 <div
