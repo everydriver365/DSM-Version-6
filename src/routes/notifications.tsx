@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconNavigation, IconPhone, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMapPin, IconMessage, IconNavigation, IconPhone, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -138,6 +138,15 @@ function getNotificationAction(
   transmission?: string | null;
   message?: string | null;
   receivedAt?: string | null;
+  isJobOffer?: boolean;
+  jobId?: string | null;
+  jobTitle?: string | null;
+  area?: string | null;
+  duration?: string | number | null;
+  rate?: string | number | null;
+  description?: string | null;
+  postedBy?: string | null;
+  expiresAt?: string | null;
 } {
   const type = notif.type ?? "";
   const meta = notif.metadata ?? {};
@@ -271,6 +280,24 @@ function getNotificationAction(
     return { directNav: "/calendarsync" };
   }
 
+  if (type === "job_offer" || type === "new_job" || type === "job" || type === "cover_request") {
+    return {
+      isJobOffer: true,
+      jobId: meta.job_id ?? meta.id ?? null,
+      jobTitle: meta.title ?? meta.job_title ?? "Job offer",
+      area: meta.area ?? meta.postcode ?? meta.location ?? null,
+      transmission: meta.transmission ?? meta.car_type ?? null,
+      lessonDate: meta.lesson_date ?? meta.date ?? null,
+      lessonTime: meta.lesson_time ?? meta.time ?? null,
+      duration: meta.duration ?? meta.hours ?? null,
+      rate: meta.rate ?? meta.hourly_rate ?? null,
+      description: meta.description ?? meta.notes ?? null,
+      postedBy: meta.posted_by ?? meta.instructor_name ?? null,
+      expiresAt: meta.expires_at ?? null,
+      options: [],
+    };
+  }
+
   // Bottom sheet with options for anything else
   return {
     options: [
@@ -323,6 +350,15 @@ function NotificationsPage() {
     transmission?: string | null;
     message?: string | null;
     receivedAt?: string | null;
+    isJobOffer?: boolean;
+    jobId?: string | null;
+    jobTitle?: string | null;
+    area?: string | null;
+    duration?: string | number | null;
+    rate?: string | number | null;
+    description?: string | null;
+    postedBy?: string | null;
+    expiresAt?: string | null;
   } | null>(null);
 
   const [quickReply, setQuickReply] = useState("");
@@ -637,6 +673,15 @@ function NotificationsPage() {
                               transmission: action.transmission,
                               message: action.message,
                               receivedAt: action.receivedAt,
+                              isJobOffer: action.isJobOffer,
+                              jobId: action.jobId,
+                              jobTitle: action.jobTitle,
+                              area: action.area,
+                              duration: action.duration,
+                              rate: action.rate,
+                              description: action.description,
+                              postedBy: action.postedBy,
+                              expiresAt: action.expiresAt,
                             });
                           }
                         }}
@@ -2544,6 +2589,425 @@ function NotificationsPage() {
                 >
                   Cancel
                 </button>
+              </>
+            ) : actionSheet.isJobOffer ? (
+              <>
+                <div
+                  style={{
+                    margin: "16px 16px 8px",
+                    background: "#fff",
+                    borderRadius: 16,
+                    border: "1px solid #E4E8EF",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      height: 6,
+                      background: "linear-gradient(90deg, #1877D6, #14509E)",
+                    }}
+                  />
+                  <div style={{ padding: "14px 16px" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: 10,
+                      }}
+                    >
+                      <div
+                        style={{
+                          background: "#EFF6FF",
+                          color: "#1877D6",
+                          fontSize: 10,
+                          fontWeight: 800,
+                          borderRadius: 20,
+                          padding: "3px 10px",
+                          ...POPPINS,
+                        }}
+                      >
+                        💼 JOB OFFER
+                      </div>
+                      {actionSheet.expiresAt && (
+                        <div
+                          style={{
+                            fontSize: 11,
+                            color: "#CC2229",
+                            ...POPPINS,
+                          }}
+                        >
+                          Expires {timeAgo(actionSheet.expiresAt)}
+                        </div>
+                      )}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 18,
+                        fontWeight: 800,
+                        color: "#0B1F3A",
+                        letterSpacing: -0.3,
+                        marginBottom: 12,
+                        ...POPPINS,
+                      }}
+                    >
+                      {actionSheet.jobTitle}
+                    </div>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr",
+                        gap: 8,
+                        marginBottom: 12,
+                      }}
+                    >
+                      {actionSheet.area && (
+                        <div
+                          style={{
+                            background: "#EEF2F7",
+                            borderRadius: 10,
+                            padding: "10px 12px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 4,
+                              fontSize: 9,
+                              fontWeight: 700,
+                              color: "#9CA3AF",
+                              letterSpacing: 0.08,
+                              textTransform: "uppercase",
+                              marginBottom: 2,
+                              ...POPPINS,
+                            }}
+                          >
+                            <IconMapPin size={12} color="#9CA3AF" stroke={1.5} />
+                            AREA
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 700,
+                              color: "#0B1F3A",
+                              ...POPPINS,
+                            }}
+                          >
+                            {actionSheet.area}
+                          </div>
+                        </div>
+                      )}
+                      {actionSheet.transmission && (
+                        <div
+                          style={{
+                            background: "#EEF2F7",
+                            borderRadius: 10,
+                            padding: "10px 12px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: 9,
+                              fontWeight: 700,
+                              color: "#9CA3AF",
+                              letterSpacing: 0.08,
+                              textTransform: "uppercase",
+                              marginBottom: 2,
+                              ...POPPINS,
+                            }}
+                          >
+                            TRANSMISSION
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 700,
+                              color: "#0B1F3A",
+                              ...POPPINS,
+                            }}
+                          >
+                            {String(actionSheet.transmission).toUpperCase()}
+                          </div>
+                        </div>
+                      )}
+                      {actionSheet.lessonDate && (
+                        <div
+                          style={{
+                            background: "#EEF2F7",
+                            borderRadius: 10,
+                            padding: "10px 12px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: 9,
+                              fontWeight: 700,
+                              color: "#9CA3AF",
+                              letterSpacing: 0.08,
+                              textTransform: "uppercase",
+                              marginBottom: 2,
+                              ...POPPINS,
+                            }}
+                          >
+                            DATE
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 700,
+                              color: "#0B1F3A",
+                              ...POPPINS,
+                            }}
+                          >
+                            {formatDate(actionSheet.lessonDate)}
+                          </div>
+                        </div>
+                      )}
+                      {actionSheet.lessonTime && (
+                        <div
+                          style={{
+                            background: "#EEF2F7",
+                            borderRadius: 10,
+                            padding: "10px 12px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: 9,
+                              fontWeight: 700,
+                              color: "#9CA3AF",
+                              letterSpacing: 0.08,
+                              textTransform: "uppercase",
+                              marginBottom: 2,
+                              ...POPPINS,
+                            }}
+                          >
+                            TIME
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 700,
+                              color: "#0B1F3A",
+                              ...POPPINS,
+                            }}
+                          >
+                            {actionSheet.lessonTime}
+                          </div>
+                        </div>
+                      )}
+                      {actionSheet.duration && (
+                        <div
+                          style={{
+                            background: "#EEF2F7",
+                            borderRadius: 10,
+                            padding: "10px 12px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: 9,
+                              fontWeight: 700,
+                              color: "#9CA3AF",
+                              letterSpacing: 0.08,
+                              textTransform: "uppercase",
+                              marginBottom: 2,
+                              ...POPPINS,
+                            }}
+                          >
+                            DURATION
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 700,
+                              color: "#0B1F3A",
+                              ...POPPINS,
+                            }}
+                          >
+                            {typeof actionSheet.duration === "number"
+                              ? `${actionSheet.duration} hrs`
+                              : actionSheet.duration}
+                          </div>
+                        </div>
+                      )}
+                      {actionSheet.rate && (
+                        <div
+                          style={{
+                            background: "#F0FDF4",
+                            border: "1px solid #DCFCE7",
+                            borderRadius: 10,
+                            padding: "10px 12px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: 9,
+                              fontWeight: 700,
+                              color: "#15803D",
+                              letterSpacing: 0.08,
+                              textTransform: "uppercase",
+                              marginBottom: 2,
+                              ...POPPINS,
+                            }}
+                          >
+                            RATE
+                          </div>
+                          <div
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 700,
+                              color: "#15803D",
+                              ...POPPINS,
+                            }}
+                          >
+                            £{actionSheet.rate}/hr
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    {actionSheet.description && (
+                      <div
+                        style={{
+                          background: "#F8FAFC",
+                          borderRadius: 10,
+                          padding: "10px 12px",
+                          marginBottom: 8,
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 700,
+                            color: "#9CA3AF",
+                            letterSpacing: 0.08,
+                            textTransform: "uppercase",
+                            marginBottom: 4,
+                            ...POPPINS,
+                          }}
+                        >
+                          DETAILS
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 12,
+                            color: "#6B7686",
+                            lineHeight: 1.5,
+                            ...POPPINS,
+                          }}
+                        >
+                          {actionSheet.description}
+                        </div>
+                      </div>
+                    )}
+                    {actionSheet.postedBy && (
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                          marginBottom: 4,
+                          ...POPPINS,
+                        }}
+                      >
+                        Posted by {actionSheet.postedBy}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#9CA3AF",
+                    textTransform: "uppercase",
+                    padding: "8px 16px 6px",
+                    ...POPPINS,
+                  }}
+                >
+                  RESPOND
+                </div>
+                <div
+                  style={{
+                    margin: "0 16px",
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: 8,
+                  }}
+                >
+                  <button
+                    type="button"
+                    style={{
+                      background: "#fff",
+                      border: "1px solid #E4E8EF",
+                      borderRadius: 20,
+                      padding: 13,
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: "#CC2229",
+                      cursor: "pointer",
+                      ...POPPINS,
+                    }}
+                    onClick={async () => {
+                      if (actionSheet.jobId) {
+                        await supabase
+                          .from("job_offers")
+                          .update({ status: "declined" })
+                          .eq("id", actionSheet.jobId);
+                      }
+                      toast.info("Job declined");
+                      setActionSheet(null);
+                      setQuickReply("");
+                    }}
+                  >
+                    Decline
+                  </button>
+                  <button
+                    type="button"
+                    style={{
+                      background: "#1877D6",
+                      border: "none",
+                      borderRadius: 20,
+                      padding: 13,
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: "#fff",
+                      cursor: "pointer",
+                      boxShadow: "0 3px 0 #0F52A8",
+                      ...POPPINS,
+                    }}
+                    onClick={() => {
+                      setActionSheet(null);
+                      setQuickReply("");
+                      if (actionSheet.jobId) {
+                        navigate({
+                          to: "/jobs" as never,
+                          search: { jobId: actionSheet.jobId } as any,
+                        });
+                      } else {
+                        navigate({ to: "/jobs" as never });
+                      }
+                    }}
+                  >
+                    View more →
+                  </button>
+                </div>
+                <div
+                  style={{
+                    textAlign: "center",
+                    marginTop: 10,
+                    fontSize: 12,
+                    color: "#9CA3AF",
+                    cursor: "pointer",
+                    ...POPPINS,
+                  }}
+                  onClick={() => {
+                    setActionSheet(null);
+                    setQuickReply("");
+                  }}
+                >
+                  Dismiss
+                </div>
               </>
             ) : (
               <>
