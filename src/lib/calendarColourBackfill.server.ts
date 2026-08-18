@@ -138,9 +138,12 @@ export async function backfillGoogleEventColours(
     return { success: false, ...empty, error: "Could not obtain a Google access token" };
   }
 
-  // --- Fetch the last 90 days of Google events ---------------------------
-  const timeMax = new Date();
-  const timeMin = new Date(timeMax.getTime() - DAYS_BACK * 24 * 3600_000);
+  // --- Fetch Google events across the requested window --------------------
+  const daysBack = Math.max(0, window?.daysBack ?? DEFAULT_DAYS_BACK);
+  const daysForward = Math.max(0, window?.daysForward ?? DEFAULT_DAYS_FORWARD);
+  const now = Date.now();
+  const timeMin = new Date(now - daysBack * 24 * 3600_000);
+  const timeMax = new Date(now + daysForward * 24 * 3600_000);
   const events: GEvent[] = [];
 
   try {
