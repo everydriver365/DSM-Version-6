@@ -367,6 +367,15 @@ function NotificationsPage() {
   const replyInputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+    if (actionSheet?.isMessage) {
+      const timer = setTimeout(() => {
+        replyInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [actionSheet?.isMessage]);
+
+  useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
       const uid = data.user?.id ?? null;
