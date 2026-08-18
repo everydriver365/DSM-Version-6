@@ -842,6 +842,7 @@ function NotificationsPage() {
                     }}
                     onClick={() => {
                       setActionSheet(null);
+                      setQuickReply("");
                       navigate({ to: option.route as never });
                     }}
                   >
