@@ -585,6 +585,67 @@ function RootComponent() {
     setupEdgeToEdgeStatusBar();
   }, []);
 
+  // ---- Face ID / Touch ID app lock ----
+  const [locked, setLocked] = useState(false);
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const lastActiveRef = useRef<number>(Date.now());
+
+  const unlock = useCallback(async () => {
+    const success = await authenticate("Unlock DSM");
+    if (success) {
+      setLocked(false);
+      lastActiveRef.current = Date.now();
+    }
+  }, []);
+
+  useEffect(() => {
+    let cleanup: (() => void) | undefined;
+    let cancelled = false;
+
+    (async () => {
+      const available = await isBiometricAvailable();
+      if (cancelled) return;
+      setBiometricEnabled(available);
+
+      let pref: string | null = null;
+      try {
+        pref = localStorage.getItem("dsm_biometric_lock");
+      } catch {
+        /* ignore */
+      }
+      if (pref !== "true") return;
+
+      const handleVisibilityChange = () => {
+        if (document.hidden) {
+          lastActiveRef.current = Date.now();
+        } else {
+          const elapsed = Date.now() - lastActiveRef.current;
+          if (elapsed > 5 * 60 * 1000 && available) {
+            setLocked(true);
+          }
+        }
+      };
+
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+      cleanup = () =>
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+    })();
+
+    return () => {
+      cancelled = true;
+      cleanup?.();
+    };
+  }, []);
+
+  // Prompt automatically as soon as the lock screen appears.
+  useEffect(() => {
+    if (!locked) return;
+    const t = setTimeout(() => { void unlock(); }, 500);
+    return () => clearTimeout(t);
+  }, [locked, unlock]);
+
+
+
 
   // Register the service worker only. Permission is requested by the
   // in-app PushPermissionCard so the user sees a clear prompt first.
