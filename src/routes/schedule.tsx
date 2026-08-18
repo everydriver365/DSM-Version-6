@@ -1036,11 +1036,13 @@ function SchedulePage() {
         const msg = "Sync failed — check your calendar URL in Settings";
         toast.error(msg);
         setSyncMessage({ type: "error", text: msg });
+        hapticError();
       }
     } catch (err) {
       const msg = "Sync failed";
       toast.error(msg);
       setSyncMessage({ type: "error", text: msg });
+      hapticError();
     } finally {
       setSyncing(false);
     }
