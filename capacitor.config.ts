@@ -1,6 +1,4 @@
-import { CapacitorConfig } from '@capacitor/cli';
-
-const config: CapacitorConfig = {
+const config = {
   appId: 'com.drivingschoolmanager.app',
   appName: 'Driving School Manager',
   webDir: 'dist',
