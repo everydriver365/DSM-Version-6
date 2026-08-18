@@ -2801,7 +2801,7 @@ function HomePage() {
       // of truth (paid_amount is unreliable in historic data).
       // ============================================================
       const nowMs = Date.now();
-      const weekLessonRowsForEarnings = allLessons.filter(
+      const weekLessonRowsForEarnings = nonEventLessons.filter(
         (l: any) =>
           l.lesson_date >= weekStartYmd &&
           l.lesson_date < weekEndYmd &&
