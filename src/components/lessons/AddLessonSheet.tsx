@@ -1138,8 +1138,10 @@ export function AddLessonSheet({
           </SheetRow>
         </SheetGroup>
 
-        {/* SECTION 6 — Recurring */}
-        <SheetGroup>
+        {!isEvent && (
+          <>
+            {/* SECTION 6 — Recurring */}
+            <SheetGroup>
           <SheetRow>
             <IconRepeat size={20} stroke={1.8} color={BLUE} />
             <span style={valueStyle}>Recurring lesson</span>
