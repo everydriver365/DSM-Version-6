@@ -26,6 +26,7 @@ import { IconFingerprint } from "@tabler/icons-react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { Keyboard } from "@capacitor/keyboard";
 import { App } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { EventToastController, emitLiveEvent, type LiveEventKind } from "../components/dsm/EventToast";
