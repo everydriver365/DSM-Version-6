@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMail, IconMapPin, IconMessage, IconNavigation, IconPhone, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconExternalLink, IconHome, IconInbox, IconMail, IconMapPin, IconMessage, IconNavigation, IconPhone, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -275,6 +275,41 @@ function getNotificationAction(
     };
   }
 
+  // Enquiry — "New enquiry from Sarah Johnson"
+  if (type === "new_enquiry" || type === "enquiry") {
+    return {
+      isEnquiry: true,
+      enquiryId: refType === "enquiry" ? refId : null,
+      enquirerName: title.replace("New enquiry from ", "").replace("Enquiry from ", "") || null,
+      enquirerPhone: null,
+      enquirerEmail: null,
+      enquirerPostcode: null,
+      transmission: null,
+      message: body || null,
+      receivedAt: notif.created_at,
+      options: [],
+    };
+  }
+
+  // Job offer — "New job offer" or "Job offer: Manual lessons in SO30"
+  if (type === "job_offer" || type === "new_job") {
+    return {
+      isJobOffer: true,
+      jobId: refType === "job_offer" || refType === "instructor_job" ? refId : null,
+      jobTitle: title.replace("New job offer: ", "").replace("New job offer", "Job offer") || "Job offer",
+      area: null,
+      transmission: null,
+      lessonDate: null,
+      lessonTime: null,
+      duration: null,
+      rate: null,
+      description: body || null,
+      postedBy: null,
+      expiresAt: null,
+      options: [],
+    };
+  }
+
   return {
     options: [
       { label: "Go to Schedule", route: "/schedule", icon: "calendar" },
@@ -457,6 +492,47 @@ function NotificationsPage() {
         action.pupilName = p.name ?? action.pupilName;
         action.pupilPhone = p.phone ?? null;
         action.pupilEmail = p.email ?? null;
+      }
+    }
+
+    if (notif.reference_type === "enquiry" && notif.reference_id) {
+      const { data: enquiry } = await supabase
+        .from("instructor_enquiries")
+        .select("*")
+        .eq("id", notif.reference_id)
+        .single();
+      if (enquiry) {
+        action.enquiryId = enquiry.id;
+        action.enquirerName = enquiry.name ?? action.enquirerName;
+        action.enquirerPhone = enquiry.phone ?? null;
+        action.enquirerEmail = enquiry.email ?? null;
+        action.enquirerPostcode = enquiry.postcode ?? null;
+        action.transmission = enquiry.transmission ?? null;
+        action.message = enquiry.message ?? enquiry.notes ?? action.message;
+      }
+    }
+
+    if (
+      (notif.reference_type === "job_offer" || notif.reference_type === "instructor_job") &&
+      notif.reference_id
+    ) {
+      const { data: job } = await supabase
+        .from("instructor_jobs")
+        .select("*")
+        .eq("id", notif.reference_id)
+        .single();
+      if (job) {
+        action.jobId = job.id;
+        action.jobTitle = job.title ?? action.jobTitle;
+        action.area = job.area ?? job.postcode ?? null;
+        action.transmission = job.transmission ?? job.car_type ?? null;
+        action.lessonDate = job.lesson_date ?? job.date ?? null;
+        action.lessonTime = job.lesson_time ?? job.time ?? null;
+        action.duration = job.duration ?? job.hours ?? null;
+        action.rate = job.rate ?? job.hourly_rate ?? null;
+        action.description = job.description ?? job.notes ?? null;
+        action.postedBy = job.posted_by ?? job.instructor_name ?? null;
+        action.expiresAt = job.expires_at ?? null;
       }
     }
 
@@ -2607,7 +2683,7 @@ function NotificationsPage() {
                         flexShrink: 0,
                       }}
                     >
-                      <IconInbox size={18} color="#D68A1B" stroke={1.5} />
+                      <IconExternalLink size={18} color="#D68A1B" stroke={1.5} />
                     </div>
                     <div style={{ flex: 1 }}>
                       <div
@@ -2618,7 +2694,7 @@ function NotificationsPage() {
                           ...POPPINS,
                         }}
                       >
-                        View full enquiry
+                        More details →
                       </div>
                       <div
                         style={{
@@ -2628,7 +2704,7 @@ function NotificationsPage() {
                           ...POPPINS,
                         }}
                       >
-                        See all details in the enquiries pipeline
+                        Open full enquiry record
                       </div>
                     </div>
                     <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
@@ -2982,6 +3058,37 @@ function NotificationsPage() {
                     )}
                   </div>
                 </div>
+                <button
+                  type="button"
+                  style={{
+                    margin: "12px 16px 0",
+                    width: "calc(100% - 32px)",
+                    background: "#15803D",
+                    color: "#fff",
+                    borderRadius: 20,
+                    padding: 13,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    border: "none",
+                    cursor: "pointer",
+                    ...POPPINS,
+                    boxShadow: "0 3px 0 #14532D",
+                  }}
+                  onClick={async () => {
+                    if (actionSheet.jobId) {
+                      await supabase
+                        .from("instructor_jobs")
+                        .update({ status: "accepted" })
+                        .eq("id", actionSheet.jobId);
+                    }
+                    toast.success("Job accepted! ✓");
+                    setActionSheet(null);
+                    setQuickReply("");
+                    navigate({ to: "/jobs" as never });
+                  }}
+                >
+                  Accept job ✓
+                </button>
                 <div
                   style={{
                     fontSize: 11,
@@ -3046,17 +3153,10 @@ function NotificationsPage() {
                     onClick={() => {
                       setActionSheet(null);
                       setQuickReply("");
-                      if (actionSheet.jobId) {
-                        navigate({
-                          to: "/jobs" as never,
-                          search: { jobId: actionSheet.jobId } as any,
-                        });
-                      } else {
-                        navigate({ to: "/jobs" as never });
-                      }
+                      navigate({ to: "/jobs" as never });
                     }}
                   >
-                    View more →
+                    View full details →
                   </button>
                 </div>
                 <div
