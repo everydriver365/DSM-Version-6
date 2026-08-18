@@ -88,7 +88,7 @@ export default function InstructorTopBar({
         right: 0,
         zIndex: 40,
         background: "#0B1F3A",
-        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 18px 16px",
+        padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 12px) 18px 16px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
