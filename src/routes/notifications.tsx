@@ -272,8 +272,12 @@ function getNotificationAction(
     type.includes("lesson_start") ||
     looksLikeLessonStarting
   ) {
-    const nameMatch = combined.match(/([A-Za-z' -]+?)(?:'s|’s)\s+lesson/i);
-    const timeMatch = combined.match(/starts?\s+at\s+([0-9]{1,2}[:.][0-9]{2}\s*(?:am|pm)?)/i);
+    const nameMatch = combined.match(/([A-Za-z][A-Za-z'’-]*)(?:'s|’s)\s+lesson/i);
+    const timeMatch = combined.match(/starts?\s+at\s+([0-9]{1,2}[:.][0-9]{2})\s*(am|pm)?/i);
+    const parsedTime = timeMatch
+      ? `${timeMatch[1].replace(".", ":")}${timeMatch[2] ? ` ${timeMatch[2]}` : ""}`.trim()
+      : null;
+
     return {
       isLessonStarting: true,
       lessonId: meta.lesson_id ?? notif.reference_id ?? null,
