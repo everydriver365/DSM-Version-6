@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconCalendar, IconChecks, IconChevronRight, IconCircleX, IconCurrencyPound, IconRefresh, IconTrash, IconUsers, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconChecks, IconChevronRight, IconCircleX, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconRefresh, IconTrash, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -72,76 +72,79 @@ function typeTitle(type: string | null, fallback: string) {
   return fallback;
 }
 
+function getNotificationAction(
+  notif: any
+): {
+  directNav?: string;
+  options?: { label: string; route: string; icon: string }[];
+} {
+  const type = notif.type ?? "";
+  const meta = notif.metadata ?? {};
+
+  // Direct navigation — go straight to the relevant page
+  if (type === "message" || type === "new_message" || type === "message_received") {
+    return { directNav: "/messages" };
+  }
+
+  if (type === "enquiry" || type === "new_enquiry") {
+    return { directNav: "/enquiries" };
+  }
+
+  if (type === "payment" || type === "payment_received" || type === "payment_overdue") {
+    return { directNav: "/payments" };
+  }
+
+  if (type === "lesson" || type === "lesson_reminder" || type === "lesson_cancelled") {
+    const lessonId = meta.lesson_id ?? notif.reference_id;
+    if (lessonId) {
+      return { directNav: `/lessons/${lessonId}` };
+    }
+    return { directNav: "/schedule" };
+  }
+
+  if (type === "pupil" || type === "new_pupil") {
+    const pupilId = meta.pupil_id ?? notif.reference_id;
+    if (pupilId) {
+      return { directNav: `/pupils/${pupilId}` };
+    }
+    return { directNav: "/pupils" };
+  }
+
+  if (type === "calendar" || type === "calendar_sync") {
+    return { directNav: "/calendarsync" };
+  }
+
+  if (type === "subscription" || type === "billing") {
+    return { directNav: "/subscription" };
+  }
+
+  if (type === "managed_enquiry" || type === "cancellation_request") {
+    return { directNav: "/more" };
+  }
+
+  if (type === "google_calendar" || type === "calendar_connected") {
+    return { directNav: "/calendarsync" };
+  }
+
+  // Bottom sheet with options for anything else
+  return {
+    options: [
+      { label: "Go to Schedule", route: "/schedule", icon: "calendar" },
+      { label: "Go to Messages", route: "/messages", icon: "message" },
+      { label: "Go to Dashboard", route: "/home", icon: "home" },
+    ],
+  };
+}
+
 function NotificationsPage() {
   const navigate = useNavigate();
 
-  function openTarget(n: Notification) {
-    const ref = n.reference_id;
-    const refType = (n.reference_type || "").toLowerCase();
-    const type = (n.type || "").toLowerCase();
-    const go = (opts: any) => navigate(opts as never);
-
-    // Reference-based routing first (most precise)
-    if (ref) {
-      switch (refType) {
-        case "job_offer":
-          return go({ to: "/messages", search: { jobOfferId: ref } });
-        case "lesson":
-          return go({ to: "/lessons/$id", params: { id: ref } });
-        case "pupil":
-          return go({ to: "/pupils/$id", params: { id: ref } });
-        case "chat_room":
-          return go({ to: "/community", search: { roomId: ref } });
-        case "marketplace_listing":
-          return go({ to: "/marketplace/$listingId", params: { listingId: ref } });
-        case "course":
-        case "course_booking":
-          return go({ to: "/bookings" });
-        case "payment":
-          return go({ to: "/payments" });
-        case "quote":
-          return go({ to: "/quotes" });
-        case "live_session":
-          return go({ to: "/dsm-live/$sessionId", params: { sessionId: ref } });
-        default:
-          break;
-      }
-    }
-
-    // Type-based routing
-    if (type === "pupil_reply" || type === "message") {
-      if (ref) return go({ to: "/messages/$pupilId", params: { pupilId: ref } });
-      return go({ to: "/messages" });
-    }
-    if (type === "chat_message") return go({ to: "/community" });
-    if (type.startsWith("lesson")) {
-      if (ref) return go({ to: "/lessons/$id", params: { id: ref } });
-      return go({ to: "/schedule" });
-    }
-    if (type === "reschedule_request") {
-      if (ref) return go({ to: "/lessons/reschedule/$id", params: { id: ref } });
-      return go({ to: "/messages" });
-    }
-    if (type.startsWith("payment")) return go({ to: "/payments" });
-    if (type === "booking") return go({ to: "/bookings" });
-    if (type === "enquiry") return go({ to: "/enquiries" });
-    if (type === "tracking") return go({ to: "/live" });
-    if (type === "quote_accepted" || type === "quote") return go({ to: "/quotes" });
-    if (type === "pupil_added" || type === "pupil") {
-      if (ref) return go({ to: "/pupils/$id", params: { id: ref } });
-      return go({ to: "/pupils" });
-    }
-    if (type === "test") return go({ to: "/tests" });
-    if (type === "marketplace_enquiry") return go({ to: "/marketplace" });
-    if (type === "featured_application") return go({ to: "/admin/applications" });
-    if (type.startsWith("gap")) return go({ to: "/gaps" });
-    if (type === "review") return go({ to: "/reviews" });
-
-    toast("Nothing more to show for this notification");
-  }
-
   const [userId, setUserId] = useState<string | null>(null);
   const [items, setItems] = useState<Notification[] | null>(null);
+  const [actionSheet, setActionSheet] = useState<{
+    notif: any;
+    options: { label: string; route: string; icon: string }[];
+  } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -159,12 +162,12 @@ function NotificationsPage() {
     })();
   }, []);
 
-  async function markRead(id: string) {
-    setItems((prev) => (prev ?? []).map((n) => (n.id === id ? { ...n, read: true } : n)));
+  async function markAsRead(notifId: string) {
+    setItems((prev) => (prev ?? []).map((n) => (n.id === notifId ? { ...n, read: true } : n)));
     const { error } = await supabase
       .from("instructor_notifications")
       .update({ read: true })
-      .eq("id", id);
+      .eq("id", notifId);
     if (error) console.error("[notifications] mark read error", error);
     window.dispatchEvent(new Event("dsm-notifications-updated"));
   }
@@ -317,11 +320,26 @@ function NotificationsPage() {
                       <div
                         role="button"
                         tabIndex={0}
-                        onClick={() => {
-                          if (!n.read) markRead(n.id);
-                          openTarget(n);
+                        onClick={async () => {
+                          if (!n.read) {
+                            await markAsRead(n.id);
+                          }
+                          const action = getNotificationAction(n);
+                          if (action.directNav) {
+                            const direct = action.directNav;
+                            if (direct.startsWith("/lessons/") && direct !== "/lessons") {
+                              navigate({ to: "/lessons/$id", params: { id: direct.split("/")[2] } });
+                            } else if (direct.startsWith("/pupils/") && direct !== "/pupils") {
+                              navigate({ to: "/pupils/$id", params: { id: direct.split("/")[2] } });
+                            } else {
+                              navigate({ to: direct as never });
+                            }
+                            return;
+                          }
+                          if (action.options) {
+                            setActionSheet({ notif: n, options: action.options });
+                          }
                         }}
-
                         className="w-full text-left cursor-pointer"
                         style={{
                           background: n.read ? "#FFFFFF" : "#F5F9FF",
@@ -389,7 +407,7 @@ function NotificationsPage() {
                                     type="button"
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      markRead(n.id);
+                                      markAsRead(n.id);
                                       navigate({ to: "/lessons/$id", params: { id: n.reference_id! } });
                                     }}
                                     className="text-[12px] font-semibold"
@@ -402,7 +420,7 @@ function NotificationsPage() {
                                   type="button"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    markRead(n.id);
+                                    markAsRead(n.id);
                                     navigate({ to: "/gaps" });
                                   }}
                                   className="text-[12px] font-semibold text-white"
@@ -418,7 +436,7 @@ function NotificationsPage() {
                                   type="button"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    markRead(n.id);
+                                    markAsRead(n.id);
                                     navigate({ to: "/messages" });
                                   }}
                                   className="text-[12px] font-semibold"
@@ -431,7 +449,7 @@ function NotificationsPage() {
                                     type="button"
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      markRead(n.id);
+                                      markAsRead(n.id);
                                       navigate({ to: "/lessons/reschedule/$id", params: { id: n.reference_id! } });
                                     }}
                                     className="text-[12px] font-semibold text-white"
@@ -480,6 +498,191 @@ function NotificationsPage() {
           ))
         )}
       </div>
+
+      {actionSheet && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 300,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "flex-end",
+          }}
+          onClick={() => setActionSheet(null)}
+        >
+          <div
+            style={{
+              background: "#EEF2F7",
+              borderRadius: "22px 22px 0 0",
+              padding: "0 0 32px",
+              width: "100%",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                width: 36,
+                height: 5,
+                background: "#D1D1D6",
+                borderRadius: 3,
+                margin: "12px auto 0",
+              }}
+            />
+            <div
+              style={{
+                margin: "16px 16px 8px",
+                background: "#fff",
+                borderRadius: 16,
+                border: "1px solid #E4E8EF",
+                padding: "14px 16px",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: "#0B1F3A",
+                  ...POPPINS,
+                }}
+              >
+                {typeTitle(actionSheet.notif.type, actionSheet.notif.title)}
+              </div>
+              {actionSheet.notif.body && (
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "#6B7686",
+                    marginTop: 4,
+                    ...POPPINS,
+                  }}
+                >
+                  {actionSheet.notif.body}
+                </div>
+              )}
+            </div>
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: "#9CA3AF",
+                textTransform: "uppercase",
+                padding: "8px 16px 6px",
+                ...POPPINS,
+              }}
+            >
+              GO TO
+            </div>
+            <div
+              style={{
+                margin: "0 16px",
+                background: "#fff",
+                borderRadius: 16,
+                border: "1px solid #E4E8EF",
+                overflow: "hidden",
+              }}
+            >
+              {actionSheet.options.map((option, idx) => {
+                const isLast = idx === actionSheet.options.length - 1;
+                let iconNode: ReactNode;
+                let iconBg: string;
+                switch (option.icon) {
+                  case "calendar":
+                    iconNode = <IconCalendar size={20} color="#1877D6" />;
+                    iconBg = "#EFF6FF";
+                    break;
+                  case "message":
+                    iconNode = <IconMessage size={20} color="#7C3AED" />;
+                    iconBg = "#EDE9FE";
+                    break;
+                  case "home":
+                    iconNode = <IconHome size={20} color="#15803D" />;
+                    iconBg = "#DCFCE7";
+                    break;
+                  case "pupils":
+                    iconNode = <IconUsers size={20} color="#1877D6" />;
+                    iconBg = "#EFF6FF";
+                    break;
+                  case "payments":
+                    iconNode = <IconCurrencyPound size={20} color="#D68A1B" />;
+                    iconBg = "#FEF3C7";
+                    break;
+                  case "enquiries":
+                    iconNode = <IconInbox size={20} color="#CC2229" />;
+                    iconBg = "#FEE2E2";
+                    break;
+                  default:
+                    iconNode = <IconBell size={20} color="#6B7280" />;
+                    iconBg = "#F3F4F6";
+                }
+                return (
+                  <div
+                    key={option.route}
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      borderBottom: isLast ? undefined : "1px solid #E4E8EF",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setActionSheet(null);
+                      navigate({ to: option.route as never });
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: iconBg,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {iconNode}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: "#0B1F3A",
+                        flex: 1,
+                        ...POPPINS,
+                      }}
+                    >
+                      {option.label}
+                    </div>
+                    <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                  </div>
+                );
+              })}
+            </div>
+            <button
+              type="button"
+              style={{
+                margin: "12px 16px 0",
+                width: "calc(100% - 32px)",
+                background: "#fff",
+                color: "#0B1F3A",
+                borderRadius: 20,
+                padding: 13,
+                fontSize: 14,
+                fontWeight: 700,
+                border: "1px solid #E4E8EF",
+                cursor: "pointer",
+                ...POPPINS,
+              }}
+              onClick={() => setActionSheet(null)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </PageLayout>
   );
 }
