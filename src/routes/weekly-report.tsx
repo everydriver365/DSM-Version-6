@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { IconCalendar, IconChevronLeft, IconChevronRight, IconDownload, IconStar, IconUsers } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard.tsx";
 
@@ -367,7 +367,7 @@ function WeeklyReportPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      <div style={{ height: "TOP_BAR_SPACER" }} />
 
 
       {/* Week navigation */}

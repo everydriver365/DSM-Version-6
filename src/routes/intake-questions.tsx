@@ -1,6 +1,6 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconArrowLeft, IconClipboardList, IconGripVertical, IconMicrophone, IconMicrophoneOff, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -285,7 +285,7 @@ function IntakeQuestionsPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      <div style={{ height: "TOP_BAR_SPACER" }} />
 
       {/* Action bar */}
       <div

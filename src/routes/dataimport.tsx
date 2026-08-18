@@ -13,7 +13,7 @@ import { validatePupilRows, resolveName } from "@/lib/pupilRowValidation";
 import { IconAlertCircle, IconAlertTriangle, IconChevronLeft, IconCircleCheck, IconDownload, IconInfoCircle, IconUpload } from "@tabler/icons-react";
 
 import { toast } from "sonner";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
@@ -288,7 +288,7 @@ function DataImportPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      <div style={{ height: "TOP_BAR_SPACER" }} />
 
       <div>
         <div className="mx-4">

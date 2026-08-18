@@ -382,7 +382,7 @@ function PerksPage() {
         onMenu={() => navigate({ to: '/more' as never })}
         onMicPress={() => toast.info('Voice commands coming soon!')}
       />
-      <div style={{ height: 'calc(60px + env(safe-area-inset-top, 0px))' }} />
+      <div style={{ height: 'TOP_BAR_SPACER' }} />
 
       {!isPaid && (
         <div

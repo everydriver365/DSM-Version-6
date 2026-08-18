@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconCalendar, IconCheck, IconChevronDown, IconChevronUp, IconMapPin, IconMicrophone, IconMicrophoneOff, IconPlus, IconSearch, IconTrophy, IconUser } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import RecommendedLearning from "@/components/learn/RecommendedLearning";
@@ -481,7 +481,7 @@ function DrivingTestPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => toast.info("Voice commands coming soon!")}
       />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      <div style={{ height: "TOP_BAR_SPACER" }} />
 
       {/* Tabs */}
       <div className="px-4 pt-4 flex gap-2">

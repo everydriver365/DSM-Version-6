@@ -21,7 +21,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
@@ -486,7 +486,7 @@ function LiveNewsPage() {
         onMenu={() => navigate({ to: "/more" as never })}
         onMicPress={() => {}}
       />
-      <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
+      <div style={{ height: "TOP_BAR_SPACER" }} />
 
       <div
         style={{
