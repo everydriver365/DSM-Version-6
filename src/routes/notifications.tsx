@@ -72,6 +72,13 @@ function typeTitle(type: string | null, fallback: string) {
   return fallback;
 }
 
+function extractNameFromTitle(title?: string | null): string | null {
+  if (!title) return null;
+  const m = title.match(/(?:new\s+)?message\s+from\s+(.+)/i);
+  return m ? m[1].trim() : null;
+}
+
+
 function getNotificationAction(
   notif: any
 ): {
@@ -85,24 +92,39 @@ function getNotificationAction(
   const type = notif.type ?? "";
   const meta = notif.metadata ?? {};
 
-  // Message notifications show a richer bottom sheet with a quick reply option
-  if (type === "message" || type === "new_message" || type === "message_received") {
+  // Message notifications show a richer bottom sheet with a quick reply option.
+  // Pupil messages use type "pupil_message" and reference_id is the pupil_id.
+  // Instructor DMs use type "instructor_dm" and reference_id is the conversation_id.
+  if (
+    type === "message" ||
+    type === "new_message" ||
+    type === "message_received" ||
+    type === "pupil_message" ||
+    type === "instructor_dm"
+  ) {
+    const threadId =
+      meta.thread_id ?? meta.conversation_id ?? notif.reference_id ?? null;
+    const senderName =
+      meta.sender_name ?? meta.from ?? extractNameFromTitle(notif.title) ?? null;
+    const messagePreview = meta.preview ?? meta.body ?? notif.body ?? null;
+    const isInstructorDm = type === "instructor_dm";
+    const isPupilMessage = type === "pupil_message";
+    const replyRoute =
+      isInstructorDm && threadId
+        ? `/messages/instructor/${threadId}`
+        : isPupilMessage && threadId
+          ? `/messages/${threadId}`
+          : threadId
+            ? `/messages/${threadId}`
+            : "/messages";
     return {
       isMessage: true,
-      threadId: meta.thread_id ?? meta.conversation_id ?? null,
-      senderName: meta.sender_name ?? meta.from ?? null,
-      messagePreview: meta.preview ?? meta.body ?? null,
+      threadId,
+      senderName,
+      messagePreview,
       options: [
-        {
-          label: "Reply to message",
-          route: meta.thread_id ? `/messages/${meta.thread_id}` : "/messages",
-          icon: "reply",
-        },
-        {
-          label: "Go to Messages",
-          route: "/messages",
-          icon: "message",
-        },
+        { label: "Reply to message", route: replyRoute, icon: "reply" },
+        { label: "Go to Messages", route: "/messages", icon: "message" },
       ],
     };
   }
@@ -164,6 +186,7 @@ function NotificationsPage() {
   const [items, setItems] = useState<Notification[] | null>(null);
   const [actionSheet, setActionSheet] = useState<{
     notif: any;
+    notifType?: string | null;
     options: { label: string; route: string; icon: string }[];
     isMessage?: boolean;
     threadId?: string | null;
@@ -258,7 +281,8 @@ function NotificationsPage() {
 
       const threadId =
         actionSheet.notif?.metadata?.thread_id ??
-        actionSheet.notif?.metadata?.conversation_id;
+        actionSheet.notif?.metadata?.conversation_id ??
+        actionSheet.notif?.reference_id;
 
       if (!threadId) {
         // No thread ID — navigate to messages instead
@@ -268,17 +292,56 @@ function NotificationsPage() {
         return;
       }
 
-      // Insert message into thread
-      const { error } = await supabase
-        .from("messages")
-        .insert({
+      const type = actionSheet.notifType ?? actionSheet.notif?.type ?? "";
+      const text = quickReply.trim();
+
+      if (type === "instructor_dm") {
+        // Fetch conversation to know the recipient
+        const { data: conv, error: convErr } = await supabase
+          .from("instructor_conversations")
+          .select("instructor_a_id, instructor_b_id")
+          .eq("id", threadId)
+          .single();
+
+        if (convErr || !conv) {
+          throw new Error("Could not load conversation");
+        }
+
+        const otherId =
+          conv.instructor_a_id === user.id
+            ? conv.instructor_b_id
+            : conv.instructor_a_id;
+
+        const { error } = await supabase.from("instructor_messages").insert({
           conversation_id: threadId,
-          sender_id: user.id,
-          content: quickReply.trim(),
-          created_at: new Date().toISOString(),
+          from_instructor_id: user.id,
+          to_instructor_id: otherId,
+          body: text,
         });
 
-      if (error) throw error;
+        if (error) throw error;
+      } else if (type === "pupil_message") {
+        const { error } = await supabase.from("chat_messages").insert({
+          instructor_id: user.id,
+          pupil_id: threadId,
+          sender_type: "instructor",
+          sender_id: user.id,
+          body: text,
+        });
+
+        if (error) throw error;
+      } else {
+        // Fallback legacy message type — assume chat_messages
+        const { error } = await supabase.from("chat_messages").insert({
+          instructor_id: user.id,
+          pupil_id: threadId,
+          sender_type: "instructor",
+          sender_id: user.id,
+          body: text,
+        });
+
+        if (error) throw error;
+      }
 
       toast.success("Reply sent ✓");
       setQuickReply("");
@@ -408,6 +471,7 @@ function NotificationsPage() {
                           if (action.options) {
                             setActionSheet({
                               notif: n,
+                              notifType: n.type,
                               options: action.options,
                               isMessage: action.isMessage,
                               threadId: action.threadId,
