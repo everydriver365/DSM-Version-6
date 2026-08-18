@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconCalendar, IconChecks, IconChevronRight, IconCircleX, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconRefresh, IconTrash, IconUsers, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconChecks, IconChevronRight, IconCircleX, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconRefresh, IconSend, IconTrash, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -77,13 +77,34 @@ function getNotificationAction(
 ): {
   directNav?: string;
   options?: { label: string; route: string; icon: string }[];
+  isMessage?: boolean;
+  threadId?: string | null;
+  senderName?: string | null;
+  messagePreview?: string | null;
 } {
   const type = notif.type ?? "";
   const meta = notif.metadata ?? {};
 
-  // Direct navigation — go straight to the relevant page
+  // Message notifications show a richer bottom sheet with a quick reply option
   if (type === "message" || type === "new_message" || type === "message_received") {
-    return { directNav: "/messages" };
+    return {
+      isMessage: true,
+      threadId: meta.thread_id ?? meta.conversation_id ?? null,
+      senderName: meta.sender_name ?? meta.from ?? null,
+      messagePreview: meta.preview ?? meta.body ?? null,
+      options: [
+        {
+          label: "Reply to message",
+          route: meta.thread_id ? `/messages/${meta.thread_id}` : "/messages",
+          icon: "reply",
+        },
+        {
+          label: "Go to Messages",
+          route: "/messages",
+          icon: "message",
+        },
+      ],
+    };
   }
 
   if (type === "enquiry" || type === "new_enquiry") {
@@ -144,7 +165,14 @@ function NotificationsPage() {
   const [actionSheet, setActionSheet] = useState<{
     notif: any;
     options: { label: string; route: string; icon: string }[];
+    isMessage?: boolean;
+    threadId?: string | null;
+    senderName?: string | null;
+    messagePreview?: string | null;
   } | null>(null);
+
+  const [quickReply, setQuickReply] = useState("");
+  const [sendingReply, setSendingReply] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -219,6 +247,47 @@ function NotificationsPage() {
       toast.success("Read notifications cleared");
     }
     window.dispatchEvent(new Event("dsm-notifications-updated"));
+  }
+
+  async function sendQuickReply() {
+    if (!quickReply.trim() || !actionSheet) return;
+    setSendingReply(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const threadId =
+        actionSheet.notif?.metadata?.thread_id ??
+        actionSheet.notif?.metadata?.conversation_id;
+
+      if (!threadId) {
+        // No thread ID — navigate to messages instead
+        navigate({ to: "/messages" as never });
+        setActionSheet(null);
+        setQuickReply("");
+        return;
+      }
+
+      // Insert message into thread
+      const { error } = await supabase
+        .from("messages")
+        .insert({
+          conversation_id: threadId,
+          sender_id: user.id,
+          content: quickReply.trim(),
+          created_at: new Date().toISOString(),
+        });
+
+      if (error) throw error;
+
+      toast.success("Reply sent ✓");
+      setQuickReply("");
+      setActionSheet(null);
+    } catch (e: any) {
+      toast.error("Could not send reply");
+    } finally {
+      setSendingReply(false);
+    }
   }
 
   const today = startOfDay(new Date());
@@ -337,7 +406,14 @@ function NotificationsPage() {
                             return;
                           }
                           if (action.options) {
-                            setActionSheet({ notif: n, options: action.options });
+                            setActionSheet({
+                              notif: n,
+                              options: action.options,
+                              isMessage: action.isMessage,
+                              threadId: action.threadId,
+                              senderName: action.senderName,
+                              messagePreview: action.messagePreview,
+                            });
                           }
                         }}
                         className="w-full text-left cursor-pointer"
@@ -509,7 +585,10 @@ function NotificationsPage() {
             display: "flex",
             alignItems: "flex-end",
           }}
-          onClick={() => setActionSheet(null)}
+          onClick={() => {
+            setActionSheet(null);
+            setQuickReply("");
+          }}
         >
           <div
             style={{
@@ -529,38 +608,169 @@ function NotificationsPage() {
                 margin: "12px auto 0",
               }}
             />
-            <div
-              style={{
-                margin: "16px 16px 8px",
-                background: "#fff",
-                borderRadius: 16,
-                border: "1px solid #E4E8EF",
-                padding: "14px 16px",
-              }}
-            >
+            {actionSheet.isMessage ? (
               <div
                 style={{
-                  fontSize: 14,
-                  fontWeight: 700,
-                  color: "#0B1F3A",
-                  ...POPPINS,
+                  margin: "16px 16px 8px",
+                  background: "#fff",
+                  borderRadius: 16,
+                  border: "1px solid #E4E8EF",
+                  overflow: "hidden",
                 }}
               >
-                {typeTitle(actionSheet.notif.type, actionSheet.notif.title)}
-              </div>
-              {actionSheet.notif.body && (
                 <div
                   style={{
-                    fontSize: 12,
-                    color: "#6B7686",
-                    marginTop: 4,
+                    display: "flex",
+                    gap: 10,
+                    alignItems: "center",
+                    padding: "14px 16px",
+                    borderBottom: "1px solid #E4E8EF",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: "50%",
+                      background: "#EDE9FE",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: "#7C3AED",
+                      ...POPPINS,
+                    }}
+                  >
+                    {actionSheet.senderName?.[0] ?? "?"}
+                  </div>
+                  <div>
+                    <div
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 700,
+                        color: "#0B1F3A",
+                        ...POPPINS,
+                      }}
+                    >
+                      {actionSheet.senderName ?? "Unknown sender"}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 11,
+                        color: "#9CA3AF",
+                        marginTop: 2,
+                        ...POPPINS,
+                      }}
+                    >
+                      Sent you a message
+                    </div>
+                  </div>
+                </div>
+                {actionSheet.messagePreview && (
+                  <div
+                    style={{
+                      padding: "12px 16px",
+                      fontSize: 13,
+                      color: "#6B7686",
+                      lineHeight: 1.5,
+                      fontStyle: "italic",
+                      ...POPPINS,
+                    }}
+                  >
+                    "{actionSheet.messagePreview}"
+                  </div>
+                )}
+                <div
+                  style={{
+                    padding: "12px 16px",
+                    borderTop: "1px solid #E4E8EF",
+                    display: "flex",
+                    gap: 8,
+                    alignItems: "center",
+                  }}
+                >
+                  <input
+                    placeholder="Quick reply..."
+                    value={quickReply}
+                    onChange={(e) => setQuickReply(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && quickReply.trim() && !sendingReply) {
+                        sendQuickReply();
+                      }
+                    }}
+                    disabled={sendingReply}
+                    style={{
+                      flex: 1,
+                      background: "#EEF2F7",
+                      border: "none",
+                      borderRadius: 20,
+                      padding: "8px 14px",
+                      fontSize: 13,
+                      fontFamily: "Poppins, sans-serif",
+                      outline: "none",
+                    }}
+                  />
+                  <button
+                    type="button"
+                    disabled={!quickReply.trim() || sendingReply}
+                    onClick={sendQuickReply}
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: "50%",
+                      background: quickReply.trim() ? "#1877D6" : "#E4E8EF",
+                      border: "none",
+                      cursor: quickReply.trim() && !sendingReply ? "pointer" : "default",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <IconSend
+                      size={16}
+                      color={quickReply.trim() ? "#fff" : "#9CA3AF"}
+                      stroke={1.5}
+                    />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div
+                style={{
+                  margin: "16px 16px 8px",
+                  background: "#fff",
+                  borderRadius: 16,
+                  border: "1px solid #E4E8EF",
+                  padding: "14px 16px",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: "#0B1F3A",
                     ...POPPINS,
                   }}
                 >
-                  {actionSheet.notif.body}
+                  {typeTitle(actionSheet.notif.type, actionSheet.notif.title)}
                 </div>
-              )}
-            </div>
+                {actionSheet.notif.body && (
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: "#6B7686",
+                      marginTop: 4,
+                      ...POPPINS,
+                    }}
+                  >
+                    {actionSheet.notif.body}
+                  </div>
+                )}
+              </div>
+            )}
             <div
               style={{
                 fontSize: 11,
@@ -587,6 +797,10 @@ function NotificationsPage() {
                 let iconNode: ReactNode;
                 let iconBg: string;
                 switch (option.icon) {
+                  case "reply":
+                    iconNode = <IconSend size={20} color="#1877D6" />;
+                    iconBg = "#EFF6FF";
+                    break;
                   case "calendar":
                     iconNode = <IconCalendar size={20} color="#1877D6" />;
                     iconBg = "#EFF6FF";
@@ -628,6 +842,7 @@ function NotificationsPage() {
                     }}
                     onClick={() => {
                       setActionSheet(null);
+                      setQuickReply("");
                       navigate({ to: option.route as never });
                     }}
                   >
@@ -676,7 +891,10 @@ function NotificationsPage() {
                 cursor: "pointer",
                 ...POPPINS,
               }}
-              onClick={() => setActionSheet(null)}
+              onClick={() => {
+                setActionSheet(null);
+                setQuickReply("");
+              }}
             >
               Cancel
             </button>
