@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { toast } from 'sonner';
-import InstructorTopBar from '@/components/dsm/InstructorTopBar';
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { PageLoader } from '@/components/dsm/LoadingSpinner';
 import {
   IconSearch,
