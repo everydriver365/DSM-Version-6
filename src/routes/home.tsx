@@ -318,7 +318,7 @@ interface LessonRow {
   lesson_time: string;
   duration_minutes: number | null;
   status: string;
-  pupil_id: string | null;
+  pupil_id: string;
   notes?: string | null;
   lesson_type?: string | null;
   event_title?: string | null;
@@ -326,7 +326,7 @@ interface LessonRow {
   eol_completed?: boolean | null;
   amount_due?: number | null;
   pickup_location?: string | null;
-  pupils?: { name: string; first_name?: string | null; phone?: string | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null; pricing_type?: string | null; block_hours_total?: number | null; profile_image_url?: string | null; } | null;
+  pupils?: { name: string; phone?: string | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null; pricing_type?: string | null; block_hours_total?: number | null; profile_image_url?: string | null; } | null;
 }
 
 interface PrevLessonRow {
