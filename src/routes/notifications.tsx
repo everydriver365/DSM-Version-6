@@ -446,6 +446,7 @@ function NotificationsPage() {
   }
 
   async function handleNotificationTap(notif: any) {
+    tapLight();
     if (!notif.read) {
       await markAsRead(notif.id);
     }
