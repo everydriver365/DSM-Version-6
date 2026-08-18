@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconNavigation, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -109,6 +109,12 @@ function getNotificationAction(
   sessionUrl?: string | null;
   startTime?: string | null;
   isLiveNow?: boolean;
+  isDrivingTest?: boolean;
+  testCentre?: string | null;
+  testDate?: string | null;
+  testTime?: string | null;
+  testResult?: string | null;
+  isToday?: boolean;
 } {
   const type = notif.type ?? "";
   const meta = notif.metadata ?? {};
@@ -207,6 +213,22 @@ function getNotificationAction(
     };
   }
 
+  if (type === "test" || type === "driving_test" || type === "test_reminder" || type === "test_booked" || type === "test_result" || type === "test_today") {
+    return {
+      isDrivingTest: true,
+      pupilId: meta.pupil_id ?? null,
+      pupilName: meta.pupil_name ?? meta.pupil ?? null,
+      pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
+      lessonId: meta.lesson_id ?? null,
+      testCentre: meta.test_centre ?? meta.pickup_location ?? meta.location ?? null,
+      testDate: meta.test_date ?? meta.lesson_date ?? null,
+      testTime: meta.test_time ?? meta.lesson_time ?? null,
+      testResult: meta.test_result ?? meta.result ?? null,
+      isToday: type === "test_today" || meta.is_today === true,
+      options: [],
+    };
+  }
+
   if (type === "managed_enquiry" || type === "cancellation_request") {
     return { directNav: "/more" };
   }
@@ -252,6 +274,12 @@ function NotificationsPage() {
     sessionUrl?: string | null;
     startTime?: string | null;
     isLiveNow?: boolean;
+    isDrivingTest?: boolean;
+    testCentre?: string | null;
+    testDate?: string | null;
+    testTime?: string | null;
+    testResult?: string | null;
+    isToday?: boolean;
   } | null>(null);
 
   const [quickReply, setQuickReply] = useState("");
@@ -551,6 +579,12 @@ function NotificationsPage() {
                               sessionUrl: action.sessionUrl,
                               startTime: action.startTime,
                               isLiveNow: action.isLiveNow,
+                              isDrivingTest: action.isDrivingTest,
+                              testCentre: action.testCentre,
+                              testDate: action.testDate,
+                              testTime: action.testTime,
+                              testResult: action.testResult,
+                              isToday: action.isToday,
                             });
                           }
                         }}
