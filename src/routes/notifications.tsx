@@ -281,7 +281,8 @@ function NotificationsPage() {
 
       const threadId =
         actionSheet.notif?.metadata?.thread_id ??
-        actionSheet.notif?.metadata?.conversation_id;
+        actionSheet.notif?.metadata?.conversation_id ??
+        actionSheet.notif?.reference_id;
 
       if (!threadId) {
         // No thread ID — navigate to messages instead
@@ -291,17 +292,56 @@ function NotificationsPage() {
         return;
       }
 
-      // Insert message into thread
-      const { error } = await supabase
-        .from("messages")
-        .insert({
+      const type = actionSheet.notifType ?? actionSheet.notif?.type ?? "";
+      const text = quickReply.trim();
+
+      if (type === "instructor_dm") {
+        // Fetch conversation to know the recipient
+        const { data: conv, error: convErr } = await supabase
+          .from("instructor_conversations")
+          .select("instructor_a_id, instructor_b_id")
+          .eq("id", threadId)
+          .single();
+
+        if (convErr || !conv) {
+          throw new Error("Could not load conversation");
+        }
+
+        const otherId =
+          conv.instructor_a_id === user.id
+            ? conv.instructor_b_id
+            : conv.instructor_a_id;
+
+        const { error } = await supabase.from("instructor_messages").insert({
           conversation_id: threadId,
-          sender_id: user.id,
-          content: quickReply.trim(),
-          created_at: new Date().toISOString(),
+          from_instructor_id: user.id,
+          to_instructor_id: otherId,
+          body: text,
         });
 
-      if (error) throw error;
+        if (error) throw error;
+      } else if (type === "pupil_message") {
+        const { error } = await supabase.from("chat_messages").insert({
+          instructor_id: user.id,
+          pupil_id: threadId,
+          sender_type: "instructor",
+          sender_id: user.id,
+          body: text,
+        });
+
+        if (error) throw error;
+      } else {
+        // Fallback legacy message type — assume chat_messages
+        const { error } = await supabase.from("chat_messages").insert({
+          instructor_id: user.id,
+          pupil_id: threadId,
+          sender_type: "instructor",
+          sender_id: user.id,
+          body: text,
+        });
+
+        if (error) throw error;
+      }
 
       toast.success("Reply sent ✓");
       setQuickReply("");
