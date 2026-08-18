@@ -11,6 +11,8 @@ import {
 import { useNavigate } from "@tanstack/react-router";
 import dsmLogoWhite from "@/assets/dsm-logo-white.png.asset.json";
 
+export const TOP_BAR_SPACER = "calc(max(env(safe-area-inset-top, 0px), 24px) + 64px)";
+
 export type InstructorTopBarProps = {
   firstName: string;
   avatarUrl?: string | null;
