@@ -648,7 +648,10 @@ function PupilsIndexPage() {
         key={p.id}
         role="button"
         tabIndex={0}
-        onClick={() => navigate({ to: "/pupils/$id", params: { id: p.id } })}
+        onClick={() => {
+          tapLight();
+          navigate({ to: "/pupils/$id", params: { id: p.id } });
+        }}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
