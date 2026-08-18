@@ -1763,7 +1763,7 @@ function SchedulePage() {
                                     aria-hidden
                                     style={{
                                       width: 4,
-                                      borderRadius: "14px 0 0 14px",
+                                      borderRadius: "12px 0 0 12px",
                                       background: "#D4A853",
                                       flexShrink: 0,
                                       alignSelf: "stretch",
@@ -2022,8 +2022,8 @@ function SchedulePage() {
                                   tabIndex={clickable ? 0 : undefined}
                                   style={{
                                     background: isTestDay ? '#FFF3E0' : '#FFFFFF',
-                                    borderRadius: 14,
-                                    boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                                    borderRadius: 12,
+                                    boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
                                     padding: "12px 14px",
                                     display: "flex",
                                     alignItems: (isBlockRow || isLessonRow) ? "stretch" : "center",
@@ -2108,7 +2108,7 @@ function SchedulePage() {
                                              aria-hidden
                                              style={{
                                                width: 4,
-                                               borderRadius: '14px 0 0 14px',
+                                               borderRadius: '12px 0 0 12px',
                                                background: markerColor,
                                                flexShrink: 0,
                                                alignSelf: 'stretch',
@@ -2120,7 +2120,7 @@ function SchedulePage() {
                                            aria-hidden
                                            style={{
                                              width: 4,
-                                             borderRadius: '14px 0 0 14px',
+                                             borderRadius: '12px 0 0 12px',
                                              background: markerColor,
                                              flexShrink: 0,
                                              alignSelf: 'stretch',
@@ -2506,7 +2506,7 @@ function SchedulePage() {
                 border: '1px solid #E4E8EF', borderRadius: 16, padding: '14px 14px', background: '#fff',
               }}
             >
-              <span style={{ width: 38, height: 38, borderRadius: 19, background: '#E7F0FB', display: 'grid', placeItems: 'center' }}>
+              <span style={{ width: 38, height: 38, borderRadius: 16, background: '#E7F0FB', display: 'grid', placeItems: 'center' }}>
                 <IconPlus size={19} stroke={1.8} color="#1877D6" />
               </span>
               <span>
@@ -2526,7 +2526,7 @@ function SchedulePage() {
                 border: '1px solid #E4E8EF', borderRadius: 16, padding: '14px 14px', background: '#fff',
               }}
             >
-              <span style={{ width: 38, height: 38, borderRadius: 19, background: '#FBF1DA', display: 'grid', placeItems: 'center' }}>
+              <span style={{ width: 38, height: 38, borderRadius: 16, background: '#FBF1DA', display: 'grid', placeItems: 'center' }}>
                 <IconCalendar size={19} stroke={1.8} color="#B8860B" />
               </span>
               <span>
@@ -3064,7 +3064,7 @@ function MonthCalendar({
         zIndex: 5,
         background: "#FFFFFF",
         borderRadius: 16,
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+        boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
         padding: 12,
         boxSizing: "border-box",
       }}

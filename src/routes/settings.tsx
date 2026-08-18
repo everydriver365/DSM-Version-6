@@ -691,7 +691,7 @@ function SettingsPage() {
             background: "#FFFFFF",
             borderRadius: 20,
             padding: 18,
-            boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
+            boxShadow: "0 4px 0 #E4E4E8",
             display: "flex",
             alignItems: "center",
             gap: 14,
@@ -942,7 +942,7 @@ function SettingsPage() {
                   style={{
                     width: 44,
                     height: 26,
-                    borderRadius: 13,
+                    borderRadius: 12,
                     background: sendLessonReminders ? "#1877D6" : "#D1D5DB",
                     border: "none",
                     position: "relative",
@@ -1608,7 +1608,7 @@ function SettingsPage() {
               style={{
                 width: 44,
                 height: 26,
-                borderRadius: 13,
+                borderRadius: 12,
                 background: publishToMarketplace ? "#1877D6" : "#D1D5DB",
                 border: "none",
                 position: "relative",
@@ -2276,7 +2276,7 @@ function MenuRow({
     >
       <div
         className="flex items-center justify-center"
-        style={{ width: 38, height: 38, minWidth: 38, minHeight: 38, borderRadius: 11, backgroundColor: iconBg, flexShrink: 0 }}
+        style={{ width: 38, height: 38, minWidth: 38, minHeight: 38, borderRadius: 12, backgroundColor: iconBg, flexShrink: 0 }}
       >
         {icon}
       </div>
@@ -2378,7 +2378,7 @@ function AccountRow({
     >
       <div
         className="flex items-center justify-center"
-        style={{ width: 38, height: 38, minWidth: 38, minHeight: 38, borderRadius: 11, backgroundColor: iconBg, flexShrink: 0 }}
+        style={{ width: 38, height: 38, minWidth: 38, minHeight: 38, borderRadius: 12, backgroundColor: iconBg, flexShrink: 0 }}
       >
         {icon}
       </div>
@@ -2470,7 +2470,7 @@ function SectionCard({ children, style }: { children: React.ReactNode; style?: R
         background: "#FFFFFF",
         borderRadius: 20,
         overflow: "hidden",
-        boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
+        boxShadow: "0 4px 0 #E4E4E8",
         marginBottom: 20,
         ...style,
       }}
@@ -2565,7 +2565,7 @@ function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: b
       style={{
         width: 44,
         height: 26,
-        borderRadius: 13,
+        borderRadius: 12,
         background: checked ? "#1877D6" : "#D1D5DB",
         border: "none",
         position: "relative",

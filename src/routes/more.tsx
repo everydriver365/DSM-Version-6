@@ -137,7 +137,7 @@ function MorePage() {
           display: 'flex',
           alignItems: 'center',
           gap: 8,
-          boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+          boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
         }}
       >
         <IconSearch size={16} color="#9CA3AF" />
@@ -194,7 +194,7 @@ function MorePage() {
                   cursor: 'pointer',
                   textAlign: 'left',
                   fontFamily: 'Poppins, sans-serif',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                  boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                 }}
               >
                 <div style={{ width: 36, height: 36, borderRadius: 10, background: tool.colour + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -225,7 +225,7 @@ function MorePage() {
                       width: '100%',
                       background: 'white',
                       border: 'none',
-                      borderRadius: 14,
+                      borderRadius: 12,
                       padding: '12px 14px',
                       display: 'flex',
                       alignItems: 'center',
@@ -233,7 +233,7 @@ function MorePage() {
                       cursor: 'pointer',
                       textAlign: 'left',
                       fontFamily: 'Poppins, sans-serif',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                      boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                     }}
                   >
                     <div
@@ -320,7 +320,7 @@ function MorePage() {
                       textAlign: 'left',
                       width: '100%',
                       fontFamily: 'Poppins, sans-serif',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                      boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                     }}
                   >
                     <div

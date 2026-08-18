@@ -441,7 +441,7 @@ function CertificationsPage() {
       {/* FAB add */}
       <button
         onClick={() => openAdd()}
-        style={{ position: "fixed", right: 20, bottom: "calc(env(safe-area-inset-bottom, 0px) + 24px)", width: 56, height: 56, borderRadius: 28, background: "#0F2044", color: "#FFFFFF", border: "none", fontSize: 28, fontWeight: 300, cursor: "pointer", boxShadow: "0 6px 20px rgba(15,32,68,0.35)", zIndex: 30 }}
+        style={{ position: "fixed", right: 20, bottom: "calc(env(safe-area-inset-bottom, 0px) + 24px)", width: 56, height: 56, borderRadius: 20, background: "#0F2044", color: "#FFFFFF", border: "none", fontSize: 28, fontWeight: 300, cursor: "pointer", boxShadow: "0 6px 20px rgba(15,32,68,0.35)", zIndex: 30 }}
         aria-label="Add certification"
       >
         +

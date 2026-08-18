@@ -1560,7 +1560,7 @@ function PupilDetailPage() {
                 className="rounded-2xl p-5 space-y-5"
                 style={{
                   backgroundColor: "#FFFFFF",
-                  boxShadow: "0 10px 40px -15px rgba(11,31,58,0.18)",
+                  boxShadow: "0 8px 24px rgba(15,32,68,0.12)",
                 }}
               >
                 {/* Actions row */}
@@ -1581,7 +1581,7 @@ function PupilDetailPage() {
                   style={{
                     background: "#FFFFFF",
                     borderRadius: 16,
-                    boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+                    boxShadow: "0 4px 0 #E4E4E8",
                     overflow: "hidden",
                   }}
                 >
@@ -1890,7 +1890,7 @@ function PupilDetailPage() {
                     </h3>
                     <div
                       className="flex flex-col"
-                      style={{ background: "#FFFFFF", borderRadius: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.05)", overflow: "hidden" }}
+                      style={{ background: "#FFFFFF", borderRadius: 16, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
                     >
                       {paymentHistory.map((p, pi) => {
                         const isRefund = p.payment_status === "refunded" || Number(p.lesson_cost ?? 0) < 0;
@@ -2038,7 +2038,7 @@ function PupilDetailPage() {
           return (
             <div
               className="grid grid-cols-5 mt-4"
-              style={{ background: "#FFFFFF", borderRadius: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.05)", overflow: "hidden" }}
+              style={{ background: "#FFFFFF", borderRadius: 16, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
             >
               {actions.map((a, i) => {
                 const inner = (
@@ -2586,7 +2586,7 @@ function PupilDetailPage() {
                 <button
                   type="button"
                   onClick={() => setViewingReport(null)}
-                  style={{ flex: 1, padding: "14px 16px", borderRadius: 16, border: "none", background: "#FFFFFF", color: "#0B1F3A", fontSize: 15, fontWeight: 700, boxShadow: "0 1px 3px rgba(11,31,58,0.06)" }}
+                  style={{ flex: 1, padding: "14px 16px", borderRadius: 16, border: "none", background: "#FFFFFF", color: "#0B1F3A", fontSize: 15, fontWeight: 700, boxShadow: "0 2px 8px rgba(15,32,68,0.06)" }}
                 >
                   Close
                 </button>
@@ -2830,7 +2830,7 @@ function PupilDetailPage() {
                       style={{
                         marginTop: 10,
                         height: 8,
-                        borderRadius: 4,
+                        borderRadius: 6,
                         backgroundColor: "#F3F8FF",
                         overflow: "hidden",
                       }}
@@ -2840,7 +2840,7 @@ function PupilDetailPage() {
                           width: `${pct}%`,
                           height: "100%",
                           backgroundColor: "#1877D6",
-                          borderRadius: 4,
+                          borderRadius: 6,
                         }}
                       />
                     </div>
@@ -3099,7 +3099,7 @@ function PupilDetailPage() {
               style={{
                 background: "#FFFFFF",
                 borderRadius: 16,
-                boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
                 overflow: "hidden",
               }}
             >
@@ -3504,7 +3504,7 @@ function PupilDetailPage() {
           };
 
           const segBase: React.CSSProperties = {
-            flex: 1, borderRadius: 9, border: 'none', padding: '9px 0',
+            flex: 1, borderRadius: 12, border: 'none', padding: '9px 0',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             cursor: 'pointer', fontFamily: 'Poppins, sans-serif', fontSize: 13, fontWeight: 600,
           };
@@ -3524,7 +3524,7 @@ function PupilDetailPage() {
           };
           const groupCard: React.CSSProperties = {
             background: "#FFFFFF", borderRadius: 16,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.05)", overflow: "hidden",
+            boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden",
           };
           const hairline = <div style={{ height: 1, background: "#E9E9EC" }} />;
 
@@ -3546,7 +3546,7 @@ function PupilDetailPage() {
                 style={{
                   ...groupCard,
                   border: focusLessonId ? "2px solid #1877D6" : "none",
-                  boxShadow: focusLessonId ? "0 12px 30px rgba(24,119,214,0.18)" : "0 1px 3px rgba(0,0,0,0.05)",
+                  boxShadow: focusLessonId ? "0 12px 30px rgba(24,119,214,0.18)" : "0 2px 8px rgba(15,32,68,0.06)",
                   scrollMarginTop: 64,
                 }}
               >
@@ -3745,7 +3745,7 @@ function PupilDetailPage() {
             borderRadius: 16,
             border: "none",
             padding: "14px 16px",
-            boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
+            boxShadow: "0 4px 0 #E4E4E8",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -3796,10 +3796,10 @@ function PupilDetailPage() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 18,
+              borderRadius: 16,
               padding: 16,
               marginBottom: 14,
-              boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+              boxShadow: "0 4px 0 #E4E4E8",
             }}
           >
             <div className="flex items-center justify-between">
@@ -3849,10 +3849,10 @@ function PupilDetailPage() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 18,
+            borderRadius: 16,
             padding: 16,
             marginBottom: 14,
-            boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+            boxShadow: "0 4px 0 #E4E4E8",
           }}
         >
           <div className="flex items-center justify-between">
@@ -3909,10 +3909,10 @@ function PupilDetailPage() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 18,
+            borderRadius: 16,
             padding: 16,
             marginBottom: 14,
-            boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+            boxShadow: "0 4px 0 #E4E4E8",
           }}
         >
           <div className="flex items-center justify-between">
@@ -5137,8 +5137,8 @@ function PupilExtras({
         <div
           style={{
             background: "#fff",
-            borderRadius: 18,
-            boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+            borderRadius: 16,
+            boxShadow: "0 4px 0 #E4E4E8",
             overflow: "hidden",
             marginBottom: 14,
           }}
@@ -5227,8 +5227,8 @@ function PupilExtras({
         <div
           style={{
             background: "#fff",
-            borderRadius: 18,
-            boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
+            borderRadius: 16,
+            boxShadow: "0 4px 0 #E4E4E8",
             overflow: "hidden",
           }}
         >
