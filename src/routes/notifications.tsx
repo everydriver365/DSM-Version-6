@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -103,6 +103,12 @@ function getNotificationAction(
   cancellationReason?: string | null;
   lessonDate?: string | null;
   lessonTime?: string | null;
+  isDSMLive?: boolean;
+  sessionId?: string | null;
+  sessionTitle?: string | null;
+  sessionUrl?: string | null;
+  startTime?: string | null;
+  isLiveNow?: boolean;
 } {
   const type = notif.type ?? "";
   const meta = notif.metadata ?? {};
@@ -189,6 +195,18 @@ function getNotificationAction(
     return { directNav: "/subscription" };
   }
 
+  if (type === "dsm_live" || type === "live_session" || type === "live_starting" || type === "live_now" || type === "webinar" || type === "podcast") {
+    return {
+      isDSMLive: true,
+      sessionId: meta.session_id ?? meta.live_id ?? null,
+      sessionTitle: meta.title ?? meta.session_title ?? "DSM Live",
+      sessionUrl: meta.url ?? meta.join_url ?? null,
+      startTime: meta.start_time ?? meta.time ?? null,
+      isLiveNow: type === "live_now" || meta.live_now === true || meta.status === "live",
+      options: [],
+    };
+  }
+
   if (type === "managed_enquiry" || type === "cancellation_request") {
     return { directNav: "/more" };
   }
@@ -228,6 +246,12 @@ function NotificationsPage() {
     cancellationReason?: string | null;
     lessonDate?: string | null;
     lessonTime?: string | null;
+    isDSMLive?: boolean;
+    sessionId?: string | null;
+    sessionTitle?: string | null;
+    sessionUrl?: string | null;
+    startTime?: string | null;
+    isLiveNow?: boolean;
   } | null>(null);
 
   const [quickReply, setQuickReply] = useState("");
@@ -521,6 +545,12 @@ function NotificationsPage() {
                               cancellationReason: action.cancellationReason,
                               lessonDate: action.lessonDate,
                               lessonTime: action.lessonTime,
+                              isDSMLive: action.isDSMLive,
+                              sessionId: action.sessionId,
+                              sessionTitle: action.sessionTitle,
+                              sessionUrl: action.sessionUrl,
+                              startTime: action.startTime,
+                              isLiveNow: action.isLiveNow,
                             });
                           }
                         }}
@@ -1151,6 +1181,318 @@ function NotificationsPage() {
                         }}
                       >
                         {actionSheet.pupilName ?? "Pupil"}'s lesson history
+                      </div>
+                    </div>
+                    <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  style={{
+                    margin: "12px 16px 0",
+                    width: "calc(100% - 32px)",
+                    background: "#fff",
+                    color: "#0B1F3A",
+                    borderRadius: 20,
+                    padding: 13,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    border: "1px solid #E4E8EF",
+                    cursor: "pointer",
+                    ...POPPINS,
+                  }}
+                  onClick={() => {
+                    setActionSheet(null);
+                    setQuickReply("");
+                  }}
+                >
+                  Dismiss
+                </button>
+              </>
+            ) : actionSheet.isDSMLive ? (
+              <>
+                <style>{`
+                  @keyframes dsm-live-pulse {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.4; }
+                  }
+                `}</style>
+                <div
+                  style={{
+                    margin: "16px 16px 8px",
+                    background: actionSheet.isLiveNow
+                      ? "linear-gradient(135deg, #CC2229, #991B1B)"
+                      : "linear-gradient(135deg, #14509E, #0B1F3A)",
+                    borderRadius: 16,
+                    padding: 16,
+                    boxShadow: "0 4px 0 rgba(0,0,0,0.2)",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    {actionSheet.isLiveNow ? (
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: 6,
+                          alignItems: "center",
+                          background: "rgba(255,255,255,0.2)",
+                          borderRadius: 20,
+                          padding: "4px 10px",
+                        }}
+                      >
+                        <span
+                          style={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: "50%",
+                            background: "#fff",
+                            animation: "dsm-live-pulse 1.5s ease-in-out infinite",
+                          }}
+                        />
+                        <span
+                          style={{
+                            fontSize: 10,
+                            fontWeight: 800,
+                            color: "#fff",
+                            ...POPPINS,
+                          }}
+                        >
+                          LIVE NOW
+                        </span>
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          background: "rgba(255,255,255,0.2)",
+                          borderRadius: 20,
+                          padding: "4px 10px",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: 10,
+                            fontWeight: 800,
+                            color: "#fff",
+                            ...POPPINS,
+                          }}
+                        >
+                          DSM LIVE
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 18,
+                      fontWeight: 800,
+                      color: "#fff",
+                      marginTop: 10,
+                      letterSpacing: -0.3,
+                      ...POPPINS,
+                    }}
+                  >
+                    {actionSheet.sessionTitle}
+                  </div>
+                  {actionSheet.startTime && !actionSheet.isLiveNow && (
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 6,
+                        alignItems: "center",
+                        marginTop: 6,
+                      }}
+                    >
+                      <IconClock size={13} color="rgba(255,255,255,0.7)" stroke={1.5} />
+                      <span
+                        style={{
+                          fontSize: 12,
+                          color: "rgba(255,255,255,0.7)",
+                          ...POPPINS,
+                        }}
+                      >
+                        {actionSheet.startTime}
+                      </span>
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    style={{
+                      marginTop: 14,
+                      width: "100%",
+                      background: "#fff",
+                      color: actionSheet.isLiveNow ? "#CC2229" : "#14509E",
+                      borderRadius: 20,
+                      padding: 12,
+                      fontSize: 14,
+                      fontWeight: 800,
+                      border: "none",
+                      cursor: "pointer",
+                      fontFamily: "Poppins, sans-serif",
+                      display: "flex",
+                      gap: 8,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    onClick={() => {
+                      const url =
+                        actionSheet.sessionUrl ??
+                        (actionSheet.sessionId ? `/dsm-live/${actionSheet.sessionId}` : "/dsm-live");
+                      if (actionSheet.sessionUrl) {
+                        window.open(url, "_blank");
+                      } else {
+                        navigate({ to: url as never });
+                      }
+                      setActionSheet(null);
+                    }}
+                  >
+                    <IconPlayerPlay
+                      size={16}
+                      color={actionSheet.isLiveNow ? "#CC2229" : "#14509E"}
+                      stroke={2}
+                    />
+                    <span>{actionSheet.isLiveNow ? "Join now →" : "Join session →"}</span>
+                  </button>
+                </div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#9CA3AF",
+                    textTransform: "uppercase",
+                    padding: "8px 16px 6px",
+                    ...POPPINS,
+                  }}
+                >
+                  MORE OPTIONS
+                </div>
+                <div
+                  style={{
+                    margin: "0 16px",
+                    background: "#fff",
+                    borderRadius: 16,
+                    border: "1px solid #E4E8EF",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      borderBottom: "1px solid #E4E8EF",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setActionSheet(null);
+                      setQuickReply("");
+                      navigate({ to: "/dsm-live" as never });
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: actionSheet.isLiveNow ? "#FEE2E2" : "#EFF6FF",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconVideo
+                        size={18}
+                        color={actionSheet.isLiveNow ? "#CC2229" : "#1877D6"}
+                        stroke={1.5}
+                      />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          ...POPPINS,
+                        }}
+                      >
+                        View all DSM Live
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                          marginTop: 2,
+                          ...POPPINS,
+                        }}
+                      >
+                        Browse upcoming sessions and replays
+                      </div>
+                    </div>
+                    <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      if (actionSheet.sessionUrl) {
+                        const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+                          actionSheet.sessionTitle ?? "DSM Live"
+                        )}&details=${encodeURIComponent(
+                          "Join at: " + (actionSheet.sessionUrl ?? "")
+                        )}`;
+                        window.open(calUrl, "_blank");
+                      } else {
+                        toast.info("No session URL available");
+                      }
+                      setActionSheet(null);
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: "#F0FDF4",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconCalendarPlus size={18} color="#15803D" stroke={1.5} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          ...POPPINS,
+                        }}
+                      >
+                        Add to Google Calendar
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                          marginTop: 2,
+                          ...POPPINS,
+                        }}
+                      >
+                        Save this session to your calendar
                       </div>
                     </div>
                     <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
