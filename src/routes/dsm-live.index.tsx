@@ -621,40 +621,6 @@ function SessionCard({
     return "Online";
   })();
 
-  const dateTimeLabel = (() => {
-    const parts: string[] = [];
-    if (s.session_date) {
-      try {
-        parts.push(
-          new Date(s.session_date + "T00:00:00").toLocaleDateString("en-GB", {
-            weekday: "short",
-            day: "numeric",
-            month: "short",
-          }),
-        );
-      } catch {
-        parts.push(s.session_date);
-      }
-    }
-    if (s.session_time) {
-      try {
-        const [hStr, mStr] = s.session_time.split(":");
-        const d = new Date();
-        d.setHours(Number(hStr), Number(mStr), 0, 0);
-        parts.push(
-          d
-            .toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true })
-            .replace(/\s/g, "")
-            .toLowerCase(),
-        );
-      } catch {
-        parts.push(s.session_time);
-      }
-    }
-    return parts.join(" · ");
-  })();
-
-  const metaLabel = s.duration_minutes && s.duration_minutes > 0 ? `${s.duration_minutes} min` : null;
 
   const priceLabel = (() => {
     if (s.price_display) return s.price_display;
@@ -663,28 +629,137 @@ function SessionCard({
   })();
   const isFree = (priceLabel ?? "").toLowerCase() === "free";
 
+  const timeLabel = (() => {
+    if (!s.session_time) return null;
+    const [hStr, mStr] = s.session_time.split(":");
+    return `${String(Number(hStr)).padStart(2, "0")}:${(mStr ?? "00").slice(0, 2)}`;
+  })();
+
+  const durLabel = (() => {
+    const m = s.duration_minutes ?? 0;
+    if (!m) return null;
+    if (m % 60 === 0) return `${m / 60}h`;
+    if (m > 60) return `${Math.floor(m / 60)}h${m % 60}`;
+    return `${m}m`;
+  })();
+
+  const dateLabel = (() => {
+    if (!s.session_date) return null;
+    try {
+      return new Date(s.session_date + "T00:00:00").toLocaleDateString("en-GB", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      });
+    } catch {
+      return s.session_date;
+    }
+  })();
+
   return (
     <div
       onClick={onOpen}
       style={{
         background: "#FFFFFF",
         border: "1px solid #E3E8F0",
-        borderRadius: 14,
+        borderRadius: 16,
         padding: 12,
         marginBottom: 10,
         display: "flex",
         flexDirection: "row",
+        alignItems: "center",
         gap: 12,
         cursor: "pointer",
         fontFamily: poppins,
       }}
     >
-      {/* Thumbnail */}
+      {/* Time column */}
+      <div style={{ width: 48, flexShrink: 0 }}>
+        <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.1 }}>
+          {timeLabel ?? "--:--"}
+        </div>
+        {durLabel && (
+          <div style={{ fontSize: 12, fontWeight: 600, color: "#8792A2", marginTop: 2 }}>
+            {durLabel}
+          </div>
+        )}
+      </div>
+
+      {/* Accent bar */}
       <div
         style={{
-          width: 90,
-          height: 90,
-          borderRadius: 10,
+          width: 4,
+          alignSelf: "stretch",
+          minHeight: 44,
+          borderRadius: 4,
+          background: booked ? "#1D7A4C" : "#1877D6",
+          flexShrink: 0,
+        }}
+      />
+
+      {/* Details */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div
+          style={{
+            fontSize: 14,
+            fontWeight: 700,
+            color: "#0B1F3A",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {s.title}
+        </div>
+        <div
+          style={{
+            fontSize: 12,
+            color: "#8792A2",
+            marginTop: 2,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {[dateLabel, deliveryLabel].filter(Boolean).join(" · ")}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
+          {priceLabel && (
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: isFree ? "#1D7A4C" : "#0B1F3A",
+              }}
+            >
+              {priceLabel}
+            </span>
+          )}
+          {booked && (
+            <span
+              style={{
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: "0.02em",
+                padding: "3px 7px",
+                borderRadius: 7,
+                background: "#E4F4EB",
+                color: "#1D7A4C",
+                textTransform: "uppercase",
+              }}
+            >
+              Booked
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Hero image — far right */}
+      <div
+        style={{
+          width: 76,
+          height: 76,
+          borderRadius: 12,
           flexShrink: 0,
           background: s.image_url ? `url(${s.image_url}) center/cover` : "#0B1F3A",
           display: "flex",
@@ -695,105 +770,6 @@ function SessionCard({
         {!s.image_url && (
           <IconSteeringWheel size={26} color="rgba(255,255,255,0.4)" stroke={1.75} />
         )}
-      </div>
-
-      {/* Details */}
-      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginBottom: 4,
-            minWidth: 0,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 14,
-              fontWeight: 500,
-              color: "#0B1F3A",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              flex: 1,
-              minWidth: 0,
-            }}
-          >
-            {s.title}
-          </div>
-          <span
-            style={{
-              fontSize: 9,
-              fontWeight: 700,
-              letterSpacing: "0.02em",
-              padding: "3px 7px",
-              borderRadius: 7,
-              background: "#E6F1FB",
-              color: "#1877D6",
-              flexShrink: 0,
-              textTransform: "uppercase",
-            }}
-          >
-            {deliveryLabel.toUpperCase()}
-          </span>
-        </div>
-        <div style={{ fontSize: 12, color: "#8792A2", marginBottom: "auto" }}>
-          {dateTimeLabel}
-          {metaLabel ? (
-            <>
-              <br />
-              {metaLabel}
-            </>
-          ) : null}
-        </div>
-
-        <div
-          style={{
-            marginTop: 6,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          {priceLabel ? (
-            <span
-              style={{
-                fontSize: 12,
-                fontWeight: 500,
-                color: isFree ? "#1D7A4C" : "#0B1F3A",
-              }}
-            >
-              {priceLabel}
-            </span>
-          ) : (
-            <span />
-          )}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onOpen();
-            }}
-            style={{
-              background: booked ? "#1D7A4C" : "#1877D6",
-              color: "#FFFFFF",
-              fontSize: 11,
-              fontWeight: 500,
-              padding: "6px 12px",
-              borderRadius: 8,
-              border: 0,
-              cursor: "pointer",
-              fontFamily: poppins,
-              display: "flex",
-              alignItems: "center",
-              gap: 4,
-            }}
-          >
-            {booked ? "Booked" : "Book"}
-            <span aria-hidden="true">›</span>
-          </button>
-        </div>
       </div>
     </div>
   );
