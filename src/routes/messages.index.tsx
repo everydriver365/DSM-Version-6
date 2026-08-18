@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { IconAdjustmentsHorizontal, IconArchive, IconBell, IconBellOff, IconChevronLeft, IconChevronRight, IconDots, IconEdit, IconFlag, IconMail, IconMessageCircle, IconPin, IconPinFilled, IconPlus, IconSearch, IconSend, IconSpeakerphone, IconX } from "@tabler/icons-react";
-import { PageHeader } from "@/components/dsm/PageHeader";
+import { IconAdjustmentsHorizontal, IconArchive, IconBell, IconBellOff, IconChevronLeft, IconChevronRight, IconDots, IconEdit, IconFlag, IconMail, IconMessageCircle, IconPlus, IconSearch, IconSend, IconSpeakerphone, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
