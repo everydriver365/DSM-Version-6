@@ -93,6 +93,17 @@ interface Booking {
   booked_at: string;
 }
 
+interface CourseSession {
+  id: string;
+  course_id: string;
+  session_date: string;
+  session_time: string;
+  duration_minutes: number;
+  status: "scheduled" | "completed" | "cancelled";
+  notes: string | null;
+}
+
+
 function typeColor(t: string) {
   if (t === "intensive") return "#1877D6";
   if (t === "semi-intensive") return "#1877D6";
