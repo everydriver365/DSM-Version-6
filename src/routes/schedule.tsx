@@ -170,6 +170,7 @@ interface Lesson {
   cancellation_reason?: string | null;
   notes?: string | null;
   pickup_location?: string | null;
+  event_title?: string | null;
 
   pupil: Pupil | null;
 
@@ -261,6 +262,14 @@ const isTest = (lesson: any) => {
   if (type === "test" || type === "test day" || type === "driving test") return true;
   if (lesson.is_test_day === true || lesson.duration === "test") return true;
   return /^test day:/i.test(String(lesson.notes ?? "").trim());
+};
+
+const isEvent = (lesson: any) => {
+  if (!lesson) return false;
+  const type = String(lesson.lesson_type ?? "").toLowerCase().trim();
+  if (type === "event") return true;
+  if (!lesson.pupil_id && lesson.event_title) return true;
+  return false;
 };
 
 // Test centre: explicit column first, then the pickup field, then legacy notes
@@ -751,19 +760,16 @@ function SchedulePage() {
     let cancelled = false;
     setLessons(null);
     (async () => {
-      // `pupil:pupils!inner(...)` promotes the join to an INNER JOIN so the
-      // pupil-level filters below actually drop lessons whose pupil is
-      // inactive/archived/deleted. Without !inner, PostgREST returns the
-      // lesson with pupil=null instead of filtering the lesson out.
+      // Use a left join so events with no pupil are still returned, and
+      // filter to active pupils only when a pupil is linked.
       const { data, error } = await supabase
         .from("lessons")
         .select(
-          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, notes, pickup_location, pupil:pupils!inner(id, name, first_name, last_name, address, postcode, calendar_colour, prepaid_hours, status, deleted_at)",
+          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, notes, pickup_location, event_title, pupil:pupils(id, name, first_name, last_name, address, postcode, calendar_colour, prepaid_hours, status, deleted_at)",
         )
 
         .is("deleted_at", null)
-        .eq("pupil.status", "active")
-        .is("pupil.deleted_at", null)
+        .or("pupil_id.is.null,and(pupil.status.eq.active,pupil.deleted_at.is.null)")
         .gte("lesson_date", ymdLocal(rangeStart))
         .lte("lesson_date", ymdLocal(rangeEnd))
         .order("lesson_date", { ascending: true })
@@ -1844,13 +1850,20 @@ function SchedulePage() {
                           let title = "";
                           let timeText = `${fmtTime(e.start)} – ${fmtTime(e.end)}`;
                           if (e.kind === "lesson") {
-                            const name = pupilDisplayName(e.lesson.pupil);
-                            markerColor = pupilColour(e.lesson.pupil_id ?? null, e.lesson.pupil?.calendar_colour ?? null, name);
+                            const eventLesson = isEvent(e.lesson);
+                            const name = eventLesson
+                              ? (e.lesson.event_title || "Event")
+                              : pupilDisplayName(e.lesson.pupil);
+                            markerColor = eventLesson
+                              ? "#1877D6"
+                              : pupilColour(e.lesson.pupil_id ?? null, e.lesson.pupil?.calendar_colour ?? null, name);
                             title = name;
                             // Subtitle shows the lesson type instead of a duplicated time range.
                             if (isTest(e.lesson)) {
                               const centre = testCentreOf(e.lesson);
                               timeText = centre ? `Test day · ${centre}` : "Test day · Test centre not set";
+                            } else if (eventLesson) {
+                              timeText = "";
                             } else {
                               const typeRaw = (e.lesson.lesson_type ?? "").trim();
                               const typeLabel = typeRaw
@@ -1894,11 +1907,17 @@ function SchedulePage() {
                           const clickable = isLessonRow || isBlockRow || isPersonalRow;
                           const isMovingThis = isLessonRow && movingLesson && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.id === movingLesson.id;
                           const isTestDay = isLessonRow && isTest((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
+                          const isEventRow = isLessonRow && isEvent((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
 
                           const isDimmed = moveMode && !isMovingThis;
                           const onCardClick = isLessonRow
                             ? () => {
-                                setActionsOpenFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson);
+                                const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
+                                if (isEvent(lesson)) {
+                                  toast.info(`Event: ${lesson.event_title || 'No title'}`, { duration: 3000 });
+                                  return;
+                                }
+                                setActionsOpenFor(lesson);
                               }
                             : isBlockRow
                               ? () => {
@@ -1936,7 +1955,38 @@ function SchedulePage() {
 
                           return (
                             <div key={e.id} style={{ position: "relative", marginBottom: 8 }}>
-                              {isLessonRow && isTestDay ? (
+                              {isLessonRow && isEventRow ? (
+                                <div
+                                  onClick={onCardClick}
+                                  role="button"
+                                  tabIndex={0}
+                                  style={{
+                                    background: '#fff',
+                                    borderRadius: 16,
+                                    border: '2px solid #1877D6',
+                                    padding: '14px 16px',
+                                    marginBottom: 8,
+                                    cursor: 'pointer',
+                                    ...POPPINS,
+                                  }}
+                                >
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ background: '#EFF6FF', color: '#1877D6', fontSize: 9, fontWeight: 800, borderRadius: 20, padding: '3px 10px' }}>
+                                      📅 EVENT
+                                    </span>
+                                    <span style={{ fontSize: 12, color: '#9CA3AF' }}>{fmtTime(e.start)}</span>
+                                  </div>
+                                  <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', marginTop: 8 }}>
+                                    {(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.event_title}
+                                  </div>
+                                  {(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pickup_location && (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, fontSize: 12, color: '#6B7686' }}>
+                                      <IconMapPin size={12} color="#9CA3AF" stroke={1.5} />
+                                      {(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pickup_location}
+                                    </div>
+                                  )}
+                                </div>
+                              ) : isLessonRow && isTestDay ? (
                                 <TestLessonCard
                                   lesson={(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson}
                                   onClick={onCardClick || (() => {})}

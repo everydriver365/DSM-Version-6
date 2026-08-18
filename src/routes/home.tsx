@@ -321,6 +321,7 @@ interface LessonRow {
   pupil_id: string;
   notes?: string | null;
   lesson_type?: string | null;
+  event_title?: string | null;
   payment_status?: string | null;
   eol_completed?: boolean | null;
   amount_due?: number | null;
@@ -2574,7 +2575,7 @@ function HomePage() {
       const { data: allLessonsRaw, error: lessonsErr } = await supabase
         .from("lessons")
         .select(
-          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, paid_amount, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, photo_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120)"
+          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, event_title, notes, payment_status, paid_amount, eol_completed, amount_due, pickup_location, pupils(name, first_name, phone, postcode, address, prepaid_hours, profile_image_url, photo_url, deleted_at, custom_rate, custom_rate_90, custom_rate_120)"
         )
         .eq("instructor_id", userId)
         .is("deleted_at", null)
@@ -2617,7 +2618,7 @@ function HomePage() {
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
         .select(
-          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, notes, payment_status, paid_amount, eol_completed, amount_due, pickup_location, pupils!inner(name, first_name, phone, postcode, address, prepaid_hours, pricing_type, block_hours_total, deleted_at)"
+          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, event_title, notes, payment_status, paid_amount, eol_completed, amount_due, pickup_location, pupils!inner(name, first_name, phone, postcode, address, prepaid_hours, pricing_type, block_hours_total, deleted_at)"
         )
         .eq("instructor_id", userId)
         .is("deleted_at", null)
@@ -3538,7 +3539,11 @@ function HomePage() {
   const earningsPct = Math.min(100, (weekEarnings / (weeklyEarningsGoal || 1)) * 100);
   const lessonsPct = Math.min(100, (weekLessonsTotal / (weeklyLessonGoal || 1)) * 100);
 
-  const pupilName = (l?: LessonRow) => l?.pupils?.name ?? "Pupil";
+  const pupilName = (l?: LessonRow) => {
+    if (!l) return "Pupil";
+    if (l.lesson_type === 'event' || (!l.pupil_id && l.event_title)) return l.event_title || "Event";
+    return l.pupils?.name ?? "Pupil";
+  };
 
   async function markLessonPaid(l: LessonRow) {
     if (!userId) {
@@ -4322,15 +4327,22 @@ function HomePage() {
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     {todayLessons.map((l) => {
+                      const isEvent = l.lesson_type === 'event' || (!l.pupil_id && l.event_title);
                       const [hh, mm] = (l.lesson_time ?? "00:00").split(":").map(Number);
 
                       const endMinutes = hh * 60 + mm + (l.duration_minutes ?? 60);
                       const nowMinutes = new Date().getHours() * 60 + new Date().getMinutes();
-                      const eolDue = !l.eol_completed && l.lesson_date === todayISO && endMinutes <= nowMinutes;
+                      const eolDue = !isEvent && !l.eol_completed && l.lesson_date === todayISO && endMinutes <= nowMinutes;
                       return (
                         <button
                           key={l.id}
-                          onClick={() => navigate({ to: "/pupils/$id", params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any })}
+                          onClick={() => {
+                            if (isEvent) {
+                              toast.info(`Event: ${l.event_title || 'No title'}`, { duration: 3000 });
+                              return;
+                            }
+                            navigate({ to: "/pupils/$id", params: { id: l.pupil_id } as any, search: { lessonId: l.id } as any });
+                          }}
                           style={{
                             display: "grid", gridTemplateColumns: "70px 1fr auto auto auto",
                             gap: 12, alignItems: "center", padding: "10px 12px",
@@ -4340,15 +4352,17 @@ function HomePage() {
                           }}
                         >
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{formatTime(l)}</span>
-                          <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{pupilName(l)}</span>
-                          <span style={{ fontSize: 12, color: "#6B7280" }}>{formatDuration(l.duration_minutes)}</span>
-                          <LessonPaymentBadge
-                            status={l.payment_status}
-                            amountDue={l.amount_due}
-                            paidAmount={(l as any).paid_amount}
-                            prepaidHours={(l.pupils as any)?.prepaid_hours}
-                            size="md"
-                          />
+                          <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{isEvent ? (l.event_title || "Event") : pupilName(l)}</span>
+                          <span style={{ fontSize: 12, color: "#6B7280" }}>{isEvent ? "Event" : formatDuration(l.duration_minutes)}</span>
+                          {!isEvent && (
+                            <LessonPaymentBadge
+                              status={l.payment_status}
+                              amountDue={l.amount_due}
+                              paidAmount={(l as any).paid_amount}
+                              prepaidHours={(l.pupils as any)?.prepaid_hours}
+                              size="md"
+                            />
+                          )}
 
                           {eolDue && (
                             <span
