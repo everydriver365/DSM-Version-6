@@ -249,6 +249,47 @@ function NotificationsPage() {
     window.dispatchEvent(new Event("dsm-notifications-updated"));
   }
 
+  async function sendQuickReply() {
+    if (!quickReply.trim() || !actionSheet) return;
+    setSendingReply(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const threadId =
+        actionSheet.notif?.metadata?.thread_id ??
+        actionSheet.notif?.metadata?.conversation_id;
+
+      if (!threadId) {
+        // No thread ID — navigate to messages instead
+        navigate({ to: "/messages" as never });
+        setActionSheet(null);
+        setQuickReply("");
+        return;
+      }
+
+      // Insert message into thread
+      const { error } = await supabase
+        .from("messages")
+        .insert({
+          conversation_id: threadId,
+          sender_id: user.id,
+          content: quickReply.trim(),
+          created_at: new Date().toISOString(),
+        });
+
+      if (error) throw error;
+
+      toast.success("Reply sent ✓");
+      setQuickReply("");
+      setActionSheet(null);
+    } catch (e: any) {
+      toast.error("Could not send reply");
+    } finally {
+      setSendingReply(false);
+    }
+  }
+
   const today = startOfDay(new Date());
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
