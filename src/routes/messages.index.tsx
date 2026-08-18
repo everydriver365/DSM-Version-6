@@ -1094,7 +1094,7 @@ function MessagesIndexPage() {
   const router = useRouter();
 
   return (
-    <PageLayout style={{ ...FONT, background: "#EEF2F7", paddingBottom: 24 }}>
+    <PageLayout style={{ ...FONT, background: "#EEF2F7", paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))" }}>
       <div
         style={{
           position: "sticky",
