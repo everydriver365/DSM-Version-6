@@ -653,25 +653,40 @@ function PerksPage() {
         >
           <div
             style={{
-              background: '#EEF2F7',
-              borderRadius: '8px 8px 0 0',
-              padding: '0 0 32px',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              width: '100%',
+              position: "relative",
+              background: "#EEF2F7",
+              borderRadius: "8px 8px 0 0",
+              padding: "0 0 32px",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              width: "100%",
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Handle bar */}
-            <div
-              style={{
-                width: 36,
-                height: 5,
-                background: '#D1D1D6',
-                borderRadius: 8,
-                margin: '12px auto 16px',
-              }}
-            />
+            <div style={{ position: "relative", padding: "12px 16px 0" }}>
+              <div style={{ width: 36, height: 5, borderRadius: 8, background: "#D1D1D6", margin: "0 auto" }} />
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => setUpgradeSheetOpen(false)}
+                style={{
+                  position: "absolute",
+                  right: 16,
+                  top: 8,
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  background: "#EEF2F7",
+                  border: "1px solid #E4E8EF",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconX size={16} color="#6B7686" stroke={2} />
+              </button>
+            </div>
 
             {/* Selected perk preview */}
             <div

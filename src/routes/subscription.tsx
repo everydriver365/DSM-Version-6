@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { IconCheck, IconCrown } from "@tabler/icons-react";
+import { IconCheck, IconCrown, IconX } from "@tabler/icons-react";
 import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
@@ -314,6 +314,7 @@ function SubscriptionPage() {
         >
           <div
             style={{
+              position: "relative",
               background: "#EEF2F7",
               borderRadius: "8px 8px 0 0",
               padding: "0 0 40px",
@@ -323,16 +324,30 @@ function SubscriptionPage() {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Handle bar */}
-            <div
-              style={{
-                width: 36,
-                height: 5,
-                background: "#D1D1D6",
-                borderRadius: 8,
-                margin: "12px auto 0",
-              }}
-            />
+            <div style={{ position: "relative", padding: "12px 16px 0" }}>
+              <div style={{ width: 36, height: 5, borderRadius: 8, background: "#D1D1D6", margin: "0 auto" }} />
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => setShowCancelSheet(false)}
+                style={{
+                  position: "absolute",
+                  right: 16,
+                  top: 8,
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  background: "#EEF2F7",
+                  border: "1px solid #E4E8EF",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconX size={16} color="#6B7686" stroke={2} />
+              </button>
+            </div>
 
             {/* Warning header */}
             <div style={{ padding: "20px 16px 0", textAlign: "center" }}>
