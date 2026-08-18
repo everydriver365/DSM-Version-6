@@ -970,8 +970,8 @@ function LivePage() {
     if (isStoppingRef.current) return;
     isStoppingRef.current = true;
     try {
-      if (watchIdRef.current != null && "geolocation" in navigator) {
-        navigator.geolocation.clearWatch(watchIdRef.current);
+      if (watchIdRef.current != null) {
+        await Geolocation.clearWatch({ id: watchIdRef.current as string });
         watchIdRef.current = null;
       }
       despiaCall("backgroundlocationoff://");
