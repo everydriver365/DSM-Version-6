@@ -885,10 +885,12 @@ function NotificationsPage() {
             style={{
               position: "relative",
               background: "#EEF2F7",
-              borderRadius: "8px 8px 0 0",
-              padding: "0 0 32px",
-              paddingBottom: replyFocused ? 320 : 40,
+              borderRadius: "22px 22px 0 0",
               width: "100%",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              transition: "transform 0.3s ease",
+              transform: keyboardHeight > 0 ? `translateY(-${keyboardHeight}px)` : "translateY(0)",
             }}
             onClick={(e) => e.stopPropagation()}
           >
