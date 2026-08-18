@@ -585,7 +585,10 @@ function NotificationsPage() {
             display: "flex",
             alignItems: "flex-end",
           }}
-          onClick={() => setActionSheet(null)}
+          onClick={() => {
+            setActionSheet(null);
+            setQuickReply("");
+          }}
         >
           <div
             style={{
