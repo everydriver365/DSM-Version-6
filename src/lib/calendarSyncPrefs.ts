@@ -44,6 +44,30 @@ export function setPushEnabled(value: boolean) {
   write(PUSH_KEY, value);
 }
 
+/**
+ * One-off "past Google event colours have been backfilled" flag, tracked per
+ * instructor so the backfill runs once and never on every sync.
+ */
+const COLOUR_BACKFILL_KEY = "dsm.calendarSync.colourBackfillDone";
+
+export function getColourBackfillDone(instructorId: string): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    return window.localStorage.getItem(`${COLOUR_BACKFILL_KEY}.${instructorId}`) === "true";
+  } catch {
+    return true;
+  }
+}
+
+export function setColourBackfillDone(instructorId: string) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(`${COLOUR_BACKFILL_KEY}.${instructorId}`, "true");
+  } catch {
+    /* ignore */
+  }
+}
+
 type PushAction = "push" | "update" | "delete" | "upsert";
 
 /**
