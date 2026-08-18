@@ -31,7 +31,16 @@ interface PupilTestRow {
   test_date: string;
   test_time: string | null;
   test_centre: string | null;
+  test_status: string | null;
 }
+
+type TestTabKey = "upcoming" | "passed" | "failed";
+
+const TEST_TABS: { key: TestTabKey; label: string }[] = [
+  { key: "upcoming", label: "Upcoming" },
+  { key: "passed", label: "Passed" },
+  { key: "failed", label: "Failed" },
+];
 
 function todayYmd() {
   const parts = new Intl.DateTimeFormat("en-GB", {
