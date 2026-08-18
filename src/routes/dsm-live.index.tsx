@@ -621,40 +621,6 @@ function SessionCard({
     return "Online";
   })();
 
-  const dateTimeLabel = (() => {
-    const parts: string[] = [];
-    if (s.session_date) {
-      try {
-        parts.push(
-          new Date(s.session_date + "T00:00:00").toLocaleDateString("en-GB", {
-            weekday: "short",
-            day: "numeric",
-            month: "short",
-          }),
-        );
-      } catch {
-        parts.push(s.session_date);
-      }
-    }
-    if (s.session_time) {
-      try {
-        const [hStr, mStr] = s.session_time.split(":");
-        const d = new Date();
-        d.setHours(Number(hStr), Number(mStr), 0, 0);
-        parts.push(
-          d
-            .toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true })
-            .replace(/\s/g, "")
-            .toLowerCase(),
-        );
-      } catch {
-        parts.push(s.session_time);
-      }
-    }
-    return parts.join(" · ");
-  })();
-
-  const metaLabel = s.duration_minutes && s.duration_minutes > 0 ? `${s.duration_minutes} min` : null;
 
   const priceLabel = (() => {
     if (s.price_display) return s.price_display;
