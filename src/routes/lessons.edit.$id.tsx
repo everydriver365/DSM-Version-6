@@ -448,23 +448,116 @@ function EditLessonPage() {
           }}
           className="flex flex-col gap-4 px-4 pt-4"
         >
-          <div>
-            <FieldLabel htmlFor="pupil">Pupil</FieldLabel>
-            <select
-              id="pupil"
-              value={pupilId}
-              onChange={(e) => setPupilId(e.target.value)}
-              className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-              style={fieldBorder}
+          {/* Lesson / Event toggle */}
+          <div
+            style={{
+              display: "flex",
+              gap: 0,
+              background: "#E5E5EA",
+              borderRadius: 14,
+              padding: 4,
+              margin: "0 16px 16px",
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setIsEvent(false);
+                if (duration === -1) setIsTestDay(true);
+              }}
+              style={{
+                flex: 1,
+                padding: "8px 0",
+                borderRadius: 10,
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: 13,
+                fontWeight: 600,
+                background: !isEvent ? "#fff" : "transparent",
+                color: !isEvent ? "#0B1F3A" : "#6B6B6F",
+                boxShadow: !isEvent ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+              }}
             >
-              <option value="">Select a pupil</option>
-              {pupils.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
+              Lesson
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsEvent(true);
+                setIsTestDay(false);
+                if (duration === -1) setDuration(60);
+              }}
+              style={{
+                flex: 1,
+                padding: "8px 0",
+                borderRadius: 10,
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: 13,
+                fontWeight: 600,
+                background: isEvent ? "#fff" : "transparent",
+                color: isEvent ? "#0B1F3A" : "#6B6B6F",
+                boxShadow: isEvent ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+              }}
+            >
+              Event
+            </button>
           </div>
+
+          {!isEvent ? (
+            <div>
+              <FieldLabel htmlFor="pupil">Pupil</FieldLabel>
+              <select
+                id="pupil"
+                value={pupilId}
+                onChange={(e) => setPupilId(e.target.value)}
+                className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
+                style={fieldBorder}
+              >
+                <option value="">Select a pupil</option>
+                {pupils.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <div>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#9CA3AF",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  marginBottom: 6,
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                EVENT TITLE
+              </div>
+              <input
+                value={eventTitle}
+                onChange={(e) => setEventTitle(e.target.value)}
+                placeholder="e.g. Team meeting, CPD training, Admin day"
+                style={{
+                  width: "100%",
+                  background: "#fff",
+                  border: "1px solid #E4E8EF",
+                  borderRadius: 10,
+                  padding: "10px 12px",
+                  fontSize: 14,
+                  fontFamily: "Poppins, sans-serif",
+                  outline: "none",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+          )}
+
 
           <Input
             label="Date"
