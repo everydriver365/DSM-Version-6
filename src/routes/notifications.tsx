@@ -2982,7 +2982,7 @@ function NotificationsPage() {
                       if (actionSheet.jobId) {
                         navigate({
                           to: "/jobs" as never,
-                          search: { jobId: actionSheet.jobId },
+                          search: { jobId: actionSheet.jobId } as any,
                         });
                       } else {
                         navigate({ to: "/jobs" as never });
