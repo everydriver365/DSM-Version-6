@@ -431,6 +431,7 @@ function NotificationsPage() {
                           if (action.options) {
                             setActionSheet({
                               notif: n,
+                              notifType: n.type,
                               options: action.options,
                               isMessage: action.isMessage,
                               threadId: action.threadId,
