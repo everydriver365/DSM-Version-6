@@ -9,9 +9,9 @@ export function useUnreadCount() {
     (async () => {
       try {
         if (unreadCount > 0) {
-          await App.setBadge?.({ count: unreadCount });
+          await (App as any).setBadge?.({ count: unreadCount });
         } else {
-          await App.clearBadge?.();
+          await (App as any).clearBadge?.();
         }
       } catch {}
     })();
