@@ -903,7 +903,7 @@ function SwipeableStatsCard({
                   cursor: "pointer",
                   height: 6,
                   width: active ? 16 : 6,
-                  borderRadius: active ? 8 : "8%",
+                  borderRadius: active ? 8 : "50%",
                   background: active ? "#1877D6" : "#D0D5DD",
                 }}
               />
