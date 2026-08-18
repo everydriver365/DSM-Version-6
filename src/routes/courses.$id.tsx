@@ -119,6 +119,15 @@ function formatDate(d: string | null) {
     year: "numeric",
   });
 }
+function formatDateWithDay(d: string | null) {
+  if (!d) return "—";
+  return new Date(d + "T00:00:00").toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
 function formatTime12hr(t: string | null) {
   if (!t) return "—";
   const [h, m] = t.split(":").map(Number);
@@ -128,6 +137,7 @@ function formatTime12hr(t: string | null) {
   const minute = String(m).padStart(2, "0");
   return `${hour}:${minute}${suffix}`;
 }
+
 
 
 function CourseDetailPage() {
