@@ -256,6 +256,7 @@ function PaymentsPage() {
         .select("amount_due, paid_amount, payment_status")
         .eq("instructor_id", userId)
         .in("payment_status", ["unpaid", "partial"])
+        .not("lesson_type", "eq", "event")
         .is("deleted_at", null),
     ]);
     setAllPupils((pupilRows ?? []) as PupilLite[]);
