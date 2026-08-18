@@ -56,6 +56,47 @@ function NewPupilPage() {
     form?: string;
   }>({});
   const [saving, setSaving] = useState(false);
+  const [importingContact, setImportingContact] = useState(false);
+  const [showContactPicker, setShowContactPicker] = useState(false);
+  const [contactsList, setContactsList] = useState<any[]>([]);
+  const [contactSearch, setContactSearch] = useState("");
+
+  async function importFromContacts() {
+    setImportingContact(true);
+    try {
+      const permission = await Contacts.requestPermissions();
+      if (permission.contacts !== "granted") {
+        toast.error("Contacts permission required");
+        return;
+      }
+      const result = await Contacts.getContacts({
+        projection: {
+          name: true,
+          phones: true,
+          emails: true,
+        },
+      });
+      setContactsList(result.contacts ?? []);
+      setShowContactPicker(true);
+    } catch (e: any) {
+      toast.error("Could not access contacts");
+    } finally {
+      setImportingContact(false);
+    }
+  }
+
+  function applyContact(contact: any) {
+    const fullName =
+      contact.name?.display ??
+      `${contact.name?.given ?? ""} ${contact.name?.family ?? ""}`.trim();
+    const phone = contact.phones?.[0]?.number?.replace(/\s/g, "") ?? "";
+    const [first, last] = splitName(fullName);
+    setFirstName(first);
+    setLastName(last);
+    setPhone(phone);
+    setShowContactPicker(false);
+    toast.success(`Imported ${fullName || "contact"}`);
+  }
 
   async function handleSave() {
     const next: typeof errors = {};
