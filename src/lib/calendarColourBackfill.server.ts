@@ -1,15 +1,16 @@
 /**
- * One-off backfill of Google Calendar event colours onto already-imported
- * `calendar_blocks` rows (source = 'external_calendar').
+ * Colour pass over imported Google events: copies each event's colour onto the
+ * matching `calendar_blocks` row (source = 'external_calendar').
  *
- * Server-only: talks to Google with the instructor's stored OAuth token and
- * writes ONLY the `colour` column on matching rows.
+ * Runs after every Google sync. Server-only: talks to Google with the
+ * instructor's stored OAuth token and writes ONLY the `colour` column.
  */
 
 import process from "node:process";
 import { createAuthenticatedSupabaseClient } from "./carplay-auth.server";
 
-const DAYS_BACK = 90;
+const DEFAULT_DAYS_BACK = 90;
+const DEFAULT_DAYS_FORWARD = 180;
 
 // Google's standard event colour palette (colorId 1-11).
 const EVENT_COLOURS: Record<string, string> = {
