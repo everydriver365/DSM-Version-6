@@ -1073,7 +1073,7 @@ export function AddLessonSheet({
         <SheetGroup>
           <SheetRow>
             <IconMapPin size={20} stroke={1.8} color={BLUE} />
-            <span style={labelStyle}>Pickup</span>
+            <span style={labelStyle}>{isEvent ? "Location (optional)" : "Pickup"}</span>
             <input
               id="al-pickup"
               type="text"
@@ -1082,7 +1082,7 @@ export function AddLessonSheet({
                 setPickupTouched(true);
                 setPickup(e.target.value);
               }}
-              placeholder={pupilId ? "Pupil's home address" : "Select a pupil first"}
+              placeholder={isEvent ? "Event location" : pupilId ? "Pupil's home address" : "Select a pupil first"}
               className="flex-1 bg-transparent focus:outline-none text-right"
               style={{ ...valueStyle, marginLeft: "auto", minWidth: 0 }}
             />
