@@ -347,20 +347,18 @@ function LessonDetailPage() {
       <div style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
 
       {/* Action bar */}
-      {!isEvent && (
-        <div className="flex items-center justify-end px-4 py-2">
-          <button
-            type="button"
-            aria-label="Edit lesson"
-            onClick={() => navigate({ to: "/lessons/edit/$id", params: { id } })}
-            className="flex items-center gap-1 text-[13px] font-semibold"
-            style={{ color: "#1877D6", background: "none", border: "none" }}
-          >
-            <IconPencil size={16} color="#1877D6" />
-            Edit
-          </button>
-        </div>
-      )}
+      <div className="flex items-center justify-end px-4 py-2">
+        <button
+          type="button"
+          aria-label="Edit lesson"
+          onClick={() => navigate({ to: "/lessons/edit/$id", params: { id } })}
+          className="flex items-center gap-1 text-[13px] font-semibold"
+          style={{ color: "#1877D6", background: "none", border: "none" }}
+        >
+          <IconPencil size={16} color="#1877D6" />
+          Edit
+        </button>
+      </div>
 
       {loading && (
         <div className="px-4 mt-3 space-y-3">
