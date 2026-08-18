@@ -7,7 +7,6 @@ import {
   IconBroadcast,
   IconCar,
   IconChevronRight,
-  IconClock,
   IconHeart,
   IconLayoutGrid,
   IconMicrophone,
@@ -27,7 +26,7 @@ import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 import { typography } from "@/lib/typography";
-import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
+import type { LiveSession } from "./dsm-live";
 import { sanitizeNewsTitle } from "@/lib/newsText";
 import {
   getPodcastEpisodes,
@@ -607,9 +606,9 @@ function LiveNewsPage() {
                                 fontSize: 14,
                                 fontWeight: 700,
                                 color: "#0B1F3A",
-                                whiteSpace: "nowrap",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
+                                lineHeight: 1.25,
+                                overflowWrap: "break-word",
+                                wordBreak: "break-word",
                               }}
                             >
                               {s.title}
@@ -619,16 +618,20 @@ function LiveNewsPage() {
                                 style={{
                                   fontSize: 12,
                                   color: "#6B7686",
-                                  marginTop: 2,
-                                  whiteSpace: "nowrap",
+                                  marginTop: 4,
+                                  lineHeight: 1.35,
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 3,
+                                  WebkitBoxOrient: "vertical",
                                   overflow: "hidden",
-                                  textOverflow: "ellipsis",
+                                  overflowWrap: "break-word",
+                                  wordBreak: "break-word",
                                 }}
                               >
                                 {subtitle}
                               </div>
                             )}
-                            {s.is_live ? (
+                            {s.is_live && (
                               <span
                                 style={{
                                   background: "#FEE2E2",
@@ -639,17 +642,11 @@ function LiveNewsPage() {
                                   padding: "2px 8px",
                                   display: "inline-block",
                                   marginTop: 6,
+                                  alignSelf: "flex-start",
                                 }}
                               >
                                 🔴 Live now
                               </span>
-                            ) : (
-                              <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 6 }}>
-                                <IconClock size={11} color="#9CA3AF" stroke={1.5} />
-                                <span style={{ fontSize: 11, color: "#9CA3AF" }}>
-                                  {formatSessionTime(s.session_time)}
-                                </span>
-                              </div>
                             )}
                           </div>
 
