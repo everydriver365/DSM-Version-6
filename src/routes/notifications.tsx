@@ -797,6 +797,10 @@ function NotificationsPage() {
                 let iconNode: ReactNode;
                 let iconBg: string;
                 switch (option.icon) {
+                  case "reply":
+                    iconNode = <IconSend size={20} color="#1877D6" />;
+                    iconBg = "#EFF6FF";
+                    break;
                   case "calendar":
                     iconNode = <IconCalendar size={20} color="#1877D6" />;
                     iconBg = "#EFF6FF";
