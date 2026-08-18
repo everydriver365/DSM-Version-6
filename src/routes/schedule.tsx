@@ -28,6 +28,7 @@ import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { PersonalEventSheet, type PersonalEvent } from "@/components/schedule/PersonalEventSheet";
 import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { filterEchoedBlocks } from "@/lib/calendarDedupe";
+import { resolveEventColour } from "@/lib/googleCalendarColours";
 
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
@@ -626,7 +627,7 @@ function SchedulePage() {
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [addLessonDate, setAddLessonDate] = useState<string | undefined>();
-  const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; is_all_day?: boolean | null }>>([]);
+  const [calendarBlocks, setCalendarBlocks] = useState<Array<{ id: string; start_datetime: string; end_datetime: string; title: string | null; is_all_day?: boolean | null; colour?: string | null }>>([]);
   // Private events created in DSM (no pupil, no payment) — the Google-style
   // "add anything to my day" flow.
   const [personalEvents, setPersonalEvents] = useState<PersonalEvent[]>([]);
@@ -800,7 +801,7 @@ function SchedulePage() {
       const startIso = ymdLocal(rangeStart);
       const endIso = ymdLocal(rangeEnd);
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${uid}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title`,
+        `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${uid}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title,colour`,
         { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
       );
       if (!res.ok) return;
@@ -1171,6 +1172,7 @@ function SchedulePage() {
         end,
         allDay: false,
         title: b.title || "Busy",
+        colour: (b as { colour?: string | null }).colour ?? null,
       });
       map.set(key, arr);
     }
@@ -1872,10 +1874,10 @@ function SchedulePage() {
                               timeText = /lesson/i.test(typeLabel) ? typeLabel : `${typeLabel} lesson`;
                             }
                           } else if (e.kind === "block") {
-                            markerColor = getBlockColour(e.title).border;
+                            markerColor = resolveEventColour(e.colour, getBlockColour(e.title).border);
                             title = e.title;
                           } else if (e.kind === "external") {
-                            markerColor = e.colour && /^#[0-9a-fA-F]{3,8}$/.test(e.colour) ? e.colour : "#4AABDB";
+                            markerColor = resolveEventColour(e.colour);
                             title = e.title;
                             if (e.allDay) timeText = "All day";
                           } else if (e.kind === "personal") {
@@ -2887,11 +2889,12 @@ function EntryRow({
   }
   if (entry.kind === "block") {
     const c = getBlockColour(entry.title);
+    const accent = resolveEventColour(entry.colour, c.border);
     return (
       <div
         style={{
           background: c.bg,
-          borderLeft: `3px solid ${c.border}`,
+          borderLeft: `3px solid ${accent}`,
           borderRadius: 8,
           padding: "10px 12px",
           margin: "2px 0",
@@ -2910,7 +2913,7 @@ function EntryRow({
     );
   }
   if (entry.kind === "external") {
-    const bg = entry.colour && /^#[0-9a-fA-F]{3,8}$/.test(entry.colour) ? entry.colour : "#4AABDB";
+    const bg = resolveEventColour(entry.colour);
     return (
       <div style={rowBase(bg, false)}>
         <div style={rowTitle}>{entry.title}</div>
