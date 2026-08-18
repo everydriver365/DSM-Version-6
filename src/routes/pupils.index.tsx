@@ -6,7 +6,7 @@ import { IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSea
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { getPupilBalance } from "@/lib/payments";
-import { EmptyState } from "../components/dsm/EmptyState";
+
 import { PageLayout } from "@/components/PageLayout";
 import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
