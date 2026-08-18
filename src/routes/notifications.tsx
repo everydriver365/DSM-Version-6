@@ -165,7 +165,14 @@ function NotificationsPage() {
   const [actionSheet, setActionSheet] = useState<{
     notif: any;
     options: { label: string; route: string; icon: string }[];
+    isMessage?: boolean;
+    threadId?: string | null;
+    senderName?: string | null;
+    messagePreview?: string | null;
   } | null>(null);
+
+  const [quickReply, setQuickReply] = useState("");
+  const [sendingReply, setSendingReply] = useState(false);
 
   useEffect(() => {
     (async () => {
