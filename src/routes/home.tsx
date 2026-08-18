@@ -5687,10 +5687,10 @@ function HomePage() {
           {
             key: 'today',
             title: "Today's lessons",
-            subtitleTop: todayLessons.length === 0 ? 'No lessons today' : `${todayUpcoming} upcoming · ${todayCompleted} completed`,
+            subtitleTop: nonEventTodayLessons.length === 0 ? 'No lessons today' : `${todayUpcoming} upcoming · ${todayCompleted} completed`,
             subtitleBottom: `£${Math.round(todayEarnings)} earned today`,
             icon: <IconCalendar size={20} stroke={1.75} />,
-            right: { kind: 'circle', value: todayLessons.length, active: todayLessons.length > 0 },
+            right: { kind: 'circle', value: nonEventTodayLessons.length, active: nonEventTodayLessons.length > 0 },
           },
           {
             key: 'week',
