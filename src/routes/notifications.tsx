@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 import InstructorTopBar from "@/components/dsm/InstructorTopBar";
-import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
+import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconHome, IconInbox, IconMessage, IconNavigation, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -109,6 +109,12 @@ function getNotificationAction(
   sessionUrl?: string | null;
   startTime?: string | null;
   isLiveNow?: boolean;
+  isDrivingTest?: boolean;
+  testCentre?: string | null;
+  testDate?: string | null;
+  testTime?: string | null;
+  testResult?: string | null;
+  isToday?: boolean;
 } {
   const type = notif.type ?? "";
   const meta = notif.metadata ?? {};
@@ -207,6 +213,22 @@ function getNotificationAction(
     };
   }
 
+  if (type === "test" || type === "driving_test" || type === "test_reminder" || type === "test_booked" || type === "test_result" || type === "test_today") {
+    return {
+      isDrivingTest: true,
+      pupilId: meta.pupil_id ?? null,
+      pupilName: meta.pupil_name ?? meta.pupil ?? null,
+      pupilPhone: meta.pupil_phone ?? meta.phone ?? null,
+      lessonId: meta.lesson_id ?? null,
+      testCentre: meta.test_centre ?? meta.pickup_location ?? meta.location ?? null,
+      testDate: meta.test_date ?? meta.lesson_date ?? null,
+      testTime: meta.test_time ?? meta.lesson_time ?? null,
+      testResult: meta.test_result ?? meta.result ?? null,
+      isToday: type === "test_today" || meta.is_today === true,
+      options: [],
+    };
+  }
+
   if (type === "managed_enquiry" || type === "cancellation_request") {
     return { directNav: "/more" };
   }
@@ -252,6 +274,12 @@ function NotificationsPage() {
     sessionUrl?: string | null;
     startTime?: string | null;
     isLiveNow?: boolean;
+    isDrivingTest?: boolean;
+    testCentre?: string | null;
+    testDate?: string | null;
+    testTime?: string | null;
+    testResult?: string | null;
+    isToday?: boolean;
   } | null>(null);
 
   const [quickReply, setQuickReply] = useState("");
@@ -551,6 +579,12 @@ function NotificationsPage() {
                               sessionUrl: action.sessionUrl,
                               startTime: action.startTime,
                               isLiveNow: action.isLiveNow,
+                              isDrivingTest: action.isDrivingTest,
+                              testCentre: action.testCentre,
+                              testDate: action.testDate,
+                              testTime: action.testTime,
+                              testResult: action.testResult,
+                              isToday: action.isToday,
                             });
                           }
                         }}
@@ -1497,6 +1531,499 @@ function NotificationsPage() {
                     </div>
                     <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
                   </div>
+                </div>
+                <button
+                  type="button"
+                  style={{
+                    margin: "12px 16px 0",
+                    width: "calc(100% - 32px)",
+                    background: "#fff",
+                    color: "#0B1F3A",
+                    borderRadius: 20,
+                    padding: 13,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    border: "1px solid #E4E8EF",
+                    cursor: "pointer",
+                    ...POPPINS,
+                  }}
+                  onClick={() => {
+                    setActionSheet(null);
+                    setQuickReply("");
+                  }}
+                >
+                  Dismiss
+                </button>
+              </>
+            ) : actionSheet.isDrivingTest ? (
+              <>
+                <style>{`
+                  @keyframes driving-test-pulse {
+                    0%, 100% { opacity: 1; transform: scale(1); }
+                    50% { opacity: 0.5; transform: scale(0.9); }
+                  }
+                `}</style>
+                <div
+                  style={{
+                    margin: "16px 16px 8px",
+                    borderRadius: 16,
+                    overflow: "hidden",
+                    background:
+                      actionSheet.testResult === "pass"
+                        ? "linear-gradient(135deg, #15803D, #166534)"
+                        : actionSheet.testResult === "fail"
+                          ? "linear-gradient(135deg, #6B7280, #4B5563)"
+                          : actionSheet.isToday
+                            ? "linear-gradient(135deg, #CC2229, #991B1B)"
+                            : "linear-gradient(135deg, #14509E, #0B1F3A)",
+                    boxShadow:
+                      actionSheet.testResult === "pass"
+                        ? "0 4px 0 #14532D"
+                        : actionSheet.testResult === "fail"
+                          ? "0 4px 0 #374151"
+                          : actionSheet.isToday
+                            ? "0 4px 0 #7F1D1D"
+                            : "0 4px 0 #091628",
+                    padding: 16,
+                    ...POPPINS,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        background: "rgba(255,255,255,0.2)",
+                        borderRadius: 20,
+                        padding: "4px 10px",
+                        fontSize: 10,
+                        fontWeight: 800,
+                        color: "#fff",
+                        ...POPPINS,
+                      }}
+                    >
+                      {actionSheet.testResult === "pass"
+                        ? "🎉 TEST PASSED"
+                        : actionSheet.testResult === "fail"
+                          ? "TEST NOT PASSED"
+                          : actionSheet.isToday
+                            ? "🚗 TEST TODAY"
+                            : "🚗 DRIVING TEST"}
+                    </div>
+                    {actionSheet.isToday && !actionSheet.testResult && (
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: 6,
+                          alignItems: "center",
+                        }}
+                      >
+                        <span
+                          style={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: "50%",
+                            background: "#fff",
+                            animation: "driving-test-pulse 1.4s ease-in-out infinite",
+                          }}
+                        />
+                        <span
+                          style={{
+                            fontSize: 10,
+                            fontWeight: 800,
+                            color: "#fff",
+                            ...POPPINS,
+                          }}
+                        >
+                          TODAY
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 800,
+                      color: "#fff",
+                      marginTop: 10,
+                      letterSpacing: -0.3,
+                      ...POPPINS,
+                    }}
+                  >
+                    {actionSheet.pupilName ?? "Test"}
+                  </div>
+                  <div
+                    style={{
+                      marginTop: 12,
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: 8,
+                    }}
+                  >
+                    {actionSheet.testDate && (
+                      <div
+                        style={{
+                          background: "rgba(255,255,255,0.15)",
+                          borderRadius: 10,
+                          padding: "10px 12px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 700,
+                            color: "rgba(255,255,255,0.6)",
+                            letterSpacing: "0.08em",
+                            marginBottom: 4,
+                            ...POPPINS,
+                          }}
+                        >
+                          DATE
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: "#fff",
+                            ...POPPINS,
+                          }}
+                        >
+                          {formatDate(actionSheet.testDate)}
+                        </div>
+                      </div>
+                    )}
+                    {actionSheet.testTime && (
+                      <div
+                        style={{
+                          background: "rgba(255,255,255,0.15)",
+                          borderRadius: 10,
+                          padding: "10px 12px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 700,
+                            color: "rgba(255,255,255,0.6)",
+                            letterSpacing: "0.08em",
+                            marginBottom: 4,
+                            ...POPPINS,
+                          }}
+                        >
+                          TIME
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: "#fff",
+                            ...POPPINS,
+                          }}
+                        >
+                          {(() => {
+                            const t = actionSheet.testTime;
+                            if (!t) return "";
+                            const d = t.includes("T") ? new Date(t) : new Date(`2000-01-01T${t}`);
+                            return d.toLocaleTimeString("en-GB", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            });
+                          })()}
+                        </div>
+                      </div>
+                    )}
+                    {actionSheet.testCentre && (
+                      <div
+                        style={{
+                          background: "rgba(255,255,255,0.15)",
+                          borderRadius: 10,
+                          padding: "10px 12px",
+                          gridColumn: "span 2 / span 2",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 700,
+                            color: "rgba(255,255,255,0.6)",
+                            letterSpacing: "0.08em",
+                            marginBottom: 4,
+                            ...POPPINS,
+                          }}
+                        >
+                          TEST CENTRE
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: "#fff",
+                            lineHeight: 1.4,
+                            ...POPPINS,
+                          }}
+                        >
+                          {actionSheet.testCentre}
+                        </div>
+                      </div>
+                    )}
+                    {actionSheet.testResult && (
+                      <div
+                        style={{
+                          background: "rgba(255,255,255,0.15)",
+                          borderRadius: 10,
+                          padding: "10px 12px",
+                          gridColumn: "span 2 / span 2",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 700,
+                            color: "rgba(255,255,255,0.6)",
+                            letterSpacing: "0.08em",
+                            marginBottom: 4,
+                            ...POPPINS,
+                          }}
+                        >
+                          RESULT
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 15,
+                            fontWeight: 800,
+                            color: "#fff",
+                            ...POPPINS,
+                          }}
+                        >
+                          {actionSheet.testResult === "pass" ? "✓ PASSED" : "✗ Not passed"}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {actionSheet.testCentre && actionSheet.isToday && !actionSheet.testResult && (
+                    <button
+                      type="button"
+                      style={{
+                        marginTop: 12,
+                        width: "100%",
+                        background: "rgba(255,255,255,0.2)",
+                        borderRadius: 20,
+                        padding: 11,
+                        border: "none",
+                        cursor: "pointer",
+                        display: "flex",
+                        gap: 8,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        ...POPPINS,
+                      }}
+                      onClick={() => {
+                        const addr = encodeURIComponent(actionSheet.testCentre ?? "");
+                        window.open(`maps://?daddr=${addr}&dirflg=d`, "_blank");
+                      }}
+                    >
+                      <IconNavigation size={16} color="#fff" stroke={1.5} />
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "#fff", ...POPPINS }}>
+                        Navigate to test centre
+                      </span>
+                    </button>
+                  )}
+                </div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#9CA3AF",
+                    textTransform: "uppercase",
+                    padding: "8px 16px 6px",
+                    ...POPPINS,
+                  }}
+                >
+                  OPTIONS
+                </div>
+                <div
+                  style={{
+                    margin: "0 16px",
+                    background: "#fff",
+                    borderRadius: 16,
+                    border: "1px solid #E4E8EF",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      borderBottom: "1px solid #E4E8EF",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setActionSheet(null);
+                      setQuickReply("");
+                      if (actionSheet.pupilId) {
+                        navigate({ to: `/pupils/${actionSheet.pupilId}` as never });
+                      }
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: "#EDE9FE",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconUser size={18} color="#7C3AED" stroke={1.5} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          ...POPPINS,
+                        }}
+                      >
+                        View pupil profile
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                          marginTop: 2,
+                          ...POPPINS,
+                        }}
+                      >
+                        {actionSheet.pupilName ?? "Pupil"}'s full profile and history
+                      </div>
+                    </div>
+                    <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      borderBottom: "1px solid #E4E8EF",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setActionSheet(null);
+                      setQuickReply("");
+                      navigate({ to: "/schedule" as never });
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: "#EFF6FF",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconCalendar size={18} color="#1877D6" stroke={1.5} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#0B1F3A",
+                          ...POPPINS,
+                        }}
+                      >
+                        View on schedule
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "#9CA3AF",
+                          marginTop: 2,
+                          ...POPPINS,
+                        }}
+                      >
+                        See the test in your schedule
+                      </div>
+                    </div>
+                    <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                  </div>
+                  {actionSheet.isToday && actionSheet.pupilPhone && !actionSheet.testResult && (
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 12,
+                        alignItems: "center",
+                        padding: "14px 16px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        if (actionSheet.pupilPhone) {
+                          window.open(
+                            `sms:${actionSheet.pupilPhone}?body=${encodeURIComponent(
+                              `Hi ${actionSheet.pupilName ?? ""}! Just wanted to wish you the very best of luck on your driving test today. You've got this! 🚗✨`
+                            )}`,
+                            "_blank"
+                          );
+                        }
+                        setActionSheet(null);
+                        setQuickReply("");
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 36,
+                          height: 36,
+                          borderRadius: "50%",
+                          background: "#DCFCE7",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <IconMessage size={18} color="#15803D" stroke={1.5} />
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 600,
+                            color: "#0B1F3A",
+                            ...POPPINS,
+                          }}
+                        >
+                          Send good luck text 🍀
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 11,
+                            color: "#9CA3AF",
+                            marginTop: 2,
+                            ...POPPINS,
+                          }}
+                        >
+                          Wish {actionSheet.pupilName ?? "them"} luck on their test
+                        </div>
+                      </div>
+                      <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+                    </div>
+                  )}
                 </div>
                 <button
                   type="button"
