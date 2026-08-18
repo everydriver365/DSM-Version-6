@@ -72,6 +72,13 @@ function typeTitle(type: string | null, fallback: string) {
   return fallback;
 }
 
+function extractNameFromTitle(title?: string | null): string | null {
+  if (!title) return null;
+  const m = title.match(/(?:new\s+)?message\s+from\s+(.+)/i);
+  return m ? m[1].trim() : null;
+}
+
+
 function getNotificationAction(
   notif: any
 ): {
