@@ -350,6 +350,15 @@ function NotificationsPage() {
     transmission?: string | null;
     message?: string | null;
     receivedAt?: string | null;
+    isJobOffer?: boolean;
+    jobId?: string | null;
+    jobTitle?: string | null;
+    area?: string | null;
+    duration?: string | number | null;
+    rate?: string | number | null;
+    description?: string | null;
+    postedBy?: string | null;
+    expiresAt?: string | null;
   } | null>(null);
 
   const [quickReply, setQuickReply] = useState("");
