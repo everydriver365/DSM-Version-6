@@ -875,6 +875,7 @@ function NotificationsPage() {
               background: "#EEF2F7",
               borderRadius: "8px 8px 0 0",
               padding: "0 0 32px",
+              paddingBottom: replyFocused ? 320 : 40,
               width: "100%",
             }}
             onClick={(e) => e.stopPropagation()}
