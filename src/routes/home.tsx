@@ -5650,33 +5650,34 @@ function HomePage() {
         const todayYmdStr = new Date().toISOString().slice(0, 10);
         const yearStr = todayYmdStr.slice(0, 4);
         const monthStr = todayYmdStr.slice(0, 7);
-        const monthEarnings = (allLessons ?? []).reduce((s: number, l: any) => {
+        const monthEarnings = (nonEventLessons ?? []).reduce((s: number, l: any) => {
           if (typeof l.lesson_date === 'string' && l.lesson_date.startsWith(monthStr) &&
               (l.status === 'completed' || l.status === 'confirmed')) {
             return s + Number(l.amount_due ?? 0);
           }
           return s;
         }, 0);
-        const monthLessonsCompleted = (allLessons ?? []).filter(
+        const monthLessonsCompleted = (nonEventLessons ?? []).filter(
           (l: any) => typeof l.lesson_date === 'string' && l.lesson_date.startsWith(monthStr) && l.status === 'completed',
         ).length;
-        const ytdEarnings = (allLessons ?? []).reduce((s: number, l: any) => {
+        const ytdEarnings = (nonEventLessons ?? []).reduce((s: number, l: any) => {
           if (typeof l.lesson_date === 'string' && l.lesson_date.startsWith(yearStr) &&
               (l.status === 'completed' || l.status === 'confirmed')) {
             return s + Number(l.amount_due ?? 0);
           }
           return s;
         }, 0);
-        const ytdLessonsCompleted = (allLessons ?? []).filter(
+        const ytdLessonsCompleted = (nonEventLessons ?? []).filter(
           (l: any) => typeof l.lesson_date === 'string' && l.lesson_date.startsWith(yearStr) && l.status === 'completed',
         ).length;
-        const todayUpcoming = todayLessons.filter((l: any) => ['confirmed', 'pending', 'in_progress'].includes(l.status)).length;
-        const todayCompleted = todayLessons.filter((l: any) => l.status === 'completed').length;
+        const nonEventTodayLessons = (nonEventLessons ?? []).filter((l: any) => l.lesson_date === todayYmdStr);
+        const todayUpcoming = nonEventTodayLessons.filter((l: any) => ['confirmed', 'pending', 'in_progress'].includes(l.status)).length;
+        const todayCompleted = nonEventTodayLessons.filter((l: any) => l.status === 'completed').length;
         const weekStartStr = (() => {
           const d = new Date(weekStart);
           return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         })();
-        const weekCompletedForAvg = (allLessons ?? []).filter(
+        const weekCompletedForAvg = (nonEventLessons ?? []).filter(
           (l: any) => l.status === 'completed' && typeof l.lesson_date === 'string' && l.lesson_date >= weekStartStr,
         ).length;
         const weekAvg = weekCompletedForAvg > 0 ? weekEarnings / weekCompletedForAvg : 0;
