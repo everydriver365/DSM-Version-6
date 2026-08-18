@@ -3,6 +3,7 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconExternalLink, IconHome, IconInbox, IconMail, IconMapPin, IconMessage, IconNavigation, IconPhone, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
+import { tapLight, hapticWarning } from "@/lib/haptics";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { EmptyState } from "@/components/dsm/EmptyState";
@@ -445,6 +446,7 @@ function NotificationsPage() {
   }
 
   async function handleNotificationTap(notif: any) {
+    tapLight();
     if (!notif.read) {
       await markAsRead(notif.id);
     }
@@ -548,6 +550,7 @@ function NotificationsPage() {
       return;
     }
 
+    if (action.isOverduePayment) hapticWarning();
     setActionSheet({ notif, notifType: notif.type, options: action.options ?? [], ...action });
   }
 

@@ -18,6 +18,7 @@ import { getLessonDriveTime, type LessonDriveTime } from "@/lib/lesson-drive-tim
 import { verifyAddress } from "@/lib/geocode.functions";
 import { useMinGapMinutes } from "@/lib/gapPrefs";
 import { readBadgePrefs, DEFAULT_BADGE_PREFS } from "@/lib/badgePrefs";
+import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { DiscoverSection as DiscoverGrid } from "@/components/home/DiscoverSection";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
@@ -2197,7 +2198,7 @@ function HomePage() {
     }
     poll();
     const id = setInterval(poll, 30000);
-    const onRefresh = () => { void poll(); };
+    const onRefresh = () => { void poll().then(hapticSuccess); };
     window.addEventListener("dsm-notifications-updated", onRefresh);
     window.addEventListener("focus", onRefresh);
     document.addEventListener("visibilitychange", onRefresh);
@@ -6640,6 +6641,7 @@ function HomePage() {
               
 
               const goTile = (tile: QuickTile) => {
+                tapLight();
                 navigate({ to: tile.route as never });
               };
 

@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { PageLayout } from "@/components/PageLayout";
 import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { recordPayment, recordRefund, correctPaymentRecord, getPupilBalance, type PupilBalance } from "@/lib/payments";
+import { hapticSuccess, hapticError } from "@/lib/haptics";
 import { calculateOutstandingOwed, calculatePaidOutstandingBreakdown } from "@/lib/paymentsOwed";
 import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";
@@ -831,10 +832,12 @@ function EditPaymentForm({ row, onCancel, onSaved }: { row: HistoryRow; onCancel
     });
     if (error) {
       toast.error("Failed to update payment");
+      hapticError();
       setSaving(false);
       return;
     }
     toast.success("Payment updated");
+    hapticSuccess();
     setSaving(false);
     onSaved();
   }
@@ -922,6 +925,7 @@ function RefundSheet({ row, userId, onClose, onSaved }: { row: HistoryRow; userI
     toast.success(
       `Refund recorded. Balance updated to ${newBalance < 0 ? "-" : ""}£${Math.abs(newBalance).toFixed(2)}`,
     );
+    hapticSuccess();
     setSaving(false);
     onSaved();
   }

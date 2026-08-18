@@ -1,20 +1,57 @@
-// Lightweight haptic feedback helper. No-op on unsupported devices.
-export type HapticPattern = "tap" | "success" | "warning" | "error" | "selection";
+import { Haptics, ImpactStyle, NotificationType } from "@capacitor/haptics";
 
-const patterns: Record<HapticPattern, number | number[]> = {
-  tap: 8,
-  selection: 5,
-  success: [10, 40, 15],
-  warning: [20, 60, 20],
-  error: [30, 40, 30, 40, 30],
-};
-
-export function haptic(kind: HapticPattern = "tap") {
+export async function tapLight() {
   try {
-    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
-      navigator.vibrate(patterns[kind]);
-    }
-  } catch {
-    // ignore
+    await Haptics.impact({ style: ImpactStyle.Light });
+  } catch {}
+}
+
+export async function tapMedium() {
+  try {
+    await Haptics.impact({ style: ImpactStyle.Medium });
+  } catch {}
+}
+
+export async function tapHeavy() {
+  try {
+    await Haptics.impact({ style: ImpactStyle.Heavy });
+  } catch {}
+}
+
+export async function hapticSuccess() {
+  try {
+    await Haptics.notification({ type: NotificationType.Success });
+  } catch {}
+}
+
+export async function hapticWarning() {
+  try {
+    await Haptics.notification({ type: NotificationType.Warning });
+  } catch {}
+}
+
+export async function hapticError() {
+  try {
+    await Haptics.notification({ type: NotificationType.Error });
+  } catch {}
+}
+
+export function haptic(kind: "selection" | "tap" | "success" | "warning" | "error") {
+  switch (kind) {
+    case "selection":
+      tapLight();
+      break;
+    case "tap":
+      tapLight();
+      break;
+    case "success":
+      hapticSuccess();
+      break;
+    case "warning":
+      hapticWarning();
+      break;
+    case "error":
+      hapticError();
+      break;
   }
 }

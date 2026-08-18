@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { IconSearch, IconX } from "@tabler/icons-react";
+import { tapLight } from "@/lib/haptics";
 
 // ---------------------------------------------------------------------------
 // DSM DESIGN TOKENS
@@ -40,6 +41,7 @@ export interface BottomSheetProps {
 
 export function BottomSheet({ title, subtitle, onClose, children, footer }: BottomSheetProps) {
   useEffect(() => {
+    tapLight();
     if (typeof window !== "undefined") {
       window.dispatchEvent(new Event("dsm-sheet-open"));
     }

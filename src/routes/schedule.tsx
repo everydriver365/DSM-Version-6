@@ -17,6 +17,7 @@ import { computeDayGaps } from "@/lib/gapDetection";
 import { previewMatchForGap } from "@/lib/pupilMatching";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
+import { tapLight, tapMedium, hapticSuccess, hapticError } from "@/lib/haptics";
 import { PAGE_BACKGROUND } from "@/components/PageLayout";
 
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard.tsx";
@@ -1006,6 +1007,7 @@ function SchedulePage() {
         toast.success(msg);
         setSyncMessage({ type: "success", text: msg });
         setLastSynced(new Date().toISOString());
+        hapticSuccess();
         await fetchCalendarBlocks();
         // Copy each Google event's colour onto the imported rows. Silent, and
         // never allowed to break a normal sync.
@@ -1034,11 +1036,13 @@ function SchedulePage() {
         const msg = "Sync failed — check your calendar URL in Settings";
         toast.error(msg);
         setSyncMessage({ type: "error", text: msg });
+        hapticError();
       }
     } catch (err) {
       const msg = "Sync failed";
       toast.error(msg);
       setSyncMessage({ type: "error", text: msg });
+      hapticError();
     } finally {
       setSyncing(false);
     }
@@ -1950,6 +1954,7 @@ function SchedulePage() {
                                   toast.info(`Event: ${lesson.event_title || 'No title'}`, { duration: 3000 });
                                   return;
                                 }
+                                tapLight();
                                 setActionsOpenFor(lesson);
                               }
                             : isBlockRow
@@ -2558,7 +2563,10 @@ function SchedulePage() {
 
       <button
         type="button"
-        onClick={() => setAddChooserOpen(true)}
+        onClick={() => {
+          tapMedium();
+          setAddChooserOpen(true);
+        }}
         style={{
           position: 'fixed',
           bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',

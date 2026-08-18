@@ -5,6 +5,7 @@ import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
+import { tapLight, tapMedium, hapticSuccess } from "@/lib/haptics";
 import { getPupilBalance } from "@/lib/payments";
 
 import { PageLayout } from "@/components/PageLayout";
@@ -647,7 +648,10 @@ function PupilsIndexPage() {
         key={p.id}
         role="button"
         tabIndex={0}
-        onClick={() => navigate({ to: "/pupils/$id", params: { id: p.id } })}
+        onClick={() => {
+          tapLight();
+          navigate({ to: "/pupils/$id", params: { id: p.id } });
+        }}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
@@ -818,6 +822,7 @@ function PupilsIndexPage() {
           <Link
             to="/pupils/new"
             aria-label="Add pupil"
+            onClick={() => tapMedium()}
             className="flex items-center justify-center"
             style={{
               width: 32,

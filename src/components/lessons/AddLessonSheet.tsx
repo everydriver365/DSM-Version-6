@@ -20,6 +20,7 @@ import { supabase } from "../../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
 import { computeLessonAmount, fetchPostcodeRates } from "../../lib/pricing/resolveRate";
 import { pushLessonToGoogle } from "@/lib/calendarSyncPrefs";
+import { tapLight, tapMedium, hapticSuccess, hapticError } from "@/lib/haptics";
 
 const BLUE = "#1877D6";
 
@@ -283,6 +284,7 @@ export function AddLessonSheet({
     if (!user) {
       setErrors({ form: "You must be signed in to add a lesson" });
       toast.error("You must be signed in to add a lesson");
+      hapticError();
       setSaving(false);
       return;
     }
@@ -416,6 +418,7 @@ export function AddLessonSheet({
       if (updErr) {
         setErrors({ form: updErr.message });
         toast.error(updErr.message);
+        hapticError();
         setSaving(false);
         return;
       }
@@ -428,6 +431,7 @@ export function AddLessonSheet({
         pushLessonToGoogle({ lesson_id: editingLesson.id, instructor_id: user.id, action: "update" });
       }
       toast.success("Lesson updated");
+      hapticSuccess();
       setSaving(false);
       onSaved(editingLesson.id);
       onClose();
@@ -459,6 +463,7 @@ export function AddLessonSheet({
       if (seriesErr) {
         setErrors({ form: seriesErr.message });
         toast.error(seriesErr.message);
+        hapticError();
         setSaving(false);
         return;
       }
@@ -488,6 +493,7 @@ export function AddLessonSheet({
     if (error) {
       setErrors({ form: error.message });
       toast.error(error.message);
+      hapticError();
       setSaving(false);
       return;
     }
@@ -553,6 +559,7 @@ export function AddLessonSheet({
     }
 
     toast.success("Lesson added");
+    hapticSuccess();
     setSaving(false);
     onSaved((insertedLesson as any)?.id as string);
     onClose();
@@ -836,10 +843,12 @@ export function AddLessonSheet({
                       type="button"
                       role="radio"
                       aria-checked={active}
-                      onClick={() => {
-                        setDuration(opt.value);
-                        setIsTestDay(opt.value === "test");
-                      }}
+                  onClick={() => {
+                    if (opt.value === "test") tapMedium();
+                    else tapLight();
+                    setDuration(opt.value);
+                    setIsTestDay(opt.value === "test");
+                  }}
                       style={{
                         height: 34,
                         borderRadius: 8,

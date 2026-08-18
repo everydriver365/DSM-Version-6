@@ -3,6 +3,7 @@ import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { tapLight, tapMedium, hapticSuccess } from "@/lib/haptics";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
@@ -408,6 +409,7 @@ function EnquiriesPage() {
 
       updateEnquiry(enquiry.id, { status: "accepted" });
       toast.success(pupilId ? "Accepted — pupil created" : "Enquiry accepted");
+      hapticSuccess();
     } catch {
       toast.error("Couldn't accept");
     } finally {
@@ -458,6 +460,7 @@ function EnquiriesPage() {
         sent_to_jobs_at: sendToJobs ? now : null,
       });
 
+      tapMedium();
       toast.success(sendToJobs ? "Sent to Jobs board" : "Enquiry declined", {
         duration: 6000,
         action: {
@@ -526,6 +529,7 @@ function EnquiriesPage() {
       <button
         type="button"
         onClick={() => {
+          tapLight();
           setSelectedId(enquiry.id);
           setNoteText("");
           void loadActivities(enquiry.id);
