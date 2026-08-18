@@ -822,6 +822,7 @@ function PupilsIndexPage() {
           <Link
             to="/pupils/new"
             aria-label="Add pupil"
+            onClick={() => tapMedium()}
             className="flex items-center justify-center"
             style={{
               width: 32,
