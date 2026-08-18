@@ -119,15 +119,16 @@ function formatDate(d: string | null) {
     year: "numeric",
   });
 }
-function formatDateWithDay(d: string | null) {
-  if (!d) return "—";
-  return new Date(d + "T00:00:00").toLocaleDateString("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
+function formatTime12hr(t: string | null) {
+  if (!t) return "—";
+  const [h, m] = t.split(":").map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return t;
+  const suffix = h >= 12 ? "pm" : "am";
+  const hour = h % 12 === 0 ? 12 : h % 12;
+  const minute = String(m).padStart(2, "0");
+  return `${hour}:${minute}${suffix}`;
 }
+
 
 function CourseDetailPage() {
   const { id } = Route.useParams();
