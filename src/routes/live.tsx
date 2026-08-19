@@ -927,9 +927,23 @@ function LivePage() {
     if (google && mapInstanceRef.current) {
       const ll = { lat, lng };
       if (polylineRef.current) {
-        const path = polylineRef.current.getPath();
-        path.push(new google.maps.LatLng(lat, lng));
+        const rawCoords = coordsRef.current
+          .map((c) => ({ lat: c.lat, lng: c.lng }))
+          .filter((c) => typeof c.lat === "number" && typeof c.lng === "number");
+        if (rawCoords.length % 5 === 0 || rawCoords.length < 5) {
+          // Snap every 5 points to keep the line following the road
+          const snapped = await snapToRoads(rawCoords);
+          if (polylineRef.current) {
+            polylineRef.current.setPath(
+              snapped.map((c) => new google.maps.LatLng(c.lat, c.lng)),
+            );
+          }
+        } else {
+          const path = polylineRef.current.getPath();
+          path.push(new google.maps.LatLng(lat, lng));
+        }
       }
+
       if (!markerRef.current) {
         markerRef.current = new google.maps.Marker({
           position: ll,
