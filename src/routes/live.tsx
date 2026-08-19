@@ -552,6 +552,7 @@ function LivePage() {
     let limit: number | null = null;
     let road: string | null = null;
     try {
+      console.log('[live] fetching road for:', lat, lng);
       // TomTom Reverse Geocode returns the snapped street name, its route
       // numbers, an optional posted speed limit ("40.00MPH") and roadUse.
       const url =
@@ -560,6 +561,7 @@ function LivePage() {
       const r = await fetch(url);
       if (!r.ok) throw new Error(`TomTom ${r.status}`);
       const j = await r.json();
+      console.log('[live] TomTom response:', JSON.stringify(j?.addresses?.[0]?.address));
       const entry = j?.addresses?.[0];
       const addr = entry?.address;
 
@@ -581,6 +583,7 @@ function LivePage() {
       else if (streetName) road = streetName;
       else if (addr?.street) road = addr.street;
       else if (addr?.municipalitySubdivision) road = addr.municipalitySubdivision;
+      console.log('[live] road name set:', road);
 
       // Road type from roadUse / route number prefix
       const roadUse: string[] = Array.isArray(entry?.roadUse) ? entry.roadUse : [];
@@ -593,7 +596,7 @@ function LivePage() {
       else if (road) rt = "Local road";
       setRoadType(rt);
     } catch (e) {
-      console.warn("[live] road/speed limit fetch failed", e);
+      console.error('[live] TomTom failed:', e);
     }
 
 
