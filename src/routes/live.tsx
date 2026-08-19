@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { IconChevronLeft, IconChevronRight, IconMap, IconSearch, IconX } from "@tabler/icons-react";
 import { Geolocation } from "@capacitor/geolocation";
 import { Capacitor } from "@capacitor/core";
+import { KeepAwake } from "@capacitor-community/keep-awake";
 import { supabase } from "../lib/supabaseClient";
 import { PupilAvatar } from "../components/PupilAvatar";
 import { buildTripReport } from "../lib/tripReport";
@@ -478,6 +479,10 @@ function LivePage() {
         // ignore
       }
       silentAudioRef.current = null;
+
+      try {
+        KeepAwake.allowSleep();
+      } catch {}
     };
   }, []);
 
@@ -732,6 +737,9 @@ function LivePage() {
 
     // Start tracking immediately — never block the UI on the route insert
     setTracking(true);
+    try {
+      await KeepAwake.keepAwake();
+    } catch {}
     startSilentAudio();
     startWatching();
 
@@ -1065,6 +1073,9 @@ function LivePage() {
       stopSilentAudio();
       await saveCoordinates(true);
 
+      try {
+        await KeepAwake.allowSleep();
+      } catch {}
       setTracking(false);
 
 
