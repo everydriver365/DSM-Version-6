@@ -595,8 +595,9 @@ function RootComponent() {
     (async () => {
       try {
         await StatusBar.setStyle({ style: Style.Dark });
-        await StatusBar.setBackgroundColor({ color: "#0B1F3A" });
-      } catch {}
+      } catch (e) {
+        console.warn('StatusBar.setStyle', e);
+      }
     })();
 
     // Keyboard handling
@@ -604,8 +605,14 @@ function RootComponent() {
     (async () => {
       try {
         await Keyboard.setAccessoryBarVisible({ isVisible: true });
+      } catch (e) {
+        console.warn('Keyboard.setAccessoryBarVisible', e);
+      }
+      try {
         await Keyboard.setScroll({ isDisabled: false });
-      } catch {}
+      } catch (e) {
+        console.warn('Keyboard.setScroll', e);
+      }
     })();
     try {
       keyboardListeners.push(
@@ -613,12 +620,18 @@ function RootComponent() {
           document.documentElement.style.setProperty("--keyboard-height", `${info.keyboardHeight}px`);
         }),
       );
+    } catch (e) {
+      console.warn('Keyboard.addListener keyboardWillShow', e);
+    }
+    try {
       keyboardListeners.push(
         Keyboard.addListener("keyboardWillHide", () => {
           document.documentElement.style.setProperty("--keyboard-height", "0px");
         }),
       );
-    } catch {}
+    } catch (e) {
+      console.warn('Keyboard.addListener keyboardWillHide', e);
+    }
 
     // App state changes: refresh unread count and clear badge on resume
     let appStateSub: Promise<{ remove: () => void }> | undefined;
@@ -628,10 +641,14 @@ function RootComponent() {
           window.dispatchEvent(new Event("dsm-notifications-updated"));
           try {
             await (App as any).clearBadge?.();
-          } catch {}
+          } catch (e) {
+            console.warn('App.clearBadge', e);
+          }
         }
       });
-    } catch {}
+    } catch (e) {
+      console.warn('App.addListener appStateChange', e);
+    }
 
     // Android back button
     let backSub: Promise<{ remove: () => void }> | undefined;
@@ -640,10 +657,16 @@ function RootComponent() {
         if (canGoBack) {
           window.history.back();
         } else {
-          void App.exitApp();
+          try {
+            void App.exitApp();
+          } catch (e) {
+            console.warn('App.exitApp', e);
+          }
         }
       });
-    } catch {}
+    } catch (e) {
+      console.warn('App.addListener backButton', e);
+    }
 
     return () => {
       keyboardListeners.forEach((l) => void l.then((s) => s.remove()));
