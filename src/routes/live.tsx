@@ -361,6 +361,7 @@ function LivePage() {
       null
     );
   }, [activePupilId, activePupils, allPupils]);
+  const activeLessonPupilName = activeLesson?.pupils?.name ?? null;
 
   // Tick elapsed
   useEffect(() => {
@@ -1829,7 +1830,7 @@ function LivePage() {
                   opacity: coordinates.length === 0 ? 0.6 : 1,
                 }}
               >
-                {trackingPupilName ?? selectedPupilName ?? activeLesson?.pupils?.name ?? "Manual journey"}
+                {trackingPupilName ?? selectedPupilName ?? activeLessonPupilName ?? "Manual journey"}
               </div>
 
             </div>
