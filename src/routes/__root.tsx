@@ -631,9 +631,7 @@ function RootComponent() {
 
         // OneSignal push notifications
         try {
-          await OneSignal.initialize({
-            appId: '8af9dd53-7122-428e-9267-4e3fc188089d'
-          });
+          await OneSignal.initialize('8af9dd53-7122-428e-9267-4e3fc188089d');
           await OneSignal.Notifications.requestPermission(true);
           OneSignal.Notifications.addEventListener('click', (event) => {
             console.log('[OneSignal] clicked:', JSON.stringify(event));
