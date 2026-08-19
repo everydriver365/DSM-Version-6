@@ -13,30 +13,19 @@ import { getPlatform } from "./platform";
 /** Fallback inset used when the wrapper reports 0 for env(safe-area-inset-top). */
 const FALLBACK_TOP_INSET = 47;
 
-function callDespia(cmd: string) {
-  try {
-    (window as any).despia?.(cmd);
-  } catch {
-    /* wrapper not present — ignore */
-  }
-}
-
 async function configureCapacitor() {
-  const StatusBar = (window as any)?.Capacitor?.Plugins?.StatusBar;
-  if (!StatusBar) return;
   try {
-    // Draw the webview behind the status bar and keep the glyphs light
-    // (our headers are navy #0B1F3A).
-    await StatusBar.setOverlaysWebView?.({ overlay: true });
-    await StatusBar.setStyle?.({ style: "DARK" }); // DARK style = light content
+    const { StatusBar, Style } = await import('@capacitor/status-bar');
+    await StatusBar.setOverlaysWebView({ overlay: true });
+    await StatusBar.setStyle({ style: Style.Dark });
   } catch {
-    /* plugin missing on this build — ignore */
+    // plugin missing — ignore
   }
 }
 
 /**
  * Measures the real safe-area top inset. If the wrapper doesn't expose one
- * (some Despia builds report 0 even when overlaying), we publish a sensible
+ * (some builds report 0 even when overlaying), we publish a sensible
  * fallback via --dsm-safe-top so headers never sit under the clock.
  */
 function publishSafeTop() {
@@ -59,13 +48,7 @@ export function setupEdgeToEdgeStatusBar() {
 
   document.documentElement.classList.add("dsm-native", `dsm-${platform}`);
 
-  if (platform === "despia") {
-    // Despia URL-scheme commands: go edge-to-edge and use light glyphs.
-    callDespia("statusbar://overlay?color=transparent&style=light");
-    callDespia("edgetoedge://enable");
-  } else {
-    void configureCapacitor();
-  }
+  void configureCapacitor();
 
   publishSafeTop();
   window.addEventListener("orientationchange", () =>
