@@ -975,10 +975,8 @@ function LivePage() {
     const google = (window as any).google;
     if (google && mapInstanceRef.current) {
       const ll = { lat, lng };
-      if (polylineRef.current) {
-        const path = polylineRef.current.getPath();
-        path.push(new google.maps.LatLng(lat, lng));
-      }
+      // Trail is drawn from road-snapped geometry plus the raw tail.
+      queueForSnapping(lat, lng);
       if (!markerRef.current) {
         markerRef.current = new google.maps.Marker({
           position: ll,
