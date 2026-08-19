@@ -630,7 +630,7 @@ function RootComponent() {
     })();
 
     return () => {
-      keyboardListeners.forEach((l) => void l.then((s) => s.remove()));
+      
       if (appStateSub) void appStateSub.then((s) => s.remove());
       if (backSub) void backSub.then((s) => s.remove());
     };
