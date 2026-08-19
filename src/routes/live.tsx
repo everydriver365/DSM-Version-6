@@ -847,7 +847,43 @@ function LivePage() {
     silentAudioRef.current = null;
   }
 
-  function handlePosition(pos: GeolocationPosition) {
+  async function snapToRoads(
+    points: { lat: number; lng: number }[],
+  ): Promise<{ lat: number; lng: number }[]> {
+    if (points.length < 2) return points;
+    try {
+      const res = await fetch(
+        `https://api.tomtom.com/snap-to-roads/1/snap-to-roads?key=${TOMTOM_API_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            points: points.map((p) => ({ lat: p.lat, lon: p.lng })),
+          }),
+        },
+      );
+      if (!res.ok) {
+        console.warn("[live] snap-to-roads failed:", res.status);
+        return points;
+      }
+      const data = await res.json();
+      const snapped = data?.snappedPoints ?? data?.points ?? [];
+      if (!Array.isArray(snapped) || snapped.length === 0) return points;
+      const mapped = snapped
+        .map((p: any) => ({
+          lat: p?.lat ?? p?.latitude ?? p?.position?.lat ?? p?.position?.latitude,
+          lng: p?.lon ?? p?.lng ?? p?.longitude ?? p?.position?.lon ?? p?.position?.longitude,
+        }))
+        .filter((p: any) => typeof p.lat === "number" && typeof p.lng === "number");
+      return mapped.length ? mapped : points;
+    } catch (e) {
+      console.warn("[live] snap error:", e);
+      return points;
+    }
+  }
+
+  async function handlePosition(pos: GeolocationPosition) {
+
     const lat = pos.coords.latitude;
     const lng = pos.coords.longitude;
     const speedMs = pos.coords.speed;
