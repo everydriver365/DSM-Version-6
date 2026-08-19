@@ -1097,98 +1097,95 @@ function MessagesIndexPage() {
     <PageLayout style={{ ...FONT, background: "#EEF2F7", paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))" }}>
       <div
         style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 30,
           background: NAVY,
           color: "#fff",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 12px) 16px 12px",
-          borderBottom: "1px solid rgba(255,255,255,0.1)",
+          padding: "calc(max(env(safe-area-inset-top, 0px), 20px) + 18px) 20px 30px",
           borderRadius: 0,
         }}
       >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" as never })}
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.15)",
-            border: "none",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#fff",
-            cursor: "pointer",
-            padding: 0,
-            flexShrink: 0,
-          }}
-        >
-          <IconChevronLeft size={18} />
-        </button>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h1
-            style={{
-              fontSize: 16,
-              fontWeight: 700,
-              color: "#fff",
-              margin: 0,
-              fontFamily: "Poppins, sans-serif",
-              lineHeight: 1.25,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            Messages
-          </h1>
-        </div>
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <button
-            type="button"
-            aria-label="Notifications"
-            onClick={() => navigate({ to: "/notifications" as never })}
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.08)",
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            <IconBell size={17} stroke={1.8} color="#C7D0DE" />
-          </button>
-          <button
-            type="button"
-            aria-label="Menu"
-            onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.08)",
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            <IconAdjustmentsHorizontal size={17} stroke={1.8} color="#C7D0DE" />
-          </button>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h1
+              style={{
+                fontSize: 30,
+                fontWeight: 700,
+                color: "#fff",
+                margin: 0,
+                letterSpacing: "-0.02em",
+                fontFamily: "Poppins, sans-serif",
+                lineHeight: 1.15,
+              }}
+            >
+              Messages
+            </h1>
+            <div
+              style={{
+                fontSize: 13,
+                color: "rgba(255,255,255,0.66)",
+                marginTop: 6,
+                lineHeight: 1.45,
+                maxWidth: 260,
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              Stay in touch with your pupils, team and school.
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 10, alignItems: "center", flexShrink: 0 }}>
+            <button
+              type="button"
+              aria-label="Notifications"
+              onClick={() => navigate({ to: "/notifications" as never })}
+              style={{
+                position: "relative",
+                width: 44,
+                height: 44,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.10)",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                padding: 0,
+              }}
+            >
+              <IconBell size={20} stroke={1.8} color="#FFFFFF" />
+              <span
+                style={{
+                  position: "absolute",
+                  top: 8,
+                  right: 9,
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: BLUE,
+                }}
+              />
+            </button>
+            <button
+              type="button"
+              aria-label="Menu"
+              onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.10)",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                padding: 0,
+              }}
+            >
+              <IconAdjustmentsHorizontal size={20} stroke={1.8} color="#FFFFFF" />
+            </button>
+          </div>
         </div>
       </div>
+
 
       {view === "chat" ? (
         <LocalChatView
