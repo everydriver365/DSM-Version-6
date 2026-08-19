@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { IconArrowLeft, IconAddressBook, IconChevronRight, IconSearch, IconX } from "@tabler/icons-react";
-import { Contacts } from "@capacitor-community/contacts";
+
 import { toast } from "sonner";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
@@ -64,11 +64,17 @@ function NewPupilPage() {
   async function importFromContacts() {
     setImportingContact(true);
     try {
+      const { Contacts } = await import("@capacitor-community/contacts");
+
       const permission = await Contacts.requestPermissions();
+
       if (permission.contacts !== "granted") {
-        toast.error("Contacts permission required");
+        toast.error(
+          "Please allow contacts access in Settings → DSM → Contacts"
+        );
         return;
       }
+
       const result = await Contacts.getContacts({
         projection: {
           name: true,
@@ -76,14 +82,19 @@ function NewPupilPage() {
           emails: true,
         },
       });
+
       setContactsList(result.contacts ?? []);
       setShowContactPicker(true);
     } catch (e: any) {
-      toast.error("Could not access contacts");
+      console.error("[contacts]", e);
+      toast.error(
+        "Could not access contacts — please check permissions in Settings → DSM → Contacts"
+      );
     } finally {
       setImportingContact(false);
     }
   }
+
 
   function applyContact(contact: any) {
     const fullName =
@@ -172,7 +183,12 @@ function NewPupilPage() {
   }
 
   return (
-    <PageLayout style={{ fontFamily: "Poppins, sans-serif" }}>
+    <PageLayout
+      style={{
+        fontFamily: "Poppins, sans-serif",
+        paddingTop: "calc(env(safe-area-inset-top, 0px) + 16px)",
+      }}
+    >
       <div className="px-4 pt-6">
         <div className="flex items-center gap-3 mb-4">
           <button
