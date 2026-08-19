@@ -1,5 +1,5 @@
 /**
- * Edge-to-edge status bar setup for the native wrappers (Despia / Capacitor).
+ * Edge-to-edge status bar setup for the native Capacitor wrapper.
  *
  * Goal: the webview should extend *under* the iOS status bar so our navy
  * headers paint behind the clock/battery, instead of the OS reserving an
