@@ -1476,7 +1476,7 @@ function MessagesIndexPage() {
                                   textTransform: "uppercase",
                                   letterSpacing: "0.12em",
                                   color: "#8A94A6",
-                                  margin: "16px 16px 8px",
+                                  margin: "14px 4px 10px",
                                   fontFamily: "Poppins, sans-serif",
                                 }}
                               >
