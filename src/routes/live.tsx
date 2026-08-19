@@ -716,7 +716,25 @@ function LivePage() {
     }
 
 
-    // Ask for a one-shot fix first so we get an immediate position.
+    // Reset state BEFORE the first fix so the initial position is kept.
+    setGeoError(null);
+    setLastGeoWarning(null);
+    setLastFixAccuracy(null);
+    startedAtRef.current = Date.now();
+    coordsRef.current = [];
+    setCoordinates([]);
+    setDistanceKm(0);
+    setOverspeedCount(0);
+    setOverspeedEvents([]);
+    setElapsedSec(0);
+    routeIdRef.current = null;
+
+    // Start tracking immediately — never block the UI on the route insert
+    setTracking(true);
+    startSilentAudio();
+    startWatching();
+
+    // Ask for a one-shot fix too so we get an immediate position.
     try {
       console.log("[live] requesting initial GPS fix...");
       const position = await Geolocation.getCurrentPosition({
@@ -736,25 +754,11 @@ function LivePage() {
         },
         timestamp: position.timestamp,
       } as GeolocationPosition);
-    } catch (err) {
+    } catch (err: any) {
       console.error("[live] initial fix failed", err);
+      setLastGeoWarning(err?.message ? String(err.message) : "Waiting for a GPS fix…");
       // Continue — the watch will deliver the first fix.
     }
-
-    setGeoError(null);
-    startedAtRef.current = Date.now();
-    coordsRef.current = [];
-    setCoordinates([]);
-    setDistanceKm(0);
-    setOverspeedCount(0);
-    setOverspeedEvents([]);
-    setElapsedSec(0);
-    routeIdRef.current = null;
-
-    // Start tracking immediately — never block the UI on the route insert
-    setTracking(true);
-    startSilentAudio();
-    startWatching();
 
 
     // Create the route record in the background
