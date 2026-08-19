@@ -286,17 +286,6 @@ function LivePage() {
   const roadNameRef = useRef<string | null>(null);
   const lastRoadFetchRef = useRef<{ lat: number; lng: number } | null>(null);
 
-  // --- Road snapping (display only) -------------------------------------
-  // snappedPathRef holds road-matched geometry for the confirmed part of the
-  // drive; pendingRawRef holds the newest raw fixes that have not been snapped
-  // yet. The drawn polyline is always snapped.concat(pendingRaw) so the line
-  // reaches the live position without lagging behind the marker.
-  const snappedPathRef = useRef<{ lat: number; lng: number }[]>([]);
-  const pendingRawRef = useRef<{ lat: number; lng: number }[]>([]);
-  const lastSnapAnchorRef = useRef<{ lat: number; lng: number } | null>(null);
-  const snapInFlightRef = useRef(false);
-  const snapIdleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   const [tracking, setTracking] = useState(false);
   const [coordinates, setCoordinates] = useState<Coord[]>([]);
   const [currentSpeed, setCurrentSpeed] = useState<number | null>(null);
@@ -738,7 +727,6 @@ function LivePage() {
     setGeoError(null);
     startedAtRef.current = Date.now();
     coordsRef.current = [];
-    resetSnapping();
     setCoordinates([]);
     setDistanceKm(0);
     setOverspeedCount(0);
@@ -847,92 +835,6 @@ function LivePage() {
     silentAudioRef.current = null;
   }
 
-  // Redraw the trail from snapped geometry + not-yet-snapped raw tail.
-  function redrawTrail() {
-    const google = (window as any).google;
-    if (!google || !polylineRef.current) return;
-    const pts = [...snappedPathRef.current, ...pendingRawRef.current];
-    polylineRef.current.setPath(pts.map((p) => new google.maps.LatLng(p.lat, p.lng)));
-  }
-
-  function resetSnapping() {
-    snappedPathRef.current = [];
-    pendingRawRef.current = [];
-    lastSnapAnchorRef.current = null;
-    if (snapIdleTimerRef.current) {
-      clearTimeout(snapIdleTimerRef.current);
-      snapIdleTimerRef.current = null;
-    }
-    if (polylineRef.current) polylineRef.current.setPath([]);
-  }
-
-  // Snap the pending raw batch to the road network and fold the result into
-  // the confirmed path. Falls back to the raw points on any failure.
-  async function flushSnapBatch(force = false) {
-    if (snapInFlightRef.current) return;
-    const pending = pendingRawRef.current;
-    const MIN_BATCH = 10;
-    if (pending.length < (force ? 2 : MIN_BATCH)) return;
-
-    const batch = pending.slice(0, 90);
-    const remainder = pending.slice(batch.length);
-    // Overlap onto the previous batch so consecutive segments join cleanly.
-    const anchor = lastSnapAnchorRef.current;
-    const request = anchor ? [anchor, ...batch] : batch;
-
-    snapInFlightRef.current = true;
-    pendingRawRef.current = remainder;
-
-    let snapped: { lat: number; lng: number }[] | null = null;
-    try {
-      const points = request.map((p) => `${p.lng},${p.lat}`).join(";");
-      const fields = encodeURIComponent("{route{geometry}}");
-      const url =
-        `https://api.tomtom.com/snapToRoads/1?key=${TOMTOM_API_KEY}` +
-        `&points=${encodeURIComponent(points)}&fields=${fields}`;
-      const ctrl = new AbortController();
-      const to = setTimeout(() => ctrl.abort(), 8000);
-      const r = await fetch(url, { signal: ctrl.signal });
-      clearTimeout(to);
-      if (!r.ok) throw new Error(`TomTom snap ${r.status}`);
-      const j = await r.json();
-      const geom: any[] = j?.route?.[0]?.geometry ?? [];
-      const parsed = geom
-        .map((g) => ({
-          lat: Number(g?.latitude ?? g?.lat),
-          lng: Number(g?.longitude ?? g?.lng ?? g?.lon),
-        }))
-        .filter((p) => Number.isFinite(p.lat) && Number.isFinite(p.lng));
-      if (parsed.length >= 2) snapped = parsed;
-    } catch (e) {
-      console.warn("[live] snapToRoads failed — using raw points", e);
-    }
-
-    const segment = snapped ?? request;
-    // Drop the duplicated join point when appending to an existing path.
-    const toAppend = snappedPathRef.current.length > 0 ? segment.slice(1) : segment;
-    snappedPathRef.current = [...snappedPathRef.current, ...toAppend];
-    lastSnapAnchorRef.current = batch[batch.length - 1] ?? anchor;
-    snapInFlightRef.current = false;
-    redrawTrail();
-
-    // More points queued up while we were waiting — keep draining.
-    if (pendingRawRef.current.length >= MIN_BATCH) void flushSnapBatch();
-  }
-
-  function queueForSnapping(lat: number, lng: number) {
-    pendingRawRef.current = [...pendingRawRef.current, { lat, lng }];
-    redrawTrail();
-    if (snapIdleTimerRef.current) clearTimeout(snapIdleTimerRef.current);
-    if (pendingRawRef.current.length >= 10) {
-      void flushSnapBatch();
-    } else {
-      // Idle flush so the line still snaps when stopped at lights.
-      snapIdleTimerRef.current = setTimeout(() => void flushSnapBatch(true), 6000);
-    }
-  }
-
-
   function handlePosition(pos: GeolocationPosition) {
     const lat = pos.coords.latitude;
     const lng = pos.coords.longitude;
@@ -976,8 +878,10 @@ function LivePage() {
     const google = (window as any).google;
     if (google && mapInstanceRef.current) {
       const ll = { lat, lng };
-      // Trail is drawn from road-snapped geometry plus the raw tail.
-      queueForSnapping(lat, lng);
+      if (polylineRef.current) {
+        const path = polylineRef.current.getPath();
+        path.push(new google.maps.LatLng(lat, lng));
+      }
       if (!markerRef.current) {
         markerRef.current = new google.maps.Marker({
           position: ll,
