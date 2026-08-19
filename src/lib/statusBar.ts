@@ -38,8 +38,6 @@ export function setupEdgeToEdgeStatusBar() {
 
   document.documentElement.classList.add("dsm-native", `dsm-${platform}`);
 
-  void configureCapacitor();
-
   publishSafeTop();
   window.addEventListener("orientationchange", () =>
     setTimeout(publishSafeTop, 250),
