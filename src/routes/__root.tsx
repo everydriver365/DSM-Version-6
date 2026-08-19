@@ -640,8 +640,7 @@ function RootComponent() {
 
           // Save OneSignal Player ID to DB
           try {
-            const deviceState = await OneSignal.User.getPushSubscription();
-            const playerId = deviceState.id;
+            const playerId = await OneSignal.User.pushSubscription.getIdAsync();
             if (playerId) {
               const { data: { user } } = await supabase.auth.getUser();
               if (user) {
