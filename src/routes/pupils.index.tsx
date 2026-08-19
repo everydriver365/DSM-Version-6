@@ -1021,13 +1021,13 @@ function PupilsIndexPage() {
       {/* Status filter tabs */}
       <div
         style={{
-          margin: "12px 16px",
+          margin: "4px 16px 8px",
           display: "flex",
-          background: "#FFFFFF",
-          borderRadius: 8,
-          boxShadow: "0 4px 0 #E4E4E8",
-          padding: 3,
+          background: "#F4F6FA",
+          borderRadius: 12,
+          padding: 4,
           overflowX: "auto",
+
           scrollbarWidth: "none",
         }}
       >
