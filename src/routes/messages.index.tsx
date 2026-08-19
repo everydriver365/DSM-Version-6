@@ -1221,35 +1221,33 @@ function MessagesIndexPage() {
         />
       ) : (
         <>
-          {/* Segmented filter control + search */}
+          {/* Rounded sheet: pill filters + search */}
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "12px 16px",
-              background: "transparent",
+              background: "#F4F6FA",
+              borderTopLeftRadius: 26,
+              borderTopRightRadius: 26,
+              marginTop: -20,
+              paddingTop: 16,
             }}
           >
             <div
               style={{
                 display: "flex",
-                flex: 1,
-                background: "#FFFFFF",
-                borderRadius: 8,
-                boxShadow: "0 3px 0 #E4E4E8",
-                padding: 3,
+                alignItems: "center",
+                gap: 6,
+                padding: "0 14px",
                 overflowX: "auto",
                 scrollbarWidth: "none",
               }}
             >
               {(
                 [
-                  { key: "all", label: "All" },
-                  { key: "pupils", label: "Pupils" },
-                  { key: "local", label: "Local" },
-                  { key: "admin", label: "Admin" },
-                  { key: "instructors", label: "ADIs" },
+                  { key: "all", label: "All", Icon: IconMessageCircle },
+                  { key: "pupils", label: "Pupils", Icon: IconSchool },
+                  { key: "local", label: "Local", Icon: IconMapPin },
+                  { key: "admin", label: "Admin", Icon: IconShieldCheck },
+                  { key: "instructors", label: "ADIs", Icon: IconUsers },
                 ] as const
               )
                 .filter((f) => f.key !== "admin" || isAdmin)
@@ -1259,90 +1257,64 @@ function MessagesIndexPage() {
                     <button
                       key={f.key}
                       type="button"
-                      onClick={() => setFilter(f.key as Filter)}
+                      onClick={() => {
+                        tapLight();
+                        setFilter(f.key as Filter);
+                      }}
                       style={{
-                        flex: 1,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
                         flexShrink: 0,
-                        textAlign: "center",
-                        padding: "7px 12px",
-                        fontSize: 12,
+                        padding: "10px 14px",
+                        fontSize: 13.5,
                         fontFamily: "Poppins, sans-serif",
                         cursor: "pointer",
                         border: "none",
                         outline: "none",
-                        background: active ? "#0B1F3A" : "transparent",
-                        color: active ? "#FFFFFF" : "#8A94A6",
-                        borderRadius: active ? 8 : 0,
+                        background: active ? NAVY : "transparent",
+                        color: active ? "#FFFFFF" : "#7C8899",
+                        borderRadius: 999,
                         fontWeight: active ? 600 : 500,
                         whiteSpace: "nowrap",
                       }}
                     >
+                      <f.Icon size={17} stroke={1.8} color={active ? "#FFFFFF" : "#7C8899"} />
                       {f.label}
                     </button>
                   );
                 })}
             </div>
-            <button
-              type="button"
-              aria-label="Search messages"
-              onClick={() => setShowSearch((v) => !v)}
-              style={{
-                width: 32,
-                height: 32,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                background: "none",
-                border: 0,
-                padding: 0,
-                cursor: "pointer",
-              }}
-            >
-              <IconSearch size={18} color="#6B7686" stroke={1.8} />
-            </button>
-            <button
-              type="button"
-              aria-label="New message"
-              onClick={() => setSearchOpen(true)}
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                background: "#F1F5F9",
-                border: 0,
-                padding: 0,
-                cursor: "pointer",
-              }}
-            >
-              <IconEdit size={16} color={NAVY} stroke={1.8} />
-            </button>
-          </div>
 
-          {showSearch && (
-            <div style={{ padding: "0 16px 8px" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "14px 16px 10px",
+              }}
+            >
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 8,
-                  background: CANVAS,
-                  borderRadius: 8,
-                  padding: "9px 12px",
+                  gap: 10,
+                  flex: 1,
+                  minWidth: 0,
+                  background: "#FFFFFF",
+                  borderRadius: 16,
+                  border: `1px solid ${BORDER}`,
+                  padding: "12px 14px",
                 }}
               >
-                <IconSearch size={17} color={GREY} stroke={1.8} />
+                <IconSearch size={18} color="#98A2B3" stroke={1.9} />
                 <input
-                  autoFocus
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search messages"
+                  placeholder="Search messages..."
                   style={{
                     flex: 1,
+                    minWidth: 0,
                     border: 0,
                     outline: "none",
                     background: "transparent",
@@ -1364,12 +1336,36 @@ function MessagesIndexPage() {
                       display: "flex",
                     }}
                   >
-                    <IconX stroke={1.5} size={15} color={GREY} />
+                    <IconX stroke={1.5} size={16} color={GREY} />
                   </button>
                 )}
               </div>
+              <button
+                type="button"
+                aria-label="New message"
+                onClick={() => {
+                  tapLight();
+                  setSearchOpen(true);
+                }}
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 16,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  background: NAVY,
+                  border: 0,
+                  padding: 0,
+                  cursor: "pointer",
+                }}
+              >
+                <IconEdit size={20} color="#FFFFFF" stroke={1.9} />
+              </button>
             </div>
-          )}
+          </div>
+
 
           {filter === "local" && (
             <div style={{ padding: "0 16px 12px" }}>
