@@ -790,19 +790,143 @@ function PupilsIndexPage() {
 
 
   return (
-    <PageLayout className="pb-24 pb-safe relative" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Pupils"
-        unreadCount={unreadCount}
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <PageLayout className="pb-24 pb-safe relative" style={{ ...POPPINS, background: "#F4F6FA" }}>
+      {/* Navy hero header */}
+      <div
+        style={{
+          background: "#0B1F3A",
+          color: "#fff",
+          padding: "calc(max(env(safe-area-inset-top, 0px), 20px) + 18px) 20px 34px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+          <button
+            type="button"
+            aria-label="Back"
+            onClick={() => navigate({ to: "/home" as never })}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.10)",
+              border: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              padding: 0,
+              flexShrink: 0,
+              marginTop: 4,
+            }}
+          >
+            <IconChevronLeft size={20} stroke={2} color="#FFFFFF" />
+          </button>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h1
+              style={{
+                fontSize: 30,
+                fontWeight: 700,
+                color: "#fff",
+                margin: 0,
+                letterSpacing: "-0.02em",
+                fontFamily: "Poppins, sans-serif",
+                lineHeight: 1.15,
+              }}
+            >
+              Pupils
+            </h1>
+            <div
+              style={{
+                fontSize: 13,
+                color: "rgba(255,255,255,0.66)",
+                marginTop: 6,
+                lineHeight: 1.45,
+                maxWidth: 240,
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              Manage your pupils and track their progress.
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 10, alignItems: "center", flexShrink: 0, marginTop: 2 }}>
+            <button
+              type="button"
+              aria-label="Notifications"
+              onClick={() => navigate({ to: "/notifications" as never })}
+              style={{
+                position: "relative",
+                width: 44,
+                height: 44,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.10)",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                padding: 0,
+              }}
+            >
+              <IconBell size={20} stroke={1.8} color="#FFFFFF" />
+              {unreadCount > 0 && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 2,
+                    right: 0,
+                    minWidth: 18,
+                    height: 18,
+                    padding: "0 5px",
+                    borderRadius: 999,
+                    background: "#CC2229",
+                    color: "#fff",
+                    fontSize: 10.5,
+                    fontWeight: 700,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontFamily: "Poppins, sans-serif",
+                  }}
+                >
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+            <button
+              type="button"
+              aria-label="Menu"
+              onClick={() => navigate({ to: "/more" as never })}
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.10)",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                padding: 0,
+              }}
+            >
+              <IconAdjustmentsHorizontal size={20} stroke={1.8} color="#FFFFFF" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Rounded sheet: count + actions + tabs */}
+      <div
+        style={{
+          background: "#FFFFFF",
+          borderTopLeftRadius: 28,
+          borderTopRightRadius: 28,
+          marginTop: -22,
+          paddingTop: 6,
+          paddingBottom: 10,
+        }}
+      >
+
 
 
 
