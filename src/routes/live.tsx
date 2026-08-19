@@ -1355,31 +1355,6 @@ function LivePage() {
         }
       `}</style>
 
-      {/* CLOSE / BACK BUTTON — does not stop tracking */}
-      <button
-        type="button"
-        onClick={() => navigate({
-          to: '/home' as never,
-          replace: true,
-        })}
-        style={{
-          position: 'absolute',
-          top: 'calc(env(safe-area-inset-top, 0px) + 12px)',
-          left: 16,
-          zIndex: 50,
-          width: 36, height: 36,
-          borderRadius: '50%',
-          background: 'rgba(0,0,0,0.45)',
-          backdropFilter: 'blur(6px)',
-          border: 'none',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-        }}
-      >
-        <IconChevronLeft size={20} color="#fff" stroke={2} />
-      </button>
 
       {/* TOP BAR */}
       <div
