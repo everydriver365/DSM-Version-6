@@ -263,6 +263,7 @@ function LivePage() {
   const markerRef = useRef<any>(null);
   const polylineRef = useRef<any>(null);
   const watchIdRef = useRef<string | null>(null);
+  const watchErrorShownRef = useRef(false);
   const silentAudioRef = useRef<HTMLAudioElement | null>(null);
   const isStoppingRef = useRef(false);
   const centeredRef = useRef(false);
