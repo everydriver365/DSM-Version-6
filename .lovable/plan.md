@@ -9,8 +9,8 @@
 ## Changes
 1. In `src/routes/__root.tsx`, remove all StatusBar and Keyboard imports and startup calls, including the call to `setupEdgeToEdgeStatusBar()`.
 2. Remove the keyboard-listener bookkeeping and cleanup that become unused. Keep the guarded Capacitor block only for the App lifecycle and Android back-button listeners.
-3. Keep safe-area layout CSS unchanged so the native UI still has appropriate spacing without plugin calls.
-4. Remove the obsolete biometric plugin dependency and update the lockfile, while retaining the safe `src/lib/biometric.ts` stub.
+3. In `src/lib/statusBar.ts`, delete the `configureCapacitor` function and its invocation, keeping `publishSafeTop()` and `setupEdgeToEdgeStatusBar()` so safe-area measurement still runs with no plugin call.
+4. Remove `@aparajita/capacitor-biometric-auth` from `package.json` dependencies, keeping the safe `src/lib/biometric.ts` stub. `capacitor.config.ts` is not touched.
 
 ## Verification
 - Search the runtime bundle source to confirm no StatusBar, Keyboard, or biometric-plugin startup imports remain.
