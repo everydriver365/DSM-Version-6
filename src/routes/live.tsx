@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconChevronLeft, IconChevronRight, IconMap, IconSearch, IconX } from "@tabler/icons-react";
 import { Geolocation } from "@capacitor/geolocation";
+import { Capacitor } from "@capacitor/core";
 import { supabase } from "../lib/supabaseClient";
 import { PupilAvatar } from "../components/PupilAvatar";
 import { buildTripReport } from "../lib/tripReport";
@@ -691,14 +692,24 @@ function LivePage() {
       return;
     }
 
-    const permission = await Geolocation.requestPermissions();
-    if (permission.location !== "granted") {
-      toast.error("Location permission required for Live Track");
-      setGeoError("Location permission is off — tap to open settings, then try again");
-      setActivePupilId(null);
-      setTrackingPupilName(null);
-      return;
+    // requestPermissions() is native-only — it throws "Not implemented on web".
+    // On web the browser prompts during getCurrentPosition instead.
+    if (Capacitor.isNativePlatform()) {
+      try {
+        const permission = await Geolocation.requestPermissions();
+        if (permission.location !== "granted" && permission.coarseLocation !== "granted") {
+          toast.error("Location permission required for Live Track");
+          setGeoError("Location permission is off — tap to open settings, then try again");
+          setActivePupilId(null);
+          setTrackingPupilName(null);
+          return;
+        }
+      } catch (err) {
+        console.error("[live] requestPermissions failed", err);
+        // Fall through — getCurrentPosition/watchPosition will surface real errors.
+      }
     }
+
 
     // Ask for a one-shot fix first so we get an immediate position.
     try {
