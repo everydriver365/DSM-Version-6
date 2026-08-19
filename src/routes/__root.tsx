@@ -630,7 +630,8 @@ function RootComponent() {
 
         // OneSignal push notifications
         try {
-          const mod: any = await import('@onesignal/onesignal-capacitor-esm');
+          // Runtime import so the web bundle never resolves the native-only plugin
+          const mod: any = await new Function("return import('@onesignal/onesignal-capacitor-esm')")();
           const OneSignal = mod.default;
           OneSignal.initialize('8af9dd53-7122-428e-9267-4e3fc188089d');
           OneSignal.Notifications.requestPermission(true);
