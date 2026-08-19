@@ -910,12 +910,16 @@ function LivePage() {
     const mph = speedMs != null && speedMs > 0 ? Math.round(speedMs * 2.23694) : 0;
     const heading = pos.coords.heading ?? null;
     const accuracy = pos.coords.accuracy ?? 999;
-    if (accuracy > 100) {
-      // GPS accuracy worse than 100m — skip this point
-      console.log('[live] skipping low accuracy point:', accuracy + 'm');
+    setLastFixAccuracy(Math.round(accuracy));
+    const prev = coordsRef.current[coordsRef.current.length - 1];
+    // Always accept the first point of a journey, whatever the accuracy —
+    // otherwise a weak indoor/Wi-Fi fix leaves tracking stuck forever.
+    if (prev && accuracy > 100) {
+      console.log("[live] skipping low accuracy point:", accuracy + "m");
+      setLastGeoWarning(`Weak GPS signal — ${Math.round(accuracy)} m accuracy`);
       return;
     }
-    const prev = coordsRef.current[coordsRef.current.length - 1];
+    setLastGeoWarning(null);
     if (prev) {
       const dMetres = haversineKm(prev, { lat, lng }) * 1000;
       if (dMetres < 5) {
