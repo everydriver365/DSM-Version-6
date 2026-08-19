@@ -738,6 +738,7 @@ function LivePage() {
     setGeoError(null);
     startedAtRef.current = Date.now();
     coordsRef.current = [];
+    resetSnapping();
     setCoordinates([]);
     setDistanceKm(0);
     setOverspeedCount(0);
