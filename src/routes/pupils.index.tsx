@@ -1095,7 +1095,6 @@ function PupilsIndexPage() {
         >
           <IconSearch stroke={1.9} size={18} color="#98A2B3" />
           <input
-            autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search pupils..."
