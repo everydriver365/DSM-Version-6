@@ -138,14 +138,6 @@ function formatDurationMs(ms: number) {
 }
 
 
-function despiaCall(cmd: string) {
-  try {
-    const w = window as any;
-    if (typeof w?.despia === "function") w.despia(cmd);
-  } catch (e) {
-    console.warn("[live] native bridge call failed", cmd, e);
-  }
-}
 
 let gmapsPromise: Promise<any> | null = null;
 
@@ -475,7 +467,6 @@ function LivePage() {
         Geolocation.clearWatch({ id: watchIdRef.current as string });
         watchIdRef.current = null;
       }
-      despiaCall("backgroundlocationoff://");
 
       try {
         silentAudioRef.current?.pause();
@@ -708,10 +699,6 @@ function LivePage() {
       setTrackingPupilName(null);
       return;
     }
-
-    // Enable native background GPS if running in the app wrapper.
-    // Guarded — a missing/throwing bridge must never abort tracking.
-    despiaCall("backgroundlocationon://");
 
     // Ask for a one-shot fix first so we get an immediate position.
     try {
@@ -1038,7 +1025,6 @@ function LivePage() {
         await Geolocation.clearWatch({ id: watchIdRef.current as string });
         watchIdRef.current = null;
       }
-      despiaCall("backgroundlocationoff://");
 
       stopSilentAudio();
       await saveCoordinates(true);
@@ -1541,7 +1527,11 @@ function LivePage() {
           <div style={{ display: "flex", gap: 8 }}>
             <button
               type="button"
-              onClick={() => despiaCall("settingsapp://")}
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  window.location.href = "app-settings:";
+                }
+              }}
               style={{
                 flex: 1,
                 height: 42,
