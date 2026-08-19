@@ -1098,7 +1098,7 @@ function MessagesIndexPage() {
   const router = useRouter();
 
   return (
-    <PageLayout style={{ ...FONT, background: "#F4F6FA", paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))" }}>
+    <PageLayout style={{ ...FONT, background: "#FFFFFF", paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))" }}>
       <div
         style={{
           background: NAVY,
@@ -1228,13 +1228,15 @@ function MessagesIndexPage() {
           {/* Rounded sheet: pill filters + search */}
           <div
             style={{
-              background: "#F4F6FA",
-              borderTopLeftRadius: 26,
-              borderTopRightRadius: 26,
-              marginTop: -20,
-              paddingTop: 16,
+              background: "#FFFFFF",
+              borderTopLeftRadius: 28,
+              borderTopRightRadius: 28,
+              marginTop: -22,
+              paddingTop: 18,
+              minHeight: "60vh",
             }}
           >
+
             <div
               style={{
                 display: "flex",
@@ -1270,22 +1272,23 @@ function MessagesIndexPage() {
                         alignItems: "center",
                         gap: 6,
                         flexShrink: 0,
-                        padding: "10px 14px",
+                        padding: "9px 14px",
                         fontSize: 13.5,
                         fontFamily: "Poppins, sans-serif",
                         cursor: "pointer",
                         border: "none",
                         outline: "none",
-                        background: active ? NAVY : "transparent",
-                        color: active ? "#FFFFFF" : "#7C8899",
+                        background: active ? NAVY : "#F1F4F9",
+                        color: active ? "#FFFFFF" : "#6B7684",
                         borderRadius: 999,
                         fontWeight: active ? 600 : 500,
                         whiteSpace: "nowrap",
                       }}
                     >
-                      <f.Icon size={17} stroke={1.8} color={active ? "#FFFFFF" : "#7C8899"} />
+                      <f.Icon size={16} stroke={1.9} color={active ? "#FFFFFF" : "#8A93A0"} />
                       {f.label}
                     </button>
+
                   );
                 })}
             </div>
@@ -1305,12 +1308,13 @@ function MessagesIndexPage() {
                   gap: 10,
                   flex: 1,
                   minWidth: 0,
-                  background: "#FFFFFF",
-                  borderRadius: 16,
-                  border: `1px solid ${BORDER}`,
-                  padding: "12px 14px",
+                  background: "#F4F6FA",
+                  borderRadius: 14,
+                  border: "none",
+                  padding: "13px 14px",
                 }}
               >
+
                 <IconSearch size={18} color="#98A2B3" stroke={1.9} />
                 <input
                   value={query}
@@ -1811,15 +1815,14 @@ function InboxRow({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        padding: "16px 14px 16px 10px",
+        padding: "14px 14px 14px 8px",
         background: "#FFFFFF",
-        borderRadius: 18,
-        boxShadow: "0 2px 10px rgba(11,31,58,0.05)",
-        marginBottom: 10,
+        borderBottom: "1px solid #F0F3F8",
         cursor: "pointer",
         WebkitTapHighlightColor: "transparent",
       }}
     >
+
       {/* Unread dot rail */}
       <div style={{ width: 10, display: "flex", justifyContent: "center", flexShrink: 0 }}>
         {unread && (
