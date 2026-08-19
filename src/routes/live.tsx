@@ -1356,19 +1356,47 @@ function LivePage() {
       `}</style>
 
 
-      {/* TOP BAR */}
+      {/* TOP BAR — standard DSM header */}
       <div
-        className="absolute top-0 left-0 right-0 z-[1000] flex items-center"
+        className="absolute top-0 left-0 right-0 z-[1000] flex items-center justify-between"
         style={{
           height: 52,
-          paddingLeft: 16,
           paddingTop: "env(safe-area-inset-top, 0px)",
-          background:
-            "linear-gradient(180deg, rgba(11,31,58,0.85) 0%, rgba(11,31,58,0.3) 100%)",
-          backdropFilter: "blur(8px)",
-          WebkitBackdropFilter: "blur(8px)",
+          paddingLeft: 16,
+          paddingRight: 16,
+          background: "#FFFFFF",
         }}
       >
+        <button
+          type="button"
+          aria-label="Back"
+          onClick={() => navigate({ to: '/home' as never, replace: true })}
+          className="flex items-center justify-center"
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 0,
+            background: "#F1F4F8",
+            border: "none",
+            cursor: "pointer",
+            padding: 0,
+          }}
+        >
+          <IconChevronLeft size={20} color="#0B1F3A" stroke={2} />
+        </button>
+
+        <div
+          className="absolute left-1/2 -translate-x-1/2"
+          style={{
+            color: "#000000",
+            fontSize: 17,
+            fontWeight: 700,
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          Live Tracking
+        </div>
+
         <button
           type="button"
           aria-label="End tracking"
@@ -1383,8 +1411,8 @@ function LivePage() {
           className="flex items-center justify-center"
           style={{
             padding: "8px 16px",
-            borderRadius: 8,
-            background: "#FF3B30",
+            borderRadius: 0,
+            background: "#CC2229",
             color: "#FFFFFF",
             fontSize: 13,
             fontWeight: 800,
@@ -1396,27 +1424,8 @@ function LivePage() {
         >
           END
         </button>
-        <div className="flex-1 text-center" style={{ color: "#fff", fontSize: 17, fontWeight: 800 }}>
-          Live tracking
-        </div>
-        <div className="flex items-center justify-center" style={{ width: 52, height: 52 }}>
-          <span
-            aria-label={
-              tracking ? (((currentSpeed ?? 0) > 1) ? "Tracking movement" : "Tracking paused") : "Not tracking"
-            }
-            title={
-              tracking ? (((currentSpeed ?? 0) > 1) ? "Tracking movement" : "Tracking paused") : "Not tracking"
-            }
-            style={{
-              width: 9,
-              height: 9,
-              borderRadius: "50%",
-              background: tracking ? (((currentSpeed ?? 0) > 1) ? "#34C759" : "#FF3B30") : "#8A8A8E",
-              animation: tracking && ((currentSpeed ?? 0) > 1) ? "liveDotPulse 1.4s ease-in-out infinite" : undefined,
-            }}
-          />
-        </div>
       </div>
+
 
       {/* MAP */}
       <div ref={mapRef} className="absolute inset-0" style={{ zIndex: 1 }} />
