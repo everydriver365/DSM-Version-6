@@ -195,7 +195,7 @@ function MessagesIndexPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [view, setView] = useState<"inbox" | "chat" | "rooms">("inbox");
-  const [showSearch, setShowSearch] = useState(false);
+  
   const adminStatus = useAdminGate();
   const isAdmin = adminStatus === "allowed";
   useEffect(() => {
