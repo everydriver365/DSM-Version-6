@@ -1815,15 +1815,14 @@ function InboxRow({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        padding: "16px 14px 16px 10px",
+        padding: "14px 14px 14px 8px",
         background: "#FFFFFF",
-        borderRadius: 18,
-        boxShadow: "0 2px 10px rgba(11,31,58,0.05)",
-        marginBottom: 10,
+        borderBottom: "1px solid #F0F3F8",
         cursor: "pointer",
         WebkitTapHighlightColor: "transparent",
       }}
     >
+
       {/* Unread dot rail */}
       <div style={{ width: 10, display: "flex", justifyContent: "center", flexShrink: 0 }}>
         {unread && (
