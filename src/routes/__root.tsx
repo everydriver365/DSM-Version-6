@@ -24,6 +24,7 @@ import { isBiometricAvailable, authenticate } from "@/lib/biometric";
 import { IconFingerprint } from "@tabler/icons-react";
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
+import OneSignal from "@onesignal/capacitor-plugin";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -630,16 +631,16 @@ function RootComponent() {
 
         // OneSignal push notifications
         try {
-          // Runtime import so the web bundle never resolves the native-only plugin
-          const mod: any = await new Function("return import('@onesignal/onesignal-capacitor-esm')")();
-          const OneSignal = mod.default;
-          OneSignal.initialize('8af9dd53-7122-428e-9267-4e3fc188089d');
-          OneSignal.Notifications.requestPermission(true);
-          OneSignal.Notifications.addEventListener('click', (event: any) => {
-            console.log('[OneSignal] clicked:', event);
+          await OneSignal.initialize({
+            appId: '8af9dd53-7122-428e-9267-4e3fc188089d'
           });
+          await OneSignal.Notifications.requestPermission(true);
+          OneSignal.Notifications.addEventListener('click', (event) => {
+            console.log('[OneSignal] clicked:', JSON.stringify(event));
+          });
+          console.log('[OneSignal] initialized');
         } catch (e) {
-          console.warn('[OneSignal] init failed:', e);
+          console.warn('[OneSignal] failed:', e);
         }
       } catch (e) {
         console.error('[native init] error:', e);
