@@ -716,10 +716,12 @@ function LivePage() {
 
     // Ask for a one-shot fix first so we get an immediate position.
     try {
+      console.log("[live] requesting initial GPS fix...");
       const position = await Geolocation.getCurrentPosition({
         enableHighAccuracy: true,
-        timeout: 10000,
+        timeout: 30000,
       });
+      console.log("[live] got initial fix:", position.coords.latitude, position.coords.longitude, "accuracy:", position.coords.accuracy);
       handlePosition({
         coords: {
           latitude: position.coords.latitude,
