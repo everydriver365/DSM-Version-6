@@ -1538,11 +1538,7 @@ function LivePage() {
           <div style={{ display: "flex", gap: 8 }}>
             <button
               type="button"
-              onClick={() => {
-                if (typeof window !== "undefined") {
-                  window.location.href = "app-settings:";
-                }
-              }}
+              onClick={() => window.open("app-settings:", "_blank")}
               style={{
                 flex: 1,
                 height: 42,
