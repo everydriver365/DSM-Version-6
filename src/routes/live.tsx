@@ -931,14 +931,16 @@ function LivePage() {
           .map((c) => ({ lat: c.lat, lng: c.lng }))
           .filter((c) => typeof c.lat === "number" && typeof c.lng === "number");
         if (rawCoords.length % 5 === 0 || rawCoords.length < 5) {
-          // Snap every 5 points to keep the line following the road
-          const snapped = await snapToRoads(rawCoords);
-          if (polylineRef.current) {
+          // Snap every 5 points to keep the line following the road.
+          // Non-blocking so the marker/stats update immediately.
+          void snapToRoads(rawCoords).then((snapped) => {
+            if (!polylineRef.current) return;
             polylineRef.current.setPath(
               snapped.map((c) => new google.maps.LatLng(c.lat, c.lng)),
             );
-          }
+          });
         } else {
+
           const path = polylineRef.current.getPath();
           path.push(new google.maps.LatLng(lat, lng));
         }
