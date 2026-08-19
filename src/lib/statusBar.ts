@@ -13,17 +13,6 @@ import { getPlatform } from "./platform";
 /** Fallback inset used when the wrapper reports 0 for env(safe-area-inset-top). */
 const FALLBACK_TOP_INSET = 47;
 
-async function configureCapacitor() {
-  try {
-    const { StatusBar, Style } =
-      await import('@capacitor/status-bar');
-    try {
-      await StatusBar.setStyle({
-        style: Style.Dark });
-    } catch {}
-  } catch {}
-}
-
 /**
  * Measures the real safe-area top inset. If the wrapper doesn't expose one
  * (some builds report 0 even when overlaying), we publish a sensible
@@ -48,8 +37,6 @@ export function setupEdgeToEdgeStatusBar() {
   if (platform === "web") return;
 
   document.documentElement.classList.add("dsm-native", `dsm-${platform}`);
-
-  void configureCapacitor();
 
   publishSafeTop();
   window.addEventListener("orientationchange", () =>

@@ -20,11 +20,8 @@ import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
 import { PushPermissionSheet } from "../components/dsm/PushPermissionSheet";
 import { supabase } from "../lib/supabaseClient";
-import { setupEdgeToEdgeStatusBar } from "../lib/statusBar";
 import { isBiometricAvailable, authenticate } from "@/lib/biometric";
 import { IconFingerprint } from "@tabler/icons-react";
-import { StatusBar, Style } from "@capacitor/status-bar";
-import { Keyboard } from "@capacitor/keyboard";
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { Button } from "@/components/ui/button";
@@ -585,55 +582,15 @@ function RootComponent() {
     import("./search").then((m) => m.recordRecentScreen(pathname)).catch(() => {});
   }, [pathname]);
 
-  // Native wrappers: extend the webview under the iOS status bar.
+  // Native wrappers: App lifecycle listeners only.
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
 
-    const keyboardListeners: Promise<{ remove: () => void }>[] = [];
     let appStateSub: Promise<{ remove: () => void }> | undefined;
     let backSub: Promise<{ remove: () => void }> | undefined;
 
     (async () => {
       try {
-        setupEdgeToEdgeStatusBar();
-
-        // Set navy status bar on native
-        try {
-          await StatusBar.setStyle({ style: Style.Dark });
-        } catch (e) {
-          console.warn('StatusBar.setStyle', e);
-        }
-
-        // Keyboard handling
-        try {
-          await Keyboard.setAccessoryBarVisible({ isVisible: true });
-        } catch (e) {
-          console.warn('Keyboard.setAccessoryBarVisible', e);
-        }
-        try {
-          await Keyboard.setScroll({ isDisabled: false });
-        } catch (e) {
-          console.warn('Keyboard.setScroll', e);
-        }
-        try {
-          keyboardListeners.push(
-            Keyboard.addListener("keyboardWillShow", (info) => {
-              document.documentElement.style.setProperty("--keyboard-height", `${info.keyboardHeight}px`);
-            }),
-          );
-        } catch (e) {
-          console.warn('Keyboard.addListener keyboardWillShow', e);
-        }
-        try {
-          keyboardListeners.push(
-            Keyboard.addListener("keyboardWillHide", () => {
-              document.documentElement.style.setProperty("--keyboard-height", "0px");
-            }),
-          );
-        } catch (e) {
-          console.warn('Keyboard.addListener keyboardWillHide', e);
-        }
-
         // App state changes: refresh unread count and clear badge on resume
         try {
           appStateSub = App.addListener("appStateChange", async ({ isActive }) => {
@@ -673,7 +630,7 @@ function RootComponent() {
     })();
 
     return () => {
-      keyboardListeners.forEach((l) => void l.then((s) => s.remove()));
+      
       if (appStateSub) void appStateSub.then((s) => s.remove());
       if (backSub) void backSub.then((s) => s.remove());
     };
