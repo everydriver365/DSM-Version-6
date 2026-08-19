@@ -294,6 +294,8 @@ function LivePage() {
   const [distanceKm, setDistanceKm] = useState(0);
   const [elapsedSec, setElapsedSec] = useState(0);
   const [geoError, setGeoError] = useState<string | null>(null);
+  const [lastFixAccuracy, setLastFixAccuracy] = useState<number | null>(null);
+  const [lastGeoWarning, setLastGeoWarning] = useState<string | null>(null);
 
   const [lessons, setLessons] = useState<LessonRow[]>([]);
   const [lessonsLoaded, setLessonsLoaded] = useState(false);
