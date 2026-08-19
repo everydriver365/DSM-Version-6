@@ -59,9 +59,15 @@ function NewPupilPage() {
   const [importingContact, setImportingContact] = useState(false);
   const [showContactPicker, setShowContactPicker] = useState(false);
   const [contactsList, setContactsList] = useState<any[]>([]);
+  const [contactsPermissionGranted, setContactsPermissionGranted] = useState(false);
   const [contactSearch, setContactSearch] = useState("");
 
   async function importFromContacts() {
+    if (contactsPermissionGranted && contactsList.length > 0) {
+      setShowContactPicker(true);
+      return;
+    }
+
     setImportingContact(true);
     try {
       const { Contacts } = await import("@capacitor-community/contacts");
@@ -74,6 +80,8 @@ function NewPupilPage() {
         );
         return;
       }
+
+      setContactsPermissionGranted(true);
 
       const result = await Contacts.getContacts({
         projection: {
@@ -94,6 +102,7 @@ function NewPupilPage() {
       setImportingContact(false);
     }
   }
+
 
 
   function applyContact(contact: any) {
