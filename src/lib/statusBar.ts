@@ -1,5 +1,5 @@
 /**
- * Edge-to-edge status bar setup for the native wrappers (Despia / Capacitor).
+ * Edge-to-edge status bar setup for the native Capacitor wrapper.
  *
  * Goal: the webview should extend *under* the iOS status bar so our navy
  * headers paint behind the clock/battery, instead of the OS reserving an
@@ -15,12 +15,13 @@ const FALLBACK_TOP_INSET = 47;
 
 async function configureCapacitor() {
   try {
-    const { StatusBar, Style } = await import('@capacitor/status-bar');
-    await StatusBar.setOverlaysWebView({ overlay: true });
-    await StatusBar.setStyle({ style: Style.Dark });
-  } catch {
-    // plugin missing — ignore
-  }
+    const { StatusBar, Style } =
+      await import('@capacitor/status-bar');
+    try {
+      await StatusBar.setStyle({
+        style: Style.Dark });
+    } catch {}
+  } catch {}
 }
 
 /**
