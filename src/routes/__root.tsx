@@ -697,7 +697,12 @@ function RootComponent() {
     let cancelled = false;
 
     (async () => {
-      const available = await isBiometricAvailable();
+      let available = false;
+      try {
+        available = await isBiometricAvailable();
+      } catch {
+        available = false;
+      }
       if (cancelled) return;
       setBiometricEnabled(available);
 
