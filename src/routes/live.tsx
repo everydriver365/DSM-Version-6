@@ -1286,10 +1286,21 @@ function LivePage() {
     return (
       <div className="fixed inset-0 overflow-y-auto" style={{ ...POPPINS, backgroundColor: "#F5F7FA" }}>
         {/* Header */}
-        <div style={{ backgroundColor: "#0B1F3A", color: "#fff", padding: "20px 16px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-          <div style={{ fontSize: 12, letterSpacing: 1, opacity: 0.7, textTransform: "uppercase" }}>Trip report</div>
-          <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>{r.pupilName}</div>
-          <div style={{ fontSize: 13, opacity: 0.8, marginTop: 6 }}>Saved to {r.pupilName}'s record</div>
+        <div style={{ backgroundColor: "#0B1F3A", color: "#fff", paddingTop: "calc(env(safe-area-inset-top, 0px) + 16px)", paddingLeft: 16, paddingRight: 16, paddingBottom: 24, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+            <div>
+              <div style={{ fontSize: 12, letterSpacing: 1, opacity: 0.7, textTransform: "uppercase" }}>Trip report</div>
+              <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>{r.pupilName}</div>
+              <div style={{ fontSize: 13, opacity: 0.8, marginTop: 6 }}>Saved to {r.pupilName}'s record</div>
+            </div>
+            <button
+              onClick={finishReport}
+              aria-label="Close report"
+              style={{ background: "transparent", border: "none", padding: 4, margin: -4, cursor: "pointer", color: "#fff", flexShrink: 0 }}
+            >
+              <IconX size={24} stroke={2} />
+            </button>
+          </div>
         </div>
 
         {/* Summary */}
