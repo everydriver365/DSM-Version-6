@@ -1906,6 +1906,11 @@ function LivePage() {
               >
                 {trackingPupilName ?? selectedPupilName ?? activeLessonPupilName ?? "Manual journey"}
               </div>
+              {coordinates.length === 0 && (lastGeoWarning || lastFixAccuracy != null) && (
+                <div style={{ fontSize: 11, color: "#B45309", fontWeight: 600, lineHeight: 1.3, marginTop: 2 }}>
+                  {lastGeoWarning ?? `Signal accuracy ${lastFixAccuracy} m`}
+                </div>
+              )}
 
             </div>
 
