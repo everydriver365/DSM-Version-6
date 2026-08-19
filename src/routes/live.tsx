@@ -1528,9 +1528,7 @@ function LivePage() {
             <button
               type="button"
               onClick={() => {
-                if (typeof window !== "undefined" && "despia" in window) {
-                  (window as any).despia?.("settingsapp://");
-                } else if (typeof window !== "undefined") {
+                if (typeof window !== "undefined") {
                   window.location.href = "app-settings:";
                 }
               }}
