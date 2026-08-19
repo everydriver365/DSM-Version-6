@@ -1811,21 +1811,29 @@ function InboxRow({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        padding: "14px 16px",
+        padding: "16px 14px 16px 10px",
         background: "#FFFFFF",
-        borderRadius: 8,
-        boxShadow: "0 4px 0 #E4E4E8",
-        marginBottom: 8,
+        borderRadius: 18,
+        boxShadow: "0 2px 10px rgba(11,31,58,0.05)",
+        marginBottom: 10,
         cursor: "pointer",
-        borderLeft: unread ? "3px solid #1877D6" : "3px solid transparent",
         WebkitTapHighlightColor: "transparent",
       }}
     >
+      {/* Unread dot rail */}
+      <div style={{ width: 10, display: "flex", justifyContent: "center", flexShrink: 0 }}>
+        {unread && (
+          <span
+            style={{ width: 8, height: 8, borderRadius: "50%", background: BLUE, flexShrink: 0 }}
+          />
+        )}
+      </div>
+
       {/* Avatar */}
       <div
         style={{
-          width: 44,
-          height: 44,
+          width: 50,
+          height: 50,
           borderRadius: "50%",
           flexShrink: 0,
           overflow: "hidden",
@@ -1834,7 +1842,7 @@ function InboxRow({
           alignItems: "center",
           justifyContent: "center",
           color: "#FFFFFF",
-          fontSize: 16,
+          fontSize: 17,
           fontWeight: 700,
         }}
       >
@@ -1842,10 +1850,10 @@ function InboxRow({
           <img
             src={item.photo}
             alt={item.name}
-            style={{ width: 44, height: 44, objectFit: "cover" }}
+            style={{ width: 50, height: 50, objectFit: "cover" }}
           />
         ) : item.system ? (
-          <IconSpeakerphone size={22} color="#FFFFFF" stroke={1.8} />
+          <IconSpeakerphone size={24} color="#FFFFFF" stroke={1.8} />
         ) : (
           item.initials
         )}
@@ -1853,59 +1861,28 @@ function InboxRow({
 
       {/* Centre */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 8,
-            minWidth: 0,
-          }}
-        >
+        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
           <div
             style={{
-              fontSize: 14,
-              fontWeight: unread ? 700 : 500,
+              fontSize: 15,
+              fontWeight: unread ? 700 : 600,
               color: NAVY,
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
+              minWidth: 0,
               fontFamily: "Poppins, sans-serif",
             }}
           >
             {item.name}
           </div>
-          <div
-            style={{
-              fontSize: 11,
-              fontWeight: unread ? 700 : 500,
-              color: unread ? BLUE : "#8A94A6",
-              flexShrink: 0,
-              fontFamily: "Poppins, sans-serif",
-            }}
-          >
-            {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
-          </div>
-        </div>
-        <div
-          style={{
-            fontSize: 13,
-            color: "#5A6270",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            fontFamily: "Poppins, sans-serif",
-          }}
-        >
-          {item.preview}
-        </div>
-        <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
           <span
             style={{
-              borderRadius: 8,
-              fontSize: 10,
+              borderRadius: 6,
+              fontSize: 10.5,
               fontWeight: 600,
-              padding: "2px 8px",
+              padding: "2px 7px",
+              flexShrink: 0,
               fontFamily: "Poppins, sans-serif",
               background: tag.bg,
               color: tag.color,
@@ -1914,21 +1891,33 @@ function InboxRow({
             {tag.label}
           </span>
         </div>
+        <div
+          style={{
+            fontSize: 13.5,
+            color: "#67717F",
+            marginTop: 3,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          {item.preview}
+        </div>
       </div>
 
       {/* Right */}
-      <div style={{ display: "flex", alignItems: "center", flexShrink: 0, gap: 8 }}>
-        {unread && (
-          <span
-            style={{
-              width: 7,
-              height: 7,
-              borderRadius: "50%",
-              background: "#1877D6",
-              flexShrink: 0,
-            }}
-          />
-        )}
+      <div style={{ display: "flex", alignItems: "center", flexShrink: 0, gap: 6 }}>
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: unread ? 600 : 500,
+            color: unread ? BLUE : "#98A2B3",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
+        </div>
         <button
           type="button"
           aria-label="Message options"
@@ -1945,10 +1934,11 @@ function InboxRow({
             flexShrink: 0,
           }}
         >
-          <IconDots size={18} color="#8A94A6" stroke={1.8} />
+          <IconDots size={18} color="#98A2B3" stroke={2.2} />
         </button>
       </div>
     </div>
+
   );
 }
 
