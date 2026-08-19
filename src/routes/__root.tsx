@@ -24,7 +24,7 @@ import { isBiometricAvailable, authenticate } from "@/lib/biometric";
 import { IconFingerprint } from "@tabler/icons-react";
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
-import OneSignal from "@onesignal/onesignal-capacitor-esm";
+
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { EventToastController, emitLiveEvent, type LiveEventKind } from "../components/dsm/EventToast";
@@ -630,9 +630,11 @@ function RootComponent() {
 
         // OneSignal push notifications
         try {
+          const mod: any = await import('@onesignal/onesignal-capacitor-esm');
+          const OneSignal = mod.default;
           OneSignal.initialize('8af9dd53-7122-428e-9267-4e3fc188089d');
           OneSignal.Notifications.requestPermission(true);
-          OneSignal.Notifications.addEventListener('click', (event) => {
+          OneSignal.Notifications.addEventListener('click', (event: any) => {
             console.log('[OneSignal] clicked:', event);
           });
         } catch (e) {
