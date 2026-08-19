@@ -1308,12 +1308,13 @@ function MessagesIndexPage() {
                   gap: 10,
                   flex: 1,
                   minWidth: 0,
-                  background: "#FFFFFF",
-                  borderRadius: 16,
-                  border: `1px solid ${BORDER}`,
-                  padding: "12px 14px",
+                  background: "#F4F6FA",
+                  borderRadius: 14,
+                  border: "none",
+                  padding: "13px 14px",
                 }}
               >
+
                 <IconSearch size={18} color="#98A2B3" stroke={1.9} />
                 <input
                   value={query}
