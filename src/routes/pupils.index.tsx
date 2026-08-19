@@ -790,7 +790,7 @@ function PupilsIndexPage() {
 
 
   return (
-    <PageLayout className="pb-24 pb-safe relative" style={{ ...POPPINS, background: "#F4F6FA" }}>
+    <PageLayout className="pb-24 pb-safe relative" style={{ ...POPPINS, background: "#FFFFFF" }}>
       {/* Navy hero header */}
       <div
         style={{
