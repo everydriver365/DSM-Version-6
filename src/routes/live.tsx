@@ -263,6 +263,7 @@ function LivePage() {
   const markerRef = useRef<any>(null);
   const polylineRef = useRef<any>(null);
   const watchIdRef = useRef<string | null>(null);
+  const watchErrorShownRef = useRef(false);
   const silentAudioRef = useRef<HTMLAudioElement | null>(null);
   const isStoppingRef = useRef(false);
   const centeredRef = useRef(false);
@@ -294,6 +295,8 @@ function LivePage() {
   const [distanceKm, setDistanceKm] = useState(0);
   const [elapsedSec, setElapsedSec] = useState(0);
   const [geoError, setGeoError] = useState<string | null>(null);
+  const [lastFixAccuracy, setLastFixAccuracy] = useState<number | null>(null);
+  const [lastGeoWarning, setLastGeoWarning] = useState<string | null>(null);
 
   const [lessons, setLessons] = useState<LessonRow[]>([]);
   const [lessonsLoaded, setLessonsLoaded] = useState(false);
@@ -714,7 +717,25 @@ function LivePage() {
     }
 
 
-    // Ask for a one-shot fix first so we get an immediate position.
+    // Reset state BEFORE the first fix so the initial position is kept.
+    setGeoError(null);
+    setLastGeoWarning(null);
+    setLastFixAccuracy(null);
+    startedAtRef.current = Date.now();
+    coordsRef.current = [];
+    setCoordinates([]);
+    setDistanceKm(0);
+    setOverspeedCount(0);
+    setOverspeedEvents([]);
+    setElapsedSec(0);
+    routeIdRef.current = null;
+
+    // Start tracking immediately — never block the UI on the route insert
+    setTracking(true);
+    startSilentAudio();
+    startWatching();
+
+    // Ask for a one-shot fix too so we get an immediate position.
     try {
       console.log("[live] requesting initial GPS fix...");
       const position = await Geolocation.getCurrentPosition({
@@ -734,25 +755,11 @@ function LivePage() {
         },
         timestamp: position.timestamp,
       } as GeolocationPosition);
-    } catch (err) {
+    } catch (err: any) {
       console.error("[live] initial fix failed", err);
+      setLastGeoWarning(err?.message ? String(err.message) : "Waiting for a GPS fix…");
       // Continue — the watch will deliver the first fix.
     }
-
-    setGeoError(null);
-    startedAtRef.current = Date.now();
-    coordsRef.current = [];
-    setCoordinates([]);
-    setDistanceKm(0);
-    setOverspeedCount(0);
-    setOverspeedEvents([]);
-    setElapsedSec(0);
-    routeIdRef.current = null;
-
-    // Start tracking immediately — never block the UI on the route insert
-    setTracking(true);
-    startSilentAudio();
-    startWatching();
 
 
     // Create the route record in the background
@@ -802,14 +809,22 @@ function LivePage() {
     watchIdRef.current = await Geolocation.watchPosition(
       {
         enableHighAccuracy: true,
-        timeout: 10000,
+        timeout: 30000,
       },
-      (position, err) => {
+      (position, err: any) => {
         console.log("[live] watch position callback fired, position:", position?.coords?.latitude, "err:", err);
         if (err) {
           console.error("[live] geolocation error:", err);
+          const msg = err?.message ? String(err.message) : "Location unavailable";
+          setLastGeoWarning(msg);
+          if (!watchErrorShownRef.current) {
+            watchErrorShownRef.current = true;
+            setGeoError(msg + " — check location permission, then try again");
+            toast.error(msg);
+          }
           return;
         }
+        watchErrorShownRef.current = false;
         if (position) {
           handlePosition({
             coords: {
@@ -895,12 +910,16 @@ function LivePage() {
     const mph = speedMs != null && speedMs > 0 ? Math.round(speedMs * 2.23694) : 0;
     const heading = pos.coords.heading ?? null;
     const accuracy = pos.coords.accuracy ?? 999;
-    if (accuracy > 100) {
-      // GPS accuracy worse than 100m — skip this point
-      console.log('[live] skipping low accuracy point:', accuracy + 'm');
+    setLastFixAccuracy(Math.round(accuracy));
+    const prev = coordsRef.current[coordsRef.current.length - 1];
+    // Always accept the first point of a journey, whatever the accuracy —
+    // otherwise a weak indoor/Wi-Fi fix leaves tracking stuck forever.
+    if (prev && accuracy > 100) {
+      console.log("[live] skipping low accuracy point:", accuracy + "m");
+      setLastGeoWarning(`Weak GPS signal — ${Math.round(accuracy)} m accuracy`);
       return;
     }
-    const prev = coordsRef.current[coordsRef.current.length - 1];
+    setLastGeoWarning(null);
     if (prev) {
       const dMetres = haversineKm(prev, { lat, lng }) * 1000;
       if (dMetres < 5) {
@@ -1887,6 +1906,11 @@ function LivePage() {
               >
                 {trackingPupilName ?? selectedPupilName ?? activeLessonPupilName ?? "Manual journey"}
               </div>
+              {coordinates.length === 0 && (lastGeoWarning || lastFixAccuracy != null) && (
+                <div style={{ fontSize: 11, color: "#B45309", fontWeight: 600, lineHeight: 1.3, marginTop: 2 }}>
+                  {lastGeoWarning ?? `Signal accuracy ${lastFixAccuracy} m`}
+                </div>
+              )}
 
             </div>
 
