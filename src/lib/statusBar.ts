@@ -15,12 +15,13 @@ const FALLBACK_TOP_INSET = 47;
 
 async function configureCapacitor() {
   try {
-    const { StatusBar, Style } = await import('@capacitor/status-bar');
-    await StatusBar.setOverlaysWebView({ overlay: true });
-    await StatusBar.setStyle({ style: Style.Dark });
-  } catch {
-    // plugin missing — ignore
-  }
+    const { StatusBar, Style } =
+      await import('@capacitor/status-bar');
+    try {
+      await StatusBar.setStyle({
+        style: Style.Dark });
+    } catch {}
+  } catch {}
 }
 
 /**
