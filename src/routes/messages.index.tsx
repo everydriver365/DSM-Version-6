@@ -1272,22 +1272,23 @@ function MessagesIndexPage() {
                         alignItems: "center",
                         gap: 6,
                         flexShrink: 0,
-                        padding: "10px 14px",
+                        padding: "9px 14px",
                         fontSize: 13.5,
                         fontFamily: "Poppins, sans-serif",
                         cursor: "pointer",
                         border: "none",
                         outline: "none",
-                        background: active ? NAVY : "transparent",
-                        color: active ? "#FFFFFF" : "#7C8899",
+                        background: active ? NAVY : "#F1F4F9",
+                        color: active ? "#FFFFFF" : "#6B7684",
                         borderRadius: 999,
                         fontWeight: active ? 600 : 500,
                         whiteSpace: "nowrap",
                       }}
                     >
-                      <f.Icon size={17} stroke={1.8} color={active ? "#FFFFFF" : "#7C8899"} />
+                      <f.Icon size={16} stroke={1.9} color={active ? "#FFFFFF" : "#8A93A0"} />
                       {f.label}
                     </button>
+
                   );
                 })}
             </div>
