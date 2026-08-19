@@ -1080,8 +1080,8 @@ function PupilsIndexPage() {
         })}
       </div>
 
-      {/* IconSearch input */}
-      {searchOpen && (
+      {/* Persistent search input */}
+      {true && (
         <div
           style={{
             margin: '4px 16px 10px',
