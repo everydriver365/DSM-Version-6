@@ -1084,17 +1084,16 @@ function PupilsIndexPage() {
       {searchOpen && (
         <div
           style={{
-            margin: '12px 16px',
-            background: '#fff',
-            borderRadius: 8,
-            boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
-            padding: '10px 14px',
+            margin: '4px 16px 10px',
+            background: '#F4F6FA',
+            borderRadius: 14,
+            padding: '12px 14px',
             display: 'flex',
             alignItems: 'center',
             gap: 10,
           }}
         >
-          <IconSearch stroke={1.5} size={16} color="#9CA3AF" />
+          <IconSearch stroke={1.9} size={18} color="#98A2B3" />
           <input
             autoFocus
             value={query}
@@ -1112,6 +1111,9 @@ function PupilsIndexPage() {
           />
         </div>
       )}
+      </div>
+
+
 
 
 
