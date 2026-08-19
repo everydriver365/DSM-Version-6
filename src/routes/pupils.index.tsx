@@ -790,7 +790,7 @@ function PupilsIndexPage() {
 
 
   return (
-    <PageLayout className="pb-24 pb-safe relative" style={{ ...POPPINS, background: "#FFFFFF" }}>
+    <PageLayout className="pb-24 pb-safe relative" style={{ ...POPPINS, background: "#F4F6FA" }}>
       {/* Navy hero header */}
       <div
         style={{
@@ -1080,8 +1080,8 @@ function PupilsIndexPage() {
         })}
       </div>
 
-      {/* Persistent search input */}
-      {true && (
+      {/* IconSearch input */}
+      {searchOpen && (
         <div
           style={{
             margin: '4px 16px 10px',
@@ -1095,6 +1095,7 @@ function PupilsIndexPage() {
         >
           <IconSearch stroke={1.9} size={18} color="#98A2B3" />
           <input
+            autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search pupils..."
