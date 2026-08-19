@@ -808,14 +808,22 @@ function LivePage() {
     watchIdRef.current = await Geolocation.watchPosition(
       {
         enableHighAccuracy: true,
-        timeout: 10000,
+        timeout: 30000,
       },
-      (position, err) => {
+      (position, err: any) => {
         console.log("[live] watch position callback fired, position:", position?.coords?.latitude, "err:", err);
         if (err) {
           console.error("[live] geolocation error:", err);
+          const msg = err?.message ? String(err.message) : "Location unavailable";
+          setLastGeoWarning(msg);
+          if (!watchErrorShownRef.current) {
+            watchErrorShownRef.current = true;
+            setGeoError(msg + " — check location permission, then try again");
+            toast.error(msg);
+          }
           return;
         }
+        watchErrorShownRef.current = false;
         if (position) {
           handlePosition({
             coords: {
