@@ -805,6 +805,7 @@ function LivePage() {
         timeout: 10000,
       },
       (position, err) => {
+        console.log("[live] watch position callback fired, position:", position?.coords?.latitude, "err:", err);
         if (err) {
           console.error("[live] geolocation error:", err);
           return;
