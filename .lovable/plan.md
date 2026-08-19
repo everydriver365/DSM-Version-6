@@ -1,27 +1,22 @@
-# Live Track page — what actually changed
+# Restore the Live Track pupil row
 
-## What I checked
+## Correction
 
-I compared the current `src/routes/live.tsx` against the version that existed before my last two turns.
+You are right: the required bottom panel is the one in your screenshot — `TRACKING`, the selected pupil’s name, and the distance/duration chip. It must remain visible while tracking.
 
-The only changes I made were:
+The JSX for that row is still present, but its pupil label currently relies only on the temporary `trackingPupilName` state. That can leave the row without the selected pupil identity if that transient state is lost or not yet available.
 
-1. The top header block (height 52 -> min-height 56, safe-area top padding + 10px, bottom padding 10px).
-2. Re-adding `/live` to the no-bottom-nav list in `src/routes/__root.tsx` so the tracking page is full-screen again.
+## Change
 
-The bottom tracking panel markup (the white card with "TRACKING / pupil name" and the grey mi / duration chip) has **not** been edited in either of those turns. Its last content change was on 29 July, long before this session. So I did not change the bottom half — nothing of mine needs reverting there.
+- Update only `src/routes/live.tsx`.
+- Keep the existing bottom white tracking panel and its current layout.
+- Restore the pupil-name display reliably by resolving the name from the selected pupil (`activePupilId`) as well as `trackingPupilName`, with the active lesson’s pupil name as an additional fallback.
+- Keep the `TRACKING` label and the distance/duration chip exactly as shown.
+- Ignore the floating native FAB.
+- Do not change the header, map, route line, tracking controls, stats calculation, or tracking logic.
 
-The tall empty white area in your screenshot comes from the panel itself: when tracking, it renders only the one row plus its padding, and the panel is anchored full-width to the bottom of the screen. The dark round button over it is the native/iOS overlay you said to ignore.
+## Verification
 
-## Options
-
-Since the panel is at its historical state, the question is what "how it was" means:
-
-- Option A — leave it exactly as is (no code change). Recommended if the layout is fine and only the floating button bothered you.
-- Option B — if the panel used to be shorter / show more (e.g. speed, road name, overspeed count under the pupil row), tell me which elements you remember and I will restore or rebuild that row inside the same panel.
-- Option C — a specific earlier version: if you can point at a chat message or history entry where the panel looked right, I will diff that exact version of `live.tsx` and restore only the bottom panel block from it.
-
-## Technical notes
-
-- Bottom panel: `src/routes/live.tsx`, the `{/* BOTTOM PANEL */}` block (~line 1762) — absolutely positioned, `borderRadius: 8px 8px 0 0`, `padding: 10px 20px`, `paddingBottom: calc(20px + safe-area)`.
-- Any restore would be scoped to that block only; the map, polyline, and tracking logic stay untouched.
+- Start tracking after selecting a pupil and confirm the panel shows `TRACKING` plus that pupil’s name.
+- Confirm the distance and duration chip remains on the right.
+- Confirm the shared DSM bottom navigation remains hidden on `/live`.
