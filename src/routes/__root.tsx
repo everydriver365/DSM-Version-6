@@ -33,6 +33,9 @@ import { Toaster } from "@/components/ui/sonner";
 
 
 
+
+
+
 function getNotificationUrl(notification: any): string {
   if (notification.reference_type === "course_booking") {
     return notification.reference_id ? `/bookings?selected=${notification.reference_id}` : "/bookings";
@@ -622,6 +625,22 @@ function RootComponent() {
           });
         } catch (e) {
           console.warn('App.addListener backButton', e);
+        }
+
+        // OneSignal push notifications
+        try {
+          // Runtime import so the web bundle never tries to resolve the native-only plugin
+          const mod: any = await new Function("return import('onesignal-capacitor')")();
+          const OneSignal = mod.default;
+          OneSignal.setAppId('8af9dd53-7122-428e-9267-4e3fc188089d');
+          OneSignal.setNotificationOpenedHandler((notification: any) => {
+            console.log('[OneSignal] opened:', notification);
+          });
+          OneSignal.promptForPushNotificationsWithUserResponse((accepted: any) => {
+            console.log('[OneSignal] permission:', accepted);
+          });
+        } catch (e) {
+          console.warn('[OneSignal] init failed:', e);
         }
       } catch (e) {
         console.error('[native init] error:', e);
