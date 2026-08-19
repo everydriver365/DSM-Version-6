@@ -892,9 +892,9 @@ function LivePage() {
     const mph = speedMs != null && speedMs > 0 ? Math.round(speedMs * 2.23694) : 0;
     const heading = pos.coords.heading ?? null;
     const accuracy = pos.coords.accuracy ?? 999;
-    if (accuracy > 50) {
-      // GPS accuracy worse than 50m — skip this point
-      console.log("[live] skipping low accuracy point:", accuracy + "m");
+    if (accuracy > 100) {
+      // GPS accuracy worse than 100m — skip this point
+      console.log('[live] skipping low accuracy point:', accuracy + 'm');
       return;
     }
     const prev = coordsRef.current[coordsRef.current.length - 1];
