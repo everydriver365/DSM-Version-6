@@ -2,7 +2,7 @@ import { SkeletonCard } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
-import { IconAdjustmentsHorizontal, IconArrowsUpDown, IconBell, IconChevronLeft, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
+import { IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { tapLight, tapMedium, hapticSuccess } from "@/lib/haptics";
@@ -790,143 +790,19 @@ function PupilsIndexPage() {
 
 
   return (
-    <PageLayout className="pb-24 pb-safe relative" style={{ ...POPPINS, background: "#F4F6FA" }}>
-      {/* Navy hero header */}
-      <div
-        style={{
-          background: "#0B1F3A",
-          color: "#fff",
-          padding: "calc(max(env(safe-area-inset-top, 0px), 20px) + 18px) 20px 34px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-          <button
-            type="button"
-            aria-label="Back"
-            onClick={() => navigate({ to: "/home" as never })}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.10)",
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              padding: 0,
-              flexShrink: 0,
-              marginTop: 4,
-            }}
-          >
-            <IconChevronLeft size={20} stroke={2} color="#FFFFFF" />
-          </button>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <h1
-              style={{
-                fontSize: 30,
-                fontWeight: 700,
-                color: "#fff",
-                margin: 0,
-                letterSpacing: "-0.02em",
-                fontFamily: "Poppins, sans-serif",
-                lineHeight: 1.15,
-              }}
-            >
-              Pupils
-            </h1>
-            <div
-              style={{
-                fontSize: 13,
-                color: "rgba(255,255,255,0.66)",
-                marginTop: 6,
-                lineHeight: 1.45,
-                maxWidth: 240,
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              Manage your pupils and track their progress.
-            </div>
-          </div>
-          <div style={{ display: "flex", gap: 10, alignItems: "center", flexShrink: 0, marginTop: 2 }}>
-            <button
-              type="button"
-              aria-label="Notifications"
-              onClick={() => navigate({ to: "/notifications" as never })}
-              style={{
-                position: "relative",
-                width: 44,
-                height: 44,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.10)",
-                border: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                padding: 0,
-              }}
-            >
-              <IconBell size={20} stroke={1.8} color="#FFFFFF" />
-              {unreadCount > 0 && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 2,
-                    right: 0,
-                    minWidth: 18,
-                    height: 18,
-                    padding: "0 5px",
-                    borderRadius: 999,
-                    background: "#CC2229",
-                    color: "#fff",
-                    fontSize: 10.5,
-                    fontWeight: 700,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontFamily: "Poppins, sans-serif",
-                  }}
-                >
-                  {unreadCount}
-                </span>
-              )}
-            </button>
-            <button
-              type="button"
-              aria-label="Menu"
-              onClick={() => navigate({ to: "/more" as never })}
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.10)",
-                border: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                padding: 0,
-              }}
-            >
-              <IconAdjustmentsHorizontal size={20} stroke={1.8} color="#FFFFFF" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Rounded sheet: count + actions + tabs */}
-      <div
-        style={{
-          background: "#FFFFFF",
-          borderTopLeftRadius: 28,
-          borderTopRightRadius: 28,
-          marginTop: -22,
-          paddingTop: 6,
-          paddingBottom: 10,
-        }}
-      >
-
+    <PageLayout className="pb-24 pb-safe relative" style={POPPINS}>
+      <InstructorTopBar
+        firstName=""
+        pageTitle="Pupils"
+        unreadCount={unreadCount}
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: TOP_BAR_SPACER }} />
 
 
 
@@ -1021,13 +897,13 @@ function PupilsIndexPage() {
       {/* Status filter tabs */}
       <div
         style={{
-          margin: "4px 16px 8px",
+          margin: "12px 16px",
           display: "flex",
-          background: "#F4F6FA",
-          borderRadius: 12,
-          padding: 4,
+          background: "#FFFFFF",
+          borderRadius: 8,
+          boxShadow: "0 4px 0 #E4E4E8",
+          padding: 3,
           overflowX: "auto",
-
           scrollbarWidth: "none",
         }}
       >
@@ -1084,16 +960,17 @@ function PupilsIndexPage() {
       {searchOpen && (
         <div
           style={{
-            margin: '4px 16px 10px',
-            background: '#F4F6FA',
-            borderRadius: 14,
-            padding: '12px 14px',
+            margin: '12px 16px',
+            background: '#fff',
+            borderRadius: 8,
+            boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+            padding: '10px 14px',
             display: 'flex',
             alignItems: 'center',
             gap: 10,
           }}
         >
-          <IconSearch stroke={1.9} size={18} color="#98A2B3" />
+          <IconSearch stroke={1.5} size={16} color="#9CA3AF" />
           <input
             autoFocus
             value={query}
@@ -1111,9 +988,6 @@ function PupilsIndexPage() {
           />
         </div>
       )}
-      </div>
-
-
 
 
 
