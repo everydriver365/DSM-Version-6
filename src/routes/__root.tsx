@@ -637,6 +637,26 @@ function RootComponent() {
             console.log('[OneSignal] clicked:', JSON.stringify(event));
           });
           console.log('[OneSignal] initialized');
+
+          // Save OneSignal Player ID to DB
+          try {
+            const deviceState = await OneSignal.User.getPushSubscription();
+            const playerId = deviceState.id;
+            if (playerId) {
+              const { data: { user } } = await supabase.auth.getUser();
+              if (user) {
+                await supabase
+                  .from('instructors')
+                  .update({
+                    onesignal_player_id: playerId
+                  })
+                  .eq('id', user.id);
+                console.log('[OneSignal] player ID saved:', playerId);
+              }
+            }
+          } catch (e) {
+            console.warn('[OneSignal] player ID save failed:', e);
+          }
         } catch (e) {
           console.warn('[OneSignal] failed:', e);
         }
