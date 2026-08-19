@@ -1228,13 +1228,15 @@ function MessagesIndexPage() {
           {/* Rounded sheet: pill filters + search */}
           <div
             style={{
-              background: "#F4F6FA",
-              borderTopLeftRadius: 26,
-              borderTopRightRadius: 26,
-              marginTop: -20,
-              paddingTop: 16,
+              background: "#FFFFFF",
+              borderTopLeftRadius: 28,
+              borderTopRightRadius: 28,
+              marginTop: -22,
+              paddingTop: 18,
+              minHeight: "60vh",
             }}
           >
+
             <div
               style={{
                 display: "flex",
