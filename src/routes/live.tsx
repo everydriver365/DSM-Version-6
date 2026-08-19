@@ -286,6 +286,17 @@ function LivePage() {
   const roadNameRef = useRef<string | null>(null);
   const lastRoadFetchRef = useRef<{ lat: number; lng: number } | null>(null);
 
+  // --- Road snapping (display only) -------------------------------------
+  // snappedPathRef holds road-matched geometry for the confirmed part of the
+  // drive; pendingRawRef holds the newest raw fixes that have not been snapped
+  // yet. The drawn polyline is always snapped.concat(pendingRaw) so the line
+  // reaches the live position without lagging behind the marker.
+  const snappedPathRef = useRef<{ lat: number; lng: number }[]>([]);
+  const pendingRawRef = useRef<{ lat: number; lng: number }[]>([]);
+  const lastSnapAnchorRef = useRef<{ lat: number; lng: number } | null>(null);
+  const snapInFlightRef = useRef(false);
+  const snapIdleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const [tracking, setTracking] = useState(false);
   const [coordinates, setCoordinates] = useState<Coord[]>([]);
   const [currentSpeed, setCurrentSpeed] = useState<number | null>(null);
