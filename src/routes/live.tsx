@@ -1360,8 +1360,9 @@ function LivePage() {
       <div
         className="absolute top-0 left-0 right-0 z-[1000] flex items-center justify-between"
         style={{
-          height: 52,
-          paddingTop: "env(safe-area-inset-top, 0px)",
+          minHeight: 56,
+          paddingTop: "calc(env(safe-area-inset-top, 0px) + 10px)",
+          paddingBottom: 10,
           paddingLeft: 16,
           paddingRight: 16,
           background: "#FFFFFF",

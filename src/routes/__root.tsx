@@ -530,6 +530,7 @@ function RootComponent() {
     "/resetpassword",
     "/onboarding",
     "/livesession",
+    "/live",
     "/satnav",
     "/features",
     "/pricing",
