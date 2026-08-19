@@ -351,6 +351,18 @@ function LivePage() {
     [lessons, activeLessonId],
   );
 
+  const selectedPupilName = useMemo(() => {
+    if (!activePupilId) return null;
+    const pupil = allPupils.find((item) => item.id === activePupilId);
+    if (!pupil) return activePupils.find((item) => item.id === activePupilId)?.name ?? null;
+    return (
+      pupil.name ||
+      `${pupil.first_name ?? ""} ${pupil.last_name ?? ""}`.trim() ||
+      null
+    );
+  }, [activePupilId, activePupils, allPupils]);
+  const activeLessonPupilName = activeLesson?.pupils?.name ?? null;
+
   // Tick elapsed
   useEffect(() => {
     if (!tracking) return;
@@ -1818,7 +1830,7 @@ function LivePage() {
                   opacity: coordinates.length === 0 ? 0.6 : 1,
                 }}
               >
-                {trackingPupilName ?? "Manual journey"}
+                {trackingPupilName ?? selectedPupilName ?? activeLessonPupilName ?? "Manual journey"}
               </div>
 
             </div>
