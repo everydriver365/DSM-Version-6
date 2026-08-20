@@ -3,8 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { IconAlertTriangle, IconChevronLeft, IconClock, IconMapPin, IconNews, IconStar } from "@tabler/icons-react";
 import { sanitizeNewsTitle } from "../lib/newsText";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
-import { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import {
   NEWS_CATEGORIES,
   categoryOf,
@@ -370,40 +369,8 @@ function NewsIndexPage() {
   };
 
   return (
-    <PageLayout style={{ background: "#DCE4F0" }}>
-      {/* Header */}
-      <div
-        className="flex items-center px-4"
-        style={{
-          gap: 12,
-          height: TOP_BAR_SPACER,
-          paddingTop: "max(env(safe-area-inset-top, 0px), 24px)",
-          backgroundColor: "#0B1F3A",
-          borderRadius: "0 0 8px 8px",
-        }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{
-            width: 34,
-            height: 34,
-            borderRadius: 999,
-            flexShrink: 0,
-            border: "none",
-            background: "rgba(255,255,255,0.08)",
-            color: "#FFFFFF",
-            cursor: "pointer",
-          }}
-        >
-          <IconChevronLeft size={20} />
-        </button>
-        <span className="text-white" style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.4px", ...POPPINS }}>
-          News
-        </span>
-      </div>
+    <DSMTopSheet title="News">
+    <div style={{ background: "#DCE4F0", minHeight: "100%" }}>
 
       {/* Category chips */}
       <div
@@ -581,6 +548,7 @@ function NewsIndexPage() {
           </div>
         )}
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }

@@ -4,7 +4,6 @@ import { IconAlertTriangle, IconCalendar, IconCircle, IconFileText, IconGauge, I
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/vehicle")({
   head: () => ({ meta: [{ title: "My vehicle — DSM by EveryDriver" }] }),
