@@ -253,7 +253,7 @@ export function MarketingNav() {
                 color: "#fff",
                 textAlign: "center",
                 padding: "12px 16px",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 fontWeight: tokens.fontWeight.bold,
                 textDecoration: "none",
                 fontSize: 14}}
@@ -453,7 +453,7 @@ function MegaPanel({
         </div>
       </div>
 
-      <div style={{ background: PANEL_BG, borderRadius: 8, padding: "24px 26px", marginLeft: -8 }}>
+      <div style={{ background: PANEL_BG, borderRadius: tokens.radiusCard, padding: "24px 26px", marginLeft: -8 }}>
         <SectionLabel>{rightTitle}</SectionLabel>
         <Link
           to={rightHref}
@@ -499,7 +499,7 @@ function MegaPanel({
                 background: ACCENT,
                 color: "#fff",
                 padding: "9px 16px",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 fontSize: tokens.fontSize.base,
                 fontWeight: 700}}
             >

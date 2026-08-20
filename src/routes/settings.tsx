@@ -705,7 +705,7 @@ function SettingsPage() {
         <div
           style={{
             background: tokens.white,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 18,
             boxShadow: "0 4px 0 #E4E4E8",
             display: "flex",
@@ -774,7 +774,7 @@ function SettingsPage() {
             style={{
               background: "#F2F2F7",
               border: "none",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "10px 16px",
               fontSize: 12.5,
               fontWeight: tokens.fontWeight.bold,
@@ -958,7 +958,7 @@ function SettingsPage() {
                   style={{
                     width: 44,
                     height: 26,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     background: sendLessonReminders ? "#1877D6" : "#D1D5DB",
                     border: "none",
                     position: "relative",
@@ -996,7 +996,7 @@ function SettingsPage() {
                       ...POPPINS,
                       padding: "10px 12px",
                       border: "1px solid #E2E6ED",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       background: tokens.white,
                     }}
                   >
@@ -1049,7 +1049,7 @@ function SettingsPage() {
                     style={{
                       width: 72,
                       height: 36,
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       border: "1px solid #E2E6ED",
                       padding: "0 8px",
                       ...POPPINS,
@@ -1074,7 +1074,7 @@ function SettingsPage() {
                   className="text-[13px] text-[#0B1F3A]"
                   style={{
                     height: 36,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     border: "1px solid #E2E6ED",
                     padding: "0 8px",
                     backgroundColor: "#fff",
@@ -1111,7 +1111,7 @@ function SettingsPage() {
                   className="text-[13px] text-[#0B1F3A]"
                   style={{
                     height: 36,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     border: "1px solid #E2E6ED",
                     padding: "0 8px",
                     backgroundColor: "#fff",
@@ -1155,7 +1155,7 @@ function SettingsPage() {
                       void saveBuffers(v);
                     }}
                     className="text-[13px]"
-                    style={{ height: 36, borderRadius: 8, border: "1px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: tokens.navy, ...POPPINS }}
+                    style={{ height: 36, borderRadius: 12, border: "1px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: tokens.navy, ...POPPINS }}
                   >
                     {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
                       <option key={m} value={m}>{m} min</option>
@@ -1183,7 +1183,7 @@ function SettingsPage() {
                   className="text-[13px] text-[#0B1F3A]"
                   style={{
                     height: 36,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     border: "1px solid #E2E6ED",
                     padding: "0 8px",
                     backgroundColor: "#fff",
@@ -1204,7 +1204,7 @@ function SettingsPage() {
                 className="w-full text-[14px] font-semibold text-white mt-5"
                 style={{
                   height: 48,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   backgroundColor: tokens.navy,
                   border: "none",
                   opacity: savingRates ? 0.7 : 1,
@@ -1301,7 +1301,7 @@ function SettingsPage() {
                         alignItems: "center",
                         gap: 8,
                         border: "1px solid #E2E6ED",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: 12,
                         background: "#fff",
                       }}
@@ -1379,7 +1379,7 @@ function SettingsPage() {
                     placeholder="e.g. Evening Surcharge"
                     style={{
                       width: "100%", height: 44, padding: "0 12px",
-                      border: "1px solid #E2E6ED", borderRadius: 8, fontSize: tokens.fontSize.md,
+                      border: "1px solid #E2E6ED", borderRadius: 12, fontSize: tokens.fontSize.md,
                       marginTop: 6, marginBottom: 12, background: "#fff", color: tokens.navy, ...POPPINS,
                     }}
                   />
@@ -1390,7 +1390,7 @@ function SettingsPage() {
                     onChange={(e) => setRuleType(e.target.value as RuleType)}
                     style={{
                       width: "100%", height: 44, padding: "0 12px",
-                      border: "1px solid #E2E6ED", borderRadius: 8, fontSize: tokens.fontSize.md,
+                      border: "1px solid #E2E6ED", borderRadius: 12, fontSize: tokens.fontSize.md,
                       marginTop: 6, marginBottom: 12, background: "#fff", color: tokens.navy, ...POPPINS,
                     }}
                   >
@@ -1409,7 +1409,7 @@ function SettingsPage() {
                         onChange={(e) => setRuleTime(e.target.value)}
                         style={{
                           width: "100%", height: 44, padding: "0 12px",
-                          border: "1px solid #E2E6ED", borderRadius: 8, fontSize: tokens.fontSize.md,
+                          border: "1px solid #E2E6ED", borderRadius: 12, fontSize: tokens.fontSize.md,
                           marginTop: 6, marginBottom: 12, background: "#fff", color: tokens.navy, ...POPPINS,
                         }}
                       />
@@ -1426,7 +1426,7 @@ function SettingsPage() {
                             style={{
                               display: "inline-flex", alignItems: "center", gap: 6,
                               padding: "6px 10px", border: "1px solid #E2E6ED",
-                              borderRadius: 8, fontSize: tokens.fontSize.base, cursor: "pointer", ...POPPINS,
+                              borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.base, cursor: "pointer", ...POPPINS,
                             }}
                           >
                             <input
@@ -1497,7 +1497,7 @@ function SettingsPage() {
                         onChange={(e) => setRuleHours(Number(e.target.value))}
                         style={{
                           width: "100%", height: 44, padding: "0 12px",
-                          border: "1px solid #E2E6ED", borderRadius: 8, fontSize: tokens.fontSize.md,
+                          border: "1px solid #E2E6ED", borderRadius: 12, fontSize: tokens.fontSize.md,
                           marginTop: 6, marginBottom: 12, background: "#fff", color: tokens.navy, ...POPPINS,
                         }}
                       />
@@ -1512,7 +1512,7 @@ function SettingsPage() {
                         onChange={(e) => setRuleAdjType(e.target.value as AdjType)}
                         style={{
                           width: "100%", height: 44, padding: "0 12px",
-                          border: "1px solid #E2E6ED", borderRadius: 8, fontSize: tokens.fontSize.md,
+                          border: "1px solid #E2E6ED", borderRadius: 12, fontSize: tokens.fontSize.md,
                           marginTop: 6, background: "#fff", color: tokens.navy, ...POPPINS,
                         }}
                       >
@@ -1529,7 +1529,7 @@ function SettingsPage() {
                         onChange={(e) => setRuleAdjValue(Number(e.target.value))}
                         style={{
                           width: "100%", height: 44, padding: "0 12px",
-                          border: "1px solid #E2E6ED", borderRadius: 8, fontSize: tokens.fontSize.md,
+                          border: "1px solid #E2E6ED", borderRadius: 12, fontSize: tokens.fontSize.md,
                           marginTop: 6, background: "#fff", color: tokens.navy, ...POPPINS,
                         }}
                       />
@@ -1542,7 +1542,7 @@ function SettingsPage() {
                     disabled={savingRule || hasInvalidPostcodes}
                     className="w-full text-[14px] font-semibold text-white mt-4"
                     style={{
-                      height: 48, borderRadius: 8, backgroundColor: tokens.navy, border: "none",
+                      height: 48, borderRadius: 12, backgroundColor: tokens.navy, border: "none",
                       opacity: savingRule || hasInvalidPostcodes ? 0.6 : 1,
                       cursor: savingRule || hasInvalidPostcodes ? "not-allowed" : "pointer",
                       display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
@@ -1603,7 +1603,7 @@ function SettingsPage() {
           >
             <div
               className="flex items-center justify-center"
-              style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 8, backgroundColor: "#DBEAFE", flexShrink: 0 }}
+              style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 12, backgroundColor: "#DBEAFE", flexShrink: 0 }}
             >
               <IconWorld size={18} color="#1877D6" />
             </div>
@@ -1624,7 +1624,7 @@ function SettingsPage() {
               style={{
                 width: 44,
                 height: 26,
-                borderRadius: 8,
+                borderRadius: 12,
                 background: publishToMarketplace ? "#1877D6" : "#D1D5DB",
                 border: "none",
                 position: "relative",
@@ -1657,7 +1657,7 @@ function SettingsPage() {
           >
             <div
               className="flex items-center justify-center"
-              style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 8, backgroundColor: "#FEF3C7", flexShrink: 0 }}
+              style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 12, backgroundColor: "#FEF3C7", flexShrink: 0 }}
             >
               <IconCrown size={18} color="#B45309" />
             </div>
@@ -1734,7 +1734,7 @@ function SettingsPage() {
           >
             <div
               className="flex items-center justify-center"
-              style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 8, backgroundColor: "#DBEAFE", flexShrink: 0 }}
+              style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 12, backgroundColor: "#DBEAFE", flexShrink: 0 }}
             >
               <IconWorld size={18} color="#1877D6" />
             </div>
@@ -1822,7 +1822,7 @@ function SettingsPage() {
               <div className="text-[12px] text-[#9CA3AF]" style={{ ...POPPINS, marginBottom: 12 }}>Set different charges based on how much notice the pupil gives:</div>
 
               {cancellationTiers.map((tier, i) => (
-                <div key={i} className="flex items-center" style={{ gap: 8, padding: "10px 12px", background: "#F7FAFC", border: "1px solid #E2E6ED", borderRadius: 8, marginBottom: 6 }}>
+                <div key={i} className="flex items-center" style={{ gap: 8, padding: "10px 12px", background: "#F7FAFC", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, marginBottom: 6 }}>
                   <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Less than</span>
                   <input
                     type="number"
@@ -1833,7 +1833,7 @@ function SettingsPage() {
                       setCancellationTiers((prev) => prev.map((t, idx) => idx === i ? { ...t, hours: v } : t));
                     }}
                     className="bg-white"
-                    style={{ width: 60, textAlign: "center", border: "1px solid #E2E6ED", borderRadius: 8, padding: "6px 4px", fontSize: tokens.fontSize.base, color: tokens.navy, ...POPPINS }}
+                    style={{ width: 60, textAlign: "center", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, padding: "6px 4px", fontSize: tokens.fontSize.base, color: tokens.navy, ...POPPINS }}
                   />
                   <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>hours notice</span>
                   <span className="text-[12px]" style={{ color: tokens.textMuted, ...POPPINS }}>→</span>
@@ -1844,7 +1844,7 @@ function SettingsPage() {
                       setCancellationTiers((prev) => prev.map((t, idx) => idx === i ? { ...t, charge_percent: v } : t));
                     }}
                     className="bg-white"
-                    style={{ border: "1px solid #E2E6ED", borderRadius: 8, padding: "6px 4px", fontSize: tokens.fontSize.base, color: tokens.navy, ...POPPINS }}
+                    style={{ border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, padding: "6px 4px", fontSize: tokens.fontSize.base, color: tokens.navy, ...POPPINS }}
                   >
                     {[0, 25, 50, 75, 100].map((p) => <option key={p} value={p}>{p}</option>)}
                   </select>
@@ -2067,7 +2067,7 @@ function SettingsPage() {
                 value={taxCode}
                 onChange={(e) => setTaxCode(e.target.value.toUpperCase())}
                 className="w-full text-[14px] text-[#0B1F3A]"
-                style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: tokens.white, ...POPPINS }}
+                style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }}
               />
               <FieldLabel>Vehicle type</FieldLabel>
               <div className="flex gap-2">
@@ -2082,7 +2082,7 @@ function SettingsPage() {
                     className="flex-1 text-[13px]"
                     style={{
                       padding: "9px 10px",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       border: "1px solid #E2E6ED",
                       background: isElectric === opt.key ? "#1877D6" : "#FFFFFF",
                       color: isElectric === opt.key ? "#FFFFFF" : "#0B1F3A",
@@ -2099,22 +2099,22 @@ function SettingsPage() {
                   <FieldLabel>Vehicle MPG</FieldLabel>
                   <input type="number" value={vehicleMpg} onChange={(e) => setVehicleMpg(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: tokens.white, ...POPPINS }} />
+                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
                   <FieldLabel>Fuel cost per litre (£)</FieldLabel>
                   <input type="number" step="0.01" value={fuelCostPerLitre} onChange={(e) => setFuelCostPerLitre(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: tokens.white, ...POPPINS }} />
+                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
                 </>
               ) : (
                 <>
                   <FieldLabel>Battery capacity (kWh)</FieldLabel>
                   <input type="number" value={batteryKwh} onChange={(e) => setBatteryKwh(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: tokens.white, ...POPPINS }} />
+                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
                   <FieldLabel>Electricity cost per kWh (£)</FieldLabel>
                   <input type="number" step="0.01" value={electricityCostPerKwh} onChange={(e) => setElectricityCostPerKwh(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: tokens.white, ...POPPINS }} />
+                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
                 </>
               )}
               <FieldLabel>Allowable deductions</FieldLabel>
@@ -2177,7 +2177,7 @@ function SettingsPage() {
                       readOnly
                       value={referralCode}
                       className="flex-1 text-[14px] text-[#0B1F3A] font-mono"
-                      style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: "#F7FAFC", ...POPPINS }}
+                      style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: "#F7FAFC", ...POPPINS }}
                     />
                     <button
                       type="button"
@@ -2188,7 +2188,7 @@ function SettingsPage() {
                         } catch { toast.error("Copy failed"); }
                       }}
                       className="flex items-center gap-1 text-[13px]"
-                      style={{ padding: "10px 14px", borderRadius: 8, background: tokens.canvas, color: tokens.navy, border: "none", cursor: "pointer", ...POPPINS }}
+                      style={{ padding: "10px 14px", borderRadius: tokens.radiusCard, background: tokens.canvas, color: tokens.navy, border: "none", cursor: "pointer", ...POPPINS }}
                     >
                       <IconCopy size={14} /> IconCopy
                     </button>
@@ -2200,7 +2200,7 @@ function SettingsPage() {
                       value={referralDiscountAmount}
                       onChange={(e) => setReferralDiscountAmount(Number(e.target.value) || 0)}
                       className="flex-1 text-[14px] text-[#0B1F3A]"
-                      style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: 8, background: tokens.white, ...POPPINS }}
+                      style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }}
                     />
                     <div className="flex" style={{ border: "1px solid #E2E6ED", borderRadius: 8, overflow: "hidden" }}>
                       {(["fixed", "percent"] as const).map((t) => (
@@ -2346,7 +2346,7 @@ function MenuRow({
     >
       <div
         className="flex items-center justify-center"
-        style={{ width: 38, height: 38, minWidth: 38, minHeight: 38, borderRadius: 8, backgroundColor: iconBg, flexShrink: 0 }}
+        style={{ width: 38, height: 38, minWidth: 38, minHeight: 38, borderRadius: 12, backgroundColor: iconBg, flexShrink: 0 }}
       >
         {icon}
       </div>
@@ -2448,7 +2448,7 @@ function AccountRow({
     >
       <div
         className="flex items-center justify-center"
-        style={{ width: 38, height: 38, minWidth: 38, minHeight: 38, borderRadius: 8, backgroundColor: iconBg, flexShrink: 0 }}
+        style={{ width: 38, height: 38, minWidth: 38, minHeight: 38, borderRadius: 12, backgroundColor: iconBg, flexShrink: 0 }}
       >
         {icon}
       </div>
@@ -2538,7 +2538,7 @@ function SectionCard({ children, style }: { children: React.ReactNode; style?: R
     <div
       style={{
         background: tokens.white,
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         overflow: "hidden",
         boxShadow: "0 4px 0 #E4E4E8",
         marginBottom: 20,
@@ -2587,7 +2587,7 @@ function PoundInput({ value, onChange }: { value: number; onChange: (n: number) 
         style={{
           padding: "10px 12px",
           border: "1px solid #E2E6ED",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           background: tokens.white,
           ...POPPINS,
         }}
@@ -2613,7 +2613,7 @@ function SelectBox({
       style={{
         padding: "10px 12px",
         border: "1px solid #E2E6ED",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         background: tokens.white,
         ...POPPINS,
       }}
@@ -2635,7 +2635,7 @@ function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: b
       style={{
         width: 44,
         height: 26,
-        borderRadius: 8,
+        borderRadius: 12,
         background: checked ? "#1877D6" : "#D1D5DB",
         border: "none",
         position: "relative",
@@ -2670,7 +2670,7 @@ function SaveRow({ onClick }: { onClick: () => void }) {
       style={{
         marginTop: 4,
         padding: "12px 16px",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         background: tokens.navy,
         color: tokens.white,
         border: "none",

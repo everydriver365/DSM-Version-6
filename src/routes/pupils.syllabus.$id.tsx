@@ -421,7 +421,7 @@ function PupilSyllabusPage() {
           className="w-full text-[14px] font-semibold text-white flex items-center justify-center gap-2"
           style={{
             height: 44,
-            borderRadius: 8,
+            borderRadius: 12,
             backgroundColor: justSaved
               ? "#1877D6"
               : !dirty || saving

@@ -262,7 +262,7 @@ function ManifestPage() {
                       className="mt-3 text-[13px] text-[#6B7280]"
                       style={{
                         padding: 10,
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         backgroundColor: "#F8F9FB",
                       }}
                     >
@@ -309,7 +309,7 @@ function ManifestPage() {
               className="mt-3 text-[13px]"
               style={{
                 padding: 10,
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 backgroundColor: "#F3F8FF",
                 color: tokens.navy,
               }}
@@ -368,7 +368,7 @@ function ActionBtn({
   );
   const style = {
     height: 32,
-    borderRadius: 8,
+    borderRadius: 12,
     backgroundColor: bg,
     color,
     flex: 1,

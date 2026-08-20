@@ -143,7 +143,7 @@ function UpcomingTestsPage() {
           className="flex"
           style={{
             background: tokens.white,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: "0 4px 0 #E4E4E8",
             padding: 3,
             overflowX: "auto",
@@ -190,7 +190,7 @@ function UpcomingTestsPage() {
           type="button"
           onClick={() => navigate({ to: "/tests" })}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 12, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
         >
           <IconBell stroke={1.5} size={15} />
           Test reminders
@@ -392,7 +392,7 @@ function UpcomingTestsPage() {
             style={{
               padding: 14,
               background: "#FEF3C7",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               color: "#B45309",
               boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
             }}
@@ -477,7 +477,7 @@ function TestRow({
       style={{
         position: "relative",
         background: tokens.white,
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         border: "1px solid #E2E8F0",
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         padding: "16px 18px",
@@ -543,7 +543,7 @@ function TestRow({
               placeItems: "center",
               width: 28,
               height: 28,
-              borderRadius: 8,
+              borderRadius: 12,
               background: "transparent",
               border: "none",
               cursor: "pointer",
@@ -562,7 +562,7 @@ function TestRow({
                 minWidth: 150,
                 background: "#fff",
                 border: "1px solid #E2E8F0",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                 zIndex: 20,
                 overflow: "hidden",

@@ -215,7 +215,7 @@ function UnreadBadge({ count }: { count: number }) {
         minWidth: 16,
         height: 16,
         padding: "0 4px",
-        borderRadius: 8,
+        borderRadius: 12,
         background: tokens.red,
         color: tokens.white,
         fontSize: 9,
@@ -468,7 +468,7 @@ export function BottomNav({
       className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white flex items-center justify-around"
       style={{
         fontFamily: "Poppins, sans-serif",
-        borderRadius: "8px 8px 0 0",
+        borderRadius: "16px 16px 0 0",
         boxShadow: "0 -4px 24px rgba(15,32,68,0.08)",
         paddingTop: 8,
         paddingBottom: "max(env(safe-area-inset-bottom), 8px)",

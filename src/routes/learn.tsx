@@ -227,7 +227,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
             bottom: 8,
             right: 8,
             padding: "3px 8px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             background: "rgba(0,0,0,0.6)",
             color: "#fff",
             fontSize: 10.5,
@@ -330,7 +330,7 @@ function ArticleRow({ onGo, isLast }: { onGo: () => void; isLast: boolean }) {
         style={{
           width: 36,
           height: 36,
-          borderRadius: 8,
+          borderRadius: 12,
           background: "#E6F1FB",
           display: "flex",
           alignItems: "center",
@@ -377,7 +377,7 @@ function GuideRow({ g, onGo, isLast }: { g: Guide; onGo: () => void; isLast: boo
         style={{
           width: 34,
           height: 34,
-          borderRadius: 8,
+          borderRadius: 12,
           background: "#E5EFFA",
           display: "flex",
           alignItems: "center",
@@ -504,7 +504,7 @@ function LearnPage() {
           style={{
             margin: "0 16px",
             background: "white",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: CARD_SHADOW,
             overflow: "hidden",
           }}
@@ -534,7 +534,7 @@ function LearnPage() {
             style={{
               margin: "0 16px",
               background: "white",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               boxShadow: CARD_SHADOW,
               overflow: "hidden",
             }}
@@ -619,7 +619,7 @@ function LearnPage() {
                       maxHeight: "80vh",
                       aspectRatio: "16 / 9",
                       border: "none",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                       background: "#000",
                     }}
@@ -655,7 +655,7 @@ function LearnPage() {
                   style={{
                     width: "100%",
                     maxHeight: "80vh",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                     background: "#000",
                   }}

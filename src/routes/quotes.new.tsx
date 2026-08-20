@@ -34,7 +34,7 @@ const POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
 
 const inputStyle: React.CSSProperties = {
   width: "100%", padding: "10px 12px", border: "1px solid #EEF2F7",
-  borderRadius: 8, fontSize: tokens.fontSize.md, fontFamily: "Poppins, sans-serif",
+  borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.md, fontFamily: "Poppins, sans-serif",
   background: "#fff", color: tokens.navy, boxSizing: "border-box",
 };
 const labelStyle: React.CSSProperties = { fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#6B7280", marginBottom: 4, display: "block" };
@@ -190,7 +190,7 @@ function NewQuotePage() {
     <DSMTopSheet title="New Quote" onBack={() => navigate({ to: "/quotes" } as never)}>
       <div style={POPPINS}>
       {isRevised && (
-        <div style={{ margin: "12px 16px 0", padding: "10px 12px", background: "#EEF4FB", border: "1px solid #BFDBFE", borderRadius: 8, color: "#1D4ED8", fontSize: 13 }}>
+        <div style={{ margin: "12px 16px 0", padding: "10px 12px", background: "#EEF4FB", border: "1px solid #BFDBFE", borderRadius: tokens.radiusCard, color: "#1D4ED8", fontSize: 13 }}>
           Revised quote — pre-filled from the original. Update the price and resend.
         </div>
       )}
@@ -265,12 +265,12 @@ function NewQuotePage() {
 
       <div style={{ position: "fixed", bottom: "calc(64px + env(safe-area-inset-bottom, 0px))", left: 0, right: 0, background: "#fff", borderTop: "0.5px solid #EEF2F7", padding: "16px", display: "flex", gap: 8, zIndex: 50 }}>
         <button disabled={saving} onClick={() => save("draft")} style={{
-          flex: 1, padding: "12px", borderRadius: 8, border: "1px solid #0B1F3A",
+          flex: 1, padding: "12px", borderRadius: tokens.radiusCard, border: "1px solid #0B1F3A",
           background: "#fff", color: tokens.navy, fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md,
           fontFamily: "Poppins, sans-serif", cursor: "pointer", opacity: saving ? 0.6 : 1,
         }}>Save as draft</button>
         <button disabled={saving} onClick={() => save("sent")} style={{
-          flex: 1, padding: "12px", borderRadius: 8, border: "none",
+          flex: 1, padding: "12px", borderRadius: tokens.radiusCard, border: "none",
           background: tokens.navy, color: "#fff", fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md,
           fontFamily: "Poppins, sans-serif", cursor: "pointer", opacity: saving ? 0.6 : 1,
         }}>Save and send</button>

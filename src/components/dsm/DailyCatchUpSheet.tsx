@@ -111,7 +111,7 @@ export function DailyCatchUpSheet({
                 alignItems: "center",
                 gap: 12,
                 padding: "12px 14px",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 background: "#F5F7FB",
                 border: "none",
                 cursor: "pointer",
@@ -124,7 +124,7 @@ export function DailyCatchUpSheet({
                 style={{
                   width: 36,
                   height: 36,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   background: r.tint,
                   display: "flex",
                   alignItems: "center",
@@ -150,7 +150,7 @@ export function DailyCatchUpSheet({
           style={{
             width: "100%",
             padding: "14px 16px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             background: NAVY,
             color: "white",
             fontWeight: tokens.fontWeight.semibold,

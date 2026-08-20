@@ -64,7 +64,7 @@ function SavingBadge({ text }: { text?: string | null }) {
         color: "#15803D",
         fontSize: 9,
         fontWeight: tokens.fontWeight.bold,
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: "2px 7px",
         marginTop: 4,
       }}
@@ -83,7 +83,7 @@ function TierBadge({ tier }: { tier?: string | null }) {
         color: tokens.blue,
         fontSize: 9,
         fontWeight: tokens.fontWeight.bold,
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: "2px 7px",
       }}
     >
@@ -119,7 +119,7 @@ function ListRow({
         gap: 12,
         padding: "13px 16px",
         background: "#fff",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         border: "1px solid #E4E8EF",
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
       }}
@@ -128,7 +128,7 @@ function ListRow({
         style={{
           width: 40,
           height: 40,
-          borderRadius: 8,
+          borderRadius: 12,
           background: iconBg || "#EEF2F7",
           display: "flex",
           alignItems: "center",
@@ -207,7 +207,7 @@ export function PartnerPreview({ partner }: { partner: any }) {
         <div
           style={{
             background: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             border: "1px solid #E4E8EF",
             padding: 14,
             marginTop: 10,
@@ -342,7 +342,7 @@ export function PerkPreview({ perk, partnerName }: { perk: any; partnerName?: st
               marginTop: 14,
               background: tokens.blue,
               color: "#fff",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "10px 16px",
               textAlign: "center",
               fontSize: tokens.fontSize.base,

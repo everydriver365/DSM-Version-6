@@ -222,7 +222,7 @@ function AdminInstructorsPage() {
           className="flex items-center gap-2"
           style={{
             backgroundColor: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: "14px 16px",
             boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.06)",
           }}
@@ -243,7 +243,7 @@ function AdminInstructorsPage() {
         <div
           style={{
             backgroundColor: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             overflow: "hidden",
             boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
           }}
@@ -333,7 +333,7 @@ function AdminInstructorsPage() {
                 style={{
                   width: 32,
                   height: 32,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -397,7 +397,7 @@ function AdminInstructorsPage() {
               gap: 12,
               padding: 16,
               background: "#fff",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.05)",
               cursor: "pointer",
             }}
@@ -406,7 +406,7 @@ function AdminInstructorsPage() {
               style={{
                 width: 36,
                 height: 36,
-                borderRadius: 8,
+                borderRadius: 12,
                 background: "#F2F2F7",
                 display: "flex",
                 alignItems: "center",
@@ -429,7 +429,7 @@ function AdminInstructorsPage() {
 
           {/* Archived list */}
           {showArchive && (
-            <div style={{ marginTop: 10, backgroundColor: "#fff", borderRadius: 8, boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)", overflow: "hidden" }}>
+            <div style={{ marginTop: 10, backgroundColor: "#fff", borderRadius: tokens.radiusCard, boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)", overflow: "hidden" }}>
 
               {archived.map((instructor) => (
                 <div
@@ -578,7 +578,7 @@ function AdminInstructorsPage() {
             className="mb-3"
             style={{
               padding: 14,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               backgroundColor: "#FEF3C7",
               color: "#B45309",
               fontSize: tokens.fontSize.base,
@@ -757,7 +757,7 @@ function AdminInstructorsPage() {
                 background: tokens.blue,
                 color: "#fff",
                 border: "none",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 fontSize: tokens.fontSize.md,
                 fontWeight: tokens.fontWeight.bold,
                 cursor: "pointer",
@@ -782,7 +782,7 @@ function AdminInstructorsPage() {
                 background: "#FCE9E9",
                 color: tokens.red,
                 border: "none",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 fontSize: tokens.fontSize.md,
                 fontWeight: tokens.fontWeight.bold,
                 cursor: "pointer",

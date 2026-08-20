@@ -380,7 +380,7 @@ function PerksPage() {
           style={{
             margin: '12px 16px',
             background: '#fff',
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             border: '1px solid #E4E8EF',
             padding: '11px 14px',
             display: 'flex',
@@ -398,7 +398,7 @@ function PerksPage() {
             style={{
               background: '#1877D6',
               color: '#fff',
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: '5px 12px',
               fontSize: tokens.fontSize.sm,
               fontWeight: tokens.fontWeight.bold,
@@ -434,7 +434,7 @@ function PerksPage() {
             width: '100%',
             background: '#fff',
             border: '1px solid #E4E8EF',
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: '10px 36px 10px 34px',
             fontSize: tokens.fontSize.md,
             color: '#0B1F3A',
@@ -487,7 +487,7 @@ function PerksPage() {
               onClick={() => setActiveCategory(cat)}
               style={{
                 height: 32,
-                borderRadius: 8,
+                borderRadius: 12,
                 padding: '0 14px',
                 fontSize: 12,
                 fontWeight: tokens.fontWeight.semibold,
@@ -516,7 +516,7 @@ function PerksPage() {
         style={{
           margin: '0 16px',
           background: '#fff',
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           border: '1px solid #E4E8EF',
           overflow: 'hidden',
           boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
@@ -560,7 +560,7 @@ function PerksPage() {
                 style={{
                   width: 40,
                   height: 40,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   background: perk.iconBg ?? '#EEF2F7',
                   display: 'flex',
                   alignItems: 'center',
@@ -586,7 +586,7 @@ function PerksPage() {
                     color: '#15803D',
                     fontSize: 9,
                     fontWeight: tokens.fontWeight.bold,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: '2px 7px',
                     marginTop: 4,
                   }}
@@ -605,7 +605,7 @@ function PerksPage() {
                         color: '#1877D6',
                         fontSize: 9,
                         fontWeight: tokens.fontWeight.bold,
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: '2px 7px',
                       }}
                     >
@@ -646,7 +646,7 @@ function PerksPage() {
             style={{
               position: "relative",
               background: tokens.canvas,
-              borderRadius: "8px 8px 0 0",
+              borderRadius: "16px 16px 0 0",
               padding: "0 0 32px",
               maxHeight: "90vh",
               overflowY: "auto",
@@ -655,7 +655,7 @@ function PerksPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ position: "relative", padding: "12px 16px 0" }}>
-              <div style={{ width: 36, height: 5, borderRadius: 8, background: "#D1D1D6", margin: "0 auto" }} />
+              <div style={{ width: 36, height: 5, borderRadius: 12, background: "#D1D1D6", margin: "0 auto" }} />
               <button
                 type="button"
                 aria-label="Close"
@@ -684,7 +684,7 @@ function PerksPage() {
               style={{
                 margin: '0 16px 16px',
                 background: '#fff',
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 border: '1px solid #E4E8EF',
                 padding: 16,
                 display: 'flex',
@@ -696,7 +696,7 @@ function PerksPage() {
                 style={{
                   width: 44,
                   height: 44,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   background: '#EFF6FF',
                   color: '#1877D6',
                   display: 'flex',
@@ -720,7 +720,7 @@ function PerksPage() {
                     color: '#15803D',
                     fontSize: 9,
                     fontWeight: tokens.fontWeight.bold,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: '2px 7px',
                     marginTop: 4,
                   }}
@@ -769,7 +769,7 @@ function PerksPage() {
                 style={{
                   margin: '0 16px 16px',
                   background: '#fff',
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   border: '1px solid #E4E8EF',
                   padding: 16,
                   fontSize: tokens.fontSize.md,
@@ -789,7 +789,7 @@ function PerksPage() {
               style={{
                 margin: '0 16px 16px',
                 background: '#fff',
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 border: '1px solid #E4E8EF',
                 padding: '14px 16px',
                 display: 'flex',
@@ -851,7 +851,7 @@ function PerksPage() {
                 width: 'calc(100% - 32px)',
                 background: '#1877D6',
                 color: '#fff',
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 15,
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.extrabold,

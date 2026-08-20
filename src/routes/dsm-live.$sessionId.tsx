@@ -276,7 +276,7 @@ END:VCALENDAR`;
             fontSize: tokens.fontSize.xs,
             fontWeight: tokens.fontWeight.extrabold,
             padding: "4px 8px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             textTransform: "uppercase",
             letterSpacing: "0.04em",
           }}
@@ -304,7 +304,7 @@ END:VCALENDAR`;
             style={{
               background: "#DCFCE7",
               border: "1px solid #86EFAC",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 16,
               color: "#15803D",
             }}
@@ -324,7 +324,7 @@ END:VCALENDAR`;
                   background: "#0F2044",
                   color: "#fff",
                   padding: "10px 14px",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   fontWeight: tokens.fontWeight.semibold,
                   fontSize: tokens.fontSize.base,
                   textDecoration: "none",
@@ -341,7 +341,7 @@ END:VCALENDAR`;
                   border: "1px solid #15803D",
                   color: "#15803D",
                   background: "#fff",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "8px 12px",
                   fontSize: tokens.fontSize.base,
                   cursor: "pointer",
@@ -371,7 +371,7 @@ END:VCALENDAR`;
                 style={{
                   background: "#fff",
                   border: "0.5px solid #E2E6ED",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 16,
                 }}
               >
@@ -403,7 +403,7 @@ END:VCALENDAR`;
               style={{
                 background: "#fff",
                 border: "0.5px solid #E2E6ED",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 16,
                 marginTop: 12,
                 fontSize: tokens.fontSize.base,
@@ -424,7 +424,7 @@ END:VCALENDAR`;
               style={{
                 background: "#fff",
                 border: "0.5px solid #E2E6ED",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 16,
                 marginTop: 12,
               }}
@@ -440,7 +440,7 @@ END:VCALENDAR`;
                 style={{
                   width: "100%",
                   border: "1px solid #E2E6ED",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "10px 12px",
                   marginTop: 4,
                   marginBottom: 10,
@@ -456,7 +456,7 @@ END:VCALENDAR`;
                 style={{
                   width: "100%",
                   border: "1px solid #E2E6ED",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "10px 12px",
                   marginTop: 4,
                   fontSize: tokens.fontSize.md,
@@ -473,7 +473,7 @@ END:VCALENDAR`;
                   background: remaining <= 0 ? "#9CA3AF" : "#CC2229",
                   color: "#fff",
                   border: 0,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   fontWeight: tokens.fontWeight.bold,
                   fontSize: 15,
                   cursor: submitting ? "wait" : "pointer",

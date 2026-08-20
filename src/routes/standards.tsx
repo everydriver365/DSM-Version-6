@@ -111,7 +111,7 @@ function StandardsPage() {
           type="button"
           onClick={() => setAddOpen(true)}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 12, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
         >
           <IconPlus size={15} />
           Add check
@@ -125,7 +125,7 @@ function StandardsPage() {
           className="mx-4 mt-3 flex items-center"
           style={{
             backgroundColor: tokens.navy,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 16,
             gap: 16,
           }}
@@ -192,7 +192,7 @@ function StandardsPage() {
                         style={{
                           width: 44,
                           height: 44,
-                          borderRadius: 8,
+                          borderRadius: 12,
                           backgroundColor: gradeColor(c.grade),
                           fontSize: 20,
                         }}
@@ -383,7 +383,7 @@ function AddCheckSheet({
                   className="flex items-center justify-center font-bold"
                   style={{
                     height: 44,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     backgroundColor: active ? gradeColor(g) : "#F8F9FB",
                     color: active ? "#FFFFFF" : gradeColor(g),
                     border: active
@@ -424,7 +424,7 @@ function AddCheckSheet({
             className="w-full text-[14px]"
             style={{
               border: "0.5px solid #EEF2F7",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 10,
               color: tokens.navy,
               outline: "none",

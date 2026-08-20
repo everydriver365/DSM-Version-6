@@ -78,7 +78,7 @@ type PerkDetail = {
 const CARD: React.CSSProperties = {
   margin: "0 16px 16px",
   background: "#fff",
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   border: "1px solid #E4E8EF",
   padding: 16,
   boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
@@ -278,7 +278,7 @@ function PerkDetailPage() {
             style={{
               background: tokens.blue,
               color: "#fff",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "7px 14px",
               fontSize: 12,
               fontWeight: tokens.fontWeight.bold,
@@ -302,7 +302,7 @@ function PerkDetailPage() {
             color: tokens.blue,
             fontSize: tokens.fontSize.xs,
             fontWeight: tokens.fontWeight.bold,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: "3px 10px",
             marginBottom: 8,
           }}
@@ -473,7 +473,7 @@ function PerkDetailPage() {
               style={{
                 background: tokens.blue,
                 color: "#fff",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 14,
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.extrabold,
@@ -497,7 +497,7 @@ function PerkDetailPage() {
                     color: tokens.blue,
                     fontSize: tokens.fontSize.xs,
                     fontWeight: tokens.fontWeight.bold,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "3px 10px",
                   }}
                 >
@@ -527,7 +527,7 @@ function PerkDetailPage() {
             style={{
               background: "#15803D",
               color: "#fff",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 14,
               fontSize: 15,
               fontWeight: tokens.fontWeight.extrabold,
@@ -549,7 +549,7 @@ function PerkDetailPage() {
         style={{
           margin: "0 16px 16px",
           background: "#fff",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           border: "1px solid #E4E8EF",
           padding: "14px 16px",
           display: "flex",
@@ -562,7 +562,7 @@ function PerkDetailPage() {
           style={{
             width: 40,
             height: 40,
-            borderRadius: 8,
+            borderRadius: 12,
             background: perk.partner?.icon_bg ?? "#EEF2F7",
             color: perk.partner?.icon_color ?? "#0B1F3A",
             display: "flex",

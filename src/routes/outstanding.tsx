@@ -221,7 +221,7 @@ function OutstandingPage() {
           <span
             style={{
               background: tokens.blue, color: "#fff", fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold,
-              padding: "2px 7px", borderRadius: 8, minWidth: 22, textAlign: "center",
+              padding: "2px 7px", borderRadius: tokens.radiusCard, minWidth: 22, textAlign: "center",
             }}
           >
             {total}
@@ -261,7 +261,7 @@ function OutstandingPage() {
                     }}
                   >
                     <div style={{
-                      width: 32, height: 32, borderRadius: 8, background: s.tint,
+                      width: 32, height: 32, borderRadius: 12, background: s.tint,
                       display: "flex", alignItems: "center", justifyContent: "center",
                     }}>
                       {s.icon}
@@ -270,7 +270,7 @@ function OutstandingPage() {
                       {s.label}
                     </div>
                     <span style={{
-                      minWidth: 24, height: 22, padding: "0 8px", borderRadius: 8,
+                      minWidth: 24, height: 22, padding: "0 8px", borderRadius: 12,
                       background: tokens.blue, color: "#fff",
                       fontSize: 12, fontWeight: tokens.fontWeight.bold,
                       display: "flex", alignItems: "center", justifyContent: "center",
@@ -406,7 +406,7 @@ const rowTitle = {
 const rowSub = { fontSize: 12, color: "#6B7280", marginTop: 2 };
 
 const actionBase = {
-  height: 30, padding: "0 10px", borderRadius: 8,
+  height: 30, padding: "0 10px", borderRadius: 12,
   fontSize: 12, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
   fontFamily: "Poppins, sans-serif", border: "none",
 } as const;

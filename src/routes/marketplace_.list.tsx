@@ -225,7 +225,7 @@ function MarketplaceListPage() {
               fontSize: tokens.fontSize.md,
               fontWeight: tokens.fontWeight.bold,
               padding: "12px 20px",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               cursor: "pointer",
             }}
           >
@@ -544,7 +544,7 @@ function MarketplaceListPage() {
               fontSize: tokens.fontSize.md,
               fontWeight: tokens.fontWeight.bold,
               padding: "12px 16px",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               cursor: "pointer",
             }}
           >
@@ -562,7 +562,7 @@ function MarketplaceListPage() {
               fontSize: tokens.fontSize.md,
               fontWeight: tokens.fontWeight.bold,
               padding: "12px 16px",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               cursor: submitting ? "not-allowed" : "pointer",
               opacity: submitting ? 0.7 : 1,
             }}
@@ -684,7 +684,7 @@ function TypePill({
         justifyContent: "center",
         gap: 6,
         padding: "14px 8px",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         border: active ? "1px solid #0F2044" : "0.5px solid #E2E6ED",
         background: active ? "#0F2044" : "#FFFFFF",
         color: active ? "#FFFFFF" : "#0F2044",
@@ -731,7 +731,7 @@ function PricePill({
 const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "0.5px solid #E2E6ED",
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   padding: "10px 12px",
   fontSize: tokens.fontSize.md,
   color: "#0F2044",
@@ -774,7 +774,7 @@ function PreviewSheet({
           background: tokens.white,
           width: "100%",
           maxWidth: 520,
-          borderRadius: "8px 8px 0 0",
+          borderRadius: "16px 16px 0 0",
           padding: 16,
           maxHeight: "85vh",
           overflowY: "auto",

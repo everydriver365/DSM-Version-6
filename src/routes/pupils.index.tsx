@@ -962,7 +962,7 @@ function PupilsIndexPage() {
           minHeight: 0,
           marginTop: -18,
           background: tokens.white,
-          borderRadius: "28px 28px 0 0",
+          borderRadius: "16px 16px 0 0",
           overflowY: "auto",
           overflowX: "hidden",
           paddingTop: 12,
@@ -1007,7 +1007,7 @@ function PupilsIndexPage() {
             className="inline-flex items-center gap-1.5"
             style={{
               padding: "6px 12px",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               backgroundColor: "#F3F8FF",
               border: "1px solid #EEF2F7",
             }}
@@ -1067,7 +1067,7 @@ function PupilsIndexPage() {
           margin: "12px 16px",
           display: "flex",
           background: tokens.canvas,
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           boxShadow: "0 4px 0 #E4E4E8",
           padding: 3,
           overflowX: "auto",
@@ -1129,7 +1129,7 @@ function PupilsIndexPage() {
           style={{
             margin: '12px 16px',
             background: '#fff',
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
             padding: '10px 14px',
             display: 'flex',
@@ -1171,7 +1171,7 @@ function PupilsIndexPage() {
                   gap: 12,
                   padding: "14px 16px",
                   background: "#fff",
-                  borderRadius: 16,
+                  borderRadius: tokens.radiusCard,
                   boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                   marginBottom: 8,
                 }}
@@ -1225,7 +1225,7 @@ function PupilsIndexPage() {
             };
             const config = emptyConfig[statusFilter];
             return (
-              <div style={{ margin: '0 16px', background: '#fff', borderRadius: 8, boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+              <div style={{ margin: '0 16px', background: '#fff', borderRadius: tokens.radiusCard, boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
                 <div className="flex flex-col items-center justify-center text-center px-6 py-12">
                   <IconUsers size={48} color="#D1D5DB" stroke={1.5} style={{ marginBottom: 12 }} />
                   <p className="font-semibold" style={{ fontSize: tokens.fontSize.md, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>
@@ -1257,7 +1257,7 @@ function PupilsIndexPage() {
                   {needsAttention.map((p) =>
                     renderSwipeRow(p, {
                       background: '#fff',
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       boxShadow: '0 3px 0 #F7C9C6, 0 8px 18px rgba(255,59,48,0.1)',
                       border: '1.5px solid #FDEDEC',
                     })
@@ -1284,7 +1284,7 @@ function PupilsIndexPage() {
               {(statusFilter === "active" ? activePupils : filtered).map((p) =>
                 renderSwipeRow(p, {
                   background: '#fff',
-                  borderRadius: 16,
+                  borderRadius: tokens.radiusCard,
                   boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
                   transition: 'transform 0.1s ease, opacity 0.1s ease',
                 })

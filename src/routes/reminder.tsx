@@ -173,7 +173,7 @@ function ReminderPage() {
                     style={{
                       width: 18,
                       height: 18,
-                      borderRadius: 8,
+                      borderRadius: 12,
                       backgroundColor: isSel ? "#1877D6" : "#ffffff",
                       borderWidth: "0.5px",
                       borderStyle: "solid",
@@ -262,7 +262,7 @@ function ReminderPage() {
             className="mt-3 text-[13px]"
             style={{
               padding: 12,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               backgroundColor: "#F3F8FF",
               color: tokens.navy,
             }}

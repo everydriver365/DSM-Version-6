@@ -304,7 +304,7 @@ export function PersonalEventSheet({
               style={{
                 width: 34,
                 height: 34,
-                borderRadius: 8,
+                borderRadius: 12,
                 background: "#FDECEC",
                 border: "none",
                 display: "grid",
@@ -321,7 +321,7 @@ export function PersonalEventSheet({
             style={{
               width: 34,
               height: 34,
-              borderRadius: 8,
+              borderRadius: 12,
               background: tokens.canvas,
               border: "none",
               display: "grid",
@@ -366,7 +366,7 @@ export function PersonalEventSheet({
               style={{
                 width: 44,
                 height: 26,
-                borderRadius: 8,
+                borderRadius: 12,
                 background: allDay ? blue : "#D6DDE7",
                 position: "relative",
                 transition: "background 150ms",
@@ -379,7 +379,7 @@ export function PersonalEventSheet({
                   left: allDay ? 21 : 3,
                   width: 20,
                   height: 20,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   background: "#fff",
                   transition: "left 150ms",
                 }}
@@ -562,7 +562,7 @@ export function PersonalEventSheet({
               style={{
                 width: 44,
                 height: 26,
-                borderRadius: 8,
+                borderRadius: 12,
                 background: busy ? blue : "#D6DDE7",
                 position: "relative",
                 flexShrink: 0,
@@ -575,7 +575,7 @@ export function PersonalEventSheet({
                   left: busy ? 21 : 3,
                   width: 20,
                   height: 20,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   background: "#fff",
                   transition: "left 150ms",
                 }}
@@ -594,7 +594,7 @@ export function PersonalEventSheet({
             style={{
               width: "100%",
               padding: "13px 16px",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               border: "none",
               background: saving ? "#8FB6E4" : blue,
               color: "#fff",

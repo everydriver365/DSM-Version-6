@@ -99,7 +99,7 @@ function QuickAccessPage() {
           }}
           aria-label="Toggle search"
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 12, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
         >
           {searchOpen ? <IconX size={15} /> : <IconSearch size={15} />}
           {searchOpen ? "Close search" : "Search"}
@@ -115,7 +115,7 @@ function QuickAccessPage() {
             style={{
               height: 40,
               backgroundColor: tokens.white,
-              borderRadius: 8,
+              borderRadius: 12,
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: tokens.canvas,
@@ -174,7 +174,7 @@ function QuickAccessPage() {
               style={{
                 width: 44,
                 height: 44,
-                borderRadius: 8,
+                borderRadius: 12,
                 backgroundColor: t.bg,
               }}
             >

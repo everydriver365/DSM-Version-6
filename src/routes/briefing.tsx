@@ -240,7 +240,7 @@ function BriefingPage() {
 
       {/* Greeting */}
       <div style={{
-        backgroundColor: tokens.navy, margin: "12px 16px 0", borderRadius: 8, padding: 16,
+        backgroundColor: tokens.navy, margin: "12px 16px 0", borderRadius: tokens.radiusCard, padding: 16,
       }}>
         <div style={{ color: "#fff", fontSize: 20, fontWeight: 600 }}>
           {greetingFor(now)}, {firstName}
@@ -264,7 +264,7 @@ function BriefingPage() {
             <>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <div style={{
-                  width: 44, height: 44, borderRadius: 8, background: "#EEF4FB",
+                  width: 44, height: 44, borderRadius: 12, background: "#EEF4FB",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
                   <W.Icon size={26} color="#1877D6" />
@@ -329,7 +329,7 @@ function BriefingPage() {
                   </div>
                   <span style={{
                     background: statusColor(l.status), color: "#fff", fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold,
-                    padding: "2px 6px", borderRadius: 8, textTransform: "uppercase", letterSpacing: 0.4,
+                    padding: "2px 6px", borderRadius: tokens.radiusCard, textTransform: "uppercase", letterSpacing: 0.4,
                   }}>
                     {l.status}
                   </span>
@@ -339,7 +339,7 @@ function BriefingPage() {
                     href={l.pupils?.phone ? `tel:${l.pupils.phone}` : undefined}
                     onClick={(e) => { if (!l.pupils?.phone) e.preventDefault(); }}
                     style={{
-                      flex: 1, height: 36, borderRadius: 8,
+                      flex: 1, height: 36, borderRadius: 12,
                       background: l.pupils?.phone ? "#1877D6" : "#cbd5e1",
                       color: "#fff", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold,
                       display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
@@ -351,7 +351,7 @@ function BriefingPage() {
                   <button
                     onClick={() => navigate({ to: "/satnav" })}
                     style={{
-                      flex: 1, height: 36, borderRadius: 8,
+                      flex: 1, height: 36, borderRadius: 12,
                       background: "#fff", color: tokens.blue,
                       border: "1px solid #1877D6", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold,
                       display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
@@ -380,7 +380,7 @@ function BriefingPage() {
               }}
             >
               <div style={{
-                width: 32, height: 32, borderRadius: 8, background: r.tint,
+                width: 32, height: 32, borderRadius: 12, background: r.tint,
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
                 {r.icon}
@@ -389,7 +389,7 @@ function BriefingPage() {
                 {r.label}
               </div>
               <span style={{
-                minWidth: 24, height: 22, padding: "0 8px", borderRadius: 8,
+                minWidth: 24, height: 22, padding: "0 8px", borderRadius: 12,
                 background: r.count > 0 ? "#1877D6" : "#EEF2F7",
                 color: r.count > 0 ? "#fff" : "#6B7280",
                 fontSize: 12, fontWeight: tokens.fontWeight.bold,
@@ -413,7 +413,7 @@ function BriefingPage() {
             }}
           >
             <div style={{
-              width: 32, height: 32, borderRadius: 8, background: "#EDE9FE",
+              width: 32, height: 32, borderRadius: 12, background: "#EDE9FE",
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
               <IconTool size={18} color="#5B21B6" />
@@ -435,7 +435,7 @@ function BriefingPage() {
             padding: "12px 14px", borderTop: "0.5px solid #EEF2F7",
           }}>
             <div style={{
-              width: 32, height: 32, borderRadius: 8, background: tokens.canvas,
+              width: 32, height: 32, borderRadius: 12, background: tokens.canvas,
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
               <IconGasStation size={18} color="#0B1F3A" />

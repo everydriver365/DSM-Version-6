@@ -190,7 +190,7 @@ function RescheduleLessonPage() {
               className="w-full mt-1 px-3 bg-white"
               style={{
                 height: 44,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: "1px solid #EEF2F7",
                 color: tokens.navy,
                 fontSize: tokens.fontSize.md,
@@ -208,7 +208,7 @@ function RescheduleLessonPage() {
               className="w-full mt-1 px-3 bg-white"
               style={{
                 height: 44,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: "1px solid #EEF2F7",
                 color: tokens.navy,
                 fontSize: tokens.fontSize.md,
@@ -225,7 +225,7 @@ function RescheduleLessonPage() {
               className="w-full mt-1 px-3 bg-white"
               style={{
                 height: 44,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: "1px solid #EEF2F7",
                 color: tokens.navy,
                 fontSize: tokens.fontSize.md,

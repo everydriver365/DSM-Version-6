@@ -180,7 +180,7 @@ function MileagePage() {
         {/* SUMMARY CARD */}
         <div
           className="mx-4 mt-3"
-          style={{ backgroundColor: tokens.navy, borderRadius: 8, padding: 16 }}
+          style={{ backgroundColor: tokens.navy, borderRadius: tokens.radiusCard, padding: 16 }}
         >
           <div className="flex">
             <div className="flex-1 pr-3">

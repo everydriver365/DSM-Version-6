@@ -46,7 +46,7 @@ export function ChangeDateTimeSheet({
 
   const inputStyle = {
     height: 44,
-    borderRadius: 8,
+    borderRadius: 12,
     border: "1px solid #EEF2F7",
     color: tokens.navy,
     fontSize: tokens.fontSize.md,
@@ -164,7 +164,7 @@ export function ChangeDateTimeSheet({
             onClick={() => onConfirm(newDate, newTime, newDuration)}
             disabled={!canSubmit}
             className="inline-flex items-center justify-center text-[14px] font-semibold text-white disabled:opacity-50"
-            style={{ height: 44, borderRadius: 8, backgroundColor: tokens.blue, ...POPPINS }}
+            style={{ height: 44, borderRadius: 12, backgroundColor: tokens.blue, ...POPPINS }}
           >
             {submitting ? "Saving…" : "Save"}
           </button>
@@ -175,7 +175,7 @@ export function ChangeDateTimeSheet({
             className="inline-flex items-center justify-center text-[13px] font-medium disabled:opacity-50"
             style={{
               height: 40,
-              borderRadius: 8,
+              borderRadius: 12,
               backgroundColor: "transparent",
               color: tokens.navy,
               ...POPPINS,

@@ -160,7 +160,7 @@ function SatNavPage() {
       <div
         className="shrink-0 bg-white relative z-10"
         style={{
-          borderRadius: "8px 8px 0 0",
+          borderRadius: "16px 16px 0 0",
           padding: 16,
           paddingBottom: 28,
           boxShadow: "0 -4px 20px rgba(0,0,0,0.08)",
@@ -186,14 +186,14 @@ function SatNavPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-1 flex items-center justify-center gap-1 text-white text-[13px] font-medium"
-                style={{ height: 40, borderRadius: 8, backgroundColor: tokens.blue }}
+                style={{ height: 40, borderRadius: 12, backgroundColor: tokens.blue }}
               >
                 <IconNavigation size={16} /> Navigate
               </a>
               <a
                 href={pupilPhone ? `tel:${pupilPhone}` : "#"}
                 className="flex-1 flex items-center justify-center gap-1 text-white text-[13px] font-medium"
-                style={{ height: 40, borderRadius: 8, backgroundColor: tokens.blue }}
+                style={{ height: 40, borderRadius: 12, backgroundColor: tokens.blue }}
               >
                 <IconPhone size={16} /> Call
               </a>
@@ -202,7 +202,7 @@ function SatNavPage() {
                 className="flex-1 flex items-center justify-center gap-1 text-[13px] font-medium"
                 style={{
                   height: 40,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   backgroundColor: "#F3F4F6",
                   color: tokens.navy,
                 }}

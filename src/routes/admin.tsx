@@ -31,7 +31,7 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         display: "flex",
         alignItems: "center",
         gap: 12,
-        borderRadius: "0 0 8px 8px",
+        borderRadius: "0 0 16px 16px",
       }}
     >
       <button
@@ -119,7 +119,7 @@ function AdminGroupCard({ children }: { children: React.ReactNode }) {
     <div
       style={{
         background: "#fff",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         overflow: "hidden",
         boxShadow: "0 1px 2px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.05)",
       }}
@@ -165,7 +165,7 @@ function AdminSectionTile({
         style={{
           width: 32,
           height: 32,
-          borderRadius: 8,
+          borderRadius: 12,
           background: "#F2F2F7",
           color: "#000",
           display: "inline-flex",
@@ -292,7 +292,7 @@ function FlaggedMessagesSection() {
         <div style={{ fontSize: tokens.fontSize.base, color: "#8A93A3" }}>Loading…</div>
       ) : rows.length === 0 ? (
         <div style={{
-          background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 8,
+          background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: tokens.radiusCard,
           padding: 24, textAlign: "center",
         }}>
           <IconShieldCheck stroke={1.5} size={32} color="#16A34A" style={{ margin: "0 auto 8px" }} />
@@ -314,7 +314,7 @@ function FlaggedMessagesSection() {
               <div
                 key={m.id}
                 style={{
-                  background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 8,
+                  background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: tokens.radiusCard,
                   padding: 14, boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                 }}
               >
@@ -332,7 +332,7 @@ function FlaggedMessagesSection() {
                 </div>
                 <div style={{
                   marginTop: 8, fontSize: tokens.fontSize.base, color: tokens.navy, lineHeight: 1.45,
-                  background: "#F7FAFC", borderRadius: 8, padding: "10px 12px",
+                  background: "#F7FAFC", borderRadius: tokens.radiusCard, padding: "10px 12px",
                   whiteSpace: "pre-wrap", wordBreak: "break-word",
                 }}>
                   {m.message}
@@ -341,7 +341,7 @@ function FlaggedMessagesSection() {
                 {confirmBanId === m.id ? (
                   <div style={{
                     marginTop: 10, background: "#FEF2F2", border: "0.5px solid #FCA5A5",
-                    borderRadius: 8, padding: 12,
+                    borderRadius: tokens.radiusCard, padding: 12,
                   }}>
                     <div style={{ fontSize: 12.5, color: "#7F1D1D", lineHeight: 1.45 }}>
                       Ban {who} from {roomName}? They will no longer be able to send messages.
@@ -352,7 +352,7 @@ function FlaggedMessagesSection() {
                         disabled={busy}
                         onClick={() => banUser(m)}
                         style={{
-                          flex: 1, height: 36, borderRadius: 8, border: "none",
+                          flex: 1, height: 36, borderRadius: 12, border: "none",
                           background: "#B91C1C", color: "#fff", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, cursor: "pointer",
                         }}
                       >
@@ -362,7 +362,7 @@ function FlaggedMessagesSection() {
                         type="button"
                         onClick={() => setConfirmBanId(null)}
                         style={{
-                          flex: 1, height: 36, borderRadius: 8, background: "#fff",
+                          flex: 1, height: 36, borderRadius: 12, background: "#fff",
                           border: "1px solid #D1D5DB", color: "#374151", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                         }}
                       >
@@ -377,7 +377,7 @@ function FlaggedMessagesSection() {
                       disabled={busy}
                       onClick={() => removeMessage(m)}
                       style={{
-                        flex: 1, minWidth: 110, height: 36, borderRadius: 8, background: "#fff",
+                        flex: 1, minWidth: 110, height: 36, borderRadius: 12, background: "#fff",
                         border: "1px solid #CC2229", color: tokens.red, fontSize: 12.5, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                       }}
                     >
@@ -388,7 +388,7 @@ function FlaggedMessagesSection() {
                       disabled={busy}
                       onClick={() => dismiss(m)}
                       style={{
-                        flex: 1, minWidth: 84, height: 36, borderRadius: 8, background: "#fff",
+                        flex: 1, minWidth: 84, height: 36, borderRadius: 12, background: "#fff",
                         border: "1px solid #D1D5DB", color: "#6B7280", fontSize: 12.5, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                       }}
                     >
@@ -399,7 +399,7 @@ function FlaggedMessagesSection() {
                       disabled={busy}
                       onClick={() => setConfirmBanId(m.id)}
                       style={{
-                        flex: 1, minWidth: 84, height: 36, borderRadius: 8, border: "none",
+                        flex: 1, minWidth: 84, height: 36, borderRadius: 12, border: "none",
                         background: "#B91C1C", color: "#fff", fontSize: 12.5, fontWeight: tokens.fontWeight.bold, cursor: "pointer",
                       }}
                     >
@@ -587,7 +587,7 @@ function ChatRoomsSection() {
           onChange={(e) => setAreaName(e.target.value)}
           style={{
             height: 44,
-            borderRadius: 8,
+            borderRadius: 12,
             border: "1px solid #EEF2F7",
             padding: "0 12px",
             fontSize: 15,
@@ -601,7 +601,7 @@ function ChatRoomsSection() {
           onChange={(e) => setOutcode(e.target.value.toUpperCase())}
           style={{
             height: 44,
-            borderRadius: 8,
+            borderRadius: 12,
             border: "1px solid #EEF2F7",
             padding: "0 12px",
             fontSize: 15,
@@ -617,7 +617,7 @@ function ChatRoomsSection() {
             justifyContent: "space-between",
             gap: 12,
             height: 44,
-            borderRadius: 8,
+            borderRadius: 12,
             border: "1px solid #EEF2F7",
             background: "#F8FAFC",
             padding: "0 12px",
@@ -659,7 +659,7 @@ function ChatRoomsSection() {
           disabled={loading || !areaName.trim() || !outcode.trim()}
           style={{
             height: 44,
-            borderRadius: 8,
+            borderRadius: 12,
             background: tokens.blue,
             color: "#fff",
             border: "none",
@@ -691,7 +691,7 @@ function ChatRoomsSection() {
           style={{
             height: 30,
             padding: "0 12px",
-            borderRadius: 8,
+            borderRadius: 12,
             border: "1px solid #E4E8EF",
             background: showDeleted ? "#EAF2FC" : "#fff",
             color: showDeleted ? "#1877D6" : "#6B7280",
@@ -714,7 +714,7 @@ function ChatRoomsSection() {
               key={room.id}
               style={{
                 padding: 12,
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 background: "#F8FAFC",
                 border: "1px solid #EEF2F7",
               }}
@@ -778,7 +778,7 @@ function ChatRoomsSection() {
                       style={{
                         height: 30,
                         padding: "0 12px",
-                        borderRadius: 8,
+                        borderRadius: 12,
                         border: "1px solid #EEF2F7",
                         background: "#fff",
                         color: tokens.blue,
@@ -802,7 +802,7 @@ function ChatRoomsSection() {
                       display: "inline-flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      borderRadius: 8,
+                      borderRadius: 12,
                       border: "1px solid #E4E8EF",
                       background: "#fff",
                       color: "#6B7280",
@@ -822,7 +822,7 @@ function ChatRoomsSection() {
                       display: "inline-flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      borderRadius: 8,
+                      borderRadius: 12,
                       border: "1px solid #F3D5D7",
                       background: "#fff",
                       color: tokens.red,
@@ -839,7 +839,7 @@ function ChatRoomsSection() {
                     style={{
                       height: 30,
                       padding: "0 12px",
-                      borderRadius: 8,
+                      borderRadius: 12,
                       border: "1px solid #EEF2F7",
                       background: "#fff",
                       color: tokens.blue,
@@ -874,7 +874,7 @@ function ChatRoomsSection() {
                     placeholder="Area name"
                     style={{
                       height: 40,
-                      borderRadius: 8,
+                      borderRadius: 12,
                       border: "1px solid #E4E8EF",
                       padding: "0 12px",
                       fontSize: tokens.fontSize.md,
@@ -887,7 +887,7 @@ function ChatRoomsSection() {
                     placeholder="What is this room about?"
                     rows={3}
                     style={{
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       border: "1px solid #E4E8EF",
                       padding: 10,
                       fontSize: tokens.fontSize.md,
@@ -910,7 +910,7 @@ function ChatRoomsSection() {
                         display: "inline-flex",
                         alignItems: "center",
                         padding: "0 12px",
-                        borderRadius: 8,
+                        borderRadius: 12,
                         border: "1px solid #E4E8EF",
                         background: "#fff",
                         color: tokens.blue,
@@ -943,7 +943,7 @@ function ChatRoomsSection() {
                       justifyContent: "space-between",
                       gap: 12,
                       height: 40,
-                      borderRadius: 8,
+                      borderRadius: 12,
                       border: "1px solid #E4E8EF",
                       background: "#fff",
                       padding: "0 12px",
@@ -985,7 +985,7 @@ function ChatRoomsSection() {
                       style={{
                         flex: 1,
                         height: 40,
-                        borderRadius: 8,
+                        borderRadius: 12,
                         background: tokens.blue,
                         color: "#fff",
                         border: "none",
@@ -1002,7 +1002,7 @@ function ChatRoomsSection() {
                       style={{
                         flex: 1,
                         height: 40,
-                        borderRadius: 8,
+                        borderRadius: 12,
                         background: "#fff",
                         color: tokens.navy,
                         border: "1px solid #E4E8EF",
@@ -1080,7 +1080,7 @@ function AdminHub() {
             style={{
               flex: 1,
               height: 44,
-              borderRadius: 8,
+              borderRadius: 12,
               background: tokens.navy,
               color: "#fff",
               border: "none",
@@ -1099,7 +1099,7 @@ function AdminHub() {
             style={{
               flex: 1,
               height: 44,
-              borderRadius: 8,
+              borderRadius: 12,
               background: "#fff",
               color: tokens.blue,
               border: "1px solid #1877D6",
@@ -1295,7 +1295,7 @@ const removeImageBtnStyle: React.CSSProperties = {
   background: "#FEF2F2",
   color: tokens.red,
   border: "none",
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   padding: "6px 12px",
   fontSize: tokens.fontSize.sm,
   fontWeight: tokens.fontWeight.bold,
@@ -1314,7 +1314,7 @@ const uploadHintStyle: React.CSSProperties = {
 const partnerInputStyle: React.CSSProperties = {
   background: "#fff",
   border: "1px solid #E4E8EF",
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   padding: "10px 12px",
   fontSize: tokens.fontSize.md,
   fontFamily: "Poppins, sans-serif",
@@ -1646,7 +1646,7 @@ export function BenefitPartnersSection() {
           style={{
             background: tokens.blue,
             color: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: "6px 14px",
             fontSize: 12,
             fontWeight: tokens.fontWeight.bold,
@@ -1664,7 +1664,7 @@ export function BenefitPartnersSection() {
         style={{
           margin: "0 16px 16px",
           background: "#fff",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           border: "1px solid #E4E8EF",
           padding: 12,
         }}
@@ -1679,7 +1679,7 @@ export function BenefitPartnersSection() {
               alignItems: "center",
               gap: 8,
               background: "#F8FAFC",
-              borderRadius: 8,
+              borderRadius: 12,
               padding: "0 10px",
               height: 40,
               border: "1px solid #E4E8EF",
@@ -1723,7 +1723,7 @@ export function BenefitPartnersSection() {
             onChange={(e) => setPerkPartnerFilter(e.target.value)}
             style={{
               height: 40,
-              borderRadius: 8,
+              borderRadius: 12,
               border: "1px solid #E4E8EF",
               background: "#F8FAFC",
               padding: "0 10px",
@@ -1765,7 +1765,7 @@ export function BenefitPartnersSection() {
                   gap: 10,
                   padding: "10px 12px",
                   background: "#F8FAFC",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   border: "1px solid #F0F4F8",
                 }}
               >
@@ -1855,7 +1855,7 @@ export function BenefitPartnersSection() {
                   height: 36,
                   background: partner.icon_bg ?? "#EEF2F7",
                   color: partner.icon_color ?? "#0B1F3A",
-                  borderRadius: 8,
+                  borderRadius: 12,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -1868,7 +1868,7 @@ export function BenefitPartnersSection() {
                   <img
                     src={partner.logo_url}
                     alt=""
-                    style={{ width: 36, height: 36, borderRadius: 8, objectFit: "cover" }}
+                    style={{ width: 36, height: 36, borderRadius: 12, objectFit: "cover" }}
                   />
                 ) : (
                   (partner.name || "?").charAt(0).toUpperCase()
@@ -1889,7 +1889,7 @@ export function BenefitPartnersSection() {
                     color: tierStyle.color,
                     fontSize: 9,
                     fontWeight: tokens.fontWeight.bold,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "2px 7px",
                   }}
                 >
@@ -1960,7 +1960,7 @@ export function BenefitPartnersSection() {
                 style={{
                   background: tokens.canvas,
                   color: tokens.textSecondary,
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "4px 12px",
                   fontSize: tokens.fontSize.sm,
                   fontWeight: tokens.fontWeight.semibold,
@@ -2065,7 +2065,7 @@ export function BenefitPartnersSection() {
                   style={{
                     background: "#EFF6FF",
                     color: tokens.blue,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "5px 12px",
                     fontSize: tokens.fontSize.sm,
                     fontWeight: tokens.fontWeight.bold,
@@ -2105,7 +2105,7 @@ export function BenefitPartnersSection() {
             style={{
               position: "relative",
               background: tokens.canvas,
-              borderRadius: "8px 8px 0 0",
+              borderRadius: "16px 16px 0 0",
               padding: "0 0 40px",
               maxHeight: "90vh",
               overflowY: "auto",
@@ -2294,7 +2294,7 @@ export function BenefitPartnersSection() {
                         background: active ? "#0B1F3A" : "#E5E5EA",
                         color: active ? "#fff" : "#6B6B6F",
                         border: "none",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: "8px 0",
                         fontSize: 12,
                         fontWeight: tokens.fontWeight.bold,
@@ -2359,7 +2359,7 @@ export function BenefitPartnersSection() {
                     style={{
                       background: "#FEE2E2",
                       border: "none",
-                      borderRadius: 8,
+                      borderRadius: 12,
                       width: 36,
                       height: 36,
                       cursor: "pointer",
@@ -2378,7 +2378,7 @@ export function BenefitPartnersSection() {
                 style={{
                   background: "#fff",
                   border: "1px solid #E4E8EF",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "8px 14px",
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.bold,
@@ -2431,7 +2431,7 @@ export function BenefitPartnersSection() {
                 width: "calc(100% - 32px)",
                 background: tokens.blue,
                 color: "#fff",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 14,
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.extrabold,
@@ -2469,7 +2469,7 @@ export function BenefitPartnersSection() {
             style={{
               position: "relative",
               background: tokens.canvas,
-              borderRadius: "8px 8px 0 0",
+              borderRadius: "16px 16px 0 0",
               padding: "0 0 40px",
               maxHeight: "90vh",
               overflowY: "auto",
@@ -2567,7 +2567,7 @@ export function BenefitPartnersSection() {
                         background: active ? "#0B1F3A" : "#E5E5EA",
                         color: active ? "#fff" : "#6B6B6F",
                         border: "none",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: "8px 0",
                         fontSize: 12,
                         fontWeight: tokens.fontWeight.bold,
@@ -2641,7 +2641,7 @@ export function BenefitPartnersSection() {
                     style={{
                       background: "#FEE2E2",
                       border: "none",
-                      borderRadius: 8,
+                      borderRadius: 12,
                       width: 36,
                       height: 36,
                       cursor: "pointer",
@@ -2660,7 +2660,7 @@ export function BenefitPartnersSection() {
                 style={{
                   background: "#fff",
                   border: "1px solid #E4E8EF",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "8px 14px",
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.bold,
@@ -2706,7 +2706,7 @@ export function BenefitPartnersSection() {
                     style={{
                       background: "#FEE2E2",
                       border: "none",
-                      borderRadius: 8,
+                      borderRadius: 12,
                       width: 36,
                       height: 36,
                       cursor: "pointer",
@@ -2725,7 +2725,7 @@ export function BenefitPartnersSection() {
                 style={{
                   background: "#fff",
                   border: "1px solid #E4E8EF",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "8px 14px",
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.bold,
@@ -2788,7 +2788,7 @@ export function BenefitPartnersSection() {
                   onClick={() => perkHeroInputRef.current?.click()}
                   style={{
                     border: "1px dashed #E2E8F0",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: 16,
                     display: "flex",
                     flexDirection: "column",
@@ -2858,7 +2858,7 @@ export function BenefitPartnersSection() {
                           left: 2,
                           background: "rgba(11,31,58,0.8)",
                           color: "#fff",
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           fontSize: tokens.fontSize.xs,
                           padding: "1px 5px",
                           fontFamily: "Poppins, sans-serif",
@@ -2904,7 +2904,7 @@ export function BenefitPartnersSection() {
                         }}
                         style={{
                           flex: 1,
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           border: "1px solid #E2E8F0",
                           background: i === 0 ? "#F1F5F9" : "#fff",
                           color: i === 0 ? "#CBD5E1" : "#0B1F3A",
@@ -2927,7 +2927,7 @@ export function BenefitPartnersSection() {
                         }}
                         style={{
                           flex: 1,
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           border: "1px solid #E2E8F0",
                           background: i === arr.length - 1 ? "#F1F5F9" : "#fff",
                           color: i === arr.length - 1 ? "#CBD5E1" : "#0B1F3A",
@@ -2975,7 +2975,7 @@ export function BenefitPartnersSection() {
               <div
                 style={{
                   background: "#E5E5EA",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 4,
                   display: "flex",
                   gap: 4,
@@ -2987,7 +2987,7 @@ export function BenefitPartnersSection() {
                   onClick={() => setPerkVideoMode("upload")}
                   style={{
                     flex: 1,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     border: "none",
                     padding: "6px 12px",
                     fontSize: tokens.fontSize.base,
@@ -3006,7 +3006,7 @@ export function BenefitPartnersSection() {
                   onClick={() => setPerkVideoMode("embed")}
                   style={{
                     flex: 1,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     border: "none",
                     padding: "6px 12px",
                     fontSize: tokens.fontSize.base,
@@ -3033,7 +3033,7 @@ export function BenefitPartnersSection() {
                     style={{
                       width: "100%",
                       border: "1px solid #E4E8EF",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: "10px 12px",
                       fontSize: tokens.fontSize.base,
                       fontFamily: "Poppins, sans-serif",
@@ -3118,7 +3118,7 @@ export function BenefitPartnersSection() {
                       onClick={() => perkVideoInputRef.current?.click()}
                       style={{
                         border: "2px dashed #E4E8EF",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: 24,
                         textAlign: "center",
                         cursor: "pointer",
@@ -3167,7 +3167,7 @@ export function BenefitPartnersSection() {
                 width: "calc(100% - 32px)",
                 background: tokens.blue,
                 color: "#fff",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 14,
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.extrabold,

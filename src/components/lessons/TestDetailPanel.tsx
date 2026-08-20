@@ -63,7 +63,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
             color: '#fff',
             fontSize: 9,
             fontWeight: tokens.fontWeight.extrabold,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: '3px 10px',
             letterSpacing: '0.08em',
           }}>
@@ -75,7 +75,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
                 type="button"
                 onClick={() => { onClose(); detail.onEdit?.(); }}
                 aria-label="Edit test day"
-                style={{ background: '#F2F5F9', border: 'none', borderRadius: 8, width: 30, height: 30, display: 'grid', placeItems: 'center', cursor: 'pointer' }}
+                style={{ background: '#F2F5F9', border: 'none', borderRadius: 12, width: 30, height: 30, display: 'grid', placeItems: 'center', cursor: 'pointer' }}
               >
                 <IconPencil size={15} stroke={2} color="#1877D6" />
               </button>
@@ -84,7 +84,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
               type="button"
               onClick={onClose}
               aria-label="Close"
-              style={{ background: '#F2F5F9', border: 'none', borderRadius: 8, width: 30, height: 30, display: 'grid', placeItems: 'center', cursor: 'pointer' }}
+              style={{ background: '#F2F5F9', border: 'none', borderRadius: 12, width: 30, height: 30, display: 'grid', placeItems: 'center', cursor: 'pointer' }}
             >
               <IconX size={16} stroke={2} color="#0B1F3A" />
             </button>
@@ -93,7 +93,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
 
         <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.extrabold, color: '#0B1F3A', letterSpacing: -0.3 }}>{detail.pupilName}</div>
 
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'space-between', marginTop: 12, background: '#F2F7FD', borderRadius: 8, padding: '10px 12px' }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'space-between', marginTop: 12, background: '#F2F7FD', borderRadius: tokens.radiusCard, padding: '10px 12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <IconClock size={18} stroke={1.8} color="#1877D6" />
             <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: '#1877D6', fontFamily: PF }}>
@@ -131,7 +131,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
             <button
               type="button"
               onClick={() => { onClose(); detail.onNavigate?.(); }}
-              style={{ flex: 1, background: '#F2F5F9', color: '#0B1F3A', border: 'none', borderRadius: 8, padding: '11px 14px', fontFamily: PF, fontWeight: tokens.fontWeight.bold, fontSize: tokens.fontSize.base, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+              style={{ flex: 1, background: '#F2F5F9', color: '#0B1F3A', border: 'none', borderRadius: tokens.radiusCard, padding: '11px 14px', fontFamily: PF, fontWeight: tokens.fontWeight.bold, fontSize: tokens.fontSize.base, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
             >
               <IconNavigation size={15} stroke={1.8} /> Navigate
             </button>
@@ -140,7 +140,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
             <button
               type="button"
               onClick={() => { onClose(); detail.onOpenLesson?.(); }}
-              style={{ flex: 1, background: 'linear-gradient(135deg, #1877D6, #0B1F3A)', color: '#fff', border: 'none', borderRadius: 8, padding: '11px 14px', fontFamily: PF, fontWeight: tokens.fontWeight.bold, fontSize: tokens.fontSize.base, cursor: 'pointer' }}
+              style={{ flex: 1, background: 'linear-gradient(135deg, #1877D6, #0B1F3A)', color: '#fff', border: 'none', borderRadius: tokens.radiusCard, padding: '11px 14px', fontFamily: PF, fontWeight: tokens.fontWeight.bold, fontSize: tokens.fontSize.base, cursor: 'pointer' }}
             >
               Open lesson
             </button>

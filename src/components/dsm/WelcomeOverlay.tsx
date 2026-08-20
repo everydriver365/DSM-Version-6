@@ -147,7 +147,7 @@ export function WelcomeOverlay({ userId, instructorName, onDismiss }: WelcomeOve
             }}
             style={{
               background: "rgba(255,255,255,0.08)",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "14px 16px",
               display: "flex",
               alignItems: "center",
@@ -196,7 +196,7 @@ export function WelcomeOverlay({ userId, instructorName, onDismiss }: WelcomeOve
             padding: 15,
             background: tokens.blue,
             color: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             border: "none",
             fontSize: tokens.fontSize.lg,
             fontWeight: tokens.fontWeight.bold,

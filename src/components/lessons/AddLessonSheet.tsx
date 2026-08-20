@@ -599,7 +599,7 @@ export function AddLessonSheet({
             display: "flex",
             gap: 0,
             background: "#E5E5EA",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 4,
             margin: "0 0 16px",
           }}
@@ -612,7 +612,7 @@ export function AddLessonSheet({
             style={{
               flex: 1,
               padding: "8px 0",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               border: "none",
               cursor: "pointer",
               fontFamily: "Poppins, sans-serif",
@@ -636,7 +636,7 @@ export function AddLessonSheet({
             style={{
               flex: 1,
               padding: "8px 0",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               border: "none",
               cursor: "pointer",
               fontFamily: "Poppins, sans-serif",
@@ -771,7 +771,7 @@ export function AddLessonSheet({
               width: "100%",
               background: "#fff",
               border: "1px solid #E4E8EF",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "10px 12px",
               fontSize: tokens.fontSize.md,
               fontFamily: "Poppins, sans-serif",
@@ -852,7 +852,7 @@ export function AddLessonSheet({
                   }}
                       style={{
                         height: 34,
-                        borderRadius: 8,
+                        borderRadius: 12,
                         padding: "0 16px",
                         fontSize: tokens.fontSize.base,
                         fontWeight: tokens.fontWeight.semibold,
@@ -910,7 +910,7 @@ export function AddLessonSheet({
                       width: "100%",
                       background: "#fff",
                       border: "1px solid #E4E8EF",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: "10px 12px",
                       fontSize: tokens.fontSize.md,
                       fontFamily: "Poppins, sans-serif",
@@ -921,7 +921,7 @@ export function AddLessonSheet({
                     <div
                       style={{
                         background: "#fff",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         border: "1px solid #E4E8EF",
                         boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                         maxHeight: 200,
@@ -979,7 +979,7 @@ export function AddLessonSheet({
                         color: "#15803D",
                         fontSize: tokens.fontSize.sm,
                         fontWeight: tokens.fontWeight.bold,
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: "4px 12px",
                         display: "flex",
                         gap: 6,
@@ -1043,7 +1043,7 @@ export function AddLessonSheet({
                       width: "100%",
                       background: "#fff",
                       border: "1px solid #E4E8EF",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: "10px 12px",
                       fontSize: tokens.fontSize.md,
                       fontFamily: "Poppins, sans-serif",

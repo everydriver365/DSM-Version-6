@@ -140,7 +140,7 @@ function PodcastDetailPage() {
             fontSize: tokens.fontSize.xs,
             fontWeight: tokens.fontWeight.extrabold,
             padding: "4px 8px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             textTransform: "uppercase",
             letterSpacing: "0.04em",
           }}
@@ -179,7 +179,7 @@ function PodcastDetailPage() {
             style={{
               background: "#fff",
               border: "0.5px solid #E2E6ED",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 16,
               marginBottom: 12,
             }}
@@ -215,7 +215,7 @@ function PodcastDetailPage() {
           style={{
             background: "#fff",
             border: "0.5px solid #E2E6ED",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 16,
             fontSize: tokens.fontSize.base,
             color: "#374151",
@@ -236,7 +236,7 @@ function PodcastDetailPage() {
             style={{
               background: "#F7FAFC",
               border: "0.5px solid #E2E6ED",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 16,
             }}
           >
@@ -253,7 +253,7 @@ function PodcastDetailPage() {
                     color: "#fff",
                     fontSize: tokens.fontSize.base,
                     fontWeight: tokens.fontWeight.semibold,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "10px 14px",
                     border: 0,
                     cursor: "pointer",
@@ -274,7 +274,7 @@ function PodcastDetailPage() {
                     color: "#fff",
                     fontSize: tokens.fontSize.base,
                     fontWeight: tokens.fontWeight.semibold,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "10px 14px",
                     border: 0,
                     cursor: "pointer",
@@ -295,7 +295,7 @@ function PodcastDetailPage() {
                     color: "#fff",
                     fontSize: tokens.fontSize.base,
                     fontWeight: tokens.fontWeight.semibold,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "10px 14px",
                     border: 0,
                     cursor: "pointer",

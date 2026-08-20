@@ -150,7 +150,7 @@ function SubscriptionPage() {
         className="mx-4 mt-3"
         style={{
           backgroundColor: tokens.navy,
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: 16,
         }}
       >
@@ -182,10 +182,10 @@ function SubscriptionPage() {
             fontSize: tokens.fontSize.sm,
             fontWeight: tokens.fontWeight.bold,
             padding: "2px 8px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
           }}
         >
-          <span style={{ width: 6, height: 6, borderRadius: 8, backgroundColor: "#ffffff" }} />
+          <span style={{ width: 6, height: 6, borderRadius: 12, backgroundColor: "#ffffff" }} />
           Active
         </div>
       </div>
@@ -219,7 +219,7 @@ function SubscriptionPage() {
         style={{
           backgroundColor: "#ffffff",
           border: "2px solid #1877D6",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: 16,
           position: "relative",
         }}
@@ -258,7 +258,7 @@ function SubscriptionPage() {
             fontSize: tokens.fontSize.xs,
             fontWeight: tokens.fontWeight.bold,
             padding: "2px 8px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
           }}
         >
           Coming soon
@@ -273,7 +273,7 @@ function SubscriptionPage() {
         className="mx-4"
         style={{
           backgroundColor: "#ffffff",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: 16,
         }}
       >
@@ -306,7 +306,7 @@ function SubscriptionPage() {
             style={{
               position: "relative",
               background: tokens.canvas,
-              borderRadius: "8px 8px 0 0",
+              borderRadius: "16px 16px 0 0",
               padding: "0 0 40px",
               maxHeight: "90vh",
               overflowY: "auto",
@@ -315,7 +315,7 @@ function SubscriptionPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ position: "relative", padding: "12px 16px 0" }}>
-              <div style={{ width: 36, height: 5, borderRadius: 8, background: "#D1D1D6", margin: "0 auto" }} />
+              <div style={{ width: 36, height: 5, borderRadius: 12, background: "#D1D1D6", margin: "0 auto" }} />
               <button
                 type="button"
                 aria-label="Close"
@@ -384,7 +384,7 @@ function SubscriptionPage() {
               style={{
                 margin: "12px 16px 0",
                 background: "#FEF3C7",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "14px 16px",
                 border: "1px solid #FDE68A",
                 display: "flex",
@@ -422,7 +422,7 @@ function SubscriptionPage() {
                 width: "calc(100% - 32px)",
                 background: tokens.navy,
                 color: "#fff",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 15,
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.extrabold,

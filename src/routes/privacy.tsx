@@ -185,7 +185,7 @@ function PrivacyPage() {
             key={section.title}
             style={{
               background: tokens.canvas,
-              borderRadius: 12,
+              borderRadius: tokens.radiusCard,
               padding: "16px",
               marginBottom: 14,
             }}

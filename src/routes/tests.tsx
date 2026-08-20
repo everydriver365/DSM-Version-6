@@ -228,7 +228,7 @@ function TestsPage() {
           className="inline-flex items-center gap-2"
           style={{
             background: "#fff", color: tokens.navy, fontSize: 13.5, fontWeight: tokens.fontWeight.extrabold,
-            padding: "10px 18px", borderRadius: 8, border: "none",
+            padding: "10px 18px", borderRadius: tokens.radiusCard, border: "none",
             boxShadow: "0 3px 0 #C7D0DC", ...POPPINS,
           }}
         >
@@ -244,7 +244,7 @@ function TestsPage() {
         {sections.map((section) => (
           <div key={section.key}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "18px 0 10px" }}>
-              <span style={{ width: 3, height: 14, background: tokens.blue, borderRadius: 8, flexShrink: 0 }} />
+              <span style={{ width: 3, height: 14, background: tokens.blue, borderRadius: 12, flexShrink: 0 }} />
               <span style={{
                 color: tokens.blue, fontSize: 12, fontWeight: tokens.fontWeight.extrabold,
                 letterSpacing: "0.6px", textTransform: "uppercase", ...POPPINS,
@@ -383,7 +383,7 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
     <div
       className="mb-4"
       style={{
-        borderRadius: 8, background: tokens.white, overflow: "hidden",
+        borderRadius: tokens.radiusCard, background: tokens.white, overflow: "hidden",
         boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.08)",
       }}
     >
@@ -521,7 +521,7 @@ function TestCard({
   return (
     <div
       style={{
-        position: "relative", background: "#fff", borderRadius: 8, padding: 16,
+        position: "relative", background: "#fff", borderRadius: tokens.radiusCard, padding: 16,
         boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
       }}
     >
@@ -546,7 +546,7 @@ function TestCard({
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.extrabold,
                   padding: "5px 12px",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   ...POPPINS,
                 }}
               >
@@ -605,7 +605,7 @@ function TestCard({
                 width: "100%",
                 marginTop: 14,
                 padding: 12,
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 background: "#fff",
                 border: "1.5px solid #1877D6",
                 color: tokens.blue,
@@ -632,7 +632,7 @@ function TestCard({
               placeItems: "center",
               width: 26,
               height: 26,
-              borderRadius: 8,
+              borderRadius: 12,
               background: "transparent",
               border: "none",
               cursor: "pointer",
@@ -651,7 +651,7 @@ function TestCard({
                 minWidth: 150,
                 background: "#fff",
                 border: "1px solid #E2E8F0",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                 zIndex: 20,
                 overflow: "hidden",
@@ -773,7 +773,7 @@ function EditTestSheet({
               width: "100%",
               padding: "10px 12px",
               border: "1px solid #E4E8EF",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               fontSize: tokens.fontSize.md,
               fontFamily: "Poppins, sans-serif",
               color: tokens.navy,
@@ -793,7 +793,7 @@ function EditTestSheet({
               width: "100%",
               padding: "10px 12px",
               border: "1px solid #E4E8EF",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               fontSize: tokens.fontSize.md,
               fontFamily: "Poppins, sans-serif",
               color: tokens.navy,
@@ -821,7 +821,7 @@ function EditTestSheet({
             background: saving ? "#9CA3AF" : "#1877D6",
             color: "#fff",
             border: "none",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             fontSize: tokens.fontSize.md,
             fontWeight: tokens.fontWeight.bold,
             cursor: saving ? "not-allowed" : "pointer",
@@ -894,7 +894,7 @@ function CancelTestSheet({
             gap: 12,
             padding: 14,
             background: "#FEF3C7",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             color: "#B45309",
           }}
         >
@@ -921,7 +921,7 @@ function CancelTestSheet({
               width: "100%",
               padding: "10px 12px",
               border: "1px solid #E4E8EF",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               fontSize: tokens.fontSize.base,
               fontFamily: "Poppins, sans-serif",
               color: tokens.navy,
@@ -939,7 +939,7 @@ function CancelTestSheet({
             background: tokens.red,
             color: "#fff",
             border: "none",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             fontSize: tokens.fontSize.md,
             fontWeight: tokens.fontWeight.bold,
             cursor: "pointer",
@@ -957,7 +957,7 @@ function CancelTestSheet({
             background: "#F1F5F9",
             color: tokens.textSecondary,
             border: "none",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             fontSize: tokens.fontSize.md,
             fontWeight: tokens.fontWeight.semibold,
             cursor: "pointer",
@@ -1284,7 +1284,7 @@ function AddTestSheet({
               className="w-full px-3 bg-white"
               style={{
                 height: 44,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: "0.5px solid #EEF2F7",
                 color: tokens.navy,
                 fontSize: tokens.fontSize.md,
@@ -1314,7 +1314,7 @@ function AddTestSheet({
             className="w-full flex items-center justify-center text-[13px] font-semibold"
             style={{
               height: 44,
-              borderRadius: 8,
+              borderRadius: 12,
               border: "1px dashed #1877D6",
               color: tokens.blue,
               background: "#F4F8FE",
@@ -1399,7 +1399,7 @@ function ExaminerNameInput({
             marginTop: 4,
             background: tokens.white,
             border: "1px solid #EEF2F7",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
             zIndex: 20,
             maxHeight: 180,
@@ -1696,7 +1696,7 @@ function LogResultSheet({
           className="w-full flex items-center justify-center text-[13px] font-semibold"
           style={{
             height: 44,
-            borderRadius: 8,
+            borderRadius: 12,
             border: "1px dashed #1877D6",
             color: tokens.blue,
             background: "#F4F8FE",
@@ -2180,7 +2180,7 @@ export function DL25Sheet({
                   className="w-full px-3 bg-white"
                   style={{
                     height: 44,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     border: "0.5px solid #EEF2F7",
                     color: tokens.navy,
                     fontSize: tokens.fontSize.md,
@@ -2234,7 +2234,7 @@ function DL25ItemRow({
       className="flex items-center justify-between"
       style={{
         padding: "8px 10px",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         border: "0.5px solid #EEF2F7",
         background: tokens.white,
       }}

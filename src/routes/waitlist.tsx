@@ -243,7 +243,7 @@ function WaitlistPage() {
                     <div className="flex items-stretch" style={{ gap: 12, padding: "12px 16px" }}>
                       <div
                         className="shrink-0"
-                        style={{ width: 3, borderRadius: 8, backgroundColor: color, alignSelf: "stretch" }}
+                        style={{ width: 3, borderRadius: 12, backgroundColor: color, alignSelf: "stretch" }}
                       />
                       <div className="min-w-0 flex-1 flex flex-col justify-center">
                         <div className="text-[14px] font-semibold text-[#0B1F3A] truncate" style={POPPINS}>

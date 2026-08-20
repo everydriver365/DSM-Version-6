@@ -166,7 +166,7 @@ function DocumentsPage() {
           style={{
             gap: 10,
             padding: 12,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             backgroundColor: tokens.canvas,
             border: "0.5px solid #1877D6",
           }}
@@ -208,7 +208,7 @@ function DocumentsPage() {
                         style={{
                           width: 36,
                           height: 36,
-                          borderRadius: 8,
+                          borderRadius: 12,
                           backgroundColor: meta.tint,
                         }}
                       >
@@ -262,7 +262,7 @@ function DocumentsPage() {
                         gap: 6,
                         height: 32,
                         padding: "0 12px",
-                        borderRadius: 8,
+                        borderRadius: 12,
                         backgroundColor: "#F1F5F9",
                         color: tokens.blue,
                         border: "0.5px solid #CBD5E1",
@@ -534,7 +534,7 @@ function DocSheet({
             className="w-full text-[14px]"
             style={{
               border: "0.5px solid #EEF2F7",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 10,
               color: tokens.navy,
               outline: "none",
@@ -555,7 +555,7 @@ function DocSheet({
             style={{
               gap: 8,
               height: 44,
-              borderRadius: 8,
+              borderRadius: 12,
               backgroundColor: "#F8F9FB",
               color: tokens.blue,
               border: "1px dashed #1877D6",

@@ -309,7 +309,7 @@ function TestDayPage() {
             className="mx-4 mt-3"
             style={{
               backgroundColor: tokens.navy,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 16,
               color: tokens.white,
             }}
@@ -336,7 +336,7 @@ function TestDayPage() {
                 style={{
                   backgroundColor: tokens.blue,
                   color: tokens.navy,
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "8px 16px",
                 }}
               >

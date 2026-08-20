@@ -222,7 +222,7 @@ function JobCard({
       onClick={() => setDetailJob(job)}
       style={{
         background: tokens.white,
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         overflow: "hidden",
         cursor: "pointer",
@@ -303,7 +303,7 @@ function JobCard({
                 color: badge.color,
                 background: badge.bg,
                 padding: "6px 12px",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 whiteSpace: "nowrap",
                 ...POPPINS,
               }}
@@ -333,7 +333,7 @@ function JobCard({
                 background: tokens.canvas,
                 color: "#000",
                 height: "auto",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 14,
                 border: "none",
                 fontSize: 14.5,
@@ -357,7 +357,7 @@ function JobCard({
               background: BLUE,
               color: "#FFF",
               height: "auto",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 14,
               border: "none",
               fontSize: 14.5,
@@ -549,7 +549,7 @@ function JobsPage() {
             style={{
               display: "inline-flex",
               background: "#E5E5EA",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 3,
             }}
           >
@@ -563,7 +563,7 @@ function JobsPage() {
                   style={{
                     background: active ? "#fff" : "transparent",
                     border: "none",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "8px 18px",
                     fontSize: 13.5,
                     fontWeight: tokens.fontWeight.semibold,
@@ -594,7 +594,7 @@ function JobsPage() {
                 key={i}
                 style={{
                   background: tokens.white,
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   boxShadow: "0 4px 0 #E4E4E8",
                   padding: 14,
                   display: "flex",
@@ -657,7 +657,7 @@ function JobsPage() {
                 key={i}
                 style={{
                   background: tokens.white,
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   boxShadow: "0 4px 0 #E4E4E8",
                   padding: 14,
                   display: "flex",
@@ -847,7 +847,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
                     maxWidth: "78%",
                     background: mine ? BLUE : "#FFFFFF",
                     color: mine ? "#FFFFFF" : NAVY,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "8px 12px",
                     fontSize: tokens.fontSize.md,
                     boxShadow: mine ? "none" : "0 1px 2px rgba(0,0,0,0.05)",
@@ -873,7 +873,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
             onKeyDown={(e) => { if (e.key === "Enter") send(); }}
             placeholder="Type a message…"
             style={{
-              flex: 1, background: tokens.canvas, border: "none", borderRadius: 8,
+              flex: 1, background: tokens.canvas, border: "none", borderRadius: tokens.radiusCard,
               padding: "10px 14px", fontSize: tokens.fontSize.lg, outline: "none", ...POPPINS,
             }}
           />
@@ -881,7 +881,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
             onClick={send}
             disabled={!draft.trim() || sending}
             style={{
-              background: BLUE, color: "#FFF", border: "none", borderRadius: 8,
+              background: BLUE, color: "#FFF", border: "none", borderRadius: 12,
               width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center",
               cursor: draft.trim() ? "pointer" : "not-allowed", opacity: draft.trim() ? 1 : 0.5,
             }}
@@ -1026,7 +1026,7 @@ function JobDetailSheet({
           )}
 
           {job.test_booked && (
-            <div style={{ marginTop: 16, padding: 12, background: "#EFF6FF", borderRadius: 8, border: "1px solid #CCE0FA" }}>
+            <div style={{ marginTop: 16, padding: 12, background: "#EFF6FF", borderRadius: tokens.radiusCard, border: "1px solid #CCE0FA" }}>
               <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: BLUE, textTransform: "uppercase", letterSpacing: 0.3, marginBottom: 6 }}>
                 Test booked
               </div>
@@ -1067,7 +1067,7 @@ function JobDetailSheet({
               background: "#EFF6FF",
               color: BLUE,
               border: "1px solid #CCE0FA",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "12px 16px",
               fontSize: tokens.fontSize.md,
               fontWeight: tokens.fontWeight.semibold,
@@ -1087,7 +1087,7 @@ function JobDetailSheet({
           <button
             onClick={onDecline}
             style={{
-              flex: 1, background: tokens.canvas, color: NAVY, border: "none", borderRadius: 8,
+              flex: 1, background: tokens.canvas, color: NAVY, border: "none", borderRadius: tokens.radiusCard,
               padding: "12px 16px", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
             }}
           >
@@ -1096,7 +1096,7 @@ function JobDetailSheet({
           <button
             onClick={onAccept}
             style={{
-              flex: 1, background: BLUE, color: "#FFF", border: "none", borderRadius: 8,
+              flex: 1, background: BLUE, color: "#FFF", border: "none", borderRadius: tokens.radiusCard,
               padding: "12px 16px", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, cursor: "pointer",
             }}
           >

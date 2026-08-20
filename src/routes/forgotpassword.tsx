@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { IconCircleCheck } from "@tabler/icons-react";
@@ -48,7 +49,7 @@ function ForgotPasswordPage() {
 
       <div
         className="w-full max-w-[360px] bg-white flex flex-col"
-        style={{ borderRadius: "8px", padding: "28px", boxShadow: "0 8px 32px rgba(0,0,0,0.3)" }}
+        style={{ borderRadius: tokens.radiusCard, padding: "28px", boxShadow: "0 8px 32px rgba(0,0,0,0.3)" }}
       >
         {sent ? (
           <div className="flex flex-col items-center text-center">

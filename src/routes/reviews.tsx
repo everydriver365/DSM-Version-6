@@ -86,7 +86,7 @@ function ReviewsPage() {
       {/* Summary card */}
       <div
         className="mx-4 mt-3 flex flex-col items-center"
-        style={{ backgroundColor: tokens.navy, borderRadius: 8, padding: 16 }}
+        style={{ backgroundColor: tokens.navy, borderRadius: tokens.radiusCard, padding: 16 }}
       >
         <div className="text-white font-bold" style={{ fontSize: 36, lineHeight: 1, ...POPPINS }}>
           {count > 0 ? average.toFixed(1) : "—"}

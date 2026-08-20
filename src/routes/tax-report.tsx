@@ -259,7 +259,7 @@ function TaxReportPage() {
 
   const cardStyle = {
     backgroundColor: tokens.white,
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     padding: 16,
     borderWidth: "0.5px",
     borderStyle: "solid" as const,
@@ -285,7 +285,7 @@ function TaxReportPage() {
           style={{
             height: 36,
             padding: "0 12px",
-            borderRadius: 8,
+            borderRadius: 12,
             border: "0.5px solid #EEF2F7",
           }}
         >
@@ -390,7 +390,7 @@ function TaxReportPage() {
       <div
         style={{
           backgroundColor: tokens.navy,
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           marginLeft: 16,
           marginRight: 16,
           marginTop: 12,

@@ -68,7 +68,7 @@ function Card({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
       background: "#fff",
-      borderRadius: 8,
+      borderRadius: tokens.radiusCard,
       boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
       padding: 16,
       margin: "0 16px 14px",
@@ -79,7 +79,7 @@ function Card({ children }: { children: React.ReactNode }) {
 function IconChip({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
-      width: 32, height: 32, borderRadius: 8, background: CHIP_BG,
+      width: 32, height: 32, borderRadius: 12, background: CHIP_BG,
       display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
     }}>{children}</div>
   );
@@ -108,7 +108,7 @@ function PrimaryButton({ onClick, children, disabled }: { onClick: () => void; c
       disabled={disabled}
       style={{
         background: NAVY, color: "#fff", width: "100%",
-        borderRadius: 8, padding: "13px 0", border: "none",
+        borderRadius: tokens.radiusCard, padding: "13px 0", border: "none",
         fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, marginTop: 14,
         opacity: disabled ? 0.6 : 1, cursor: disabled ? "default" : "pointer",
         ...FONT,
@@ -157,7 +157,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) {
 function TimeField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <label style={{
-      flex: 1, background: FIELD_BG, borderRadius: 8,
+      flex: 1, background: FIELD_BG, borderRadius: tokens.radiusCard,
       padding: "7px 10px", display: "flex", alignItems: "center",
       justifyContent: "space-between", cursor: "pointer", position: "relative",
     }}>
@@ -183,7 +183,7 @@ function SelectField({ value, onChange, options, label }: {
     <div style={{ flex: 1 }}>
       <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, marginBottom: 6 }}>{label}</div>
       <div style={{
-        position: "relative", background: FIELD_BG, borderRadius: 8,
+        position: "relative", background: FIELD_BG, borderRadius: tokens.radiusCard,
         padding: "10px 12px", display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: NAVY }}>
@@ -422,7 +422,7 @@ function AvailabilitySettingsPage() {
     <div style={{ minHeight: "100vh", background: "#F5F7FA", paddingBottom: 40, ...FONT }}>
       <div style={{
         position: "sticky", top: 0, zIndex: 40, display: "flex", alignItems: "center", gap: 12,
-        background: tokens.navy, height: 52, padding: "0 16px", borderRadius: "0 0 8px 8px",
+        background: tokens.navy, height: 52, padding: "0 16px", borderRadius: "0 0 16px 16px",
       }}>
         <button
           type="button"
@@ -441,7 +441,7 @@ function AvailabilitySettingsPage() {
       </div>
 
       {savedFlash ? (
-        <div style={{ margin: "12px 16px 0", padding: "8px 12px", background: "#E0FFF4", border: "0.5px solid #86EFAC", color: "#15803D", borderRadius: 8, fontSize: 13 }}>
+        <div style={{ margin: "12px 16px 0", padding: "8px 12px", background: "#E0FFF4", border: "0.5px solid #86EFAC", color: "#15803D", borderRadius: tokens.radiusCard, fontSize: 13 }}>
           {savedFlash}
         </div>
       ) : null}
@@ -452,7 +452,7 @@ function AvailabilitySettingsPage() {
       <div style={{ padding: "0 16px", marginBottom: 14 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
           <div style={{
-            width: 38, height: 38, borderRadius: 8, background: "#E7F1FC",
+            width: 38, height: 38, borderRadius: 12, background: "#E7F1FC",
             display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
           }}>
             <IconClock size={18} color="#1877D6" />
@@ -463,7 +463,7 @@ function AvailabilitySettingsPage() {
         </div>
 
         <div style={{
-          background: "#fff", borderRadius: 8, overflow: "hidden",
+          background: "#fff", borderRadius: tokens.radiusCard, overflow: "hidden",
           boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.07)",
         }}>
           {DAY_NAMES.map((d, idx) => {
@@ -484,7 +484,7 @@ function AvailabilitySettingsPage() {
                     aria-label={`${d} working`}
                     onClick={() => updateDay(d, { active: !cfg.active })}
                     style={{
-                      width: 44, height: 26, borderRadius: 8, position: "relative",
+                      width: 44, height: 26, borderRadius: 12, position: "relative",
                       background: cfg.active ? "#1877D6" : "#E5E5EA", border: "none", cursor: "pointer",
                       flexShrink: 0, padding: 0,
                     }}
@@ -505,7 +505,7 @@ function AvailabilitySettingsPage() {
                   {cfg.active ? (
                     <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1 }}>
                       <label style={{
-                        flex: 1, background: "#F2F2F7", borderRadius: 8,
+                        flex: 1, background: "#F2F2F7", borderRadius: tokens.radiusCard,
                         padding: "9px 11px", display: "flex", alignItems: "center", justifyContent: "space-between",
                         cursor: "pointer", position: "relative",
                       }}>
@@ -522,7 +522,7 @@ function AvailabilitySettingsPage() {
                       </label>
                       <span style={{ fontSize: 12.5, fontWeight: tokens.fontWeight.medium, color: "#B0B0B5", ...FONT }}>to</span>
                       <label style={{
-                        flex: 1, background: "#F2F2F7", borderRadius: 8,
+                        flex: 1, background: "#F2F2F7", borderRadius: tokens.radiusCard,
                         padding: "9px 11px", display: "flex", alignItems: "center", justifyContent: "space-between",
                         cursor: "pointer", position: "relative",
                       }}>
@@ -659,7 +659,7 @@ function AvailabilitySettingsPage() {
               <button type="button" onClick={() => setAddingRecurring(false)}
                 style={{ flex: 1, height: 40, borderRadius: 8, background: "#fff", border: `0.5px solid ${BORDER}`, fontSize: tokens.fontSize.md, cursor: "pointer" }}>Cancel</button>
               <button type="button" onClick={addRecurring}
-                style={{ flex: 1, height: 40, borderRadius: 8, background: NAVY, color: "#fff", border: "none", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, cursor: "pointer" }}>Save</button>
+                style={{ flex: 1, height: 40, borderRadius: 12, background: NAVY, color: "#fff", border: "none", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, cursor: "pointer" }}>Save</button>
             </div>
           </div>
         ) : (
@@ -738,7 +738,7 @@ function AvailabilitySettingsPage() {
               <button type="button" onClick={() => setAddingTimeOff(false)}
                 style={{ flex: 1, height: 40, borderRadius: 8, background: "#fff", border: `0.5px solid ${BORDER}`, fontSize: tokens.fontSize.md, cursor: "pointer" }}>Cancel</button>
               <button type="button" onClick={addTimeOff}
-                style={{ flex: 1, height: 40, borderRadius: 8, background: NAVY, color: "#fff", border: "none", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, cursor: "pointer" }}>Save</button>
+                style={{ flex: 1, height: 40, borderRadius: 12, background: NAVY, color: "#fff", border: "none", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, cursor: "pointer" }}>Save</button>
             </div>
           </div>
         ) : (

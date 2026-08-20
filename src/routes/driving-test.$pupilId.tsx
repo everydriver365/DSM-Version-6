@@ -483,7 +483,7 @@ function DrivingTestPage() {
             className="flex-1 text-[13px] font-semibold"
             style={{
               height: 40,
-              borderRadius: 8,
+              borderRadius: 12,
               backgroundColor: tab === t ? "#0F2044" : "#F1F4F9",
               color: tab === t ? "#FFFFFF" : "#0F2044",
               border: "none",
@@ -607,7 +607,7 @@ function Card({ children }: { children: React.ReactNode }) {
       style={{
         backgroundColor: tokens.white,
         border: "0.5px solid #E2E6ED",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: 16,
       }}
     >
@@ -655,7 +655,7 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   height: 40,
   padding: "0 12px",
-  borderRadius: 8,
+  borderRadius: 12,
   border: "0.5px solid #E2E6ED",
   fontSize: tokens.fontSize.md,
   backgroundColor: tokens.white,
@@ -722,7 +722,7 @@ function CentreSearchSelect({
           className="flex items-center justify-between"
           style={{
             padding: "10px 12px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             border: "0.5px solid #E2E6ED",
             backgroundColor: "#F0FDF4",
           }}
@@ -783,7 +783,7 @@ function CentreSearchSelect({
                 right: 0,
                 backgroundColor: tokens.white,
                 border: "0.5px solid #E2E6ED",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                 maxHeight: 200,
                 overflowY: "auto",
@@ -1048,7 +1048,7 @@ function RecordTab(props: any) {
               type="button"
               onClick={addExaminer}
               className="text-[12px] font-semibold text-white px-3"
-              style={{ height: 40, borderRadius: 8, backgroundColor: "#0F2044", border: "none" }}
+              style={{ height: 40, borderRadius: 12, backgroundColor: "#0F2044", border: "none" }}
             >
               Save
             </button>
@@ -1171,7 +1171,7 @@ function RecordTab(props: any) {
                             className="text-[12px] font-semibold"
                             style={{
                               height: 32,
-                              borderRadius: 8,
+                              borderRadius: 12,
                               backgroundColor: cell[col] > 0 ? colColor : "#F1F4F9",
                               color: cell[col] > 0 ? "#FFFFFF" : "#0F2044",
                               border: "none",
@@ -1211,7 +1211,7 @@ function RecordTab(props: any) {
               width: "100%",
               padding: 12,
               paddingRight: 44,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               border: "0.5px solid #E2E6ED",
               fontSize: tokens.fontSize.md,
               color: "#0F2044",
@@ -1318,7 +1318,7 @@ function HistoryTab({
             style={{
               backgroundColor: tokens.white,
               border: "0.5px solid #E2E6ED",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 16,
             }}
           >

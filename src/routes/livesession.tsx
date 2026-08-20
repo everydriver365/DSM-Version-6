@@ -199,7 +199,7 @@ function LiveSessionPage() {
       <div
         style={{
           background: "#ffffff",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: 16,
           margin: "0 16px",
           boxShadow: "0 2px 12px rgba(0,0,0,0.10)",
@@ -210,7 +210,7 @@ function LiveSessionPage() {
             style={{
               width: 48,
               height: 48,
-              borderRadius: 8,
+              borderRadius: 12,
               background: tokens.blue,
               color: "#fff",
               display: "flex",
@@ -281,7 +281,7 @@ function LiveSessionPage() {
             style={{
               width: "100%",
               minHeight: 160,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 12,
               background: "#ffffff",
               color: tokens.navy,
@@ -300,7 +300,7 @@ function LiveSessionPage() {
               color: "#6B7280",
               background: "rgba(255,255,255,0.9)",
               padding: "2px 6px",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
             }}
           >
             {savingNote ? "Saving…" : notes === lastSavedRef.current ? "Saved" : "Editing"}
@@ -343,7 +343,7 @@ function LiveSessionPage() {
               style={{
                 width: "100%",
                 minHeight: 100,
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 10,
                 border: "0.5px solid #EEF2F7",
                 fontSize: tokens.fontSize.md,

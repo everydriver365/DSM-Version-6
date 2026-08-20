@@ -220,7 +220,7 @@ function AdminApplicationsPage() {
         <button
           type="button"
           onClick={() => navigate({ to: "/home" })}
-          style={{ marginTop: 20, height: 44, padding: "0 20px", borderRadius: 8, background: NAVY, color: "#fff", border: "none", fontWeight: tokens.fontWeight.semibold, cursor: "pointer" }}
+          style={{ marginTop: 20, height: 44, padding: "0 20px", borderRadius: 12, background: NAVY, color: "#fff", border: "none", fontWeight: tokens.fontWeight.semibold, cursor: "pointer" }}
         >
           Go to home
         </button>
@@ -238,7 +238,7 @@ function AdminApplicationsPage() {
           zIndex: 10,
           background: tokens.navy,
           color: "#fff",
-          borderRadius: "0 0 8px 8px",
+          borderRadius: "0 0 16px 16px",
           padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 18px",
           display: "flex",
           alignItems: "center",
@@ -275,7 +275,7 @@ function AdminApplicationsPage() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
             display: "flex",
             overflow: "hidden",
@@ -299,7 +299,7 @@ function AdminApplicationsPage() {
               style={{
                 flexShrink: 0,
                 padding: "10px 18px",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 fontSize: 13.5,
                 fontWeight: tokens.fontWeight.bold,
                 cursor: "pointer",
@@ -426,7 +426,7 @@ function AdminApplicationsPage() {
                         style={{
                           flex: 1,
                           height: 42,
-                          borderRadius: 8,
+                          borderRadius: 12,
                           border: "none",
                           background: GREEN,
                           color: "#fff",
@@ -445,7 +445,7 @@ function AdminApplicationsPage() {
                         style={{
                           flex: 1,
                           height: 42,
-                          borderRadius: 8,
+                          borderRadius: 12,
                           border: "none",
                           background: RED,
                           color: "#fff",
@@ -502,7 +502,7 @@ function AdminApplicationsPage() {
                             marginTop: 8,
                             width: "100%",
                             height: 40,
-                            borderRadius: 8,
+                            borderRadius: 12,
                             border: "none",
                             background: RED,
                             color: "#fff",

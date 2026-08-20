@@ -115,7 +115,7 @@ function TaxPage() {
               className="flex-1 text-[13px] font-medium"
               style={{
                 height: 36,
-                borderRadius: 8,
+                borderRadius: 12,
                 backgroundColor: active ? "#1877D6" : "#F3F4F6",
                 color: active ? "#ffffff" : "#6B7280",
               }}
@@ -129,7 +129,7 @@ function TaxPage() {
       {/* SUMMARY CARD */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: tokens.navy, borderRadius: 8, padding: 16 }}
+        style={{ backgroundColor: tokens.navy, borderRadius: tokens.radiusCard, padding: 16 }}
       >
         <div className="text-[10px] uppercase" style={{ color: tokens.textMuted, letterSpacing: "0.08em" }}>
           GROSS INCOME
@@ -185,7 +185,7 @@ function TaxPage() {
           </div>
           <div
             className="mt-2 overflow-hidden"
-            style={{ height: 6, borderRadius: 8, backgroundColor: "#F3F4F6" }}
+            style={{ height: 6, borderRadius: 12, backgroundColor: "#F3F4F6" }}
           >
             <div style={{ height: "100%", width: `${progressPct}%`, backgroundColor: tokens.blue }} />
           </div>

@@ -425,7 +425,7 @@ function LessonSeriesPage() {
         style={{
           background: "#F0F4FF",
           border: "0.5px solid #BFDBFE",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: 16,
           margin: "16px",
         }}
@@ -458,7 +458,7 @@ function LessonSeriesPage() {
               background: "#0F2044",
               color: tokens.white,
               padding: "10px 18px",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               fontWeight: tokens.fontWeight.semibold,
               fontSize: tokens.fontSize.md,
             }}
@@ -479,7 +479,7 @@ function LessonSeriesPage() {
                 style={{
                   background: tokens.white,
                   border: "0.5px solid #E2E6ED",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 16,
                   margin: "8px 16px 0 16px",
                   position: "relative",
@@ -546,7 +546,7 @@ function LessonSeriesPage() {
                       right: 12,
                       background: tokens.white,
                       border: "0.5px solid #E2E6ED",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       boxShadow: "0 6px 20px rgba(11,31,58,0.12)",
                       minWidth: 160,
                       zIndex: 5,
@@ -619,7 +619,7 @@ function LessonSeriesPage() {
               background: "#0F2044",
               color: tokens.white,
               padding: "12px",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               fontWeight: tokens.fontWeight.semibold,
               fontSize: tokens.fontSize.md,
               margin: "12px 16px 24px 16px",
@@ -649,7 +649,7 @@ function LessonSeriesPage() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{ background: tokens.white, borderRadius: 8, padding: 20, width: "100%", maxWidth: 360 }}
+            style={{ background: tokens.white, borderRadius: tokens.radiusCard, padding: 20, width: "100%", maxWidth: 360 }}
           >
             <p style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: "#0F2044", marginBottom: 8 }}>End series</p>
             <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 12 }}>
@@ -662,7 +662,7 @@ function LessonSeriesPage() {
               style={{
                 width: "100%",
                 height: 44,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: "0.5px solid #E2E6ED",
                 padding: "0 12px",
                 fontSize: tokens.fontSize.md,
@@ -674,7 +674,7 @@ function LessonSeriesPage() {
                 type="button"
                 onClick={() => setEndSeriesId(null)}
                 className="cf-tap flex-1"
-                style={{ padding: "10px", borderRadius: 8, border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.md, color: "#0F2044" }}
+                style={{ padding: "10px", borderRadius: tokens.radiusCard, border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.md, color: "#0F2044" }}
               >
                 Cancel
               </button>
@@ -682,7 +682,7 @@ function LessonSeriesPage() {
                 type="button"
                 onClick={confirmEndSeries}
                 className="cf-tap flex-1"
-                style={{ padding: "10px", borderRadius: 8, background: "#0F2044", color: tokens.white, fontSize: tokens.fontSize.md, fontWeight: 600 }}
+                style={{ padding: "10px", borderRadius: tokens.radiusCard, background: "#0F2044", color: tokens.white, fontSize: tokens.fontSize.md, fontWeight: 600 }}
               >
                 Confirm
               </button>
@@ -704,7 +704,7 @@ function LessonSeriesPage() {
           <div
             style={{
               border: "0.5px solid #E2E6ED",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "8px 10px",
               display: "flex",
               alignItems: "center",
@@ -823,7 +823,7 @@ function LessonSeriesPage() {
             style={{
               width: "100%",
               height: 44,
-              borderRadius: 8,
+              borderRadius: 12,
               border: "0.5px solid #E2E6ED",
               padding: "0 12px",
               fontSize: tokens.fontSize.md,
@@ -844,7 +844,7 @@ function LessonSeriesPage() {
                   className="cf-tap"
                   style={{
                     padding: "10px 0",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     fontSize: tokens.fontSize.base,
                     fontWeight: tokens.fontWeight.semibold,
                     background: active ? "#0F2044" : "#F7FAFC",
@@ -871,7 +871,7 @@ function LessonSeriesPage() {
                   className="cf-tap"
                   style={{
                     padding: "10px 0",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     fontSize: tokens.fontSize.base,
                     fontWeight: tokens.fontWeight.semibold,
                     background: active ? "#0F2044" : "#F7FAFC",
@@ -895,7 +895,7 @@ function LessonSeriesPage() {
             style={{
               width: "100%",
               height: 44,
-              borderRadius: 8,
+              borderRadius: 12,
               border: "0.5px solid #E2E6ED",
               padding: "0 12px",
               fontSize: tokens.fontSize.md,
@@ -919,7 +919,7 @@ function LessonSeriesPage() {
                   className="cf-tap"
                   style={{
                     padding: "10px 0",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     fontSize: tokens.fontSize.base,
                     fontWeight: tokens.fontWeight.semibold,
                     background: active ? "#0F2044" : "#F7FAFC",
@@ -940,7 +940,7 @@ function LessonSeriesPage() {
               style={{
                 width: "100%",
                 height: 44,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: "0.5px solid #E2E6ED",
                 padding: "0 12px",
                 fontSize: tokens.fontSize.md,
@@ -957,7 +957,7 @@ function LessonSeriesPage() {
               display: "flex",
               alignItems: "center",
               border: "0.5px solid #E2E6ED",
-              borderRadius: 8,
+              borderRadius: 12,
               padding: "0 12px",
               height: 44,
             }}
@@ -982,7 +982,7 @@ function LessonSeriesPage() {
             placeholder="Any notes for this series..."
             style={{
               width: "100%",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               border: "0.5px solid #E2E6ED",
               padding: "10px 12px",
               fontSize: tokens.fontSize.md,
@@ -996,7 +996,7 @@ function LessonSeriesPage() {
             style={{
               background: "#F7FAFC",
               border: "0.5px solid #E2E6ED",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 12,
               marginTop: 12,
             }}
@@ -1023,7 +1023,7 @@ function LessonSeriesPage() {
               background: "#0F2044",
               color: tokens.white,
               padding: "12px",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               fontWeight: tokens.fontWeight.semibold,
               fontSize: tokens.fontSize.md,
               marginTop: 16,

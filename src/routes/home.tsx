@@ -388,7 +388,7 @@ const SECTION_TITLE_BAR_STYLE: React.CSSProperties = {
   display: 'inline-block',
   width: 3,
   height: 12,
-  borderRadius: 8,
+  borderRadius: 12,
   backgroundColor: '#1877D6',
   flexShrink: 0,
 };
@@ -662,7 +662,7 @@ function TodayLessonsTile({
         width: "100%",
         background: tokens.white,
         border: "0.5px solid rgba(15,32,68,0.10)",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: "14px 16px",
         display: "flex",
         alignItems: "center",
@@ -676,7 +676,7 @@ function TodayLessonsTile({
         style={{
           width: 36,
           height: 36,
-          borderRadius: 8,
+          borderRadius: 12,
           background: "#EFF6FF",
           color: tokens.blue,
           display: "flex",
@@ -703,7 +703,7 @@ function TodayLessonsTile({
               style={{
                 width: 22,
                 height: 22,
-                borderRadius: 8,
+                borderRadius: 12,
                 background: tokens.blue,
                 color: tokens.white,
                 border: "none",
@@ -814,7 +814,7 @@ function SwipeableStatsCard({
       style={{
         position: "relative",
         background: tokens.white,
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: 16,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         marginBottom: 14,
@@ -847,7 +847,7 @@ function SwipeableStatsCard({
           style={{
             width: 40,
             height: 40,
-            borderRadius: 8,
+            borderRadius: 12,
             background: tokens.canvas,
             display: "flex",
             alignItems: "center",
@@ -990,7 +990,7 @@ function TileCard({
         position: "relative",
         background: tokens.white,
         border: "1px solid #ECEFF3",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: image ? "0 0 18px" : "20px 20px 18px",
         minHeight: image ? 0 : 148,
         display: "flex",
@@ -1167,7 +1167,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
       style={{
         position: 'relative',
         background: '#FFFFFF',
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: '12px 6px 10px',
         border: '0.5px solid #E4E8EF',
         cursor: 'pointer',
@@ -1186,7 +1186,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
         style={{
           width: 42,
           height: 42,
-          borderRadius: 8,
+          borderRadius: 12,
           background: t.chipBg,
           display: 'inline-flex',
           alignItems: 'center',
@@ -1221,7 +1221,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
           style={{
             width: 36,
             height: 36,
-            borderRadius: 8,
+            borderRadius: 12,
             background: '#fff',
             boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
             border: 'none',
@@ -1239,7 +1239,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
         <div
           style={{
             background: '#fff',
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: '9px 12px',
             boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
             display: 'flex',
@@ -3737,7 +3737,7 @@ function HomePage() {
                 fontSize: 12,
                 fontWeight: tokens.fontWeight.bold,
                 textTransform: "uppercase",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "2px 8px",
                 cursor: "pointer",
               }}
@@ -3823,7 +3823,7 @@ function HomePage() {
     const cardBase: React.CSSProperties = {
       minHeight: 56,
       padding: "8px 12px",
-      borderRadius: 8,
+      borderRadius: tokens.radiusCard,
       backgroundColor: tokens.white,
       display: "flex",
       alignItems: "center",
@@ -4188,7 +4188,7 @@ function HomePage() {
     });
     const cardStyle: React.CSSProperties = {
       background: tokens.white, border: "0.5px solid #E2E6ED",
-      borderRadius: 8, padding: 16, boxShadow: '0 4px 0 #E4E4E8',
+      borderRadius: tokens.radiusCard, padding: 16, boxShadow: '0 4px 0 #E4E4E8',
     };
     const statLabel: React.CSSProperties = {
       fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.textSecondary,
@@ -4207,7 +4207,7 @@ function HomePage() {
     };
     const quickBtn: React.CSSProperties = {
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      gap: 6, padding: "14px 8px", borderRadius: 8,
+      gap: 6, padding: "14px 8px", borderRadius: tokens.radiusCard,
       border: "0.5px solid #E2E6ED", background: "#F8FAFF",
       cursor: "pointer", fontFamily: "Poppins, sans-serif",
       fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.navy,
@@ -4297,7 +4297,7 @@ function HomePage() {
                     return (
                       <div style={{
                         background: tokens.white, border: "0.5px solid #E2E6ED",
-                        borderRadius: 8, overflow: "hidden", margin: "12px 16px 0", boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
+                        borderRadius: tokens.radiusCard, overflow: "hidden", margin: "12px 16px 0", boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                         fontFamily: "Poppins, sans-serif",
                       }}>
                         <div style={{ height: 4, background: "linear-gradient(90deg, #00B5A5, #1877D6)" }} />
@@ -4314,7 +4314,7 @@ function HomePage() {
                             ].map((s) => (
                               <div key={s.label} style={{
                                 flex: 1, background: "#F7FAFC", border: "0.5px solid #E2E6ED",
-                                borderRadius: 8, padding: "10px 14px", textAlign: "center",
+                                borderRadius: tokens.radiusCard, padding: "10px 14px", textAlign: "center",
                               }}>
                                 <div style={{ fontWeight: tokens.fontWeight.bold, fontSize: tokens.fontSize.xl, color: s.color }}>{s.value}</div>
                                 <div style={{ fontSize: 12, color: tokens.textMuted }}>{s.label}</div>
@@ -4357,14 +4357,14 @@ function HomePage() {
                           <div style={{ display: "flex", gap: 8 }}>
                             <button onClick={() => navigate({ to: "/gaps" })} style={{
                               flex: 1, background: tokens.navy, color: tokens.white,
-                              padding: "12px 0", borderRadius: 8, fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md,
+                              padding: "12px 0", borderRadius: tokens.radiusCard, fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md,
                               border: "none", cursor: "pointer", fontFamily: "Poppins, sans-serif",
                             }}>Fill My Slots →</button>
                             <button onClick={() => {
                               window.location.href = `sms:?body=${encodeURIComponent("Hi everyone, I have lesson availability today. Reply to book!")}`;
                             }} style={{
                               flex: 1, background: "#00B5A5", color: tokens.white,
-                              padding: "12px 0", borderRadius: 8, fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md,
+                              padding: "12px 0", borderRadius: tokens.radiusCard, fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md,
                               border: "none", cursor: "pointer", fontFamily: "Poppins, sans-serif",
                             }}>Broadcast message</button>
                           </div>
@@ -4405,7 +4405,7 @@ function HomePage() {
                             style={{
                               display: "grid", gridTemplateColumns: "70px 1fr auto auto auto auto",
                               gap: 12, alignItems: "center", padding: "10px 12px",
-                              borderRadius: 8, border: now ? "2px solid #15803D" : "0.5px solid #E2E6ED",
+                              borderRadius: tokens.radiusCard, border: now ? "2px solid #15803D" : "0.5px solid #E2E6ED",
                               background: tokens.white, cursor: "pointer", textAlign: "left",
                               fontFamily: "Poppins, sans-serif",
                               opacity: past ? 0.45 : 1,
@@ -4426,7 +4426,7 @@ function HomePage() {
                             )}
 
                             {(past || l.status === 'completed') && (
-                              <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, textTransform: "uppercase", padding: "2px 7px", borderRadius: 20, background: tokens.canvas, color: tokens.textMuted }}>Done</span>
+                              <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, textTransform: "uppercase", padding: "2px 7px", borderRadius: tokens.radiusCard, background: tokens.canvas, color: tokens.textMuted }}>Done</span>
                             )}
                             {now && (
                               <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, textTransform: "uppercase", padding: "4px 10px", borderRadius: 999, background: "#DCFCE7", color: "#15803D" }}>Now</span>
@@ -4459,7 +4459,7 @@ function HomePage() {
                     onClick={() => navigate({ to: "/schedule" })}
                     style={{
                       flex: 1, padding: "10px 12px",
-                      borderRadius: 8, border: "1px dashed #1877D6",
+                      borderRadius: tokens.radiusCard, border: "1px dashed #1877D6",
                       background: "transparent", color: tokens.blue,
                       fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                       fontFamily: "Poppins, sans-serif",
@@ -4470,7 +4470,7 @@ function HomePage() {
                     style={{
                       background: 'white',
                       border: '0.5px solid #E2E6ED',
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: '6px 10px',
                       cursor: 'pointer',
                       display: 'flex',
@@ -4506,7 +4506,7 @@ function HomePage() {
                         style={{
                           display: "grid", gridTemplateColumns: "1fr auto auto",
                           gap: 12, alignItems: "center", padding: "10px 12px",
-                          borderRadius: 8, border: "0.5px solid #E2E6ED", boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
+                          borderRadius: tokens.radiusCard, border: "0.5px solid #E2E6ED", boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                           fontFamily: "Poppins, sans-serif",
                         }}
                       >
@@ -4519,7 +4519,7 @@ function HomePage() {
                           <a
                             href={`sms:${p.phone}?body=${encodeURIComponent(`Hi ${p.firstName}, just a reminder that £${p.amount.toFixed(2)} is outstanding on your lesson account. Thanks!`)}`}
                             style={{
-                              padding: "6px 10px", borderRadius: 8,
+                              padding: "6px 10px", borderRadius: tokens.radiusCard,
                               background: tokens.blue, color: tokens.white,
                               fontSize: 12, fontWeight: tokens.fontWeight.semibold, textDecoration: "none",
                             }}
@@ -4552,7 +4552,7 @@ function HomePage() {
                       <div key={n.id}
                         style={{
                           display: "flex", gap: 10, alignItems: "flex-start",
-                          padding: "10px 12px", borderRadius: 8,
+                          padding: "10px 12px", borderRadius: tokens.radiusCard,
                           border: "0.5px solid #E2E6ED",
                           background: n.read ? "#FFFFFF" : "#F0F7FF",
                           fontFamily: "Poppins, sans-serif",
@@ -4594,7 +4594,7 @@ function HomePage() {
                         style={{
                           display: "grid", gridTemplateColumns: "1fr auto",
                           gap: 12, alignItems: "center", padding: "10px 12px",
-                          borderRadius: 8, border: "0.5px solid #E2E6ED",
+                          borderRadius: tokens.radiusCard, border: "0.5px solid #E2E6ED",
                           fontFamily: "Poppins, sans-serif",
                         }}
                       >
@@ -4749,7 +4749,7 @@ function HomePage() {
             type="button"
             onClick={() => navigate({ to: s.route as never })}
             style={{
-              flex: 1, background: '#FFFFFF', borderRadius: 8,
+              flex: 1, background: '#FFFFFF', borderRadius: tokens.radiusCard,
               boxShadow: '0 4px 0 #E4E4E8', padding: 12, minWidth: 0,
               border: 'none', textAlign: 'left', cursor: 'pointer', fontFamily: 'Poppins, sans-serif',
             }}
@@ -5124,7 +5124,7 @@ function HomePage() {
                           background: '#FFFFFF',
                           color: '#0B1F3A',
                           padding: '5px 12px',
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           border: '1px solid #E5E8EE',
                           boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
                           fontSize: 12,
@@ -5164,7 +5164,7 @@ function HomePage() {
                     position: 'relative',
                     flex: 1,
                     height: 38,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     border: 'none',
                     background: '#1877D6',
                     color: '#FFFFFF',
@@ -5220,7 +5220,7 @@ function HomePage() {
                   style={{
                     flex: 1,
                     height: 38,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     border: 'none',
                     background: '#EEF2F7',
                     color: '#0B1F3A',
@@ -5248,7 +5248,7 @@ function HomePage() {
                   style={{
                     flex: 1,
                     height: 38,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     border: 'none',
                     background: '#FEE2E2',
                     color: '#CC2229',
@@ -5478,7 +5478,7 @@ function HomePage() {
                     }
                     setLateOpen(false);
                   }}
-                  style={{ height: 44, borderRadius: 8, border: '1px solid #e3e6ec', background: '#fff', fontFamily: 'Poppins, sans-serif', fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md, cursor: 'pointer' }}
+                  style={{ height: 44, borderRadius: 12, border: '1px solid #e3e6ec', background: '#fff', fontFamily: 'Poppins, sans-serif', fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md, cursor: 'pointer' }}
                 >{m}m</button>
               ))}
             </div>
@@ -5809,7 +5809,7 @@ function HomePage() {
                       background: '#FEF3C7',
                       border: '0.5px solid #B45309',
                       borderLeft: '4px solid #B45309',
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: '14px 16px',
                       fontFamily: PF,
                       display: 'flex',
@@ -5817,7 +5817,7 @@ function HomePage() {
                       alignItems: 'center',
                     }}
                   >
-                    <div style={{ width: 40, height: 40, borderRadius: 8, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 12, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <IconBolt stroke={1.5} size={20} color="#B45309" />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -5835,7 +5835,7 @@ function HomePage() {
                         to: '/gaps',
                         search: { date: freedSlot.lesson_date, time, duration: String(duration) } as any,
                       })}
-                      style={{ background: '#B45309', color: '#FFFFFF', border: 'none', borderRadius: 8, padding: '8px 12px', fontSize: 12, fontWeight: tokens.fontWeight.bold, cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
+                      style={{ background: '#B45309', color: '#FFFFFF', border: 'none', borderRadius: tokens.radiusCard, padding: '8px 12px', fontSize: 12, fontWeight: tokens.fontWeight.bold, cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
                     >
                       Fill slot →
                     </button>
@@ -5923,7 +5923,7 @@ function HomePage() {
                                 minWidth: 18,
                                 height: 18,
                                 padding: '0 5px',
-                                borderRadius: 8,
+                                borderRadius: 12,
                                 background: '#1877D6',
                                 color: '#FFFFFF',
                                 fontSize: tokens.fontSize.sm,
@@ -5952,8 +5952,8 @@ function HomePage() {
                   return (
                     <div style={{ fontFamily: PF }}>
                       {tabs}
-                      <div style={{ background: '#FFFFFF', borderRadius: 8, border: '1px solid rgba(15,32,68,0.08)', padding: '20px 18px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-                        <div style={{ width: 44, height: 44, borderRadius: 8, background: 'linear-gradient(135deg, #1877D6, #0B1F3A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ background: '#FFFFFF', borderRadius: tokens.radiusCard, border: '1px solid rgba(15,32,68,0.08)', padding: '20px 18px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+                        <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #1877D6, #0B1F3A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           <IconBolt size={22} color="#FFFFFF" stroke={2} />
                         </div>
                         <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>Your day is wide open</div>
@@ -5961,7 +5961,7 @@ function HomePage() {
                         <button
                           type="button"
                           onClick={() => navigate({ to: '/gaps' })}
-                          style={{ marginTop: 4, width: '100%', background: '#0B1F3A', color: '#FFFFFF', border: 'none', borderRadius: 8, padding: 12, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer' }}
+                          style={{ marginTop: 4, width: '100%', background: '#0B1F3A', color: '#FFFFFF', border: 'none', borderRadius: tokens.radiusCard, padding: 12, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer' }}
                         >
                           <IconBolt size={16} color="#FFFFFF" stroke={2} />
                           Open gap filler
@@ -6005,7 +6005,7 @@ function HomePage() {
                         gap: 12,
                         background: '#0B1F3A',
                         color: '#FFFFFF',
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: '10px 14px',
                         margin: '0 0 12px',
 
@@ -6038,7 +6038,7 @@ function HomePage() {
                           background: 'transparent',
                           border: '1px solid rgba(255,255,255,0.3)',
                           color: '#FFFFFF',
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           padding: '4px 10px',
                           fontSize: 12,
                           fontWeight: tokens.fontWeight.medium,
@@ -6111,7 +6111,7 @@ function HomePage() {
                             style={{
                               background: moveModeHome ? '#F4F8FE' : '#FDFBF6',
                               border: '2px dashed #D4A853',
-                              borderRadius: 8,
+                              borderRadius: tokens.radiusCard,
                               boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                               padding: '20px 14px 12px',
                               display: 'flex',
@@ -6188,7 +6188,7 @@ function HomePage() {
                                   fontSize: 12.5,
                                   fontWeight: tokens.fontWeight.semibold,
                                   padding: '8px 14px',
-                                  borderRadius: 8,
+                                  borderRadius: tokens.radiusCard,
                                   border: 'none',
                                   cursor: 'pointer',
                                   fontFamily: PF,
@@ -6208,7 +6208,7 @@ function HomePage() {
                                   fontSize: tokens.fontSize.base,
                                   fontWeight: tokens.fontWeight.bold,
                                   padding: '9px 18px',
-                                  borderRadius: 8,
+                                  borderRadius: tokens.radiusCard,
                                   border: 'none',
                                   cursor: 'pointer',
                                   fontFamily: PF,
@@ -6256,7 +6256,7 @@ function HomePage() {
                           style={{
                             background: '#FFFFFF',
                             border: '1px solid #E4E8EF',
-                            borderRadius: 8,
+                            borderRadius: tokens.radiusCard,
                             marginBottom: 8,
                             padding: '12px 14px',
                             display: 'flex',
@@ -6272,7 +6272,7 @@ function HomePage() {
                               {durLabel}
                             </div>
                           </div>
-                          <div aria-hidden style={{ width: 3, borderRadius: 8, background: resolveEventColour(r.colour, '#D9DEE7'), flexShrink: 0, alignSelf: 'stretch' }} />
+                          <div aria-hidden style={{ width: 3, borderRadius: 12, background: resolveEventColour(r.colour, '#D9DEE7'), flexShrink: 0, alignSelf: 'stretch' }} />
                           <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                             <div
                               style={{
@@ -6385,7 +6385,7 @@ function HomePage() {
                             tabIndex={0}
                             style={{
                               background: 'linear-gradient(135deg, #1877D6, #0B1F3A)',
-                              borderRadius: 8,
+                              borderRadius: tokens.radiusCard,
                               marginBottom: 8,
                               padding: '10px 12px',
                               cursor: 'pointer',
@@ -6416,7 +6416,7 @@ function HomePage() {
                                 aria-hidden
                                 style={{
                                   width: 3,
-                                  borderRadius: 8,
+                                  borderRadius: 12,
                                   background: 'rgba(255,255,255,0.3)',
                                   flexShrink: 0,
                                   alignSelf: 'stretch',
@@ -6524,7 +6524,7 @@ function HomePage() {
                               aria-hidden
                               style={{
                                 width: 3,
-                                borderRadius: 8,
+                                borderRadius: 12,
                                 background: isCancelled ? '#9CA3AF' : '#1877D6',
                                 flexShrink: 0,
                                 alignSelf: 'stretch',
@@ -6633,7 +6633,7 @@ function HomePage() {
                                style={{
                                  background: '#FEF3C7',
                                  border: '1px solid #FDE68A',
-                                 borderRadius: 8,
+                                 borderRadius: tokens.radiusCard,
                                  padding: '6px 10px',
                                  margin: '0 14px 8px',
                                  display: 'flex',
@@ -6744,7 +6744,7 @@ function HomePage() {
               style={{
                 background: '#FFFFFF',
                 border: '1px solid #E3E8F0',
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: '14px 16px',
                 cursor: 'pointer',
                 fontFamily: 'Poppins, sans-serif',
@@ -6757,7 +6757,7 @@ function HomePage() {
                   style={{
                     width: 40,
                     height: 40,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     background: '#0B1F3A',
                     color: '#FFFFFF',
                     display: 'flex',
@@ -6990,7 +6990,7 @@ function HomePage() {
                         style={{
                           width: '100%',
                           background: '#fff',
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           padding: '12px 10px',
                           boxShadow: '0 4px 0 #E4E4E8',
                           display: 'flex',
@@ -7012,7 +7012,7 @@ function HomePage() {
                           style={{
                             width: 34,
                             height: 34,
-                            borderRadius: 8,
+                            borderRadius: 12,
                             background: tint.chip,
                             display: 'flex',
                             alignItems: 'center',
@@ -7139,7 +7139,7 @@ function HomePage() {
                               background: '#fff',
                               border: 'none',
                               boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
-                              borderRadius: 8,
+                              borderRadius: tokens.radiusCard,
                               padding: '10px 12px 10px 34px',
                               fontSize: tokens.fontSize.base,
                               color: '#0B1F3A',
@@ -7244,7 +7244,7 @@ function HomePage() {
                         style={{ background: '#FFFFFF', borderRadius: '8px 8px 0 0', padding: 20, width: '100%' }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                          <div style={{ width: 36, height: 36, borderRadius: 8, background: '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <div style={{ width: 36, height: 36, borderRadius: 12, background: '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <IconClock stroke={1.5} size={20} color="#C23B3B" />
                           </div>
                           <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>Running late</div>
@@ -7256,14 +7256,14 @@ function HomePage() {
                           <button
                             type="button"
                             onClick={() => setRunningLateOpen(false)}
-                            style={{ flex: 1, padding: '12px', borderRadius: 8, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
+                            style={{ flex: 1, padding: '12px', borderRadius: tokens.radiusCard, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
                           >
                             Cancel
                           </button>
                           <button
                             type="button"
                             onClick={() => { setRunningLateOpen(false); navigate({ to: '/broadcast' as never }); }}
-                            style={{ flex: 1, padding: '12px', borderRadius: 8, border: 'none', background: '#C23B3B', color: '#FFFFFF', fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
+                            style={{ flex: 1, padding: '12px', borderRadius: tokens.radiusCard, border: 'none', background: '#C23B3B', color: '#FFFFFF', fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
                           >
                             Notify pupils
                           </button>
@@ -7393,7 +7393,7 @@ function HomePage() {
                                   type="button"
                                   aria-label="Back to categories"
                                   onClick={() => { setNearbyCategory(null); setNearbyResults([]); setNearbyError(null); setNearbyLoading(null); }}
-                                  style={{ width: 32, height: 32, borderRadius: 8, border: '1px solid #E2E8F0', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0, flexShrink: 0 }}
+                                  style={{ width: 32, height: 32, borderRadius: 12, border: '1px solid #E2E8F0', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0, flexShrink: 0 }}
                                 >
                                   <IconChevronLeft stroke={1.5} size={16} color="#0B1F3A" />
                                 </button>
@@ -7465,7 +7465,7 @@ function HomePage() {
                           ) : (
                             <>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                                <div style={{ width: 36, height: 36, borderRadius: 8, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{ width: 36, height: 36, borderRadius: 12, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                   <IconMapPin size={20} color="#1877D6" stroke={1.8} />
                                 </div>
                                 <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>Find nearby</div>
@@ -7481,7 +7481,7 @@ function HomePage() {
                                     disabled={!!nearbyLoading}
                                     onClick={() => openCat(c)}
                                     style={{
-                                      background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, height: 56,
+                                      background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: tokens.radiusCard, height: 56,
                                       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
                                       cursor: nearbyLoading ? 'default' : 'pointer', opacity: nearbyLoading && nearbyLoading !== c.label ? 0.5 : 1,
                                       fontFamily: 'Poppins, sans-serif', padding: 0,
@@ -7497,7 +7497,7 @@ function HomePage() {
                           <button
                             type="button"
                             onClick={closeSheet}
-                            style={{ marginTop: 14, width: '100%', padding: '12px', borderRadius: 8, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
+                            style={{ marginTop: 14, width: '100%', padding: '12px', borderRadius: tokens.radiusCard, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
                           >
                             Close
                           </button>
@@ -7682,7 +7682,7 @@ function HomePage() {
           const Badge = ({ colour, value }: { colour: string; value: number }) => (
             <span style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              minWidth: 16, height: 16, borderRadius: 8, background: colour,
+              minWidth: 16, height: 16, borderRadius: 12, background: colour,
               color: '#FFFFFF', fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, fontFamily: PF_C,
               padding: '0 3px', marginLeft: 2,
             }}>
@@ -8472,7 +8472,7 @@ function HomePage() {
             <div
               onClick={() => navigate({ to: '/community', search: { tab: 'uk' } })}
               style={{
-                margin: 0, background: 'white', borderRadius: 8,
+                margin: 0, background: 'white', borderRadius: tokens.radiusCard,
                 boxShadow: '0 2px 8px rgba(15,32,68,0.06)', padding: '13px 14px',
                 display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
                 fontFamily: 'Poppins, sans-serif',
@@ -8481,7 +8481,7 @@ function HomePage() {
             >
             <div style={{ position: 'relative', flexShrink: 0 }}>
               <div style={{
-                width: 36, height: 36, borderRadius: 8,
+                width: 36, height: 36, borderRadius: 12,
                 background: unreadUkChat > 0 ? '#1877D6' : '#E6F1FB',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
@@ -8516,7 +8516,7 @@ function HomePage() {
             </div>
             {unreadUkChat > 0 && (
               <div style={{
-                width: 16, height: 16, borderRadius: 8, flexShrink: 0,
+                width: 16, height: 16, borderRadius: 12, flexShrink: 0,
                 background: '#1877D6', color: '#FFFFFF', fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontFamily: 'Poppins, sans-serif',
@@ -8714,10 +8714,10 @@ function HomePage() {
               }}
               style={{
                 display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
-                border: '1px solid #E4E8EF', borderRadius: 8, padding: '14px 14px', background: '#fff',
+                border: '1px solid #E4E8EF', borderRadius: tokens.radiusCard, padding: '14px 14px', background: '#fff',
               }}
             >
-              <span style={{ width: 38, height: 38, borderRadius: 8, background: '#E7F0FB', display: 'grid', placeItems: 'center' }}>
+              <span style={{ width: 38, height: 38, borderRadius: 12, background: '#E7F0FB', display: 'grid', placeItems: 'center' }}>
                 <IconPlus size={19} stroke={1.8} color="#1877D6" />
               </span>
               <span>
@@ -8734,10 +8734,10 @@ function HomePage() {
               }}
               style={{
                 display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
-                border: '1px solid #E4E8EF', borderRadius: 8, padding: '14px 14px', background: '#fff',
+                border: '1px solid #E4E8EF', borderRadius: tokens.radiusCard, padding: '14px 14px', background: '#fff',
               }}
             >
-              <span style={{ width: 38, height: 38, borderRadius: 8, background: '#FEF3C7', display: 'grid', placeItems: 'center' }}>
+              <span style={{ width: 38, height: 38, borderRadius: 12, background: '#FEF3C7', display: 'grid', placeItems: 'center' }}>
                 <IconCalendar size={19} stroke={1.8} color="#B8860B" />
               </span>
               <span>
@@ -8748,7 +8748,7 @@ function HomePage() {
             <button
               type="button"
               onClick={() => setAddChooserOpen(false)}
-              style={{ marginTop: 4, padding: '12px', borderRadius: 8, border: 'none', background: '#EEF2F7', color: '#0B1F3A', fontSize: tokens.fontSize.md, fontWeight: 700 }}
+              style={{ marginTop: 4, padding: '12px', borderRadius: tokens.radiusCard, border: 'none', background: '#EEF2F7', color: '#0B1F3A', fontSize: tokens.fontSize.md, fontWeight: 700 }}
             >
               Cancel
             </button>
@@ -8808,7 +8808,7 @@ function HomePage() {
                   navigate({ to: '/messages/$pupilId', params: { pupilId: pid } });
                 }}
                 style={{
-                  flex: 1, padding: '12px 14px', borderRadius: 8,
+                  flex: 1, padding: '12px 14px', borderRadius: tokens.radiusCard,
                   border: '1px solid #D9E0EA', background: '#FFFFFF',
                   color: '#0B1F3A', fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold,
                   fontFamily: 'Poppins, sans-serif', cursor: 'pointer',
@@ -8824,7 +8824,7 @@ function HomePage() {
                   setSendMessageOpen(true);
                 }}
                 style={{
-                  flex: 1, padding: '12px 14px', borderRadius: 8,
+                  flex: 1, padding: '12px 14px', borderRadius: tokens.radiusCard,
                   border: 'none', background: '#1877D6',
                   color: '#FFFFFF', fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold,
                   fontFamily: 'Poppins, sans-serif', cursor: 'pointer',
@@ -9250,7 +9250,7 @@ function HeroExpandedPanel({
   const pillBase: React.CSSProperties = {
     background: '#EEF2F7',
     border: 'none',
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     padding: '8px 4px',
     display: 'flex',
     flexDirection: 'column',
@@ -9402,7 +9402,7 @@ function HeroExpandedPanel({
   const gridBtn: React.CSSProperties = {
     background: '#EEF2F7',
     border: '1px solid #E2E8F0',
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     padding: '10px 4px',
     display: 'flex',
     flexDirection: 'column',
@@ -9426,7 +9426,7 @@ function HeroExpandedPanel({
     minWidth: 0,
     background: '#FFFFFF',
     border: '1px solid #E2E8F0',
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     padding: '9px 12px',
     fontFamily: 'Poppins, sans-serif',
     fontSize: tokens.fontSize.base,
@@ -9462,7 +9462,7 @@ function HeroExpandedPanel({
   };
 
   return (
-    <div style={{ background: '#EFF6FF', borderRadius: 8, padding: 12 }}>
+    <div style={{ background: '#EFF6FF', borderRadius: tokens.radiusCard, padding: 12 }}>
       {/* Quick Actions */}
       <div style={sectionLabel}>Quick Actions</div>
       {/* Row 1 — Navigate / Text / Call */}
@@ -9559,7 +9559,7 @@ function HeroExpandedPanel({
               style={{
                 width: 34,
                 height: 34,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: '1px solid #B7E4C7',
                 background: pickupState === 'checking' ? '#F5F7FA' : '#E8F5E9',
                 color: '#1F6B2E',
@@ -9574,7 +9574,7 @@ function HeroExpandedPanel({
             </button>
           </div>
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '9px 12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: tokens.radiusCard, padding: '9px 12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
               <IconMapPin stroke={1.5} size={14} color="#8E8E93" />
               <span style={{ fontFamily: 'Poppins, sans-serif', fontSize: tokens.fontSize.base, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -9653,17 +9653,17 @@ function HeroExpandedPanel({
         return (
           <div style={{ marginTop: 14 }}>
             <div style={sectionLabel}>Account</div>
-            <div style={{ background: bg, borderRadius: 8, padding: '11px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
+            <div style={{ background: bg, borderRadius: tokens.radiusCard, padding: '11px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
               <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: fg }}>{label}</span>
               {showActions && (
                 <div style={{ display: 'flex', gap: 6 }}>
                   <button
                     onClick={() => sendSms(`Hi ${firstName}, just a quick reminder that £${amount.toFixed(2)} is outstanding on your lesson account. Thanks!`)}
-                    style={{ background: '#FFFFFF', color: '#0B1F3A', fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.medium, padding: '0 10px', height: 26, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+                    style={{ background: '#FFFFFF', color: '#0B1F3A', fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.medium, padding: '0 10px', height: 26, borderRadius: 12, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
                   >Chase</button>
                   <button
                     onClick={() => navigateTo('/payments')}
-                    style={{ background: '#3B6D11', color: '#FFFFFF', fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.medium, padding: '0 10px', height: 26, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+                    style={{ background: '#3B6D11', color: '#FFFFFF', fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.medium, padding: '0 10px', height: 26, borderRadius: 12, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
                   >Mark paid</button>
                 </div>
               )}
@@ -9676,7 +9676,7 @@ function HeroExpandedPanel({
       <div style={{ marginTop: 14 }}>
         <div style={sectionLabel}>Last Lesson</div>
         {prev ? (
-          <div style={{ background: '#EEF2F7', borderRadius: 8, padding: '10px 12px', fontFamily: 'Poppins, sans-serif' }}>
+          <div style={{ background: '#EEF2F7', borderRadius: tokens.radiusCard, padding: '10px 12px', fontFamily: 'Poppins, sans-serif' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A' }}>
                 {new Date(prev.lesson_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
@@ -9690,7 +9690,7 @@ function HeroExpandedPanel({
             )}
           </div>
         ) : (
-          <div style={{ background: '#EEF2F7', borderRadius: 8, padding: '10px 12px', color: '#9CA3AF', fontFamily: 'Poppins, sans-serif', fontSize: 12 }}>No previous lesson</div>
+          <div style={{ background: '#EEF2F7', borderRadius: tokens.radiusCard, padding: '10px 12px', color: '#9CA3AF', fontFamily: 'Poppins, sans-serif', fontSize: 12 }}>No previous lesson</div>
         )}
       </div>
 
@@ -9773,7 +9773,7 @@ function TabBtn({
       style={{
         backgroundColor: active ? "#ffffff" : "transparent",
         color: active ? "#0B1F3A" : "#6B7280",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: "8px 6px",
         fontWeight: tokens.fontWeight.medium,
         fontSize: tokens.fontSize.base,
@@ -9855,7 +9855,7 @@ function AccessTile({
     >
       <span
         className="flex items-center justify-center"
-        style={{ width: 40, height: 40, borderRadius: 8, backgroundColor: iconTint(color) }}
+        style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: iconTint(color) }}
       >
         {coloredIcon}
       </span>
@@ -9889,7 +9889,7 @@ function EndOfDayBanner() {
         backgroundColor: "#F0F4FF",
         border: "1px solid #BFDBFE",
         padding: "10px 16px",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         fontFamily: "Poppins, sans-serif",
       }}
     >
@@ -9952,7 +9952,7 @@ function TodayTile({
         flex: 1,
         backgroundColor: '#FFFFFF',
         border: '1px solid #e0e3ea',
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: '12px 8px',
         minHeight: 70,
         display: 'flex',
@@ -10076,7 +10076,7 @@ function OutstandingBreakdownModal({
                         fontSize: tokens.fontSize.xs,
                         fontWeight: tokens.fontWeight.semibold,
                         padding: "2px 6px",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         backgroundColor: r.type === "NI Course" ? "#EEF2F7" : "#DBEAFE",
                         color: r.type === "NI Course" ? "#0B1F3A" : "#1E40AF",
                       }}
@@ -10170,7 +10170,7 @@ function OutstandingBreakdownModal({
               backgroundColor: rows.length === 0 ? "#E5E7EB" : "#1877D6",
               color: rows.length === 0 ? "#9CA3AF" : "#FFFFFF",
               border: "none",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               cursor: rows.length === 0 ? "not-allowed" : "pointer",
             }}
           >
@@ -10185,7 +10185,7 @@ function OutstandingBreakdownModal({
               backgroundColor: tokens.canvas,
               color: "#374151",
               border: "1px solid #D1D5DB",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               cursor: "pointer",
             }}
           >
@@ -10284,7 +10284,7 @@ function EarningsBreakdownModal({
                       </div>
                       <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, marginTop: 2 }}>{fmtDate(r.date)}</div>
                     </div>
-                    <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, padding: "2px 6px", borderRadius: 8, backgroundColor: "#EFF6FF", color: "#1E40AF", textTransform: "capitalize" }}>
+                    <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, padding: "2px 6px", borderRadius: tokens.radiusCard, backgroundColor: "#EFF6FF", color: "#1E40AF", textTransform: "capitalize" }}>
                       {r.method}
                     </span>
                     <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy, minWidth: 60, textAlign: "right" }}>
@@ -10296,7 +10296,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={() => startEdit(r)}
                           aria-label="Edit payment"
-                          style={{ background: "none", border: "1px solid #E5E7EB", borderRadius: 8, padding: "4px 6px", cursor: "pointer", color: "#374151", fontSize: 11 }}
+                          style={{ background: "none", border: "1px solid #E5E7EB", borderRadius: tokens.radiusCard, padding: "4px 6px", cursor: "pointer", color: "#374151", fontSize: 11 }}
                         >
                           Edit
                         </button>
@@ -10304,7 +10304,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={() => setConfirmDeleteId(r.id)}
                           aria-label="Delete payment"
-                          style={{ background: "none", border: "1px solid #FCA5A5", borderRadius: 8, padding: "4px 6px", cursor: "pointer", color: "#B91C1C", fontSize: 11 }}
+                          style={{ background: "none", border: "1px solid #FCA5A5", borderRadius: tokens.radiusCard, padding: "4px 6px", cursor: "pointer", color: "#B91C1C", fontSize: 11 }}
                         >
                           Delete
                         </button>
@@ -10322,7 +10322,7 @@ function EarningsBreakdownModal({
                             min="0"
                             value={editAmount}
                             onChange={(e) => setEditAmount(e.target.value)}
-                            style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 8, fontSize: 13 }}
+                            style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: tokens.radiusCard, fontSize: 13 }}
                           />
                         </label>
                         <label style={{ flex: 1, fontSize: tokens.fontSize.sm, color: tokens.textSecondary }}>
@@ -10331,7 +10331,7 @@ function EarningsBreakdownModal({
                             type="date"
                             value={editDate}
                             onChange={(e) => setEditDate(e.target.value)}
-                            style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 8, fontSize: 13 }}
+                            style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: tokens.radiusCard, fontSize: 13 }}
                           />
                         </label>
                       </div>
@@ -10340,7 +10340,7 @@ function EarningsBreakdownModal({
                         <select
                           value={editMethod}
                           onChange={(e) => setEditMethod(e.target.value)}
-                          style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 8, fontSize: tokens.fontSize.base, backgroundColor: "#fff" }}
+                          style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.base, backgroundColor: "#fff" }}
                         >
                           <option value="cash">Cash</option>
                           <option value="bank_transfer">Bank transfer</option>
@@ -10352,7 +10352,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={cancelEdit}
                           disabled={isBusy}
-                          style={{ padding: "6px 10px", fontSize: 12, background: tokens.canvas, border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: tokens.canvas, border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, cursor: "pointer" }}
                         >
                           Cancel
                         </button>
@@ -10373,7 +10373,7 @@ function EarningsBreakdownModal({
                               setBusyId(null);
                             }
                           }}
-                          style={{ padding: "6px 10px", fontSize: 12, background: tokens.blue, color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: tokens.blue, color: "#fff", border: "none", borderRadius: tokens.radiusCard, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
                         >
                           {isBusy ? "Saving..." : "Save"}
                         </button>
@@ -10390,7 +10390,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={() => setConfirmDeleteId(null)}
                           disabled={isBusy}
-                          style={{ padding: "6px 10px", fontSize: 12, background: tokens.canvas, border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: tokens.canvas, border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, cursor: "pointer" }}
                         >
                           Cancel
                         </button>
@@ -10406,7 +10406,7 @@ function EarningsBreakdownModal({
                               setBusyId(null);
                             }
                           }}
-                          style={{ padding: "6px 10px", fontSize: 12, background: "#B91C1C", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: "#B91C1C", color: "#fff", border: "none", borderRadius: tokens.radiusCard, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
                         >
                           {isBusy ? "Deleting..." : "Delete"}
                         </button>
@@ -10427,13 +10427,13 @@ function EarningsBreakdownModal({
           <div style={{ display: "flex", gap: 8 }}>
             <button
               onClick={onViewMTD}
-              style={{ flex: 1, padding: "10px 12px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, backgroundColor: tokens.blue, color: tokens.white, border: "none", borderRadius: 8, cursor: "pointer" }}
+              style={{ flex: 1, padding: "10px 12px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, backgroundColor: tokens.blue, color: tokens.white, border: "none", borderRadius: tokens.radiusCard, cursor: "pointer" }}
             >
               View MTD →
             </button>
             <button
               onClick={onClose}
-              style={{ padding: "10px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, backgroundColor: tokens.canvas, color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+              style={{ padding: "10px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, backgroundColor: tokens.canvas, color: "#374151", border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, cursor: "pointer" }}
             >
               Close
             </button>
@@ -10538,7 +10538,7 @@ function LessonsBreakdownModal({
                   <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, padding: "4px 10px", borderRadius: 999, backgroundColor: "#F1F5F9", color: tokens.navy }}>
                     {r.duration_minutes ?? 60}m
                   </span>
-                  <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, padding: "2px 6px", borderRadius: 8, backgroundColor: colors.bg, color: colors.fg, textTransform: "capitalize" }}>
+                  <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, padding: "2px 6px", borderRadius: tokens.radiusCard, backgroundColor: colors.bg, color: colors.fg, textTransform: "capitalize" }}>
                     {r.status}
                   </span>
                 </button>
@@ -10576,7 +10576,7 @@ function LessonsBreakdownModal({
           </div>
           <button
             onClick={onClose}
-            style={{ marginTop: 4, padding: "10px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, backgroundColor: tokens.canvas, color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+            style={{ marginTop: 4, padding: "10px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, backgroundColor: tokens.canvas, color: "#374151", border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, cursor: "pointer" }}
           >
             Close
           </button>
@@ -10595,7 +10595,7 @@ function LessonsBreakdownModal({
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: tokens.fontSize.base, border: "1px solid #D1D5DB", borderRadius: 8, background: "#fff" }}
+              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: tokens.fontSize.base, border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, background: "#fff" }}
             >
               <option>Created in error</option>
               <option>Duplicate entry</option>
@@ -10609,7 +10609,7 @@ function LessonsBreakdownModal({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: tokens.fontSize.base, border: "1px solid #D1D5DB", borderRadius: 8, resize: "vertical", fontFamily: "inherit" }}
+              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: tokens.fontSize.base, border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, resize: "vertical", fontFamily: "inherit" }}
             />
           </label>
         </div>
@@ -10617,7 +10617,7 @@ function LessonsBreakdownModal({
           <button
             onClick={closeConfirm}
             disabled={deleting}
-            style={{ padding: "8px 14px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, background: "transparent", color: "#374151", border: "none", borderRadius: 8, cursor: "pointer" }}
+            style={{ padding: "8px 14px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, background: "transparent", color: "#374151", border: "none", borderRadius: tokens.radiusCard, cursor: "pointer" }}
           >
             Cancel
           </button>
@@ -10633,7 +10633,7 @@ function LessonsBreakdownModal({
               }
             }}
             disabled={deleting}
-            style={{ padding: "8px 14px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, backgroundColor: "#B91C1C", color: "#fff", border: "none", borderRadius: 8, cursor: deleting ? "not-allowed" : "pointer", opacity: deleting ? 0.7 : 1 }}
+            style={{ padding: "8px 14px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, backgroundColor: "#B91C1C", color: "#fff", border: "none", borderRadius: tokens.radiusCard, cursor: deleting ? "not-allowed" : "pointer", opacity: deleting ? 0.7 : 1 }}
           >
             {deleting ? "Deleting…" : "Delete lesson"}
           </button>
@@ -10804,7 +10804,7 @@ function TestsBreakdownModal({
                     style={{
                       background: "#fff",
                       border: "0.5px solid #EEF2F7",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: "10px 12px",
                       display: "flex",
                       alignItems: "center",
@@ -10853,7 +10853,7 @@ function TestsBreakdownModal({
         <div style={{ padding: 12, borderTop: "1px solid #e5e7eb" }}>
           <button
             onClick={onClose}
-            style={{ width: "100%", padding: "10px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, backgroundColor: tokens.canvas, color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+            style={{ width: "100%", padding: "10px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, backgroundColor: tokens.canvas, color: "#374151", border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, cursor: "pointer" }}
           >
             Close
           </button>
@@ -10976,7 +10976,7 @@ function DiscoverSection() {
 
   const cardShell: React.CSSProperties = {
     background: tokens.white,
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
     overflow: "hidden",
     cursor: "pointer",
@@ -11055,7 +11055,7 @@ function DiscoverSection() {
                     }}
                   >
                     {isToday && (
-                      <span style={{ position: 'absolute', top: 4, left: 4, background: '#CC2229', color: '#FFFFFF', fontSize: 7, fontWeight: tokens.fontWeight.bold, padding: '2px 5px', borderRadius: 8, letterSpacing: 0.4 }}>
+                      <span style={{ position: 'absolute', top: 4, left: 4, background: '#CC2229', color: '#FFFFFF', fontSize: 7, fontWeight: tokens.fontWeight.bold, padding: '2px 5px', borderRadius: tokens.radiusCard, letterSpacing: 0.4 }}>
                         LIVE
                       </span>
                     )}

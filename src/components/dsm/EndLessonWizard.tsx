@@ -1186,7 +1186,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                   style={{
                     background: "#fff",
                     padding: 12,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     border: "1px solid #EEF2F7",
                   }}
                 >
@@ -1267,7 +1267,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                   className="mt-2 w-full flex items-center justify-center gap-2"
                   style={{
                     padding: "8px 0",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     backgroundColor: "#fff",
                     border: "0.5px solid #EEF2F7",
                     color: tokens.blue,
@@ -1518,7 +1518,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                     className="mt-2 w-full flex items-center justify-center gap-2"
                     style={{
                       padding: "8px 0",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       backgroundColor: "#fff",
                       border: "0.5px solid #EEF2F7",
                       color: tokens.blue,

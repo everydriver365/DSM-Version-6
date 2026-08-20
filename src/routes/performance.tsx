@@ -180,7 +180,7 @@ function PerformancePage() {
       {/* Period tabs */}
       <div
         className="mx-4 mt-3 flex"
-        style={{ backgroundColor: "#F3F4F6", borderRadius: 8, padding: 4, gap: 4 }}
+        style={{ backgroundColor: "#F3F4F6", borderRadius: tokens.radiusCard, padding: 4, gap: 4 }}
       >
         {TABS.map((t) => {
           const active = period === t.key;
@@ -192,7 +192,7 @@ function PerformancePage() {
               className="flex-1 inline-flex items-center justify-center text-[12px] font-medium"
               style={{
                 height: 32,
-                borderRadius: 8,
+                borderRadius: 12,
                 backgroundColor: active ? "#FFFFFF" : "transparent",
                 color: active ? "#1877D6" : "#6B7280",
                 boxShadow: active ? "0 1px 2px rgba(11,31,58,0.08)" : "none",
@@ -274,7 +274,7 @@ function ResultBar({
       </div>
       <div
         className="mt-1 overflow-hidden"
-        style={{ height: 8, borderRadius: 8, backgroundColor: tokens.canvas }}
+        style={{ height: 8, borderRadius: 12, backgroundColor: tokens.canvas }}
       >
         <div style={{ width: `${pct}%`, height: "100%", backgroundColor: color }} />
       </div>

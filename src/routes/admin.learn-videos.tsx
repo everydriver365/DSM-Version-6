@@ -405,7 +405,7 @@ function VideoForm({
             width: "100%",
             padding: "10px 12px",
             border: "1px solid #E4E8EF",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             fontSize: tokens.fontSize.base,
             fontFamily: "Poppins, sans-serif",
             color: tokens.navy,
@@ -857,7 +857,7 @@ function VideoForm({
           <div
             style={{
               height: 6,
-              borderRadius: 8,
+              borderRadius: 12,
               background: "#E2E6ED",
               overflow: "hidden",
               position: "relative",
@@ -934,7 +934,7 @@ function VideoForm({
           style={{
             flex: 1,
             height: 44,
-            borderRadius: 8,
+            borderRadius: 12,
             background: BLUE,
             color: "#fff",
             border: "none",
@@ -1084,7 +1084,7 @@ function AdminLearnVideosPage() {
             onClick={() => setAdding(true)}
             style={{
               width: "100%",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               background: BLUE,
               color: "#fff",
               border: "none",
@@ -1134,7 +1134,7 @@ function AdminLearnVideosPage() {
                 key={v.id}
                 style={{
                   background: "#fff",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 14,
                   marginBottom: 0,
                   display: "flex",
@@ -1210,7 +1210,7 @@ function AdminLearnVideosPage() {
                   style={{
                     width: 38,
                     height: 38,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     border: "none",
                     background: "#fff",
                     color: NAVY,
@@ -1231,7 +1231,7 @@ function AdminLearnVideosPage() {
                   style={{
                     width: 38,
                     height: 38,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     border: "none",
                     background: "#fff",
                     color: "#FF3B30",

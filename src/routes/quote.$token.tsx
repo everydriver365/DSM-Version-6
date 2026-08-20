@@ -285,7 +285,7 @@ function PublicQuotePage() {
           </div>
 
           {quote.personal_message && (
-            <div style={{ marginTop: 16, padding: 12, background: "#EFF6FF", borderRadius: 8, fontStyle: "italic", color: "#475569", fontSize: 14 }}>
+            <div style={{ marginTop: 16, padding: 12, background: "#EFF6FF", borderRadius: tokens.radiusCard, fontStyle: "italic", color: "#475569", fontSize: 14 }}>
               {quote.personal_message}
             </div>
           )}
@@ -319,7 +319,7 @@ function PublicQuotePage() {
               )}
 
               {needsDeposit && (
-                <div style={{ width: "100%", marginTop: 16, padding: 20, background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 8, textAlign: "left" }}>
+                <div style={{ width: "100%", marginTop: 16, padding: 20, background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: tokens.radiusCard, textAlign: "left" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                     <IconLock size={18} color="#1877D6" />
                     <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>Secure your booking</div>
@@ -332,13 +332,13 @@ function PublicQuotePage() {
                   </div>
 
                   {payError && (
-                    <div style={{ background: "#fef2f2", color: "#b91c1c", padding: 10, borderRadius: 8, fontSize: tokens.fontSize.base, marginBottom: 12 }}>
+                    <div style={{ background: "#fef2f2", color: "#b91c1c", padding: 10, borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.base, marginBottom: 12 }}>
                       {payError}
                     </div>
                   )}
 
                   {noSquare && (
-                    <div style={{ background: "#FFFBEB", color: "#B45309", padding: 12, borderRadius: 8, fontSize: tokens.fontSize.base, marginBottom: 12 }}>
+                    <div style={{ background: "#FFFBEB", color: "#B45309", padding: 12, borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.base, marginBottom: 12 }}>
                       Your instructor hasn't connected Square yet. Please pay by bank transfer or contact your instructor directly.
                       {(instructor?.bank_account_name || instructor?.bank_sort_code || instructor?.bank_account_number) && (
                         <div style={{ marginTop: 8, color: tokens.navy }}>
@@ -357,7 +357,7 @@ function PublicQuotePage() {
                       onClick={startDepositPayment}
                       style={{
                         width: "100%", height: 48, background: tokens.blue, color: "#fff",
-                        border: "none", borderRadius: 8, fontSize: 15, fontWeight: tokens.fontWeight.semibold,
+                        border: "none", borderRadius: 12, fontSize: 15, fontWeight: tokens.fontWeight.semibold,
                         fontFamily: "Poppins, sans-serif", cursor: "pointer",
                         opacity: payStatus === "creating" ? 0.6 : 1,
                       }}
@@ -371,7 +371,7 @@ function PublicQuotePage() {
                         style={{
                           display: "flex", alignItems: "center", justifyContent: "center",
                           width: "100%", height: 48, background: tokens.blue, color: "#fff",
-                          borderRadius: 8, fontSize: 15, fontWeight: tokens.fontWeight.semibold, textDecoration: "none",
+                          borderRadius: 12, fontSize: 15, fontWeight: tokens.fontWeight.semibold, textDecoration: "none",
                         }}
                       >
                         Pay now
@@ -430,7 +430,7 @@ function PublicQuotePage() {
           <button
             onClick={askQuestion}
             style={{
-              height: 48, borderRadius: 8, background: "#fff",
+              height: 48, borderRadius: 12, background: "#fff",
               border: "1px solid #0B1F3A", color: tokens.navy,
               fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md, fontFamily: "Poppins, sans-serif", cursor: "pointer",
             }}

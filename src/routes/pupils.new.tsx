@@ -232,7 +232,7 @@ function NewPupilPage() {
               width: "100%",
               background: "#fff",
               border: "1px solid #E4E8EF",
-              borderRadius: 16,
+              borderRadius: tokens.radiusCard,
               padding: "13px 16px",
               display: "flex",
               alignItems: "center",
@@ -329,7 +329,7 @@ function NewPupilPage() {
               className="text-[14px] text-[#0B1F3A]"
               style={{
                 height: 44,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: "1px solid #EEF2F7",
                 padding: "0 12px",
                 backgroundColor: "#fff",
@@ -370,7 +370,7 @@ function NewPupilPage() {
               className="text-[14px] text-[#0B1F3A]"
               style={{
                 height: 44,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: "1px solid #EEF2F7",
                 padding: "0 12px",
                 backgroundColor: "#fff",
@@ -467,7 +467,7 @@ function NewPupilPage() {
                   className="text-[14px] text-[#0B1F3A]"
                   style={{
                     height: 44,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     border: "1px solid #EEF2F7",
                     padding: "0 12px",
                     backgroundColor: "#fff",
@@ -536,7 +536,7 @@ function NewPupilPage() {
             onClick={(e) => e.stopPropagation()}
             style={{
               background: tokens.canvas,
-              borderRadius: "22px 22px 0 0",
+              borderRadius: "16px 16px 0 0",
               padding: "0 0 32px",
               maxHeight: "85vh",
               width: "100%",
@@ -610,7 +610,7 @@ function NewPupilPage() {
                 style={{
                   background: "#fff",
                   border: "1px solid #E4E8EF",
-                  borderRadius: 12,
+                  borderRadius: tokens.radiusCard,
                   padding: "10px 14px 10px 38px",
                   fontSize: tokens.fontSize.md,
                   fontFamily: "Poppins, sans-serif",

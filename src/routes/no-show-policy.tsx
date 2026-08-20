@@ -136,7 +136,7 @@ function NoShowPolicyPage() {
         style={{
           backgroundColor: "#FFFBEB",
           border: "1px solid #FDE68A",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: 16,
         }}
       >
@@ -153,7 +153,7 @@ function NoShowPolicyPage() {
         style={{
           backgroundColor: tokens.white,
           border: "0.5px solid #E2E6ED",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: 16,
         }}
       >
@@ -174,7 +174,7 @@ function NoShowPolicyPage() {
             className="w-full text-[14px] text-[#0F2044] bg-white"
             style={{
               border: "0.5px solid #E2E6ED",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "10px 12px",
               ...FONT,
             }}
@@ -201,7 +201,7 @@ function NoShowPolicyPage() {
               className="flex-1 text-[14px] text-[#0F2044] bg-white"
               style={{
                 border: "0.5px solid #E2E6ED",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "10px 12px",
                 ...FONT,
               }}
@@ -228,7 +228,7 @@ function NoShowPolicyPage() {
               className="flex-1 text-[14px] text-[#0F2044] bg-white"
               style={{
                 border: "0.5px solid #E2E6ED",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "10px 12px",
                 ...FONT,
               }}
@@ -279,7 +279,7 @@ function NoShowPolicyPage() {
         style={{
           backgroundColor: "#F7FAFC",
           border: "1px solid #E2E6ED",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: 16,
         }}
       >

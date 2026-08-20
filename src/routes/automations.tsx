@@ -186,7 +186,7 @@ function AutomationsPage() {
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: tokens.blue,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 16,
             }}
           >

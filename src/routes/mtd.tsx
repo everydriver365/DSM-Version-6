@@ -414,7 +414,7 @@ function MtdPage() {
             borderWidth: "0.5px",
             borderStyle: "solid",
             borderColor: tokens.blue,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 16,
             fontSize: tokens.fontSize.base,
             color: VALUE,
@@ -602,7 +602,7 @@ function MtdPage() {
                     borderWidth: "1px",
                     borderStyle: "solid",
                     borderColor: tokens.canvas,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: 16,
                     background: "#fff",
                   }}

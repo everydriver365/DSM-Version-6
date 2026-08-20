@@ -226,7 +226,7 @@ function BookingsPage() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 16,
               boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
               display: "flex",
@@ -375,7 +375,7 @@ function SectionHeader({ label }: { label: string }) {
           display: "inline-block",
           width: 3,
           height: 12,
-          borderRadius: 8,
+          borderRadius: 12,
           backgroundColor: tokens.blue,
         }}
       />
@@ -398,7 +398,7 @@ function GroupedCard({ children }: { children: React.ReactNode }) {
     <div
       style={{
         background: "#fff",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         overflow: "hidden",
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
       }}

@@ -66,7 +66,7 @@ const labelStyle: React.CSSProperties = {
 const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #E4E8EF",
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   padding: "10px 12px",
   fontSize: tokens.fontSize.md,
   color: tokens.navy,
@@ -399,7 +399,7 @@ function AdminBitesizePage() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
             display: "flex",
             overflow: "hidden",
@@ -493,7 +493,7 @@ function AdminBitesizePage() {
               key={video.id}
               style={{
                 background: "#fff",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 18,
                 marginBottom: 14,
                 boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
@@ -616,7 +616,7 @@ function AdminBitesizePage() {
                   style={{
                     flex: 1,
                     height: 40,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     background: "#fff",
                     border: "none",
                     boxShadow: "0 3px 0 #E4E4E8",
@@ -645,7 +645,7 @@ function AdminBitesizePage() {
                   style={{
                     flex: 1,
                     height: 40,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     background: "#fff",
                     border: "none",
                     boxShadow: "0 3px 0 #E4E4E8",
@@ -670,7 +670,7 @@ function AdminBitesizePage() {
                   style={{
                     flex: 1,
                     height: 40,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     background: "#fff",
                     border: "none",
                     boxShadow: "0 3px 0 #F7C9C6",
@@ -728,7 +728,7 @@ function AdminBitesizePage() {
                   justifyContent: "center",
                   gap: 6,
                   border: "2px dashed #DDD6FE",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "24px 16px",
                   cursor: "pointer",
                   background: "#FAF8FF",
@@ -847,7 +847,7 @@ function AdminBitesizePage() {
                 background: "#7C3AED",
                 color: "#fff",
                 border: "none",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "14px 16px",
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.bold,
@@ -900,7 +900,7 @@ function AdminBitesizePage() {
                 background: tokens.blue,
                 color: "#fff",
                 border: "none",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "14px 16px",
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.bold,

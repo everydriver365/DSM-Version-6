@@ -172,7 +172,7 @@ function InstructorMiniSite() {
   const btnPrimary: React.CSSProperties = {
     display: "inline-block",
     padding: "14px 28px",
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     background: accent,
     color: theme.isDark && accent === "#FFFFFF" ? "#000" : "#FFFFFF",
     fontWeight: tokens.fontWeight.semibold,
@@ -281,7 +281,7 @@ function InstructorMiniSite() {
                 style={{
                   padding: 0,
                   border: "none",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   overflow: "hidden",
                   cursor: "pointer",
                   aspectRatio: "1 / 1",

@@ -264,7 +264,7 @@ const SUBTLE = "#6B7686";
 
 const cardStyle: React.CSSProperties = {
   background: WHITE,
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   border: "none",
   boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
   overflow: "hidden",
@@ -1618,7 +1618,7 @@ export function UnifiedPaymentSheet({
           <div
             style={{
               background: "#fff",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 24,
               textAlign: "center",
               maxWidth: 320,
@@ -1648,7 +1648,7 @@ export function UnifiedPaymentSheet({
                 width: "100%",
                 marginTop: 16,
                 height: 46,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: "none",
                 background: tokens.canvas,
                 color: tokens.textSecondary,
@@ -1799,7 +1799,7 @@ export function UnifiedPaymentSheet({
                 style={{
                   flex: 1,
                   height: 44,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   border: "none",
                   background: BLUE,
                   color: WHITE,
@@ -1903,7 +1903,7 @@ export function UnifiedPaymentSheet({
                 style={{
                   flex: 1,
                   height: 44,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   border: "none",
                   background: BLUE,
                   color: WHITE,
@@ -1966,7 +1966,7 @@ export function UnifiedPaymentSheet({
                 style={{
                   flex: 1,
                   height: 44,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   border: "none",
                   background: RED,
                   color: WHITE,
@@ -2397,7 +2397,7 @@ export function UnifiedPaymentSheet({
               <div
                 style={{
                   background: "#FEF3C7",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "12px 14px",
                   marginBottom: 12,
                   fontSize: tokens.fontSize.base,
@@ -2675,7 +2675,7 @@ export function UnifiedPaymentSheet({
                         style={{
                           flex: 1,
                           height: 34,
-                          borderRadius: 8,
+                          borderRadius: 12,
                           border: "none",
                           background: invalid ? BORDER : RED,
                           color: WHITE,
@@ -3268,7 +3268,7 @@ export function UnifiedPaymentSheet({
                   style={{
                     width: "100%",
                     height: 44,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     border: "none",
                     background: BLUE,
                     color: WHITE,

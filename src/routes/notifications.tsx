@@ -755,7 +755,7 @@ function NotificationsPage() {
                   gap: 12,
                   padding: "13px 16px",
                   background: tokens.white,
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
                 }}
               >
@@ -794,7 +794,7 @@ function NotificationsPage() {
               <div
                 style={{
                   background: tokens.white,
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
                   overflow: "hidden",
                 }}
@@ -901,7 +901,7 @@ function NotificationsPage() {
                                     navigate({ to: "/gaps" });
                                   }}
                                   className="text-[12px] font-semibold text-white"
-                                  style={{ background: "#B45309", border: "none", borderRadius: 20, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
+                                  style={{ background: "#B45309", border: "none", borderRadius: tokens.radiusCard, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
                                 >
                                   Fill slot →
                                 </button>
@@ -930,7 +930,7 @@ function NotificationsPage() {
                                       navigate({ to: "/lessons/reschedule/$id", params: { id: n.reference_id! } });
                                     }}
                                     className="text-[12px] font-semibold text-white"
-                                    style={{ background: tokens.blue, border: "none", borderRadius: 20, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
+                                    style={{ background: tokens.blue, border: "none", borderRadius: tokens.radiusCard, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
                                   >
                                     Reschedule →
                                   </button>
@@ -995,7 +995,7 @@ function NotificationsPage() {
             style={{
               position: "relative",
               background: tokens.canvas,
-              borderRadius: "22px 22px 0 0",
+              borderRadius: "16px 16px 0 0",
               width: "100%",
               maxHeight: "90vh",
               overflowY: "auto",
@@ -1005,7 +1005,7 @@ function NotificationsPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ position: "relative", padding: "12px 16px 0" }}>
-              <div style={{ width: 36, height: 5, borderRadius: 8, background: "#D1D1D6", margin: "0 auto" }} />
+              <div style={{ width: 36, height: 5, borderRadius: 12, background: "#D1D1D6", margin: "0 auto" }} />
               <button
                 type="button"
                 aria-label="Close"
@@ -1146,7 +1146,7 @@ function NotificationsPage() {
                         flex: 1,
                         minHeight: 44,
                         maxHeight: 120,
-                        borderRadius: 22,
+                        borderRadius: tokens.radiusCard,
                         padding: "12px 16px",
                         fontSize: 15,
                         fontFamily: "Poppins, sans-serif",
@@ -1189,7 +1189,7 @@ function NotificationsPage() {
                   style={{
                     margin: "16px 16px 8px",
                     background: "#FEE2E2",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     border: "1px solid #FECACA",
                     padding: "14px 16px",
                   }}
@@ -1252,7 +1252,7 @@ function NotificationsPage() {
                       style={{
                         marginTop: 8,
                         background: "rgba(255,255,255,0.6)",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: "10px 12px",
                       }}
                     >
@@ -1501,7 +1501,7 @@ function NotificationsPage() {
                     width: "calc(100% - 32px)",
                     background: "#fff",
                     color: tokens.navy,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: 13,
                     fontSize: tokens.fontSize.md,
                     fontWeight: tokens.fontWeight.bold,
@@ -1531,7 +1531,7 @@ function NotificationsPage() {
                     background: actionSheet.isLiveNow
                       ? "linear-gradient(135deg, #CC2229, #B91C1C)"
                       : "linear-gradient(135deg, #14509E, #0B1F3A)",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: 16,
                     boxShadow: "0 4px 0 rgba(0,0,0,0.2)",
                   }}
@@ -1635,7 +1635,7 @@ function NotificationsPage() {
                       width: "100%",
                       background: "#fff",
                       color: actionSheet.isLiveNow ? "#CC2229" : "#14509E",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: 12,
                       fontSize: tokens.fontSize.md,
                       fontWeight: tokens.fontWeight.extrabold,
@@ -1813,7 +1813,7 @@ function NotificationsPage() {
                     width: "calc(100% - 32px)",
                     background: "#fff",
                     color: tokens.navy,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: 13,
                     fontSize: tokens.fontSize.md,
                     fontWeight: tokens.fontWeight.bold,
@@ -1840,7 +1840,7 @@ function NotificationsPage() {
                 <div
                   style={{
                     margin: "16px 16px 8px",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     overflow: "hidden",
                     background:
                       actionSheet.testResult === "pass"
@@ -1942,7 +1942,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           padding: "10px 12px",
                         }}
                       >
@@ -1974,7 +1974,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           padding: "10px 12px",
                         }}
                       >
@@ -2015,7 +2015,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           padding: "10px 12px",
                           gridColumn: "span 2 / span 2",
                         }}
@@ -2049,7 +2049,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           padding: "10px 12px",
                           gridColumn: "span 2 / span 2",
                         }}
@@ -2086,7 +2086,7 @@ function NotificationsPage() {
                         marginTop: 12,
                         width: "100%",
                         background: "rgba(255,255,255,0.2)",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: 11,
                         border: "none",
                         cursor: "pointer",
@@ -2306,7 +2306,7 @@ function NotificationsPage() {
                     width: "calc(100% - 32px)",
                     background: "#fff",
                     color: tokens.navy,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: 13,
                     fontSize: tokens.fontSize.md,
                     fontWeight: tokens.fontWeight.bold,
@@ -2328,7 +2328,7 @@ function NotificationsPage() {
                   style={{
                     margin: "16px 16px 8px",
                     background: "linear-gradient(135deg, #14509E, #0B1F3A)",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: 16,
                     boxShadow: "0 4px 0 #091628",
                   }}
@@ -2394,7 +2394,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           padding: "10px 12px",
                         }}
                       >
@@ -2426,7 +2426,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           padding: "10px 12px",
                         }}
                       >
@@ -2459,7 +2459,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           padding: "10px 12px",
                         }}
                       >
@@ -2491,7 +2491,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "rgba(255,255,255,0.15)",
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           padding: "10px 12px",
                           gridColumn: actionSheet.enquirerPhone ? undefined : "span 2 / span 2",
                         }}
@@ -2527,7 +2527,7 @@ function NotificationsPage() {
                       style={{
                         marginTop: 10,
                         background: "rgba(255,255,255,0.12)",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: "10px 12px",
                       }}
                     >
@@ -2751,7 +2751,7 @@ function NotificationsPage() {
                     width: "calc(100% - 32px)",
                     background: "#fff",
                     color: tokens.navy,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: 13,
                     fontSize: tokens.fontSize.md,
                     fontWeight: tokens.fontWeight.bold,
@@ -2799,7 +2799,7 @@ function NotificationsPage() {
                           color: tokens.blue,
                           fontSize: tokens.fontSize.xs,
                           fontWeight: tokens.fontWeight.extrabold,
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           padding: "3px 10px",
                           ...POPPINS,
                         }}
@@ -2842,7 +2842,7 @@ function NotificationsPage() {
                         <div
                           style={{
                             background: tokens.canvas,
-                            borderRadius: 8,
+                            borderRadius: tokens.radiusCard,
                             padding: "10px 12px",
                           }}
                         >
@@ -2879,7 +2879,7 @@ function NotificationsPage() {
                         <div
                           style={{
                             background: tokens.canvas,
-                            borderRadius: 8,
+                            borderRadius: tokens.radiusCard,
                             padding: "10px 12px",
                           }}
                         >
@@ -2912,7 +2912,7 @@ function NotificationsPage() {
                         <div
                           style={{
                             background: tokens.canvas,
-                            borderRadius: 8,
+                            borderRadius: tokens.radiusCard,
                             padding: "10px 12px",
                           }}
                         >
@@ -2945,7 +2945,7 @@ function NotificationsPage() {
                         <div
                           style={{
                             background: tokens.canvas,
-                            borderRadius: 8,
+                            borderRadius: tokens.radiusCard,
                             padding: "10px 12px",
                           }}
                         >
@@ -2978,7 +2978,7 @@ function NotificationsPage() {
                         <div
                           style={{
                             background: tokens.canvas,
-                            borderRadius: 8,
+                            borderRadius: tokens.radiusCard,
                             padding: "10px 12px",
                           }}
                         >
@@ -3014,7 +3014,7 @@ function NotificationsPage() {
                           style={{
                             background: "#DCFCE7",
                             border: "1px solid #DCFCE7",
-                            borderRadius: 8,
+                            borderRadius: tokens.radiusCard,
                             padding: "10px 12px",
                           }}
                         >
@@ -3048,7 +3048,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "#F8FAFC",
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           padding: "10px 12px",
                           marginBottom: 8,
                         }}
@@ -3099,7 +3099,7 @@ function NotificationsPage() {
                     width: "calc(100% - 32px)",
                     background: "#15803D",
                     color: "#fff",
-                    borderRadius: 20,
+                    borderRadius: tokens.radiusCard,
                     padding: 13,
                     fontSize: tokens.fontSize.md,
                     fontWeight: tokens.fontWeight.bold,
@@ -3148,7 +3148,7 @@ function NotificationsPage() {
                     style={{
                       background: "#fff",
                       border: "1px solid #E4E8EF",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: 13,
                       fontSize: tokens.fontSize.md,
                       fontWeight: tokens.fontWeight.bold,
@@ -3175,7 +3175,7 @@ function NotificationsPage() {
                     style={{
                       background: tokens.blue,
                       border: "none",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: 13,
                       fontSize: tokens.fontSize.md,
                       fontWeight: tokens.fontWeight.bold,
@@ -3280,7 +3280,7 @@ function NotificationsPage() {
                     <div
                       style={{
                         background: "#FEF3C7",
-                        borderRadius: 12,
+                        borderRadius: tokens.radiusCard,
                         padding: "14px 16px",
                         display: "flex",
                         alignItems: "center",
@@ -3621,7 +3621,7 @@ function NotificationsPage() {
                   style={{
                     margin: "16px 16px 8px",
                     background: "linear-gradient(135deg, #14509E, #0B1F3A)",
-                    borderRadius: 16,
+                    borderRadius: tokens.radiusCard,
                     padding: 16,
                     boxShadow: "0 4px 0 #091628",
                   }}
@@ -3698,7 +3698,7 @@ function NotificationsPage() {
                       style={{
                         marginTop: 8,
                         background: "rgba(255,255,255,0.12)",
-                        borderRadius: 10,
+                        borderRadius: tokens.radiusCard,
                         padding: "10px 12px",
                         display: "flex",
                         gap: 8,
@@ -3745,7 +3745,7 @@ function NotificationsPage() {
                         marginTop: 12,
                         width: "100%",
                         background: "rgba(255,255,255,0.2)",
-                        borderRadius: 20,
+                        borderRadius: tokens.radiusCard,
                         padding: 11,
                         border: "none",
                         cursor: "pointer",
@@ -3976,7 +3976,7 @@ function NotificationsPage() {
                     width: "calc(100% - 32px)",
                     background: "#fff",
                     color: tokens.navy,
-                    borderRadius: 20,
+                    borderRadius: tokens.radiusCard,
                     padding: 13,
                     fontSize: tokens.fontSize.md,
                     fontWeight: tokens.fontWeight.bold,
@@ -3999,7 +3999,7 @@ function NotificationsPage() {
                   style={{
                     margin: "16px 16px 8px",
                     background: "#fff",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     border: "1px solid #E4E8EF",
                     padding: "14px 16px",
                   }}
@@ -4139,7 +4139,7 @@ function NotificationsPage() {
                     width: "calc(100% - 32px)",
                     background: "#fff",
                     color: tokens.navy,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: 13,
                     fontSize: tokens.fontSize.md,
                     fontWeight: tokens.fontWeight.bold,

@@ -290,7 +290,7 @@ function DataImportPage() {
               borderWidth: "0.5px",
               borderStyle: "solid",
               borderColor: tokens.blue,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 16,
               display: "flex",
               gap: 12,
@@ -318,7 +318,7 @@ function DataImportPage() {
               borderWidth: "1px",
               borderStyle: "dashed",
               borderColor: tokens.canvas,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 32,
               gap: 8,
               backgroundColor: "#FAFBFC",
@@ -391,7 +391,7 @@ function DataImportPage() {
                         style={{
                           maxWidth: "55%",
                           padding: "6px 8px",
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           borderWidth: "0.5px",
                           borderStyle: "solid",
                           borderColor: auto ? "#1877D6" : "#E4E4E8",
@@ -422,7 +422,7 @@ function DataImportPage() {
                 borderWidth: "0.5px",
                 borderStyle: "solid",
                 borderColor: invalidRowCount > 0 ? "#CC2229" : "#EEF2F7",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 14,
               }}
             >
@@ -452,7 +452,7 @@ function DataImportPage() {
                       className="text-[12px]"
                       style={{
                         backgroundColor: "#FDF2F2",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: "8px 10px",
                         color: tokens.navy,
                       }}
@@ -562,7 +562,7 @@ function DataImportPage() {
                     borderWidth: "0.5px",
                     borderStyle: "solid",
                     borderColor: tokens.canvas,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: 14,
                   }}
                 >

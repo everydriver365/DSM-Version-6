@@ -469,7 +469,7 @@ function CourseDetailPage() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
             overflow: "hidden",
             margin: "0 16px 12px",
@@ -641,7 +641,7 @@ function CourseDetailPage() {
             fontSize: 12,
             fontWeight: tokens.fontWeight.extrabold,
             padding: "8px 14px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             border: "none",
             cursor: "pointer",
             fontFamily: "Poppins, sans-serif",
@@ -727,7 +727,7 @@ function CourseDetailPage() {
                     fontSize: 11.5,
                     fontWeight: tokens.fontWeight.extrabold,
                     padding: "6px 14px",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     textTransform: "uppercase",
                     letterSpacing: "0.3px",
                   }}
@@ -838,7 +838,7 @@ function CourseDetailPage() {
                       style={{
                         width: "100%",
                         height: 44,
-                        borderRadius: 8,
+                        borderRadius: 12,
                         border: "0.5px solid #EEF2F7",
                         padding: "0 10px",
                         background: "#fff",
@@ -917,7 +917,7 @@ function CourseDetailPage() {
                               setForm((prev) => (prev ? { ...prev, lesson_time_from: e.target.value || null } : prev))
                             }
                             style={{
-                              height: 44, borderRadius: 8, border: "0.5px solid #EEF2F7",
+                              height: 44, borderRadius: 12, border: "0.5px solid #EEF2F7",
                               padding: "0 10px", fontSize: tokens.fontSize.md, fontFamily: "Poppins, sans-serif",
                               color: tokens.navy, background: "#fff",
                             }}
@@ -932,7 +932,7 @@ function CourseDetailPage() {
                               setForm((prev) => (prev ? { ...prev, lesson_time_to: e.target.value || null } : prev))
                             }
                             style={{
-                              height: 44, borderRadius: 8, border: "0.5px solid #EEF2F7",
+                              height: 44, borderRadius: 12, border: "0.5px solid #EEF2F7",
                               padding: "0 10px", fontSize: tokens.fontSize.md, fontFamily: "Poppins, sans-serif",
                               color: tokens.navy, background: "#fff",
                             }}
@@ -1096,7 +1096,7 @@ function CourseDetailPage() {
                       rows={3}
                       style={{
                         width: "100%",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         border: "0.5px solid #EEF2F7",
                         padding: 10,
                         fontFamily: "Poppins, sans-serif",
@@ -1178,7 +1178,7 @@ function CourseDetailPage() {
                       color: tokens.blue,
                       fontSize: tokens.fontSize.sm,
                       fontWeight: tokens.fontWeight.bold,
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: "3px 10px",
                       marginLeft: 8,
                     }}
@@ -1190,7 +1190,7 @@ function CourseDetailPage() {
                   style={{
                     margin: "0 16px 16px",
                     background: "#fff",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     border: "1px solid #E4E8EF",
                     overflow: "hidden",
                     boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
@@ -1313,7 +1313,7 @@ function CourseDetailPage() {
                             color: statusColor,
                             fontSize: tokens.fontSize.xs,
                             fontWeight: tokens.fontWeight.bold,
-                            borderRadius: 8,
+                            borderRadius: tokens.radiusCard,
                             padding: "3px 8px",
                             flexShrink: 0,
                             textTransform: "uppercase",
@@ -1448,7 +1448,7 @@ function CourseDetailPage() {
                           fontSize: tokens.fontSize.xs,
                           fontWeight: tokens.fontWeight.bold,
                           padding: "3px 7px",
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           textTransform: "uppercase",
                           letterSpacing: 0.4,
                         }}
@@ -1574,7 +1574,7 @@ function CourseDetailPage() {
             style={{
               background: "#F2F2F7",
               width: "100%",
-              borderRadius: "8px 8px 0 0",
+              borderRadius: "16px 16px 0 0",
               padding: "0 20px 24px",
               maxHeight: "90vh",
               overflowY: "auto",
@@ -1586,7 +1586,7 @@ function CourseDetailPage() {
                 width: 36,
                 height: 5,
                 background: "#D1D1D6",
-                borderRadius: 8,
+                borderRadius: 12,
                 margin: "12px auto 8px",
               }}
             />
@@ -1619,7 +1619,7 @@ function CourseDetailPage() {
               style={{
                 background: "#E6F7EC",
                 padding: "11px 13px",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 marginBottom: 16,
                 display: "flex",
                 gap: 9,
@@ -1668,7 +1668,7 @@ function CourseDetailPage() {
                   onClick={() => setEditScope(value)}
                   style={{
                     background: "#fff",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "14px 16px",
                     boxShadow: selected
                       ? "0 3px 0 #D6E8FB, 0 8px 18px rgba(24,119,214,0.1)"
@@ -1688,7 +1688,7 @@ function CourseDetailPage() {
                     style={{
                       width: 36,
                       height: 36,
-                      borderRadius: 8,
+                      borderRadius: 12,
                       background: "#E7F1FC",
                       display: "flex",
                       alignItems: "center",
@@ -1743,7 +1743,7 @@ function CourseDetailPage() {
                 color: "#fff",
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.extrabold,
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 border: "none",
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
@@ -1786,7 +1786,7 @@ function CourseDetailPage() {
 
 const DETAIL_CARD = (editing: boolean): React.CSSProperties => ({
   padding: editing ? 0 : "4px 16px",
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   borderColor: "transparent",
   boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
 });
@@ -1797,7 +1797,7 @@ function StatStrip({ items }: { items: { value: string; label: string }[] }) {
       style={{
         display: "flex",
         background: "#fff",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         overflow: "hidden",
         boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
       }}
@@ -1866,7 +1866,7 @@ function DetailRow({ label, value, last, first }: { label: string; value: string
 function CourseSectionBar({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "20px 0 10px" }}>
-      <span style={{ width: 3, height: 14, borderRadius: 8, background: tokens.blue }} />
+      <span style={{ width: 3, height: 14, borderRadius: 12, background: tokens.blue }} />
       <span
         style={{
           fontSize: 12,
@@ -1900,7 +1900,7 @@ function ToggleRow({
         style={{
           width: 44,
           height: 26,
-          borderRadius: 8,
+          borderRadius: 12,
           border: "none",
           background: value ? "#1877D6" : "#cbd2dc",
           position: "relative",
@@ -1945,7 +1945,7 @@ function SelectRow({
         style={{
           width: "100%",
           height: 44,
-          borderRadius: 8,
+          borderRadius: 12,
           border: "0.5px solid #EEF2F7",
           padding: "0 10px",
           background: "#fff",
@@ -2322,7 +2322,7 @@ function PostcodeAutocomplete(props: {
             marginTop: 4,
             background: "#fff",
             border: "0.5px solid #EEF2F7",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
             maxHeight: 240,
             overflowY: "auto",

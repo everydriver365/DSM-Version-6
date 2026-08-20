@@ -317,7 +317,7 @@ function IntakeQuestionsPage() {
           margin: "16px",
           backgroundColor: "#F0F4FF",
           border: "1px solid #BFDBFE",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: 16,
           display: "flex",
           gap: 12,
@@ -351,7 +351,7 @@ function IntakeQuestionsPage() {
               style={{
                 backgroundColor: tokens.white,
                 border: "0.5px solid #EEF2F7",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "12px 14px",
                 marginBottom: 8,
                 display: "flex",
@@ -369,7 +369,7 @@ function IntakeQuestionsPage() {
                   background: tokens.navy,
                   color: tokens.white,
                   border: "none",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "6px 10px",
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.semibold,
@@ -402,7 +402,7 @@ function IntakeQuestionsPage() {
               style={{
                 backgroundColor: tokens.white,
                 border: "0.5px solid #EEF2F7",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "14px 16px",
                 margin: "0 16px 8px",
                 display: "flex",
@@ -437,7 +437,7 @@ function IntakeQuestionsPage() {
                     style={{
                       fontSize: tokens.fontSize.sm,
                       padding: "2px 8px",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       backgroundColor: "#EEF2FF",
                       color: tokens.blue,
                       fontWeight: tokens.fontWeight.medium,
@@ -450,7 +450,7 @@ function IntakeQuestionsPage() {
                       style={{
                         fontSize: tokens.fontSize.sm,
                         padding: "2px 8px",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         backgroundColor: "#FEECEE",
                         color: tokens.blue,
                         fontWeight: tokens.fontWeight.medium,
@@ -549,7 +549,7 @@ function IntakeQuestionsPage() {
             onClick={(e) => e.stopPropagation()}
             style={{
               backgroundColor: tokens.white,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 20,
               maxWidth: 380,
               width: "100%",
@@ -567,7 +567,7 @@ function IntakeQuestionsPage() {
                 onClick={() => setConfirmDelete(null)}
                 style={{
                   padding: "8px 14px",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   border: "1px solid #EEF2F7",
                   background: tokens.white,
                   color: tokens.navy,
@@ -582,7 +582,7 @@ function IntakeQuestionsPage() {
                 onClick={() => removeQuestion(confirmDelete)}
                 style={{
                   padding: "8px 14px",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   border: "none",
                   background: tokens.blue,
                   color: tokens.white,
@@ -616,7 +616,7 @@ function Toggle({
       style={{
         width: 42,
         height: 24,
-        borderRadius: 8,
+        borderRadius: 12,
         border: "none",
         backgroundColor: checked ? "#1877D6" : "#D1D5DB",
         position: "relative",
@@ -735,7 +735,7 @@ function QuestionSheet({
               style={{
                 width: "100%",
                 border: "1px solid #EEF2F7",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "10px 40px 10px 12px",
                 fontSize: tokens.fontSize.md,
                 fontFamily: "Poppins, sans-serif",
@@ -755,7 +755,7 @@ function QuestionSheet({
                 background: listening ? "#1877D6" : "#F4F4F5",
                 color: listening ? "#FFFFFF" : "#374151",
                 border: "none",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 6,
                 cursor: "pointer",
               }}
@@ -774,7 +774,7 @@ function QuestionSheet({
               marginTop: 6,
               marginBottom: 16,
               border: "1px solid #EEF2F7",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "10px 12px",
               fontSize: tokens.fontSize.md,
               fontFamily: "Poppins, sans-serif",
@@ -809,7 +809,7 @@ function QuestionSheet({
                       style={{
                         flex: 1,
                         border: "1px solid #EEF2F7",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: "8px 12px",
                         fontSize: tokens.fontSize.md,
                         fontFamily: "Poppins, sans-serif",
@@ -843,7 +843,7 @@ function QuestionSheet({
                     background: "transparent",
                     border: "1px dashed #BFDBFE",
                     color: tokens.blue,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "8px 12px",
                     fontSize: tokens.fontSize.base,
                     fontWeight: tokens.fontWeight.medium,
@@ -889,7 +889,7 @@ function QuestionSheet({
             style={{
               width: "100%",
               height: 48,
-              borderRadius: 8,
+              borderRadius: 12,
               backgroundColor: tokens.navy,
               color: tokens.white,
               border: "none",

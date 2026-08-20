@@ -288,7 +288,7 @@ function Row({
         style={{
           background: NAVY,
           color: tokens.white,
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: "7px 12px",
           fontSize: tokens.fontSize.sm,
           fontWeight: tokens.fontWeight.bold,
@@ -355,7 +355,7 @@ function TabBar({
             style={{
               flex: 1,
               padding: "10px 8px",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               border: "none",
               background: isActive ? NAVY : "#FFFFFF",
               color: isActive ? "#FFFFFF" : NAVY,
@@ -382,7 +382,7 @@ function TabBar({
                   minWidth: 18,
                   height: 18,
                   padding: "0 5px",
-                  borderRadius: 8,
+                  borderRadius: 12,
                   background: isActive ? "rgba(255,255,255,0.22)" : "#EAF2FC",
                   color: isActive ? "#FFFFFF" : "#1877D6",
                   fontSize: tokens.fontSize.sm,
@@ -529,7 +529,7 @@ function DiscoverPage() {
                           fontWeight: tokens.fontWeight.bold,
                           letterSpacing: "0.04em",
                           padding: "2px 5px",
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                         }}
                       >
                         LIVE
