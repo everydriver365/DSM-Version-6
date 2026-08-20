@@ -22,7 +22,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
@@ -517,19 +517,7 @@ function LiveNewsPage() {
   };
 
   return (
-    <div style={{ background: "#EEF2F7", minHeight: "100vh", ...POPPINS }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Live & News"
-        onBack={() => goBack('/home')}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => {}}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="DSM News">
       <div
         style={{
           background: "#fff",
@@ -1508,7 +1496,7 @@ function LiveNewsPage() {
           }}
         />
       )}
-    </div>
+    </DSMTopSheet>
   );
 }
 

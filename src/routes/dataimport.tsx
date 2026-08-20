@@ -13,11 +13,10 @@ import { validatePupilRows, resolveName } from "@/lib/pupilRowValidation";
 import { IconAlertCircle, IconAlertTriangle, IconChevronLeft, IconCircleCheck, IconDownload, IconInfoCircle, IconUpload } from "@tabler/icons-react";
 
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 import ImportResults, {
   type FailedResult,
   type ImportedResult,
@@ -277,19 +276,8 @@ function DataImportPage() {
   const preview = rows.slice(0, 5);
 
   return (
-    <PageLayout className="pb-8" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Import data"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="Import Data">
+      <div className="pb-8" style={POPPINS}>
       <div>
         <div className="mx-4">
           <SectionHeader>IMPORT PUPILS</SectionHeader>
@@ -654,6 +642,7 @@ function DataImportPage() {
           </div>
         </div>
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }

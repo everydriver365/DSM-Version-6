@@ -1,11 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { IconAlertTriangle, IconClock, IconEye } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/no-show-policy")({
   head: () => ({
@@ -128,20 +127,8 @@ function NoShowPolicyPage() {
         }`.trim();
 
   return (
-    <PageLayout className="pb-24 pb-safe" style={FONT}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="No-show policy"
-        onBack={() => navigate({ to: "/settings" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
-
+    <DSMTopSheet title="No Show Policy">
+      <div className="pb-24 pb-safe" style={FONT}>
       {/* Intro card */}
       <div
         className="mx-4 mt-4 flex gap-3"
@@ -326,6 +313,7 @@ function NoShowPolicyPage() {
           </div>
         )}
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }

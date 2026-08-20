@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { IconChevronRight, IconClock, IconSearch } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 
@@ -280,19 +280,7 @@ function SearchPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F3F8FF" }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Search"
-        onBack={() => navigate({ to: "/home" } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="Search">
       {/* Search row */}
       <div className="px-3 pt-3">
         <div
@@ -487,7 +475,7 @@ function SearchPage() {
           </>
         )}
       </div>
-    </div>
+    </DSMTopSheet>
   );
 }
 

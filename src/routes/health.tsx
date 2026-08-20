@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useState } from "react";
 import { IconActivity, IconArrowLeft, IconCoffee, IconDroplet, IconHeart, IconMoodSmile, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -9,7 +9,6 @@ import { Button } from "../components/dsm/Button";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 import healthCoverAsset from "../assets/health-cover.png.asset.json";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/health")({
   head: () => ({
@@ -142,20 +141,9 @@ function HealthPage() {
   }
 
   return (
-    <PageLayout className="pb-8" style={POPPINS}>
+    <DSMTopSheet title="Health">
+      <div className="pb-8" style={POPPINS}>
       {/* Top bar */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Health & wellbeing"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
       <img
         src={healthCoverAsset.url}
         alt="Instructor health and wellbeing cover"
@@ -334,7 +322,8 @@ function HealthPage() {
           }}
         />
       )}
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
 
