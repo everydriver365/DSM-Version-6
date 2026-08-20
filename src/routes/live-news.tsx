@@ -57,6 +57,10 @@ export const Route = createFileRoute("/live-news")({
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
+const DSM_ARTWORK =
+  "https://drivingschoolmanager.co.uk/__l5e/assets-v1/dd36bc6c-af86-427d-9d37-010b83be3619/icon-512.png";
+
+
 const PODCAST_STYLES = {
   title: {
     fontFamily: typography.family,
