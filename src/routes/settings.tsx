@@ -22,9 +22,8 @@ import {
 } from "../lib/badgePrefs";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -695,18 +694,8 @@ function SettingsPage() {
   const displayedName = displayName || instructorName || email.split("@")[0] || "Instructor";
 
   return (
-    <PageLayout className="pb-24 pb-safe" style={POPPINS}>
-      <InstructorTopBar
-        firstName={instructorName}
-        pageTitle="Settings"
-        onBack={() => navigate({ to: "/more" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Settings">
+      <div style={POPPINS}>
       
 
 
@@ -2286,7 +2275,8 @@ function SettingsPage() {
         onConfirm={signOut}
         onCancel={() => setSignOutOpen(false)}
       />
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }
 
