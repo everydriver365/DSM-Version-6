@@ -1,11 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconBell, IconCalendar, IconClock, IconDotsVertical, IconMapPin, IconPencil, IconX } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { formatCountdown } from "@/lib/dateHelpers";
-import { PageLayout } from "@/components/PageLayout";
 import { BottomSheet as BottomSheetV2, SheetGroup, PrimaryButton, GhostButton } from "@/components/dsm/BottomSheetV2";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 
@@ -135,20 +134,8 @@ function UpcomingTestsPage() {
   }, [tests, activeTab]);
 
   return (
-    <PageLayout className="pb-8" style={POPPINS}>
-      {/* Header */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Driving tests"
-        onBack={() => navigate({ to: "/home" } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="Upcoming Tests">
+      <div className="pb-8" style={POPPINS}>
       {/* Tabs */}
       <div className="px-4 pt-3">
         <div
@@ -446,7 +433,8 @@ function UpcomingTestsPage() {
           </SheetGroup>
       </BottomSheetV2>
       )}
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }
 

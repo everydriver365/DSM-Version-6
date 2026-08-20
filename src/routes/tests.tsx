@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { IconDotsVertical, IconPencil, IconPlus, IconX, IconX as IconClose } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -10,7 +10,6 @@ import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import { formatCountdown } from "@/lib/dateHelpers";
-import { PageLayout } from "@/components/PageLayout";
 import { BottomSheet as BottomSheetV2 } from "@/components/dsm/BottomSheetV2";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 
@@ -218,20 +217,8 @@ function TestsPage() {
   ];
 
   return (
-    <PageLayout className="pb-8" style={POPPINS}>
-      {/* Top bar */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Driving tests"
-        onBack={() => navigate({ to: "/home" } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="Tests">
+      <div className="pb-8" style={POPPINS}>
       {/* Actions row */}
       <div className="flex justify-end px-4 pt-3">
         <button
@@ -338,7 +325,8 @@ function TestsPage() {
           }}
         />
       )}
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }
 

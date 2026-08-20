@@ -2,8 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { IconBolt, IconBriefcase, IconCalendarCheck, IconCalendarX, IconChevronRight, IconCircleCheck, IconCreditCard, IconMail, IconMessage, IconPlayerPlay, IconShoppingBag, IconVideo } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
-import { PageLayout } from "@/components/PageLayout";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -420,19 +419,8 @@ function WhatsChangedPage() {
   };
 
   return (
-    <PageLayout className="pb-24" style={{ ...FONT, backgroundColor: "#EEF2F7" }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="What's changed"
-        onBack={() => navigate({ to: "/home" } as never)}
-        onBell={() => navigate({ to: "/notifications" } as never)}
-        onPhone={() => navigate({ to: "/enquiries" } as never)}
-        onLiveTrack={() => navigate({ to: "/live" } as never)}
-        onMenu={() => navigate({ to: "/more" } as never)}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="What's Changed">
+      <div className="pb-24" style={{ ...FONT, backgroundColor: "#EEF2F7" }}>
       <div style={{ padding: "8px 16px 12px", fontSize: 12, color: GRAY, textAlign: "right" }}>
         Last updated: {formatLastUpdated(lastUpdated)}
       </div>
@@ -535,7 +523,8 @@ function WhatsChangedPage() {
       </div>
 
       {selected && <DetailSheet item={selected} onClose={() => setSelected(null)} onGo={go} />}
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }
 
