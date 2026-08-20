@@ -656,6 +656,7 @@ function PupilsIndexPage() {
         role="button"
         tabIndex={0}
         onClick={() => {
+          if (swipedId === p.id) { setSwipedId(null); return; }
           tapLight();
           navigate({ to: "/pupils/$id", params: { id: p.id } });
         }}
@@ -665,12 +666,21 @@ function PupilsIndexPage() {
             navigate({ to: "/pupils/$id", params: { id: p.id } });
           }
         }}
+        onTouchStart={(e) => {
+          e.currentTarget.style.transform = "scale(0.98)";
+          e.currentTarget.style.opacity = "0.9";
+        }}
+        onTouchEnd={(e) => {
+          e.currentTarget.style.transform = "scale(1)";
+          e.currentTarget.style.opacity = "1";
+        }}
         onContextMenu={(e) => e.preventDefault()}
         className="block cursor-pointer select-none"
         style={{
           background: "transparent",
           padding: "13px 16px",
           WebkitTouchCallout: "none",
+          transition: "transform 0.1s ease, opacity 0.1s ease",
         }}
       >
         <div className="flex items-center" style={{ gap: 12 }}>
