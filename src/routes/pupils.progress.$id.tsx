@@ -406,7 +406,7 @@ function PupilProgressPage() {
       </div>
 
       <div
-        className="fixed bottom-0 left-0 right-0 px-4 py-3 bg-white"
+        className="fixed bottom-0 left-0 right-0 px-4 py-3 bg-white z-50"
         style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
       >
         {saved && (
