@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState } from "react";
 import { IconPlayerPlay } from "@tabler/icons-react";
 import {
@@ -105,8 +106,8 @@ export function WhatsNewSheet({
 
         <div
           style={{
-            fontSize: 11,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.sm,
+            fontWeight: tokens.fontWeight.bold,
             color: BLUE,
             textTransform: "uppercase",
             letterSpacing: "0.08em",
@@ -115,7 +116,7 @@ export function WhatsNewSheet({
         >
           Just added
         </div>
-        <h2 style={{ fontSize: 19, fontWeight: 700, color: NAVY, margin: 0, marginBottom: 16 }}>
+        <h2 style={{ fontSize: 19, fontWeight: tokens.fontWeight.bold, color: NAVY, margin: 0, marginBottom: 16 }}>
           {items.length === 1 ? "1 new thing in DSM" : `${items.length} new things in DSM`}
         </h2>
 
@@ -124,7 +125,7 @@ export function WhatsNewSheet({
             <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
               <Thumb size={72} />
               <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
-                <div style={{ fontSize: 14.5, fontWeight: 700, color: NAVY, lineHeight: 1.3 }}>
+                <div style={{ fontSize: 14.5, fontWeight: tokens.fontWeight.bold, color: NAVY, lineHeight: 1.3 }}>
                   {it.title}
                 </div>
                 <div style={{ fontSize: 12.5, color: GRAY_BODY, lineHeight: 1.4, marginTop: 2 }}>
@@ -144,7 +145,7 @@ export function WhatsNewSheet({
             borderRadius: 8,
             background: NAVY,
             color: "white",
-            fontWeight: 600,
+            fontWeight: tokens.fontWeight.semibold,
             fontSize: 15,
             border: "none",
             cursor: "pointer",
@@ -161,7 +162,7 @@ export function WhatsNewSheet({
             background: "transparent",
             border: "none",
             color: GRAY_BODY,
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
             padding: "12px 0 4px",
             cursor: "pointer",
             textAlign: "center",

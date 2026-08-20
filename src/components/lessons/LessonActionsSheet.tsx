@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -93,7 +94,7 @@ const NAVY = "#0B1F3A";
 const rowLabel: React.CSSProperties = {
   fontFamily: "Poppins, sans-serif",
   fontSize: 15,
-  fontWeight: 500,
+  fontWeight: tokens.fontWeight.medium,
   color: NAVY,
   minWidth: 0,
 };
@@ -109,7 +110,7 @@ function Chevron() {
 const ACTION_ROW_LABEL: React.CSSProperties = {
   fontFamily: "Poppins, sans-serif",
   fontSize: 15,
-  fontWeight: 700,
+  fontWeight: tokens.fontWeight.bold,
   color: NAVY,
   minWidth: 0,
 };
@@ -138,7 +139,7 @@ const ACTION_ROW_BASE: React.CSSProperties = {
 const SECTION_LABEL_STYLE: React.CSSProperties = {
   fontFamily: "Poppins, sans-serif",
   fontSize: 11.5,
-  fontWeight: 700,
+  fontWeight: tokens.fontWeight.bold,
   color: "#8A8A8E",
   textTransform: "uppercase",
   letterSpacing: 0.5,
@@ -243,9 +244,9 @@ export function LessonActionsSheet({
   ];
   const cancelLabel: React.CSSProperties = {
     fontFamily: "Poppins, sans-serif",
-    fontSize: 10,
-    fontWeight: 600,
-    color: "#9CA3AF",
+    fontSize: tokens.fontSize.xs,
+    fontWeight: tokens.fontWeight.semibold,
+    color: tokens.textMuted,
     textTransform: "uppercase",
     letterSpacing: 0.6,
     margin: "14px 0 8px",
@@ -261,14 +262,14 @@ export function LessonActionsSheet({
   });
   const chargeTitle: React.CSSProperties = {
     fontFamily: "Poppins, sans-serif",
-    fontSize: 13,
-    fontWeight: 600,
-    color: "#0B1F3A",
+    fontSize: tokens.fontSize.base,
+    fontWeight: tokens.fontWeight.semibold,
+    color: tokens.navy,
   };
   const chargeSub: React.CSSProperties = {
     fontFamily: "Poppins, sans-serif",
-    fontSize: 11,
-    color: "#6B7686",
+    fontSize: tokens.fontSize.sm,
+    color: tokens.textSecondary,
     marginTop: 2,
   };
 
@@ -281,7 +282,7 @@ export function LessonActionsSheet({
 
   const backLink: React.CSSProperties = {
     fontSize: 12,
-    color: "#1877D6",
+    color: tokens.blue,
     background: "none",
     border: "none",
     padding: "8px 0",
@@ -289,8 +290,8 @@ export function LessonActionsSheet({
     fontFamily: "Poppins, sans-serif",
   };
   const inlineHeading: React.CSSProperties = {
-    fontSize: 14,
-    fontWeight: 600,
+    fontSize: tokens.fontSize.md,
+    fontWeight: tokens.fontWeight.semibold,
     color: NAVY,
     fontFamily: "Poppins, sans-serif",
     margin: "4px 0 10px",
@@ -298,14 +299,14 @@ export function LessonActionsSheet({
   const primaryBtn: React.CSSProperties = {
     marginTop: 12,
     width: "100%",
-    background: "#1877D6",
-    color: "#FFFFFF",
+    background: tokens.blue,
+    color: tokens.white,
     border: "none",
     borderRadius: 8,
     padding: "12px 0",
     fontFamily: "Poppins, sans-serif",
-    fontSize: 13,
-    fontWeight: 600,
+    fontSize: tokens.fontSize.base,
+    fontWeight: tokens.fontWeight.semibold,
     cursor: "pointer",
   };
   const greyBtn: React.CSSProperties = {
@@ -317,8 +318,8 @@ export function LessonActionsSheet({
     borderRadius: 8,
     padding: "12px 0",
     fontFamily: "Poppins, sans-serif",
-    fontSize: 13,
-    fontWeight: 600,
+    fontSize: tokens.fontSize.base,
+    fontWeight: tokens.fontWeight.semibold,
     cursor: "pointer",
   };
 
@@ -341,10 +342,10 @@ export function LessonActionsSheet({
     window.location.href = `sms:${phone}?&body=${encodeURIComponent(body)}`;
   };
 
-  const pillLabel: React.CSSProperties = { fontSize: 11, fontWeight: 500 };
+  const pillLabel: React.CSSProperties = { fontSize: tokens.fontSize.sm, fontWeight: 500 };
   const sectionLabel: React.CSSProperties = {
-    fontSize: 11,
-    fontWeight: 600,
+    fontSize: tokens.fontSize.sm,
+    fontWeight: tokens.fontWeight.semibold,
     color: "#8E8E93",
     textTransform: "uppercase",
     letterSpacing: 0.2,
@@ -499,15 +500,15 @@ export function LessonActionsSheet({
     gap: 5,
     cursor: "pointer",
     fontFamily: "Poppins, sans-serif",
-    fontSize: 11,
-    fontWeight: 500,
+    fontSize: tokens.fontSize.sm,
+    fontWeight: tokens.fontWeight.medium,
     color: NAVY,
   };
   const gridBtnDanger: React.CSSProperties = {
     ...gridBtn,
     background: "#FDF3F3",
     border: "1px solid #F6D0D0",
-    color: "#CC2229",
+    color: tokens.red,
   };
   const iconBg = (bg: string): React.CSSProperties => ({
     width: 30,
@@ -522,12 +523,12 @@ export function LessonActionsSheet({
   const fieldInput: React.CSSProperties = {
     flex: 1,
     minWidth: 0,
-    background: "#FFFFFF",
+    background: tokens.white,
     border: "1px solid #E2E8F0",
     borderRadius: 8,
     padding: "9px 12px",
     fontFamily: "Poppins, sans-serif",
-    fontSize: 13,
+    fontSize: tokens.fontSize.base,
     color: NAVY,
     outline: "none",
   };
@@ -539,7 +540,7 @@ export function LessonActionsSheet({
   ) => {
     if (state === "checking") {
       return (
-        <div style={{ marginTop: 6, fontSize: 11, color: "#8E8E93", fontFamily: "Poppins, sans-serif" }}>
+        <div style={{ marginTop: 6, fontSize: tokens.fontSize.sm, color: "#8E8E93", fontFamily: "Poppins, sans-serif" }}>
           Checking…
         </div>
       );
@@ -552,7 +553,7 @@ export function LessonActionsSheet({
             display: "flex",
             alignItems: "center",
             gap: 5,
-            fontSize: 11,
+            fontSize: tokens.fontSize.sm,
             color: "#1F6B2E",
             fontFamily: "Poppins, sans-serif",
           }}
@@ -569,7 +570,7 @@ export function LessonActionsSheet({
             display: "flex",
             alignItems: "center",
             gap: 5,
-            fontSize: 11,
+            fontSize: tokens.fontSize.sm,
             color: "#B45309",
             fontFamily: "Poppins, sans-serif",
           }}
@@ -579,7 +580,7 @@ export function LessonActionsSheet({
       );
     }
     return (
-      <div style={{ marginTop: 6, fontSize: 11, color: "#8E8E93", fontFamily: "Poppins, sans-serif" }}>
+      <div style={{ marginTop: 6, fontSize: tokens.fontSize.sm, color: "#8E8E93", fontFamily: "Poppins, sans-serif" }}>
         Not yet verified
       </div>
     );
@@ -722,7 +723,7 @@ export function LessonActionsSheet({
                 border: "1px solid #E4E8EF",
                 borderRadius: 8,
                 fontFamily: "Poppins, sans-serif",
-                fontSize: 13,
+                fontSize: tokens.fontSize.base,
                 padding: 10,
                 color: NAVY,
                 outline: "none",
@@ -754,7 +755,7 @@ export function LessonActionsSheet({
           <div style={{ paddingBottom: 12, textAlign: "left" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <IconAlertCircle size={20} stroke={1.8} color="#CC2229" />
-              <div style={{ ...inlineHeading, color: "#CC2229", margin: 0 }}>
+              <div style={{ ...inlineHeading, color: tokens.red, margin: 0 }}>
                 Cancel lesson with {pupilName}
               </div>
             </div>
@@ -799,7 +800,7 @@ export function LessonActionsSheet({
                 border: "1px solid #E4E8EF",
                 borderRadius: 8,
                 fontFamily: "Poppins, sans-serif",
-                fontSize: 13,
+                fontSize: tokens.fontSize.base,
                 padding: 10,
                 boxSizing: "border-box",
                 resize: "vertical",
@@ -831,7 +832,7 @@ export function LessonActionsSheet({
                   {chargeOption === "fee" && (
                     <>
                       <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8 }}>
-                        <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 13, color: "#6B7686" }}>£</span>
+                        <span style={{ fontFamily: "Poppins, sans-serif", fontSize: tokens.fontSize.base, color: tokens.textSecondary }}>£</span>
                         <input
                           type="number"
                           inputMode="decimal"
@@ -853,7 +854,7 @@ export function LessonActionsSheet({
                             borderRadius: 8,
                             padding: "10px 12px",
                             fontFamily: "Poppins, sans-serif",
-                            fontSize: 13,
+                            fontSize: tokens.fontSize.base,
                             boxSizing: "border-box",
                           }}
                         />
@@ -862,7 +863,7 @@ export function LessonActionsSheet({
                         <div
                           style={{
                             fontFamily: "Poppins, sans-serif",
-                            fontSize: 11,
+                            fontSize: tokens.fontSize.sm,
                             marginTop: 6,
                             color: feeDesc.error ? "#CC2229" : "#6B7686",
                           }}
@@ -905,7 +906,7 @@ export function LessonActionsSheet({
               disabled={saving || !cancelReason || !activeDesc.valid}
               style={{
                 ...primaryBtn,
-                background: "#CC2229",
+                background: tokens.red,
                 opacity: !cancelReason || !activeDesc.valid || saving ? 0.5 : 1,
               }}
               onClick={async () => {
@@ -1041,16 +1042,16 @@ export function LessonActionsSheet({
         {inlineView === "delete" && (
           <div style={{ paddingBottom: 12, textAlign: "center" }}>
             <IconTrash size={24} stroke={1.8} color="#CC2229" />
-            <div style={{ ...inlineHeading, color: "#CC2229", textAlign: "center" }}>
+            <div style={{ ...inlineHeading, color: tokens.red, textAlign: "center" }}>
               Delete this lesson?
             </div>
-            <div style={{ fontFamily: "Poppins, sans-serif", fontSize: 11, color: "#9CA3AF" }}>
+            <div style={{ fontFamily: "Poppins, sans-serif", fontSize: tokens.fontSize.sm, color: tokens.textMuted }}>
               This cannot be undone
             </div>
             <button
               type="button"
               disabled={saving}
-              style={{ ...primaryBtn, background: "#CC2229" }}
+              style={{ ...primaryBtn, background: tokens.red }}
               onClick={async () => {
                 setSaving(true);
                 await supabase
@@ -1149,7 +1150,7 @@ export function LessonActionsSheet({
                       marginLeft: "auto",
                       fontFamily: "Poppins, sans-serif",
                       fontSize: 11.5,
-                      fontWeight: 800,
+                      fontWeight: tokens.fontWeight.extrabold,
                       color: payPill.fg,
                       background: "#E6F7EC",
                       borderRadius: 8,
@@ -1358,7 +1359,7 @@ export function LessonActionsSheet({
             {/* what3words */}
             <SheetGroup>
               <SheetRow>
-                <span style={{ color: "#E11F26", fontWeight: 700, fontFamily: "Poppins, sans-serif", fontSize: 15 }}>
+                <span style={{ color: "#E11F26", fontWeight: tokens.fontWeight.bold, fontFamily: "Poppins, sans-serif", fontSize: 15 }}>
                   ///
                 </span>
                 {[0, 1, 2].map((i) => (
@@ -1392,10 +1393,10 @@ export function LessonActionsSheet({
                   <div style={{ minWidth: 0 }}>
                     <div style={rowLabel}>
                       {new Date(prev.lesson_date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })} ·{" "}
-                      <span style={{ textTransform: "capitalize", color: "#6B7686" }}>{prev.status}</span>
+                      <span style={{ textTransform: "capitalize", color: tokens.textSecondary }}>{prev.status}</span>
                     </div>
                     {prev.notes && (
-                      <div style={{ marginTop: 3, color: "#6B7686", fontSize: 12, fontFamily: "Poppins, sans-serif", lineHeight: 1.4 }}>
+                      <div style={{ marginTop: 3, color: tokens.textSecondary, fontSize: 12, fontFamily: "Poppins, sans-serif", lineHeight: 1.4 }}>
                         {prev.notes}
                       </div>
                     )}

@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { testStartTime, testTimeFromNotes, testTimeFromStart, withTestTimeNote, TEST_TOTAL_MINUTES } from "@/lib/testDay";
 import { useEffect, useRef, useState } from "react";
 import { IconSearch } from "@tabler/icons-react";
@@ -26,17 +27,17 @@ const BLUE = "#1877D6";
 
 const labelStyle: React.CSSProperties = {
   fontFamily: "Poppins, sans-serif",
-  fontSize: 13,
-  fontWeight: 500,
-  color: "#6B7686",
+  fontSize: tokens.fontSize.base,
+  fontWeight: tokens.fontWeight.medium,
+  color: tokens.textSecondary,
   whiteSpace: "nowrap",
 };
 
 const valueStyle: React.CSSProperties = {
   fontFamily: "Poppins, sans-serif",
-  fontSize: 16,
-  fontWeight: 600,
-  color: "#0B1F3A",
+  fontSize: tokens.fontSize.lg,
+  fontWeight: tokens.fontWeight.semibold,
+  color: tokens.navy,
 };
 
 
@@ -72,7 +73,7 @@ interface Pupil {
 
 function ErrorText({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-3 -mt-1 text-[12px]" style={{ color: "#CC2229", fontFamily: "Poppins, sans-serif" }}>
+    <p className="mb-3 -mt-1 text-[12px]" style={{ color: tokens.red, fontFamily: "Poppins, sans-serif" }}>
       {children}
     </p>
   );
@@ -579,11 +580,11 @@ export function AddLessonSheet({
           disabled={saving || !date || (!isEvent && !pupilId)}
           className="w-full text-white active:opacity-90 disabled:opacity-40"
           style={{
-            backgroundColor: "#1877D6",
+            backgroundColor: tokens.blue,
             borderRadius: 8,
             height: 52,
-            fontSize: 16,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.lg,
+            fontWeight: tokens.fontWeight.bold,
             fontFamily: "Poppins, sans-serif",
           }}
         >
@@ -615,8 +616,8 @@ export function AddLessonSheet({
               border: "none",
               cursor: "pointer",
               fontFamily: "Poppins, sans-serif",
-              fontSize: 13,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.semibold,
               background: !isEvent ? "#fff" : "transparent",
               color: !isEvent ? "#0B1F3A" : "#6B6B6F",
               boxShadow: !isEvent ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
@@ -639,8 +640,8 @@ export function AddLessonSheet({
               border: "none",
               cursor: "pointer",
               fontFamily: "Poppins, sans-serif",
-              fontSize: 13,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.semibold,
               background: isEvent ? "#fff" : "transparent",
               color: isEvent ? "#0B1F3A" : "#6B6B6F",
               boxShadow: isEvent ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
@@ -667,9 +668,9 @@ export function AddLessonSheet({
                   height: 32,
                   borderRadius: 999,
                   background: "#E6F1FB",
-                  color: "#1877D6",
-                  fontSize: 13,
-                  fontWeight: 700,
+                  color: tokens.blue,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.bold,
                 }}
               >
                 {selectedPupil.name.trim().charAt(0).toUpperCase()}
@@ -677,7 +678,7 @@ export function AddLessonSheet({
             ) : (
               <IconUser size={20} stroke={1.8} color={BLUE} />
             )}
-            <span style={selectedPupil ? valueStyle : { ...valueStyle, color: "#9CA3AF" }}>
+            <span style={selectedPupil ? valueStyle : { ...valueStyle, color: tokens.textMuted }}>
               {selectedPupil ? selectedPupil.name : "Select pupil"}
             </span>
             {!selectedPupil && (
@@ -733,10 +734,10 @@ export function AddLessonSheet({
                       width: 32,
                       height: 32,
                       borderRadius: 999,
-                      background: "#EEF2F7",
-                      color: "#6B7686",
-                      fontSize: 13,
-                      fontWeight: 700,
+                      background: tokens.canvas,
+                      color: tokens.textSecondary,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.bold,
                     }}
                   >
                     {p.name.trim().charAt(0).toUpperCase()}
@@ -751,9 +752,9 @@ export function AddLessonSheet({
         <div style={{ marginBottom: 16 }}>
           <div
             style={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: "#9CA3AF",
+              fontSize: tokens.fontSize.sm,
+              fontWeight: tokens.fontWeight.semibold,
+              color: tokens.textMuted,
               textTransform: "uppercase",
               letterSpacing: "0.08em",
               marginBottom: 6,
@@ -772,7 +773,7 @@ export function AddLessonSheet({
               border: "1px solid #E4E8EF",
               borderRadius: 8,
               padding: "10px 12px",
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               fontFamily: "Poppins, sans-serif",
               outline: "none",
               boxSizing: "border-box",
@@ -853,8 +854,8 @@ export function AddLessonSheet({
                         height: 34,
                         borderRadius: 8,
                         padding: "0 16px",
-                        fontSize: 13,
-                        fontWeight: 600,
+                        fontSize: tokens.fontSize.base,
+                        fontWeight: tokens.fontWeight.semibold,
                         cursor: "pointer",
                         border: active ? "none" : "1px solid #E4E8EF",
                         whiteSpace: "nowrap",
@@ -872,8 +873,8 @@ export function AddLessonSheet({
               {isTestDay && (
                 <p
                   style={{
-                    fontSize: 11,
-                    color: "#9CA3AF",
+                    fontSize: tokens.fontSize.sm,
+                    color: tokens.textMuted,
                     marginTop: 6,
                     fontFamily: "Poppins, sans-serif",
                   }}
@@ -887,9 +888,9 @@ export function AddLessonSheet({
                     style={{
                       marginBottom: 6,
                       fontFamily: "Poppins, sans-serif",
-                      fontSize: 11,
-                      fontWeight: 600,
-                      color: "#9CA3AF",
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.semibold,
+                      color: tokens.textMuted,
                       textTransform: "uppercase",
                     }}
                   >
@@ -911,7 +912,7 @@ export function AddLessonSheet({
                       border: "1px solid #E4E8EF",
                       borderRadius: 8,
                       padding: "10px 12px",
-                      fontSize: 14,
+                      fontSize: tokens.fontSize.md,
                       fontFamily: "Poppins, sans-serif",
                       outline: "none",
                     }}
@@ -944,13 +945,13 @@ export function AddLessonSheet({
                             padding: "11px 14px",
                             borderBottom: "1px solid #E4E8EF",
                             cursor: "pointer",
-                            fontSize: 13,
-                            color: "#0B1F3A",
+                            fontSize: tokens.fontSize.base,
+                            color: tokens.navy,
                             fontFamily: "Poppins, sans-serif",
                           }}
                         >
-                          <div style={{ fontSize: 13, fontWeight: 600 }}>{r.name}</div>
-                          <div style={{ fontSize: 11, color: "#6B7686", marginTop: 2 }}>
+                          <div style={{ fontSize: tokens.fontSize.base, fontWeight: 600 }}>{r.name}</div>
+                          <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, marginTop: 2 }}>
                             {[r.address, r.town, r.postcode].filter(Boolean).join(", ")}
                           </div>
                         </div>
@@ -962,8 +963,8 @@ export function AddLessonSheet({
                     !searchingCentres && (
                       <p
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginTop: 6,
                           fontFamily: "Poppins, sans-serif",
                         }}
@@ -976,8 +977,8 @@ export function AddLessonSheet({
                       style={{
                         background: "#DCFCE7",
                         color: "#15803D",
-                        fontSize: 11,
-                        fontWeight: 700,
+                        fontSize: tokens.fontSize.sm,
+                        fontWeight: tokens.fontWeight.bold,
                         borderRadius: 8,
                         padding: "4px 12px",
                         display: "flex",
@@ -1012,7 +1013,7 @@ export function AddLessonSheet({
                           border: "none",
                           color: "#15803D",
                           cursor: "pointer",
-                          fontSize: 13,
+                          fontSize: tokens.fontSize.base,
                           lineHeight: 1,
                           padding: 0,
                         }}
@@ -1026,9 +1027,9 @@ export function AddLessonSheet({
                       marginTop: 12,
                       marginBottom: 6,
                       fontFamily: "Poppins, sans-serif",
-                      fontSize: 11,
-                      fontWeight: 600,
-                      color: "#9CA3AF",
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.semibold,
+                      color: tokens.textMuted,
                       textTransform: "uppercase",
                     }}
                   >
@@ -1044,15 +1045,15 @@ export function AddLessonSheet({
                       border: "1px solid #E4E8EF",
                       borderRadius: 8,
                       padding: "10px 12px",
-                      fontSize: 14,
+                      fontSize: tokens.fontSize.md,
                       fontFamily: "Poppins, sans-serif",
                       outline: "none",
                     }}
                   />
                   <p
                     style={{
-                      fontSize: 10,
-                      color: "#9CA3AF",
+                      fontSize: tokens.fontSize.xs,
+                      color: tokens.textMuted,
                       marginTop: 4,
                       fontFamily: "Poppins, sans-serif",
                     }}
@@ -1063,7 +1064,7 @@ export function AddLessonSheet({
                     <p
                       style={{
                         fontSize: 12,
-                        color: "#CC2229",
+                        color: tokens.red,
                         marginTop: 6,
                         fontFamily: "Poppins, sans-serif",
                       }}
@@ -1106,7 +1107,7 @@ export function AddLessonSheet({
               <SheetRow>
                 <IconCurrencyPound size={20} stroke={1.8} color={BLUE} />
                 <span style={labelStyle}>Amount</span>
-                <span style={{ ...valueStyle, marginLeft: "auto", color: "#6B7686", fontWeight: 500, fontSize: 13 }}>
+                <span style={{ ...valueStyle, marginLeft: "auto", color: tokens.textSecondary, fontWeight: tokens.fontWeight.medium, fontSize: 13 }}>
                   Auto from your rates
                 </span>
               </SheetRow>
@@ -1118,7 +1119,7 @@ export function AddLessonSheet({
                     marginLeft: "auto",
                     fontFamily: "Poppins, sans-serif",
                     fontSize: 12,
-                    fontWeight: 600,
+                    fontWeight: tokens.fontWeight.semibold,
                     borderRadius: 999,
                     padding: "4px 12px",
                     color: willBePrepaid ? "#1F6B2E" : "#8A5A00",
@@ -1143,7 +1144,7 @@ export function AddLessonSheet({
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Add a note..."
               className="flex-1 bg-transparent focus:outline-none"
-              style={{ fontFamily: "Poppins, sans-serif", fontSize: 13, color: "#0B1F3A" }}
+              style={{ fontFamily: "Poppins, sans-serif", fontSize: tokens.fontSize.base, color: tokens.navy }}
             />
           </SheetRow>
         </SheetGroup>
@@ -1179,7 +1180,7 @@ export function AddLessonSheet({
                   width: 24,
                   height: 24,
                   borderRadius: 999,
-                  background: "#FFFFFF",
+                  background: tokens.white,
                   boxShadow: "0 1px 3px rgba(11,31,58,0.2)",
                   transition: "left 0.15s",
                 }}
@@ -1201,8 +1202,8 @@ export function AddLessonSheet({
                       style={{
                         padding: "6px 12px",
                         borderRadius: 999,
-                        fontSize: 13,
-                        fontWeight: 600,
+                        fontSize: tokens.fontSize.base,
+                        fontWeight: tokens.fontWeight.semibold,
                         fontFamily: "Poppins, sans-serif",
                         textTransform: "capitalize",
                         background: active ? BLUE : "#F3F6FA",

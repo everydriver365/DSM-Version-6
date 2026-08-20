@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import React, { useEffect, useRef } from "react";
 
 export interface LessonActionsMenuItem {
@@ -21,12 +22,12 @@ const BASE_ITEM_STYLE: React.CSSProperties = {
   width: "100%",
   textAlign: "left",
   padding: "10px 14px",
-  fontSize: 13,
+  fontSize: tokens.fontSize.base,
   fontFamily: "Poppins, sans-serif",
   background: "transparent",
   border: "none",
   cursor: "pointer",
-  color: "#0B1F3A",
+  color: tokens.navy,
 };
 
 export function LessonActionsMenu({
@@ -75,7 +76,7 @@ export function LessonActionsMenu({
             top,
             right,
             minWidth: 140,
-            background: "#FFFFFF",
+            background: tokens.white,
             border: "1px solid #E5E7EB",
             borderRadius: 8,
             boxShadow: "0 4px 16px rgba(0,0,0,0.1)",

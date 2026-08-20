@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconPlayerPlay } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
@@ -74,7 +75,7 @@ export default function BitesizeLearnVideos({ limitPerSection = 12 }: { limitPer
     <div style={{ background: "#fff", borderBottom: "0.5px solid #E4E8EF", padding: "14px 0 18px" }}>
       <div style={{ padding: "0 16px 2px", display: "flex", alignItems: "center", gap: 7 }}>
         <span style={{ fontSize: 14 }}>⚡</span>
-        <span style={{ fontSize: 14, fontWeight: 700, color: NAVY, ...POPPINS }}>
+        <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: NAVY, ...POPPINS }}>
           Bitesize from DSM Learn
         </span>
       </div>
@@ -97,7 +98,7 @@ export default function BitesizeLearnVideos({ limitPerSection = 12 }: { limitPer
               }}
             >
               <span style={{ fontSize: 13 }}>{section.emoji}</span>
-              <span style={{ fontSize: 13.5, fontWeight: 700, color: NAVY }}>{section.title}</span>
+              <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.bold, color: NAVY }}>{section.title}</span>
               <span style={{ fontSize: 11.5, color: GRAY_BODY, marginLeft: "auto" }}>
                 {list.length}
               </span>
@@ -170,7 +171,7 @@ export default function BitesizeLearnVideos({ limitPerSection = 12 }: { limitPer
                             background: "rgba(0,0,0,0.65)",
                             color: "#fff",
                             fontSize: 10.5,
-                            fontWeight: 700,
+                            fontWeight: tokens.fontWeight.bold,
                           }}
                         >
                           {formatVideoDuration(v)}
@@ -178,10 +179,10 @@ export default function BitesizeLearnVideos({ limitPerSection = 12 }: { limitPer
                       )}
                     </div>
                     <div style={{ padding: 10 }}>
-                      <div style={{ fontSize: 10.5, fontWeight: 700, color: BLUE, marginBottom: 3 }}>
+                      <div style={{ fontSize: 10.5, fontWeight: tokens.fontWeight.bold, color: BLUE, marginBottom: 3 }}>
                         {BITESIZE_CATEGORY_EMOJI[label] ?? "⚡"} {label}
                       </div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: NAVY, lineHeight: 1.3 }}>
+                      <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: NAVY, lineHeight: 1.3 }}>
                         {v.title}
                       </div>
                       <div style={{ fontSize: 11.5, color: GRAY_BODY, marginTop: 3 }}>
@@ -196,7 +197,7 @@ export default function BitesizeLearnVideos({ limitPerSection = 12 }: { limitPer
                           gap: 5,
                           color: BLUE,
                           fontSize: 12,
-                          fontWeight: 700,
+                          fontWeight: tokens.fontWeight.bold,
                         }}
                       >
                         <IconPlayerPlay size={13} fill={BLUE} color={BLUE} /> Watch

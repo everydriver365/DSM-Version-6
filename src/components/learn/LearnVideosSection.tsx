@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import {
   IconBookmark,
@@ -48,7 +49,7 @@ function Chip({ label, active, onClick }: { label: string; active: boolean; onCl
         background: active ? NAVY : "#FFFFFF",
         color: active ? "#FFFFFF" : NAVY,
         fontSize: 12.5,
-        fontWeight: 600,
+        fontWeight: tokens.fontWeight.semibold,
         fontFamily: FONT,
         whiteSpace: "nowrap",
         cursor: "pointer",
@@ -138,13 +139,13 @@ export function VideoPlayerSheet({
           <div style={{ color: "#fff", textAlign: "center" }}>This video isn't available yet.</div>
         )}
 
-        <div style={{ color: "#FFFFFF", marginTop: 14 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.3 }}>{video.title}</div>
+        <div style={{ color: tokens.white, marginTop: 14 }}>
+          <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, lineHeight: 1.3 }}>{video.title}</div>
           <div style={{ fontSize: 12.5, color: "rgba(255,255,255,0.7)", marginTop: 4 }}>
             {[video.source, formatVideoDuration(video)].filter(Boolean).join(" · ")}
           </div>
           {video.description && (
-            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", marginTop: 8, lineHeight: 1.4 }}>
+            <div style={{ fontSize: tokens.fontSize.base, color: "rgba(255,255,255,0.8)", marginTop: 8, lineHeight: 1.4 }}>
               {video.description}
             </div>
           )}
@@ -184,7 +185,7 @@ function VideoCard({
       style={{
         width: wide ? 250 : undefined,
         flexShrink: wide ? 0 : undefined,
-        background: "#FFFFFF",
+        background: tokens.white,
         borderRadius: 8,
         boxShadow: CARD_SHADOW,
         overflow: "hidden",
@@ -248,7 +249,7 @@ function VideoCard({
               background: "rgba(0,0,0,0.65)",
               color: "#fff",
               fontSize: 10.5,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
             }}
           >
             {formatVideoDuration(v)}
@@ -258,11 +259,11 @@ function VideoCard({
 
       <div style={{ padding: 12, display: "flex", flexDirection: "column", gap: 5, flex: 1 }}>
         {cat && (
-          <div style={{ fontSize: 11, fontWeight: 600, color: BLUE }}>
+          <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: BLUE }}>
             {VIDEO_CATEGORY_EMOJI[cat] ?? "🎥"} {cat}
           </div>
         )}
-        <div style={{ fontSize: 14, fontWeight: 600, color: NAVY, lineHeight: 1.3 }}>{v.title}</div>
+        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY, lineHeight: 1.3 }}>{v.title}</div>
         {v.description && (
           <div style={{ fontSize: 12, color: GRAY_BODY, lineHeight: 1.35 }}>{v.description}</div>
         )}
@@ -295,7 +296,7 @@ function VideoCard({
             borderRadius: 8,
             background: "#E8F1FC",
             color: BLUE,
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
             fontSize: 12.5,
             padding: "8px 10px",
             cursor: "pointer",
@@ -367,7 +368,7 @@ export default function LearnVideosSection() {
     <div style={{ marginTop: 26, fontFamily: FONT }}>
       <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "0 16px 10px" }}>
         <span style={{ fontSize: 15 }}>🎥</span>
-        <span style={{ fontSize: 15, fontWeight: 800, color: NAVY }}>Videos</span>
+        <span style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: NAVY }}>Videos</span>
         <span style={{ fontSize: 12, color: GRAY_LABEL, marginLeft: "auto" }}>
           {videos.length} videos
         </span>
@@ -379,7 +380,7 @@ export default function LearnVideosSection() {
             display: "flex",
             alignItems: "center",
             gap: 8,
-            background: "#FFFFFF",
+            background: tokens.white,
             borderRadius: 8,
             padding: "9px 12px",
             boxShadow: CARD_SHADOW,
@@ -435,7 +436,7 @@ export default function LearnVideosSection() {
 
       {continueWatching.length > 0 && filter === "All" && !query && (
         <>
-          <div style={{ padding: "4px 16px 8px", fontSize: 12.5, fontWeight: 700, color: GRAY_LABEL }}>
+          <div style={{ padding: "4px 16px 8px", fontSize: 12.5, fontWeight: tokens.fontWeight.bold, color: GRAY_LABEL }}>
             Continue watching
           </div>
           <div style={{ display: "flex", gap: 12, overflowX: "auto", padding: "0 16px 14px" }}>
@@ -455,7 +456,7 @@ export default function LearnVideosSection() {
 
       {featured.length > 0 && filter === "All" && !query && (
         <>
-          <div style={{ padding: "4px 16px 8px", fontSize: 12.5, fontWeight: 700, color: GRAY_LABEL }}>
+          <div style={{ padding: "4px 16px 8px", fontSize: 12.5, fontWeight: tokens.fontWeight.bold, color: GRAY_LABEL }}>
             ⭐ Featured videos
           </div>
           <div style={{ display: "flex", gap: 12, overflowX: "auto", padding: "0 16px 14px" }}>
@@ -484,7 +485,7 @@ export default function LearnVideosSection() {
           />
         ))}
         {list.length === 0 && (
-          <div style={{ fontSize: 13, color: GRAY_BODY, padding: "8px 2px" }}>
+          <div style={{ fontSize: tokens.fontSize.base, color: GRAY_BODY, padding: "8px 2px" }}>
             No videos match that yet.
           </div>
         )}

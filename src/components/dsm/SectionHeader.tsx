@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 interface Props {
   children: React.ReactNode;
   className?: string;
@@ -16,14 +17,14 @@ export function SectionHeader({ children, className = "", style }: Props) {
           width: 3,
           height: 12,
           borderRadius: 8,
-          backgroundColor: "#1877D6",
+          backgroundColor: tokens.blue,
         }}
       />
       <span
         className="text-[11px] font-semibold uppercase"
         style={{
           letterSpacing: "0.12em",
-          color: "#1877D6",
+          color: tokens.blue,
           fontFamily: "Poppins, sans-serif",
         }}
       >

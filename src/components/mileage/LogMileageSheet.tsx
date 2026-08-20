@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -93,7 +94,7 @@ export function LogMileageSheet({ open, onClose, onSaved }: LogMileageSheetProps
               fontFamily: "Poppins, sans-serif",
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#EEF2F7",
+              borderColor: tokens.canvas,
             }}
           />
         </div>
@@ -132,7 +133,7 @@ export function LogMileageSheet({ open, onClose, onSaved }: LogMileageSheetProps
                 fontFamily: "Poppins, sans-serif",
                 borderWidth: purpose === "business" ? 0 : "0.5px",
                 borderStyle: "solid",
-                borderColor: "#EEF2F7",
+                borderColor: tokens.canvas,
               }}
             >
               Business
@@ -147,7 +148,7 @@ export function LogMileageSheet({ open, onClose, onSaved }: LogMileageSheetProps
                 fontFamily: "Poppins, sans-serif",
                 borderWidth: purpose === "personal" ? 0 : "0.5px",
                 borderStyle: "solid",
-                borderColor: "#EEF2F7",
+                borderColor: tokens.canvas,
               }}
             >
               Personal

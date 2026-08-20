@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { IconChevronRight } from "@tabler/icons-react";
 
@@ -168,8 +169,8 @@ export function SwipeableDetailShell<T>({
             zIndex: 5,
             pointerEvents: "none",
             color: "#fff",
-            fontSize: 13,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.base,
+            fontWeight: tokens.fontWeight.bold,
             background: "rgba(0,0,0,0.3)",
             padding: "6px 12px",
             borderRadius: 8,

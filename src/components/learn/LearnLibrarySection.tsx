@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import {
   IconBookmark,
@@ -49,7 +50,7 @@ function Chip({
         background: active ? NAVY : "#FFFFFF",
         color: active ? "#FFFFFF" : NAVY,
         fontSize: 12.5,
-        fontWeight: 600,
+        fontWeight: tokens.fontWeight.semibold,
         fontFamily: FONT,
         whiteSpace: "nowrap",
         cursor: "pointer",
@@ -79,7 +80,7 @@ function ItemCard({
         position: "relative",
         width: wide ? 232 : undefined,
         flexShrink: wide ? 0 : undefined,
-        background: "#FFFFFF",
+        background: tokens.white,
         borderRadius: 8,
         boxShadow: CARD_SHADOW,
         padding: 13,
@@ -100,10 +101,10 @@ function ItemCard({
           fontFamily: FONT,
         }}
       >
-        <div style={{ fontSize: 11, fontWeight: 600, color: BLUE, marginBottom: 4 }}>
+        <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: BLUE, marginBottom: 4 }}>
           {CATEGORY_EMOJI[item.category]} {item.category}
         </div>
-        <div style={{ fontSize: 14, fontWeight: 600, color: NAVY, lineHeight: 1.3 }}>
+        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY, lineHeight: 1.3 }}>
           {item.title}
         </div>
         <div style={{ fontSize: 12, color: GRAY_BODY, lineHeight: 1.35, marginTop: 3 }}>
@@ -163,7 +164,7 @@ function ItemSheet({
           width: "100%",
           maxHeight: "88vh",
           overflowY: "auto",
-          background: "#FFFFFF",
+          background: tokens.white,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
           padding: "16px 16px calc(24px + env(safe-area-inset-bottom, 0px))",
@@ -171,10 +172,10 @@ function ItemSheet({
       >
         <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: BLUE }}>
+            <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: BLUE }}>
               {CATEGORY_EMOJI[item.category]} {item.category} · {item.minutes} min
             </div>
-            <h3 style={{ fontSize: 17, fontWeight: 700, color: NAVY, margin: "4px 0 2px" }}>
+            <h3 style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, color: NAVY, margin: "4px 0 2px" }}>
               {item.title}
             </h3>
             <div style={{ fontSize: 12.5, color: GRAY_BODY }}>{item.source}</div>
@@ -239,10 +240,10 @@ function ItemSheet({
               height: 44,
               borderRadius: 8,
               border: "0.5px solid #E2E6ED",
-              background: "#FFFFFF",
+              background: tokens.white,
               color: NAVY,
-              fontSize: 14,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.semibold,
               fontFamily: FONT,
               cursor: "pointer",
             }}
@@ -259,9 +260,9 @@ function ItemSheet({
                 height: 44,
                 borderRadius: 8,
                 background: BLUE,
-                color: "#FFFFFF",
-                fontSize: 14,
-                fontWeight: 600,
+                color: tokens.white,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.semibold,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -275,7 +276,7 @@ function ItemSheet({
         </div>
 
         {(item.category === "Health" || item.category === "Wellbeing" || item.category === "Mind") && (
-          <p style={{ fontSize: 11, color: GRAY_BODY, lineHeight: 1.4, marginTop: 12 }}>
+          <p style={{ fontSize: tokens.fontSize.sm, color: GRAY_BODY, lineHeight: 1.4, marginTop: 12 }}>
             {HEALTH_DISCLAIMER}
           </p>
         )}
@@ -318,7 +319,7 @@ export default function LearnLibrarySection() {
   return (
     <div style={{ marginTop: 24, fontFamily: FONT }}>
       <div style={{ padding: "0 16px 10px" }}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>Wellbeing &amp; development</div>
+        <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY }}>Wellbeing &amp; development</div>
         <div style={{ fontSize: 12.5, color: GRAY_BODY, marginTop: 2 }}>
           TED talks, short reads and 5-minute resets — for you, not just your pupils.
         </div>
@@ -331,7 +332,7 @@ export default function LearnLibrarySection() {
             display: "flex",
             alignItems: "center",
             gap: 8,
-            background: "#FFFFFF",
+            background: tokens.white,
             borderRadius: 8,
             boxShadow: CARD_SHADOW,
             padding: "0 12px",
@@ -347,7 +348,7 @@ export default function LearnLibrarySection() {
               flex: 1,
               border: "none",
               outline: "none",
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               color: NAVY,
               fontFamily: FONT,
               background: "transparent",
@@ -394,7 +395,7 @@ export default function LearnLibrarySection() {
 
       {filter === "All" && !query && (
         <>
-          <div style={{ padding: "0 16px 8px", fontSize: 13, fontWeight: 700, color: NAVY }}>
+          <div style={{ padding: "0 16px 8px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: NAVY }}>
             Featured
           </div>
           <div
@@ -418,7 +419,7 @@ export default function LearnLibrarySection() {
             ))}
           </div>
 
-          <div style={{ padding: "0 16px 8px", fontSize: 13, fontWeight: 700, color: NAVY }}>
+          <div style={{ padding: "0 16px 8px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: NAVY }}>
             Your next 10 minutes
           </div>
           <div
@@ -464,14 +465,14 @@ export default function LearnLibrarySection() {
       </div>
 
       {list.length === 0 && (
-        <div style={{ padding: "0 16px", fontSize: 13, color: GRAY_BODY }}>
+        <div style={{ padding: "0 16px", fontSize: tokens.fontSize.base, color: GRAY_BODY }}>
           {filter === "Saved"
             ? "Nothing saved yet — tap the bookmark on any item."
             : "No results. Try a different search."}
         </div>
       )}
 
-      <p style={{ fontSize: 11, color: GRAY_BODY, lineHeight: 1.4, padding: "14px 16px 0" }}>
+      <p style={{ fontSize: tokens.fontSize.sm, color: GRAY_BODY, lineHeight: 1.4, padding: "14px 16px 0" }}>
         {HEALTH_DISCLAIMER}
       </p>
 

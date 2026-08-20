@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { IconChevronRight, IconSparkles } from "@tabler/icons-react";
@@ -87,7 +88,7 @@ export default function RecommendedLearning({ faults }: { faults: FaultMap | nul
   return (
     <div
       style={{
-        background: "#FFFFFF",
+        background: tokens.white,
         borderRadius: 8,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         padding: 14,
@@ -96,7 +97,7 @@ export default function RecommendedLearning({ faults }: { faults: FaultMap | nul
     >
       <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 4 }}>
         <IconSparkles stroke={1.6} size={17} color={BLUE} />
-        <div style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>Recommended learning</div>
+        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: NAVY }}>Recommended learning</div>
       </div>
       <div style={{ fontSize: 12, color: GRAY_BODY, marginBottom: 12 }}>
         Based on the faults marked above.
@@ -113,13 +114,13 @@ export default function RecommendedLearning({ faults }: { faults: FaultMap | nul
                 background: SEVERITY_COLOR[rec.topic.severity],
               }}
             />
-            <span style={{ fontSize: 13, fontWeight: 600, color: NAVY, flex: 1 }}>
+            <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: NAVY, flex: 1 }}>
               {rec.topic.label}
             </span>
             <span
               style={{
                 fontSize: 10.5,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 color: SEVERITY_COLOR[rec.topic.severity],
               }}
             >
@@ -165,7 +166,7 @@ export default function RecommendedLearning({ faults }: { faults: FaultMap | nul
               }}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: NAVY, lineHeight: 1.3 }}>
+                <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: NAVY, lineHeight: 1.3 }}>
                   {item.title}
                 </div>
                 <div style={{ fontSize: 11.5, color: GRAY_BODY }}>
@@ -187,10 +188,10 @@ export default function RecommendedLearning({ faults }: { faults: FaultMap | nul
           height: 40,
           borderRadius: 8,
           border: "0.5px solid #E2E6ED",
-          background: "#FFFFFF",
+          background: tokens.white,
           color: BLUE,
-          fontSize: 13,
-          fontWeight: 600,
+          fontSize: tokens.fontSize.base,
+          fontWeight: tokens.fontWeight.semibold,
           fontFamily: FONT,
           cursor: "pointer",
         }}

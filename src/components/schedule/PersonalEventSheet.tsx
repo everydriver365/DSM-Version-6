@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import React, { useEffect, useMemo, useState } from "react";
 import { IconX, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -54,7 +55,7 @@ function addMinutes(date: string, time: string, mins: number) {
 
 const label: React.CSSProperties = {
   fontSize: 12,
-  fontWeight: 600,
+  fontWeight: tokens.fontWeight.semibold,
   color: subtle,
   marginBottom: 6,
   display: "block",
@@ -290,7 +291,7 @@ export function PersonalEventSheet({
           }}
         >
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 17, fontWeight: 700, color: navy, fontFamily: "Sora, sans-serif" }}>
+            <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, color: navy, fontFamily: "Sora, sans-serif" }}>
               {editing ? "Edit private event" : "New private event"}
             </div>
             <div style={{ fontSize: 12, color: subtle }}>Only visible to you</div>
@@ -321,7 +322,7 @@ export function PersonalEventSheet({
               width: 34,
               height: 34,
               borderRadius: 8,
-              background: "#EEF2F7",
+              background: tokens.canvas,
               border: "none",
               display: "grid",
               placeItems: "center",
@@ -360,7 +361,7 @@ export function PersonalEventSheet({
               background: "#fff",
             }}
           >
-            <span style={{ fontSize: 14, fontWeight: 600, color: navy }}>All day</span>
+            <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: navy }}>All day</span>
             <span
               style={{
                 width: 44,
@@ -476,7 +477,7 @@ export function PersonalEventSheet({
                     onChange={(e) => setRepeatUntil(e.target.value)}
                     style={inputStyle}
                   />
-                  <div style={{ fontSize: 11, color: subtle, marginTop: 6 }}>
+                  <div style={{ fontSize: tokens.fontSize.sm, color: subtle, marginTop: 6 }}>
                     {repeatUntil
                       ? `${occurrences.length} event${occurrences.length === 1 ? "" : "s"} will be created`
                       : "Choose an end date to create the series"}
@@ -550,10 +551,10 @@ export function PersonalEventSheet({
             }}
           >
             <span>
-              <span style={{ display: "block", fontSize: 14, fontWeight: 600, color: navy }}>
+              <span style={{ display: "block", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: navy }}>
                 Show as busy
               </span>
-              <span style={{ fontSize: 11, color: subtle }}>
+              <span style={{ fontSize: tokens.fontSize.sm, color: subtle }}>
                 Blocks this time from free-slot suggestions
               </span>
             </span>
@@ -583,7 +584,7 @@ export function PersonalEventSheet({
           </button>
 
           {error && (
-            <div style={{ fontSize: 13, color: red, fontWeight: 600 }}>{error}</div>
+            <div style={{ fontSize: tokens.fontSize.base, color: red, fontWeight: 600 }}>{error}</div>
           )}
 
           <button
@@ -598,7 +599,7 @@ export function PersonalEventSheet({
               background: saving ? "#8FB6E4" : blue,
               color: "#fff",
               fontSize: 15,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               fontFamily: font,
             }}
           >

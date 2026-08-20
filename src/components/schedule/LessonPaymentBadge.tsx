@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import * as React from "react";
 import { pillStyle, type PillVariant } from "@/components/dsm/DSMPill";
 
@@ -21,7 +22,7 @@ export function getLessonPaymentBadge(
   isLive?: boolean,
 ): { label: string; variant: PillVariant; bg: string; color: string } | null {
   if (isLive) {
-    return { label: "Live", variant: "info", bg: "#E6F1FB", color: "#1877D6" };
+    return { label: "Live", variant: "info", bg: "#E6F1FB", color: tokens.blue };
   }
 
   const s = (status ?? "").toLowerCase();

@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import React from 'react';
 import { IconMapPin, IconClock, IconX, IconNavigation, IconPencil } from '@tabler/icons-react';
 
@@ -21,7 +22,7 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, padding: '9px 0', borderBottom: '1px solid #EEF1F6' }}>
       <span style={{ fontSize: 12, color: '#6B7686', fontFamily: PF, fontWeight: 500 }}>{label}</span>
-      <span style={{ fontSize: 13, color: '#0B1F3A', fontFamily: PF, fontWeight: 700, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{value}</span>
+      <span style={{ fontSize: tokens.fontSize.base, color: '#0B1F3A', fontFamily: PF, fontWeight: tokens.fontWeight.bold, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{value}</span>
     </div>
   );
 }
@@ -61,7 +62,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
             background: 'linear-gradient(135deg, #1877D6, #0B1F3A)',
             color: '#fff',
             fontSize: 9,
-            fontWeight: 800,
+            fontWeight: tokens.fontWeight.extrabold,
             borderRadius: 8,
             padding: '3px 10px',
             letterSpacing: '0.08em',
@@ -90,16 +91,16 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
           </div>
         </div>
 
-        <div style={{ fontSize: 20, fontWeight: 800, color: '#0B1F3A', letterSpacing: -0.3 }}>{detail.pupilName}</div>
+        <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.extrabold, color: '#0B1F3A', letterSpacing: -0.3 }}>{detail.pupilName}</div>
 
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'space-between', marginTop: 12, background: '#F2F7FD', borderRadius: 8, padding: '10px 12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <IconClock size={18} stroke={1.8} color="#1877D6" />
-            <span style={{ fontSize: 13, fontWeight: 600, color: '#1877D6', fontFamily: PF }}>
+            <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: '#1877D6', fontFamily: PF }}>
               {detail.dateLabel || 'Test date'}
             </span>
           </div>
-          <span style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
+          <span style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
             {detail.startTime} – {detail.endTime}
           </span>
         </div>
@@ -118,8 +119,8 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
         <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginTop: 12 }}>
           <IconMapPin size={16} stroke={1.8} color="#1877D6" style={{ marginTop: 2, flexShrink: 0 }} />
           <div>
-            <div style={{ fontSize: 11, color: '#6B7686', fontWeight: 600, letterSpacing: '0.06em' }}>TEST CENTRE</div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: detail.testCentre ? '#0B1F3A' : '#98A2B3', fontStyle: detail.testCentre ? 'normal' : 'italic' }}>
+            <div style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', fontWeight: tokens.fontWeight.semibold, letterSpacing: '0.06em' }}>TEST CENTRE</div>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: detail.testCentre ? '#0B1F3A' : '#98A2B3', fontStyle: detail.testCentre ? 'normal' : 'italic' }}>
               {detail.testCentre || 'Test centre not set'}
             </div>
           </div>
@@ -130,7 +131,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
             <button
               type="button"
               onClick={() => { onClose(); detail.onNavigate?.(); }}
-              style={{ flex: 1, background: '#F2F5F9', color: '#0B1F3A', border: 'none', borderRadius: 8, padding: '11px 14px', fontFamily: PF, fontWeight: 700, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+              style={{ flex: 1, background: '#F2F5F9', color: '#0B1F3A', border: 'none', borderRadius: 8, padding: '11px 14px', fontFamily: PF, fontWeight: tokens.fontWeight.bold, fontSize: tokens.fontSize.base, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
             >
               <IconNavigation size={15} stroke={1.8} /> Navigate
             </button>
@@ -139,7 +140,7 @@ export function TestDetailPanel({ detail, onClose }: { detail: TestDetail; onClo
             <button
               type="button"
               onClick={() => { onClose(); detail.onOpenLesson?.(); }}
-              style={{ flex: 1, background: 'linear-gradient(135deg, #1877D6, #0B1F3A)', color: '#fff', border: 'none', borderRadius: 8, padding: '11px 14px', fontFamily: PF, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}
+              style={{ flex: 1, background: 'linear-gradient(135deg, #1877D6, #0B1F3A)', color: '#fff', border: 'none', borderRadius: 8, padding: '11px 14px', fontFamily: PF, fontWeight: tokens.fontWeight.bold, fontSize: tokens.fontSize.base, cursor: 'pointer' }}
             >
               Open lesson
             </button>

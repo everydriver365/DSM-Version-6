@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconChevronRight, IconMessageCircle2 } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -45,7 +46,7 @@ const DRAFT_UI: Record<DraftStatus, { label: string; color: string }> = {
   empty: { label: "No draft", color: "#8A93A3" },
   unsaved: { label: "Unsaved…", color: "#8A5A00" },
   saved: { label: "Draft saved", color: "#0F7B4F" },
-  sent: { label: "Sent", color: "#1877D6" },
+  sent: { label: "Sent", color: tokens.blue },
 };
 
 type SmsStatus = "idle" | "queued" | "sending" | "sent" | "failed";
@@ -393,7 +394,7 @@ export function SendMessageSheet({
                   flexShrink: 0,
                 }}
               />
-              <div style={{ fontSize: 14, fontWeight: 700, color: SMS_STATUS_UI[smsStatus].fg }}>
+              <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: SMS_STATUS_UI[smsStatus].fg }}>
                 SMS {SMS_STATUS_UI[smsStatus].label}
               </div>
             </div>
@@ -413,17 +414,17 @@ export function SendMessageSheet({
           ) : (
             <div
               className="flex items-center justify-center rounded-full shrink-0"
-              style={{ width: 40, height: 40, backgroundColor: "#EEF2F7", color: SUBTLE }}
+              style={{ width: 40, height: 40, backgroundColor: tokens.canvas, color: SUBTLE }}
             >
               <IconMessageCircle2 size={18} />
             </div>
           )}
           <div className="flex-1 min-w-0 text-left">
-            <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>
+            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>
               {pupilName || "Select pupil"}
             </div>
             {selectedPupil && (
-              <div style={{ fontSize: 13, fontWeight: 500, color: SUBTLE }}>
+              <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: SUBTLE }}>
                 {pupilPhone || "No phone number"}
               </div>
             )}
@@ -438,7 +439,7 @@ export function SendMessageSheet({
             <SheetDivider />
             <div style={{ maxHeight: 220, overflowY: "auto" }}>
               {filteredPupils.length === 0 && (
-                <div style={{ padding: "15px 16px", fontSize: 13, color: SUBTLE }}>No pupils found</div>
+                <div style={{ padding: "15px 16px", fontSize: tokens.fontSize.base, color: SUBTLE }}>No pupils found</div>
               )}
               {filteredPupils.map((p, idx) => (
                 <div key={p.id}>
@@ -455,7 +456,7 @@ export function SendMessageSheet({
                   >
                     <SheetRadio selected={p.id === pupilId} />
                     <div className="flex-1 min-w-0 text-left">
-                      <div style={{ fontSize: 15, fontWeight: 600, color: NAVY }}>{p.name ?? "Pupil"}</div>
+                      <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>{p.name ?? "Pupil"}</div>
                     </div>
                     <div style={{ fontSize: 12, color: SUBTLE }}>{p.phone || "No phone"}</div>
                   </SheetRow>
@@ -469,10 +470,10 @@ export function SendMessageSheet({
       {pendingPupil && (
         <SheetGroup>
           <div style={{ padding: "15px 16px" }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>
               Switch to {pendingPupil.name ?? "this pupil"}?
             </div>
-            <div style={{ fontSize: 13, color: SUBTLE, marginTop: 2 }}>
+            <div style={{ fontSize: tokens.fontSize.base, color: SUBTLE, marginTop: 2 }}>
               Your unsent message will be kept, but it was written for{" "}
               {pupilName || "the current pupil"}.
             </div>
@@ -487,8 +488,8 @@ export function SendMessageSheet({
                   border: "none",
                   background: BLUE,
                   color: "#fff",
-                  fontSize: 13,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.bold,
                   cursor: "pointer",
                 }}
               >
@@ -504,8 +505,8 @@ export function SendMessageSheet({
                   border: "1px solid #E2E8F0",
                   background: "#fff",
                   color: NAVY,
-                  fontSize: 13,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.bold,
                   cursor: "pointer",
                 }}
               >
@@ -524,7 +525,7 @@ export function SendMessageSheet({
             {idx > 0 && <SheetDivider />}
             <SheetRow selected={activeTemplate === t.label} onClick={() => insertTemplate(t.label, t.body)}>
               <SheetRadio selected={activeTemplate === t.label} />
-              <div className="flex-1 min-w-0 text-left" style={{ fontSize: 15, fontWeight: 600, color: NAVY }}>
+              <div className="flex-1 min-w-0 text-left" style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>
                 {t.label}
               </div>
             </SheetRow>
@@ -540,8 +541,8 @@ export function SendMessageSheet({
             display: "flex",
             alignItems: "center",
             gap: 5,
-            fontSize: 11,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.sm,
+            fontWeight: tokens.fontWeight.bold,
             color: DRAFT_UI[draftStatus].color,
             marginBottom: 8,
           }}
@@ -583,8 +584,8 @@ export function SendMessageSheet({
         <SheetGroup>
           <SheetRow>
             <div className="flex-1 min-w-0">
-              <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>Send via SMS</div>
-              <div style={{ fontSize: 13, fontWeight: 500, color: SUBTLE, marginTop: 2 }}>
+              <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>Send via SMS</div>
+              <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: SUBTLE, marginTop: 2 }}>
                 Also texts {pupilPhone}
               </div>
             </div>

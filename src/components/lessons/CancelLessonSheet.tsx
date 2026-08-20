@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { IconAlertTriangle } from "@tabler/icons-react";
@@ -272,10 +273,10 @@ export function CancelLessonSheet({
         >
           <IconAlertTriangle size={20} color="#B7791F" style={{ flexShrink: 0, marginTop: 1 }} />
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#8A5A00" }}>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: "#8A5A00" }}>
               This will cancel the lesson
             </div>
-            <div style={{ fontSize: 13, fontWeight: 500, color: "#8A6D3B", marginTop: 2 }}>
+            <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: "#8A6D3B", marginTop: 2 }}>
               Notice given: {Math.max(0, Math.round(hoursUntilLesson))} hours
               {applicableTier || isNoShow
                 ? ` — a cancellation fee may apply based on your policy.`
@@ -290,7 +291,7 @@ export function CancelLessonSheet({
       <SheetGroup>
         <SheetRow>
           <div className="flex-1 min-w-0">
-            <div style={{ fontSize: 13, fontWeight: 500, color: SUBTLE }}>Cancellation reason *</div>
+            <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: SUBTLE }}>Cancellation reason *</div>
             <select
               value={reason}
               onChange={(e) => {
@@ -298,7 +299,7 @@ export function CancelLessonSheet({
                 setFeeChoice(null);
               }}
               className="w-full mt-1 bg-transparent focus:outline-none"
-              style={{ fontSize: 16, fontWeight: 600, color: NAVY, fontFamily: "Poppins, sans-serif" }}
+              style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY, fontFamily: "Poppins, sans-serif" }}
             >
               <option value="" disabled>Select a reason</option>
               {CANCEL_REASONS.map((r) => (
@@ -310,14 +311,14 @@ export function CancelLessonSheet({
         <SheetDivider />
         <SheetRow>
           <div className="flex-1 min-w-0">
-            <div style={{ fontSize: 13, fontWeight: 500, color: SUBTLE }}>Additional notes</div>
+            <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: SUBTLE }}>Additional notes</div>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
               placeholder="Optional"
               className="w-full mt-1 bg-transparent focus:outline-none"
-              style={{ fontSize: 15, fontWeight: 500, color: NAVY, resize: "none", fontFamily: "Poppins, sans-serif" }}
+              style={{ fontSize: 15, fontWeight: tokens.fontWeight.medium, color: NAVY, resize: "none", fontFamily: "Poppins, sans-serif" }}
             />
           </div>
         </SheetRow>
@@ -333,10 +334,10 @@ export function CancelLessonSheet({
                 <SheetRow selected={feeChoice === "charge"} onClick={() => setFeeChoice("charge")}>
                   <SheetRadio selected={feeChoice === "charge"} />
                   <div className="flex-1 min-w-0 text-left">
-                    <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>
+                    <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>
                       Apply £{chargeAmount.toFixed(2)} charge
                     </div>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: SUBTLE }}>
+                    <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: SUBTLE }}>
                       {chargePercent}% ·{" "}
                       {isNoShow ? "no-show policy" : `less than ${noticePeriod}h notice`}
                     </div>
@@ -346,8 +347,8 @@ export function CancelLessonSheet({
                 <SheetRow selected={feeChoice === "waive"} onClick={() => setFeeChoice("waive")}>
                   <SheetRadio selected={feeChoice === "waive"} />
                   <div className="flex-1 min-w-0 text-left">
-                    <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>Waive charge</div>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: SUBTLE }}>
+                    <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>Waive charge</div>
+                    <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: SUBTLE }}>
                       Cancel with no fee, this once
                     </div>
                   </div>
@@ -358,10 +359,10 @@ export function CancelLessonSheet({
             <SheetRow selected={feeChoice === "none"} onClick={() => setFeeChoice("none")}>
               <SheetRadio selected={feeChoice === "none"} />
               <div className="flex-1 min-w-0 text-left">
-                <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>
+                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>
                   {chargeAmount > 0 ? "Cancel without charge" : "No charge applies"}
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 500, color: SUBTLE }}>
+                <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: SUBTLE }}>
                   {chargeAmount > 0 ? "Skip any cancellation fee" : "Sufficient notice given"}
                 </div>
               </div>

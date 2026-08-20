@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { QRCodeSVG } from "qrcode.react";
@@ -187,7 +188,7 @@ const inputStyle: React.CSSProperties = {
   border: `1px solid ${BORDER}`,
   background: WHITE,
   padding: "0 10px",
-  fontSize: 13,
+  fontSize: tokens.fontSize.base,
   color: NAVY,
   fontFamily: FONT,
   outline: "none",
@@ -199,7 +200,7 @@ function Label({ children }: { children: React.ReactNode }) {
     <div
       style={{
         fontSize: 9,
-        fontWeight: 600,
+        fontWeight: tokens.fontWeight.semibold,
         color: MUTED,
         textTransform: "uppercase",
         letterSpacing: "0.08em",
@@ -215,7 +216,7 @@ function Label({ children }: { children: React.ReactNode }) {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: 10 }}>
-      <div style={{ fontSize: 11, color: BODY, marginBottom: 4, fontFamily: FONT }}>{label}</div>
+      <div style={{ fontSize: tokens.fontSize.sm, color: BODY, marginBottom: 4, fontFamily: FONT }}>{label}</div>
       {children}
     </div>
   );
@@ -243,7 +244,7 @@ function SummaryBar({ cells }: { cells: { label: string; value: string; color?: 
             borderLeft: i === 0 ? "none" : `1px solid ${BORDER}`,
           }}
         >
-          <div style={{ fontSize: 14, fontWeight: 700, color: c.color ?? NAVY, fontFamily: FONT }}>
+          <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: c.color ?? NAVY, fontFamily: FONT }}>
             {c.value}
           </div>
           <div style={{ fontSize: 9, color: MUTED, marginTop: 2, fontFamily: FONT, textTransform: "uppercase", letterSpacing: "0.06em" }}>
@@ -343,7 +344,7 @@ function Radio({ selected }: { selected: boolean }) {
 }
 
 function RowLabel({ children }: { children: React.ReactNode }) {
-  return <span style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: 600, color: NAVY }}>{children}</span>;
+  return <span style={{ flex: 1, minWidth: 0, fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>{children}</span>;
 }
 
 function InitialsAvatar({ name }: { name: string }) {
@@ -358,8 +359,8 @@ function InitialsAvatar({ name }: { name: string }) {
         borderRadius: 999,
         background: BLUE,
         color: WHITE,
-        fontSize: 13,
-        fontWeight: 700,
+        fontSize: tokens.fontSize.base,
+        fontWeight: tokens.fontWeight.bold,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -373,7 +374,7 @@ function InitialsAvatar({ name }: { name: string }) {
 
 function SectionCaption({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ fontSize: 13, color: SUBTLE, margin: "-4px 4px 12px", fontFamily: FONT }}>{children}</div>
+    <div style={{ fontSize: tokens.fontSize.base, color: SUBTLE, margin: "-4px 4px 12px", fontFamily: FONT }}>{children}</div>
   );
 }
 
@@ -1516,8 +1517,8 @@ export function UnifiedPaymentSheet({
           border: "none",
           background: BLUE,
           color: WHITE,
-          fontSize: 16,
-          fontWeight: 700,
+          fontSize: tokens.fontSize.lg,
+          fontWeight: tokens.fontWeight.bold,
           fontFamily: FONT,
           cursor: "pointer",
           opacity: savingPricing ? 0.5 : 1,
@@ -1538,8 +1539,8 @@ export function UnifiedPaymentSheet({
             border: "none",
             background: BLUE,
             color: WHITE,
-            fontSize: 16,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.lg,
+            fontWeight: tokens.fontWeight.bold,
             fontFamily: FONT,
             cursor: "pointer",
             opacity: squareLoading || amountNum <= 0 ? 0.45 : 1,
@@ -1558,8 +1559,8 @@ export function UnifiedPaymentSheet({
             border: `1.5px solid ${BLUE}`,
             background: "#fff",
             color: BLUE,
-            fontSize: 16,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.lg,
+            fontWeight: tokens.fontWeight.bold,
             fontFamily: FONT,
             cursor: "pointer",
             opacity: squareLoading || amountNum <= 0 ? 0.45 : 1,
@@ -1580,8 +1581,8 @@ export function UnifiedPaymentSheet({
           border: "none",
           background: BLUE,
           color: WHITE,
-          fontSize: 16,
-          fontWeight: 700,
+          fontSize: tokens.fontSize.lg,
+          fontWeight: tokens.fontWeight.bold,
           fontFamily: FONT,
           cursor: "pointer",
           opacity: primaryDisabled ? 0.45 : 1,
@@ -1624,8 +1625,8 @@ export function UnifiedPaymentSheet({
               width: "100%",
             }}
           >
-            <div style={{ fontSize: 18, fontWeight: 700, color: NAVY }}>Scan to pay</div>
-            <div style={{ fontSize: 32, fontWeight: 800, color: BLUE, marginBottom: 16 }}>
+            <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.bold, color: NAVY }}>Scan to pay</div>
+            <div style={{ fontSize: 32, fontWeight: tokens.fontWeight.extrabold, color: BLUE, marginBottom: 16 }}>
               £{amountNum.toFixed(2)}
             </div>
             <img
@@ -1637,7 +1638,7 @@ export function UnifiedPaymentSheet({
               height={250}
               style={{ borderRadius: 8, maxWidth: "100%" }}
             />
-            <div style={{ fontSize: 13, color: "#6B7686", marginTop: 12 }}>
+            <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, marginTop: 12 }}>
               Pupil scans this with their camera
             </div>
             <button
@@ -1649,10 +1650,10 @@ export function UnifiedPaymentSheet({
                 height: 46,
                 borderRadius: 8,
                 border: "none",
-                background: "#EEF2F7",
-                color: "#6B7686",
+                background: tokens.canvas,
+                color: tokens.textSecondary,
                 fontSize: 15,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 fontFamily: FONT,
                 cursor: "pointer",
               }}
@@ -1680,11 +1681,11 @@ export function UnifiedPaymentSheet({
             }}
           >
             <IconCircleCheck size={48} color={GREEN} />
-            <div style={{ fontSize: 16, fontWeight: 600, color: NAVY, marginTop: 16 }}>Payment recorded</div>
-            <div style={{ fontSize: 13, color: MUTED, marginTop: 4 }}>
+            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY, marginTop: 16 }}>Payment recorded</div>
+            <div style={{ fontSize: tokens.fontSize.base, color: MUTED, marginTop: 4 }}>
               £{paymentSuccess.amount.toFixed(2)} {METHOD_LABEL[paymentSuccess.method as PayMethod] || paymentSuccess.method}
             </div>
-            <div style={{ fontSize: 13, color: MUTED }}>for {paymentSuccess.pupilName}</div>
+            <div style={{ fontSize: tokens.fontSize.base, color: MUTED }}>for {paymentSuccess.pupilName}</div>
             {balance && (
               <div style={{ width: "100%", marginTop: 16 }}>
                 <SummaryBar
@@ -1737,7 +1738,7 @@ export function UnifiedPaymentSheet({
                   background: WHITE,
                   color: NAVY,
                   fontSize: 12,
-                  fontWeight: 600,
+                  fontWeight: tokens.fontWeight.semibold,
                   fontFamily: FONT,
                   cursor: "pointer",
                   opacity: paymentSuccess.historyId ? 1 : 0.45,
@@ -1764,7 +1765,7 @@ export function UnifiedPaymentSheet({
                   background: WHITE,
                   color: RED,
                   fontSize: 12,
-                  fontWeight: 600,
+                  fontWeight: tokens.fontWeight.semibold,
                   fontFamily: FONT,
                   cursor: "pointer",
                   opacity: paymentSuccess.historyId ? 1 : 0.45,
@@ -1784,8 +1785,8 @@ export function UnifiedPaymentSheet({
                   border: `1px solid ${BORDER}`,
                   background: WHITE,
                   color: NAVY,
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
                   fontFamily: FONT,
                   cursor: "pointer",
                 }}
@@ -1802,8 +1803,8 @@ export function UnifiedPaymentSheet({
                   border: "none",
                   background: BLUE,
                   color: WHITE,
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
                   fontFamily: FONT,
                   cursor: "pointer",
                 }}
@@ -1824,7 +1825,7 @@ export function UnifiedPaymentSheet({
               overflowY: "auto",
             }}
           >
-            <div style={{ fontSize: 16, fontWeight: 600, color: NAVY, marginBottom: 12 }}>Edit payment</div>
+            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY, marginBottom: 12 }}>Edit payment</div>
             <Field label="Amount (£)">
               <input
                 inputMode="decimal"
@@ -1850,7 +1851,7 @@ export function UnifiedPaymentSheet({
                       background: active ? BLUE : WHITE,
                       color: active ? WHITE : BODY,
                       fontSize: 12,
-                      fontWeight: 600,
+                      fontWeight: tokens.fontWeight.semibold,
                       fontFamily: FONT,
                       cursor: "pointer",
                     }}
@@ -1887,8 +1888,8 @@ export function UnifiedPaymentSheet({
                   border: `1px solid ${BORDER}`,
                   background: WHITE,
                   color: NAVY,
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
                   fontFamily: FONT,
                   cursor: "pointer",
                 }}
@@ -1906,8 +1907,8 @@ export function UnifiedPaymentSheet({
                   border: "none",
                   background: BLUE,
                   color: WHITE,
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
                   fontFamily: FONT,
                   cursor: "pointer",
                   opacity: savingEdit ? 0.5 : 1,
@@ -1932,8 +1933,8 @@ export function UnifiedPaymentSheet({
               justifyContent: "center",
             }}
           >
-            <div style={{ fontSize: 16, fontWeight: 600, color: RED }}>Delete this payment?</div>
-            <div style={{ fontSize: 13, color: MUTED, marginTop: 6 }}>
+            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: RED }}>Delete this payment?</div>
+            <div style={{ fontSize: tokens.fontSize.base, color: MUTED, marginTop: 6 }}>
               {money(deletePayment.amount)} ·{" "}
               {METHOD_LABEL[deletePayment.method as PayMethod] || deletePayment.method || "payment"} ·{" "}
               {fmtDate(deletePayment.date)}
@@ -1950,8 +1951,8 @@ export function UnifiedPaymentSheet({
                   border: `1px solid ${BORDER}`,
                   background: WHITE,
                   color: NAVY,
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
                   fontFamily: FONT,
                   cursor: "pointer",
                 }}
@@ -1969,8 +1970,8 @@ export function UnifiedPaymentSheet({
                   border: "none",
                   background: RED,
                   color: WHITE,
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
                   fontFamily: FONT,
                   cursor: "pointer",
                   opacity: savingEdit ? 0.5 : 1,
@@ -1998,7 +1999,7 @@ export function UnifiedPaymentSheet({
                   border: "none",
                   outline: "none",
                   background: "transparent",
-                  fontSize: 16,
+                  fontSize: tokens.fontSize.lg,
                   color: NAVY,
                   fontFamily: FONT,
                 }}
@@ -2006,7 +2007,7 @@ export function UnifiedPaymentSheet({
             </Row>
             {filtered.length === 0 ? (
               <Row>
-                <span style={{ fontSize: 13, color: SUBTLE }}>No pupils found</span>
+                <span style={{ fontSize: tokens.fontSize.base, color: SUBTLE }}>No pupils found</span>
               </Row>
             ) : null}
             {filtered.map((p) => {
@@ -2029,8 +2030,8 @@ export function UnifiedPaymentSheet({
                     <span
                       style={{
                         display: "block",
-                        fontSize: 16,
-                        fontWeight: 600,
+                        fontSize: tokens.fontSize.lg,
+                        fontWeight: tokens.fontWeight.semibold,
                         color: NAVY,
                         overflow: "hidden",
                         textOverflow: "ellipsis",
@@ -2039,7 +2040,7 @@ export function UnifiedPaymentSheet({
                     >
                       {p.name ?? "Unnamed"}
                     </span>
-                    <span style={{ fontSize: 13, color: SUBTLE }}>
+                    <span style={{ fontSize: tokens.fontSize.base, color: SUBTLE }}>
                       {t === "national_intensives"
                         ? "National Intensives"
                         : t.charAt(0).toUpperCase() + t.slice(1)}
@@ -2047,8 +2048,8 @@ export function UnifiedPaymentSheet({
                   </span>
                   <span
                     style={{
-                      fontSize: 13,
-                      fontWeight: 700,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.bold,
                       color: owed > 0 ? RED : GREEN,
                       flexShrink: 0,
                     }}
@@ -2070,7 +2071,7 @@ export function UnifiedPaymentSheet({
               }}
             >
               <IconSparkles size={18} color={PURPLE} />
-              <span style={{ flex: 1, fontSize: 16, fontWeight: 600, color: PURPLE }}>
+              <span style={{ flex: 1, fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: PURPLE }}>
                 Custom payment
               </span>
             </Row>
@@ -2086,8 +2087,8 @@ export function UnifiedPaymentSheet({
                 <span
                   style={{
                     display: "block",
-                    fontSize: 16,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.lg,
+                    fontWeight: tokens.fontWeight.semibold,
                     color: NAVY,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -2096,7 +2097,7 @@ export function UnifiedPaymentSheet({
                 >
                   {customMode ? "Custom payment" : (pupil?.name ?? "")}
                 </span>
-                <span style={{ fontSize: 13, color: SUBTLE }}>
+                <span style={{ fontSize: tokens.fontSize.base, color: SUBTLE }}>
                   {customMode ? "No pupil linked" : pupilContext}
                 </span>
               </span>
@@ -2104,7 +2105,7 @@ export function UnifiedPaymentSheet({
                 <span
                   style={{
                     fontSize: 12,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     padding: "4px 10px",
                     borderRadius: 999,
                     flexShrink: 0,
@@ -2149,7 +2150,7 @@ export function UnifiedPaymentSheet({
                     background: active ? BLUE_BG : WHITE,
                     color: active ? BLUE : BODY,
                     fontSize: 12,
-                    fontWeight: 600,
+                    fontWeight: tokens.fontWeight.semibold,
                     fontFamily: FONT,
                     cursor: "pointer",
                   }}
@@ -2199,7 +2200,7 @@ export function UnifiedPaymentSheet({
                   background: GREEN_BG,
                   borderRadius: 8,
                   padding: "9px 12px",
-                  fontSize: 11,
+                  fontSize: tokens.fontSize.sm,
                   color: GREEN,
                   marginBottom: 12,
                 }}
@@ -2241,14 +2242,14 @@ export function UnifiedPaymentSheet({
                           <span style={{ display: "block", fontSize: 12, color: NAVY }}>
                             {fmtDate(l.lesson_date)}
                           </span>
-                          <span style={{ fontSize: 11, color: MUTED }}>
+                          <span style={{ fontSize: tokens.fontSize.sm, color: MUTED }}>
                             {l.duration ? `${l.duration} min` : "Lesson"}
                             {Number(l.paid_amount ?? 0) > 0
                               ? ` · ${money(Number(l.paid_amount))} paid`
                               : ""}
                           </span>
                         </span>
-                        <span style={{ fontSize: 12, fontWeight: 600, color: RED }}>
+                        <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: RED }}>
                           {money(due)}
                         </span>
                       </button>
@@ -2261,7 +2262,7 @@ export function UnifiedPaymentSheet({
             {/* Amount */}
             <Group>
               <Row>
-                <span style={{ fontSize: 28, fontWeight: 700, color: NAVY, lineHeight: 1 }}>£</span>
+                <span style={{ fontSize: tokens.fontSize.hero, fontWeight: tokens.fontWeight.bold, color: NAVY, lineHeight: 1 }}>£</span>
                 <input
                   inputMode="decimal"
                   value={amount}
@@ -2279,8 +2280,8 @@ export function UnifiedPaymentSheet({
                     border: "none",
                     outline: "none",
                     background: "transparent",
-                    fontSize: 28,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.hero,
+                    fontWeight: tokens.fontWeight.bold,
                     color: NAVY,
                     fontFamily: FONT,
                     padding: 0,
@@ -2289,7 +2290,7 @@ export function UnifiedPaymentSheet({
               </Row>
               {!customMode && outstanding > 0 ? (
                 <Row>
-                  <span style={{ flex: 1, fontSize: 13, color: SUBTLE }}>
+                  <span style={{ flex: 1, fontSize: tokens.fontSize.base, color: SUBTLE }}>
                     {amountNum > 0 && amountNum < outstanding
                       ? `Partial: ${money(amountNum)} of ${money(outstanding)}`
                       : `Outstanding balance ${money(outstanding)}`}
@@ -2302,8 +2303,8 @@ export function UnifiedPaymentSheet({
                       border: "none",
                       padding: 0,
                       color: BLUE,
-                      fontWeight: 700,
-                      fontSize: 13,
+                      fontWeight: tokens.fontWeight.bold,
+                      fontSize: tokens.fontSize.base,
                       cursor: "pointer",
                       fontFamily: FONT,
                     }}
@@ -2314,7 +2315,7 @@ export function UnifiedPaymentSheet({
               ) : null}
               {!customMode && outstanding > 0 ? (
                 <Row onClick={() => setPartial(!partial)}>
-                  <span style={{ flex: 1, fontSize: 16, fontWeight: 600, color: NAVY }}>
+                  <span style={{ flex: 1, fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>
                     Partial payment
                   </span>
                   <input
@@ -2359,7 +2360,7 @@ export function UnifiedPaymentSheet({
                     border: "none",
                     outline: "none",
                     background: "transparent",
-                    fontSize: 13,
+                    fontSize: tokens.fontSize.base,
                     color: NAVY,
                     fontFamily: FONT,
                     padding: 0,
@@ -2399,7 +2400,7 @@ export function UnifiedPaymentSheet({
                   borderRadius: 8,
                   padding: "12px 14px",
                   marginBottom: 12,
-                  fontSize: 13,
+                  fontSize: tokens.fontSize.base,
                   lineHeight: 1.5,
                   color: "#B45309",
                 }}
@@ -2422,7 +2423,7 @@ export function UnifiedPaymentSheet({
                 }}
               >
                 <QRCodeSVG value={qrUrl} size={160} />
-                <div style={{ fontSize: 12, color: NAVY, fontWeight: 600, marginTop: 10 }}>
+                <div style={{ fontSize: 12, color: NAVY, fontWeight: tokens.fontWeight.semibold, marginTop: 10 }}>
                   Scan to pay {money(amountNum)}
                 </div>
                 <button
@@ -2431,7 +2432,7 @@ export function UnifiedPaymentSheet({
                   style={{
                     marginTop: 8,
                     fontSize: 12,
-                    fontWeight: 600,
+                    fontWeight: tokens.fontWeight.semibold,
                     color: BLUE,
                     background: "none",
                     border: "none",
@@ -2476,8 +2477,8 @@ export function UnifiedPaymentSheet({
                         border: `1px solid ${BORDER}`,
                         background: WHITE,
                         color: BODY,
-                        fontSize: 11,
-                        fontWeight: 500,
+                        fontSize: tokens.fontSize.sm,
+                        fontWeight: tokens.fontWeight.medium,
                         fontFamily: FONT,
                         cursor: "pointer",
                       }}
@@ -2490,7 +2491,7 @@ export function UnifiedPaymentSheet({
                 <div
                   style={{
                     marginTop: 8,
-                    fontSize: 10,
+                    fontSize: tokens.fontSize.xs,
                     color: MUTED,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -2499,7 +2500,7 @@ export function UnifiedPaymentSheet({
                 >
                   {payUrl}
                 </div>
-                <div style={{ marginTop: 6, fontSize: 10, color: PURPLE }}>
+                <div style={{ marginTop: 6, fontSize: tokens.fontSize.xs, color: PURPLE }}>
                   ✦ Email sent via DSM — branded
                 </div>
               </div>
@@ -2509,7 +2510,7 @@ export function UnifiedPaymentSheet({
             {!isRemote && (
               <Group>
                 <Row>
-                  <span style={{ flex: 1, fontSize: 16, fontWeight: 600, color: NAVY }}>
+                  <span style={{ flex: 1, fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>
                     Payment date
                   </span>
                   <input
@@ -2520,7 +2521,7 @@ export function UnifiedPaymentSheet({
                       border: "none",
                       outline: "none",
                       background: "transparent",
-                      fontSize: 14,
+                      fontSize: tokens.fontSize.md,
                       color: SUBTLE,
                       fontFamily: FONT,
                       textAlign: "right",
@@ -2552,8 +2553,8 @@ export function UnifiedPaymentSheet({
                       background: "none",
                       border: "none",
                       padding: 0,
-                      fontSize: 11,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.semibold,
                       color: BLUE,
                       cursor: "pointer",
                       fontFamily: FONT,
@@ -2573,17 +2574,17 @@ export function UnifiedPaymentSheet({
                       overflow: "visible",
                     }}
                   >
-                    <div style={{ fontSize: 16, fontWeight: 700, color: RED }}>
+                    <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: RED }}>
                       Issue refund — {money(refundRow.amount)} —{" "}
                       {refundRow.method ?? "payment"} — {fmtDate(refundRow.created_at)}
                     </div>
 
                     <div style={{ marginTop: 10 }}>
-                      <div style={{ fontSize: 10, color: MUTED, marginBottom: 4 }}>
+                      <div style={{ fontSize: tokens.fontSize.xs, color: MUTED, marginBottom: 4 }}>
                         Refund amount (max {money(refundRowMax)})
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                        <span style={{ fontSize: 13, color: BODY, fontWeight: 600 }}>£</span>
+                        <span style={{ fontSize: tokens.fontSize.base, color: BODY, fontWeight: 600 }}>£</span>
                         <input
                           type="number"
                           inputMode="decimal"
@@ -2599,7 +2600,7 @@ export function UnifiedPaymentSheet({
                             border: `1px solid ${BORDER}`,
                             background: WHITE,
                             padding: "0 10px",
-                            fontSize: 13,
+                            fontSize: tokens.fontSize.base,
                             fontFamily: FONT,
                             color: NAVY,
                           }}
@@ -2614,8 +2615,8 @@ export function UnifiedPaymentSheet({
                             border: `1px solid ${BORDER}`,
                             background: WHITE,
                             color: BODY,
-                            fontSize: 11,
-                            fontWeight: 600,
+                            fontSize: tokens.fontSize.sm,
+                            fontWeight: tokens.fontWeight.semibold,
                             fontFamily: FONT,
                             cursor: "pointer",
                           }}
@@ -2624,20 +2625,20 @@ export function UnifiedPaymentSheet({
                         </button>
                       </div>
                       {refundAmountNum > 0 && refundAmountNum < refundRow.amount && (
-                        <div style={{ fontSize: 10, color: MUTED, marginTop: 4 }}>
+                        <div style={{ fontSize: tokens.fontSize.xs, color: MUTED, marginTop: 4 }}>
                           Partial refund — {money(refundRow.amount - refundAmountNum)} of this
                           payment stays on the ledger
                         </div>
                       )}
                       {refundAmountNum > refundRowMax && (
-                        <div style={{ fontSize: 10, color: RED, marginTop: 4 }}>
+                        <div style={{ fontSize: tokens.fontSize.xs, color: RED, marginTop: 4 }}>
                           Amount exceeds the refundable maximum
                         </div>
                       )}
                     </div>
 
                     <div style={{ marginTop: 10 }}>
-                      <div style={{ fontSize: 10, color: MUTED, marginBottom: 4 }}>
+                      <div style={{ fontSize: tokens.fontSize.xs, color: MUTED, marginBottom: 4 }}>
                         Reason for refund <span style={{ color: RED }}>*</span>
                       </div>
                       <input
@@ -2653,7 +2654,7 @@ export function UnifiedPaymentSheet({
                           border: `1px solid ${refundReason.trim() ? BORDER : RED}`,
                           background: WHITE,
                           padding: "0 10px",
-                          fontSize: 13,
+                          fontSize: tokens.fontSize.base,
                           fontFamily: FONT,
                           color: NAVY,
                         }}
@@ -2679,7 +2680,7 @@ export function UnifiedPaymentSheet({
                           background: invalid ? BORDER : RED,
                           color: WHITE,
                           fontSize: 12,
-                          fontWeight: 600,
+                          fontWeight: tokens.fontWeight.semibold,
                           fontFamily: FONT,
                           cursor: invalid ? "not-allowed" : "pointer",
                         }}
@@ -2707,7 +2708,7 @@ export function UnifiedPaymentSheet({
                           background: WHITE,
                           color: BODY,
                           fontSize: 12,
-                          fontWeight: 600,
+                          fontWeight: tokens.fontWeight.semibold,
                           fontFamily: FONT,
                           cursor: "pointer",
                         }}
@@ -2719,7 +2720,7 @@ export function UnifiedPaymentSheet({
                 )}
 
                 {history.length === 0 && (
-                  <div style={{ fontSize: 11, color: MUTED, padding: "6px 0" }}>
+                  <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, padding: "6px 0" }}>
                     No payments recorded yet
                   </div>
                 )}
@@ -2748,14 +2749,14 @@ export function UnifiedPaymentSheet({
                           <div style={{ fontSize: 12, color: NAVY }}>
                             {(r.method ?? "payment").replace(/_/g, " ")} · {fmtDate(r.created_at)}
                           </div>
-                          <div style={{ fontSize: 10, color: MUTED, marginTop: 2 }}>
+                          <div style={{ fontSize: tokens.fontSize.xs, color: MUTED, marginTop: 2 }}>
                             {balanceAfter > 0
                               ? `Balance after: ${money(balanceAfter)} still owed`
                               : "Balance after: Fully paid ✓"}
                           </div>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                          <span style={{ fontSize: 12, fontWeight: 600, color: r.amount < 0 ? RED : GREEN }}>
+                          <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: r.amount < 0 ? RED : GREEN }}>
                             {money(r.amount)}
                           </span>
                           {r.amount > 0 && (() => {
@@ -2782,8 +2783,8 @@ export function UnifiedPaymentSheet({
                                   border: `1px solid ${blocked ? BORDER : RED}`,
                                   background: WHITE,
                                   color: blocked ? MUTED : RED,
-                                  fontSize: 10,
-                                  fontWeight: 600,
+                                  fontSize: tokens.fontSize.xs,
+                                  fontWeight: tokens.fontWeight.semibold,
                                   fontFamily: FONT,
                                   cursor: blocked ? "not-allowed" : "pointer",
                                 }}
@@ -2804,8 +2805,8 @@ export function UnifiedPaymentSheet({
                               border: `1px solid ${BORDER}`,
                               background: WHITE,
                               color: NAVY,
-                              fontSize: 10,
-                              fontWeight: 600,
+                              fontSize: tokens.fontSize.xs,
+                              fontWeight: tokens.fontWeight.semibold,
                               fontFamily: FONT,
                               cursor: "pointer",
                             }}
@@ -2829,8 +2830,8 @@ export function UnifiedPaymentSheet({
                               border: `1px solid ${RED}`,
                               background: WHITE,
                               color: RED,
-                              fontSize: 10,
-                              fontWeight: 600,
+                              fontSize: tokens.fontSize.xs,
+                              fontWeight: tokens.fontWeight.semibold,
                               fontFamily: FONT,
                               cursor: "pointer",
                             }}
@@ -2854,8 +2855,8 @@ export function UnifiedPaymentSheet({
                       background: "none",
                       border: "none",
                       padding: "8px 0 0",
-                      fontSize: 11,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.semibold,
                       color: BLUE,
                       cursor: "pointer",
                       fontFamily: FONT,
@@ -2906,11 +2907,11 @@ export function UnifiedPaymentSheet({
                     }}
                   >
                     <Icon size={16} color={active ? accent : MUTED} />
-                    <span style={{ fontSize: 12, fontWeight: 600, color: active ? accent : NAVY }}>
+                    <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: active ? accent : NAVY }}>
                       {label}
                     </span>
                     {sublabel && (
-                      <span style={{ fontSize: 10, color: MUTED, lineHeight: 1.2 }}>
+                      <span style={{ fontSize: tokens.fontSize.xs, color: MUTED, lineHeight: 1.2 }}>
                         {sublabel}
                       </span>
                     )}
@@ -2943,7 +2944,7 @@ export function UnifiedPaymentSheet({
 
                 <div
                   style={{
-                    fontSize: 10,
+                    fontSize: tokens.fontSize.xs,
                     color: MUTED,
                     marginTop: 8,
                     marginBottom: 12,
@@ -2969,10 +2970,10 @@ export function UnifiedPaymentSheet({
                           padding: 12,
                         }}
                       >
-                        <div style={{ fontSize: 12, fontWeight: 700, color: AMBER }}>
+                        <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: AMBER }}>
                           Record package payment
                         </div>
-                        <div style={{ fontSize: 11, color: AMBER, marginTop: 4 }}>
+                        <div style={{ fontSize: tokens.fontSize.sm, color: AMBER, marginTop: 4 }}>
                           This will record a {money(newPrice)} package payment for{" "}
                           {hoursTotal === "" ? 0 : Number(hoursTotal)} hours
                         </div>
@@ -2993,7 +2994,7 @@ export function UnifiedPaymentSheet({
                                 background: active ? "#EFF6FF" : WHITE,
                                 color: active ? BLUE : NAVY,
                                 fontSize: 12,
-                                fontWeight: 600,
+                                fontWeight: tokens.fontWeight.semibold,
                                 fontFamily: FONT,
                                 cursor: "pointer",
                               }}
@@ -3031,16 +3032,16 @@ export function UnifiedPaymentSheet({
                       marginBottom: 12,
                     }}
                   >
-                    <div style={{ fontSize: 12, fontWeight: 600, color: AMBER }}>
+                    <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: AMBER }}>
                       Cancel package — refund calculator
                     </div>
-                    <div style={{ fontSize: 11, color: AMBER, marginTop: 6 }}>
+                    <div style={{ fontSize: tokens.fontSize.sm, color: AMBER, marginTop: 6 }}>
                       {unusedHrs} unused hrs of {blockTotalHrs} total · {money(blockPrice)} package
                     </div>
-                    <div style={{ fontSize: 11, color: AMBER, marginTop: 2 }}>
+                    <div style={{ fontSize: tokens.fontSize.sm, color: AMBER, marginTop: 2 }}>
                       ({unusedHrs} ÷ {blockTotalHrs}) × {money(blockPrice)}
                     </div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: AMBER, marginTop: 6 }}>
+                    <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: AMBER, marginTop: 6 }}>
                       Refund due: {money(refundDue)}
                     </div>
                     <button
@@ -3055,7 +3056,7 @@ export function UnifiedPaymentSheet({
                         background: WHITE,
                         color: RED,
                         fontSize: 12,
-                        fontWeight: 600,
+                        fontWeight: tokens.fontWeight.semibold,
                         fontFamily: FONT,
                         cursor: "pointer",
                       }}
@@ -3114,8 +3115,8 @@ export function UnifiedPaymentSheet({
                             border: `1px solid ${active ? GREEN : BORDER}`,
                             background: active ? GREEN_BG : WHITE,
                             color: active ? GREEN : BODY,
-                            fontSize: 11,
-                            fontWeight: 600,
+                            fontSize: tokens.fontSize.sm,
+                            fontWeight: tokens.fontWeight.semibold,
                             fontFamily: FONT,
                             cursor: "pointer",
                           }}
@@ -3159,11 +3160,11 @@ export function UnifiedPaymentSheet({
                   }}
                 >
                   <span style={{ fontSize: 12, color: BODY }}>Hourly rate</span>
-                  <span style={{ fontSize: 14, fontWeight: 600, color: MUTED }}>
+                  <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: MUTED }}>
                     {money(Number(instructor?.hourly_rate ?? 0))}
                   </span>
                 </div>
-                <div style={{ fontSize: 11, color: MUTED, marginTop: 6 }}>
+                <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, marginTop: 6 }}>
                   Rate set in your instructor settings
                 </div>
               </div>
@@ -3180,7 +3181,7 @@ export function UnifiedPaymentSheet({
                       left: 12,
                       top: 12,
                       fontSize: 20,
-                      fontWeight: 700,
+                      fontWeight: tokens.fontWeight.bold,
                       color: NAVY,
                     }}
                   >
@@ -3201,8 +3202,8 @@ export function UnifiedPaymentSheet({
                       ...inputStyle,
                       height: 52,
                       paddingLeft: 30,
-                      fontSize: 22,
-                      fontWeight: 700,
+                      fontSize: tokens.fontSize.xxl,
+                      fontWeight: tokens.fontWeight.bold,
                     }}
                   />
                 </div>
@@ -3248,7 +3249,7 @@ export function UnifiedPaymentSheet({
                           border: `1px solid ${active ? BLUE : BORDER}`,
                           background: active ? BLUE_BG : WHITE,
                           color: active ? BLUE : BODY,
-                          fontSize: 11,
+                          fontSize: tokens.fontSize.sm,
                           fontWeight: active ? 600 : 500,
                           fontFamily: FONT,
                           cursor: "pointer",
@@ -3271,8 +3272,8 @@ export function UnifiedPaymentSheet({
                     border: "none",
                     background: BLUE,
                     color: WHITE,
-                    fontSize: 13,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
                     fontFamily: FONT,
                     cursor: "pointer",
                   }}
@@ -3306,11 +3307,11 @@ export function UnifiedPaymentSheet({
             value={qrUrl}
             size={Math.min(window.innerWidth, window.innerHeight) - 80}
           />
-          <div style={{ fontSize: 16, fontWeight: 600, color: WHITE, marginTop: 16 }}>
+          <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: WHITE, marginTop: 16 }}>
             Scan to pay {money(amountNum)}
           </div>
           {squareIntentPaid ? (
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#22C55E", marginTop: 8 }}>
+            <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: "#22C55E", marginTop: 8 }}>
               ● Payment received
             </div>
           ) : (
@@ -3329,7 +3330,7 @@ export function UnifiedPaymentSheet({
             style={{
               position: "absolute",
               bottom: 32,
-              fontSize: 11,
+              fontSize: tokens.fontSize.sm,
               color: "rgba(255,255,255,0.4)",
             }}
           >

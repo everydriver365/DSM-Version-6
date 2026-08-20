@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import React from "react";
 import { Link } from "@tanstack/react-router";
 
@@ -42,7 +43,7 @@ export function Eyebrow({ children }: { children: React.ReactNode }) {
         background: BLUE_TINT,
         color: BLUE_DARK,
         fontSize: 12,
-        fontWeight: 600,
+        fontWeight: tokens.fontWeight.semibold,
         letterSpacing: "0.12em",
         textTransform: "uppercase",
         marginBottom: 18}}
@@ -59,7 +60,7 @@ export function H1({ children }: { children: React.ReactNode }) {
         fontSize: "clamp(34px, 6vw, 64px)",
         lineHeight: 1.05,
         letterSpacing: "-0.02em",
-        fontWeight: 700,
+        fontWeight: tokens.fontWeight.bold,
         color: NAVY,
         margin: 0}}
     >
@@ -75,7 +76,7 @@ export function H2({ children }: { children: React.ReactNode }) {
         fontSize: "clamp(28px, 4vw, 44px)",
         lineHeight: 1.12,
         letterSpacing: "-0.015em",
-        fontWeight: 700,
+        fontWeight: tokens.fontWeight.bold,
         color: NAVY,
         margin: 0}}
     >
@@ -88,7 +89,7 @@ export function Lead({ children }: { children: React.ReactNode }) {
   return (
     <p
       style={{
-        fontSize: 18,
+        fontSize: tokens.fontSize.xl,
         lineHeight: 1.65,
         color: "#475569",
         marginTop: 18,
@@ -113,7 +114,7 @@ export function PrimaryBtn({ to, children, className, onClick }: { to: string; c
         borderRadius: 8,
         background: BLUE,
         color: "#fff",
-        fontWeight: 600,
+        fontWeight: tokens.fontWeight.semibold,
         fontSize: 15,
         textDecoration: "none",
         boxShadow: "0 8px 20px rgba(14,124,206,0.28)",
@@ -140,7 +141,7 @@ export function SecondaryBtn({ to, children, className, onClick }: { to: string;
         borderRadius: 8,
         background: "#fff",
         color: BLUE,
-        fontWeight: 600,
+        fontWeight: tokens.fontWeight.semibold,
         fontSize: 15,
         textDecoration: "none",
         border: `1px solid ${BLUE}`,
@@ -196,12 +197,12 @@ export function FeatureCard({
           color: BLUE_DARK,
           display: "grid",
           placeItems: "center",
-          fontSize: 22,
+          fontSize: tokens.fontSize.xxl,
           marginBottom: 14}}
       >
         {icon}
       </div>
-      <h3 style={{ margin: 0, fontSize: 18, fontWeight: 600, color: NAVY}}>
+      <h3 style={{ margin: 0, fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: NAVY}}>
         {title}
       </h3>
       <p style={{ margin: "8px 0 0", fontSize: 15, lineHeight: 1.65, color: MUTED}}>
