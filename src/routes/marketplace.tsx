@@ -427,9 +427,11 @@ function MarketplacePage() {
         )}
 
       </div>
-    </div>
+      </div>
+    </DSMTopSheet>
   );
 }
+
 
 const CARD_SHADOW = "0 1px 3px rgba(11,31,58,0.06)";
 
@@ -663,10 +665,10 @@ function ProductCard({
           </button>
         </div>
       </div>
-      </div>
-    </DSMTopSheet>
+    </div>
   );
 }
+
 
 
 
