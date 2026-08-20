@@ -2237,21 +2237,10 @@ function SchedulePage() {
                                                     {title}
                                                   </span>
                                                     {cancelled ? (
-                                                      <span style={{
-                                                        flexShrink: 0,
-                                                        display: 'inline-flex',
-                                                        alignItems: 'center',
-                                                        fontSize: tokens.fontSize.xs,
-                                                        fontWeight: tokens.fontWeight.bold,
-                                                        borderRadius: tokens.radiusCard,
-                                                        padding: '2px 7px',
-                                                        lineHeight: 1.4,
-                                                        fontFamily: 'Poppins, sans-serif',
-                                                        background: '#EEF2F7',
-                                                        color: '#6B7686',
-                                                      }}>
-                                                        Cancelled
-                                                      </span>
+                                                      <DSMPill variant={lessonStatusVariant('cancelled')}>
+                                                        {statusLabel('cancelled')}
+                                                      </DSMPill>
+
                                                       ) : (
                                                         <LessonPaymentBadge
                                                           status={e.lesson.payment_status}
