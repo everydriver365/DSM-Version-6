@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { useEffect, useMemo, useState } from "react";
 import { IconArrowLeft, IconReceipt, IconSearch, IconX } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 
 export const Route = createFileRoute("/invoices")({

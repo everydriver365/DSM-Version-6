@@ -4,7 +4,6 @@ import { IconArrowLeft, IconMessage, IconMicrophone, IconMicrophoneOff, IconUser
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/broadcast")({
   head: () => ({

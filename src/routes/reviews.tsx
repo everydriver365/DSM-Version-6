@@ -6,7 +6,6 @@ import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/reviews")({
   head: () => ({

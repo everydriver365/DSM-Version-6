@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/pipeline")({
   head: () => ({

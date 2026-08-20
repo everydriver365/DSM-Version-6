@@ -7,7 +7,6 @@ import { EmptyState } from "@/components/dsm/EmptyState";
 
 import { Card } from "../components/dsm/Card";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/notes/")({
   head: () => ({

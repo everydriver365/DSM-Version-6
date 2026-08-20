@@ -4,7 +4,6 @@ import { IconCalendar, IconCheck, IconChevronDown, IconChevronUp, IconMapPin, Ic
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 import RecommendedLearning from "@/components/learn/RecommendedLearning";
 
 export const Route = createFileRoute("/driving-test/$pupilId")({

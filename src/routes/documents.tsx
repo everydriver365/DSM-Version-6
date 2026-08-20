@@ -9,7 +9,6 @@ import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
 export const Route = createFileRoute("/documents")({

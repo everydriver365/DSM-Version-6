@@ -3,7 +3,6 @@ import { IconAward, IconBook, IconCalendar, IconCar, IconCloud, IconExternalLink
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SectionHeader } from "../components/dsm/SectionHeader";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/resources")({
   head: () => ({
