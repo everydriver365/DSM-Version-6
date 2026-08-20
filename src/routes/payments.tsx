@@ -645,8 +645,16 @@ function PaymentsPage() {
                         </div>
                         <button
                           type="button"
-                          onClick={() => setExpandedId(isOpen ? null : row.id)}
-                          style={{ background: "none", border: 0, padding: 0, textAlign: "left", flex: 1, minWidth: 0, cursor: "pointer", alignSelf: "stretch", display: "flex", flexDirection: "column", justifyContent: "center" }}
+                          onClick={() => { tapLight(); setExpandedId(isOpen ? null : row.id); }}
+                          onTouchStart={(e) => {
+                            e.currentTarget.style.transform = "scale(0.98)";
+                            e.currentTarget.style.opacity = "0.9";
+                          }}
+                          onTouchEnd={(e) => {
+                            e.currentTarget.style.transform = "scale(1)";
+                            e.currentTarget.style.opacity = "1";
+                          }}
+                          style={{ background: "none", border: 0, padding: 0, textAlign: "left", flex: 1, minWidth: 0, cursor: "pointer", alignSelf: "stretch", display: "flex", flexDirection: "column", justifyContent: "center", transition: "transform 0.1s ease, opacity 0.1s ease" }}
                         >
                           <div
                             style={{
