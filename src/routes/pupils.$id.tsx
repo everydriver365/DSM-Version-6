@@ -4062,6 +4062,41 @@ function PupilDetailPage() {
         onCancel={() => setPermDeleteOpen(false)}
       />
 
+      {moreOpen && pupil && (
+        <BottomSheetV2 title="Pupil options" subtitle={pupil.name} onClose={() => setMoreOpen(false)}>
+          <SheetGroup>
+            <SheetRow onClick={() => { setMoreOpen(false); openEditSheet(); }}>
+              <IconPencil size={18} stroke={1.6} color="#0B1F3A" />
+              <span className="text-[15px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>Edit details</span>
+            </SheetRow>
+            <SheetDivider />
+            <SheetRow>
+              <IconCamera size={18} stroke={1.6} color="#0B1F3A" />
+              <span className="flex-1 text-[15px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>Photo consent</span>
+              <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                <input
+                  type="checkbox"
+                  checked={Boolean(pupil.photo_consent)}
+                  onChange={(e) => togglePhotoConsent(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 rounded-full transition-colors" style={{ backgroundColor: pupil.photo_consent ? "#248A3D" : "#CBD5E1" }} />
+                <div
+                  className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
+                  style={{ transform: pupil.photo_consent ? "translateX(20px)" : "translateX(0)" }}
+                />
+              </label>
+            </SheetRow>
+            <SheetDivider />
+            <SheetRow onClick={() => { setMoreOpen(false); setRemoveOpen(true); }}>
+              <IconTrash size={18} stroke={1.6} color="#CC2229" />
+              <span className="text-[15px] font-medium" style={{ color: "#CC2229", ...POPPINS }}>Remove pupil</span>
+            </SheetRow>
+          </SheetGroup>
+        </BottomSheetV2>
+      )}
+
+
       <ConfirmDialog
 
         open={removeOpen}
