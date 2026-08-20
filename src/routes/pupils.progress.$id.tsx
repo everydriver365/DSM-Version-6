@@ -28,7 +28,7 @@ const LEVELS: {
   color: string;
 }[] = [
   { key: "introduced", n: 1, label: "Introduced", color: "#9CA3AF" },
-  { key: "talk_through", n: 2, label: "Under full talk-through", color: "#DC2626" },
+  { key: "talk_through", n: 2, label: "Under full talk-through", color: "#B91C1C" },
   { key: "prompted", n: 3, label: "Prompted", color: "#1877D6" },
   { key: "seldom_prompted", n: 4, label: "Seldom prompted", color: "#84CC16" },
   { key: "independent", n: 5, label: "Independent", color: "#1877D6" },

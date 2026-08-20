@@ -844,7 +844,7 @@ function SettingsPage() {
             onClick={() => navigate({ to: "/referrals" })}
           />
           <AccountRow
-            icon={<IconBolt size={20} color="#D97706" />}
+            icon={<IconBolt size={20} color="#B45309" />}
             iconBg="#FEF3C7"
             label="Automations"
             onClick={() => navigate({ to: "/automations" })}
@@ -1566,7 +1566,7 @@ function SettingsPage() {
             isFirst
           />
           <MenuRow
-            icon={<IconAlertTriangle size={18} color="#D97706" />}
+            icon={<IconAlertTriangle size={18} color="#B45309" />}
             iconBg="#FEF3C7"
             label="No-show policy"
             onClick={() => navigate({ to: "/no-show-policy" })}
@@ -1658,7 +1658,7 @@ function SettingsPage() {
               className="flex items-center justify-center"
               style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 8, backgroundColor: "#FEF3C7", flexShrink: 0 }}
             >
-              <IconCrown size={18} color="#D97706" />
+              <IconCrown size={18} color="#B45309" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
@@ -2049,7 +2049,7 @@ function SettingsPage() {
         {/* Section 5 — Tax & expenses */}
         <SectionCard>
           <MenuRow
-            icon={<IconCalculator color="#D97706" />}
+            icon={<IconCalculator color="#B45309" />}
             iconBg="#FEF3C7"
             label="Tax & expenses"
             subLabel="Tax code, vehicle costs and allowable deductions"
@@ -2362,7 +2362,7 @@ function MenuRow({
                 width: 8,
                 height: 8,
                 borderRadius: 999,
-                background: "#D97706",
+                background: "#B45309",
                 display: "inline-block",
                 flexShrink: 0,
               }}
@@ -2373,7 +2373,7 @@ function MenuRow({
           <span
             className="truncate"
             title={warning}
-            style={{ fontSize: 11, color: "#D97706", ...POPPINS, marginTop: 2 }}
+            style={{ fontSize: 11, color: "#B45309", ...POPPINS, marginTop: 2 }}
           >
             {warning}
           </span>
@@ -2395,7 +2395,7 @@ function MenuRow({
             fontSize: 11,
             fontWeight: 700,
             padding: "4px 10px",
-            borderRadius: 8,
+            borderRadius: 999,
             marginRight: 4,
             ...POPPINS,
           }}
@@ -2464,7 +2464,7 @@ function AccountRow({
                 width: 8,
                 height: 8,
                 borderRadius: 999,
-                background: "#D97706",
+                background: "#B45309",
                 display: "inline-block",
                 flexShrink: 0,
               }}
@@ -2475,7 +2475,7 @@ function AccountRow({
           <span
             className="truncate"
             title={warning}
-            style={{ fontSize: 11, color: "#D97706", ...POPPINS, marginTop: 2 }}
+            style={{ fontSize: 11, color: "#B45309", ...POPPINS, marginTop: 2 }}
           >
             {warning}
           </span>
@@ -2497,7 +2497,7 @@ function AccountRow({
             fontSize: 11,
             fontWeight: 700,
             padding: "4px 10px",
-            borderRadius: 8,
+            borderRadius: 999,
             marginRight: 4,
             ...POPPINS,
           }}

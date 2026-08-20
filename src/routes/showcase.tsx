@@ -1193,7 +1193,7 @@ function ShowcasePage() {
                         left: 6,
                         top: 6,
                         background: "#FEF3C7",
-                        color: "#92400E",
+                        color: "#B45309",
                         fontSize: 8,
                         fontWeight: 700,
                         borderRadius: 8,

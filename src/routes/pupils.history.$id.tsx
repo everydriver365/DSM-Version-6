@@ -133,7 +133,7 @@ function PupilHistoryPage() {
                         </div>
                       </div>
                       {isCancelled ? (
-                        <span style={{ background: "#FDECEA", color: "#B42318", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Cancelled</span>
+                        <span style={{ background: "#FDECEA", color: "#B91C1C", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Cancelled</span>
                       ) : isCompleted ? (
                         <Button
                           variant="ghost"

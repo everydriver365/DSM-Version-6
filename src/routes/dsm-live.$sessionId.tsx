@@ -305,7 +305,7 @@ END:VCALENDAR`;
               border: "1px solid #86EFAC",
               borderRadius: 8,
               padding: 16,
-              color: "#166534",
+              color: "#15803D",
             }}
           >
             <div style={{ fontWeight: 700, fontSize: 16 }}>✓ You're booked!</div>
@@ -337,8 +337,8 @@ END:VCALENDAR`;
                 type="button"
                 onClick={downloadIcs}
                 style={{
-                  border: "1px solid #166534",
-                  color: "#166534",
+                  border: "1px solid #15803D",
+                  color: "#15803D",
                   background: "#fff",
                   borderRadius: 8,
                   padding: "8px 12px",
@@ -386,7 +386,7 @@ END:VCALENDAR`;
                           background: "#F1F5F9",
                           color: "#0F2044",
                           fontSize: 11,
-                          padding: "3px 8px",
+                          padding: "4px 10px",
                           borderRadius: 999,
                         }}
                       >

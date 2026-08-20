@@ -1,4 +1,5 @@
 import * as React from "react";
+import { pillStyle, type PillVariant } from "@/components/dsm/DSMPill";
 
 export type LessonPaymentBadgeProps = {
   status: string | null | undefined;
@@ -18,9 +19,9 @@ export function getLessonPaymentBadge(
   paidAmount?: number | null | undefined,
   prepaidHours?: number | null | undefined,
   isLive?: boolean,
-): { label: string; bg: string; color: string } | null {
+): { label: string; variant: PillVariant; bg: string; color: string } | null {
   if (isLive) {
-    return { label: "Live", bg: "#E6F1FB", color: "#1877D6" };
+    return { label: "Live", variant: "info", bg: "#E6F1FB", color: "#1877D6" };
   }
 
   const s = (status ?? "").toLowerCase();
@@ -31,7 +32,7 @@ export function getLessonPaymentBadge(
   // Paid / prepaid / nothing outstanding / fully paid by amount
   if (s === "paid" || s === "prepaid" || prepaid || due <= 0 || paid >= due) {
     const label = s === "prepaid" || prepaid ? "Prepaid" : "Paid";
-    return { label, bg: "#E8F8ED", color: "#1A7A3C" };
+    return { label, variant: "success", bg: "#DCFCE7", color: "#15803D" };
   }
 
 
@@ -39,12 +40,12 @@ export function getLessonPaymentBadge(
   if (s === "partial" || (paid > 0 && paid < due)) {
     const remaining = Math.max(0, due - paid);
     const label = remaining > 0 ? `Part paid · £${remaining.toFixed(0)}` : "Part paid";
-    return { label, bg: "#FEF3C7", color: "#D97706" };
+    return { label, variant: "warning", bg: "#FEF3C7", color: "#B45309" };
   }
 
   // Unpaid / due
   if (due > 0) {
-    return { label: `£${due.toFixed(0)} due`, bg: "#FFECEC", color: "#D33B3B" };
+    return { label: `£${due.toFixed(0)} due`, variant: "danger", bg: "#FEE2E2", color: "#B91C1C" };
   }
 
   return null;
@@ -62,24 +63,9 @@ export function LessonPaymentBadge({
   const badge = getLessonPaymentBadge(status, amountDue, paidAmount, prepaidHours, isLive);
   if (!badge) return null;
 
-  const sizeStyle: React.CSSProperties =
-    size === "sm"
-      ? { fontSize: 10, padding: "2px 7px", borderRadius: 8}
-      : { fontSize: 11, padding: "3px 8px", borderRadius: 8};
-
   const style: React.CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
-    fontWeight: 700,
-    lineHeight: 1.4,
-    fontFamily: "Poppins, sans-serif",
-    backgroundColor: badge.bg,
-    color: badge.color,
-    border: "none",
+    ...pillStyle(badge.variant, size),
     cursor: onClick ? "pointer" : "default",
-    flexShrink: 0,
-    whiteSpace: "nowrap",
-    ...sizeStyle,
   };
 
   if (onClick) {

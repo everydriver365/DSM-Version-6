@@ -405,7 +405,7 @@ function WeeklyReportPage() {
         <StatTile
           label="Outstanding"
           value={loading ? "…" : gbpFromPounds(outstandingPounds)}
-          valueColor={outstandingPounds > 0 ? "#DC2626" : "#0B1F3A"}
+          valueColor={outstandingPounds > 0 ? "#B91C1C" : "#0B1F3A"}
         />
       </div>
 
@@ -526,10 +526,10 @@ function WeeklyReportPage() {
                           className="text-[11px] font-semibold"
                           style={{
                             ...POPPINS,
-                            padding: "4px 8px",
+                            padding: "4px 10px",
                             borderRadius: 999,
                             background: owes ? "#FEE2E2" : "#EEF2F7",
-                            color: owes ? "#DC2626" : "#0B1F3A",
+                            color: owes ? "#B91C1C" : "#0B1F3A",
                           }}
                         >
                           {owes ? gbpFromPounds(owed) : "All paid ✓"}

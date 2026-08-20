@@ -343,7 +343,7 @@ function MockTestsPage() {
         <StatCard
           label="Last result"
           value={stats.last ? (stats.last.passed ? "Pass ✓" : "Fail ✗") : "—"}
-          tone={stats.last ? (stats.last.passed ? "#059669" : "#DC2626") : undefined}
+          tone={stats.last ? (stats.last.passed ? "#059669" : "#B91C1C") : undefined}
         />
       </div>
 
@@ -449,7 +449,7 @@ function MockTestsPage() {
                 </div>
                 <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[12px]" style={{ color: "#374151" }}>
                   <span>Faults: <b>{t.fault_count ?? 0}</b></span>
-                  <span style={{ color: (t.serious_faults ?? 0) > 0 ? "#DC2626" : "#374151" }}>
+                  <span style={{ color: (t.serious_faults ?? 0) > 0 ? "#B91C1C" : "#374151" }}>
                     Serious: <b>{t.serious_faults ?? 0}</b>
                   </span>
                   <span style={{ color: (t.dangerous_faults ?? 0) > 0 ? "#7F1D1D" : "#374151" }}>
@@ -557,7 +557,7 @@ function MockTestsPage() {
                     onClick={() => setPassed(false)}
                     className="flex-1 h-12 rounded-lg text-[14px] font-semibold"
                     style={{
-                      backgroundColor: passed === false ? "#DC2626" : "#F3F4F6",
+                      backgroundColor: passed === false ? "#B91C1C" : "#F3F4F6",
                       color: passed === false ? "#FFFFFF" : "#0F2044",
                       border: "none",
                     }}
@@ -583,7 +583,7 @@ function MockTestsPage() {
                   />
                 </div>
                 <div>
-                  <div className="text-xs font-semibold mb-1" style={{ color: "#DC2626" }}>
+                  <div className="text-xs font-semibold mb-1" style={{ color: "#B91C1C" }}>
                     Serious
                   </div>
                   <input

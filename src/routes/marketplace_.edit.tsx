@@ -207,7 +207,7 @@ function MarketplaceEditPage() {
             style={{
               background: "#fef2f2",
               border: "1px solid #fecaca",
-              color: "#991b1b",
+              color: "#B91C1C",
               padding: 12,
               borderRadius: 8,
               marginBottom: 12,

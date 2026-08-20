@@ -64,7 +64,7 @@ function getCertStatus(expiryDate: string | null, reminderDays: number): {
     return { status: "expired", daysUntilExpiry: days, colour: "#CC2229", bg: "#FEF2F2", label: "Expired" };
   }
   if (days <= reminderDays) {
-    return { status: "expiring_soon", daysUntilExpiry: days, colour: "#D97706", bg: "#FFFBEB", label: `Expires in ${days} days` };
+    return { status: "expiring_soon", daysUntilExpiry: days, colour: "#B45309", bg: "#FFFBEB", label: `Expires in ${days} days` };
   }
   return { status: "valid", daysUntilExpiry: days, colour: "#16A34A", bg: "#E0FFF4", label: "Valid" };
 }
@@ -378,7 +378,7 @@ function CertificationsPage() {
       <div style={{ display: "flex", gap: 8, margin: "16px 16px 0" }}>
         {[
           { count: expiredCount, label: "Expired", colour: "#CC2229" },
-          { count: expiringCount, label: "Expiring soon", colour: "#D97706" },
+          { count: expiringCount, label: "Expiring soon", colour: "#B45309" },
           { count: validCount, label: "Valid", colour: "#16A34A" },
         ].map((s) => (
           <div key={s.label} style={{ flex: 1, background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 8, padding: 12, textAlign: "center" }}>
@@ -429,7 +429,7 @@ function CertificationsPage() {
         <>
           {groupHeader("EXPIRED", "#CC2229", grouped.expired.length)}
           {grouped.expired.map(({ cert, s }) => <CertCard key={cert.id} cert={cert} s={s} />)}
-          {groupHeader("EXPIRING SOON", "#D97706", grouped.expiring_soon.length)}
+          {groupHeader("EXPIRING SOON", "#B45309", grouped.expiring_soon.length)}
           {grouped.expiring_soon.map(({ cert, s }) => <CertCard key={cert.id} cert={cert} s={s} />)}
           {groupHeader("VALID", "#16A34A", grouped.valid.length)}
           {grouped.valid.map(({ cert, s }) => <CertCard key={cert.id} cert={cert} s={s} />)}

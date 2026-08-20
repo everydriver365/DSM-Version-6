@@ -35,7 +35,7 @@ const BLUE_BG = "#EFF6FF";
 const RED = "#CC2229";
 const GREEN = "#15803D";
 const GREEN_BG = "#F0FDF4";
-const AMBER = "#92400E";
+const AMBER = "#B45309";
 const AMBER_BG = "#FFFBEB";
 const PURPLE = "#7C5CFC";
 const FONT = "Poppins, sans-serif";
@@ -2401,7 +2401,7 @@ export function UnifiedPaymentSheet({
                   marginBottom: 12,
                   fontSize: 13,
                   lineHeight: 1.5,
-                  color: "#92400E",
+                  color: "#B45309",
                 }}
               >
                 Payments take up to 2 days to reach you. Connect Square in your profile for

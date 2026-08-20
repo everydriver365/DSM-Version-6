@@ -63,7 +63,7 @@ const THEMES: { key: Theme; label: string; swatch: string[] }[] = [
   { key: "classic", label: "Classic", swatch: ["#0B1F3A", "#1877D6", "#FFFFFF"] },
   { key: "modern", label: "Modern", swatch: ["#111111", "#2A2A2A", "#F5F5F5"] },
   { key: "warm", label: "Warm", swatch: ["#C2410C", "#FB923C", "#FFF7ED"] },
-  { key: "bold", label: "Bold", swatch: ["#000000", "#DC2626", "#FFFFFF"] },
+  { key: "bold", label: "Bold", swatch: ["#000000", "#B91C1C", "#FFFFFF"] },
 ];
 
 const FONTS: Font[] = ["Poppins", "Playfair Display"];
@@ -74,7 +74,7 @@ const HEADER_STYLES: { key: HeaderStyle; label: string }[] = [
 ];
 
 const COLOUR_SWATCHES = [
-  "#1877D6", "#0B1F3A", "#1877D6", "#DC2626",
+  "#1877D6", "#0B1F3A", "#1877D6", "#B91C1C",
   "#0B1F3A", "#1877D6", "#0EA5E9", "#111111",
 ];
 
@@ -493,11 +493,11 @@ function MiniSitePage() {
             <span
               style={{
                 background: "#FEF3C7",
-                color: "#92400E",
-                fontSize: 10,
+                color: "#B45309",
+                fontSize: 11,
                 fontWeight: 700,
-                borderRadius: 8,
-                padding: "3px 8px",
+                borderRadius: 999,
+                padding: "4px 10px",
               }}
             >
               {t.badge}
@@ -896,7 +896,7 @@ function MiniSitePage() {
             </div>
             <div className="text-[12px] mt-1 flex items-center gap-1" style={{ minHeight: 18 }}>
               {!slugValidFormat && slug && (
-                <span style={{ color: "#DC2626" }}>Use lowercase letters, numbers, hyphens (min 3 chars)</span>
+                <span style={{ color: "#B91C1C" }}>Use lowercase letters, numbers, hyphens (min 3 chars)</span>
               )}
               {slugValidFormat && slugChecking && (
                 <span style={{ color: "#6B7280" }}>Checking…</span>
@@ -907,7 +907,7 @@ function MiniSitePage() {
                 </span>
               )}
               {slugValidFormat && !slugChecking && slugAvailable === false && (
-                <span style={{ color: "#DC2626" }}>Already taken</span>
+                <span style={{ color: "#B91C1C" }}>Already taken</span>
               )}
             </div>
             <div className="mt-3">
@@ -2140,8 +2140,8 @@ function MiniSitePage() {
                     color: "#15803D",
                     fontSize: 11,
                     fontWeight: 700,
-                    borderRadius: 8,
-                    padding: "4px 12px",
+                    borderRadius: 999,
+                    padding: "4px 10px",
                   }}
                 >
                   ✓ {chosenDomain} reserved

@@ -874,7 +874,7 @@ function AdminListingsPage() {
                             ...ghostBtn,
                             background: l.is_featured ? "#FEF3C7" : "#fff",
                             borderColor: l.is_featured ? "#F59E0B" : "#0B1F3A",
-                            color: l.is_featured ? "#92400E" : "#0B1F3A",
+                            color: l.is_featured ? "#B45309" : "#0B1F3A",
                           }}
                         >
                           {l.is_featured ? "★ Featured" : "Feature this listing"}

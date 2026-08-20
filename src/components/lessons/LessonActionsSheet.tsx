@@ -772,8 +772,8 @@ export function LessonActionsSheet({
                     style={{
                       background: sel ? "#0B1F3A" : "#F1F5F9",
                       color: sel ? "#fff" : "#6B7686",
-                      borderRadius: 8,
-                      padding: "6px 14px",
+                      borderRadius: 999,
+                      padding: "4px 10px",
                       fontFamily: "Poppins, sans-serif",
                       fontSize: 12,
                       fontWeight: sel ? 600 : 500,
@@ -823,7 +823,7 @@ export function LessonActionsSheet({
                   <button
                     type="button"
                     onClick={() => setChargeOption("fee")}
-                    style={chargeRow(chargeOption === "fee", "#FEF3C7", "#D97706")}
+                    style={chargeRow(chargeOption === "fee", "#FEF3C7", "#B45309")}
                   >
                     <div style={chargeTitle}>Charge cancellation fee</div>
                     <div style={chargeSub}>{feeDesc.subtitle}</div>

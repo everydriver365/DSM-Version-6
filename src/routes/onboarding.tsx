@@ -363,7 +363,7 @@ function OnboardingPage() {
                         onClick={() => setAdiGrade(sel ? "" : g)}
                         style={{
                           ...POPPINS,
-                          padding: "6px 16px",
+                          padding: "4px 10px",
                           borderRadius: 999,
                           border: "none",
                           fontSize: 13,
@@ -516,7 +516,7 @@ function OnboardingPage() {
                 style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", cursor: "pointer" }}
               >
                 <div className="h-9 w-9 rounded-full bg-[#FEF3C7] flex items-center justify-center" style={{ flexShrink: 0 }}>
-                  <IconExternalLink stroke={1.5} size={20} color="#D97706" />
+                  <IconExternalLink stroke={1.5} size={20} color="#B45309" />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Get a Square account</div>
@@ -537,8 +537,8 @@ function OnboardingPage() {
                 marginBottom: 4,
               }}
             >
-              <IconAlertTriangle stroke={1.5} size={18} color="#D97706" style={{ flexShrink: 0, marginTop: 1 }} />
-              <div style={{ fontSize: 13, color: "#92400E", ...POPPINS }}>
+              <IconAlertTriangle stroke={1.5} size={18} color="#B45309" style={{ flexShrink: 0, marginTop: 1 }} />
+              <div style={{ fontSize: 13, color: "#B45309", ...POPPINS }}>
                 Without Square, card payments take up to <strong>2 days</strong> to reach you via EveryDriver. Connect
                 Square for instant payouts.
               </div>

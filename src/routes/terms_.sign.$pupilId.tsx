@@ -336,8 +336,8 @@ function SignTermsPage() {
           <div
             style={{
               background: "#fff",
-              border: "1px solid #FEE4E2",
-              color: "#B42318",
+              border: "1px solid #FEE2E2",
+              color: "#B91C1C",
               padding: 14,
               borderRadius: 8,
               fontSize: 14,

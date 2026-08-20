@@ -235,7 +235,7 @@ function getBlockColour(title: string): { bg: string; border: string; icon: stri
     t.includes("school") || t.includes("pickup") || t.includes("drop") ||
     t.includes("kids") || t.includes("child") || t.includes("nursery")
   )
-    return { bg: "#FFFBEB", border: "#D97706", icon: "🎒", text: "#D97706" };
+    return { bg: "#FFFBEB", border: "#B45309", icon: "🎒", text: "#B45309" };
   if (
     t.includes("lunch") || t.includes("dinner") || t.includes("coffee") ||
     t.includes("birthday") || t.includes("party") || t.includes("wedding")
@@ -1611,7 +1611,7 @@ function SchedulePage() {
           <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Google Calendar</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 8, background: '#D97706' }} />
+          <div style={{ width: 8, height: 8, borderRadius: 8, background: '#B45309' }} />
           <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Free slot</span>
         </div>
       </div>
@@ -1810,7 +1810,7 @@ function SchedulePage() {
                                     left: 12,
                                     zIndex: 1,
                                     background: "#DCFCE7",
-                                    color: "#166534",
+                                    color: "#15803D",
                                     fontSize: 10,
                                     fontWeight: 800,
                                     textTransform: "uppercase",
@@ -2226,7 +2226,7 @@ function SchedulePage() {
                                                         width: 8,
                                                         height: 8,
                                                         borderRadius: 999,
-                                                        backgroundColor: '#DC2626',
+                                                        backgroundColor: '#B91C1C',
                                                         boxShadow: '0 0 0 2px #FFFFFF',
                                                         flexShrink: 0,
                                                       }}
@@ -2923,7 +2923,7 @@ function EntryRow({
           </div>
           {/* Time row */}
           <div style={{
-            fontSize: 11, color: '#92400E',
+            fontSize: 11, color: '#B45309',
             fontFamily: 'Poppins, sans-serif',
             marginBottom: testTime || location ? 3 : 0,
           }}>
@@ -3014,7 +3014,7 @@ function EntryRow({
               }}>
                 <span style={{
                   fontSize: 11,
-                  color: custom ? '#92400E' : 'rgba(255,255,255,0.8)',
+                  color: custom ? '#B45309' : 'rgba(255,255,255,0.8)',
                   fontWeight: custom ? 600 : 400,
                   fontFamily: 'Poppins, sans-serif',
                 }}>
@@ -3024,7 +3024,7 @@ function EntryRow({
                   <span style={{
                     fontSize: 9,
                     fontWeight: 700,
-                    color: '#92400E',
+                    color: '#B45309',
                     fontFamily: 'Poppins, sans-serif',
                   }}>
                     CUSTOM
@@ -3568,7 +3568,7 @@ function MonthStrip({
             padding: "6px 10px",
             borderRadius: 8,
             background: syncMessage.type === "success" ? "rgba(34, 197, 94, 0.12)" : "rgba(239, 68, 68, 0.12)",
-            color: syncMessage.type === "success" ? "#16A34A" : "#DC2626",
+            color: syncMessage.type === "success" ? "#16A34A" : "#B91C1C",
             fontSize: 12,
             fontWeight: 500,
             ...POPPINS,
@@ -3579,7 +3579,7 @@ function MonthStrip({
               width: 6,
               height: 6,
               borderRadius: "50%",
-              background: syncMessage.type === "success" ? "#16A34A" : "#DC2626",
+              background: syncMessage.type === "success" ? "#16A34A" : "#B91C1C",
             }}
           />
           <span style={{ flex: 1 }}>{syncMessage.text}</span>
@@ -3594,7 +3594,7 @@ function MonthStrip({
                 background: "transparent",
                 border: 0,
                 padding: 0,
-                color: "#DC2626",
+                color: "#B91C1C",
                 fontSize: 12,
                 fontWeight: 700,
                 textDecoration: "underline",

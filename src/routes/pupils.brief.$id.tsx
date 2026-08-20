@@ -530,7 +530,7 @@ function PupilBriefPage() {
                 <SectionHeader>TEST PREPARATION</SectionHeader>
                 <Card>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <IconTrophy size={20} color="#D97706" />
+                    <IconTrophy size={20} color="#B45309" />
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>
                         {fmtDate(pupil.test_date)}
@@ -549,14 +549,14 @@ function PupilBriefPage() {
                         padding: 10,
                         borderRadius: 8,
                         background: "#FFF8EB",
-                        color: "#92400E",
+                        color: "#B45309",
                         fontSize: 13,
                         lineHeight: 1.45,
                       }}
                     >
                       <IconAlertTriangle
                         size={14}
-                        color="#D97706"
+                        color="#B45309"
                         style={{ display: "inline", marginRight: 6 }}
                       />
                       Still to firm up before test: {continueItems.map((p) => p.label).join(", ")}

@@ -95,7 +95,7 @@ function statusColour(s: string | null | undefined): { bg: string; fg: string } 
     case "Studying": return { bg: "#F59E0B", fg: "#FFFFFF" };
     case "Booked": return { bg: "#1877D6", fg: "#FFFFFF" };
     case "Passed": return { bg: "#16A34A", fg: "#FFFFFF" };
-    case "Failed": return { bg: "#DC2626", fg: "#FFFFFF" };
+    case "Failed": return { bg: "#B91C1C", fg: "#FFFFFF" };
     default: return { bg: "#E5E7EB", fg: "#374151" };
   }
 }
@@ -2137,7 +2137,7 @@ function PupilDetailPage() {
                             </div>
                           </div>
                           {isCancelled ? (
-                            <span style={{ background: "#FDECEA", color: "#B42318", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Cancelled</span>
+                            <span style={{ background: "#FDECEA", color: "#B91C1C", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Cancelled</span>
                           ) : isPaid ? (
                             <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Paid ✓</span>
                           ) : isPartial ? (
@@ -3074,7 +3074,7 @@ function PupilDetailPage() {
                               </div>
                               <div className="flex gap-1.5 shrink-0">
                                 {r.f > 0 && (<span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#F3F4F6", color: "#374151", padding: "2px 7px", borderRadius: 999 }}>{r.f}</span>)}
-                                {r.s > 0 && (<span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#FEF3C7", color: "#92400E", padding: "2px 7px", borderRadius: 999 }}>S {r.s}</span>)}
+                                {r.s > 0 && (<span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#FEF3C7", color: "#B45309", padding: "4px 10px", borderRadius: 999 }}>S {r.s}</span>)}
                                 {r.d > 0 && (<span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 7px", borderRadius: 999 }}>D {r.d}</span>)}
                               </div>
                             </SheetRow>
@@ -3339,7 +3339,7 @@ function PupilDetailPage() {
           const hairline = <div style={{ height: 1, background: "#E9E9EC" }} />;
 
           const label = isLive ? "In progress" : isPast ? "Last lesson" : "Next lesson";
-          const labelColor = isLive ? "#137333" : isCancelled ? "#B42318" : "#1877D6";
+          const labelColor = isLive ? "#137333" : isCancelled ? "#B91C1C" : "#1877D6";
           const lastMsgTime = lastMessage
             ? new Date(lastMessage.created_at).toLocaleString("en-GB", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" })
             : "";
@@ -4995,7 +4995,7 @@ function NIRow({
 }
 
 const RELATIONS = ["Parent", "Spouse", "Partner", "Sibling", "Friend", "Guardian", "Other"];
-const CAL_COLOURS = ["#1A52A0", "#16A34A", "#CC2229", "#D97706", "#7C3AED", "#0891B2", "#EC4899", "#0B1F3A"];
+const CAL_COLOURS = ["#1A52A0", "#16A34A", "#CC2229", "#B45309", "#7C3AED", "#0891B2", "#EC4899", "#0B1F3A"];
 const EXTRAS_CARD: React.CSSProperties = {
   borderRadius: 8,
   border: "0.5px solid #E2E6ED",

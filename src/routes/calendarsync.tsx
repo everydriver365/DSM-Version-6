@@ -666,10 +666,10 @@ function CalendarSyncPage() {
                   style={{
                     background: "#DCFCE7",
                     color: "#15803D",
-                    fontSize: 10,
+                    fontSize: 11,
                     fontWeight: 700,
-                    borderRadius: 8,
-                    padding: "2px 8px",
+                    borderRadius: 999,
+                    padding: "4px 10px",
                   }}
                 >
                   Connected

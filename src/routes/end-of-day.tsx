@@ -270,7 +270,7 @@ function EndOfDayPage() {
         <Stat label="Lessons today" value={String(stats.count)} />
         <Stat label="Hours taught" value={stats.hours.toFixed(1)} />
         <Stat label="Earned today" value={`£${stats.earned.toFixed(0)}`} color="#1877D6" hint={stats.prepaidEarnings > 0 ? "(est.)" : undefined} />
-        <Stat label="Outstanding" value={`£${stats.outstanding.toFixed(0)}`} color={stats.outstanding > 0 ? "#DC2626" : "#0B1F3A"} />
+        <Stat label="Outstanding" value={`£${stats.outstanding.toFixed(0)}`} color={stats.outstanding > 0 ? "#B91C1C" : "#0B1F3A"} />
       </div>
 
       {/* Section 2: Outstanding actions */}
@@ -286,7 +286,7 @@ function EndOfDayPage() {
           {unpaidLessons.map((l) => (
             <Row key={`pay-${l.id}`}>
               <span>{pupilName(l.pupils) || "Pupil"} — £{(l.amount_due ?? 0).toFixed(2)} unpaid</span>
-              <SmallBtn color="#DC2626" onClick={() => chasePayment(l)}>Chase payment</SmallBtn>
+              <SmallBtn color="#B91C1C" onClick={() => chasePayment(l)}>Chase payment</SmallBtn>
             </Row>
           ))}
         </Card>
@@ -333,7 +333,7 @@ function EndOfDayPage() {
               ) : l.payment_status === "paid" ? (
                 <Badge bg="#E7F8EF" color="#067647">Paid ✓</Badge>
               ) : l.payment_status === "unpaid" && (l.amount_due ?? 0) > 0 ? (
-                <Badge bg="#FEE2E2" color="#991B1B">£{(l.amount_due ?? 0).toFixed(0)} unpaid</Badge>
+                <Badge bg="#FEE2E2" color="#B91C1C">£{(l.amount_due ?? 0).toFixed(0)} unpaid</Badge>
               ) : null}
             </button>
           ))
@@ -415,7 +415,7 @@ function EndOfDayPage() {
               top: 8,
               padding: 6,
               borderRadius: 999,
-              background: listening ? "#DC2626" : "#F3F4F6",
+              background: listening ? "#B91C1C" : "#F3F4F6",
               cursor: "pointer",
               animation: listening ? "eod-pulse 1s infinite" : undefined,
             }}

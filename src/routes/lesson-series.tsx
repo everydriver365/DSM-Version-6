@@ -576,7 +576,7 @@ function LessonSeriesPage() {
                         setMenuOpenId(null);
                       }}
                       className="cf-tap w-full text-left"
-                      style={{ padding: "10px 14px", fontSize: 13, color: "#DC2626", borderTop: "0.5px solid #F3F4F6" }}
+                      style={{ padding: "10px 14px", fontSize: 13, color: "#B91C1C", borderTop: "0.5px solid #F3F4F6" }}
                     >
                       End series
                     </button>

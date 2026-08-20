@@ -440,7 +440,7 @@ function AvailabilitySettingsPage() {
       </div>
 
       {savedFlash ? (
-        <div style={{ margin: "12px 16px 0", padding: "8px 12px", background: "#E0FFF4", border: "0.5px solid #86EFAC", color: "#166534", borderRadius: 8, fontSize: 13 }}>
+        <div style={{ margin: "12px 16px 0", padding: "8px 12px", background: "#E0FFF4", border: "0.5px solid #86EFAC", color: "#15803D", borderRadius: 8, fontSize: 13 }}>
           {savedFlash}
         </div>
       ) : null}

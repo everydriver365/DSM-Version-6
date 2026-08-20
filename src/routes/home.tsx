@@ -431,7 +431,7 @@ const TIER_THRESHOLDS = {
 const TIER_COLORS: Record<keyof typeof TIER_THRESHOLDS, string> = {
   bronze: "#CD7F32",
   silver: "#9CA3AF",
-  gold: "#D97706",
+  gold: "#B45309",
   platinum: "#6366F1",
   elite: "#0B1F3A",
 };
@@ -2263,7 +2263,7 @@ function HomePage() {
       course_booking: { bg: "#1877D6", Icon: IconBook, route: "/bookings" },
       payment: { bg: "#16A34A", Icon: IconCurrencyPound, route: "/payments" },
       message: { bg: "#00B5A5", Icon: IconMessage, route: "/messages" },
-      rewards: { bg: "#D97706", Icon: IconTrophy, route: "/rewards" },
+      rewards: { bg: "#B45309", Icon: IconTrophy, route: "/rewards" },
       pupil_reply: { bg: "#00B5A5", Icon: IconMessage, route: "/messages" },
       chat_message: { bg: "#7C3AED", Icon: IconMessageCircle, route: "/community" },
 
@@ -3704,7 +3704,7 @@ function HomePage() {
             {isTestLesson(l) ? (
               <div
                 className="flex items-center"
-                style={{ gap: 4, fontSize: 12, color: testCentreOf(l) ? "#92400E" : "#9CA3AF" }}
+                style={{ gap: 4, fontSize: 12, color: testCentreOf(l) ? "#B45309" : "#9CA3AF" }}
               >
                 <IconMapPin stroke={1.5} size={10} />
                 <span style={{ fontWeight: testCentreOf(l) ? 600 : 400 }}>
@@ -3998,12 +3998,12 @@ function HomePage() {
     { icon: <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><IconRosetteDiscount stroke={1.5} size={20} color="#FFFFFF" /><span style={{ position: 'absolute', right: -4, bottom: -4, width: 16, height: 16, borderRadius: '50%', background: '#7C3AED', border: '1.5px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconSearch size={9} color="#FFFFFF" stroke={2.5} /></span></span>, bg: '#7C3AED', label: 'My Perks', sub: 'Perks and rewards', route: '/perks' },
     { icon: <IconMap stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Start tracking", route: "/live" },
     { icon: <IconCalendarCheck stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Month end", route: "/monthend" },
-    { icon: <IconSchool stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Courses", route: "/courses" },
+    { icon: <IconSchool stroke={1.5} size={20} color="#FFFFFF" />, bg: "#B91C1C", label: "Courses", route: "/courses" },
     { icon: <IconCurrencyPound stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Payments", route: "/payments" },
     { icon: <IconMessage stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Messages", route: "/messages" },
     { icon: <IconTrendingUp stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Earnings", route: "/earnings" },
     { icon: <IconReceipt size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Expenses", route: "/expenses" },
-    { icon: <IconCar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Mileage", route: "/mileage" },
+    { icon: <IconCar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#B91C1C", label: "Mileage", route: "/mileage" },
     { icon: <IconGasStation size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Fuel costs", route: "/fuel" },
     { icon: <IconChartBar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Reports", route: "/reports" },
     { icon: <IconTrendingUp stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Performance", route: "/performance" },
@@ -4013,7 +4013,7 @@ function HomePage() {
     { icon: <IconTrophy stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Rewards", route: "/rewards" },
     { icon: <IconStar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Reviews", route: "/reviews" },
     { icon: <IconInbox stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Enquiries", route: "/enquiries" },
-    { icon: <IconClock stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Waiting list", route: "/waitlist" },
+    { icon: <IconClock stroke={1.5} size={20} color="#FFFFFF" />, bg: "#B91C1C", label: "Waiting list", route: "/waitlist" },
     { icon: <IconGift stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Referrals", route: "/referrals" },
     { icon: <IconCar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Vehicle", route: "/vehicle" },
     { icon: <IconBook size={20} color="#FFFFFF" />, bg: "#1877D6", label: "CPD", route: "/cpd" },
@@ -4026,36 +4026,36 @@ function HomePage() {
     { icon: <IconFolderOpen size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Documents", route: "/documents" },
     { icon: <IconClipboardList stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Manifest", route: "/manifest" },
     { icon: <IconCheckbox stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Checklist", route: "/checklist" },
-    { icon: <IconBell stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Reminders", route: "/reminder" },
+    { icon: <IconBell stroke={1.5} size={20} color="#FFFFFF" />, bg: "#B91C1C", label: "Reminders", route: "/reminder" },
     { icon: <IconHeart stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Health", route: "/health" },
     { icon: <IconBook size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Resources", route: "/resources" },
     { icon: <IconHelpCircle size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Help", route: "/help" },
     { icon: <IconLayoutGrid stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pipeline", route: "/pipeline" },
     { icon: <IconSignature size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Waivers", route: "/waivers" },
     { icon: <IconBolt stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Fill My Slots", route: "/gaps" },
-    { icon: <IconUsers stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Bulk message", route: "/bulkmessage" },
+    { icon: <IconUsers stroke={1.5} size={20} color="#FFFFFF" />, bg: "#B91C1C", label: "Bulk message", route: "/bulkmessage" },
     { icon: <IconNavigation stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Sat Nav", route: "/satnav" },
     { icon: <IconChartBar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Weekly report", route: "/weekly-report" },
-    { icon: <IconMapPin stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Locations", route: "/locations" },
+    { icon: <IconMapPin stroke={1.5} size={20} color="#FFFFFF" />, bg: "#B91C1C", label: "Locations", route: "/locations" },
     { icon: <IconUpload stroke={1.5} size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Import", route: "/dataimport" },
     { icon: <IconAward stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Certifications", route: "/certifications" },
     { icon: <IconToggleLeft size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Availability", route: "/availability" },
     
     { icon: <IconMoon stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "End of day", route: "/end-of-day" },
-    { icon: <IconSpeakerphone size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Broadcast", route: "/broadcast" },
+    { icon: <IconSpeakerphone size={20} color="#FFFFFF" />, bg: "#B91C1C", label: "Broadcast", route: "/broadcast" },
     { icon: <IconBolt stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Automations", route: "/automations" },
     { icon: <IconCalendar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Diary", route: "/diary" },
     { icon: <IconCrown size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My plan", route: "/subscription" },
-    { icon: <IconPlayerPlay size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Live session", route: "/livesession" },
+    { icon: <IconPlayerPlay size={20} color="#FFFFFF" />, bg: "#B91C1C", label: "Live session", route: "/livesession" },
     { icon: <IconSearch stroke={1.5} size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Search", route: "/search" },
-    { icon: <IconBell stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Notifications", route: "/notifications" },
+    { icon: <IconBell stroke={1.5} size={20} color="#FFFFFF" />, bg: "#B91C1C", label: "Notifications", route: "/notifications" },
     
     { icon: <IconRefresh stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Calendar sync", route: "/calendarsync" },
     { icon: <IconUserCircle size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Profile", route: "/profile" },
     { icon: <IconFileSpreadsheet size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "MTD", route: "/mtd" },
     { icon: <IconFileText stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Quotes", route: "/quotes" },
     { icon: <IconSun stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Briefing", route: "/briefing" },
-    { icon: <IconAlertCircle stroke={1.5} size={20} color="#FFFFFF" />, bg: "#DC2626", label: "Outstanding", route: "/outstanding" },
+    { icon: <IconAlertCircle stroke={1.5} size={20} color="#FFFFFF" />, bg: "#B91C1C", label: "Outstanding", route: "/outstanding" },
     { icon: <IconPlayerPlay size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Learn", route: "/learn" },
 
   ] as const;
@@ -4290,7 +4290,7 @@ function HomePage() {
                     const potential = Math.round(availableHours * hourlyRate);
                     const fmt24 = (h: number, m: number) => `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
                     const workingLabel = todayWorks ? `${fmt24(sh, sm)} – ${fmt24(eh, em)}` : "Not working today";
-                    const AVATAR_PALETTE = ["#1877D6", "#00B5A5", "#7C3AED", "#DC2626", "#F59E0B", "#0EA5E9"];
+                    const AVATAR_PALETTE = ["#1877D6", "#00B5A5", "#7C3AED", "#B91C1C", "#F59E0B", "#0EA5E9"];
                     const pupils = outstandingBreakdown.slice(0, 5);
                     const extraPupils = Math.max(0, activePupilsCount - pupils.length);
                     return (
@@ -4428,7 +4428,7 @@ function HomePage() {
                               <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "2px 7px", borderRadius: 20, background: "#EEF2F7", color: "#9CA3AF" }}>Done</span>
                             )}
                             {now && (
-                              <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "2px 7px", borderRadius: 20, background: "#DCFCE7", color: "#15803D" }}>Now</span>
+                              <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", padding: "4px 10px", borderRadius: 999, background: "#DCFCE7", color: "#15803D" }}>Now</span>
                             )}
 
                             {eolDue && (
@@ -4438,8 +4438,8 @@ function HomePage() {
                                   navigate({ to: "/end-of-day" });
                                 }}
                                 style={{
-                                  fontSize: 10, fontWeight: 700, textTransform: "uppercase",
-                                  padding: "3px 8px", borderRadius: 8,
+                                  fontSize: 11, fontWeight: 700, textTransform: "uppercase",
+                                  padding: "4px 10px", borderRadius: 999,
                                   background: "#FEF3C7", color: "#D68A1B",
                                   cursor: "pointer",
                                 }}
@@ -4914,7 +4914,7 @@ function HomePage() {
 
           const hLabelFinal = hIsPartial ? 'Part paid' : isPaid ? 'Paid' : isOverdue ? 'Overdue' : 'Due';
           const hPillBgFinal = hIsPartial ? '#FEF3C7' : isPaid ? '#E5F4EA' : isOverdue ? '#FEECEC' : '#FEF3C7';
-          const hPillFgFinal = hIsPartial ? '#D97706' : isPaid ? '#1E9E5A' : isOverdue ? '#CC2229' : '#D97706';
+          const hPillFgFinal = hIsPartial ? '#B45309' : isPaid ? '#1E9E5A' : isOverdue ? '#CC2229' : '#B45309';
 
 
 
@@ -5501,7 +5501,7 @@ function HomePage() {
         const ACCENT = '#1877D6';
         const DANGER = '#C9302C';
         const AMBER_BG = '#FEF3C7';
-        const AMBER_FG = '#92400E';
+        const AMBER_FG = '#B45309';
         const PURPLE_BG = '#EDE9FE';
         const PURPLE_FG = '#6D28D9';
 
@@ -5806,8 +5806,8 @@ function HomePage() {
                     style={{
                       marginTop: 16,
                       background: '#FEF3C7',
-                      border: '0.5px solid #D97706',
-                      borderLeft: '4px solid #D97706',
+                      border: '0.5px solid #B45309',
+                      borderLeft: '4px solid #B45309',
                       borderRadius: 8,
                       padding: '14px 16px',
                       fontFamily: PF,
@@ -5817,10 +5817,10 @@ function HomePage() {
                     }}
                   >
                     <div style={{ width: 40, height: 40, borderRadius: 8, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <IconBolt stroke={1.5} size={20} color="#D97706" />
+                      <IconBolt stroke={1.5} size={20} color="#B45309" />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: '#D97706', textTransform: 'uppercase', letterSpacing: 0.5 }}>Slot freed</div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: '#B45309', textTransform: 'uppercase', letterSpacing: 0.5 }}>Slot freed</div>
                       <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {pupilName} cancelled their lesson
                       </div>
@@ -5834,7 +5834,7 @@ function HomePage() {
                         to: '/gaps',
                         search: { date: freedSlot.lesson_date, time, duration: String(duration) } as any,
                       })}
-                      style={{ background: '#D97706', color: '#FFFFFF', border: 'none', borderRadius: 8, padding: '8px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
+                      style={{ background: '#B45309', color: '#FFFFFF', border: 'none', borderRadius: 8, padding: '8px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
                     >
                       Fill slot →
                     </button>
@@ -6577,8 +6577,8 @@ function HomePage() {
                                         padding: custom ? '2px 6px' : '0',
                                         minWidth: 0,
                                       }}>
-                                        <IconMapPin size={12} stroke={1.9} color={custom ? '#92400E' : '#6B7686'} style={{ flexShrink: 0 }} />
-                                        <span style={{ fontSize: 12, color: custom ? '#92400E' : '#6B7686', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: custom ? 600 : 400 }}>
+                                        <IconMapPin size={12} stroke={1.9} color={custom ? '#B45309' : '#6B7686'} style={{ flexShrink: 0 }} />
+                                        <span style={{ fontSize: 12, color: custom ? '#B45309' : '#6B7686', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: custom ? 600 : 400 }}>
                                           {pickupLabel}
                                         </span>
                                         {custom && (
@@ -6640,7 +6640,7 @@ function HomePage() {
                                  gap: 6,
                                }}
                              >
-                               <IconClockExclamation size={13} stroke={1.9} color="#92400E" style={{ flexShrink: 0 }} />
+                               <IconClockExclamation size={13} stroke={1.9} color="#B45309" style={{ flexShrink: 0 }} />
                                <span style={{ fontSize: 11, fontWeight: 600, color: '#D68A1B', fontFamily: PF }}>
                                  End of lesson not completed
                                </span>
@@ -6902,7 +6902,7 @@ function HomePage() {
                   // Soft pastel chip tint derived from each tile's existing colour
                   const TINTS: Record<string, { chip: string; icon: string }> = {
                     '#1877D6': { chip: '#E3EEFB', icon: '#1877D6' },
-                    '#DC2626': { chip: '#FCE4E4', icon: '#DC2626' },
+                    '#B91C1C': { chip: '#FCE4E4', icon: '#B91C1C' },
                     '#0B1F3A': { chip: '#E6E9F2', icon: '#0B1F3A' },
                     '#6B7280': { chip: '#EDEFF2', icon: '#6B7280' },
                     '#7C3AED': { chip: '#EEE7FC', icon: '#7C3AED' },
@@ -7514,7 +7514,7 @@ function HomePage() {
           const GREY_C = '#6B7686';
           const BORDER_C = '#E4E8EF';
           const GREEN_C = '#1E9E5A';
-          const AMBER_C = '#D97706';
+          const AMBER_C = '#B45309';
           const RED_C = '#CC2229';
           const PF_C = 'Poppins, sans-serif';
 
@@ -7663,7 +7663,7 @@ function HomePage() {
             avatarItems.push({ key: 'issues', bg: RED_C, node: <IconAlertTriangle stroke={1.5} size={15} color="#FFFFFF" /> });
           }
           if (adminUnread > 0) {
-            avatarItems.push({ key: 'admin', bg: '#92400E', node: <IconSpeakerphone size={15} color="#FFFFFF" /> });
+            avatarItems.push({ key: 'admin', bg: '#B45309', node: <IconSpeakerphone size={15} color="#FFFFFF" /> });
           }
           const firstPupil = pupilReplies[0];
           if (firstPupil) {
@@ -7911,7 +7911,7 @@ function HomePage() {
                       title: 'Admin update',
                       source: 'Admin',
                       detail: clean(adminLatest.message),
-                      colour: '#92400E',
+                      colour: '#B45309',
                       onClick: () => navigate({ to: '/community', search: { tab: 'rooms' } }),
                     } : null,
                     topDM?.last_message_at ? {
@@ -8021,7 +8021,7 @@ function HomePage() {
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       }}
                                     >
-                                      <IconSpeakerphone size={14} color="#92400E" />
+                                      <IconSpeakerphone size={14} color="#B45309" />
                                     </div>
                                   );
                                 }
@@ -8084,7 +8084,7 @@ function HomePage() {
                         />
                         <Sep />
                         <Label
-                          text="Admin" colour="#92400E" count={adminUnread}
+                          text="Admin" colour="#B45309" count={adminUnread}
                           onClick={() => navigate({ to: '/community', search: { tab: 'rooms' } })}
                         />
                         <Sep />
@@ -9794,7 +9794,7 @@ function iconTint(solid: string) {
   switch (solid.toUpperCase()) {
     case "#1877D6": return "#F3F8FF";
     case "#0B1F3A": return "#EEF2F7";
-    case "#DC2626": return "#FEF2F2";
+    case "#B91C1C": return "#FEF2F2";
     case "#6B7280": return "#F3F4F6";
     case "#EA580C": return "#FFF7ED";
     case "#16A34A": return "#F0FDF4";
@@ -9812,7 +9812,7 @@ function tileColor(route: string) {
   if (r.includes("pupil") || r.includes("people") || r.includes("user") || r.includes("enquir") || r.includes("waitlist") || r.includes("referral")) return "#7C3AED";
   if (r.includes("message") || r.includes("broadcast") || r.includes("bulkmessage")) return "#EC4899";
   if (r.includes("live") || r.includes("satnav") || r.includes("map") || r.includes("location") || r.includes("gap") || r.includes("track")) return "#06B6D4";
-  if (r.includes("mileage") || r.includes("fuel") || r.includes("vehicle") || r.includes("car") || r.includes("reminder") || r.includes("alert")) return "#DC2626";
+  if (r.includes("mileage") || r.includes("fuel") || r.includes("vehicle") || r.includes("car") || r.includes("reminder") || r.includes("alert")) return "#B91C1C";
   if (r.includes("report") || r.includes("performance") || r.includes("pipeline") || r.includes("analytic") || r.includes("document") || r.includes("manifest") || r.includes("checklist") || r.includes("note") || r.includes("todo") || r.includes("waiver") || r.includes("import") || r.includes("certification") || r.includes("standard") || r.includes("help") || r.includes("expenses")) return "#0B1F3A";
   if (r.includes("test") || r.includes("course") || r.includes("cpd") || r.includes("briefing") || r.includes("health") || r.includes("eod") || r.includes("end-of-day") || r.includes("resource")) return "#F59E0B";
   if (r.includes("reward") || r.includes("review") || r.includes("trophy")) return "#EC4899";
@@ -10139,13 +10139,13 @@ function OutstandingBreakdownModal({
                       alignItems: "center",
                       justifyContent: "center",
                       gap: 4,
-                      padding: "6px 8px",
+                      padding: "4px 10px",
                       fontSize: 11,
                       fontWeight: 600,
                       backgroundColor: "#F1F5F9",
                       color: "#0B1F3A",
                       border: "1px solid #CBD5E1",
-                      borderRadius: 8,
+                      borderRadius: 999,
                       cursor: "pointer",
                     }}
                   >
@@ -10405,7 +10405,7 @@ function EarningsBreakdownModal({
                               setBusyId(null);
                             }
                           }}
-                          style={{ padding: "6px 10px", fontSize: 12, background: "#DC2626", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: "#B91C1C", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
                         >
                           {isBusy ? "Deleting..." : "Delete"}
                         </button>
@@ -10469,7 +10469,7 @@ function LessonsBreakdownModal({
   const statusColors: Record<string, { bg: string; fg: string }> = {
     completed: { bg: "#F3F8FF", fg: "#0B1F3A" },
     confirmed: { bg: "#EFF6FF", fg: "#1E40AF" },
-    cancelled: { bg: "#FEE2E2", fg: "#991B1B" },
+    cancelled: { bg: "#FEE2E2", fg: "#B91C1C" },
   };
   const completed = rows.filter((r) => r.status === "completed").length;
   const upcoming = rows.filter((r) => r.status === "confirmed" || r.status === "scheduled").length;
@@ -10534,7 +10534,7 @@ function LessonsBreakdownModal({
                   <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 600, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {r.pupilName}
                   </div>
-                  <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 8, backgroundColor: "#F1F5F9", color: "#0B1F3A" }}>
+                  <span style={{ fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 999, backgroundColor: "#F1F5F9", color: "#0B1F3A" }}>
                     {r.duration_minutes ?? 60}m
                   </span>
                   <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 8, backgroundColor: colors.bg, color: colors.fg, textTransform: "capitalize" }}>
@@ -10554,7 +10554,7 @@ function LessonsBreakdownModal({
                     border: "none",
                     padding: 6,
                     cursor: "pointer",
-                    color: "#DC2626",
+                    color: "#B91C1C",
                     display: "flex",
                     alignItems: "center",
                   }}
@@ -10632,7 +10632,7 @@ function LessonsBreakdownModal({
               }
             }}
             disabled={deleting}
-            style={{ padding: "8px 14px", fontSize: 13, fontWeight: 700, backgroundColor: "#DC2626", color: "#fff", border: "none", borderRadius: 8, cursor: deleting ? "not-allowed" : "pointer", opacity: deleting ? 0.7 : 1 }}
+            style={{ padding: "8px 14px", fontSize: 13, fontWeight: 700, backgroundColor: "#B91C1C", color: "#fff", border: "none", borderRadius: 8, cursor: deleting ? "not-allowed" : "pointer", opacity: deleting ? 0.7 : 1 }}
           >
             {deleting ? "Deleting…" : "Delete lesson"}
           </button>
@@ -10679,7 +10679,7 @@ function TestsBreakdownModal({
     return Math.max(0, Math.round((today.getTime() - dt.getTime()) / (1000 * 60 * 60 * 24)));
   };
   const badgeColors = (days: number) => {
-    if (days < 7) return { bg: "#FEE2E2", fg: "#991B1B" };
+    if (days < 7) return { bg: "#FEE2E2", fg: "#B91C1C" };
     if (days <= 14) return { bg: "#EEF2F7", fg: "#0B1F3A" };
     return { bg: "#F3F8FF", fg: "#0B1F3A" };
   };
@@ -10751,9 +10751,9 @@ function TestsBreakdownModal({
                     <span
                       onClick={(e) => { e.stopPropagation(); onOpenPupil(t.id); }}
                       style={{
-                        fontSize: 10,
+                        fontSize: 11,
                         fontWeight: 700,
-                        padding: "3px 8px",
+                        padding: "4px 10px",
                         borderRadius: 999,
                         backgroundColor: "#FEF3C7",
                         color: "#D68A1B",

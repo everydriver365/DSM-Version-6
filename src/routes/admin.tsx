@@ -352,7 +352,7 @@ function FlaggedMessagesSection() {
                         onClick={() => banUser(m)}
                         style={{
                           flex: 1, height: 36, borderRadius: 8, border: "none",
-                          background: "#991B1B", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer",
+                          background: "#B91C1C", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer",
                         }}
                       >
                         Confirm ban
@@ -399,7 +399,7 @@ function FlaggedMessagesSection() {
                       onClick={() => setConfirmBanId(m.id)}
                       style={{
                         flex: 1, minWidth: 84, height: 36, borderRadius: 8, border: "none",
-                        background: "#991B1B", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer",
+                        background: "#B91C1C", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer",
                       }}
                     >
                       Ban user
@@ -1287,7 +1287,7 @@ const PARTNER_TIER_STYLE: Record<string, { bg: string; color: string }> = {
   free: { bg: "#F1F5F9", color: "#6B7686" },
   website: { bg: "#EFF6FF", color: "#1877D6" },
   pro: { bg: "#EDE9FE", color: "#7C3AED" },
-  managed: { bg: "#FEF3C7", color: "#92400E" },
+  managed: { bg: "#FEF3C7", color: "#B45309" },
 };
 
 const removeImageBtnStyle: React.CSSProperties = {
@@ -1781,11 +1781,11 @@ export function BenefitPartnersSection() {
                   <span
                     style={{
                       background: "#FEF3C7",
-                      color: "#92400E",
-                      fontSize: 9,
+                      color: "#B45309",
+                      fontSize: 11,
                       fontWeight: 700,
-                      borderRadius: 8,
-                      padding: "2px 7px",
+                      borderRadius: 999,
+                      padding: "4px 10px",
                       flexShrink: 0,
                     }}
                   >
@@ -1912,10 +1912,10 @@ export function BenefitPartnersSection() {
                   style={{
                     background: partner.active ? "#DCFCE7" : "#F1F5F9",
                     color: partner.active ? "#15803D" : "#9CA3AF",
-                    fontSize: 9,
+                    fontSize: 11,
                     fontWeight: 700,
-                    borderRadius: 8,
-                    padding: "2px 7px",
+                    borderRadius: 999,
+                    padding: "4px 10px",
                     cursor: "pointer",
                   }}
                 >
@@ -2001,11 +2001,11 @@ export function BenefitPartnersSection() {
                       <span
                         style={{
                           background: "#FEF3C7",
-                          color: "#92400E",
-                          fontSize: 9,
+                          color: "#B45309",
+                          fontSize: 11,
                           fontWeight: 700,
-                          borderRadius: 8,
-                          padding: "2px 7px",
+                          borderRadius: 999,
+                          padding: "4px 10px",
                         }}
                       >
                         Coming soon

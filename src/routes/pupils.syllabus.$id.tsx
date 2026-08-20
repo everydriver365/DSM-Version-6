@@ -86,7 +86,7 @@ const MAX_POINTS = TOTAL_COMPETENCIES * 5;
 
 const LEVEL_META: { n: 0 | 1 | 2 | 3 | 4 | 5; label: string; color: string }[] = [
   { n: 0, label: "Not started", color: "#9CA3AF" },
-  { n: 1, label: "Introduced", color: "#DC2626" },
+  { n: 1, label: "Introduced", color: "#B91C1C" },
   { n: 2, label: "Under guidance", color: "#EA580C" },
   { n: 3, label: "Prompted", color: "#EAB308" },
   { n: 4, label: "Seldom prompted", color: "#1877D6" },

@@ -212,7 +212,7 @@ function VehiclePage() {
           }}
         >
           <IconAlertTriangle stroke={1.5} size={16} color="#1877D6" />
-          <div className="text-[13px]" style={{ color: "#991B1B" }}>
+          <div className="text-[13px]" style={{ color: "#B91C1C" }}>
             <span className="font-semibold">{alerts.length} vehicle check{alerts.length === 1 ? "" : "s"} due soon</span>
             <span className="ml-1">— {alerts.join(", ")}</span>
           </div>

@@ -102,7 +102,7 @@ type AlertSeverity = "critical" | "caution" | "info" | "neutral";
 
 const SEVERITY_COLOURS: Record<AlertSeverity, { bg: string; colour: string; sign: string }> = {
   critical: { bg: "#FCEBEB", colour: "#A32D2D", sign: "#C8102E" },
-  caution:  { bg: "#FEF3C7", colour: "#D97706", sign: "#D97706" },
+  caution:  { bg: "#FEF3C7", colour: "#B45309", sign: "#B45309" },
   info:     { bg: "#F5F3FF", colour: "#6B4FD6", sign: "#005EB8" },
   neutral:  { bg: "#F3F4F6", colour: "#6B7280", sign: "#9CA3AF" },
 };

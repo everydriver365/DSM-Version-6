@@ -44,10 +44,10 @@ const allTools: Tool[] = [
   { icon: IconClipboardCheck, colour: '#16A34A', label: 'Mock tests', sub: 'Practice tests', route: '/mock-tests', group: 'Teaching' },
   { icon: IconFileText, colour: '#9CA3AF', label: 'Lesson notes', sub: 'Templates', route: '/lesson-notes', group: 'Teaching' },
   // Business
-  { icon: IconAward, colour: '#D97706', label: 'Certifications', sub: 'Licences & renewals', route: '/certifications', group: 'Business' },
+  { icon: IconAward, colour: '#B45309', label: 'Certifications', sub: 'Licences & renewals', route: '/certifications', group: 'Business' },
   { icon: IconSchool, colour: '#16A34A', label: 'CPD log', sub: 'Development hours', route: '/cpd', group: 'Business' },
   { icon: IconReceipt, colour: '#CC2229', label: 'Expenses', sub: 'Track costs', route: '/expenses', group: 'Business' },
-  { icon: IconGasStation, colour: '#D97706', label: 'Find fuel', sub: 'Nearby stations', route: '/fuel', group: 'Business' },
+  { icon: IconGasStation, colour: '#B45309', label: 'Find fuel', sub: 'Nearby stations', route: '/fuel', group: 'Business' },
   { icon: IconCar, colour: '#6B7280', label: 'Vehicle', sub: 'Health & MOT', route: '/vehicle', group: 'Business' },
   { icon: IconMapPin, colour: '#6B7280', label: 'Mileage', sub: 'Log miles', route: '/mileage', group: 'Business' },
   { icon: IconFileText, colour: '#1A52A0', label: 'Invoices', sub: 'Billing', route: '/invoices', group: 'Business' },
@@ -57,14 +57,14 @@ const allTools: Tool[] = [
   
 
   // Payments
-  { icon: IconCreditCard, colour: '#D97706', label: 'Square Payments', sub: 'Set up card payments', route: '/square', group: 'Payments', gradient: 'linear-gradient(135deg, #F59E0B, #D97706)' },
+  { icon: IconCreditCard, colour: '#B45309', label: 'Square Payments', sub: 'Set up card payments', route: '/square', group: 'Payments', gradient: 'linear-gradient(135deg, #F59E0B, #B45309)' },
 
 
 
 
   // Reports
   { icon: IconChartBar, colour: '#1A52A0', label: 'MTD', sub: 'Month to date', route: '/mtd', group: 'Reports' },
-  { icon: IconCalculator, colour: '#D97706', label: 'Tax report', sub: 'Self assessment', route: '/tax-report', group: 'Reports' },
+  { icon: IconCalculator, colour: '#B45309', label: 'Tax report', sub: 'Self assessment', route: '/tax-report', group: 'Reports' },
   { icon: IconCalendar, colour: '#16A34A', label: 'Weekly report', sub: 'Week summary', route: '/weekly-report', group: 'Reports' },
   { icon: IconMoon, colour: '#7C3AED', label: 'End of day', sub: 'Daily wrap up', route: '/end-of-day', group: 'Reports' },
   { icon: IconTrendingUp, colour: '#16A34A', label: 'Earnings forecast', sub: 'Predict income', route: '/earnings-forecast', group: 'Reports' },

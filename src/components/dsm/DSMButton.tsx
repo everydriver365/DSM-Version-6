@@ -40,7 +40,7 @@ export default function DSMButton({
     danger: {
       background: tokens.red,
       color: tokens.white,
-      boxShadow: "0 3px 0 #991B1B",
+      boxShadow: "0 3px 0 #B91C1C",
     },
     ghost: {
       background: "transparent",

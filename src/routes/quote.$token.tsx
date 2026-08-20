@@ -337,7 +337,7 @@ function PublicQuotePage() {
                   )}
 
                   {noSquare && (
-                    <div style={{ background: "#FFFBEB", color: "#92400E", padding: 12, borderRadius: 8, fontSize: 13, marginBottom: 12 }}>
+                    <div style={{ background: "#FFFBEB", color: "#B45309", padding: 12, borderRadius: 8, fontSize: 13, marginBottom: 12 }}>
                       Your instructor hasn't connected Square yet. Please pay by bank transfer or contact your instructor directly.
                       {(instructor?.bank_account_name || instructor?.bank_sort_code || instructor?.bank_account_number) && (
                         <div style={{ marginTop: 8, color: "#0B1F3A" }}>

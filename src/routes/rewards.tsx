@@ -22,7 +22,7 @@ type TierKey = "bronze" | "silver" | "gold" | "platinum" | "elite";
 const TIERS: Record<TierKey, { min: number; label: string; emoji: string; color: string; bg: string }> = {
   bronze:   { min: 0,    label: "Bronze",   emoji: "🥉", color: "#CD7F32", bg: "#FDF3E7" },
   silver:   { min: 500,  label: "Silver",   emoji: "🥈", color: "#9CA3AF", bg: "#F3F4F6" },
-  gold:     { min: 1500, label: "Gold",     emoji: "🥇", color: "#D97706", bg: "#FFFBEB" },
+  gold:     { min: 1500, label: "Gold",     emoji: "🥇", color: "#B45309", bg: "#FFFBEB" },
   platinum: { min: 3000, label: "Platinum", emoji: "💎", color: "#6366F1", bg: "#EEF2FF" },
   elite:    { min: 6000, label: "Elite",    emoji: "⭐", color: "#0F2044", bg: "#E0F2FE" },
 };
@@ -239,7 +239,7 @@ function RewardsPage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-          <IconBolt size={18} color="#D97706" />
+          <IconBolt size={18} color="#B45309" />
           <div style={{ fontWeight: 800, color: "#0B1F3A", fontSize: 15 }}>How to earn points</div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
@@ -288,7 +288,7 @@ function RewardsPage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <IconMedal size={18} color="#D97706" />
+          <IconMedal size={18} color="#B45309" />
           <div style={{ fontWeight: 800, color: "#0B1F3A", fontSize: 15 }}>
             Leaderboard {currentYear}
           </div>
@@ -319,7 +319,7 @@ function RewardsPage() {
               const rank = i + 1;
               const isMe = row.instructor_id === userId;
               const rankColor =
-                rank === 1 ? "#D97706" : rank === 2 ? "#9CA3AF" : rank === 3 ? "#CD7F32" : "#0B1F3A";
+                rank === 1 ? "#B45309" : rank === 2 ? "#9CA3AF" : rank === 3 ? "#CD7F32" : "#0B1F3A";
               const tKey = (row.tier as TierKey) || tierFromPoints(row.total_points || 0);
               const t = TIERS[tKey] || TIERS.bronze;
               const name = row.instructors?.name || "Instructor";

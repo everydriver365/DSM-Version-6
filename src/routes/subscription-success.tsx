@@ -127,7 +127,7 @@ function SubscriptionSuccessPage() {
   const successCard = (
     <div
       style={{
-        background: "linear-gradient(135deg, #15803D, #166534)",
+        background: "linear-gradient(135deg, #15803D, #15803D)",
         borderRadius: 8,
         padding: "28px 24px",
         textAlign: "center",
@@ -311,16 +311,16 @@ function SubscriptionSuccessPage() {
     >
       <IconWorld
         size={18}
-        color="#92400E"
+        color="#B45309"
         stroke={1.5}
         style={{ marginTop: 2, flexShrink: 0 }}
       />
       <div>
-        <div style={{ fontSize: 14, fontWeight: 700, color: "#92400E" }}>{domain}</div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#B45309" }}>{domain}</div>
         <div
           style={{
             fontSize: 12,
-            color: "#92400E",
+            color: "#B45309",
             opacity: 0.8,
             lineHeight: 1.5,
             marginTop: 4,
