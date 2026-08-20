@@ -11,7 +11,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { useGoBack } from "@/hooks/useGoBack";
 import { createSubscriptionPaymentLink, type PaidTierId } from "@/lib/websiteUpgrade";
@@ -163,22 +163,13 @@ function PerkDetailPage() {
 
   if (!perk) {
     return (
-      <div style={{ background: "#EEF2F7", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
-        <InstructorTopBar
-          firstName=""
-          pageTitle="Perk"
-          onBack={() => goBack("/perks")}
-          onBell={() => navigate({ to: "/notifications" as never })}
-          onPhone={() => navigate({ to: "/enquiries" as never })}
-          onLiveTrack={() => navigate({ to: "/live" as never })}
-          onMenu={() => navigate({ to: "/more" as never })}
-          onMicPress={() => toast.info("Voice commands coming soon!")}
-        />
-        <div style={{ height: TOP_BAR_SPACER }} />
-        <div style={{ ...CARD, textAlign: "center", color: "#6B7686", fontSize: 14 }}>
-          This perk is no longer available.
+      <DSMTopSheet title="Perk Details" onBack={() => goBack("/perks")}>
+        <div style={{ background: "#EEF2F7", minHeight: "100%", fontFamily: "Poppins, sans-serif" }}>
+          <div style={{ ...CARD, textAlign: "center", color: "#6B7686", fontSize: 14 }}>
+            This perk is no longer available.
+          </div>
         </div>
-      </div>
+      </DSMTopSheet>
     );
   }
 
@@ -190,25 +181,15 @@ function PerkDetailPage() {
   const partnerName = perk.partner?.name ?? "DSM partner";
 
   return (
+    <DSMTopSheet title="Perk Details" onBack={() => goBack("/perks")}>
     <div
       style={{
         background: "#EEF2F7",
-        minHeight: "100vh",
+        minHeight: "100%",
         paddingBottom: 100,
         fontFamily: "Poppins, sans-serif",
       }}
     >
-      <InstructorTopBar
-        firstName=""
-        pageTitle={perk.name}
-        onBack={() => goBack("/perks")}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
 
       {/* HERO */}
       {perk.hero_image_url ? (
@@ -712,5 +693,6 @@ function PerkDetailPage() {
         </div>
       )}
     </div>
+    </DSMTopSheet>
   );
 }
