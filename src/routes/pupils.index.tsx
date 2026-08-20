@@ -1252,20 +1252,14 @@ function PupilsIndexPage() {
                   Needs Attention
                 </div>
                 <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {needsAttention.map((p, index) => (
-                    <div
-                      key={p.id}
-                      style={{
-                        background: '#fff',
-                        borderRadius: 8,
-                        padding: 14,
-                        boxShadow: '0 3px 0 #F7C9C6, 0 8px 18px rgba(255,59,48,0.1)',
-                        border: '1.5px solid #FDEDEC',
-                      }}
-                    >
-                      {renderRow(p, index, needsAttention.length)}
-                    </div>
-                  ))}
+                  {needsAttention.map((p) =>
+                    renderSwipeRow(p, {
+                      background: '#fff',
+                      borderRadius: 8,
+                      boxShadow: '0 3px 0 #F7C9C6, 0 8px 18px rgba(255,59,48,0.1)',
+                      border: '1.5px solid #FDEDEC',
+                    })
+                  )}
                 </div>
               </>
             )}
