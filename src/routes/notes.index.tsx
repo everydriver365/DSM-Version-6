@@ -100,7 +100,7 @@ function NotesListPage() {
           <EmptyState
             icon={<IconNotes size={32} color="#9CA3AF" stroke={1.5} />}
             title="No notes yet"
-            subtitle="Tap + to add your first note"
+            subtitle="Notes from lessons will appear here"
           />
         ) : (
           notes.map((n) => (
