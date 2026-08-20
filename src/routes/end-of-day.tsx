@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { IconAlertTriangle, IconArrowLeft, IconCalendar, IconCalendarOff, IconCar, IconChevronRight, IconFileText, IconMicrophone, IconMicrophoneOff, IconReceipt } from "@tabler/icons-react";
+import { IconAlertTriangle, IconCalendar, IconCalendarOff, IconCar, IconChevronRight, IconFileText, IconMicrophone, IconMicrophoneOff, IconReceipt } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { EndLessonWizard } from "../components/dsm/EndLessonWizard.tsx";
@@ -246,20 +246,8 @@ function EndOfDayPage() {
   const earliestTomorrow = tomorrowLessons[0]?.lesson_time?.slice(0, 5) ?? null;
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#FFFFFF", fontFamily: "Poppins, sans-serif", paddingBottom: 80 }}>
-      {/* Top bar */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="End of day"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="End of Day">
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
       {/* Date sub-bar */}
       <div
         style={{
@@ -540,6 +528,7 @@ function EndOfDayPage() {
         />
       )}
     </div>
+    </DSMTopSheet>
   );
 }
 

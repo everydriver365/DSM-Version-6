@@ -13,9 +13,8 @@ import {
   IconTrophy,
 } from "@tabler/icons-react";
 
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
-import { PageLayout } from "@/components/PageLayout";
 import RecommendedLearning from "@/components/learn/RecommendedLearning";
 import {
   LEVEL_LABEL,
@@ -188,19 +187,8 @@ function PupilBriefPage() {
   }, [pupil?.test_date]);
 
   return (
-    <PageLayout className="pb-24" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Pupil brief"
-        onBack={() => navigate({ to: "/pupils/$id", params: { id } } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="Pupil Brief" onBack={() => navigate({ to: "/pupils/$id", params: { id } } as never)}>
+      <div style={POPPINS}>
       <div className="px-4 mt-3">
         {loading ? (
           <EmptyLine>Loading brief…</EmptyLine>
@@ -669,6 +657,7 @@ function PupilBriefPage() {
           </>
         )}
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }

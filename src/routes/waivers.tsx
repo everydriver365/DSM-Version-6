@@ -1,14 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { IconFileText, IconPlus, IconSignature, IconX } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { Button } from "../components/dsm/Button";
 import { Card } from "../components/dsm/Card";
 import { Input } from "../components/dsm/Input";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/waivers")({
   head: () => ({ meta: [{ title: "Waivers — DSM by EveryDriver" }] }),
@@ -130,19 +129,8 @@ function WaiversPage() {
 
 
   return (
-    <PageLayout style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Waivers"
-        onBack={() => navigate({ to: "/home" } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="Waivers">
+      <div style={POPPINS}>
       {/* Actions row */}
       <div className="flex justify-end px-4 pt-3">
         <button
@@ -293,7 +281,8 @@ function WaiversPage() {
       {detail && (
         <TemplateDetailSheet template={detail} onClose={() => setDetail(null)} />
       )}
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
 
