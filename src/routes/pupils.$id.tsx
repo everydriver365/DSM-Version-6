@@ -2745,8 +2745,6 @@ function PupilDetailPage() {
                 )}
               </div>
 
-          );
-        })()}
 
             {pupil && (
               <CustomRatesCard
