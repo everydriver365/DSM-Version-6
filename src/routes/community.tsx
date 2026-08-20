@@ -3018,10 +3018,12 @@ function ChatTab({
           </div>
         </>
       )}
-    </div>
-
+      </div>
+      </div>
+    </DSMTopSheet>
   );
 }
+
 
 function ChatAvatar({ name, photo, size }: { name: string; photo: string | null; size: number }) {
   const initials = (name || "?")
