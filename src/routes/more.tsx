@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { IconActivity, IconArrowsLeftRight, IconAward, IconBell, IconBriefcase, IconCalculator, IconCalendar, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconFileText, IconGasStation, IconMapPin, IconMoon, IconPlayerPlay, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconShoppingBag, IconTrendingUp, IconUsers, IconWorld, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
+
 import { EmptyState } from "@/components/dsm/EmptyState";
 
 // Toggle to false when Learn is no longer "new" — hides the NEW badge only.
@@ -80,6 +81,7 @@ function MorePage() {
   const navigate = useNavigate();
   const unreadCount = useUnreadCount();
   const [searchQuery, setSearchQuery] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
   const [squareConnected, setSquareConnected] = useState(false);
 
   useEffect(() => {
@@ -93,6 +95,12 @@ function MorePage() {
       setSquareConnected(!!inst?.square_merchant_id);
     });
   }, []);
+
+  useEffect(() => {
+    searchRef.current?.blur();
+  }, []);
+
+
 
 
   const q = searchQuery.trim().toLowerCase();
@@ -111,42 +119,9 @@ function MorePage() {
   };
 
   return (
-    <PageLayout
-      style={{
-        fontFamily: 'Poppins, sans-serif',
-        position: 'fixed',
-        inset: 0,
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: 0,
-        background: '#0B1F3A',
-        overflow: 'hidden',
-      }}
-    >
-      <header
-        style={{
-          height: 'calc(max(env(safe-area-inset-top, 0px), 24px) + 86px)',
-          flexShrink: 0,
-          padding: 'calc(max(env(safe-area-inset-top, 0px), 24px) + 13px) 22px 28px',
-          display: 'flex',
-          alignItems: 'flex-start',
-          justifyContent: 'space-between',
-          background: '#0B1F3A',
-          boxSizing: 'border-box',
-        }}
-      >
-        <h1
-          style={{
-            margin: 0,
-            color: '#FFFFFF',
-            fontFamily: 'Sora, sans-serif',
-            fontSize: 22,
-            lineHeight: '40px',
-            fontWeight: 700,
-          }}
-        >
-          More
-        </h1>
+    <DSMTopSheet
+      title="More"
+      right={
         <button
           type="button"
           aria-label="Notifications"
@@ -180,29 +155,14 @@ function MorePage() {
             />
           )}
         </button>
-      </header>
-
-      <div
-        style={{
-          position: 'relative',
-          zIndex: 1,
-          flex: 1,
-          minHeight: 0,
-          marginTop: -18,
-          background: '#FFFFFF',
-          borderRadius: '28px 28px 0 0',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          paddingTop: 12,
-          paddingBottom: 'calc(88px + env(safe-area-inset-bottom, 0px))',
-        }}
-      >
+      }
+    >
 
 
       {/* IconSearch */}
       <div
         style={{
-          background: '#fff',
+          background: '#EEF2F7',
           border: 'none',
           borderRadius: 8,
           padding: '12px 16px',
@@ -216,7 +176,7 @@ function MorePage() {
         <IconSearch size={16} color="#9CA3AF" />
         <input
           type="text"
-          autoFocus
+          ref={searchRef}
           placeholder="Search features..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -429,8 +389,7 @@ function MorePage() {
           );
         })
       )}
-      </div>
-    </PageLayout>
+    </DSMTopSheet>
 
   );
 }
