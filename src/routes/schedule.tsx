@@ -2348,7 +2348,35 @@ function SchedulePage() {
                                               {isLessonRow && (() => {
                                                 const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
                                                 return (
-                                                <div style={{ flexShrink: 0, marginLeft: 4, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                                <div style={{ flexShrink: 0, marginLeft: 4, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                                                  <button
+                                                    type="button"
+                                                    onClick={(ev) => {
+                                                      ev.stopPropagation();
+                                                      if (lesson.pupil?.phone) {
+                                                        window.open(`tel:${lesson.pupil.phone}`, '_blank');
+                                                      } else {
+                                                        toast.error('No phone number on record');
+                                                      }
+                                                    }}
+                                                    aria-label="Call pupil"
+                                                    style={{
+                                                      width: 32,
+                                                      height: 32,
+                                                      borderRadius: '50%',
+                                                      background: 'rgba(255,255,255,0.15)',
+                                                      border: 'none',
+                                                      cursor: 'pointer',
+                                                      display: 'flex',
+                                                      alignItems: 'center',
+                                                      justifyContent: 'center',
+                                                      alignSelf: 'flex-start',
+                                                      marginTop: 2,
+                                                      padding: 0,
+                                                    }}
+                                                  >
+                                                    <IconPhone size={14} color="#fff" stroke={1.5} />
+                                                  </button>
                                                   <LessonActionsMenu
                                                     open={actionsOpenFor?.id === lesson.id}
                                                     onOpenChange={(open) => setActionsOpenFor(open ? lesson : null)}
