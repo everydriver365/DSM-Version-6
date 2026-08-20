@@ -708,18 +708,21 @@ function LivePage() {
     if (Capacitor.isNativePlatform()) {
       try {
         const permission = await Geolocation.requestPermissions();
-        if (permission.location !== "granted" && permission.coarseLocation !== "granted") {
-          toast.error("Location permission required for Live Track");
-          setGeoError("Location permission is off — tap to open settings, then try again");
+        if (permission.location === 'denied') {
+          toast.error('Location access denied — please enable in Settings → DSM');
+          setGeoError('Location permission is off — tap to open settings, then try again');
           setActivePupilId(null);
           setTrackingPupilName(null);
           return;
         }
+        // Any other status (granted, prompt, limited) — continue tracking
+        // Don't show warnings for these
       } catch (err) {
-        console.error("[live] requestPermissions failed", err);
+        console.error('[live] requestPermissions failed', err);
         // Fall through — getCurrentPosition/watchPosition will surface real errors.
       }
     }
+
 
 
     // Reset state BEFORE the first fix so the initial position is kept.
