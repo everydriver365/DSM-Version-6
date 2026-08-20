@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { Capacitor } from "@capacitor/core";
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import {
   IconBookmark,
