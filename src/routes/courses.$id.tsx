@@ -1777,6 +1777,7 @@ function CourseDetailPage() {
 
       {confirmSheet}
     </div>
+    </DSMTopSheet>
   );
 }
 
@@ -2352,6 +2353,5 @@ function PostcodeAutocomplete(props: {
         </div>
       )}
     </div>
-    </DSMTopSheet>
   );
 }
