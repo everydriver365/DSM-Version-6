@@ -216,7 +216,7 @@ function BriefingPage() {
   const W = weather ? weatherMeta(weather.code) : null;
 
   return (
-    <DSMTopSheet title="Day Briefing" onBack={() => window.history.back()}>
+    <DSMTopSheet title="Day Briefing">
       <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {/* Date bar */}

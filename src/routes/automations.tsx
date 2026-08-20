@@ -159,7 +159,7 @@ function AutomationsPage() {
   const insertVar = (v: string) => setMessage((m) => `${m}${v}`);
 
   return (
-    <DSMTopSheet title="Automations" onBack={() => window.history.back()}>
+    <DSMTopSheet title="Automations">
       <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {/* Action bar */}
