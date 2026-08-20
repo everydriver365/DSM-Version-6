@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { toast } from 'sonner';
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { PageLoader } from '@/components/dsm/LoadingSpinner';
 import diaLogoAsset from '@/assets/dia-logo.png.asset.json';
 import perkboxLogoAsset from '@/assets/perkbox-logo.jpeg.asset.json';
@@ -486,24 +486,14 @@ function BenefitsPage() {
 
 
   return (
+    <DSMTopSheet title="Benefits">
     <div
       style={{
         background: '#EEF2F7',
-        minHeight: '100vh',
+        minHeight: '100%',
         paddingBottom: 100,
       }}
     >
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Benefits"
-        onBack={() => goBack('/more')}
-        onBell={() => navigate({ to: '/notifications' as never })}
-        onPhone={() => navigate({ to: '/enquiries' as never })}
-        onLiveTrack={() => navigate({ to: '/live' as never })}
-        onMenu={() => {/* no-op */}}
-        onMicPress={() => toast.info('Voice commands coming soon!')}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
 
       {isPaid ? (
         <div
