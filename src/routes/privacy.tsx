@@ -1,12 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
       { title: "Privacy Policy — DSM by EveryDriver" },
-      { name: "description", content: "Privacy policy for DSM by EveryDriver." },
+      { name: "description", content: "How DSM by EveryDriver collects, uses and stores your data." },
       { property: "og:title", content: "Privacy Policy — DSM by EveryDriver" },
-      { property: "og:description", content: "Privacy policy for DSM by EveryDriver." },
+      { property: "og:description", content: "How DSM by EveryDriver collects, uses and stores your data." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -14,195 +15,216 @@ export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
 });
 
-const NAVY = "#0B1F3A";
-const BLUE = "#1877D6";
-const TEXT = "#374151";
-const MUTED = "#6B7280";
-const FONT = "Poppins, sans-serif";
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+
+const sections: { title: string; content: React.ReactNode }[] = [
+  {
+    title: "1. WHO WE ARE",
+    content: (
+      <>
+        <p>
+          EveryDriver Ltd operates DSM (Driving School Manager), a management application for UK driving instructors.
+        </p>
+        <p style={{ marginTop: 8 }}>
+          Contact: <a href="mailto:hello@everydriver.co.uk" style={{ color: "#1877D6" }}>hello@everydriver.co.uk</a>
+        </p>
+      </>
+    ),
+  },
+  {
+    title: "2. WHAT DATA WE COLLECT",
+    content: (
+      <ul>
+        <li>Name and email address (account)</li>
+        <li>Business information (instructor details, pricing, availability)</li>
+        <li>Pupil information (name, phone, email, lesson history)</li>
+        <li>Location data (only during Live Track sessions, not stored permanently)</li>
+        <li>Payment records (amounts, dates — no card details stored)</li>
+        <li>Device information (for push notifications)</li>
+        <li>Google Calendar data (if connected)</li>
+      </ul>
+    ),
+  },
+  {
+    title: "3. HOW WE USE YOUR DATA",
+    content: (
+      <ul>
+        <li>To provide DSM services</li>
+        <li>To send lesson reminders and notifications</li>
+        <li>To generate reports and analytics for your business</li>
+        <li>To improve the app</li>
+      </ul>
+    ),
+  },
+  {
+    title: "4. DATA STORAGE",
+    content: (
+      <>
+        <p>All data is stored securely using Supabase (EU region).</p>
+        <p style={{ marginTop: 8 }}>We never sell your data to third parties.</p>
+      </>
+    ),
+  },
+  {
+    title: "5. PUSH NOTIFICATIONS",
+    content: (
+      <>
+        <p>We use OneSignal to deliver push notifications.</p>
+        <p style={{ marginTop: 8 }}>You can disable notifications in your iPhone settings at any time.</p>
+      </>
+    ),
+  },
+  {
+    title: "6. GOOGLE CALENDAR",
+    content: (
+      <>
+        <p>If you connect Google Calendar, we store access tokens to sync your lessons.</p>
+        <p style={{ marginTop: 8 }}>You can disconnect at any time in Settings.</p>
+      </>
+    ),
+  },
+  {
+    title: "7. YOUR RIGHTS",
+    content: (
+      <>
+        <p>Under UK GDPR you have the right to:</p>
+        <ul>
+          <li>Access your data</li>
+          <li>Correct your data</li>
+          <li>Delete your account and data</li>
+          <li>Export your data</li>
+        </ul>
+        <p style={{ marginTop: 8 }}>
+          To exercise these rights contact: <a href="mailto:hello@everydriver.co.uk" style={{ color: "#1877D6" }}>hello@everydriver.co.uk</a>
+        </p>
+      </>
+    ),
+  },
+  {
+    title: "8. COOKIES",
+    content: <p>DSM uses essential cookies only for authentication.</p>,
+  },
+  {
+    title: "9. CHANGES",
+    content: <p>We may update this policy. We will notify you of significant changes via the app.</p>,
+  },
+  {
+    title: "10. CONTACT",
+    content: (
+      <>
+        <p>EveryDriver Ltd</p>
+        <p style={{ marginTop: 4 }}>
+          <a href="mailto:hello@everydriver.co.uk" style={{ color: "#1877D6" }}>hello@everydriver.co.uk</a>
+        </p>
+        <p style={{ marginTop: 4 }}>
+          <a href="https://drivingschoolmanager.co.uk" target="_blank" rel="noopener noreferrer" style={{ color: "#1877D6" }}>
+            drivingschoolmanager.co.uk
+          </a>
+        </p>
+      </>
+    ),
+  },
+];
 
 function PrivacyPage() {
+  const navigate = useNavigate();
+
   return (
-    <div style={{ minHeight: "100dvh", backgroundColor: "#fff", fontFamily: FONT }}>
-      <header
-        style={{
-          height: 56,
-          backgroundColor: NAVY,
-          padding: "0 24px",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <span style={{ color: "#fff", fontSize: 18, fontWeight: 700 }}>
-          DSM by <span style={{ color: BLUE }}>EveryDriver</span>
-        </span>
-      </header>
-
-      <main
-        style={{
-          maxWidth: 760,
-          margin: "0 auto",
-          padding: "32px 24px 40px",
-        }}
-      >
-        <h1 style={{ fontSize: 28, fontWeight: 700, color: NAVY, margin: "0 0 8px" }}>
-          Privacy Policy
-        </h1>
-        <p style={{ fontSize: 13, color: MUTED, margin: "0 0 40px" }}>
-          Last updated: 30 July 2026
-        </p>
-
-        <Section title="Who we are">
-          <p>
-            DSM by EveryDriver is a driving instructor management platform.
-          </p>
-          <p>Contact: hello@everydriver.co.uk</p>
-        </Section>
-
-        <Section title="What data we collect">
-          <ul>
-            <li>Account data: name, email, phone</li>
-            <li>Pupil data: names, contact details, lesson history, test dates</li>
-            <li>Lesson data: dates, times, locations, GPS routes, notes</li>
-            <li>
-              Payment data: transaction records — card numbers never stored, processed by Square
-            </li>
-            <li>Location data: GPS only when live tracking is active</li>
-            <li>Calendar data: Google Calendar events when you connect via OAuth</li>
-            <li>Usage data: feature usage, error logs</li>
-          </ul>
-        </Section>
-
-        <Section title="How we use your data">
-          <ul>
-            <li>To provide the DSM platform</li>
-            <li>To send lesson reminders and SMS to pupils on your behalf</li>
-            <li>To sync lessons with Google Calendar when connected</li>
-            <li>To process payments via Square</li>
-            <li>To generate financial reports</li>
-            <li>To improve the platform</li>
-          </ul>
-        </Section>
-
-        <Section title="Google Calendar integration">
-          <p>
-            DSM by EveryDriver's use of information received from Google APIs will adhere to the Google API Services User Data Policy, including the Limited Use requirements.
-          </p>
-          <p>When you connect your Google Calendar account, DSM will:</p>
-          <ul>
-            <li>Create a calendar event when you book a lesson in DSM</li>
-            <li>Update that event when the lesson is rescheduled or its details change</li>
-            <li>Delete that event when the lesson is cancelled or removed</li>
-          </ul>
-          <p>
-            <strong>Scope and access:</strong> We request only the calendar.events scope. This is the minimum scope required to create, update and delete calendar events. We do not access your existing calendar events, contacts, Gmail, Google Drive, or any other Google data. We do not read, store or share the contents of your Google Calendar.
-          </p>
-          <p>
-            <strong>Data handling:</strong> Your Google OAuth tokens are stored securely in our database, encrypted at rest, and used only to write lesson events to your calendar. We never share your Google tokens or calendar data with any third party. We never use your Google Calendar data for advertising or to train AI/ML models. Calendar data is used solely to provide the lesson sync feature you explicitly enabled.
-          </p>
-          <p>
-            <strong>Revoking access:</strong> You can disconnect Google Calendar at any time from Settings → Calendar sync → Disconnect. This immediately deletes your stored tokens and stops all calendar sync. You can also revoke access directly from your Google Account at myaccount.google.com/permissions.
-          </p>
-          <p>
-            <strong>Compliance:</strong> Our use of Google user data complies with the Google API Services User Data Policy (https://developers.google.com/terms/api-services-user-data-policy) including the Limited Use requirements. Specifically:
-          </p>
-          <ul>
-            <li>We only use Google Calendar data to provide the calendar sync feature described above</li>
-            <li>We do not transfer Google user data to third parties except as necessary to provide the sync feature</li>
-            <li>We do not use Google user data for serving advertisements</li>
-            <li>We do not allow humans to read Google user data unless you have given explicit permission or it is required for security/legal reasons</li>
-          </ul>
-        </Section>
-
-        <Section title="AI Features & Google Data">
-          <p>
-            DSM by EveryDriver uses AI to power certain features including
-            coaching tips and our optional call answering service. None of these
-            AI features access, process, or use your Google account data in any
-            way. Google Calendar data obtained via our Calendar Sync feature is
-            used solely to create, read, update and delete driving lesson
-            appointments in your Google Calendar. It is never shared with or used
-            by any AI service.
-          </p>
-        </Section>
-
-        <Section title="Data sharing">
-          <p>
-            We do not sell your data. We share only with: Supabase (database and auth), Square (payments), Twilio (SMS), Google (calendar sync when connected), Resend (email).
-          </p>
-        </Section>
-
-        <Section title="Data retention">
-          <p>
-            Retained while your account is active. Deleted within 30 days of account closure except where required by law.
-          </p>
-        </Section>
-
-        <Section title="Your rights">
-          <p>
-            Under UK GDPR you have the right to access, correct, export or delete your data. Email hello@everydriver.co.uk
-          </p>
-        </Section>
-
-        <Section title="Cookies">
-          <p>
-            Only essential cookies for authentication and session management. No tracking or advertising cookies.
-          </p>
-        </Section>
-
-        <Section title="Changes">
-          <p>
-            We will notify you of significant changes by email or in-app notification.
-          </p>
-        </Section>
-      </main>
-
-      <footer
-        style={{
-          borderTop: "1px solid #E5E7EB",
-          padding: "24px",
-          textAlign: "center",
-          fontSize: 13,
-          color: "#9CA3AF",
-        }}
-      >
-        © 2026 EveryDriver Ltd ·{" "}
-        <a href="/terms" style={{ color: "#9CA3AF", textDecoration: "none" }}>
-          Terms
-        </a>{" "}
-        ·{" "}
-        <a href="mailto:hello@everydriver.co.uk" style={{ color: "#9CA3AF", textDecoration: "none" }}>
-          hello@everydriver.co.uk
-        </a>
-      </footer>
-    </div>
-  );
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section style={{ marginBottom: 28 }}>
-      <h2
-        style={{
-          fontSize: 16,
-          fontWeight: 600,
-          color: NAVY,
-          margin: "0 0 12px",
-        }}
-      >
-        {title}
-      </h2>
+    <DSMTopSheet
+      title="Privacy Policy"
+      onBack={() => navigate({ to: "/settings" })}
+    >
       <div
         style={{
-          fontSize: 14,
-          fontWeight: 400,
-          color: TEXT,
-          lineHeight: 1.6,
+          padding: "20px 16px 28px",
+          ...POPPINS,
         }}
       >
-        {children}
+        <div
+          style={{
+            marginBottom: 24,
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
+              fontSize: 13,
+              fontWeight: 600,
+              color: "#1877D6",
+              textTransform: "uppercase",
+              letterSpacing: "0.5px",
+            }}
+          >
+            DSM by EveryDriver
+          </p>
+          <h1
+            style={{
+              margin: "6px 0 4px",
+              fontSize: 26,
+              fontWeight: 700,
+              color: "#0B1F3A",
+              lineHeight: "32px",
+            }}
+          >
+            Privacy Policy
+          </h1>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 13,
+              color: "#6B7280",
+            }}
+          >
+            Last updated: August 2026
+          </p>
+        </div>
+
+        {sections.map((section) => (
+          <div
+            key={section.title}
+            style={{
+              background: "#EEF2F7",
+              borderRadius: 12,
+              padding: "16px",
+              marginBottom: 14,
+            }}
+          >
+            <h2
+              style={{
+                margin: "0 0 10px",
+                fontSize: 14,
+                fontWeight: 700,
+                color: "#0B1F3A",
+                letterSpacing: "0.3px",
+              }}
+            >
+              {section.title}
+            </h2>
+            <div
+              style={{
+                fontSize: 14,
+                lineHeight: "22px",
+                color: "#374151",
+              }}
+            >
+              {section.content}
+            </div>
+          </div>
+        ))}
+
+        <p
+          style={{
+            marginTop: 10,
+            fontSize: 12,
+            color: "#8A8A8E",
+            textAlign: "center",
+          }}
+        >
+          © {new Date().getFullYear()} EveryDriver Ltd. All rights reserved.
+        </p>
       </div>
-    </section>
+    </DSMTopSheet>
   );
 }
 
-export default PrivacyPage;
+PrivacyPage.displayName = "PrivacyPage";
