@@ -2880,8 +2880,17 @@ function EntryRow({
       return (
         <button
           type="button"
-          onClick={() => onLessonTap(l.id)}
+          onClick={() => { tapLight(); onLessonTap(l.id); }}
+          onTouchStart={(e) => {
+            e.currentTarget.style.transform = 'scale(0.98)';
+            e.currentTarget.style.opacity = '0.9';
+          }}
+          onTouchEnd={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.opacity = '1';
+          }}
           style={{
+            transition: 'transform 0.1s ease, opacity 0.1s ease',
             ...rowBase('#FF8C00', cancelled),
             background: '#FFF3E0',
             borderLeft: '3px solid #FF8C00',
