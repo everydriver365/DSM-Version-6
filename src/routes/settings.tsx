@@ -2229,6 +2229,17 @@ function SettingsPage() {
           )}
         </SectionCard>
 
+        <Label>LEGAL</Label>
+        <SectionCard>
+          <MenuRow
+            icon={<IconShield size={18} color="#1877D6" />}
+            iconBg="#E7F1FC"
+            label="Privacy Policy"
+            onClick={() => navigate({ to: "/privacy" })}
+            isFirst
+          />
+        </SectionCard>
+
         <Label>SUPPORT</Label>
         <SectionCard>
           <MenuRow
@@ -2237,14 +2248,6 @@ function SettingsPage() {
             label="Help"
             onClick={() => navigate({ to: "/help" })}
             isFirst
-          />
-          <MenuRow
-            icon={<IconShield size={18} color="#52525B" />}
-            iconBg="#F4F4F5"
-            label="Privacy policy"
-            onClick={() =>
-              window.open("https://everydriver.co.uk/privacy-policy", "_blank", "noopener,noreferrer")
-            }
           />
           <MenuRow
             icon={<IconShield size={18} color="#1877D6" />}
