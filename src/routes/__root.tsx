@@ -9,7 +9,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, useState, useRef, useCallback, type ReactNode } from "react";
-import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMenu2, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconSearch, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconX } from "@tabler/icons-react";
+import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMenu2, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconSearch, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconWifiOff, IconX } from "@tabler/icons-react";
 import { IconCalculator, IconCalendarPlus, IconHelpCircle, IconListCheck, IconReceipt, IconSettings, IconSignature, IconSparkles, IconSpeakerphone } from "@tabler/icons-react";
 
 import appCss from "../styles.css?url";
@@ -523,6 +523,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
   const active = getActiveNav(router.state.location.pathname);
   const pathname = router.state.location.pathname;
   const hideNavExact = new Set([
@@ -758,8 +759,21 @@ function RootComponent() {
 
 
 
+  // Offline/online state banner.
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   // Register the service worker only. Permission is requested by the
-  // in-app PushPermissionCard so the user sees a clear prompt first.
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return;
     navigator.serviceWorker
@@ -1057,6 +1071,26 @@ function RootComponent() {
       )}
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <div style={Object.keys(wrapperStyle).length ? wrapperStyle : undefined}>
+        {!isOnline && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              padding: "10px 16px",
+              background: "#FEF3C7",
+              color: "#92400E",
+              fontSize: 13,
+              fontWeight: 500,
+              fontFamily: "Poppins, sans-serif",
+              textAlign: "center",
+            }}
+          >
+            <IconWifiOff size={16} stroke={1.8} />
+            <span>No internet connection — some features may be unavailable</span>
+          </div>
+        )}
         <Outlet />
       </div>
       {!hideNav && !sheetOpen && <BottomNav active={active} />}
