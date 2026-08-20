@@ -375,12 +375,49 @@ function LiveNewsPage() {
     [flushProgress],
   );
 
+  /** Publish Now Playing metadata to iOS lock screen / Control Centre / CarPlay. */
+  const updateNowPlaying = useCallback(
+    (title: string, artist: string, album: string, artworkUrl?: string | null) => {
+      if (!Capacitor.isNativePlatform()) return;
+      try {
+        if (typeof navigator !== "undefined" && "mediaSession" in navigator) {
+          const ms = navigator.mediaSession;
+          ms.metadata = new MediaMetadata({
+            title,
+            artist,
+            album,
+            artwork: [
+              {
+                src: artworkUrl || DSM_ARTWORK,
+                sizes: "512x512",
+                type: "image/png",
+              },
+            ],
+          });
+          ms.playbackState = "playing";
+          ms.setActionHandler("play", () => {
+            void audioRef.current?.play();
+            ms.playbackState = "playing";
+          });
+          ms.setActionHandler("pause", () => {
+            audioRef.current?.pause();
+            ms.playbackState = "paused";
+          });
+        }
+      } catch (e) {
+        console.warn("[media session]", e);
+      }
+    },
+    [],
+  );
+
   const togglePlay = useCallback(() => {
     const el = audioRef.current;
     if (!el) return;
     if (el.paused) void el.play();
     else el.pause();
   }, []);
+
 
   const seekTo = useCallback((secs: number) => {
     const el = audioRef.current;
