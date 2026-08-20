@@ -125,7 +125,7 @@ export default function DSMTopSheet({
           overflowX: "hidden",
           display: "flex",
           flexDirection: "column",
-          paddingTop: 12,
+          paddingTop: 20,
         }}
       >
         {sticky && (
