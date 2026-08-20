@@ -163,7 +163,7 @@ function MorePage() {
         </button>
       }
     >
-
+      <div {...pullToRefreshProps} style={{ minHeight: '100%' }}>
 
       {/* IconSearch */}
       <div
@@ -395,6 +395,7 @@ function MorePage() {
           );
         })
       )}
+    </div>
     </DSMTopSheet>
 
   );
