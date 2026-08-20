@@ -2008,7 +2008,15 @@ function RoomBrowser({
 
   const RoomRow = ({ r, join }: { r: LocalChatRoom; join: boolean }) => (
     <div
-      onClick={() => (join ? onJoin(r) : onOpen(r))}
+      onClick={() => { tapLight(); join ? onJoin(r) : onOpen(r); }}
+      onTouchStart={(e) => {
+        e.currentTarget.style.transform = "scale(0.98)";
+        e.currentTarget.style.opacity = "0.9";
+      }}
+      onTouchEnd={(e) => {
+        e.currentTarget.style.transform = "scale(1)";
+        e.currentTarget.style.opacity = "1";
+      }}
       style={{
         display: "flex",
         alignItems: "center",
@@ -2017,6 +2025,7 @@ function RoomBrowser({
         borderBottom: `0.5px solid ${BORDER}`,
         cursor: "pointer",
         background: "#FFFFFF",
+        transition: "transform 0.1s ease, opacity 0.1s ease",
       }}
     >
       {r.image_url ? (
