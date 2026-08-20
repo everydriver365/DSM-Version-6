@@ -630,7 +630,10 @@ function LivePage() {
   }
 
   async function saveCoordinates(final = false, extras: Record<string, any> = {}) {
-    if (!routeIdRef.current) return false;
+    if (!routeIdRef.current) {
+      if (final) toast.error('Could not save route');
+      return false;
+    }
     const speeds = coordsRef.current.map((c) => c.speed_mph).filter((s) => s > 0);
     const maxSpeed = speeds.length ? Math.max(...speeds) : 0;
     const avgSpeed = speeds.length
@@ -649,18 +652,34 @@ function LivePage() {
         (Date.now() - startedAtRef.current) / 60000,
       );
     }
-    try {
-      const { error } = await supabase.from("lesson_routes").update(payload).eq("id", routeIdRef.current);
-      if (error) {
-        console.warn("[live] save route failed", error);
-        return false;
-      }
-      return true;
-    } catch (e) {
-      console.warn("[live] save route failed", e);
+
+    // Main route save
+    const { error: routeError } = await supabase
+      .from("lesson_routes")
+      .update(payload)
+      .eq("id", routeIdRef.current);
+
+    if (routeError) {
+      console.warn("[live] save route failed", routeError);
+      if (final) toast.error('Could not save route');
       return false;
     }
+
+    if (final) {
+      toast.success('Route saved ✓');
+    }
+
+    // Secondary saves (e.g. snap-to-roads, speed data) — wrap separately
+    try {
+      // No secondary saves live here; add them inside this block and never toast.error.
+    } catch (e) {
+      console.warn('[live] secondary save failed:', e);
+      // do NOT toast.error here
+    }
+
+    return true;
   }
+
 
 
   async function recordOverspeed(
