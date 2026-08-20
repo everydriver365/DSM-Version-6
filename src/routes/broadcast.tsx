@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconArrowLeft, IconMessage, IconMicrophone, IconMicrophoneOff, IconUsers } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 
@@ -277,18 +277,8 @@ function BroadcastPage() {
   const canSend = selCount > 0 && message.trim().length > 0;
 
   return (
-    <PageLayout className="pb-32" style={POPPINS}>
-      <InstructorTopBar
-        firstName={instructorName === "Your instructor" ? "" : instructorName}
-        pageTitle="Broadcast message"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Broadcast" onBack={() => window.history.back()}>
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {/* SECTION 1 — Audience */}
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 16 }}>
@@ -544,6 +534,7 @@ function BroadcastPage() {
           Send to {selCount} pupil{selCount === 1 ? "" : "s"} →
         </button>
       </div>
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }

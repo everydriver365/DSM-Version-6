@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
@@ -214,18 +214,8 @@ function BookingsPage() {
   const selectedBooking = selectedId ? bookings.find((b) => b.id === selectedId) : null;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#F6F8FB", ...POPPINS }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Bookings"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => window.dispatchEvent(new Event("dsm-open-menu"))}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Bookings" onBack={() => window.history.back()}>
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {loading ? (
         <PageLoader />
@@ -370,7 +360,8 @@ function BookingsPage() {
           </div>
         </BottomSheet>
       )}
-    </div>
+      </div>
+    </DSMTopSheet>
   );
 }
 

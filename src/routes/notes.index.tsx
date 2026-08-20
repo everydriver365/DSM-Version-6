@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { IconFileText, IconNotes, IconPlus } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { EmptyState } from "@/components/dsm/EmptyState";
 
 import { Card } from "../components/dsm/Card";
@@ -77,18 +77,8 @@ function NotesListPage() {
   };
 
   return (
-    <PageLayout className="pb-8" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Notes"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Notes">
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {/* Action bar */}
       <div
@@ -145,6 +135,7 @@ function NotesListPage() {
           ))
         )}
       </div>
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }

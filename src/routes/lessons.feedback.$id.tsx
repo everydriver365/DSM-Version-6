@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -132,18 +132,8 @@ function LessonFeedbackPage() {
   const dateObj = lesson ? new Date(`${lesson.lesson_date}T00:00:00`) : null;
 
   return (
-    <PageLayout className="pb-12" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Lesson feedback"
-        onBack={() => navigate({ to: "/lessons/$id", params: { id } } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Lesson Feedback" onBack={() => window.history.back()}>
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {/* Action bar */}
       <div className="flex items-center justify-end px-4 py-2">
@@ -278,6 +268,7 @@ function LessonFeedbackPage() {
           )}
         </div>
       )}
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }

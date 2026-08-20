@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { IconCar, IconDownload } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 import { toast } from "sonner";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -401,18 +401,8 @@ function MtdPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F3F8FF", margin: -8 }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Making Tax Digital"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Making Tax Digital">
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
 
       <div className="px-4 pb-12 pt-3">
@@ -649,7 +639,8 @@ function MtdPage() {
         </Card>
 
       </div>
-    </div>
+      </div>
+    </DSMTopSheet>
   );
 }
 

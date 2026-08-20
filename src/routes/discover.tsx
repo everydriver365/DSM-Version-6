@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { IconBroadcast, IconPlayerPlay, IconChevronRight } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { supabase } from "@/lib/supabaseClient";
 
 type DiscoverTab = "live" | "learn" | "market";
@@ -469,18 +469,8 @@ function DiscoverPage() {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", background: CANVAS, paddingBottom: 96, fontFamily: FONT }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Discover"
-        onBack={() => navigate({ to: "/" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Discover">
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       <div style={{ padding: "8px 16px 0" }}>
         <h1 style={{ fontSize: 26, fontWeight: 700, color: NAVY, margin: 0, lineHeight: 1.15 }}>
@@ -629,7 +619,8 @@ function DiscoverPage() {
           </SectionBlock>
         </div>
       )}
-    </div>
+      </div>
+    </DSMTopSheet>
   );
 }
 

@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { IconAlertCircle, IconAward, IconBell, IconBolt, IconBook, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarMonth, IconCar, IconChartBar, IconClipboardCheck, IconClipboardList, IconClock, IconCrown, IconCurrencyPound, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHeart, IconHelpCircle, IconInbox, IconLayoutGrid, IconMapPin, IconMessage, IconNavigation, IconPlayerPlay, IconReceipt, IconRefresh, IconSchool, IconSearch, IconSignature, IconSquareCheck, IconStar, IconSun, IconToggleLeft, IconTrendingUp, IconTrophy, IconUpload, IconUserCircle, IconUsers, IconWorld, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 export const Route = createFileRoute("/quickaccess")({
   component: QuickAccessPage,
@@ -82,21 +82,8 @@ function QuickAccessPage() {
   );
 
   return (
-    <div
-      className="min-h-screen pb-24 pb-safe"
-      style={{ backgroundColor: "#F3F8FF", fontFamily: "Poppins, sans-serif" }}
-    >
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Quick access"
-        onBack={() => navigate({ to: "/home" } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Quick Access">
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {/* Actions row */}
       <div className="flex justify-end px-4 pt-3">
@@ -211,6 +198,7 @@ function QuickAccessPage() {
           No results for "{searchQuery}"
         </div>
       )}
-    </div>
+      </div>
+    </DSMTopSheet>
   );
 }

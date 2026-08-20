@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { IconCheck, IconCircleX, IconClock, IconPlus, IconSend, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { supabase } from "../lib/supabaseClient";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
@@ -129,19 +129,8 @@ function WaitlistPage() {
   };
 
   return (
-    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: "#F3F8FF" }}>
-      {/* Header */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Waiting List"
-        onBack={() => navigate({ to: "/home" } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Waiting List">
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
 
       {/* Tabs */}
@@ -342,7 +331,8 @@ function WaitlistPage() {
         />
       )}
       {confirmSheet}
-    </div>
+      </div>
+    </DSMTopSheet>
   );
 }
 

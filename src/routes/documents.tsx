@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { IconAlertTriangle, IconArrowLeft, IconCar, IconExternalLink, IconFileCheck, IconFileText, IconFolderOpen, IconPlus, IconReceipt, IconRosette, IconShieldCheck, IconTrash, IconUpload, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { z } from "zod";
 import { Card } from "../components/dsm/Card";
 import { Input } from "../components/dsm/Input";
@@ -132,18 +132,8 @@ function DocumentsPage() {
   );
 
   return (
-    <PageLayout className="pb-8" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Documents"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Documents" onBack={() => window.history.back()}>
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {/* Action bar */}
       <div
@@ -314,7 +304,8 @@ function DocumentsPage() {
           }}
         />
       )}
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }
 

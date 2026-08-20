@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconCalendar, IconCheck, IconChevronDown, IconChevronUp, IconMapPin, IconMicrophone, IconMicrophoneOff, IconPlus, IconSearch, IconTrophy, IconUser } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import RecommendedLearning from "@/components/learn/RecommendedLearning";
@@ -470,18 +470,8 @@ function DrivingTestPage() {
     r === "pass" ? "#059669" : r === "fail" ? "#DC2626" : "#6B7280";
 
   return (
-    <PageLayout className="pb-32" style={INTER}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle={`Test report${pupilName ? ` — ${pupilName}` : ""}`}
-        onBack={() => navigate({ to: "/pupils/$id", params: { id: pupilId } } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Driving Test" onBack={() => window.history.back()}>
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {/* Tabs */}
       <div className="px-4 pt-4 flex gap-2">
@@ -603,7 +593,8 @@ function DrivingTestPage() {
           </button>
         </div>
       )}
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }
 
