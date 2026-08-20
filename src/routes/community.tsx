@@ -794,8 +794,10 @@ function CommunityPage() {
 
 
     </div>
+    </DSMTopSheet>
   );
 }
+
 
 /* ============================================================ ROOMS TAB */
 
@@ -3018,11 +3020,10 @@ function ChatTab({
           </div>
         </>
       )}
-      </div>
-      </div>
-    </DSMTopSheet>
+    </div>
   );
 }
+
 
 
 function ChatAvatar({ name, photo, size }: { name: string; photo: string | null; size: number }) {
