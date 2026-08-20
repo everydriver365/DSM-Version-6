@@ -10,7 +10,7 @@ import {
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { IconArrowDown, IconBell, IconArrowsMove, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconMapPin, IconNavigation, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
+import { IconArrowDown, IconBell, IconArrowsMove, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconMapPin, IconNavigation, IconPhone, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { computeDayGaps } from "@/lib/gapDetection";
@@ -155,6 +155,7 @@ interface Pupil {
   prepaid_hours?: number | null;
   address?: string | null;
   postcode?: string | null;
+  phone?: string | null;
   test_status?: string | null;
 
 }
@@ -777,7 +778,7 @@ function SchedulePage() {
       const { data, error } = await supabase
         .from("lessons")
         .select(
-          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, notes, pickup_location, event_title, pupil:pupils(id, name, first_name, last_name, address, postcode, calendar_colour, prepaid_hours, status, test_status, deleted_at)",
+          "id, pupil_id, lesson_date, lesson_time, duration_minutes, status, lesson_type, payment_status, amount_due, eol_completed, cancellation_reason, notes, pickup_location, event_title, pupil:pupils(id, name, first_name, last_name, phone, address, postcode, calendar_colour, prepaid_hours, status, test_status, deleted_at)",
         )
 
         .is("deleted_at", null)
@@ -2347,7 +2348,35 @@ function SchedulePage() {
                                               {isLessonRow && (() => {
                                                 const lesson = (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson;
                                                 return (
-                                                <div style={{ flexShrink: 0, marginLeft: 4, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                                <div style={{ flexShrink: 0, marginLeft: 4, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                                                  <button
+                                                    type="button"
+                                                    onClick={(ev) => {
+                                                      ev.stopPropagation();
+                                                      if (lesson.pupil?.phone) {
+                                                        window.open(`tel:${lesson.pupil.phone}`, '_blank');
+                                                      } else {
+                                                        toast.error('No phone number on record');
+                                                      }
+                                                    }}
+                                                    aria-label="Call pupil"
+                                                    style={{
+                                                      width: 32,
+                                                      height: 32,
+                                                      borderRadius: '50%',
+                                                      background: 'rgba(255,255,255,0.15)',
+                                                      border: 'none',
+                                                      cursor: 'pointer',
+                                                      display: 'flex',
+                                                      alignItems: 'center',
+                                                      justifyContent: 'center',
+                                                      alignSelf: 'flex-start',
+                                                      marginTop: 2,
+                                                      padding: 0,
+                                                    }}
+                                                  >
+                                                    <IconPhone size={14} color="#fff" stroke={1.5} />
+                                                  </button>
                                                   <LessonActionsMenu
                                                     open={actionsOpenFor?.id === lesson.id}
                                                     onOpenChange={(open) => setActionsOpenFor(open ? lesson : null)}
