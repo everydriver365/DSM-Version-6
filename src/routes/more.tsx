@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { IconActivity, IconArrowsLeftRight, IconAward, IconBell, IconBriefcase, IconCalculator, IconCalendar, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconFileText, IconGasStation, IconMapPin, IconMoon, IconPlayerPlay, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconShoppingBag, IconTrendingUp, IconUsers, IconWorld, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -78,6 +79,7 @@ const allTools: Tool[] = [
 const GROUP_ORDER = ['Teaching', 'Business', 'Payments', 'Admin', 'Reports', 'Community', 'Marketing'] as const;
 
 function MorePage() {
+  const [reloadKey, setReloadKey] = useState(0);
   const navigate = useNavigate();
   const unreadCount = useUnreadCount();
   const [searchQuery, setSearchQuery] = useState('');
@@ -94,7 +96,11 @@ function MorePage() {
         .maybeSingle();
       setSquareConnected(!!inst?.square_merchant_id);
     });
-  }, []);
+  }, [reloadKey]);
+
+  const { pullToRefreshProps } = usePullToRefresh({
+    onRefresh: async () => { setReloadKey((k) => k + 1); },
+  });
 
   useEffect(() => {
     searchRef.current?.blur();
@@ -157,7 +163,7 @@ function MorePage() {
         </button>
       }
     >
-
+      <div {...pullToRefreshProps} style={{ minHeight: '100%' }}>
 
       {/* IconSearch */}
       <div
@@ -389,6 +395,7 @@ function MorePage() {
           );
         })
       )}
+    </div>
     </DSMTopSheet>
 
   );

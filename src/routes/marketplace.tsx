@@ -5,6 +5,9 @@ import { IconBriefcase, IconCamera, IconCar, IconHeart, IconMapPin, IconPackage,
 import { IconBook, IconSearch, IconSpeakerphone } from "@tabler/icons-react";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { EmptyState } from "@/components/dsm/EmptyState";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
+import { IconShoppingBag } from "@tabler/icons-react";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -138,6 +141,11 @@ function MarketplacePage() {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
+
+  const { pullToRefreshProps } = usePullToRefresh({
+    onRefresh: async () => { setReloadKey((k) => k + 1); },
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -167,7 +175,7 @@ function MarketplacePage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reloadKey]);
 
   const filteredAll = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -223,7 +231,7 @@ function MarketplacePage() {
 
   return (
     <DSMTopSheet title="Marketplace">
-      <div style={{ fontFamily: POPPINS }}>
+      <div {...pullToRefreshProps} style={{ fontFamily: POPPINS }}>
 
       <div style={{ padding: "16px 0 8px" }}>
         {/* Search bar */}
@@ -367,7 +375,11 @@ function MarketplacePage() {
             ))}
           </div>
         ) : topMarketplace.length === 0 ? (
-          <div style={{ fontSize: 13, color: "#6B7686", padding: "0 16px" }}>No products yet.</div>
+          <EmptyState
+            icon={IconShoppingBag}
+            title="Nothing here yet"
+            subtitle="Marketplace listings will appear here."
+          />
         ) : (
           <div style={{ display: "flex", flexDirection: "column" }}>
             {topMarketplace.map((l, idx) =>

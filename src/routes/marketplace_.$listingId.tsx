@@ -1005,6 +1005,7 @@ function ListingDetailPage() {
                     <img
                       src={galleryPhotos[lightboxIndex]}
                       alt={`Photo ${lightboxIndex + 1} of ${galleryPhotos.length}`}
+                      onError={(e) => { e.currentTarget.style.display = "none"; }}
                       style={{ maxWidth: "100%", maxHeight: "80vh", objectFit: "contain" }}
                       onClick={(e) => e.stopPropagation()}
                     />

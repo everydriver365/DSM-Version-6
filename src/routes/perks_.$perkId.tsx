@@ -196,6 +196,7 @@ function PerkDetailPage() {
         <img
           src={perk.hero_image_url}
           alt={perk.name}
+          onError={(e) => { e.currentTarget.style.display = "none"; }}
           style={{ width: "100%", height: 220, objectFit: "cover", display: "block" }}
         />
       ) : (

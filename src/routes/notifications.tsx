@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, IconChevronRight, IconCircleX, IconClock, IconCurrencyPound, IconExternalLink, IconHome, IconInbox, IconMail, IconMapPin, IconMessage, IconNavigation, IconPhone, IconPlayerPlay, IconRefresh, IconSend, IconTrash, IconUser, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { tapLight, hapticWarning } from "@/lib/haptics";
@@ -320,6 +321,7 @@ function getNotificationAction(
 }
 
 function NotificationsPage() {
+  const [reloadKey, setReloadKey] = useState(0);
   const navigate = useNavigate();
 
   const [userId, setUserId] = useState<string | null>(null);
@@ -433,7 +435,11 @@ function NotificationsPage() {
       if (error) console.error("[notifications] fetch error", error);
       setItems((rows ?? []) as Notification[]);
     })();
-  }, []);
+  }, [reloadKey]);
+
+  const { pullToRefreshProps } = usePullToRefresh({
+    onRefresh: async () => { setReloadKey((k) => k + 1); },
+  });
 
   async function markAsRead(notifId: string) {
     setItems((prev) => (prev ?? []).map((n) => (n.id === notifId ? { ...n, read: true } : n)));
@@ -703,6 +709,7 @@ function NotificationsPage() {
 
   return (
     <DSMTopSheet title="Notifications" onBack={() => navigate({ to: "/home" as never })}>
+      <div {...pullToRefreshProps} style={{ minHeight: "100%" }}>
 
       {/* Action bar */}
       <div
@@ -4117,6 +4124,7 @@ function NotificationsPage() {
           </div>
         </div>
       )}
+    </div>
     </DSMTopSheet>
   );
 }
