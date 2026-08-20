@@ -237,7 +237,7 @@ function TodosPage() {
       </div>
 
 
-      <div className="pt-[52px]">
+      <div>
         <div className="mx-4">
           {overdue.length > 0 && (
             <>
