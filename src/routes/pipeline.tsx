@@ -1,12 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { IconPlus, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/pipeline")({
   head: () => ({
@@ -91,18 +90,8 @@ function PipelinePage() {
   }, [userId]);
 
   return (
-    <PageLayout style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Pipeline"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Pipeline" onBack={() => window.history.back()}>
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {/* Actions row */}
       <div className="flex justify-end px-4 pt-3">
@@ -244,7 +233,8 @@ function PipelinePage() {
       <style>{`
         .pipeline-scroll::-webkit-scrollbar { display: none; }
       `}</style>
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }
 

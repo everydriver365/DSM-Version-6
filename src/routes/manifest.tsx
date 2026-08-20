@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { useEffect, useMemo, useState } from "react";
 import { IconArrowLeft, IconChevronDown, IconChevronUp, IconMessage, IconNavigation, IconPhone } from "@tabler/icons-react";
@@ -7,7 +7,6 @@ import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/manifest")({
   head: () => ({
@@ -151,18 +150,8 @@ function ManifestPage() {
   }
 
   return (
-    <PageLayout className="pb-12" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Today's manifest"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Manifest" onBack={() => window.history.back()}>
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {/* Date sub-bar */}
       <div
@@ -329,7 +318,8 @@ function ManifestPage() {
           )}
         </Card>
       </div>
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }
 

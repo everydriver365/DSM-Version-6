@@ -1,10 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { useEffect, useMemo, useState } from "react";
 import { IconArrowLeft, IconReceipt, IconSearch, IconX } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 
 export const Route = createFileRoute("/invoices")({
@@ -128,19 +127,8 @@ function InvoicesPage() {
   const selectedRow = useMemo(() => filtered.find((r) => r.id === selectedId) ?? null, [filtered, selectedId]);
 
   return (
-    <PageLayout className="pb-24 pb-safe relative" style={POPPINS}>
-      {/* Header */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Invoices"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Invoices" onBack={() => window.history.back()}>
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {/* Summary */}
       <div style={{ background: "white", borderRadius: 8, boxShadow: "0 1px 3px rgba(0,0,0,0.06)", padding: 16, margin: 16 }}>
@@ -283,6 +271,7 @@ function InvoicesPage() {
           </div>
         </BottomSheet>
       )}
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }
