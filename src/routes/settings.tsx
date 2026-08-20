@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { IconAlertTriangle, IconBell, IconBolt, IconBuildingBank, IconBuildingStore, IconCalculator, IconCalendar, IconCheck, IconChevronDown, IconChevronRight, IconClipboardList, IconClock, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconFingerprint, IconGift, IconHelpCircle, IconLogout, IconMapPin, IconPlus, IconShield, IconTag, IconTrash, IconUser, IconWorld } from "@tabler/icons-react";
+import { IconAlertTriangle, IconBell, IconBolt, IconBuildingBank, IconBuildingStore, IconCalculator, IconCalendar, IconCheck, IconChevronDown, IconChevronRight, IconClipboardList, IconClock, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconFileText, IconFingerprint, IconGift, IconHelpCircle, IconLogout, IconMapPin, IconPlus, IconShield, IconTag, IconTrash, IconUser, IconWorld } from "@tabler/icons-react";
 import { isBiometricAvailable, authenticate } from "@/lib/biometric";
 import squareLogo from "../assets/square-logo.png.asset.json";
 
@@ -2237,6 +2237,12 @@ function SettingsPage() {
             label="Privacy Policy"
             onClick={() => navigate({ to: "/privacy" })}
             isFirst
+          />
+          <MenuRow
+            icon={<IconFileText size={18} color="#1877D6" />}
+            iconBg="#E7F1FC"
+            label="Terms of Service"
+            onClick={() => navigate({ to: "/terms" })}
           />
         </SectionCard>
 
