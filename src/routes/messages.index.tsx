@@ -214,6 +214,7 @@ function MessagesIndexPage() {
   const [openThreadJobId, setOpenThreadJobId] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(true);
+  const { pullToRefreshProps } = usePullToRefresh({ onRefresh: async () => loadConvos() });
   const [convos, setConvos] = useState<Conversation[]>([]);
   const [query, setQuery] = useState("");
 
