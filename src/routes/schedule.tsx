@@ -2352,6 +2352,8 @@ function SchedulePage() {
         </div>
 
       </div>
+      </div>
+
 
       {eolLesson && (
         <EndLessonWizard
