@@ -1096,100 +1096,18 @@ function MessagesIndexPage() {
 
   return (
     <PageLayout style={{ ...FONT, background: "#EEF2F7", paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))" }}>
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 30,
-          background: NAVY,
-          color: "#fff",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 12px) 16px 12px",
-          borderBottom: "1px solid rgba(255,255,255,0.1)",
-          borderRadius: 0,
-        }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" as never })}
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.15)",
-            border: "none",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#fff",
-            cursor: "pointer",
-            padding: 0,
-            flexShrink: 0,
-          }}
-        >
-          <IconChevronLeft size={18} />
-        </button>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h1
-            style={{
-              fontSize: 16,
-              fontWeight: 700,
-              color: "#fff",
-              margin: 0,
-              fontFamily: "Poppins, sans-serif",
-              lineHeight: 1.25,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            Messages
-          </h1>
-        </div>
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <button
-            type="button"
-            aria-label="Notifications"
-            onClick={() => navigate({ to: "/notifications" as never })}
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.08)",
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            <IconBell size={17} stroke={1.8} color="#C7D0DE" />
-          </button>
-          <button
-            type="button"
-            aria-label="Menu"
-            onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.08)",
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            <IconAdjustmentsHorizontal size={17} stroke={1.8} color="#C7D0DE" />
-          </button>
-        </div>
-      </div>
+      <InstructorTopBar
+        firstName={myName ?? ""}
+        pageTitle="Messages"
+        onBack={() => navigate({ to: "/home" as never })}
+        onBell={() => navigate({ to: "/notifications" as never })}
+        onPhone={() => navigate({ to: "/enquiries" as never })}
+        onLiveTrack={() => navigate({ to: "/live" as never })}
+        onMenu={() => navigate({ to: "/more" as never })}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+      <div style={{ height: TOP_BAR_SPACER }} />
+
 
       {view === "chat" ? (
         <LocalChatView
