@@ -634,7 +634,26 @@ function RootComponent() {
           await OneSignal.initialize('99bff6e4-df88-4349-afd6-54112ea83907');
           await OneSignal.Notifications.requestPermission(true);
           OneSignal.Notifications.addEventListener('click', (event) => {
-            console.log('[OneSignal] clicked:', JSON.stringify(event));
+            const data = event.notification.additionalData as any;
+            const type = data?.type ?? '';
+            if (type === 'message' || type === 'instructor_dm') {
+              router.navigate({ to: '/messages' as never });
+            } else if (type === 'overdue_payment' || type === 'payment') {
+              router.navigate({ to: '/payments' as never });
+            } else if (type === 'lesson_cancelled' || type === 'tracking' || type === 'lesson') {
+              router.navigate({ to: '/schedule' as never });
+            } else if (type === 'test_tomorrow' || type === 'test') {
+              router.navigate({ to: '/schedule' as never });
+            } else if (type === 'pupil_churn' || type === 'pupil') {
+              router.navigate({ to: '/pupils' as never });
+            } else if (type === 'enquiry' || type === 'new_enquiry') {
+              router.navigate({ to: '/enquiries' as never });
+            } else if (type === 'live_starting_soon' || type === 'dsm_live') {
+              router.navigate({ to: '/dsm-live' as never });
+            } else {
+              router.navigate({ to: '/notifications' as never });
+            }
+            console.log('[OneSignal] navigating for type:', type);
           });
           console.log('[OneSignal] initialized');
 
