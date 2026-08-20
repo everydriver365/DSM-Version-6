@@ -1168,10 +1168,11 @@ function PupilsIndexPage() {
                   display: "flex",
                   alignItems: "center",
                   gap: 12,
-                  padding: 14,
+                  padding: "14px 16px",
                   background: "#fff",
-                  borderRadius: 8,
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                  borderRadius: 16,
+                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                  marginBottom: 8,
                 }}
               >
                 <DSMSkeleton width={44} height={44} borderRadius={22} />
@@ -1282,8 +1283,9 @@ function PupilsIndexPage() {
               {(statusFilter === "active" ? activePupils : filtered).map((p) =>
                 renderSwipeRow(p, {
                   background: '#fff',
-                  borderRadius: 8,
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                  borderRadius: 16,
+                  boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+                  transition: 'transform 0.1s ease, opacity 0.1s ease',
                 })
               )}
             </div>

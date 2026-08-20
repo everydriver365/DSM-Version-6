@@ -569,10 +569,11 @@ function PaymentsPage() {
                   display: "flex",
                   alignItems: "center",
                   gap: 12,
-                  padding: 16,
+                  padding: "14px 16px",
                   background: "#fff",
-                  borderRadius: 8,
-                  boxShadow: "0 4px 0 #E4E4E8",
+                  borderRadius: 16,
+                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                  marginBottom: 8,
                 }}
               >
                 <DSMSkeleton width={44} height={44} borderRadius={22} />
@@ -618,10 +619,11 @@ function PaymentsPage() {
                       key={row.id}
                       style={{
                         background: "#fff",
-                        borderRadius: 8,
-                        marginBottom: 10,
+                        borderRadius: 16,
+                        marginBottom: 8,
                         opacity: isNonRevenue ? 0.65 : 1,
-                        boxShadow: "0 4px 0 #E4E4E8",
+                        boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                        transition: "transform 0.1s ease, opacity 0.1s ease",
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: 13, padding: 16 }}>
