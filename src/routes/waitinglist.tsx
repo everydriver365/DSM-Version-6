@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { IconHourglass, IconPlus, IconUsers, IconX } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Card } from "../components/dsm/Card";
@@ -9,7 +9,7 @@ import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
+
 
 export const Route = createFileRoute("/waitinglist")({
   head: () => ({
@@ -94,19 +94,8 @@ function WaitingListPage() {
   }
 
   return (
-    <PageLayout className="pb-8" style={POPPINS}>
-      {/* Top bar */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Waiting list"
-        onBack={() => navigate({ to: "/home" } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Waiting List">
+      <div className="pb-8" style={POPPINS}>
 
       {/* Actions row */}
       <div className="flex justify-end px-4 pt-3">
@@ -234,7 +223,8 @@ function WaitingListPage() {
           }}
         />
       )}
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
 

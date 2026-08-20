@@ -1,14 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { IconCalendar } from "@tabler/icons-react";
 
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { StatTile } from "../components/dsm/StatTile";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
+
 
 export const Route = createFileRoute("/pupils/history/$id")({
   head: () => ({
@@ -82,18 +82,8 @@ function PupilHistoryPage() {
   }
 
   return (
-    <PageLayout className="pb-8" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Lesson history"
-        onBack={() => navigate({ to: "/pupils/$id", params: { id } } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Lesson History" onBack={() => navigate({ to: "/pupils/$id", params: { id } } as never)}>
+      <div className="pb-8" style={POPPINS}>
 
 
       <div className="px-4 mt-3">
@@ -170,6 +160,7 @@ function PupilHistoryPage() {
 
         )}
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
