@@ -3087,7 +3087,7 @@ function GapsPage() {
 
       <Toaster />
     </div>
-
+    </DSMTopSheet>
   );
 }
 
@@ -3410,7 +3410,6 @@ function PupilCard({
         </div>
       )}
 
-      </div>
-    </DSMTopSheet>
+    </div>
   );
 }
