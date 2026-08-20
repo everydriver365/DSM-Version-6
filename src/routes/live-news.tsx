@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { Capacitor } from "@capacitor/core";
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import {
   IconBookmark,
@@ -55,6 +56,10 @@ export const Route = createFileRoute("/live-news")({
 });
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+
+const DSM_ARTWORK =
+  "https://drivingschoolmanager.co.uk/__l5e/assets-v1/dd36bc6c-af86-427d-9d37-010b83be3619/icon-512.png";
+
 
 const PODCAST_STYLES = {
   title: {
@@ -375,12 +380,49 @@ function LiveNewsPage() {
     [flushProgress],
   );
 
+  /** Publish Now Playing metadata to iOS lock screen / Control Centre / CarPlay. */
+  const updateNowPlaying = useCallback(
+    (title: string, artist: string, album: string, artworkUrl?: string | null) => {
+      if (!Capacitor.isNativePlatform()) return;
+      try {
+        if (typeof navigator !== "undefined" && "mediaSession" in navigator) {
+          const ms = navigator.mediaSession;
+          ms.metadata = new MediaMetadata({
+            title,
+            artist,
+            album,
+            artwork: [
+              {
+                src: artworkUrl || DSM_ARTWORK,
+                sizes: "512x512",
+                type: "image/png",
+              },
+            ],
+          });
+          ms.playbackState = "playing";
+          ms.setActionHandler("play", () => {
+            void audioRef.current?.play();
+            ms.playbackState = "playing";
+          });
+          ms.setActionHandler("pause", () => {
+            audioRef.current?.pause();
+            ms.playbackState = "paused";
+          });
+        }
+      } catch (e) {
+        console.warn("[media session]", e);
+      }
+    },
+    [],
+  );
+
   const togglePlay = useCallback(() => {
     const el = audioRef.current;
     if (!el) return;
     if (el.paused) void el.play();
     else el.pause();
   }, []);
+
 
   const seekTo = useCallback((secs: number) => {
     const el = audioRef.current;
@@ -1395,9 +1437,20 @@ function LiveNewsPage() {
           ref={audioRef}
           src={playing.audioUrl}
           preload="metadata"
-          onPlay={() => setIsPlaying(true)}
+          onPlay={() => {
+            setIsPlaying(true);
+            updateNowPlaying(
+              playing.title,
+              playing.showName || "DSM by EveryDriver",
+              playing.showName || "DSM Learn",
+              playing.imageUrl,
+            );
+          }}
           onPause={(e) => {
             setIsPlaying(false);
+            if (typeof navigator !== "undefined" && "mediaSession" in navigator) {
+              navigator.mediaSession.playbackState = "paused";
+            }
             commitProgress(playing.id, e.currentTarget.currentTime, e.currentTarget.duration || 0, {
               force: true,
             });
