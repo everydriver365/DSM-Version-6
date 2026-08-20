@@ -1,6 +1,7 @@
 import { useGoBack } from "@/hooks/useGoBack";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { IconAward, IconCalendar, IconCamera, IconCar, IconChartBar, IconCheck, IconChevronDown, IconChevronRight, IconClipboardCheck, IconClipboardList, IconClock, IconCreditCard, IconCurrencyPound, IconDots, IconExternalLink, IconFlag, IconHeart, IconLoader2, IconMail, IconMapPin, IconMessage, IconPalette, IconPencil, IconPhone, IconPlus, IconRefresh, IconSearch, IconSend, IconTrash, IconTrophy, IconX } from "@tabler/icons-react";
 import { IconBook, IconHistory } from "@tabler/icons-react";
@@ -4514,9 +4515,10 @@ function PupilDetailPage() {
         </div>
       )}
 
-      {editSheetOpen && pupil && (
-        <div className="fixed inset-0 z-[60] flex flex-col justify-end">
+      {editSheetOpen && pupil && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[60] flex flex-col justify-end" style={{ animation: "fadeInSheet 0.15s ease-out" }}>
           <div className="absolute inset-0 bg-black/40" onClick={() => !editSaving && setEditSheetOpen(false)} />
+
           <div
             className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-lg px-4 pt-5 pb-8 max-h-[90vh] overflow-y-auto"
             style={{ ...POPPINS, animation: "slideUp 0.25s ease-out" }}
@@ -4761,7 +4763,8 @@ function PupilDetailPage() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
 
 
@@ -4903,7 +4906,7 @@ function PupilDetailPage() {
 
 
 
-      <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
+      <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } } @keyframes fadeInSheet { from { opacity: 0; } to { opacity: 1; } }`}</style>
       </div>
     </div>
     </DSMTopSheet>
