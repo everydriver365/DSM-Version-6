@@ -4514,9 +4514,10 @@ function PupilDetailPage() {
         </div>
       )}
 
-      {editSheetOpen && pupil && (
-        <div className="fixed inset-0 z-[60] flex flex-col justify-end">
+      {editSheetOpen && pupil && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[60] flex flex-col justify-end" style={{ animation: "fadeInSheet 0.15s ease-out" }}>
           <div className="absolute inset-0 bg-black/40" onClick={() => !editSaving && setEditSheetOpen(false)} />
+
           <div
             className="relative w-full max-w-[430px] mx-auto bg-white rounded-t-lg px-4 pt-5 pb-8 max-h-[90vh] overflow-y-auto"
             style={{ ...POPPINS, animation: "slideUp 0.25s ease-out" }}
