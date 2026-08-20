@@ -1584,9 +1584,14 @@ function PupilDetailPage() {
           <div className="mt-4 flex gap-2">
             <button
               type="button"
-              onClick={() => { if (pupil.phone) window.location.href = `tel:${pupil.phone}`; }}
-              disabled={!pupil.phone}
-              className="flex-1 h-11 flex items-center justify-center gap-2 rounded-lg font-semibold text-[14px] active:opacity-70 disabled:opacity-40"
+              onClick={() => {
+                if (pupil.phone) {
+                  window.open(`tel:${pupil.phone}`, "_blank");
+                } else {
+                  toast.error("No phone number on record for this pupil");
+                }
+              }}
+              className="flex-1 h-11 flex items-center justify-center gap-2 rounded-lg font-semibold text-[14px] active:opacity-70"
               style={{ background: "#E8F4FD", color: "#1877D6", border: "none", ...POPPINS }}
             >
               <IconPhone size={18} stroke={1.8} /> Call
