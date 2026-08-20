@@ -1,5 +1,6 @@
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { tokens } from "@/lib/tokens";
+import { lessonStatusColors } from "@/lib/statusVariants";
 import { TestDetailTrigger } from '@/components/lessons/TestDetailPanel';
 import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
 
@@ -10467,10 +10468,9 @@ function LessonsBreakdownModal({
     const day = d.toLocaleDateString("en-GB", { weekday: "short" });
     return `${day} ${(time || "").slice(0, 5)}`;
   };
-  const statusColors: Record<string, { bg: string; fg: string }> = {
-    completed: { bg: "#F3F8FF", fg: "#0B1F3A" },
-    confirmed: { bg: "#EFF6FF", fg: "#1E40AF" },
-    cancelled: { bg: "#FEE2E2", fg: "#B91C1C" },
+  const statusColors = (status: string | null | undefined) => {
+    const c = lessonStatusColors(status);
+    return { bg: c.bg, fg: c.color };
   };
   const completed = rows.filter((r) => r.status === "completed").length;
   const upcoming = rows.filter((r) => r.status === "confirmed" || r.status === "scheduled").length;
@@ -10501,7 +10501,7 @@ function LessonsBreakdownModal({
             </div>
           )}
           {rows.map((r) => {
-            const colors = statusColors[r.status] ?? { bg: "#F3F4F6", fg: "#374151" };
+            const colors = statusColors(r.status);
             return (
               <div
                 key={r.id}

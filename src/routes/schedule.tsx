@@ -1,5 +1,7 @@
 import { pupilColour } from "@/components/PupilAvatar";
 import { tokens } from "@/lib/tokens";
+import { DSMPill, pillStyle } from "@/components/dsm/DSMPill";
+import { lessonStatusVariant, statusLabel } from "@/lib/statusVariants";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -2263,25 +2265,11 @@ function SchedulePage() {
                                                        lsn.lesson_date <= ymdLocal(new Date());
                                                      if (!eolRelevant) return null;
                                                      const eolDone = lsn.eol_completed === true;
-                                                     const pillStyle: React.CSSProperties = {
-                                                       flexShrink: 0,
-                                                       display: 'inline-flex',
-                                                       alignItems: 'center',
-                                                       gap: 4,
-                                                       fontSize: tokens.fontSize.xs,
-                                                       fontWeight: tokens.fontWeight.bold,
-                                                       padding: '2px 8px',
-                                                       borderRadius: tokens.radiusCard,
-                                                       lineHeight: 1.4,
-                                                       border: 'none',
-                                                       background: eolDone ? '#E4F5EA' : '#FBE7E7',
-                                                       color: eolDone ? '#2E7D4F' : '#CC2229',
-                                                       ...POPPINS,
-                                                     };
+                                                     const eolPill: React.CSSProperties = pillStyle(eolDone ? 'success' : 'danger');
                                                      if (eolDone) {
                                                        return (
-                                                         <span style={pillStyle}>
-                                                           <IconCheck size={11} stroke={2.4} color="#2E7D4F" />
+                                                         <span style={eolPill}>
+                                                           <IconCheck size={11} stroke={2.4} />
                                                            EOL
                                                          </span>
                                                        );
@@ -2291,7 +2279,7 @@ function SchedulePage() {
                                                          type="button"
                                                          aria-label="Complete end of lesson"
                                                          onClick={(ev) => { ev.stopPropagation(); setEolLesson(lsn); }}
-                                                         style={{ ...pillStyle, cursor: 'pointer' }}
+                                                         style={{ ...eolPill, cursor: 'pointer' }}
                                                        >
                                                          EOL
                                                        </button>
