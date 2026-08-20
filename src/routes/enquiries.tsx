@@ -1,4 +1,5 @@
 import { useGoBack } from "@/hooks/useGoBack";
+import { tokens } from "@/lib/tokens";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
@@ -118,11 +119,11 @@ const STATUS_META: Record<
   string,
   { label: string; bg: string; color: string; Icon: typeof IconMail }
 > = {
-  new: { label: "New", bg: "#EFF6FF", color: "#1877D6", Icon: IconMail },
+  new: { label: "New", bg: "#EFF6FF", color: tokens.blue, Icon: IconMail },
   contacted: { label: "Contacted", bg: "#FFF7E6", color: "#D68A1B", Icon: IconPhone },
   accepted: { label: "Accepted", bg: "#DCFCE7", color: "#15803D", Icon: IconCheck },
-  declined: { label: "Declined", bg: "#FCE9E9", color: "#CC2229", Icon: IconX },
-  on_jobs: { label: "On jobs board", bg: "#EEF2F7", color: "#0B1F3A", Icon: IconBriefcase },
+  declined: { label: "Declined", bg: "#FCE9E9", color: tokens.red, Icon: IconX },
+  on_jobs: { label: "On jobs board", bg: "#EEF2F7", color: tokens.navy, Icon: IconBriefcase },
 };
 
 function metaFor(status: string | null) {
@@ -138,9 +139,9 @@ const CARD: React.CSSProperties = {
 
 const SECTION_HEADER: React.CSSProperties = {
   fontSize: 12,
-  fontWeight: 700,
+  fontWeight: tokens.fontWeight.bold,
   letterSpacing: "0.5px",
-  color: "#9CA3AF",
+  color: tokens.textMuted,
   textTransform: "uppercase",
   margin: "18px 4px 8px",
   ...POPPINS,
@@ -549,7 +550,7 @@ function EnquiriesPage() {
           background: "#fff",
           border: "none",
           textAlign: "left",
-          fontWeight: 700, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44,
+          fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44,
           marginBottom: 10,
           boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
         }}
@@ -571,7 +572,7 @@ function EnquiriesPage() {
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-            <div style={{ fontSize: 16.5, fontWeight: 800, color: "#0B1F3A", ...POPPINS }}>
+            <div style={{ fontSize: 16.5, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, ...POPPINS }}>
               {enquiry.name ?? "Unknown"}
             </div>
             {unreadReplies.has(enquiry.id) && (
@@ -580,7 +581,7 @@ function EnquiriesPage() {
                   width: 8,
                   height: 8,
                   borderRadius: "50%",
-                  background: "#1877D6",
+                  background: tokens.blue,
                   flexShrink: 0,
                 }}
               />
@@ -589,9 +590,9 @@ function EnquiriesPage() {
           {unreadReplies.has(enquiry.id) && (
             <div
               style={{
-                fontSize: 11,
-                fontWeight: 800,
-                color: "#1877D6",
+                fontSize: tokens.fontSize.sm,
+                fontWeight: tokens.fontWeight.extrabold,
+                color: tokens.blue,
                 fontFamily: "Poppins, sans-serif",
                 marginTop: 2,
               }}
@@ -607,8 +608,8 @@ function EnquiriesPage() {
                 gap: 4,
                 background: isValidPostcode(enquiry.postcode) ? "#F2F2F7" : "#FDEDEC",
                 color: isValidPostcode(enquiry.postcode) ? "#6B6B6F" : "#FF3B30",
-                fontSize: 11,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.sm,
+                fontWeight: tokens.fontWeight.bold,
                 padding: "3px 9px",
                 borderRadius: 8,
                 marginTop: 5,
@@ -632,7 +633,7 @@ function EnquiriesPage() {
               ...POPPINS,
             }}
           >
-            <span style={{ color: "#9CA3AF", fontSize: 12, fontWeight: 500 }}>
+            <span style={{ color: tokens.textMuted, fontSize: 12, fontWeight: 500 }}>
               {timeAgo(enquiry.created_at)}
             </span>
             {enquiry.phone && (
@@ -642,11 +643,11 @@ function EnquiriesPage() {
                   alignItems: "center",
                   gap: 5,
                   background: "#EFF6FF",
-                  color: "#1877D6",
+                  color: tokens.blue,
                   borderRadius: 8,
                   padding: "6px 12px",
                   fontSize: 12.5,
-                  fontWeight: 800,
+                  fontWeight: tokens.fontWeight.extrabold,
                 }}
               >
                 <IconPhone size={12} stroke={2} color="#1877D6" />
@@ -707,7 +708,7 @@ function EnquiriesPage() {
           alignItems: "center",
           gap: 12,
           background: "linear-gradient(100deg, #0B1F3A, #14509E)",
-          fontWeight: 700, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44,
+          fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44,
           padding: "14px 16px",
           marginTop: 20,
           marginBottom: 16,
@@ -733,8 +734,8 @@ function EnquiriesPage() {
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
-              fontSize: 14,
-              fontWeight: 800,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.extrabold,
               color: "#fff",
               ...POPPINS,
             }}
@@ -788,14 +789,14 @@ function EnquiriesPage() {
         }}
       >
         {Icon && <Icon size={17} stroke={2} color={color ?? "#6B7280"} />}
-        <div style={{ fontSize: 14.5, fontWeight: 600, color: color ?? "#0B1F3A", ...POPPINS }}>
+        <div style={{ fontSize: 14.5, fontWeight: tokens.fontWeight.semibold, color: color ?? "#0B1F3A", ...POPPINS }}>
           {label}
         </div>
         <div
           style={{
             marginLeft: "auto",
-            fontSize: 14,
-            color: "#6B7686",
+            fontSize: tokens.fontSize.md,
+            color: tokens.textSecondary,
             ...POPPINS,
             maxWidth: "55%",
             textAlign: "right",
@@ -887,7 +888,7 @@ function EnquiriesPage() {
           <div
             style={{
               fontSize: 15,
-              fontWeight: 800,
+              fontWeight: tokens.fontWeight.extrabold,
               color: labelColor ?? "#0B1F3A",
               ...POPPINS,
             }}
@@ -898,9 +899,9 @@ function EnquiriesPage() {
             <div
               style={{
                 marginTop: 2,
-                color: "#9CA3AF",
+                color: tokens.textMuted,
                 fontSize: 11.5,
-                fontWeight: 500,
+                fontWeight: tokens.fontWeight.medium,
                 lineHeight: 1.35,
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
@@ -914,7 +915,7 @@ function EnquiriesPage() {
           )}
         </div>
         {value && (
-          <span style={{ fontSize: 12, color: "#9CA3AF", flexShrink: 0, ...POPPINS }}>{value}</span>
+          <span style={{ fontSize: 12, color: tokens.textMuted, flexShrink: 0, ...POPPINS }}>{value}</span>
         )}
         {(onClick || href) && (
           <span
@@ -991,7 +992,7 @@ function EnquiriesPage() {
             position: "sticky",
             top: 0,
             zIndex: 2,
-            background: "#0B1F3A",
+            background: tokens.navy,
             padding: "calc(12px + env(safe-area-inset-top, 0px)) 16px 16px",
             borderRadius: "0 0 8px 8px",
             display: "flex",
@@ -1021,7 +1022,7 @@ function EnquiriesPage() {
               minWidth: 0,
               color: "#fff",
               fontSize: 19,
-              fontWeight: 800,
+              fontWeight: tokens.fontWeight.extrabold,
               letterSpacing: "-0.3px",
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -1033,12 +1034,12 @@ function EnquiriesPage() {
           </div>
           <span
             style={{
-              background: "#1877D6",
+              background: tokens.blue,
               color: "#fff",
               borderRadius: 8,
               padding: "6px 14px",
               fontSize: 12,
-              fontWeight: 800,
+              fontWeight: tokens.fontWeight.extrabold,
               flexShrink: 0,
               ...POPPINS,
             }}
@@ -1086,11 +1087,11 @@ function EnquiriesPage() {
                       flexShrink: 0,
                     }}
                   />
-                  <span style={{ color: "#0B1F3A", fontSize: 14.5, fontWeight: 800, ...POPPINS }}>
+                  <span style={{ color: tokens.navy, fontSize: 14.5, fontWeight: tokens.fontWeight.extrabold, ...POPPINS }}>
                     {banner.text}
                   </span>
                 </div>
-                <span style={{ color: "#9CA3AF", fontSize: 12, fontWeight: 500, ...POPPINS }}>
+                <span style={{ color: tokens.textMuted, fontSize: 12, fontWeight: tokens.fontWeight.medium, ...POPPINS }}>
                   {timeAgo(lastChange)}
                 </span>
               </div>
@@ -1137,14 +1138,14 @@ function EnquiriesPage() {
                     borderTop: i === 0 ? "none" : "1px solid #F0F0F2",
                   }}
                 >
-                  <span style={{ color: "#9CA3AF", fontSize: 13, fontWeight: 600, ...POPPINS }}>
+                  <span style={{ color: tokens.textMuted, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, ...POPPINS }}>
                     {r.label}
                   </span>
                   <span
                     style={{
-                      color: "#0B1F3A",
+                      color: tokens.navy,
                       fontSize: 13.5,
-                      fontWeight: 700,
+                      fontWeight: tokens.fontWeight.bold,
                       textAlign: "right",
                       ...POPPINS,
                     }}
@@ -1159,9 +1160,9 @@ function EnquiriesPage() {
               <div style={{ marginTop: 14 }}>
                 <div
                   style={{
-                    color: "#9CA3AF",
-                    fontSize: 11,
-                    fontWeight: 700,
+                    color: tokens.textMuted,
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.bold,
                     letterSpacing: "0.3px",
                     textTransform: "uppercase",
                     marginBottom: 6,
@@ -1175,9 +1176,9 @@ function EnquiriesPage() {
                     background: "#F7F9FC",
                     padding: 12,
                     borderRadius: 8,
-                    color: "#0B1F3A",
+                    color: tokens.navy,
                     fontSize: 13.5,
-                    fontWeight: 500,
+                    fontWeight: tokens.fontWeight.medium,
                     lineHeight: 1.5,
                     ...POPPINS,
                   }}
@@ -1212,7 +1213,7 @@ function EnquiriesPage() {
                       gap: 5,
                       color: "#7B4FC9",
                       fontSize: 11.5,
-                      fontWeight: 700,
+                      fontWeight: tokens.fontWeight.bold,
                       marginBottom: 12,
                       ...POPPINS,
                     }}
@@ -1235,7 +1236,7 @@ function EnquiriesPage() {
                         style={{
                           maxWidth: "82%",
                           padding: "9px 13px",
-                          fontSize: 13,
+                          fontSize: tokens.fontSize.base,
                           lineHeight: 1.45,
                           borderRadius: 8,
                           background: m.outgoing ? "#1877D6" : "#F2F2F7",
@@ -1248,7 +1249,7 @@ function EnquiriesPage() {
                       >
                         {m.text}
                       </div>
-                      <div style={{ marginTop: 3, fontSize: 10, color: "#9CA3AF", ...POPPINS }}>
+                      <div style={{ marginTop: 3, fontSize: tokens.fontSize.xs, color: tokens.textMuted, ...POPPINS }}>
                         {m.outgoing ? "You" : (enquiry.name ?? "Reply")} · {timeAgo(m.at)}
                       </div>
                     </div>
@@ -1262,13 +1263,13 @@ function EnquiriesPage() {
                       style={{
                         width: "100%",
                         marginTop: 4,
-                        background: "#1877D6",
+                        background: tokens.blue,
                         color: "#fff",
                         border: "none",
                         borderRadius: 20, minHeight: 44,
                         padding: "9px 14px",
                         fontSize: 12.5,
-                        fontWeight: 700,
+                        fontWeight: tokens.fontWeight.bold,
                         textAlign: "center",
                         ...POPPINS,
                       }}
@@ -1319,18 +1320,18 @@ function EnquiriesPage() {
                 });
 
               const metaFor = (it: Item) => {
-                if (it.pending) return { label: "Pending", color: "#9CA3AF", dot: "#D1D1D6" };
+                if (it.pending) return { label: "Pending", color: tokens.textMuted, dot: "#D1D1D6" };
                 switch (it.type) {
                   case "note":
                     return { label: "Note", color: "#D68A1B", dot: "#D68A1B" };
                   case "call":
-                    return { label: "Call / Contact", color: "#1877D6", dot: "#1877D6" };
+                    return { label: "Call / Contact", color: tokens.blue, dot: "#1877D6" };
                   case "status_change":
                     return { label: "Status", color: "#248A3D", dot: "#248A3D" };
                   case "received":
-                    return { label: "Enquiry", color: "#1877D6", dot: "#1877D6" };
+                    return { label: "Enquiry", color: tokens.blue, dot: "#1877D6" };
                   default:
-                    return { label: "Activity", color: "#9CA3AF", dot: "#B0B0B5" };
+                    return { label: "Activity", color: tokens.textMuted, dot: "#B0B0B5" };
                 }
               };
 
@@ -1366,8 +1367,8 @@ function EnquiriesPage() {
                       >
                         <span
                           style={{
-                            fontSize: 11,
-                            fontWeight: 800,
+                            fontSize: tokens.fontSize.sm,
+                            fontWeight: tokens.fontWeight.extrabold,
                             letterSpacing: "0.4px",
                             textTransform: "uppercase",
                             color,
@@ -1377,7 +1378,7 @@ function EnquiriesPage() {
                           {label}
                         </span>
                         <span
-                          style={{ fontSize: 11, color: "#9CA3AF", flexShrink: 0, ...POPPINS }}
+                          style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, flexShrink: 0, ...POPPINS }}
                         >
                           {it.at ? timeAgo(it.at) : ""}
                         </span>
@@ -1434,8 +1435,8 @@ function EnquiriesPage() {
                     <div
                       style={{
                         fontSize: 12,
-                        fontWeight: 700,
-                        color: "#1877D6",
+                        fontWeight: tokens.fontWeight.bold,
+                        color: tokens.blue,
                         textTransform: "uppercase",
                         letterSpacing: "0.06em",
                         marginBottom: 8,
@@ -1453,8 +1454,8 @@ function EnquiriesPage() {
                         border: "1px solid #E4E4E8",
                         borderRadius: 8,
                         padding: 10,
-                        fontSize: 14,
-                        color: "#0B1F3A",
+                        fontSize: tokens.fontSize.md,
+                        color: tokens.navy,
                         outline: "none",
                         resize: "vertical",
                         ...POPPINS,
@@ -1473,8 +1474,8 @@ function EnquiriesPage() {
                           border: "none",
                           borderRadius: 20, minHeight: 44,
                           padding: "10px 12px",
-                          fontSize: 14,
-                          fontWeight: 700,
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.bold,
                           ...POPPINS,
                         }}
                       >
@@ -1489,13 +1490,13 @@ function EnquiriesPage() {
                         className="active:opacity-70"
                         style={{
                           flex: 1,
-                          background: "#EEF2F7",
-                          color: "#0B1F3A",
+                          background: tokens.canvas,
+                          color: tokens.navy,
                           border: "none",
                           borderRadius: 20, minHeight: 44,
                           padding: "10px 12px",
-                          fontSize: 14,
-                          fontWeight: 700,
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.bold,
                           ...POPPINS,
                         }}
                       >
@@ -1615,7 +1616,7 @@ function EnquiriesPage() {
                 border: "none",
                 outline: "none",
                 fontSize: 14.5,
-                color: "#0B1F3A",
+                color: tokens.navy,
                 background: "transparent",
                 ...POPPINS,
               }}
@@ -1631,8 +1632,8 @@ function EnquiriesPage() {
                 border: "none",
                 borderRadius: 20, minHeight: 44,
                 padding: "8px 12px",
-                fontSize: 13,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.base,
+                fontWeight: tokens.fontWeight.bold,
                 display: "flex",
                 gap: 6,
                 alignItems: "center",
@@ -1664,7 +1665,7 @@ function EnquiriesPage() {
               <div
                 key={i}
                 style={{
-                  background: "#FFFFFF",
+                  background: tokens.white,
                   borderRadius: 8,
                   boxShadow: "0 4px 0 #E4E4E8",
                   padding: "15px 16px",

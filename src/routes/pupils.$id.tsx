@@ -1,4 +1,5 @@
 import { useGoBack } from "@/hooks/useGoBack";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
 import { createPortal } from "react-dom";
@@ -353,7 +354,7 @@ function ActionTile({
         ) : null}
       </div>
       {badge ? (
-        <span className="text-[10px] font-semibold" style={{ color: "#1877D6" }}>
+        <span className="text-[10px] font-semibold" style={{ color: tokens.blue }}>
           {badge}
         </span>
       ) : null}
@@ -365,7 +366,7 @@ function ActionTile({
         {label}
       </span>
       {badge ? (
-        <span className="absolute top-1.5 right-2 text-[10px] font-semibold" style={{ color: "#1877D6" }}>
+        <span className="absolute top-1.5 right-2 text-[10px] font-semibold" style={{ color: tokens.blue }}>
           {badge}
         </span>
       ) : null}
@@ -1387,7 +1388,7 @@ function PupilDetailPage() {
         {pupil && (
           <div
             className="mt-4 flex items-center gap-3 p-4"
-            style={{ background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 8px rgba(15,32,68,0.06)" }}
+            style={{ background: tokens.white, borderRadius: 12, boxShadow: "0 2px 8px rgba(15,32,68,0.06)" }}
           >
             <label className="relative shrink-0 cursor-pointer">
               <input
@@ -1418,9 +1419,9 @@ function PupilDetailPage() {
                   height: 56,
                   borderRadius: 999,
                   background: pupil.calendar_colour || "#1877D6",
-                  color: "#FFFFFF",
+                  color: tokens.white,
                   fontSize: 19,
-                  fontWeight: 800,
+                  fontWeight: tokens.fontWeight.extrabold,
                   ...POPPINS,
                 }}
               >
@@ -1434,7 +1435,7 @@ function PupilDetailPage() {
               </div>
               <span
                 className="absolute flex items-center justify-center"
-                style={{ right: -2, bottom: -2, width: 20, height: 20, borderRadius: 999, background: "#FFFFFF", boxShadow: "0 1px 3px rgba(0,0,0,0.18)", color: "#0B1F3A" }}
+                style={{ right: -2, bottom: -2, width: 20, height: 20, borderRadius: 999, background: tokens.white, boxShadow: "0 1px 3px rgba(0,0,0,0.18)", color: tokens.navy }}
               >
                 <IconCamera size={12} stroke={1.7} />
               </span>
@@ -1442,12 +1443,12 @@ function PupilDetailPage() {
 
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 min-w-0">
-                <h1 className="truncate" style={{ fontSize: 18, fontWeight: 800, color: "#0B1F3A", letterSpacing: "-0.3px", ...POPPINS }}>
+                <h1 className="truncate" style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, letterSpacing: "-0.3px", ...POPPINS }}>
                   {pupil.name}
                 </h1>
                 <span
                   className="shrink-0"
-                  style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", padding: "2px 8px", borderRadius: 999, background: badge.bg, color: "#FFFFFF", ...POPPINS }}
+                  style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, textTransform: "uppercase", letterSpacing: "0.04em", padding: "2px 8px", borderRadius: 999, background: badge.bg, color: tokens.white, ...POPPINS }}
                 >
                   {badge.label}
                 </span>
@@ -1462,7 +1463,7 @@ function PupilDetailPage() {
               aria-label="More options"
               onClick={() => setMoreOpen(true)}
               className="shrink-0 flex items-center justify-center active:opacity-60"
-              style={{ width: 34, height: 34, borderRadius: 999, background: "#F3F6FA", border: "none", color: "#0B1F3A" }}
+              style={{ width: 34, height: 34, borderRadius: 999, background: "#F3F6FA", border: "none", color: tokens.navy }}
             >
               <IconDots size={18} stroke={1.6} />
             </button>
@@ -1473,7 +1474,7 @@ function PupilDetailPage() {
         {pupil && (
           <div
             className="mt-3"
-            style={{ background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
+            style={{ background: tokens.white, borderRadius: 12, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
           >
                   {/* 3-up stat row: Balance | Hours remaining | Days to test */}
                   {(() => {
@@ -1530,8 +1531,8 @@ function PupilDetailPage() {
                       }
                     }
                     const colLabel: React.CSSProperties = {
-                      fontSize: 10,
-                      fontWeight: 700,
+                      fontSize: tokens.fontSize.xs,
+                      fontWeight: tokens.fontWeight.bold,
                       textTransform: "uppercase",
                       letterSpacing: "0.06em",
                       color: "#8A8A8E",
@@ -1539,7 +1540,7 @@ function PupilDetailPage() {
                     };
                     const colValue = (v: string): React.CSSProperties => ({
                       fontSize: v.length > 9 ? 15 : v.length > 7 ? 16.5 : 19,
-                      fontWeight: 800,
+                      fontWeight: tokens.fontWeight.extrabold,
                       lineHeight: 1.2,
                       marginTop: 2,
                       whiteSpace: "normal",
@@ -1592,7 +1593,7 @@ function PupilDetailPage() {
                 }
               }}
               className="flex-1 h-11 flex items-center justify-center gap-2 rounded-lg font-semibold text-[14px] active:opacity-70"
-              style={{ background: "#E8F4FD", color: "#1877D6", border: "none", ...POPPINS }}
+              style={{ background: "#E8F4FD", color: tokens.blue, border: "none", ...POPPINS }}
             >
               <IconPhone size={18} stroke={1.8} /> Call
             </button>
@@ -1600,7 +1601,7 @@ function PupilDetailPage() {
               type="button"
               onClick={openEditSheet}
               className="flex-1 h-11 flex items-center justify-center gap-2 rounded-lg font-semibold text-[14px] active:opacity-70"
-              style={{ background: "#FFFFFF", color: "#0B1F3A", border: "1px solid #E2E6ED", ...POPPINS }}
+              style={{ background: tokens.white, color: tokens.navy, border: "1px solid #E2E6ED", ...POPPINS }}
             >
               <IconPencil size={18} stroke={1.8} /> Edit
             </button>
@@ -1608,7 +1609,7 @@ function PupilDetailPage() {
               type="button"
               onClick={() => setRemoveOpen(true)}
               className="flex-1 h-11 flex items-center justify-center gap-2 rounded-lg font-semibold text-[14px] active:opacity-70"
-              style={{ background: "#FEF2F2", color: "#CC2229", border: "none", ...POPPINS }}
+              style={{ background: "#FEF2F2", color: tokens.red, border: "none", ...POPPINS }}
             >
               <IconTrash size={18} stroke={1.8} /> Remove
             </button>
@@ -1617,7 +1618,7 @@ function PupilDetailPage() {
         {/* Tab bar — fixed-width segmented control */}
         <div
           className="mt-4 mb-2 flex gap-1"
-          style={{ background: "#EEF2F7", borderRadius: 8, padding: 3, ...POPPINS }}
+          style={{ background: tokens.canvas, borderRadius: 8, padding: 3, ...POPPINS }}
         >
           {(["overview", "lessons", "payments", "profile"] as const).map((t) => (
             <button
@@ -1676,7 +1677,7 @@ function PupilDetailPage() {
                             type="button"
                             onClick={() => navigate({ to: "/pupils/syllabus/$id", params: { id } })}
                             className="text-[18px] font-bold leading-none"
-                            style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+                            style={{ color: tokens.blue, background: "none", border: "none", padding: 0, ...POPPINS }}
                           >
                             {readiness.score}%
                           </button>
@@ -1808,13 +1809,13 @@ function PupilDetailPage() {
                   <div>
                     <h3
                       className="mb-2"
-                      style={{ fontSize: 20, fontWeight: 800, color: "#000000", letterSpacing: "-0.4px", ...POPPINS }}
+                      style={{ fontSize: 20, fontWeight: tokens.fontWeight.extrabold, color: "#000000", letterSpacing: "-0.4px", ...POPPINS }}
                     >
                       Recent payments
                     </h3>
                     <div
                       className="flex flex-col"
-                      style={{ background: "#FFFFFF", borderRadius: 8, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
+                      style={{ background: tokens.white, borderRadius: 8, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
                     >
                       {paymentHistory.map((p, pi) => {
                         const isRefund = p.payment_status === "refunded" || Number(p.lesson_cost ?? 0) < 0;
@@ -1827,15 +1828,15 @@ function PupilDetailPage() {
                         >
                           <div className="flex flex-col">
                             <div className="flex items-center gap-2">
-                              <span style={{ fontSize: 16, fontWeight: 700, color: isRefund ? "#CC2229" : "#000000", ...POPPINS }}>
+                              <span style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: isRefund ? "#CC2229" : "#000000", ...POPPINS }}>
                                 {isRefund ? "−" : ""}£{amt.toFixed(2)}
                               </span>
                               {isRefund && (
                                 <span
                                   style={{
                                     fontSize: 10.5,
-                                    fontWeight: 700,
-                                    color: "#CC2229",
+                                    fontWeight: tokens.fontWeight.bold,
+                                    color: tokens.red,
                                     background: "rgba(204,34,41,0.10)",
                                     borderRadius: 999,
                                     padding: "2px 8px",
@@ -1916,7 +1917,7 @@ function PupilDetailPage() {
             </p>
           </div>
         ) : (
-          <div style={{ background: "#FFFFFF", borderRadius: 8, overflow: "hidden", border: "0.5px solid rgba(11,31,58,0.10)" }}>
+          <div style={{ background: tokens.white, borderRadius: 8, overflow: "hidden", border: "0.5px solid rgba(11,31,58,0.10)" }}>
             {lessons.map((l, idx) => {
               const d = new Date(`${l.lesson_date}T00:00:00`);
               const prev = idx > 0 ? lessons[idx - 1] : null;
@@ -1946,7 +1947,7 @@ function PupilDetailPage() {
                 <Fragment key={l.id}>
                   {showGap && (
                     <div className="flex items-center justify-center py-3" style={{ borderTop: idx === 0 ? "none" : "0.5px solid rgba(11,31,58,0.10)" }}>
-                      <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                      <span className="text-[11px]" style={{ color: tokens.textMuted, ...POPPINS }}>
                         {gapDays} day{gapDays > 1 ? "s" : ""} gap
                       </span>
                     </div>
@@ -1960,11 +1961,11 @@ function PupilDetailPage() {
                       ...POPPINS,
                     }}
                   >
-                    <div style={{ width: 40, height: 40, borderRadius: 999, background: colour, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, letterSpacing: 0.2, flexShrink: 0 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 999, background: colour, color: tokens.white, display: "flex", alignItems: "center", justifyContent: "center", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, letterSpacing: 0.2, flexShrink: 0 }}>
                       {initials}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
+                      <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
                         {formatDateShort(d)}
                       </div>
                       <div style={{ fontSize: 12, color: "#64748B", marginTop: 2, fontVariantNumeric: "tabular-nums", ...POPPINS }}>
@@ -1972,18 +1973,18 @@ function PupilDetailPage() {
                       </div>
                     </div>
                     {live ? (
-                      <span style={{ background: "#DBEAFE", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Live</span>
+                      <span style={{ background: "#DBEAFE", color: "#1A52A0", fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Live</span>
                     ) : isPaid ? (
-                      <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Paid ✓</span>
+                      <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Paid ✓</span>
                     ) : isPartial ? (
-                      <span style={{ background: "#F3E8FF", color: "#7C3AED", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Partial £{remaining.toFixed(0)}</span>
+                      <span style={{ background: "#F3E8FF", color: "#7C3AED", fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Partial £{remaining.toFixed(0)}</span>
                     ) : isUnpaid && price > 0 ? (
-                      <span style={{ background: "#FDECC8", color: "#8A5A00", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Unpaid £{price.toFixed(0)}</span>
+                      <span style={{ background: "#FDECC8", color: "#8A5A00", fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Unpaid £{price.toFixed(0)}</span>
                     ) : past && l.status !== "cancelled" && !l.eol_completed ? (
                       <button
                         type="button"
                         onClick={(e) => { e.stopPropagation(); setEolWizardFor(l); }}
-                        style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, border: "none", ...POPPINS }}
+                        style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "4px 10px", borderRadius: 999, border: "none", ...POPPINS }}
                       >
                         EOL
                       </button>
@@ -2008,21 +2009,21 @@ function PupilDetailPage() {
                       >
                         <button
                           className="text-left px-4 py-3 text-[14px]"
-                          style={{ color: "#0B1F3A", ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
+                          style={{ color: tokens.navy, ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
                           onClick={(e) => { e.stopPropagation(); setChangeDateTimeSheetFor(l); setActionsOpenFor(null); }}
                         >
                           Change date & time
                         </button>
                         <button
                           className="text-left px-4 py-3 text-[14px]"
-                          style={{ color: "#0B1F3A", ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
+                          style={{ color: tokens.navy, ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
                           onClick={(e) => { e.stopPropagation(); setCancelSheetFor(l); setActionsOpenFor(null); }}
                         >
                           Cancel
                         </button>
                         <button
                           className="text-left px-4 py-3 text-[14px]"
-                          style={{ color: "#CC2229", ...POPPINS }}
+                          style={{ color: tokens.red, ...POPPINS }}
                           onClick={(e) => { e.stopPropagation(); setDeleteSheetFor(l); setActionsOpenFor(null); }}
                         >
                           Delete
@@ -2037,22 +2038,22 @@ function PupilDetailPage() {
         )}
 
 
-        <div style={{ background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 8, padding: 0, overflow: "hidden", margin: "12px 0 0 0" }}>
+        <div style={{ background: tokens.white, border: "0.5px solid #E2E6ED", borderRadius: 8, padding: 0, overflow: "hidden", margin: "12px 0 0 0" }}>
           <div style={{ padding: "14px 16px", borderBottom: "0.5px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div className="flex items-center gap-2">
               <IconRefresh stroke={1.5} size={14} color="#1A52A0" />
-              <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Recurring lessons</span>
+              <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, ...POPPINS }}>Recurring lessons</span>
             </div>
             <button
               type="button"
               onClick={() => navigate({ to: "/lesson-series" as never, search: { pupilId: id } as never })}
-              style={{ fontSize: 12, color: "#1A52A0", fontWeight: 600, ...POPPINS }}
+              style={{ fontSize: 12, color: "#1A52A0", fontWeight: tokens.fontWeight.semibold, ...POPPINS }}
             >
               + Add series
             </button>
           </div>
           {pupilSeries === null ? null : pupilSeries.length === 0 ? (
-            <div style={{ padding: "14px 16px", fontSize: 12, color: "#9CA3AF", ...POPPINS }}>No recurring lessons set up</div>
+            <div style={{ padding: "14px 16px", fontSize: 12, color: tokens.textMuted, ...POPPINS }}>No recurring lessons set up</div>
           ) : (
             pupilSeries.map((s, idx) => (
               <div
@@ -2069,14 +2070,14 @@ function PupilDetailPage() {
                 }}
               >
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 500, color: "#0B1F3A" }}>
+                  <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: tokens.navy }}>
                     {s.day_of_week} at {(s.lesson_time || "").slice(0, 5)}
                   </div>
-                  <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, textTransform: "capitalize" }}>
+                  <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 2, textTransform: "capitalize" }}>
                     {s.frequency} · {s.duration_minutes} mins
                   </div>
                 </div>
-                <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 999 }}>Active</span>
+                <span style={{ background: "#E7F7EC", color: "#137333", fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, padding: "2px 8px", borderRadius: 999 }}>Active</span>
               </div>
             ))
           )}
@@ -2090,7 +2091,7 @@ function PupilDetailPage() {
             </p>
           </div>
         ) : (
-          <div style={{ background: "#FFFFFF", borderRadius: 8, overflow: "hidden", border: "0.5px solid rgba(11,31,58,0.10)" }}>
+          <div style={{ background: tokens.white, borderRadius: 8, overflow: "hidden", border: "0.5px solid rgba(11,31,58,0.10)" }}>
             {(() => {
               const visible = pastExpanded ? pastLessons : pastLessons.slice(0, 5);
               const colour = pupil?.calendar_colour || "#1A52A0";
@@ -2111,7 +2112,7 @@ function PupilDetailPage() {
                       <Fragment key={l.id}>
                         {showGap && (
                           <div className="flex items-center justify-center py-3" style={{ borderTop: idx === 0 ? "none" : "0.5px solid rgba(11,31,58,0.10)" }}>
-                            <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                            <span className="text-[11px]" style={{ color: tokens.textMuted, ...POPPINS }}>
                               {gapDays} day{gapDays > 1 ? "s" : ""} gap
                             </span>
                           </div>
@@ -2125,11 +2126,11 @@ function PupilDetailPage() {
                             ...POPPINS,
                           }}
                         >
-                          <div style={{ width: 40, height: 40, borderRadius: 999, background: isCancelled ? "#E5E7EB" : colour, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, letterSpacing: 0.2, flexShrink: 0 }}>
+                          <div style={{ width: 40, height: 40, borderRadius: 999, background: isCancelled ? "#E5E7EB" : colour, color: tokens.white, display: "flex", alignItems: "center", justifyContent: "center", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, letterSpacing: 0.2, flexShrink: 0 }}>
                             {initials}
                           </div>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 15, fontWeight: 600, color: isCancelled ? "#64748B" : "#0B1F3A", textDecoration: isCancelled ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
+                            <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: isCancelled ? "#64748B" : "#0B1F3A", textDecoration: isCancelled ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
                               {formatDateShort(d)}
                             </div>
                             <div style={{ fontSize: 12, color: "#64748B", marginTop: 2, fontVariantNumeric: "tabular-nums", ...POPPINS }}>
@@ -2137,13 +2138,13 @@ function PupilDetailPage() {
                             </div>
                           </div>
                           {isCancelled ? (
-                            <span style={{ background: "#FDECEA", color: "#B91C1C", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Cancelled</span>
+                            <span style={{ background: "#FDECEA", color: "#B91C1C", fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Cancelled</span>
                           ) : isPaid ? (
-                            <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Paid ✓</span>
+                            <span style={{ background: "#E7F7EC", color: "#137333", fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Paid ✓</span>
                           ) : isPartial ? (
-                            <span style={{ background: "#F3E8FF", color: "#7C3AED", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Partial £{remaining.toFixed(0)}</span>
+                            <span style={{ background: "#F3E8FF", color: "#7C3AED", fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Partial £{remaining.toFixed(0)}</span>
                           ) : isUnpaid ? (
-                            <span style={{ background: "#FDECC8", color: "#8A5A00", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Unpaid £{remaining.toFixed(0)}</span>
+                            <span style={{ background: "#FDECC8", color: "#8A5A00", fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Unpaid £{remaining.toFixed(0)}</span>
                           ) : null}
                           <button
                             onClick={(e) => { e.stopPropagation(); setActionsOpenFor(actionsOpenFor?.id === l.id ? null : l); }}
@@ -2165,21 +2166,21 @@ function PupilDetailPage() {
                             >
                               <button
                                 className="text-left px-4 py-3 text-[14px]"
-                                style={{ color: "#0B1F3A", ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
+                                style={{ color: tokens.navy, ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
                                 onClick={(e) => { e.stopPropagation(); setChangeDateTimeSheetFor(l); setActionsOpenFor(null); }}
                               >
                                 Change date & time
                               </button>
                               <button
                                 className="text-left px-4 py-3 text-[14px]"
-                                style={{ color: "#0B1F3A", ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
+                                style={{ color: tokens.navy, ...POPPINS, borderBottom: "0.5px solid #F3F4F6" }}
                                 onClick={(e) => { e.stopPropagation(); setCancelSheetFor(l); setActionsOpenFor(null); }}
                               >
                                 Cancel
                               </button>
                               <button
                                 className="text-left px-4 py-3 text-[14px]"
-                                style={{ color: "#CC2229", ...POPPINS }}
+                                style={{ color: tokens.red, ...POPPINS }}
                                 onClick={(e) => { e.stopPropagation(); setDeleteSheetFor(l); setActionsOpenFor(null); }}
                               >
                                 Delete
@@ -2214,21 +2215,21 @@ function PupilDetailPage() {
         )}
 
         <SectionHeader>LESSON TRACKS</SectionHeader>
-        <div style={{ background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 8, padding: 0, overflow: "hidden" }}>
+        <div style={{ background: tokens.white, border: "0.5px solid #E2E6ED", borderRadius: 8, padding: 0, overflow: "hidden" }}>
           <div style={{ padding: "14px 16px", borderBottom: "0.5px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div className="flex items-center gap-2">
               <IconMapPin stroke={1.5} size={14} color="#1A52A0" />
-              <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Lesson tracks</span>
+              <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, ...POPPINS }}>Lesson tracks</span>
             </div>
             <span
               className="text-[11px] font-semibold text-white"
-              style={{ backgroundColor: "#1877D6", padding: "2px 8px", borderRadius: 999, ...POPPINS }}
+              style={{ backgroundColor: tokens.blue, padding: "2px 8px", borderRadius: 999, ...POPPINS }}
             >
               {lessonRoutes.length}
             </span>
           </div>
           {lessonRoutes.length === 0 ? (
-            <div style={{ padding: "14px 16px", fontSize: 12, color: "#9CA3AF", ...POPPINS }}>No tracked lessons yet</div>
+            <div style={{ padding: "14px 16px", fontSize: 12, color: tokens.textMuted, ...POPPINS }}>No tracked lessons yet</div>
           ) : (
             lessonRoutes.map((r, idx) => {
               const date = r.started_at ? new Date(r.started_at).toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }) : "—";
@@ -2257,8 +2258,8 @@ function PupilDetailPage() {
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: "#0B1F3A" }}>{date}</div>
-                    <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+                    <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: tokens.navy }}>{date}</div>
+                    <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 2 }}>
                       {duration} · {distance} · {maxSpeed}
                     </div>
                   </div>
@@ -2266,7 +2267,7 @@ function PupilDetailPage() {
                     {overspeeds > 0 ? (
                       <span
                         className="text-[11px] font-semibold"
-                        style={{ backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 8px", borderRadius: 999, ...POPPINS }}
+                        style={{ backgroundColor: "#FDECEA", color: tokens.red, padding: "2px 8px", borderRadius: 999, ...POPPINS }}
                       >
                         {overspeeds} overspeed
                       </span>
@@ -2293,7 +2294,7 @@ function PupilDetailPage() {
               <SheetGroup>
                 <SheetRow>
                   <div className="flex-1 min-w-0">
-                    <div style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A" }}>
+                    <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
                       {viewingReport.started_at
                         ? new Date(viewingReport.started_at).toLocaleString("en-GB", {
                             weekday: "short", day: "2-digit", month: "short", year: "numeric",
@@ -2301,7 +2302,7 @@ function PupilDetailPage() {
                           })
                         : "—"}
                     </div>
-                    <div style={{ fontSize: 13, color: "#6B7686", marginTop: 2, fontWeight: 500 }}>
+                    <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, marginTop: 2, fontWeight: 500 }}>
                       {viewingReport.duration_minutes ? `${viewingReport.duration_minutes} min · ` : ""}
                       Saved to {(pupil?.first_name || pupil?.name || "pupil")}'s record
                     </div>
@@ -2310,16 +2311,16 @@ function PupilDetailPage() {
                 <SheetRow>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0, width: "100%" }}>
                     <div style={{ textAlign: "center", borderRight: "1px solid #E4E8EF" }}>
-                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Distance</div>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 3 }}>{viewingReport.totalDistanceMiles.toFixed(2)} mi</div>
+                      <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, textTransform: "uppercase", letterSpacing: 0.4 }}>Distance</div>
+                      <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy, marginTop: 3 }}>{viewingReport.totalDistanceMiles.toFixed(2)} mi</div>
                     </div>
                     <div style={{ textAlign: "center", borderRight: "1px solid #E4E8EF" }}>
-                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Max speed</div>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 3 }}>{Math.round(viewingReport.overallMaxSpeed)} mph</div>
+                      <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, textTransform: "uppercase", letterSpacing: 0.4 }}>Max speed</div>
+                      <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy, marginTop: 3 }}>{Math.round(viewingReport.overallMaxSpeed)} mph</div>
                     </div>
                     <div style={{ textAlign: "center" }}>
-                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Overspeed</div>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: viewingReport.overspeedCount > 0 ? "#CC2229" : "#0B1F3A", marginTop: 3 }}>{viewingReport.overspeedCount}</div>
+                      <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, textTransform: "uppercase", letterSpacing: 0.4 }}>Overspeed</div>
+                      <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: viewingReport.overspeedCount > 0 ? "#CC2229" : "#0B1F3A", marginTop: 3 }}>{viewingReport.overspeedCount}</div>
                     </div>
                   </div>
                 </SheetRow>
@@ -2334,15 +2335,15 @@ function PupilDetailPage() {
                     {viewingReport.overspeedEvents.map((ev) => (
                       <SheetRow key={ev.id} onClick={() => setSelectedOverspeedEvent(ev)}>
                         <div style={{ minWidth: 0, flex: 1 }}>
-                          <div style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                             {ev.road_name ?? "Unknown road"}
                           </div>
-                          <div style={{ fontSize: 13, color: "#6B7686", marginTop: 2, fontWeight: 500 }}>
+                          <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, marginTop: 2, fontWeight: 500 }}>
                             {new Date(ev.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })} · {Math.round(ev.speed_mph)} mph in a {ev.speed_limit_mph} mph zone
                           </div>
                         </div>
                         <div className="flex items-center gap-1 shrink-0">
-                          <span style={{ fontSize: 13, fontWeight: 700, color: "#CC2229", whiteSpace: "nowrap" }}>
+                          <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: tokens.red, whiteSpace: "nowrap" }}>
                             +{Math.round(ev.excess_mph)} mph
                           </span>
                           <IconChevronRight stroke={1.5} size={16} color="#CC2229" />
@@ -2369,21 +2370,21 @@ function PupilDetailPage() {
               <SheetGroup>
                 {viewingReport.segments.length === 0 ? (
                   <SheetRow>
-                    <span style={{ fontSize: 14, color: "#6B7686" }}>No segments</span>
+                    <span style={{ fontSize: tokens.fontSize.md, color: tokens.textSecondary }}>No segments</span>
                   </SheetRow>
                 ) : (
                   viewingReport.segments.map((s, i) => (
                     <SheetRow key={i}>
                       <div style={{ minWidth: 0, flex: 1 }}>
-                        <div style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                           {s.road_name}
                         </div>
-                        <div style={{ fontSize: 13, color: "#6B7686", marginTop: 2, fontWeight: 500 }}>
+                        <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, marginTop: 2, fontWeight: 500 }}>
                           {s.distance_miles.toFixed(2)} mi · {s.speed_limit_mph != null ? `${s.speed_limit_mph} mph limit` : "no limit"} · max {Math.round(s.max_speed_mph)} mph
                         </div>
                       </div>
                       {s.exceeded && (
-                        <span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 8px", borderRadius: 999 }}>
+                        <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, backgroundColor: "#FDECEA", color: tokens.red, padding: "2px 8px", borderRadius: 999 }}>
                           Exceeded
                         </span>
                       )}
@@ -2396,14 +2397,14 @@ function PupilDetailPage() {
                 <button
                   type="button"
                   onClick={() => setViewingReport(null)}
-                  style={{ flex: 1, padding: "14px 16px", borderRadius: 8, border: "none", background: "#FFFFFF", color: "#0B1F3A", fontSize: 15, fontWeight: 700, boxShadow: "0 2px 8px rgba(15,32,68,0.06)" }}
+                  style={{ flex: 1, padding: "14px 16px", borderRadius: 8, border: "none", background: tokens.white, color: tokens.navy, fontSize: 15, fontWeight: tokens.fontWeight.bold, boxShadow: "0 2px 8px rgba(15,32,68,0.06)" }}
                 >
                   Close
                 </button>
                 <button
                   type="button"
                   onClick={exportReportText}
-                  style={{ flex: 1, padding: "14px 16px", borderRadius: 8, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 15, fontWeight: 700 }}
+                  style={{ flex: 1, padding: "14px 16px", borderRadius: 8, border: "none", background: tokens.blue, color: tokens.white, fontSize: 15, fontWeight: 700 }}
                 >
                   Export
                 </button>
@@ -2424,20 +2425,20 @@ function PupilDetailPage() {
                 <SheetRow>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, width: "100%" }}>
                     <div>
-                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Speed</div>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: "#CC2229", marginTop: 3 }}>{Math.round(selectedOverspeedEvent.speed_mph)} mph</div>
+                      <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, textTransform: "uppercase", letterSpacing: 0.4 }}>Speed</div>
+                      <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.red, marginTop: 3 }}>{Math.round(selectedOverspeedEvent.speed_mph)} mph</div>
                     </div>
                     <div>
-                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Limit</div>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 3 }}>{Math.round(selectedOverspeedEvent.speed_limit_mph)} mph</div>
+                      <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, textTransform: "uppercase", letterSpacing: 0.4 }}>Limit</div>
+                      <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy, marginTop: 3 }}>{Math.round(selectedOverspeedEvent.speed_limit_mph)} mph</div>
                     </div>
                     <div>
-                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Excess</div>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: "#CC2229", marginTop: 3 }}>+{Math.round(selectedOverspeedEvent.excess_mph)} mph</div>
+                      <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, textTransform: "uppercase", letterSpacing: 0.4 }}>Excess</div>
+                      <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.red, marginTop: 3 }}>+{Math.round(selectedOverspeedEvent.excess_mph)} mph</div>
                     </div>
                     <div>
-                      <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Time</div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", marginTop: 3 }}>
+                      <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, textTransform: "uppercase", letterSpacing: 0.4 }}>Time</div>
+                      <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy, marginTop: 3 }}>
                         {new Date(selectedOverspeedEvent.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
                       </div>
                     </div>
@@ -2456,8 +2457,8 @@ function PupilDetailPage() {
                   { label: "Longitude", value: selectedOverspeedEvent.longitude != null ? String(selectedOverspeedEvent.longitude) : "—" },
                 ].map((row) => (
                   <SheetRow key={row.label}>
-                    <span style={{ fontSize: 13, color: "#6B7686", fontWeight: 500 }}>{row.label}</span>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", textAlign: "right", wordBreak: "break-all", marginLeft: "auto" }}>{row.value}</span>
+                    <span style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, fontWeight: 500 }}>{row.label}</span>
+                    <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, textAlign: "right", wordBreak: "break-all", marginLeft: "auto" }}>{row.value}</span>
                   </SheetRow>
                 ))}
               </SheetGroup>
@@ -2465,7 +2466,7 @@ function PupilDetailPage() {
               <button
                 type="button"
                 onClick={() => setSelectedOverspeedEvent(null)}
-                style={{ width: "100%", padding: "14px 16px", borderRadius: 8, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 15, fontWeight: 700 }}
+                style={{ width: "100%", padding: "14px 16px", borderRadius: 8, border: "none", background: tokens.blue, color: tokens.white, fontSize: 15, fontWeight: 700 }}
               >
                 Close
               </button>
@@ -2492,7 +2493,7 @@ function PupilDetailPage() {
               }}
             >
               <IconCreditCard stroke={1.5} size={16} color="#1877D6" />
-              <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A',
+              <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: '#0B1F3A',
                 flex: 1, textAlign: 'left' }}>Pricing & payment</span>
               <IconChevronRight stroke={1.5} size={14} color="#9CA3AF" />
             </button>
@@ -2504,10 +2505,10 @@ function PupilDetailPage() {
               style={{
                 height: 44,
                 borderRadius: 8,
-                background: "#1877D6",
-                color: "#FFFFFF",
-                fontSize: 14,
-                fontWeight: 600,
+                background: tokens.blue,
+                color: tokens.white,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.semibold,
                 border: "none",
                 ...POPPINS,
               }}
@@ -2538,19 +2539,19 @@ function PupilDetailPage() {
                 borderRadius: 8,
                 borderWidth: "0.5px",
                 borderStyle: "solid",
-                borderColor: "#EEF2F7",
+                borderColor: tokens.canvas,
               }}
             >
               <div className="flex items-center gap-2 mb-3">
                 <span
                   className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: "#EEF4FB", color: "#1877D6", ...POPPINS }}
+                  style={{ backgroundColor: "#EEF4FB", color: tokens.blue, ...POPPINS }}
                 >
                   National Intensive
                 </span>
                 <span
                   className="text-[13px] font-semibold"
-                  style={{ color: "#0B1F3A", ...POPPINS }}
+                  style={{ color: tokens.navy, ...POPPINS }}
                 >
                   Payment details
                 </span>
@@ -2576,9 +2577,9 @@ function PupilDetailPage() {
                       borderRadius: 8,
                       backgroundColor: "#FEF2F2",
                       border: "1px solid #FECACA",
-                      color: "#1877D6",
-                      fontSize: 13,
-                      fontWeight: 600,
+                      color: tokens.blue,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.semibold,
                       ...POPPINS,
                     }}
                   >
@@ -2592,9 +2593,9 @@ function PupilDetailPage() {
                       borderRadius: 8,
                       backgroundColor: "#F0FDF4",
                       border: "1px solid #DBEAFE",
-                      color: "#1877D6",
-                      fontSize: 13,
-                      fontWeight: 600,
+                      color: tokens.blue,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.semibold,
                       ...POPPINS,
                     }}
                   >
@@ -2649,7 +2650,7 @@ function PupilDetailPage() {
                         style={{
                           width: `${pct}%`,
                           height: "100%",
-                          backgroundColor: "#1877D6",
+                          backgroundColor: tokens.blue,
                           borderRadius: 8,
                         }}
                       />
@@ -2680,14 +2681,14 @@ function PupilDetailPage() {
                   </span>
                   <div className="flex items-center gap-2">
                     {(centreInfo || pupil.test_centre) ? (
-                      <span className="inline-flex items-center gap-1 text-[13px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>
+                      <span className="inline-flex items-center gap-1 text-[13px] font-medium" style={{ color: tokens.navy, ...POPPINS }}>
                         <IconMapPin stroke={1.5} size={14} color="#1877D6" />
                         {centreInfo
                           ? `${centreInfo.name}${centreInfo.town ? `, ${centreInfo.town}` : ""}`
                           : pupil.test_centre}
                       </span>
                     ) : (
-                      <span className="text-[13px]" style={{ color: "#9CA3AF", ...POPPINS }}>—</span>
+                      <span className="text-[13px]" style={{ color: tokens.textMuted, ...POPPINS }}>—</span>
                     )}
                     <button
                       type="button"
@@ -2704,7 +2705,7 @@ function PupilDetailPage() {
                         }
                       }}
                       className="text-[12px] font-semibold"
-                      style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+                      style={{ color: tokens.blue, background: "none", border: "none", padding: 0, ...POPPINS }}
                     >
                       {centrePickerOpen ? "Cancel" : "Edit"}
                     </button>
@@ -2729,7 +2730,7 @@ function PupilDetailPage() {
                           padding: "0 12px 0 36px",
                           borderRadius: 8,
                           border: "0.5px solid #E2E6ED",
-                          fontSize: 13,
+                          fontSize: tokens.fontSize.base,
                           outline: "none",
                           ...POPPINS,
                         }}
@@ -2742,7 +2743,7 @@ function PupilDetailPage() {
                         borderRadius: 8,
                         maxHeight: 220,
                         overflowY: "auto",
-                        backgroundColor: "#FFFFFF",
+                        backgroundColor: tokens.white,
                       }}
                     >
                       <div
@@ -2796,7 +2797,7 @@ function PupilDetailPage() {
                             className="cursor-pointer"
                             style={{ padding: "10px 12px", borderBottom: "0.5px solid #F3F4F6" }}
                           >
-                            <div className="text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                            <div className="text-[13px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>
                               {c.name}
                             </div>
                             {c.town ? (
@@ -2829,16 +2830,16 @@ function PupilDetailPage() {
                   <span className="flex items-center gap-2">
                     <span
                       className="text-[11px] font-semibold text-white px-2 py-0.5 rounded-full"
-                      style={{ backgroundColor: "#1877D6", ...POPPINS }}
+                      style={{ backgroundColor: tokens.blue, ...POPPINS }}
                     >
                       On EverySwap list
                     </span>
-                    <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                    <span className="text-[11px]" style={{ color: tokens.textMuted, ...POPPINS }}>
                       Seeking swap
                     </span>
                   </span>
                 ) : (
-                  <span className="text-[12px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                  <span className="text-[12px]" style={{ color: tokens.textMuted, ...POPPINS }}>
                     Not on swap list
                   </span>
                 )}
@@ -2849,7 +2850,7 @@ function PupilDetailPage() {
                   type="button"
                   onClick={openEditSheet}
                   className="text-[13px] font-medium"
-                  style={{ color: "#1877D6", ...POPPINS }}
+                  style={{ color: tokens.blue, ...POPPINS }}
                 >
                   Edit payment details
                 </button>
@@ -2866,7 +2867,7 @@ function PupilDetailPage() {
                     toast.success(next ? "Added to EverySwap list" : "Removed from EverySwap list");
                   }}
                   className="text-[13px] font-medium"
-                  style={{ color: "#1877D6", ...POPPINS }}
+                  style={{ color: tokens.blue, ...POPPINS }}
                 >
                   Manage swap
                 </button>
@@ -2895,26 +2896,26 @@ function PupilDetailPage() {
         {pupil && (
           <div className="mt-4">
             <div className="flex items-center justify-between mb-2">
-              <h3 style={{ fontSize: 20, fontWeight: 800, color: "#000000", letterSpacing: "-0.4px", ...POPPINS }}>
+              <h3 style={{ fontSize: 20, fontWeight: tokens.fontWeight.extrabold, color: "#000000", letterSpacing: "-0.4px", ...POPPINS }}>
                 Mock tests
               </h3>
               <span
                 className="text-[11px] font-semibold text-white"
-                style={{ backgroundColor: "#1877D6", padding: "2px 8px", borderRadius: 999, ...POPPINS }}
+                style={{ backgroundColor: tokens.blue, padding: "2px 8px", borderRadius: 999, ...POPPINS }}
               >
                 {mockTests.length}
               </span>
             </div>
             <div
               style={{
-                background: "#FFFFFF",
+                background: tokens.white,
                 borderRadius: 8,
                 boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
                 overflow: "hidden",
               }}
             >
             {mockTests.length === 0 ? (
-              <div className="px-4 py-3 text-[13px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+              <div className="px-4 py-3 text-[13px]" style={{ color: tokens.textMuted, ...POPPINS }}>
                 No mock tests logged yet
               </div>
             ) : (
@@ -2945,7 +2946,7 @@ function PupilDetailPage() {
                       }}
                     >
                       <div className="flex flex-col min-w-0">
-                        <span className="text-[13px] font-semibold" style={{ color: "#0B1F3A" }}>
+                        <span className="text-[13px] font-semibold" style={{ color: tokens.navy }}>
                           {fmtUKDate(mt.test_date)}
                         </span>
                         {faultSummary && (
@@ -2969,7 +2970,7 @@ function PupilDetailPage() {
               type="button"
               onClick={() => navigate({ to: "/mock-tests", search: { pupilId: id } as never })}
               className="w-full text-left px-4 py-3 text-[13px] font-medium"
-              style={{ color: "#1877D6", borderTop: "1px solid #E9E9EC", background: "none", borderRight: "none", borderLeft: "none", borderBottom: "none", ...POPPINS }}
+              style={{ color: tokens.blue, borderTop: "1px solid #E9E9EC", background: "none", borderRight: "none", borderLeft: "none", borderBottom: "none", ...POPPINS }}
             >
               New mock test
             </button>
@@ -3010,26 +3011,26 @@ function PupilDetailPage() {
                   <>
                     <SheetGroup>
                       <SheetRow>
-                        <div className="flex-1" style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A" }}>
+                        <div className="flex-1" style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
                           {fmtUKDate(mt.test_date)}
                         </div>
-                        <span style={{ fontSize: 12, fontWeight: 700, backgroundColor: resultColor.bg, color: resultColor.fg, padding: "3px 10px", borderRadius: 999 }}>
+                        <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, backgroundColor: resultColor.bg, color: resultColor.fg, padding: "3px 10px", borderRadius: 999 }}>
                           {result}
                         </span>
                       </SheetRow>
                       <SheetRow>
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0, width: "100%" }}>
                           <div style={{ textAlign: "center", borderRight: "1px solid #E4E8EF" }}>
-                            <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Minor</div>
-                            <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginTop: 3 }}>{minor}</div>
+                            <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, textTransform: "uppercase", letterSpacing: 0.4 }}>Minor</div>
+                            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy, marginTop: 3 }}>{minor}</div>
                           </div>
                           <div style={{ textAlign: "center", borderRight: "1px solid #E4E8EF" }}>
-                            <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Serious</div>
-                            <div style={{ fontSize: 16, fontWeight: 700, color: serious > 0 ? "#CC2229" : "#0B1F3A", marginTop: 3 }}>{serious}</div>
+                            <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, textTransform: "uppercase", letterSpacing: 0.4 }}>Serious</div>
+                            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: serious > 0 ? "#CC2229" : "#0B1F3A", marginTop: 3 }}>{serious}</div>
                           </div>
                           <div style={{ textAlign: "center" }}>
-                            <div style={{ fontSize: 11, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.4 }}>Dangerous</div>
-                            <div style={{ fontSize: 16, fontWeight: 700, color: dangerous > 0 ? "#CC2229" : "#0B1F3A", marginTop: 3 }}>{dangerous}</div>
+                            <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, textTransform: "uppercase", letterSpacing: 0.4 }}>Dangerous</div>
+                            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: dangerous > 0 ? "#CC2229" : "#0B1F3A", marginTop: 3 }}>{dangerous}</div>
                           </div>
                         </div>
                       </SheetRow>
@@ -3037,7 +3038,7 @@ function PupilDetailPage() {
 
                     {isPending && (
                       <div style={{ marginBottom: 16 }}>
-                        <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
+                        <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
                           Set result
                         </div>
                         <div style={{ display: "flex", gap: 8 }}>
@@ -3045,7 +3046,7 @@ function PupilDetailPage() {
                             type="button"
                             disabled={savingMockResult}
                             onClick={() => updateMockResult("Passed")}
-                            style={{ flex: 1, padding: "10px 12px", borderRadius: 8, border: "none", background: "#1E8E5A", color: "#FFFFFF", fontSize: 13, fontWeight: 600 }}
+                            style={{ flex: 1, padding: "10px 12px", borderRadius: 8, border: "none", background: "#1E8E5A", color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: 600 }}
                           >
                             Passed
                           </button>
@@ -3053,7 +3054,7 @@ function PupilDetailPage() {
                             type="button"
                             disabled={savingMockResult}
                             onClick={() => updateMockResult("Failed")}
-                            style={{ flex: 1, padding: "10px 12px", borderRadius: 8, border: "none", background: "#CC2229", color: "#FFFFFF", fontSize: 13, fontWeight: 600 }}
+                            style={{ flex: 1, padding: "10px 12px", borderRadius: 8, border: "none", background: tokens.red, color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: 600 }}
                           >
                             Failed
                           </button>
@@ -3069,13 +3070,13 @@ function PupilDetailPage() {
                         <SheetGroup>
                           {breakdown.map((r) => (
                             <SheetRow key={r.k}>
-                              <div style={{ fontSize: 16, color: "#0B1F3A", fontWeight: 600, flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: tokens.fontSize.lg, color: tokens.navy, fontWeight: tokens.fontWeight.semibold, flex: 1, minWidth: 0 }}>
                                 {dl25Label(r.k)}
                               </div>
                               <div className="flex gap-1.5 shrink-0">
-                                {r.f > 0 && (<span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#F3F4F6", color: "#374151", padding: "2px 7px", borderRadius: 999 }}>{r.f}</span>)}
-                                {r.s > 0 && (<span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#FEF3C7", color: "#B45309", padding: "4px 10px", borderRadius: 999 }}>S {r.s}</span>)}
-                                {r.d > 0 && (<span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 7px", borderRadius: 999 }}>D {r.d}</span>)}
+                                {r.f > 0 && (<span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, backgroundColor: "#F3F4F6", color: "#374151", padding: "2px 7px", borderRadius: 999 }}>{r.f}</span>)}
+                                {r.s > 0 && (<span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, backgroundColor: "#FEF3C7", color: "#B45309", padding: "4px 10px", borderRadius: 999 }}>S {r.s}</span>)}
+                                {r.d > 0 && (<span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, backgroundColor: "#FDECEA", color: tokens.red, padding: "2px 7px", borderRadius: 999 }}>D {r.d}</span>)}
                               </div>
                             </SheetRow>
                           ))}
@@ -3087,13 +3088,13 @@ function PupilDetailPage() {
                       <button
                         type="button"
                         onClick={() => setViewingDl25(mt)}
-                        style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #1877D6", background: "#FFFFFF", color: "#1877D6", fontSize: 13, fontWeight: 600, marginBottom: 16, ...POPPINS }}
+                        style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #1877D6", background: tokens.white, color: tokens.blue, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, marginBottom: 16, ...POPPINS }}
                       >
                         View DL25
                       </button>
                     )}
 
-                    <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
+                    <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 8 }}>
                       Comments
                     </div>
                     <textarea
@@ -3101,14 +3102,14 @@ function PupilDetailPage() {
                       onChange={(e) => setMockNotesDraft(e.target.value)}
                       rows={4}
                       placeholder="Add notes for this mock test…"
-                      style={{ width: "100%", padding: 10, borderRadius: 8, border: "0.5px solid #E2E6ED", fontSize: 13, color: "#0B1F3A", resize: "vertical", ...POPPINS }}
+                      style={{ width: "100%", padding: 10, borderRadius: 8, border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.base, color: tokens.navy, resize: "vertical", ...POPPINS }}
                     />
                     <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
                       <button
                         type="button"
                         disabled={savingMockNotes || mockNotesDraft === (mt.notes ?? "")}
                         onClick={saveMockNotes}
-                        style={{ padding: "8px 14px", borderRadius: 8, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 13, fontWeight: 600, opacity: (savingMockNotes || mockNotesDraft === (mt.notes ?? "")) ? 0.6 : 1 }}
+                        style={{ padding: "8px 14px", borderRadius: 8, border: "none", background: tokens.blue, color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, opacity: (savingMockNotes || mockNotesDraft === (mt.notes ?? "")) ? 0.6 : 1 }}
                       >
                         {savingMockNotes ? "Saving…" : "Save"}
                       </button>
@@ -3118,14 +3119,14 @@ function PupilDetailPage() {
                       <button
                         type="button"
                         onClick={() => setViewingMock(null)}
-                        style={{ flex: 1, padding: "12px 16px", borderRadius: 8, border: "0.5px solid #E2E6ED", background: "#FFFFFF", color: "#0B1F3A", fontSize: 14, fontWeight: 600 }}
+                        style={{ flex: 1, padding: "12px 16px", borderRadius: 8, border: "0.5px solid #E2E6ED", background: tokens.white, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: 600 }}
                       >
                         Close
                       </button>
                       <button
                         type="button"
                         onClick={shareMockText}
-                        style={{ flex: 1, padding: "12px 16px", borderRadius: 8, border: "none", background: "#1877D6", color: "#FFFFFF", fontSize: 14, fontWeight: 600 }}
+                        style={{ flex: 1, padding: "12px 16px", borderRadius: 8, border: "none", background: tokens.blue, color: tokens.white, fontSize: tokens.fontSize.md, fontWeight: 600 }}
                       >
                         Share
                       </button>
@@ -3148,7 +3149,7 @@ function PupilDetailPage() {
             return (
               <div
                 style={{
-                  background: "#FFFFFF",
+                  background: tokens.white,
                   borderRadius: 8,
                   border: "0.5px solid rgba(11,31,58,0.10)",
                   padding: "20px 16px",
@@ -3316,12 +3317,12 @@ function PupilDetailPage() {
           const segBase: React.CSSProperties = {
             flex: 1, borderRadius: 8, border: 'none', padding: '9px 0',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-            cursor: 'pointer', fontFamily: 'Poppins, sans-serif', fontSize: 13, fontWeight: 600,
+            cursor: 'pointer', fontFamily: 'Poppins, sans-serif', fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold,
           };
           const rowBtn: React.CSSProperties = {
             width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
             padding: "12px 16px", background: "none", border: "none", cursor: "pointer",
-            fontFamily: 'Poppins, sans-serif', fontSize: 15, color: "#0B1F3A", fontWeight: 500,
+            fontFamily: 'Poppins, sans-serif', fontSize: 15, color: tokens.navy, fontWeight: tokens.fontWeight.medium,
           };
           const rowChip = (color: string): React.CSSProperties => ({
             width: 30, height: 30, borderRadius: 8, background: "#F2F2F7",
@@ -3329,11 +3330,11 @@ function PupilDetailPage() {
             color, flexShrink: 0,
           });
           const sectionTitle: React.CSSProperties = {
-            fontSize: 20, fontWeight: 800, color: "#000000", letterSpacing: "-0.4px",
+            fontSize: 20, fontWeight: tokens.fontWeight.extrabold, color: "#000000", letterSpacing: "-0.4px",
             margin: "16px 0 8px", fontFamily: 'Poppins, sans-serif',
           };
           const groupCard: React.CSSProperties = {
-            background: "#FFFFFF", borderRadius: 8,
+            background: tokens.white, borderRadius: 8,
             boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden",
           };
           const hairline = <div style={{ height: 1, background: "#E9E9EC" }} />;
@@ -3360,7 +3361,7 @@ function PupilDetailPage() {
                   scrollMarginTop: 64,
                 }}
               >
-                <div style={{ height: 140, background: "#EEF2F7", position: "relative" }}>
+                <div style={{ height: 140, background: tokens.canvas, position: "relative" }}>
                   {mapSrc ? (
                     <iframe
                       title="Pickup map"
@@ -3376,8 +3377,8 @@ function PupilDetailPage() {
                   )}
                   <span
                     style={{
-                      position: "absolute", top: 10, left: 10, background: "#FFFFFF",
-                      color: labelColor, fontSize: 11, fontWeight: 700,
+                      position: "absolute", top: 10, left: 10, background: tokens.white,
+                      color: labelColor, fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold,
                       padding: "4px 10px", borderRadius: 999, letterSpacing: 0.3,
                       textTransform: "uppercase", ...POPPINS,
                     }}
@@ -3387,9 +3388,9 @@ function PupilDetailPage() {
                 </div>
                 <div style={{ padding: 16 }}>
                   {/* Consolidated info block */}
-                  <div style={{ fontSize: 16, fontWeight: 700, color: "#000000", letterSpacing: "-0.2px", ...POPPINS }}>
+                  <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: "#000000", letterSpacing: "-0.2px", ...POPPINS }}>
                     {formatDateShort(start)} · {formatTime(focus.lesson_time)}
-                    <span style={{ fontSize: 13, fontWeight: 500, color: "#8A8A8E" }}>
+                    <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: "#8A8A8E" }}>
                       {" "}· {focus.duration_minutes ?? 60} mins
                     </span>
                   </div>
@@ -3399,7 +3400,7 @@ function PupilDetailPage() {
                       <a
                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pickup)}`}
                         target="_blank" rel="noreferrer"
-                        style={{ color: "#1877D6", fontWeight: 600, whiteSpace: "nowrap" }}
+                        style={{ color: tokens.blue, fontWeight: tokens.fontWeight.semibold, whiteSpace: "nowrap" }}
                       >Navigate</a>
                     </div>
                   )}
@@ -3473,12 +3474,12 @@ function PupilDetailPage() {
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <span style={rowChip("#0B1F3A")}><IconMessage stroke={1.5} size={17} /></span>
-                    <span style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Recent</span>
+                    <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, ...POPPINS }}>Recent</span>
                     {unreadMessages > 0 && (
-                      <span style={{ background: "#CC2229", color: "#FFF", fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 999 }}>{unreadMessages}</span>
+                      <span style={{ background: tokens.red, color: "#FFF", fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, padding: "1px 6px", borderRadius: 999 }}>{unreadMessages}</span>
                     )}
                   </div>
-                  <span style={{ fontSize: 13, color: "#1877D6", fontWeight: 600, ...POPPINS }}>Open chat →</span>
+                  <span style={{ fontSize: tokens.fontSize.base, color: tokens.blue, fontWeight: tokens.fontWeight.semibold, ...POPPINS }}>Open chat →</span>
                 </div>
                 <div
                   style={{
@@ -3498,8 +3499,8 @@ function PupilDetailPage() {
               {balance > 0 && !isPaid && (
                 <div style={{ background: "#FFF8E8", borderRadius: 8, border: "0.5px solid #F0D28A", padding: 14, marginTop: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div>
-                    <div style={{ fontSize: 12, color: "#8A5A00", fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.3, ...POPPINS }}>Outstanding</div>
-                    <div style={{ fontSize: 22, fontWeight: 700, color: "#0B1F3A", ...POPPINS }}>£{balance.toFixed(2)}</div>
+                    <div style={{ fontSize: 12, color: "#8A5A00", fontWeight: tokens.fontWeight.semibold, textTransform: "uppercase", letterSpacing: 0.3, ...POPPINS }}>Outstanding</div>
+                    <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.bold, color: tokens.navy, ...POPPINS }}>£{balance.toFixed(2)}</div>
                   </div>
                   <button
                     onClick={markPaid}
@@ -3510,8 +3511,8 @@ function PupilDetailPage() {
                       border: "none",
                       borderRadius: 999,
                       padding: "8px 14px",
-                      fontSize: 13,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.semibold,
                       cursor: markPaidLoading ? "not-allowed" : "pointer",
                       display: "flex",
                       alignItems: "center",
@@ -3541,18 +3542,18 @@ function PupilDetailPage() {
 
         {/* Settings / toggles */}
         {pupil && (
-          <div className="mb-4" style={{ background: "#EEF2F7", borderRadius: 12, overflow: "hidden" }}>
+          <div className="mb-4" style={{ background: tokens.canvas, borderRadius: 12, overflow: "hidden" }}>
             <div className="flex items-center justify-between px-4 py-3.5" style={{ borderBottom: "0.5px solid #E2E6ED" }}>
               <div className="flex items-center gap-2.5">
                 <IconCamera size={18} stroke={1.6} color="#0B1F3A" />
-                <span className="text-[15px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>Photo consent</span>
+                <span className="text-[15px] font-medium" style={{ color: tokens.navy, ...POPPINS }}>Photo consent</span>
               </div>
               <DSMToggle checked={Boolean(pupil.photo_consent)} onChange={(v) => togglePhotoConsent(v)} />
             </div>
             <div className="flex items-center justify-between px-4 py-3.5">
               <div className="flex items-center gap-2.5">
                 <IconRefresh size={18} stroke={1.6} color="#0B1F3A" />
-                <span className="text-[15px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>EverySwap</span>
+                <span className="text-[15px] font-medium" style={{ color: tokens.navy, ...POPPINS }}>EverySwap</span>
               </div>
               <DSMToggle
                 checked={Boolean(pupil.wants_swap)}
@@ -3577,8 +3578,8 @@ function PupilDetailPage() {
 
 
         <div className="flex items-center gap-2" style={{ marginBottom: 8 }}>
-          <span style={{ width: 3, height: 14, borderRadius: 8, background: "#1877D6", display: "inline-block" }} />
-          <span style={{ color: "#1877D6", fontSize: 12, fontWeight: 800, letterSpacing: "0.6px", textTransform: "uppercase", ...POPPINS }}>
+          <span style={{ width: 3, height: 14, borderRadius: 8, background: tokens.blue, display: "inline-block" }} />
+          <span style={{ color: tokens.blue, fontSize: 12, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "0.6px", textTransform: "uppercase", ...POPPINS }}>
             Notes
           </span>
         </div>
@@ -3599,7 +3600,7 @@ function PupilDetailPage() {
             ...POPPINS,
           }}
         >
-          <span className="truncate" style={{ color: notesDraft ? "#0B1F3A" : "#B0B0B5", fontSize: 14.5, fontWeight: 500, ...POPPINS }}>
+          <span className="truncate" style={{ color: notesDraft ? "#0B1F3A" : "#B0B0B5", fontSize: 14.5, fontWeight: tokens.fontWeight.medium, ...POPPINS }}>
             {notesDraft ? notesDraft : "Add a note…"}
           </span>
           <IconChevronRight stroke={1.7}
@@ -3620,13 +3621,13 @@ function PupilDetailPage() {
                 ...POPPINS,
                 borderWidth: "0.5px",
                 borderStyle: "solid",
-                borderColor: "#EEF2F7",
+                borderColor: tokens.canvas,
                 resize: "vertical",
               }}
             />
             <div className="mt-2 flex items-center justify-end gap-3">
               {noteSaved && (
-                <span className="text-[12px]" style={{ color: "#1877D6", ...POPPINS }}>
+                <span className="text-[12px]" style={{ color: tokens.blue, ...POPPINS }}>
                   Saved
                 </span>
               )}
@@ -3649,13 +3650,13 @@ function PupilDetailPage() {
             }}
           >
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2" style={{ color: "#0B1F3A", fontSize: 16, fontWeight: 800, ...POPPINS }}>
+              <span className="flex items-center gap-2" style={{ color: tokens.navy, fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, ...POPPINS }}>
                 <IconMapPin stroke={1.6} size={18} color="#1877D6" /> Address
               </span>
               <button
                 type="button"
                 onClick={() => setAddressEditing((v) => !v)}
-                style={{ color: "#1877D6", fontSize: 13, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+                style={{ color: tokens.blue, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, background: "none", border: "none", padding: 0, ...POPPINS }}
               >
                 {addressEditing ? "Cancel" : "Edit"}
               </button>
@@ -3670,7 +3671,7 @@ function PupilDetailPage() {
                 />
               </div>
             ) : (
-              <div style={{ color: pupil.address ? "#0B1F3A" : "#B0B0B5", fontSize: 14, fontWeight: 500, marginTop: 10, lineHeight: 1.5, ...POPPINS }}>
+              <div style={{ color: pupil.address ? "#0B1F3A" : "#B0B0B5", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, marginTop: 10, lineHeight: 1.5, ...POPPINS }}>
                 {pupil.address || "No address on file"}
                 {pupil.postcode ? (
                   <span className="ml-2" style={{ color: "#6B6B6F" }}>{pupil.postcode}</span>
@@ -3702,13 +3703,13 @@ function PupilDetailPage() {
           }}
         >
           <div className="flex items-center justify-between">
-            <span className="flex items-center gap-2" style={{ color: "#0B1F3A", fontSize: 16, fontWeight: 800, ...POPPINS }}>
+            <span className="flex items-center gap-2" style={{ color: tokens.navy, fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, ...POPPINS }}>
               <IconBook size={18} color="#1877D6" /> Theory test
             </span>
             <button
               type="button"
               onClick={() => setTheoryEditing((v) => !v)}
-              style={{ color: "#1877D6", fontSize: 13, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+              style={{ color: tokens.blue, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, background: "none", border: "none", padding: 0, ...POPPINS }}
             >
               {theoryEditing ? "Cancel" : "Edit"}
             </button>
@@ -3747,17 +3748,17 @@ function PupilDetailPage() {
                   >
                     {passed && <div className="pupil-pass-confetti" aria-hidden />}
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ fontSize: 14, fontWeight: 800, color: passed ? "#15803D" : "#B02318" }}>
+                      <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.extrabold, color: passed ? "#15803D" : "#B02318" }}>
                         {passed ? "🎉 Test passed!" : "❌ Test not passed"}
                       </span>
                       <span
                         style={{
                           fontSize: 10.5,
-                          fontWeight: 800,
+                          fontWeight: tokens.fontWeight.extrabold,
                           borderRadius: 999,
                           padding: "3px 10px",
                           background: passed ? "#15803D" : "#CC2229",
-                          color: "#FFFFFF",
+                          color: tokens.white,
                         }}
                       >
                         {passed ? "Passed" : "Failed"}
@@ -3785,8 +3786,8 @@ function PupilDetailPage() {
                         background: "none",
                         border: "none",
                         padding: 0,
-                        fontSize: 13,
-                        fontWeight: 800,
+                        fontSize: tokens.fontSize.base,
+                        fontWeight: tokens.fontWeight.extrabold,
                         color: passed ? "#15803D" : "#CC2229",
                         cursor: "pointer",
                         ...POPPINS,
@@ -3815,23 +3816,23 @@ function PupilDetailPage() {
               })()}
               <div>
                 <span style={{ color: "#6B6B6F", fontSize: 13.5, fontWeight: 500 }}>Status: </span>
-                <span style={{ fontSize: 13.5, fontWeight: 800, color: testStatusColour(pupil.theory_status || "Not started") }}>
+                <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.extrabold, color: testStatusColour(pupil.theory_status || "Not started") }}>
                   {pupil.theory_status || "Not started"}
                 </span>
               </div>
               {pupil.theory_test_date && (
-                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
-                  Test date: <span style={{ color: "#0B1F3A", fontWeight: 700 }}>{fmtUKDate(pupil.theory_test_date)}</span>
+                <div style={{ color: "#6B6B6F", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, marginTop: 6 }}>
+                  Test date: <span style={{ color: tokens.navy, fontWeight: 700 }}>{fmtUKDate(pupil.theory_test_date)}</span>
                 </div>
               )}
               {pupil.theory_pass_date && (
-                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
-                  Pass date: <span style={{ color: "#0B1F3A", fontWeight: 700 }}>{fmtUKDate(pupil.theory_pass_date)}</span>
+                <div style={{ color: "#6B6B6F", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, marginTop: 6 }}>
+                  Pass date: <span style={{ color: tokens.navy, fontWeight: 700 }}>{fmtUKDate(pupil.theory_pass_date)}</span>
                 </div>
               )}
               {typeof pupil.theory_score === "number" && (
-                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
-                  Score: <span style={{ color: "#0B1F3A", fontWeight: 700 }}>{pupil.theory_score}</span>
+                <div style={{ color: "#6B6B6F", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, marginTop: 6 }}>
+                  Score: <span style={{ color: tokens.navy, fontWeight: 700 }}>{pupil.theory_score}</span>
                 </div>
               )}
             </div>
@@ -3850,7 +3851,7 @@ function PupilDetailPage() {
           }}
         >
           <div className="flex items-center justify-between">
-            <span className="flex items-center gap-2" style={{ color: "#0B1F3A", fontSize: 16, fontWeight: 800, ...POPPINS }}>
+            <span className="flex items-center gap-2" style={{ color: tokens.navy, fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, ...POPPINS }}>
               <IconCar stroke={1.6} size={18} color="#1877D6" /> Practical test
             </span>
             <button
@@ -3866,7 +3867,7 @@ function PupilDetailPage() {
                   setAllCentres((data as any) ?? []);
                 }
               }}
-              style={{ color: "#1877D6", fontSize: 13, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+              style={{ color: tokens.blue, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, background: "none", border: "none", padding: 0, ...POPPINS }}
             >
               {practicalEditing ? "Cancel" : "Edit"}
             </button>
@@ -3892,24 +3893,24 @@ function PupilDetailPage() {
             <div style={{ marginTop: 10, ...POPPINS }}>
               <div>
                 <span style={{ color: "#6B6B6F", fontSize: 13.5, fontWeight: 500 }}>Status: </span>
-                <span style={{ fontSize: 13.5, fontWeight: 800, color: testStatusColour(pupil.test_status || "Not booked") }}>
+                <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.extrabold, color: testStatusColour(pupil.test_status || "Not booked") }}>
                   {pupil.test_status || "Not booked"}
                 </span>
               </div>
               {pupil.test_date && (
-                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
-                  Date: <span style={{ color: "#0B1F3A", fontWeight: 700 }}>{fmtUKDate(pupil.test_date)}</span>
+                <div style={{ color: "#6B6B6F", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, marginTop: 6 }}>
+                  Date: <span style={{ color: tokens.navy, fontWeight: 700 }}>{fmtUKDate(pupil.test_date)}</span>
                 </div>
               )}
               {pupil.test_time && (
-                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
-                  Time: <span style={{ color: "#0B1F3A", fontWeight: 700 }}>{pupil.test_time.slice(0, 5)}</span>
+                <div style={{ color: "#6B6B6F", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, marginTop: 6 }}>
+                  Time: <span style={{ color: tokens.navy, fontWeight: 700 }}>{pupil.test_time.slice(0, 5)}</span>
                 </div>
               )}
               {(centreInfo || pupil.test_centre) && (
-                <div style={{ color: "#6B6B6F", fontSize: 13, fontWeight: 500, marginTop: 6 }}>
+                <div style={{ color: "#6B6B6F", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, marginTop: 6 }}>
                   Centre:{" "}
-                  <span style={{ color: "#0B1F3A", fontWeight: 700 }}>
+                  <span style={{ color: tokens.navy, fontWeight: 700 }}>
                     {centreInfo?.name || pupil.test_centre}
                     {centreInfo?.town ? `, ${centreInfo.town}` : ""}
                   </span>
@@ -3924,7 +3925,7 @@ function PupilDetailPage() {
                     marginTop: 12,
                     color: "#B02318",
                     fontSize: 11.5,
-                    fontWeight: 600,
+                    fontWeight: tokens.fontWeight.semibold,
                     lineHeight: 1.5,
                     ...POPPINS,
                   }}
@@ -3950,13 +3951,13 @@ function PupilDetailPage() {
               borderRadius: 8,
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#EEF2F7",
+              borderColor: tokens.canvas,
               padding: 16,
             }}
           >
             <div className="flex items-center gap-2 mb-3">
               <IconClipboardList stroke={1.5} size={18} color="#1877D6" />
-              <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+              <div className="text-[14px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>
                 Intake answers
               </div>
             </div>
@@ -3967,7 +3968,7 @@ function PupilDetailPage() {
                 </div>
                 <div
                   className="text-[14px] font-semibold mt-0.5"
-                  style={{ color: "#0B1F3A", ...POPPINS }}
+                  style={{ color: tokens.navy, ...POPPINS }}
                 >
                   {a.answer ?? a.answer_text ?? String(a.value ?? "")}
                 </div>
@@ -4025,8 +4026,8 @@ function PupilDetailPage() {
                 height: 44,
                 borderRadius: 8,
                 border: "none",
-                background: "#CC2229",
-                color: "#FFFFFF",
+                background: tokens.red,
+                color: tokens.white,
                 ...POPPINS,
               }}
             >
@@ -4054,12 +4055,12 @@ function PupilDetailPage() {
           <SheetGroup>
             <SheetRow onClick={() => { setMoreOpen(false); openEditSheet(); }}>
               <IconPencil size={18} stroke={1.6} color="#0B1F3A" />
-              <span className="text-[15px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>Edit details</span>
+              <span className="text-[15px] font-medium" style={{ color: tokens.navy, ...POPPINS }}>Edit details</span>
             </SheetRow>
             <SheetDivider />
             <SheetRow>
               <IconCamera size={18} stroke={1.6} color="#0B1F3A" />
-              <span className="flex-1 text-[15px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>Photo consent</span>
+              <span className="flex-1 text-[15px] font-medium" style={{ color: tokens.navy, ...POPPINS }}>Photo consent</span>
               <label className="relative inline-flex items-center cursor-pointer shrink-0">
                 <input
                   type="checkbox"
@@ -4077,7 +4078,7 @@ function PupilDetailPage() {
             <SheetDivider />
             <SheetRow onClick={() => { setMoreOpen(false); setRemoveOpen(true); }}>
               <IconTrash size={18} stroke={1.6} color="#CC2229" />
-              <span className="text-[15px] font-medium" style={{ color: "#CC2229", ...POPPINS }}>Remove pupil</span>
+              <span className="text-[15px] font-medium" style={{ color: tokens.red, ...POPPINS }}>Remove pupil</span>
             </SheetRow>
           </SheetGroup>
         </BottomSheetV2>
@@ -4159,19 +4160,19 @@ function PupilDetailPage() {
               <SheetGroup>
                 <SheetRow>
                   <div className="flex-1">
-                    <div className="text-[13px] font-medium" style={{ color: "#6B7686" }}>
+                    <div className="text-[13px] font-medium" style={{ color: tokens.textSecondary }}>
                       Current total
                     </div>
-                    <div className="text-[22px] font-bold mt-0.5" style={{ color: "#0B1F3A" }}>
+                    <div className="text-[22px] font-bold mt-0.5" style={{ color: tokens.navy }}>
                       {currentTotal}
                     </div>
                   </div>
                   <IconChevronRight stroke={1.5} size={18} color="#8A93A3" />
                   <div className="flex-1 text-right">
-                    <div className="text-[13px] font-medium" style={{ color: "#6B7686" }}>
+                    <div className="text-[13px] font-medium" style={{ color: tokens.textSecondary }}>
                       New total
                     </div>
-                    <div className="text-[22px] font-bold mt-0.5" style={{ color: "#1877D6" }}>
+                    <div className="text-[22px] font-bold mt-0.5" style={{ color: tokens.blue }}>
                       {newTotal}
                     </div>
                   </div>
@@ -4181,7 +4182,7 @@ function PupilDetailPage() {
               <SheetGroup>
                 <SheetRow>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>
+                    <div className="text-[13px] font-medium mb-0.5" style={{ color: tokens.textSecondary }}>
                       Adjustment (+/-)
                     </div>
                     <input
@@ -4191,13 +4192,13 @@ function PupilDetailPage() {
                       value={adjValue}
                       onChange={(e) => setAdjValue(e.target.value)}
                       className="w-full bg-transparent focus:outline-none text-[16px] font-semibold"
-                      style={{ color: "#0B1F3A", ...POPPINS }}
+                      style={{ color: tokens.navy, ...POPPINS }}
                     />
                   </div>
                 </SheetRow>
                 <SheetRow>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[13px] font-medium mb-1" style={{ color: "#6B7686" }}>
+                    <div className="text-[13px] font-medium mb-1" style={{ color: tokens.textSecondary }}>
                       Reason / note (optional)
                     </div>
                     <textarea
@@ -4206,7 +4207,7 @@ function PupilDetailPage() {
                       rows={3}
                       placeholder="e.g. carried over from previous instructor"
                       className="w-full bg-transparent focus:outline-none text-[16px] resize-none"
-                      style={{ color: "#0B1F3A", ...POPPINS }}
+                      style={{ color: tokens.navy, ...POPPINS }}
                     />
                   </div>
                 </SheetRow>
@@ -4263,7 +4264,7 @@ function PupilDetailPage() {
                 setPracticalQuickOpen(false);
               }}
               className="w-full py-4 rounded-full text-white font-semibold text-base active:opacity-90 disabled:opacity-40"
-              style={{ backgroundColor: "#1877D6" }}
+              style={{ backgroundColor: tokens.blue }}
             >
               {practicalQuickSaving ? "Saving…" : "Save"}
             </button>
@@ -4273,31 +4274,31 @@ function PupilDetailPage() {
             <SheetGroup>
               <SheetRow>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>Date</div>
+                  <div className="text-[13px] font-medium mb-0.5" style={{ color: tokens.textSecondary }}>Date</div>
                   <input
                     type="date"
                     value={practicalQuickDate}
                     onChange={(e) => setPracticalQuickDate(e.target.value)}
                     className="w-full bg-transparent focus:outline-none text-[16px] font-semibold"
-                    style={{ color: "#0B1F3A", ...POPPINS }}
+                    style={{ color: tokens.navy, ...POPPINS }}
                   />
                 </div>
               </SheetRow>
               <SheetRow>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>Time</div>
+                  <div className="text-[13px] font-medium mb-0.5" style={{ color: tokens.textSecondary }}>Time</div>
                   <input
                     type="time"
                     value={practicalQuickTime}
                     onChange={(e) => setPracticalQuickTime(e.target.value)}
                     className="w-full bg-transparent focus:outline-none text-[16px] font-semibold"
-                    style={{ color: "#0B1F3A", ...POPPINS }}
+                    style={{ color: tokens.navy, ...POPPINS }}
                   />
                 </div>
               </SheetRow>
             </SheetGroup>
             <div className="mb-2">
-              <label className="block mb-1 text-[13px] font-medium px-1" style={{ color: "#6B7686", ...POPPINS }}>Test centre</label>
+              <label className="block mb-1 text-[13px] font-medium px-1" style={{ color: tokens.textSecondary, ...POPPINS }}>Test centre</label>
               <button
                 type="button"
                 onClick={async () => {
@@ -4312,7 +4313,7 @@ function PupilDetailPage() {
                   }
                 }}
                 className="h-11 w-full rounded-lg px-3 text-[14px] bg-white text-left flex items-center justify-between"
-                style={{ border: "0.5px solid #EEF2F7", color: "#0B1F3A", ...POPPINS }}
+                style={{ border: "0.5px solid #EEF2F7", color: tokens.navy, ...POPPINS }}
               >
                 <span className="truncate">
                   {centreInfo?.name || pupil.test_centre || "Select a centre"}
@@ -4327,7 +4328,7 @@ function PupilDetailPage() {
                     value={practicalQuickCentreSearch}
                     onChange={(e) => setPracticalQuickCentreSearch(e.target.value)}
                     className="h-10 w-full px-3 text-[13px] bg-white"
-                    style={{ borderBottom: "0.5px solid #EEF2F7", color: "#0B1F3A", ...POPPINS }}
+                    style={{ borderBottom: "0.5px solid #EEF2F7", color: tokens.navy, ...POPPINS }}
                   />
                   <div className="max-h-64 overflow-y-auto">
                     {practicalQuickCentres
@@ -4362,7 +4363,7 @@ function PupilDetailPage() {
                             toast.success("Test centre updated");
                           }}
                           className="w-full text-left px-3 py-2 text-[13px] flex flex-col"
-                          style={{ borderTop: "0.5px solid #F4F6FA", color: "#0B1F3A", ...POPPINS }}
+                          style={{ borderTop: "0.5px solid #F4F6FA", color: tokens.navy, ...POPPINS }}
                         >
                           <span className="font-medium">{c.name}</span>
                           {(c.town || c.postcode) && (
@@ -4405,7 +4406,7 @@ function PupilDetailPage() {
               value={certMilestone}
               onChange={(e) => setCertMilestone(e.target.value as typeof certMilestone)}
               className="h-11 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none mb-4"
-              style={{ ...POPPINS, borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+              style={{ ...POPPINS, borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
             >
               <option value="first_lesson">First lesson complete</option>
               <option value="10_lessons">10 lessons complete</option>
@@ -4511,7 +4512,7 @@ function PupilDetailPage() {
                 toast.success("Certificate downloaded. Send to pupil manually.");
               }}
               className="w-full inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white"
-              style={{ height: 44, borderRadius: 8, backgroundColor: "#1877D6", ...POPPINS }}
+              style={{ height: 44, borderRadius: 8, backgroundColor: tokens.blue, ...POPPINS }}
             >
               <IconAward stroke={1.5} size={16} color="#FFFFFF" />
               Generate & download
@@ -4547,7 +4548,7 @@ function PupilDetailPage() {
                   value={editDraft.first_name}
                   onChange={(e) => setEditDraft((d) => ({ ...d, first_name: e.target.value }))}
                   className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
-                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
                 />
               </label>
               <label className="text-[12px] text-[#6B7280]">
@@ -4557,7 +4558,7 @@ function PupilDetailPage() {
                   value={editDraft.last_name}
                   onChange={(e) => setEditDraft((d) => ({ ...d, last_name: e.target.value }))}
                   className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
-                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
                 />
               </label>
             </div>
@@ -4568,7 +4569,7 @@ function PupilDetailPage() {
                 value={editDraft.phone}
                 onChange={(e) => setEditDraft((d) => ({ ...d, phone: e.target.value }))}
                 className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
               />
             </label>
             <label className="block text-[12px] text-[#6B7280] mb-4">
@@ -4578,7 +4579,7 @@ function PupilDetailPage() {
                 value={editDraft.email}
                 onChange={(e) => setEditDraft((d) => ({ ...d, email: e.target.value }))}
                 className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
               />
             </label>
             <div className="mb-4">
@@ -4597,7 +4598,7 @@ function PupilDetailPage() {
                 value={editDraft.date_of_birth}
                 onChange={(e) => setEditDraft((d) => ({ ...d, date_of_birth: e.target.value }))}
                 className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
               />
               {editDraft.date_of_birth && (
                 <span className="mt-1 inline-block text-[11px] text-[#9CA3AF]">
@@ -4614,7 +4615,7 @@ function PupilDetailPage() {
                 value={editDraft.status}
                 onChange={(e) => setEditDraft((d) => ({ ...d, status: e.target.value }))}
                 className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
               >
                 <option value="active">Active</option>
                 <option value="passed">Passed</option>
@@ -4631,7 +4632,7 @@ function PupilDetailPage() {
                   value={editDraft.test_date}
                   onChange={(e) => setEditDraft((d) => ({ ...d, test_date: e.target.value }))}
                   className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
-                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
                 />
               </label>
               <label className="text-[12px] text-[#6B7280] block">
@@ -4641,7 +4642,7 @@ function PupilDetailPage() {
                   value={editDraft.test_time}
                   onChange={(e) => setEditDraft((d) => ({ ...d, test_time: e.target.value }))}
                   className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
-                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
                 />
               </label>
             </div>
@@ -4653,7 +4654,7 @@ function PupilDetailPage() {
                 value={editDraft.lead_source}
                 onChange={(e) => setEditDraft((d) => ({ ...d, lead_source: e.target.value, lead_source_detail: "" }))}
                 className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
               >
                 <option value="">Select source</option>
                 <option value="Referral">Referral</option>
@@ -4675,7 +4676,7 @@ function PupilDetailPage() {
                   value={editDraft.lead_source_detail}
                   onChange={(e) => setEditDraft((d) => ({ ...d, lead_source_detail: e.target.value }))}
                   className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
-                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
                 />
               </label>
             )}
@@ -4692,7 +4693,7 @@ function PupilDetailPage() {
                   value={editDraft.prepaid_hours}
                   onChange={(e) => setEditDraft((d) => ({ ...d, prepaid_hours: e.target.value }))}
                   className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
-                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
                 />
               </label>
               <label className="text-[12px] text-[#6B7280]">
@@ -4704,7 +4705,7 @@ function PupilDetailPage() {
                   value={editDraft.prepaid_amount_paid}
                   onChange={(e) => setEditDraft((d) => ({ ...d, prepaid_amount_paid: e.target.value }))}
                   className="mt-1 h-10 w-full rounded-lg px-3 text-[16px] text-[#0B1F3A] bg-white"
-                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
                 />
               </label>
             </div>
@@ -4719,7 +4720,7 @@ function PupilDetailPage() {
                   value={editDraft.custom_rate}
                   onChange={(e) => setEditDraft((d) => ({ ...d, custom_rate: e.target.value }))}
                   className="mt-1 h-10 w-full rounded-lg px-2 text-[16px] text-[#0B1F3A] bg-white"
-                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
                 />
               </label>
               <label className="text-[12px] text-[#6B7280]">
@@ -4731,7 +4732,7 @@ function PupilDetailPage() {
                   value={editDraft.custom_rate_90}
                   onChange={(e) => setEditDraft((d) => ({ ...d, custom_rate_90: e.target.value }))}
                   className="mt-1 h-10 w-full rounded-lg px-2 text-[16px] text-[#0B1F3A] bg-white"
-                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
                 />
               </label>
               <label className="text-[12px] text-[#6B7280]">
@@ -4743,7 +4744,7 @@ function PupilDetailPage() {
                   value={editDraft.custom_rate_120}
                   onChange={(e) => setEditDraft((d) => ({ ...d, custom_rate_120: e.target.value }))}
                   className="mt-1 h-10 w-full rounded-lg px-2 text-[16px] text-[#0B1F3A] bg-white"
-                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                  style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
                 />
               </label>
             </div>
@@ -4754,7 +4755,7 @@ function PupilDetailPage() {
                 onClick={() => setEditSheetOpen(false)}
                 disabled={editSaving}
                 className="flex-1 h-11 rounded-lg text-[14px] font-medium text-[#0B1F3A] bg-white disabled:opacity-60"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
               >
                 Cancel
               </button>
@@ -4941,7 +4942,7 @@ function StatChip({
         backgroundColor: "#F8F9FB",
         borderWidth: "0.5px",
         borderStyle: "solid",
-        borderColor: "#EEF2F7",
+        borderColor: tokens.canvas,
         cursor: onClick ? "pointer" : undefined,
       }}
     >
@@ -4954,7 +4955,7 @@ function StatChip({
       {subValue ? (
         <div
           className="text-[10px] truncate mt-0.5"
-          style={{ color: "#0B1F3A", ...POPPINS }}
+          style={{ color: tokens.navy, ...POPPINS }}
           title={subValue}
         >
           {subValue}
@@ -5009,8 +5010,8 @@ const EXTRAS_INPUT: React.CSSProperties = {
   padding: "0 12px",
   border: "0.5px solid #E2E6ED",
   borderRadius: 8,
-  fontSize: 14,
-  color: "#0B1F3A",
+  fontSize: tokens.fontSize.md,
+  color: tokens.navy,
   background: "#fff",
   ...POPPINS,
 };
@@ -5122,7 +5123,7 @@ function PupilExtras({
           >
             <IconHeart stroke={1.6} size={18} color="#FF3B30" style={{ flexShrink: 0 }} />
             <span style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ display: "block", color: "#0B1F3A", fontSize: 14, fontWeight: 800, ...POPPINS }}>Emergency contact</span>
+              <span style={{ display: "block", color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.extrabold, ...POPPINS }}>Emergency contact</span>
               <span
                 style={{
                   display: "block",
@@ -5145,13 +5146,13 @@ function PupilExtras({
               {!editEmg ? (
                 pupil.emergency_contact_name ? (
                   <div>
-                    <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>{pupil.emergency_contact_name}</div>
+                    <div className="text-[14px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>{pupil.emergency_contact_name}</div>
                     <div className="flex items-center gap-2 mt-1">
-                      <a href={`tel:${pupil.emergency_contact_phone ?? ""}`} className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
+                      <a href={`tel:${pupil.emergency_contact_phone ?? ""}`} className="text-[13px]" style={{ color: tokens.blue, ...POPPINS }}>
                         {pupil.emergency_contact_phone}
                       </a>
                       {pupil.emergency_contact_relation && (
-                        <span className="text-[11px] px-2 py-0.5 rounded-full" style={{ background: "#F2F2F7", color: "#0B1F3A", ...POPPINS }}>
+                        <span className="text-[11px] px-2 py-0.5 rounded-full" style={{ background: "#F2F2F7", color: tokens.navy, ...POPPINS }}>
                           {pupil.emergency_contact_relation}
                         </span>
                       )}
@@ -5159,7 +5160,7 @@ function PupilExtras({
                     <button
                       type="button"
                       onClick={() => setEditEmg(true)}
-                      style={{ marginTop: 10, color: "#1877D6", fontSize: 12.5, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+                      style={{ marginTop: 10, color: tokens.blue, fontSize: 12.5, fontWeight: tokens.fontWeight.bold, background: "none", border: "none", padding: 0, ...POPPINS }}
                     >
                       Edit emergency contact
                     </button>
@@ -5168,7 +5169,7 @@ function PupilExtras({
                   <button
                     type="button"
                     onClick={() => setEditEmg(true)}
-                    style={{ color: "#1877D6", fontSize: 12.5, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+                    style={{ color: tokens.blue, fontSize: 12.5, fontWeight: tokens.fontWeight.bold, background: "none", border: "none", padding: 0, ...POPPINS }}
                   >
                     + Add emergency contact
                   </button>
@@ -5181,10 +5182,10 @@ function PupilExtras({
                     {RELATIONS.map((r) => <option key={r} value={r}>{r}</option>)}
                   </select>
                   <div className="flex gap-2 mt-1">
-                    <button type="button" onClick={saveEmg} disabled={savingEmg} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
+                    <button type="button" onClick={saveEmg} disabled={savingEmg} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: tokens.blue, ...POPPINS }}>
                       {savingEmg ? "Saving…" : "Save"}
                     </button>
-                    <button type="button" onClick={() => setEditEmg(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
+                    <button type="button" onClick={() => setEditEmg(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: tokens.navy, ...POPPINS }}>
                       Cancel
                     </button>
                   </div>
@@ -5211,7 +5212,7 @@ function PupilExtras({
           >
             <IconCreditCard stroke={1.6} size={18} color="#1877D6" style={{ flexShrink: 0 }} />
             <span style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ display: "block", color: "#0B1F3A", fontSize: 14, fontWeight: 800, ...POPPINS }}>Driving licence</span>
+              <span style={{ display: "block", color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.extrabold, ...POPPINS }}>Driving licence</span>
               <span
                 style={{
                   display: "block",
@@ -5239,7 +5240,7 @@ function PupilExtras({
                     <div
                       style={{
                         fontSize: 12.5,
-                        fontWeight: 700,
+                        fontWeight: tokens.fontWeight.bold,
                         letterSpacing: "0.05em",
                         color: pupil.driving_licence_number ? "#0B1F3A" : "#B0B0B5",
                         fontFamily: pupil.driving_licence_number ? "ui-monospace, SFMono-Regular, Menlo, monospace" : undefined,
@@ -5251,7 +5252,7 @@ function PupilExtras({
                     <button
                       type="button"
                       onClick={() => setEditLic(true)}
-                      style={{ color: "#1877D6", fontSize: 12.5, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+                      style={{ color: tokens.blue, fontSize: 12.5, fontWeight: tokens.fontWeight.bold, background: "none", border: "none", padding: 0, ...POPPINS }}
                     >
                       {pupil.driving_licence_number ? "Edit" : "+ Add"}
                     </button>
@@ -5279,7 +5280,7 @@ function PupilExtras({
                       disabled={savingChecked}
                       style={{ position: "absolute", opacity: 0, width: 0, height: 0 }}
                     />
-                    <span style={{ color: "#0B1F3A", fontSize: 12.5, fontWeight: 700, ...POPPINS }}>
+                    <span style={{ color: tokens.navy, fontSize: 12.5, fontWeight: tokens.fontWeight.bold, ...POPPINS }}>
                       Licence checked &amp; verified
                     </span>
                   </label>
@@ -5287,7 +5288,7 @@ function PupilExtras({
                     type="button"
                     onClick={() => setRequestSheetOpen(true)}
                     className="mt-3 flex items-center gap-1.5"
-                    style={{ color: "#1877D6", fontSize: 12.5, fontWeight: 700, background: "none", border: "none", padding: 0, ...POPPINS }}
+                    style={{ color: tokens.blue, fontSize: 12.5, fontWeight: tokens.fontWeight.bold, background: "none", border: "none", padding: 0, ...POPPINS }}
                   >
                     Request DVLA check code
                     <IconExternalLink stroke={1.8} size={12} />
@@ -5297,10 +5298,10 @@ function PupilExtras({
                 <div className="flex flex-col gap-2">
                   <input style={EXTRAS_INPUT} placeholder="e.g. MORGA657054SM9IJ" value={licence} onChange={(e) => setLicence(e.target.value.toUpperCase())} maxLength={20} />
                   <div className="flex gap-2 mt-1">
-                    <button type="button" onClick={saveLic} disabled={savingLic} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
+                    <button type="button" onClick={saveLic} disabled={savingLic} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: tokens.blue, ...POPPINS }}>
                       {savingLic ? "Saving…" : "Save"}
                     </button>
-                    <button type="button" onClick={() => setEditLic(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
+                    <button type="button" onClick={() => setEditLic(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: tokens.navy, ...POPPINS }}>
                       Cancel
                     </button>
                   </div>
@@ -5322,7 +5323,7 @@ function PupilExtras({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+              <span className="text-[15px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>
                 Request DVLA check code
               </span>
               <button type="button" onClick={() => setRequestSheetOpen(false)} aria-label="Close">
@@ -5336,7 +5337,7 @@ function PupilExtras({
               href={pupil.phone ? `sms:${pupil.phone}?&body=${encodeURIComponent(smsBody)}` : `sms:?&body=${encodeURIComponent(smsBody)}`}
               onClick={() => setRequestSheetOpen(false)}
               className="flex items-center gap-3 w-full mb-2 rounded-lg"
-              style={{ background: "#EEF4FB", padding: "14px 16px", color: "#0B1F3A", ...POPPINS }}
+              style={{ background: "#EEF4FB", padding: "14px 16px", color: tokens.navy, ...POPPINS }}
             >
               <IconMessage stroke={1.5} size={18} color="#1A52A0" />
               <div className="flex-1">
@@ -5350,7 +5351,7 @@ function PupilExtras({
               href={pupil.email ? `mailto:${pupil.email}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}` : `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`}
               onClick={() => setRequestSheetOpen(false)}
               className="flex items-center gap-3 w-full rounded-lg"
-              style={{ background: "#EEF4FB", padding: "14px 16px", color: "#0B1F3A", ...POPPINS }}
+              style={{ background: "#EEF4FB", padding: "14px 16px", color: tokens.navy, ...POPPINS }}
             >
               <IconMail stroke={1.5} size={18} color="#1A52A0" />
               <div className="flex-1">
@@ -5440,10 +5441,10 @@ function CustomRatesCard({
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <IconCurrencyPound stroke={1.5} size={18} color="#1877D6" />
-            <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Custom lesson rates</span>
+            <span className="text-[14px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>Custom lesson rates</span>
           </div>
           {!editRates && (
-            <button type="button" onClick={() => setEditRates(true)} className="text-[12px] font-semibold" style={{ color: "#1877D6", ...POPPINS }}>
+            <button type="button" onClick={() => setEditRates(true)} className="text-[12px] font-semibold" style={{ color: tokens.blue, ...POPPINS }}>
               {pupil.custom_rate != null || pupil.custom_rate_90 != null || pupil.custom_rate_120 != null ? "Edit" : "Add"}
             </button>
           )}
@@ -5455,17 +5456,17 @@ function CustomRatesCard({
           pupil.custom_rate != null || pupil.custom_rate_90 != null || pupil.custom_rate_120 != null ? (
             <div className="flex flex-col gap-1">
               {pupil.custom_rate != null && (
-                <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                <div className="text-[13px]" style={{ color: tokens.navy, ...POPPINS }}>
                   1 hour: <span className="font-semibold">£{pupil.custom_rate}</span>
                 </div>
               )}
               {pupil.custom_rate_90 != null && (
-                <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                <div className="text-[13px]" style={{ color: tokens.navy, ...POPPINS }}>
                   1.5 hour: <span className="font-semibold">£{pupil.custom_rate_90}</span>
                 </div>
               )}
               {pupil.custom_rate_120 != null && (
-                <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+                <div className="text-[13px]" style={{ color: tokens.navy, ...POPPINS }}>
                   2 hour: <span className="font-semibold">£{pupil.custom_rate_120}</span>
                 </div>
               )}
@@ -5482,14 +5483,14 @@ function CustomRatesCard({
             <label className="text-[12px] mt-1" style={{ color: "#6B7280", ...POPPINS }}>2 hour lesson (£)</label>
             <input style={EXTRAS_INPUT} type="number" step="0.5" inputMode="decimal" placeholder={instructorRate != null ? String(instructorRate * 2) : ""} value={r120} onChange={(e) => setR120(e.target.value)} />
             <div className="flex gap-2 mt-3">
-              <button type="button" onClick={saveRates} disabled={savingRates} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
+              <button type="button" onClick={saveRates} disabled={savingRates} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: tokens.blue, ...POPPINS }}>
                 {savingRates ? "Saving…" : "Save rates"}
               </button>
-              <button type="button" onClick={() => setEditRates(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
+              <button type="button" onClick={() => setEditRates(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: tokens.navy, ...POPPINS }}>
                 Cancel
               </button>
             </div>
-            <button type="button" onClick={clearRates} className="mt-2 text-[12px] font-medium text-left" style={{ color: "#CC2229", ...POPPINS }}>
+            <button type="button" onClick={clearRates} className="mt-2 text-[12px] font-medium text-left" style={{ color: tokens.red, ...POPPINS }}>
               Clear custom rates
             </button>
           </div>
@@ -5556,7 +5557,7 @@ function PupilRatesAndColour({
           value={pupil.buffer_after_minutes ?? ""}
           onChange={(e) => void saveBuffer(e.target.value)}
           className="text-[13px]"
-          style={{ height: 34, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: "#0B1F3A", ...POPPINS }}
+          style={{ height: 34, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: tokens.navy, ...POPPINS }}
         >
           <option value="">Use default</option>
           {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
@@ -5575,7 +5576,7 @@ function PupilRatesAndColour({
       <div style={EXTRAS_CARD}>
         <div className="flex items-center gap-2 mb-3">
           <IconPalette stroke={1.5} size={18} color="#1877D6" />
-          <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Calendar colour</span>
+          <span className="text-[14px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>Calendar colour</span>
         </div>
         <div className="grid grid-cols-8 gap-2">
           {CAL_COLOURS.map((c) => {
@@ -5623,7 +5624,7 @@ function LeadSourceSection({
   const [detail, setDetail] = useState<string>(pupil.lead_source_detail ?? "");
   const inputStyle: React.CSSProperties = {
     width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
-    border: "0.5px solid #E2E6ED", fontSize: 14, outline: "none", ...POPPINS,
+    border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.md, outline: "none", ...POPPINS,
   };
   return (
     <>
@@ -5638,7 +5639,7 @@ function LeadSourceSection({
               setEditing(true);
             }}
             className="text-[12px] font-semibold flex items-center gap-1"
-            style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+            style={{ color: tokens.blue, background: "none", border: "none", padding: 0, ...POPPINS }}
           >
             <IconPencil stroke={1.5} size={12} /> Edit
           </button>
@@ -5650,7 +5651,7 @@ function LeadSourceSection({
           ...POPPINS,
           borderWidth: "0.5px",
           borderStyle: "solid",
-          borderColor: "#EEF2F7",
+          borderColor: tokens.canvas,
         }}
       >
         {editing ? (
@@ -5690,7 +5691,7 @@ function LeadSourceSection({
             {pupil.lead_source_detail ? ` — ${pupil.lead_source_detail}` : ""}
           </>
         ) : (
-          <span style={{ color: "#9CA3AF" }}>Not set</span>
+          <span style={{ color: tokens.textMuted }}>Not set</span>
         )}
       </div>
     </>
@@ -5715,7 +5716,7 @@ function TheoryEditor({
   const showScore = status === "Passed" || status === "Failed";
   const inputStyle: React.CSSProperties = {
     width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
-    border: "0.5px solid #E2E6ED", fontSize: 14, outline: "none", ...POPPINS,
+    border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.md, outline: "none", ...POPPINS,
   };
   return (
     <div className="flex flex-col gap-2">
@@ -5788,7 +5789,7 @@ function PracticalEditor({
   const [examiner, setExaminer] = useState<string>(pupil.test_examiner ?? "");
   const inputStyle: React.CSSProperties = {
     width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
-    border: "0.5px solid #E2E6ED", fontSize: 14, outline: "none", ...POPPINS,
+    border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.md, outline: "none", ...POPPINS,
   };
   const filtered = search.trim()
     ? allCentres.filter((c) => {
@@ -5819,7 +5820,7 @@ function PracticalEditor({
             type="button"
             onClick={() => setPickerOpen(!pickerOpen)}
             className="text-[12px] font-semibold"
-            style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+            style={{ color: tokens.blue, background: "none", border: "none", padding: 0, ...POPPINS }}
           >
             {pickerOpen ? "Close" : "Choose"}
           </button>
@@ -5836,7 +5837,7 @@ function PracticalEditor({
                 style={{ ...inputStyle, height: 36, padding: "0 12px 0 36px", fontSize: 13 }}
               />
             </div>
-            <div style={{ marginTop: 6, border: "0.5px solid #E2E6ED", borderRadius: 8, maxHeight: 220, overflowY: "auto", backgroundColor: "#FFFFFF" }}>
+            <div style={{ marginTop: 6, border: "0.5px solid #E2E6ED", borderRadius: 8, maxHeight: 220, overflowY: "auto", backgroundColor: tokens.white }}>
               <div
                 onClick={() => {
                   setCentreId(null);
@@ -5865,7 +5866,7 @@ function PracticalEditor({
                     className="cursor-pointer"
                     style={{ padding: "10px 12px", borderBottom: "0.5px solid #F3F4F6" }}
                   >
-                    <div className="text-[13px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>{c.name}</div>
+                    <div className="text-[13px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>{c.name}</div>
                     {c.town && <div className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>{c.town}</div>}
                   </div>
                 ))
@@ -6011,7 +6012,7 @@ function UnavailablePeriodsCard({ pupilId }: { pupilId: string }) {
 
   const inputStyle: React.CSSProperties = {
     width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
-    border: "0.5px solid #E2E6ED", fontSize: 16, outline: "none", ...POPPINS,
+    border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.lg, outline: "none", ...POPPINS,
   };
 
   return (
@@ -6019,13 +6020,13 @@ function UnavailablePeriodsCard({ pupilId }: { pupilId: string }) {
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <IconCalendar stroke={1.5} size={18} color="#1877D6" />
-          <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Unavailable periods</span>
+          <span className="text-[14px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>Unavailable periods</span>
         </div>
         <button
           type="button"
           onClick={() => setOpen(true)}
           className="text-[12px] font-semibold flex items-center gap-1"
-          style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+          style={{ color: tokens.blue, background: "none", border: "none", padding: 0, ...POPPINS }}
         >
           <IconPlus stroke={1.5} size={12} /> Add period
         </button>
@@ -6043,7 +6044,7 @@ function UnavailablePeriodsCard({ pupilId }: { pupilId: string }) {
               className="flex items-center justify-between rounded-lg px-3 py-2"
               style={{ background: "#F5F7FB", ...POPPINS }}
             >
-              <div className="text-[13px]" style={{ color: "#0B1F3A" }}>
+              <div className="text-[13px]" style={{ color: tokens.navy }}>
                 <span style={{ fontWeight: 600 }}>{r.reason || "Unavailable"}</span>
                 <span style={{ color: "#6B7280" }}> — {fmtShortDate(r.start_date)} to {fmtShortDate(r.end_date)}</span>
               </div>
@@ -6070,7 +6071,7 @@ function UnavailablePeriodsCard({ pupilId }: { pupilId: string }) {
               disabled={saving}
               onClick={save}
               className="w-full h-[52px] rounded-lg text-white text-[16px] font-bold"
-              style={{ background: "#1877D6", ...POPPINS, opacity: saving ? 0.6 : 1 }}
+              style={{ background: tokens.blue, ...POPPINS, opacity: saving ? 0.6 : 1 }}
             >
               {saving ? "Saving…" : "Save"}
             </button>
@@ -6080,20 +6081,20 @@ function UnavailablePeriodsCard({ pupilId }: { pupilId: string }) {
             <SheetGroup>
               <SheetRow>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>Start date</div>
-                  <input type="date" value={start} onChange={(e) => setStart(e.target.value)} className="w-full bg-transparent focus:outline-none text-[16px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }} />
+                  <div className="text-[13px] font-medium mb-0.5" style={{ color: tokens.textSecondary }}>Start date</div>
+                  <input type="date" value={start} onChange={(e) => setStart(e.target.value)} className="w-full bg-transparent focus:outline-none text-[16px] font-semibold" style={{ color: tokens.navy, ...POPPINS }} />
                 </div>
               </SheetRow>
               <SheetRow>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>End date</div>
-                  <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} className="w-full bg-transparent focus:outline-none text-[16px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }} />
+                  <div className="text-[13px] font-medium mb-0.5" style={{ color: tokens.textSecondary }}>End date</div>
+                  <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} className="w-full bg-transparent focus:outline-none text-[16px] font-semibold" style={{ color: tokens.navy, ...POPPINS }} />
                 </div>
               </SheetRow>
               <SheetRow>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[13px] font-medium mb-0.5" style={{ color: "#6B7686" }}>Reason</div>
-                  <select value={reason} onChange={(e) => setReason(e.target.value)} className="w-full bg-transparent focus:outline-none text-[16px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                  <div className="text-[13px] font-medium mb-0.5" style={{ color: tokens.textSecondary }}>Reason</div>
+                  <select value={reason} onChange={(e) => setReason(e.target.value)} className="w-full bg-transparent focus:outline-none text-[16px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>
                     {UNAVAIL_REASONS.map((r) => (
                       <option key={r} value={r}>{r}</option>
                     ))}
@@ -6236,10 +6237,10 @@ function ReadyToLearnCard({ pupilId }: { pupilId: string }) {
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <IconClock stroke={1.5} size={18} color="#1877D6" />
-          <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Ready to Learn</span>
+          <span className="text-[14px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>Ready to Learn</span>
         </div>
         {!edit && loaded && (
-          <button type="button" onClick={() => setEdit(true)} className="text-[12px] font-semibold" style={{ color: "#1877D6", ...POPPINS }}>
+          <button type="button" onClick={() => setEdit(true)} className="text-[12px] font-semibold" style={{ color: tokens.blue, ...POPPINS }}>
             {hasSaved ? "Edit" : "Add"}
           </button>
         )}
@@ -6252,7 +6253,7 @@ function ReadyToLearnCard({ pupilId }: { pupilId: string }) {
         <div className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>Loading…</div>
       ) : !edit ? (
         hasSaved ? (
-          <div className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>{summary}</div>
+          <div className="text-[13px]" style={{ color: tokens.navy, ...POPPINS }}>{summary}</div>
         ) : (
           <div className="text-[13px]" style={{ color: "#6B7280", ...POPPINS }}>Not set</div>
         )
@@ -6300,7 +6301,7 @@ function ReadyToLearnCard({ pupilId }: { pupilId: string }) {
             <input style={{ ...EXTRAS_INPUT, marginTop: 4 }} type="number" min="0" inputMode="numeric" value={notice} onChange={(e) => setNotice(e.target.value)} />
           </div>
 
-          <label className="flex items-center justify-between text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+          <label className="flex items-center justify-between text-[13px]" style={{ color: tokens.navy, ...POPPINS }}>
             <span>Accept short-notice slots</span>
             <button
               type="button"
@@ -6352,10 +6353,10 @@ function ReadyToLearnCard({ pupilId }: { pupilId: string }) {
           </div>
 
           <div className="flex gap-2 mt-1">
-            <button type="button" onClick={save} disabled={saving} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#1877D6", ...POPPINS }}>
+            <button type="button" onClick={save} disabled={saving} className="flex-1 h-10 rounded-lg text-white text-[13px] font-semibold" style={{ background: tokens.blue, ...POPPINS }}>
               {saving ? "Saving…" : "Save settings"}
             </button>
-            <button type="button" onClick={() => setEdit(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: "#0B1F3A", ...POPPINS }}>
+            <button type="button" onClick={() => setEdit(false)} className="h-10 px-4 rounded-lg text-[13px] font-semibold" style={{ background: "#F3F4F6", color: tokens.navy, ...POPPINS }}>
               Cancel
             </button>
           </div>

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState, type ReactNode } from "react";
 import { IconAlertTriangle, IconCalendar, IconCheck, IconChevronRight, IconCircleCheck, IconClock, IconCreditCard, IconExternalLink, IconUserPlus, IconWorld } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
@@ -227,10 +228,10 @@ function OnboardingPage() {
           <div className="flex flex-col items-center">
             <img src={dsmLogoAsset.url} alt="DSM" className="h-[60px] w-auto mb-5" />
             <div style={{ marginBottom: 16, textAlign: "center" }}>
-              <div style={{ fontSize: 22, fontWeight: 800, color: "#fff", ...POPPINS, letterSpacing: "-0.4px", marginBottom: 4 }}>
+              <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.extrabold, color: "#fff", ...POPPINS, letterSpacing: "-0.4px", marginBottom: 4 }}>
                 Welcome to DSM
               </div>
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", ...POPPINS }}>
+              <div style={{ fontSize: tokens.fontSize.base, color: "rgba(255,255,255,0.5)", ...POPPINS }}>
                 Let&apos;s get you set up in 3 minutes
               </div>
             </div>
@@ -292,7 +293,7 @@ function OnboardingPage() {
                       borderBottom: i === DAYS.length - 1 ? "none" : "1px solid #E4E8EF",
                     }}
                   >
-                    <label style={{ display: "flex", alignItems: "center", gap: 8, width: 110, flexShrink: 0, fontSize: 14, fontWeight: 500, color: "#0B1F3A", ...POPPINS, cursor: "pointer" }}>
+                    <label style={{ display: "flex", alignItems: "center", gap: 8, width: 110, flexShrink: 0, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: tokens.navy, ...POPPINS, cursor: "pointer" }}>
                       <input
                         type="checkbox"
                         checked={h.enabled}
@@ -313,7 +314,7 @@ function OnboardingPage() {
                           }
                           style={{ ...TIME_INPUT }}
                         />
-                        <span style={{ fontSize: 12, color: "#6B7686", ...POPPINS }}>—</span>
+                        <span style={{ fontSize: 12, color: tokens.textSecondary, ...POPPINS }}>—</span>
                         <input
                           type="time"
                           value={h.end}
@@ -366,8 +367,8 @@ function OnboardingPage() {
                           padding: "4px 10px",
                           borderRadius: 999,
                           border: "none",
-                          fontSize: 13,
-                          fontWeight: 600,
+                          fontSize: tokens.fontSize.base,
+                          fontWeight: tokens.fontWeight.semibold,
                           background: sel ? "#1877D6" : "#F1F5F9",
                           color: sel ? "#FFFFFF" : "#6B7686",
                         }}
@@ -383,7 +384,7 @@ function OnboardingPage() {
             <button
               type="button"
               onClick={next}
-              style={{ ...POPPINS, fontSize: 13, color: "rgba(255,255,255,0.5)", background: "none", border: "none", marginTop: 12, width: "100%" }}
+              style={{ ...POPPINS, fontSize: tokens.fontSize.base, color: "rgba(255,255,255,0.5)", background: "none", border: "none", marginTop: 12, width: "100%" }}
             >
               Skip for now →
             </button>
@@ -471,7 +472,7 @@ function OnboardingPage() {
             <button
               type="button"
               onClick={next}
-              style={{ ...POPPINS, fontSize: 13, color: "rgba(255,255,255,0.5)", background: "none", border: "none", marginTop: 12, width: "100%" }}
+              style={{ ...POPPINS, fontSize: tokens.fontSize.base, color: "rgba(255,255,255,0.5)", background: "none", border: "none", marginTop: 12, width: "100%" }}
             >
               I&apos;ll do this later
             </button>
@@ -499,15 +500,15 @@ function OnboardingPage() {
                   <IconCreditCard stroke={1.5} size={20} color="#1877D6" />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Connect Square</div>
-                  <div style={{ fontSize: 13, color: "#6B7686", ...POPPINS }}>
+                  <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, ...POPPINS }}>Connect Square</div>
+                  <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, ...POPPINS }}>
                     Already have a Square account? Connect it here
                   </div>
                 </div>
                 <IconChevronRight stroke={1.5} size={18} color="#9CA3AF" />
               </div>
 
-              <div style={{ height: 1, background: "#EEF2F7", marginLeft: 60 }} />
+              <div style={{ height: 1, background: tokens.canvas, marginLeft: 60 }} />
 
               <div
                 role="button"
@@ -519,8 +520,8 @@ function OnboardingPage() {
                   <IconExternalLink stroke={1.5} size={20} color="#B45309" />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>Get a Square account</div>
-                  <div style={{ fontSize: 13, color: "#6B7686", ...POPPINS }}>Free to sign up via our partner link</div>
+                  <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, ...POPPINS }}>Get a Square account</div>
+                  <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, ...POPPINS }}>Free to sign up via our partner link</div>
                 </div>
                 <IconChevronRight stroke={1.5} size={18} color="#9CA3AF" />
               </div>
@@ -538,7 +539,7 @@ function OnboardingPage() {
               }}
             >
               <IconAlertTriangle stroke={1.5} size={18} color="#B45309" style={{ flexShrink: 0, marginTop: 1 }} />
-              <div style={{ fontSize: 13, color: "#B45309", ...POPPINS }}>
+              <div style={{ fontSize: tokens.fontSize.base, color: "#B45309", ...POPPINS }}>
                 Without Square, card payments take up to <strong>2 days</strong> to reach you via EveryDriver. Connect
                 Square for instant payouts.
               </div>
@@ -548,7 +549,7 @@ function OnboardingPage() {
             <button
               type="button"
               onClick={next}
-              style={{ ...POPPINS, fontSize: 13, color: "rgba(255,255,255,0.5)", background: "none", border: "none", marginTop: 12, width: "100%" }}
+              style={{ ...POPPINS, fontSize: tokens.fontSize.base, color: "rgba(255,255,255,0.5)", background: "none", border: "none", marginTop: 12, width: "100%" }}
             >
               Skip for now — I&apos;ll set this up later
             </button>
@@ -566,10 +567,10 @@ function OnboardingPage() {
               </div>
             </div>
             <div style={{ marginBottom: 16, textAlign: "center" }}>
-              <div style={{ fontSize: 22, fontWeight: 800, color: "#fff", ...POPPINS, letterSpacing: "-0.4px", marginBottom: 4 }}>
+              <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.extrabold, color: "#fff", ...POPPINS, letterSpacing: "-0.4px", marginBottom: 4 }}>
                 You&apos;re all set!
               </div>
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", ...POPPINS }}>Welcome to DSM</div>
+              <div style={{ fontSize: tokens.fontSize.base, color: "rgba(255,255,255,0.5)", ...POPPINS }}>Welcome to DSM</div>
             </div>
             {error && (
               <p className="text-[13px] text-[#CC2229] text-center mb-2" style={POPPINS} role="alert">{error}</p>
@@ -602,9 +603,9 @@ function OnboardingPage() {
 }
 
 const ROW_LABEL = {
-  fontSize: 13,
-  fontWeight: 500,
-  color: "#6B7686",
+  fontSize: tokens.fontSize.base,
+  fontWeight: tokens.fontWeight.medium,
+  color: tokens.textSecondary,
   width: 110,
   flexShrink: 0,
   ...POPPINS,
@@ -615,8 +616,8 @@ const ROW_INPUT = {
   border: "none",
   outline: "none",
   fontSize: 15,
-  fontWeight: 500,
-  color: "#0B1F3A",
+  fontWeight: tokens.fontWeight.medium,
+  color: tokens.navy,
   ...POPPINS,
   background: "transparent",
   textAlign: "right" as const,
@@ -638,9 +639,9 @@ const ROW_STYLE_LAST = {
 
 const TIME_INPUT = {
   ...POPPINS,
-  fontSize: 13,
-  fontWeight: 500,
-  color: "#0B1F3A",
+  fontSize: tokens.fontSize.base,
+  fontWeight: tokens.fontWeight.medium,
+  color: tokens.navy,
   background: "#fff",
   border: "1px solid #E4E8EF",
   borderRadius: 8,
@@ -650,10 +651,10 @@ const TIME_INPUT = {
 function StepHeader({ title, subtitle }: { title: string; subtitle: string }) {
   return (
     <div style={{ marginBottom: 16 }}>
-      <div style={{ fontSize: 22, fontWeight: 800, color: "#fff", ...POPPINS, letterSpacing: "-0.4px", marginBottom: 4 }}>
+      <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.extrabold, color: "#fff", ...POPPINS, letterSpacing: "-0.4px", marginBottom: 4 }}>
         {title}
       </div>
-      <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", ...POPPINS }}>{subtitle}</div>
+      <div style={{ fontSize: tokens.fontSize.base, color: "rgba(255,255,255,0.5)", ...POPPINS }}>{subtitle}</div>
     </div>
   );
 }
@@ -694,7 +695,7 @@ function FieldRow({
   return (
     <div style={last ? ROW_STYLE_LAST : ROW_STYLE}>
       <label style={ROW_LABEL}>{label}</label>
-      {prefix && <span style={{ ...POPPINS, fontSize: 15, fontWeight: 500, color: "#0B1F3A" }}>{prefix}</span>}
+      {prefix && <span style={{ ...POPPINS, fontSize: 15, fontWeight: tokens.fontWeight.medium, color: tokens.navy }}>{prefix}</span>}
       <input
         type={type}
         value={value}
@@ -727,8 +728,8 @@ function Cta({
         color: "#fff",
         border: "none",
         borderRadius: 8,
-        fontSize: 16,
-        fontWeight: 700,
+        fontSize: tokens.fontSize.lg,
+        fontWeight: tokens.fontWeight.bold,
         cursor: disabled ? "not-allowed" : "pointer",
         ...POPPINS,
         marginTop: 8,
@@ -767,7 +768,7 @@ function ActionRow({
       }}
     >
       {icon}
-      <span style={{ ...POPPINS, fontSize: 15, fontWeight: 500, color: "#0B1F3A" }}>{label}</span>
+      <span style={{ ...POPPINS, fontSize: 15, fontWeight: tokens.fontWeight.medium, color: tokens.navy }}>{label}</span>
     </button>
   );
 }
@@ -795,7 +796,7 @@ function ChoiceCard({
         borderRadius: 8,
         border: selected ? "2px solid #1877D6" : "2px solid transparent",
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-        background: "#FFFFFF",
+        background: tokens.white,
       }}
     >
       <div className="mt-0.5">{icon}</div>

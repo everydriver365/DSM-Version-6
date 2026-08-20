@@ -1,4 +1,5 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useGoBack } from "@/hooks/useGoBack";
@@ -209,9 +210,9 @@ function ExpensesPage() {
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
-            fontWeight: 600,
+            fontWeight: tokens.fontWeight.semibold,
             cursor: "pointer",
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
           }}
         >
           <IconPlus stroke={1.5} size={16} /> Add expense
@@ -258,8 +259,8 @@ function ExpensesPage() {
                 color: active ? "#fff" : colour,
                 padding: "8px 14px",
                 borderRadius: 999,
-                fontSize: 13,
-                fontWeight: 600,
+                fontSize: tokens.fontSize.base,
+                fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 display: "inline-flex",
                 alignItems: "center",
@@ -307,7 +308,7 @@ function ExpensesPage() {
                     marginBottom: 8,
                   }}
                 >
-                  <div style={{ fontWeight: 700, color: NAVY, fontSize: 15 }}>{monthLabel(k)}</div>
+                  <div style={{ fontWeight: tokens.fontWeight.bold, color: NAVY, fontSize: 15 }}>{monthLabel(k)}</div>
                   <div style={{ color: "#6B7280", fontSize: 13 }}>{money(total)}</div>
                 </div>
                 {items.map((r) => (
@@ -376,7 +377,7 @@ function SummaryCard({
       }}
     >
       <div style={{ fontSize: 12, color: "#6B7280", marginBottom: 6 }}>{label}</div>
-      <div style={{ fontWeight: 800, fontSize: 20, color: valueColor ?? NAVY }}>{value}</div>
+      <div style={{ fontWeight: tokens.fontWeight.extrabold, fontSize: 20, color: valueColor ?? NAVY }}>{value}</div>
     </div>
   );
 }
@@ -442,8 +443,8 @@ function ExpenseRow({
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontWeight: 700,
-                fontSize: 14,
+                fontWeight: tokens.fontWeight.bold,
+                fontSize: tokens.fontSize.md,
                 color: NAVY,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -457,8 +458,8 @@ function ExpenseRow({
               {row.is_recurring && (
                 <span
                   style={{
-                    fontSize: 11,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.semibold,
                     color: "#6B7280",
                     display: "inline-flex",
                     alignItems: "center",
@@ -472,11 +473,11 @@ function ExpenseRow({
           </div>
         </div>
         <div style={{ textAlign: "right", flexShrink: 0 }}>
-          <div style={{ fontWeight: 800, color: NAVY, display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <div style={{ fontWeight: tokens.fontWeight.extrabold, color: NAVY, display: "inline-flex", alignItems: "center", gap: 6 }}>
             {money(Number(row.amount || 0))}
             {row.tax_deductible && <IconLeaf size={14} color={GREEN} />}
           </div>
-          <div style={{ color: "#6B7280", fontSize: 11, marginTop: 2 }}>{date}</div>
+          <div style={{ color: "#6B7280", fontSize: tokens.fontSize.sm, marginTop: 2 }}>{date}</div>
         </div>
       </button>
 
@@ -492,13 +493,13 @@ function ExpenseRow({
               border: BORDER,
               background: "#fff",
               color: NAVY,
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               gap: 6,
               cursor: "pointer",
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
             }}
           >
             <IconPencil stroke={1.5} size={14} /> Edit
@@ -513,13 +514,13 @@ function ExpenseRow({
               border: `1px solid #FCA5A5`,
               background: "#FEF2F2",
               color: "#B91C1C",
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               gap: 6,
               cursor: "pointer",
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
             }}
           >
             <IconTrash stroke={1.5} size={14} /> Delete
@@ -536,10 +537,10 @@ function ExpenseRow({
                 border: BORDER,
                 background: "#fff",
                 color: NAVY,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 textAlign: "center",
                 textDecoration: "none",
-                fontSize: 13,
+                fontSize: tokens.fontSize.base,
               }}
             >
               Receipt
@@ -784,8 +785,8 @@ function AddEditSheet({
               borderRadius: 8,
               cursor: "pointer",
               color: NAVY,
-              fontSize: 13,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.semibold,
             }}
           >
             <IconUpload stroke={1.5} size={16} />
@@ -811,7 +812,7 @@ function AddEditSheet({
             padding: "14px 16px",
             border: 0,
             borderRadius: 8,
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
             cursor: saving ? "not-allowed" : "pointer",
             opacity: saving ? 0.7 : 1,
           }}
@@ -836,7 +837,7 @@ const inputStyle: React.CSSProperties = {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: 12 }}>
-      <div style={{ fontSize: 12, fontWeight: 600, color: "#6B7280", marginBottom: 6 }}>{label}</div>
+      <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#6B7280", marginBottom: 6 }}>{label}</div>
       {children}
     </div>
   );
@@ -862,7 +863,7 @@ function ToggleRow({
         marginBottom: 4,
       }}
     >
-      <div style={{ color: NAVY, fontWeight: 600, fontSize: 14 }}>{label}</div>
+      <div style={{ color: NAVY, fontWeight: tokens.fontWeight.semibold, fontSize: 14 }}>{label}</div>
       <button
         type="button"
         onClick={() => onChange(!value)}

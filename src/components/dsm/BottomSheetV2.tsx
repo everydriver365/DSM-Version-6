@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { tokens } from "@/lib/tokens";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { tapLight } from "@/lib/haptics";
 
@@ -90,7 +91,7 @@ export function BottomSheet({ title, subtitle, onClose, children, footer }: Bott
               width: 30,
               height: 30,
               borderRadius: "50%",
-              background: "#EEF2F7",
+              background: tokens.canvas,
               border: "none",
               cursor: "pointer",
               display: "flex",
@@ -108,7 +109,7 @@ export function BottomSheet({ title, subtitle, onClose, children, footer }: Bott
               style={{
                 color: navy,
                 fontSize: 26,
-                fontWeight: 800,
+                fontWeight: tokens.fontWeight.extrabold,
                 letterSpacing: "-0.5px",
                 lineHeight: 1.15,
               }}
@@ -359,7 +360,7 @@ export function SheetRadio({ selected }: { selected: boolean }) {
       }}
     >
       {selected && (
-        <div style={{ width: 8, height: 8, borderRadius: 999, backgroundColor: "#FFFFFF" }} />
+        <div style={{ width: 8, height: 8, borderRadius: 999, backgroundColor: tokens.white }} />
       )}
     </div>
   );
@@ -393,12 +394,12 @@ export function SheetRadioRow({
       <div className="flex-1 min-w-0">
         <div
           className="truncate"
-          style={{ fontSize: 16, fontWeight: 600, color: navy }}
+          style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: navy }}
         >
           {title}
         </div>
         {subtitle && (
-          <div className="truncate" style={{ fontSize: 13, fontWeight: 500, color: subtle }}>
+          <div className="truncate" style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: subtle }}>
             {subtitle}
           </div>
         )}
@@ -408,8 +409,8 @@ export function SheetRadioRow({
           {status && (
             <div
               style={{
-                fontSize: 13,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.base,
+                fontWeight: tokens.fontWeight.bold,
                 color: statusPositive ? "#1A9B5C" : red,
               }}
             >
@@ -443,7 +444,7 @@ export function SheetSearchRow({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className="flex-1 min-w-0 bg-transparent focus:outline-none"
-        style={{ fontFamily: font, fontSize: 16, color: navy }}
+        style={{ fontFamily: font, fontSize: tokens.fontSize.lg, color: navy }}
       />
     </SheetRow>
   );

@@ -1,4 +1,5 @@
 import { testStartTime, testTimeFromNotes, testTimeFromStart, withTestTimeNote, TEST_TOTAL_MINUTES } from "@/lib/testDay";
+import { tokens } from "@/lib/tokens";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
@@ -57,7 +58,7 @@ const fieldBorder: React.CSSProperties = {
   fontFamily: "Poppins, sans-serif",
   borderWidth: "0.5px",
   borderStyle: "solid",
-  borderColor: "#EEF2F7",
+  borderColor: tokens.canvas,
 };
 
 function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) {
@@ -431,7 +432,7 @@ function EditLessonPage() {
           onClick={handleSave}
           disabled={saving || loading || showCancelConfirm}
           className="text-[13px] font-semibold"
-          style={{ color: "#1877D6", background: "none", border: "none", opacity: saving || loading || showCancelConfirm ? 0.5 : 1 }}
+          style={{ color: tokens.blue, background: "none", border: "none", opacity: saving || loading || showCancelConfirm ? 0.5 : 1 }}
         >
           {saving ? "Saving…" : "Save"}
         </button>
@@ -471,8 +472,8 @@ function EditLessonPage() {
                 border: "none",
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
-                fontSize: 13,
-                fontWeight: 600,
+                fontSize: tokens.fontSize.base,
+                fontWeight: tokens.fontWeight.semibold,
                 background: !isEvent ? "#fff" : "transparent",
                 color: !isEvent ? "#0B1F3A" : "#6B6B6F",
                 boxShadow: !isEvent ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
@@ -494,8 +495,8 @@ function EditLessonPage() {
                 border: "none",
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
-                fontSize: 13,
-                fontWeight: 600,
+                fontSize: tokens.fontSize.base,
+                fontWeight: tokens.fontWeight.semibold,
                 background: isEvent ? "#fff" : "transparent",
                 color: isEvent ? "#0B1F3A" : "#6B6B6F",
                 boxShadow: isEvent ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
@@ -527,9 +528,9 @@ function EditLessonPage() {
             <div>
               <div
                 style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: "#9CA3AF",
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.semibold,
+                  color: tokens.textMuted,
                   textTransform: "uppercase",
                   letterSpacing: "0.08em",
                   marginBottom: 6,
@@ -548,7 +549,7 @@ function EditLessonPage() {
                   border: "1px solid #E4E8EF",
                   borderRadius: 8,
                   padding: "10px 12px",
-                  fontSize: 14,
+                  fontSize: tokens.fontSize.md,
                   fontFamily: "Poppins, sans-serif",
                   outline: "none",
                   boxSizing: "border-box",
@@ -599,8 +600,8 @@ function EditLessonPage() {
                       height: 34,
                       borderRadius: 8,
                       padding: '0 16px',
-                      fontSize: 13,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.semibold,
                       cursor: 'pointer',
                       border: duration === opt.value
                         ? 'none'
@@ -625,8 +626,8 @@ function EditLessonPage() {
             {isTestDay && (
               <div style={{ marginBottom: 16 }}>
                 <div style={{
-                  fontSize: 11,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.semibold,
                   color: '#9CA3AF',
                   textTransform: 'uppercase',
                   letterSpacing: '0.08em',
@@ -653,7 +654,7 @@ function EditLessonPage() {
                       border: '1px solid #E4E8EF',
                       borderRadius: 8,
                       padding: '10px 12px 10px 34px',
-                      fontSize: 14,
+                      fontSize: tokens.fontSize.md,
                       fontFamily: 'Poppins, sans-serif',
                       outline: 'none',
                       boxSizing: 'border-box',
@@ -689,8 +690,8 @@ function EditLessonPage() {
                           fontFamily: 'Poppins, sans-serif',
                         }}
                       >
-                        <div style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A' }}>{r.name}</div>
-                        <div style={{ fontSize: 11, color: '#6B7686', marginTop: 2 }}>
+                        <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A' }}>{r.name}</div>
+                        <div style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', marginTop: 2 }}>
                           {[r.address, r.town, r.postcode].filter(Boolean).join(', ')}
                         </div>
                       </div>
@@ -698,7 +699,7 @@ function EditLessonPage() {
                   </div>
                 )}
                 {testCentreSearch.trim().length >= 2 && testCentreResults.length === 0 && !searchingCentres && (
-                  <p style={{ fontSize: 11, color: '#9CA3AF', marginTop: 6, fontFamily: 'Poppins, sans-serif' }}>
+                  <p style={{ fontSize: tokens.fontSize.sm, color: '#9CA3AF', marginTop: 6, fontFamily: 'Poppins, sans-serif' }}>
                     No centres found — type the address manually
                   </p>
                 )}
@@ -706,8 +707,8 @@ function EditLessonPage() {
                   <div style={{
                     background: '#DCFCE7',
                     color: '#15803D',
-                    fontSize: 11,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.bold,
                     borderRadius: 8,
                     padding: '4px 12px',
                     display: 'flex',
@@ -724,15 +725,15 @@ function EditLessonPage() {
                       type="button"
                       aria-label="Clear test centre"
                       onClick={() => { setTestCentre(''); setTestCentreSearch(''); setTestCentreResults([]); }}
-                      style={{ background: 'none', border: 'none', color: '#15803D', cursor: 'pointer', fontSize: 13, lineHeight: 1, padding: 0 }}
+                      style={{ background: 'none', border: 'none', color: '#15803D', cursor: 'pointer', fontSize: tokens.fontSize.base, lineHeight: 1, padding: 0 }}
                     >
                       ×
                     </button>
                   </div>
                 )}
                 <div style={{
-                  fontSize: 11,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.semibold,
                   color: '#9CA3AF',
                   textTransform: 'uppercase',
                   letterSpacing: '0.08em',
@@ -752,13 +753,13 @@ function EditLessonPage() {
                     border: '1px solid #E4E8EF',
                     borderRadius: 8,
                     padding: '10px 12px',
-                    fontSize: 14,
+                    fontSize: tokens.fontSize.md,
                     fontFamily: 'Poppins, sans-serif',
                     outline: 'none',
                     boxSizing: 'border-box',
                   }}
                 />
-                <p style={{ fontSize: 10, color: '#9CA3AF', marginTop: 4, fontFamily: 'Poppins, sans-serif' }}>
+                <p style={{ fontSize: tokens.fontSize.xs, color: '#9CA3AF', marginTop: 4, fontFamily: 'Poppins, sans-serif' }}>
                   Standard test: 38-40 mins. Extended test: 70 mins.
                 </p>
                 {testCentreError && (
@@ -816,9 +817,9 @@ function EditLessonPage() {
               ];
               const labelStyle: React.CSSProperties = {
                 fontFamily: "Poppins, sans-serif",
-                fontSize: 10,
-                fontWeight: 600,
-                color: "#9CA3AF",
+                fontSize: tokens.fontSize.xs,
+                fontWeight: tokens.fontWeight.semibold,
+                color: tokens.textMuted,
                 textTransform: "uppercase",
                 letterSpacing: 0.6,
                 margin: "14px 0 8px",
@@ -834,14 +835,14 @@ function EditLessonPage() {
               });
               const chargeTitle: React.CSSProperties = {
                 fontFamily: "Poppins, sans-serif",
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#0B1F3A",
+                fontSize: tokens.fontSize.base,
+                fontWeight: tokens.fontWeight.semibold,
+                color: tokens.navy,
               };
               const chargeSub: React.CSSProperties = {
                 fontFamily: "Poppins, sans-serif",
-                fontSize: 11,
-                color: "#6B7686",
+                fontSize: tokens.fontSize.sm,
+                color: tokens.textSecondary,
                 marginTop: 2,
               };
               const resetCancel = () => {
@@ -871,9 +872,9 @@ function EditLessonPage() {
               >
                 <div
                   style={{
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "#CC2229",
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.red,
                     fontFamily: "Poppins, sans-serif",
                   }}
                 >
@@ -920,7 +921,7 @@ function EditLessonPage() {
                     border: "1px solid #E4E8EF",
                     borderRadius: 8,
                     fontFamily: "Poppins, sans-serif",
-                    fontSize: 13,
+                    fontSize: tokens.fontSize.base,
                     padding: 10,
                     boxSizing: "border-box",
                     resize: "vertical",
@@ -952,7 +953,7 @@ function EditLessonPage() {
                       {activeOption === "fee" && (
                         <>
                           <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8 }}>
-                            <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 13, color: "#6B7686" }}>£</span>
+                            <span style={{ fontFamily: "Poppins, sans-serif", fontSize: tokens.fontSize.base, color: tokens.textSecondary }}>£</span>
                             <input
                               type="number"
                               inputMode="decimal"
@@ -974,7 +975,7 @@ function EditLessonPage() {
                                 borderRadius: 8,
                                 padding: "10px 12px",
                                 fontFamily: "Poppins, sans-serif",
-                                fontSize: 13,
+                                fontSize: tokens.fontSize.base,
                                 boxSizing: "border-box",
                               }}
                             />
@@ -983,7 +984,7 @@ function EditLessonPage() {
                             <div
                               style={{
                                 fontFamily: "Poppins, sans-serif",
-                                fontSize: 11,
+                                fontSize: tokens.fontSize.sm,
                                 marginTop: 6,
                                 color: feeDesc.error ? "#CC2229" : "#6B7686",
                               }}
@@ -1138,13 +1139,13 @@ function EditLessonPage() {
                     }}
 
                     style={{
-                      background: "#CC2229",
+                      background: tokens.red,
                       color: "#fff",
                       borderRadius: 8,
                       padding: 12,
                       width: "100%",
-                      fontSize: 14,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.semibold,
                       fontFamily: "Poppins, sans-serif",
                       border: "none",
                       opacity: saving || !cancelReason || !activeDesc.valid ? 0.5 : 1,
@@ -1166,8 +1167,8 @@ function EditLessonPage() {
                       borderRadius: 8,
                       padding: 12,
                       width: "100%",
-                      fontSize: 14,
-                      fontWeight: 500,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.medium,
                       fontFamily: "Poppins, sans-serif",
                       border: "none",
                     }}
@@ -1215,7 +1216,7 @@ function EditLessonPage() {
                   type="button"
                   onClick={() => setPayOpen((v) => !v)}
                   className="text-[13px] font-semibold"
-                  style={{ color: "#1877D6" }}
+                  style={{ color: tokens.blue }}
                 >
                   {payOpen ? "Cancel" : "Log payment"}
                 </button>
@@ -1229,7 +1230,7 @@ function EditLessonPage() {
                   <div className="flex gap-2">
                     <div
                       className="flex items-center rounded-lg px-3 flex-1"
-                      style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
+                      style={{ border: "1px solid #E3E7ED", backgroundColor: tokens.white }}
                     >
                       <IconCurrencyPound stroke={1.5} size={16} color="#8A93A3" />
                       <input
@@ -1245,7 +1246,7 @@ function EditLessonPage() {
                       value={payMethod}
                       onChange={(e) => setPayMethod(e.target.value)}
                       className="rounded-lg px-3 py-2 text-[14px] focus:outline-none text-[#0B1F3A]"
-                      style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
+                      style={{ border: "1px solid #E3E7ED", backgroundColor: tokens.white }}
                     >
                       <option value="cash">Cash</option>
                       <option value="bank_transfer">Bank</option>
@@ -1259,7 +1260,7 @@ function EditLessonPage() {
                     placeholder="Notes (optional)"
                     rows={2}
                     className="w-full px-3 py-2 rounded-lg text-[14px] resize-none focus:outline-none text-[#0B1F3A]"
-                    style={{ border: "1px solid #E3E7ED", backgroundColor: "#FFFFFF" }}
+                    style={{ border: "1px solid #E3E7ED", backgroundColor: tokens.white }}
                   />
                   <button
                     type="button"
@@ -1267,7 +1268,7 @@ function EditLessonPage() {
                     onClick={submitPayment}
                     className="h-10 rounded-lg text-white text-[14px] font-semibold"
                     style={{
-                      backgroundColor: "#1877D6",
+                      backgroundColor: tokens.blue,
                       opacity:
                         savingPayment || !payAmount || Number(payAmount) <= 0 ? 0.5 : 1,
                     }}
@@ -1297,7 +1298,7 @@ function EditLessonPage() {
           </div>
 
           {error && (
-            <p className="text-[12px]" style={{ color: "#1877D6" }}>
+            <p className="text-[12px]" style={{ color: tokens.blue }}>
               {error}
             </p>
           )}

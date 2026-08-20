@@ -1,4 +1,5 @@
 import { useGoBack } from "@/hooks/useGoBack";
+import { tokens } from "@/lib/tokens";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 
@@ -253,9 +254,9 @@ function ListingDetailPage() {
     fontFamily: "Poppins, sans-serif",
   };
   const LABEL: React.CSSProperties = {
-    color: "#9CA3AF",
-    fontSize: 11,
-    fontWeight: 600,
+    color: tokens.textMuted,
+    fontSize: tokens.fontSize.sm,
+    fontWeight: tokens.fontWeight.semibold,
     letterSpacing: "0.08em",
     textTransform: "uppercase",
     margin: "0 0 10px",
@@ -270,14 +271,14 @@ function ListingDetailPage() {
   };
   const SECTION_TITLE: React.CSSProperties = {
     fontSize: 15,
-    fontWeight: 700,
-    color: "#0B1F3A",
+    fontWeight: tokens.fontWeight.bold,
+    color: tokens.navy,
     fontFamily: "Poppins, sans-serif",
   };
   const SECTION_LINK: React.CSSProperties = {
     fontSize: 12,
-    fontWeight: 600,
-    color: "#1877D6",
+    fontWeight: tokens.fontWeight.semibold,
+    color: tokens.blue,
     fontFamily: "Poppins, sans-serif",
     background: "none",
     border: "none",
@@ -290,8 +291,8 @@ function ListingDetailPage() {
       {/* Header */}
       <div
         style={{
-          background: "#0B1F3A",
-          color: "#FFFFFF",
+          background: tokens.navy,
+          color: tokens.white,
           padding: "14px 16px",
           display: "flex",
           alignItems: "center",
@@ -311,7 +312,7 @@ function ListingDetailPage() {
             borderRadius: 999,
             background: "rgba(255,255,255,0.12)",
             border: "none",
-            color: "#FFFFFF",
+            color: tokens.white,
             cursor: "pointer",
             padding: 0,
             display: "flex",
@@ -324,8 +325,8 @@ function ListingDetailPage() {
         </button>
         <div
           style={{
-            fontSize: 18,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.xl,
+            fontWeight: tokens.fontWeight.bold,
             color: "#fff",
             fontFamily: "Poppins, sans-serif",
             overflow: "hidden",
@@ -350,9 +351,9 @@ function ListingDetailPage() {
             style={{
               background: "none",
               border: "none",
-              color: "#1877D6",
-              fontSize: 14,
-              fontWeight: 600,
+              color: tokens.blue,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.semibold,
               cursor: "pointer",
             }}
           >
@@ -382,7 +383,7 @@ function ListingDetailPage() {
         <>
 
           {/* Hero photo gallery */}
-          <div style={{ position: "relative", width: "100%", background: "#0B1F3A" }}>
+          <div style={{ position: "relative", width: "100%", background: tokens.navy }}>
             {listingId === WEBSITE_LISTING_ID ? (
               <div
                 style={{
@@ -402,7 +403,7 @@ function ListingDetailPage() {
                   style={{
                     width: "23%",
                     aspectRatio: "1 / 1.95",
-                    background: "#FFFFFF",
+                    background: tokens.white,
                     border: "3px solid #0B1F3A",
                     borderRadius: 8,
                     overflow: "hidden",
@@ -411,7 +412,7 @@ function ListingDetailPage() {
                     boxShadow: "0 10px 24px rgba(0,0,0,0.28)",
                   }}
                 >
-                  <div style={{ height: 18, background: "#0B1F3A", display: "flex", alignItems: "center", gap: 3, padding: "0 6px" }}>
+                  <div style={{ height: 18, background: tokens.navy, display: "flex", alignItems: "center", gap: 3, padding: "0 6px" }}>
                     {[0, 1, 2].map((i) => (
                       <span key={i} style={{ width: 4, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.55)" }} />
                     ))}
@@ -427,7 +428,7 @@ function ListingDetailPage() {
                   style={{
                     width: "40%",
                     aspectRatio: "1 / 0.68",
-                    background: "#FFFFFF",
+                    background: tokens.white,
                     border: "3px solid #0B1F3A",
                     borderRadius: 8,
                     overflow: "hidden",
@@ -435,7 +436,7 @@ function ListingDetailPage() {
                     boxShadow: "0 12px 28px rgba(0,0,0,0.3)",
                   }}
                 >
-                  <div style={{ height: 20, background: "#0B1F3A", display: "flex", alignItems: "center", gap: 4, padding: "0 8px" }}>
+                  <div style={{ height: 20, background: tokens.navy, display: "flex", alignItems: "center", gap: 4, padding: "0 8px" }}>
                     {[0, 1, 2].map((i) => (
                       <span key={i} style={{ width: 5, height: 5, borderRadius: 999, background: "rgba(255,255,255,0.55)" }} />
                     ))}
@@ -502,8 +503,8 @@ function ListingDetailPage() {
                 backdropFilter: "blur(4px)",
                 WebkitBackdropFilter: "blur(4px)",
                 color: "#fff",
-                fontSize: 11,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.sm,
+                fontWeight: tokens.fontWeight.bold,
                 padding: "4px 10px",
                 borderRadius: 8,
                 fontFamily: "Poppins, sans-serif",
@@ -523,8 +524,8 @@ function ListingDetailPage() {
                   backdropFilter: "blur(4px)",
                   WebkitBackdropFilter: "blur(4px)",
                   color: "#fff",
-                  fontSize: 11,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.bold,
                   padding: "4px 10px",
                   borderRadius: 8,
                   fontFamily: "Poppins, sans-serif",
@@ -583,9 +584,9 @@ function ListingDetailPage() {
             <div style={CARD}>
               <div
                 style={{
-                  color: "#0B1F3A",
-                  fontSize: 18,
-                  fontWeight: 800,
+                  color: tokens.navy,
+                  fontSize: tokens.fontSize.xl,
+                  fontWeight: tokens.fontWeight.extrabold,
                   lineHeight: 1.3,
                   fontFamily: "Poppins, sans-serif",
                   marginBottom: 8,
@@ -613,7 +614,7 @@ function ListingDetailPage() {
                     >
                       {isWebsiteListing ? (
                         <>
-                          <span style={{ fontSize: 14, fontWeight: 600, color: "#6B7686" }}>
+                          <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.textSecondary }}>
                             From
                     </span>
                     {noPrice &&
@@ -627,9 +628,9 @@ function ListingDetailPage() {
                             background: "none",
                             border: "none",
                             padding: 0,
-                            color: "#1877D6",
+                            color: tokens.blue,
                             fontSize: 12,
-                            fontWeight: 600,
+                            fontWeight: tokens.fontWeight.semibold,
                             cursor: "pointer",
                             fontFamily: "Poppins, sans-serif",
                           }}
@@ -638,7 +639,7 @@ function ListingDetailPage() {
                         </button>
                       )}
                           £9.99
-                          <span style={{ fontSize: 14, fontWeight: 600, color: "#6B7686" }}>
+                          <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.textSecondary }}>
                             /mo
                           </span>
                         </>
@@ -655,9 +656,9 @@ function ListingDetailPage() {
                           style={{
                             display: "inline-block",
                             background: "#EFF6FF",
-                            color: "#1877D6",
-                            fontSize: 11,
-                            fontWeight: 700,
+                            color: tokens.blue,
+                            fontSize: tokens.fontSize.sm,
+                            fontWeight: tokens.fontWeight.bold,
                             padding: "4px 10px",
                             borderRadius: 8,
                             marginTop: 8,
@@ -682,7 +683,7 @@ function ListingDetailPage() {
                     display: "flex",
                     alignItems: "center",
                     gap: 6,
-                    color: "#6B7686",
+                    color: tokens.textSecondary,
                     fontSize: 12,
                     fontFamily: "Poppins, sans-serif",
                   }}
@@ -722,8 +723,8 @@ function ListingDetailPage() {
                   background: supplier?.logo_url
                     ? `#E7F1FC url(${supplier.logo_url}) center/cover`
                     : "#E7F1FC",
-                  color: "#1877D6",
-                  fontWeight: 800,
+                  color: tokens.blue,
+                  fontWeight: tokens.fontWeight.extrabold,
                   fontSize: 17,
                   display: "flex",
                   alignItems: "center",
@@ -736,9 +737,9 @@ function ListingDetailPage() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
-                    color: "#0B1F3A",
+                    color: tokens.navy,
                     fontSize: 15,
-                    fontWeight: 800,
+                    fontWeight: tokens.fontWeight.extrabold,
                     display: "flex",
                     alignItems: "center",
                     gap: 6,
@@ -780,8 +781,8 @@ function ListingDetailPage() {
                   <div style={LABEL}>Description</div>
                   <div
                     style={{
-                      color: "#6B7686",
-                      fontSize: 14,
+                      color: tokens.textSecondary,
+                      fontSize: tokens.fontSize.md,
                       lineHeight: 1.6,
                       whiteSpace: "pre-wrap",
                       fontFamily: "Poppins, sans-serif",
@@ -814,8 +815,8 @@ function ListingDetailPage() {
                         display: "flex",
                         alignItems: "flex-start",
                         gap: 8,
-                        color: "#6B7686",
-                        fontSize: 14,
+                        color: tokens.textSecondary,
+                        fontSize: tokens.fontSize.md,
                         lineHeight: 1.5,
                         fontFamily: "Poppins, sans-serif",
                       }}
@@ -853,9 +854,9 @@ function ListingDetailPage() {
                       <span
                         style={{
                           flex: 1,
-                          color: "#0B1F3A",
-                          fontSize: 14,
-                          fontWeight: 600,
+                          color: tokens.navy,
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
                           fontFamily: "Poppins, sans-serif",
                         }}
                       >
@@ -876,9 +877,9 @@ function ListingDetailPage() {
                 <div style={{ margin: "0 16px 16px" }}>
                   <div
                     style={{
-                      color: "#9CA3AF",
-                      fontSize: 11,
-                      fontWeight: 600,
+                      color: tokens.textMuted,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.semibold,
                       letterSpacing: "0.08em",
                       textTransform: "uppercase",
                       marginBottom: 8,
@@ -921,9 +922,9 @@ function ListingDetailPage() {
                 <>
                   <div
                     style={{
-                      color: "#9CA3AF",
-                      fontSize: 11,
-                      fontWeight: 600,
+                      color: tokens.textMuted,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.semibold,
                       letterSpacing: "0.08em",
                       textTransform: "uppercase",
                       margin: "0 16px 8px",
@@ -1017,7 +1018,7 @@ function ListingDetailPage() {
                     position: "absolute",
                     bottom: 32,
                     color: "rgba(255,255,255,0.6)",
-                    fontSize: 13,
+                    fontSize: tokens.fontSize.base,
                     fontFamily: "Poppins, sans-serif",
                   }}
                 >
@@ -1103,9 +1104,9 @@ function ListingDetailPage() {
                     key={t}
                     style={{
                       fontSize: 11.5,
-                      fontWeight: 700,
-                      color: "#6B7686",
-                      background: "#EEF2F7",
+                      fontWeight: tokens.fontWeight.bold,
+                      color: tokens.textSecondary,
+                      background: tokens.canvas,
                       padding: "5px 11px",
                       borderRadius: 8,
                     }}
@@ -1234,8 +1235,8 @@ function ConditionBadge({ condition }: { condition: string }) {
         display: "inline-block",
         background: style.bg,
         color: style.color,
-        fontSize: 11,
-        fontWeight: 700,
+        fontSize: tokens.fontSize.sm,
+        fontWeight: tokens.fontWeight.bold,
         textTransform: "uppercase",
         letterSpacing: "0.04em",
         padding: "4px 10px",
@@ -1257,11 +1258,11 @@ function ContactActions({
   const type = listing.contact_type ?? "email";
 
   const primaryBtn = {
-    background: "#1877D6",
+    background: tokens.blue,
     color: "#fff",
     border: "none",
-    fontSize: 14,
-    fontWeight: 700,
+    fontSize: tokens.fontSize.md,
+    fontWeight: tokens.fontWeight.bold,
     padding: 13,
     borderRadius: 8,
     boxShadow: "0 3px 0 #0F52A8",
@@ -1275,10 +1276,10 @@ function ContactActions({
 
   const secondaryBtn = {
     background: "#EFF6FF",
-    color: "#1877D6",
+    color: tokens.blue,
     border: "1px solid #1877D6",
-    fontSize: 14,
-    fontWeight: 700,
+    fontSize: tokens.fontSize.md,
+    fontWeight: tokens.fontWeight.bold,
     padding: 13,
     borderRadius: 8,
     boxShadow: "none",
@@ -1463,7 +1464,7 @@ function EnquirySheet({
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           width: "100%",
           maxWidth: 520,
           borderRadius: "8px 8px 0 0",
@@ -1480,7 +1481,7 @@ function EnquirySheet({
             marginBottom: 12,
           }}
         >
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>
+          <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: "#0F2044" }}>
             Send enquiry
           </div>
           <button
@@ -1503,7 +1504,7 @@ function EnquirySheet({
         <label
           style={{
             fontSize: 12,
-            fontWeight: 600,
+            fontWeight: tokens.fontWeight.semibold,
             color: "#374151",
             display: "block",
             marginBottom: 4,
@@ -1520,7 +1521,7 @@ function EnquirySheet({
             border: "0.5px solid #E2E6ED",
             borderRadius: 8,
             padding: 10,
-            fontSize: 14,
+            fontSize: tokens.fontSize.md,
             fontFamily: "inherit",
             marginBottom: 12,
             resize: "vertical",
@@ -1531,7 +1532,7 @@ function EnquirySheet({
         <label
           style={{
             fontSize: 12,
-            fontWeight: 600,
+            fontWeight: tokens.fontWeight.semibold,
             color: "#374151",
             display: "block",
             marginBottom: 4,
@@ -1548,7 +1549,7 @@ function EnquirySheet({
             border: "0.5px solid #E2E6ED",
             borderRadius: 8,
             padding: 10,
-            fontSize: 14,
+            fontSize: tokens.fontSize.md,
             marginBottom: 12,
             color: "#0F2044",
           }}
@@ -1557,7 +1558,7 @@ function EnquirySheet({
         <label
           style={{
             fontSize: 12,
-            fontWeight: 600,
+            fontWeight: tokens.fontWeight.semibold,
             color: "#374151",
             display: "block",
             marginBottom: 4,
@@ -1574,7 +1575,7 @@ function EnquirySheet({
             border: "0.5px solid #E2E6ED",
             borderRadius: 8,
             padding: 10,
-            fontSize: 14,
+            fontSize: tokens.fontSize.md,
             marginBottom: 16,
             color: "#0F2044",
           }}
@@ -1587,10 +1588,10 @@ function EnquirySheet({
           style={{
             width: "100%",
             background: "#1A52A0",
-            color: "#FFFFFF",
+            color: tokens.white,
             border: "none",
-            fontSize: 14,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.bold,
             padding: "12px 16px",
             borderRadius: 8,
             cursor: sending ? "not-allowed" : "pointer",
@@ -1610,9 +1611,9 @@ function CategoryPill({ name }: { name: string }) {
       style={{
         display: "inline-block",
         fontFamily: "Poppins, sans-serif",
-        fontSize: 10,
-        fontWeight: 700,
-        color: "#1877D6",
+        fontSize: tokens.fontSize.xs,
+        fontWeight: tokens.fontWeight.bold,
+        color: tokens.blue,
         background: "#EFF6FF",
         padding: "3px 10px",
         borderRadius: 8,
@@ -1713,9 +1714,9 @@ function SellerListingRow({
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            color: "#0B1F3A",
-            fontSize: 13,
-            fontWeight: 600,
+            color: tokens.navy,
+            fontSize: tokens.fontSize.base,
+            fontWeight: tokens.fontWeight.semibold,
             lineHeight: 1.25,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -1733,7 +1734,7 @@ function SellerListingRow({
           style={{
             marginTop: 4,
             color: price.muted ? "#9CA3AF" : "#0B1F3A",
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
             fontWeight: price.muted ? 500 : 700,
           }}
         >
@@ -1747,12 +1748,12 @@ function SellerListingRow({
           onOpen(listing.id);
         }}
         style={{
-          background: "#1877D6",
+          background: tokens.blue,
           color: "#fff",
           borderRadius: 8,
           padding: "6px 14px",
           fontSize: 12,
-          fontWeight: 700,
+          fontWeight: tokens.fontWeight.bold,
           border: "none",
           cursor: "pointer",
           fontFamily: "Poppins, sans-serif",
@@ -1809,9 +1810,9 @@ function MiniListingCard({
       <div style={{ padding: 10 }}>
         <div
           style={{
-            color: "#0B1F3A",
+            color: tokens.navy,
             fontSize: 12,
-            fontWeight: 600,
+            fontWeight: tokens.fontWeight.semibold,
             lineHeight: 1.3,
             display: "-webkit-box",
             WebkitLineClamp: 2,
@@ -1830,7 +1831,7 @@ function MiniListingCard({
           style={{
             marginTop: 6,
             color: price.muted ? "#9CA3AF" : "#0B1F3A",
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
             fontWeight: price.muted ? 500 : 700,
           }}
         >
@@ -1868,15 +1869,15 @@ function ListingPeek({ listing }: { listing: Listing }) {
           }}
         />
         <div style={{ padding: 16 }}>
-          <div style={{ color: "#0B1F3A", fontSize: 17, fontWeight: 800, lineHeight: 1.2 }}>
+          <div style={{ color: tokens.navy, fontSize: 17, fontWeight: tokens.fontWeight.extrabold, lineHeight: 1.2 }}>
             {listing.title}
           </div>
           {listing.price_display && (
-            <div style={{ color: "#1877D6", fontSize: 20, fontWeight: 800, marginTop: 6 }}>
+            <div style={{ color: tokens.blue, fontSize: 20, fontWeight: tokens.fontWeight.extrabold, marginTop: 6 }}>
               {listing.price_display}
             </div>
           )}
-          <div style={{ color: "#8A8A8E", fontSize: 13, marginTop: 10 }}>
+          <div style={{ color: "#8A8A8E", fontSize: tokens.fontSize.base, marginTop: 10 }}>
             Release to open this listing…
           </div>
         </div>
@@ -1892,9 +1893,9 @@ function ListingPeek({ listing }: { listing: Listing }) {
    ──────────────────────────────────────────────────────────────── */
 
 const SECTION_TITLE: React.CSSProperties = {
-  fontSize: 16,
-  fontWeight: 800,
-  color: "#0B1F3A",
+  fontSize: tokens.fontSize.lg,
+  fontWeight: tokens.fontWeight.extrabold,
+  color: tokens.navy,
   marginBottom: 8,
 };
 
@@ -2017,7 +2018,7 @@ function WebsiteUpgradeSections() {
   };
   const pill: React.CSSProperties = {
     fontSize: 12,
-    fontWeight: 700,
+    fontWeight: tokens.fontWeight.bold,
     borderRadius: 8,
     padding: "3px 10px",
     whiteSpace: "nowrap",
@@ -2027,13 +2028,13 @@ function WebsiteUpgradeSections() {
     border: "none",
     borderRadius: 8,
     padding: 11,
-    fontSize: 14,
-    fontWeight: 700,
+    fontSize: tokens.fontSize.md,
+    fontWeight: tokens.fontWeight.bold,
     marginTop: 12,
     cursor: "pointer",
   };
   const noteBase: React.CSSProperties = {
-    fontSize: 10,
+    fontSize: tokens.fontSize.xs,
     textAlign: "center",
     marginTop: 4,
   };
@@ -2071,10 +2072,10 @@ function WebsiteUpgradeSections() {
         }}
       >
         <span
-          style={{ width: 8, height: 8, borderRadius: 999, background: "#1877D6", flexShrink: 0 }}
+          style={{ width: 8, height: 8, borderRadius: 999, background: tokens.blue, flexShrink: 0 }}
         />
-        <span style={{ fontSize: 12, color: "#6B7686" }}>Your current plan:</span>
-        <span style={{ fontSize: 12, fontWeight: 700, color: "#0B1F3A" }}>
+        <span style={{ fontSize: 12, color: tokens.textSecondary }}>Your current plan:</span>
+        <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
           {TIER_NAMES[tier]}
         </span>
       </div>
@@ -2085,19 +2086,19 @@ function WebsiteUpgradeSections() {
       {website && (
         <div style={{ ...cardBase, background: "#fff", border: "1px solid #E4E8EF" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-            <span style={{ fontSize: 15, fontWeight: 800, color: "#0B1F3A" }}>{website.name}</span>
-            <span style={{ ...pill, background: "#EFF6FF", color: "#1877D6" }}>£9.99/month</span>
+            <span style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy }}>{website.name}</span>
+            <span style={{ ...pill, background: "#EFF6FF", color: tokens.blue }}>£9.99/month</span>
           </div>
           {website.features.map((f) => featureRow(f, "#6B7686", "#15803D"))}
           <button
             type="button"
             disabled={busyTier !== null}
             onClick={() => startUpgrade("website")}
-            style={{ ...ctaBase, background: "#1877D6", color: "#fff" }}
+            style={{ ...ctaBase, background: tokens.blue, color: "#fff" }}
           >
             {busyTier === "website" ? "Starting…" : "Upgrade online →"}
           </button>
-          <div style={{ ...noteBase, color: "#9CA3AF" }}>Takes you to secure checkout</div>
+          <div style={{ ...noteBase, color: tokens.textMuted }}>Takes you to secure checkout</div>
         </div>
       )}
 
@@ -2111,14 +2112,14 @@ function WebsiteUpgradeSections() {
               background: "#15803D",
               color: "#fff",
               fontSize: 9,
-              fontWeight: 800,
+              fontWeight: tokens.fontWeight.extrabold,
               borderRadius: 8,
               padding: "3px 8px",
             }}
           >
             Most popular
           </span>
-          <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", paddingRight: 88 }}>
+          <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: "#fff", paddingRight: 88 }}>
             {pro.name}
           </div>
           <div style={{ marginTop: 8 }}>
@@ -2133,7 +2134,7 @@ function WebsiteUpgradeSections() {
             type="button"
             disabled={busyTier !== null}
             onClick={() => startUpgrade("pro")}
-            style={{ ...ctaBase, background: "#fff", color: "#0B1F3A" }}
+            style={{ ...ctaBase, background: "#fff", color: tokens.navy }}
           >
             {busyTier === "pro" ? "Starting…" : "Upgrade to Pro →"}
           </button>
@@ -2153,14 +2154,14 @@ function WebsiteUpgradeSections() {
               background: "#D68A1B",
               color: "#fff",
               fontSize: 9,
-              fontWeight: 800,
+              fontWeight: tokens.fontWeight.extrabold,
               borderRadius: 8,
               padding: "3px 8px",
             }}
           >
             White glove
           </span>
-          <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", paddingRight: 88 }}>
+          <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: "#fff", paddingRight: 88 }}>
             {managed.name}
           </div>
           <div style={{ marginTop: 8 }}>
@@ -2187,7 +2188,7 @@ function WebsiteUpgradeSections() {
 
       {/* SECTION 3 — Find your domain */}
       <div style={{ ...SECTION_TITLE, marginTop: 22 }}>Find your domain</div>
-      <div style={{ fontSize: 12, color: "#6B7686", marginBottom: 12 }}>
+      <div style={{ fontSize: 12, color: tokens.textSecondary, marginBottom: 12 }}>
         Search for your school name — included free with DSM Website
       </div>
       <div style={{ display: "flex", gap: 8 }}>
@@ -2204,8 +2205,8 @@ function WebsiteUpgradeSections() {
             border: "1px solid #E4E8EF",
             borderRadius: 8,
             padding: "11px 12px",
-            fontSize: 14,
-            color: "#0B1F3A",
+            fontSize: tokens.fontSize.md,
+            color: tokens.navy,
             background: "#fff",
             outline: "none",
           }}
@@ -2215,13 +2216,13 @@ function WebsiteUpgradeSections() {
           onClick={() => void runDomainSearch()}
           disabled={domainChecking}
           style={{
-            background: "#1877D6",
+            background: tokens.blue,
             color: "#fff",
             border: "none",
             borderRadius: 8,
             padding: "11px 16px",
-            fontSize: 14,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.bold,
             cursor: "pointer",
             flexShrink: 0,
           }}
@@ -2242,14 +2243,14 @@ function WebsiteUpgradeSections() {
         >
           <div
             style={{
-              fontSize: 14,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.bold,
               color: domainResult.available ? "#15803D" : "#B91C1C",
             }}
           >
             {domainResult.domain}
           </div>
-          <div style={{ fontSize: 12, color: "#6B7686", marginTop: 3 }}>
+          <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 3 }}>
             {domainResult.available
               ? "Available — included free with DSM Website"
               : "Not available — try another name"}
@@ -2278,8 +2279,8 @@ function WebsiteUpgradeSections() {
             border: "none",
             padding: 0,
             fontSize: 12,
-            color: "#1877D6",
-            fontWeight: 600,
+            color: tokens.blue,
+            fontWeight: tokens.fontWeight.semibold,
             cursor: "pointer",
           }}
         >
@@ -2294,22 +2295,22 @@ function WebsiteUpgradeSections() {
             overflow: "hidden",
           }}
         >
-          <div style={{ display: "flex", background: "#EEF2F7", padding: "8px 10px" }}>
-            <div style={{ flex: 2, fontSize: 10, fontWeight: 800, color: "#0B1F3A" }}>Feature</div>
+          <div style={{ display: "flex", background: tokens.canvas, padding: "8px 10px" }}>
+            <div style={{ flex: 2, fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy }}>Feature</div>
             {COMPARISON_COLS.map((c) => (
               <div
                 key={c.id}
                 style={{
                   flex: 1,
                   textAlign: "center",
-                  fontSize: 10,
-                  fontWeight: 800,
-                  color: "#0B1F3A",
+                  fontSize: tokens.fontSize.xs,
+                  fontWeight: tokens.fontWeight.extrabold,
+                  color: tokens.navy,
                   background: c.id === tier ? "#F7FAFE" : "transparent",
                 }}
               >
                 {c.name}
-                <div style={{ fontSize: 9, fontWeight: 600, color: "#6B7686" }}>{c.price}</div>
+                <div style={{ fontSize: 9, fontWeight: tokens.fontWeight.semibold, color: tokens.textSecondary }}>{c.price}</div>
               </div>
             ))}
           </div>
@@ -2317,9 +2318,9 @@ function WebsiteUpgradeSections() {
             <div key={group.title}>
               <div
                 style={{
-                  fontSize: 10,
-                  fontWeight: 800,
-                  color: "#6B7686",
+                  fontSize: tokens.fontSize.xs,
+                  fontWeight: tokens.fontWeight.extrabold,
+                  color: tokens.textSecondary,
                   padding: "8px 10px 4px",
                   textTransform: "uppercase",
                   letterSpacing: "0.04em",
@@ -2337,14 +2338,14 @@ function WebsiteUpgradeSections() {
                     borderTop: "1px solid #F1F4F8",
                   }}
                 >
-                  <div style={{ flex: 2, fontSize: 10, color: "#0B1F3A" }}>{row.label}</div>
+                  <div style={{ flex: 2, fontSize: tokens.fontSize.xs, color: tokens.navy }}>{row.label}</div>
                   {COMPARISON_COLS.map((c, i) => (
                     <div
                       key={c.id}
                       style={{
                         flex: 1,
                         textAlign: "center",
-                        fontSize: 10,
+                        fontSize: tokens.fontSize.xs,
                         color: i >= row.from ? "#15803D" : "#C7CDD6",
                         background: c.id === tier ? "#F7FAFE" : "transparent",
                       }}
@@ -2366,8 +2367,8 @@ function WebsiteUpgradeSections() {
               borderTop: "1px solid #E4E8EF",
               padding: 10,
               fontSize: 12,
-              fontWeight: 600,
-              color: "#1877D6",
+              fontWeight: tokens.fontWeight.semibold,
+              color: tokens.blue,
               cursor: "pointer",
             }}
           >
@@ -2402,11 +2403,11 @@ function WebsiteUpgradeSections() {
             }}
           >
             <span style={{ fontSize: 32 }}>🌐</span>
-            <span style={{ fontSize: 11, color: "#9CA3AF" }}>Example site</span>
+            <span style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted }}>Example site</span>
           </div>
           <div style={{ padding: 12 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{site.name}</div>
-            <div style={{ fontSize: 11, color: "#1877D6", marginTop: 2 }}>{site.url}</div>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>{site.name}</div>
+            <div style={{ fontSize: tokens.fontSize.sm, color: tokens.blue, marginTop: 2 }}>{site.url}</div>
             <a
               href="#"
               onClick={(e) => e.preventDefault()}
@@ -2414,8 +2415,8 @@ function WebsiteUpgradeSections() {
                 display: "inline-block",
                 marginTop: 8,
                 fontSize: 12,
-                fontWeight: 600,
-                color: "#1877D6",
+                fontWeight: tokens.fontWeight.semibold,
+                color: tokens.blue,
                 textDecoration: "none",
               }}
             >

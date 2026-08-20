@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconChevronLeft, IconChevronRight, IconPlus, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -242,7 +243,7 @@ function DiaryPage() {
       {/* Action bar */}
       <div
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           padding: "8px 16px",
           display: "flex",
           justifyContent: "flex-end",
@@ -257,7 +258,7 @@ function DiaryPage() {
           onClick={openAdd}
           aria-label="Add entry"
           className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
-          style={{ backgroundColor: "#1877D6" }}
+          style={{ backgroundColor: tokens.blue }}
         >
           <IconPlus size={16} color="#fff" /> Add entry
         </button>
@@ -334,7 +335,7 @@ function DiaryPage() {
                       height: 30,
                       backgroundColor: circleBg,
                       color: textColor,
-                      fontSize: 13,
+                      fontSize: tokens.fontSize.base,
                       fontWeight: isToday || isSelected ? 600 : 400,
                     }}
                   >
@@ -344,13 +345,13 @@ function DiaryPage() {
                     {hasLesson && (
                       <span
                         className="rounded-full"
-                        style={{ width: 4, height: 4, backgroundColor: "#1877D6" }}
+                        style={{ width: 4, height: 4, backgroundColor: tokens.blue }}
                       />
                     )}
                     {hasEntry && (
                       <span
                         className="rounded-full"
-                        style={{ width: 4, height: 4, backgroundColor: "#1877D6" }}
+                        style={{ width: 4, height: 4, backgroundColor: tokens.blue }}
                       />
                     )}
                   </div>
@@ -367,14 +368,14 @@ function DiaryPage() {
             <div className="flex items-center" style={{ gap: 6 }}>
               <span
                 className="rounded-full"
-                style={{ width: 6, height: 6, backgroundColor: "#1877D6" }}
+                style={{ width: 6, height: 6, backgroundColor: tokens.blue }}
               />
               <span className="text-[11px] text-[#6B7280]">Lessons</span>
             </div>
             <div className="flex items-center" style={{ gap: 6 }}>
               <span
                 className="rounded-full"
-                style={{ width: 6, height: 6, backgroundColor: "#1877D6" }}
+                style={{ width: 6, height: 6, backgroundColor: tokens.blue }}
               />
               <span className="text-[11px] text-[#6B7280]">Diary</span>
             </div>
@@ -407,7 +408,7 @@ function DiaryPage() {
                     </div>
                     <span
                       className="text-[11px] rounded-full px-2 py-1"
-                      style={{ backgroundColor: "#EEF4FB", color: "#1877D6" }}
+                      style={{ backgroundColor: "#EEF4FB", color: tokens.blue }}
                     >
                       Lesson
                     </span>
@@ -506,7 +507,7 @@ function DiaryPage() {
                     fontFamily: "Poppins, sans-serif",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#EEF2F7",
+                    borderColor: tokens.canvas,
                     resize: "vertical",
                   }}
                 />
@@ -534,7 +535,7 @@ function DiaryPage() {
                     fontFamily: "Poppins, sans-serif",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#EEF2F7",
+                    borderColor: tokens.canvas,
                   }}
                 >
                   {TYPES.map((t) => (
@@ -546,7 +547,7 @@ function DiaryPage() {
               </div>
 
               {sheetError && (
-                <div className="text-[12px]" style={{ color: "#1877D6" }}>
+                <div className="text-[12px]" style={{ color: tokens.blue }}>
                   {sheetError}
                 </div>
               )}
@@ -610,7 +611,7 @@ function DiaryPage() {
               type="button"
               onClick={() => removeEntry(viewEntry.id)}
               className="text-[13px] font-medium py-2"
-              style={{ color: "#1877D6" }}
+              style={{ color: tokens.blue }}
             >
               Delete entry
             </button>

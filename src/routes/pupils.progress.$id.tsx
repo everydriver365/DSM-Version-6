@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -27,11 +28,11 @@ const LEVELS: {
   label: string;
   color: string;
 }[] = [
-  { key: "introduced", n: 1, label: "Introduced", color: "#9CA3AF" },
+  { key: "introduced", n: 1, label: "Introduced", color: tokens.textMuted },
   { key: "talk_through", n: 2, label: "Under full talk-through", color: "#B91C1C" },
-  { key: "prompted", n: 3, label: "Prompted", color: "#1877D6" },
+  { key: "prompted", n: 3, label: "Prompted", color: tokens.blue },
   { key: "seldom_prompted", n: 4, label: "Seldom prompted", color: "#84CC16" },
-  { key: "independent", n: 5, label: "Independent", color: "#1877D6" },
+  { key: "independent", n: 5, label: "Independent", color: tokens.blue },
 ];
 
 const LEVEL_BY_KEY: Record<Exclude<Status, "not_started">, (typeof LEVELS)[number]> =
@@ -281,9 +282,9 @@ function PupilProgressPage() {
                 height: 16,
                 borderRadius: 999,
                 backgroundColor: l.color,
-                color: "#FFFFFF",
-                fontSize: 10,
-                fontWeight: 700,
+                color: tokens.white,
+                fontSize: tokens.fontSize.xs,
+                fontWeight: tokens.fontWeight.bold,
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -309,7 +310,7 @@ function PupilProgressPage() {
                 style={{
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: "#EEF2F7",
+                  borderColor: tokens.canvas,
                 }}
               >
                 {section.items.map((it, idx) => {
@@ -321,7 +322,7 @@ function PupilProgressPage() {
                       style={{
                         borderTopWidth: idx === 0 ? 0 : "0.5px",
                         borderTopStyle: "solid",
-                        borderTopColor: "#EEF2F7",
+                        borderTopColor: tokens.canvas,
                       }}
                     >
                       <button
@@ -351,8 +352,8 @@ function PupilProgressPage() {
                                 onClick={() => setLevel(it.key, l.key)}
                                 className="inline-flex items-center gap-1 px-2 py-1 rounded-full"
                                 style={{
-                                  fontSize: 11,
-                                  fontWeight: 600,
+                                  fontSize: tokens.fontSize.sm,
+                                  fontWeight: tokens.fontWeight.semibold,
                                   backgroundColor: active ? l.color : "#F3F4F6",
                                   color: active ? "#FFFFFF" : "#374151",
                                   border: active
@@ -366,9 +367,9 @@ function PupilProgressPage() {
                                     height: 14,
                                     borderRadius: 999,
                                     backgroundColor: active ? "rgba(255,255,255,0.25)" : l.color,
-                                    color: "#FFFFFF",
+                                    color: tokens.white,
                                     fontSize: 9,
-                                    fontWeight: 700,
+                                    fontWeight: tokens.fontWeight.bold,
                                     display: "inline-flex",
                                     alignItems: "center",
                                     justifyContent: "center",
@@ -385,9 +386,9 @@ function PupilProgressPage() {
                             onClick={() => setLevel(it.key, "not_started")}
                             className="inline-flex items-center px-2 py-1 rounded-full"
                             style={{
-                              fontSize: 11,
-                              fontWeight: 600,
-                              backgroundColor: "#FFFFFF",
+                              fontSize: tokens.fontSize.sm,
+                              fontWeight: tokens.fontWeight.semibold,
+                              backgroundColor: tokens.white,
                               color: "#6B7280",
                               border: "1px solid #E5E7EB",
                             }}
@@ -407,12 +408,12 @@ function PupilProgressPage() {
 
       <div
         className="fixed bottom-0 left-0 right-0 px-4 py-3 bg-white z-50"
-        style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+        style={{ borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: tokens.canvas }}
       >
         {saved && (
           <div
             className="text-center text-[12px] mb-2"
-            style={{ color: "#1877D6", ...POPPINS }}
+            style={{ color: tokens.blue, ...POPPINS }}
           >
             Saved
           </div>
@@ -449,9 +450,9 @@ function StatusBadge({ status }: { status: Status }) {
         width: 24,
         height: 24,
         backgroundColor: l.color,
-        color: "#FFFFFF",
+        color: tokens.white,
         fontSize: 12,
-        fontWeight: 700,
+        fontWeight: tokens.fontWeight.bold,
         ...POPPINS,
       }}
     >

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconArrowLeft, IconMusic, IconPlayerPlay } from "@tabler/icons-react";
 
@@ -110,7 +111,7 @@ function PodcastDetailPage() {
         </button>
         <div
           style={{
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
             fontSize: 15,
             flex: 1,
             overflow: "hidden",
@@ -136,8 +137,8 @@ function PodcastDetailPage() {
             gap: 6,
             background: "rgba(255,255,255,0.92)",
             color: "#7C3AED",
-            fontSize: 10,
-            fontWeight: 800,
+            fontSize: tokens.fontSize.xs,
+            fontWeight: tokens.fontWeight.extrabold,
             padding: "4px 8px",
             borderRadius: 8,
             textTransform: "uppercase",
@@ -148,12 +149,12 @@ function PodcastDetailPage() {
         </div>
         <div style={{ fontWeight: 900, fontSize: 20, marginTop: 12 }}>{podcast.title}</div>
         {podcast.guest_name && (
-          <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14, marginTop: 2 }}>
+          <div style={{ color: "rgba(255,255,255,0.7)", fontSize: tokens.fontSize.md, marginTop: 2 }}>
             with {podcast.guest_name}
             {podcast.guest_title ? ` · ${podcast.guest_title}` : ""}
           </div>
         )}
-        <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginTop: 8 }}>
+        <div style={{ color: "rgba(255,255,255,0.6)", fontSize: tokens.fontSize.base, marginTop: 8 }}>
           {formatDate(podcast.published_at)}
           {podcast.duration_minutes ? ` · ${podcast.duration_minutes} mins` : ""}
         </div>
@@ -183,10 +184,10 @@ function PodcastDetailPage() {
               marginBottom: 12,
             }}
           >
-            <div style={{ fontWeight: 700, fontSize: 15, color: "#0F2044", marginBottom: 10 }}>
+            <div style={{ fontWeight: tokens.fontWeight.bold, fontSize: 15, color: "#0F2044", marginBottom: 10 }}>
               About this episode
             </div>
-            <div style={{ fontSize: 14, color: "#374151", whiteSpace: "pre-wrap", lineHeight: 1.5 }}>
+            <div style={{ fontSize: tokens.fontSize.md, color: "#374151", whiteSpace: "pre-wrap", lineHeight: 1.5 }}>
               {podcast.description}
             </div>
             {podcast.tags && podcast.tags.length > 0 && (
@@ -197,7 +198,7 @@ function PodcastDetailPage() {
                     style={{
                       background: "#F1F5F9",
                       color: "#0F2044",
-                      fontSize: 11,
+                      fontSize: tokens.fontSize.sm,
                       padding: "4px 10px",
                       borderRadius: 999,
                     }}
@@ -216,7 +217,7 @@ function PodcastDetailPage() {
             border: "0.5px solid #E2E6ED",
             borderRadius: 8,
             padding: 16,
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
             color: "#374151",
             display: "grid",
             gap: 8,
@@ -239,7 +240,7 @@ function PodcastDetailPage() {
               padding: 16,
             }}
           >
-            <div style={{ fontWeight: 700, fontSize: 15, color: "#0F2044", marginBottom: 12 }}>
+            <div style={{ fontWeight: tokens.fontWeight.bold, fontSize: 15, color: "#0F2044", marginBottom: 12 }}>
               Listen now
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -250,8 +251,8 @@ function PodcastDetailPage() {
                   style={{
                     background: "#1DB954",
                     color: "#fff",
-                    fontSize: 13,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
                     borderRadius: 8,
                     padding: "10px 14px",
                     border: 0,
@@ -271,8 +272,8 @@ function PodcastDetailPage() {
                   style={{
                     background: "#FC3C44",
                     color: "#fff",
-                    fontSize: 13,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
                     borderRadius: 8,
                     padding: "10px 14px",
                     border: 0,
@@ -290,10 +291,10 @@ function PodcastDetailPage() {
                   type="button"
                   onClick={() => openUrl(podcast.audio_url)}
                   style={{
-                    background: "#CC2229",
+                    background: tokens.red,
                     color: "#fff",
-                    fontSize: 13,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
                     borderRadius: 8,
                     padding: "10px 14px",
                     border: 0,

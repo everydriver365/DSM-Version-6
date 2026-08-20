@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { PartnerPreview, PerkPreview } from "@/components/admin/BenefitPreview";
 import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
 import { IconBook, IconBriefcase, IconGift, IconChevronLeft, IconChevronRight, IconFileCheck, IconFileText, IconFlag, IconMessageCircle, IconMicrophone, IconNews, IconPencil, IconPhoto, IconPlayerPlay, IconSearch, IconSettings, IconShieldCheck, IconShoppingBag, IconStar, IconTrash, IconUsers, IconVideo, IconX } from "@tabler/icons-react";
@@ -24,7 +25,7 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         left: 0,
         right: 0,
         zIndex: 40,
-        background: "#0B1F3A",
+        background: tokens.navy,
         color: "#fff",
         padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 16px",
         display: "flex",
@@ -54,7 +55,7 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
       >
         <IconChevronLeft stroke={1.8} size={18} color="#fff" />
       </button>
-      <span style={{ fontSize: 26, fontWeight: 800, color: "#fff", letterSpacing: "-0.5px" }}>
+      <span style={{ fontSize: 26, fontWeight: tokens.fontWeight.extrabold, color: "#fff", letterSpacing: "-0.5px" }}>
         {title}
       </span>
     </div>
@@ -102,7 +103,7 @@ function AdminGroupLabel({ children, first }: { children: React.ReactNode; first
       style={{
         color: "#8A8A8E",
         fontSize: 12,
-        fontWeight: 700,
+        fontWeight: tokens.fontWeight.bold,
         letterSpacing: "0.5px",
         textTransform: "uppercase",
         margin: first ? "4px 4px 10px" : "22px 4px 10px",
@@ -176,7 +177,7 @@ function AdminSectionTile({
         {icon}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 15, fontWeight: 600, color: "#000" }}>{label}</div>
+        <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: "#000" }}>{label}</div>
         {subtitle && (
           <div style={{ fontSize: 12, color: "#8A8A8E", marginTop: 1 }}>{subtitle}</div>
         )}
@@ -283,19 +284,19 @@ function FlaggedMessagesSection() {
 
   return (
     <div style={{ padding: "0 16px 32px" }}>
-      <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A", margin: "8px 0 12px" }}>
+      <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: tokens.navy, margin: "8px 0 12px" }}>
         Flagged messages
       </div>
 
       {loading ? (
-        <div style={{ fontSize: 13, color: "#8A93A3" }}>Loading…</div>
+        <div style={{ fontSize: tokens.fontSize.base, color: "#8A93A3" }}>Loading…</div>
       ) : rows.length === 0 ? (
         <div style={{
           background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 8,
           padding: 24, textAlign: "center",
         }}>
           <IconShieldCheck stroke={1.5} size={32} color="#16A34A" style={{ margin: "0 auto 8px" }} />
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
+          <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
             No flagged messages — all clear
           </div>
         </div>
@@ -318,9 +319,9 @@ function FlaggedMessagesSection() {
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A" }}>{roomName}</div>
+                  <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>{roomName}</div>
                   <div style={{
-                    fontSize: 11, fontWeight: 700, color: "#CC2229",
+                    fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, color: tokens.red,
                     background: "#FEF2F2", borderRadius: 999, padding: "2px 8px", flexShrink: 0,
                   }}>
                     {reports} report{reports === 1 ? "" : "s"}
@@ -330,7 +331,7 @@ function FlaggedMessagesSection() {
                   {who} · {when}
                 </div>
                 <div style={{
-                  marginTop: 8, fontSize: 13, color: "#0B1F3A", lineHeight: 1.45,
+                  marginTop: 8, fontSize: tokens.fontSize.base, color: tokens.navy, lineHeight: 1.45,
                   background: "#F7FAFC", borderRadius: 8, padding: "10px 12px",
                   whiteSpace: "pre-wrap", wordBreak: "break-word",
                 }}>
@@ -352,7 +353,7 @@ function FlaggedMessagesSection() {
                         onClick={() => banUser(m)}
                         style={{
                           flex: 1, height: 36, borderRadius: 8, border: "none",
-                          background: "#B91C1C", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer",
+                          background: "#B91C1C", color: "#fff", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, cursor: "pointer",
                         }}
                       >
                         Confirm ban
@@ -362,7 +363,7 @@ function FlaggedMessagesSection() {
                         onClick={() => setConfirmBanId(null)}
                         style={{
                           flex: 1, height: 36, borderRadius: 8, background: "#fff",
-                          border: "1px solid #D1D5DB", color: "#374151", fontSize: 13, fontWeight: 600, cursor: "pointer",
+                          border: "1px solid #D1D5DB", color: "#374151", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                         }}
                       >
                         Cancel
@@ -377,7 +378,7 @@ function FlaggedMessagesSection() {
                       onClick={() => removeMessage(m)}
                       style={{
                         flex: 1, minWidth: 110, height: 36, borderRadius: 8, background: "#fff",
-                        border: "1px solid #CC2229", color: "#CC2229", fontSize: 12.5, fontWeight: 600, cursor: "pointer",
+                        border: "1px solid #CC2229", color: tokens.red, fontSize: 12.5, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                       }}
                     >
                       Remove message
@@ -388,7 +389,7 @@ function FlaggedMessagesSection() {
                       onClick={() => dismiss(m)}
                       style={{
                         flex: 1, minWidth: 84, height: 36, borderRadius: 8, background: "#fff",
-                        border: "1px solid #D1D5DB", color: "#6B7280", fontSize: 12.5, fontWeight: 600, cursor: "pointer",
+                        border: "1px solid #D1D5DB", color: "#6B7280", fontSize: 12.5, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                       }}
                     >
                       Dismiss
@@ -399,7 +400,7 @@ function FlaggedMessagesSection() {
                       onClick={() => setConfirmBanId(m.id)}
                       style={{
                         flex: 1, minWidth: 84, height: 36, borderRadius: 8, border: "none",
-                        background: "#B91C1C", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer",
+                        background: "#B91C1C", color: "#fff", fontSize: 12.5, fontWeight: tokens.fontWeight.bold, cursor: "pointer",
                       }}
                     >
                       Ban user
@@ -575,7 +576,7 @@ function ChatRoomsSection() {
 
   return (
     <div id="chat-rooms" style={{ padding: "24px 16px" }}>
-      <div style={{ fontSize: 18, fontWeight: 600, color: "#0B1F3A", marginBottom: 16 }}>
+      <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, marginBottom: 16 }}>
         Chat rooms
       </div>
       <form onSubmit={handleCreate} style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
@@ -624,7 +625,7 @@ function ChatRoomsSection() {
             textAlign: "left",
           }}
         >
-          <span style={{ fontSize: 13, color: "#0B1F3A", fontWeight: 600 }}>
+          <span style={{ fontSize: tokens.fontSize.base, color: tokens.navy, fontWeight: 600 }}>
             Invite only <span style={{ color: "#6B7280", fontWeight: 400 }}>— hidden from room browser</span>
           </span>
           <span
@@ -659,17 +660,17 @@ function ChatRoomsSection() {
           style={{
             height: 44,
             borderRadius: 8,
-            background: "#1877D6",
+            background: tokens.blue,
             color: "#fff",
             border: "none",
-            fontWeight: 600,
+            fontWeight: tokens.fontWeight.semibold,
             cursor: "pointer",
             opacity: loading || !areaName.trim() || !outcode.trim() ? 0.6 : 1,
           }}
         >
           {loading ? "Creating…" : "Create room"}
         </button>
-        {error && <div style={{ color: "#CC2229", fontSize: 13 }}>{error}</div>}
+        {error && <div style={{ color: tokens.red, fontSize: 13 }}>{error}</div>}
       </form>
 
       <div
@@ -681,7 +682,7 @@ function ChatRoomsSection() {
           marginBottom: 12,
         }}
       >
-        <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
           {showDeleted ? "Deleted rooms" : "Existing rooms"}
         </div>
         <button
@@ -695,7 +696,7 @@ function ChatRoomsSection() {
             background: showDeleted ? "#EAF2FC" : "#fff",
             color: showDeleted ? "#1877D6" : "#6B7280",
             fontSize: 12,
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
             cursor: "pointer",
           }}
         >
@@ -736,11 +737,11 @@ function ChatRoomsSection() {
                   ) : null}
                   <div style={{ minWidth: 0 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <div style={{ fontWeight: 600, color: "#0B1F3A", fontSize: 14 }}>{room.area_name}</div>
+                      <div style={{ fontWeight: tokens.fontWeight.semibold, color: tokens.navy, fontSize: 14 }}>{room.area_name}</div>
                       <span
                         style={{
-                          fontSize: 10,
-                          fontWeight: 700,
+                          fontSize: tokens.fontSize.xs,
+                          fontWeight: tokens.fontWeight.bold,
                           borderRadius: 999,
                           padding: "2px 8px",
                           background: room.is_opt_in ? "#F1F3F7" : "#EAF2FC",
@@ -754,7 +755,7 @@ function ChatRoomsSection() {
                     {room.description ? (
                       <div
                         style={{
-                          color: "#6B7686",
+                          color: tokens.textSecondary,
                           fontSize: 12,
                           marginTop: 2,
                           overflow: "hidden",
@@ -780,9 +781,9 @@ function ChatRoomsSection() {
                         borderRadius: 8,
                         border: "1px solid #EEF2F7",
                         background: "#fff",
-                        color: "#1877D6",
+                        color: tokens.blue,
                         fontSize: 12,
-                        fontWeight: 700,
+                        fontWeight: tokens.fontWeight.bold,
                         cursor: "pointer",
                         opacity: deletingId === room.id ? 0.6 : 1,
                       }}
@@ -824,7 +825,7 @@ function ChatRoomsSection() {
                       borderRadius: 8,
                       border: "1px solid #F3D5D7",
                       background: "#fff",
-                      color: "#CC2229",
+                      color: tokens.red,
                       cursor: "pointer",
                       opacity: deletingId === room.id ? 0.6 : 1,
                     }}
@@ -841,9 +842,9 @@ function ChatRoomsSection() {
                       borderRadius: 8,
                       border: "1px solid #EEF2F7",
                       background: "#fff",
-                      color: "#1877D6",
+                      color: tokens.blue,
                       fontSize: 12,
-                      fontWeight: 700,
+                      fontWeight: tokens.fontWeight.bold,
                       cursor: "pointer",
                       opacity: savingId === room.id ? 0.6 : 1,
                     }}
@@ -876,7 +877,7 @@ function ChatRoomsSection() {
                       borderRadius: 8,
                       border: "1px solid #E4E8EF",
                       padding: "0 12px",
-                      fontSize: 14,
+                      fontSize: tokens.fontSize.md,
                       background: "#fff",
                     }}
                   />
@@ -889,7 +890,7 @@ function ChatRoomsSection() {
                       borderRadius: 8,
                       border: "1px solid #E4E8EF",
                       padding: 10,
-                      fontSize: 14,
+                      fontSize: tokens.fontSize.md,
                       background: "#fff",
                       resize: "vertical",
                       fontFamily: "Poppins, sans-serif",
@@ -912,9 +913,9 @@ function ChatRoomsSection() {
                         borderRadius: 8,
                         border: "1px solid #E4E8EF",
                         background: "#fff",
-                        color: "#1877D6",
+                        color: tokens.blue,
                         fontSize: 12,
-                        fontWeight: 700,
+                        fontWeight: tokens.fontWeight.bold,
                         cursor: uploading ? "default" : "pointer",
                         opacity: uploading ? 0.6 : 1,
                       }}
@@ -950,7 +951,7 @@ function ChatRoomsSection() {
                       textAlign: "left",
                     }}
                   >
-                    <span style={{ fontSize: 13, color: "#0B1F3A", fontWeight: 600 }}>Private room</span>
+                    <span style={{ fontSize: tokens.fontSize.base, color: tokens.navy, fontWeight: 600 }}>Private room</span>
                     <span
                       style={{
                         width: 42,
@@ -985,10 +986,10 @@ function ChatRoomsSection() {
                         flex: 1,
                         height: 40,
                         borderRadius: 8,
-                        background: "#1877D6",
+                        background: tokens.blue,
                         color: "#fff",
                         border: "none",
-                        fontWeight: 600,
+                        fontWeight: tokens.fontWeight.semibold,
                         cursor: "pointer",
                         opacity: editSaving || uploading || !editName.trim() ? 0.6 : 1,
                       }}
@@ -1003,9 +1004,9 @@ function ChatRoomsSection() {
                         height: 40,
                         borderRadius: 8,
                         background: "#fff",
-                        color: "#0B1F3A",
+                        color: tokens.navy,
                         border: "1px solid #E4E8EF",
-                        fontWeight: 600,
+                        fontWeight: tokens.fontWeight.semibold,
                         cursor: "pointer",
                       }}
                     >
@@ -1068,7 +1069,7 @@ function AdminHub() {
   if (status === "denied") {
     return (
       <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
-        <div style={{ fontSize: 18, fontWeight: 600, color: "#1877D6" }}>Access denied</div>
+        <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: tokens.blue }}>Access denied</div>
         <div style={{ color: "#6B7280", marginTop: 8 }}>
           Your account doesn't have admin access.
         </div>
@@ -1080,10 +1081,10 @@ function AdminHub() {
               flex: 1,
               height: 44,
               borderRadius: 8,
-              background: "#0B1F3A",
+              background: tokens.navy,
               color: "#fff",
               border: "none",
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
               cursor: "pointer",
             }}
           >
@@ -1100,9 +1101,9 @@ function AdminHub() {
               height: 44,
               borderRadius: 8,
               background: "#fff",
-              color: "#1877D6",
+              color: tokens.blue,
               border: "1px solid #1877D6",
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
               cursor: "pointer",
             }}
           >
@@ -1284,27 +1285,27 @@ const PARTNER_TIERS: { id: string; label: string }[] = [
 ];
 
 const PARTNER_TIER_STYLE: Record<string, { bg: string; color: string }> = {
-  free: { bg: "#F1F5F9", color: "#6B7686" },
-  website: { bg: "#EFF6FF", color: "#1877D6" },
+  free: { bg: "#F1F5F9", color: tokens.textSecondary },
+  website: { bg: "#EFF6FF", color: tokens.blue },
   pro: { bg: "#EDE9FE", color: "#7C3AED" },
   managed: { bg: "#FEF3C7", color: "#B45309" },
 };
 
 const removeImageBtnStyle: React.CSSProperties = {
   background: "#FEF2F2",
-  color: "#CC2229",
+  color: tokens.red,
   border: "none",
   borderRadius: 8,
   padding: "6px 12px",
-  fontSize: 11,
-  fontWeight: 700,
+  fontSize: tokens.fontSize.sm,
+  fontWeight: tokens.fontWeight.bold,
   cursor: "pointer",
   fontFamily: "Poppins, sans-serif",
 };
 
 const uploadHintStyle: React.CSSProperties = {
-  fontSize: 11,
-  color: "#6B7686",
+  fontSize: tokens.fontSize.sm,
+  color: tokens.textSecondary,
   marginTop: -6,
   marginBottom: 12,
   fontFamily: "Poppins, sans-serif",
@@ -1315,7 +1316,7 @@ const partnerInputStyle: React.CSSProperties = {
   border: "1px solid #E4E8EF",
   borderRadius: 8,
   padding: "10px 12px",
-  fontSize: 14,
+  fontSize: tokens.fontSize.md,
   fontFamily: "Poppins, sans-serif",
   width: "100%",
   outline: "none",
@@ -1324,9 +1325,9 @@ const partnerInputStyle: React.CSSProperties = {
 };
 
 const partnerLabelStyle: React.CSSProperties = {
-  fontSize: 11,
-  fontWeight: 600,
-  color: "#9CA3AF",
+  fontSize: tokens.fontSize.sm,
+  fontWeight: tokens.fontWeight.semibold,
+  color: tokens.textMuted,
   textTransform: "uppercase",
   marginBottom: 6,
 };
@@ -1401,12 +1402,12 @@ export function BenefitPartnersSection() {
 
   const perkFieldStyle = (field: string): React.CSSProperties =>
     perkErrors[field]
-      ? { ...partnerInputStyle, borderColor: "#CC2229", marginBottom: 4 }
+      ? { ...partnerInputStyle, borderColor: tokens.red, marginBottom: 4 }
       : partnerInputStyle;
 
   const PerkError = ({ field }: { field: string }) =>
     perkErrors[field] ? (
-      <div style={{ fontSize: 11, fontWeight: 600, color: "#CC2229", marginBottom: 12 }}>
+      <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: tokens.red, marginBottom: 12 }}>
         {perkErrors[field]}
       </div>
     ) : null;
@@ -1613,7 +1614,7 @@ export function BenefitPartnersSection() {
           marginBottom: 8,
         }}
       >
-        <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase" }}>
+        <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, textTransform: "uppercase" }}>
           Benefits &amp; Perks
         </span>
         <button
@@ -1626,7 +1627,7 @@ export function BenefitPartnersSection() {
               description: "",
               icon: "IconGift",
               icon_bg: "#EEF2F7",
-              icon_color: "#0B1F3A",
+              icon_color: tokens.navy,
               logo_url: null,
               hero_image_url: null,
               category: "Health",
@@ -1643,12 +1644,12 @@ export function BenefitPartnersSection() {
             setPartnerSheetOpen(true);
           }}
           style={{
-            background: "#1877D6",
+            background: tokens.blue,
             color: "#fff",
             borderRadius: 8,
             padding: "6px 14px",
             fontSize: 12,
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
             border: "none",
             cursor: "pointer",
             fontFamily: "Poppins, sans-serif",
@@ -1668,7 +1669,7 @@ export function BenefitPartnersSection() {
           padding: 12,
         }}
       >
-        <div style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A", marginBottom: 10 }}>
+        <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: tokens.navy, marginBottom: 10 }}>
           Find a perk
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -1695,9 +1696,9 @@ export function BenefitPartnersSection() {
                 border: "none",
                 background: "transparent",
                 outline: "none",
-                fontSize: 14,
+                fontSize: tokens.fontSize.md,
                 fontFamily: "Poppins, sans-serif",
-                color: "#0B1F3A",
+                color: tokens.navy,
               }}
             />
             {perkSearch && (
@@ -1705,8 +1706,8 @@ export function BenefitPartnersSection() {
                 type="button"
                 onClick={() => setPerkSearch("")}
                 style={{
-                  fontSize: 11,
-                  color: "#6B7686",
+                  fontSize: tokens.fontSize.sm,
+                  color: tokens.textSecondary,
                   background: "none",
                   border: "none",
                   cursor: "pointer",
@@ -1726,9 +1727,9 @@ export function BenefitPartnersSection() {
               border: "1px solid #E4E8EF",
               background: "#F8FAFC",
               padding: "0 10px",
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               fontFamily: "Poppins, sans-serif",
-              color: "#0B1F3A",
+              color: tokens.navy,
               outline: "none",
             }}
           >
@@ -1742,13 +1743,13 @@ export function BenefitPartnersSection() {
         </div>
 
         {filteredPerks.length > 0 && (
-          <div style={{ marginTop: 12, fontSize: 12, color: "#6B7686" }}>
+          <div style={{ marginTop: 12, fontSize: 12, color: tokens.textSecondary }}>
             {filteredPerks.length} perk{filteredPerks.length === 1 ? "" : "s"} found
           </div>
         )}
 
         {perkSearch && filteredPerks.length === 0 && (
-          <div style={{ marginTop: 12, fontSize: 12, color: "#9CA3AF" }}>
+          <div style={{ marginTop: 12, fontSize: 12, color: tokens.textMuted }}>
             No perks match your search.
           </div>
         )}
@@ -1769,10 +1770,10 @@ export function BenefitPartnersSection() {
                 }}
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
+                  <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
                     {perk.name}
                   </div>
-                  <div style={{ fontSize: 11, color: "#6B7686", marginTop: 2 }}>
+                  <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, marginTop: 2 }}>
                     {partnerName(perk.partner_id)}
                     {perk.category ? ` · ${perk.category}` : ""}
                   </div>
@@ -1782,8 +1783,8 @@ export function BenefitPartnersSection() {
                     style={{
                       background: "#FEF3C7",
                       color: "#B45309",
-                      fontSize: 11,
-                      fontWeight: 700,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.bold,
                       borderRadius: 999,
                       padding: "4px 10px",
                       flexShrink: 0,
@@ -1830,7 +1831,7 @@ export function BenefitPartnersSection() {
         }}
       >
         {partners.length === 0 && (
-          <div style={{ padding: 16, fontSize: 13, color: "#6B7686" }}>No partners yet.</div>
+          <div style={{ padding: 16, fontSize: tokens.fontSize.base, color: tokens.textSecondary }}>No partners yet.</div>
         )}
         {partners.map((partner, i) => {
           const tierStyle = PARTNER_TIER_STYLE[partner.min_tier] ?? PARTNER_TIER_STYLE.free;
@@ -1858,8 +1859,8 @@ export function BenefitPartnersSection() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 16,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.lg,
+                  fontWeight: tokens.fontWeight.bold,
                   flexShrink: 0,
                 }}
               >
@@ -1875,9 +1876,9 @@ export function BenefitPartnersSection() {
               </div>
 
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{partner.name}</div>
+                <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>{partner.name}</div>
                 {partner.tagline && (
-                  <div style={{ fontSize: 11, color: "#6B7686", marginTop: 2 }}>{partner.tagline}</div>
+                  <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, marginTop: 2 }}>{partner.tagline}</div>
                 )}
               </div>
 
@@ -1887,7 +1888,7 @@ export function BenefitPartnersSection() {
                     background: tierStyle.bg,
                     color: tierStyle.color,
                     fontSize: 9,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     borderRadius: 8,
                     padding: "2px 7px",
                   }}
@@ -1912,8 +1913,8 @@ export function BenefitPartnersSection() {
                   style={{
                     background: partner.active ? "#DCFCE7" : "#F1F5F9",
                     color: partner.active ? "#15803D" : "#9CA3AF",
-                    fontSize: 11,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.bold,
                     borderRadius: 999,
                     padding: "4px 10px",
                     cursor: "pointer",
@@ -1957,12 +1958,12 @@ export function BenefitPartnersSection() {
                   }
                 }}
                 style={{
-                  background: "#EEF2F7",
-                  color: "#6B7686",
+                  background: tokens.canvas,
+                  color: tokens.textSecondary,
                   borderRadius: 8,
                   padding: "4px 12px",
-                  fontSize: 11,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.semibold,
                   border: "none",
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
@@ -1981,7 +1982,7 @@ export function BenefitPartnersSection() {
                 }}
               >
                 {(partnerPerks[partner.id] ?? []).length === 0 && (
-                  <div style={{ fontSize: 12, color: "#9CA3AF" }}>No perks yet.</div>
+                  <div style={{ fontSize: 12, color: tokens.textMuted }}>No perks yet.</div>
                 )}
                 {(partnerPerks[partner.id] ?? []).map((perk: any) => (
                   <div
@@ -1994,7 +1995,7 @@ export function BenefitPartnersSection() {
                       borderBottom: "1px solid #F0F4F8",
                     }}
                   >
-                    <span style={{ fontSize: 13, fontWeight: 500, color: "#0B1F3A", flex: 1, minWidth: 0 }}>
+                    <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: tokens.navy, flex: 1, minWidth: 0 }}>
                       {perk.name}
                     </span>
                     {perk.coming_soon && (
@@ -2002,8 +2003,8 @@ export function BenefitPartnersSection() {
                         style={{
                           background: "#FEF3C7",
                           color: "#B45309",
-                          fontSize: 11,
-                          fontWeight: 700,
+                          fontSize: tokens.fontSize.sm,
+                          fontWeight: tokens.fontWeight.bold,
                           borderRadius: 999,
                           padding: "4px 10px",
                         }}
@@ -2063,11 +2064,11 @@ export function BenefitPartnersSection() {
                   }}
                   style={{
                     background: "#EFF6FF",
-                    color: "#1877D6",
+                    color: tokens.blue,
                     borderRadius: 8,
                     padding: "5px 12px",
-                    fontSize: 11,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.bold,
                     border: "none",
                     cursor: "pointer",
                     marginTop: 8,
@@ -2103,7 +2104,7 @@ export function BenefitPartnersSection() {
             onClick={(e) => e.stopPropagation()}
             style={{
               position: "relative",
-              background: "#EEF2F7",
+              background: tokens.canvas,
               borderRadius: "8px 8px 0 0",
               padding: "0 0 40px",
               maxHeight: "90vh",
@@ -2127,7 +2128,7 @@ export function BenefitPartnersSection() {
                   width: 30,
                   height: 30,
                   borderRadius: "50%",
-                  background: "#EEF2F7",
+                  background: tokens.canvas,
                   border: "1px solid #E4E8EF",
                   cursor: "pointer",
                   display: "flex",
@@ -2147,7 +2148,7 @@ export function BenefitPartnersSection() {
                 padding: 16,
               }}
             >
-              <span style={{ fontSize: 18, fontWeight: 800, color: "#0B1F3A" }}>
+              <span style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy }}>
                 {editingPartner.id === "new" ? "Add partner" : "Edit partner"}
               </span>
               <button
@@ -2162,7 +2163,7 @@ export function BenefitPartnersSection() {
                   border: "none",
                   cursor: "pointer",
                   fontSize: 20,
-                  color: "#6B7686",
+                  color: tokens.textSecondary,
                 }}
               >
                 ×
@@ -2296,7 +2297,7 @@ export function BenefitPartnersSection() {
                         borderRadius: 8,
                         padding: "8px 0",
                         fontSize: 12,
-                        fontWeight: 700,
+                        fontWeight: tokens.fontWeight.bold,
                         cursor: "pointer",
                         fontFamily: "Poppins, sans-serif",
                       }}
@@ -2362,8 +2363,8 @@ export function BenefitPartnersSection() {
                       width: 36,
                       height: 36,
                       cursor: "pointer",
-                      color: "#CC2229",
-                      fontSize: 16,
+                      color: tokens.red,
+                      fontSize: tokens.fontSize.lg,
                       flexShrink: 0,
                     }}
                   >
@@ -2380,8 +2381,8 @@ export function BenefitPartnersSection() {
                   borderRadius: 8,
                   padding: "8px 14px",
                   fontSize: 12,
-                  fontWeight: 700,
-                  color: "#1877D6",
+                  fontWeight: tokens.fontWeight.bold,
+                  color: tokens.blue,
                   cursor: "pointer",
                   marginBottom: 16,
                   fontFamily: "Poppins, sans-serif",
@@ -2392,21 +2393,21 @@ export function BenefitPartnersSection() {
 
               <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A" }}>Coming soon</span>
+                  <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>Coming soon</span>
                   <DSMToggle
                     checked={editingPartner.coming_soon}
                     onChange={(v) => patch({ coming_soon: v })}
                   />
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A" }}>Exclusive</span>
+                  <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>Exclusive</span>
                   <DSMToggle
                     checked={editingPartner.exclusive}
                     onChange={(v) => patch({ exclusive: v })}
                   />
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A" }}>Active</span>
+                  <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>Active</span>
                   <DSMToggle checked={editingPartner.active} onChange={(v) => patch({ active: v })} />
                 </div>
               </div>
@@ -2428,12 +2429,12 @@ export function BenefitPartnersSection() {
               style={{
                 margin: "16px 16px 0",
                 width: "calc(100% - 32px)",
-                background: "#1877D6",
+                background: tokens.blue,
                 color: "#fff",
                 borderRadius: 8,
                 padding: 14,
                 fontSize: 15,
-                fontWeight: 800,
+                fontWeight: tokens.fontWeight.extrabold,
                 border: "none",
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
@@ -2467,7 +2468,7 @@ export function BenefitPartnersSection() {
             onClick={(e) => e.stopPropagation()}
             style={{
               position: "relative",
-              background: "#EEF2F7",
+              background: tokens.canvas,
               borderRadius: "8px 8px 0 0",
               padding: "0 0 40px",
               maxHeight: "90vh",
@@ -2492,7 +2493,7 @@ export function BenefitPartnersSection() {
                   width: 30,
                   height: 30,
                   borderRadius: "50%",
-                  background: "#EEF2F7",
+                  background: tokens.canvas,
                   border: "1px solid #E4E8EF",
                   cursor: "pointer",
                   display: "flex",
@@ -2505,7 +2506,7 @@ export function BenefitPartnersSection() {
             </div>
 
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: 16 }}>
-              <span style={{ fontSize: 18, fontWeight: 800, color: "#0B1F3A" }}>
+              <span style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy }}>
                 {editingPerk.id === "new" ? "Add perk" : "Edit perk"}
               </span>
               <button
@@ -2516,7 +2517,7 @@ export function BenefitPartnersSection() {
                   setEditingPerk(null);
                   setPerkErrors({});
                 }}
-                style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, color: "#6B7686" }}
+                style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, color: tokens.textSecondary }}
               >
                 ×
               </button>
@@ -2569,7 +2570,7 @@ export function BenefitPartnersSection() {
                         borderRadius: 8,
                         padding: "8px 0",
                         fontSize: 12,
-                        fontWeight: 700,
+                        fontWeight: tokens.fontWeight.bold,
                         cursor: "pointer",
                         fontFamily: "Poppins, sans-serif",
                       }}
@@ -2644,8 +2645,8 @@ export function BenefitPartnersSection() {
                       width: 36,
                       height: 36,
                       cursor: "pointer",
-                      color: "#CC2229",
-                      fontSize: 16,
+                      color: tokens.red,
+                      fontSize: tokens.fontSize.lg,
                       flexShrink: 0,
                     }}
                   >
@@ -2662,8 +2663,8 @@ export function BenefitPartnersSection() {
                   borderRadius: 8,
                   padding: "8px 14px",
                   fontSize: 12,
-                  fontWeight: 700,
-                  color: "#1877D6",
+                  fontWeight: tokens.fontWeight.bold,
+                  color: tokens.blue,
                   cursor: "pointer",
                   marginBottom: 16,
                   fontFamily: "Poppins, sans-serif",
@@ -2709,8 +2710,8 @@ export function BenefitPartnersSection() {
                       width: 36,
                       height: 36,
                       cursor: "pointer",
-                      color: "#CC2229",
-                      fontSize: 16,
+                      color: tokens.red,
+                      fontSize: tokens.fontSize.lg,
                       flexShrink: 0,
                     }}
                   >
@@ -2727,8 +2728,8 @@ export function BenefitPartnersSection() {
                   borderRadius: 8,
                   padding: "8px 14px",
                   fontSize: 12,
-                  fontWeight: 700,
-                  color: "#1877D6",
+                  fontWeight: tokens.fontWeight.bold,
+                  color: tokens.blue,
                   cursor: "pointer",
                   marginBottom: 16,
                   fontFamily: "Poppins, sans-serif",
@@ -2800,8 +2801,8 @@ export function BenefitPartnersSection() {
                   }}
                 >
                   <IconPhoto size={24} color="#9CA3AF" />
-                  <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>Add hero image</span>
-                  <span style={{ fontSize: 11, color: "#9CA3AF" }}>Shown at top of perk detail page</span>
+                  <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>Add hero image</span>
+                  <span style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted }}>Shown at top of perk detail page</span>
                 </div>
               )}
               {uploadingPerkHero && <div style={uploadHintStyle}>Uploading hero image...</div>}
@@ -2858,7 +2859,7 @@ export function BenefitPartnersSection() {
                           background: "rgba(11,31,58,0.8)",
                           color: "#fff",
                           borderRadius: 8,
-                          fontSize: 10,
+                          fontSize: tokens.fontSize.xs,
                           padding: "1px 5px",
                           fontFamily: "Poppins, sans-serif",
                         }}
@@ -2908,7 +2909,7 @@ export function BenefitPartnersSection() {
                           background: i === 0 ? "#F1F5F9" : "#fff",
                           color: i === 0 ? "#CBD5E1" : "#0B1F3A",
                           cursor: i === 0 ? "default" : "pointer",
-                          fontSize: 11,
+                          fontSize: tokens.fontSize.sm,
                           lineHeight: "18px",
                           padding: 0,
                         }}
@@ -2931,7 +2932,7 @@ export function BenefitPartnersSection() {
                           background: i === arr.length - 1 ? "#F1F5F9" : "#fff",
                           color: i === arr.length - 1 ? "#CBD5E1" : "#0B1F3A",
                           cursor: i === arr.length - 1 ? "default" : "pointer",
-                          fontSize: 11,
+                          fontSize: tokens.fontSize.sm,
                           lineHeight: "18px",
                           padding: 0,
                         }}
@@ -2967,7 +2968,7 @@ export function BenefitPartnersSection() {
               </div>
 
 
-              <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", marginBottom: 8 }}>
+              <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, textTransform: "uppercase", marginBottom: 8 }}>
                 VIDEO
               </div>
 
@@ -2989,8 +2990,8 @@ export function BenefitPartnersSection() {
                     borderRadius: 8,
                     border: "none",
                     padding: "6px 12px",
-                    fontSize: 13,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
                     fontFamily: "Poppins, sans-serif",
                     cursor: "pointer",
                     background: perkVideoMode === "upload" ? "#fff" : "transparent",
@@ -3008,8 +3009,8 @@ export function BenefitPartnersSection() {
                     borderRadius: 8,
                     border: "none",
                     padding: "6px 12px",
-                    fontSize: 13,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
                     fontFamily: "Poppins, sans-serif",
                     cursor: "pointer",
                     background: perkVideoMode === "embed" ? "#fff" : "transparent",
@@ -3023,7 +3024,7 @@ export function BenefitPartnersSection() {
 
               {perkVideoMode === "embed" ? (
                 <>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", marginBottom: 6 }}>Embed URL</div>
+                  <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, marginBottom: 6 }}>Embed URL</div>
                   <textarea
                     rows={3}
                     value={editingPerk.video_embed_url ?? ""}
@@ -3034,7 +3035,7 @@ export function BenefitPartnersSection() {
                       border: "1px solid #E4E8EF",
                       borderRadius: 8,
                       padding: "10px 12px",
-                      fontSize: 13,
+                      fontSize: tokens.fontSize.base,
                       fontFamily: "Poppins, sans-serif",
                       resize: "vertical",
                     }}
@@ -3103,11 +3104,11 @@ export function BenefitPartnersSection() {
                         }}
                       >
                         <IconVideo size={14} color="#1877D6" />
-                        <span style={{ fontSize: 13, color: "#1877D6" }}>Change video</span>
+                        <span style={{ fontSize: tokens.fontSize.base, color: tokens.blue }}>Change video</span>
                       </div>
                       <div
                         onClick={() => patchPerk({ video_url: null })}
-                        style={{ fontSize: 12, color: "#CC2229", cursor: "pointer", marginTop: 4 }}
+                        style={{ fontSize: 12, color: tokens.red, cursor: "pointer", marginTop: 4 }}
                       >
                         Remove
                       </div>
@@ -3125,8 +3126,8 @@ export function BenefitPartnersSection() {
                       }}
                     >
                       <IconVideo size={28} color="#9CA3AF" stroke={1.5} />
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", marginTop: 8 }}>Upload video</div>
-                      <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 4 }}>MP4, WebM or MOV · max 500MB</div>
+                      <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, marginTop: 8 }}>Upload video</div>
+                      <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, marginTop: 4 }}>MP4, WebM or MOV · max 500MB</div>
                     </div>
                   )}
                 </>
@@ -3135,14 +3136,14 @@ export function BenefitPartnersSection() {
 
               <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A" }}>Coming soon</span>
+                  <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>Coming soon</span>
                   <DSMToggle
                     checked={!!editingPerk.coming_soon}
                     onChange={(v) => patchPerk({ coming_soon: v })}
                   />
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A" }}>Active</span>
+                  <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>Active</span>
                   <DSMToggle checked={!!editingPerk.active} onChange={(v) => patchPerk({ active: v })} />
                 </div>
               </div>
@@ -3164,12 +3165,12 @@ export function BenefitPartnersSection() {
               style={{
                 margin: "16px 16px 0",
                 width: "calc(100% - 32px)",
-                background: "#1877D6",
+                background: tokens.blue,
                 color: "#fff",
                 borderRadius: 8,
                 padding: 14,
                 fontSize: 15,
-                fontWeight: 800,
+                fontWeight: tokens.fontWeight.extrabold,
                 border: "none",
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",

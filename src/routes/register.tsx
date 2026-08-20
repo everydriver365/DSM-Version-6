@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useState, type FormEvent } from "react";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { Button } from "../components/dsm/Button";
@@ -277,7 +278,7 @@ function RegisterPage() {
             style={{
               textAlign: 'center',
               marginTop: 16,
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               color: '#6B7686',
               fontFamily: 'Poppins, sans-serif',
             }}
@@ -285,7 +286,7 @@ function RegisterPage() {
             Already have an account?{' '}
             <a href="/login" style={{
               color: '#1877D6',
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
               textDecoration: 'none',
             }}>
               Log in
@@ -314,8 +315,8 @@ function RegisterPage() {
                 <Link
                   to="/login"
                   style={{
-                    color: "#1877D6",
-                    fontWeight: 600,
+                    color: tokens.blue,
+                    fontWeight: tokens.fontWeight.semibold,
                     textDecoration: "none",
                   }}
                 >

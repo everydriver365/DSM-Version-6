@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -246,7 +247,7 @@ END:VCALENDAR`;
         </button>
         <div
           style={{
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
             fontSize: 15,
             flex: 1,
             overflow: "hidden",
@@ -272,8 +273,8 @@ END:VCALENDAR`;
             gap: 6,
             background: "rgba(255,255,255,0.92)",
             color: bandColor,
-            fontSize: 10,
-            fontWeight: 800,
+            fontSize: tokens.fontSize.xs,
+            fontWeight: tokens.fontWeight.extrabold,
             padding: "4px 8px",
             borderRadius: 8,
             textTransform: "uppercase",
@@ -282,16 +283,16 @@ END:VCALENDAR`;
         >
           {(session.category ?? "").toLowerCase().includes("webinar") ? "🎓 Webinar" : "📹 Zoom Session"}
         </div>
-        <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 12, fontWeight: 700, textTransform: "uppercase", marginTop: 12 }}>
+        <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 12, fontWeight: tokens.fontWeight.bold, textTransform: "uppercase", marginTop: 12 }}>
           {session.category ?? "Session"}
         </div>
         <div style={{ fontWeight: 900, fontSize: 20, marginTop: 4 }}>{session.title}</div>
         {session.host_name && (
-          <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 14, marginTop: 2 }}>
+          <div style={{ color: "rgba(255,255,255,0.7)", fontSize: tokens.fontSize.md, marginTop: 2 }}>
             with {session.host_name}
           </div>
         )}
-        <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, marginTop: 8 }}>
+        <div style={{ color: "rgba(255,255,255,0.6)", fontSize: tokens.fontSize.base, marginTop: 8 }}>
           {formatSessionDate(session.session_date)} · {formatSessionTime(session.session_time)}
           {session.duration_minutes ? ` · ${session.duration_minutes} mins` : ""}
         </div>
@@ -308,8 +309,8 @@ END:VCALENDAR`;
               color: "#15803D",
             }}
           >
-            <div style={{ fontWeight: 700, fontSize: 16 }}>✓ You're booked!</div>
-            <div style={{ fontSize: 13, marginTop: 6 }}>
+            <div style={{ fontWeight: tokens.fontWeight.bold, fontSize: 16 }}>✓ You're booked!</div>
+            <div style={{ fontSize: tokens.fontSize.base, marginTop: 6 }}>
               Your Zoom link will be sent to your email 30 minutes before the session starts.
             </div>
             {session.zoom_link && session.zoom_link_revealed_after_booking === false && (
@@ -324,8 +325,8 @@ END:VCALENDAR`;
                   color: "#fff",
                   padding: "10px 14px",
                   borderRadius: 8,
-                  fontWeight: 600,
-                  fontSize: 13,
+                  fontWeight: tokens.fontWeight.semibold,
+                  fontSize: tokens.fontSize.base,
                   textDecoration: "none",
                 }}
               >
@@ -342,7 +343,7 @@ END:VCALENDAR`;
                   background: "#fff",
                   borderRadius: 8,
                   padding: "8px 12px",
-                  fontSize: 13,
+                  fontSize: tokens.fontSize.base,
                   cursor: "pointer",
                 }}
               >
@@ -354,8 +355,8 @@ END:VCALENDAR`;
                 style={{
                   background: "transparent",
                   border: 0,
-                  color: "#CC2229",
-                  fontSize: 13,
+                  color: tokens.red,
+                  fontSize: tokens.fontSize.base,
                   cursor: "pointer",
                 }}
               >
@@ -374,7 +375,7 @@ END:VCALENDAR`;
                   padding: 16,
                 }}
               >
-                <div style={{ fontSize: 14, color: "#374151", whiteSpace: "pre-wrap" }}>
+                <div style={{ fontSize: tokens.fontSize.md, color: "#374151", whiteSpace: "pre-wrap" }}>
                   {session.description}
                 </div>
                 {session.tags && session.tags.length > 0 && (
@@ -385,7 +386,7 @@ END:VCALENDAR`;
                         style={{
                           background: "#F1F5F9",
                           color: "#0F2044",
-                          fontSize: 11,
+                          fontSize: tokens.fontSize.sm,
                           padding: "4px 10px",
                           borderRadius: 999,
                         }}
@@ -405,7 +406,7 @@ END:VCALENDAR`;
                 borderRadius: 8,
                 padding: 16,
                 marginTop: 12,
-                fontSize: 13,
+                fontSize: tokens.fontSize.base,
                 color: "#374151",
                 display: "grid",
                 gap: 8,
@@ -428,7 +429,7 @@ END:VCALENDAR`;
                 marginTop: 12,
               }}
             >
-              <div style={{ fontWeight: 700, fontSize: 15, color: "#0F2044", marginBottom: 10 }}>
+              <div style={{ fontWeight: tokens.fontWeight.bold, fontSize: 15, color: "#0F2044", marginBottom: 10 }}>
                 Book your place
               </div>
               <label style={{ fontSize: 12, color: "#6B7280" }}>Name</label>
@@ -443,7 +444,7 @@ END:VCALENDAR`;
                   padding: "10px 12px",
                   marginTop: 4,
                   marginBottom: 10,
-                  fontSize: 14,
+                  fontSize: tokens.fontSize.md,
                 }}
               />
               <label style={{ fontSize: 12, color: "#6B7280" }}>Email</label>
@@ -458,7 +459,7 @@ END:VCALENDAR`;
                   borderRadius: 8,
                   padding: "10px 12px",
                   marginTop: 4,
-                  fontSize: 14,
+                  fontSize: tokens.fontSize.md,
                 }}
               />
               <button
@@ -473,7 +474,7 @@ END:VCALENDAR`;
                   color: "#fff",
                   border: 0,
                   borderRadius: 8,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   fontSize: 15,
                   cursor: submitting ? "wait" : "pointer",
                 }}

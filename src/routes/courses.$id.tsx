@@ -1,4 +1,5 @@
 import { useGoBack } from "@/hooks/useGoBack";
+import { tokens } from "@/lib/tokens";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
@@ -452,9 +453,9 @@ function CourseDetailPage() {
         <div style={{ marginTop: 24, marginBottom: 8, padding: "0 16px" }}>
           <span
             style={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: "#9CA3AF",
+              fontSize: tokens.fontSize.sm,
+              fontWeight: tokens.fontWeight.semibold,
+              color: tokens.textMuted,
               textTransform: "uppercase",
               letterSpacing: 0.6,
               fontFamily: "Poppins, sans-serif",
@@ -500,9 +501,9 @@ function CourseDetailPage() {
                   borderBottom: "none",
                   width: "100%",
                   fontFamily: "Poppins, sans-serif",
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: "#0B1F3A",
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.medium,
+                  color: tokens.navy,
                 }}
               >
                 <IconPhoto size={18} stroke={1.5} color="#6B7686" />
@@ -534,9 +535,9 @@ function CourseDetailPage() {
                   borderBottom: "none",
                   width: "100%",
                   fontFamily: "Poppins, sans-serif",
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: "#CC2229",
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.medium,
+                  color: tokens.red,
                 }}
               >
                 <IconTrash size={18} stroke={1.5} color="#CC2229" />
@@ -563,17 +564,17 @@ function CourseDetailPage() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
-                    fontSize: 14,
-                    fontWeight: 500,
-                    color: "#0B1F3A",
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.medium,
+                    color: tokens.navy,
                   }}
                 >
                   {uploadingHero ? "Uploading..." : "Add course image"}
                 </div>
                 <div
                   style={{
-                    fontSize: 11,
-                    color: "#9CA3AF",
+                    fontSize: tokens.fontSize.sm,
+                    color: tokens.textMuted,
                     marginTop: 2,
                   }}
                 >
@@ -636,9 +637,9 @@ function CourseDetailPage() {
             background: "rgba(255,255,255,0.95)",
             backdropFilter: "blur(4px)",
             WebkitBackdropFilter: "blur(4px)",
-            color: "#0B1F3A",
+            color: tokens.navy,
             fontSize: 12,
-            fontWeight: 800,
+            fontWeight: tokens.fontWeight.extrabold,
             padding: "8px 14px",
             borderRadius: 8,
             border: "none",
@@ -684,7 +685,7 @@ function CourseDetailPage() {
               setEditing(true);
             }
           }}
-          style={{ background: "none", border: "none", cursor: "pointer", color: "#1877D6", display: "flex", alignItems: "center", gap: 6, fontSize: 13.5, fontWeight: 700 }}
+          style={{ background: "none", border: "none", cursor: "pointer", color: tokens.blue, display: "flex", alignItems: "center", gap: 6, fontSize: 13.5, fontWeight: 700 }}
           aria-label={editing ? "Cancel edit" : "Edit"}
         >
           {editing ? <IconX stroke={1.8} size={13} /> : <IconPencil stroke={1.8} size={13} />}
@@ -704,7 +705,7 @@ function CourseDetailPage() {
         {loading ? (
           <PageLoader />
         ) : !course || !form ? (
-          <div style={{ color: "#1877D6", padding: 24, textAlign: "center" }}>
+          <div style={{ color: tokens.blue, padding: 24, textAlign: "center" }}>
             Course not found.
           </div>
         ) : (
@@ -724,7 +725,7 @@ function CourseDetailPage() {
                     background: t.bg,
                     color: "#fff",
                     fontSize: 11.5,
-                    fontWeight: 800,
+                    fontWeight: tokens.fontWeight.extrabold,
                     padding: "6px 14px",
                     borderRadius: 8,
                     textTransform: "uppercase",
@@ -804,8 +805,8 @@ function CourseDetailPage() {
                     onChange={(e) => setForm({ ...form, end_date: e.target.value || null })}
                   />
                   <div>
-                    <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 4 }}>
-                      Pickup postcode <span style={{ color: "#1877D6" }}>*</span>
+                    <div style={{ fontSize: 12, color: LABEL, fontWeight: tokens.fontWeight.medium, marginBottom: 4 }}>
+                      Pickup postcode <span style={{ color: tokens.blue }}>*</span>
                     </div>
                     <PostcodeAutocomplete
                       value={
@@ -828,7 +829,7 @@ function CourseDetailPage() {
 
 
                   <div>
-                    <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 4 }}>
+                    <div style={{ fontSize: 12, color: LABEL, fontWeight: tokens.fontWeight.medium, marginBottom: 4 }}>
                       Coverage radius
                     </div>
                     <select
@@ -842,8 +843,8 @@ function CourseDetailPage() {
                         padding: "0 10px",
                         background: "#fff",
                         fontFamily: "Poppins, sans-serif",
-                        fontSize: 14,
-                        color: "#0B1F3A",
+                        fontSize: tokens.fontSize.md,
+                        color: tokens.navy,
                       }}
                     >
                       {RADIUS_OPTIONS.map((m) => (
@@ -852,17 +853,17 @@ function CourseDetailPage() {
                     </select>
                   </div>
                   <div>
-                    <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 6 }}>
+                    <div style={{ fontSize: 12, color: LABEL, fontWeight: tokens.fontWeight.medium, marginBottom: 6 }}>
                       Lesson time
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                       {([
-                        { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: IconClock, color: "#1877D6", full: false },
-                        { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: IconSunrise, color: "#1877D6", full: false },
+                        { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: IconClock, color: tokens.blue, full: false },
+                        { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: IconSunrise, color: tokens.blue, full: false },
                         { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: IconSun, color: "#E8641A", full: false },
-                        { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: IconMoon, color: "#1877D6", full: false },
-                        { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: IconSun, color: "#1877D6", full: false },
-                        { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: IconSchool, color: "#1877D6", full: false },
+                        { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: IconMoon, color: tokens.blue, full: false },
+                        { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: IconSun, color: tokens.blue, full: false },
+                        { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: IconSchool, color: tokens.blue, full: false },
                         { key: "custom", label: "Custom", desc: "Set your own times", Icon: IconSettings, color: "#6B7280", full: true },
                       ] as Array<{ key: string; label: string; desc: string; Icon: typeof IconClock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
                         const active = (form.lesson_time_preference || "flexible") === key;
@@ -898,8 +899,8 @@ function CourseDetailPage() {
                               <Icon size={18} />
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-                              <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{label}</span>
-                              <span style={{ fontSize: 11, color: "#6B7280" }}>{desc}</span>
+                              <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>{label}</span>
+                              <span style={{ fontSize: tokens.fontSize.sm, color: "#6B7280" }}>{desc}</span>
                             </div>
                           </button>
                         );
@@ -908,7 +909,7 @@ function CourseDetailPage() {
                     {form.lesson_time_preference === "custom" && (
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
                         <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                          <span style={{ fontSize: 12, fontWeight: 500, color: LABEL, fontFamily: "Poppins, sans-serif" }}>From</span>
+                          <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.medium, color: LABEL, fontFamily: "Poppins, sans-serif" }}>From</span>
                           <input
                             type="time"
                             value={form.lesson_time_from ?? "09:00"}
@@ -917,13 +918,13 @@ function CourseDetailPage() {
                             }
                             style={{
                               height: 44, borderRadius: 8, border: "0.5px solid #EEF2F7",
-                              padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
-                              color: "#0B1F3A", background: "#fff",
+                              padding: "0 10px", fontSize: tokens.fontSize.md, fontFamily: "Poppins, sans-serif",
+                              color: tokens.navy, background: "#fff",
                             }}
                           />
                         </label>
                         <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                          <span style={{ fontSize: 12, fontWeight: 500, color: LABEL, fontFamily: "Poppins, sans-serif" }}>To</span>
+                          <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.medium, color: LABEL, fontFamily: "Poppins, sans-serif" }}>To</span>
                           <input
                             type="time"
                             value={form.lesson_time_to ?? "17:00"}
@@ -932,8 +933,8 @@ function CourseDetailPage() {
                             }
                             style={{
                               height: 44, borderRadius: 8, border: "0.5px solid #EEF2F7",
-                              padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
-                              color: "#0B1F3A", background: "#fff",
+                              padding: "0 10px", fontSize: tokens.fontSize.md, fontFamily: "Poppins, sans-serif",
+                              color: tokens.navy, background: "#fff",
                             }}
                           />
                         </label>
@@ -941,7 +942,7 @@ function CourseDetailPage() {
                     )}
                   </div>
                   <div>
-                    <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 6 }}>
+                    <div style={{ fontSize: 12, color: LABEL, fontWeight: tokens.fontWeight.medium, marginBottom: 6 }}>
                       Repeat
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6 }}>
@@ -969,7 +970,7 @@ function CourseDetailPage() {
                               color: active ? "#fff" : "#0B1F3A",
                               fontFamily: "Poppins, sans-serif",
                               fontSize: 12,
-                              fontWeight: 600,
+                              fontWeight: tokens.fontWeight.semibold,
                               cursor: "pointer",
                             }}
                           >
@@ -982,7 +983,7 @@ function CourseDetailPage() {
 
                   {form.repeat_type === "weekly" && (
                     <div>
-                      <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 6 }}>
+                      <div style={{ fontSize: 12, color: LABEL, fontWeight: tokens.fontWeight.medium, marginBottom: 6 }}>
                         Repeat on
                       </div>
                       <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -1021,7 +1022,7 @@ function CourseDetailPage() {
                                 color: active ? "#fff" : "#0B1F3A",
                                 fontFamily: "Poppins, sans-serif",
                                 fontSize: 12,
-                                fontWeight: 600,
+                                fontWeight: tokens.fontWeight.semibold,
                                 cursor: "pointer",
                               }}
                             >
@@ -1050,10 +1051,10 @@ function CourseDetailPage() {
                               borderRadius: 999,
                               border: "1px solid #EEF2F7",
                               background: "#fff",
-                              color: "#0B1F3A",
+                              color: tokens.navy,
                               fontFamily: "Poppins, sans-serif",
-                              fontSize: 11,
-                              fontWeight: 600,
+                              fontSize: tokens.fontSize.sm,
+                              fontWeight: tokens.fontWeight.semibold,
                               cursor: "pointer",
                             }}
                           >
@@ -1086,7 +1087,7 @@ function CourseDetailPage() {
                     onChange={(e) => setForm({ ...form, max_spaces: Number(e.target.value) })}
                   />
                   <div>
-                    <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 4 }}>
+                    <div style={{ fontSize: 12, color: LABEL, fontWeight: tokens.fontWeight.medium, marginBottom: 4 }}>
                       Description
                     </div>
                     <textarea
@@ -1099,8 +1100,8 @@ function CourseDetailPage() {
                         border: "0.5px solid #EEF2F7",
                         padding: 10,
                         fontFamily: "Poppins, sans-serif",
-                        fontSize: 14,
-                        color: "#0B1F3A",
+                        fontSize: tokens.fontSize.md,
+                        color: tokens.navy,
                         resize: "vertical",
                       }}
                     />
@@ -1158,10 +1159,10 @@ function CourseDetailPage() {
               <>
                 <div
                   style={{
-                    fontSize: 11,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.semibold,
                     textTransform: "uppercase",
-                    color: "#9CA3AF",
+                    color: tokens.textMuted,
                     padding: "8px 16px 6px",
                     display: "flex",
                     alignItems: "center",
@@ -1174,9 +1175,9 @@ function CourseDetailPage() {
                       alignItems: "center",
                       gap: 4,
                       background: "#EFF6FF",
-                      color: "#1877D6",
-                      fontSize: 11,
-                      fontWeight: 700,
+                      color: tokens.blue,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.bold,
                       borderRadius: 8,
                       padding: "3px 10px",
                       marginLeft: 8,
@@ -1269,7 +1270,7 @@ function CourseDetailPage() {
                             alignItems: "center",
                             justifyContent: "center",
                             fontSize: 12,
-                            fontWeight: 800,
+                            fontWeight: tokens.fontWeight.extrabold,
                             background: numberBg,
                             color: numberColor,
                           }}
@@ -1278,7 +1279,7 @@ function CourseDetailPage() {
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                            <span style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A" }}>
+                            <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
                               {formatDate(session.session_date)}
                             </span>
                             {isToday && (
@@ -1286,8 +1287,8 @@ function CourseDetailPage() {
                                 style={{
                                   background: "#FEF3C7",
                                   color: "#B45309",
-                                  fontSize: 11,
-                                  fontWeight: 800,
+                                  fontSize: tokens.fontSize.sm,
+                                  fontWeight: tokens.fontWeight.extrabold,
                                   borderRadius: 999,
                                   padding: "4px 10px",
                                   textTransform: "uppercase",
@@ -1297,11 +1298,11 @@ function CourseDetailPage() {
                               </span>
                             )}
                           </div>
-                          <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>
+                          <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, marginTop: 2 }}>
                             {formatTime12hr(session.session_time)} · {session.duration_minutes} min
                           </div>
                           {session.notes && (
-                            <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2, fontStyle: "italic" }}>
+                            <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, marginTop: 2, fontStyle: "italic" }}>
                               {session.notes}
                             </div>
                           )}
@@ -1310,8 +1311,8 @@ function CourseDetailPage() {
                           style={{
                             background: statusBg,
                             color: statusColor,
-                            fontSize: 10,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.bold,
                             borderRadius: 8,
                             padding: "3px 8px",
                             flexShrink: 0,
@@ -1332,11 +1333,11 @@ function CourseDetailPage() {
                       justifyContent: "center",
                     }}
                   >
-                    <div style={{ display: "flex", gap: 4, alignItems: "center", fontSize: 11, color: "#15803D" }}>
+                    <div style={{ display: "flex", gap: 4, alignItems: "center", fontSize: tokens.fontSize.sm, color: "#15803D" }}>
                       <IconCheck size={14} />
                       {sessions.filter((s) => s.status === "completed").length} completed
                     </div>
-                    <div style={{ display: "flex", gap: 4, alignItems: "center", fontSize: 11, color: "#1877D6" }}>
+                    <div style={{ display: "flex", gap: 4, alignItems: "center", fontSize: tokens.fontSize.sm, color: tokens.blue }}>
                       <IconCalendar size={14} />
                       {
                         sessions.filter((s) => s.status === "scheduled" && new Date(s.session_date) >= new Date()).length
@@ -1425,7 +1426,7 @@ function CourseDetailPage() {
             <SectionHeader>BOOKINGS ({bookings.length})</SectionHeader>
             {bookings.length === 0 ? (
               <Card>
-                <div style={{ color: "#6B7280", fontSize: 13, textAlign: "center", padding: 8 }}>
+                <div style={{ color: "#6B7280", fontSize: tokens.fontSize.base, textAlign: "center", padding: 8 }}>
                   No bookings yet
                 </div>
               </Card>
@@ -1435,17 +1436,17 @@ function CourseDetailPage() {
                   <Card key={b.id} style={{ padding: 12 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 14, fontWeight: 600, color: VALUE }}>{b.pupil_name}</div>
+                        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: VALUE }}>{b.pupil_name}</div>
                         {b.pupil_phone && (
-                          <div style={{ fontSize: 13, color: LABEL, marginTop: 2 }}>{b.pupil_phone}</div>
+                          <div style={{ fontSize: tokens.fontSize.base, color: LABEL, marginTop: 2 }}>{b.pupil_phone}</div>
                         )}
                       </div>
                       <span
                         style={{
                           background: statusColor(b.status),
                           color: "#fff",
-                          fontSize: 10,
-                          fontWeight: 700,
+                          fontSize: tokens.fontSize.xs,
+                          fontWeight: tokens.fontWeight.bold,
                           padding: "3px 7px",
                           borderRadius: 8,
                           textTransform: "uppercase",
@@ -1454,7 +1455,7 @@ function CourseDetailPage() {
                       >
                         {b.status}
                       </span>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: "#1877D6", marginLeft: 4 }}>
+                      <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.blue, marginLeft: 4 }}>
                         £{Number(b.amount_paid).toFixed(0)}
                       </div>
                     </div>
@@ -1531,9 +1532,9 @@ function CourseDetailPage() {
               <div
                 style={{
                   marginTop: 12,
-                  color: "#1877D6",
-                  fontSize: 13,
-                  fontWeight: 500,
+                  color: tokens.blue,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.medium,
                   textAlign: "center",
                 }}
               >
@@ -1593,8 +1594,8 @@ function CourseDetailPage() {
             <h2
               style={{
                 fontSize: 20,
-                fontWeight: 800,
-                color: "#0B1F3A",
+                fontWeight: tokens.fontWeight.extrabold,
+                color: tokens.navy,
                 textAlign: "center",
                 margin: "0 0 6px",
               }}
@@ -1603,7 +1604,7 @@ function CourseDetailPage() {
             </h2>
             <p
               style={{
-                fontSize: 13,
+                fontSize: tokens.fontSize.base,
                 color: "#8A8A8E",
                 textAlign: "center",
                 margin: "0 0 16px",
@@ -1629,7 +1630,7 @@ function CourseDetailPage() {
               <span
                 style={{
                   fontSize: 11.5,
-                  fontWeight: 600,
+                  fontWeight: tokens.fontWeight.semibold,
                   color: "#186429",
                   lineHeight: 1.4,
                 }}
@@ -1698,7 +1699,7 @@ function CourseDetailPage() {
                     <Icon size={20} color="#1877D6" stroke={1.5} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14.5, fontWeight: 800, color: "#0B1F3A" }}>{title}</div>
+                    <div style={{ fontSize: 14.5, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy }}>{title}</div>
                     <div style={{ fontSize: 11.5, color: "#8A8A8E", marginTop: 2, lineHeight: 1.35 }}>
                       {description}
                     </div>
@@ -1738,10 +1739,10 @@ function CourseDetailPage() {
               style={{
                 width: "100%",
                 padding: 15,
-                background: "#0B1F3A",
+                background: tokens.navy,
                 color: "#fff",
                 fontSize: 15,
-                fontWeight: 800,
+                fontWeight: tokens.fontWeight.extrabold,
                 borderRadius: 8,
                 border: "none",
                 cursor: "pointer",
@@ -1762,7 +1763,7 @@ function CourseDetailPage() {
                 border: "none",
                 color: "#8A8A8E",
                 fontSize: 13.5,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 textAlign: "center",
                 marginTop: 14,
                 cursor: "pointer",
@@ -1810,14 +1811,14 @@ function StatStrip({ items }: { items: { value: string; label: string }[] }) {
             borderLeft: i === 0 ? "none" : "1.5px dashed #E4E4E8",
           }}
         >
-          <div style={{ color: "#0B1F3A", fontSize: 22, fontWeight: 900, letterSpacing: "-0.5px" }}>
+          <div style={{ color: tokens.navy, fontSize: tokens.fontSize.xxl, fontWeight: 900, letterSpacing: "-0.5px" }}>
             {it.value}
           </div>
           <div
             style={{
               color: "#8A8A8E",
               fontSize: 9.5,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               letterSpacing: "0.3px",
               textTransform: "uppercase",
               marginTop: 3,
@@ -1848,9 +1849,9 @@ function DetailRow({ label, value, last, first }: { label: string; value: string
       <div style={{ fontSize: 13.5, color: "#8A8A8E", fontWeight: 600 }}>{label}</div>
       <div
         style={{
-          fontSize: 14,
+          fontSize: tokens.fontSize.md,
           color: empty ? "#B0B0B5" : "#0B1F3A",
-          fontWeight: 700,
+          fontWeight: tokens.fontWeight.bold,
           textAlign: "right",
           maxWidth: "60%",
           wordBreak: "break-word",
@@ -1865,14 +1866,14 @@ function DetailRow({ label, value, last, first }: { label: string; value: string
 function CourseSectionBar({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "20px 0 10px" }}>
-      <span style={{ width: 3, height: 14, borderRadius: 8, background: "#1877D6" }} />
+      <span style={{ width: 3, height: 14, borderRadius: 8, background: tokens.blue }} />
       <span
         style={{
           fontSize: 12,
-          fontWeight: 800,
+          fontWeight: tokens.fontWeight.extrabold,
           letterSpacing: "0.6px",
           textTransform: "uppercase",
-          color: "#1877D6",
+          color: tokens.blue,
         }}
       >
         {children}
@@ -1893,7 +1894,7 @@ function ToggleRow({
 }) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-      <div style={{ fontSize: 13, color: VALUE, fontWeight: 500 }}>{label}</div>
+      <div style={{ fontSize: tokens.fontSize.base, color: VALUE, fontWeight: 500 }}>{label}</div>
       <button
         onClick={() => onChange(!value)}
         style={{
@@ -1937,7 +1938,7 @@ function SelectRow({
 }) {
   return (
     <div>
-      <div style={{ fontSize: 12, color: LABEL, fontWeight: 500, marginBottom: 4 }}>{label}</div>
+      <div style={{ fontSize: 12, color: LABEL, fontWeight: tokens.fontWeight.medium, marginBottom: 4 }}>{label}</div>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -1949,8 +1950,8 @@ function SelectRow({
           padding: "0 10px",
           background: "#fff",
           fontFamily: "Poppins, sans-serif",
-          fontSize: 14,
-          color: "#0B1F3A",
+          fontSize: tokens.fontSize.md,
+          color: tokens.navy,
         }}
       >
         {options.map(([v, l]) => (
@@ -2087,7 +2088,7 @@ function AddBookingSheet({
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <h2 style={{ fontSize: 16, fontWeight: 700, color: VALUE, margin: 0 }}>Add booking</h2>
+          <h2 style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: VALUE, margin: 0 }}>Add booking</h2>
           <button
             onClick={onClose}
             style={{ background: "none", border: "none", cursor: "pointer", color: LABEL, display: "flex" }}
@@ -2120,7 +2121,7 @@ function AddBookingSheet({
         </div>
 
         {err && (
-          <div style={{ marginTop: 10, color: "#1877D6", fontSize: 13, fontWeight: 500 }}>{err}</div>
+          <div style={{ marginTop: 10, color: tokens.blue, fontSize: tokens.fontSize.base, fontWeight: 500 }}>{err}</div>
         )}
 
         <div style={{ marginTop: 14 }}>
@@ -2297,8 +2298,8 @@ function PostcodeAutocomplete(props: {
             borderRadius: 8,
             padding: "0 12px 0 40px",
             fontFamily: "Poppins, sans-serif",
-            fontSize: 14,
-            color: "#0B1F3A",
+            fontSize: tokens.fontSize.md,
+            color: tokens.navy,
             background: "#fff",
             outline: "none",
             boxSizing: "border-box",
@@ -2306,7 +2307,7 @@ function PostcodeAutocomplete(props: {
         />
       </div>
       {error && (
-        <div style={{ color: "#1877D6", fontSize: 12, marginTop: 4, fontFamily: "Poppins, sans-serif" }}>
+        <div style={{ color: tokens.blue, fontSize: 12, marginTop: 4, fontFamily: "Poppins, sans-serif" }}>
           {error}
         </div>
       )}
@@ -2346,7 +2347,7 @@ function PostcodeAutocomplete(props: {
               }}
             >
               <IconMapPin stroke={1.5} size={14} color="#6B7280" />
-              <span style={{ fontWeight: 700, color: "#0B1F3A", fontSize: 14 }}>{s.postcode}</span>
+              <span style={{ fontWeight: tokens.fontWeight.bold, color: tokens.navy, fontSize: 14 }}>{s.postcode}</span>
               <span style={{ color: "#6B7280", fontSize: 13 }}>{s.area}</span>
             </div>
           ))}

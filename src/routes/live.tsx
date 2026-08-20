@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconChevronLeft, IconChevronRight, IconMap, IconSearch, IconX } from "@tabler/icons-react";
 import { Geolocation } from "@capacitor/geolocation";
@@ -1347,12 +1348,12 @@ function LivePage() {
     return (
       <div className="fixed inset-0 overflow-y-auto" style={{ ...POPPINS, backgroundColor: "#F5F7FA" }}>
         {/* Header */}
-        <div style={{ backgroundColor: "#0B1F3A", color: "#fff", paddingTop: "calc(env(safe-area-inset-top, 0px) + 16px)", paddingLeft: 16, paddingRight: 16, paddingBottom: 24, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+        <div style={{ backgroundColor: tokens.navy, color: "#fff", paddingTop: "calc(env(safe-area-inset-top, 0px) + 16px)", paddingLeft: 16, paddingRight: 16, paddingBottom: 24, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
             <div>
               <div style={{ fontSize: 12, letterSpacing: 1, opacity: 0.7, textTransform: "uppercase" }}>Trip report</div>
-              <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>{r.pupilName}</div>
-              <div style={{ fontSize: 13, opacity: 0.8, marginTop: 6 }}>Saved to {r.pupilName}'s record</div>
+              <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.bold, marginTop: 4 }}>{r.pupilName}</div>
+              <div style={{ fontSize: tokens.fontSize.base, opacity: 0.8, marginTop: 6 }}>Saved to {r.pupilName}'s record</div>
             </div>
             <button
               onClick={finishReport}
@@ -1374,8 +1375,8 @@ function LivePage() {
               { label: "Overspeed", value: `${r.overspeedCount}`, red: r.overspeedCount > 0 },
             ].map((s) => (
               <div key={s.label} style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB", borderRadius: 8, padding: 12, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-                <div style={{ fontSize: 11, letterSpacing: 0.5, color: "#6B7280", textTransform: "uppercase" }}>{s.label}</div>
-                <div style={{ fontSize: 20, fontWeight: 700, color: s.red ? "#CC2229" : "#0B1F3A", marginTop: 4 }}>{s.value}</div>
+                <div style={{ fontSize: tokens.fontSize.sm, letterSpacing: 0.5, color: "#6B7280", textTransform: "uppercase" }}>{s.label}</div>
+                <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.bold, color: s.red ? "#CC2229" : "#0B1F3A", marginTop: 4 }}>{s.value}</div>
               </div>
             ))}
           </div>
@@ -1399,21 +1400,21 @@ function LivePage() {
                   style={{ width: "100%", background: "transparent", border: "none", padding: 12, textAlign: "left", cursor: "pointer" }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                    <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {seg.road_name}
                     </div>
                     {seg.exceeded && (
-                      <span style={{ fontSize: 11, fontWeight: 700, color: "#fff", backgroundColor: "#CC2229", padding: "3px 8px", borderRadius: 999 }}>
+                      <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, color: "#fff", backgroundColor: tokens.red, padding: "3px 8px", borderRadius: 999 }}>
                         Exceeded
                       </span>
                     )}
                     <span style={{ fontSize: 12, color: "#6B7280", marginLeft: 4 }}>{isOpen ? "▲" : "▼"}</span>
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 8, fontSize: 12, color: "#374151" }}>
-                    <span><b style={{ color: "#0B1F3A" }}>{seg.distance_miles.toFixed(2)} mi</b></span>
-                    <span>Duration: <b style={{ color: "#0B1F3A" }}>{seg.points.length > 1 ? formatDurationMs(seg.points[seg.points.length - 1].timestamp - seg.points[0].timestamp) : "—"}</b></span>
-                    <span>Limit: <b style={{ color: "#0B1F3A" }}>{seg.speed_limit_mph != null ? `${seg.speed_limit_mph} mph` : "Not available"}</b></span>
-                    <span>Avg: <b style={{ color: "#0B1F3A" }}>{Math.round(seg.avg_speed_mph)} mph</b></span>
+                    <span><b style={{ color: tokens.navy }}>{seg.distance_miles.toFixed(2)} mi</b></span>
+                    <span>Duration: <b style={{ color: tokens.navy }}>{seg.points.length > 1 ? formatDurationMs(seg.points[seg.points.length - 1].timestamp - seg.points[0].timestamp) : "—"}</b></span>
+                    <span>Limit: <b style={{ color: tokens.navy }}>{seg.speed_limit_mph != null ? `${seg.speed_limit_mph} mph` : "Not available"}</b></span>
+                    <span>Avg: <b style={{ color: tokens.navy }}>{Math.round(seg.avg_speed_mph)} mph</b></span>
                     <span>Max: <b style={{ color: seg.exceeded ? "#CC2229" : "#0B1F3A" }}>{Math.round(seg.max_speed_mph)} mph</b></span>
                     <span style={{ color: "#6B7280" }}>{seg.points.length} pts</span>
                   </div>
@@ -1427,7 +1428,7 @@ function LivePage() {
                       seg.points.map((pt, j) => (
                         <div key={j} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", borderTop: j === 0 ? "none" : "1px solid #F1F5F9", fontSize: 12, fontVariantNumeric: "tabular-nums" }}>
                           <span style={{ color: "#374151" }}>{new Date(pt.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}</span>
-                          <span style={{ fontWeight: 600, color: pt.over ? "#CC2229" : "#0B1F3A" }}>{Math.round(pt.speed_mph)} mph</span>
+                          <span style={{ fontWeight: tokens.fontWeight.semibold, color: pt.over ? "#CC2229" : "#0B1F3A" }}>{Math.round(pt.speed_mph)} mph</span>
                         </div>
                       ))
                     )}
@@ -1447,9 +1448,9 @@ function LivePage() {
               borderRadius: 8,
               border: "1px solid #1877D6",
               backgroundColor: "#fff",
-              color: "#1877D6",
+              color: tokens.blue,
               fontSize: 15,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               cursor: "pointer",
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             }}
@@ -1464,10 +1465,10 @@ function LivePage() {
               padding: "14px 16px",
               borderRadius: 8,
               border: "1px solid #1877D6",
-              backgroundColor: "#1877D6",
+              backgroundColor: tokens.blue,
               color: "#fff",
               fontSize: 15,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               cursor: "pointer",
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             }}
@@ -1482,10 +1483,10 @@ function LivePage() {
               padding: "14px 16px",
               borderRadius: 8,
               border: "none",
-              backgroundColor: "#1877D6",
+              backgroundColor: tokens.blue,
               color: "#fff",
               fontSize: 15,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               cursor: "pointer",
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             }}
@@ -1523,7 +1524,7 @@ function LivePage() {
           paddingBottom: 10,
           paddingLeft: 16,
           paddingRight: 16,
-          background: "#FFFFFF",
+          background: tokens.white,
         }}
       >
         <button
@@ -1549,7 +1550,7 @@ function LivePage() {
           style={{
             color: "#000000",
             fontSize: 17,
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
             fontFamily: "Poppins, sans-serif",
           }}
         >
@@ -1571,10 +1572,10 @@ function LivePage() {
           style={{
             padding: "8px 16px",
             borderRadius: 0,
-            background: "#CC2229",
-            color: "#FFFFFF",
-            fontSize: 13,
-            fontWeight: 800,
+            background: tokens.red,
+            color: tokens.white,
+            fontSize: tokens.fontSize.base,
+            fontWeight: tokens.fontWeight.extrabold,
             letterSpacing: "0.3px",
             boxShadow: "0 3px 0 #B02318",
             border: "none",
@@ -1600,8 +1601,8 @@ function LivePage() {
             color: "#fff",
             padding: "10px 16px",
             borderRadius: 8,
-            fontSize: 13,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.base,
+            fontWeight: tokens.fontWeight.bold,
             letterSpacing: "0.02em",
             boxShadow: "0 8px 24px rgba(239,68,68,0.4)",
             animation: "overspeedFlash 0.8s ease-in-out infinite",
@@ -1626,8 +1627,8 @@ function LivePage() {
             maxWidth: 300,
             width: "calc(100% - 40px)",
             textAlign: "center",
-            color: "#0B1F3A",
-            fontSize: 14,
+            color: tokens.navy,
+            fontSize: tokens.fontSize.md,
             boxShadow: "0 8px 30px rgba(0,0,0,0.3)",
           }}
         >
@@ -1642,9 +1643,9 @@ function LivePage() {
                 borderRadius: 8,
                 background: "#fff",
                 border: "1px solid #E2E8F0",
-                color: "#0B1F3A",
-                fontSize: 14,
-                fontWeight: 700,
+                color: tokens.navy,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.bold,
                 cursor: "pointer",
               }}
             >
@@ -1660,11 +1661,11 @@ function LivePage() {
                 flex: 1,
                 height: 42,
                 borderRadius: 8,
-                background: "#1877D6",
+                background: tokens.blue,
                 border: "none",
                 color: "#fff",
-                fontSize: 14,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.bold,
                 cursor: "pointer",
               }}
             >
@@ -1725,8 +1726,8 @@ function LivePage() {
               >
                 <span
                   style={{
-                    fontSize: 18,
-                    fontWeight: 800,
+                    fontSize: tokens.fontSize.xl,
+                    fontWeight: tokens.fontWeight.extrabold,
                     lineHeight: 1,
                     color: speedLimit == null ? "#6B7686" : over ? "#fff" : zone20 ? "#B45309" : "#0B1F3A",
                   }}
@@ -1738,7 +1739,7 @@ function LivePage() {
               {/* Centre: speed + road name */}
               <div style={{ flex: 1, minWidth: 0, textAlign: "center", padding: "0 12px" }}>
                 <div className="flex items-baseline justify-center" style={{ gap: 4 }}>
-                  <span style={{ fontSize: 36, fontWeight: 800, lineHeight: 1, color: over ? "#FF6B6B" : "#fff" }}>
+                  <span style={{ fontSize: 36, fontWeight: tokens.fontWeight.extrabold, lineHeight: 1, color: over ? "#FF6B6B" : "#fff" }}>
                     {currentSpeed ?? 0}
                   </span>
                   <span style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", paddingBottom: 3 }}>mph</span>
@@ -1746,7 +1747,7 @@ function LivePage() {
                 <div
                   style={{
                     marginTop: 4,
-                    fontSize: 16,
+                    fontSize: tokens.fontSize.lg,
                     fontWeight: over ? 600 : 400,
                     color: over ? "#FF6B6B" : "#fff",
                     whiteSpace: "nowrap",
@@ -1771,8 +1772,8 @@ function LivePage() {
                     flexShrink: 0,
                     background: "#F59E0B",
                     color: "#B45309",
-                    fontSize: 11,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.bold,
                     padding: "4px 8px",
                     borderRadius: 8,
                     whiteSpace: "nowrap",
@@ -1807,7 +1808,7 @@ function LivePage() {
                 },
               ].map((s) => (
                 <div key={s.l} style={{ flex: 1, textAlign: "center" }}>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: s.c, lineHeight: 1.1 }}>{s.v}</div>
+                  <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: s.c, lineHeight: 1.1 }}>{s.v}</div>
                   <div
                     style={{
                       fontSize: 9,
@@ -1850,10 +1851,10 @@ function LivePage() {
           <div className="flex items-center justify-center" style={{ marginBottom: 12 }}>
             <IconMap size={44} color="#1877D6" stroke={1.8} />
           </div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: "#0B1F3A", marginBottom: 6 }}>
+          <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.bold, color: tokens.navy, marginBottom: 6 }}>
             No active lesson
           </div>
-          <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 20, lineHeight: 1.4 }}>
+          <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280", marginBottom: 20, lineHeight: 1.4 }}>
             You can still track this journey manually
           </div>
           <button
@@ -1865,11 +1866,11 @@ function LivePage() {
               width: "100%",
               height: 46,
               borderRadius: 8,
-              background: "#1877D6",
+              background: tokens.blue,
               border: "none",
               color: "#fff",
               fontSize: 15,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               cursor: "pointer",
               marginBottom: 8,
               boxShadow: "0 4px 12px rgba(26,82,160,0.3)",
@@ -1886,9 +1887,9 @@ function LivePage() {
               borderRadius: 8,
               background: "#fff",
               border: "1.5px solid #1877D6",
-              color: "#1877D6",
+              color: tokens.blue,
               fontSize: 15,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               cursor: "pointer",
               marginBottom: 8,
             }}
@@ -1905,8 +1906,8 @@ function LivePage() {
               background: "transparent",
               border: "none",
               color: "#6B7280",
-              fontSize: 14,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.semibold,
               cursor: "pointer",
             }}
           >
@@ -1931,11 +1932,11 @@ function LivePage() {
           <div style={{ marginBottom: 8 }}>
             <div
               style={{
-                fontSize: 10,
+                fontSize: tokens.fontSize.xs,
                 letterSpacing: "0.08em",
                 color: "#6B7280",
                 textTransform: "uppercase",
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
               }}
             >
               Active lesson
@@ -1944,10 +1945,10 @@ function LivePage() {
               className="flex items-center justify-between"
               style={{ marginTop: 4 }}
             >
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#0B1F3A" }}>
+              <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
                 {activeLesson.pupils?.name ?? "Pupil"}
               </div>
-              <div style={{ fontSize: 13, color: "#6B7280", fontWeight: 600 }}>
+              <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280", fontWeight: 600 }}>
                 {(activeLesson.lesson_time ?? "").slice(0, 5)}
               </div>
             </div>
@@ -1957,11 +1958,11 @@ function LivePage() {
             <div style={{ minWidth: 0 }}>
               <div
                 style={{
-                  fontSize: 10,
+                  fontSize: tokens.fontSize.xs,
                   letterSpacing: "0.08em",
                   color: "#6B7280",
                   textTransform: "uppercase",
-                  fontWeight: 600,
+                  fontWeight: tokens.fontWeight.semibold,
                   lineHeight: 1.2,
                 }}
               >
@@ -1969,9 +1970,9 @@ function LivePage() {
               </div>
               <div
                 style={{
-                  fontSize: 14,
-                  fontWeight: 700,
-                  color: "#0B1F3A",
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.bold,
+                  color: tokens.navy,
                   lineHeight: 1.2,
                   opacity: coordinates.length === 0 ? 0.6 : 1,
                 }}
@@ -1979,7 +1980,7 @@ function LivePage() {
                 {trackingPupilName ?? selectedPupilName ?? activeLessonPupilName ?? "Manual journey"}
               </div>
               {coordinates.length === 0 && (lastGeoWarning || lastFixAccuracy != null) && (
-                <div style={{ fontSize: 11, color: "#B45309", fontWeight: 600, lineHeight: 1.3, marginTop: 2 }}>
+                <div style={{ fontSize: tokens.fontSize.sm, color: "#B45309", fontWeight: tokens.fontWeight.semibold, lineHeight: 1.3, marginTop: 2 }}>
                   {lastGeoWarning ?? `Signal accuracy ${lastFixAccuracy} m`}
                 </div>
               )}
@@ -1990,7 +1991,7 @@ function LivePage() {
             <div
               className="flex items-center"
               style={{
-                background: "#EEF2F7",
+                background: tokens.canvas,
                 borderRadius: 8,
                 padding: "6px 10px",
                 gap: 10,
@@ -1998,14 +1999,14 @@ function LivePage() {
               }}
             >
               <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.2 }}>
+                <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy, lineHeight: 1.2 }}>
                   {distanceMiles.toFixed(1)}
                 </div>
                 <div style={{ fontSize: 9, color: "#6B7280", lineHeight: 1.2 }}>mi</div>
               </div>
               <div style={{ width: 1, alignSelf: "stretch", background: "#D7DEE8" }} />
               <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.2 }}>
+                <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy, lineHeight: 1.2 }}>
                   {elapsedMin}:{String(elapsedSecRem).padStart(2, "0")}
                 </div>
                 <div style={{ fontSize: 9, color: "#6B7280", lineHeight: 1.2 }}>duration</div>
@@ -2015,7 +2016,7 @@ function LivePage() {
         ) : (
           <div
             style={{
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               color: "#6B7280",
               fontStyle: "italic",
               padding: "4px 0",
@@ -2048,7 +2049,7 @@ function LivePage() {
             }}
           >
             <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
+              <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
                 Overspeed events ({overspeedEvents.length})
               </div>
               <button
@@ -2058,8 +2059,8 @@ function LivePage() {
                   background: "transparent",
                   border: "none",
                   color: "#6B7280",
-                  fontSize: 14,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.semibold,
                   cursor: "pointer",
                 }}
               >
@@ -2067,7 +2068,7 @@ function LivePage() {
               </button>
             </div>
             {overspeedEvents.length === 0 ? (
-              <div style={{ fontSize: 13, color: "#6B7280" }}>No events yet.</div>
+              <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280" }}>No events yet.</div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {overspeedEvents.map((ev, i) => {
@@ -2084,7 +2085,7 @@ function LivePage() {
                       }}
                     >
                       <div className="flex items-center justify-between">
-                        <div style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A" }}>
+                        <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
                           {ev.road_name ?? "Unknown road"}
                         </div>
                         <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600 }}>
@@ -2133,7 +2134,7 @@ function LivePage() {
               <div style={{ width: 36, height: 5, borderRadius: 8, background: "#D1D1D6" }} />
             </div>
             <div className="flex items-center justify-between px-5 pt-2 pb-3">
-              <div style={{ fontSize: 20, fontWeight: 800, color: "#0B1F3A", letterSpacing: "-0.3px" }}>
+              <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, letterSpacing: "-0.3px" }}>
                 Select pupil
               </div>
               <button
@@ -2173,7 +2174,7 @@ function LivePage() {
                     outline: "none",
                     flex: 1,
                     fontSize: 14.5,
-                    color: "#0B1F3A",
+                    color: tokens.navy,
                   }}
                   className="live-pupil-search"
                 />
@@ -2199,7 +2200,7 @@ function LivePage() {
                         padding: "24px 16px",
                         textAlign: "center",
                         color: "#6B7280",
-                        fontSize: 14,
+                        fontSize: tokens.fontSize.md,
                       }}
                     >
                       No pupils found
@@ -2231,7 +2232,7 @@ function LivePage() {
                     }}
                   >
                     <PupilAvatar pupil={p} pupilId={p.id} size={44} />
-                    <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
+                    <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
                       {display}
                     </div>
                     <IconChevronRight size={14} stroke={2} color="#C7C7CC" style={{ marginLeft: "auto" }} />

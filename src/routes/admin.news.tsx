@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   IconEye,
@@ -59,15 +60,15 @@ const inputStyle: React.CSSProperties = {
   border: "1px solid #E3E8F0",
   borderRadius: 8,
   padding: "9px 11px",
-  fontSize: 13,
-  color: "#0B1F3A",
+  fontSize: tokens.fontSize.base,
+  color: tokens.navy,
   background: "#fff",
   ...POPPINS,
 };
 
 const labelStyle: React.CSSProperties = {
-  fontSize: 11,
-  fontWeight: 700,
+  fontSize: tokens.fontSize.sm,
+  fontWeight: tokens.fontWeight.bold,
   color: "#5B6472",
   marginBottom: 4,
   display: "block",
@@ -162,8 +163,8 @@ function AdminNews() {
   if (status === "denied") {
     return (
       <div style={{ padding: 24, ...POPPINS }}>
-        <p style={{ fontWeight: 700, color: "#0B1F3A" }}>Admin access required</p>
-        <button type="button" onClick={() => navigate({ to: "/home" })} style={{ color: "#1877D6" }}>
+        <p style={{ fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>Admin access required</p>
+        <button type="button" onClick={() => navigate({ to: "/home" })} style={{ color: tokens.blue }}>
           Back to home
         </button>
       </div>
@@ -186,8 +187,8 @@ function AdminNews() {
               borderRadius: 8,
               border: "none",
               cursor: "pointer",
-              fontSize: 13,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.bold,
               background: tab === t ? "#0B1F3A" : "#FFFFFF",
               color: tab === t ? "#FFFFFF" : "#5B6472",
               ...POPPINS,
@@ -212,13 +213,13 @@ function AdminNews() {
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
-              background: "#1877D6",
+              background: tokens.blue,
               color: "#fff",
               border: "none",
               borderRadius: 8,
               padding: "11px 14px",
-              fontSize: 13,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.bold,
               cursor: "pointer",
               ...POPPINS,
             }}
@@ -239,14 +240,14 @@ function AdminNews() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 800, color: "#0B1F3A", flex: 1, minWidth: 0 }}>
+                <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, flex: 1, minWidth: 0 }}>
                   {s.name}
                 </span>
                 <span
                   style={{
-                    fontSize: 10,
-                    fontWeight: 800,
-                    background: "#EEF2F7",
+                    fontSize: tokens.fontSize.xs,
+                    fontWeight: tokens.fontWeight.extrabold,
+                    background: tokens.canvas,
                     color: "#334155",
                     borderRadius: 8,
                     padding: "3px 8px",
@@ -258,7 +259,7 @@ function AdminNews() {
                   type="button"
                   aria-label={s.enabled ? "Disable source" : "Enable source"}
                   onClick={() => patchSource(s.id, { enabled: !s.enabled })}
-                  style={{ color: "#1877D6", background: "none", border: "none", cursor: "pointer" }}
+                  style={{ color: tokens.blue, background: "none", border: "none", cursor: "pointer" }}
                 >
                   {s.enabled ? <IconEye size={18} /> : <IconEyeOff size={18} />}
                 </button>
@@ -266,21 +267,21 @@ function AdminNews() {
                   type="button"
                   aria-label="Delete source"
                   onClick={() => removeSource(s.id)}
-                  style={{ color: "#CC2229", background: "none", border: "none", cursor: "pointer" }}
+                  style={{ color: tokens.red, background: "none", border: "none", cursor: "pointer" }}
                 >
                   <IconTrash size={17} />
                 </button>
               </div>
-              <div style={{ fontSize: 11, color: "#5B6472", marginTop: 4, wordBreak: "break-all" }}>
+              <div style={{ fontSize: tokens.fontSize.sm, color: "#5B6472", marginTop: 4, wordBreak: "break-all" }}>
                 {s.feed_url || s.url}
               </div>
               <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
-                <span style={{ fontSize: 11, color: "#0B1F3A", fontWeight: 700 }}>
+                <span style={{ fontSize: tokens.fontSize.sm, color: tokens.navy, fontWeight: 700 }}>
                   {categoryOf(s.default_category).emoji} {categoryOf(s.default_category).label}
                 </span>
-                <span style={{ fontSize: 11, color: "#9CA3AF" }}>· priority {s.priority}</span>
+                <span style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted }}>· priority {s.priority}</span>
                 {s.requires_approval ? (
-                  <span style={{ fontSize: 11, color: "#B8860B", fontWeight: 700 }}>· needs approval</span>
+                  <span style={{ fontSize: tokens.fontSize.sm, color: "#B8860B", fontWeight: 700 }}>· needs approval</span>
                 ) : null}
                 <button
                   type="button"
@@ -288,8 +289,8 @@ function AdminNews() {
                   style={{
                     marginLeft: "auto",
                     fontSize: 12,
-                    fontWeight: 700,
-                    color: "#1877D6",
+                    fontWeight: tokens.fontWeight.bold,
+                    color: tokens.blue,
                     background: "none",
                     border: "none",
                     cursor: "pointer",
@@ -311,7 +312,7 @@ function AdminNews() {
                 onClick={() => setArticleFilter(f)}
                 style={{
                   fontSize: 12,
-                  fontWeight: 600,
+                  fontWeight: tokens.fontWeight.semibold,
                   borderRadius: 8,
                   padding: "6px 14px",
                   border: "none",
@@ -338,10 +339,10 @@ function AdminNews() {
                 ...POPPINS,
               }}
             >
-              <div style={{ fontSize: 13.5, fontWeight: 800, color: "#0B1F3A", lineHeight: 1.3 }}>
+              <div style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, lineHeight: 1.3 }}>
                 {a.title}
               </div>
-              <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 3 }}>
+              <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, marginTop: 3 }}>
                 {a.source} · {categoryOf(a.category).label} · {a.status ?? "approved"}
               </div>
               <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
@@ -350,14 +351,14 @@ function AdminNews() {
                     <button
                       type="button"
                       onClick={() => patchArticle(a.id, { status: "approved" })}
-                      style={{ fontSize: 12, fontWeight: 700, color: "#0F9D58", background: "none", border: "none", cursor: "pointer" }}
+                      style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: "#0F9D58", background: "none", border: "none", cursor: "pointer" }}
                     >
                       Approve
                     </button>
                     <button
                       type="button"
                       onClick={() => patchArticle(a.id, { status: "rejected" })}
-                      style={{ fontSize: 12, fontWeight: 700, color: "#CC2229", background: "none", border: "none", cursor: "pointer" }}
+                      style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: tokens.red, background: "none", border: "none", cursor: "pointer" }}
                     >
                       Reject
                     </button>
@@ -370,28 +371,28 @@ function AdminNews() {
                       importance: a.importance === "important" ? "normal" : "important",
                     })
                   }
-                  style={{ fontSize: 12, fontWeight: 700, color: a.importance === "important" ? "#CC2229" : "#5B6472", background: "none", border: "none", cursor: "pointer" }}
+                  style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: a.importance === "important" ? "#CC2229" : "#5B6472", background: "none", border: "none", cursor: "pointer" }}
                 >
                   {a.importance === "important" ? "Important ✓" : "Mark important"}
                 </button>
                 <button
                   type="button"
                   onClick={() => patchArticle(a.id, { is_featured: !a.is_featured })}
-                  style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 700, color: a.is_featured ? "#B8860B" : "#5B6472", background: "none", border: "none", cursor: "pointer" }}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: tokens.fontWeight.bold, color: a.is_featured ? "#B8860B" : "#5B6472", background: "none", border: "none", cursor: "pointer" }}
                 >
                   <IconStar size={14} /> Feature
                 </button>
                 <button
                   type="button"
                   onClick={() => patchArticle(a.id, { is_hidden: !a.is_hidden })}
-                  style={{ fontSize: 12, fontWeight: 700, color: "#5B6472", background: "none", border: "none", cursor: "pointer" }}
+                  style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: "#5B6472", background: "none", border: "none", cursor: "pointer" }}
                 >
                   {a.is_hidden ? "Unhide" : "Hide"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditArticle(a)}
-                  style={{ marginLeft: "auto", fontSize: 12, fontWeight: 700, color: "#1877D6", background: "none", border: "none", cursor: "pointer" }}
+                  style={{ marginLeft: "auto", fontSize: 12, fontWeight: tokens.fontWeight.bold, color: tokens.blue, background: "none", border: "none", cursor: "pointer" }}
                 >
                   Edit
                 </button>
@@ -427,7 +428,7 @@ function AdminNews() {
             }}
           >
             <div style={{ display: "flex", alignItems: "center", marginBottom: 12 }}>
-              <span style={{ fontSize: 16, fontWeight: 800, color: "#0B1F3A", flex: 1 }}>
+              <span style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, flex: 1 }}>
                 {editing.id ? "Edit source" : "Add source"}
               </span>
               <button type="button" aria-label="Close" onClick={() => setEditing(null)} style={{ background: "none", border: "none", cursor: "pointer" }}>
@@ -501,13 +502,13 @@ function AdminNews() {
               style={{
                 marginTop: 14,
                 width: "100%",
-                background: "#1877D6",
+                background: tokens.blue,
                 color: "#fff",
                 border: "none",
                 borderRadius: 8,
                 padding: "12px 16px",
-                fontSize: 14,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.bold,
                 cursor: "pointer",
                 ...POPPINS,
               }}
@@ -544,7 +545,7 @@ function AdminNews() {
             }}
           >
             <div style={{ display: "flex", alignItems: "center", marginBottom: 12 }}>
-              <span style={{ fontSize: 16, fontWeight: 800, color: "#0B1F3A", flex: 1 }}>Edit article</span>
+              <span style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, flex: 1 }}>Edit article</span>
               <button type="button" aria-label="Close" onClick={() => setEditArticle(null)} style={{ background: "none", border: "none", cursor: "pointer" }}>
                 <IconX size={20} color="#5B6472" />
               </button>
@@ -630,13 +631,13 @@ function AdminNews() {
               style={{
                 marginTop: 14,
                 width: "100%",
-                background: "#1877D6",
+                background: tokens.blue,
                 color: "#fff",
                 border: "none",
                 borderRadius: 8,
                 padding: "12px 16px",
-                fontSize: 14,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.bold,
                 cursor: "pointer",
                 ...POPPINS,
               }}

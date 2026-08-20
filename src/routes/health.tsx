@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useState } from "react";
 import { IconActivity, IconArrowLeft, IconCoffee, IconDroplet, IconHeart, IconMoodSmile, IconX } from "@tabler/icons-react";
@@ -193,7 +194,7 @@ function HealthPage() {
               style={{ color: "#6B7280" }}
             >
               <span>Water today</span>
-              <span style={{ color: "#0B1F3A", fontWeight: 600 }}>
+              <span style={{ color: tokens.navy, fontWeight: 600 }}>
                 {today.water_glasses} / 8 glasses
               </span>
             </div>
@@ -255,7 +256,7 @@ function HealthPage() {
         <Card className="bg-white">
           <div
             className="text-[14px]"
-            style={{ color: "#0B1F3A", lineHeight: 1.5 }}
+            style={{ color: tokens.navy, lineHeight: 1.5 }}
           >
             {TIPS[tipIndex]}
           </div>
@@ -301,7 +302,7 @@ function HealthPage() {
                     border: active
                       ? "1px solid #1877D6"
                       : "0.5px solid #EEF2F7",
-                    fontSize: 28,
+                    fontSize: tokens.fontSize.hero,
                   }}
                 >
                   {emoji}
@@ -348,7 +349,7 @@ function QuickLog({
         padding: 12,
         borderRadius: 8,
         border: "0.5px solid #EEF2F7",
-        backgroundColor: "#FFFFFF",
+        backgroundColor: tokens.white,
       }}
     >
       <div
@@ -364,7 +365,7 @@ function QuickLog({
       </div>
       <span
         className="text-[13px] font-semibold text-left"
-        style={{ color: "#0B1F3A" }}
+        style={{ color: tokens.navy }}
       >
         {label}
       </span>
@@ -390,7 +391,7 @@ function MiniStat({ label, value }: { label: string; value: string }) {
       </div>
       <div
         className="mt-0.5 font-bold"
-        style={{ color: "#0B1F3A", fontSize: 16 }}
+        style={{ color: tokens.navy, fontSize: 16 }}
       >
         {value}
       </div>

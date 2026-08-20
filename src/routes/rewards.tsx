@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconArrowLeft, IconBolt, IconMedal, IconTrophy } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
@@ -21,7 +22,7 @@ const SUPABASE_ANON_KEY =
 type TierKey = "bronze" | "silver" | "gold" | "platinum" | "elite";
 const TIERS: Record<TierKey, { min: number; label: string; emoji: string; color: string; bg: string }> = {
   bronze:   { min: 0,    label: "Bronze",   emoji: "🥉", color: "#CD7F32", bg: "#FDF3E7" },
-  silver:   { min: 500,  label: "Silver",   emoji: "🥈", color: "#9CA3AF", bg: "#F3F4F6" },
+  silver:   { min: 500,  label: "Silver",   emoji: "🥈", color: tokens.textMuted, bg: "#F3F4F6" },
   gold:     { min: 1500, label: "Gold",     emoji: "🥇", color: "#B45309", bg: "#FFFBEB" },
   platinum: { min: 3000, label: "Platinum", emoji: "💎", color: "#6366F1", bg: "#EEF2FF" },
   elite:    { min: 6000, label: "Elite",    emoji: "⭐", color: "#0F2044", bg: "#E0F2FE" },
@@ -154,12 +155,12 @@ function RewardsPage() {
   }
 
   return (
-    <div style={{ background: "#FFFFFF", minHeight: "100vh" }}>
+    <div style={{ background: tokens.white, minHeight: "100vh" }}>
       {/* Top bar */}
       <div
         style={{
           background: "#0F2044",
-          color: "#FFFFFF",
+          color: tokens.white,
           padding: "14px 16px",
           display: "flex",
           alignItems: "center",
@@ -176,7 +177,7 @@ function RewardsPage() {
         >
           <IconArrowLeft size={22} />
         </button>
-        <div style={{ fontWeight: 800, fontSize: 17 }}>DSM Rewards</div>
+        <div style={{ fontWeight: tokens.fontWeight.extrabold, fontSize: 17 }}>DSM Rewards</div>
       </div>
 
       {/* Hero */}
@@ -195,7 +196,7 @@ function RewardsPage() {
         </div>
         {nextTier ? (
           <div style={{ marginTop: 14 }}>
-            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)" }}>
+            <div style={{ fontSize: tokens.fontSize.base, color: "rgba(255,255,255,0.75)" }}>
               {ptsToNext.toLocaleString()} pts to {nextTier.label}
             </div>
             <div
@@ -219,7 +220,7 @@ function RewardsPage() {
             </div>
           </div>
         ) : (
-          <div style={{ marginTop: 12, fontSize: 13, color: "rgba(255,255,255,0.75)" }}>
+          <div style={{ marginTop: 12, fontSize: tokens.fontSize.base, color: "rgba(255,255,255,0.75)" }}>
             Top tier reached
           </div>
         )}
@@ -231,7 +232,7 @@ function RewardsPage() {
       {/* How to earn */}
       <div
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           border: "0.5px solid #E2E6ED",
           borderRadius: 8,
           padding: 16,
@@ -240,7 +241,7 @@ function RewardsPage() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
           <IconBolt size={18} color="#B45309" />
-          <div style={{ fontWeight: 800, color: "#0B1F3A", fontSize: 15 }}>How to earn points</div>
+          <div style={{ fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, fontSize: 15 }}>How to earn points</div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           {EARN_ACTIVITIES.map((a) => (
@@ -256,14 +257,14 @@ function RewardsPage() {
                 border: "0.5px solid #E2E6ED",
               }}
             >
-              <div style={{ fontSize: 12, color: "#0B1F3A", fontWeight: 600, lineHeight: 1.25 }}>
+              <div style={{ fontSize: 12, color: tokens.navy, fontWeight: tokens.fontWeight.semibold, lineHeight: 1.25 }}>
                 {a.label}
               </div>
               <span
                 style={{
                   alignSelf: "flex-start",
-                  fontSize: 11,
-                  fontWeight: 800,
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.extrabold,
                   padding: "2px 8px",
                   borderRadius: 999,
                   background: "#E0F4FF",
@@ -280,7 +281,7 @@ function RewardsPage() {
       {/* Leaderboard */}
       <div
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           border: "0.5px solid #E2E6ED",
           borderRadius: 8,
           padding: 16,
@@ -289,16 +290,16 @@ function RewardsPage() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <IconMedal size={18} color="#B45309" />
-          <div style={{ fontWeight: 800, color: "#0B1F3A", fontSize: 15 }}>
+          <div style={{ fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, fontSize: 15 }}>
             Leaderboard {currentYear}
           </div>
         </div>
-        <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 12 }}>
+        <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280", marginBottom: 12 }}>
           Top 20 DSM instructors
         </div>
 
         {loading ? (
-          <div style={{ color: "#6B7280", fontSize: 13, padding: "12px 0" }}>Loading…</div>
+          <div style={{ color: "#6B7280", fontSize: tokens.fontSize.base, padding: "12px 0" }}>Loading…</div>
         ) : leaderboard.length === 0 ? (
           <div
             style={{
@@ -306,7 +307,7 @@ function RewardsPage() {
               alignItems: "center",
               gap: 8,
               color: "#6B7280",
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               padding: "12px 0",
             }}
           >
@@ -342,9 +343,9 @@ function RewardsPage() {
                     style={{
                       width: 24,
                       textAlign: "center",
-                      fontWeight: 800,
+                      fontWeight: tokens.fontWeight.extrabold,
                       color: rankColor,
-                      fontSize: 14,
+                      fontSize: tokens.fontSize.md,
                     }}
                   >
                     {rank}
@@ -355,11 +356,11 @@ function RewardsPage() {
                       height: 32,
                       borderRadius: 999,
                       background: "#F3F4F6",
-                      color: "#0B1F3A",
+                      color: tokens.navy,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontWeight: 800,
+                      fontWeight: tokens.fontWeight.extrabold,
                       fontSize: 12,
                       overflow: "hidden",
                       flexShrink: 0,
@@ -378,9 +379,9 @@ function RewardsPage() {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div
                       style={{
-                        fontSize: 13,
-                        fontWeight: 700,
-                        color: "#0B1F3A",
+                        fontSize: tokens.fontSize.base,
+                        fontWeight: tokens.fontWeight.bold,
+                        color: tokens.navy,
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
@@ -391,7 +392,7 @@ function RewardsPage() {
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <span style={{ fontSize: 14 }}>{t.emoji}</span>
-                    <span style={{ fontWeight: 800, color: "#0B1F3A", fontSize: 13 }}>
+                    <span style={{ fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, fontSize: 13 }}>
                       {(row.total_points || 0).toLocaleString()}
                     </span>
                   </div>
@@ -412,7 +413,7 @@ function RewardsPage() {
       <div style={{ padding: 16, marginTop: 4 }}>
         <div
           style={{
-            background: "#FFFFFF",
+            background: tokens.white,
             border: "0.5px solid #E2E6ED",
             borderRadius: 8,
             padding: "12px 14px",
@@ -422,7 +423,7 @@ function RewardsPage() {
           }}
         >
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
               Show me on leaderboard
             </div>
             <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>

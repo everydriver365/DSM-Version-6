@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { IconArrowLeft, IconCheck, IconCircleCheck, IconCircleX, IconClock, IconStar } from "@tabler/icons-react";
@@ -189,7 +190,7 @@ function ApplyPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "Poppins, sans-serif", paddingBottom: 120 }}>
+    <div style={{ minHeight: "100vh", background: tokens.white, fontFamily: "Poppins, sans-serif", paddingBottom: 120 }}>
       {/* Top bar */}
       <div style={{ background: NAVY, color: "#FFF", padding: "14px 16px", display: "flex", alignItems: "center", gap: 12 }}>
         <button
@@ -200,7 +201,7 @@ function ApplyPage() {
         >
           <IconArrowLeft size={22} />
         </button>
-        <h1 style={{ fontSize: 17, fontWeight: 700, margin: 0 }}>Get Featured on EveryDriver</h1>
+        <h1 style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, margin: 0 }}>Get Featured on EveryDriver</h1>
       </div>
 
       {loading ? (
@@ -214,10 +215,10 @@ function ApplyPage() {
           {/* Hero */}
           <div style={{ background: BG_HERO, borderBottom: `0.5px solid ${BORDER_HERO}`, padding: "20px 16px" }}>
             <IconStar size={32} color={BLUE} stroke={2} />
-            <div style={{ fontSize: 18, fontWeight: 700, color: NAVY, marginTop: 8 }}>
+            <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 8 }}>
               Grow your driving school with EveryDriver
             </div>
-            <div style={{ fontSize: 13, color: MUTED, marginTop: 6, lineHeight: 1.5 }}>
+            <div style={{ fontSize: tokens.fontSize.base, color: MUTED, marginTop: 6, lineHeight: 1.5 }}>
               Featured instructors get priority placement on EveryDriver search results, more enquiries and a professional profile page.
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 12, fontSize: 12, color: BLUE, fontWeight: 600 }}>
@@ -229,7 +230,7 @@ function ApplyPage() {
 
           {/* Progress */}
           <div style={{ padding: "16px 16px 0" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: MUTED, marginBottom: 6, fontWeight: 600 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: tokens.fontSize.sm, color: MUTED, marginBottom: 6, fontWeight: 600 }}>
               <span>Step {step} of 4</span>
               <span>{Math.round((step / 4) * 100)}%</span>
             </div>
@@ -329,11 +330,11 @@ function ApplyPage() {
                     borderRadius: 8,
                     padding: 14,
                     marginTop: 8,
-                    fontSize: 13,
+                    fontSize: tokens.fontSize.base,
                     color: NAVY,
                   }}
                 >
-                  <div style={{ fontWeight: 700, marginBottom: 8 }}>Summary</div>
+                  <div style={{ fontWeight: tokens.fontWeight.bold, marginBottom: 8 }}>Summary</div>
                   <SummaryRow k="Business" v={businessName || "—"} />
                   <SummaryRow k="ADI number" v={adiNumber || "—"} />
                   <SummaryRow k="DVSA grade" v={dvsaGrade || "—"} />
@@ -343,7 +344,7 @@ function ApplyPage() {
                   <SummaryRow k="Contact" v={`${contactName} · ${contactEmail}`} />
                 </div>
 
-                <label style={{ display: "flex", gap: 10, alignItems: "flex-start", marginTop: 14, fontSize: 13, color: NAVY }}>
+                <label style={{ display: "flex", gap: 10, alignItems: "flex-start", marginTop: 14, fontSize: tokens.fontSize.base, color: NAVY }}>
                   <input type="checkbox" checked={confirm} onChange={(e) => setConfirm(e.target.checked)} style={{ marginTop: 3 }} />
                   <span>I confirm all details are accurate and I am a DVSA-registered ADI</span>
                 </label>
@@ -363,8 +364,8 @@ function ApplyPage() {
                     border: `1px solid ${BORDER}`,
                     background: "#FFF",
                     color: NAVY,
-                    fontWeight: 600,
-                    fontSize: 14,
+                    fontWeight: tokens.fontWeight.semibold,
+                    fontSize: tokens.fontSize.md,
                     cursor: "pointer",
                   }}
                 >
@@ -383,8 +384,8 @@ function ApplyPage() {
                     border: "none",
                     background: canNext ? BLUE : "#94A3B8",
                     color: "#FFF",
-                    fontWeight: 700,
-                    fontSize: 14,
+                    fontWeight: tokens.fontWeight.bold,
+                    fontSize: tokens.fontSize.md,
                     cursor: canNext ? "pointer" : "not-allowed",
                   }}
                 >
@@ -402,8 +403,8 @@ function ApplyPage() {
                     border: "none",
                     background: confirm && !submitting ? BLUE : "#94A3B8",
                     color: "#FFF",
-                    fontWeight: 700,
-                    fontSize: 14,
+                    fontWeight: tokens.fontWeight.bold,
+                    fontSize: tokens.fontSize.md,
                     cursor: confirm && !submitting ? "pointer" : "not-allowed",
                   }}
                 >
@@ -421,7 +422,7 @@ function ApplyPage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div style={{ marginTop: 16 }}>
-      <div style={{ fontSize: 16, fontWeight: 700, color: NAVY, marginBottom: 12 }}>{title}</div>
+      <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: NAVY, marginBottom: 12 }}>{title}</div>
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>{children}</div>
     </div>
   );
@@ -430,7 +431,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label style={{ display: "block" }}>
-      <div style={{ fontSize: 12, fontWeight: 600, color: NAVY, marginBottom: 6 }}>{label}</div>
+      <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: NAVY, marginBottom: 6 }}>{label}</div>
       {children}
     </label>
   );
@@ -458,7 +459,7 @@ function Input({
         padding: "11px 12px",
         borderRadius: 8,
         border: `1px solid ${BORDER}`,
-        fontSize: 14,
+        fontSize: tokens.fontSize.md,
         color: NAVY,
         background: "#FFF",
         outline: "none",
@@ -490,7 +491,7 @@ function Textarea({
         padding: "11px 12px",
         borderRadius: 8,
         border: `1px solid ${BORDER}`,
-        fontSize: 14,
+        fontSize: tokens.fontSize.md,
         color: NAVY,
         background: "#FFF",
         outline: "none",
@@ -521,7 +522,7 @@ function Select({
         padding: "11px 12px",
         borderRadius: 8,
         border: `1px solid ${BORDER}`,
-        fontSize: 14,
+        fontSize: tokens.fontSize.md,
         color: NAVY,
         background: "#FFF",
         outline: "none",
@@ -561,8 +562,8 @@ function Pills({
             style={{
               padding: "8px 14px",
               borderRadius: 999,
-              fontSize: 13,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.semibold,
               border: active ? `1px solid ${BLUE}` : `1px solid ${BORDER}`,
               background: active ? BLUE : "#FFF",
               color: active ? "#FFF" : NAVY,
@@ -583,7 +584,7 @@ function SummaryRow({ k, v }: { k: string; v: string }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", gap: 10, padding: "4px 0", fontSize: 12 }}>
       <span style={{ color: MUTED }}>{k}</span>
-      <span style={{ color: NAVY, fontWeight: 600, textAlign: "right", maxWidth: "60%" }}>{v}</span>
+      <span style={{ color: NAVY, fontWeight: tokens.fontWeight.semibold, textAlign: "right", maxWidth: "60%" }}>{v}</span>
     </div>
   );
 }
@@ -606,8 +607,8 @@ function SuccessScreen({ onBack }: { onBack: () => void }) {
       >
         <IconCheck size={44} color="#16A34A" stroke={3} />
       </div>
-      <div style={{ fontSize: 22, fontWeight: 700, color: NAVY }}>Application submitted!</div>
-      <div style={{ fontSize: 14, color: MUTED, marginTop: 10, lineHeight: 1.5 }}>
+      <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.bold, color: NAVY }}>Application submitted!</div>
+      <div style={{ fontSize: tokens.fontSize.md, color: MUTED, marginTop: 10, lineHeight: 1.5 }}>
         We'll review your application within 2 business days and notify you of the outcome.
       </div>
       <button
@@ -620,8 +621,8 @@ function SuccessScreen({ onBack }: { onBack: () => void }) {
           border: "none",
           background: BLUE,
           color: "#FFF",
-          fontWeight: 700,
-          fontSize: 14,
+          fontWeight: tokens.fontWeight.bold,
+          fontSize: tokens.fontSize.md,
           cursor: "pointer",
         }}
       >
@@ -709,8 +710,8 @@ function Banner({
         }}
       >
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>{icon}</div>
-        <div style={{ fontSize: 18, fontWeight: 700, color: NAVY }}>{title}</div>
-        <div style={{ fontSize: 13, color: "#334155", marginTop: 8, lineHeight: 1.5 }}>{body}</div>
+        <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.bold, color: NAVY }}>{title}</div>
+        <div style={{ fontSize: tokens.fontSize.base, color: "#334155", marginTop: 8, lineHeight: 1.5 }}>{body}</div>
         <button
           type="button"
           onClick={onAction}
@@ -721,8 +722,8 @@ function Banner({
             border: "none",
             background: BLUE,
             color: "#FFF",
-            fontWeight: 700,
-            fontSize: 13,
+            fontWeight: tokens.fontWeight.bold,
+            fontSize: tokens.fontSize.base,
             cursor: "pointer",
           }}
         >

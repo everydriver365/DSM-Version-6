@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconAlertTriangle, IconClock, IconEye } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -150,7 +151,7 @@ function NoShowPolicyPage() {
       <div
         className="mx-4 mt-3"
         style={{
-          backgroundColor: "#FFFFFF",
+          backgroundColor: tokens.white,
           border: "0.5px solid #E2E6ED",
           borderRadius: 8,
           padding: 16,

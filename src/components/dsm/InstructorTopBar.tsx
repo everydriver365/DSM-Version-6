@@ -1,4 +1,5 @@
 import React from "react";
+import { tokens } from "@/lib/tokens";
 import { IconChevronLeft, IconMicrophone } from "@tabler/icons-react";
 import {
   IconHeadset,
@@ -87,7 +88,7 @@ export default function InstructorTopBar({
         left: 0,
         right: 0,
         zIndex: 40,
-        background: "#0B1F3A",
+        background: tokens.navy,
         padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 12px) 18px 16px",
         display: "flex",
         alignItems: "center",
@@ -106,8 +107,8 @@ export default function InstructorTopBar({
           <span
             style={{
               color: "#ffffff",
-              fontSize: 16,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.lg,
+              fontWeight: tokens.fontWeight.semibold,
               flex: 1,
               minWidth: 0,
               whiteSpace: "nowrap",
@@ -143,7 +144,7 @@ export default function InstructorTopBar({
           <IconBtn
             ariaLabel="Voice commands"
             onClick={onMicPress}
-            style={{ background: "#1877D6", width: 30, height: 30 }}
+            style={{ background: tokens.blue, width: 30, height: 30 }}
           >
             <IconMicrophone size={16} strokeWidth={1.8} color="#ffffff" />
           </IconBtn>
@@ -159,7 +160,7 @@ export default function InstructorTopBar({
               onClick={onPhone}
               style={
                 callsActive
-                  ? { background: "#1877D6" }
+                  ? { background: tokens.blue }
                   : undefined
               }
             >
@@ -205,10 +206,10 @@ export default function InstructorTopBar({
               position: "absolute",
               top: -2,
               right: -2,
-              background: "#CC2229",
+              background: tokens.red,
               color: "#ffffff",
-              fontSize: 10,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.xs,
+              fontWeight: tokens.fontWeight.semibold,
               minWidth: 17,
               height: 17,
               borderRadius: 8,

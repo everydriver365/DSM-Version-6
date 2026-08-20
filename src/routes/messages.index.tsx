@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import DSMSkeleton from "@/components/dsm/DSMSkeleton";
 import {
@@ -1124,11 +1125,11 @@ function MessagesIndexPage() {
         <h1
           style={{
             margin: 0,
-            color: "#FFFFFF",
+            color: tokens.white,
             fontFamily: "Sora, sans-serif",
-            fontSize: 22,
+            fontSize: tokens.fontSize.xxl,
             lineHeight: "40px",
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
           }}
         >
           Messages
@@ -1155,7 +1156,7 @@ function MessagesIndexPage() {
       </header>
 
       {view === "chat" ? (
-        <div style={{ flex: 1, minHeight: 0, background: "#FFFFFF" }}>
+        <div style={{ flex: 1, minHeight: 0, background: tokens.white }}>
           <LocalChatView
             areaName={areaName}
             room={room}
@@ -1180,7 +1181,7 @@ function MessagesIndexPage() {
           />
         </div>
       ) : view === "rooms" ? (
-        <div style={{ flex: 1, minHeight: 0, background: "#FFFFFF" }}>
+        <div style={{ flex: 1, minHeight: 0, background: tokens.white }}>
           <RoomBrowser
             rooms={browseRooms}
             joinedRoomIds={joinedRoomIds}
@@ -1199,7 +1200,7 @@ function MessagesIndexPage() {
             flex: 1,
             minHeight: 0,
             marginTop: -18,
-            background: "#FFFFFF",
+            background: tokens.white,
             borderRadius: "28px 28px 0 0",
             overflowY: "auto",
             overflowX: "hidden",
@@ -1332,7 +1333,7 @@ function MessagesIndexPage() {
                     border: 0,
                     outline: "none",
                     background: "transparent",
-                    fontSize: 14,
+                    fontSize: tokens.fontSize.md,
                     color: NAVY,
                     ...FONT,
                   }}
@@ -1366,12 +1367,12 @@ function MessagesIndexPage() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 6,
-                  background: "#FFFFFF",
+                  background: tokens.white,
                   border: `0.5px solid ${BORDER}`,
                   borderRadius: 8,
                   padding: "7px 14px",
-                  fontSize: 13,
-                  fontWeight: 500,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.medium,
                   color: NAVY,
                   cursor: "pointer",
                   ...FONT,
@@ -1395,7 +1396,7 @@ function MessagesIndexPage() {
                       alignItems: "center",
                       gap: 12,
                       padding: "14px 16px",
-                      background: "#FFFFFF",
+                      background: tokens.white,
                       borderRadius: 8,
                       boxShadow: "0 4px 0 #E4E4E8",
                     }}
@@ -1431,8 +1432,8 @@ function MessagesIndexPage() {
                 />
                 <div
                   style={{
-                    fontSize: 16,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.lg,
+                    fontWeight: tokens.fontWeight.semibold,
                     color: NAVY,
                     fontFamily: "Poppins, sans-serif",
                   }}
@@ -1441,7 +1442,7 @@ function MessagesIndexPage() {
                 </div>
                 <div
                   style={{
-                    fontSize: 14,
+                    fontSize: tokens.fontSize.md,
                     color: "#8A94A6",
                     marginTop: 4,
                     lineHeight: 1.5,
@@ -1480,8 +1481,8 @@ function MessagesIndexPage() {
                             <div key={s.label}>
                               <div
                                 style={{
-                                  fontSize: 10,
-                                  fontWeight: 600,
+                                  fontSize: tokens.fontSize.xs,
+                                  fontWeight: tokens.fontWeight.semibold,
                                   textTransform: "uppercase",
                                   letterSpacing: "0.12em",
                                   color: "#8A94A6",
@@ -1528,7 +1529,7 @@ function MessagesIndexPage() {
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              background: "#FFFFFF",
+              background: tokens.white,
               width: "100%",
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
@@ -1568,7 +1569,7 @@ function MessagesIndexPage() {
                 {
                   label: "Mark as unread",
                   icon: IconMail,
-                  color: "#1877D6",
+                  color: tokens.blue,
                   bold: true,
                   run: () => markUnread(menuItem),
                 },
@@ -1595,7 +1596,7 @@ function MessagesIndexPage() {
                   background: "none",
                   border: 0,
                   padding: "14px 20px",
-                  fontSize: 14,
+                  fontSize: tokens.fontSize.md,
                   color: a.bold ? a.color : "#0B1F3A",
                   fontWeight: a.bold ? 600 : 500,
                   cursor: "pointer",
@@ -1617,9 +1618,9 @@ function MessagesIndexPage() {
                 background: "none",
                 border: 0,
                 padding: "14px 20px",
-                fontSize: 14,
+                fontSize: tokens.fontSize.md,
                 color: RED,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 textAlign: "center",
                 fontFamily: "Poppins, sans-serif",
@@ -1636,7 +1637,7 @@ function MessagesIndexPage() {
           style={{
             position: "fixed",
             inset: 0,
-            background: "#FFFFFF",
+            background: tokens.white,
             zIndex: 100,
             display: "flex",
             flexDirection: "column",
@@ -1653,7 +1654,7 @@ function MessagesIndexPage() {
               borderBottom: `0.5px solid ${BORDER}`,
             }}
           >
-            <div style={{ fontSize: 16, fontWeight: 600, color: NAVY }}>New message</div>
+            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>New message</div>
             <button
               type="button"
               aria-label="Close"
@@ -1686,7 +1687,7 @@ function MessagesIndexPage() {
                 borderRadius: 8,
                 outline: "none",
                 padding: "10px 12px",
-                fontSize: 14,
+                fontSize: tokens.fontSize.md,
                 color: NAVY,
                 ...FONT,
               }}
@@ -1727,12 +1728,12 @@ function MessagesIndexPage() {
                       height: 44,
                       borderRadius: "50%",
                       background: BLUE,
-                      color: "#FFFFFF",
+                      color: tokens.white,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: 14,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.semibold,
                       flexShrink: 0,
                     }}
                   >
@@ -1740,7 +1741,7 @@ function MessagesIndexPage() {
                   </div>
                 )}
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>{r.name}</div>
+                  <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>{r.name}</div>
                   {r.home_postcode && (
                     <div style={{ fontSize: 12, color: GREY, marginTop: 2 }}>{r.home_postcode}</div>
                   )}
@@ -1748,7 +1749,7 @@ function MessagesIndexPage() {
               </div>
             ))}
             {searchQuery.trim().length >= 2 && searchResults.length === 0 && (
-              <div style={{ padding: "40px 24px", textAlign: "center", fontSize: 14, color: GREY }}>
+              <div style={{ padding: "40px 24px", textAlign: "center", fontSize: tokens.fontSize.md, color: GREY }}>
                 No instructors found
               </div>
             )}
@@ -1804,10 +1805,10 @@ function InboxRow({
       case "admin":
         return { label: "Admin", bg: "#EDEBFB", color: "#5B3FD9" };
       case "instructor":
-        return { label: "DSM", bg: "#E7F0FD", color: "#1877D6" };
+        return { label: "DSM", bg: "#E7F0FD", color: tokens.blue };
       case "pupil":
       default:
-        return { label: "Pupil", bg: "#E7F0FD", color: "#1877D6" };
+        return { label: "Pupil", bg: "#E7F0FD", color: tokens.blue };
     }
   })();
 
@@ -1851,9 +1852,9 @@ function InboxRow({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          color: "#FFFFFF",
-          fontSize: 16,
-          fontWeight: 700,
+          color: tokens.white,
+          fontSize: tokens.fontSize.lg,
+          fontWeight: tokens.fontWeight.bold,
         }}
       >
         {item.photo ? (
@@ -1882,7 +1883,7 @@ function InboxRow({
         >
           <div
             style={{
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               fontWeight: unread ? 700 : 500,
               color: NAVY,
               overflow: "hidden",
@@ -1895,7 +1896,7 @@ function InboxRow({
           </div>
           <div
             style={{
-              fontSize: 11,
+              fontSize: tokens.fontSize.sm,
               fontWeight: unread ? 700 : 500,
               color: unread ? BLUE : "#8A94A6",
               flexShrink: 0,
@@ -1907,7 +1908,7 @@ function InboxRow({
         </div>
         <div
           style={{
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
             color: "#5A6270",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -1921,8 +1922,8 @@ function InboxRow({
           <span
             style={{
               borderRadius: 8,
-              fontSize: 10,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.xs,
+              fontWeight: tokens.fontWeight.semibold,
               padding: "2px 8px",
               fontFamily: "Poppins, sans-serif",
               background: tag.bg,
@@ -1942,7 +1943,7 @@ function InboxRow({
               width: 7,
               height: 7,
               borderRadius: "50%",
-              background: "#1877D6",
+              background: tokens.blue,
               flexShrink: 0,
             }}
           />
@@ -2043,12 +2044,12 @@ function RoomBrowser({
             height: 56,
             borderRadius: "50%",
             background: NAVY,
-            color: "#FFFFFF",
+            color: tokens.white,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: 18,
-            fontWeight: 500,
+            fontSize: tokens.fontSize.xl,
+            fontWeight: tokens.fontWeight.medium,
             flexShrink: 0,
           }}
         >
@@ -2059,8 +2060,8 @@ function RoomBrowser({
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            fontSize: 16,
-            fontWeight: 500,
+            fontSize: tokens.fontSize.lg,
+            fontWeight: tokens.fontWeight.medium,
             color: NAVY,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -2071,7 +2072,7 @@ function RoomBrowser({
         </div>
         <div
           style={{
-            fontSize: 14,
+            fontSize: tokens.fontSize.md,
             color: GREY,
             marginTop: 2,
             display: "flex",
@@ -2084,10 +2085,10 @@ function RoomBrowser({
             {r.outcode}
           </span>
           {joinedRoomIds.has(r.id) && (
-            <span style={{ fontSize: 11, fontWeight: 600, color: BLUE }}>Joined</span>
+            <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: BLUE }}>Joined</span>
           )}
           {r.is_opt_in && (
-            <span style={{ fontSize: 11, fontWeight: 600, color: "#7C3AED" }}>Private</span>
+            <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: "#7C3AED" }}>Private</span>
           )}
         </div>
       </div>
@@ -2121,7 +2122,7 @@ function RoomBrowser({
   );
 
   return (
-    <div style={{ background: "#FFFFFF", minHeight: "60vh" }}>
+    <div style={{ background: tokens.white, minHeight: "60vh" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 16px 4px" }}>
         <button
           type="button"
@@ -2131,7 +2132,7 @@ function RoomBrowser({
         >
           <IconChevronLeft size={22} color={NAVY} stroke={1.8} />
         </button>
-        <div style={{ fontSize: 22, fontWeight: 500, color: NAVY }}>Find rooms</div>
+        <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.medium, color: NAVY }}>Find rooms</div>
       </div>
 
       <div style={{ padding: "8px 16px 12px" }}>
@@ -2155,7 +2156,7 @@ function RoomBrowser({
               border: 0,
               outline: "none",
               background: "transparent",
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               color: NAVY,
               ...FONT,
             }}
@@ -2175,7 +2176,7 @@ function RoomBrowser({
             style={{
               padding: "12px 16px 6px",
               fontSize: 12,
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
               letterSpacing: 0.6,
               textTransform: "uppercase",
               color: GREY,
@@ -2184,7 +2185,7 @@ function RoomBrowser({
             {label}
           </div>
           {list.length === 0 ? (
-            <div style={{ padding: "8px 16px 12px", fontSize: 13, color: GREY }}>
+            <div style={{ padding: "8px 16px 12px", fontSize: tokens.fontSize.base, color: GREY }}>
               {searching ? "No rooms match your search" : "None"}
             </div>
           ) : (
@@ -2298,8 +2299,8 @@ function LocalChatView(props: {
             cursor: "pointer",
           }}
         >
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{areaName} ▾</div>
-          <div style={{ fontSize: 11, color: "#9CA3AF" }}>
+          <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>{areaName} ▾</div>
+          <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted }}>
             {room?.instructor_count ?? 1} members
           </div>
         </button>
@@ -2319,7 +2320,7 @@ function LocalChatView(props: {
               left: 16,
               right: 16,
               zIndex: 41,
-              background: "#FFFFFF",
+              background: tokens.white,
               borderRadius: 8,
               border: "0.5px solid #E2E6ED",
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
@@ -2348,8 +2349,8 @@ function LocalChatView(props: {
                   flex: 1,
                   border: 0,
                   outline: "none",
-                  fontSize: 13,
-                  color: "#0B1F3A",
+                  fontSize: tokens.fontSize.base,
+                  color: tokens.navy,
                   background: "transparent",
                   ...FONT,
                 }}
@@ -2373,7 +2374,7 @@ function LocalChatView(props: {
             </div>
             <div style={{ overflowY: "auto" }}>
               {totalRooms === 0 ? (
-                <div style={{ padding: "12px 14px", fontSize: 12, color: "#9CA3AF" }}>
+                <div style={{ padding: "12px 14px", fontSize: 12, color: tokens.textMuted }}>
                   No rooms found
                 </div>
               ) : (
@@ -2388,11 +2389,11 @@ function LocalChatView(props: {
                       <div
                         style={{
                           padding: "8px 14px 4px",
-                          fontSize: 10,
-                          fontWeight: 700,
+                          fontSize: tokens.fontSize.xs,
+                          fontWeight: tokens.fontWeight.bold,
                           letterSpacing: 0.6,
                           textTransform: "uppercase",
-                          color: "#9CA3AF",
+                          color: tokens.textMuted,
                           background: "#FAFBFC",
                         }}
                       >
@@ -2417,8 +2418,8 @@ function LocalChatView(props: {
                             background: room?.id === r.id ? "#F2F7FF" : "#FFFFFF",
                             border: 0,
                             borderBottom: "0.5px solid #F0F2F6",
-                            fontSize: 13,
-                            color: "#0B1F3A",
+                            fontSize: tokens.fontSize.base,
+                            color: tokens.navy,
                             cursor: "pointer",
                             ...FONT,
                           }}
@@ -2433,7 +2434,7 @@ function LocalChatView(props: {
                             }}
                           >
                             {r.area_name || r.outcode}
-                            <span style={{ color: "#9CA3AF", fontSize: 11, marginLeft: 6 }}>
+                            <span style={{ color: tokens.textMuted, fontSize: tokens.fontSize.sm, marginLeft: 6 }}>
                               {r.outcode}
                             </span>
                           </span>
@@ -2442,8 +2443,8 @@ function LocalChatView(props: {
                               style={{
                                 background: "#F1F3F7",
                                 color: "#6B7280",
-                                fontSize: 10,
-                                fontWeight: 700,
+                                fontSize: tokens.fontSize.xs,
+                                fontWeight: tokens.fontWeight.bold,
                                 borderRadius: 999,
                                 padding: "2px 8px",
                                 flexShrink: 0,
@@ -2473,19 +2474,19 @@ function LocalChatView(props: {
           display: "flex",
           flexDirection: "column",
           gap: 4,
-          background: "#FFFFFF",
+          background: tokens.white,
         }}
       >
         {loading ? (
-          <div style={{ padding: 40, textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>
+          <div style={{ padding: 40, textAlign: "center", color: tokens.textMuted, fontSize: 13 }}>
             Loading…
           </div>
         ) : messages.length === 0 ? (
           <div style={{ padding: 40, textAlign: "center" }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#6B7280" }}>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: "#6B7280" }}>
               Be the first to chat in {areaName}!
             </div>
-            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>
+            <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 4 }}>
               Connect with local instructors, share tips
             </div>
           </div>
@@ -2505,8 +2506,8 @@ function LocalChatView(props: {
                 {showDate && (
                   <div
                     style={{
-                      fontSize: 11,
-                      color: "#9CA3AF",
+                      fontSize: tokens.fontSize.sm,
+                      color: tokens.textMuted,
                       textAlign: "center",
                       padding: "8px 0",
                     }}
@@ -2519,11 +2520,11 @@ function LocalChatView(props: {
                     <div style={{ maxWidth: "75%" }}>
                       <div
                         style={{
-                          background: "#0B1F3A",
-                          color: "#FFFFFF",
+                          background: tokens.navy,
+                          color: tokens.white,
                           borderRadius: "8px 8px 8px 8px",
                           padding: "10px 14px",
-                          fontSize: 13,
+                          fontSize: tokens.fontSize.base,
                           lineHeight: 1.35,
                           wordBreak: "break-word",
                         }}
@@ -2531,7 +2532,7 @@ function LocalChatView(props: {
                         {highlight(msg.message)}
                       </div>
                       <div
-                        style={{ fontSize: 10, color: "#9CA3AF", textAlign: "right", marginTop: 2 }}
+                        style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted, textAlign: "right", marginTop: 2 }}
                       >
                         {time}
                       </div>
@@ -2558,8 +2559,8 @@ function LocalChatView(props: {
                           height: 32,
                           borderRadius: "50%",
                           background: "#1A52A0",
-                          color: "#FFFFFF",
-                          fontWeight: 700,
+                          color: tokens.white,
+                          fontWeight: tokens.fontWeight.bold,
                           fontSize: 12,
                           display: "flex",
                           alignItems: "center",
@@ -2572,26 +2573,26 @@ function LocalChatView(props: {
                     )}
                     <div style={{ maxWidth: "75%" }}>
                       <div
-                        style={{ fontSize: 10, color: "#9CA3AF", fontWeight: 600, marginBottom: 2 }}
+                        style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted, fontWeight: tokens.fontWeight.semibold, marginBottom: 2 }}
                       >
                         {firstName(msg.instructors?.name)}
                       </div>
                       <div
                         style={{
-                          background: "#FFFFFF",
+                          background: tokens.white,
                           border: "0.5px solid #E2E6ED",
                           borderRadius: "8px 8px 8px 8px",
                           padding: "10px 14px",
-                          fontSize: 13,
+                          fontSize: tokens.fontSize.base,
                           lineHeight: 1.35,
-                          color: "#0B1F3A",
+                          color: tokens.navy,
                           wordBreak: "break-word",
                         }}
                       >
                         {highlight(msg.message)}
                       </div>
                       <div style={{ display: "flex", gap: 8, marginTop: 2, alignItems: "center" }}>
-                        <span style={{ fontSize: 10, color: "#9CA3AF" }}>{time}</span>
+                        <span style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted }}>{time}</span>
                         <button
                           type="button"
                           aria-label="Flag message"
@@ -2620,7 +2621,7 @@ function LocalChatView(props: {
       {/* Input */}
       <div
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           borderTop: "0.5px solid #E2E6ED",
           padding: "12px 16px",
           paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
@@ -2635,9 +2636,9 @@ function LocalChatView(props: {
             height: 28,
             borderRadius: "50%",
             background: "#1A52A0",
-            color: "#FFFFFF",
-            fontWeight: 700,
-            fontSize: 11,
+            color: tokens.white,
+            fontWeight: tokens.fontWeight.bold,
+            fontSize: tokens.fontSize.sm,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -2662,9 +2663,9 @@ function LocalChatView(props: {
             border: "0.5px solid #E2E6ED",
             borderRadius: 8,
             padding: "10px 14px",
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
             outline: "none",
-            color: "#0B1F3A",
+            color: tokens.navy,
             ...FONT,
           }}
         />
@@ -2675,7 +2676,7 @@ function LocalChatView(props: {
           onClick={onSend}
           style={{
             background: newMessage.trim() ? "#0B1F3A" : "#B0BAC9",
-            color: "#FFFFFF",
+            color: tokens.white,
             border: 0,
             width: 36,
             height: 36,
@@ -2807,8 +2808,8 @@ function AdminJobThreadSheet({
           }}
         >
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>Job thread</div>
-            <div style={{ fontSize: 11, color: "#8A93A3" }}>{jobLabel || "…"}</div>
+            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>Job thread</div>
+            <div style={{ fontSize: tokens.fontSize.sm, color: "#8A93A3" }}>{jobLabel || "…"}</div>
           </div>
           <button
             onClick={onClose}
@@ -2830,11 +2831,11 @@ function AdminJobThreadSheet({
           }}
         >
           {messages === null ? (
-            <div style={{ color: "#8A93A3", fontSize: 13, textAlign: "center", padding: 20 }}>
+            <div style={{ color: "#8A93A3", fontSize: tokens.fontSize.base, textAlign: "center", padding: 20 }}>
               Loading…
             </div>
           ) : messages.length === 0 ? (
-            <div style={{ color: "#8A93A3", fontSize: 13, textAlign: "center", padding: 20 }}>
+            <div style={{ color: "#8A93A3", fontSize: tokens.fontSize.base, textAlign: "center", padding: 20 }}>
               No messages yet.
             </div>
           ) : (
@@ -2854,13 +2855,13 @@ function AdminJobThreadSheet({
                       color,
                       borderRadius: 8,
                       padding: "8px 12px",
-                      fontSize: 14,
+                      fontSize: tokens.fontSize.md,
                       boxShadow: mine ? "none" : "0 1px 2px rgba(0,0,0,0.05)",
                     }}
                   >
                     <div
                       style={{
-                        fontSize: 10,
+                        fontSize: tokens.fontSize.xs,
                         opacity: 0.7,
                         marginBottom: 2,
                         textTransform: "uppercase",
@@ -2872,7 +2873,7 @@ function AdminJobThreadSheet({
                     <div style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
                       {m.message}
                     </div>
-                    <div style={{ fontSize: 10, opacity: 0.7, marginTop: 2, textAlign: "right" }}>
+                    <div style={{ fontSize: tokens.fontSize.xs, opacity: 0.7, marginTop: 2, textAlign: "right" }}>
                       {fmtTime(m.created_at)}
                     </div>
                   </div>
@@ -2904,7 +2905,7 @@ function AdminJobThreadSheet({
               border: "none",
               borderRadius: 8,
               padding: "10px 14px",
-              fontSize: 16,
+              fontSize: tokens.fontSize.lg,
               outline: "none",
               ...FONT,
             }}
@@ -2913,7 +2914,7 @@ function AdminJobThreadSheet({
             onClick={send}
             disabled={!draft.trim() || sending}
             style={{
-              background: "#1877D6",
+              background: tokens.blue,
               color: "#fff",
               border: "none",
               borderRadius: 8,

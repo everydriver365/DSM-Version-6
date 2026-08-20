@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -51,7 +52,7 @@ function Card({
   return (
     <div
       style={{
-        background: "#FFFFFF",
+        background: tokens.white,
         borderRadius: 8,
         border: BORDER,
         padding: 16,
@@ -83,7 +84,7 @@ function Chip({
         background: bg,
         color,
         fontSize: 12,
-        fontWeight: 600,
+        fontWeight: tokens.fontWeight.semibold,
         lineHeight: 1.2,
       }}
     >
@@ -94,7 +95,7 @@ function Chip({
 
 function EmptyLine({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ ...POPPINS, fontSize: 13, color: MUTED }}>{children}</div>
+    <div style={{ ...POPPINS, fontSize: tokens.fontSize.base, color: MUTED }}>{children}</div>
   );
 }
 
@@ -201,13 +202,13 @@ function PupilBriefPage() {
               style={{
                 background: "linear-gradient(135deg, #0F2044 0%, #1A52A0 100%)",
                 border: "none",
-                color: "#FFFFFF",
+                color: tokens.white,
               }}
             >
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.6, opacity: 0.75 }}>
+              <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, letterSpacing: 0.6, opacity: 0.75 }}>
                 10-SECOND BRIEF
               </div>
-              <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4 }}>
+              <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.bold, marginTop: 4 }}>
                 {pupil.name || firstName || "Pupil"}
               </div>
 
@@ -218,8 +219,8 @@ function PupilBriefPage() {
                     alignItems: "center",
                     gap: 8,
                     marginTop: 10,
-                    fontSize: 13,
-                    fontWeight: 500,
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.medium,
                     opacity: 0.95,
                   }}
                 >
@@ -237,7 +238,7 @@ function PupilBriefPage() {
                     alignItems: "center",
                     gap: 8,
                     marginTop: 6,
-                    fontSize: 13,
+                    fontSize: tokens.fontSize.base,
                     opacity: 0.9,
                   }}
                 >
@@ -252,7 +253,7 @@ function PupilBriefPage() {
                   alignItems: "center",
                   gap: 8,
                   marginTop: 6,
-                  fontSize: 13,
+                  fontSize: tokens.fontSize.base,
                   opacity: 0.9,
                 }}
               >
@@ -271,7 +272,7 @@ function PupilBriefPage() {
                         borderRadius: 999,
                         background: "rgba(255,255,255,0.16)",
                         fontSize: 12,
-                        fontWeight: 600,
+                        fontWeight: tokens.fontWeight.semibold,
                       }}
                     >
                       Continue: {p.label}
@@ -288,7 +289,7 @@ function PupilBriefPage() {
                     borderRadius: 8,
                     background: "rgba(255,255,255,0.14)",
                     fontSize: 12.5,
-                    fontWeight: 600,
+                    fontWeight: tokens.fontWeight.semibold,
                   }}
                 >
                   Test {testDaysAway === 0 ? "today" : `in ${testDaysAway} day${testDaysAway === 1 ? "" : "s"}`}
@@ -302,7 +303,7 @@ function PupilBriefPage() {
             {data?.lastLesson || data?.lastHistory ? (
               <Card>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>
+                  <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY }}>
                     {fmtDate(data.lastLesson?.lesson_date ?? data.lastHistory?.lesson_date)}
                   </div>
                   <div style={{ fontSize: 12.5, color: MUTED }}>
@@ -349,7 +350,7 @@ function PupilBriefPage() {
                       padding: 10,
                       borderRadius: 8,
                       background: "#F3FAE9",
-                      fontSize: 13,
+                      fontSize: tokens.fontSize.base,
                       color: "#3F6212",
                       lineHeight: 1.45,
                     }}
@@ -396,7 +397,7 @@ function PupilBriefPage() {
 
                 {roads.length > 0 ? (
                   <>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: NAVY, marginTop: 12 }}>
+                    <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 12 }}>
                       Roads driven last lesson
                     </div>
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
@@ -411,7 +412,7 @@ function PupilBriefPage() {
 
                 {areas.length > 0 ? (
                   <>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: NAVY, marginTop: 14 }}>
+                    <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 14 }}>
                       Areas practised recently
                     </div>
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
@@ -432,7 +433,7 @@ function PupilBriefPage() {
             {/* ---------- Covered last time ---------- */}
             <SectionHeader>COVERED LAST TIME</SectionHeader>
             <Card>
-              <div style={{ fontSize: 12, fontWeight: 700, color: NAVY }}>Manoeuvres</div>
+              <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: NAVY }}>Manoeuvres</div>
               <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
                 {covered.manoeuvres.length > 0 ? (
                   covered.manoeuvres.map((m) => (
@@ -443,7 +444,7 @@ function PupilBriefPage() {
                 )}
               </div>
 
-              <div style={{ fontSize: 12, fontWeight: 700, color: NAVY, marginTop: 14 }}>Topics</div>
+              <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 14 }}>Topics</div>
               <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
                 {covered.topics.length > 0 ? (
                   covered.topics.map((t) => <Chip key={t} label={t} />)
@@ -472,7 +473,7 @@ function PupilBriefPage() {
                     >
                       <IconSteeringWheel size={18} color={meta.color} />
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>{p.label}</div>
+                        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>{p.label}</div>
                         <div style={{ fontSize: 12, color: MUTED }}>{LEVEL_LABEL[p.status]}</div>
                       </div>
                       <Chip label={meta.verdict} color={meta.color} bg={meta.bg} />
@@ -494,10 +495,10 @@ function PupilBriefPage() {
                   padding: "10px 12px",
                   borderRadius: 8,
                   border: `1px solid ${BLUE}`,
-                  background: "#FFFFFF",
+                  background: tokens.white,
                   color: BLUE,
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
                   cursor: "pointer",
                 }}
               >
@@ -532,7 +533,7 @@ function PupilBriefPage() {
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <IconTrophy size={20} color="#B45309" />
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>
+                      <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: NAVY }}>
                         {fmtDate(pupil.test_date)}
                         {pupil.test_time ? ` · ${fmtTime(pupil.test_time)}` : ""}
                       </div>
@@ -550,7 +551,7 @@ function PupilBriefPage() {
                         borderRadius: 8,
                         background: "#FFF8EB",
                         color: "#B45309",
-                        fontSize: 13,
+                        fontSize: tokens.fontSize.base,
                         lineHeight: 1.45,
                       }}
                     >
@@ -575,9 +576,9 @@ function PupilBriefPage() {
                       borderRadius: 8,
                       border: "none",
                       background: BLUE,
-                      color: "#FFFFFF",
-                      fontSize: 13,
-                      fontWeight: 600,
+                      color: tokens.white,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.semibold,
                       cursor: "pointer",
                     }}
                   >
@@ -632,7 +633,7 @@ function PupilBriefPage() {
                       }}
                     >
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>
+                        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>
                           {fmtDate(l.lesson_date)}
                           {l.duration_minutes ? ` · ${l.duration_minutes} min` : ""}
                         </div>

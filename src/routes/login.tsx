@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useState, useEffect, useRef, type FormEvent } from "react";
 import { IconCheck, IconEye, IconEyeOff, IconScan } from "@tabler/icons-react";
 import { Button } from "../components/dsm/Button";
@@ -237,7 +238,7 @@ function LoginPage() {
             padding: 16,
             color: "#fff",
             fontSize: 15.5,
-            fontWeight: 600,
+            fontWeight: tokens.fontWeight.semibold,
           }}
         >
           <IconScan size={20} />
@@ -262,7 +263,7 @@ function LoginPage() {
               type="button"
               onClick={enableFaceId}
               className="flex-1 h-10 rounded-lg text-[14px] font-medium text-white"
-              style={{ background: "#1877D6", fontFamily: "Poppins, sans-serif" }}
+              style={{ background: tokens.blue, fontFamily: "Poppins, sans-serif" }}
             >
               Enable
             </button>
@@ -377,7 +378,7 @@ function LoginPage() {
                 persistRemember(email, on);
               }}
               className="flex items-center gap-2 cursor-pointer select-none"
-              style={{ fontFamily: "Poppins, sans-serif", fontSize: 14, fontWeight: 500, color: "#000" }}
+              style={{ fontFamily: "Poppins, sans-serif", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: "#000" }}
             >
               <div
                 style={{

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { IconClipboardCheck, IconMicrophone, IconMicrophoneOff, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
@@ -141,7 +142,7 @@ function StatCard({ label, value, tone }: { label: string; value: string; tone?:
     <div
       className="flex-1"
       style={{
-        backgroundColor: "#FFFFFF",
+        backgroundColor: tokens.white,
         border: "0.5px solid #E2E6ED",
         borderRadius: 8,
         padding: 12,
@@ -319,7 +320,7 @@ function MockTestsPage() {
     <>
     <DSMTopSheet title="Mock Tests"
       onBack={() => navigate({ to: "/pupils/$id", params: { id: pupilId } } as never)}>
-      <div className="min-h-screen" style={{ backgroundColor: "#FFFFFF", ...INTER }}>
+      <div className="min-h-screen" style={{ backgroundColor: tokens.white, ...INTER }}>
       {/* Actions row */}
       <div className="flex justify-end px-4 pt-3">
         <button
@@ -329,7 +330,7 @@ function MockTestsPage() {
             setAddOpen(true);
           }}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
         >
           <IconPlus size={15} />
           Record mock test
@@ -356,7 +357,7 @@ function MockTestsPage() {
             height: 44,
             borderRadius: 8,
             backgroundColor: "#0F2044",
-            color: "#FFFFFF",
+            color: tokens.white,
             border: "none",
             ...INTER,
           }}
@@ -370,7 +371,7 @@ function MockTestsPage() {
         <div className="px-4 pb-2">
           <div
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: tokens.white,
               border: "0.5px solid #E2E6ED",
               borderRadius: 8,
               padding: 12,
@@ -383,8 +384,8 @@ function MockTestsPage() {
               <ResponsiveContainer>
                 <LineChart data={chartData} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#EEF2F7" />
-                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#6B7280" }} />
-                  <YAxis tick={{ fontSize: 10, fill: "#6B7280" }} allowDecimals={false} />
+                  <XAxis dataKey="date" tick={{ fontSize: tokens.fontSize.xs, fill: "#6B7280" }} />
+                  <YAxis tick={{ fontSize: tokens.fontSize.xs, fill: "#6B7280" }} allowDecimals={false} />
                   <Tooltip />
                   <Line
                     type="monotone"
@@ -423,7 +424,7 @@ function MockTestsPage() {
                 key={t.id}
                 onClick={() => setExpandedId(isOpen ? null : t.id)}
                 style={{
-                  backgroundColor: "#FFFFFF",
+                  backgroundColor: tokens.white,
                   border: "0.5px solid #E2E6ED",
                   borderRadius: 8,
                   padding: 16,
@@ -498,7 +499,7 @@ function MockTestsPage() {
           <div
             className="w-full"
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: tokens.white,
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
               maxHeight: "88vh",

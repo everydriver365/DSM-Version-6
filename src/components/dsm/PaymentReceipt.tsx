@@ -1,4 +1,5 @@
 import { IconPrinter, IconCheck, IconX } from "@tabler/icons-react";
+import { tokens } from "@/lib/tokens";
 import { useEffect } from "react";
 import type { RecordPaymentResult } from "@/lib/payments";
 
@@ -119,11 +120,11 @@ export function PaymentReceipt({
           style={{
             padding: "8px 14px",
             borderRadius: 8,
-            backgroundColor: "#1877D6",
+            backgroundColor: tokens.blue,
             color: "#fff",
             border: "none",
-            fontWeight: 600,
-            fontSize: 14,
+            fontWeight: tokens.fontWeight.semibold,
+            fontSize: tokens.fontSize.md,
             cursor: "pointer",
           }}
         >
@@ -174,7 +175,7 @@ export function PaymentReceipt({
           >
             <IconCheck stroke={1.5} size={24} color="#1877D6" />
           </div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: "#0B1F3A" }}>
+          <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy }}>
             Payment received
           </div>
           <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
@@ -194,12 +195,12 @@ export function PaymentReceipt({
             style={{
               display: "flex",
               justifyContent: "space-between",
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               padding: "4px 0",
             }}
           >
             <span style={{ color: "#6B7280" }}>Pupil</span>
-            <span style={{ color: "#0B1F3A", fontWeight: 600, textAlign: "right" }}>
+            <span style={{ color: tokens.navy, fontWeight: tokens.fontWeight.semibold, textAlign: "right" }}>
               {pupilName}
             </span>
           </div>
@@ -207,12 +208,12 @@ export function PaymentReceipt({
             style={{
               display: "flex",
               justifyContent: "space-between",
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               padding: "4px 0",
             }}
           >
             <span style={{ color: "#6B7280" }}>Lesson</span>
-            <span style={{ color: "#0B1F3A", fontWeight: 600, textAlign: "right" }}>
+            <span style={{ color: tokens.navy, fontWeight: tokens.fontWeight.semibold, textAlign: "right" }}>
               {formatDate(lessonDate)} · {startTime}
             </span>
           </div>
@@ -220,12 +221,12 @@ export function PaymentReceipt({
             style={{
               display: "flex",
               justifyContent: "space-between",
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               padding: "4px 0",
             }}
           >
             <span style={{ color: "#6B7280" }}>Duration</span>
-            <span style={{ color: "#0B1F3A", fontWeight: 600, textAlign: "right" }}>
+            <span style={{ color: tokens.navy, fontWeight: tokens.fontWeight.semibold, textAlign: "right" }}>
               {durationMinutes} minutes
             </span>
           </div>
@@ -239,8 +240,8 @@ export function PaymentReceipt({
             marginBottom: 16,
           }}
         >
-          <span style={{ fontSize: 14, color: "#6B7280" }}>Lesson cost</span>
-          <span style={{ fontSize: 18, color: "#0B1F3A", fontWeight: 700 }}>
+          <span style={{ fontSize: tokens.fontSize.md, color: "#6B7280" }}>Lesson cost</span>
+          <span style={{ fontSize: tokens.fontSize.xl, color: tokens.navy, fontWeight: 700 }}>
             £{lessonCost.toFixed(2)}
           </span>
         </div>
@@ -257,12 +258,12 @@ export function PaymentReceipt({
             style={{
               display: "flex",
               justifyContent: "space-between",
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               padding: "4px 0",
             }}
           >
             <span style={{ color: "#6B7280" }}>Amount paid</span>
-            <span style={{ color: "#0B1F3A", fontWeight: 700 }}>
+            <span style={{ color: tokens.navy, fontWeight: 700 }}>
               £{amountPaid.toFixed(2)}
             </span>
           </div>
@@ -270,12 +271,12 @@ export function PaymentReceipt({
             style={{
               display: "flex",
               justifyContent: "space-between",
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               padding: "4px 0",
             }}
           >
             <span style={{ color: "#6B7280" }}>Method</span>
-            <span style={{ color: "#0B1F3A", fontWeight: 600 }}>
+            <span style={{ color: tokens.navy, fontWeight: 600 }}>
               {formatMethod(method)}
             </span>
           </div>
@@ -285,12 +286,12 @@ export function PaymentReceipt({
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  fontSize: 13,
+                  fontSize: tokens.fontSize.base,
                   padding: "4px 0",
                 }}
               >
                 <span style={{ color: "#6B7280" }}>Applied to lesson</span>
-                <span style={{ color: "#0B1F3A", fontWeight: 600 }}>
+                <span style={{ color: tokens.navy, fontWeight: 600 }}>
                   £{result.amountApplied.toFixed(2)}
                 </span>
               </div>
@@ -299,12 +300,12 @@ export function PaymentReceipt({
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    fontSize: 13,
+                    fontSize: tokens.fontSize.base,
                     padding: "4px 0",
                   }}
                 >
                   <span style={{ color: "#6B7280" }}>Overpayment / credit</span>
-                  <span style={{ color: "#0B1F3A", fontWeight: 600 }}>
+                  <span style={{ color: tokens.navy, fontWeight: 600 }}>
                     £{result.overpayment.toFixed(2)}
                   </span>
                 </div>
@@ -313,15 +314,15 @@ export function PaymentReceipt({
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  fontSize: 13,
+                  fontSize: tokens.fontSize.base,
                   padding: "4px 0",
                 }}
               >
                 <span style={{ color: "#6B7280" }}>Account balance</span>
-                <span style={{ color: "#0B1F3A", fontWeight: 600 }}>
+                <span style={{ color: tokens.navy, fontWeight: 600 }}>
                   {result.newAccountBalance >= 0 ? "+" : "−"}
                   £{Math.abs(result.newAccountBalance).toFixed(2)}
-                  <span style={{ color: "#6B7280", fontWeight: 400, marginLeft: 4 }}>
+                  <span style={{ color: "#6B7280", fontWeight: tokens.fontWeight.regular, marginLeft: 4 }}>
                     {result.newAccountBalance > 0
                       ? "credit"
                       : result.newAccountBalance < 0
@@ -334,12 +335,12 @@ export function PaymentReceipt({
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  fontSize: 13,
+                  fontSize: tokens.fontSize.base,
                   padding: "4px 0",
                 }}
               >
                 <span style={{ color: "#6B7280" }}>Lessons fully paid</span>
-                <span style={{ color: "#0B1F3A", fontWeight: 600 }}>
+                <span style={{ color: tokens.navy, fontWeight: 600 }}>
                   {result.lessonsFullyPaid}
                 </span>
               </div>
@@ -348,12 +349,12 @@ export function PaymentReceipt({
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    fontSize: 13,
+                    fontSize: tokens.fontSize.base,
                     padding: "4px 0",
                   }}
                 >
                   <span style={{ color: "#6B7280" }}>Left partially paid</span>
-                  <span style={{ color: "#0B1F3A", fontWeight: 600 }}>
+                  <span style={{ color: tokens.navy, fontWeight: 600 }}>
                     {result.lessonsLeftPartial}
                   </span>
                 </div>
@@ -368,9 +369,9 @@ export function PaymentReceipt({
           </div>
           <div
             style={{
-              fontSize: 14,
-              fontWeight: 700,
-              color: "#0B1F3A",
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.bold,
+              color: tokens.navy,
               marginTop: 2,
             }}
           >

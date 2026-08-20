@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   IconChevronLeft,
@@ -139,12 +140,12 @@ function Avatar({
         height: 28,
         borderRadius: "50%",
         background: bg,
-        color: "#FFFFFF",
+        color: tokens.white,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontSize: 11,
-        fontWeight: 600,
+        fontSize: tokens.fontSize.sm,
+        fontWeight: tokens.fontWeight.semibold,
         flexShrink: 0,
         ...POPPINS,
       }}
@@ -234,9 +235,9 @@ function DeliveryIndicator({
           background: "transparent",
           border: "none",
           padding: 0,
-          fontSize: 10,
-          fontWeight: 600,
-          color: "#CC2229",
+          fontSize: tokens.fontSize.xs,
+          fontWeight: tokens.fontWeight.semibold,
+          color: tokens.red,
           cursor: "pointer",
         }}
       >
@@ -662,7 +663,7 @@ function InstructorDMThread() {
     <div
       style={{
         height: "100dvh",
-        background: "#FFFFFF",
+        background: tokens.white,
         display: "flex",
         flexDirection: "column",
         ...POPPINS,
@@ -705,8 +706,8 @@ function InstructorDMThread() {
             <div
               style={{
                 fontSize: 15,
-                fontWeight: 600,
-                color: "#FFFFFF",
+                fontWeight: tokens.fontWeight.semibold,
+                color: tokens.white,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
@@ -714,7 +715,7 @@ function InstructorDMThread() {
             >
               {otherInstructor?.name ?? "Instructor"}
             </div>
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.6)" }}>
+            <div style={{ fontSize: tokens.fontSize.sm, color: "rgba(255,255,255,0.6)" }}>
               DSM Instructor
             </div>
           </div>
@@ -763,7 +764,7 @@ function InstructorDMThread() {
             }}
           >
             <Avatar person={otherInstructor} bg={BLUE} />
-            <div style={{ fontSize: 13, color: GREY }}>
+            <div style={{ fontSize: tokens.fontSize.base, color: GREY }}>
               Start a conversation with{" "}
               {otherInstructor?.name ?? "this instructor"}
             </div>
@@ -791,8 +792,8 @@ function InstructorDMThread() {
                     <div style={{ flex: 1, height: 0.5, background: BORDER }} />
                     <div
                       style={{
-                        fontSize: 10,
-                        fontWeight: 600,
+                        fontSize: tokens.fontSize.xs,
+                        fontWeight: tokens.fontWeight.semibold,
                         color: MUTED,
                         letterSpacing: 0.4,
                       }}
@@ -824,8 +825,8 @@ function InstructorDMThread() {
                     {!g.mine && (
                       <div
                         style={{
-                          fontSize: 11,
-                          fontWeight: 600,
+                          fontSize: tokens.fontSize.sm,
+                          fontWeight: tokens.fontWeight.semibold,
                           color: GREY,
                           marginBottom: 1,
                         }}
@@ -857,7 +858,7 @@ function InstructorDMThread() {
                         >
                           <div
                             style={{
-                              fontSize: 13,
+                              fontSize: tokens.fontSize.base,
                               color: g.mine ? "#FFFFFF" : NAVY,
                               whiteSpace: "pre-wrap",
                               wordBreak: "break-word",
@@ -873,7 +874,7 @@ function InstructorDMThread() {
                         display: "flex",
                         alignItems: "center",
                         gap: 4,
-                        fontSize: 10,
+                        fontSize: tokens.fontSize.xs,
                         color: "#B0B8C4",
                         marginTop: 1,
                       }}
@@ -899,7 +900,7 @@ function InstructorDMThread() {
             <Avatar person={otherInstructor} bg={NAVY} />
             <div
               style={{
-                background: "#EEF2F7",
+                background: tokens.canvas,
                 borderRadius: "8px 8px 8px 8px",
                 padding: "11px 14px",
                 display: "flex",
@@ -914,7 +915,7 @@ function InstructorDMThread() {
                     width: 6,
                     height: 6,
                     borderRadius: "50%",
-                    background: "#9CA3AF",
+                    background: tokens.textMuted,
                     display: "inline-block",
                     animation: "dsmtyping 1.2s infinite ease-in-out",
                     animationDelay: `${i * 0.18}s`,
@@ -932,7 +933,7 @@ function InstructorDMThread() {
       <div
         style={{
           flexShrink: 0,
-          background: "#FFFFFF",
+          background: tokens.white,
           borderTop: `0.5px solid ${BORDER}`,
           padding: "10px 16px",
           paddingBottom: "calc(10px + env(safe-area-inset-bottom, 0px))",
@@ -978,12 +979,12 @@ function InstructorDMThread() {
           placeholder={`Message ${other}...`}
           style={{
             flex: 1,
-            background: "#EEF2F7",
+            background: tokens.canvas,
             border: 0,
             outline: "none",
             borderRadius: 8,
             padding: "10px 14px",
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
             color: NAVY,
             resize: "none",
             maxHeight: 100,

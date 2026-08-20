@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconChevronLeft, IconChevronRight, IconCloud, IconCloudFog, IconCloudRain, IconCloudSnow, IconCloudStorm, IconCurrencyPound, IconEye, IconFileText, IconGasStation, IconInbox, IconNavigation, IconPhone, IconSchool, IconSun, IconTool, IconWind } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -222,15 +223,15 @@ function BriefingPage() {
       {/* Date bar */}
       <div
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           padding: "8px 16px",
           display: "flex",
           justifyContent: "flex-end",
           alignItems: "center",
           borderBottom: "1px solid #EEF2F7",
-          color: "#0B1F3A",
-          fontSize: 13,
-          fontWeight: 500,
+          color: tokens.navy,
+          fontSize: tokens.fontSize.base,
+          fontWeight: tokens.fontWeight.medium,
           ...POPPINS,
         }}
       >
@@ -239,15 +240,15 @@ function BriefingPage() {
 
       {/* Greeting */}
       <div style={{
-        backgroundColor: "#0B1F3A", margin: "12px 16px 0", borderRadius: 8, padding: 16,
+        backgroundColor: tokens.navy, margin: "12px 16px 0", borderRadius: 8, padding: 16,
       }}>
         <div style={{ color: "#fff", fontSize: 20, fontWeight: 600 }}>
           {greetingFor(now)}, {firstName}
         </div>
-        <div style={{ color: "#9CA3AF", fontSize: 13, marginTop: 4 }}>
+        <div style={{ color: tokens.textMuted, fontSize: tokens.fontSize.base, marginTop: 4 }}>
           {formatLongDate(now)}
         </div>
-        <div style={{ color: "#9CA3AF", fontSize: 13, marginTop: 4 }}>
+        <div style={{ color: tokens.textMuted, fontSize: tokens.fontSize.base, marginTop: 4 }}>
           {loading ? "Loading lessons…" : `You have ${lessons.length} lesson${lessons.length === 1 ? "" : "s"} today`}
         </div>
       </div>
@@ -269,10 +270,10 @@ function BriefingPage() {
                   <W.Icon size={26} color="#1877D6" />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: "#0B1F3A" }}>
+                  <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
                     {weather.temp}°C
                   </div>
-                  <div style={{ fontSize: 13, color: "#6B7280" }}>{W.label}</div>
+                  <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280" }}>{W.label}</div>
                 </div>
               </div>
               <div style={{
@@ -310,14 +311,14 @@ function BriefingPage() {
               <Card key={l.id} style={{ padding: 12 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <div style={{
-                    fontSize: 16, fontWeight: 800, color: "#0B1F3A",
+                    fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy,
                     minWidth: 52,
                   }}>
                     {formatTime(l.lesson_time)}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{
-                      fontSize: 14, fontWeight: 600, color: "#0B1F3A",
+                      fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy,
                       overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                     }}>
                       {l.pupils?.name ?? "Pupil"}
@@ -327,7 +328,7 @@ function BriefingPage() {
                     </div>
                   </div>
                   <span style={{
-                    background: statusColor(l.status), color: "#fff", fontSize: 10, fontWeight: 700,
+                    background: statusColor(l.status), color: "#fff", fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold,
                     padding: "2px 6px", borderRadius: 8, textTransform: "uppercase", letterSpacing: 0.4,
                   }}>
                     {l.status}
@@ -340,7 +341,7 @@ function BriefingPage() {
                     style={{
                       flex: 1, height: 36, borderRadius: 8,
                       background: l.pupils?.phone ? "#1877D6" : "#cbd5e1",
-                      color: "#fff", fontSize: 13, fontWeight: 600,
+                      color: "#fff", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold,
                       display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
                       textDecoration: "none", pointerEvents: l.pupils?.phone ? "auto" : "none",
                     }}
@@ -351,8 +352,8 @@ function BriefingPage() {
                     onClick={() => navigate({ to: "/satnav" })}
                     style={{
                       flex: 1, height: 36, borderRadius: 8,
-                      background: "#fff", color: "#1877D6",
-                      border: "1px solid #1877D6", fontSize: 13, fontWeight: 600,
+                      background: "#fff", color: tokens.blue,
+                      border: "1px solid #1877D6", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold,
                       display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
                       cursor: "pointer", fontFamily: "Poppins, sans-serif",
                     }}
@@ -384,14 +385,14 @@ function BriefingPage() {
               }}>
                 {r.icon}
               </div>
-              <div style={{ flex: 1, fontSize: 14, color: "#0B1F3A", fontWeight: 500 }}>
+              <div style={{ flex: 1, fontSize: tokens.fontSize.md, color: tokens.navy, fontWeight: 500 }}>
                 {r.label}
               </div>
               <span style={{
                 minWidth: 24, height: 22, padding: "0 8px", borderRadius: 8,
                 background: r.count > 0 ? "#1877D6" : "#EEF2F7",
                 color: r.count > 0 ? "#fff" : "#6B7280",
-                fontSize: 12, fontWeight: 700,
+                fontSize: 12, fontWeight: tokens.fontWeight.bold,
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
                 {r.count}
@@ -418,7 +419,7 @@ function BriefingPage() {
               <IconTool size={18} color="#5B21B6" />
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+              <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
                 {nextService ? nextService.type : "Next service"}
               </div>
               <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
@@ -434,12 +435,12 @@ function BriefingPage() {
             padding: "12px 14px", borderTop: "0.5px solid #EEF2F7",
           }}>
             <div style={{
-              width: 32, height: 32, borderRadius: 8, background: "#EEF2F7",
+              width: 32, height: 32, borderRadius: 8, background: tokens.canvas,
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
               <IconGasStation size={18} color="#0B1F3A" />
             </div>
-            <div style={{ flex: 1, fontSize: 13, color: "#0B1F3A" }}>
+            <div style={{ flex: 1, fontSize: tokens.fontSize.base, color: tokens.navy }}>
               Remember to check fuel before lessons
             </div>
           </div>

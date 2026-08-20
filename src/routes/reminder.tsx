@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconSearch } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -117,7 +118,7 @@ function ReminderPage() {
             type="button"
             onClick={toggleAll}
             className="text-[12px] font-medium mt-4"
-            style={{ color: "#1877D6" }}
+            style={{ color: tokens.blue }}
           >
             {allVisibleSelected ? "Deselect all" : "Select all"}
           </button>
@@ -139,7 +140,7 @@ function ReminderPage() {
               fontFamily: "Poppins, sans-serif",
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#EEF2F7",
+              borderColor: tokens.canvas,
             }}
           />
         </div>
@@ -190,7 +191,7 @@ function ReminderPage() {
                       width: 32,
                       height: 32,
                       borderRadius: 999,
-                      backgroundColor: "#1877D6",
+                      backgroundColor: tokens.blue,
                     }}
                   >
                     {initials(p.name)}
@@ -219,10 +220,10 @@ function ReminderPage() {
                 padding: "8px 12px",
                 borderRadius: 999,
                 backgroundColor: "#F3F4F6",
-                color: "#0B1F3A",
+                color: tokens.navy,
                 borderWidth: "0.5px",
                 borderStyle: "solid",
-                borderColor: "#EEF2F7",
+                borderColor: tokens.canvas,
               }}
             >
               {t.label}
@@ -240,7 +241,7 @@ function ReminderPage() {
             fontFamily: "Poppins, sans-serif",
             borderWidth: "0.5px",
             borderStyle: "solid",
-            borderColor: "#EEF2F7",
+            borderColor: tokens.canvas,
           }}
         />
         <div className="mt-1 text-[12px] text-[#6B7280] text-right">
@@ -263,7 +264,7 @@ function ReminderPage() {
               padding: 12,
               borderRadius: 8,
               backgroundColor: "#F3F8FF",
-              color: "#0B1F3A",
+              color: tokens.navy,
             }}
           >
             {confirmation}

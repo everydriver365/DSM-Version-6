@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import DSMSkeleton from "@/components/dsm/DSMSkeleton";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -715,14 +716,14 @@ function NotificationsPage() {
       {/* Action bar */}
       <div
         className="flex items-center justify-end gap-2"
-        style={{ background: "#FFFFFF", padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
+        style={{ background: tokens.white, padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
       >
         <button
           type="button"
           onClick={clearAllRead}
           disabled={!(items ?? []).some((n) => n.read)}
           className="inline-flex items-center gap-1 text-[12px] font-medium px-2 py-1 rounded-lg disabled:opacity-50"
-          style={{ color: "#6B7686", ...POPPINS }}
+          style={{ color: tokens.textSecondary, ...POPPINS }}
           aria-label="Clear read notifications"
         >
           <IconTrash stroke={1.5} size={14} color="#6B7280" />
@@ -733,7 +734,7 @@ function NotificationsPage() {
           onClick={markAllRead}
           disabled={!hasAnyUnread}
           className="inline-flex items-center gap-1 text-[12px] font-semibold px-2 py-1 rounded-lg disabled:opacity-50"
-          style={{ color: "#1877D6", ...POPPINS }}
+          style={{ color: tokens.blue, ...POPPINS }}
           aria-label="Mark all as read"
         >
           <IconChecks size={14} color="#1877D6" />
@@ -753,7 +754,7 @@ function NotificationsPage() {
                   alignItems: "flex-start",
                   gap: 12,
                   padding: "13px 16px",
-                  background: "#FFFFFF",
+                  background: tokens.white,
                   borderRadius: 8,
                   boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
                 }}
@@ -779,9 +780,9 @@ function NotificationsPage() {
               <div
                 style={{
                   ...POPPINS,
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: "#9CA3AF",
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.semibold,
+                  color: tokens.textMuted,
                   textTransform: "uppercase",
                   letterSpacing: 0.3,
                   marginLeft: 16,
@@ -792,7 +793,7 @@ function NotificationsPage() {
               </div>
               <div
                 style={{
-                  background: "#FFFFFF",
+                  background: tokens.white,
                   borderRadius: 8,
                   boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
                   overflow: "hidden",
@@ -840,7 +841,7 @@ function NotificationsPage() {
                                   width: 7,
                                   height: 7,
                                   borderRadius: "50%",
-                                  background: "#1877D6",
+                                  background: tokens.blue,
                                 }}
                               />
                             )}
@@ -887,7 +888,7 @@ function NotificationsPage() {
                                       navigate({ to: "/lessons/$id", params: { id: n.reference_id! } });
                                     }}
                                     className="text-[12px] font-semibold"
-                                    style={{ color: "#0B1F3A", background: "none", border: "none", padding: 0, cursor: "pointer", ...POPPINS }}
+                                    style={{ color: tokens.navy, background: "none", border: "none", padding: 0, cursor: "pointer", ...POPPINS }}
                                   >
                                     View lesson →
                                   </button>
@@ -916,7 +917,7 @@ function NotificationsPage() {
                                     navigate({ to: "/messages" });
                                   }}
                                   className="text-[12px] font-semibold"
-                                  style={{ color: "#0B1F3A", background: "none", border: "none", padding: 0, cursor: "pointer", ...POPPINS }}
+                                  style={{ color: tokens.navy, background: "none", border: "none", padding: 0, cursor: "pointer", ...POPPINS }}
                                 >
                                   View message →
                                 </button>
@@ -929,7 +930,7 @@ function NotificationsPage() {
                                       navigate({ to: "/lessons/reschedule/$id", params: { id: n.reference_id! } });
                                     }}
                                     className="text-[12px] font-semibold text-white"
-                                    style={{ background: "#1877D6", border: "none", borderRadius: 20, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
+                                    style={{ background: tokens.blue, border: "none", borderRadius: 20, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
                                   >
                                     Reschedule →
                                   </button>
@@ -961,7 +962,7 @@ function NotificationsPage() {
                         <div
                           style={{
                             height: 1,
-                            background: "#E4E8EF",
+                            background: tokens.border,
                             marginLeft: 62,
                           }}
                         />
@@ -993,7 +994,7 @@ function NotificationsPage() {
           <div
             style={{
               position: "relative",
-              background: "#EEF2F7",
+              background: tokens.canvas,
               borderRadius: "22px 22px 0 0",
               width: "100%",
               maxHeight: "90vh",
@@ -1019,7 +1020,7 @@ function NotificationsPage() {
                   width: 30,
                   height: 30,
                   borderRadius: "50%",
-                  background: "#EEF2F7",
+                  background: tokens.canvas,
                   border: "1px solid #E4E8EF",
                   cursor: "pointer",
                   display: "flex",
@@ -1059,8 +1060,8 @@ function NotificationsPage() {
                       alignItems: "center",
                       justifyContent: "center",
                       flexShrink: 0,
-                      fontSize: 14,
-                      fontWeight: 700,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.bold,
                       color: "#7C3AED",
                       ...POPPINS,
                     }}
@@ -1070,9 +1071,9 @@ function NotificationsPage() {
                   <div>
                     <div
                       style={{
-                        fontSize: 14,
-                        fontWeight: 700,
-                        color: "#0B1F3A",
+                        fontSize: tokens.fontSize.md,
+                        fontWeight: tokens.fontWeight.bold,
+                        color: tokens.navy,
                         ...POPPINS,
                       }}
                     >
@@ -1080,8 +1081,8 @@ function NotificationsPage() {
                     </div>
                     <div
                       style={{
-                        fontSize: 11,
-                        color: "#9CA3AF",
+                        fontSize: tokens.fontSize.sm,
+                        color: tokens.textMuted,
                         marginTop: 2,
                         ...POPPINS,
                       }}
@@ -1094,8 +1095,8 @@ function NotificationsPage() {
                   <div
                     style={{
                       padding: "12px 16px",
-                      fontSize: 13,
-                      color: "#6B7686",
+                      fontSize: tokens.fontSize.base,
+                      color: tokens.textSecondary,
                       lineHeight: 1.5,
                       fontStyle: "italic",
                       ...POPPINS,
@@ -1211,9 +1212,9 @@ function NotificationsPage() {
                     <div>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 700,
-                          color: "#CC2229",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.bold,
+                          color: tokens.red,
                           ...POPPINS,
                         }}
                       >
@@ -1222,7 +1223,7 @@ function NotificationsPage() {
                       {actionSheet.lessonDate && actionSheet.lessonTime && (
                         <div
                           style={{
-                            fontSize: 11,
+                            fontSize: tokens.fontSize.sm,
                             color: "rgba(204, 34, 41, 0.7)",
                             marginTop: 2,
                             ...POPPINS,
@@ -1236,9 +1237,9 @@ function NotificationsPage() {
                   {actionSheet.pupilName && (
                     <div
                       style={{
-                        fontSize: 13,
-                        fontWeight: 600,
-                        color: "#0B1F3A",
+                        fontSize: tokens.fontSize.base,
+                        fontWeight: tokens.fontWeight.semibold,
+                        color: tokens.navy,
                         marginTop: 10,
                         ...POPPINS,
                       }}
@@ -1257,9 +1258,9 @@ function NotificationsPage() {
                     >
                       <div
                         style={{
-                          fontSize: 11,
-                          fontWeight: 600,
-                          color: "#CC2229",
+                          fontSize: tokens.fontSize.sm,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.red,
                           marginBottom: 4,
                           ...POPPINS,
                         }}
@@ -1268,7 +1269,7 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 13,
+                          fontSize: tokens.fontSize.base,
                           color: "#B91C1C",
                           lineHeight: 1.5,
                           ...POPPINS,
@@ -1280,7 +1281,7 @@ function NotificationsPage() {
                   ) : (
                     <div
                       style={{
-                        fontSize: 13,
+                        fontSize: tokens.fontSize.base,
                         color: "rgba(204, 34, 41, 0.6)",
                         fontStyle: "italic",
                         marginTop: 8,
@@ -1293,9 +1294,9 @@ function NotificationsPage() {
                 </div>
                 <div
                   style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: "#9CA3AF",
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.textMuted,
                     textTransform: "uppercase",
                     padding: "8px 16px 6px",
                     ...POPPINS,
@@ -1355,9 +1356,9 @@ function NotificationsPage() {
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           ...POPPINS,
                         }}
                       >
@@ -1365,8 +1366,8 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginTop: 2,
                           ...POPPINS,
                         }}
@@ -1413,9 +1414,9 @@ function NotificationsPage() {
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           ...POPPINS,
                         }}
                       >
@@ -1423,8 +1424,8 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginTop: 2,
                           ...POPPINS,
                         }}
@@ -1471,9 +1472,9 @@ function NotificationsPage() {
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           ...POPPINS,
                         }}
                       >
@@ -1481,8 +1482,8 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginTop: 2,
                           ...POPPINS,
                         }}
@@ -1499,11 +1500,11 @@ function NotificationsPage() {
                     margin: "12px 16px 0",
                     width: "calc(100% - 32px)",
                     background: "#fff",
-                    color: "#0B1F3A",
+                    color: tokens.navy,
                     borderRadius: 8,
                     padding: 13,
-                    fontSize: 14,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.bold,
                     border: "1px solid #E4E8EF",
                     cursor: "pointer",
                     ...POPPINS,
@@ -1564,8 +1565,8 @@ function NotificationsPage() {
                         />
                         <span
                           style={{
-                            fontSize: 10,
-                            fontWeight: 800,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.extrabold,
                             color: "#fff",
                             ...POPPINS,
                           }}
@@ -1583,8 +1584,8 @@ function NotificationsPage() {
                       >
                         <span
                           style={{
-                            fontSize: 10,
-                            fontWeight: 800,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.extrabold,
                             color: "#fff",
                             ...POPPINS,
                           }}
@@ -1596,8 +1597,8 @@ function NotificationsPage() {
                   </div>
                   <div
                     style={{
-                      fontSize: 18,
-                      fontWeight: 800,
+                      fontSize: tokens.fontSize.xl,
+                      fontWeight: tokens.fontWeight.extrabold,
                       color: "#fff",
                       marginTop: 10,
                       letterSpacing: -0.3,
@@ -1636,8 +1637,8 @@ function NotificationsPage() {
                       color: actionSheet.isLiveNow ? "#CC2229" : "#14509E",
                       borderRadius: 8,
                       padding: 12,
-                      fontSize: 14,
-                      fontWeight: 800,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.extrabold,
                       border: "none",
                       cursor: "pointer",
                       fontFamily: "Poppins, sans-serif",
@@ -1668,9 +1669,9 @@ function NotificationsPage() {
                 </div>
                 <div
                   style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: "#9CA3AF",
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.textMuted,
                     textTransform: "uppercase",
                     padding: "8px 16px 6px",
                     ...POPPINS,
@@ -1723,9 +1724,9 @@ function NotificationsPage() {
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           ...POPPINS,
                         }}
                       >
@@ -1733,8 +1734,8 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginTop: 2,
                           ...POPPINS,
                         }}
@@ -1783,9 +1784,9 @@ function NotificationsPage() {
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           ...POPPINS,
                         }}
                       >
@@ -1793,8 +1794,8 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginTop: 2,
                           ...POPPINS,
                         }}
@@ -1811,11 +1812,11 @@ function NotificationsPage() {
                     margin: "12px 16px 0",
                     width: "calc(100% - 32px)",
                     background: "#fff",
-                    color: "#0B1F3A",
+                    color: tokens.navy,
                     borderRadius: 8,
                     padding: 13,
-                    fontSize: 14,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.bold,
                     border: "1px solid #E4E8EF",
                     cursor: "pointer",
                     ...POPPINS,
@@ -1873,8 +1874,8 @@ function NotificationsPage() {
                         background: "rgba(255,255,255,0.2)",
                         borderRadius: 8,
                         padding: "4px 10px",
-                        fontSize: 10,
-                        fontWeight: 800,
+                        fontSize: tokens.fontSize.xs,
+                        fontWeight: tokens.fontWeight.extrabold,
                         color: "#fff",
                         ...POPPINS,
                       }}
@@ -1906,8 +1907,8 @@ function NotificationsPage() {
                         />
                         <span
                           style={{
-                            fontSize: 10,
-                            fontWeight: 800,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.extrabold,
                             color: "#fff",
                             ...POPPINS,
                           }}
@@ -1920,7 +1921,7 @@ function NotificationsPage() {
                   <div
                     style={{
                       fontSize: 20,
-                      fontWeight: 800,
+                      fontWeight: tokens.fontWeight.extrabold,
                       color: "#fff",
                       marginTop: 10,
                       letterSpacing: -0.3,
@@ -1947,8 +1948,8 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 10,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
                             marginBottom: 4,
@@ -1959,8 +1960,8 @@ function NotificationsPage() {
                         </div>
                         <div
                           style={{
-                            fontSize: 13,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.base,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "#fff",
                             ...POPPINS,
                           }}
@@ -1979,8 +1980,8 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 10,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
                             marginBottom: 4,
@@ -1991,8 +1992,8 @@ function NotificationsPage() {
                         </div>
                         <div
                           style={{
-                            fontSize: 13,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.base,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "#fff",
                             ...POPPINS,
                           }}
@@ -2021,8 +2022,8 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 10,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
                             marginBottom: 4,
@@ -2033,8 +2034,8 @@ function NotificationsPage() {
                         </div>
                         <div
                           style={{
-                            fontSize: 13,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.base,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "#fff",
                             lineHeight: 1.4,
                             ...POPPINS,
@@ -2055,8 +2056,8 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 10,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
                             marginBottom: 4,
@@ -2068,7 +2069,7 @@ function NotificationsPage() {
                         <div
                           style={{
                             fontSize: 15,
-                            fontWeight: 800,
+                            fontWeight: tokens.fontWeight.extrabold,
                             color: "#fff",
                             ...POPPINS,
                           }}
@@ -2101,7 +2102,7 @@ function NotificationsPage() {
                       }}
                     >
                       <IconNavigation size={16} color="#fff" stroke={1.5} />
-                      <span style={{ fontSize: 13, fontWeight: 700, color: "#fff", ...POPPINS }}>
+                      <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: "#fff", ...POPPINS }}>
                         Navigate to test centre
                       </span>
                     </button>
@@ -2109,9 +2110,9 @@ function NotificationsPage() {
                 </div>
                 <div
                   style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: "#9CA3AF",
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.textMuted,
                     textTransform: "uppercase",
                     padding: "8px 16px 6px",
                     ...POPPINS,
@@ -2162,9 +2163,9 @@ function NotificationsPage() {
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           ...POPPINS,
                         }}
                       >
@@ -2172,8 +2173,8 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginTop: 2,
                           ...POPPINS,
                         }}
@@ -2215,9 +2216,9 @@ function NotificationsPage() {
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           ...POPPINS,
                         }}
                       >
@@ -2225,8 +2226,8 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginTop: 2,
                           ...POPPINS,
                         }}
@@ -2275,9 +2276,9 @@ function NotificationsPage() {
                       <div style={{ flex: 1 }}>
                         <div
                           style={{
-                            fontSize: 14,
-                            fontWeight: 600,
-                            color: "#0B1F3A",
+                            fontSize: tokens.fontSize.md,
+                            fontWeight: tokens.fontWeight.semibold,
+                            color: tokens.navy,
                             ...POPPINS,
                           }}
                         >
@@ -2285,8 +2286,8 @@ function NotificationsPage() {
                         </div>
                         <div
                           style={{
-                            fontSize: 11,
-                            color: "#9CA3AF",
+                            fontSize: tokens.fontSize.sm,
+                            color: tokens.textMuted,
                             marginTop: 2,
                             ...POPPINS,
                           }}
@@ -2304,11 +2305,11 @@ function NotificationsPage() {
                     margin: "12px 16px 0",
                     width: "calc(100% - 32px)",
                     background: "#fff",
-                    color: "#0B1F3A",
+                    color: tokens.navy,
                     borderRadius: 8,
                     padding: 13,
-                    fontSize: 14,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.bold,
                     border: "1px solid #E4E8EF",
                     cursor: "pointer",
                     ...POPPINS,
@@ -2348,8 +2349,8 @@ function NotificationsPage() {
                     >
                       <span
                         style={{
-                          fontSize: 10,
-                          fontWeight: 800,
+                          fontSize: tokens.fontSize.xs,
+                          fontWeight: tokens.fontWeight.extrabold,
                           color: "#fff",
                           ...POPPINS,
                         }}
@@ -2360,7 +2361,7 @@ function NotificationsPage() {
                     {actionSheet.receivedAt && (
                       <span
                         style={{
-                          fontSize: 11,
+                          fontSize: tokens.fontSize.sm,
                           color: "rgba(255,255,255,0.6)",
                           ...POPPINS,
                         }}
@@ -2371,8 +2372,8 @@ function NotificationsPage() {
                   </div>
                   <div
                     style={{
-                      fontSize: 22,
-                      fontWeight: 800,
+                      fontSize: tokens.fontSize.xxl,
+                      fontWeight: tokens.fontWeight.extrabold,
                       color: "#fff",
                       marginTop: 10,
                       letterSpacing: -0.3,
@@ -2399,8 +2400,8 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 10,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
                             marginBottom: 4,
@@ -2411,8 +2412,8 @@ function NotificationsPage() {
                         </div>
                         <div
                           style={{
-                            fontSize: 13,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.base,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "#fff",
                             ...POPPINS,
                           }}
@@ -2431,8 +2432,8 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 10,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
                             marginBottom: 4,
@@ -2443,8 +2444,8 @@ function NotificationsPage() {
                         </div>
                         <div
                           style={{
-                            fontSize: 13,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.base,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "#fff",
                             ...POPPINS,
                           }}
@@ -2464,8 +2465,8 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 10,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
                             marginBottom: 4,
@@ -2476,8 +2477,8 @@ function NotificationsPage() {
                         </div>
                         <div
                           style={{
-                            fontSize: 13,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.base,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "#fff",
                             ...POPPINS,
                           }}
@@ -2497,8 +2498,8 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 10,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
                             marginBottom: 4,
@@ -2511,7 +2512,7 @@ function NotificationsPage() {
                           style={{
                             fontSize:
                               actionSheet.enquirerEmail.length > 24 ? 11 : 13,
-                            fontWeight: 700,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "#fff",
                             ...POPPINS,
                           }}
@@ -2532,8 +2533,8 @@ function NotificationsPage() {
                     >
                       <div
                         style={{
-                          fontSize: 10,
-                          fontWeight: 700,
+                          fontSize: tokens.fontSize.xs,
+                          fontWeight: tokens.fontWeight.bold,
                           color: "rgba(255,255,255,0.6)",
                           letterSpacing: "0.08em",
                           marginBottom: 4,
@@ -2558,9 +2559,9 @@ function NotificationsPage() {
                 </div>
                 <div
                   style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: "#9CA3AF",
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.textMuted,
                     textTransform: "uppercase",
                     padding: "8px 16px 6px",
                     ...POPPINS,
@@ -2609,9 +2610,9 @@ function NotificationsPage() {
                       <div style={{ flex: 1 }}>
                         <div
                           style={{
-                            fontSize: 14,
-                            fontWeight: 600,
-                            color: "#0B1F3A",
+                            fontSize: tokens.fontSize.md,
+                            fontWeight: tokens.fontWeight.semibold,
+                            color: tokens.navy,
                             ...POPPINS,
                           }}
                         >
@@ -2619,8 +2620,8 @@ function NotificationsPage() {
                         </div>
                         <div
                           style={{
-                            fontSize: 11,
-                            color: "#9CA3AF",
+                            fontSize: tokens.fontSize.sm,
+                            color: tokens.textMuted,
                             marginTop: 2,
                             ...POPPINS,
                           }}
@@ -2669,9 +2670,9 @@ function NotificationsPage() {
                       <div style={{ flex: 1 }}>
                         <div
                           style={{
-                            fontSize: 14,
-                            fontWeight: 600,
-                            color: "#0B1F3A",
+                            fontSize: tokens.fontSize.md,
+                            fontWeight: tokens.fontWeight.semibold,
+                            color: tokens.navy,
                             ...POPPINS,
                           }}
                         >
@@ -2679,8 +2680,8 @@ function NotificationsPage() {
                         </div>
                         <div
                           style={{
-                            fontSize: 11,
-                            color: "#9CA3AF",
+                            fontSize: tokens.fontSize.sm,
+                            color: tokens.textMuted,
                             marginTop: 2,
                             ...POPPINS,
                           }}
@@ -2721,9 +2722,9 @@ function NotificationsPage() {
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           ...POPPINS,
                         }}
                       >
@@ -2731,8 +2732,8 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginTop: 2,
                           ...POPPINS,
                         }}
@@ -2749,11 +2750,11 @@ function NotificationsPage() {
                     margin: "12px 16px 0",
                     width: "calc(100% - 32px)",
                     background: "#fff",
-                    color: "#0B1F3A",
+                    color: tokens.navy,
                     borderRadius: 8,
                     padding: 13,
-                    fontSize: 14,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.bold,
                     border: "1px solid #E4E8EF",
                     cursor: "pointer",
                     ...POPPINS,
@@ -2795,9 +2796,9 @@ function NotificationsPage() {
                       <div
                         style={{
                           background: "#EFF6FF",
-                          color: "#1877D6",
-                          fontSize: 10,
-                          fontWeight: 800,
+                          color: tokens.blue,
+                          fontSize: tokens.fontSize.xs,
+                          fontWeight: tokens.fontWeight.extrabold,
                           borderRadius: 8,
                           padding: "3px 10px",
                           ...POPPINS,
@@ -2808,8 +2809,8 @@ function NotificationsPage() {
                       {actionSheet.expiresAt && (
                         <div
                           style={{
-                            fontSize: 11,
-                            color: "#CC2229",
+                            fontSize: tokens.fontSize.sm,
+                            color: tokens.red,
                             ...POPPINS,
                           }}
                         >
@@ -2819,9 +2820,9 @@ function NotificationsPage() {
                     </div>
                     <div
                       style={{
-                        fontSize: 18,
-                        fontWeight: 800,
-                        color: "#0B1F3A",
+                        fontSize: tokens.fontSize.xl,
+                        fontWeight: tokens.fontWeight.extrabold,
+                        color: tokens.navy,
                         letterSpacing: -0.3,
                         marginBottom: 12,
                         ...POPPINS,
@@ -2840,7 +2841,7 @@ function NotificationsPage() {
                       {actionSheet.area && (
                         <div
                           style={{
-                            background: "#EEF2F7",
+                            background: tokens.canvas,
                             borderRadius: 8,
                             padding: "10px 12px",
                           }}
@@ -2850,9 +2851,9 @@ function NotificationsPage() {
                               display: "flex",
                               alignItems: "center",
                               gap: 4,
-                              fontSize: 10,
-                              fontWeight: 700,
-                              color: "#9CA3AF",
+                              fontSize: tokens.fontSize.xs,
+                              fontWeight: tokens.fontWeight.bold,
+                              color: tokens.textMuted,
                               letterSpacing: 0.08,
                               textTransform: "uppercase",
                               marginBottom: 2,
@@ -2864,9 +2865,9 @@ function NotificationsPage() {
                           </div>
                           <div
                             style={{
-                              fontSize: 13,
-                              fontWeight: 700,
-                              color: "#0B1F3A",
+                              fontSize: tokens.fontSize.base,
+                              fontWeight: tokens.fontWeight.bold,
+                              color: tokens.navy,
                               ...POPPINS,
                             }}
                           >
@@ -2877,16 +2878,16 @@ function NotificationsPage() {
                       {actionSheet.transmission && (
                         <div
                           style={{
-                            background: "#EEF2F7",
+                            background: tokens.canvas,
                             borderRadius: 8,
                             padding: "10px 12px",
                           }}
                         >
                           <div
                             style={{
-                              fontSize: 10,
-                              fontWeight: 700,
-                              color: "#9CA3AF",
+                              fontSize: tokens.fontSize.xs,
+                              fontWeight: tokens.fontWeight.bold,
+                              color: tokens.textMuted,
                               letterSpacing: 0.08,
                               textTransform: "uppercase",
                               marginBottom: 2,
@@ -2897,9 +2898,9 @@ function NotificationsPage() {
                           </div>
                           <div
                             style={{
-                              fontSize: 13,
-                              fontWeight: 700,
-                              color: "#0B1F3A",
+                              fontSize: tokens.fontSize.base,
+                              fontWeight: tokens.fontWeight.bold,
+                              color: tokens.navy,
                               ...POPPINS,
                             }}
                           >
@@ -2910,16 +2911,16 @@ function NotificationsPage() {
                       {actionSheet.lessonDate && (
                         <div
                           style={{
-                            background: "#EEF2F7",
+                            background: tokens.canvas,
                             borderRadius: 8,
                             padding: "10px 12px",
                           }}
                         >
                           <div
                             style={{
-                              fontSize: 10,
-                              fontWeight: 700,
-                              color: "#9CA3AF",
+                              fontSize: tokens.fontSize.xs,
+                              fontWeight: tokens.fontWeight.bold,
+                              color: tokens.textMuted,
                               letterSpacing: 0.08,
                               textTransform: "uppercase",
                               marginBottom: 2,
@@ -2930,9 +2931,9 @@ function NotificationsPage() {
                           </div>
                           <div
                             style={{
-                              fontSize: 13,
-                              fontWeight: 700,
-                              color: "#0B1F3A",
+                              fontSize: tokens.fontSize.base,
+                              fontWeight: tokens.fontWeight.bold,
+                              color: tokens.navy,
                               ...POPPINS,
                             }}
                           >
@@ -2943,16 +2944,16 @@ function NotificationsPage() {
                       {actionSheet.lessonTime && (
                         <div
                           style={{
-                            background: "#EEF2F7",
+                            background: tokens.canvas,
                             borderRadius: 8,
                             padding: "10px 12px",
                           }}
                         >
                           <div
                             style={{
-                              fontSize: 10,
-                              fontWeight: 700,
-                              color: "#9CA3AF",
+                              fontSize: tokens.fontSize.xs,
+                              fontWeight: tokens.fontWeight.bold,
+                              color: tokens.textMuted,
                               letterSpacing: 0.08,
                               textTransform: "uppercase",
                               marginBottom: 2,
@@ -2963,9 +2964,9 @@ function NotificationsPage() {
                           </div>
                           <div
                             style={{
-                              fontSize: 13,
-                              fontWeight: 700,
-                              color: "#0B1F3A",
+                              fontSize: tokens.fontSize.base,
+                              fontWeight: tokens.fontWeight.bold,
+                              color: tokens.navy,
                               ...POPPINS,
                             }}
                           >
@@ -2976,16 +2977,16 @@ function NotificationsPage() {
                       {actionSheet.duration && (
                         <div
                           style={{
-                            background: "#EEF2F7",
+                            background: tokens.canvas,
                             borderRadius: 8,
                             padding: "10px 12px",
                           }}
                         >
                           <div
                             style={{
-                              fontSize: 10,
-                              fontWeight: 700,
-                              color: "#9CA3AF",
+                              fontSize: tokens.fontSize.xs,
+                              fontWeight: tokens.fontWeight.bold,
+                              color: tokens.textMuted,
                               letterSpacing: 0.08,
                               textTransform: "uppercase",
                               marginBottom: 2,
@@ -2996,9 +2997,9 @@ function NotificationsPage() {
                           </div>
                           <div
                             style={{
-                              fontSize: 13,
-                              fontWeight: 700,
-                              color: "#0B1F3A",
+                              fontSize: tokens.fontSize.base,
+                              fontWeight: tokens.fontWeight.bold,
+                              color: tokens.navy,
                               ...POPPINS,
                             }}
                           >
@@ -3019,8 +3020,8 @@ function NotificationsPage() {
                         >
                           <div
                             style={{
-                              fontSize: 10,
-                              fontWeight: 700,
+                              fontSize: tokens.fontSize.xs,
+                              fontWeight: tokens.fontWeight.bold,
                               color: "#15803D",
                               letterSpacing: 0.08,
                               textTransform: "uppercase",
@@ -3032,8 +3033,8 @@ function NotificationsPage() {
                           </div>
                           <div
                             style={{
-                              fontSize: 13,
-                              fontWeight: 700,
+                              fontSize: tokens.fontSize.base,
+                              fontWeight: tokens.fontWeight.bold,
                               color: "#15803D",
                               ...POPPINS,
                             }}
@@ -3054,9 +3055,9 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 10,
-                            fontWeight: 700,
-                            color: "#9CA3AF",
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.bold,
+                            color: tokens.textMuted,
                             letterSpacing: 0.08,
                             textTransform: "uppercase",
                             marginBottom: 4,
@@ -3068,7 +3069,7 @@ function NotificationsPage() {
                         <div
                           style={{
                             fontSize: 12,
-                            color: "#6B7686",
+                            color: tokens.textSecondary,
                             lineHeight: 1.5,
                             ...POPPINS,
                           }}
@@ -3080,8 +3081,8 @@ function NotificationsPage() {
                     {actionSheet.postedBy && (
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginBottom: 4,
                           ...POPPINS,
                         }}
@@ -3100,8 +3101,8 @@ function NotificationsPage() {
                     color: "#fff",
                     borderRadius: 20,
                     padding: 13,
-                    fontSize: 14,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.bold,
                     border: "none",
                     cursor: "pointer",
                     ...POPPINS,
@@ -3124,9 +3125,9 @@ function NotificationsPage() {
                 </button>
                 <div
                   style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: "#9CA3AF",
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.textMuted,
                     textTransform: "uppercase",
                     padding: "8px 16px 6px",
                     ...POPPINS,
@@ -3149,9 +3150,9 @@ function NotificationsPage() {
                       border: "1px solid #E4E8EF",
                       borderRadius: 8,
                       padding: 13,
-                      fontSize: 14,
-                      fontWeight: 700,
-                      color: "#CC2229",
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.bold,
+                      color: tokens.red,
                       cursor: "pointer",
                       ...POPPINS,
                     }}
@@ -3172,12 +3173,12 @@ function NotificationsPage() {
                   <button
                     type="button"
                     style={{
-                      background: "#1877D6",
+                      background: tokens.blue,
                       border: "none",
                       borderRadius: 8,
                       padding: 13,
-                      fontSize: 14,
-                      fontWeight: 700,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.bold,
                       color: "#fff",
                       cursor: "pointer",
                       boxShadow: "0 3px 0 #0F52A8",
@@ -3197,7 +3198,7 @@ function NotificationsPage() {
                     textAlign: "center",
                     marginTop: 10,
                     fontSize: 12,
-                    color: "#9CA3AF",
+                    color: tokens.textMuted,
                     cursor: "pointer",
                     ...POPPINS,
                   }}
@@ -3245,8 +3246,8 @@ function NotificationsPage() {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          fontSize: 18,
-                          fontWeight: 700,
+                          fontSize: tokens.fontSize.xl,
+                          fontWeight: tokens.fontWeight.bold,
                           color: "#D68A1B",
                           ...POPPINS,
                         }}
@@ -3256,9 +3257,9 @@ function NotificationsPage() {
                       <div style={{ flex: 1 }}>
                         <div
                           style={{
-                            fontSize: 16,
-                            fontWeight: 800,
-                            color: "#0B1F3A",
+                            fontSize: tokens.fontSize.lg,
+                            fontWeight: tokens.fontWeight.extrabold,
+                            color: tokens.navy,
                             ...POPPINS,
                           }}
                         >
@@ -3266,8 +3267,8 @@ function NotificationsPage() {
                         </div>
                         <div
                           style={{
-                            fontSize: 11,
-                            color: "#9CA3AF",
+                            fontSize: tokens.fontSize.sm,
+                            color: tokens.textMuted,
                             marginTop: 2,
                             ...POPPINS,
                           }}
@@ -3290,8 +3291,8 @@ function NotificationsPage() {
                       <div>
                         <div
                           style={{
-                            fontSize: 11,
-                            fontWeight: 600,
+                            fontSize: tokens.fontSize.sm,
+                            fontWeight: tokens.fontWeight.semibold,
                             color: "#D68A1B",
                             textTransform: "uppercase",
                             letterSpacing: "0.08em",
@@ -3303,7 +3304,7 @@ function NotificationsPage() {
                         {actionSheet.lessonCount && (
                           <div
                             style={{
-                              fontSize: 11,
+                              fontSize: tokens.fontSize.sm,
                               color: "rgba(146, 64, 14, 0.7)",
                               marginTop: 2,
                               ...POPPINS,
@@ -3317,7 +3318,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           fontSize: 26,
-                          fontWeight: 800,
+                          fontWeight: tokens.fontWeight.extrabold,
                           color: "#D68A1B",
                           ...POPPINS,
                         }}
@@ -3329,9 +3330,9 @@ function NotificationsPage() {
                 </div>
                 <div
                   style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: "#9CA3AF",
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.textMuted,
                     textTransform: "uppercase",
                     padding: "8px 16px 6px",
                     ...POPPINS,
@@ -3384,9 +3385,9 @@ function NotificationsPage() {
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           ...POPPINS,
                         }}
                       >
@@ -3394,8 +3395,8 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginTop: 2,
                           ...POPPINS,
                         }}
@@ -3450,9 +3451,9 @@ function NotificationsPage() {
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           ...POPPINS,
                         }}
                       >
@@ -3460,8 +3461,8 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginTop: 2,
                           ...POPPINS,
                         }}
@@ -3518,9 +3519,9 @@ function NotificationsPage() {
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           ...POPPINS,
                         }}
                       >
@@ -3528,7 +3529,7 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
+                          fontSize: tokens.fontSize.sm,
                           color: actionSheet.pupilEmail ? "#9CA3AF" : "#CC2229",
                           marginTop: 2,
                           ...POPPINS,
@@ -3574,9 +3575,9 @@ function NotificationsPage() {
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           ...POPPINS,
                         }}
                       >
@@ -3584,8 +3585,8 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginTop: 2,
                           ...POPPINS,
                         }}
@@ -3601,7 +3602,7 @@ function NotificationsPage() {
                     textAlign: "center",
                     marginTop: 10,
                     fontSize: 12,
-                    color: "#9CA3AF",
+                    color: tokens.textMuted,
                     cursor: "pointer",
                     ...POPPINS,
                   }}
@@ -3637,8 +3638,8 @@ function NotificationsPage() {
                         background: "rgba(255,255,255,0.2)",
                         borderRadius: 20,
                         padding: "4px 10px",
-                        fontSize: 10,
-                        fontWeight: 800,
+                        fontSize: tokens.fontSize.xs,
+                        fontWeight: tokens.fontWeight.extrabold,
                         color: "#fff",
                         ...POPPINS,
                       }}
@@ -3650,7 +3651,7 @@ function NotificationsPage() {
                     {actionSheet.lessonTime && (
                       <span
                         style={{
-                          fontSize: 11,
+                          fontSize: tokens.fontSize.sm,
                           color: "rgba(255,255,255,0.6)",
                           ...POPPINS,
                         }}
@@ -3661,8 +3662,8 @@ function NotificationsPage() {
                   </div>
                   <div
                     style={{
-                      fontSize: 22,
-                      fontWeight: 800,
+                      fontSize: tokens.fontSize.xxl,
+                      fontWeight: tokens.fontWeight.extrabold,
                       color: "#fff",
                       marginTop: 10,
                       letterSpacing: -0.3,
@@ -3713,8 +3714,8 @@ function NotificationsPage() {
                       <div>
                         <div
                           style={{
-                            fontSize: 10,
-                            fontWeight: 700,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.bold,
                             color: "rgba(255,255,255,0.5)",
                             letterSpacing: "0.08em",
                             marginBottom: 3,
@@ -3725,8 +3726,8 @@ function NotificationsPage() {
                         </div>
                         <div
                           style={{
-                            fontSize: 13,
-                            fontWeight: 600,
+                            fontSize: tokens.fontSize.base,
+                            fontWeight: tokens.fontWeight.semibold,
                             color: "#fff",
                             lineHeight: 1.4,
                             ...POPPINS,
@@ -3760,7 +3761,7 @@ function NotificationsPage() {
                       }}
                     >
                       <IconNavigation size={16} color="#fff" stroke={1.5} />
-                      <span style={{ fontSize: 13, fontWeight: 700, color: "#fff", ...POPPINS }}>
+                      <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: "#fff", ...POPPINS }}>
                         Navigate to pickup
                       </span>
                     </button>
@@ -3768,9 +3769,9 @@ function NotificationsPage() {
                 </div>
                 <div
                   style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: "#9CA3AF",
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.textMuted,
                     textTransform: "uppercase",
                     padding: "8px 16px 6px",
                     ...POPPINS,
@@ -3823,9 +3824,9 @@ function NotificationsPage() {
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           ...POPPINS,
                         }}
                       >
@@ -3833,8 +3834,8 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginTop: 2,
                           ...POPPINS,
                         }}
@@ -3890,9 +3891,9 @@ function NotificationsPage() {
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           ...POPPINS,
                         }}
                       >
@@ -3900,8 +3901,8 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginTop: 2,
                           ...POPPINS,
                         }}
@@ -3946,9 +3947,9 @@ function NotificationsPage() {
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           ...POPPINS,
                         }}
                       >
@@ -3956,8 +3957,8 @@ function NotificationsPage() {
                       </div>
                       <div
                         style={{
-                          fontSize: 11,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.sm,
+                          color: tokens.textMuted,
                           marginTop: 2,
                           ...POPPINS,
                         }}
@@ -3974,11 +3975,11 @@ function NotificationsPage() {
                     margin: "12px 16px 0",
                     width: "calc(100% - 32px)",
                     background: "#fff",
-                    color: "#0B1F3A",
+                    color: tokens.navy,
                     borderRadius: 20,
                     padding: 13,
-                    fontSize: 14,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.bold,
                     border: "1px solid #E4E8EF",
                     cursor: "pointer",
                     ...POPPINS,
@@ -4005,9 +4006,9 @@ function NotificationsPage() {
                 >
                   <div
                     style={{
-                      fontSize: 14,
-                      fontWeight: 700,
-                      color: "#0B1F3A",
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.bold,
+                      color: tokens.navy,
                       ...POPPINS,
                     }}
                   >
@@ -4017,7 +4018,7 @@ function NotificationsPage() {
                     <div
                       style={{
                         fontSize: 12,
-                        color: "#6B7686",
+                        color: tokens.textSecondary,
                         marginTop: 4,
                         ...POPPINS,
                       }}
@@ -4028,9 +4029,9 @@ function NotificationsPage() {
                 </div>
                 <div
                   style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: "#9CA3AF",
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.textMuted,
                     textTransform: "uppercase",
                     padding: "8px 16px 6px",
                     ...POPPINS,
@@ -4117,9 +4118,9 @@ function NotificationsPage() {
                         </div>
                         <div
                           style={{
-                            fontSize: 14,
-                            fontWeight: 600,
-                            color: "#0B1F3A",
+                            fontSize: tokens.fontSize.md,
+                            fontWeight: tokens.fontWeight.semibold,
+                            color: tokens.navy,
                             flex: 1,
                             ...POPPINS,
                           }}
@@ -4137,11 +4138,11 @@ function NotificationsPage() {
                     margin: "12px 16px 0",
                     width: "calc(100% - 32px)",
                     background: "#fff",
-                    color: "#0B1F3A",
+                    color: tokens.navy,
                     borderRadius: 8,
                     padding: 13,
-                    fontSize: 14,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.bold,
                     border: "1px solid #E4E8EF",
                     cursor: "pointer",
                     ...POPPINS,

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { IconArrowLeft, IconBriefcase, IconCircleCheck, IconTag, IconUpload, IconX } from "@tabler/icons-react";
@@ -192,7 +193,7 @@ function MarketplaceListPage() {
 
   if (submitted) {
     return (
-      <div style={{ minHeight: "100vh", background: "#FFFFFF" }}>
+      <div style={{ minHeight: "100vh", background: tokens.white }}>
         <TopBar onBack={() => navigate({ to: "/marketplace" })} />
         <div
           style={{
@@ -206,11 +207,11 @@ function MarketplaceListPage() {
         >
           <IconCircleCheck stroke={1.5} size={56} color="#00B5A5" />
           <div
-            style={{ fontSize: 20, fontWeight: 700, color: "#0F2044" }}
+            style={{ fontSize: 20, fontWeight: tokens.fontWeight.bold, color: "#0F2044" }}
           >
             Listing submitted!
           </div>
-          <div style={{ fontSize: 14, color: "#6B7280", maxWidth: 320 }}>
+          <div style={{ fontSize: tokens.fontSize.md, color: "#6B7280", maxWidth: 320 }}>
             We'll review it within 24 hours and notify you when it goes live.
           </div>
           <button
@@ -219,10 +220,10 @@ function MarketplaceListPage() {
             style={{
               marginTop: 16,
               background: "#1A52A0",
-              color: "#FFFFFF",
+              color: tokens.white,
               border: "none",
-              fontSize: 14,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.bold,
               padding: "12px 20px",
               borderRadius: 8,
               cursor: "pointer",
@@ -237,7 +238,7 @@ function MarketplaceListPage() {
 
   return (
     <div
-      style={{ minHeight: "100vh", background: "#FFFFFF", paddingBottom: 120 }}
+      style={{ minHeight: "100vh", background: tokens.white, paddingBottom: 120 }}
     >
       <TopBar onBack={() => navigate({ to: "/marketplace" })} />
 
@@ -254,7 +255,7 @@ function MarketplaceListPage() {
       >
         <IconTag stroke={1.5} size={18} color="#B45309" style={{ flexShrink: 0, marginTop: 2 }} />
         <div>
-          <div style={{ fontSize: 14, color: "#0F2044", fontWeight: 600 }}>
+          <div style={{ fontSize: tokens.fontSize.md, color: "#0F2044", fontWeight: 600 }}>
             List your product or service free. Reach thousands of driving
             instructors.
           </div>
@@ -355,7 +356,7 @@ function MarketplaceListPage() {
                   top: "50%",
                   transform: "translateY(-50%)",
                   color: "#6B7280",
-                  fontSize: 14,
+                  fontSize: tokens.fontSize.md,
                 }}
               >
                 £
@@ -434,7 +435,7 @@ function MarketplaceListPage() {
                     height: 20,
                     borderRadius: 999,
                     background: "#0F2044",
-                    color: "#FFFFFF",
+                    color: tokens.white,
                     border: "none",
                     cursor: "pointer",
                     display: "flex",
@@ -516,8 +517,8 @@ function MarketplaceListPage() {
                 <span
                   key={t}
                   style={{
-                    fontSize: 11,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.semibold,
                     color: "#6B7280",
                     background: "#F3F4F6",
                     padding: "3px 8px",
@@ -537,11 +538,11 @@ function MarketplaceListPage() {
             onClick={() => setShowPreview(true)}
             style={{
               flex: 1,
-              background: "#FFFFFF",
+              background: tokens.white,
               color: "#0F2044",
               border: "0.5px solid #0F2044",
-              fontSize: 14,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.bold,
               padding: "12px 16px",
               borderRadius: 8,
               cursor: "pointer",
@@ -556,10 +557,10 @@ function MarketplaceListPage() {
             style={{
               flex: 2,
               background: "#1A52A0",
-              color: "#FFFFFF",
+              color: tokens.white,
               border: "none",
-              fontSize: 14,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.bold,
               padding: "12px 16px",
               borderRadius: 8,
               cursor: submitting ? "not-allowed" : "pointer",
@@ -599,7 +600,7 @@ function TopBar({ onBack }: { onBack: () => void }) {
     <div
       style={{
         background: "#0F2044",
-        color: "#FFFFFF",
+        color: tokens.white,
         padding: "14px 16px",
         display: "flex",
         alignItems: "center",
@@ -616,7 +617,7 @@ function TopBar({ onBack }: { onBack: () => void }) {
         style={{
           background: "transparent",
           border: "none",
-          color: "#FFFFFF",
+          color: tokens.white,
           cursor: "pointer",
           padding: 0,
           display: "flex",
@@ -624,7 +625,7 @@ function TopBar({ onBack }: { onBack: () => void }) {
       >
         <IconArrowLeft stroke={1.5} size={22} />
       </button>
-      <div style={{ fontSize: 16, fontWeight: 700 }}>List your product</div>
+      <div style={{ fontSize: tokens.fontSize.lg, fontWeight: 700 }}>List your product</div>
     </div>
   );
 }
@@ -650,11 +651,11 @@ function Field({
           marginBottom: 6,
         }}
       >
-        <label style={{ fontSize: 13, fontWeight: 600, color: "#0F2044" }}>
+        <label style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: "#0F2044" }}>
           {label}
           {required && <span style={{ color: "#B91C1C" }}> *</span>}
         </label>
-        {hint && <span style={{ fontSize: 11, color: "#6B7280" }}>{hint}</span>}
+        {hint && <span style={{ fontSize: tokens.fontSize.sm, color: "#6B7280" }}>{hint}</span>}
       </div>
       {children}
     </div>
@@ -687,8 +688,8 @@ function TypePill({
         border: active ? "1px solid #0F2044" : "0.5px solid #E2E6ED",
         background: active ? "#0F2044" : "#FFFFFF",
         color: active ? "#FFFFFF" : "#0F2044",
-        fontSize: 13,
-        fontWeight: 600,
+        fontSize: tokens.fontSize.base,
+        fontWeight: tokens.fontWeight.semibold,
         cursor: "pointer",
       }}
     >
@@ -718,7 +719,7 @@ function PricePill({
         background: active ? "#0F2044" : "#FFFFFF",
         color: active ? "#FFFFFF" : "#0F2044",
         fontSize: 12,
-        fontWeight: 600,
+        fontWeight: tokens.fontWeight.semibold,
         cursor: "pointer",
       }}
     >
@@ -732,9 +733,9 @@ const inputStyle: React.CSSProperties = {
   border: "0.5px solid #E2E6ED",
   borderRadius: 8,
   padding: "10px 12px",
-  fontSize: 14,
+  fontSize: tokens.fontSize.md,
   color: "#0F2044",
-  background: "#FFFFFF",
+  background: tokens.white,
   outline: "none",
   boxSizing: "border-box",
 };
@@ -770,7 +771,7 @@ function PreviewSheet({
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           width: "100%",
           maxWidth: 520,
           borderRadius: "8px 8px 0 0",
@@ -787,7 +788,7 @@ function PreviewSheet({
             marginBottom: 12,
           }}
         >
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>
+          <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: "#0F2044" }}>
             Preview
           </div>
           <button
@@ -827,10 +828,10 @@ function PreviewSheet({
               <span
                 style={{
                   display: "inline-block",
-                  background: "#EEF2F7",
+                  background: tokens.canvas,
                   color: "#0F2044",
-                  fontSize: 10,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.xs,
+                  fontWeight: tokens.fontWeight.semibold,
                   padding: "2px 8px",
                   borderRadius: 999,
                   marginBottom: 6,
@@ -841,8 +842,8 @@ function PreviewSheet({
             )}
             <div
               style={{
-                fontSize: 16,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.lg,
+                fontWeight: tokens.fontWeight.bold,
                 color: "#0F2044",
                 marginBottom: 6,
               }}
@@ -852,8 +853,8 @@ function PreviewSheet({
             {priceDisplay && (
               <div
                 style={{
-                  fontSize: 14,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.bold,
                   color: "#00B5A5",
                   marginBottom: 6,
                 }}
@@ -862,7 +863,7 @@ function PreviewSheet({
               </div>
             )}
             <div
-              style={{ fontSize: 13, color: "#374151", whiteSpace: "pre-wrap" }}
+              style={{ fontSize: tokens.fontSize.base, color: "#374151", whiteSpace: "pre-wrap" }}
             >
               {description || "Description will appear here."}
             </div>

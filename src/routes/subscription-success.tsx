@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { toast } from "sonner";
@@ -117,9 +118,9 @@ function SubscriptionSuccessPage() {
   }, [navigate]);
 
   const sectionLabelStyle: React.CSSProperties = {
-    fontSize: 11,
-    fontWeight: 600,
-    color: "#9CA3AF",
+    fontSize: tokens.fontSize.sm,
+    fontWeight: tokens.fontWeight.semibold,
+    color: tokens.textMuted,
     textTransform: "uppercase",
     marginBottom: 8,
   };
@@ -141,10 +142,10 @@ function SubscriptionSuccessPage() {
         stroke={1.5}
         style={{ margin: "0 auto 16px", display: "block" }}
       />
-      <div style={{ fontSize: 24, fontWeight: 800, color: "#fff", marginBottom: 8 }}>
+      <div style={{ fontSize: 24, fontWeight: tokens.fontWeight.extrabold, color: "#fff", marginBottom: 8 }}>
         You're all set! 🎉
       </div>
-      <div style={{ fontSize: 14, color: "rgba(255,255,255,0.8)" }}>
+      <div style={{ fontSize: tokens.fontSize.md, color: "rgba(255,255,255,0.8)" }}>
         {TIER_NAMES[tier] ?? "Your plan"} is now active
       </div>
       {domain && (
@@ -192,7 +193,7 @@ function SubscriptionSuccessPage() {
             }}
           >
             <IconCircleCheck size={16} color="#15803D" stroke={2} />
-            <span style={{ fontSize: 14, color: "#0B1F3A", fontWeight: 500 }}>
+            <span style={{ fontSize: tokens.fontSize.md, color: tokens.navy, fontWeight: 500 }}>
               {feature}
             </span>
           </div>
@@ -232,10 +233,10 @@ function SubscriptionSuccessPage() {
           <IconWorld size={20} color="#1877D6" stroke={1.5} />
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>
+          <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
             Set up your website
           </div>
-          <div style={{ fontSize: 12, color: "#6B7686", marginTop: 2 }}>
+          <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 2 }}>
             Customise your mini-site
           </div>
         </div>
@@ -257,10 +258,10 @@ function SubscriptionSuccessPage() {
           <IconRosetteDiscount size={20} color="#7C3AED" stroke={1.5} />
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>
+          <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
             Access your benefits
           </div>
-          <div style={{ fontSize: 12, color: "#6B7686", marginTop: 2 }}>
+          <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 2 }}>
             DIA membership, health cover and more
           </div>
         </div>
@@ -283,10 +284,10 @@ function SubscriptionSuccessPage() {
             <IconPhone size={20} color="#15803D" stroke={1.5} />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
               Set up AI call answering
             </div>
-            <div style={{ fontSize: 12, color: "#6B7686", marginTop: 2 }}>
+            <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 2 }}>
               Record your voice and activate your DSM number
             </div>
           </div>
@@ -316,7 +317,7 @@ function SubscriptionSuccessPage() {
         style={{ marginTop: 2, flexShrink: 0 }}
       />
       <div>
-        <div style={{ fontSize: 14, fontWeight: 700, color: "#B45309" }}>{domain}</div>
+        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: "#B45309" }}>{domain}</div>
         <div
           style={{
             fontSize: 12,
@@ -338,12 +339,12 @@ function SubscriptionSuccessPage() {
       style={{
         marginTop: 8,
         width: "100%",
-        background: "#0B1F3A",
+        background: tokens.navy,
         color: "#fff",
         borderRadius: 8,
         padding: 15,
         fontSize: 15,
-        fontWeight: 800,
+        fontWeight: tokens.fontWeight.extrabold,
         border: "none",
         cursor: "pointer",
         fontFamily: "Poppins, sans-serif",
@@ -366,16 +367,16 @@ function SubscriptionSuccessPage() {
         marginBottom: 16,
       }}
     >
-      <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginBottom: 8 }}>
+      <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy, marginBottom: 8 }}>
         Taking longer than expected
       </div>
-      <div style={{ fontSize: 13, color: "#6B7686", lineHeight: 1.5, marginBottom: 16 }}>
+      <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, lineHeight: 1.5, marginBottom: 16 }}>
         Your payment was received. If your subscription hasn't activated in a few minutes, contact
         us at info@everydriver.co.uk
       </div>
       {goToDSMButton}
       <div
-        style={{ fontSize: 12, color: "#1877D6", marginTop: 12, cursor: "pointer" }}
+        style={{ fontSize: 12, color: tokens.blue, marginTop: 12, cursor: "pointer" }}
         onClick={() =>
           window.open(
             "mailto:info@everydriver.co.uk?subject=Subscription activation issue",
@@ -392,21 +393,21 @@ function SubscriptionSuccessPage() {
     <div
       style={{
         ...POPPINS,
-        backgroundColor: "#EEF2F7",
+        backgroundColor: tokens.canvas,
         minHeight: "100vh",
         paddingBottom: 40,
       }}
     >
       <div
         style={{
-          backgroundColor: "#0B1F3A",
+          backgroundColor: tokens.navy,
           borderRadius: "0 0 8px 8px",
           padding: "20px 16px",
           textAlign: "center",
           color: "#fff",
         }}
       >
-        <div style={{ fontSize: 18, fontWeight: 800 }}>Subscription activated</div>
+        <div style={{ fontSize: tokens.fontSize.xl, fontWeight: 800 }}>Subscription activated</div>
       </div>
 
       <div style={{ maxWidth: 480, margin: "0 auto", padding: "24px 16px" }}>
@@ -415,8 +416,8 @@ function SubscriptionSuccessPage() {
             <PageLoader />
             <div
               style={{
-                fontSize: 14,
-                color: "#6B7686",
+                fontSize: tokens.fontSize.md,
+                color: tokens.textSecondary,
                 textAlign: "center",
                 marginTop: 16,
               }}

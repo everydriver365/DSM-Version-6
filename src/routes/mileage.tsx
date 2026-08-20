@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconCar, IconPlus, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -162,13 +163,13 @@ function MileagePage() {
       {/* Action bar */}
       <div
         className="flex items-center justify-end"
-        style={{ background: "#FFFFFF", padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
+        style={{ background: tokens.white, padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
       >
         <button
           type="button"
           onClick={() => setLogMileageOpen(true)}
           className="inline-flex items-center gap-1 text-[13px] font-semibold text-white"
-          style={{ background: "#1877D6", borderRadius: 999, padding: "8px 14px", border: "none" }}
+          style={{ background: tokens.blue, borderRadius: 999, padding: "8px 14px", border: "none" }}
         >
           <IconPlus size={16} color="#FFFFFF" /> Add mileage
         </button>
@@ -179,13 +180,13 @@ function MileagePage() {
         {/* SUMMARY CARD */}
         <div
           className="mx-4 mt-3"
-          style={{ backgroundColor: "#0B1F3A", borderRadius: 8, padding: 16 }}
+          style={{ backgroundColor: tokens.navy, borderRadius: 8, padding: 16 }}
         >
           <div className="flex">
             <div className="flex-1 pr-3">
               <div
                 className="text-[10px] uppercase font-medium"
-                style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}
+                style={{ color: tokens.textMuted, letterSpacing: "0.08em" }}
               >
                 THIS MONTH
               </div>
@@ -197,7 +198,7 @@ function MileagePage() {
             <div className="flex-1 pl-3">
               <div
                 className="text-[10px] uppercase font-medium"
-                style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}
+                style={{ color: tokens.textMuted, letterSpacing: "0.08em" }}
               >
                 THIS YEAR
               </div>
@@ -212,7 +213,7 @@ function MileagePage() {
           >
             <div
               className="text-[10px] uppercase font-medium"
-              style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}
+              style={{ color: tokens.textMuted, letterSpacing: "0.08em" }}
             >
               EST. TAX RELIEF
             </div>
@@ -316,7 +317,7 @@ function MileagePage() {
                     fontFamily: "Poppins, sans-serif",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#EEF2F7",
+                    borderColor: tokens.canvas,
                   }}
                 />
               </div>
@@ -355,7 +356,7 @@ function MileagePage() {
                       fontFamily: "Poppins, sans-serif",
                       borderWidth: purpose === "business" ? 0 : "0.5px",
                       borderStyle: "solid",
-                      borderColor: "#EEF2F7",
+                      borderColor: tokens.canvas,
                     }}
                   >
                     Business
@@ -370,7 +371,7 @@ function MileagePage() {
                       fontFamily: "Poppins, sans-serif",
                       borderWidth: purpose === "personal" ? 0 : "0.5px",
                       borderStyle: "solid",
-                      borderColor: "#EEF2F7",
+                      borderColor: tokens.canvas,
                     }}
                   >
                     Personal
@@ -379,7 +380,7 @@ function MileagePage() {
               </div>
 
               {sheetError && (
-                <div className="text-[12px]" style={{ color: "#1877D6" }}>
+                <div className="text-[12px]" style={{ color: tokens.blue }}>
                   {sheetError}
                 </div>
               )}

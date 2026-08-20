@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconFileText, IconNotes, IconPlus } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -82,13 +83,13 @@ function NotesListPage() {
       {/* Action bar */}
       <div
         className="flex items-center justify-end"
-        style={{ background: "#FFFFFF", padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
+        style={{ background: tokens.white, padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
       >
         <button
           type="button"
           onClick={createNote}
           className="inline-flex items-center gap-1 text-[13px] font-semibold text-white"
-          style={{ background: "#1877D6", borderRadius: 999, padding: "8px 14px", border: "none" }}
+          style={{ background: tokens.blue, borderRadius: 999, padding: "8px 14px", border: "none" }}
         >
           <IconPlus stroke={1.5} size={16} color="#FFFFFF" /> New note
         </button>

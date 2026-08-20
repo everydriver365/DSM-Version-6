@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { useNavigate } from "@tanstack/react-router";
 import { IconBriefcase, IconMail, IconMessage, IconX } from "@tabler/icons-react";
 import { IconCalendarCheck, IconCalendarX } from "@tabler/icons-react";
@@ -75,8 +76,8 @@ export function DailyCatchUpSheet({
           <div>
             <div
               style={{
-                fontSize: 11,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.sm,
+                fontWeight: tokens.fontWeight.bold,
                 color: BLUE,
                 textTransform: "uppercase",
                 letterSpacing: "0.08em",
@@ -85,7 +86,7 @@ export function DailyCatchUpSheet({
             >
               Since yesterday
             </div>
-            <h2 style={{ fontSize: 19, fontWeight: 700, color: NAVY, margin: 0 }}>
+            <h2 style={{ fontSize: 19, fontWeight: tokens.fontWeight.bold, color: NAVY, margin: 0 }}>
               {title}
             </h2>
           </div>
@@ -134,11 +135,11 @@ export function DailyCatchUpSheet({
                 {r.icon}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 14.5, fontWeight: 600, color: NAVY, lineHeight: 1.3 }}>
+                <div style={{ fontSize: 14.5, fontWeight: tokens.fontWeight.semibold, color: NAVY, lineHeight: 1.3 }}>
                   {r.count} {r.label}
                 </div>
               </div>
-              <div style={{ color: GRAY_BODY, fontSize: 18, lineHeight: 1 }}>›</div>
+              <div style={{ color: GRAY_BODY, fontSize: tokens.fontSize.xl, lineHeight: 1 }}>›</div>
             </button>
           ))}
         </div>
@@ -152,7 +153,7 @@ export function DailyCatchUpSheet({
             borderRadius: 8,
             background: NAVY,
             color: "white",
-            fontWeight: 600,
+            fontWeight: tokens.fontWeight.semibold,
             fontSize: 15,
             border: "none",
             cursor: "pointer",

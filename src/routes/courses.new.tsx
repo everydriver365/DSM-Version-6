@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { IconCalendar, IconCalendarCheck, IconCalendarMonth, IconCalendarPlus, IconCheck, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMoon, IconPhoto, IconRepeat, IconSchool, IconSettings, IconSun, IconSunrise, IconTrash } from "@tabler/icons-react";
@@ -58,10 +59,10 @@ const TYPE_META: Record<
   CourseType,
   { label: string; color: string; bg: string; desc: string }
 > = {
-  intensive: { label: "Intensive", color: "#1877D6", bg: "#fbe8e8", desc: "All hours in one week" },
-  "semi-intensive": { label: "Semi-intensive", color: "#1877D6", bg: "#fff4e0", desc: "Spread over 2–4 weeks" },
-  weekly: { label: "Weekly lessons", color: "#1877D6", bg: "#e7f6ec", desc: "Regular weekly slots" },
-  custom: { label: "Custom", color: "#1877D6", bg: "#e8eefb", desc: "You define the schedule" },
+  intensive: { label: "Intensive", color: tokens.blue, bg: "#fbe8e8", desc: "All hours in one week" },
+  "semi-intensive": { label: "Semi-intensive", color: tokens.blue, bg: "#fff4e0", desc: "Spread over 2–4 weeks" },
+  weekly: { label: "Weekly lessons", color: tokens.blue, bg: "#e7f6ec", desc: "Regular weekly slots" },
+  custom: { label: "Custom", color: tokens.blue, bg: "#e8eefb", desc: "You define the schedule" },
 };
 
 function ymd(d: Date) {
@@ -519,9 +520,9 @@ function NewCoursePage() {
             background: "none",
             border: "none",
             cursor: saving ? "not-allowed" : "pointer",
-            color: "#1877D6",
-            fontWeight: 700,
-            fontSize: 14,
+            color: tokens.blue,
+            fontWeight: tokens.fontWeight.bold,
+            fontSize: tokens.fontSize.md,
             opacity: saving ? 0.5 : 1,
           }}
         >
@@ -550,7 +551,7 @@ function NewCoursePage() {
                 borderRadius: 8,
                 padding: "8px 6px",
                 fontSize: 12,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
               }}
@@ -651,7 +652,7 @@ function NewCoursePage() {
         {step === 3 && (
           <>
             <div style={{ marginTop: 24, marginBottom: 8 }}>
-              <span style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.6, fontFamily: "Poppins, sans-serif" }}>
+              <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, textTransform: "uppercase", letterSpacing: 0.6, fontFamily: "Poppins, sans-serif" }}>
                 COURSE IMAGE
               </span>
             </div>
@@ -679,9 +680,9 @@ function NewCoursePage() {
                       borderBottom: "0.5px solid #EEF2F7",
                       cursor: "pointer",
                       fontFamily: "Poppins, sans-serif",
-                      fontSize: 14,
-                      fontWeight: 500,
-                      color: "#0B1F3A",
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.medium,
+                      color: tokens.navy,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
@@ -689,7 +690,7 @@ function NewCoursePage() {
                   >
                     Change image
                     {uploadingHero && (
-                      <IconLoader2 stroke={1.5} size={16} className="animate-spin" style={{ color: "#1877D6" }} />
+                      <IconLoader2 stroke={1.5} size={16} className="animate-spin" style={{ color: tokens.blue }} />
                     )}
                   </button>
                   <button
@@ -703,9 +704,9 @@ function NewCoursePage() {
                       border: "none",
                       cursor: "pointer",
                       fontFamily: "Poppins, sans-serif",
-                      fontSize: 14,
-                      fontWeight: 500,
-                      color: "#CC2229",
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.medium,
+                      color: tokens.red,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
@@ -732,8 +733,8 @@ function NewCoursePage() {
                 >
                   <IconPhoto size={18} color="#6B7686" />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 500, color: "#0B1F3A", fontFamily: "Poppins, sans-serif" }}>Add course image</div>
-                    <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2, fontFamily: "Poppins, sans-serif" }}>
+                    <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: tokens.navy, fontFamily: "Poppins, sans-serif" }}>Add course image</div>
+                    <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, marginTop: 2, fontFamily: "Poppins, sans-serif" }}>
                       Shows on your mini-site and EveryDriver listings
                     </div>
                   </div>
@@ -763,10 +764,10 @@ function NewCoursePage() {
                 flex: 1,
                 height: 44,
                 background: "#fff",
-                color: "#1877D6",
+                color: tokens.blue,
                 border: "1px solid #1877D6",
                 borderRadius: 8,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
               }}
@@ -778,11 +779,11 @@ function NewCoursePage() {
               style={{
                 flex: 1,
                 height: 44,
-                background: "#1877D6",
+                background: tokens.blue,
                 color: "#fff",
                 border: "none",
                 borderRadius: 8,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
               }}
@@ -796,10 +797,10 @@ function NewCoursePage() {
                   flex: 1,
                   height: 44,
                   background: "#fff",
-                  color: "#1877D6",
+                  color: tokens.blue,
                   border: "1px solid #1877D6",
                   borderRadius: 8,
-                  fontWeight: 600,
+                  fontWeight: tokens.fontWeight.semibold,
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
                 }}
@@ -810,11 +811,11 @@ function NewCoursePage() {
                 style={{
                   flex: 1.4,
                   height: 44,
-                  background: "#1877D6",
+                  background: tokens.blue,
                   color: "#fff",
                   border: "none",
                   borderRadius: 8,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   cursor: saving ? "not-allowed" : "pointer",
                   fontFamily: "Poppins, sans-serif",
                   display: "flex",
@@ -832,7 +833,7 @@ function NewCoursePage() {
         </div>
 
         {error && (
-          <div style={{ marginTop: 12, color: "#1877D6", fontSize: 13, fontWeight: 500, textAlign: "center" }}>
+          <div style={{ marginTop: 12, color: tokens.blue, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, textAlign: "center" }}>
             {error}
           </div>
         )}
@@ -885,8 +886,8 @@ function Step1(props: {
                 fontFamily: "Poppins, sans-serif",
               }}
             >
-              <div style={{ fontSize: 13, fontWeight: 800, color: meta.color }}>{meta.label}</div>
-              <div style={{ fontSize: 11, color: "#6B7280", marginTop: 4 }}>{meta.desc}</div>
+              <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.extrabold, color: meta.color }}>{meta.label}</div>
+              <div style={{ fontSize: tokens.fontSize.sm, color: "#6B7280", marginTop: 4 }}>{meta.desc}</div>
             </button>
           );
         })}
@@ -905,7 +906,7 @@ function Step1(props: {
           fontFamily: "Poppins, sans-serif",
         }}
       >
-        <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>Transmission</div>
+        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>Transmission</div>
         <div style={{ display: "flex", gap: 6 }}>
           {(["Manual", "Automatic", "Both"] as Transmission[]).map((t) => {
             const active = transmission === t;
@@ -919,7 +920,7 @@ function Step1(props: {
                   borderRadius: 8,
                   padding: "6px 14px",
                   fontSize: 12,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   border: "none",
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
@@ -954,8 +955,8 @@ function Step1(props: {
                   border: `1px solid ${active ? "#1877D6" : "#e3e6ec"}`,
                   background: active ? "#1877D6" : "#fff",
                   color: active ? "#fff" : "#0B1F3A",
-                  fontWeight: 600,
-                  fontSize: 13,
+                  fontWeight: tokens.fontWeight.semibold,
+                  fontSize: tokens.fontSize.base,
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
                 }}
@@ -986,7 +987,7 @@ function Step1(props: {
             borderRadius: 8,
             border: "0.5px solid #EEF2F7",
             padding: 10,
-            fontSize: 14,
+            fontSize: tokens.fontSize.md,
             fontFamily: "Poppins, sans-serif",
             background: "#fff",
             resize: "vertical",
@@ -1101,8 +1102,8 @@ function Step2(props: {
     border: "1px solid #E4E8EF",
     background: "#fff",
     padding: "0 12px",
-    fontSize: 14,
-    color: "#0B1F3A",
+    fontSize: tokens.fontSize.md,
+    color: tokens.navy,
     fontFamily: "Poppins, sans-serif",
     outline: "none",
   };
@@ -1135,8 +1136,8 @@ function Step2(props: {
             background: "#F3F8FF",
             border: "0.5px solid #EEF2F7",
             borderRadius: 8,
-            color: "#0B1F3A",
-            fontSize: 14,
+            color: tokens.navy,
+            fontSize: tokens.fontSize.md,
             fontFamily: "Poppins, sans-serif",
           }}
         >
@@ -1176,8 +1177,8 @@ function Step2(props: {
                 }}
               >
               <Icon size={18} color={active ? "#fff" : "#0B1F3A"} />
-                <div style={{ fontSize: 13, fontWeight: 700 }}>{label}</div>
-                <div style={{ fontSize: 11, color: active ? "#cbd5e1" : "#6B7280" }}>{desc}</div>
+                <div style={{ fontSize: tokens.fontSize.base, fontWeight: 700 }}>{label}</div>
+                <div style={{ fontSize: tokens.fontSize.sm, color: active ? "#cbd5e1" : "#6B7280" }}>{desc}</div>
               </button>
             );
           })}
@@ -1214,8 +1215,8 @@ function Step2(props: {
             <IconCalendarPlus size={20} color="#1877D6" />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>Set custom session dates</div>
-            <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>Define exact dates and times for each session</div>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>Set custom session dates</div>
+            <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, marginTop: 2 }}>Define exact dates and times for each session</div>
           </div>
           <DSMToggle checked={useCustomSessions} onChange={setUseCustomSessions} />
         </div>
@@ -1225,9 +1226,9 @@ function Step2(props: {
         <div>
           <div
             style={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: "#9CA3AF",
+              fontSize: tokens.fontSize.sm,
+              fontWeight: tokens.fontWeight.semibold,
+              color: tokens.textMuted,
               textTransform: "uppercase",
               padding: "8px 0 6px",
               fontFamily: "Poppins, sans-serif",
@@ -1271,16 +1272,16 @@ function Step2(props: {
                         alignItems: "center",
                         justifyContent: "center",
                         fontSize: 12,
-                        fontWeight: 700,
-                        color: "#1877D6",
+                        fontWeight: tokens.fontWeight.bold,
+                        color: tokens.blue,
                         flexShrink: 0,
                       }}
                     >
                       {i + 1}
                     </div>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{fmtDate(session.date)}</div>
-                      <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>
+                      <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>{fmtDate(session.date)}</div>
+                      <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, marginTop: 2 }}>
                         {session.time} · {session.duration} min
                       </div>
                     </div>
@@ -1295,7 +1296,7 @@ function Step2(props: {
                         alignItems: "center",
                         justifyContent: "center",
                         padding: 4,
-                        color: "#CC2229",
+                        color: tokens.red,
                       }}
                     >
                       <IconTrash size={18} />
@@ -1307,7 +1308,7 @@ function Step2(props: {
 
           <div
             style={{
-              background: "#EEF2F7",
+              background: tokens.canvas,
               borderRadius: 8,
               padding: "14px 16px",
               marginBottom: 12,
@@ -1315,9 +1316,9 @@ function Step2(props: {
           >
             <div
               style={{
-                fontSize: 11,
-                fontWeight: 600,
-                color: "#9CA3AF",
+                fontSize: tokens.fontSize.sm,
+                fontWeight: tokens.fontWeight.semibold,
+                color: tokens.textMuted,
                 textTransform: "uppercase",
                 marginBottom: 10,
                 fontFamily: "Poppins, sans-serif",
@@ -1328,7 +1329,7 @@ function Step2(props: {
             </div>
 
             <div>
-              <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", marginBottom: 4, fontFamily: "Poppins, sans-serif" }}>DATE</div>
+              <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, marginBottom: 4, fontFamily: "Poppins, sans-serif" }}>DATE</div>
               <input
                 type="date"
                 value={newSessionDate}
@@ -1340,7 +1341,7 @@ function Step2(props: {
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 8 }}>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", marginBottom: 4, fontFamily: "Poppins, sans-serif" }}>TIME</div>
+                <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, marginBottom: 4, fontFamily: "Poppins, sans-serif" }}>TIME</div>
                 <input
                   type="time"
                   value={newSessionTime}
@@ -1349,7 +1350,7 @@ function Step2(props: {
                 />
               </div>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: "#9CA3AF", marginBottom: 4, fontFamily: "Poppins, sans-serif" }}>DURATION</div>
+                <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, marginBottom: 4, fontFamily: "Poppins, sans-serif" }}>DURATION</div>
                 <select
                   value={newSessionDuration}
                   onChange={(e) => setNewSessionDuration(Number(e.target.value))}
@@ -1385,12 +1386,12 @@ function Step2(props: {
               style={{
                 marginTop: 10,
                 width: "100%",
-                background: "#1877D6",
+                background: tokens.blue,
                 color: "#fff",
                 borderRadius: 8,
                 padding: 11,
-                fontSize: 13,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.base,
+                fontWeight: tokens.fontWeight.bold,
                 border: "none",
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
@@ -1406,7 +1407,7 @@ function Step2(props: {
               style={{
                 fontSize: 12,
                 color: "#15803D",
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 marginTop: 4,
                 display: "flex",
                 gap: 6,
@@ -1441,7 +1442,7 @@ function Step2(props: {
                     border: `1.5px solid ${active ? "#0B1F3A" : "#EEF2F7"}`,
                     background: active ? "#0B1F3A" : "#fff",
                     color: active ? "#fff" : "#0B1F3A",
-                    fontWeight: 600,
+                    fontWeight: tokens.fontWeight.semibold,
                     fontSize: 12,
                     cursor: "pointer",
                     fontFamily: "Poppins, sans-serif",
@@ -1470,8 +1471,8 @@ function Step2(props: {
                   repeatDays.length === 5 && WEEKDAYS.every((d) => repeatDays.includes(d))
                     ? "#fff"
                     : "#0B1F3A",
-                fontWeight: 600,
-                fontSize: 13,
+                fontWeight: tokens.fontWeight.semibold,
+                fontSize: tokens.fontSize.base,
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
               }}
@@ -1494,8 +1495,8 @@ function Step2(props: {
                   repeatDays.length === 2 && [6, 0].every((d) => repeatDays.includes(d))
                     ? "#fff"
                     : "#0B1F3A",
-                fontWeight: 600,
-                fontSize: 13,
+                fontWeight: tokens.fontWeight.semibold,
+                fontSize: tokens.fontSize.base,
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
               }}
@@ -1518,8 +1519,8 @@ function Step2(props: {
                   repeatDays.length === 7 && ALL_DAYS.every((d) => repeatDays.includes(d))
                     ? "#fff"
                     : "#0B1F3A",
-                fontWeight: 600,
-                fontSize: 13,
+                fontWeight: tokens.fontWeight.semibold,
+                fontSize: tokens.fontSize.base,
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
               }}
@@ -1581,8 +1582,8 @@ function Step2(props: {
           background: "#F8F9FB",
           border: "0.5px solid #EEF2F7",
           borderRadius: 8,
-          fontSize: 13,
-          color: "#0B1F3A",
+          fontSize: tokens.fontSize.base,
+          color: tokens.navy,
           fontFamily: "Poppins, sans-serif",
           lineHeight: 1.4,
         }}
@@ -1593,7 +1594,7 @@ function Step2(props: {
 
       <div>
         <FieldLabel>
-          Pickup postcode <span style={{ color: "#1877D6" }}>*</span>
+          Pickup postcode <span style={{ color: tokens.blue }}>*</span>
         </FieldLabel>
         <PostcodeAutocomplete
           value={pickup}
@@ -1616,10 +1617,10 @@ function Step2(props: {
             borderRadius: 8,
             border: "0.5px solid #EEF2F7",
             padding: "0 10px",
-            fontSize: 14,
+            fontSize: tokens.fontSize.md,
             fontFamily: "Poppins, sans-serif",
             background: "#fff",
-            color: "#0B1F3A",
+            color: tokens.navy,
           }}
         >
           {RADIUS_OPTIONS.map((m) => (
@@ -1634,12 +1635,12 @@ function Step2(props: {
         <FieldLabel>Lesson times</FieldLabel>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           {([
-            { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: IconClock, color: "#1877D6", full: false },
-            { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: IconSunrise, color: "#1877D6", full: false },
+            { key: "flexible", label: "Flexible", desc: "Any time of day", Icon: IconClock, color: tokens.blue, full: false },
+            { key: "morning", label: "Morning", desc: "08:00 – 12:00", Icon: IconSunrise, color: tokens.blue, full: false },
             { key: "afternoon", label: "Afternoon", desc: "12:00 – 17:00", Icon: IconSun, color: "#E8641A", full: false },
-            { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: IconMoon, color: "#1877D6", full: false },
-            { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: IconSun, color: "#1877D6", full: false },
-            { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: IconSchool, color: "#1877D6", full: false },
+            { key: "evening", label: "Evening", desc: "17:00 – 20:00", Icon: IconMoon, color: tokens.blue, full: false },
+            { key: "daytime", label: "Daytime", desc: "08:00 – 17:00", Icon: IconSun, color: tokens.blue, full: false },
+            { key: "school", label: "School hours", desc: "09:00 – 15:00", Icon: IconSchool, color: tokens.blue, full: false },
             { key: "custom", label: "Custom", desc: "Set your own times", Icon: IconSettings, color: "#6B7280", full: true },
           ] as Array<{ key: TimePref; label: string; desc: string; Icon: typeof IconClock; color: string; full: boolean }>).map(({ key, label, desc, Icon, color, full }) => {
             const active = timePref === key;
@@ -1671,8 +1672,8 @@ function Step2(props: {
                   <Icon size={18} />
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{label}</span>
-                  <span style={{ fontSize: 11, color: "#6B7280" }}>{desc}</span>
+                  <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>{label}</span>
+                  <span style={{ fontSize: tokens.fontSize.sm, color: "#6B7280" }}>{desc}</span>
                 </div>
               </button>
             );
@@ -1681,28 +1682,28 @@ function Step2(props: {
         {timePref === "custom" && (
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
             <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>From</span>
+              <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.medium, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>From</span>
               <input
                 type="time"
                 value={lessonTimeFrom}
                 onChange={(e) => setLessonTimeFrom(e.target.value)}
                 style={{
                   height: 44, borderRadius: 8, border: "1px solid #e3e6ec",
-                  padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
-                  color: "#0B1F3A", background: "#fff",
+                  padding: "0 10px", fontSize: tokens.fontSize.md, fontFamily: "Poppins, sans-serif",
+                  color: tokens.navy, background: "#fff",
                 }}
               />
             </label>
             <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>To</span>
+              <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.medium, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>To</span>
               <input
                 type="time"
                 value={lessonTimeTo}
                 onChange={(e) => setLessonTimeTo(e.target.value)}
                 style={{
                   height: 44, borderRadius: 8, border: "1px solid #e3e6ec",
-                  padding: "0 10px", fontSize: 14, fontFamily: "Poppins, sans-serif",
-                  color: "#0B1F3A", background: "#fff",
+                  padding: "0 10px", fontSize: tokens.fontSize.md, fontFamily: "Poppins, sans-serif",
+                  color: tokens.navy, background: "#fff",
                 }}
               />
             </label>
@@ -1741,8 +1742,8 @@ function Step3(props: {
               background: "#E7F6EC",
               border: "1.5px solid #34C759",
               color: "#34C759",
-              fontSize: 18,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.xl,
+              fontWeight: tokens.fontWeight.bold,
               fontFamily: "Poppins, sans-serif",
             }}
           >
@@ -1780,7 +1781,7 @@ function Step3(props: {
           }}
         >
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>Free course</div>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>Free course</div>
             <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>No payment required to book</div>
           </div>
           <DSMToggle checked={props.isFree} onChange={(v) => {
@@ -1861,7 +1862,7 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
     <div
       style={{
         fontSize: 12,
-        fontWeight: 600,
+        fontWeight: tokens.fontWeight.semibold,
         color: "#6B7280",
         marginBottom: 6,
         fontFamily: "Poppins, sans-serif",
@@ -1897,7 +1898,7 @@ function ToggleRow({
       }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{label}</div>
+        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>{label}</div>
         {sublabel && (
           <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{sublabel}</div>
         )}
@@ -1955,8 +1956,8 @@ function CheckRow({
         opacity: disabled ? 0.5 : 1,
         textAlign: "left",
         fontFamily: "Poppins, sans-serif",
-        fontSize: 14,
-        color: "#0B1F3A",
+        fontSize: tokens.fontSize.md,
+        color: tokens.navy,
       }}
     >
       <div
@@ -2140,8 +2141,8 @@ function PostcodeAutocomplete(props: {
             borderRadius: 8,
             padding: "0 12px 0 40px",
             fontFamily: "Poppins, sans-serif",
-            fontSize: 14,
-            color: "#0B1F3A",
+            fontSize: tokens.fontSize.md,
+            color: tokens.navy,
             background: "#fff",
             outline: "none",
             boxSizing: "border-box",
@@ -2149,7 +2150,7 @@ function PostcodeAutocomplete(props: {
         />
       </div>
       {error && (
-        <div style={{ color: "#1877D6", fontSize: 12, marginTop: 4, fontFamily: "Poppins, sans-serif" }}>
+        <div style={{ color: tokens.blue, fontSize: 12, marginTop: 4, fontFamily: "Poppins, sans-serif" }}>
           {error}
         </div>
       )}
@@ -2189,7 +2190,7 @@ function PostcodeAutocomplete(props: {
               }}
             >
               <IconMapPin size={14} color="#6B7280" />
-              <span style={{ fontWeight: 700, color: "#0B1F3A", fontSize: 14 }}>{s.postcode}</span>
+              <span style={{ fontWeight: tokens.fontWeight.bold, color: tokens.navy, fontSize: 14 }}>{s.postcode}</span>
               <span style={{ color: "#6B7280", fontSize: 13 }}>{s.area}</span>
             </div>
           ))}

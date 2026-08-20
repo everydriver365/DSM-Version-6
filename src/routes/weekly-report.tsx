@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconCalendar, IconChevronLeft, IconChevronRight, IconDownload, IconStar, IconUsers } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -361,7 +362,7 @@ function WeeklyReportPage() {
       {/* Week navigation */}
       <div
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           padding: "12px 16px",
           borderBottom: "0.5px solid #EEF2F7",
           display: "flex",
@@ -373,11 +374,11 @@ function WeeklyReportPage() {
           type="button"
           onClick={gotoPrevWeek}
           aria-label="Previous week"
-          style={{ background: "transparent", border: "none", padding: 4, cursor: "pointer", color: "#0B1F3A" }}
+          style={{ background: "transparent", border: "none", padding: 4, cursor: "pointer", color: tokens.navy }}
         >
           <IconChevronLeft stroke={1.5} size={22} />
         </button>
-        <div className="text-[14px] font-medium" style={{ ...POPPINS, color: "#0B1F3A" }}>
+        <div className="text-[14px] font-medium" style={{ ...POPPINS, color: tokens.navy }}>
           Week of {DAY_LABELS[0]} {weekStart.getDate()} {MONTH_SHORT[weekStart.getMonth()]}
         </div>
         <button
@@ -490,7 +491,7 @@ function WeeklyReportPage() {
                   style={{ borderTop: "0.5px solid #F1F3F7", background: "transparent", border: "none" }}
                 >
                   <div className="min-w-0">
-                    <div className="text-[14px] font-medium" style={{ ...POPPINS, color: "#0B1F3A" }}>
+                    <div className="text-[14px] font-medium" style={{ ...POPPINS, color: tokens.navy }}>
                       {p.name}
                     </div>
                     <div className="text-[12px]" style={{ ...POPPINS, color: "#6B7280" }}>
@@ -512,7 +513,7 @@ function WeeklyReportPage() {
                               padding: "4px 8px",
                               borderRadius: 999,
                               background: "#DBEAFE",
-                              color: "#1877D6",
+                              color: tokens.blue,
                             }}
                           >
                             {remaining.toFixed(1)}h remaining
@@ -543,8 +544,8 @@ function WeeklyReportPage() {
                           ...POPPINS,
                           padding: "3px 7px",
                           borderRadius: 999,
-                          background: "#EEF2F7",
-                          color: "#0B1F3A",
+                          background: tokens.canvas,
+                          color: tokens.navy,
                         }}
                       >
                         EOL ✓
@@ -576,8 +577,8 @@ function WeeklyReportPage() {
                           ...POPPINS,
                           padding: "3px 7px",
                           borderRadius: 999,
-                          background: "#EEF2F7",
-                          color: "#0B1F3A",
+                          background: tokens.canvas,
+                          color: tokens.navy,
                           cursor: "pointer",
                         }}
                       >
@@ -603,7 +604,7 @@ function WeeklyReportPage() {
           ) : (
             <ul className="mt-2 flex flex-col gap-2">
               {highlights.map((h, i) => (
-                <li key={i} className="text-[13px]" style={{ ...POPPINS, color: "#0B1F3A" }}>
+                <li key={i} className="text-[13px]" style={{ ...POPPINS, color: tokens.navy }}>
                   {h}
                 </li>
               ))}
@@ -623,10 +624,10 @@ function WeeklyReportPage() {
             padding: "12px",
             borderRadius: 8,
             border: "0.5px solid #1877D6",
-            color: "#1877D6",
-            background: "#FFFFFF",
-            fontSize: 14,
-            fontWeight: 600,
+            color: tokens.blue,
+            background: tokens.white,
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.semibold,
             cursor: "pointer",
           }}
         >
@@ -669,7 +670,7 @@ function StatTile({
   return (
     <div
       style={{
-        background: "#FFFFFF",
+        background: tokens.white,
         border: "0.5px solid #EEF2F7",
         borderRadius: 8,
         padding: 14,
@@ -689,7 +690,7 @@ function CardBox({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
-        background: "#FFFFFF",
+        background: tokens.white,
         border: "0.5px solid #EEF2F7",
         borderRadius: 8,
         padding: 16,
@@ -704,7 +705,7 @@ function SectionHead({ icon, title }: { icon: React.ReactNode; title: string }) 
   return (
     <div className="flex items-center gap-2">
       {icon}
-      <div className="text-[14px] font-semibold" style={{ ...POPPINS, color: "#0B1F3A" }}>
+      <div className="text-[14px] font-semibold" style={{ ...POPPINS, color: tokens.navy }}>
         {title}
       </div>
     </div>

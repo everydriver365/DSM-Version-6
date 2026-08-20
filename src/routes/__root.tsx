@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { tokens } from "@/lib/tokens";
 import {
   Outlet,
   Link,
@@ -327,7 +328,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
         >
           <Icon size={17} stroke={1.8} color="#000" />
         </span>
-        <span style={{ flex: 1, fontSize: 15, fontWeight: 500, color: "#000" }}>{m.label}</span>
+        <span style={{ flex: 1, fontSize: 15, fontWeight: tokens.fontWeight.medium, color: "#000" }}>{m.label}</span>
         <IconChevronRight size={14} color="#C7C7CC" />
       </button>
     );
@@ -379,13 +380,13 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
       >
         <div
           style={{
-            background: "#0B1F3A",
+            background: tokens.navy,
             color: "#fff",
             padding: "16px 18px 14px",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ fontWeight: 700, fontSize: 16 }}>Menu</div>
+            <div style={{ fontWeight: tokens.fontWeight.bold, fontSize: 16 }}>Menu</div>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               {isAdmin && (
                 <button
@@ -394,8 +395,8 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
                     setOpen(false);
                   }}
                   style={{
-                    fontSize: 10,
-                    fontWeight: 500,
+                    fontSize: tokens.fontSize.xs,
+                    fontWeight: tokens.fontWeight.medium,
                     color: "rgba(255,255,255,0.5)",
                     background: "none",
                     border: "none",
@@ -413,8 +414,8 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
                   navigate({ to: "/" as never, replace: true });
                 }}
                 style={{
-                  fontSize: 10,
-                  fontWeight: 500,
+                  fontSize: tokens.fontSize.xs,
+                  fontWeight: tokens.fontWeight.medium,
                   color: "rgba(255,255,255,0.5)",
                   background: "none",
                   border: "none",
@@ -458,7 +459,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
                 border: "none",
                 outline: "none",
                 color: "#fff",
-                fontSize: 14,
+                fontSize: tokens.fontSize.md,
                 fontFamily: "Poppins, sans-serif",
               }}
             />
@@ -472,7 +473,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
                 style={{
                   color: "#8A8A8E",
                   fontSize: 12,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   letterSpacing: "0.5px",
                   textTransform: "uppercase",
                   margin: "4px 4px 10px",
@@ -1008,7 +1009,7 @@ function RootComponent() {
             position: "fixed",
             inset: 0,
             zIndex: 100000,
-            background: "#0B1F3A",
+            background: tokens.navy,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -1023,21 +1024,21 @@ function RootComponent() {
               width: 72,
               height: 72,
               borderRadius: 20,
-              background: "#1877D6",
+              background: tokens.blue,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               marginBottom: 8,
             }}
           >
-            <span style={{ fontSize: 24, fontWeight: 800, color: "#fff" }}>DSM</span>
+            <span style={{ fontSize: 24, fontWeight: tokens.fontWeight.extrabold, color: "#fff" }}>DSM</span>
           </div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: "#fff" }}>
+          <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.bold, color: "#fff" }}>
             DSM by EveryDriver
           </div>
           <div
             style={{
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               color: "rgba(255,255,255,0.5)",
               marginTop: -12,
             }}
@@ -1049,12 +1050,12 @@ function RootComponent() {
             onClick={() => { void unlock(); }}
             style={{
               marginTop: 16,
-              background: "#1877D6",
+              background: tokens.blue,
               color: "#fff",
               borderRadius: 20,
               padding: "14px 40px",
               fontSize: 15,
-              fontWeight: 800,
+              fontWeight: tokens.fontWeight.extrabold,
               border: "none",
               cursor: "pointer",
               fontFamily: "Poppins, sans-serif",
@@ -1081,8 +1082,8 @@ function RootComponent() {
               padding: "10px 16px",
               background: "#FEF3C7",
               color: "#B45309",
-              fontSize: 13,
-              fontWeight: 500,
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.medium,
               fontFamily: "Poppins, sans-serif",
               textAlign: "center",
             }}
@@ -1113,7 +1114,7 @@ function RootComponent() {
             width: 44,
             height: 44,
             borderRadius: "50%",
-            background: "#0B1F3A",
+            background: tokens.navy,
             boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
             border: "none",
             cursor: "pointer",

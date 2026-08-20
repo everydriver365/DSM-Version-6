@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { useEffect, useMemo, useState } from "react";
@@ -156,7 +157,7 @@ function ManifestPage() {
       {/* Date sub-bar */}
       <div
         className="flex items-center justify-end text-[13px] font-medium"
-        style={{ background: "#FFFFFF", padding: "8px 16px", borderBottom: "1px solid #EEF2F7", color: "#0B1F3A" }}
+        style={{ background: tokens.white, padding: "8px 16px", borderBottom: "1px solid #EEF2F7", color: tokens.navy }}
       >
         {dateLabel}
       </div>
@@ -164,7 +165,7 @@ function ManifestPage() {
       {/* SUMMARY STRIP */}
       <div
         className="px-4 py-3 flex"
-        style={{ backgroundColor: "#0B1F3A", gap: 8 }}
+        style={{ backgroundColor: tokens.navy, gap: 8 }}
       >
         <Stat value={String(lessons.length)} label="LESSONS" />
         <Stat value={totalHours} label="HOURS" />
@@ -191,7 +192,7 @@ function ManifestPage() {
                     borderRadius: 8,
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#EEF2F7",
+                    borderColor: tokens.canvas,
                   }}
                 >
                   <div className="flex items-start justify-between">
@@ -294,7 +295,7 @@ function ManifestPage() {
                 fontFamily: "Poppins, sans-serif",
                 borderWidth: "0.5px",
                 borderStyle: "solid",
-                borderColor: "#EEF2F7",
+                borderColor: tokens.canvas,
               }}
             />
           </div>
@@ -310,7 +311,7 @@ function ManifestPage() {
                 padding: 10,
                 borderRadius: 8,
                 backgroundColor: "#F3F8FF",
-                color: "#0B1F3A",
+                color: tokens.navy,
               }}
             >
               {savedMsg}
@@ -339,7 +340,7 @@ function Stat({
       </div>
       <div
         className="text-[10px] uppercase"
-        style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}
+        style={{ color: tokens.textMuted, letterSpacing: "0.08em" }}
       >
         {label}
       </div>

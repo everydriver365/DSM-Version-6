@@ -1,4 +1,5 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
+import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -514,7 +515,7 @@ function CommunityPage() {
 
       {/* TABS */}
       <div style={{
-        background: "#EEF2F7",
+        background: tokens.canvas,
         display: "flex", gap: 6, overflowX: "auto",
         padding: "12px 16px 8px", position: "sticky", top: 0, zIndex: 10,
       }}>
@@ -534,7 +535,7 @@ function CommunityPage() {
               onClick={() => setActiveTab(t.id)}
               style={{
                 flexShrink: 0, padding: "9px 16px", borderRadius: 8,
-                fontSize: 13.5, fontWeight: 700, border: "none", cursor: "pointer",
+                fontSize: 13.5, fontWeight: tokens.fontWeight.bold, border: "none", cursor: "pointer",
                 background: active ? "#0B1F3A" : "transparent",
                 color: active ? "#fff" : "#6B6B6F",
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
@@ -545,7 +546,7 @@ function CommunityPage() {
               {t.label}
               {badge > 0 && (
                 <span style={{
-                  background: "#1877D6", color: "white", fontSize: 10, fontWeight: 700,
+                  background: tokens.blue, color: "white", fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold,
                   borderRadius: 999, padding: "1px 6px", minWidth: 18, lineHeight: "16px",
                 }}>
                   {badge > 99 ? "99+" : badge}
@@ -615,8 +616,8 @@ function CommunityPage() {
               type="button"
               onClick={() => setDmSearchOpen(true)}
               style={{
-                width: "100%", padding: "10px 14px", background: "#1877D6", color: "#fff",
-                border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer",
+                width: "100%", padding: "10px 14px", background: tokens.blue, color: "#fff",
+                border: "none", borderRadius: 8, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                 fontFamily: "Poppins, sans-serif", display: "flex", alignItems: "center",
                 justifyContent: "center", gap: 8,
               }}
@@ -629,8 +630,8 @@ function CommunityPage() {
           {/* Conversation list */}
           {dmConversations.length === 0 ? (
             <div style={{
-              padding: "40px 24px", textAlign: "center", fontSize: 14,
-              color: "#6B7686", fontFamily: "Poppins, sans-serif",
+              padding: "40px 24px", textAlign: "center", fontSize: tokens.fontSize.md,
+              color: tokens.textSecondary, fontFamily: "Poppins, sans-serif",
             }}>
               No messages yet — start a conversation with another DSM instructor
             </div>
@@ -660,23 +661,23 @@ function CommunityPage() {
                       }}
                     >
                       <div style={{
-                        width: 44, height: 44, borderRadius: "50%", background: "#1877D6",
+                        width: 44, height: 44, borderRadius: "50%", background: tokens.blue,
                         display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                       }}>
-                        <span style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>{initials}</span>
+                        <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: "#fff" }}>{initials}</span>
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", marginBottom: 2 }}>
+                        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, marginBottom: 2 }}>
                           {other?.name ?? "DSM Instructor"}
                         </div>
                         <div style={{
-                          fontSize: 12, color: "#6B7686", whiteSpace: "nowrap",
+                          fontSize: 12, color: tokens.textSecondary, whiteSpace: "nowrap",
                           overflow: "hidden", textOverflow: "ellipsis",
                         }}>
                           {dm.last_message ?? "New conversation"}
                         </div>
                       </div>
-                      <div style={{ fontSize: 11, color: "#9CA3AF", flexShrink: 0 }}>
+                      <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, flexShrink: 0 }}>
                         {dm.last_message_at
                           ? new Date(dm.last_message_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })
                           : ""}
@@ -702,13 +703,13 @@ function CommunityPage() {
                 display: "flex", alignItems: "center", justifyContent: "space-between",
                 padding: "14px 16px", borderBottom: "0.5px solid #E4E8EF",
               }}>
-                <div style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A" }}>New message</div>
+                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>New message</div>
                 <button
                   type="button"
                   onClick={() => { setDmSearchOpen(false); setDmSearch(""); setDmSearchResults([]); }}
                   style={{ background: "none", border: 0, cursor: "pointer", padding: 0 }}
                 >
-                  <i className="ti ti-x" style={{ fontSize: 20, color: "#6B7686" }} />
+                  <i className="ti ti-x" style={{ fontSize: 20, color: tokens.textSecondary }} />
                 </button>
               </div>
               <div style={{ padding: "12px 16px" }}>
@@ -730,7 +731,7 @@ function CommunityPage() {
                   placeholder="Search instructors..."
                   style={{
                     width: "100%", boxSizing: "border-box", border: "1px solid #E4E8EF",
-                    borderRadius: 8, padding: "10px 12px", fontSize: 14, color: "#0B1F3A", outline: "none",
+                    borderRadius: 8, padding: "10px 12px", fontSize: tokens.fontSize.md, color: tokens.navy, outline: "none",
                   }}
                 />
               </div>
@@ -770,17 +771,17 @@ function CommunityPage() {
                     }}
                   >
                     <div style={{
-                      width: 44, height: 44, borderRadius: "50%", background: "#1877D6",
+                      width: 44, height: 44, borderRadius: "50%", background: tokens.blue,
                       display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                     }}>
-                      <span style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>
+                      <span style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: "#fff" }}>
                         {(r.name ?? "DM").split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()}
                       </span>
                     </div>
                     <div style={{ minWidth: 0 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{r.name}</div>
+                      <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>{r.name}</div>
                       {r.home_postcode && (
-                        <div style={{ fontSize: 12, color: "#6B7686", marginTop: 2 }}>{r.home_postcode}</div>
+                        <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 2 }}>{r.home_postcode}</div>
                       )}
                     </div>
                   </div>
@@ -897,9 +898,9 @@ function RoomsTab({
       <div style={rowStyle}>
         <div style={{
           width: 46, height: 46, borderRadius: "50%", overflow: "hidden", flexShrink: 0,
-          background: "#0B1F3A", color: "#fff",
+          background: tokens.navy, color: "#fff",
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 16, fontWeight: 800,
+          fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold,
         }}>
           {room.image_url ? (
             <img
@@ -913,18 +914,18 @@ function RoomsTab({
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-            <div style={{ fontSize: 15.5, fontWeight: 800, color: "#0B1F3A", lineHeight: 1.3 }}>
+            <div style={{ fontSize: 15.5, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, lineHeight: 1.3 }}>
               {room.area_name || room.outcode}
             </div>
             <span style={{
-              background: "#E7F1FC", color: "#1877D6", fontSize: 10.5, fontWeight: 800,
+              background: "#E7F1FC", color: tokens.blue, fontSize: 10.5, fontWeight: tokens.fontWeight.extrabold,
               borderRadius: 8, padding: "3px 9px", whiteSpace: "nowrap", flexShrink: 0,
             }}>
               {room.outcode}
             </span>
             {room.is_opt_in && (
               <span style={{
-                background: "#F1F3F7", color: "#6B7280", fontSize: 10.5, fontWeight: 800,
+                background: "#F1F3F7", color: "#6B7280", fontSize: 10.5, fontWeight: tokens.fontWeight.extrabold,
                 borderRadius: 8, padding: "3px 9px", whiteSpace: "nowrap", flexShrink: 0,
               }}>
                 Private
@@ -939,7 +940,7 @@ function RoomsTab({
               {room.description}
             </div>
           ) : null}
-          <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 4, fontSize: 12, fontWeight: 500, color: "#8A8A8E" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 4, fontSize: 12, fontWeight: tokens.fontWeight.medium, color: "#8A8A8E" }}>
             <IconUsers stroke={1.5} size={12} />
             {room.instructor_count ?? 0} instructors
           </div>
@@ -951,12 +952,12 @@ function RoomsTab({
 
   const btn = (bg: string, shadow: string): React.CSSProperties => ({
     padding: "10px 18px", borderRadius: 8, border: "none",
-    background: bg, color: "#fff", fontSize: 13.5, fontWeight: 800,
+    background: bg, color: "#fff", fontSize: 13.5, fontWeight: tokens.fontWeight.extrabold,
     cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap", boxShadow: shadow,
   });
 
   const sectionHeader: React.CSSProperties = {
-    fontSize: 12, fontWeight: 700, color: "#8A8A8E", textTransform: "uppercase",
+    fontSize: 12, fontWeight: tokens.fontWeight.bold, color: "#8A8A8E", textTransform: "uppercase",
     letterSpacing: 0.5, marginBottom: 12,
   };
 
@@ -969,7 +970,7 @@ function RoomsTab({
         {loading ? (
           <PageLoader />
         ) : myRooms.length === 0 ? (
-          <div style={{ fontSize: 13, color: "#8A8A8E" }}>You haven’t joined any rooms yet.</div>
+          <div style={{ fontSize: tokens.fontSize.base, color: "#8A8A8E" }}>You haven’t joined any rooms yet.</div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {myRooms.map((room) => (
@@ -1001,11 +1002,11 @@ function RoomsTab({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search area or outcode"
-            style={{ flex: 1, border: "none", outline: "none", fontSize: 14, color: "#0B1F3A", background: "transparent" }}
+            style={{ flex: 1, border: "none", outline: "none", fontSize: tokens.fontSize.md, color: tokens.navy, background: "transparent" }}
           />
         </div>
         {loading ? null : availableRooms.length === 0 ? (
-          <div style={{ fontSize: 13, color: "#8A8A8E" }}>No other rooms found.</div>
+          <div style={{ fontSize: tokens.fontSize.base, color: "#8A8A8E" }}>No other rooms found.</div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {availableRooms.map((room) => (
@@ -1275,13 +1276,13 @@ function AlertsTab({
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{
-            fontSize: 14.5, fontWeight: 800, color: "#0B1F3A",
+            fontSize: 14.5, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy,
             whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
           }}>
             {a.description || cfg.label}
           </div>
           <div style={{
-            fontSize: 12, fontWeight: 500, color: "#8A8A8E", marginTop: 1,
+            fontSize: 12, fontWeight: tokens.fontWeight.medium, color: "#8A8A8E", marginTop: 1,
             whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
           }}>
             {a.location_name || (source === "tomtom" ? "Official traffic data" : `${reporter} reported this`)}
@@ -1290,7 +1291,7 @@ function AlertsTab({
         <div style={{
           flexShrink: 0, background: "#F2F2F7",
           color: suspicious ? "#CC2229" : "#6B6B6F",
-          fontSize: 11, fontWeight: 700, padding: "5px 10px", borderRadius: 8,
+          fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, padding: "5px 10px", borderRadius: 8,
           whiteSpace: "nowrap",
         }}>
           {formatCountdown(a.expires_at)}
@@ -1302,10 +1303,10 @@ function AlertsTab({
   return (
     <div style={{ padding: 16, paddingBottom: 100, marginBottom: 80 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-        <div style={{ fontSize: 19, fontWeight: 800, color: "#000", letterSpacing: "-0.3px" }}>
+        <div style={{ fontSize: 19, fontWeight: tokens.fontWeight.extrabold, color: "#000", letterSpacing: "-0.3px" }}>
           Alerts near {coverageOutcodes.length > 1 ? "your coverage areas" : instructorArea}
         </div>
-        <div style={{ fontSize: 13, fontWeight: 600, color: "#8A8A8E", flexShrink: 0, marginLeft: 10, textAlign: "right" }}>
+        <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: "#8A8A8E", flexShrink: 0, marginLeft: 10, textAlign: "right" }}>
           {otherAlerts.length === 0
             ? "0 active"
             : instructorReportedCount > 0 && officialCount > 0
@@ -1320,7 +1321,7 @@ function AlertsTab({
       {myAlerts.length > 0 && (
         <div style={{ marginBottom: 18 }}>
           <div style={{
-            fontSize: 11, fontWeight: 600, color: '#9CA3AF',
+            fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#9CA3AF',
             textTransform: 'uppercase', letterSpacing: '0.08em',
             padding: '0 2px 8px', fontFamily: 'Poppins, sans-serif',
           }}>
@@ -1347,13 +1348,13 @@ function AlertsTab({
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{
-                    fontSize: 14.5, fontWeight: 800, color: "#0B1F3A",
+                    fontSize: 14.5, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy,
                     whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
                   }}>
                     {a.description || cfg.label}
                   </div>
                   <div style={{
-                    fontSize: 12, fontWeight: 500, color: "#8A8A8E", marginTop: 1,
+                    fontSize: 12, fontWeight: tokens.fontWeight.medium, color: "#8A8A8E", marginTop: 1,
                     whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
                   }}>
                     {a.location_name || formatCountdown(a.expires_at)}
@@ -1375,7 +1376,7 @@ function AlertsTab({
                 ) : (
                   <div style={{
                     flexShrink: 0, background: "#F2F2F7", color: "#6B6B6F",
-                    fontSize: 11, fontWeight: 700, padding: "5px 10px", borderRadius: 8,
+                    fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, padding: "5px 10px", borderRadius: 8,
                     whiteSpace: "nowrap",
                   }}>
                     {formatCountdown(a.expires_at)}
@@ -1392,8 +1393,8 @@ function AlertsTab({
         myAlerts.length === 0 && officialAlerts.length === 0 ? (
           <div style={{ padding: 40, textAlign: "center" }}>
             <IconMapPin stroke={1.5} size={48} color="#D1D5DB" style={{ margin: "0 auto 12px" }} />
-            <div style={{ fontWeight: 600, color: "#6B7280" }}>No other alerts near {instructorArea}</div>
-            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>Be the first to report an issue</div>
+            <div style={{ fontWeight: tokens.fontWeight.semibold, color: "#6B7280" }}>No other alerts near {instructorArea}</div>
+            <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 4 }}>Be the first to report an issue</div>
             <button
               type="button"
               onClick={() => {
@@ -1401,8 +1402,8 @@ function AlertsTab({
                 setReportSheetOpenWithEvent(true);
               }}
               style={{
-                background: "#CC2229", color: "white", border: "none", borderRadius: 8,
-                padding: "10px 24px", marginTop: 16, fontWeight: 600, cursor: "pointer",
+                background: tokens.red, color: "white", border: "none", borderRadius: 8,
+                padding: "10px 24px", marginTop: 16, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
               }}
             >
               Report alert
@@ -1412,7 +1413,7 @@ function AlertsTab({
           <div style={{
             padding: 20, textAlign: "center", background: "#fff",
             border: "1.5px dashed #D1D1D6", borderRadius: 8,
-            fontSize: 14, fontWeight: 500, color: "#B0B0B5",
+            fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: "#B0B0B5",
           }}>
             No instructor reports in your area
           </div>
@@ -1420,7 +1421,7 @@ function AlertsTab({
       ) : (
         <div style={{ marginBottom: 16 }}>
           <div style={{
-            fontSize: 11, fontWeight: 600, color: '#9CA3AF',
+            fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#9CA3AF',
             textTransform: 'uppercase', letterSpacing: '0.08em',
             padding: '0 2px 8px', fontFamily: 'Poppins, sans-serif',
           }}>
@@ -1467,17 +1468,17 @@ function AlertsTab({
                   justifyContent: "center",
                   flexShrink: 0,
                   background: "#EAF2FB",
-                  color: "#1877D6",
+                  color: tokens.blue,
                 }}
                 aria-hidden="true"
               >
                 <IconBuilding size={20} stroke={1.9} />
               </div>
               <div style={{ minWidth: 0, textAlign: "left" }}>
-                <div style={{ fontSize: 15.5, fontWeight: 800, color: "#0B1F3A", lineHeight: 1.25 }}>
+                <div style={{ fontSize: 15.5, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, lineHeight: 1.25 }}>
                   Official sources
                 </div>
-                <div style={{ fontSize: 12.5, fontWeight: 500, color: "#8A8A8E", marginTop: 1 }}>
+                <div style={{ fontSize: 12.5, fontWeight: tokens.fontWeight.medium, color: "#8A8A8E", marginTop: 1 }}>
                   {officialAlerts.length} live incident{officialAlerts.length === 1 ? "" : "s"}
                 </div>
               </div>
@@ -1532,7 +1533,7 @@ function AlertsTab({
                       color: active ? "#fff" : "#0B1F3A",
                       boxShadow: active ? "0 4px 0 #050D1C" : "0 4px 0 #E4E4E8",
                       borderRadius: 8, padding: "9px 16px",
-                      fontSize: 13, fontWeight: 700, cursor: "pointer",
+                      fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, cursor: "pointer",
                       whiteSpace: "nowrap",
                     }}
                   >
@@ -1546,7 +1547,7 @@ function AlertsTab({
               <div style={{
                 padding: 20, textAlign: "center", background: "#fff",
                 border: "1.5px dashed #D1D1D6", borderRadius: 8,
-                fontSize: 14, fontWeight: 500, color: "#B0B0B5",
+                fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: "#B0B0B5",
               }}>
                 No matching incidents
               </div>
@@ -1579,7 +1580,7 @@ function AlertsTab({
         const alreadyUpvoted = !!userId && (selectedAlert.upvoted_by ?? []).includes(userId);
         const rowStyle: React.CSSProperties = {
           display: "flex", justifyContent: "space-between", alignItems: "center",
-          padding: "11px 14px", fontSize: 13,
+          padding: "11px 14px", fontSize: tokens.fontSize.base,
         };
         const expirySuspicious = isExpirySuspicious(selectedAlert.expires_at);
         const affectedRoads = extractRoads(selectedAlert.location_name, selectedAlert.description);
@@ -1606,8 +1607,8 @@ function AlertsTab({
                   onClick={() => setSelectedAlert(null)}
                   style={{
                     flex: 1, padding: "12px 0", borderRadius: 999, background: "white",
-                    border: "1px solid #E2E6ED", color: "#0B1F3A", fontWeight: 600,
-                    fontSize: 14, cursor: "pointer",
+                    border: "1px solid #E2E6ED", color: tokens.navy, fontWeight: tokens.fontWeight.semibold,
+                    fontSize: tokens.fontSize.md, cursor: "pointer",
                   }}
                 >
                   Close
@@ -1617,8 +1618,8 @@ function AlertsTab({
                     type="button"
                     onClick={() => { handleCancel(selectedAlert); setSelectedAlert(null); }}
                     style={{
-                      flex: 1, padding: "12px 0", borderRadius: 999, background: "#0B1F3A",
-                      border: "none", color: "white", fontWeight: 600, fontSize: 14, cursor: "pointer",
+                      flex: 1, padding: "12px 0", borderRadius: 999, background: tokens.navy,
+                      border: "none", color: "white", fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md, cursor: "pointer",
                     }}
                   >
                     Cancel alert
@@ -1639,7 +1640,7 @@ function AlertsTab({
                       color={alreadyUpvoted ? "#1877D6" : "#9CA3AF"}
                       fill={alreadyUpvoted ? "#1877D6" : "none"}
                     />
-                    <span style={{ fontSize: 14, fontWeight: 600, color: alreadyUpvoted ? "#1877D6" : "#6B7280" }}>
+                    <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: alreadyUpvoted ? "#1877D6" : "#6B7280" }}>
                       {selectedAlert.upvotes} confirmed
                     </span>
                   </button>
@@ -1647,7 +1648,7 @@ function AlertsTab({
               </div>
             }
           >
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Details</div>
+            <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#8A93A3", marginBottom: 6 }}>Details</div>
             <div style={{ background: "white", borderRadius: 8, overflow: "hidden", marginBottom: 14 }}>
               {metaRows.map((r, i) => {
                 const isReportedTomTom = r.label === "Reported" && selectedAlert.source === 'tomtom';
@@ -1657,10 +1658,10 @@ function AlertsTab({
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", marginLeft: 12 }}>
                       <span style={{ color: r.danger ? "#CC2229" : "#0B1F3A", fontWeight: r.danger ? 800 : 600, textAlign: "right" }}>{r.value}</span>
                       {isReportedTomTom && (
-                        <span style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>Updates automatically</span>
+                        <span style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, marginTop: 2 }}>Updates automatically</span>
                       )}
                       {r.danger && (
-                        <span style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2, textAlign: "right" }}>End time looks unreliable</span>
+                        <span style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, marginTop: 2, textAlign: "right" }}>End time looks unreliable</span>
                       )}
                     </div>
                   </div>
@@ -1670,14 +1671,14 @@ function AlertsTab({
 
             {affectedRoads.length > 0 && (
               <>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Affected roads</div>
+                <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#8A93A3", marginBottom: 6 }}>Affected roads</div>
                 <div style={{
                   background: "white", borderRadius: 8, padding: "12px 14px", marginBottom: 14,
                   display: "flex", flexWrap: "wrap", gap: 6,
                 }}>
                   {affectedRoads.map((road) => (
                     <span key={road} style={{
-                      background: "#E7F1FC", color: "#1877D6", fontSize: 12, fontWeight: 700,
+                      background: "#E7F1FC", color: tokens.blue, fontSize: 12, fontWeight: tokens.fontWeight.bold,
                       padding: "5px 11px", borderRadius: 8,
                     }}>
                       {road}
@@ -1689,15 +1690,15 @@ function AlertsTab({
 
 
 
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>Description</div>
+            <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#8A93A3", marginBottom: 6 }}>Description</div>
             <div style={{
               background: "white", borderRadius: 8, padding: "12px 14px",
-              fontSize: 13.5, color: "#0B1F3A", lineHeight: 1.45, marginBottom: 14,
+              fontSize: 13.5, color: tokens.navy, lineHeight: 1.45, marginBottom: 14,
             }}>
               {selectedAlert.description}
             </div>
 
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#8A93A3", marginBottom: 6 }}>
+            <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#8A93A3", marginBottom: 6 }}>
               Comments · {comments.length}
             </div>
             {comments.length > 0 && (
@@ -1713,17 +1714,17 @@ function AlertsTab({
                     <div style={{
                       width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
                       background: commentColour(c.instructor_id), color: "white",
-                      fontSize: 11, fontWeight: 700,
+                      fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold,
                       display: "flex", alignItems: "center", justifyContent: "center",
                     }}>
                       {commentInitials(c.instructors?.name)}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 12, color: "#8A93A3" }}>
-                        <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{firstName(c.instructors?.name)}</span>
+                        <span style={{ color: tokens.navy, fontWeight: 600 }}>{firstName(c.instructors?.name)}</span>
                         {" · "}{commentTimeAgo(c.created_at)}
                       </div>
-                      <div style={{ fontSize: 13.5, color: "#0B1F3A", marginTop: 2, lineHeight: 1.4, wordBreak: "break-word" }}>
+                      <div style={{ fontSize: 13.5, color: tokens.navy, marginTop: 2, lineHeight: 1.4, wordBreak: "break-word" }}>
                         {c.body}
                       </div>
                     </div>
@@ -1739,7 +1740,7 @@ function AlertsTab({
               <div style={{
                 width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
                 background: userId ? commentColour(userId) : "#9CA3AF", color: "white",
-                fontSize: 11, fontWeight: 700,
+                fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold,
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
                 {commentInitials(instructorFirstName)}
@@ -1751,7 +1752,7 @@ function AlertsTab({
                 placeholder="Add an update…"
                 style={{
                   flex: 1, minWidth: 0, border: "none", outline: "none",
-                  fontSize: 13.5, color: "#0B1F3A", background: "transparent",
+                  fontSize: 13.5, color: tokens.navy, background: "transparent",
                 }}
               />
               <button
@@ -1761,7 +1762,7 @@ function AlertsTab({
                 aria-label="Post comment"
                 style={{
                   width: 32, height: 32, borderRadius: "50%", flexShrink: 0,
-                  background: "#1877D6", border: "none", color: "white",
+                  background: tokens.blue, border: "none", color: "white",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   cursor: commentDraft.trim() ? "pointer" : "default",
                   opacity: commentDraft.trim() ? 1 : 0.4, padding: 0,
@@ -1801,26 +1802,26 @@ function AlertCard({
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{
-            fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+            fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, textTransform: "uppercase",
             color: cfg.colour, letterSpacing: 0.3,
           }}>
             {cfg.label}
           </div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#0F2044", marginTop: 2 }}>
+          <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: "#0F2044", marginTop: 2 }}>
             {alert.description}
           </div>
           {alert.location_name && (
-            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 1 }}>{alert.location_name}</div>
+            <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 1 }}>{alert.location_name}</div>
           )}
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2, flexShrink: 0 }}>
-          <div style={{ fontSize: 10, color: "#9CA3AF" }}>{formatCountdown(alert.expires_at)}</div>
+          <div style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted }}>{formatCountdown(alert.expires_at)}</div>
           {source === 'tomtom' ? (
-            <div style={{ background: '#E3EEFC', color: '#1877D6', fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 8}}>
+            <div style={{ background: '#E3EEFC', color: '#1877D6', fontSize: 9, fontWeight: tokens.fontWeight.bold, padding: '2px 7px', borderRadius: 8}}>
               TomTom
             </div>
           ) : (
-            <div style={{ fontSize: 10, color: "#9CA3AF" }}>{reporter}</div>
+            <div style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted }}>{reporter}</div>
           )}
         </div>
       </div>
@@ -1829,13 +1830,13 @@ function AlertCard({
         display: "flex", justifyContent: "space-between", alignItems: "center",
         marginTop: 10, paddingTop: 8, borderTop: "0.5px solid #F3F4F6",
       }}>
-        <div style={{ fontSize: 12, color: "#9CA3AF" }}>
+        <div style={{ fontSize: 12, color: tokens.textMuted }}>
           {source === 'tomtom' ? 'Official traffic data' : `${reporter} reported this`}
         </div>
         {commentCount > 0 && (
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <IconMessageCircle stroke={1.5} size={13} color="#9CA3AF" />
-            <span style={{ fontSize: 12, color: "#9CA3AF" }}>{commentCount}</span>
+            <span style={{ fontSize: 12, color: tokens.textMuted }}>{commentCount}</span>
           </div>
         )}
         <button
@@ -1852,7 +1853,7 @@ function AlertCard({
             color={alreadyUpvoted ? "#185FA5" : "#9CA3AF"}
             fill={alreadyUpvoted ? "#185FA5" : "none"}
           />
-          <span style={{ fontSize: 12, fontWeight: 600, color: alreadyUpvoted ? "#185FA5" : "#6B7280" }}>
+          <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: alreadyUpvoted ? "#185FA5" : "#6B7280" }}>
             {alert.upvotes} confirmed
           </span>
         </button>
@@ -1881,8 +1882,8 @@ function ReportSheet({
   const hairline = "#E4E8EF";
   const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
   const labelStyle: React.CSSProperties = {
-    fontSize: 13,
-    fontWeight: 500,
+    fontSize: tokens.fontSize.base,
+    fontWeight: tokens.fontWeight.medium,
     color: subtle,
     marginBottom: 4,
     display: "block",
@@ -2086,7 +2087,7 @@ function ReportSheet({
         <BottomSheet title="Community guidelines" onClose={onClose}>
           <SheetGroup>
             <SheetRow>
-              <ul style={{ fontSize: 14, color: subtle, lineHeight: 1.6, paddingLeft: 18, margin: 0, ...POPPINS }}>
+              <ul style={{ fontSize: tokens.fontSize.md, color: subtle, lineHeight: 1.6, paddingLeft: 18, margin: 0, ...POPPINS }}>
                 <li>Keep it relevant — driving related only</li>
                 <li>Be professional and respectful to other ADIs</li>
                 <li>No advertising or self-promotion</li>
@@ -2142,7 +2143,7 @@ function ReportSheet({
                     placeholder={locationLoading ? "Detecting your location..." : "Road name or location..."}
                     disabled={locationLoading}
                     className="w-full bg-transparent focus:outline-none"
-                    style={{ fontSize: 16, fontWeight: 600, color: navy, opacity: locationLoading ? 0.6 : 1, ...POPPINS }}
+                    style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: navy, opacity: locationLoading ? 0.6 : 1, ...POPPINS }}
                   />
                   {suggestions.length > 0 && (
                     <div
@@ -2151,7 +2152,7 @@ function ReportSheet({
                         top: "calc(100% + 8px)",
                         left: -16,
                         right: -16,
-                        background: "#FFFFFF",
+                        background: tokens.white,
                         border: `1px solid ${hairline}`,
                         borderRadius: 8,
                         boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
@@ -2173,7 +2174,7 @@ function ReportSheet({
                             background: "none",
                             border: "none",
                             borderBottom: `1px solid ${hairline}`,
-                            fontSize: 14,
+                            fontSize: tokens.fontSize.md,
                             color: navy,
                             cursor: "pointer",
                             ...POPPINS,
@@ -2210,7 +2211,7 @@ function ReportSheet({
                   onChange={(e) => setTown(e.target.value)}
                   placeholder="Town or area..."
                   className="w-full bg-transparent focus:outline-none"
-                  style={{ fontSize: 16, fontWeight: 600, color: navy, ...POPPINS }}
+                  style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: navy, ...POPPINS }}
                 />
               </div>
             </SheetRow>
@@ -2226,7 +2227,7 @@ function ReportSheet({
                   placeholder="Add details to help other ADIs..."
                   rows={3}
                   className="w-full bg-transparent focus:outline-none resize-none"
-                  style={{ fontSize: 16, color: navy, ...POPPINS }}
+                  style={{ fontSize: tokens.fontSize.lg, color: navy, ...POPPINS }}
                 />
               </div>
             </SheetRow>
@@ -2235,8 +2236,8 @@ function ReportSheet({
           <SheetGroup>
             <SheetRow>
               <div className="flex-1 min-w-0">
-                <div style={{ fontSize: 16, fontWeight: 600, color: navy, ...POPPINS }}>Report anonymously</div>
-                <div style={{ fontSize: 13, fontWeight: 500, color: subtle, marginTop: 2, ...POPPINS }}>
+                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: navy, ...POPPINS }}>Report anonymously</div>
+                <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: subtle, marginTop: 2, ...POPPINS }}>
                   Your name won't be shown to other instructors
                 </div>
               </div>
@@ -2636,10 +2637,10 @@ function ChatTab({
         display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8,
       }}>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>
+          <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: "#0F2044" }}>
             {scope === "uk" ? "All UK ADIs" : `${areaLabel} ADIs`}
           </div>
-          <div style={{ fontSize: 12, color: "#9CA3AF" }}>
+          <div style={{ fontSize: 12, color: tokens.textMuted }}>
             {memberCount} members · {scope === "uk" ? "Chat with ADIs across the UK" : "Real names only"}
           </div>
         </div>
@@ -2703,7 +2704,7 @@ function ChatTab({
                       onClick={() => muteFor(o.hours)}
                       style={{
                         display: "block", width: "100%", textAlign: "left",
-                        padding: "10px 14px", fontSize: 13, color: "#0F2044",
+                        padding: "10px 14px", fontSize: tokens.fontSize.base, color: "#0F2044",
                         background: "none", border: "none", borderBottom: "0.5px solid #F1F4F8", cursor: "pointer",
                       }}
                     >
@@ -2715,7 +2716,7 @@ function ChatTab({
                     onClick={unsubscribe}
                     style={{
                       display: "block", width: "100%", textAlign: "left",
-                      padding: "10px 14px", fontSize: 13, color: "#CC2229", fontWeight: 600,
+                      padding: "10px 14px", fontSize: tokens.fontSize.base, color: tokens.red, fontWeight: tokens.fontWeight.semibold,
                       background: "none", border: "none", cursor: "pointer",
                     }}
                   >
@@ -2739,7 +2740,7 @@ function ChatTab({
               background: "none", border: "none", padding: 0, cursor: "pointer",
             }}
           >
-            <span style={{ fontSize: 13, fontWeight: 600, color: "#0F2044" }}>
+            <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: "#0F2044" }}>
               {areaLabel}
             </span>
             <IconChevronDown stroke={1.5}
@@ -2770,7 +2771,7 @@ function ChatTab({
                     }}
                     style={{
                       display: "block", width: "100%", textAlign: "left",
-                      padding: "10px 14px", fontSize: 13, color: "#0F2044",
+                      padding: "10px 14px", fontSize: tokens.fontSize.base, color: "#0F2044",
                       background: "none", border: "none", borderBottom: "0.5px solid #F1F4F8", cursor: "pointer",
                     }}
                   >
@@ -2796,7 +2797,7 @@ function ChatTab({
             placeholder="Search messages..."
             autoFocus
             style={{
-              flex: 1, border: "none", outline: "none", fontSize: 13, color: "#0F2044", background: "transparent",
+              flex: 1, border: "none", outline: "none", fontSize: tokens.fontSize.base, color: "#0F2044", background: "transparent",
             }}
           />
           {msgSearch && (
@@ -2827,19 +2828,19 @@ function ChatTab({
         {noRoom ? (
           <div style={{ marginTop: 60, textAlign: "center", padding: "0 24px" }}>
             <IconMessage stroke={1.5} size={40} color="#D1D5DB" style={{ margin: "0 auto 12px" }} />
-            <div style={{ fontWeight: 600, color: "#6B7280" }}>
+            <div style={{ fontWeight: tokens.fontWeight.semibold, color: "#6B7280" }}>
               No chat room yet for your area
             </div>
-            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4, lineHeight: 1.5 }}>
+            <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 4, lineHeight: 1.5 }}>
               {noRoomMessage || "Check back soon, or contact support."}
             </div>
           </div>
         ) : displayed.length === 0 ? (
           <div style={{ marginTop: 40, textAlign: "center" }}>
-            <div style={{ fontWeight: 600, color: "#6B7280" }}>
+            <div style={{ fontWeight: tokens.fontWeight.semibold, color: "#6B7280" }}>
               {msgSearch.trim() ? "No messages match your search" : `Be the first to chat in ${areaLabel}!`}
             </div>
-            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>
+            <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 4 }}>
               {msgSearch.trim() ? "Try a different keyword" : "Connect with local ADIs, share tips and help each other"}
             </div>
           </div>
@@ -2853,7 +2854,7 @@ function ChatTab({
             return (
               <div key={m.id}>
                 {showDateSep && (
-                  <div style={{ fontSize: 12, color: "#9CA3AF", textAlign: "center", padding: "8px 0" }}>
+                  <div style={{ fontSize: 12, color: tokens.textMuted, textAlign: "center", padding: "8px 0" }}>
                     {new Date(m.created_at).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short" })}
                   </div>
                 )}
@@ -2863,11 +2864,11 @@ function ChatTab({
                       <div style={{
                         background: "#0F2044", color: "white",
                         borderRadius: "8px 8px 8px 8px", padding: "10px 14px",
-                        fontSize: 13, whiteSpace: "pre-wrap", wordBreak: "break-word",
+                        fontSize: tokens.fontSize.base, whiteSpace: "pre-wrap", wordBreak: "break-word",
                       }}>
                         {messageNode}
                       </div>
-                      <div style={{ fontSize: 10, color: "#9CA3AF", textAlign: "right", marginTop: 2 }}>{time}</div>
+                      <div style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted, textAlign: "right", marginTop: 2 }}>{time}</div>
                     </div>
                   </div>
                 ) : (
@@ -2878,7 +2879,7 @@ function ChatTab({
                       size={32}
                     />
                     <div style={{ maxWidth: "75%" }}>
-                      <div style={{ fontSize: 10, color: "#9CA3AF", fontWeight: 600, marginBottom: 2 }}>
+                      <div style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted, fontWeight: tokens.fontWeight.semibold, marginBottom: 2 }}>
                         {firstName(m.instructors?.name)}
                       </div>
                       <div
@@ -2892,7 +2893,7 @@ function ChatTab({
                         style={{
                           background: "white", border: "0.5px solid #E2E6ED",
                           borderRadius: "8px 8px 8px 8px", padding: "10px 14px",
-                          fontSize: 13, color: "#0F2044", whiteSpace: "pre-wrap", wordBreak: "break-word",
+                          fontSize: tokens.fontSize.base, color: "#0F2044", whiteSpace: "pre-wrap", wordBreak: "break-word",
                           userSelect: "none", WebkitUserSelect: "none", cursor: "pointer",
                         }}
                       >
@@ -2900,7 +2901,7 @@ function ChatTab({
                       </div>
 
                       <div style={{ display: "flex", gap: 8, marginTop: 2, alignItems: "center" }}>
-                        <span style={{ fontSize: 10, color: "#9CA3AF" }}>{time}</span>
+                        <span style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted }}>{time}</span>
                         <button
                           type="button"
                           onClick={() => flag(m)}
@@ -2925,7 +2926,7 @@ function ChatTab({
           padding: "14px 16px",
           paddingBottom: "calc(14px + env(safe-area-inset-bottom, 0px))",
           position: "sticky", bottom: 0,
-          color: "#CC2229", fontSize: 12.5, lineHeight: 1.45, fontWeight: 600, textAlign: "center",
+          color: tokens.red, fontSize: 12.5, lineHeight: 1.45, fontWeight: tokens.fontWeight.semibold, textAlign: "center",
         }}>
           You have been removed from this chat room by an admin. Contact support if you believe this is an error.
         </div>
@@ -2954,7 +2955,7 @@ function ChatTab({
             placeholder={noRoom ? "No room available yet" : `Message ${areaLabel} ADIs...`}
             style={{
               flex: 1, background: "#F7FAFC", border: "0.5px solid #E2E6ED",
-              borderRadius: 8, padding: "10px 14px", fontSize: 13, outline: "none",
+              borderRadius: 8, padding: "10px 14px", fontSize: tokens.fontSize.base, outline: "none",
               opacity: noRoom || !room ? 0.6 : 1,
             }}
           />
@@ -2999,7 +3000,7 @@ function ChatTab({
               onClick={() => flag(contextMsg)}
               style={{
                 display: "flex", alignItems: "center", gap: 8, width: "100%", textAlign: "left",
-                padding: "14px 16px", fontSize: 14, fontWeight: 600, color: "#CC2229",
+                padding: "14px 16px", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.red,
                 background: "none", border: "none", borderBottom: "0.5px solid #F1F4F8", cursor: "pointer",
               }}
             >
@@ -3011,7 +3012,7 @@ function ChatTab({
               onClick={() => setContextMsg(null)}
               style={{
                 display: "block", width: "100%", textAlign: "center",
-                padding: "14px 16px", fontSize: 14, color: "#0F2044",
+                padding: "14px 16px", fontSize: tokens.fontSize.md, color: "#0F2044",
                 background: "none", border: "none", cursor: "pointer",
               }}
             >
@@ -3033,7 +3034,7 @@ function ChatAvatar({ name, photo, size }: { name: string; photo: string | null;
     <div style={{
       width: size, height: size, borderRadius: "50%", background: "#1A52A0",
       color: "white", display: "flex", alignItems: "center", justifyContent: "center",
-      fontSize: Math.round(size * 0.38), fontWeight: 700, flexShrink: 0,
+      fontSize: Math.round(size * 0.38), fontWeight: tokens.fontWeight.bold, flexShrink: 0,
       backgroundImage: photo ? `url(${photo})` : undefined,
       backgroundSize: "cover", backgroundPosition: "center",
     }}>

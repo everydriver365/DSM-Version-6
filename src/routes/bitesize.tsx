@@ -1,4 +1,5 @@
 import { DSMToggle } from "@/components/dsm/DSMToggle";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -80,11 +81,11 @@ const CATEGORIES = [
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const labelStyle: React.CSSProperties = {
-  fontSize: 10,
-  fontWeight: 700,
+  fontSize: tokens.fontSize.xs,
+  fontWeight: tokens.fontWeight.bold,
   letterSpacing: "0.06em",
   textTransform: "uppercase",
-  color: "#6B7686",
+  color: tokens.textSecondary,
   marginBottom: 6,
   display: "block",
   ...POPPINS,
@@ -95,8 +96,8 @@ const inputStyle: React.CSSProperties = {
   border: "1px solid #E4E8EF",
   borderRadius: 8,
   padding: "10px 12px",
-  fontSize: 14,
-  color: "#0B1F3A",
+  fontSize: tokens.fontSize.md,
+  color: tokens.navy,
   background: "#fff",
   outline: "none",
   ...POPPINS,
@@ -366,7 +367,7 @@ function BitesizePage() {
                 borderRadius: 999,
                 padding: "4px 10px",
                 fontSize: 12,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 background: active ? "#1877D6" : "#F1F5F9",
                 color: active ? "#fff" : "#6B7686",
                 ...POPPINS,
@@ -409,8 +410,8 @@ function BitesizePage() {
               <div
                 style={{
                   fontSize: 9,
-                  fontWeight: 600,
-                  color: "#9CA3AF",
+                  fontWeight: tokens.fontWeight.semibold,
+                  color: tokens.textMuted,
                   textTransform: "uppercase",
                   letterSpacing: "0.06em",
                   ...POPPINS,
@@ -420,9 +421,9 @@ function BitesizePage() {
               </div>
               <div
                 style={{
-                  fontSize: 16,
-                  fontWeight: 700,
-                  color: "#0B1F3A",
+                  fontSize: tokens.fontSize.lg,
+                  fontWeight: tokens.fontWeight.bold,
+                  color: tokens.navy,
                   ...POPPINS,
                 }}
               >
@@ -461,9 +462,9 @@ function BitesizePage() {
           <IconBook size={48} color="#7C3AED" />
           <div
             style={{
-              fontSize: 16,
-              fontWeight: 600,
-              color: "#0B1F3A",
+              fontSize: tokens.fontSize.lg,
+              fontWeight: tokens.fontWeight.semibold,
+              color: tokens.navy,
               marginTop: 12,
               ...POPPINS,
             }}
@@ -472,8 +473,8 @@ function BitesizePage() {
           </div>
           <div
             style={{
-              fontSize: 13,
-              color: "#6B7686",
+              fontSize: tokens.fontSize.base,
+              color: tokens.textSecondary,
               marginTop: 6,
               ...POPPINS,
             }}
@@ -538,8 +539,8 @@ function BitesizePage() {
                         <div
                           style={{
                             fontSize: 15,
-                            fontWeight: 700,
-                            color: "#0B1F3A",
+                            fontWeight: tokens.fontWeight.bold,
+                            color: tokens.navy,
                             ...POPPINS,
                           }}
                         >
@@ -548,8 +549,8 @@ function BitesizePage() {
                         {video.description && (
                           <div
                             style={{
-                              fontSize: 13,
-                              color: "#6B7686",
+                              fontSize: tokens.fontSize.base,
+                              color: tokens.textSecondary,
                               marginTop: 4,
                               lineHeight: 1.45,
                               ...POPPINS,
@@ -566,9 +567,9 @@ function BitesizePage() {
                               padding: "3px 10px",
                               borderRadius: 999,
                               background: "#EAF2FD",
-                              color: "#1877D6",
-                              fontSize: 11,
-                              fontWeight: 700,
+                              color: tokens.blue,
+                              fontSize: tokens.fontSize.sm,
+                              fontWeight: tokens.fontWeight.bold,
                               ...POPPINS,
                             }}
                           >
@@ -683,7 +684,7 @@ function BitesizePage() {
                       background: "rgba(0,0,0,0.7)",
                       color: "#fff",
                       fontSize: 9,
-                      fontWeight: 600,
+                      fontWeight: tokens.fontWeight.semibold,
                       borderRadius: 8,
                       padding: "2px 6px",
                       ...POPPINS,
@@ -701,7 +702,7 @@ function BitesizePage() {
                       background: "#FEF3C7",
                       color: "#B45309",
                       fontSize: 8,
-                      fontWeight: 700,
+                      fontWeight: tokens.fontWeight.bold,
                       borderRadius: 8,
                       padding: "2px 6px",
                       ...POPPINS,
@@ -717,8 +718,8 @@ function BitesizePage() {
                 <div
                   style={{
                     fontSize: 12,
-                    fontWeight: 700,
-                    color: "#0B1F3A",
+                    fontWeight: tokens.fontWeight.bold,
+                    color: tokens.navy,
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
@@ -734,7 +735,7 @@ function BitesizePage() {
                       display: "inline-block",
                       marginTop: 5,
                       fontSize: 9,
-                      fontWeight: 600,
+                      fontWeight: tokens.fontWeight.semibold,
                       color: "#7C3AED",
                       background: "#EFE7FB",
                       borderRadius: 8,
@@ -751,8 +752,8 @@ function BitesizePage() {
                     alignItems: "center",
                     gap: 4,
                     marginTop: 4,
-                    fontSize: 10,
-                    color: "#9CA3AF",
+                    fontSize: tokens.fontSize.xs,
+                    color: tokens.textMuted,
                     ...POPPINS,
                   }}
                 >
@@ -785,8 +786,8 @@ function BitesizePage() {
                       color: video.is_published ? "#15803D" : "#B45309",
                       border: "none",
                       borderRadius: 8,
-                      fontSize: 10,
-                      fontWeight: 700,
+                      fontSize: tokens.fontSize.xs,
+                      fontWeight: tokens.fontWeight.bold,
                       cursor: "pointer",
                       ...POPPINS,
                       display: "flex",
@@ -817,11 +818,11 @@ function BitesizePage() {
                       flex: 1,
                       padding: "6px 0",
                       background: "#E6F1FB",
-                      color: "#1877D6",
+                      color: tokens.blue,
                       border: "none",
                       borderRadius: 8,
-                      fontSize: 10,
-                      fontWeight: 700,
+                      fontSize: tokens.fontSize.xs,
+                      fontWeight: tokens.fontWeight.bold,
                       cursor: "pointer",
                       ...POPPINS,
                       display: "flex",
@@ -844,11 +845,11 @@ function BitesizePage() {
                       flex: 1,
                       padding: "6px 0",
                       background: "#FCE9E9",
-                      color: "#CC2229",
+                      color: tokens.red,
                       border: "none",
                       borderRadius: 8,
-                      fontSize: 10,
-                      fontWeight: 700,
+                      fontSize: tokens.fontSize.xs,
+                      fontWeight: tokens.fontWeight.bold,
                       cursor: "pointer",
                       ...POPPINS,
                       display: "flex",
@@ -892,9 +893,9 @@ function BitesizePage() {
           >
             <div
               style={{
-                fontSize: 16,
-                fontWeight: 700,
-                color: "#0B1F3A",
+                fontSize: tokens.fontSize.lg,
+                fontWeight: tokens.fontWeight.bold,
+                color: tokens.navy,
                 ...POPPINS,
               }}
             >
@@ -909,7 +910,7 @@ function BitesizePage() {
                 border: "none",
                 padding: 0,
                 display: "flex",
-                color: "#6B7686",
+                color: tokens.textSecondary,
                 cursor: "pointer",
               }}
             >
@@ -1004,22 +1005,22 @@ function BitesizePage() {
                 <IconUpload size={48} color="#7C3AED" />
                 <div
                   style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: "#0B1F3A",
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.navy,
                     ...POPPINS,
                   }}
                 >
                   Tap to select video
                 </div>
-                <div style={{ fontSize: 12, color: "#6B7686", ...POPPINS }}>
+                <div style={{ fontSize: 12, color: tokens.textSecondary, ...POPPINS }}>
                   MP4 or MOV · max 500MB
                 </div>
                 {videoFile && (
                   <div
                     style={{
                       fontSize: 12,
-                      fontWeight: 600,
+                      fontWeight: tokens.fontWeight.semibold,
                       color: "#16A34A",
                       marginTop: 4,
                       wordBreak: "break-all",
@@ -1079,9 +1080,9 @@ function BitesizePage() {
                   <label
                     htmlFor="bs-thumb"
                     style={{
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: "#1877D6",
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.semibold,
+                      color: tokens.blue,
                       cursor: "pointer",
                       ...POPPINS,
                     }}
@@ -1114,9 +1115,9 @@ function BitesizePage() {
               <div>
                 <div
                   style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: "#0B1F3A",
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.navy,
                     ...POPPINS,
                   }}
                 >
@@ -1124,7 +1125,7 @@ function BitesizePage() {
                 </div>
                 {!uploadPublished && (
                   <div
-                    style={{ fontSize: 12, color: "#6B7686", ...POPPINS }}
+                    style={{ fontSize: 12, color: tokens.textSecondary, ...POPPINS }}
                   >
                     Save as draft
                   </div>
@@ -1145,7 +1146,7 @@ function BitesizePage() {
                 borderRadius: 8,
                 padding: "14px 16px",
                 fontSize: 15,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 cursor:
                   !videoFile || !uploadTitle.trim() || uploading
                     ? "not-allowed"
@@ -1189,9 +1190,9 @@ function BitesizePage() {
               <div className="flex-1 min-w-0">
                 <div
                   style={{
-                    fontSize: 13,
-                    fontWeight: 500,
-                    color: "#6B7686",
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.medium,
+                    color: tokens.textSecondary,
                     marginBottom: 6,
                   }}
                 >
@@ -1205,9 +1206,9 @@ function BitesizePage() {
                     border: "none",
                     outline: "none",
                     background: "transparent",
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: "#0B1F3A",
+                    fontSize: tokens.fontSize.lg,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.navy,
                     fontFamily: "Poppins, sans-serif",
                   }}
                 />
@@ -1217,9 +1218,9 @@ function BitesizePage() {
               <div className="flex-1 min-w-0">
                 <div
                   style={{
-                    fontSize: 13,
-                    fontWeight: 500,
-                    color: "#6B7686",
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.medium,
+                    color: tokens.textSecondary,
                     marginBottom: 6,
                   }}
                 >
@@ -1234,9 +1235,9 @@ function BitesizePage() {
                     border: "none",
                     outline: "none",
                     background: "transparent",
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: "#0B1F3A",
+                    fontSize: tokens.fontSize.lg,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.navy,
                     fontFamily: "Poppins, sans-serif",
                     resize: "none",
                   }}
@@ -1246,9 +1247,9 @@ function BitesizePage() {
             <SheetRow>
               <div
                 style={{
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "#6B7686",
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.medium,
+                  color: tokens.textSecondary,
                 }}
               >
                 Category
@@ -1262,9 +1263,9 @@ function BitesizePage() {
                   outline: "none",
                   background: "transparent",
                   textAlign: "right",
-                  fontSize: 16,
-                  fontWeight: 600,
-                  color: "#0B1F3A",
+                  fontSize: tokens.fontSize.lg,
+                  fontWeight: tokens.fontWeight.semibold,
+                  color: tokens.navy,
                   fontFamily: "Poppins, sans-serif",
                 }}
               >
@@ -1278,9 +1279,9 @@ function BitesizePage() {
             <SheetRow>
               <div
                 style={{
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "#6B7686",
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.medium,
+                  color: tokens.textSecondary,
                 }}
               >
                 Duration (minutes)
@@ -1296,9 +1297,9 @@ function BitesizePage() {
                   outline: "none",
                   background: "transparent",
                   textAlign: "right",
-                  fontSize: 16,
-                  fontWeight: 600,
-                  color: "#0B1F3A",
+                  fontSize: tokens.fontSize.lg,
+                  fontWeight: tokens.fontWeight.semibold,
+                  color: tokens.navy,
                   fontFamily: "Poppins, sans-serif",
                 }}
               />
@@ -1310,18 +1311,18 @@ function BitesizePage() {
               <div className="flex-1 min-w-0">
                 <div
                   style={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: "#0B1F3A",
+                    fontSize: tokens.fontSize.lg,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.navy,
                   }}
                 >
                   Published
                 </div>
                 <div
                   style={{
-                    fontSize: 13,
-                    fontWeight: 500,
-                    color: "#6B7686",
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.medium,
+                    color: tokens.textSecondary,
                   }}
                 >
                   {editPublished

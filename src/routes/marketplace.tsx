@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import type { ComponentType } from "react";
 import { IconBriefcase, IconCamera, IconCar, IconHeart, IconMapPin, IconPackage, IconSchool, IconShieldCheck, IconStar, IconTool } from "@tabler/icons-react";
@@ -259,12 +260,12 @@ function MarketplacePage() {
                 width: "100%",
                 boxSizing: "border-box",
                 height: 44,
-                background: "#EEF2F7",
+                background: tokens.canvas,
                 borderRadius: 8,
                 padding: "0 14px 0 38px",
                 outline: "none",
-                fontSize: 14,
-                color: "#0B1F3A",
+                fontSize: tokens.fontSize.md,
+                color: tokens.navy,
                 fontFamily: POPPINS,
               }}
             />
@@ -274,12 +275,12 @@ function MarketplacePage() {
         {/* Categories */}
         <style>{`.mkt-cat-row::-webkit-scrollbar{display:none}.mkt-search-input::placeholder{color:#9CA3AF}`}</style>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, padding: "0 16px" }}>
-          <span style={{ width: 4, height: 14, borderRadius: 8, background: "#1877D6" }} />
+          <span style={{ width: 4, height: 14, borderRadius: 8, background: tokens.blue }} />
           <span
             style={{
               fontSize: 12,
-              fontWeight: 500,
-              color: "#0B1F3A",
+              fontWeight: tokens.fontWeight.medium,
+              color: tokens.navy,
               letterSpacing: "0.5px",
               textTransform: "uppercase",
               fontFamily: POPPINS,
@@ -313,7 +314,7 @@ function MarketplacePage() {
                   borderRadius: 8,
                   padding: "0 14px",
                   fontSize: 12,
-                  fontWeight: 600,
+                  fontWeight: tokens.fontWeight.semibold,
                   color: isActive ? "#FFFFFF" : "#6B7686",
                   cursor: "pointer",
                   whiteSpace: "nowrap",
@@ -339,7 +340,7 @@ function MarketplacePage() {
             marginBottom: 10,
           }}
         >
-          <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#0B1F3A", fontFamily: POPPINS }}>
+          <h2 style={{ margin: 0, fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy, fontFamily: POPPINS }}>
             Top marketplace
           </h2>
           <button
@@ -350,9 +351,9 @@ function MarketplacePage() {
               border: "none",
               padding: 0,
               cursor: "pointer",
-              color: "#1877D6",
-              fontSize: 13,
-              fontWeight: 600,
+              color: tokens.blue,
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.semibold,
               fontFamily: POPPINS,
             }}
           >
@@ -367,7 +368,7 @@ function MarketplacePage() {
                 key={i}
                 style={{
                   height: 100,
-                  background: "#FFFFFF",
+                  background: tokens.white,
                   borderRadius: 8,
                   border: "1px solid #E4E8EF",
                 }}
@@ -405,7 +406,7 @@ function MarketplacePage() {
                 margin: "22px 0 10px",
               }}
             >
-              <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#0B1F3A", fontFamily: POPPINS }}>
+              <h2 style={{ margin: 0, fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy, fontFamily: POPPINS }}>
                 For sale by instructors
               </h2>
               <button
@@ -421,9 +422,9 @@ function MarketplacePage() {
                   border: "none",
                   padding: 0,
                   cursor: "pointer",
-                  color: "#1877D6",
-                  fontSize: 13,
-                  fontWeight: 600,
+                  color: tokens.blue,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
                   fontFamily: POPPINS,
                 }}
               >
@@ -450,20 +451,20 @@ const CARD_SHADOW = "0 1px 3px rgba(11,31,58,0.06)";
 const CATEGORY_PILL: React.CSSProperties = {
   display: "inline-block",
   background: "#EFF6FF",
-  color: "#1877D6",
-  fontSize: 10,
-  fontWeight: 700,
+  color: tokens.blue,
+  fontSize: tokens.fontSize.xs,
+  fontWeight: tokens.fontWeight.bold,
   borderRadius: 8,
   fontFamily: POPPINS,
 };
 
 const VIEW_BUTTON: React.CSSProperties = {
-  background: "#1877D6",
-  color: "#FFFFFF",
+  background: tokens.blue,
+  color: tokens.white,
   borderRadius: 8,
   padding: "7px 16px",
-  fontSize: 13,
-  fontWeight: 700,
+  fontSize: tokens.fontSize.base,
+  fontWeight: tokens.fontWeight.bold,
   border: "none",
   cursor: "pointer",
   fontFamily: POPPINS,
@@ -473,7 +474,7 @@ const VIEW_BUTTON: React.CSSProperties = {
 function NoPriceRow() {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <span style={{ fontSize: 13, color: "#9CA3AF", fontFamily: POPPINS }}>
+      <span style={{ fontSize: tokens.fontSize.base, color: tokens.textMuted, fontFamily: POPPINS }}>
         No price set
       </span>
     </div>
@@ -527,9 +528,9 @@ function FeaturedCard({
       <div style={{ padding: 14 }}>
         <div
           style={{
-            fontSize: 16,
-            fontWeight: 700,
-            color: "#0B1F3A",
+            fontSize: tokens.fontSize.lg,
+            fontWeight: tokens.fontWeight.bold,
+            color: tokens.navy,
             fontFamily: POPPINS,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -559,7 +560,7 @@ function FeaturedCard({
           {priceIsBad ? (
             <NoPriceRow />
           ) : (
-            <span style={{ fontSize: 16, fontWeight: 800, color: "#0B1F3A" }}>
+            <span style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy }}>
               {price}
             </span>
           )}
@@ -632,9 +633,9 @@ function ProductCard({
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            fontSize: 14,
-            fontWeight: 600,
-            color: "#0B1F3A",
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.semibold,
+            color: tokens.navy,
             fontFamily: POPPINS,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -668,7 +669,7 @@ function ProductCard({
           {priceIsBad ? (
             <NoPriceRow />
           ) : (
-            <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>
+            <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
               {price}
             </span>
           )}

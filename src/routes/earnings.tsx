@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconChevronLeft } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -103,7 +104,7 @@ function EarningsPage() {
       {/* Summary card */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: "#0B1F3A", borderRadius: 8, padding: 16 }}
+        style={{ backgroundColor: tokens.navy, borderRadius: 8, padding: 16 }}
       >
         <SummaryRow label="THIS WEEK" value={formatGBP(week)} />
         <Divider />
@@ -147,7 +148,7 @@ function EarningsPage() {
                   </div>
                   <div
                     className="text-[14px] font-bold shrink-0"
-                    style={{ color: "#1877D6", ...POPPINS }}
+                    style={{ color: tokens.blue, ...POPPINS }}
                   >
                     {formatGBP(Number(row.amount))}
                   </div>
@@ -167,13 +168,13 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
     <div className="py-2">
       <div
         className="text-[10px] font-medium uppercase"
-        style={{ color: "#9CA3AF", letterSpacing: "0.05em", ...POPPINS }}
+        style={{ color: tokens.textMuted, letterSpacing: "0.05em", ...POPPINS }}
       >
         {label}
       </div>
       <div
         className="text-[28px] font-bold mt-1 leading-none"
-        style={{ color: "#1877D6", ...POPPINS }}
+        style={{ color: tokens.blue, ...POPPINS }}
       >
         {value}
       </div>

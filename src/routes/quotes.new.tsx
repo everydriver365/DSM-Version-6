@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -33,10 +34,10 @@ const POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
 
 const inputStyle: React.CSSProperties = {
   width: "100%", padding: "10px 12px", border: "1px solid #EEF2F7",
-  borderRadius: 8, fontSize: 14, fontFamily: "Poppins, sans-serif",
-  background: "#fff", color: "#0B1F3A", boxSizing: "border-box",
+  borderRadius: 8, fontSize: tokens.fontSize.md, fontFamily: "Poppins, sans-serif",
+  background: "#fff", color: tokens.navy, boxSizing: "border-box",
 };
-const labelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: "#6B7280", marginBottom: 4, display: "block" };
+const labelStyle: React.CSSProperties = { fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#6B7280", marginBottom: 4, display: "block" };
 
 function NewQuotePage() {
   const navigate = useNavigate();
@@ -265,12 +266,12 @@ function NewQuotePage() {
       <div style={{ position: "fixed", bottom: "calc(64px + env(safe-area-inset-bottom, 0px))", left: 0, right: 0, background: "#fff", borderTop: "0.5px solid #EEF2F7", padding: "16px", display: "flex", gap: 8, zIndex: 50 }}>
         <button disabled={saving} onClick={() => save("draft")} style={{
           flex: 1, padding: "12px", borderRadius: 8, border: "1px solid #0B1F3A",
-          background: "#fff", color: "#0B1F3A", fontWeight: 600, fontSize: 14,
+          background: "#fff", color: tokens.navy, fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md,
           fontFamily: "Poppins, sans-serif", cursor: "pointer", opacity: saving ? 0.6 : 1,
         }}>Save as draft</button>
         <button disabled={saving} onClick={() => save("sent")} style={{
           flex: 1, padding: "12px", borderRadius: 8, border: "none",
-          background: "#0B1F3A", color: "#fff", fontWeight: 600, fontSize: 14,
+          background: tokens.navy, color: "#fff", fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md,
           fontFamily: "Poppins, sans-serif", cursor: "pointer", opacity: saving ? 0.6 : 1,
         }}>Save and send</button>
       </div>

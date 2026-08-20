@@ -1,4 +1,5 @@
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
+import { tokens } from "@/lib/tokens";
 import { TestDetailTrigger } from '@/components/lessons/TestDetailPanel';
 import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
 
@@ -202,7 +203,7 @@ function NextLessonMap({
         scale: 7,
         fillColor,
         fillOpacity: 1,
-        strokeColor: "#FFFFFF",
+        strokeColor: tokens.white,
         strokeWeight: 2,
       });
 
@@ -223,7 +224,7 @@ function NextLessonMap({
         new g.maps.Polyline({
           path,
           map,
-          strokeColor: "#1877D6",
+          strokeColor: tokens.blue,
           strokeOpacity: 0.95,
           strokeWeight: 4,
         });
@@ -238,7 +239,7 @@ function NextLessonMap({
             { lat: dLat, lng: dLng },
           ],
           map,
-          strokeColor: "#1877D6",
+          strokeColor: tokens.blue,
           strokeOpacity: 0.7,
           strokeWeight: 3,
         });
@@ -393,8 +394,8 @@ const SECTION_TITLE_BAR_STYLE: React.CSSProperties = {
 };
 
 const SECTION_TITLE_TEXT_STYLE: React.CSSProperties = {
-  fontSize: 11,
-  fontWeight: 600,
+  fontSize: tokens.fontSize.sm,
+  fontWeight: tokens.fontWeight.semibold,
   color: '#1877D6',
   textTransform: 'uppercase',
   letterSpacing: '0.12em',
@@ -405,8 +406,8 @@ const SECTION_LINK_STYLE: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
   gap: 2,
-  fontSize: 11,
-  fontWeight: 600,
+  fontSize: tokens.fontSize.sm,
+  fontWeight: tokens.fontWeight.semibold,
   color: '#1877D6',
   background: 'none',
   border: 'none',
@@ -659,7 +660,7 @@ function TodayLessonsTile({
       }}
       style={{
         width: "100%",
-        background: "#FFFFFF",
+        background: tokens.white,
         border: "0.5px solid rgba(15,32,68,0.10)",
         borderRadius: 8,
         padding: "14px 16px",
@@ -677,7 +678,7 @@ function TodayLessonsTile({
           height: 36,
           borderRadius: 8,
           background: "#EFF6FF",
-          color: "#1877D6",
+          color: tokens.blue,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -688,7 +689,7 @@ function TodayLessonsTile({
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{ fontSize: 14, fontWeight: 500, color: "#0B1F3A", lineHeight: 1.3 }}>
+          <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: tokens.navy, lineHeight: 1.3 }}>
             Today's lessons
           </div>
           {onAddLesson && (
@@ -703,8 +704,8 @@ function TodayLessonsTile({
                 width: 22,
                 height: 22,
                 borderRadius: 8,
-                background: "#1877D6",
-                color: "#FFFFFF",
+                background: tokens.blue,
+                color: tokens.white,
                 border: "none",
                 display: "flex",
                 alignItems: "center",
@@ -718,7 +719,7 @@ function TodayLessonsTile({
             </button>
           )}
         </div>
-        <div style={{ fontSize: 12, fontWeight: 400, color: "#64748B", marginTop: 2, lineHeight: 1.3 }}>
+        <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.regular, color: "#64748B", marginTop: 2, lineHeight: 1.3 }}>
           {subtitle}
         </div>
       </div>
@@ -761,9 +762,9 @@ function TodayLessonsTile({
         </svg>
         <div
           style={{
-            fontSize: 16,
-            fontWeight: 600,
-            color: "#0B1F3A",
+            fontSize: tokens.fontSize.lg,
+            fontWeight: tokens.fontWeight.semibold,
+            color: tokens.navy,
             lineHeight: 1,
             fontVariantNumeric: "tabular-nums",
           }}
@@ -812,7 +813,7 @@ function SwipeableStatsCard({
     <div
       style={{
         position: "relative",
-        background: "#FFFFFF",
+        background: tokens.white,
         borderRadius: 8,
         padding: 16,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
@@ -847,20 +848,20 @@ function SwipeableStatsCard({
             width: 40,
             height: 40,
             borderRadius: 8,
-            background: "#EEF2F7",
+            background: tokens.canvas,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
-            color: "#1877D6",
+            color: tokens.blue,
           }}
         >
           {s.icon}
         </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: "#12142B" }}>{s.title}</div>
+            <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: "#12142B" }}>{s.title}</div>
             <div style={{ fontSize: 12, color: "#8A94A6", marginTop: 1 }}>{s.subtitleTop}</div>
-          <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>{s.subtitleBottom}</div>
+          <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, marginTop: 2 }}>{s.subtitleBottom}</div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0 }}>
           {s.right.kind === "circle" ? (
@@ -874,7 +875,7 @@ function SwipeableStatsCard({
                 alignItems: "center",
                 justifyContent: "center",
                 fontSize: 20,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 color: s.right.active ? "#1877D6" : "#B0BAC9",
               }}
             >
@@ -882,8 +883,8 @@ function SwipeableStatsCard({
             </div>
           ) : (
             <>
-              <div style={{ fontSize: 20, fontWeight: 700, color: "#1877D6", lineHeight: 1 }}>{s.right.value}</div>
-              {s.right.label && <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>{s.right.label}</div>}
+              <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.bold, color: tokens.blue, lineHeight: 1 }}>{s.right.value}</div>
+              {s.right.label && <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, marginTop: 2 }}>{s.right.label}</div>}
             </>
           )}
         </div>
@@ -987,7 +988,7 @@ function TileCard({
       className="cf-tap qa-card"
       style={{
         position: "relative",
-        background: "#FFFFFF",
+        background: tokens.white,
         border: "1px solid #ECEFF3",
         borderRadius: 8,
         padding: image ? "0 0 18px" : "20px 20px 18px",
@@ -1014,7 +1015,7 @@ function TileCard({
             width: 8,
             height: 8,
             borderRadius: 999,
-            background: "#CC2229",
+            background: tokens.red,
             zIndex: 2,
           }}
         />
@@ -1073,8 +1074,8 @@ function TileCard({
       <div
         style={{
           fontSize: 15,
-          fontWeight: 600,
-          color: "#0B1F3A",
+          fontWeight: tokens.fontWeight.semibold,
+          color: tokens.navy,
           lineHeight: 1.25,
           marginBottom: 4,
           marginTop: !icon && !image ? 62 : 0,
@@ -1092,8 +1093,8 @@ function TileCard({
       <div
         style={{
           fontSize: 12,
-          fontWeight: 500,
-          color: "#9CA3AF",
+          fontWeight: tokens.fontWeight.medium,
+          color: tokens.textMuted,
           overflow: "hidden",
           textOverflow: "ellipsis",
           maxWidth: "calc(100% - 56px)",
@@ -1179,7 +1180,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
       }}
     >
       {t.badge ? (
-        <span style={{ position: 'absolute', top: 5, right: 5, fontSize: 10, fontWeight: 700, background: '#CC2229', color: '#fff', borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{t.badge}</span>
+        <span style={{ position: 'absolute', top: 5, right: 5, fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, background: '#CC2229', color: '#fff', borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{t.badge}</span>
       ) : null}
       <span
         style={{
@@ -1198,7 +1199,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
           ? React.cloneElement(t.icon as React.ReactElement<{ size?: number }>, { size: 19 })
           : t.icon}
       </span>
-      <div style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.2, marginTop: 0, color: NAVY }}>{t.label}</div>
+      <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, lineHeight: 1.2, marginTop: 0, color: NAVY }}>{t.label}</div>
     </button>
   );
 
@@ -1258,7 +1259,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
               border: 'none',
               outline: 'none',
               background: 'transparent',
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               fontFamily: PF,
               color: NAVY,
               minWidth: 0,
@@ -1285,7 +1286,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
         style={{ touchAction: 'pan-y' }}
       >
         {showFiltered && filtered.length === 0 ? (
-          <div style={{ textAlign: 'center', fontSize: 14, color: '#9CA3AF', padding: '24px 0' }}>
+          <div style={{ textAlign: 'center', fontSize: tokens.fontSize.md, color: '#9CA3AF', padding: '24px 0' }}>
             No actions found
           </div>
         ) : (
@@ -2286,7 +2287,7 @@ function HomePage() {
           left: 0,
           right: 0,
           zIndex: 999,
-          background: "#0B1F3A",
+          background: tokens.navy,
           padding: "12px 16px calc(12px) 16px",
           paddingTop: "calc(12px + env(safe-area-inset-top, 0px))",
           transform: toastVisible ? "translateY(0)" : "translateY(-110%)",
@@ -2315,7 +2316,7 @@ function HomePage() {
           <Icon size={18} color="#FFFFFF" />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ color: "#FFFFFF", fontWeight: 600, fontSize: 13, lineHeight: 1.3 }}>
+          <div style={{ color: tokens.white, fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.base, lineHeight: 1.3 }}>
             {toastNotif?.title ?? ""}
           </div>
           {toastNotif?.body && (
@@ -2333,7 +2334,7 @@ function HomePage() {
             </div>
           )}
         </div>
-        <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, flexShrink: 0 }}>Just now</div>
+        <div style={{ color: "rgba(255,255,255,0.5)", fontSize: tokens.fontSize.sm, flexShrink: 0 }}>Just now</div>
         <button
           type="button"
           aria-label="Dismiss notification"
@@ -3646,8 +3647,8 @@ function HomePage() {
     const notes = (l.notes ?? "").toLowerCase();
     const lessonType = (l.lesson_type ?? "").toLowerCase();
     let typeBadge: { label: string; bg: string; color: string } | null = null;
-    if (notes.includes("mock")) typeBadge = { label: "Mock test", bg: "#EEF2F7", color: "#0B1F3A" };
-    else if (notes.includes("test") || lessonType.includes("test")) typeBadge = { label: "Test", bg: "#EEF2F7", color: "#0B1F3A" };
+    if (notes.includes("mock")) typeBadge = { label: "Mock test", bg: "#EEF2F7", color: tokens.navy };
+    else if (notes.includes("test") || lessonType.includes("test")) typeBadge = { label: "Test", bg: "#EEF2F7", color: tokens.navy };
     else if ((l.notes ?? "").includes("Course")) typeBadge = { label: "Course", bg: "#DBEAFE", color: "#1E40AF" };
     const todayYmdStr = ymd(todayStart);
     const showEol = l.lesson_date < todayYmdStr || status === "completed";
@@ -3672,7 +3673,7 @@ function HomePage() {
           borderRadius: 8,
           borderWidth: "0.5px",
           borderStyle: "solid",
-          borderColor: "#EEF2F7",
+          borderColor: tokens.canvas,
           borderLeft: `4px solid ${accent}`,
           marginBottom: 6,
           cursor: "pointer",
@@ -3717,7 +3718,7 @@ function HomePage() {
                 <span>{postcode ?? "No pickup set"}</span>
               </div>
             )}
-            <div style={{ fontSize: 13, color: "#6B7686" }}>
+            <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary }}>
               {isTestLesson(l) ? "Test day" : formatDuration(l.duration_minutes)}
             </div>
           </div>
@@ -3732,9 +3733,9 @@ function HomePage() {
               }}
               style={{
                 backgroundColor: "#EEF4FB",
-                color: "#1877D6",
+                color: tokens.blue,
                 fontSize: 12,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 textTransform: "uppercase",
                 borderRadius: 8,
                 padding: "2px 8px",
@@ -3789,15 +3790,15 @@ function HomePage() {
 
     let dot: React.ReactNode;
     if (state === "past") {
-      dot = <div style={{ width: 12, height: 12, borderRadius: 999, backgroundColor: "#9CA3AF" }} />;
+      dot = <div style={{ width: 12, height: 12, borderRadius: 999, backgroundColor: tokens.textMuted }} />;
     } else if (state === "current") {
       dot = (
         <div style={{ position: "relative", width: 14, height: 14 }}>
           <span
             className="animate-ping"
-            style={{ position: "absolute", inset: 0, borderRadius: 999, backgroundColor: "#1877D6", opacity: 0.6 }}
+            style={{ position: "absolute", inset: 0, borderRadius: 999, backgroundColor: tokens.blue, opacity: 0.6 }}
           />
-          <div style={{ position: "relative", width: 14, height: 14, borderRadius: 999, backgroundColor: "#1877D6" }} />
+          <div style={{ position: "relative", width: 14, height: 14, borderRadius: 999, backgroundColor: tokens.blue }} />
         </div>
       );
     } else if (state === "next") {
@@ -3807,7 +3808,7 @@ function HomePage() {
             width: 12,
             height: 12,
             borderRadius: 999,
-            backgroundColor: "#0B1F3A",
+            backgroundColor: tokens.navy,
             border: "2px solid #FFFFFF",
             boxShadow: "0 0 0 1px #0B1F3A",
           }}
@@ -3815,7 +3816,7 @@ function HomePage() {
       );
     } else {
       dot = (
-        <div style={{ width: 12, height: 12, borderRadius: 999, backgroundColor: "#FFFFFF", border: "2px solid #EEF2F7" }} />
+        <div style={{ width: 12, height: 12, borderRadius: 999, backgroundColor: tokens.white, border: "2px solid #EEF2F7" }} />
       );
     }
 
@@ -3823,7 +3824,7 @@ function HomePage() {
       minHeight: 56,
       padding: "8px 12px",
       borderRadius: 8,
-      backgroundColor: "#FFFFFF",
+      backgroundColor: tokens.white,
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
@@ -3841,7 +3842,7 @@ function HomePage() {
 
     type Badge = { label: string; bg: string; color: string };
     const badges: Badge[] = [];
-    if (endPassed && !eolDone) badges.push({ label: "EOL", bg: "#EEF2F7", color: "#0B1F3A" });
+    if (endPassed && !eolDone) badges.push({ label: "EOL", bg: "#EEF2F7", color: tokens.navy });
 
 
     const rowInner = (
@@ -3850,7 +3851,7 @@ function HomePage() {
           <span
             style={{
               fontSize: 12,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               color: timeColor,
               fontFamily: "Poppins, sans-serif",
               flexShrink: 0,
@@ -3860,7 +3861,7 @@ function HomePage() {
             {formatTime(l)}
           </span>
         )}
-        <div style={{ minWidth: 0, fontSize: 13, fontWeight: 600, color: nameColor, fontFamily: "Poppins, sans-serif" }} className="truncate flex-1">
+        <div style={{ minWidth: 0, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: nameColor, fontFamily: "Poppins, sans-serif" }} className="truncate flex-1">
           {pupilName(l)}
         </div>
         <div className="flex items-center" style={{ gap: 4, flexShrink: 0 }}>
@@ -3881,12 +3882,12 @@ function HomePage() {
                   setEolLesson(l);
                 }}
                 style={{
-                  fontSize: 10,
+                  fontSize: tokens.fontSize.xs,
                   padding: "2px 6px",
                   borderRadius: 999,
                   backgroundColor: b.bg,
                   color: b.color,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   fontFamily: "Poppins, sans-serif",
                   lineHeight: 1.4,
                   border: "none",
@@ -3899,12 +3900,12 @@ function HomePage() {
               <span
                 key={i}
                 style={{
-                  fontSize: 10,
+                  fontSize: tokens.fontSize.xs,
                   padding: "2px 6px",
                   borderRadius: 999,
                   backgroundColor: b.bg,
                   color: b.color,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   fontFamily: "Poppins, sans-serif",
                   lineHeight: 1.4,
                 }}
@@ -3960,8 +3961,8 @@ function HomePage() {
           <div
             className="mt-1"
             style={{
-              fontSize: 11,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.sm,
+              fontWeight: tokens.fontWeight.semibold,
               color: timeColor,
               textDecoration: isPast ? "line-through" : "none",
               zIndex: 1,
@@ -4118,7 +4119,7 @@ function HomePage() {
             className="animate-spin rounded-full"
             style={{ width: 32, height: 32, border: '3px solid #EEF2F7', borderTopColor: '#1877D6' }}
           />
-          <div style={{ fontSize: 14, color: '#6B7686' }}>Checking access…</div>
+          <div style={{ fontSize: tokens.fontSize.md, color: '#6B7686' }}>Checking access…</div>
         </div>
       </div>
     );
@@ -4186,21 +4187,21 @@ function HomePage() {
       weekday: "long", day: "numeric", month: "long", year: "numeric",
     });
     const cardStyle: React.CSSProperties = {
-      background: "#FFFFFF", border: "0.5px solid #E2E6ED",
+      background: tokens.white, border: "0.5px solid #E2E6ED",
       borderRadius: 8, padding: 16, boxShadow: '0 4px 0 #E4E4E8',
     };
     const statLabel: React.CSSProperties = {
-      fontSize: 12, fontWeight: 600, color: "#6B7686",
+      fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.textSecondary,
       marginTop: 4, letterSpacing: 0.2,
     };
     const statValue: React.CSSProperties = {
-      fontSize: 28, fontWeight: 800, color: "#0B1F3A", letterSpacing: -0.5,
+      fontSize: tokens.fontSize.hero, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, letterSpacing: -0.5,
     };
     const panelHeading: React.CSSProperties = {
-      fontSize: 16, fontWeight: 800, color: "#0B1F3A", marginBottom: 12,
+      fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, marginBottom: 12,
     };
     const viewAllLink: React.CSSProperties = {
-      fontSize: 13, fontWeight: 600, color: "#1877D6",
+      fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.blue,
       background: "none", border: "none", cursor: "pointer",
       fontFamily: "Poppins, sans-serif", padding: 0,
     };
@@ -4209,7 +4210,7 @@ function HomePage() {
       gap: 6, padding: "14px 8px", borderRadius: 8,
       border: "0.5px solid #E2E6ED", background: "#F8FAFF",
       cursor: "pointer", fontFamily: "Poppins, sans-serif",
-      fontSize: 12, fontWeight: 600, color: "#0B1F3A",
+      fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.navy,
     };
     return (
       <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: TOP_BAR_SPACER }}>
@@ -4228,10 +4229,10 @@ function HomePage() {
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
           {/* HEADER */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-            <h1 style={{ fontSize: 24, fontWeight: 800, color: "#0B1F3A", margin: 0, fontFamily: "Sora, sans-serif" }}>
+            <h1 style={{ fontSize: 24, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, margin: 0, fontFamily: "Sora, sans-serif" }}>
               Good morning, {firstName} 👋
             </h1>
-            <div style={{ fontSize: 14, color: "#6B7686", fontFamily: "Poppins, sans-serif" }}>
+            <div style={{ fontSize: tokens.fontSize.md, color: tokens.textSecondary, fontFamily: "Poppins, sans-serif" }}>
               {dateHeader}
             </div>
           </div>
@@ -4252,7 +4253,7 @@ function HomePage() {
               <div style={statLabel}>This week</div>
             </div>
             <div style={cardStyle}>
-              <div style={{ ...statValue, color: "#CC2229" }}>£{Math.round(outstanding)}</div>
+              <div style={{ ...statValue, color: tokens.red }}>£{Math.round(outstanding)}</div>
               <div style={statLabel}>Outstanding</div>
             </div>
             <div style={cardStyle}>
@@ -4273,7 +4274,7 @@ function HomePage() {
               <div style={cardStyle}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
                   <div style={panelHeading}>Today's schedule</div>
-                  <div style={{ fontSize: 12, color: "#6B7686", fontFamily: "Poppins, sans-serif" }}>{dateHeader}</div>
+                  <div style={{ fontSize: 12, color: tokens.textSecondary, fontFamily: "Poppins, sans-serif" }}>{dateHeader}</div>
                 </div>
                 {todayLessons.length === 0 ? (
                   (() => {
@@ -4295,33 +4296,33 @@ function HomePage() {
                     const extraPupils = Math.max(0, activePupilsCount - pupils.length);
                     return (
                       <div style={{
-                        background: "#FFFFFF", border: "0.5px solid #E2E6ED",
+                        background: tokens.white, border: "0.5px solid #E2E6ED",
                         borderRadius: 8, overflow: "hidden", margin: "12px 16px 0", boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                         fontFamily: "Poppins, sans-serif",
                       }}>
                         <div style={{ height: 4, background: "linear-gradient(90deg, #00B5A5, #1877D6)" }} />
                         <div style={{ padding: 20 }}>
                           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-                            <div style={{ fontWeight: 800, fontSize: 18, color: "#0B1F3A" }}>📅 Free day today</div>
-                            <div style={{ fontSize: 13, color: "#9CA3AF" }}>{workingLabel}</div>
+                            <div style={{ fontWeight: tokens.fontWeight.extrabold, fontSize: tokens.fontSize.xl, color: tokens.navy }}>📅 Free day today</div>
+                            <div style={{ fontSize: tokens.fontSize.base, color: tokens.textMuted }}>{workingLabel}</div>
                           </div>
                           <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
                             {[
-                              { value: `${availableHours} hrs`, label: "Available", color: "#0B1F3A" },
+                              { value: `${availableHours} hrs`, label: "Available", color: tokens.navy },
                               { value: `£${potential}`, label: "Potential", color: "#16A34A" },
-                              { value: `${activePupilsCount}`, label: "Pupils", color: "#1877D6" },
+                              { value: `${activePupilsCount}`, label: "Pupils", color: tokens.blue },
                             ].map((s) => (
                               <div key={s.label} style={{
                                 flex: 1, background: "#F7FAFC", border: "0.5px solid #E2E6ED",
                                 borderRadius: 8, padding: "10px 14px", textAlign: "center",
                               }}>
-                                <div style={{ fontWeight: 700, fontSize: 18, color: s.color }}>{s.value}</div>
-                                <div style={{ fontSize: 12, color: "#9CA3AF" }}>{s.label}</div>
+                                <div style={{ fontWeight: tokens.fontWeight.bold, fontSize: tokens.fontSize.xl, color: s.color }}>{s.value}</div>
+                                <div style={{ fontSize: 12, color: tokens.textMuted }}>{s.label}</div>
                               </div>
                             ))}
                           </div>
                           <div style={{ marginBottom: 16 }}>
-                            <div style={{ fontSize: 12, color: "#9CA3AF", fontWeight: 600, marginBottom: 8 }}>
+                            <div style={{ fontSize: 12, color: tokens.textMuted, fontWeight: tokens.fontWeight.semibold, marginBottom: 8 }}>
                               Pupils who may be free today:
                             </div>
                             {pupils.length > 0 ? (
@@ -4333,7 +4334,7 @@ function HomePage() {
                                     <div key={p.pupilId} style={{
                                       width: 36, height: 36, borderRadius: "50%",
                                       background: AVATAR_PALETTE[i % AVATAR_PALETTE.length],
-                                      color: "#FFFFFF", fontWeight: 700, fontSize: 13,
+                                      color: tokens.white, fontWeight: tokens.fontWeight.bold, fontSize: tokens.fontSize.base,
                                       display: "flex", alignItems: "center", justifyContent: "center",
                                       marginLeft: i === 0 ? 0 : -10,
                                       border: "2px solid #FFFFFF",
@@ -4343,27 +4344,27 @@ function HomePage() {
                                 {extraPupils > 0 && (
                                   <div style={{
                                     width: 36, height: 36, borderRadius: "50%", background: "#E5E7EB",
-                                    color: "#4B5563", fontWeight: 700, fontSize: 12,
+                                    color: "#4B5563", fontWeight: tokens.fontWeight.bold, fontSize: 12,
                                     display: "flex", alignItems: "center", justifyContent: "center",
                                     marginLeft: -10, border: "2px solid #FFFFFF",
                                   }}>+{extraPupils}</div>
                                 )}
                               </div>
                             ) : (
-                              <div style={{ fontSize: 13, color: "#9CA3AF" }}>Your active pupils</div>
+                              <div style={{ fontSize: tokens.fontSize.base, color: tokens.textMuted }}>Your active pupils</div>
                             )}
                           </div>
                           <div style={{ display: "flex", gap: 8 }}>
                             <button onClick={() => navigate({ to: "/gaps" })} style={{
-                              flex: 1, background: "#0B1F3A", color: "#FFFFFF",
-                              padding: "12px 0", borderRadius: 8, fontWeight: 600, fontSize: 14,
+                              flex: 1, background: tokens.navy, color: tokens.white,
+                              padding: "12px 0", borderRadius: 8, fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md,
                               border: "none", cursor: "pointer", fontFamily: "Poppins, sans-serif",
                             }}>Fill My Slots →</button>
                             <button onClick={() => {
                               window.location.href = `sms:?body=${encodeURIComponent("Hi everyone, I have lesson availability today. Reply to book!")}`;
                             }} style={{
-                              flex: 1, background: "#00B5A5", color: "#FFFFFF",
-                              padding: "12px 0", borderRadius: 8, fontWeight: 600, fontSize: 14,
+                              flex: 1, background: "#00B5A5", color: tokens.white,
+                              padding: "12px 0", borderRadius: 8, fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md,
                               border: "none", cursor: "pointer", fontFamily: "Poppins, sans-serif",
                             }}>Broadcast message</button>
                           </div>
@@ -4405,15 +4406,15 @@ function HomePage() {
                               display: "grid", gridTemplateColumns: "70px 1fr auto auto auto auto",
                               gap: 12, alignItems: "center", padding: "10px 12px",
                               borderRadius: 8, border: now ? "2px solid #15803D" : "0.5px solid #E2E6ED",
-                              background: "#FFFFFF", cursor: "pointer", textAlign: "left",
+                              background: tokens.white, cursor: "pointer", textAlign: "left",
                               fontFamily: "Poppins, sans-serif",
                               opacity: past ? 0.45 : 1,
                               transition: 'opacity 0.2s',
                             }}
                           >
-                            <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{formatTime(l)}</span>
-                            <span style={{ fontSize: 14, fontWeight: 600, color: past ? "#9CA3AF" : "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textDecoration: past ? 'line-through' : 'none' }}>{isEvent ? (l.event_title || "Event") : pupilName(l)}</span>
-                            <span style={{ fontSize: 12, color: "#6B7686" }}>{isEvent ? "Event" : formatDuration(l.duration_minutes)}</span>
+                            <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>{formatTime(l)}</span>
+                            <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: past ? "#9CA3AF" : "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textDecoration: past ? 'line-through' : 'none' }}>{isEvent ? (l.event_title || "Event") : pupilName(l)}</span>
+                            <span style={{ fontSize: 12, color: tokens.textSecondary }}>{isEvent ? "Event" : formatDuration(l.duration_minutes)}</span>
                             {!isEvent && (
                               <LessonPaymentBadge
                                 status={l.payment_status}
@@ -4425,10 +4426,10 @@ function HomePage() {
                             )}
 
                             {(past || l.status === 'completed') && (
-                              <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "2px 7px", borderRadius: 20, background: "#EEF2F7", color: "#9CA3AF" }}>Done</span>
+                              <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, textTransform: "uppercase", padding: "2px 7px", borderRadius: 20, background: tokens.canvas, color: tokens.textMuted }}>Done</span>
                             )}
                             {now && (
-                              <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", padding: "4px 10px", borderRadius: 999, background: "#DCFCE7", color: "#15803D" }}>Now</span>
+                              <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, textTransform: "uppercase", padding: "4px 10px", borderRadius: 999, background: "#DCFCE7", color: "#15803D" }}>Now</span>
                             )}
 
                             {eolDue && (
@@ -4438,7 +4439,7 @@ function HomePage() {
                                   navigate({ to: "/end-of-day" });
                                 }}
                                 style={{
-                                  fontSize: 11, fontWeight: 700, textTransform: "uppercase",
+                                  fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, textTransform: "uppercase",
                                   padding: "4px 10px", borderRadius: 999,
                                   background: "#FEF3C7", color: "#D68A1B",
                                   cursor: "pointer",
@@ -4459,8 +4460,8 @@ function HomePage() {
                     style={{
                       flex: 1, padding: "10px 12px",
                       borderRadius: 8, border: "1px dashed #1877D6",
-                      background: "transparent", color: "#1877D6",
-                      fontSize: 13, fontWeight: 600, cursor: "pointer",
+                      background: "transparent", color: tokens.blue,
+                      fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                       fontFamily: "Poppins, sans-serif",
                     }}
                   >Add lesson +</button>
@@ -4475,8 +4476,8 @@ function HomePage() {
                       display: 'flex',
                       alignItems: 'center',
                       gap: 4,
-                      fontSize: 11,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.semibold,
                       color: '#1877D6',
                       fontFamily: 'Poppins, sans-serif',
                     }}
@@ -4495,7 +4496,7 @@ function HomePage() {
                   <button onClick={() => navigate({ to: "/payments" })} style={viewAllLink}>View all →</button>
                 </div>
                 {outstandingBreakdown.length === 0 ? (
-                  <div style={{ fontSize: 13, color: "#6B7686", padding: "12px 0", fontFamily: "Poppins, sans-serif" }}>
+                  <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, padding: "12px 0", fontFamily: "Poppins, sans-serif" }}>
                     All pupils paid up.
                   </div>
                 ) : (
@@ -4510,21 +4511,21 @@ function HomePage() {
                         }}
                       >
                         <div style={{ minWidth: 0 }}>
-                          <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</div>
-                          <div style={{ fontSize: 11, color: "#6B7686" }}>{p.type}</div>
+                          <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</div>
+                          <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary }}>{p.type}</div>
                         </div>
-                        <div style={{ fontSize: 14, fontWeight: 800, color: "#CC2229" }}>£{p.amount.toFixed(2)}</div>
+                        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.extrabold, color: tokens.red }}>£{p.amount.toFixed(2)}</div>
                         {p.phone ? (
                           <a
                             href={`sms:${p.phone}?body=${encodeURIComponent(`Hi ${p.firstName}, just a reminder that £${p.amount.toFixed(2)} is outstanding on your lesson account. Thanks!`)}`}
                             style={{
                               padding: "6px 10px", borderRadius: 8,
-                              background: "#1877D6", color: "#FFFFFF",
-                              fontSize: 12, fontWeight: 600, textDecoration: "none",
+                              background: tokens.blue, color: tokens.white,
+                              fontSize: 12, fontWeight: tokens.fontWeight.semibold, textDecoration: "none",
                             }}
                           >Chase SMS</a>
                         ) : (
-                          <span style={{ fontSize: 11, color: "#9CA3AF" }}>No phone</span>
+                          <span style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted }}>No phone</span>
                         )}
                       </div>
                     ))}
@@ -4542,7 +4543,7 @@ function HomePage() {
                   <button onClick={() => navigate({ to: "/notifications" })} style={viewAllLink}>View all →</button>
                 </div>
                 {recentActivity.length === 0 ? (
-                  <div style={{ fontSize: 13, color: "#6B7686", padding: "12px 0", fontFamily: "Poppins, sans-serif" }}>
+                  <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, padding: "12px 0", fontFamily: "Poppins, sans-serif" }}>
                     No recent activity.
                   </div>
                 ) : (
@@ -4565,14 +4566,14 @@ function HomePage() {
                           <IconBell stroke={1.5} size={14} color="#1877D6" />
                         </div>
                         <div style={{ minWidth: 0, flex: 1 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3 }}>{n.title}</div>
+                          <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, lineHeight: 1.3 }}>{n.title}</div>
                           {n.body && (
-                            <div style={{ fontSize: 12, color: "#6B7686", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
+                            <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
                               {n.body}
                             </div>
                           )}
                         </div>
-                        <div style={{ fontSize: 11, color: "#9CA3AF", flexShrink: 0 }}>{timeAgo(n.created_at)}</div>
+                        <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, flexShrink: 0 }}>{timeAgo(n.created_at)}</div>
                       </div>
                     ))}
                   </div>
@@ -4583,7 +4584,7 @@ function HomePage() {
               <div style={{ ...cardStyle, marginTop: 16 }}>
                 <div style={panelHeading}>Upcoming tests</div>
                 {upcomingTests30.length === 0 ? (
-                  <div style={{ fontSize: 13, color: "#6B7686", padding: "12px 0", fontFamily: "Poppins, sans-serif" }}>
+                  <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, padding: "12px 0", fontFamily: "Poppins, sans-serif" }}>
                     No tests in the next 30 days.
                   </div>
                 ) : (
@@ -4598,8 +4599,8 @@ function HomePage() {
                         }}
                       >
                         <div style={{ minWidth: 0 }}>
-                          <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.name}</div>
-                          <div style={{ fontSize: 12, color: "#6B7686" }}>
+                          <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.name}</div>
+                          <div style={{ fontSize: 12, color: tokens.textSecondary }}>
                             {new Date(t.test_date + "T00:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })}
                             {t.test_time ? ` · ${t.test_time.slice(0, 5)}` : ""}
                             {t.test_centre ? ` · ${t.test_centre}` : ""}
@@ -4710,8 +4711,8 @@ function HomePage() {
         }}
       >
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 18, fontWeight: 600, color: '#FFFFFF', lineHeight: 1.2 }}>Dashboard</div>
-          <div style={{ fontSize: 13, color: '#9CA3AF', marginTop: 4 }}>
+          <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: '#FFFFFF', lineHeight: 1.2 }}>Dashboard</div>
+          <div style={{ fontSize: tokens.fontSize.base, color: '#9CA3AF', marginTop: 4 }}>
             Welcome back, {firstName || 'there'} 👋
           </div>
         </div>
@@ -4722,7 +4723,7 @@ function HomePage() {
           style={{
             width: 34, height: 34, borderRadius: '50%',
             background: '#1877D6', color: '#FFFFFF',
-            fontSize: 13, fontWeight: 600,
+            fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold,
             border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', overflow: 'hidden', padding: 0, flexShrink: 0,
             fontFamily: 'Poppins, sans-serif',
@@ -4753,12 +4754,12 @@ function HomePage() {
               border: 'none', textAlign: 'left', cursor: 'pointer', fontFamily: 'Poppins, sans-serif',
             }}
           >
-            <div style={{ fontSize: 10, fontWeight: 700, color: s.color, textTransform: 'uppercase', letterSpacing: 0.3 }}>{s.label}</div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: s.label === 'Jobs' ? '#1E8E3E' : '#0B1F3A', marginTop: 4, lineHeight: 1 }}>{s.value}</div>
+            <div style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, color: s.color, textTransform: 'uppercase', letterSpacing: 0.3 }}>{s.label}</div>
+            <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.bold, color: s.label === 'Jobs' ? '#1E8E3E' : '#0B1F3A', marginTop: 4, lineHeight: 1 }}>{s.value}</div>
             {s.label === 'Jobs' && claimedAwaitingPaymentCount > 0 ? (
-              <div style={{ fontSize: 10, color: '#1877D6', marginTop: 4 }}>{claimedAwaitingPaymentCount} claimed</div>
+              <div style={{ fontSize: tokens.fontSize.xs, color: '#1877D6', marginTop: 4 }}>{claimedAwaitingPaymentCount} claimed</div>
             ) : s.label === 'Jobs' ? null : (
-              <div style={{ fontSize: 10, color: '#9CA3AF', marginTop: 4 }}>{s.sub}</div>
+              <div style={{ fontSize: tokens.fontSize.xs, color: '#9CA3AF', marginTop: 4 }}>{s.sub}</div>
             )}
           </button>
         ))}
@@ -5062,11 +5063,11 @@ function HomePage() {
                           display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5,
                         }}>
                           <IconCar stroke={1.5} size={13} color="#1877D6" />
-                          <span style={{ fontSize: 12, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+                          <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
                             {driveData.durationMinutes} min
                           </span>
                           {driveData.distanceText && (
-                            <span style={{ fontSize: 11, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>
+                            <span style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>
                               · {driveData.distanceText}
                             </span>
                           )}
@@ -5094,18 +5095,18 @@ function HomePage() {
                         display: 'inline-flex',
                         alignSelf: 'flex-start',
                         alignItems: 'center', gap: 5,
-                        fontSize: 11, fontWeight: 700, color: '#0B1F3A',
+                        fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A',
                         fontFamily: 'Poppins, sans-serif',
                         whiteSpace: 'nowrap',
                       }}>
                         <span>{isLessonToday ? 'TODAY' : `${railDow} ${railDay} ${railMon}`}</span>
-                        <span style={{ fontWeight: 600, color: '#4A5568' }}>{startText}{endText ? ` - ${endText}` : ''}</span>
+                        <span style={{ fontWeight: tokens.fontWeight.semibold, color: '#4A5568' }}>{startText}{endText ? ` - ${endText}` : ''}</span>
                       </div>
 
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
                         <PupilAvatar pupil={upcoming?.pupils ?? null} pupilId={upcoming?.pupil_id ?? null} size={40} />
                         <div style={{
-                          fontSize: 16, fontWeight: 700, color: '#0B1F3A',
+                          fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A',
                           fontFamily: 'Poppins, sans-serif',
                           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                           minWidth: 0,
@@ -5127,7 +5128,7 @@ function HomePage() {
                           border: '1px solid #E5E8EE',
                           boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
                           fontSize: 12,
-                          fontWeight: 700,
+                          fontWeight: tokens.fontWeight.bold,
                           cursor: 'pointer',
                           fontFamily: 'Poppins, sans-serif',
                           display: 'flex', alignItems: 'center', gap: 5,
@@ -5173,7 +5174,7 @@ function HomePage() {
                     gap: 6,
                     cursor: 'pointer',
                     fontSize: 12,
-                    fontWeight: 600,
+                    fontWeight: tokens.fontWeight.semibold,
                     fontFamily: 'Poppins, sans-serif',
                     padding: 0,
                   }}
@@ -5188,7 +5189,7 @@ function HomePage() {
                       {upcomingSmsCount > 0 && (
                         <span style={{
                           minWidth: 14, height: 14, borderRadius: '50%', background: '#CC2229',
-                          color: '#FFFFFF', fontSize: 10, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
+                          color: '#FFFFFF', fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           padding: '0 3px', boxSizing: 'border-box',
                         }}>
@@ -5198,7 +5199,7 @@ function HomePage() {
                       {upcomingAppCount > 0 && (
                         <span style={{
                           minWidth: 14, height: 14, borderRadius: '50%', background: '#1877D6',
-                          color: '#FFFFFF', fontSize: 10, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
+                          color: '#FFFFFF', fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           padding: '0 3px', boxSizing: 'border-box',
                         }}>
@@ -5229,7 +5230,7 @@ function HomePage() {
                     gap: 6,
                     cursor: 'pointer',
                     fontSize: 12,
-                    fontWeight: 600,
+                    fontWeight: tokens.fontWeight.semibold,
                     fontFamily: 'Poppins, sans-serif',
                     padding: 0,
                   }}
@@ -5257,7 +5258,7 @@ function HomePage() {
                     gap: 6,
                     cursor: 'pointer',
                     fontSize: 12,
-                    fontWeight: 600,
+                    fontWeight: tokens.fontWeight.semibold,
                     fontFamily: 'Poppins, sans-serif',
                     padding: 0,
                   }}
@@ -5276,7 +5277,7 @@ function HomePage() {
               }}>
                 <IconMapPin stroke={1.5} size={18} color="#6B7686" style={{ flexShrink: 0 }} />
                 <span style={{
-                  fontSize: 13, color: '#5A6270', fontFamily: 'Poppins, sans-serif',
+                  fontSize: tokens.fontSize.base, color: '#5A6270', fontFamily: 'Poppins, sans-serif',
                   overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                 }}>
                   {pickup}
@@ -5289,7 +5290,7 @@ function HomePage() {
                 <div style={{
                   marginTop: 0, padding: '10px 16px',
                   display: 'flex', flexDirection: 'column', gap: 3,
-                  fontSize: 11, color: '#5A6270',
+                  fontSize: tokens.fontSize.sm, color: '#5A6270',
                   borderBottom: '1px solid #E4E8EF',
                 }}>
                   {showTraffic && driveData && (
@@ -5311,7 +5312,7 @@ function HomePage() {
                   borderBottom: '1px solid #F5D5D5',
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
                 }}>
-                  <span style={{ fontSize: 11, color: '#7A1F1F', fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <span style={{ fontSize: tokens.fontSize.sm, color: '#7A1F1F', fontWeight: tokens.fontWeight.medium, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     Arriving ~{etaLabel} — let {pupilFirstName} know?
                   </span>
                   <button
@@ -5319,7 +5320,7 @@ function HomePage() {
                     onClick={(e) => { e.stopPropagation(); setLateOpen(true); }}
                     style={{
                       background: '#CC2229', color: '#FFFFFF', border: 'none',
-                      fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 999,
+                      fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, padding: '5px 10px', borderRadius: 999,
                       cursor: 'pointer', flexShrink: 0, fontFamily: 'Poppins, sans-serif',
                     }}
                   >Notify pupil</button>
@@ -5342,7 +5343,7 @@ function HomePage() {
                     style={{
                       background: 'none', border: 'none', padding: 0, cursor: 'pointer',
                       display: 'flex', alignItems: 'center', gap: 6,
-                      fontSize: 13, fontWeight: 700, color: '#1877D6',
+                      fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: '#1877D6',
                       fontFamily: 'Poppins, sans-serif',
                     }}
                   >
@@ -5353,7 +5354,7 @@ function HomePage() {
                   {driveData?.durationMinutes != null && (
                     <>
                       <span style={{ color: '#9CA3AF', fontSize: 12 }}>·</span>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: '#1877D6' }}>
+                      <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: '#1877D6' }}>
                         {driveData.durationMinutes} min
                       </span>
                     </>
@@ -5391,8 +5392,8 @@ function HomePage() {
                             }}
                           />
                         ) : null}
-                        <span style={{ fontSize: 14, display: iconUrl ? 'none' : 'inline' }}>{emoji}</span>
-                        <span style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A' }}>
+                        <span style={{ fontSize: tokens.fontSize.md, display: iconUrl ? 'none' : 'inline' }}>{emoji}</span>
+                        <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>
                           {Math.round(weatherData.tempC)}°
                         </span>
                       </>
@@ -5408,7 +5409,7 @@ function HomePage() {
                     flexShrink: 0,
                     background: 'none', border: 'none', padding: 0, cursor: 'pointer',
                     display: 'flex', alignItems: 'center', gap: 4,
-                    fontSize: 13, fontWeight: 600, color: '#0B1F3A',
+                    fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A',
                     fontFamily: 'Poppins, sans-serif',
                   }}
                 >
@@ -5477,7 +5478,7 @@ function HomePage() {
                     }
                     setLateOpen(false);
                   }}
-                  style={{ height: 44, borderRadius: 8, border: '1px solid #e3e6ec', background: '#fff', fontFamily: 'Poppins, sans-serif', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}
+                  style={{ height: 44, borderRadius: 8, border: '1px solid #e3e6ec', background: '#fff', fontFamily: 'Poppins, sans-serif', fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md, cursor: 'pointer' }}
                 >{m}m</button>
               ))}
             </div>
@@ -5700,8 +5701,8 @@ function HomePage() {
               cursor: onClick ? 'pointer' : 'default',
             }}
           >
-            <div style={{ fontSize: 12, fontWeight: 500, color: MUTED, letterSpacing: -0.1 }}>{label}</div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: danger ? DANGER : NAVY, marginTop: 4, letterSpacing: -0.3, lineHeight: 1.1 }}>{value}</div>
+            <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.medium, color: MUTED, letterSpacing: -0.1 }}>{label}</div>
+            <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.bold, color: danger ? DANGER : NAVY, marginTop: 4, letterSpacing: -0.3, lineHeight: 1.1 }}>{value}</div>
           </div>
         );
 
@@ -5820,8 +5821,8 @@ function HomePage() {
                       <IconBolt stroke={1.5} size={20} color="#B45309" />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: '#B45309', textTransform: 'uppercase', letterSpacing: 0.5 }}>Slot freed</div>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: '#B45309', textTransform: 'uppercase', letterSpacing: 0.5 }}>Slot freed</div>
+                      <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {pupilName} cancelled their lesson
                       </div>
                       <div style={{ fontSize: 12, color: '#D68A1B', marginTop: 1 }}>
@@ -5834,7 +5835,7 @@ function HomePage() {
                         to: '/gaps',
                         search: { date: freedSlot.lesson_date, time, duration: String(duration) } as any,
                       })}
-                      style={{ background: '#B45309', color: '#FFFFFF', border: 'none', borderRadius: 8, padding: '8px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
+                      style={{ background: '#B45309', color: '#FFFFFF', border: 'none', borderRadius: 8, padding: '8px 12px', fontSize: 12, fontWeight: tokens.fontWeight.bold, cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
                     >
                       Fill slot →
                     </button>
@@ -5858,14 +5859,14 @@ function HomePage() {
                   <button
                     type="button"
                     onClick={() => { setAddLessonPupilId(undefined); setAddLessonDate(tab === 'tomorrow' ? tomorrowISO : todayISO); setAddChooserOpen(true); }}
-                    style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: '#CC2229', cursor: 'pointer', lineHeight: 1 }}
+                    style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: '#CC2229', cursor: 'pointer', lineHeight: 1 }}
                   >
                     Add +
                   </button>
                   <button
                     type="button"
                     onClick={() => navigate({ to: '/schedule' as never })}
-                    style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: 13, fontWeight: 600, color: '#1877D6', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, lineHeight: 1 }}
+                    style={{ background: 'none', border: 'none', padding: 0, fontFamily: PF, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: '#1877D6', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, lineHeight: 1 }}
                   >
                     Full schedule
                     <IconArrowRight stroke={1.5} size={14} />
@@ -5905,7 +5906,7 @@ function HomePage() {
                           background: active ? '#FFFFFF' : 'transparent',
                           color: active ? '#0B1F3A' : '#6B7A90',
                           fontFamily: PF,
-                          fontSize: 14,
+                          fontSize: tokens.fontSize.md,
                           fontWeight: active ? 700 : 500,
                           cursor: 'pointer',
                           boxShadow: active ? '0 1px 2px rgba(11,31,58,0.10), 0 1px 3px rgba(11,31,58,0.06)' : 'none',
@@ -5925,8 +5926,8 @@ function HomePage() {
                                 borderRadius: 8,
                                 background: '#1877D6',
                                 color: '#FFFFFF',
-                                fontSize: 11,
-                                fontWeight: 700,
+                                fontSize: tokens.fontSize.sm,
+                                fontWeight: tokens.fontWeight.bold,
                                 lineHeight: '18px',
                                 display: 'inline-flex',
                                 alignItems: 'center',
@@ -5955,12 +5956,12 @@ function HomePage() {
                         <div style={{ width: 44, height: 44, borderRadius: 8, background: 'linear-gradient(135deg, #1877D6, #0B1F3A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           <IconBolt size={22} color="#FFFFFF" stroke={2} />
                         </div>
-                        <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>Your day is wide open</div>
-                        <div style={{ fontSize: 13, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>{hours} hours free {dayLabel} — fill a gap before it goes to waste.</div>
+                        <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>Your day is wide open</div>
+                        <div style={{ fontSize: tokens.fontSize.base, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>{hours} hours free {dayLabel} — fill a gap before it goes to waste.</div>
                         <button
                           type="button"
                           onClick={() => navigate({ to: '/gaps' })}
-                          style={{ marginTop: 4, width: '100%', background: '#0B1F3A', color: '#FFFFFF', border: 'none', borderRadius: 8, padding: 12, fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer' }}
+                          style={{ marginTop: 4, width: '100%', background: '#0B1F3A', color: '#FFFFFF', border: 'none', borderRadius: 8, padding: 12, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer' }}
                         >
                           <IconBolt size={16} color="#FFFFFF" stroke={2} />
                           Open gap filler
@@ -6026,7 +6027,7 @@ function HomePage() {
                         >
                           <IconArrowsMove size={14} color="#FFFFFF" />
                         </div>
-                        <div style={{ fontSize: 13, fontWeight: 500, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           Moving: {(movingLessonHome.pupils as any)?.name?.split(' ')[0] || 'lesson'}'s {movingLessonHome.duration_minutes} min lesson
                         </div>
                       </div>
@@ -6040,7 +6041,7 @@ function HomePage() {
                           borderRadius: 8,
                           padding: '4px 10px',
                           fontSize: 12,
-                          fontWeight: 500,
+                          fontWeight: tokens.fontWeight.medium,
                           cursor: 'pointer',
                           flexShrink: 0,
                         }}
@@ -6083,10 +6084,10 @@ function HomePage() {
                               top: -12,
                               left: 12,
                               zIndex: 1,
-                              background: "#0B1F3A",
-                              color: "#FFFFFF",
-                              fontSize: 10,
-                              fontWeight: 800,
+                              background: tokens.navy,
+                              color: tokens.white,
+                              fontSize: tokens.fontSize.xs,
+                              fontWeight: tokens.fontWeight.extrabold,
                               textTransform: "uppercase",
                               letterSpacing: "0.5px",
                               padding: "4px 10px",
@@ -6121,10 +6122,10 @@ function HomePage() {
                             }}
                           >
                             <div style={{ width: 54, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
-                              <div style={{ fontSize: 22, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.1 }}>
+                              <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.1 }}>
                                 {fmtT(gs)}
                               </div>
-                              <div style={{ fontSize: 12, fontWeight: 500, color: '#9CA3AF', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
+                              <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.medium, color: '#9CA3AF', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
                                 {durLabel}
                               </div>
                             </div>
@@ -6153,8 +6154,8 @@ function HomePage() {
                                               display: 'flex',
                                               alignItems: 'center',
                                               justifyContent: 'center',
-                                              fontSize: 11,
-                                              fontWeight: 700,
+                                              fontSize: tokens.fontSize.sm,
+                                              fontWeight: tokens.fontWeight.bold,
                                               color: '#FFFFFF',
                                               marginRight: i === preview.topPupils.length - 1 ? 0 : -10,
                                               fontFamily: PF,
@@ -6165,12 +6166,12 @@ function HomePage() {
                                         );
                                       })}
                                     </div>
-                                    <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', lineHeight: 1.3 }}>
+                                    <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', lineHeight: 1.3 }}>
                                       {preview.count} pupil{preview.count === 1 ? '' : 's'} may fit · £{potential} potential
                                     </div>
                                   </>
                                 ) : (
-                                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', lineHeight: 1.3 }}>
+                                  <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', lineHeight: 1.3 }}>
                                     {durLabel} free · £{potential} potential
                                   </div>
                                 )}
@@ -6185,7 +6186,7 @@ function HomePage() {
                                   background: '#0B1F3A',
                                   color: '#FFFFFF',
                                   fontSize: 12.5,
-                                  fontWeight: 600,
+                                  fontWeight: tokens.fontWeight.semibold,
                                   padding: '8px 14px',
                                   borderRadius: 8,
                                   border: 'none',
@@ -6204,8 +6205,8 @@ function HomePage() {
                                   alignSelf: 'center',
                                   background: '#1877D6',
                                   color: '#FFFFFF',
-                                  fontSize: 13,
-                                  fontWeight: 700,
+                                  fontSize: tokens.fontSize.base,
+                                  fontWeight: tokens.fontWeight.bold,
                                   padding: '9px 18px',
                                   borderRadius: 8,
                                   border: 'none',
@@ -6264,10 +6265,10 @@ function HomePage() {
                           }}
                         >
                           <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
-                            <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
                               {fmtT(cs)}
                             </div>
-                            <div style={{ fontSize: 11.5, fontWeight: 500, color: '#9CA3AF', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
+                            <div style={{ fontSize: 11.5, fontWeight: tokens.fontWeight.medium, color: '#9CA3AF', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
                               {durLabel}
                             </div>
                           </div>
@@ -6276,7 +6277,7 @@ function HomePage() {
                             <div
                               style={{
                                 fontSize: 15,
-                                fontWeight: 600,
+                                fontWeight: tokens.fontWeight.semibold,
                                 color: '#0B1F3A',
                                 lineHeight: 1.3,
                                 whiteSpace: 'nowrap',
@@ -6289,7 +6290,7 @@ function HomePage() {
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 3, minWidth: 0 }}>
                               <IconCalendarEvent size={13} stroke={1.8} color="#6B7686" style={{ flexShrink: 0 }} />
-                              <span style={{ fontSize: 12, color: '#6B7686', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Google Calendar</span>
+                              <span style={{ fontSize: 12, color: '#6B7686', fontWeight: tokens.fontWeight.medium, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Google Calendar</span>
                             </div>
                           </div>
                         </div>
@@ -6318,19 +6319,19 @@ function HomePage() {
                       priceNode = null;
                     } else if (isLive) {
                       priceNode = (
-                        <span style={{ fontSize: 13, fontWeight: 500, color: ACCENT }}>Live</span>
+                        <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: ACCENT }}>Live</span>
                       );
                     } else if (isPrepaidPupil) {
                       priceNode = (
-                        <span style={{ fontSize: 13, fontWeight: 500, color: '#1877D6' }}>Prepaid</span>
+                        <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: '#1877D6' }}>Prepaid</span>
                       );
                     } else if (isPaid) {
                       priceNode = (
-                        <span style={{ fontSize: 13, fontWeight: 500, color: '#137333' }}>Paid</span>
+                        <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: '#137333' }}>Paid</span>
                       );
                     } else if (amt > 0) {
                       priceNode = (
-                        <span style={{ fontSize: 13, fontWeight: 500, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums' }}>
+                        <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums' }}>
                           £{amt.toFixed(0)}
                         </span>
                       );
@@ -6404,10 +6405,10 @@ function HomePage() {
                                   paddingTop: 2,
                                 }}
                               >
-                                <div style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, fontFamily: PF }}>
+                                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#FFFFFF', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, fontFamily: PF }}>
                                   {timeLabel}
                                 </div>
-                                <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.75)', marginTop: 3, fontVariantNumeric: 'tabular-nums', fontFamily: PF }}>
+                                <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: 'rgba(255,255,255,0.75)', marginTop: 3, fontVariantNumeric: 'tabular-nums', fontFamily: PF }}>
                                   {durLabel}
                                 </div>
                               </div>
@@ -6428,8 +6429,8 @@ function HomePage() {
                                     alignItems: 'center',
                                     background: 'rgba(255,255,255,0.2)',
                                     color: '#fff',
-                                    fontSize: 10,
-                                    fontWeight: 800,
+                                    fontSize: tokens.fontSize.xs,
+                                    fontWeight: tokens.fontWeight.extrabold,
                                     borderRadius: 999,
                                     padding: '2px 8px',
                                     letterSpacing: '0.08em',
@@ -6439,7 +6440,7 @@ function HomePage() {
                                   </span>
                                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
                                     {testTimeOf(l) ? (
-                                      <span style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.85)', fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
+                                      <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, color: 'rgba(255,255,255,0.85)', fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
                                         Test at {testTimeOf(l)}
                                       </span>
                                     ) : null}
@@ -6472,13 +6473,13 @@ function HomePage() {
                                     </div>
                                   </div>
                                 </div>
-                                <div style={{ fontSize: 15, fontWeight: 800, color: '#fff', marginTop: 4, letterSpacing: -0.2, fontFamily: PF, lineHeight: 1.2 }}>
+                                <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: '#fff', marginTop: 4, letterSpacing: -0.2, fontFamily: PF, lineHeight: 1.2 }}>
                                   {name}
                                 </div>
                                 <div style={{ display: 'flex', gap: 4, alignItems: 'center', marginTop: 2 }}>
                                   <IconMapPin size={11} color="rgba(255,255,255,0.7)" stroke={1.5} />
                                   <span style={{
-                                    fontSize: 11,
+                                    fontSize: tokens.fontSize.sm,
                                     color: pickupLabel ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.5)',
                                     fontStyle: pickupLabel ? 'normal' : 'italic',
                                     fontFamily: PF,
@@ -6512,10 +6513,10 @@ function HomePage() {
                             }}
                           >
                             <div style={{ width: 52, flexShrink: 0, paddingTop: 2 }}>
-                              <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none' }}>
+                              <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none' }}>
                                 {timeLabel}
                               </div>
-                              <div style={{ fontSize: 11.5, fontWeight: 500, color: '#9CA3AF', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
+                              <div style={{ fontSize: 11.5, fontWeight: tokens.fontWeight.medium, color: '#9CA3AF', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
                                 {durLabel}
                               </div>
                             </div>
@@ -6531,7 +6532,7 @@ function HomePage() {
                             />
                             <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                                <span style={{ flex: 1, minWidth: 0, fontSize: 15, fontWeight: 600, color: isCancelled ? '#6B7280' : '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none', fontFamily: PF }}>
+                                <span style={{ flex: 1, minWidth: 0, fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: isCancelled ? '#6B7280' : '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none', fontFamily: PF }}>
                                   {name}
                                 </span>
                                 {isCancelled ? (
@@ -6539,8 +6540,8 @@ function HomePage() {
                                     flexShrink: 0,
                                     display: 'inline-flex',
                                     alignItems: 'center',
-                                    fontSize: 10,
-                                    fontWeight: 700,
+                                    fontSize: tokens.fontSize.xs,
+                                    fontWeight: tokens.fontWeight.bold,
                                     letterSpacing: 0.4,
                                     textTransform: 'uppercase',
                                     color: '#CC2229',
@@ -6582,7 +6583,7 @@ function HomePage() {
                                           {pickupLabel}
                                         </span>
                                         {custom && (
-                                          <span style={{ fontSize: 10, fontWeight: 700, color: '#D68A1B', flexShrink: 0 }}>
+                                          <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, color: '#D68A1B', flexShrink: 0 }}>
                                             {isTestDayRow ? 'TEST CENTRE' : 'CUSTOM'}
                                           </span>
                                         )}
@@ -6641,7 +6642,7 @@ function HomePage() {
                                }}
                              >
                                <IconClockExclamation size={13} stroke={1.9} color="#B45309" style={{ flexShrink: 0 }} />
-                               <span style={{ fontSize: 11, fontWeight: 600, color: '#D68A1B', fontFamily: PF }}>
+                               <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#D68A1B', fontFamily: PF }}>
                                  End of lesson not completed
                                </span>
                                <button
@@ -6653,8 +6654,8 @@ function HomePage() {
                                    border: 'none',
                                    padding: 0,
                                    cursor: 'pointer',
-                                   fontSize: 11,
-                                   fontWeight: 500,
+                                   fontSize: tokens.fontSize.sm,
+                                   fontWeight: tokens.fontWeight.medium,
                                    color: '#1877D6',
                                    fontFamily: PF,
                                    whiteSpace: 'nowrap',
@@ -6771,7 +6772,7 @@ function HomePage() {
                   <div
                     style={{
                       fontSize: 8,
-                      fontWeight: 600,
+                      fontWeight: tokens.fontWeight.semibold,
                       textTransform: 'uppercase',
                       letterSpacing: '0.04em',
                     }}
@@ -6783,8 +6784,8 @@ function HomePage() {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div
                     style={{
-                      fontSize: 14,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.semibold,
                       color: '#0B1F3A',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
@@ -6831,8 +6832,8 @@ function HomePage() {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          fontSize: 10,
-                          fontWeight: 600,
+                          fontSize: tokens.fontSize.xs,
+                          fontWeight: tokens.fontWeight.semibold,
                           color: '#FFFFFF',
                           marginLeft: i === 0 ? 0 : -7,
                           zIndex: i,
@@ -6854,8 +6855,8 @@ function HomePage() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: 10,
-                        fontWeight: 600,
+                        fontSize: tokens.fontSize.xs,
+                        fontWeight: tokens.fontWeight.semibold,
                         color: '#5B6472',
                         marginLeft: -7,
                         zIndex: 3,
@@ -7025,7 +7026,7 @@ function HomePage() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0, maxWidth: '100%' }}>
                           <span style={{
                             fontSize: 15,
-                            fontWeight: 700,
+                            fontWeight: tokens.fontWeight.bold,
                             color: '#0B1F3A',
                             lineHeight: 1.2,
                             fontFamily: 'Poppins, sans-serif',
@@ -7037,7 +7038,7 @@ function HomePage() {
                           {sub && (
                             <span style={{
                               fontSize: 12,
-                              fontWeight: 400,
+                              fontWeight: tokens.fontWeight.regular,
                               color: '#8792A2',
                               lineHeight: 1.3,
                               fontFamily: 'Poppins, sans-serif',
@@ -7086,7 +7087,7 @@ function HomePage() {
                                   }}
                                 />
                               ))}
-                              <span style={{ fontSize: 11, fontWeight: 600, color: '#4A5568', marginLeft: 2, fontFamily: 'Poppins, sans-serif' }}>
+                              <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#4A5568', marginLeft: 2, fontFamily: 'Poppins, sans-serif' }}>
                                 {currentPage + 1}/{pageCount}
                               </span>
                             </div>
@@ -7140,7 +7141,7 @@ function HomePage() {
                               boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
                               borderRadius: 8,
                               padding: '10px 12px 10px 34px',
-                              fontSize: 13,
+                              fontSize: tokens.fontSize.base,
                               color: '#0B1F3A',
                               fontFamily: 'Poppins, sans-serif',
                               outline: 'none',
@@ -7160,7 +7161,7 @@ function HomePage() {
                                 border: 'none',
                                 cursor: 'pointer',
                                 color: '#9CA3AF',
-                                fontSize: 16,
+                                fontSize: tokens.fontSize.lg,
                                 padding: 0,
                                 lineHeight: 1,
                               }}
@@ -7246,23 +7247,23 @@ function HomePage() {
                           <div style={{ width: 36, height: 36, borderRadius: 8, background: '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <IconClock stroke={1.5} size={20} color="#C23B3B" />
                           </div>
-                          <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Running late</div>
+                          <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>Running late</div>
                         </div>
-                        <div style={{ fontSize: 13, color: '#5A6B85', marginBottom: 16 }}>
+                        <div style={{ fontSize: tokens.fontSize.base, color: '#5A6B85', marginBottom: 16 }}>
                           Notify today's pupils you're running late. This will send a heads-up message to each pupil with a lesson later today.
                         </div>
                         <div style={{ display: 'flex', gap: 8 }}>
                           <button
                             type="button"
                             onClick={() => setRunningLateOpen(false)}
-                            style={{ flex: 1, padding: '12px', borderRadius: 8, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
+                            style={{ flex: 1, padding: '12px', borderRadius: 8, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
                           >
                             Cancel
                           </button>
                           <button
                             type="button"
                             onClick={() => { setRunningLateOpen(false); navigate({ to: '/broadcast' as never }); }}
-                            style={{ flex: 1, padding: '12px', borderRadius: 8, border: 'none', background: '#C23B3B', color: '#FFFFFF', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
+                            style={{ flex: 1, padding: '12px', borderRadius: 8, border: 'none', background: '#C23B3B', color: '#FFFFFF', fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
                           >
                             Notify pupils
                           </button>
@@ -7396,13 +7397,13 @@ function HomePage() {
                                 >
                                   <IconChevronLeft stroke={1.5} size={16} color="#0B1F3A" />
                                 </button>
-                                <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>
+                                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>
                                   {activeCat.emoji} {activeCat.label}
                                 </div>
                               </div>
 
                               {nearbyLoading ? (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '20px 0', fontSize: 13, color: '#5A6B85' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '20px 0', fontSize: tokens.fontSize.base, color: '#5A6B85' }}>
                                   <span
                                     aria-hidden
                                     style={{
@@ -7414,7 +7415,7 @@ function HomePage() {
                                   <style>{`@keyframes nearby-spin { to { transform: rotate(360deg); } }`}</style>
                                 </div>
                               ) : nearbyError ? (
-                                <div style={{ padding: '20px 0', fontSize: 13, color: '#6B7686' }}>{nearbyError}</div>
+                                <div style={{ padding: '20px 0', fontSize: tokens.fontSize.base, color: '#6B7686' }}>{nearbyError}</div>
                               ) : (
                                 <div>
                                   {nearbyResults.map((r, i) => (
@@ -7436,11 +7437,11 @@ function HomePage() {
                                       }}
                                     >
                                       <div style={{ flex: 1, minWidth: 0 }}>
-                                        <div style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                        <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                           {r.name}
                                         </div>
                                         {r.address ? (
-                                          <div style={{ fontSize: 11, color: '#6B7686', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: 2 }}>
+                                          <div style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: 2 }}>
                                             {r.address}
                                           </div>
                                         ) : null}
@@ -7448,10 +7449,10 @@ function HomePage() {
                                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
                                         <div style={{ textAlign: 'right' }}>
                                           {r.rating != null ? (
-                                            <div style={{ fontSize: 11, color: '#6B7686' }}>⭐ {Number(r.rating).toFixed(1)}</div>
+                                            <div style={{ fontSize: tokens.fontSize.sm, color: '#6B7686' }}>⭐ {Number(r.rating).toFixed(1)}</div>
                                           ) : null}
                                           {r.dist != null ? (
-                                            <div style={{ fontSize: 11, color: '#6B7686' }}>{fmtDistance(r.dist)}</div>
+                                            <div style={{ fontSize: tokens.fontSize.sm, color: '#6B7686' }}>{fmtDistance(r.dist)}</div>
                                           ) : null}
                                         </div>
                                         <IconChevronRight stroke={1.5} size={14} color="#9CA3AF" />
@@ -7467,9 +7468,9 @@ function HomePage() {
                                 <div style={{ width: 36, height: 36, borderRadius: 8, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                   <IconMapPin size={20} color="#1877D6" stroke={1.8} />
                                 </div>
-                                <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Find nearby</div>
+                                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>Find nearby</div>
                               </div>
-                              <div style={{ fontSize: 13, color: '#5A6B85', marginBottom: 16 }}>
+                              <div style={{ fontSize: tokens.fontSize.base, color: '#5A6B85', marginBottom: 16 }}>
                                 Shows places within 2km of your current location.
                               </div>
                               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
@@ -7486,8 +7487,8 @@ function HomePage() {
                                       fontFamily: 'Poppins, sans-serif', padding: 0,
                                     }}
                                   >
-                                    <span style={{ fontSize: 18, lineHeight: 1 }}>{c.emoji}</span>
-                                    <span style={{ fontSize: 11, fontWeight: 600, color: '#0B1F3A' }}>{c.label}</span>
+                                    <span style={{ fontSize: tokens.fontSize.xl, lineHeight: 1 }}>{c.emoji}</span>
+                                    <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A' }}>{c.label}</span>
                                   </button>
                                 ))}
                               </div>
@@ -7496,7 +7497,7 @@ function HomePage() {
                           <button
                             type="button"
                             onClick={closeSheet}
-                            style={{ marginTop: 14, width: '100%', padding: '12px', borderRadius: 8, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: 14, fontWeight: 600, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
+                            style={{ marginTop: 14, width: '100%', padding: '12px', borderRadius: 8, border: '1px solid #E2E6ED', background: '#FFFFFF', color: '#0B1F3A', fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, fontFamily: 'Poppins, sans-serif', cursor: 'pointer' }}
                           >
                             Close
                           </button>
@@ -7631,7 +7632,7 @@ function HomePage() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: size * 0.4,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   flexShrink: 0,
                   fontFamily: PF_C,
                 }}
@@ -7682,7 +7683,7 @@ function HomePage() {
             <span style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
               minWidth: 16, height: 16, borderRadius: 8, background: colour,
-              color: '#FFFFFF', fontSize: 10, fontWeight: 700, fontFamily: PF_C,
+              color: '#FFFFFF', fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, fontFamily: PF_C,
               padding: '0 3px', marginLeft: 2,
             }}>
               {value}
@@ -7706,7 +7707,7 @@ function HomePage() {
                   : {})}
                 style={{
                   display: 'inline-flex', alignItems: 'center',
-                  fontSize: 11, fontFamily: PF_C,
+                  fontSize: tokens.fontSize.sm, fontFamily: PF_C,
                   color: count > 0 ? colour : '#9CA3AF',
                   fontWeight: count > 0 ? 600 : 400,
                   padding: active ? '2px 4px' : 0,
@@ -7731,8 +7732,8 @@ function HomePage() {
             padding: '11px 14px', cursor: 'pointer',
             borderTop: `0.5px solid ${BORDER_C}`,
           };
-          const labelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: NAVY_C, fontFamily: PF_C };
-          const timeStyle: React.CSSProperties = { fontSize: 10, color: GREY_C, fontFamily: PF_C, flexShrink: 0 };
+          const labelStyle: React.CSSProperties = { fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: NAVY_C, fontFamily: PF_C };
+          const timeStyle: React.CSSProperties = { fontSize: tokens.fontSize.xs, color: GREY_C, fontFamily: PF_C, flexShrink: 0 };
 
           return (
             <div style={SECTION_WRAPPER_STYLE}>
@@ -7948,7 +7949,7 @@ function HomePage() {
                           }} />
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{
-                              fontSize: 15, fontWeight: 700, color: NAVY_C, fontFamily: PF_C,
+                              fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY_C, fontFamily: PF_C,
                               whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                             }}>
                               {latestItem.title}
@@ -8031,7 +8032,7 @@ function HomePage() {
                                     style={{
                                       ...stackStyle,
                                       background: s.colour,
-                                      fontSize: 10, fontWeight: 700, color: '#fff',
+                                      fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, color: '#fff',
                                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       overflow: 'hidden',
                                     }}
@@ -8045,7 +8046,7 @@ function HomePage() {
                                   width: 28, height: 28, borderRadius: '50%', background: '#E4E8EF',
                                   border: '2px solid #fff', marginLeft: -10, zIndex: visibleAvatars.length + 1,
                                   position: 'relative', flexShrink: 0,
-                                  fontSize: 10, fontWeight: 600, color: '#6B7686',
+                                  fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, color: '#6B7686',
                                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 }}>
                                   +{extraAvatarCount}
@@ -8053,10 +8054,10 @@ function HomePage() {
                               )}
                             </>
                           )}
-                          <span style={{ fontSize: 11, color: '#6B7686', fontFamily: PF_C, marginLeft: 8 }}>{totalActive} active</span>
+                          <span style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', fontFamily: PF_C, marginLeft: 8 }}>{totalActive} active</span>
                         </div>
                         {timeAgo && (
-                          <span style={{ fontSize: 11, color: '#9CA3AF', fontFamily: PF_C }}>
+                          <span style={{ fontSize: tokens.fontSize.sm, color: '#9CA3AF', fontFamily: PF_C }}>
                             Updated {timeAgo}
                           </span>
                         )}
@@ -8116,7 +8117,7 @@ function HomePage() {
                         <span style={{
                           position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
                           borderRadius: 999, background: RED_C, color: '#FFFFFF',
-                          fontSize: 10, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
+                          fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, fontFamily: PF_C, padding: '0 4px',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>
                           {alerts.length}
@@ -8125,7 +8126,7 @@ function HomePage() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={labelStyle}>Local issues</div>
                         <div style={{
-                          fontSize: 11, fontWeight: 600, color: RED_C, fontFamily: PF_C,
+                          fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: RED_C, fontFamily: PF_C,
                           whiteSpace: 'normal', overflowWrap: 'break-word', lineHeight: '1.35',
                         }}>
                           {alertPreview}
@@ -8151,7 +8152,7 @@ function HomePage() {
                       <div style={{ position: 'relative', flexShrink: 0 }}>
                         <div style={{
                           width: 36, height: 36, borderRadius: '50%', background: '#1877D6',
-                          color: '#FFFFFF', fontSize: 13, fontWeight: 700, fontFamily: PF_C,
+                          color: '#FFFFFF', fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, fontFamily: PF_C,
                           display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
                         }}>
                           {m.pupils?.profile_image_url
@@ -8166,7 +8167,7 @@ function HomePage() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={labelStyle}>{pupilName(m)}</div>
                         <div style={{
-                          fontSize: 11, fontWeight: 700, color: NAVY_C, fontFamily: PF_C,
+                          fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, color: NAVY_C, fontFamily: PF_C,
                           whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                         }}>
                           {(m.body || '').substring(0, 48)}{(m.body || '').length > 48 ? '…' : ''}
@@ -8192,7 +8193,7 @@ function HomePage() {
                           <span style={{
                             position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
                             borderRadius: 999, background: '#7C3AED', color: '#FFFFFF',
-                            fontSize: 10, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
+                            fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, fontFamily: PF_C, padding: '0 4px',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                           }}>
                             {unreadChat}
@@ -8202,7 +8203,7 @@ function HomePage() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={labelStyle}>{localRoom.area_name} Local Chat</div>
                         <div style={{
-                          fontSize: 11, fontWeight: unreadChat > 0 ? 700 : 500,
+                          fontSize: tokens.fontSize.sm, fontWeight: unreadChat > 0 ? 700 : 500,
                           color: unreadChat > 0 ? NAVY_C : GREY_C, fontFamily: PF_C,
                           whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                         }}>
@@ -8226,7 +8227,7 @@ function HomePage() {
                       <div style={{ position: 'relative', flexShrink: 0 }}>
                         <div style={{
                           width: 36, height: 36, borderRadius: '50%', background: '#7C3AED',
-                          color: '#FFFFFF', fontSize: 13, fontWeight: 700, fontFamily: PF_C,
+                          color: '#FFFFFF', fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, fontFamily: PF_C,
                           display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
                         }}>
                           {room.image_url
@@ -8237,7 +8238,7 @@ function HomePage() {
                           <span style={{
                             position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
                             borderRadius: 999, background: '#7C3AED', color: '#FFFFFF',
-                            fontSize: 10, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
+                            fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, fontFamily: PF_C, padding: '0 4px',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                           }}>
                             {room.unread}
@@ -8247,7 +8248,7 @@ function HomePage() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={labelStyle}>{room.area_name || room.outcode}</div>
                         <div style={{
-                          fontSize: 11, fontWeight: room.unread > 0 ? 700 : 500,
+                          fontSize: tokens.fontSize.sm, fontWeight: room.unread > 0 ? 700 : 500,
                           color: room.unread > 0 ? NAVY_C : GREY_C, fontFamily: PF_C,
                           whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                         }}>
@@ -8264,7 +8265,7 @@ function HomePage() {
                     <div style={{ marginTop: 12 }}>
                       {/* Section header */}
                       <div style={{
-                        fontSize: 10, fontWeight: 700,
+                        fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold,
                         color: '#9CA3AF',
                         textTransform: 'uppercase',
                         letterSpacing: '0.06em',
@@ -8335,7 +8336,7 @@ function HomePage() {
                                 flexShrink: 0,
                               }}>
                                 <span style={{
-                                  fontSize: 10, fontWeight: 700,
+                                  fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold,
                                   color: '#fff',
                                   fontFamily: 'Poppins, sans-serif',
                                 }}>
@@ -8352,7 +8353,7 @@ function HomePage() {
                                 marginBottom: 2,
                               }}>
                                 <span style={{
-                                  fontSize: 13, fontWeight: 600,
+                                  fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold,
                                   color: '#0B1F3A',
                                   fontFamily: 'Poppins, sans-serif',
                                 }}>
@@ -8361,7 +8362,7 @@ function HomePage() {
                                 <span style={{
                                   background: '#EFF6FF',
                                   color: '#1877D6',
-                                  fontSize: 8, fontWeight: 700,
+                                  fontSize: 8, fontWeight: tokens.fontWeight.bold,
                                   padding: '1px 5px',
                                   borderRadius: 999,
                                   textTransform: 'uppercase',
@@ -8372,7 +8373,7 @@ function HomePage() {
                                 </span>
                               </div>
                               <div style={{
-                                fontSize: 11,
+                                fontSize: tokens.fontSize.sm,
                                 color: '#6B7686',
                                 whiteSpace: 'nowrap',
                                 overflow: 'hidden',
@@ -8388,7 +8389,7 @@ function HomePage() {
                               textAlign: 'right',
                             }}>
                               <div style={{
-                                fontSize: 10,
+                                fontSize: tokens.fontSize.xs,
                                 color: '#9CA3AF',
                                 fontFamily: 'Poppins, sans-serif',
                               }}>
@@ -8419,7 +8420,7 @@ function HomePage() {
                             to: '/messages' as never,
                           })}
                           style={{
-                            fontSize: 12, fontWeight: 600,
+                            fontSize: 12, fontWeight: tokens.fontWeight.semibold,
                             color: '#1877D6', cursor: 'pointer',
                             fontFamily: 'Poppins, sans-serif',
                           }}
@@ -8433,7 +8434,7 @@ function HomePage() {
                   <div
                     onClick={() => navigate({ to: '/community' })}
                     style={{
-                      padding: '9px 14px', fontSize: 12, fontWeight: 500, color: '#1877D6',
+                      padding: '9px 14px', fontSize: 12, fontWeight: tokens.fontWeight.medium, color: '#1877D6',
                       fontFamily: PF_C, cursor: 'pointer', borderTop: `0.5px solid ${BORDER_C}`,
                     }}
                   >
@@ -8451,7 +8452,7 @@ function HomePage() {
                         width: '100%', textAlign: 'center', padding: '10px 16px',
                         background: '#F7F9FC', border: 'none',
                         borderTop: `0.5px solid ${BORDER_C}`,
-                        fontSize: 12, fontWeight: 600, color: GREY_C, fontFamily: PF_C, cursor: 'pointer',
+                        fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: GREY_C, fontFamily: PF_C, cursor: 'pointer',
                       }}
                     >
                       {mutedCount} muted · Show all
@@ -8488,7 +8489,7 @@ function HomePage() {
               </div>
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+              <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
                 DSM National Chat
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 1 }}>
@@ -8505,7 +8506,7 @@ function HomePage() {
                 </div>
                 {ukChatLatest?.created_at && (
                   <div style={{
-                    fontSize: 10, color: unreadUkChat > 0 ? '#1877D6' : '#9CA3AF', flexShrink: 0,
+                    fontSize: tokens.fontSize.xs, color: unreadUkChat > 0 ? '#1877D6' : '#9CA3AF', flexShrink: 0,
                     fontFamily: 'Poppins, sans-serif',
                   }}>
                     {timeAgo(ukChatLatest.created_at)}
@@ -8516,7 +8517,7 @@ function HomePage() {
             {unreadUkChat > 0 && (
               <div style={{
                 width: 16, height: 16, borderRadius: 8, flexShrink: 0,
-                background: '#1877D6', color: '#FFFFFF', fontSize: 10, fontWeight: 700,
+                background: '#1877D6', color: '#FFFFFF', fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontFamily: 'Poppins, sans-serif',
               }}>
@@ -8701,7 +8702,7 @@ function HomePage() {
               gap: 10,
             }}
           >
-            <div style={{ fontSize: 17, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Sora, sans-serif', marginBottom: 4 }}>
+            <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: 'Sora, sans-serif', marginBottom: 4 }}>
               Add to your schedule
             </div>
             <button
@@ -8720,7 +8721,7 @@ function HomePage() {
                 <IconPlus size={19} stroke={1.8} color="#1877D6" />
               </span>
               <span>
-                <span style={{ display: 'block', fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>Lesson</span>
+                <span style={{ display: 'block', fontSize: 15, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>Lesson</span>
                 <span style={{ fontSize: 12, color: '#6B7686' }}>Pupil, duration and payment</span>
               </span>
             </button>
@@ -8740,14 +8741,14 @@ function HomePage() {
                 <IconCalendar size={19} stroke={1.8} color="#B8860B" />
               </span>
               <span>
-                <span style={{ display: 'block', fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>Private event</span>
+                <span style={{ display: 'block', fontSize: 15, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>Private event</span>
                 <span style={{ fontSize: 12, color: '#6B7686' }}>Your own name, times, place and notes</span>
               </span>
             </button>
             <button
               type="button"
               onClick={() => setAddChooserOpen(false)}
-              style={{ marginTop: 4, padding: '12px', borderRadius: 8, border: 'none', background: '#EEF2F7', color: '#0B1F3A', fontSize: 14, fontWeight: 700 }}
+              style={{ marginTop: 4, padding: '12px', borderRadius: 8, border: 'none', background: '#EEF2F7', color: '#0B1F3A', fontSize: tokens.fontSize.md, fontWeight: 700 }}
             >
               Cancel
             </button>
@@ -8809,7 +8810,7 @@ function HomePage() {
                 style={{
                   flex: 1, padding: '12px 14px', borderRadius: 8,
                   border: '1px solid #D9E0EA', background: '#FFFFFF',
-                  color: '#0B1F3A', fontSize: 14, fontWeight: 600,
+                  color: '#0B1F3A', fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold,
                   fontFamily: 'Poppins, sans-serif', cursor: 'pointer',
                 }}
               >
@@ -8825,7 +8826,7 @@ function HomePage() {
                 style={{
                   flex: 1, padding: '12px 14px', borderRadius: 8,
                   border: 'none', background: '#1877D6',
-                  color: '#FFFFFF', fontSize: 14, fontWeight: 600,
+                  color: '#FFFFFF', fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold,
                   fontFamily: 'Poppins, sans-serif', cursor: 'pointer',
                 }}
               >
@@ -8835,11 +8836,11 @@ function HomePage() {
           }
         >
           {lessonMsgsLoading ? (
-            <div style={{ padding: '18px 4px', textAlign: 'center', color: '#9CA3AF', fontSize: 13, fontFamily: 'Poppins, sans-serif' }}>
+            <div style={{ padding: '18px 4px', textAlign: 'center', color: '#9CA3AF', fontSize: tokens.fontSize.base, fontFamily: 'Poppins, sans-serif' }}>
               Loading messages…
             </div>
           ) : lessonMsgs.length === 0 ? (
-            <div style={{ padding: '18px 4px', textAlign: 'center', color: '#9CA3AF', fontSize: 13, fontFamily: 'Poppins, sans-serif' }}>
+            <div style={{ padding: '18px 4px', textAlign: 'center', color: '#9CA3AF', fontSize: tokens.fontSize.base, fontFamily: 'Poppins, sans-serif' }}>
               No messages yet with {lessonMsgsPupil.name}.
             </div>
           ) : (
@@ -8863,14 +8864,14 @@ function HomePage() {
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
                       <span style={{
-                        fontSize: 11, fontWeight: 700, letterSpacing: '0.04em',
+                        fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, letterSpacing: '0.04em',
                         textTransform: 'uppercase', fontFamily: 'Poppins, sans-serif',
                         color: fromPupil ? '#0B1F3A' : '#6B7686',
                       }}>
                         {fromPupil ? lessonMsgsPupil.name : 'You'}
                       </span>
                       <span style={{
-                        fontSize: 10, fontWeight: 600, padding: '1px 6px', borderRadius: 999,
+                        fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, padding: '1px 6px', borderRadius: 999,
                         background: isSms ? '#FEECEC' : '#E8F1FC',
                         color: isSms ? '#CC2229' : '#1877D6',
                         fontFamily: 'Poppins, sans-serif',
@@ -8880,13 +8881,13 @@ function HomePage() {
                       {unread && (
                         <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#CC2229' }} />
                       )}
-                      <span style={{ marginLeft: 'auto', fontSize: 11, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>
+                      <span style={{ marginLeft: 'auto', fontSize: tokens.fontSize.sm, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>
                         {when.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                         {' · '}
                         {when.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
-                    <div style={{ fontSize: 13, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif', lineHeight: 1.4 }}>
+                    <div style={{ fontSize: tokens.fontSize.base, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif', lineHeight: 1.4 }}>
                       {m.body || '—'}
                     </div>
                   </div>
@@ -9162,7 +9163,7 @@ function HomePage() {
               return (
                 <div key={p.id} style={{ borderTop: '0.5px solid #F3F4F6' }}>
                   <div className="flex items-center gap-3" style={{ padding: '14px 16px' }}>
-                    <div style={{ width: 40, height: 40, borderRadius: '50%', background: bg, color: '#FFFFFF', fontSize: 14, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: 40, height: 40, borderRadius: '50%', background: bg, color: '#FFFFFF', fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {initials}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -9258,14 +9259,14 @@ function HeroExpandedPanel({
     gap: 3,
     cursor: 'pointer',
     fontFamily: 'Poppins, sans-serif',
-    fontSize: 11,
-    fontWeight: 500,
+    fontSize: tokens.fontSize.sm,
+    fontWeight: tokens.fontWeight.medium,
     color: '#0B1F3A',
   };
-  const pillLabel: React.CSSProperties = { fontSize: 11, fontWeight: 500 };
+  const pillLabel: React.CSSProperties = { fontSize: tokens.fontSize.sm, fontWeight: 500 };
   const sectionLabel: React.CSSProperties = {
-    fontSize: 11,
-    fontWeight: 600,
+    fontSize: tokens.fontSize.sm,
+    fontWeight: tokens.fontWeight.semibold,
     color: '#9CA3AF',
     textTransform: 'uppercase',
     letterSpacing: 0.2,
@@ -9410,8 +9411,8 @@ function HeroExpandedPanel({
     gap: 5,
     cursor: 'pointer',
     fontFamily: 'Poppins, sans-serif',
-    fontSize: 11,
-    fontWeight: 500,
+    fontSize: tokens.fontSize.sm,
+    fontWeight: tokens.fontWeight.medium,
     color: '#0B1F3A',
   };
   const gridBtnDanger: React.CSSProperties = {
@@ -9428,7 +9429,7 @@ function HeroExpandedPanel({
     borderRadius: 8,
     padding: '9px 12px',
     fontFamily: 'Poppins, sans-serif',
-    fontSize: 13,
+    fontSize: tokens.fontSize.base,
     color: '#0B1F3A',
     outline: 'none',
   };
@@ -9439,24 +9440,24 @@ function HeroExpandedPanel({
     badText: string,
   ) => {
     if (state === 'checking') {
-      return <div style={{ marginTop: 6, fontSize: 11, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>Checking…</div>;
+      return <div style={{ marginTop: 6, fontSize: tokens.fontSize.sm, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>Checking…</div>;
     }
     if (state === 'ok') {
       return (
-        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#1F6B2E', fontFamily: 'Poppins, sans-serif' }}>
+        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: tokens.fontSize.sm, color: '#1F6B2E', fontFamily: 'Poppins, sans-serif' }}>
           <IconCircleCheck size={14} stroke={1.8} /> {okText}
         </div>
       );
     }
     if (state === 'bad') {
       return (
-        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#D68A1B', fontFamily: 'Poppins, sans-serif' }}>
+        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: tokens.fontSize.sm, color: '#D68A1B', fontFamily: 'Poppins, sans-serif' }}>
           <IconAlertTriangle size={14} stroke={1.8} /> {badText}
         </div>
       );
     }
     return (
-      <div style={{ marginTop: 6, fontSize: 11, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>Not yet verified</div>
+      <div style={{ marginTop: 6, fontSize: tokens.fontSize.sm, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>Not yet verified</div>
     );
   };
 
@@ -9576,7 +9577,7 @@ function HeroExpandedPanel({
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 8, padding: '9px 12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
               <IconMapPin stroke={1.5} size={14} color="#8E8E93" />
-              <span style={{ fontFamily: 'Poppins, sans-serif', fontSize: 13, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <span style={{ fontFamily: 'Poppins, sans-serif', fontSize: tokens.fontSize.base, color: '#0B1F3A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {pickupValue || 'No address set'}
               </span>
             </div>
@@ -9602,7 +9603,7 @@ function HeroExpandedPanel({
       <div style={{ marginTop: 14 }}>
         <div style={sectionLabel}>what3words</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ color: '#E11F26', fontWeight: 700, fontFamily: 'Poppins, sans-serif', fontSize: 15 }}>///</span>
+          <span style={{ color: '#E11F26', fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', fontSize: 15 }}>///</span>
           {[0, 1, 2].map((i) => (
             <Fragment key={i}>
               {i > 0 && <span style={{ color: '#0B1F3A', fontWeight: 700 }}>.</span>}
@@ -9653,16 +9654,16 @@ function HeroExpandedPanel({
           <div style={{ marginTop: 14 }}>
             <div style={sectionLabel}>Account</div>
             <div style={{ background: bg, borderRadius: 8, padding: '11px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
-              <span style={{ fontSize: 14, fontWeight: 600, color: fg }}>{label}</span>
+              <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: fg }}>{label}</span>
               {showActions && (
                 <div style={{ display: 'flex', gap: 6 }}>
                   <button
                     onClick={() => sendSms(`Hi ${firstName}, just a quick reminder that £${amount.toFixed(2)} is outstanding on your lesson account. Thanks!`)}
-                    style={{ background: '#FFFFFF', color: '#0B1F3A', fontSize: 11, fontWeight: 500, padding: '0 10px', height: 26, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+                    style={{ background: '#FFFFFF', color: '#0B1F3A', fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.medium, padding: '0 10px', height: 26, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
                   >Chase</button>
                   <button
                     onClick={() => navigateTo('/payments')}
-                    style={{ background: '#3B6D11', color: '#FFFFFF', fontSize: 11, fontWeight: 500, padding: '0 10px', height: 26, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
+                    style={{ background: '#3B6D11', color: '#FFFFFF', fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.medium, padding: '0 10px', height: 26, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'Poppins, sans-serif' }}
                   >Mark paid</button>
                 </div>
               )}
@@ -9677,13 +9678,13 @@ function HeroExpandedPanel({
         {prev ? (
           <div style={{ background: '#EEF2F7', borderRadius: 8, padding: '10px 12px', fontFamily: 'Poppins, sans-serif' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 12, fontWeight: 600, color: '#0B1F3A' }}>
+              <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A' }}>
                 {new Date(prev.lesson_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
               </span>
-              <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: 999, color: '#5A6270', background: '#E9EDF2', textTransform: 'capitalize' }}>{prev.status}</span>
+              <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.medium, padding: '2px 8px', borderRadius: 999, color: '#5A6270', background: '#E9EDF2', textTransform: 'capitalize' }}>{prev.status}</span>
             </div>
             {prev.notes && (
-              <div style={{ marginTop: 5, color: '#5A6270', fontSize: 11, lineHeight: 1.4 }}>
+              <div style={{ marginTop: 5, color: '#5A6270', fontSize: tokens.fontSize.sm, lineHeight: 1.4 }}>
                 {prev.notes}
               </div>
             )}
@@ -9706,7 +9707,7 @@ function HeroExpandedPanel({
           color: '#1877D6',
           fontFamily: 'Poppins, sans-serif',
           fontSize: 12,
-          fontWeight: 600,
+          fontWeight: tokens.fontWeight.semibold,
           cursor: 'pointer',
           padding: 0,
         }}
@@ -9737,7 +9738,7 @@ function QuickTile({
       style={{
         borderWidth: "0.5px",
         borderStyle: "solid",
-        borderColor: "#EEF2F7",
+        borderColor: tokens.canvas,
         borderRadius: 8,
         padding: 10,
       }}
@@ -9747,7 +9748,7 @@ function QuickTile({
       </div>
       <div
         className="text-[9px] uppercase mt-1"
-        style={{ color: "#6B7686", letterSpacing: "0.06em" }}
+        style={{ color: tokens.textSecondary, letterSpacing: "0.06em" }}
       >
         {label}
       </div>
@@ -9774,8 +9775,8 @@ function TabBtn({
         color: active ? "#0B1F3A" : "#6B7280",
         borderRadius: 8,
         padding: "8px 6px",
-        fontWeight: 500,
-        fontSize: 13,
+        fontWeight: tokens.fontWeight.medium,
+        fontSize: tokens.fontSize.base,
         fontFamily: "Poppins, sans-serif",
         lineHeight: 1.2,
         border: "none",
@@ -9844,7 +9845,7 @@ function AccessTile({
         height: 80,
         borderWidth: "0.5px",
         borderStyle: "solid",
-        borderColor: "#EEF2F7",
+        borderColor: tokens.canvas,
         borderRadius: 8,
         gap: 6,
         padding: 12,
@@ -9893,7 +9894,7 @@ function EndOfDayBanner() {
       }}
     >
       <IconMoon stroke={1.5} size={16} color="#1877D6" />
-      <div style={{ fontSize: 13, color: "#0B1F3A", fontWeight: 600 }}>
+      <div style={{ fontSize: tokens.fontSize.base, color: tokens.navy, fontWeight: 600 }}>
         Ready to wrap up?
       </div>
       <button
@@ -9902,8 +9903,8 @@ function EndOfDayBanner() {
         style={{
           marginLeft: "auto",
           fontSize: 12,
-          fontWeight: 600,
-          color: "#1877D6",
+          fontWeight: tokens.fontWeight.semibold,
+          color: tokens.blue,
           background: "transparent",
           cursor: "pointer",
           fontFamily: "Poppins, sans-serif",
@@ -9961,15 +9962,15 @@ function TodayTile({
         fontFamily: 'Poppins, sans-serif',
       }}
     >
-      <div style={{ fontSize: valueSize, fontWeight: 700, color: valueColor, lineHeight: 1.1 }}>
+      <div style={{ fontSize: valueSize, fontWeight: tokens.fontWeight.bold, color: valueColor, lineHeight: 1.1 }}>
         {value}
       </div>
       {subValue && (
-        <div style={{ fontSize: 10, color: '#6B7686', marginTop: 2, lineHeight: 1.1 }}>
+        <div style={{ fontSize: tokens.fontSize.xs, color: '#6B7686', marginTop: 2, lineHeight: 1.1 }}>
           {subValue}
         </div>
       )}
-      <div style={{ fontSize: 10, color: '#9CA3AF', marginTop: subValue ? 2 : 4, textAlign: 'center' }}>
+      <div style={{ fontSize: tokens.fontSize.xs, color: '#9CA3AF', marginTop: subValue ? 2 : 4, textAlign: 'center' }}>
         {label}
       </div>
     </div>
@@ -10038,7 +10039,7 @@ function OutstandingBreakdownModal({
         }}
       >
         <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
-          <DialogTitle style={{ fontSize: 16, fontWeight: 700, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <DialogTitle style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>Outstanding payments</span>
             <span style={{ color: "#c9302c" }}>£{total.toFixed(2)}</span>
           </DialogTitle>
@@ -10046,7 +10047,7 @@ function OutstandingBreakdownModal({
 
         <div style={{ flex: 1, overflowY: "auto", padding: "8px 12px" }}>
           {rows.length === 0 && (
-            <div style={{ padding: 24, textAlign: "center", color: "#6B7686", fontSize: 13 }}>
+            <div style={{ padding: 24, textAlign: "center", color: tokens.textSecondary, fontSize: 13 }}>
               No outstanding payments. 🎉
             </div>
           )}
@@ -10065,15 +10066,15 @@ function OutstandingBreakdownModal({
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
                   <div style={{ display: "flex", flexDirection: "column", flex: 1, minWidth: 0 }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {r.name}
                     </span>
                     <span
                       style={{
                         marginTop: 2,
                         alignSelf: "flex-start",
-                        fontSize: 10,
-                        fontWeight: 600,
+                        fontSize: tokens.fontSize.xs,
+                        fontWeight: tokens.fontWeight.semibold,
                         padding: "2px 6px",
                         borderRadius: 8,
                         backgroundColor: r.type === "NI Course" ? "#EEF2F7" : "#DBEAFE",
@@ -10083,7 +10084,7 @@ function OutstandingBreakdownModal({
                       {r.type}
                     </span>
                   </div>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: "#c9302c" }}>
+                  <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: "#c9302c" }}>
                     £{r.amount.toFixed(2)}
                   </span>
                 </div>
@@ -10099,8 +10100,8 @@ function OutstandingBreakdownModal({
                       justifyContent: "center",
                       gap: 4,
                       padding: "6px 8px",
-                      fontSize: 11,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.semibold,
                       backgroundColor: r.phone ? "#F3F8FF" : "#F3F4F6",
                       color: r.phone ? "#0B1F3A" : "#9CA3AF",
                       border: `1px solid ${r.phone ? "#A7F3D0" : "#E5E7EB"}`,
@@ -10120,8 +10121,8 @@ function OutstandingBreakdownModal({
                       justifyContent: "center",
                       gap: 4,
                       padding: "6px 8px",
-                      fontSize: 11,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.semibold,
                       backgroundColor: r.email ? "#EFF6FF" : "#F3F4F6",
                       color: r.email ? "#1D4ED8" : "#9CA3AF",
                       border: `1px solid ${r.email ? "#BFDBFE" : "#E5E7EB"}`,
@@ -10140,10 +10141,10 @@ function OutstandingBreakdownModal({
                       justifyContent: "center",
                       gap: 4,
                       padding: "4px 10px",
-                      fontSize: 11,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.semibold,
                       backgroundColor: "#F1F5F9",
-                      color: "#0B1F3A",
+                      color: tokens.navy,
                       border: "1px solid #CBD5E1",
                       borderRadius: 999,
                       cursor: "pointer",
@@ -10164,8 +10165,8 @@ function OutstandingBreakdownModal({
             style={{
               flex: 1,
               padding: "10px 12px",
-              fontSize: 13,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.bold,
               backgroundColor: rows.length === 0 ? "#E5E7EB" : "#1877D6",
               color: rows.length === 0 ? "#9CA3AF" : "#FFFFFF",
               border: "none",
@@ -10179,9 +10180,9 @@ function OutstandingBreakdownModal({
             onClick={onClose}
             style={{
               padding: "10px 16px",
-              fontSize: 13,
-              fontWeight: 600,
-              backgroundColor: "#EEF2F7",
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.semibold,
+              backgroundColor: tokens.canvas,
               color: "#374151",
               border: "1px solid #D1D5DB",
               borderRadius: 8,
@@ -10250,20 +10251,20 @@ function EarningsBreakdownModal({
         style={{ maxWidth: 480, padding: 0, fontFamily: "Poppins, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
       >
         <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
-          <DialogTitle style={{ fontSize: 16, fontWeight: 700, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <DialogTitle style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>Earnings this week</span>
-            <span style={{ color: "#0B1F3A" }}>£{total.toFixed(2)}</span>
+            <span style={{ color: tokens.navy }}>£{total.toFixed(2)}</span>
           </DialogTitle>
         </DialogHeader>
 
         <div style={{ flex: 1, overflowY: "auto", padding: "8px 12px" }}>
           {rows.length === 0 ? (
-            <div style={{ padding: 24, textAlign: "center", color: "#6B7686", fontSize: 13 }}>
+            <div style={{ padding: 24, textAlign: "center", color: tokens.textSecondary, fontSize: 13 }}>
               No payments recorded this week
               <div style={{ marginTop: 8 }}>
                 <button
                   onClick={onRecord}
-                  style={{ background: "none", border: "none", color: "#1877D6", fontWeight: 600, fontSize: 13, textDecoration: "underline", cursor: "pointer" }}
+                  style={{ background: "none", border: "none", color: tokens.blue, fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.base, textDecoration: "underline", cursor: "pointer" }}
                 >
                   Record payment →
                 </button>
@@ -10278,15 +10279,15 @@ function EarningsBreakdownModal({
                 <div key={`${r.source}-${r.id}`} style={{ borderBottom: "1px solid #f3f4f6" }}>
                   <div style={{ padding: 12, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {r.pupilName}
                       </div>
-                      <div style={{ fontSize: 11, color: "#6B7686", marginTop: 2 }}>{fmtDate(r.date)}</div>
+                      <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, marginTop: 2 }}>{fmtDate(r.date)}</div>
                     </div>
-                    <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 8, backgroundColor: "#EFF6FF", color: "#1E40AF", textTransform: "capitalize" }}>
+                    <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, padding: "2px 6px", borderRadius: 8, backgroundColor: "#EFF6FF", color: "#1E40AF", textTransform: "capitalize" }}>
                       {r.method}
                     </span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", minWidth: 60, textAlign: "right" }}>
+                    <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy, minWidth: 60, textAlign: "right" }}>
                       £{r.amount.toFixed(2)}
                     </span>
                     {editable && !isEditing && (
@@ -10313,7 +10314,7 @@ function EarningsBreakdownModal({
                   {isEditing && (
                     <div style={{ padding: "0 12px 12px", display: "flex", flexDirection: "column", gap: 8 }}>
                       <div style={{ display: "flex", gap: 8 }}>
-                        <label style={{ flex: 1, fontSize: 11, color: "#6B7686" }}>
+                        <label style={{ flex: 1, fontSize: tokens.fontSize.sm, color: tokens.textSecondary }}>
                           Amount (£)
                           <input
                             type="number"
@@ -10324,7 +10325,7 @@ function EarningsBreakdownModal({
                             style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 8, fontSize: 13 }}
                           />
                         </label>
-                        <label style={{ flex: 1, fontSize: 11, color: "#6B7686" }}>
+                        <label style={{ flex: 1, fontSize: tokens.fontSize.sm, color: tokens.textSecondary }}>
                           Date
                           <input
                             type="date"
@@ -10334,12 +10335,12 @@ function EarningsBreakdownModal({
                           />
                         </label>
                       </div>
-                      <label style={{ fontSize: 11, color: "#6B7686" }}>
+                      <label style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary }}>
                         Method
                         <select
                           value={editMethod}
                           onChange={(e) => setEditMethod(e.target.value)}
-                          style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 8, fontSize: 13, backgroundColor: "#fff" }}
+                          style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 8, fontSize: tokens.fontSize.base, backgroundColor: "#fff" }}
                         >
                           <option value="cash">Cash</option>
                           <option value="bank_transfer">Bank transfer</option>
@@ -10351,7 +10352,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={cancelEdit}
                           disabled={isBusy}
-                          style={{ padding: "6px 10px", fontSize: 12, background: "#EEF2F7", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: tokens.canvas, border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
                         >
                           Cancel
                         </button>
@@ -10372,7 +10373,7 @@ function EarningsBreakdownModal({
                               setBusyId(null);
                             }
                           }}
-                          style={{ padding: "6px 10px", fontSize: 12, background: "#1877D6", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: tokens.blue, color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
                         >
                           {isBusy ? "Saving..." : "Save"}
                         </button>
@@ -10389,7 +10390,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={() => setConfirmDeleteId(null)}
                           disabled={isBusy}
-                          style={{ padding: "6px 10px", fontSize: 12, background: "#EEF2F7", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: tokens.canvas, border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
                         >
                           Cancel
                         </button>
@@ -10419,20 +10420,20 @@ function EarningsBreakdownModal({
         </div>
 
         <div style={{ padding: 12, borderTop: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: 8 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13, fontWeight: 700, color: "#111827" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: "#111827" }}>
             <span>Total</span>
-            <span style={{ color: "#0B1F3A" }}>£{total.toFixed(2)}</span>
+            <span style={{ color: tokens.navy }}>£{total.toFixed(2)}</span>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             <button
               onClick={onViewMTD}
-              style={{ flex: 1, padding: "10px 12px", fontSize: 13, fontWeight: 700, backgroundColor: "#1877D6", color: "#FFFFFF", border: "none", borderRadius: 8, cursor: "pointer" }}
+              style={{ flex: 1, padding: "10px 12px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, backgroundColor: tokens.blue, color: tokens.white, border: "none", borderRadius: 8, cursor: "pointer" }}
             >
               View MTD →
             </button>
             <button
               onClick={onClose}
-              style={{ padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#EEF2F7", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+              style={{ padding: "10px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, backgroundColor: tokens.canvas, color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
             >
               Close
             </button>
@@ -10490,12 +10491,12 @@ function LessonsBreakdownModal({
         style={{ maxWidth: 480, padding: 0, fontFamily: "Poppins, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
       >
         <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
-          <DialogTitle style={{ fontSize: 16, fontWeight: 700 }}>Lessons this week</DialogTitle>
+          <DialogTitle style={{ fontSize: tokens.fontSize.lg, fontWeight: 700 }}>Lessons this week</DialogTitle>
         </DialogHeader>
 
         <div style={{ flex: 1, overflowY: "auto", padding: "8px 12px" }}>
           {rows.length === 0 && (
-            <div style={{ padding: 24, textAlign: "center", color: "#6B7686", fontSize: 13 }}>
+            <div style={{ padding: 24, textAlign: "center", color: tokens.textSecondary, fontSize: 13 }}>
               No lessons this week.
             </div>
           )}
@@ -10528,16 +10529,16 @@ function LessonsBreakdownModal({
                     cursor: "pointer",
                   }}
                 >
-                  <div style={{ minWidth: 78, fontSize: 12, fontWeight: 700, color: "#0B1F3A" }}>
+                  <div style={{ minWidth: 78, fontSize: 12, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
                     {fmtDayTime(r.lesson_date, r.lesson_time)}
                   </div>
-                  <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 600, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <div style={{ flex: 1, minWidth: 0, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {r.pupilName}
                   </div>
-                  <span style={{ fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 999, backgroundColor: "#F1F5F9", color: "#0B1F3A" }}>
+                  <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, padding: "4px 10px", borderRadius: 999, backgroundColor: "#F1F5F9", color: tokens.navy }}>
                     {r.duration_minutes ?? 60}m
                   </span>
-                  <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 8, backgroundColor: colors.bg, color: colors.fg, textTransform: "capitalize" }}>
+                  <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, padding: "2px 6px", borderRadius: 8, backgroundColor: colors.bg, color: colors.fg, textTransform: "capitalize" }}>
                     {r.status}
                   </span>
                 </button>
@@ -10570,12 +10571,12 @@ function LessonsBreakdownModal({
           <div style={{ fontSize: 12, color: "#374151", fontWeight: 600 }}>
             Completed: {completed} · Upcoming: {upcoming} · Cancelled: {cancelled}
           </div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A" }}>
+          <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
             {totalHours.toFixed(1)}h taught this week
           </div>
           <button
             onClick={onClose}
-            style={{ marginTop: 4, padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#EEF2F7", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+            style={{ marginTop: 4, padding: "10px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, backgroundColor: tokens.canvas, color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
           >
             Close
           </button>
@@ -10586,15 +10587,15 @@ function LessonsBreakdownModal({
     <Dialog open={confirmId !== null} onOpenChange={(v) => !v && !deleting && closeConfirm()}>
       <DialogContent style={{ maxWidth: 400, padding: 0, fontFamily: "Poppins, sans-serif" }}>
         <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
-          <DialogTitle style={{ fontSize: 16, fontWeight: 700 }}>Delete this lesson?</DialogTitle>
+          <DialogTitle style={{ fontSize: tokens.fontSize.lg, fontWeight: 700 }}>Delete this lesson?</DialogTitle>
         </DialogHeader>
         <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
-          <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>
+          <label style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#374151" }}>
             Reason
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: 13, border: "1px solid #D1D5DB", borderRadius: 8, background: "#fff" }}
+              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: tokens.fontSize.base, border: "1px solid #D1D5DB", borderRadius: 8, background: "#fff" }}
             >
               <option>Created in error</option>
               <option>Duplicate entry</option>
@@ -10602,13 +10603,13 @@ function LessonsBreakdownModal({
               <option>Other</option>
             </select>
           </label>
-          <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>
+          <label style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#374151" }}>
             Additional notes (optional)
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: 13, border: "1px solid #D1D5DB", borderRadius: 8, resize: "vertical", fontFamily: "inherit" }}
+              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: tokens.fontSize.base, border: "1px solid #D1D5DB", borderRadius: 8, resize: "vertical", fontFamily: "inherit" }}
             />
           </label>
         </div>
@@ -10616,7 +10617,7 @@ function LessonsBreakdownModal({
           <button
             onClick={closeConfirm}
             disabled={deleting}
-            style={{ padding: "8px 14px", fontSize: 13, fontWeight: 600, background: "transparent", color: "#374151", border: "none", borderRadius: 8, cursor: "pointer" }}
+            style={{ padding: "8px 14px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, background: "transparent", color: "#374151", border: "none", borderRadius: 8, cursor: "pointer" }}
           >
             Cancel
           </button>
@@ -10632,7 +10633,7 @@ function LessonsBreakdownModal({
               }
             }}
             disabled={deleting}
-            style={{ padding: "8px 14px", fontSize: 13, fontWeight: 700, backgroundColor: "#B91C1C", color: "#fff", border: "none", borderRadius: 8, cursor: deleting ? "not-allowed" : "pointer", opacity: deleting ? 0.7 : 1 }}
+            style={{ padding: "8px 14px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, backgroundColor: "#B91C1C", color: "#fff", border: "none", borderRadius: 8, cursor: deleting ? "not-allowed" : "pointer", opacity: deleting ? 0.7 : 1 }}
           >
             {deleting ? "Deleting…" : "Delete lesson"}
           </button>
@@ -10690,15 +10691,15 @@ function TestsBreakdownModal({
         style={{ maxWidth: 480, padding: 0, fontFamily: "Poppins, sans-serif", maxHeight: "85vh", display: "flex", flexDirection: "column" }}
       >
         <DialogHeader style={{ padding: "16px 20px", borderBottom: "1px solid #e5e7eb" }}>
-          <DialogTitle style={{ fontSize: 16, fontWeight: 700 }}>Tests</DialogTitle>
+          <DialogTitle style={{ fontSize: tokens.fontSize.lg, fontWeight: 700 }}>Tests</DialogTitle>
         </DialogHeader>
 
         <div style={{ flex: 1, overflowY: "auto" }}>
-          <div style={{ padding: "10px 16px", fontSize: 11, fontWeight: 700, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.5 }}>
+          <div style={{ padding: "10px 16px", fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, color: tokens.textSecondary, textTransform: "uppercase", letterSpacing: 0.5 }}>
             Upcoming tests
           </div>
           {tests.length === 0 && (
-            <div style={{ padding: "12px 20px 18px", color: "#6B7686", fontSize: 13 }}>
+            <div style={{ padding: "12px 20px 18px", color: tokens.textSecondary, fontSize: 13 }}>
               No upcoming tests scheduled.
             </div>
           )}
@@ -10724,7 +10725,7 @@ function TestsBreakdownModal({
                   }}
                 >
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {t.name}
                     </div>
                     <div style={{ fontSize: 12, color: "#4B5563", marginTop: 2 }}>
@@ -10736,8 +10737,8 @@ function TestsBreakdownModal({
                   {resultState === "passed" ? (
                     <span
                       style={{
-                        fontSize: 10,
-                        fontWeight: 700,
+                        fontSize: tokens.fontSize.xs,
+                        fontWeight: tokens.fontWeight.bold,
                         padding: "3px 8px",
                         borderRadius: 999,
                         backgroundColor: "#DDEFE1",
@@ -10751,8 +10752,8 @@ function TestsBreakdownModal({
                     <span
                       onClick={(e) => { e.stopPropagation(); onOpenPupil(t.id); }}
                       style={{
-                        fontSize: 11,
-                        fontWeight: 700,
+                        fontSize: tokens.fontSize.sm,
+                        fontWeight: tokens.fontWeight.bold,
                         padding: "4px 10px",
                         borderRadius: 999,
                         backgroundColor: "#FEF3C7",
@@ -10766,8 +10767,8 @@ function TestsBreakdownModal({
                   ) : (
                     <span
                       style={{
-                        fontSize: 10,
-                        fontWeight: 700,
+                        fontSize: tokens.fontSize.xs,
+                        fontWeight: tokens.fontWeight.bold,
                         padding: "3px 8px",
                         borderRadius: 999,
                         backgroundColor: colors.bg,
@@ -10785,12 +10786,12 @@ function TestsBreakdownModal({
 
           <div style={{ padding: "16px 16px 8px", display: "flex", alignItems: "center", gap: 6 }}>
             <IconArrowsLeftRight size={14} color="#1877D6" />
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#1877D6", textTransform: "uppercase", letterSpacing: 0.5 }}>
+            <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, color: tokens.blue, textTransform: "uppercase", letterSpacing: 0.5 }}>
               EverySwap requests
             </span>
           </div>
           {swapRequests.length === 0 ? (
-            <div style={{ padding: "8px 20px 18px", color: "#6B7686", fontSize: 12, textAlign: "center" }}>
+            <div style={{ padding: "8px 20px 18px", color: tokens.textSecondary, fontSize: 12, textAlign: "center" }}>
               No active swap requests
             </div>
           ) : (
@@ -10811,10 +10812,10 @@ function TestsBreakdownModal({
                     }}
                   >
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {s.name}
                       </div>
-                      <div style={{ fontSize: 12, color: "#6B7686", marginTop: 2 }}>
+                      <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 2 }}>
                         {s.current_test_date ? fmtShort(s.current_test_date) : "No date"}
                         {s.current_test_time ? ` · ${String(s.current_test_time).slice(0, 5)}` : ""}
                         {s.test_centre ? ` · ${s.test_centre}` : ""}
@@ -10823,8 +10824,8 @@ function TestsBreakdownModal({
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
                       <span
                         style={{
-                          fontSize: 10,
-                          fontWeight: 700,
+                          fontSize: tokens.fontSize.xs,
+                          fontWeight: tokens.fontWeight.bold,
                           padding: "3px 8px",
                           borderRadius: 999,
                           backgroundColor: matched ? "#F3F8FF" : "#EEF2F7",
@@ -10834,7 +10835,7 @@ function TestsBreakdownModal({
                       >
                         {matched ? "Matched ✓" : "Seeking swap"}
                       </span>
-                      <span style={{ fontSize: 11, color: "#9CA3AF" }}>
+                      <span style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted }}>
                         {(() => {
                           const d = daysSince(s.created_at);
                           return d === 0 ? "Today" : `${d} day${d === 1 ? "" : "s"} ago`;
@@ -10852,7 +10853,7 @@ function TestsBreakdownModal({
         <div style={{ padding: 12, borderTop: "1px solid #e5e7eb" }}>
           <button
             onClick={onClose}
-            style={{ width: "100%", padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#EEF2F7", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+            style={{ width: "100%", padding: "10px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, backgroundColor: tokens.canvas, color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
           >
             Close
           </button>
@@ -10953,9 +10954,9 @@ function DiscoverSection() {
 
 
   const headerTitle = {
-    fontSize: 18,
-    fontWeight: 700,
-    color: "#0B1F3A",
+    fontSize: tokens.fontSize.xl,
+    fontWeight: tokens.fontWeight.bold,
+    color: tokens.navy,
     fontFamily: "Poppins, sans-serif",
   } as const;
 
@@ -10963,9 +10964,9 @@ function DiscoverSection() {
     display: "inline-flex",
     alignItems: "center",
     gap: 4,
-    fontSize: 13,
-    fontWeight: 600,
-    color: "#1877D6",
+    fontSize: tokens.fontSize.base,
+    fontWeight: tokens.fontWeight.semibold,
+    color: tokens.blue,
     background: "none",
     border: "none",
     padding: 0,
@@ -10974,7 +10975,7 @@ function DiscoverSection() {
   } as const;
 
   const cardShell: React.CSSProperties = {
-    background: "#FFFFFF",
+    background: tokens.white,
     borderRadius: 8,
     boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
     overflow: "hidden",
@@ -11054,7 +11055,7 @@ function DiscoverSection() {
                     }}
                   >
                     {isToday && (
-                      <span style={{ position: 'absolute', top: 4, left: 4, background: '#CC2229', color: '#FFFFFF', fontSize: 7, fontWeight: 700, padding: '2px 5px', borderRadius: 8, letterSpacing: 0.4 }}>
+                      <span style={{ position: 'absolute', top: 4, left: 4, background: '#CC2229', color: '#FFFFFF', fontSize: 7, fontWeight: tokens.fontWeight.bold, padding: '2px 5px', borderRadius: 8, letterSpacing: 0.4 }}>
                         LIVE
                       </span>
                     )}
@@ -11063,11 +11064,11 @@ function DiscoverSection() {
                     <div style={{ fontSize: 8, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.3 }}>
                       {formatDiscoverDay(s.session_date)} {formatDiscoverMonth(s.session_date)} · {formatDiscoverTime(s.session_time)}
                     </div>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.2, ...truncate, marginTop: 2 }}>{s.title}</div>
-                    <div style={{ fontSize: 10, fontWeight: 600, color: '#3B6D11', marginTop: 3 }}>Free</div>
+                    <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', lineHeight: 1.2, ...truncate, marginTop: 2 }}>{s.title}</div>
+                    <div style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, color: '#3B6D11', marginTop: 3 }}>Free</div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px', flexShrink: 0 }}>
-                    <span style={{ background: '#1877D6', color: '#FFFFFF', fontSize: 11, fontWeight: 600, padding: '6px 10px', borderRadius: 8}}>Join</span>
+                    <span style={{ background: '#1877D6', color: '#FFFFFF', fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, padding: '6px 10px', borderRadius: 8}}>Join</span>
                   </div>
                 </div>
               );

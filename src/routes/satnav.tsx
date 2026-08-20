@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconMessage, IconNavigation, IconPhone, IconX } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
@@ -93,7 +94,7 @@ function SatNavPage() {
       {/* TOP BAR */}
       <div
         className="shrink-0 h-[52px] px-4 flex items-center justify-between relative z-50"
-        style={{ backgroundColor: "#0B1F3A" }}
+        style={{ backgroundColor: tokens.navy }}
       >
         <div className="w-10" />
         <span className="text-white text-[15px] font-semibold">Sat Nav</span>
@@ -185,14 +186,14 @@ function SatNavPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-1 flex items-center justify-center gap-1 text-white text-[13px] font-medium"
-                style={{ height: 40, borderRadius: 8, backgroundColor: "#1877D6" }}
+                style={{ height: 40, borderRadius: 8, backgroundColor: tokens.blue }}
               >
                 <IconNavigation size={16} /> Navigate
               </a>
               <a
                 href={pupilPhone ? `tel:${pupilPhone}` : "#"}
                 className="flex-1 flex items-center justify-center gap-1 text-white text-[13px] font-medium"
-                style={{ height: 40, borderRadius: 8, backgroundColor: "#1877D6" }}
+                style={{ height: 40, borderRadius: 8, backgroundColor: tokens.blue }}
               >
                 <IconPhone size={16} /> Call
               </a>
@@ -203,7 +204,7 @@ function SatNavPage() {
                   height: 40,
                   borderRadius: 8,
                   backgroundColor: "#F3F4F6",
-                  color: "#0B1F3A",
+                  color: tokens.navy,
                 }}
               >
                 <IconMessage size={16} /> Text

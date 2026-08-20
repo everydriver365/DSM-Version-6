@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconChevronLeft, IconDeviceFloppy } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -135,7 +136,7 @@ function AdminTermsPage() {
   if (gate === "denied") {
     return (
       <div style={{ background: "#fff", minHeight: "100vh", padding: 24, ...POPPINS }}>
-        <div style={{ fontSize: 18, fontWeight: 600, color: BLUE }}>Access denied</div>
+        <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: BLUE }}>Access denied</div>
       </div>
     );
   }
@@ -177,7 +178,7 @@ function AdminTermsPage() {
         >
           <IconChevronLeft size={18} />
         </button>
-        <span style={{ fontSize: 16, fontWeight: 600, flex: 1 }}>Platform terms</span>
+        <span style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, flex: 1 }}>Platform terms</span>
       </div>
 
       <div style={{ padding: 16 }}>
@@ -187,7 +188,7 @@ function AdminTermsPage() {
               fontSize: 12,
               color: GREY,
               marginBottom: 12,
-              fontWeight: 500,
+              fontWeight: tokens.fontWeight.medium,
             }}
           >
             Last updated {lastUpdated}
@@ -203,8 +204,8 @@ function AdminTermsPage() {
               htmlFor="platform-terms-content"
               style={{
                 display: "block",
-                fontSize: 14,
-                fontWeight: 600,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.semibold,
                 color: NAVY,
                 marginBottom: 8,
               }}
@@ -222,7 +223,7 @@ function AdminTermsPage() {
                 borderRadius: 8,
                 border: `1px solid ${BORDER}`,
                 padding: 14,
-                fontSize: 14,
+                fontSize: tokens.fontSize.md,
                 lineHeight: 1.5,
                 color: NAVY,
                 background: "#fff",
@@ -243,7 +244,7 @@ function AdminTermsPage() {
                 background: BLUE,
                 color: "#fff",
                 border: "none",
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 opacity: saving ? 0.7 : 1,
                 display: "flex",

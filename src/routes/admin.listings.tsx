@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconChevronLeft, IconLoader2, IconPlus, IconStar, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -105,12 +106,12 @@ const emptyDraft: NewListingDraft = {
 
 function categoryStyle(name: string | null | undefined): { bg: string; color: string } {
   const n = (name ?? "").toLowerCase();
-  if (n.includes("business") || n.includes("service")) return { bg: "#E7F1FC", color: "#1877D6" };
+  if (n.includes("business") || n.includes("service")) return { bg: "#E7F1FC", color: tokens.blue };
   if (n.includes("equipment")) return { bg: "#F3EEFB", color: "#7B4FC9" };
   if (n.includes("car") || n.includes("vehicle")) return { bg: "#E6F6F4", color: "#0B9B8A" };
   if (n.includes("insurance")) return { bg: "#FCE7F3", color: "#C724B1" };
   if (n.includes("franchise") || n.includes("training")) return { bg: "#FFF4E5", color: "#D68A1B" };
-  return { bg: "#F2F2F7", color: "#0B1F3A" };
+  return { bg: "#F2F2F7", color: tokens.navy };
 }
 
 function initials(name: string | null | undefined): string {
@@ -126,7 +127,7 @@ function initials(name: string | null | undefined): string {
 
 function StatusPill({ type, label }: { type: "instructor" | "live" | "pending" | "featured" | "supplier"; label: string }) {
   const styles: Record<string, React.CSSProperties> = {
-    instructor: { background: "#0B1F3A", color: "#fff" },
+    instructor: { background: tokens.navy, color: "#fff" },
     supplier: { background: "#8A8A8E", color: "#fff" },
     live: { background: "#1A9B5C", color: "#fff" },
     pending: { background: "#D68A1B", color: "#fff" },
@@ -137,7 +138,7 @@ function StatusPill({ type, label }: { type: "instructor" | "live" | "pending" |
       style={{
         ...styles[type],
         fontSize: 11.5,
-        fontWeight: 800,
+        fontWeight: tokens.fontWeight.extrabold,
         padding: "6px 12px",
         borderRadius: 8,
         display: "inline-flex",
@@ -488,7 +489,7 @@ function AdminListingsPage() {
           left: 0,
           right: 0,
           zIndex: 40,
-          background: "#0B1F3A",
+          background: tokens.navy,
           color: "#fff",
           borderRadius: "0 0 8px 8px",
           padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
@@ -516,7 +517,7 @@ function AdminListingsPage() {
         >
           <IconChevronLeft size={18} stroke={2} />
         </button>
-        <span style={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.5px" }}>Marketplace listings</span>
+        <span style={{ fontSize: 26, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.5px" }}>Marketplace listings</span>
         <button
           type="button"
           onClick={() => setSheetOpen(true)}
@@ -525,13 +526,13 @@ function AdminListingsPage() {
             display: "inline-flex",
             alignItems: "center",
             gap: 5,
-            background: "#1877D6",
+            background: tokens.blue,
             color: "#fff",
             border: "none",
             borderRadius: 999,
             padding: "7px 13px",
-            fontSize: 13,
-            fontWeight: 600,
+            fontSize: tokens.fontSize.base,
+            fontWeight: tokens.fontWeight.semibold,
             fontFamily: "Poppins, sans-serif",
             cursor: "pointer",
           }}
@@ -560,7 +561,7 @@ function AdminListingsPage() {
                 <div style={{ color: s.color, fontSize: 34, fontWeight: 900, letterSpacing: "-1.2px", lineHeight: 1 }}>
                   {s.value}
                 </div>
-                <div style={{ color: "#8A8A8E", fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", marginTop: 6 }}>
+                <div style={{ color: "#8A8A8E", fontSize: 10.5, fontWeight: tokens.fontWeight.bold, textTransform: "uppercase", marginTop: 6 }}>
                   {s.label}
                 </div>
               </div>
@@ -603,7 +604,7 @@ function AdminListingsPage() {
                   color: active ? "#fff" : "#0B1F3A",
                   boxShadow: active ? "0 3px 0 #0F52A8" : "0 3px 0 #E4E4E8",
                   fontSize: 13.5,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   fontFamily: "Poppins, sans-serif",
                   cursor: "pointer",
                 }}
@@ -651,8 +652,8 @@ function AdminListingsPage() {
                       <span
                         style={{
                           ...categoryStyle(l.marketplace_categories.name),
-                          fontSize: 10,
-                          fontWeight: 800,
+                          fontSize: tokens.fontSize.xs,
+                          fontWeight: tokens.fontWeight.extrabold,
                           textTransform: "uppercase",
                           letterSpacing: "0.4px",
                           padding: "5px 11px",
@@ -665,7 +666,7 @@ function AdminListingsPage() {
                       <span />
                     )}
                     {l.price_display || l.price_amount != null ? (
-                      <div style={{ color: "#000", fontSize: 22, fontWeight: 900, lineHeight: 1 }}>
+                      <div style={{ color: "#000", fontSize: tokens.fontSize.xxl, fontWeight: 900, lineHeight: 1 }}>
                         {l.price_display}
                       </div>
                     ) : (
@@ -674,7 +675,7 @@ function AdminListingsPage() {
                           background: "#FDEDEC",
                           color: "#FF3B30",
                           fontSize: 12,
-                          fontWeight: 800,
+                          fontWeight: tokens.fontWeight.extrabold,
                           padding: "6px 10px",
                           borderRadius: 8,
                         }}
@@ -684,7 +685,7 @@ function AdminListingsPage() {
                     )}
                   </div>
 
-                  <div style={{ fontSize: 19, fontWeight: 800, color: "#000", letterSpacing: "-0.3px", marginTop: 12 }}>
+                  <div style={{ fontSize: 19, fontWeight: tokens.fontWeight.extrabold, color: "#000", letterSpacing: "-0.3px", marginTop: 12 }}>
                     {l.title}
                   </div>
 
@@ -694,19 +695,19 @@ function AdminListingsPage() {
                         width: 26,
                         height: 26,
                         borderRadius: "50%",
-                        background: "#0B1F3A",
+                        background: tokens.navy,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontSize: 10,
-                        fontWeight: 800,
+                        fontSize: tokens.fontSize.xs,
+                        fontWeight: tokens.fontWeight.extrabold,
                         color: "#fff",
                         flexShrink: 0,
                       }}
                     >
                       {initials(l.instructors?.name)}
                     </div>
-                    <span style={{ fontSize: 13.5, fontWeight: 700, color: "#0B1F3A" }}>
+                    <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
                       {l.instructors?.name ?? "—"}
                     </span>
                   </div>
@@ -729,7 +730,7 @@ function AdminListingsPage() {
                     style={{
                       color: "#B0B0B5",
                       fontSize: 11.5,
-                      fontWeight: 600,
+                      fontWeight: tokens.fontWeight.semibold,
                       marginTop: 14,
                       paddingTop: 12,
                       borderTop: "1.5px dashed #EEEEF0",
@@ -966,7 +967,7 @@ function SupplierListingSheet({
             gap: 8,
           }}
         >
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
+          <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
             New supplier listing
           </div>
           <button
@@ -984,7 +985,7 @@ function SupplierListingSheet({
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              color: "#0B1F3A",
+              color: tokens.navy,
             }}
           >
             <IconX size={16} />
@@ -1037,8 +1038,8 @@ function SupplierListingSheet({
                       border: "0.5px solid #E2E6ED",
                       background: draft.priceType === t ? "#0B1F3A" : "#fff",
                       color: draft.priceType === t ? "#fff" : "#0B1F3A",
-                      fontSize: 13,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.semibold,
                       cursor: "pointer",
                       textTransform: "uppercase",
                     }}
@@ -1065,8 +1066,8 @@ function SupplierListingSheet({
                       border: "0.5px solid #E2E6ED",
                       background: draft.contactType === t ? "#0B1F3A" : "#fff",
                       color: draft.contactType === t ? "#fff" : "#0B1F3A",
-                      fontSize: 13,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.semibold,
                       cursor: "pointer",
                       textTransform: "capitalize",
                     }}
@@ -1094,7 +1095,7 @@ function SupplierListingSheet({
 
           <Section title="Images">
             <div>
-              <label style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A" }}>Images</label>
+              <label style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>Images</label>
 
               {/* Existing images */}
               {draft.images.length > 0 && (
@@ -1145,7 +1146,7 @@ function SupplierListingSheet({
                   ) : (
                     <>
                       <IconPlus size={20} color="#1877D6" />
-                      <span style={{ fontSize: 11, color: "#6B7280", fontWeight: 500 }}>Add photo</span>
+                      <span style={{ fontSize: tokens.fontSize.sm, color: "#6B7280", fontWeight: 500 }}>Add photo</span>
                     </>
                   )}
                 </button>
@@ -1204,7 +1205,7 @@ function SupplierListingSheet({
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.6 }}>
+      <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.6 }}>
         {title}
       </div>
       {children}
@@ -1244,7 +1245,7 @@ function Toggle({ label, value, onChange }: { label: string; value: boolean; onC
           }}
         />
       </button>
-      <span style={{ fontSize: 13, color: "#0B1F3A" }}>{label}</span>
+      <span style={{ fontSize: tokens.fontSize.base, color: tokens.navy }}>{label}</span>
     </label>
   );
 }
@@ -1260,8 +1261,8 @@ function StatCard({ label, value }: { label: string; value: number; color?: stri
         fontFamily: "Poppins, sans-serif",
       }}
     >
-      <div style={{ fontSize: 22, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.1 }}>{value}</div>
-      <div style={{ fontSize: 11, color: "#6B7280", marginTop: 4 }}>{label}</div>
+      <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, lineHeight: 1.1 }}>{value}</div>
+      <div style={{ fontSize: tokens.fontSize.sm, color: "#6B7280", marginTop: 4 }}>{label}</div>
     </div>
   );
 }
@@ -1269,7 +1270,7 @@ function StatCard({ label, value }: { label: string; value: number; color?: stri
 
 function Badge({ children, color, bg }: { children: React.ReactNode; color: string; bg: string }) {
   return (
-    <span style={{ background: bg, color, fontSize: 11, fontWeight: 600, padding: "3px 8px", borderRadius: 999 }}>
+    <span style={{ background: bg, color, fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, padding: "3px 8px", borderRadius: 999 }}>
       {children}
     </span>
   );
@@ -1278,8 +1279,8 @@ function Badge({ children, color, bg }: { children: React.ReactNode; color: stri
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <div style={{ marginTop: 8 }}>
-      <div style={{ fontSize: 11, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: 0.4 }}>{label}</div>
-      <div style={{ fontSize: 13, color: "#0B1F3A", whiteSpace: "pre-wrap" }}>{value}</div>
+      <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, textTransform: "uppercase", letterSpacing: 0.4 }}>{label}</div>
+      <div style={{ fontSize: tokens.fontSize.base, color: tokens.navy, whiteSpace: "pre-wrap" }}>{value}</div>
     </div>
   );
 }
@@ -1287,7 +1288,7 @@ function Detail({ label, value }: { label: string; value: string }) {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <span style={{ fontSize: 11, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>{label}</span>
+      <span style={{ fontSize: tokens.fontSize.sm, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.4 }}>{label}</span>
       {children}
     </label>
   );
@@ -1297,9 +1298,9 @@ const inputStyle: React.CSSProperties = {
   border: "0.5px solid #E2E6ED",
   borderRadius: 8,
   padding: "8px 10px",
-  fontSize: 13,
+  fontSize: tokens.fontSize.base,
   fontFamily: "Poppins, sans-serif",
-  color: "#0B1F3A",
+  color: tokens.navy,
   background: "#fff",
   width: "100%",
 
@@ -1313,19 +1314,19 @@ function primaryBtn(bg: string): React.CSSProperties {
     border: "none",
     borderRadius: 8,
     padding: "8px 12px",
-    fontSize: 13,
-    fontWeight: 600,
+    fontSize: tokens.fontSize.base,
+    fontWeight: tokens.fontWeight.semibold,
     cursor: "pointer",
   };
 }
 
 const ghostBtn: React.CSSProperties = {
   background: "#fff",
-  color: "#0B1F3A",
+  color: tokens.navy,
   border: "1px solid #0B1F3A",
   borderRadius: 8,
   padding: "8px 12px",
-  fontSize: 13,
-  fontWeight: 600,
+  fontSize: tokens.fontSize.base,
+  fontWeight: tokens.fontWeight.semibold,
   cursor: "pointer",
 };

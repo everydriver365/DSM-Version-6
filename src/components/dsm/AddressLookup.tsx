@@ -1,4 +1,5 @@
 import {
+import { tokens } from "@/lib/tokens";
   useCallback,
   useEffect,
   useRef,
@@ -428,9 +429,9 @@ export function AddressLookup({
               marginTop: 6,
               border: `0.5px solid ${inputBorderColor}`,
               borderRadius: 8,
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               background: "#fff",
-              color: "#0B1F3A",
+              color: tokens.navy,
               ...POPPINS,
             }}
           />
@@ -467,9 +468,9 @@ export function AddressLookup({
               borderRadius: 8,
               border: "0.5px solid #E2E6ED",
               background: "#fff",
-              color: "#1877D6",
+              color: tokens.blue,
               fontSize: 12,
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
               cursor: "pointer",
               ...POPPINS,
             }}
@@ -504,7 +505,7 @@ export function AddressLookup({
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                fontSize: 13,
+                fontSize: tokens.fontSize.base,
                 color: "#6B7280",
                 ...POPPINS,
               }}
@@ -521,7 +522,7 @@ export function AddressLookup({
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                fontSize: 13,
+                fontSize: tokens.fontSize.base,
                 color: "#6B7280",
                 ...POPPINS,
               }}
@@ -547,8 +548,8 @@ export function AddressLookup({
                 border: "none",
                 borderBottom: "0.5px solid #F1F5F9",
                 cursor: "pointer",
-                fontSize: 13,
-                color: "#0B1F3A",
+                fontSize: tokens.fontSize.base,
+                color: tokens.navy,
                 ...POPPINS,
               }}
               onMouseEnter={(e) =>
@@ -566,8 +567,8 @@ export function AddressLookup({
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
-                    fontSize: 13,
-                    color: "#0B1F3A",
+                    fontSize: tokens.fontSize.base,
+                    color: tokens.navy,
                     ...POPPINS,
                     lineHeight: 1.35,
                   }}
@@ -578,7 +579,7 @@ export function AddressLookup({
                 {prediction.structured_formatting?.secondary_text && (
                   <div
                     style={{
-                      fontSize: 11,
+                      fontSize: tokens.fontSize.sm,
                       color: "#6B7280",
                       marginTop: 2,
                       ...POPPINS,
@@ -597,7 +598,7 @@ export function AddressLookup({
         <div
           style={{
             fontSize: 12,
-            color: "#1877D6",
+            color: tokens.blue,
             marginTop: 6,
             ...POPPINS,
           }}
@@ -627,8 +628,8 @@ export function AddressLookup({
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: 14,
-                color: "#0B1F3A",
+                fontSize: tokens.fontSize.md,
+                color: tokens.navy,
                 ...POPPINS,
                 lineHeight: 1.35,
               }}
@@ -650,7 +651,7 @@ export function AddressLookup({
             )}
             <div style={{ marginTop: 8 }}>
               <label
-                style={{ fontSize: 11, color: "#6B7280", ...POPPINS }}
+                style={{ fontSize: tokens.fontSize.sm, color: "#6B7280", ...POPPINS }}
               >
                 House / flat number or name (optional)
               </label>
@@ -674,9 +675,9 @@ export function AddressLookup({
                   marginTop: 4,
                   border: "0.5px solid #EEF2F7",
                   borderRadius: 8,
-                  fontSize: 16,
+                  fontSize: tokens.fontSize.lg,
                   background: "#fff",
-                  color: "#0B1F3A",
+                  color: tokens.navy,
                   ...POPPINS,
                 }}
               />
@@ -688,7 +689,7 @@ export function AddressLookup({
                 marginTop: 6,
                 background: "none",
                 border: "none",
-                color: "#1877D6",
+                color: tokens.blue,
                 cursor: "pointer",
                 fontSize: 12,
                 padding: 0,

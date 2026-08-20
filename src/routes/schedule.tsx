@@ -1,4 +1,5 @@
 import { pupilColour } from "@/components/PupilAvatar";
+import { tokens } from "@/lib/tokens";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -397,9 +398,9 @@ function TestLessonCard({
         >
           <div
             style={{
-              fontSize: 16,
-              color: "#FFFFFF",
-              fontWeight: 700,
+              fontSize: tokens.fontSize.lg,
+              color: tokens.white,
+              fontWeight: tokens.fontWeight.bold,
               fontFamily: "Poppins, sans-serif",
               fontVariantNumeric: "tabular-nums",
               lineHeight: 1.15,
@@ -409,9 +410,9 @@ function TestLessonCard({
           </div>
           <div
             style={{
-              fontSize: 11,
+              fontSize: tokens.fontSize.sm,
               color: "rgba(255,255,255,0.75)",
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
               marginTop: 3,
               fontFamily: "Poppins, sans-serif",
               fontVariantNumeric: "tabular-nums",
@@ -439,7 +440,7 @@ function TestLessonCard({
                 background: "rgba(255,255,255,0.2)",
                 color: "#fff",
                 fontSize: 9,
-                fontWeight: 800,
+                fontWeight: tokens.fontWeight.extrabold,
                 borderRadius: 8,
                 padding: "2px 8px",
                 letterSpacing: "0.08em",
@@ -452,8 +453,8 @@ function TestLessonCard({
               {testTime ? (
                 <span
                   style={{
-                    fontSize: 10,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.xs,
+                    fontWeight: tokens.fontWeight.semibold,
                     color: "rgba(255,255,255,0.85)",
                     fontFamily: "Poppins, sans-serif",
                     fontVariantNumeric: "tabular-nums",
@@ -502,8 +503,8 @@ function TestLessonCard({
           </div>
           <div
             style={{
-              fontSize: 16,
-              fontWeight: 800,
+              fontSize: tokens.fontSize.lg,
+              fontWeight: tokens.fontWeight.extrabold,
               color: "#fff",
               marginTop: 4,
               letterSpacing: -0.3,
@@ -517,7 +518,7 @@ function TestLessonCard({
             <IconMapPin size={12} color="rgba(255,255,255,0.7)" stroke={1.5} />
             <span
               style={{
-                fontSize: 11,
+                fontSize: tokens.fontSize.sm,
                 color: testCentre ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.5)",
                 fontStyle: testCentre ? "normal" : "italic",
                 fontFamily: "Poppins, sans-serif",
@@ -534,7 +535,7 @@ function TestLessonCard({
                     background: "#15803D",
                     color: "#fff",
                     fontSize: 9,
-                    fontWeight: 800,
+                    fontWeight: tokens.fontWeight.extrabold,
                     borderRadius: 8,
                     padding: "3px 10px",
                     fontFamily: "Poppins, sans-serif",
@@ -548,7 +549,7 @@ function TestLessonCard({
                     background: "rgba(0,0,0,0.3)",
                     color: "rgba(255,255,255,0.8)",
                     fontSize: 9,
-                    fontWeight: 800,
+                    fontWeight: tokens.fontWeight.extrabold,
                     borderRadius: 8,
                     padding: "3px 10px",
                     fontFamily: "Poppins, sans-serif",
@@ -559,7 +560,7 @@ function TestLessonCard({
               ) : (
                 <span
                   style={{
-                    fontSize: 10,
+                    fontSize: tokens.fontSize.xs,
                     color: "rgba(255,255,255,0.6)",
                     fontFamily: "Poppins, sans-serif",
                   }}
@@ -576,7 +577,7 @@ function TestLessonCard({
               }}
               style={{
                 background: "rgba(255,255,255,0.2)",
-                fontWeight: 700, borderRadius: 20, minHeight: 44,
+                fontWeight: tokens.fontWeight.bold, borderRadius: 20, minHeight: 44,
                 padding: "4px 10px",
                 border: "none",
                 cursor: "pointer",
@@ -587,7 +588,7 @@ function TestLessonCard({
               }}
             >
               <IconNavigation size={12} color="#fff" stroke={1.5} />
-              <span style={{ fontSize: 11, fontWeight: 600, color: "#fff", fontFamily: "Poppins, sans-serif" }}>
+              <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: "#fff", fontFamily: "Poppins, sans-serif" }}>
                 Navigate
               </span>
             </button>
@@ -1443,7 +1444,7 @@ function SchedulePage() {
         inset: 0,
         display: "flex",
         flexDirection: "column",
-        background: "#0B1F3A",
+        background: tokens.navy,
         color: "#111827",
         ...POPPINS,
       }}
@@ -1456,18 +1457,18 @@ function SchedulePage() {
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "space-between",
-          background: "#0B1F3A",
+          background: tokens.navy,
           boxSizing: "border-box",
         }}
       >
         <h1
           style={{
             margin: 0,
-            color: "#FFFFFF",
+            color: tokens.white,
             fontFamily: "Sora, sans-serif",
-            fontSize: 22,
+            fontSize: tokens.fontSize.xxl,
             lineHeight: "40px",
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
           }}
         >
           Schedule
@@ -1500,7 +1501,7 @@ function SchedulePage() {
                 minWidth: 8,
                 height: 8,
                 borderRadius: 999,
-                background: "#CC2229",
+                background: tokens.red,
               }}
             />
           )}
@@ -1525,7 +1526,7 @@ function SchedulePage() {
         >
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <IconArrowsMove size={16} color="#FFFFFF" />
-            <span style={{ color: '#FFFFFF', fontWeight: 600, fontSize: 13, marginLeft: 8 }}>
+            <span style={{ color: '#FFFFFF', fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.base, marginLeft: 8 }}>
               Moving: {(movingLesson.pupil?.first_name || movingLesson.pupils?.first_name || 'lesson')}'s {movingLesson.duration_minutes} min lesson
             </span>
           </div>
@@ -1536,7 +1537,7 @@ function SchedulePage() {
               background: 'rgba(255,255,255,0.2)',
               color: '#FFFFFF',
               fontSize: 12,
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
               padding: '6px 12px',
               borderRadius: 20, minHeight: 44,
               border: 'none',
@@ -1559,7 +1560,7 @@ function SchedulePage() {
           flex: 1,
           minHeight: 0,
           marginTop: -18,
-          background: "#FFFFFF",
+          background: tokens.white,
           borderRadius: "28px 28px 0 0",
           overflow: "hidden",
           display: "flex",
@@ -1604,15 +1605,15 @@ function SchedulePage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px 4px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <div style={{ width: 8, height: 8, borderRadius: 8, background: '#1877D6' }} />
-          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>DSM lesson</span>
+          <span style={{ fontSize: tokens.fontSize.xs, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>DSM lesson</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <div style={{ width: 8, height: 8, borderRadius: 8, background: '#9CA3AF' }} />
-          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Google Calendar</span>
+          <span style={{ fontSize: tokens.fontSize.xs, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Google Calendar</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <div style={{ width: 8, height: 8, borderRadius: 8, background: '#B45309' }} />
-          <span style={{ fontSize: 10, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Free slot</span>
+          <span style={{ fontSize: tokens.fontSize.xs, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Free slot</span>
         </div>
       </div>
 
@@ -1672,7 +1673,7 @@ function SchedulePage() {
                 {row.entries.length === 0 && isToday ? (
                   <div
                     style={{
-                      background: "#EEF2F7",
+                      background: tokens.canvas,
                       border: "1.5px dashed #D0D5DD",
                       borderRadius: 8,
                       padding: "10px 14px",
@@ -1811,8 +1812,8 @@ function SchedulePage() {
                                     zIndex: 1,
                                     background: "#DCFCE7",
                                     color: "#15803D",
-                                    fontSize: 10,
-                                    fontWeight: 800,
+                                    fontSize: tokens.fontSize.xs,
+                                    fontWeight: tokens.fontWeight.extrabold,
                                     textTransform: "uppercase",
                                     letterSpacing: "0.5px",
                                     padding: "4px 10px",
@@ -1837,10 +1838,10 @@ function SchedulePage() {
                                   }}
                                 >
                                   <div style={{ width: 48, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "flex-start", paddingTop: 2 }}>
-                                    <div style={{ fontSize: 15, fontWeight: 600, color: "#0B1F3A", fontVariantNumeric: "tabular-nums", lineHeight: 1.15 }}>
+                                    <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, fontVariantNumeric: "tabular-nums", lineHeight: 1.15 }}>
                                       {e.startTime}
                                     </div>
-                                    <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
+                                    <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: "#6B7280", marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
                                       {formatMins(e.mins)}
                                     </div>
                                   </div>
@@ -1873,15 +1874,15 @@ function SchedulePage() {
                                                     width: 34,
                                                     height: 34,
                                                     borderRadius: "50%",
-                                                    background: "#0B1F3A",
+                                                    background: tokens.navy,
                                                     border: "2px solid #FDFBF6",
                                                     marginLeft: idx === 0 ? 0 : -10,
                                                     display: "flex",
                                                     alignItems: "center",
                                                     justifyContent: "center",
-                                                    color: "#FFFFFF",
-                                                    fontSize: 11,
-                                                    fontWeight: 700,
+                                                    color: tokens.white,
+                                                    fontSize: tokens.fontSize.sm,
+                                                    fontWeight: tokens.fontWeight.bold,
                                                     fontFamily: "Poppins, sans-serif",
                                                   }}
                                                 >
@@ -1890,12 +1891,12 @@ function SchedulePage() {
                                               );
                                             })}
                                           </div>
-                                          <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3 }}>
+                                          <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, lineHeight: 1.3 }}>
                                             {preview.count} pupil{preview.count === 1 ? "" : "s"} may fit · £{e.potential} potential
                                           </div>
                                         </>
                                       ) : (
-                                        <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3 }}>
+                                        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, lineHeight: 1.3 }}>
                                           £{e.potential} potential
                                         </div>
                                       )}
@@ -1937,13 +1938,13 @@ function SchedulePage() {
                                   }}
                                 >
                                   <IconClock stroke={1.5} size={14} color="#1E8E3E" />
-                                  <span style={{ fontSize: 13, fontWeight: 600, color: '#065F46', fontVariantNumeric: 'tabular-nums' }}>
+                                  <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: '#065F46', fontVariantNumeric: 'tabular-nums' }}>
                                     {e.time}
                                   </span>
-                                  <span style={{ fontSize: 11, color: '#1E8E3E' }}>
+                                  <span style={{ fontSize: tokens.fontSize.sm, color: '#1E8E3E' }}>
                                     {dur} min slot available
                                   </span>
-                                  <span style={{ fontSize: 11, color: '#1E8E3E', fontWeight: 600, marginLeft: 'auto' }}>
+                                  <span style={{ fontSize: tokens.fontSize.sm, color: '#1E8E3E', fontWeight: tokens.fontWeight.semibold, marginLeft: 'auto' }}>
                                     Move here →
                                   </span>
                                 </div>
@@ -2079,12 +2080,12 @@ function SchedulePage() {
                                   }}
                                 >
                                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ background: '#EFF6FF', color: '#1877D6', fontSize: 9, fontWeight: 800, borderRadius: 20, padding: '3px 10px' }}>
+                                    <span style={{ background: '#EFF6FF', color: '#1877D6', fontSize: 9, fontWeight: tokens.fontWeight.extrabold, borderRadius: 20, padding: '3px 10px' }}>
                                       📅 EVENT
                                     </span>
                                     <span style={{ fontSize: 12, color: '#9CA3AF' }}>{fmtTime(e.start)}</span>
                                   </div>
-                                  <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', marginTop: 8 }}>
+                                  <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', marginTop: 8 }}>
                                     {(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.event_title}
                                   </div>
                                   {(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.pickup_location && (
@@ -2131,10 +2132,10 @@ function SchedulePage() {
                                   {isBlockRow ? (
                                     <>
                                       <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                                        <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                                        <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
                                           {fmtTime(e.start)}
                                         </div>
-                                        <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                                        <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
                                           {(() => {
                                             const durMin = Math.max(0, Math.round((e.end.getTime() - e.start.getTime()) / 60000));
                                             const h = Math.floor(durMin / 60);
@@ -2156,8 +2157,8 @@ function SchedulePage() {
                                       <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                                         <div
                                           style={{
-                                            fontSize: 14,
-                                            fontWeight: 600,
+                                            fontSize: tokens.fontSize.md,
+                                            fontWeight: tokens.fontWeight.semibold,
                                             color: '#0B1F3A',
                                             whiteSpace: 'nowrap',
                                             overflow: 'hidden',
@@ -2178,10 +2179,10 @@ function SchedulePage() {
                                       {isLessonRow ? (
                                         <>
                                           <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                                            <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                                            <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
                                               {fmtTime(e.start)}
                                             </div>
-                                            <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                                            <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
                                               {(() => {
                                                 const durMin = Math.max(0, Math.round((e.end.getTime() - e.start.getTime()) / 60000));
                                                 const h = Math.floor(durMin / 60);
@@ -2232,7 +2233,7 @@ function SchedulePage() {
                                                       }}
                                                     />
                                                   )}
-                                                  <span style={{ fontSize: 14, fontWeight: 500, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: cancelled ? 'line-through' : 'none' }}>
+                                                  <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: cancelled ? 'line-through' : 'none' }}>
                                                     {title}
                                                   </span>
                                                     {cancelled ? (
@@ -2240,8 +2241,8 @@ function SchedulePage() {
                                                         flexShrink: 0,
                                                         display: 'inline-flex',
                                                         alignItems: 'center',
-                                                        fontSize: 10,
-                                                        fontWeight: 700,
+                                                        fontSize: tokens.fontSize.xs,
+                                                        fontWeight: tokens.fontWeight.bold,
                                                         borderRadius: 8,
                                                         padding: '2px 7px',
                                                         lineHeight: 1.4,
@@ -2278,8 +2279,8 @@ function SchedulePage() {
                                                        display: 'inline-flex',
                                                        alignItems: 'center',
                                                        gap: 3,
-                                                       fontSize: 10,
-                                                       fontWeight: 700,
+                                                       fontSize: tokens.fontSize.xs,
+                                                       fontWeight: tokens.fontWeight.bold,
                                                        padding: '2px 8px',
                                                        borderRadius: 8,
                                                        lineHeight: 1.4,
@@ -2310,12 +2311,12 @@ function SchedulePage() {
                                                 </div>
 
                                                 {timeText ? (
-                                                  <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
+                                                  <div style={{ fontSize: tokens.fontSize.sm, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
                                                     {timeText}
                                                   </div>
                                                 ) : null}
                                                 {cancelled && (e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.cancellation_reason ? (
-                                                  <div style={{ fontSize: 11, color: "#CC2229", marginTop: 2 }}>
+                                                  <div style={{ fontSize: tokens.fontSize.sm, color: tokens.red, marginTop: 2 }}>
                                                     {(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson.cancellation_reason}
                                                   </div>
                                                 ) : null}
@@ -2326,9 +2327,9 @@ function SchedulePage() {
                                            <>
                                              <div
                                                style={{
-                                                 fontSize: 14,
-                                                 fontWeight: 500,
-                                                 color: "#0B1F3A",
+                                                 fontSize: tokens.fontSize.md,
+                                                 fontWeight: tokens.fontWeight.medium,
+                                                 color: tokens.navy,
                                                  overflow: "hidden",
                                                  textOverflow: "ellipsis",
                                                  whiteSpace: "nowrap",
@@ -2338,7 +2339,7 @@ function SchedulePage() {
                                                {title}
                                              </div>
                                              {timeText ? (
-                                               <div style={{ fontSize: 11, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
+                                               <div style={{ fontSize: tokens.fontSize.sm, color: "#8A93A3", marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
                                                  {timeText}
                                                </div>
                                              ) : null}
@@ -2606,7 +2607,7 @@ function SchedulePage() {
               gap: 10,
             }}
           >
-            <div style={{ fontSize: 17, fontWeight: 700, color: '#0B1F3A', fontFamily: 'Sora, sans-serif', marginBottom: 4 }}>
+            <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: 'Sora, sans-serif', marginBottom: 4 }}>
               Add to your schedule
             </div>
             <button
@@ -2619,14 +2620,14 @@ function SchedulePage() {
               }}
               style={{
                 display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
-                border: '1px solid #E4E8EF', fontWeight: 700, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44, padding: '14px 14px', background: '#fff',
+                border: '1px solid #E4E8EF', fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44, padding: '14px 14px', background: '#fff',
               }}
             >
               <span style={{ width: 38, height: 38, borderRadius: 8, background: '#E7F0FB', display: 'grid', placeItems: 'center' }}>
                 <IconPlus size={19} stroke={1.8} color="#1877D6" />
               </span>
               <span>
-                <span style={{ display: 'block', fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>Lesson</span>
+                <span style={{ display: 'block', fontSize: 15, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>Lesson</span>
                 <span style={{ fontSize: 12, color: '#6B7686' }}>Pupil, duration and payment</span>
               </span>
             </button>
@@ -2639,21 +2640,21 @@ function SchedulePage() {
               }}
               style={{
                 display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
-                border: '1px solid #E4E8EF', fontWeight: 700, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44, padding: '14px 14px', background: '#fff',
+                border: '1px solid #E4E8EF', fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44, padding: '14px 14px', background: '#fff',
               }}
             >
               <span style={{ width: 38, height: 38, borderRadius: 8, background: '#FBF1DA', display: 'grid', placeItems: 'center' }}>
                 <IconCalendar size={19} stroke={1.8} color="#B8860B" />
               </span>
               <span>
-                <span style={{ display: 'block', fontSize: 15, fontWeight: 700, color: '#0B1F3A' }}>Private event</span>
+                <span style={{ display: 'block', fontSize: 15, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>Private event</span>
                 <span style={{ fontSize: 12, color: '#6B7686' }}>Your own name, times, place and notes</span>
               </span>
             </button>
             <button
               type="button"
               onClick={() => setAddChooserOpen(false)}
-              style={{ marginTop: 4, padding: '12px', fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44, border: 'none', background: '#EEF2F7', color: '#0B1F3A', fontSize: 14, fontWeight: 700 }}
+              style={{ marginTop: 4, padding: '12px', fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44, border: 'none', background: '#EEF2F7', color: '#0B1F3A', fontSize: tokens.fontSize.md, fontWeight: 700 }}
             >
               Cancel
             </button>
@@ -2713,18 +2714,18 @@ function SchedulePage() {
               ...POPPINS,
             }}
           >
-            <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', marginBottom: 16 }}>
+            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', marginBottom: 16 }}>
               Move lesson?
             </div>
-            <div style={{ fontSize: 11, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>From</div>
-            <div style={{ fontSize: 14, color: '#9CA3AF', marginBottom: 10 }}>
+            <div style={{ fontSize: tokens.fontSize.sm, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>From</div>
+            <div style={{ fontSize: tokens.fontSize.md, color: '#9CA3AF', marginBottom: 10 }}>
               {movingLesson.lesson_date} at {String(movingLesson.lesson_time).slice(0, 5)}
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
               <IconArrowDown size={20} color="#9CA3AF" />
             </div>
-            <div style={{ fontSize: 11, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>To</div>
-            <div style={{ fontSize: 14, color: '#0B1F3A', fontWeight: 700 }}>
+            <div style={{ fontSize: tokens.fontSize.sm, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>To</div>
+            <div style={{ fontSize: tokens.fontSize.md, color: '#0B1F3A', fontWeight: 700 }}>
               {confirmMove.date} at {confirmMove.time}
             </div>
             <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4, marginBottom: 20 }}>
@@ -2737,8 +2738,8 @@ function SchedulePage() {
                 width: '100%',
                 background: '#0B1F3A',
                 color: '#FFFFFF',
-                fontWeight: 600,
-                fontSize: 14,
+                fontWeight: tokens.fontWeight.semibold,
+                fontSize: tokens.fontSize.md,
                 padding: '12px 0',
                 borderRadius: 20, minHeight: 44,
                 border: 'none',
@@ -2756,8 +2757,8 @@ function SchedulePage() {
                 background: '#FFFFFF',
                 color: '#6B7280',
                 border: '0.5px solid #E2E6ED',
-                fontWeight: 500,
-                fontSize: 14,
+                fontWeight: tokens.fontWeight.medium,
+                fontSize: tokens.fontSize.md,
                 padding: '12px 0',
                 borderRadius: 20, minHeight: 44,
                 cursor: 'pointer',
@@ -2804,8 +2805,8 @@ function DayHeader({ date, isToday, isPast }: { date: Date; isToday: boolean; is
     >
       <div
         style={{
-          fontSize: 11,
-          fontWeight: 500,
+          fontSize: tokens.fontSize.sm,
+          fontWeight: tokens.fontWeight.medium,
           letterSpacing: "0.04em",
           color: isPast ? "#94A3B8" : isToday ? "#1877D6" : "#6B7280",
         }}
@@ -2824,7 +2825,7 @@ function DayHeader({ date, isToday, isPast }: { date: Date; isToday: boolean; is
           background: isToday ? "#1877D6" : "transparent",
           color: isToday ? "#FFFFFF" : isPast ? "#94A3B8" : "#0B1F3A",
           fontSize: 15,
-          fontWeight: 600,
+          fontWeight: tokens.fontWeight.semibold,
           fontVariantNumeric: "tabular-nums",
         }}
       >
@@ -2894,7 +2895,7 @@ function EntryRow({
             ...rowBase('#FF8C00', cancelled),
             background: '#FFF3E0',
             borderLeft: '3px solid #FF8C00',
-            fontWeight: 700, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44,
+            fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44,
             padding: '10px 12px',
             width: '100%',
             textAlign: 'left',
@@ -2914,7 +2915,7 @@ function EntryRow({
           }}>
             <span style={{ fontSize: 14 }}>🎯</span>
             <span style={{
-              fontSize: 13, fontWeight: 700,
+              fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold,
               color: '#7C3300',
               fontFamily: 'Poppins, sans-serif',
             }}>
@@ -2923,7 +2924,7 @@ function EntryRow({
           </div>
           {/* Time row */}
           <div style={{
-            fontSize: 11, color: '#B45309',
+            fontSize: tokens.fontSize.sm, color: '#B45309',
             fontFamily: 'Poppins, sans-serif',
             marginBottom: testTime || location ? 3 : 0,
           }}>
@@ -2948,7 +2949,7 @@ function EntryRow({
                   padding: '2px 8px',
                 }}>
                   <span style={{
-                    fontSize: 10, fontWeight: 700,
+                    fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold,
                     color: '#fff',
                     fontFamily: 'Poppins, sans-serif',
                   }}>
@@ -2966,7 +2967,7 @@ function EntryRow({
                   padding: '2px 8px',
                 }}>
                   <span style={{
-                    fontSize: 10, fontWeight: 600,
+                    fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold,
                     color: '#7C3300',
                     fontFamily: 'Poppins, sans-serif',
                   }}>
@@ -3013,7 +3014,7 @@ function EntryRow({
                 padding: custom ? '2px 6px' : '0',
               }}>
                 <span style={{
-                  fontSize: 11,
+                  fontSize: tokens.fontSize.sm,
                   color: custom ? '#B45309' : 'rgba(255,255,255,0.8)',
                   fontWeight: custom ? 600 : 400,
                   fontFamily: 'Poppins, sans-serif',
@@ -3023,7 +3024,7 @@ function EntryRow({
                 {custom && (
                   <span style={{
                     fontSize: 9,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     color: '#B45309',
                     fontFamily: 'Poppins, sans-serif',
                   }}>
@@ -3035,7 +3036,7 @@ function EntryRow({
           );
         })()}
         {cancelled && l.cancellation_reason ? (
-          <div style={{ fontSize: 11, color: "#CC2229", marginTop: 2, textDecoration: "none" }}>
+          <div style={{ fontSize: tokens.fontSize.sm, color: tokens.red, marginTop: 2, textDecoration: "none" }}>
             {l.cancellation_reason}
           </div>
         ) : null}
@@ -3061,8 +3062,8 @@ function EntryRow({
         }}
       >
         <span style={{ fontSize: 14 }} aria-hidden>{c.icon}</span>
-        <div style={{ fontSize: 13, color: c.text, fontWeight: 500, flex: 1 }}>{entry.title}</div>
-        <div style={{ fontSize: 11, color: "#9CA3AF", fontVariantNumeric: "tabular-nums" }}>
+        <div style={{ fontSize: tokens.fontSize.base, color: c.text, fontWeight: tokens.fontWeight.medium, flex: 1 }}>{entry.title}</div>
+        <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, fontVariantNumeric: "tabular-nums" }}>
           {fmtTime(entry.start)} – {fmtTime(entry.end)}
         </div>
       </div>
@@ -3132,7 +3133,7 @@ function rowBase(bg: string, cancelled: boolean): React.CSSProperties {
     borderRadius: 8,
     padding: "12px 14px",
     background: bg,
-    color: "#FFFFFF",
+    color: tokens.white,
     cursor: "pointer",
     opacity: cancelled ? 0.5 : 1,
     textDecoration: cancelled ? "line-through" : "none",
@@ -3141,9 +3142,9 @@ function rowBase(bg: string, cancelled: boolean): React.CSSProperties {
   };
 }
 const rowTitle: React.CSSProperties = {
-  fontSize: 14,
-  fontWeight: 500,
-  color: "#FFFFFF",
+  fontSize: tokens.fontSize.md,
+  fontWeight: tokens.fontWeight.medium,
+  color: tokens.white,
   lineHeight: 1.3,
 };
 const rowSub: React.CSSProperties = {
@@ -3198,7 +3199,7 @@ function MonthCalendar({
         position: "sticky",
         top: 0,
         zIndex: 5,
-        background: "#FFFFFF",
+        background: tokens.white,
         borderRadius: 8,
         boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
         padding: 12,
@@ -3229,9 +3230,9 @@ function MonthCalendar({
               border: 0,
               padding: "0 4px",
               fontSize: 15,
-              fontWeight: 500,
+              fontWeight: tokens.fontWeight.medium,
               lineHeight: 1,
-              color: "#0B1F3A",
+              color: tokens.navy,
               ...POPPINS,
               cursor: "pointer",
             }}
@@ -3256,7 +3257,7 @@ function MonthCalendar({
             type="button"
             aria-label="Add lesson"
             onClick={onAdd}
-            style={{ ...calChip, background: "#1877D6" }}
+            style={{ ...calChip, background: tokens.blue }}
           >
             <IconPlus size={14} stroke={1.75} color="#FFFFFF" />
           </button>
@@ -3276,8 +3277,8 @@ function MonthCalendar({
             key={i}
             style={{
               textAlign: "center",
-              fontSize: 10,
-              fontWeight: 500,
+              fontSize: tokens.fontSize.xs,
+              fontWeight: tokens.fontWeight.medium,
               lineHeight: 1,
               color: "#8A93A3",
               ...POPPINS,
@@ -3332,7 +3333,7 @@ function MonthCalendar({
                   background: isToday ? "#1877D6" : "transparent",
                   border: isSelected ? "1.5px solid #1877D6" : "none",
                   color: numColour,
-                  fontSize: 13,
+                  fontSize: tokens.fontSize.base,
                   fontWeight: isToday || isSelected ? 500 : 400,
                   fontVariantNumeric: "tabular-nums",
                   boxSizing: "border-box",
@@ -3448,7 +3449,7 @@ function MonthStrip({
   return (
     <div
       style={{
-        background: "#FFFFFF",
+        background: tokens.white,
         borderBottom: "0.5px solid #E2E6ED",
         padding: "8px 16px",
         position: "sticky",
@@ -3462,7 +3463,7 @@ function MonthStrip({
           type="button"
           onClick={onPrevMonth}
           aria-label="Previous month"
-          style={{ background: "transparent", border: 0, cursor: "pointer", padding: 4, color: "#0B1F3A", display: "inline-flex" }}
+          style={{ background: "transparent", border: 0, cursor: "pointer", padding: 4, color: tokens.navy, display: "inline-flex" }}
         >
           <IconChevronLeft size={18} stroke={2} />
         </button>
@@ -3477,13 +3478,13 @@ function MonthStrip({
                   border: 0,
                   cursor: "pointer",
                   padding: 4,
-                  color: "#0B1F3A",
+                  color: tokens.navy,
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 6,
                 }}
               >
-                <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>{monthLabel}</div>
+                <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>{monthLabel}</div>
                 <IconCalendar size={16} stroke={2} />
               </button>
             </PopoverTrigger>
@@ -3509,8 +3510,8 @@ function MonthStrip({
               border: 0,
               cursor: "pointer",
               fontSize: 12,
-              fontWeight: 600,
-              color: "#1877D6",
+              fontWeight: tokens.fontWeight.semibold,
+              color: tokens.blue,
               padding: "2px 6px",
               ...POPPINS,
             }}
@@ -3538,8 +3539,8 @@ function MonthStrip({
           {lastSynced && formatRelativeSync && (
             <span
               style={{
-                fontSize: 11,
-                fontWeight: 500,
+                fontSize: tokens.fontSize.sm,
+                fontWeight: tokens.fontWeight.medium,
                 color: "#64748B",
                 ...POPPINS,
               }}
@@ -3552,7 +3553,7 @@ function MonthStrip({
           type="button"
           onClick={onNextMonth}
           aria-label="Next month"
-          style={{ background: "transparent", border: 0, cursor: "pointer", padding: 4, color: "#0B1F3A", display: "inline-flex" }}
+          style={{ background: "transparent", border: 0, cursor: "pointer", padding: 4, color: tokens.navy, display: "inline-flex" }}
         >
           <IconChevronRight size={18} stroke={2} />
         </button>
@@ -3570,7 +3571,7 @@ function MonthStrip({
             background: syncMessage.type === "success" ? "rgba(34, 197, 94, 0.12)" : "rgba(239, 68, 68, 0.12)",
             color: syncMessage.type === "success" ? "#16A34A" : "#B91C1C",
             fontSize: 12,
-            fontWeight: 500,
+            fontWeight: tokens.fontWeight.medium,
             ...POPPINS,
           }}
         >
@@ -3596,7 +3597,7 @@ function MonthStrip({
                 padding: 0,
                 color: "#B91C1C",
                 fontSize: 12,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 textDecoration: "underline",
                 cursor: syncing ? "default" : "pointer",
                 opacity: syncing ? 0.6 : 1,
@@ -3647,11 +3648,11 @@ function MonthStrip({
                 ...POPPINS,
               }}
             >
-              <span style={{ fontSize: 10, color: "#9CA3AF", fontWeight: 500 }}>{dayLetters[dow]}</span>
+              <span style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted, fontWeight: 500 }}>{dayLetters[dow]}</span>
               <span
                 style={{
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
                   width: 26,
                   height: 26,
                   borderRadius: "50%",

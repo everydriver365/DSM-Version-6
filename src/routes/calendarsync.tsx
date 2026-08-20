@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState } from "react";
 import { IconAlertCircle, IconAlertTriangle, IconCalendar, IconCheck, IconChevronDown, IconChevronRight, IconCopy, IconInfoCircle, IconLoader2, IconRefresh, IconX } from "@tabler/icons-react";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
@@ -68,7 +69,7 @@ const DESC: React.CSSProperties = {
   ...POPPINS,
   color: "#6B6B6F",
   fontSize: 13.5,
-  fontWeight: 500,
+  fontWeight: tokens.fontWeight.medium,
   lineHeight: 1.5,
   marginBottom: 16,
 };
@@ -78,7 +79,7 @@ const FIELD_LABEL: React.CSSProperties = {
   display: "block",
   color: "#8A8A8E",
   fontSize: 12,
-  fontWeight: 600,
+  fontWeight: tokens.fontWeight.semibold,
   marginBottom: 8,
 };
 
@@ -90,8 +91,8 @@ const FIELD_INPUT: React.CSSProperties = {
   border: "none",
   outline: "none",
   color: "#6B6B6F",
-  fontSize: 13,
-  fontWeight: 500,
+  fontSize: tokens.fontSize.base,
+  fontWeight: tokens.fontWeight.medium,
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
@@ -114,7 +115,7 @@ const BTN_BASE: React.CSSProperties = {
   padding: 15,
   borderRadius: 8,
   fontSize: 14.5,
-  fontWeight: 800,
+  fontWeight: tokens.fontWeight.extrabold,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -123,7 +124,7 @@ const BTN_BASE: React.CSSProperties = {
 
 const BTN_PRIMARY: React.CSSProperties = {
   ...BTN_BASE,
-  background: "#1877D6",
+  background: tokens.blue,
   color: "#fff",
   border: "none",
   boxShadow: "0 4px 0 #0F52A8",
@@ -132,7 +133,7 @@ const BTN_PRIMARY: React.CSSProperties = {
 const BTN_OUTLINE: React.CSSProperties = {
   ...BTN_BASE,
   background: "#fff",
-  color: "#1877D6",
+  color: tokens.blue,
   border: "1.5px solid #E4E4E8",
 };
 
@@ -146,13 +147,13 @@ const BTN_OUTLINE_RED: React.CSSProperties = {
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 12 }}>
-      <span style={{ width: 3, height: 14, background: "#1877D6", borderRadius: 8, flexShrink: 0 }} />
+      <span style={{ width: 3, height: 14, background: tokens.blue, borderRadius: 8, flexShrink: 0 }} />
       <span
         style={{
           ...POPPINS,
-          color: "#1877D6",
+          color: tokens.blue,
           fontSize: 12,
-          fontWeight: 800,
+          fontWeight: tokens.fontWeight.extrabold,
           letterSpacing: "0.6px",
           textTransform: "uppercase",
         }}
@@ -600,7 +601,7 @@ function CalendarSyncPage() {
           }}
         >
           <IconInfoCircle size={16} color="#1877D6" style={{ flexShrink: 0, marginTop: 1 }} />
-          <p style={{ ...POPPINS, color: "#0B1F3A", fontSize: 13, fontWeight: 500, lineHeight: 1.5 }}>
+          <p style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, lineHeight: 1.5 }}>
             Sync your lessons to any calendar app using an ICS feed. Works with Google Calendar, Apple Calendar, and Outlook.
           </p>
         </div>
@@ -610,9 +611,9 @@ function CalendarSyncPage() {
           <div
             style={{
               ...POPPINS,
-              color: "#9CA3AF",
-              fontSize: 11,
-              fontWeight: 600,
+              color: tokens.textMuted,
+              fontSize: tokens.fontSize.sm,
+              fontWeight: tokens.fontWeight.semibold,
               textTransform: "uppercase",
               marginBottom: 12,
             }}
@@ -655,10 +656,10 @@ function CalendarSyncPage() {
                   <IconCalendar size={20} color="#15803D" stroke={1.5} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ ...POPPINS, color: "#0B1F3A", fontSize: 14, fontWeight: 600 }}>
+                  <div style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: 600 }}>
                     Google Calendar
                   </div>
-                  <div style={{ ...POPPINS, color: "#9CA3AF", fontSize: 11, marginTop: 2 }}>
+                  <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm, marginTop: 2 }}>
                     Last synced: {lastSynced ? timeAgo(lastSynced) : "Never synced"}
                   </div>
                 </div>
@@ -666,8 +667,8 @@ function CalendarSyncPage() {
                   style={{
                     background: "#DCFCE7",
                     color: "#15803D",
-                    fontSize: 11,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.bold,
                     borderRadius: 999,
                     padding: "4px 10px",
                   }}
@@ -675,7 +676,7 @@ function CalendarSyncPage() {
                   Connected
                 </div>
               </div>
-              <div style={{ height: 1, background: "#E4E8EF" }} />
+              <div style={{ height: 1, background: tokens.border }} />
 
               {/* Import direction */}
               <div
@@ -688,10 +689,10 @@ function CalendarSyncPage() {
                 }}
               >
                 <div style={{ flex: 1 }}>
-                  <div style={{ ...POPPINS, color: "#0B1F3A", fontSize: 14, fontWeight: 500 }}>
+                  <div style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: 500 }}>
                     Import Google events into DSM
                   </div>
-                  <div style={{ ...POPPINS, color: "#9CA3AF", fontSize: 11, marginTop: 2 }}>
+                  <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm, marginTop: 2 }}>
                     Google events appear on your schedule
                   </div>
                 </div>
@@ -709,10 +710,10 @@ function CalendarSyncPage() {
                 }}
               >
                 <div style={{ flex: 1 }}>
-                  <div style={{ ...POPPINS, color: "#0B1F3A", fontSize: 14, fontWeight: 500 }}>
+                  <div style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: 500 }}>
                     Push DSM lessons to Google
                   </div>
-                  <div style={{ ...POPPINS, color: "#9CA3AF", fontSize: 11, marginTop: 2 }}>
+                  <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm, marginTop: 2 }}>
                     Lessons appear in your Google Calendar
                   </div>
                 </div>
@@ -741,11 +742,11 @@ function CalendarSyncPage() {
                   stroke={1.5}
                   className={syncing ? "animate-spin" : undefined}
                 />
-                <div style={{ ...POPPINS, color: "#0B1F3A", fontSize: 14, fontWeight: 500, flex: 1 }}>
+                <div style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, flex: 1 }}>
                   Sync now
                 </div>
                 {syncing && (
-                  <div style={{ ...POPPINS, color: "#9CA3AF", fontSize: 11 }}>Syncing...</div>
+                  <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: 11 }}>Syncing...</div>
                 )}
               </div>
 
@@ -765,7 +766,7 @@ function CalendarSyncPage() {
                 }}
               >
                 <IconX size={16} color="#CC2229" stroke={1.5} />
-                <div style={{ ...POPPINS, color: "#CC2229", fontSize: 14, fontWeight: 500 }}>
+                <div style={{ ...POPPINS, color: tokens.red, fontSize: tokens.fontSize.md, fontWeight: 500 }}>
                   Disconnect Google Calendar
                 </div>
               </div>
@@ -801,15 +802,15 @@ function CalendarSyncPage() {
                 <IconCalendar size={20} color="#1877D6" stroke={1.5} />
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ ...POPPINS, color: "#0B1F3A", fontSize: 14, fontWeight: 600 }}>
+                <div style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: 600 }}>
                   Connect Google Calendar
                 </div>
-                <div style={{ ...POPPINS, color: "#9CA3AF", fontSize: 11, marginTop: 2 }}>
+                <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm, marginTop: 2 }}>
                   Import events and push lessons automatically
                 </div>
               </div>
               {connecting ? (
-                <div style={{ ...POPPINS, color: "#1877D6", fontSize: 12 }}>Connecting...</div>
+                <div style={{ ...POPPINS, color: tokens.blue, fontSize: 12 }}>Connecting...</div>
               ) : (
                 <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
               )}
@@ -826,7 +827,7 @@ function CalendarSyncPage() {
             border: "none",
             cursor: "pointer",
             fontSize: 12,
-            color: "#9CA3AF",
+            color: tokens.textMuted,
             padding: "8px 0",
             display: "flex",
             alignItems: "center",
@@ -854,10 +855,10 @@ function CalendarSyncPage() {
             padding: "14px 16px",
           }}
         >
-          <div style={{ ...POPPINS, color: "#0B1F3A", fontSize: 14, fontWeight: 600, marginBottom: 4 }}>
+          <div style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, marginBottom: 4 }}>
             Or use a custom ICS URL
           </div>
-          <p style={{ ...POPPINS, color: "#9CA3AF", fontSize: 12, lineHeight: 1.5, marginBottom: 12 }}>
+          <p style={{ ...POPPINS, color: tokens.textMuted, fontSize: 12, lineHeight: 1.5, marginBottom: 12 }}>
             Works with Outlook, Apple Calendar, and other apps that share an ICS feed.
           </p>
           <div style={{ marginBottom: 12 }}>
@@ -896,13 +897,13 @@ function CalendarSyncPage() {
                   inputRef.current?.focus();
                 }}
                 className="text-xs font-semibold"
-                style={{ ...POPPINS, color: "#1877D6", marginTop: 6 }}
+                style={{ ...POPPINS, color: tokens.blue, marginTop: 6 }}
               >
                 Update URL →
               </button>
             </div>
           ) : icsLastSynced ? (
-            <div style={{ ...POPPINS, color: "#9CA3AF", fontSize: 12, marginTop: 8, marginBottom: 12 }}>
+            <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: 12, marginTop: 8, marginBottom: 12 }}>
               Last synced: {timeAgo(icsLastSynced)}
             </div>
           ) : null}
@@ -931,7 +932,7 @@ function CalendarSyncPage() {
                 type="button"
                 onClick={removeCalendar}
                 disabled={removing}
-                style={{ ...POPPINS, color: "#FF3B30", fontSize: 13, fontWeight: 700 }}
+                style={{ ...POPPINS, color: "#FF3B30", fontSize: tokens.fontSize.base, fontWeight: 700 }}
               >
                 {removing ? "Removing..." : "Remove calendar"}
               </button>
@@ -1009,10 +1010,10 @@ function CalendarSyncPage() {
         <div
           className="mt-3 flex items-start gap-3"
           style={{
-            backgroundColor: "#EEF2F7",
+            backgroundColor: tokens.canvas,
             borderWidth: "1px",
             borderStyle: "solid",
-            borderColor: "#1877D6",
+            borderColor: tokens.blue,
             borderRadius: 8,
             padding: 12,
           }}
@@ -1034,7 +1035,7 @@ function CalendarSyncPage() {
               marginBottom: 12,
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#EEF2F7",
+              borderColor: tokens.canvas,
             }}
           >
             <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 8}}>
@@ -1048,7 +1049,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
                   >
                     1
                   </div>
@@ -1059,7 +1060,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
                   >
                     2
                   </div>
@@ -1070,7 +1071,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
                   >
                     3
                   </div>
@@ -1081,7 +1082,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
                   >
                     4
                   </div>
@@ -1092,7 +1093,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
                   >
                     5
                   </div>
@@ -1116,7 +1117,7 @@ function CalendarSyncPage() {
               marginBottom: 12,
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#EEF2F7",
+              borderColor: tokens.canvas,
             }}
           >
             <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 8}}>
@@ -1130,7 +1131,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
                   >
                     1
                   </div>
@@ -1141,7 +1142,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
                   >
                     2
                   </div>
@@ -1152,7 +1153,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
                   >
                     3
                   </div>
@@ -1163,7 +1164,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
                   >
                     4
                   </div>
@@ -1187,7 +1188,7 @@ function CalendarSyncPage() {
               marginBottom: 12,
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#EEF2F7",
+              borderColor: tokens.canvas,
             }}
           >
             <AccordionTrigger className="px-4 py-3 text-[14px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, borderRadius: 8}}>
@@ -1201,7 +1202,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
                   >
                     1
                   </div>
@@ -1212,7 +1213,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
                   >
                     2
                   </div>
@@ -1223,7 +1224,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
                   >
                     3
                   </div>
@@ -1234,7 +1235,7 @@ function CalendarSyncPage() {
                 <li className="flex items-start gap-3">
                   <div
                     className="flex items-center justify-center shrink-0 rounded-full text-[12px] font-semibold text-white"
-                    style={{ width: 28, height: 28, backgroundColor: "#1877D6", ...POPPINS }}
+                    style={{ width: 28, height: 28, backgroundColor: tokens.blue, ...POPPINS }}
                   >
                     4
                   </div>

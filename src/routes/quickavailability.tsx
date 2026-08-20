@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconChevronRight, IconToggleLeft } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -109,13 +110,13 @@ function QuickAvailabilityPage() {
             <div
               style={{
                 fontSize: 20,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 color: isActive ? "#1877D6" : "#1877D6",
               }}
             >
               {isActive ? "You are available" : "You are unavailable"}
             </div>
-            <div style={{ fontSize: 13, color: "#6B7280", marginTop: 6, marginBottom: 20 }}>
+            <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280", marginTop: 6, marginBottom: 20 }}>
               {isActive
                 ? "Pupils can see and book your slots"
                 : "Pupils cannot book new lessons"}

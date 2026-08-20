@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useState } from "react";
 import { IconArrowLeft, IconAddressBook, IconChevronRight, IconSearch, IconX } from "@tabler/icons-react";
 
@@ -210,7 +211,7 @@ function NewPupilPage() {
           </button>
           <p
             className="text-[20px] font-semibold"
-            style={{ color: "#0B1F3A", fontFamily: "Poppins, sans-serif" }}
+            style={{ color: tokens.navy, fontFamily: "Poppins, sans-serif" }}
           >
             Add pupil
           </p>
@@ -258,9 +259,9 @@ function NewPupilPage() {
             <div style={{ flex: 1, textAlign: "left" }}>
               <p
                 style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "#0B1F3A",
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.semibold,
+                  color: tokens.navy,
                   fontFamily: "Poppins, sans-serif",
                   margin: 0,
                 }}
@@ -269,8 +270,8 @@ function NewPupilPage() {
               </p>
               <p
                 style={{
-                  fontSize: 11,
-                  color: "#9CA3AF",
+                  fontSize: tokens.fontSize.sm,
+                  color: tokens.textMuted,
                   marginTop: 2,
                   fontFamily: "Poppins, sans-serif",
                   margin: 0,
@@ -289,7 +290,7 @@ function NewPupilPage() {
               maxLength={100}
             />
             {errors.firstName && (
-              <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
+              <p className="mt-1 text-[12px]" style={{ color: tokens.blue }}>
                 {errors.firstName}
               </p>
             )}
@@ -302,7 +303,7 @@ function NewPupilPage() {
               maxLength={100}
             />
             {errors.lastName && (
-              <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
+              <p className="mt-1 text-[12px]" style={{ color: tokens.blue }}>
                 {errors.lastName}
               </p>
             )}
@@ -335,7 +336,7 @@ function NewPupilPage() {
                 fontFamily: "Poppins, sans-serif",
               }}
             />
-            <p className="text-[11px]" style={{ color: "#9CA3AF", fontFamily: "Poppins, sans-serif" }}>
+            <p className="text-[11px]" style={{ color: tokens.textMuted, fontFamily: "Poppins, sans-serif" }}>
               Optional — used for birthday reminders
             </p>
           </div>
@@ -349,7 +350,7 @@ function NewPupilPage() {
             }}
           />
           {errors.postcode && (
-            <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
+            <p className="mt-1 text-[12px]" style={{ color: tokens.blue }}>
               {errors.postcode}
             </p>
           )}
@@ -505,7 +506,7 @@ function NewPupilPage() {
           )}
 
           {errors.form && (
-            <p className="text-[12px]" style={{ color: "#1877D6" }}>
+            <p className="text-[12px]" style={{ color: tokens.blue }}>
               {errors.form}
             </p>
           )}
@@ -534,7 +535,7 @@ function NewPupilPage() {
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              background: "#EEF2F7",
+              background: tokens.canvas,
               borderRadius: "22px 22px 0 0",
               padding: "0 0 32px",
               maxHeight: "85vh",
@@ -562,9 +563,9 @@ function NewPupilPage() {
             >
               <p
                 style={{
-                  fontSize: 18,
-                  fontWeight: 800,
-                  color: "#0B1F3A",
+                  fontSize: tokens.fontSize.xl,
+                  fontWeight: tokens.fontWeight.extrabold,
+                  color: tokens.navy,
                   margin: 0,
                 }}
               >
@@ -611,7 +612,7 @@ function NewPupilPage() {
                   border: "1px solid #E4E8EF",
                   borderRadius: 12,
                   padding: "10px 14px 10px 38px",
-                  fontSize: 14,
+                  fontSize: tokens.fontSize.md,
                   fontFamily: "Poppins, sans-serif",
                   outline: "none",
                   width: "calc(100% - 32px)",
@@ -646,9 +647,9 @@ function NewPupilPage() {
                     <div style={{ padding: "32px", textAlign: "center" }}>
                       <p
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#6B7686",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.textSecondary,
                           margin: 0,
                         }}
                       >
@@ -657,7 +658,7 @@ function NewPupilPage() {
                       <p
                         style={{
                           fontSize: 12,
-                          color: "#9CA3AF",
+                          color: tokens.textMuted,
                           marginTop: 4,
                           margin: 0,
                         }}
@@ -717,8 +718,8 @@ function NewPupilPage() {
                               justifyContent: "center",
                               flexShrink: 0,
                               fontSize: 15,
-                              fontWeight: 700,
-                              color: "#1877D6",
+                              fontWeight: tokens.fontWeight.bold,
+                              color: tokens.blue,
                             }}
                           >
                             {initial}
@@ -726,9 +727,9 @@ function NewPupilPage() {
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <p
                               style={{
-                                fontSize: 14,
-                                fontWeight: 600,
-                                color: "#0B1F3A",
+                                fontSize: tokens.fontSize.md,
+                                fontWeight: tokens.fontWeight.semibold,
+                                color: tokens.navy,
                                 margin: 0,
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
@@ -741,7 +742,7 @@ function NewPupilPage() {
                               <p
                                 style={{
                                   fontSize: 12,
-                                  color: "#9CA3AF",
+                                  color: tokens.textMuted,
                                   marginTop: 2,
                                   margin: 0,
                                 }}

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
@@ -160,14 +161,14 @@ function RescheduleLessonPage() {
             <Card className="!bg-[#F8F9FB]">
               <div
                 className="text-[10px] font-semibold uppercase"
-                style={{ color: "#9CA3AF", letterSpacing: "0.05em" }}
+                style={{ color: tokens.textMuted, letterSpacing: "0.05em" }}
               >
                 Current lesson
               </div>
-              <div className="text-[16px] font-semibold mt-1" style={{ color: "#0B1F3A" }}>
+              <div className="text-[16px] font-semibold mt-1" style={{ color: tokens.navy }}>
                 {pupilName}
               </div>
-              <div className="text-[14px] font-bold mt-1" style={{ color: "#1877D6" }}>
+              <div className="text-[14px] font-bold mt-1" style={{ color: tokens.blue }}>
                 {formatDateLong(currentDateObj)} · {formatTime(lesson.lesson_time)}
               </div>
               <div className="text-[13px] mt-0.5" style={{ color: "#6B7280" }}>
@@ -178,7 +179,7 @@ function RescheduleLessonPage() {
 
           <SectionHeader>NEW DATE & TIME</SectionHeader>
           <Card>
-            <label className="text-[12px] font-semibold" style={{ color: "#0B1F3A" }}>
+            <label className="text-[12px] font-semibold" style={{ color: tokens.navy }}>
               Date
             </label>
             <input
@@ -191,13 +192,13 @@ function RescheduleLessonPage() {
                 height: 44,
                 borderRadius: 8,
                 border: "1px solid #EEF2F7",
-                color: "#0B1F3A",
-                fontSize: 14,
+                color: tokens.navy,
+                fontSize: tokens.fontSize.md,
                 ...POPPINS,
               }}
             />
 
-            <label className="text-[12px] font-semibold mt-3 block" style={{ color: "#0B1F3A" }}>
+            <label className="text-[12px] font-semibold mt-3 block" style={{ color: tokens.navy }}>
               Time
             </label>
             <input
@@ -209,13 +210,13 @@ function RescheduleLessonPage() {
                 height: 44,
                 borderRadius: 8,
                 border: "1px solid #EEF2F7",
-                color: "#0B1F3A",
-                fontSize: 14,
+                color: tokens.navy,
+                fontSize: tokens.fontSize.md,
                 ...POPPINS,
               }}
             />
 
-            <label className="text-[12px] font-semibold mt-3 block" style={{ color: "#0B1F3A" }}>
+            <label className="text-[12px] font-semibold mt-3 block" style={{ color: tokens.navy }}>
               Duration
             </label>
             <select
@@ -226,8 +227,8 @@ function RescheduleLessonPage() {
                 height: 44,
                 borderRadius: 8,
                 border: "1px solid #EEF2F7",
-                color: "#0B1F3A",
-                fontSize: 14,
+                color: tokens.navy,
+                fontSize: tokens.fontSize.md,
                 ...POPPINS,
               }}
             >
@@ -242,7 +243,7 @@ function RescheduleLessonPage() {
           <SectionHeader>NOTIFY PUPIL</SectionHeader>
           <Card>
             <div className="flex items-center justify-between">
-              <span className="text-[14px] font-medium" style={{ color: "#0B1F3A" }}>
+              <span className="text-[14px] font-medium" style={{ color: tokens.navy }}>
                 Send SMS notification to pupil
               </span>
               <button
@@ -275,7 +276,7 @@ function RescheduleLessonPage() {
 
             {notify && (
               <div className="mt-3">
-                <label className="text-[12px] font-semibold" style={{ color: "#0B1F3A" }}>
+                <label className="text-[12px] font-semibold" style={{ color: tokens.navy }}>
                   SMS preview
                 </label>
                 <textarea
@@ -289,14 +290,14 @@ function RescheduleLessonPage() {
                   style={{
                     borderRadius: 8,
                     border: "1px solid #EEF2F7",
-                    color: "#0B1F3A",
-                    fontSize: 14,
+                    color: tokens.navy,
+                    fontSize: tokens.fontSize.md,
                     resize: "none",
                     ...POPPINS,
                   }}
                 />
                 {!lesson.pupils?.phone && (
-                  <div className="text-[12px] mt-1" style={{ color: "#1877D6" }}>
+                  <div className="text-[12px] mt-1" style={{ color: tokens.blue }}>
                     No phone number on file for this pupil — SMS will not be sent.
                   </div>
                 )}

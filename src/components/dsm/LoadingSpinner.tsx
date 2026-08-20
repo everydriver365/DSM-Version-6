@@ -1,4 +1,5 @@
 import React from "react";
+import { tokens } from "@/lib/tokens";
 
 export function LoadingSpinner({
   size = 24,
@@ -44,8 +45,8 @@ export function PageLoader() {
         padding: 40,
         color: "#6B7280",
         fontFamily: "Poppins, sans-serif",
-        fontSize: 14,
-        fontWeight: 500,
+        fontSize: tokens.fontSize.md,
+        fontWeight: tokens.fontWeight.medium,
       }}
     >
       <LoadingSpinner />
@@ -70,7 +71,7 @@ export function SkeletonRow() {
         style={{
           gap: 12,
           padding: "13px 16px",
-          background: "#FFFFFF",
+          background: tokens.white,
         }}
       >
         {/* Avatar skeleton */}
@@ -79,7 +80,7 @@ export function SkeletonRow() {
             width: 40,
             height: 40,
             borderRadius: "50%",
-            backgroundColor: "#EEF2F7",
+            backgroundColor: tokens.canvas,
             animation: "dsm-pulse 1.6s ease-in-out infinite",
             flexShrink: 0,
           }}
@@ -90,7 +91,7 @@ export function SkeletonRow() {
             style={{
               height: 14,
               width: "60%",
-              backgroundColor: "#EEF2F7",
+              backgroundColor: tokens.canvas,
               borderRadius: 8,
               animation: "dsm-pulse 1.6s ease-in-out infinite",
             }}
@@ -99,7 +100,7 @@ export function SkeletonRow() {
             style={{
               height: 11,
               width: "40%",
-              backgroundColor: "#EEF2F7",
+              backgroundColor: tokens.canvas,
               borderRadius: 8,
               animation: "dsm-pulse 1.6s ease-in-out infinite",
             }}
@@ -115,7 +116,7 @@ export function SkeletonCard({ rows = 3 }: { rows?: number }) {
     <div
       style={{
         margin: "0 16px",
-        background: "#FFFFFF",
+        background: tokens.white,
         borderRadius: 8,
         overflow: "hidden",
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
@@ -125,7 +126,7 @@ export function SkeletonCard({ rows = 3 }: { rows?: number }) {
         <div key={i}>
           <SkeletonRow />
           {i < rows - 1 && (
-            <div style={{ height: 1, background: "#E4E8EF", marginLeft: 74 }} />
+            <div style={{ height: 1, background: tokens.border, marginLeft: 74 }} />
           )}
         </div>
       ))}

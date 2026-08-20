@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { Capacitor } from "@capacitor/core";
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import {
@@ -477,7 +478,7 @@ function LiveNewsPage() {
           fontFamily: "Poppins, sans-serif",
           position: "relative",
           color: isActive ? "#0B1F3A" : "#9CA3AF",
-          fontSize: 14,
+          fontSize: tokens.fontSize.md,
           fontWeight: isActive ? 700 : 500,
         }}
       >
@@ -489,8 +490,8 @@ function LiveNewsPage() {
             justifyContent: "center",
             background: isActive ? "#1877D6" : "#E4E8EF",
             color: isActive ? "#fff" : "#9CA3AF",
-            fontSize: 10,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.xs,
+            fontWeight: tokens.fontWeight.bold,
             borderRadius: 8,
             padding: "1px 6px",
             marginLeft: 6,
@@ -507,7 +508,7 @@ function LiveNewsPage() {
               left: 0,
               right: 0,
               height: 2,
-              background: "#1877D6",
+              background: tokens.blue,
               borderRadius: "8px 8px 0 0",
             }}
           />
@@ -544,7 +545,7 @@ function LiveNewsPage() {
         {activeTab === "live" && (
           <section>
             {sessions === null ? (
-              <div style={{ padding: "24px 0", textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>
+              <div style={{ padding: "24px 0", textAlign: "center", color: tokens.textMuted, fontSize: 13 }}>
                 Loading…
               </div>
             ) : allSessions.length === 0 ? (
@@ -607,11 +608,11 @@ function LiveNewsPage() {
                         >
                           {/* Time + duration */}
                           <div style={{ width: 46, flexShrink: 0 }}>
-                            <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.1 }}>
+                            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy, lineHeight: 1.1 }}>
                               {startLabel}
                             </div>
                             {durLabel && (
-                              <div style={{ fontSize: 12, fontWeight: 600, color: "#8792A2", marginTop: 2 }}>
+                              <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#8792A2", marginTop: 2 }}>
                                 {durLabel}
                               </div>
                             )}
@@ -633,9 +634,9 @@ function LiveNewsPage() {
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div
                               style={{
-                                fontSize: 14,
-                                fontWeight: 700,
-                                color: "#0B1F3A",
+                                fontSize: tokens.fontSize.md,
+                                fontWeight: tokens.fontWeight.bold,
+                                color: tokens.navy,
                                 lineHeight: 1.25,
                                 overflowWrap: "break-word",
                                 wordBreak: "break-word",
@@ -647,7 +648,7 @@ function LiveNewsPage() {
                               <div
                                 style={{
                                   fontSize: 12,
-                                  color: "#6B7686",
+                                  color: tokens.textSecondary,
                                   marginTop: 4,
                                   lineHeight: 1.35,
                                   display: "-webkit-box",
@@ -665,9 +666,9 @@ function LiveNewsPage() {
                               <span
                                 style={{
                                   background: "#FEE2E2",
-                                  color: "#CC2229",
-                                  fontSize: 11,
-                                  fontWeight: 700,
+                                  color: tokens.red,
+                                  fontSize: tokens.fontSize.sm,
+                                  fontWeight: tokens.fontWeight.bold,
                                   borderRadius: 999,
                                   padding: "4px 10px",
                                   display: "inline-block",
@@ -702,7 +703,7 @@ function LiveNewsPage() {
                                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
                               />
                             ) : (
-                              <span style={{ fontSize: 20, fontWeight: 800, color: "rgba(255,255,255,0.7)" }}>
+                              <span style={{ fontSize: 20, fontWeight: tokens.fontWeight.extrabold, color: "rgba(255,255,255,0.7)" }}>
                                 {formatSessionDay(s.session_date)}
                               </span>
                             )}
@@ -721,7 +722,7 @@ function LiveNewsPage() {
         {activeTab === "news" && (
           <section>
             {articles === null ? (
-              <div style={{ padding: "24px 0", textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>
+              <div style={{ padding: "24px 0", textAlign: "center", color: tokens.textMuted, fontSize: 13 }}>
                 Loading…
               </div>
             ) : articles.length === 0 ? (
@@ -788,9 +789,9 @@ function LiveNewsPage() {
                       <span
                         style={{
                           background: "#EFF6FF",
-                          color: "#1877D6",
-                          fontSize: 10,
-                          fontWeight: 700,
+                          color: tokens.blue,
+                          fontSize: tokens.fontSize.xs,
+                          fontWeight: tokens.fontWeight.bold,
                           borderRadius: 8,
                           padding: "2px 8px",
                           display: "inline-block",
@@ -802,9 +803,9 @@ function LiveNewsPage() {
                       </span>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 700,
-                          color: "#0B1F3A",
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.bold,
+                          color: tokens.navy,
                           fontFamily: "Poppins, sans-serif",
                           display: "-webkit-box",
                           WebkitLineClamp: 2,
@@ -816,7 +817,7 @@ function LiveNewsPage() {
                       >
                         {sanitizeNewsTitle(a.title)}
                       </div>
-                      <div style={{ fontSize: 11, color: "#9CA3AF" }}>
+                      <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted }}>
                         {formatDate(a.published_at)}
                       </div>
                     </div>
@@ -830,7 +831,7 @@ function LiveNewsPage() {
         {activeTab === "podcasts" && (
           <section>
             {episodes === null ? (
-              <div style={{ padding: "24px 0", textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>
+              <div style={{ padding: "24px 0", textAlign: "center", color: tokens.textMuted, fontSize: 13 }}>
                 Loading…
               </div>
             ) : episodes.length === 0 ? (
@@ -863,7 +864,7 @@ function LiveNewsPage() {
                           marginBottom: 8,
                         }}
                       >
-                        <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
+                        <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
                           Continue listening
                         </div>
                         {inProgress.length > 1 && (
@@ -875,10 +876,10 @@ function LiveNewsPage() {
                               background: "none",
                               padding: 0,
                               cursor: "pointer",
-                              color: "#1877D6",
+                              color: tokens.blue,
                               fontFamily: "Poppins, sans-serif",
                               fontSize: 12.5,
-                              fontWeight: 600,
+                              fontWeight: tokens.fontWeight.semibold,
                             }}
                           >
                             View all
@@ -911,7 +912,7 @@ function LiveNewsPage() {
                             borderRadius: 8,
                             overflow: "hidden",
                             flexShrink: 0,
-                            background: "#EEF2F7",
+                            background: tokens.canvas,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -951,15 +952,15 @@ function LiveNewsPage() {
                                 flex: 1,
                                 height: 4,
                                 borderRadius: 8,
-                                background: "#E4E8EF",
+                                background: tokens.border,
                                 overflow: "hidden",
                               }}
                             >
                               <div
-                                style={{ width: `${pct}%`, height: "100%", background: "#1877D6" }}
+                                style={{ width: `${pct}%`, height: "100%", background: tokens.blue }}
                               />
                             </div>
-                            <span style={{ fontSize: 11, color: "#6B7686", whiteSpace: "nowrap" }}>
+                            <span style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, whiteSpace: "nowrap" }}>
                               {remainingLabel(entry) ?? ""}
                             </span>
                           </div>
@@ -977,7 +978,7 @@ function LiveNewsPage() {
                               height: 48,
                               borderRadius: 8,
                               border: "none",
-                              background: "#1877D6",
+                              background: tokens.blue,
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
@@ -993,9 +994,9 @@ function LiveNewsPage() {
                           </button>
                           <div
                             style={{
-                              fontSize: 11,
-                              fontWeight: 600,
-                              color: "#1877D6",
+                              fontSize: tokens.fontSize.sm,
+                              fontWeight: tokens.fontWeight.semibold,
+                              color: tokens.blue,
                               marginTop: 4,
                             }}
                           >
@@ -1017,7 +1018,7 @@ function LiveNewsPage() {
                       marginBottom: 8,
                     }}
                   >
-                    <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>Featured</div>
+                    <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>Featured</div>
                     <button
                       type="button"
                       onClick={() => setShowFilter("featured")}
@@ -1026,10 +1027,10 @@ function LiveNewsPage() {
                         background: "none",
                         padding: 0,
                         cursor: "pointer",
-                        color: "#1877D6",
+                        color: tokens.blue,
                         fontFamily: "Poppins, sans-serif",
                         fontSize: 12.5,
-                        fontWeight: 600,
+                        fontWeight: tokens.fontWeight.semibold,
                       }}
                     >
                       View all
@@ -1067,7 +1068,7 @@ function LiveNewsPage() {
                               height: 116,
                               borderRadius: 8,
                               overflow: "hidden",
-                              background: "#EEF2F7",
+                              background: tokens.canvas,
                               border: `1px solid ${active ? "#1877D6" : "#E4E8EF"}`,
                               boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                               cursor: "pointer",
@@ -1157,7 +1158,7 @@ function LiveNewsPage() {
                     marginBottom: searchOpen ? 10 : 8,
                   }}
                 >
-                  <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
+                  <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
                     Browse by category
                   </div>
                   <button
@@ -1212,7 +1213,7 @@ function LiveNewsPage() {
                         padding: "12px 10px",
                         fontFamily: "Poppins, sans-serif",
                         fontSize: 13.5,
-                        color: "#0B1F3A",
+                        color: tokens.navy,
                       }}
                     />
                     {podcastQuery && (
@@ -1263,7 +1264,7 @@ function LiveNewsPage() {
                           color: active ? "#fff" : "#0B1F3A",
                           fontFamily: "Poppins, sans-serif",
                           fontSize: 12.5,
-                          fontWeight: 600,
+                          fontWeight: tokens.fontWeight.semibold,
                           cursor: "pointer",
                         }}
                       >
@@ -1321,7 +1322,7 @@ function LiveNewsPage() {
                           color: active ? "#1877D6" : "#6B7686",
                           fontFamily: "Poppins, sans-serif",
                           fontSize: 12.5,
-                          fontWeight: 600,
+                          fontWeight: tokens.fontWeight.semibold,
                           cursor: "pointer",
                         }}
                       >
@@ -1329,8 +1330,8 @@ function LiveNewsPage() {
                         {count > 0 && (
                           <span
                             style={{
-                              fontSize: 11,
-                              fontWeight: 700,
+                              fontSize: tokens.fontSize.sm,
+                              fontWeight: tokens.fontWeight.bold,
                               color: active ? "#1877D6" : "#9CA3AF",
                             }}
                           >
@@ -1342,7 +1343,7 @@ function LiveNewsPage() {
                   })}
                 </div>
 
-                <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", margin: "8px 0 8px" }}>
+                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy, margin: "8px 0 8px" }}>
                   Latest episodes
                 </div>
 
@@ -1389,13 +1390,13 @@ function LiveNewsPage() {
                     alignItems: "center",
                     gap: 6,
                     marginBottom: 10,
-                    color: "#6B7686",
+                    color: tokens.textSecondary,
                     fontSize: 12,
                   }}
                 >
                   <IconBookmarkFilled size={14} color="#1877D6" />
                   <span>
-                    <strong style={{ color: "#0B1F3A" }}>{savedEpisodes.length}</strong> saved{" "}
+                    <strong style={{ color: tokens.navy }}>{savedEpisodes.length}</strong> saved{" "}
                     {savedEpisodes.length === 1 ? "episode" : "episodes"} on this device
                   </span>
                 </div>
@@ -1526,7 +1527,7 @@ function ProgressBar({
       disabled={!duration}
       aria-label="Seek"
       onChange={(e) => onSeek(Number(e.target.value))}
-      style={{ width: "100%", accentColor: "#1877D6", cursor: duration ? "pointer" : "default" }}
+      style={{ width: "100%", accentColor: tokens.blue, cursor: duration ? "pointer" : "default" }}
     />
   );
 }
@@ -1591,7 +1592,7 @@ function MiniPlayer({
               flexShrink: 0,
               borderRadius: 8,
               overflow: "hidden",
-              background: "#EEF2F7",
+              background: tokens.canvas,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -1611,8 +1612,8 @@ function MiniPlayer({
             <div
               style={{
                 fontSize: 12.5,
-                fontWeight: 700,
-                color: "#0B1F3A",
+                fontWeight: tokens.fontWeight.bold,
+                color: tokens.navy,
                 lineHeight: 1.35,
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
@@ -1626,7 +1627,7 @@ function MiniPlayer({
             <div
               style={{
                 fontSize: 10.5,
-                color: "#9CA3AF",
+                color: tokens.textMuted,
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -1646,7 +1647,7 @@ function MiniPlayer({
             height: 38,
             borderRadius: 8,
             border: "none",
-            background: "#1877D6",
+            background: tokens.blue,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -1698,13 +1699,13 @@ function MiniPlayer({
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2 }}>
-        <span style={{ fontSize: 10, color: "#9CA3AF", width: 34 }}>
+        <span style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted, width: 34 }}>
           {formatClock(currentTime)}
         </span>
         <div style={{ flex: 1 }}>
           <ProgressBar currentTime={currentTime} duration={duration} onSeek={onSeek} />
         </div>
-        <span style={{ fontSize: 10, color: "#9CA3AF", width: 34, textAlign: "right" }}>
+        <span style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted, width: 34, textAlign: "right" }}>
           {formatClock(duration)}
         </span>
       </div>
@@ -1790,8 +1791,8 @@ function EpisodeModal({
         background: tab === key ? "#fff" : "transparent",
         boxShadow: tab === key ? "0 1px 3px rgba(11,31,58,0.10)" : "none",
         color: disabled ? "#C3CAD4" : tab === key ? "#0B1F3A" : "#6B7686",
-        fontSize: 13,
-        fontWeight: 700,
+        fontSize: tokens.fontSize.base,
+        fontWeight: tokens.fontWeight.bold,
         cursor: disabled ? "not-allowed" : "pointer",
         ...POPPINS,
       }}
@@ -1844,7 +1845,7 @@ function EpisodeModal({
               flexShrink: 0,
               borderRadius: 8,
               overflow: "hidden",
-              background: "#EEF2F7",
+              background: tokens.canvas,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -1900,7 +1901,7 @@ function EpisodeModal({
               flexShrink: 0,
               borderRadius: 8,
               border: "none",
-              background: "#EEF2F7",
+              background: tokens.canvas,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -1933,7 +1934,7 @@ function EpisodeModal({
                   height: 52,
                   borderRadius: 8,
                   border: "none",
-                  background: "#1877D6",
+                  background: tokens.blue,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -1959,8 +1960,8 @@ function EpisodeModal({
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    fontSize: 10,
-                    color: "#9CA3AF",
+                    fontSize: tokens.fontSize.xs,
+                    color: tokens.textMuted,
                   }}
                 >
                   <span>{formatClock(isCurrent ? currentTime : 0)}</span>
@@ -2004,7 +2005,7 @@ function EpisodeModal({
                     gap: 10,
                   }}
                 >
-                  <span style={{ fontSize: 11, fontWeight: 600, color: finished ? "#16A34A" : "#6B7686" }}>
+                  <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: finished ? "#16A34A" : "#6B7686" }}>
                     {finished ? "Played" : `Resumes with ${left}`}
                   </span>
                   <button
@@ -2014,9 +2015,9 @@ function EpisodeModal({
                       border: "none",
                       background: "transparent",
                       padding: 0,
-                      fontSize: 11,
-                      fontWeight: 700,
-                      color: "#1877D6",
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.bold,
+                      color: tokens.blue,
                       cursor: "pointer",
                       fontFamily: "Poppins, sans-serif",
                     }}
@@ -2041,7 +2042,7 @@ function EpisodeModal({
                   color: isSaved ? "#1877D6" : "#6B7686",
                   padding: "6px 10px",
                   fontSize: 12,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   cursor: "pointer",
                   ...POPPINS,
                 }}
@@ -2064,10 +2065,10 @@ function EpisodeModal({
                   border: "1px solid #1877D6",
                   borderRadius: 8,
                   background: "#fff",
-                  color: "#1877D6",
+                  color: tokens.blue,
                   padding: "6px 10px",
                   fontSize: 12,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   cursor: "pointer",
                   ...POPPINS,
                 }}
@@ -2105,7 +2106,7 @@ function EpisodeModal({
               border: "1px solid #E4E8EF",
               borderRadius: 8,
               padding: 14,
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               lineHeight: 1.6,
               color: "#435063",
               whiteSpace: "pre-wrap",
@@ -2143,8 +2144,8 @@ function EmptyState({ message }: { message: string }) {
         borderRadius: 8,
         padding: 32,
         textAlign: "center",
-        color: "#9CA3AF",
-        fontSize: 14,
+        color: tokens.textMuted,
+        fontSize: tokens.fontSize.md,
         ...POPPINS,
       }}
     >
@@ -2252,11 +2253,11 @@ function EpisodeCard({
               marginLeft: 6,
               verticalAlign: "middle",
               background: "#EFF6FF",
-              color: "#1877D6",
+              color: tokens.blue,
               borderRadius: 8,
               padding: "2px 6px",
-              fontSize: 10,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.xs,
+              fontWeight: tokens.fontWeight.bold,
               marginBottom: 5,
             }}
           >
@@ -2308,7 +2309,7 @@ function EpisodeCard({
                   style={{
                     height: 3,
                     borderRadius: 8,
-                    background: "#E4E8EF",
+                    background: tokens.border,
                     overflow: "hidden",
                   }}
                 >
@@ -2323,8 +2324,8 @@ function EpisodeCard({
                 <div
                   style={{
                     marginTop: 3,
-                    fontSize: 10,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.xs,
+                    fontWeight: tokens.fontWeight.semibold,
                     color: finished ? "#16A34A" : "#1877D6",
                   }}
                 >
@@ -2380,7 +2381,7 @@ function EpisodeCard({
             flexShrink: 0,
             borderRadius: 8,
             border: "none",
-            background: "#1877D6",
+            background: tokens.blue,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

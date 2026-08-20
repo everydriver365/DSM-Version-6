@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { IconCircleCheck, IconAlertCircle, IconRefresh, IconDownload, IconX } from "@tabler/icons-react";
 import {
   PUPIL_FIELDS,
@@ -89,7 +90,7 @@ export default function ImportResults({
     <div
       className="mt-4"
       style={{
-        backgroundColor: "#FFFFFF",
+        backgroundColor: tokens.white,
         borderRadius: 8,
         boxShadow: "0 2px 10px rgba(11,31,58,0.08)",
         overflow: "hidden",
@@ -98,7 +99,7 @@ export default function ImportResults({
       {/* Header */}
       <div
         className="flex items-center justify-between"
-        style={{ backgroundColor: "#0B1F3A", padding: "14px 16px" }}
+        style={{ backgroundColor: tokens.navy, padding: "14px 16px" }}
       >
         <div>
           <div className="text-[15px] font-semibold text-white">Import results</div>
@@ -212,7 +213,7 @@ export default function ImportResults({
                                 marginTop: 2,
                                 height: 36,
                                 borderRadius: 8,
-                                backgroundColor: "#FFFFFF",
+                                backgroundColor: tokens.white,
                                 borderWidth: "0.5px",
                                 borderStyle: "solid",
                                 borderColor: fieldErr ? "#CC2229" : "#E4E9F0",
@@ -220,7 +221,7 @@ export default function ImportResults({
                               }}
                             />
                             {fieldErr && (
-                              <div className="text-[10px] mt-1" style={{ color: "#CC2229" }}>
+                              <div className="text-[10px] mt-1" style={{ color: tokens.red }}>
                                 {fieldErr}
                               </div>
                             )}

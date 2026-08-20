@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconChevronLeft, IconChevronRight, IconRosette, IconStar, IconX } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
@@ -135,7 +136,7 @@ function InstructorMiniSite() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#FFFFFF", color: "#0B1F3A", fontFamily: "Poppins, sans-serif" }}>
+      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: tokens.white, color: tokens.navy, fontFamily: "Poppins, sans-serif" }}>
         Loading…
       </div>
     );
@@ -143,13 +144,13 @@ function InstructorMiniSite() {
 
   if (!instructor) {
     return (
-      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#FFFFFF", color: "#0B1F3A", fontFamily: "Poppins, sans-serif", padding: 24, textAlign: "center" }}>
+      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: tokens.white, color: tokens.navy, fontFamily: "Poppins, sans-serif", padding: 24, textAlign: "center" }}>
         <div>
-          <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 12 }}>This page isn't available</h1>
+          <h1 style={{ fontSize: tokens.fontSize.hero, fontWeight: tokens.fontWeight.bold, marginBottom: 12 }}>This page isn't available</h1>
           <p style={{ color: "#475569", marginBottom: 20 }}>
             The instructor page you're looking for doesn't exist or isn't published.
           </p>
-          <Link to="/courses" style={{ color: "#1877D6", fontWeight: 600, textDecoration: "underline" }}>
+          <Link to="/courses" style={{ color: tokens.blue, fontWeight: tokens.fontWeight.semibold, textDecoration: "underline" }}>
             Browse all courses →
           </Link>
         </div>
@@ -174,9 +175,9 @@ function InstructorMiniSite() {
     borderRadius: 8,
     background: accent,
     color: theme.isDark && accent === "#FFFFFF" ? "#000" : "#FFFFFF",
-    fontWeight: 600,
+    fontWeight: tokens.fontWeight.semibold,
     textDecoration: "none",
-    fontSize: 16,
+    fontSize: tokens.fontSize.lg,
     border: "none",
     cursor: "pointer",
   };
@@ -198,9 +199,9 @@ function InstructorMiniSite() {
           }}
         >
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.1))" }} />
-          <div style={{ position: "relative", color: "#FFFFFF", maxWidth: 800 }}>
+          <div style={{ position: "relative", color: tokens.white, maxWidth: 800 }}>
             <Badge accent={accent} />
-            <h1 style={{ fontSize: "clamp(32px, 6vw, 56px)", fontWeight: 700, margin: "12px 0 8px", lineHeight: 1.1 }}>{name}</h1>
+            <h1 style={{ fontSize: "clamp(32px, 6vw, 56px)", fontWeight: tokens.fontWeight.bold, margin: "12px 0 8px", lineHeight: 1.1 }}>{name}</h1>
             {avgRating > 0 && <Rating value={avgRating} count={reviews.length} color="#FFFFFF" />}
             <div style={{ marginTop: 20 }}>
               <a href={bookHref} style={btnPrimary}>Book a lesson</a>
@@ -219,7 +220,7 @@ function InstructorMiniSite() {
             />
           ) : null}
           <Badge accent={accent} />
-          <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", fontWeight: 700, margin: "12px 0 8px" }}>{name}</h1>
+          <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", fontWeight: tokens.fontWeight.bold, margin: "12px 0 8px" }}>{name}</h1>
           {avgRating > 0 && (
             <div style={{ display: "flex", justifyContent: "center" }}>
               <Rating value={avgRating} count={reviews.length} color={theme.primary} />
@@ -243,7 +244,7 @@ function InstructorMiniSite() {
           />
           <div style={{ padding: 40, display: "flex", flexDirection: "column", justifyContent: "center" }}>
             <Badge accent={accent} />
-            <h1 style={{ fontSize: "clamp(28px, 4vw, 44px)", fontWeight: 700, margin: "12px 0 8px" }}>{name}</h1>
+            <h1 style={{ fontSize: "clamp(28px, 4vw, 44px)", fontWeight: tokens.fontWeight.bold, margin: "12px 0 8px" }}>{name}</h1>
             {avgRating > 0 && <Rating value={avgRating} count={reviews.length} color={theme.primary} />}
             <div style={{ marginTop: 24 }}>
               <a href={bookHref} style={btnPrimary}>Book a lesson</a>
@@ -309,22 +310,22 @@ function InstructorMiniSite() {
                   padding: 20,
                 }}
               >
-                <div style={{ fontSize: 12, fontWeight: 600, color: accent, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: accent, textTransform: "uppercase", letterSpacing: 0.5 }}>
                   {c.course_type}
                 </div>
-                <div style={{ fontSize: 18, fontWeight: 700, margin: "6px 0 12px", color: theme.primary }}>{c.name}</div>
-                <div style={{ fontSize: 14, color: theme.muted, marginBottom: 4 }}>{c.total_hours} hours</div>
+                <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.bold, margin: "6px 0 12px", color: theme.primary }}>{c.name}</div>
+                <div style={{ fontSize: tokens.fontSize.md, color: theme.muted, marginBottom: 4 }}>{c.total_hours} hours</div>
                 {c.start_date && (
-                  <div style={{ fontSize: 14, color: theme.muted, marginBottom: 10 }}>
+                  <div style={{ fontSize: tokens.fontSize.md, color: theme.muted, marginBottom: 10 }}>
                     Starts {new Date(c.start_date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
                   </div>
                 )}
-                <div style={{ fontSize: 22, fontWeight: 700, color: theme.primary }}>£{Number(c.price).toFixed(0)}</div>
+                <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.bold, color: theme.primary }}>£{Number(c.price).toFixed(0)}</div>
               </div>
             ))}
           </div>
           <div style={{ marginTop: 20 }}>
-            <a href={bookHref} style={{ color: accent, fontWeight: 600, textDecoration: "underline" }}>
+            <a href={bookHref} style={{ color: accent, fontWeight: tokens.fontWeight.semibold, textDecoration: "underline" }}>
               View all courses →
             </a>
           </div>
@@ -353,7 +354,7 @@ function InstructorMiniSite() {
                   </p>
                 )}
                 {r.pupil_name && (
-                  <div style={{ fontSize: 13, fontWeight: 600, color: theme.primary }}>— {r.pupil_name}</div>
+                  <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: theme.primary }}>— {r.pupil_name}</div>
                 )}
               </div>
             ))}
@@ -363,14 +364,14 @@ function InstructorMiniSite() {
 
       {/* CTA */}
       <section style={{ padding: "64px 24px", textAlign: "center", background: theme.surface }}>
-        <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 700, marginBottom: 12, color: theme.primary }}>
+        <h2 style={{ fontSize: "clamp(26px, 4vw, 38px)", fontWeight: tokens.fontWeight.bold, marginBottom: 12, color: theme.primary }}>
           Ready to start driving?
         </h2>
         <p style={{ fontSize: 17, color: theme.muted, marginBottom: 24 }}>
           Book your first lesson with {name.split(" ")[0]} today.
         </p>
         <a href={bookHref} style={btnPrimary}>Book your first lesson</a>
-        <div style={{ marginTop: 40, fontSize: 13, color: theme.muted }}>
+        <div style={{ marginTop: 40, fontSize: tokens.fontSize.base, color: theme.muted }}>
           Powered by{" "}
           <a href="/" style={{ color: accent, textDecoration: "underline" }}>
             EveryDriver
@@ -433,7 +434,7 @@ function InstructorMiniSite() {
 
 const h2Style: React.CSSProperties = {
   fontSize: "clamp(24px, 3vw, 32px)",
-  fontWeight: 700,
+  fontWeight: tokens.fontWeight.bold,
   marginBottom: 20,
 };
 
@@ -453,11 +454,11 @@ function Badge({ accent }: { accent: string }) {
         alignItems: "center",
         gap: 6,
         background: accent,
-        color: "#FFFFFF",
+        color: tokens.white,
         padding: "6px 12px",
         borderRadius: 999,
         fontSize: 12,
-        fontWeight: 600,
+        fontWeight: tokens.fontWeight.semibold,
         letterSpacing: 0.3,
       }}
     >
@@ -474,7 +475,7 @@ function Rating({ value, count, color }: { value: number; count?: number; color:
       {[1, 2, 3, 4, 5].map((i) => (
         <IconStar key={i} size={18} fill={i <= full ? color : "none"} stroke={color} />
       ))}
-      <span style={{ fontSize: 14, fontWeight: 600 }}>
+      <span style={{ fontSize: tokens.fontSize.md, fontWeight: 600 }}>
         {value.toFixed(1)}
         {count !== undefined && ` (${count})`}
       </span>

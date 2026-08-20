@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconCircleCheck, IconHome } from "@tabler/icons-react";
 
@@ -48,7 +49,7 @@ function PaymentCompletePage() {
     <div
       style={{
         minHeight: "100dvh",
-        background: "#EEF2F7",
+        background: tokens.canvas,
         fontFamily: FONT,
         display: "flex",
         flexDirection: "column",
@@ -76,9 +77,9 @@ function PaymentCompletePage() {
       <h1
         style={{
           margin: 0,
-          fontSize: 22,
-          fontWeight: 700,
-          color: "#0B1F3A",
+          fontSize: tokens.fontSize.xxl,
+          fontWeight: tokens.fontWeight.bold,
+          color: tokens.navy,
           fontFamily: FONT,
         }}
       >
@@ -88,8 +89,8 @@ function PaymentCompletePage() {
       <p
         style={{
           margin: "10px 0 0",
-          fontSize: 14,
-          color: "#6B7686",
+          fontSize: tokens.fontSize.md,
+          color: tokens.textSecondary,
           lineHeight: 1.5,
           maxWidth: 320,
         }}
@@ -98,7 +99,7 @@ function PaymentCompletePage() {
         notified.
       </p>
 
-      <div style={{ fontSize: 12, color: "#9CA3AF", margin: "20px 0 16px" }}>
+      <div style={{ fontSize: 12, color: tokens.textMuted, margin: "20px 0 16px" }}>
         Returning to DSM in {countdown}s…
       </div>
 
@@ -109,13 +110,13 @@ function PaymentCompletePage() {
           display: "flex",
           alignItems: "center",
           gap: 8,
-          background: "#1877D6",
+          background: tokens.blue,
           color: "#fff",
           border: "none",
           borderRadius: 8,
           padding: "12px 24px",
-          fontSize: 14,
-          fontWeight: 700,
+          fontSize: tokens.fontSize.md,
+          fontWeight: tokens.fontWeight.bold,
           cursor: "pointer",
           fontFamily: FONT,
         }}

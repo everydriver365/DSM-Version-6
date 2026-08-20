@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconArrowLeft, IconCalendar, IconChevronDown, IconClock, IconPlus, IconRepeat, IconShield, IconX } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
@@ -88,7 +89,7 @@ function SectionHead({ icon, title, tight }: { icon: React.ReactNode; title: str
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: tight ? 8 : 14 }}>
       <IconChip>{icon}</IconChip>
-      <div style={{ fontSize: 15, fontWeight: 600, color: NAVY, ...FONT }}>{title}</div>
+      <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: NAVY, ...FONT }}>{title}</div>
     </div>
   );
 }
@@ -108,7 +109,7 @@ function PrimaryButton({ onClick, children, disabled }: { onClick: () => void; c
       style={{
         background: NAVY, color: "#fff", width: "100%",
         borderRadius: 8, padding: "13px 0", border: "none",
-        fontSize: 14, fontWeight: 500, marginTop: 14,
+        fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, marginTop: 14,
         opacity: disabled ? 0.6 : 1, cursor: disabled ? "default" : "pointer",
         ...FONT,
       }}
@@ -125,7 +126,7 @@ function DashedButton({ onClick, children }: { onClick: () => void; children: Re
         background: "transparent", color: BLUE, width: "100%",
         border: `1.5px dashed ${DASHED_BORDER}`,
         borderRadius: 8, padding: "12px 0",
-        fontSize: 14, fontWeight: 500, marginTop: 8, cursor: "pointer",
+        fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, marginTop: 8, cursor: "pointer",
         display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
         ...FONT,
       }}
@@ -160,7 +161,7 @@ function TimeField({ value, onChange }: { value: string; onChange: (v: string) =
       padding: "7px 10px", display: "flex", alignItems: "center",
       justifyContent: "space-between", cursor: "pointer", position: "relative",
     }}>
-      <span style={{ fontSize: 13, fontWeight: 500, color: NAVY }}>{value}</span>
+      <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: NAVY }}>{value}</span>
       <IconClock size={13} color={MUTED} />
       <input
         type="time" value={value}
@@ -180,12 +181,12 @@ function SelectField({ value, onChange, options, label }: {
 }) {
   return (
     <div style={{ flex: 1 }}>
-      <div style={{ fontSize: 11, color: MUTED, marginBottom: 6 }}>{label}</div>
+      <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, marginBottom: 6 }}>{label}</div>
       <div style={{
         position: "relative", background: FIELD_BG, borderRadius: 8,
         padding: "10px 12px", display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
-        <span style={{ fontSize: 13, fontWeight: 500, color: NAVY }}>
+        <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: NAVY }}>
           {options.find(o => o.v === value)?.label ?? value}
         </span>
         <IconChevronDown size={13} color={MUTED} />
@@ -421,7 +422,7 @@ function AvailabilitySettingsPage() {
     <div style={{ minHeight: "100vh", background: "#F5F7FA", paddingBottom: 40, ...FONT }}>
       <div style={{
         position: "sticky", top: 0, zIndex: 40, display: "flex", alignItems: "center", gap: 12,
-        background: "#0B1F3A", height: 52, padding: "0 16px", borderRadius: "0 0 8px 8px",
+        background: tokens.navy, height: 52, padding: "0 16px", borderRadius: "0 0 8px 8px",
       }}>
         <button
           type="button"
@@ -434,7 +435,7 @@ function AvailabilitySettingsPage() {
         >
           <IconArrowLeft size={22} color="#fff" />
         </button>
-        <div style={{ color: "#fff", fontSize: 24, fontWeight: 800, letterSpacing: "-0.4px", ...FONT }}>
+        <div style={{ color: "#fff", fontSize: 24, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.4px", ...FONT }}>
           My Availability
         </div>
       </div>
@@ -456,7 +457,7 @@ function AvailabilitySettingsPage() {
           }}>
             <IconClock size={18} color="#1877D6" />
           </div>
-          <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: "-0.2px", color: "#000", ...FONT }}>
+          <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.2px", color: "#000", ...FONT }}>
             Working hours
           </div>
         </div>
@@ -495,7 +496,7 @@ function AvailabilitySettingsPage() {
                     }} />
                   </button>
                   <span style={{
-                    width: 38, fontSize: 15.5, fontWeight: 800, letterSpacing: "-0.1px",
+                    width: 38, fontSize: 15.5, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.1px",
                     color: cfg.active ? "#000" : "#B0B0B5", ...FONT,
                   }}>
                     {DAY_SHORT[d]}
@@ -508,7 +509,7 @@ function AvailabilitySettingsPage() {
                         padding: "9px 11px", display: "flex", alignItems: "center", justifyContent: "space-between",
                         cursor: "pointer", position: "relative",
                       }}>
-                        <span style={{ fontSize: 14, fontWeight: 700, color: "#000", ...FONT }}>{cfg.start}</span>
+                        <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: "#000", ...FONT }}>{cfg.start}</span>
                         <IconClock size={13} color="#B0B0B5" />
                         <input
                           type="time" value={cfg.start}
@@ -519,13 +520,13 @@ function AvailabilitySettingsPage() {
                           }}
                         />
                       </label>
-                      <span style={{ fontSize: 12.5, fontWeight: 500, color: "#B0B0B5", ...FONT }}>to</span>
+                      <span style={{ fontSize: 12.5, fontWeight: tokens.fontWeight.medium, color: "#B0B0B5", ...FONT }}>to</span>
                       <label style={{
                         flex: 1, background: "#F2F2F7", borderRadius: 8,
                         padding: "9px 11px", display: "flex", alignItems: "center", justifyContent: "space-between",
                         cursor: "pointer", position: "relative",
                       }}>
-                        <span style={{ fontSize: 14, fontWeight: 700, color: "#000", ...FONT }}>{cfg.end}</span>
+                        <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: "#000", ...FONT }}>{cfg.end}</span>
                         <IconClock size={13} color="#B0B0B5" />
                         <input
                           type="time" value={cfg.end}
@@ -538,7 +539,7 @@ function AvailabilitySettingsPage() {
                       </label>
                     </div>
                   ) : (
-                    <div style={{ flex: 1, textAlign: "right", fontSize: 14, fontWeight: 700, color: "#B0B0B5", ...FONT }}>
+                    <div style={{ flex: 1, textAlign: "right", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: "#B0B0B5", ...FONT }}>
                       Off
                     </div>
                   )}
@@ -552,7 +553,7 @@ function AvailabilitySettingsPage() {
                       style={{
                         display: "inline-flex", alignItems: "center", gap: 4,
                         background: "none", border: "none", cursor: "pointer",
-                        fontSize: 12.5, fontWeight: 700, color: "#1877D6", padding: 0, ...FONT,
+                        fontSize: 12.5, fontWeight: tokens.fontWeight.bold, color: tokens.blue, padding: 0, ...FONT,
                       }}
                     >
                       Copy to all weekdays <IconChevronDown size={11} />
@@ -568,7 +569,7 @@ function AvailabilitySettingsPage() {
             padding: 16, borderTop: "1px solid #EFEFF2",
             display: "flex", alignItems: "center", justifyContent: "space-between",
           }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#000", ...FONT }}>Lunch break</div>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: "#000", ...FONT }}>Lunch break</div>
             <Toggle on={lunchOn} onChange={() => setLunchOn((v) => !v)} />
           </div>
           {lunchOn && (
@@ -610,10 +611,10 @@ function AvailabilitySettingsPage() {
             borderTop: idx === 0 ? "none" : `1px solid ${ROW_BORDER}`,
             gap: 8,
           }}>
-            <span style={{ background: CHIP_BG, color: BLUE, fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 999 }}>
+            <span style={{ background: CHIP_BG, color: BLUE, fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, padding: "2px 8px", borderRadius: 999 }}>
               {DAY_SHORT[r.day_of_week] ?? r.day_of_week.slice(0, 3)}
             </span>
-            <span style={{ fontSize: 14, color: NAVY }}>
+            <span style={{ fontSize: tokens.fontSize.md, color: NAVY }}>
               {r.start_time.slice(0, 5)} – {r.end_time.slice(0, 5)}
             </span>
             <span style={{ fontSize: 12, color: MUTED, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
@@ -630,35 +631,35 @@ function AvailabilitySettingsPage() {
         {addingRecurring ? (
           <div style={{ marginTop: 12, padding: 12, background: FIELD_BG, borderRadius: 8}}>
             <div style={{ marginBottom: 8 }}>
-              <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Day</div>
+              <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, marginBottom: 4 }}>Day</div>
               <select value={rDay} onChange={(e) => setRDay(e.target.value)}
-                style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14, background: "#fff" }}>
+                style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: tokens.fontSize.md, background: "#fff" }}>
                 {DAY_NAMES.map(d => <option key={d} value={d}>{d}</option>)}
               </select>
             </div>
             <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Start</div>
+                <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, marginBottom: 4 }}>Start</div>
                 <input type="time" value={rStart} onChange={(e) => setRStart(e.target.value)}
                   style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14 }} />
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>End</div>
+                <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, marginBottom: 4 }}>End</div>
                 <input type="time" value={rEnd} onChange={(e) => setREnd(e.target.value)}
                   style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14 }} />
               </div>
             </div>
             <div style={{ marginBottom: 8 }}>
-              <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Label</div>
+              <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, marginBottom: 4 }}>Label</div>
               <input type="text" value={rLabel} onChange={(e) => setRLabel(e.target.value)}
                 placeholder="e.g. School run"
                 style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14 }} />
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               <button type="button" onClick={() => setAddingRecurring(false)}
-                style={{ flex: 1, height: 40, borderRadius: 8, background: "#fff", border: `0.5px solid ${BORDER}`, fontSize: 14, cursor: "pointer" }}>Cancel</button>
+                style={{ flex: 1, height: 40, borderRadius: 8, background: "#fff", border: `0.5px solid ${BORDER}`, fontSize: tokens.fontSize.md, cursor: "pointer" }}>Cancel</button>
               <button type="button" onClick={addRecurring}
-                style={{ flex: 1, height: 40, borderRadius: 8, background: NAVY, color: "#fff", border: "none", fontSize: 14, fontWeight: 500, cursor: "pointer" }}>Save</button>
+                style={{ flex: 1, height: 40, borderRadius: 8, background: NAVY, color: "#fff", border: "none", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, cursor: "pointer" }}>Save</button>
             </div>
           </div>
         ) : (
@@ -680,12 +681,12 @@ function AvailabilitySettingsPage() {
             gap: 8,
           }}>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 14, color: NAVY }}>
+              <div style={{ fontSize: tokens.fontSize.md, color: NAVY }}>
                 {fmtDate(t.start_date)}{t.start_date !== t.end_date ? ` – ${fmtDate(t.end_date)}` : ""}
               </div>
               {t.reason ? <div style={{ fontSize: 12, color: MUTED }}>{t.reason}</div> : null}
             </div>
-            <span style={{ background: CHIP_BG, color: BLUE, fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 999 }}>
+            <span style={{ background: CHIP_BG, color: BLUE, fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, padding: "2px 8px", borderRadius: 999 }}>
               {daysBetween(t.start_date, t.end_date)} days
             </span>
             <button type="button" onClick={() => deleteTimeOff(t.id)}
@@ -698,36 +699,36 @@ function AvailabilitySettingsPage() {
         {addingTimeOff ? (
           <div style={{ marginTop: 12, padding: 12, background: FIELD_BG, borderRadius: 8}}>
             <div style={{ marginBottom: 8 }}>
-              <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Reason</div>
+              <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, marginBottom: 4 }}>Reason</div>
               <input type="text" value={toReason} onChange={(e) => setToReason(e.target.value)}
                 placeholder="e.g. Summer holiday"
                 style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14 }} />
             </div>
             <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>From</div>
+                <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, marginBottom: 4 }}>From</div>
                 <input type="date" value={toFrom} onChange={(e) => setToFrom(e.target.value)}
                   style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14 }} />
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>To</div>
+                <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, marginBottom: 4 }}>To</div>
                 <input type="date" value={toTo} onChange={(e) => setToTo(e.target.value)}
                   style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14 }} />
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0" }}>
-              <div style={{ fontSize: 14, fontWeight: 500, color: NAVY }}>All day</div>
+              <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: NAVY }}>All day</div>
               <Toggle on={toAllDay} onChange={() => setToAllDay((v) => !v)} />
             </div>
             {!toAllDay && (
               <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>Start time</div>
+                  <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, marginBottom: 4 }}>Start time</div>
                   <input type="time" value={toStartTime} onChange={(e) => setToStartTime(e.target.value)}
                     style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14 }} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 11, color: MUTED, marginBottom: 4 }}>End time</div>
+                  <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, marginBottom: 4 }}>End time</div>
                   <input type="time" value={toEndTime} onChange={(e) => setToEndTime(e.target.value)}
                     style={{ width: "100%", height: 40, borderRadius: 8, border: `0.5px solid ${BORDER}`, padding: "0 10px", fontSize: 14 }} />
                 </div>
@@ -735,9 +736,9 @@ function AvailabilitySettingsPage() {
             )}
             <div style={{ display: "flex", gap: 8 }}>
               <button type="button" onClick={() => setAddingTimeOff(false)}
-                style={{ flex: 1, height: 40, borderRadius: 8, background: "#fff", border: `0.5px solid ${BORDER}`, fontSize: 14, cursor: "pointer" }}>Cancel</button>
+                style={{ flex: 1, height: 40, borderRadius: 8, background: "#fff", border: `0.5px solid ${BORDER}`, fontSize: tokens.fontSize.md, cursor: "pointer" }}>Cancel</button>
               <button type="button" onClick={addTimeOff}
-                style={{ flex: 1, height: 40, borderRadius: 8, background: NAVY, color: "#fff", border: "none", fontSize: 14, fontWeight: 500, cursor: "pointer" }}>Save</button>
+                style={{ flex: 1, height: 40, borderRadius: 8, background: NAVY, color: "#fff", border: "none", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, cursor: "pointer" }}>Save</button>
             </div>
           </div>
         ) : (

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   PUPIL_FIELDS,
@@ -288,7 +289,7 @@ function DataImportPage() {
               backgroundColor: "#EEF4FB",
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#1877D6",
+              borderColor: tokens.blue,
               borderRadius: 8,
               padding: 16,
               display: "flex",
@@ -316,7 +317,7 @@ function DataImportPage() {
             style={{
               borderWidth: "1px",
               borderStyle: "dashed",
-              borderColor: "#EEF2F7",
+              borderColor: tokens.canvas,
               borderRadius: 8,
               padding: 32,
               gap: 8,
@@ -339,7 +340,7 @@ function DataImportPage() {
           {parseErrors.length > 0 && (
             <div
               className="mt-3 text-[12px]"
-              style={{ color: "#1877D6" }}
+              style={{ color: tokens.blue }}
             >
               {parseErrors.map((er, i) => <div key={i}>{er}</div>)}
             </div>
@@ -354,10 +355,10 @@ function DataImportPage() {
               <div
                 className="flex flex-col"
                 style={{
-                  backgroundColor: "#FFFFFF",
+                  backgroundColor: tokens.white,
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: "#EEF2F7",
+                  borderColor: tokens.canvas,
                   borderRadius: 8,
                   overflow: "hidden",
                 }}
@@ -417,7 +418,7 @@ function DataImportPage() {
             <div
               className="mt-4"
               style={{
-                backgroundColor: "#FFFFFF",
+                backgroundColor: tokens.white,
                 borderWidth: "0.5px",
                 borderStyle: "solid",
                 borderColor: invalidRowCount > 0 ? "#CC2229" : "#EEF2F7",
@@ -453,12 +454,12 @@ function DataImportPage() {
                         backgroundColor: "#FDF2F2",
                         borderRadius: 8,
                         padding: "8px 10px",
-                        color: "#0B1F3A",
+                        color: tokens.navy,
                       }}
                     >
                       <strong>Row {x.row}</strong>
                       {x.issues.map((iss, k) => (
-                        <div key={k} style={{ color: "#CC2229" }}>
+                        <div key={k} style={{ color: tokens.red }}>
                           {FIELD_LABELS[iss.field as PupilField] ?? iss.field}: {iss.message}
                         </div>
                       ))}
@@ -485,7 +486,7 @@ function DataImportPage() {
                 style={{
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: "#EEF2F7",
+                  borderColor: tokens.canvas,
                   borderRadius: 8,
                 }}
               >
@@ -557,10 +558,10 @@ function DataImportPage() {
                 <div
                   className="mt-3"
                   style={{
-                    backgroundColor: "#FFFFFF",
+                    backgroundColor: tokens.white,
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#EEF2F7",
+                    borderColor: tokens.canvas,
                     borderRadius: 8,
                     padding: 14,
                   }}
@@ -569,7 +570,7 @@ function DataImportPage() {
                     <div className="text-[13px] font-semibold text-[#0B1F3A]">
                       Importing {processed} of {rows.length}
                     </div>
-                    <div className="text-[13px] font-semibold" style={{ color: "#1877D6" }}>
+                    <div className="text-[13px] font-semibold" style={{ color: tokens.blue }}>
                       {progress}%
                     </div>
                   </div>
@@ -579,7 +580,7 @@ function DataImportPage() {
                     style={{
                       height: 6,
                       borderRadius: 999,
-                      backgroundColor: "#EEF2F7",
+                      backgroundColor: tokens.canvas,
                       overflow: "hidden",
                     }}
                   >
@@ -587,7 +588,7 @@ function DataImportPage() {
                       style={{
                         width: `${progress}%`,
                         height: "100%",
-                        backgroundColor: "#1877D6",
+                        backgroundColor: tokens.blue,
                         transition: "width 0.2s",
                       }}
                     />
@@ -634,7 +635,7 @@ function DataImportPage() {
             style={{
               borderWidth: "0.5px",
               borderStyle: "dashed",
-              borderColor: "#EEF2F7",
+              borderColor: tokens.canvas,
               borderRadius: 8,
             }}
           >

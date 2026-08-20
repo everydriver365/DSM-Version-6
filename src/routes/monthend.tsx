@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -297,11 +298,11 @@ function MonthEndPage() {
       {/* Summary card */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: "#0B1F3A", borderRadius: 8, padding: 16 }}
+        style={{ backgroundColor: tokens.navy, borderRadius: 8, padding: 16 }}
       >
         <div
           className="text-[10px] uppercase"
-          style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}
+          style={{ color: tokens.textMuted, letterSpacing: "0.08em" }}
         >
           {monthLabelUpper}
         </div>
@@ -317,7 +318,7 @@ function MonthEndPage() {
         >
           <div
             className="text-[10px] uppercase"
-            style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}
+            style={{ color: tokens.textMuted, letterSpacing: "0.08em" }}
           >
             Net profit
           </div>
@@ -405,7 +406,7 @@ function MonthEndPage() {
               >
                 <div
                   className="flex items-center justify-center text-white text-[12px] font-semibold"
-                  style={{ width: 36, height: 36, borderRadius: 999, backgroundColor: "#1877D6" }}
+                  style={{ width: 36, height: 36, borderRadius: 999, backgroundColor: tokens.blue }}
                 >
                   {initials(p.name)}
                 </div>
@@ -431,7 +432,7 @@ function MonthEndPage() {
             fontFamily: "Poppins, sans-serif",
             borderWidth: "0.5px",
             borderStyle: "solid",
-            borderColor: "#EEF2F7",
+            borderColor: tokens.canvas,
           }}
         />
 
@@ -451,7 +452,7 @@ function SummaryStat({ label, value, color }: { label: string; value: string; co
     <div>
       <div
         className="text-[10px] uppercase"
-        style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}
+        style={{ color: tokens.textMuted, letterSpacing: "0.08em" }}
       >
         {label}
       </div>
@@ -470,7 +471,7 @@ function PanelCard({ children }: { children: React.ReactNode }) {
         borderRadius: 8,
         borderWidth: "0.5px",
         borderStyle: "solid",
-        borderColor: "#EEF2F7",
+        borderColor: tokens.canvas,
         padding: 12,
       }}
     >

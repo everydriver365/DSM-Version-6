@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconBell } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -244,10 +245,10 @@ function NotificationSettingsPage() {
             const status = !supported
               ? { label: "Notifications: Not supported", color: "#6B7280", bg: "#F3F4F6" }
               : browserPerm === "granted"
-                ? { label: "Notifications: Enabled ✓", color: "#0B1F3A", bg: "#EEF2F7" }
+                ? { label: "Notifications: Enabled ✓", color: tokens.navy, bg: "#EEF2F7" }
                 : browserPerm === "denied"
                   ? { label: "Notifications: Blocked ✗", color: "#B91C1C", bg: "#FEE2E2" }
-                  : { label: "Notifications: Not set up", color: "#0B1F3A", bg: "#EEF2F7" };
+                  : { label: "Notifications: Not set up", color: tokens.navy, bg: "#EEF2F7" };
             return (
               <div className="flex items-center gap-3">
                 <span
@@ -271,7 +272,7 @@ function NotificationSettingsPage() {
                     }}
                     className="text-white text-[12px] font-semibold rounded-lg"
                     style={{
-                      backgroundColor: "#1877D6",
+                      backgroundColor: tokens.blue,
                       padding: "8px 12px",
                       ...POPPINS,
                     }}
@@ -324,7 +325,7 @@ function NotificationSettingsPage() {
                 value={state.quiet_from}
                 onChange={(e) => setKey("quiet_from", e.target.value)}
                 className="w-full h-11 rounded-lg px-3 bg-white text-[14px] text-[#0B1F3A]"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", ...POPPINS }}
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas, ...POPPINS }}
               />
             </label>
             <label className="flex-1">
@@ -334,7 +335,7 @@ function NotificationSettingsPage() {
                 value={state.quiet_to}
                 onChange={(e) => setKey("quiet_to", e.target.value)}
                 className="w-full h-11 rounded-lg px-3 bg-white text-[14px] text-[#0B1F3A]"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", ...POPPINS }}
+                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas, ...POPPINS }}
               />
             </label>
           </div>
@@ -367,7 +368,7 @@ function ToggleRow({
   return (
     <div
       className="flex items-center justify-between px-4 py-3"
-      style={isFirst ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+      style={isFirst ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: tokens.canvas }}
     >
       <span className="flex-1 pr-3">
         <span className="block text-[14px] text-[#0B1F3A]" style={POPPINS}>{label}</span>

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { tokens } from "@/lib/tokens";
 import { useNavigate } from "@tanstack/react-router";
 import { IconChevronLeft } from "@tabler/icons-react";
 
@@ -74,8 +75,8 @@ export function PageHeader({
       <div style={{ flex: 1, minWidth: 0 }}>
         <h1
           style={{
-            fontSize: 16,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.lg,
+            fontWeight: tokens.fontWeight.bold,
             color: "#fff",
             margin: 0,
             fontFamily: "Poppins, sans-serif",

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconChevronLeft, IconMovie, IconPencil, IconPlus, IconTrash, IconUpload } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -174,7 +175,7 @@ const inputStyle: React.CSSProperties = {
   borderRadius: 8,
   border: `1px solid ${BORDER}`,
   padding: "0 12px",
-  fontSize: 14,
+  fontSize: tokens.fontSize.md,
   color: NAVY,
   background: "#fff",
   outline: "none",
@@ -183,8 +184,8 @@ const inputStyle: React.CSSProperties = {
 
 const labelStyle: React.CSSProperties = {
   display: "block",
-  fontSize: 13,
-  fontWeight: 600,
+  fontSize: tokens.fontSize.base,
+  fontWeight: tokens.fontWeight.semibold,
   color: NAVY,
   marginBottom: 6,
   marginTop: 14,
@@ -365,7 +366,7 @@ function VideoForm({
         marginBottom: 16,
       }}
     >
-      <div style={{ fontSize: 15, fontWeight: 600, color: NAVY }}>
+      <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>
         {initial ? "Edit video" : "Add video"}
       </div>
 
@@ -382,9 +383,9 @@ function VideoForm({
         <label
           htmlFor="lv-description"
           style={{
-            fontSize: 11,
-            fontWeight: 600,
-            color: "#6B7686",
+            fontSize: tokens.fontSize.sm,
+            fontWeight: tokens.fontWeight.semibold,
+            color: tokens.textSecondary,
             textTransform: "uppercase",
             letterSpacing: "0.06em",
             display: "block",
@@ -405,9 +406,9 @@ function VideoForm({
             padding: "10px 12px",
             border: "1px solid #E4E8EF",
             borderRadius: 8,
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
             fontFamily: "Poppins, sans-serif",
-            color: "#0B1F3A",
+            color: tokens.navy,
             resize: "none",
             boxSizing: "border-box",
           }}
@@ -446,8 +447,8 @@ function VideoForm({
               flex: 1,
               padding: "10px 12px",
               borderRadius: 8,
-              fontSize: 13,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.semibold,
               cursor: "pointer",
               border: `1px solid ${kind === k.v ? BLUE : BORDER}`,
               background: kind === k.v ? "#E8F1FC" : "#fff",
@@ -505,7 +506,7 @@ function VideoForm({
                     padding: "6px 10px",
                     borderRadius: 8,
                     fontSize: 12,
-                    fontWeight: 600,
+                    fontWeight: tokens.fontWeight.semibold,
                     cursor: "pointer",
                     border: `1px solid ${on ? BLUE : BORDER}`,
                     background: on ? "#E8F1FC" : "#fff",
@@ -529,8 +530,8 @@ function VideoForm({
                   flex: 1,
                   padding: "10px 12px",
                   borderRadius: 8,
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
                   textTransform: "capitalize",
                   cursor: "pointer",
                   border: `1px solid ${audience === a ? BLUE : BORDER}`,
@@ -587,8 +588,8 @@ function VideoForm({
               style={{
                 padding: "10px 14px",
                 borderRadius: 8,
-                fontSize: 13,
-                fontWeight: 600,
+                fontSize: tokens.fontSize.base,
+                fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 border: `1px solid ${isBitesize ? BLUE : BORDER}`,
                 background: isBitesize ? "#E8F1FC" : "#fff",
@@ -621,8 +622,8 @@ function VideoForm({
                 flex: 1,
                 padding: "10px 12px",
                 borderRadius: 8,
-                fontSize: 13,
-                fontWeight: 600,
+                fontSize: tokens.fontSize.base,
+                fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 border: `1px solid ${isFeatured ? BLUE : BORDER}`,
                 background: isFeatured ? "#E8F1FC" : "#fff",
@@ -638,8 +639,8 @@ function VideoForm({
                 flex: 1,
                 padding: "10px 12px",
                 borderRadius: 8,
-                fontSize: 13,
-                fontWeight: 600,
+                fontSize: tokens.fontSize.base,
+                fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 border: `1px solid ${isPublishedField ? BLUE : BORDER}`,
                 background: isPublishedField ? "#E8F1FC" : "#fff",
@@ -663,8 +664,8 @@ function VideoForm({
               flex: 1,
               padding: "10px 12px",
               borderRadius: 8,
-              fontSize: 13,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.semibold,
               cursor: "pointer",
               border: `1px solid ${source === s ? BLUE : BORDER}`,
               background: source === s ? "#E8F1FC" : "#fff",
@@ -844,9 +845,9 @@ function VideoForm({
             </div>
             <div
               style={{
-                fontSize: 13,
+                fontSize: tokens.fontSize.base,
                 color: NAVY,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
               }}
             >
               Uploading video...
@@ -899,8 +900,8 @@ function VideoForm({
             alignItems: "center",
             gap: 8,
             color: "#1E8E3E",
-            fontSize: 13,
-            fontWeight: 600,
+            fontSize: tokens.fontSize.base,
+            fontWeight: tokens.fontWeight.semibold,
           }}
         >
           <svg
@@ -920,7 +921,7 @@ function VideoForm({
       )}
 
       {uploadStatus === "error" && (
-        <div style={{ marginTop: 16, fontSize: 13, color: RED, fontWeight: 600 }}>
+        <div style={{ marginTop: 16, fontSize: tokens.fontSize.base, color: RED, fontWeight: 600 }}>
           IconUpload failed. Please try again.
         </div>
       )}
@@ -937,7 +938,7 @@ function VideoForm({
             background: BLUE,
             color: "#fff",
             border: "none",
-            fontWeight: 600,
+            fontWeight: tokens.fontWeight.semibold,
             cursor: "pointer",
             opacity: saving || uploadStatus === "saved" ? 0.7 : 1,
             display: "flex",
@@ -967,7 +968,7 @@ function VideoForm({
             background: "#fff",
             color: NAVY,
             border: `1px solid ${BORDER}`,
-            fontWeight: 600,
+            fontWeight: tokens.fontWeight.semibold,
             cursor: "pointer",
             ...POPPINS,
           }}
@@ -1034,7 +1035,7 @@ function AdminLearnVideosPage() {
   if (gate === "denied") {
     return (
       <div style={{ background: "#fff", minHeight: "100vh", padding: 24, ...POPPINS }}>
-        <div style={{ fontSize: 18, fontWeight: 600, color: BLUE }}>Access denied</div>
+        <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: BLUE }}>Access denied</div>
       </div>
     );
   }
@@ -1073,7 +1074,7 @@ function AdminLearnVideosPage() {
         >
           <IconChevronLeft size={18} />
         </button>
-        <span style={{ fontSize: 16, fontWeight: 600, flex: 1 }}>Learn videos</span>
+        <span style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, flex: 1 }}>Learn videos</span>
       </div>
 
       <div style={{ padding: 16 }}>
@@ -1088,7 +1089,7 @@ function AdminLearnVideosPage() {
               color: "#fff",
               border: "none",
               fontSize: 15,
-              fontWeight: 800,
+              fontWeight: tokens.fontWeight.extrabold,
               padding: 15,
               cursor: "pointer",
               display: "flex",
@@ -1183,7 +1184,7 @@ function AdminLearnVideosPage() {
                   <div
                     style={{
                       fontSize: 16.5,
-                      fontWeight: 800,
+                      fontWeight: tokens.fontWeight.extrabold,
                       color: "#000",
                       letterSpacing: "-0.2px",
                       overflow: "hidden",
@@ -1193,7 +1194,7 @@ function AdminLearnVideosPage() {
                   >
                     {v.title}
                   </div>
-                  <div style={{ fontSize: 12.5, color: "#8A8A8E", fontWeight: 500, marginTop: 3 }}>
+                  <div style={{ fontSize: 12.5, color: "#8A8A8E", fontWeight: tokens.fontWeight.medium, marginTop: 3 }}>
                     {v.duration || "—"} · #{v.sort_order ?? 0}
                     {!v.url && " · no video uploaded yet"}
                   </div>

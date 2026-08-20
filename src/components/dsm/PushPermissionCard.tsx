@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { IconAlertTriangle, IconBell, IconBellOff, IconCircleCheck } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../../lib/supabaseClient";
@@ -104,7 +105,7 @@ export function PushPermissionCard() {
       <div
         className="rounded-lg p-3"
         style={{
-          backgroundColor: "#FFFFFF",
+          backgroundColor: tokens.white,
           border: "0.5px solid #EEF2F7",
           boxShadow: "0 1px 2px rgba(11,31,58,0.04)",
         }}
@@ -127,7 +128,7 @@ export function PushPermissionCard() {
           <div className="min-w-0 flex-1">
             <div
               className="text-[14px] font-semibold"
-              style={{ ...POPPINS, color: "#0B1F3A" }}
+              style={{ ...POPPINS, color: tokens.navy }}
             >
               {isUnsupported
                 ? "Notifications not supported"
@@ -145,7 +146,7 @@ export function PushPermissionCard() {
                 ? "You blocked notifications. Re-enable them in your browser site settings, then reload."
                 : "Get alerts for new bookings, payments and lesson reminders."}
             </div>
-            <div className="text-[11px] mt-1" style={{ ...POPPINS, color: "#9CA3AF" }}>
+            <div className="text-[11px] mt-1" style={{ ...POPPINS, color: tokens.textMuted }}>
               Status:{" "}
               <strong style={{ color: "#374151" }}>
                 {isUnsupported
@@ -162,7 +163,7 @@ export function PushPermissionCard() {
                   onClick={enable}
                   disabled={busy}
                   className="text-[13px] font-semibold rounded-lg px-3 py-1.5 disabled:opacity-60"
-                  style={{ ...POPPINS, backgroundColor: "#1877D6", color: "#FFFFFF" }}
+                  style={{ ...POPPINS, backgroundColor: tokens.blue, color: tokens.white }}
                 >
                   {busy ? "Enabling…" : "Enable notifications"}
                 </button>

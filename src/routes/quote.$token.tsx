@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconCircleCheck, IconLock } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
@@ -85,8 +86,8 @@ function MessagePage({ title, body }: { title: string; body: string }) {
   return (
     <div style={{ ...POPPINS, minHeight: "100vh", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div style={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
-        <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginBottom: 8 }}>{title}</div>
-        <div style={{ fontSize: 14, color: "#6B7280" }}>{body}</div>
+        <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy, marginBottom: 8 }}>{title}</div>
+        <div style={{ fontSize: tokens.fontSize.md, color: "#6B7280" }}>{body}</div>
       </div>
     </div>
   );
@@ -243,8 +244,8 @@ function PublicQuotePage() {
   if (!accepted && isExpired(quote)) return <MessagePage title="This quote has expired" body="Please contact your instructor for a new quote." />;
 
   const badge = accepted
-    ? { label: "Accepted", bg: "#EEF2F7", color: "#0B1F3A" }
-    : { label: "Awaiting response", bg: "#EEF2F7", color: "#0B1F3A" };
+    ? { label: "Accepted", bg: "#EEF2F7", color: tokens.navy }
+    : { label: "Awaiting response", bg: "#EEF2F7", color: tokens.navy };
 
   const depositAmount = Number(quote.deposit_amount || 0);
   const needsDeposit = accepted && depositAmount > 0 && !depositPaid;
@@ -253,17 +254,17 @@ function PublicQuotePage() {
   return (
     <div style={{ ...POPPINS, minHeight: "100vh", background: "#fff" }}>
       <div style={{ maxWidth: 480, margin: "0 auto" }}>
-        <div style={{ background: "#0B1F3A", color: "#fff", padding: 20, textAlign: "center", paddingTop: "calc(20px + env(safe-area-inset-top, 0px))" }}>
-          <div style={{ fontWeight: 700, fontSize: 18 }}>EveryDriver</div>
-          <div style={{ fontSize: 13, opacity: 0.85, marginTop: 4 }}>Your driving lesson quote</div>
+        <div style={{ background: tokens.navy, color: "#fff", padding: 20, textAlign: "center", paddingTop: "calc(20px + env(safe-area-inset-top, 0px))" }}>
+          <div style={{ fontWeight: tokens.fontWeight.bold, fontSize: 18 }}>EveryDriver</div>
+          <div style={{ fontSize: tokens.fontSize.base, opacity: 0.85, marginTop: 4 }}>Your driving lesson quote</div>
         </div>
 
         <div style={{ margin: 16, padding: 24, background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 8}}>
-          <div style={{ fontSize: 20, fontWeight: 700, color: "#0B1F3A", marginBottom: 16 }}>
+          <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.bold, color: tokens.navy, marginBottom: 16 }}>
             Quote for {quote.recipient_name}
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 14, color: "#0B1F3A" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: tokens.fontSize.md, color: tokens.navy }}>
             {quote.course_type && (
               <Row label="Course type" value={quote.course_type} />
             )}
@@ -272,7 +273,7 @@ function PublicQuotePage() {
             )}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 4 }}>
               <span style={{ color: "#6B7280" }}>Total price</span>
-              <span style={{ fontSize: 24, fontWeight: 700, color: "#1877D6" }}>£{Number(quote.price).toFixed(2)}</span>
+              <span style={{ fontSize: 24, fontWeight: tokens.fontWeight.bold, color: tokens.blue }}>£{Number(quote.price).toFixed(2)}</span>
             </div>
             {quote.deposit_amount != null && (
               <div style={{ display: "flex", justifyContent: "space-between", color: "#6B7280", fontSize: 13 }}>
@@ -300,8 +301,8 @@ function PublicQuotePage() {
           {accepted ? (
             <div style={{ padding: "24px 16px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 12 }}>
               <IconCircleCheck size={72} color="#1877D6" stroke={2} />
-              <div style={{ fontSize: 22, fontWeight: 700, color: "#0B1F3A" }}>Quote accepted! 🎉</div>
-              <div style={{ fontSize: 14, color: "#6B7280", maxWidth: 340 }}>
+              <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>Quote accepted! 🎉</div>
+              <div style={{ fontSize: tokens.fontSize.md, color: "#6B7280", maxWidth: 340 }}>
                 {depositPaid && !depositDoneNow
                   ? "Your booking is confirmed. We'll be in touch shortly to arrange your lessons."
                   : depositDoneNow
@@ -312,7 +313,7 @@ function PublicQuotePage() {
               </div>
 
               {depositAmount > 0 && depositPaid && (
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 999, background: "#EEF2F7", color: "#0B1F3A", fontSize: 13, fontWeight: 700 }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 999, background: tokens.canvas, color: tokens.navy, fontSize: tokens.fontSize.base, fontWeight: 700 }}>
                   <IconCircleCheck size={16} /> Deposit paid
                 </span>
               )}
@@ -321,26 +322,26 @@ function PublicQuotePage() {
                 <div style={{ width: "100%", marginTop: 16, padding: 20, background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: 8, textAlign: "left" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                     <IconLock size={18} color="#1877D6" />
-                    <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>Secure your booking</div>
+                    <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>Secure your booking</div>
                   </div>
-                  <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 12 }}>
+                  <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280", marginBottom: 12 }}>
                     Pay your £{depositAmount.toFixed(2)} deposit to confirm your lesson booking
                   </div>
-                  <div style={{ fontSize: 36, fontWeight: 700, color: "#1877D6", lineHeight: 1, marginBottom: 16 }}>
+                  <div style={{ fontSize: 36, fontWeight: tokens.fontWeight.bold, color: tokens.blue, lineHeight: 1, marginBottom: 16 }}>
                     £{depositAmount.toFixed(2)}
                   </div>
 
                   {payError && (
-                    <div style={{ background: "#fef2f2", color: "#b91c1c", padding: 10, borderRadius: 8, fontSize: 13, marginBottom: 12 }}>
+                    <div style={{ background: "#fef2f2", color: "#b91c1c", padding: 10, borderRadius: 8, fontSize: tokens.fontSize.base, marginBottom: 12 }}>
                       {payError}
                     </div>
                   )}
 
                   {noSquare && (
-                    <div style={{ background: "#FFFBEB", color: "#B45309", padding: 12, borderRadius: 8, fontSize: 13, marginBottom: 12 }}>
+                    <div style={{ background: "#FFFBEB", color: "#B45309", padding: 12, borderRadius: 8, fontSize: tokens.fontSize.base, marginBottom: 12 }}>
                       Your instructor hasn't connected Square yet. Please pay by bank transfer or contact your instructor directly.
                       {(instructor?.bank_account_name || instructor?.bank_sort_code || instructor?.bank_account_number) && (
-                        <div style={{ marginTop: 8, color: "#0B1F3A" }}>
+                        <div style={{ marginTop: 8, color: tokens.navy }}>
                           {instructor?.bank_name && <div>Bank: {instructor.bank_name}</div>}
                           {instructor?.bank_account_name && <div>Account name: {instructor.bank_account_name}</div>}
                           {instructor?.bank_sort_code && <div>Sort code: {instructor.bank_sort_code}</div>}
@@ -355,8 +356,8 @@ function PublicQuotePage() {
                       disabled={payStatus === "creating"}
                       onClick={startDepositPayment}
                       style={{
-                        width: "100%", height: 48, background: "#1877D6", color: "#fff",
-                        border: "none", borderRadius: 8, fontSize: 15, fontWeight: 600,
+                        width: "100%", height: 48, background: tokens.blue, color: "#fff",
+                        border: "none", borderRadius: 8, fontSize: 15, fontWeight: tokens.fontWeight.semibold,
                         fontFamily: "Poppins, sans-serif", cursor: "pointer",
                         opacity: payStatus === "creating" ? 0.6 : 1,
                       }}
@@ -369,13 +370,13 @@ function PublicQuotePage() {
                         href={payUrl}
                         style={{
                           display: "flex", alignItems: "center", justifyContent: "center",
-                          width: "100%", height: 48, background: "#1877D6", color: "#fff",
-                          borderRadius: 8, fontSize: 15, fontWeight: 600, textDecoration: "none",
+                          width: "100%", height: 48, background: tokens.blue, color: "#fff",
+                          borderRadius: 8, fontSize: 15, fontWeight: tokens.fontWeight.semibold, textDecoration: "none",
                         }}
                       >
                         Pay now
                       </a>
-                      <div style={{ textAlign: "center", color: "#9CA3AF", fontSize: 13, margin: "16px 0 8px" }}>— or scan to pay —</div>
+                      <div style={{ textAlign: "center", color: tokens.textMuted, fontSize: tokens.fontSize.base, margin: "16px 0 8px" }}>— or scan to pay —</div>
                       <div style={{ display: "flex", justifyContent: "center" }}>
                         <img
                           src={`https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=${encodeURIComponent(payUrl)}&choe=UTF-8`}
@@ -400,13 +401,13 @@ function PublicQuotePage() {
                     href="https://everydriver.co.uk/courses"
                     style={{
                       marginTop: 8, display: "flex", alignItems: "center", justifyContent: "center",
-                      height: 52, width: "100%", borderRadius: 8, background: "#1877D6", color: "#fff",
-                      fontWeight: 600, fontSize: 15, textDecoration: "none",
+                      height: 52, width: "100%", borderRadius: 8, background: tokens.blue, color: "#fff",
+                      fontWeight: tokens.fontWeight.semibold, fontSize: 15, textDecoration: "none",
                     }}
                   >
                     Book your first lesson →
                   </a>
-                  <a href="mailto:info@everydriver.co.uk" style={{ marginTop: 4, color: "#1877D6", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+                  <a href="mailto:info@everydriver.co.uk" style={{ marginTop: 4, color: tokens.blue, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, textDecoration: "none" }}>
                     Contact us
                   </a>
                 </>
@@ -418,7 +419,7 @@ function PublicQuotePage() {
               onClick={accept}
               style={{
                 height: 52, borderRadius: 8, border: "none",
-                background: "#1877D6", color: "#fff", fontWeight: 600, fontSize: 15,
+                background: tokens.blue, color: "#fff", fontWeight: tokens.fontWeight.semibold, fontSize: 15,
                 fontFamily: "Poppins, sans-serif", cursor: "pointer", opacity: accepting ? 0.6 : 1,
               }}
             >
@@ -430,8 +431,8 @@ function PublicQuotePage() {
             onClick={askQuestion}
             style={{
               height: 48, borderRadius: 8, background: "#fff",
-              border: "1px solid #0B1F3A", color: "#0B1F3A",
-              fontWeight: 600, fontSize: 14, fontFamily: "Poppins, sans-serif", cursor: "pointer",
+              border: "1px solid #0B1F3A", color: tokens.navy,
+              fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md, fontFamily: "Poppins, sans-serif", cursor: "pointer",
             }}
           >
             I have questions
@@ -440,7 +441,7 @@ function PublicQuotePage() {
 
         <div style={{ padding: "16px 16px 32px", textAlign: "center", fontSize: 12, color: "#6B7280" }}>
           Powered by{" "}
-          <a href="https://everydriver.co.uk" style={{ color: "#1877D6", textDecoration: "none", fontWeight: 600 }}>
+          <a href="https://everydriver.co.uk" style={{ color: tokens.blue, textDecoration: "none", fontWeight: 600 }}>
             EveryDriver
           </a>
         </div>

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { Card } from "../components/dsm/Card";
@@ -251,7 +252,7 @@ function BulkMessagePage() {
                     type="button"
                     onClick={() => toggleSelected(p.id)}
                     className="w-full flex items-center gap-3 px-4 py-3 text-left"
-                    style={idx === 0 ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+                    style={idx === 0 ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: tokens.canvas }}
                   >
                     <div
                       className="flex items-center justify-center rounded-lg shrink-0"
@@ -272,7 +273,7 @@ function BulkMessagePage() {
                     </div>
                     <div
                       className="flex items-center justify-center rounded-full shrink-0 text-[12px] font-semibold"
-                      style={{ width: 36, height: 36, backgroundColor: "#1877D6", color: "#FFFFFF", ...POPPINS }}
+                      style={{ width: 36, height: 36, backgroundColor: tokens.blue, color: tokens.white, ...POPPINS }}
                     >
                       {initials(dn)}
                     </div>
@@ -325,7 +326,7 @@ function BulkMessagePage() {
           }}
           placeholder="Type your message…"
           className="w-full rounded-lg p-3 text-[14px] text-[#0B1F3A] bg-white resize-none"
-          style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", ...POPPINS }}
+          style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas, ...POPPINS }}
         />
         <div className="text-right text-[13px] text-[#6B7280] mt-1" style={POPPINS}>
           {message.length} characters
@@ -337,7 +338,7 @@ function BulkMessagePage() {
             onClick={() => setConfirmOpen(true)}
             disabled={sendCount === 0 || !message.trim() || sending}
             className="w-full rounded-lg text-white text-[14px] font-medium disabled:opacity-50"
-            style={{ height: 52, backgroundColor: "#1877D6", ...POPPINS }}
+            style={{ height: 52, backgroundColor: tokens.blue, ...POPPINS }}
           >
             Send to {sendCount} pupils
           </button>
@@ -358,7 +359,7 @@ function BulkMessagePage() {
       {toast && (
         <div
           className="fixed left-1/2 -translate-x-1/2 bottom-6 px-4 py-3 rounded-lg text-white text-[14px] z-50"
-          style={{ backgroundColor: "#0B1F3A", ...POPPINS }}
+          style={{ backgroundColor: tokens.navy, ...POPPINS }}
         >
           {toast}
         </div>

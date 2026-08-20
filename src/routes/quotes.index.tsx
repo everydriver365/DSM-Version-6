@@ -1,4 +1,5 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { IconChevronLeft, IconFileText, IconLink, IconPlus, IconRefresh, IconSend } from "@tabler/icons-react";
@@ -176,7 +177,7 @@ function QuotesPage() {
     <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS }}>
       <div
         style={{
-          position: "sticky", top: 0, zIndex: 10, backgroundColor: "#0B1F3A",
+          position: "sticky", top: 0, zIndex: 10, backgroundColor: tokens.navy,
           padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between",
         }}
       >
@@ -185,7 +186,7 @@ function QuotesPage() {
           aria-label="Back">
           <IconChevronLeft stroke={1.5} size={24} />
         </button>
-        <h1 style={{ color: "#fff", fontSize: 16, fontWeight: 700, margin: 0 }}>Quotes</h1>
+        <h1 style={{ color: "#fff", fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, margin: 0 }}>Quotes</h1>
         <button onClick={() => navigate({ to: "/quotes/new" })}
           style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex" }}
           aria-label="New quote">
@@ -200,12 +201,12 @@ function QuotesPage() {
           style={{
             width: "100%",
             background: "#fff",
-            color: "#1877D6",
+            color: tokens.blue,
             border: "1px solid #e3e6ec",
             borderRadius: 8,
             padding: "10px 12px",
-            fontSize: 14,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.bold,
             fontFamily: "Poppins, sans-serif",
             cursor: "pointer",
             appearance: "none",
@@ -236,13 +237,13 @@ function QuotesPage() {
             display: "flex", flexDirection: "column", alignItems: "center", gap: 12,
           }}>
             <IconFileText stroke={1.5} size={48} color="#9CA3AF" />
-            <div style={{ fontSize: 14, fontWeight: 600 }}>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: 600 }}>
               No {tab} quotes yet
             </div>
             <button onClick={() => navigate({ to: "/quotes/new" })}
               style={{
-                marginTop: 8, background: "#1877D6", color: "#fff", border: "none",
-                borderRadius: 8, padding: "10px 16px", fontWeight: 600, fontSize: 14,
+                marginTop: 8, background: tokens.blue, color: "#fff", border: "none",
+                borderRadius: 8, padding: "10px 16px", fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md,
                 cursor: "pointer", fontFamily: "Poppins, sans-serif",
               }}>
               + New quote
@@ -265,26 +266,26 @@ function QuotesPage() {
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{
-                        fontSize: 14, fontWeight: 600, color: "#0B1F3A",
+                        fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy,
                         overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                         display: "flex", alignItems: "center", gap: 6,
                       }}>
                         <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{q.recipient_name}</span>
                         {isRev && (
                           <span style={{
-                            background: "#1877D6", color: "#fff", fontSize: 10, fontWeight: 700,
+                            background: tokens.blue, color: "#fff", fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold,
                             padding: "2px 6px", borderRadius: 8, letterSpacing: 0.4,
                           }}>REVISION</span>
                         )}
                         {isResent && (
                           <span style={{
-                            background: "#1877D6", color: "#fff", fontSize: 10, fontWeight: 700,
+                            background: tokens.blue, color: "#fff", fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold,
                             padding: "2px 6px", borderRadius: 8, letterSpacing: 0.4,
                           }}>FOLLOWED UP ✓</span>
                         )}
                       </div>
                       {isRev && (
-                        <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2, fontStyle: "italic" }}>
+                        <div style={{ fontSize: tokens.fontSize.sm, color: "#6B7280", marginTop: 2, fontStyle: "italic" }}>
                           Revised from declined quote
                         </div>
                       )}
@@ -293,7 +294,7 @@ function QuotesPage() {
                         {q.hours ? `${q.hours}h` : ""}{q.course_type ? ` · ${q.course_type}` : ""}
                       </div>
                     </div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: "#0B1F3A" }}>
+                    <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy }}>
                       £{Number(q.price).toFixed(0)}
                     </div>
                   </div>
@@ -305,7 +306,7 @@ function QuotesPage() {
                       Sent {formatDate(q.sent_at)}{q.valid_until ? ` · valid to ${formatDate(q.valid_until)}` : ""}
                     </div>
                     <span style={{
-                      background: statusColor(displayStatus), color: "#fff", fontSize: 10, fontWeight: 700,
+                      background: statusColor(displayStatus), color: "#fff", fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold,
                       padding: "2px 6px", borderRadius: 8, textTransform: "uppercase", letterSpacing: 0.4,
                     }}>
                       {displayStatus}
@@ -318,8 +319,8 @@ function QuotesPage() {
                       display: "flex", flexDirection: "column", gap: 6,
                     }}>
                       {counter != null && (
-                        <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>
-                          Pupil suggested: <span style={{ color: "#1877D6" }}>£{counter.toFixed(2)}</span>
+                        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
+                          Pupil suggested: <span style={{ color: tokens.blue }}>£{counter.toFixed(2)}</span>
                         </div>
                       )}
                       {reason && (
@@ -353,8 +354,8 @@ function QuotesPage() {
                         }}
                         style={{
                           display: "inline-flex", alignItems: "center", gap: 6,
-                          background: "#1877D6", border: "1px solid #1877D6", color: "#fff",
-                          fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
+                          background: tokens.blue, border: "1px solid #1877D6", color: "#fff",
+                          fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "6px 10px", borderRadius: 8,
                           cursor: "pointer", fontFamily: "Poppins, sans-serif",
                         }}
                       >
@@ -372,8 +373,8 @@ function QuotesPage() {
                           toast.success(`Revision sent ${formatDate(revision.sent_at)} · £${Number(revision.price).toFixed(0)}`);
                         }}
                         style={{
-                          background: "none", border: "none", color: "#1877D6",
-                          fontSize: 12, fontWeight: 600, cursor: "pointer",
+                          background: "none", border: "none", color: tokens.blue,
+                          fontSize: 12, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                           fontFamily: "Poppins, sans-serif", padding: 0,
                         }}
                       >
@@ -397,8 +398,8 @@ function QuotesPage() {
                         }}
                         style={{
                           display: "inline-flex", alignItems: "center", gap: 6,
-                          background: "#fff", border: "1px solid #1877D6", color: "#1877D6",
-                          fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
+                          background: "#fff", border: "1px solid #1877D6", color: tokens.blue,
+                          fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "6px 10px", borderRadius: 8,
                           cursor: "pointer", fontFamily: "Poppins, sans-serif",
                         }}
                       >
@@ -434,8 +435,8 @@ function QuotesPage() {
                           }}
                           style={{
                             display: "inline-flex", alignItems: "center", gap: 6,
-                            background: "#0B1F3A", border: "1px solid #0B1F3A", color: "#fff",
-                            fontSize: 12, fontWeight: 600, padding: "6px 10px", borderRadius: 8,
+                            background: tokens.navy, border: "1px solid #0B1F3A", color: "#fff",
+                            fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "6px 10px", borderRadius: 8,
                             cursor: "pointer", fontFamily: "Poppins, sans-serif",
                           }}
                         >

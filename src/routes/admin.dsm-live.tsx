@@ -1,4 +1,5 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconCamera, IconPencil, IconPlus, IconTrash, IconUsers, IconX } from "@tabler/icons-react";
@@ -260,7 +261,7 @@ function AdminDsmLive() {
     if (recurringFrequency !== "custom") return null;
     return (
       <div style={{ marginBottom: 12 }}>
-        <div style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A", marginBottom: 6 }}>
+        <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, marginBottom: 6 }}>
           Repeat on
         </div>
         <div style={{ display: "flex", gap: 6 }}>
@@ -279,7 +280,7 @@ function AdminDsmLive() {
                   background: on ? "#0B1F3A" : "#FFFFFF",
                   color: on ? "#FFFFFF" : "#6B7280",
                   fontSize: 12,
-                  fontWeight: 600,
+                  fontWeight: tokens.fontWeight.semibold,
                   cursor: "pointer",
                 }}
               >
@@ -289,7 +290,7 @@ function AdminDsmLive() {
           })}
         </div>
         {customDaysInvalid && (
-          <div style={{ fontSize: 11, color: "#CC2229", marginTop: 6 }}>
+          <div style={{ fontSize: tokens.fontSize.sm, color: tokens.red, marginTop: 6 }}>
             Select at least one day.
           </div>
         )}
@@ -595,13 +596,13 @@ function AdminDsmLive() {
           type="button"
           onClick={openAdd}
           style={{
-            background: "#1877D6",
+            background: tokens.blue,
             color: "#fff",
             border: "none",
             borderRadius: 8,
             padding: "11px 20px",
-            fontSize: 14,
-            fontWeight: 800,
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.extrabold,
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
@@ -641,7 +642,7 @@ function AdminDsmLive() {
               <div style={{ fontSize: 32, fontWeight: 900, color: "#000", letterSpacing: -1.1 }}>
                 {s.value}
               </div>
-              <div style={{ fontSize: 10.5, fontWeight: 700, color: "#8A8A8E", textTransform: "uppercase", marginTop: 6 }}>
+              <div style={{ fontSize: 10.5, fontWeight: tokens.fontWeight.bold, color: "#8A8A8E", textTransform: "uppercase", marginTop: 6 }}>
                 {s.label}
               </div>
             </div>
@@ -674,19 +675,19 @@ function AdminDsmLive() {
                 boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.07)",
               }}
             >
-              <div style={{ fontSize: 19, fontWeight: 800, color: "#000", letterSpacing: -0.3, marginBottom: 10 }}>
+              <div style={{ fontSize: 19, fontWeight: tokens.fontWeight.extrabold, color: "#000", letterSpacing: -0.3, marginBottom: 10 }}>
                 {sentenceCase(s.title)}
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginBottom: 12 }}>
                 {s.category && (
-                  <span style={{ fontSize: 11.5, fontWeight: 700, background: "#F2F2F7", color: "#6B6B6F", padding: "6px 12px", borderRadius: 8}}>
+                  <span style={{ fontSize: 11.5, fontWeight: tokens.fontWeight.bold, background: "#F2F2F7", color: "#6B6B6F", padding: "6px 12px", borderRadius: 8}}>
                     {sentenceCase(s.category)}
                   </span>
                 )}
                 <span
                   style={{
                     fontSize: 11.5,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     padding: "6px 12px",
                     borderRadius: 8,
                     background: isUpcoming ? "#1877D6" : isPast ? "#E5E5EA" : "#E5E5EA",
@@ -696,10 +697,10 @@ function AdminDsmLive() {
                   {statusLabel}
                 </span>
               </div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+              <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
                 {formatSessionDateTime(s.session_date, s.session_time, s.duration_minutes)}
               </div>
-              <div style={{ fontSize: 13, color: "#8A8A8E", fontWeight: 500, marginTop: 4 }}>
+              <div style={{ fontSize: tokens.fontSize.base, color: "#8A8A8E", fontWeight: tokens.fontWeight.medium, marginTop: 4 }}>
                 {s.spaces_taken ?? 0}/{s.max_spaces ?? 0} booked ·{" "}
                 {isFreeFallback ? (
                   <span style={{ color: "#1A9B5C", fontWeight: 700 }}>Free</span>
@@ -711,14 +712,14 @@ function AdminDsmLive() {
                 <button
                   type="button"
                   onClick={() => openEdit(s)}
-                  style={actionBtn({ textColor: "#0B1F3A", borderColor: "#E4E4E8" })}
+                  style={actionBtn({ textColor: tokens.navy, borderColor: "#E4E4E8" })}
                 >
                   <IconPencil stroke={1.5} size={14} /> Edit
                 </button>
                 <button
                   type="button"
                   onClick={() => openBookings(s)}
-                  style={actionBtn({ textColor: "#1877D6", borderColor: "#1877D6" })}
+                  style={actionBtn({ textColor: tokens.blue, borderColor: tokens.blue })}
                 >
                   <IconUsers size={14} /> Bookings
                 </button>
@@ -826,8 +827,8 @@ function AdminDsmLive() {
                     border: "none",
                     borderRadius: 8,
                     padding: "4px 10px",
-                    fontSize: 11,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.semibold,
                     cursor: "pointer",
                   }}
                 >
@@ -853,7 +854,7 @@ function AdminDsmLive() {
                   gap: 6,
                   cursor: uploadingImage ? "wait" : "pointer",
                   fontFamily: "Poppins, sans-serif",
-                  fontSize: 13,
+                  fontSize: tokens.fontSize.base,
                 }}
               >
                 <IconCamera stroke={1.5} size={22} />
@@ -895,7 +896,7 @@ function AdminDsmLive() {
                       onChange={(e) => setRecurringUntil(e.target.value)}
                     />
                   </FormField>
-                  <div style={{ fontSize: 11, color: "#6B7280" }}>
+                  <div style={{ fontSize: tokens.fontSize.sm, color: "#6B7280" }}>
                     Generates individual session entries for each occurrence.
                   </div>
                 </div>
@@ -931,7 +932,7 @@ function AdminDsmLive() {
                       onChange={(e) => setRecurringUntil(e.target.value)}
                     />
                   </FormField>
-                  <div style={{ fontSize: 11, color: "#6B7280" }}>
+                  <div style={{ fontSize: tokens.fontSize.sm, color: "#6B7280" }}>
                     Keeps this session and creates future occurrences in the same series.
                   </div>
                 </div>
@@ -944,13 +945,13 @@ function AdminDsmLive() {
             onClick={handleSave}
             style={{
               width: "100%",
-              background: "#CC2229",
+              background: tokens.red,
               color: "#fff",
               border: "none",
               borderRadius: 8,
               padding: "12px 16px",
-              fontSize: 14,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.semibold,
               marginTop: 12,
               cursor: "pointer",
               opacity: saving || ((isRecurring || convertToRecurring) && customDaysInvalid) ? 0.6 : 1,
@@ -969,15 +970,15 @@ function AdminDsmLive() {
       {bookingsFor && (
         <Sheet onClose={() => setBookingsFor(null)} title={`Bookings — ${bookingsFor.title}`}>
           {bookings.length === 0 ? (
-            <div style={{ color: "#6B7280", fontSize: 13, padding: "8px 0" }}>No bookings yet.</div>
+            <div style={{ color: "#6B7280", fontSize: tokens.fontSize.base, padding: "8px 0" }}>No bookings yet.</div>
           ) : (
             bookings.map((b, i) => (
               <div key={b.id || i} style={{ padding: "10px 0", borderBottom: "0.5px solid #E2E6ED" }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
+                <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
                   {b.instructors?.name || b.instructor_name || "Instructor"}
                 </div>
                 <div style={{ fontSize: 12, color: "#6B7280" }}>{b.email || "—"}</div>
-                <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>
+                <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, marginTop: 2 }}>
                   Booked {b.created_at ? new Date(b.created_at).toLocaleString() : "—"} · {b.status || "confirmed"}
                 </div>
               </div>
@@ -988,13 +989,13 @@ function AdminDsmLive() {
             onClick={() => showToast("Coming soon")}
             style={{
               width: "100%",
-              background: "#1877D6",
+              background: tokens.blue,
               color: "#fff",
               border: "none",
               borderRadius: 8,
               padding: "12px 16px",
-              fontSize: 14,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.semibold,
               marginTop: 12,
               cursor: "pointer",
             }}
@@ -1018,7 +1019,7 @@ function AdminDsmLive() {
             padding: 20,
           }}
         >
-          <div style={{ color: "#fff", fontSize: 14, fontWeight: 600, marginBottom: 12, textAlign: "center" }}>
+          <div style={{ color: "#fff", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, marginBottom: 12, textAlign: "center" }}>
             Drag to reposition
           </div>
           <div
@@ -1077,13 +1078,13 @@ function AdminDsmLive() {
               }}
             />
           </div>
-          <div style={{ color: "#9CA3AF", fontSize: 11, marginTop: 8 }}>
+          <div style={{ color: tokens.textMuted, fontSize: tokens.fontSize.sm, marginTop: 8 }}>
             Position: {Math.round(cropPos.x)}% {Math.round(cropPos.y)}%
           </div>
           <div style={{ width: "100%", maxWidth: 420, marginTop: 12 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
               <label className="text-sm" style={{ color: "#6B7280" }}>Zoom</label>
-              <span className="text-xs" style={{ color: "#9CA3AF" }}>{cropZoom}%</span>
+              <span className="text-xs" style={{ color: tokens.textMuted }}>{cropZoom}%</span>
             </div>
             <input
               type="range"
@@ -1108,8 +1109,8 @@ function AdminDsmLive() {
               border: "none",
               borderRadius: 8,
               padding: "12px 16px",
-              fontSize: 14,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.semibold,
               cursor: uploadingImage ? "wait" : "pointer",
               opacity: uploadingImage ? 0.6 : 1,
             }}
@@ -1127,7 +1128,7 @@ function AdminDsmLive() {
               background: "transparent",
               color: "#fff",
               border: "none",
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               textDecoration: "underline",
               cursor: "pointer",
             }}
@@ -1140,7 +1141,7 @@ function AdminDsmLive() {
             style={{
               marginTop: 6,
               background: "transparent",
-              color: "#9CA3AF",
+              color: tokens.textMuted,
               border: "none",
               fontSize: 12,
               cursor: "pointer",
@@ -1158,11 +1159,11 @@ function AdminDsmLive() {
             bottom: 24,
             left: "50%",
             transform: "translateX(-50%)",
-            background: "#0B1F3A",
+            background: tokens.navy,
             color: "#fff",
             padding: "10px 16px",
             borderRadius: 8,
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
             zIndex: 60,
           }}
         >
@@ -1195,10 +1196,10 @@ function AdminDsmLive() {
               boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
             }}
           >
-            <div style={{ fontSize: 17, fontWeight: 700, color: "#0B1F3A", marginBottom: 6 }}>
+            <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, color: tokens.navy, marginBottom: 6 }}>
               Update recurring sessions
             </div>
-            <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 14 }}>
+            <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280", marginBottom: 14 }}>
               This is a recurring session. What would you like to update?
             </div>
             {[
@@ -1228,7 +1229,7 @@ function AdminDsmLive() {
                   style={{ marginTop: 3 }}
                 />
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>{opt.label}</div>
+                  <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>{opt.label}</div>
                   <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{opt.desc}</div>
                 </div>
               </label>
@@ -1240,12 +1241,12 @@ function AdminDsmLive() {
                 onClick={() => setRecurringUpdateOpen(false)}
                 style={{
                   background: "#fff",
-                  color: "#0B1F3A",
+                  color: tokens.navy,
                   border: "1px solid #E2E6ED",
                   borderRadius: 8,
                   padding: "10px 14px",
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
                   cursor: "pointer",
                 }}
               >
@@ -1256,13 +1257,13 @@ function AdminDsmLive() {
                 disabled={saving}
                 onClick={confirmRecurringUpdate}
                 style={{
-                  background: "#0B1F3A",
+                  background: tokens.navy,
                   color: "#fff",
                   border: "none",
                   borderRadius: 8,
                   padding: "10px 14px",
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
                   cursor: saving ? "wait" : "pointer",
                   opacity: saving ? 0.7 : 1,
                 }}
@@ -1284,10 +1285,10 @@ const inp: React.CSSProperties = {
   padding: "10px 12px",
   borderRadius: 8,
   border: "1px solid #E2E6ED",
-  fontSize: 14,
+  fontSize: tokens.fontSize.md,
   fontFamily: "Poppins, sans-serif",
   background: "#fff",
-  color: "#0B1F3A",
+  color: tokens.navy,
   boxSizing: "border-box",
 };
 
@@ -1304,7 +1305,7 @@ function actionBtn({ textColor, borderColor }: { textColor: string; borderColor:
     borderRadius: 8,
     padding: 12,
     fontSize: 13.5,
-    fontWeight: 700,
+    fontWeight: tokens.fontWeight.bold,
     cursor: "pointer",
     fontFamily: "Poppins, system-ui, sans-serif",
   };
@@ -1313,7 +1314,7 @@ function actionBtn({ textColor, borderColor }: { textColor: string; borderColor:
 function FormField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: 10 }}>
-      <div style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A", marginBottom: 4 }}>{label}</div>
+      <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, marginBottom: 4 }}>{label}</div>
       {children}
     </div>
   );
@@ -1322,7 +1323,7 @@ function FormField({ label, children }: { label: string; children: React.ReactNo
 function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", cursor: "pointer" }}>
-      <span style={{ fontSize: 13, color: "#0B1F3A" }}>{label}</span>
+      <span style={{ fontSize: tokens.fontSize.base, color: tokens.navy }}>{label}</span>
       <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
     </label>
   );
@@ -1355,12 +1356,12 @@ function Sheet({ title, children, onClose }: { title: string; children: React.Re
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>{title}</div>
+          <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>{title}</div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            style={{ background: "#F3F4F6", border: "none", borderRadius: "50%", width: 32, height: 32, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#0B1F3A" }}
+            style={{ background: "#F3F4F6", border: "none", borderRadius: "50%", width: 32, height: 32, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: tokens.navy }}
           >
             <IconX stroke={1.5} size={16} />
           </button>

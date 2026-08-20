@@ -1,4 +1,5 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -208,7 +209,7 @@ function OutstandingPage() {
       {!loading && total > 0 && (
         <div
           style={{
-            background: "#FFFFFF",
+            background: tokens.white,
             padding: "8px 16px",
             borderBottom: "1px solid #EEF2F7",
             display: "flex",
@@ -216,10 +217,10 @@ function OutstandingPage() {
             gap: 8,
           }}
         >
-          <span style={{ fontSize: 13, color: "#6B7280" }}>Open items</span>
+          <span style={{ fontSize: tokens.fontSize.base, color: "#6B7280" }}>Open items</span>
           <span
             style={{
-              background: "#1877D6", color: "#fff", fontSize: 11, fontWeight: 700,
+              background: tokens.blue, color: "#fff", fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold,
               padding: "2px 7px", borderRadius: 8, minWidth: 22, textAlign: "center",
             }}
           >
@@ -238,10 +239,10 @@ function OutstandingPage() {
             display: "flex", flexDirection: "column", alignItems: "center", gap: 14,
           }}>
             <IconCircleCheck stroke={1.5} size={64} color="#1877D6" />
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>
+            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
               All clear! Nothing needs attention
             </div>
-            <div style={{ fontSize: 13, color: "#6B7280", maxWidth: 280 }}>
+            <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280", maxWidth: 280 }}>
               Payments, tests, enquiries, documents, certifications, todos and pupils all up to date.
             </div>
           </div>
@@ -265,13 +266,13 @@ function OutstandingPage() {
                     }}>
                       {s.icon}
                     </div>
-                    <div style={{ flex: 1, fontSize: 14, color: "#0B1F3A", fontWeight: 600 }}>
+                    <div style={{ flex: 1, fontSize: tokens.fontSize.md, color: tokens.navy, fontWeight: 600 }}>
                       {s.label}
                     </div>
                     <span style={{
                       minWidth: 24, height: 22, padding: "0 8px", borderRadius: 8,
-                      background: "#1877D6", color: "#fff",
-                      fontSize: 12, fontWeight: 700,
+                      background: tokens.blue, color: "#fff",
+                      fontSize: 12, fontWeight: tokens.fontWeight.bold,
                       display: "flex", alignItems: "center", justifyContent: "center",
                     }}>
                       {s.count}
@@ -285,7 +286,7 @@ function OutstandingPage() {
                         <Row key={p.id} top={i > 0}>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={rowTitle}>{p.name}</div>
-                            <div style={{ ...rowSub, color: "#1877D6", fontWeight: 700 }}>
+                            <div style={{ ...rowSub, color: tokens.blue, fontWeight: 700 }}>
                               £{Number(p.balance_owed).toFixed(2)} owed
                             </div>
                           </div>
@@ -316,7 +317,7 @@ function OutstandingPage() {
                           </div>
                           {e.phone && (
                             <a href={`tel:${e.phone}`} style={{
-                              ...actionBase, background: "#1877D6", color: "#fff",
+                              ...actionBase, background: tokens.blue, color: "#fff",
                               textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4,
                             }}>
                               <IconPhone stroke={1.5} size={12} /> Call
@@ -330,7 +331,7 @@ function OutstandingPage() {
                         <Row key={d.id} top={i > 0}>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={rowTitle}>{d.name}</div>
-                            <div style={{ ...rowSub, color: "#1877D6", fontWeight: 600 }}>
+                            <div style={{ ...rowSub, color: tokens.blue, fontWeight: 600 }}>
                               Expires {formatDate(d.expiry_date)}
                             </div>
                           </div>
@@ -342,7 +343,7 @@ function OutstandingPage() {
                         <Row key={c.id} top={i > 0}>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={rowTitle}>{c.name}</div>
-                            <div style={{ ...rowSub, color: "#1877D6", fontWeight: 600 }}>
+                            <div style={{ ...rowSub, color: tokens.blue, fontWeight: 600 }}>
                               Expires {formatDate(c.expiry_date)}
                             </div>
                           </div>
@@ -359,14 +360,14 @@ function OutstandingPage() {
                               aria-label="Complete"
                               style={{
                                 background: "none", border: "none", cursor: "pointer",
-                                color: "#1877D6", display: "flex", padding: 0,
+                                color: tokens.blue, display: "flex", padding: 0,
                               }}
                             >
                               <IconSquare stroke={1.5} size={20} />
                             </button>
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={rowTitle}>{t.title}</div>
-                              <div style={{ ...rowSub, color: "#1877D6", fontWeight: 600 }}>
+                              <div style={{ ...rowSub, color: tokens.blue, fontWeight: 600 }}>
                                 {overdue} day{overdue === 1 ? "" : "s"} overdue
                               </div>
                             </div>
@@ -399,14 +400,14 @@ function OutstandingPage() {
 }
 
 const rowTitle = {
-  fontSize: 14, fontWeight: 600, color: "#0B1F3A",
+  fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy,
   overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const,
 };
 const rowSub = { fontSize: 12, color: "#6B7280", marginTop: 2 };
 
 const actionBase = {
   height: 30, padding: "0 10px", borderRadius: 8,
-  fontSize: 12, fontWeight: 600, cursor: "pointer",
+  fontSize: 12, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
   fontFamily: "Poppins, sans-serif", border: "none",
 } as const;
 

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconArrowLeft, IconRefresh } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -52,7 +53,7 @@ const fieldBorder: React.CSSProperties = {
   fontFamily: "Poppins, sans-serif",
   borderWidth: "0.5px",
   borderStyle: "solid",
-  borderColor: "#EEF2F7",
+  borderColor: tokens.canvas,
 };
 
 function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) {
@@ -380,7 +381,7 @@ function NewLessonPage() {
           </button>
           <p
             className="text-[20px] font-semibold"
-            style={{ color: "#0B1F3A", fontFamily: "Poppins, sans-serif" }}
+            style={{ color: tokens.navy, fontFamily: "Poppins, sans-serif" }}
           >
             Add lesson
           </p>
@@ -410,7 +411,7 @@ function NewLessonPage() {
               ))}
             </select>
             {errors.pupil && (
-              <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
+              <p className="mt-1 text-[12px]" style={{ color: tokens.blue }}>
                 {errors.pupil}
               </p>
             )}
@@ -424,7 +425,7 @@ function NewLessonPage() {
               onChange={(e) => setDate(e.target.value)}
             />
             {errors.date && (
-              <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
+              <p className="mt-1 text-[12px]" style={{ color: tokens.blue }}>
                 {errors.date}
               </p>
             )}
@@ -439,7 +440,7 @@ function NewLessonPage() {
               step={60}
             />
             {errors.time && (
-              <p className="mt-1 text-[12px]" style={{ color: "#1877D6" }}>
+              <p className="mt-1 text-[12px]" style={{ color: tokens.blue }}>
                 {errors.time}
               </p>
             )}
@@ -525,7 +526,7 @@ function NewLessonPage() {
           >
             <div className="flex items-center" style={{ flex: 1, gap: 8 }}>
               <IconRefresh size={14} color="#9CA3AF" />
-              <span style={{ fontSize: 14, color: "#0B1F3A" }}>Make this a recurring lesson</span>
+              <span style={{ fontSize: tokens.fontSize.md, color: tokens.navy }}>Make this a recurring lesson</span>
             </div>
             <button
               type="button"
@@ -549,7 +550,7 @@ function NewLessonPage() {
                   width: 20,
                   height: 20,
                   borderRadius: 999,
-                  background: "#FFFFFF",
+                  background: tokens.white,
                   transition: "left 0.15s",
                 }}
               />
@@ -557,8 +558,8 @@ function NewLessonPage() {
           </div>
 
           {isRecurring && (
-            <div style={{ marginTop: 8, padding: "12px 16px", background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 8}}>
-              <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6 }}>Repeat</label>
+            <div style={{ marginTop: 8, padding: "12px 16px", background: tokens.white, border: "0.5px solid #E2E6ED", borderRadius: 8}}>
+              <label style={{ display: "block", fontSize: 12, color: tokens.textMuted, marginBottom: 6 }}>Repeat</label>
               <div className="grid grid-cols-2 gap-2">
                 {(["weekly", "fortnightly"] as const).map((f) => {
                   const active = recurringFreq === f;
@@ -570,8 +571,8 @@ function NewLessonPage() {
                       style={{
                         padding: "10px 0",
                         borderRadius: 8,
-                        fontSize: 13,
-                        fontWeight: 600,
+                        fontSize: tokens.fontSize.base,
+                        fontWeight: tokens.fontWeight.semibold,
                         background: active ? "#0F2044" : "#F7FAFC",
                         color: active ? "#FFFFFF" : "#0F2044",
                         border: active ? "none" : "0.5px solid #E2E6ED",
@@ -583,7 +584,7 @@ function NewLessonPage() {
                   );
                 })}
               </div>
-              <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6, marginTop: 12 }}>Until</label>
+              <label style={{ display: "block", fontSize: 12, color: tokens.textMuted, marginBottom: 6, marginTop: 12 }}>Until</label>
               <input
                 type="date"
                 value={recurringUntil}
@@ -594,15 +595,15 @@ function NewLessonPage() {
                   borderRadius: 8,
                   border: "0.5px solid #E2E6ED",
                   padding: "0 12px",
-                  fontSize: 14,
-                  color: "#0B1F3A",
+                  fontSize: tokens.fontSize.md,
+                  color: tokens.navy,
                 }}
               />
             </div>
           )}
 
           {errors.form && (
-            <p className="text-[12px]" style={{ color: "#1877D6" }}>
+            <p className="text-[12px]" style={{ color: tokens.blue }}>
               {errors.form}
             </p>
           )}

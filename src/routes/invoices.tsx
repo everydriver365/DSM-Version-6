@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { useEffect, useMemo, useState } from "react";
@@ -132,9 +133,9 @@ function InvoicesPage() {
 
       {/* Summary */}
       <div style={{ background: "white", borderRadius: 8, boxShadow: "0 1px 3px rgba(0,0,0,0.06)", padding: 16, margin: 16 }}>
-        <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600, letterSpacing: "0.05em" }}>INVOICED THIS MONTH</div>
-        <div style={{ fontSize: 28, fontWeight: 700, color: NAVY, marginTop: 4 }}>{formatGBP(monthTotal)}</div>
-        <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>{filtered.length} record{filtered.length === 1 ? "" : "s"}</div>
+        <div style={{ fontSize: 12, color: "#6B7280", fontWeight: tokens.fontWeight.semibold, letterSpacing: "0.05em" }}>INVOICED THIS MONTH</div>
+        <div style={{ fontSize: tokens.fontSize.hero, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 4 }}>{formatGBP(monthTotal)}</div>
+        <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 2 }}>{filtered.length} record{filtered.length === 1 ? "" : "s"}</div>
       </div>
 
       {/* IconSearch */}
@@ -146,7 +147,7 @@ function InvoicesPage() {
             placeholder="Search by pupil name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ flex: 1, border: "none", outline: "none", fontSize: 14, color: "#0B1F3A", background: "transparent", ...POPPINS }}
+            style={{ flex: 1, border: "none", outline: "none", fontSize: tokens.fontSize.md, color: tokens.navy, background: "transparent", ...POPPINS }}
           />
           {search && (
             <button type="button" onClick={() => setSearch("")} style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }} aria-label="Clear search">
@@ -159,12 +160,12 @@ function InvoicesPage() {
       {/* List */}
       <div style={{ padding: "0 16px" }}>
         {loading ? (
-          <div style={{ textAlign: "center", padding: 40, color: "#9CA3AF", fontSize: 13 }}>Loading…</div>
+          <div style={{ textAlign: "center", padding: 40, color: tokens.textMuted, fontSize: 13 }}>Loading…</div>
         ) : filtered.length === 0 ? (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 24px", gap: 8 }}>
             <IconReceipt size={40} color="#D0D5DD" />
-            <div style={{ fontSize: 14, color: "#6B7280" }}>No invoices found</div>
-            <div style={{ fontSize: 12, color: "#9CA3AF" }}>{search ? "Try a different search" : "Invoice records will appear here"}</div>
+            <div style={{ fontSize: tokens.fontSize.md, color: "#6B7280" }}>No invoices found</div>
+            <div style={{ fontSize: 12, color: tokens.textMuted }}>{search ? "Try a different search" : "Invoice records will appear here"}</div>
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -189,7 +190,7 @@ function InvoicesPage() {
                 >
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: NAVY, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {row.pupils?.name ?? "Unknown pupil"}
                       </div>
                       <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
@@ -197,16 +198,16 @@ function InvoicesPage() {
                       </div>
                     </div>
                     <div style={{ textAlign: "right", flexShrink: 0 }}>
-                      <div style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>{formatGBP(row.lesson_cost)}</div>
-                      <div style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", marginTop: 2 }}>{methodLabel(row.payment_method)}</div>
+                      <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY }}>{formatGBP(row.lesson_cost)}</div>
+                      <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: "#6B7280", marginTop: 2 }}>{methodLabel(row.payment_method)}</div>
                     </div>
                   </div>
                   <div style={{ marginTop: 8 }}>
                     <span
                       style={{
                         display: "inline-block",
-                        fontSize: 11,
-                        fontWeight: 700,
+                        fontSize: tokens.fontSize.sm,
+                        fontWeight: tokens.fontWeight.bold,
                         padding: "3px 9px",
                         borderRadius: 999,
                         color: status.color,
@@ -228,30 +229,30 @@ function InvoicesPage() {
         <BottomSheet title="Invoice details" onClose={() => setSelectedId(null)}>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div>
-              <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600, letterSpacing: "0.05em" }}>PUPIL</div>
-              <div style={{ fontSize: 16, fontWeight: 600, color: NAVY, marginTop: 2 }}>{selectedRow.pupils?.name ?? "Unknown pupil"}</div>
+              <div style={{ fontSize: 12, color: "#6B7280", fontWeight: tokens.fontWeight.semibold, letterSpacing: "0.05em" }}>PUPIL</div>
+              <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY, marginTop: 2 }}>{selectedRow.pupils?.name ?? "Unknown pupil"}</div>
             </div>
             <div>
-              <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600, letterSpacing: "0.05em" }}>DATE</div>
-              <div style={{ fontSize: 16, fontWeight: 600, color: NAVY, marginTop: 2 }}>{dateLabel(selectedRow.created_at)}</div>
-              <div style={{ fontSize: 13, color: "#6B7280", marginTop: 1 }}>{timeLabel(selectedRow.created_at)}</div>
+              <div style={{ fontSize: 12, color: "#6B7280", fontWeight: tokens.fontWeight.semibold, letterSpacing: "0.05em" }}>DATE</div>
+              <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY, marginTop: 2 }}>{dateLabel(selectedRow.created_at)}</div>
+              <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280", marginTop: 1 }}>{timeLabel(selectedRow.created_at)}</div>
             </div>
             <div>
-              <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600, letterSpacing: "0.05em" }}>AMOUNT</div>
-              <div style={{ fontSize: 22, fontWeight: 700, color: NAVY, marginTop: 2 }}>{formatGBP(selectedRow.lesson_cost)}</div>
+              <div style={{ fontSize: 12, color: "#6B7280", fontWeight: tokens.fontWeight.semibold, letterSpacing: "0.05em" }}>AMOUNT</div>
+              <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 2 }}>{formatGBP(selectedRow.lesson_cost)}</div>
             </div>
             <div>
-              <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600, letterSpacing: "0.05em" }}>METHOD</div>
-              <div style={{ fontSize: 16, fontWeight: 600, color: NAVY, marginTop: 2 }}>{methodLabel(selectedRow.payment_method)}</div>
+              <div style={{ fontSize: 12, color: "#6B7280", fontWeight: tokens.fontWeight.semibold, letterSpacing: "0.05em" }}>METHOD</div>
+              <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY, marginTop: 2 }}>{methodLabel(selectedRow.payment_method)}</div>
             </div>
             <div>
-              <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600, letterSpacing: "0.05em" }}>STATUS</div>
+              <div style={{ fontSize: 12, color: "#6B7280", fontWeight: tokens.fontWeight.semibold, letterSpacing: "0.05em" }}>STATUS</div>
               <div style={{ marginTop: 4 }}>
                 <span
                   style={{
                     display: "inline-block",
                     fontSize: 12,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     padding: "4px 10px",
                     borderRadius: 999,
                     color: statusBadge(selectedRow.payment_status).color,
@@ -264,8 +265,8 @@ function InvoicesPage() {
             </div>
             {selectedRow.notes && (
               <div>
-                <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600, letterSpacing: "0.05em" }}>NOTES</div>
-                <div style={{ fontSize: 14, color: "#374151", marginTop: 2, lineHeight: 1.4, whiteSpace: "pre-wrap" }}>{selectedRow.notes}</div>
+                <div style={{ fontSize: 12, color: "#6B7280", fontWeight: tokens.fontWeight.semibold, letterSpacing: "0.05em" }}>NOTES</div>
+                <div style={{ fontSize: tokens.fontSize.md, color: "#374151", marginTop: 2, lineHeight: 1.4, whiteSpace: "pre-wrap" }}>{selectedRow.notes}</div>
               </div>
             )}
           </div>

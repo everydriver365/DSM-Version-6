@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
@@ -190,7 +191,7 @@ function MorePage() {
             flex: 1,
             border: 'none',
             outline: 'none',
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
             fontFamily: 'Poppins, sans-serif',
             color: '#0F2044',
             background: 'transparent',
@@ -240,10 +241,10 @@ function MorePage() {
                   <tool.icon size={18} color={tool.colour} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, fontSize: 13, color: '#0F2044' }}>{tool.label}</div>
+                  <div style={{ fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.base, color: '#0F2044' }}>{tool.label}</div>
                   <div style={{ fontSize: 12, color: '#9CA3AF' }}>{tool.sub}</div>
                 </div>
-                <span style={{ fontSize: 10, color: '#9CA3AF', marginLeft: 'auto' }}>{tool.group}</span>
+                <span style={{ fontSize: tokens.fontSize.xs, color: '#9CA3AF', marginLeft: 'auto' }}>{tool.group}</span>
               </button>
             ))}
           </div>
@@ -291,12 +292,12 @@ function MorePage() {
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <div style={{ fontSize: 14, fontWeight: 600, color: '#0F2044' }}>Learn</div>
+                        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: '#0F2044' }}>Learn</div>
                         {LEARN_IS_NEW && (
                           <span
                             style={{
                               fontSize: 9.5,
-                              fontWeight: 700,
+                              fontWeight: tokens.fontWeight.bold,
                               color: 'white',
                               background: '#1877D6',
                               padding: '2px 6px',
@@ -319,8 +320,8 @@ function MorePage() {
               )}
               <div
                 style={{
-                  fontSize: 11,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.semibold,
                   color: '#9CA3AF',
                   textTransform: 'uppercase',
                   letterSpacing: '0.08em',
@@ -377,7 +378,7 @@ function MorePage() {
                       <tool.icon size={tool.gradient ? 20 : 18} color={tool.gradient ? '#fff' : tool.colour} />
                     </div>
                     <div>
-                      <div style={{ fontWeight: 500, fontSize: 15, color: '#0B1F3A' }}>{tool.label}</div>
+                      <div style={{ fontWeight: tokens.fontWeight.medium, fontSize: 15, color: '#0B1F3A' }}>{tool.label}</div>
                       <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 1, display: 'flex', alignItems: 'center', gap: 5 }}>
                         {isSquare && squareConnected && (
                           <span style={{ width: 7, height: 7, borderRadius: 999, background: '#16A34A', flexShrink: 0 }} />

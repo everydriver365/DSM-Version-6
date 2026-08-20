@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState } from "react";
 import { IconArrowLeft, IconCircleCheck } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
@@ -31,7 +32,7 @@ const inputStyle: React.CSSProperties = {
   padding: "10px 12px",
   border: "1px solid #EEF2F7",
   borderRadius: 8,
-  fontSize: 14,
+  fontSize: tokens.fontSize.md,
   fontFamily: "Poppins, sans-serif",
   background: "#fff",
   color: NAVY,
@@ -40,7 +41,7 @@ const inputStyle: React.CSSProperties = {
 
 const labelStyle: React.CSSProperties = {
   fontSize: 12,
-  fontWeight: 600,
+  fontWeight: tokens.fontWeight.semibold,
   color: "#6B7280",
   marginBottom: 4,
   display: "block",
@@ -326,7 +327,7 @@ function SignTermsPage() {
         >
           <IconArrowLeft stroke={1.5} size={20} />
         </button>
-        <div style={{ fontSize: 16, fontWeight: 700 }}>Sign terms & conditions</div>
+        <div style={{ fontSize: tokens.fontSize.lg, fontWeight: 700 }}>Sign terms & conditions</div>
       </div>
 
       <div style={{ maxWidth: 640, margin: "0 auto", padding: 16 }}>
@@ -340,7 +341,7 @@ function SignTermsPage() {
               color: "#B91C1C",
               padding: 14,
               borderRadius: 8,
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
             }}
           >
             {error}
@@ -359,10 +360,10 @@ function SignTermsPage() {
             <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
               <IconCircleCheck stroke={1.5} size={40} color="#1B7F3B" />
             </div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: NAVY, marginBottom: 6 }}>
+            <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.bold, color: NAVY, marginBottom: 6 }}>
               Terms signed
             </div>
-            <div style={{ fontSize: 14, color: "#6B7280" }}>
+            <div style={{ fontSize: tokens.fontSize.md, color: "#6B7280" }}>
               {success.emailed
                 ? "A confirmation copy has been emailed."
                 : pupil?.email
@@ -379,8 +380,8 @@ function SignTermsPage() {
                 border: "none",
                 borderRadius: 8,
                 padding: "10px 16px",
-                fontSize: 14,
-                fontWeight: 600,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
               }}
@@ -395,7 +396,7 @@ function SignTermsPage() {
               border: "1px solid #EEF2F7",
               borderRadius: 8,
               padding: 16,
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               color: "#6B7280",
             }}
           >
@@ -415,9 +416,9 @@ function SignTermsPage() {
               }}
             >
               <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600 }}>Signing for</div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>{pupil.name}</div>
+              <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: NAVY }}>{pupil.name}</div>
               {pupil.email ? (
-                <div style={{ fontSize: 13, color: "#6B7280", marginTop: 2 }}>{pupil.email}</div>
+                <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280", marginTop: 2 }}>{pupil.email}</div>
               ) : null}
             </div>
 
@@ -432,7 +433,7 @@ function SignTermsPage() {
                 boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               }}
             >
-              <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600, marginBottom: 8 }}>
+              <div style={{ fontSize: 12, color: "#6B7280", fontWeight: tokens.fontWeight.semibold, marginBottom: 8 }}>
                 Terms & conditions (v{terms.version})
               </div>
               <div
@@ -462,7 +463,7 @@ function SignTermsPage() {
                   color: "#8A5A00",
                   padding: 12,
                   borderRadius: 8,
-                  fontSize: 13,
+                  fontSize: tokens.fontSize.base,
                   marginBottom: 12,
                 }}
               >
@@ -500,7 +501,7 @@ function SignTermsPage() {
                     borderRadius: 8,
                     padding: "6px 10px",
                     fontSize: 12,
-                    fontWeight: 600,
+                    fontWeight: tokens.fontWeight.semibold,
                     cursor: "pointer",
                     fontFamily: "Poppins, sans-serif",
                   }}
@@ -529,7 +530,7 @@ function SignTermsPage() {
                   onTouchEnd={endDraw}
                 />
               </div>
-              <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 6 }}>
+              <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, marginTop: 6 }}>
                 Draw your signature above.
               </div>
             </div>
@@ -585,7 +586,7 @@ function SignTermsPage() {
                 color: "#fff",
                 border: "none",
                 fontSize: 15,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 cursor: canSubmit ? "pointer" : "not-allowed",
                 fontFamily: "Poppins, sans-serif",
                 marginBottom: 24,

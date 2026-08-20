@@ -1,4 +1,5 @@
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
@@ -480,7 +481,7 @@ function MiniSitePage() {
               background: t.pillBg,
               color: t.pillColor,
               fontSize: 12,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               borderRadius: 8,
               padding: "4px 10px",
             }}
@@ -494,8 +495,8 @@ function MiniSitePage() {
               style={{
                 background: "#FEF3C7",
                 color: "#B45309",
-                fontSize: 11,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.sm,
+                fontWeight: tokens.fontWeight.bold,
                 borderRadius: 999,
                 padding: "4px 10px",
               }}
@@ -507,9 +508,9 @@ function MiniSitePage() {
         {billingPeriod === "annual" && (
           <div
             style={{
-              fontSize: 11,
+              fontSize: tokens.fontSize.sm,
               color: "#15803D",
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
               marginTop: 4,
             }}
           >
@@ -518,9 +519,9 @@ function MiniSitePage() {
         )}
         <div
           style={{
-            fontSize: 16,
-            fontWeight: 800,
-            color: "#0B1F3A",
+            fontSize: tokens.fontSize.lg,
+            fontWeight: tokens.fontWeight.extrabold,
+            color: tokens.navy,
             marginTop: 8,
             fontFamily: "Poppins, sans-serif",
           }}
@@ -531,7 +532,7 @@ function MiniSitePage() {
           {t.features.map((f) => (
             <div key={f} className="flex items-center" style={{ gap: 8 }}>
               <IconCheck size={12} color="#15803D" />
-              <span style={{ fontSize: 12, color: "#6B7686" }}>{f}</span>
+              <span style={{ fontSize: 12, color: tokens.textSecondary }}>{f}</span>
             </div>
           ))}
         </div>
@@ -544,8 +545,8 @@ function MiniSitePage() {
             color: "#fff",
             borderRadius: 8,
             padding: 12,
-            fontSize: 14,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.bold,
             marginTop: 12,
             border: "none",
             cursor: "pointer",
@@ -581,12 +582,12 @@ function MiniSitePage() {
   function Eyebrow({ label }: { label: string }) {
     return (
       <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "18px 0 10px" }}>
-        <span style={{ width: 3, height: 14, borderRadius: 8, background: "#1877D6" }} />
+        <span style={{ width: 3, height: 14, borderRadius: 8, background: tokens.blue }} />
         <span
           style={{
-            color: "#1877D6",
+            color: tokens.blue,
             fontSize: 12,
-            fontWeight: 800,
+            fontWeight: tokens.fontWeight.extrabold,
             textTransform: "uppercase",
             letterSpacing: "0.08em",
           }}
@@ -643,7 +644,7 @@ function MiniSitePage() {
               height: 34,
               borderRadius: 8,
               background: "#E7F1FC",
-              color: "#1877D6",
+              color: tokens.blue,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -657,8 +658,8 @@ function MiniSitePage() {
               style={{
                 display: "block",
                 fontSize: 15,
-                fontWeight: 700,
-                color: "#0B1F3A",
+                fontWeight: tokens.fontWeight.bold,
+                color: tokens.navy,
               }}
             >
               {title}
@@ -711,8 +712,8 @@ function MiniSitePage() {
               <div
                 style={{
                   color: "#8A8A8E",
-                  fontSize: 11,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.bold,
                   textTransform: "uppercase",
                   letterSpacing: "0.06em",
                   marginBottom: 3,
@@ -722,9 +723,9 @@ function MiniSitePage() {
               </div>
               <div
                 style={{
-                  color: "#1877D6",
+                  color: tokens.blue,
                   fontSize: 15,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -743,7 +744,7 @@ function MiniSitePage() {
                 background: "#F2F2F7",
                 border: "none",
                 cursor: "pointer",
-                color: "#0B1F3A",
+                color: tokens.navy,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -762,9 +763,9 @@ function MiniSitePage() {
               width: "100%",
               marginTop: 14,
               background: "#F2F2F7",
-              color: "#0B1F3A",
-              fontSize: 14,
-              fontWeight: 700,
+              color: tokens.navy,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.bold,
               padding: 13,
               borderRadius: 8,
               border: "none",
@@ -800,7 +801,7 @@ function MiniSitePage() {
                   background: published ? "#15803D" : "#C7C7CC",
                 }}
               />
-              <span style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
+              <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
                 {published ? "Live" : "Draft"}
               </span>
             </div>
@@ -867,8 +868,8 @@ function MiniSitePage() {
                   border: "none",
                   borderRadius: isUpgrade ? 8 : 8,
                   padding: "9px 6px",
-                  fontSize: 13,
-                  fontWeight: 800,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.extrabold,
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
                   textTransform: isUpgrade ? "none" : "capitalize",
@@ -883,7 +884,7 @@ function MiniSitePage() {
         {/* SLUG CLAIM */}
         {!originalSlug && (
           <Card className="mt-3" style={{ background: "#fff" }}>
-            <div className="text-[13px] font-medium mb-2" style={{ color: "#0B1F3A" }}>
+            <div className="text-[13px] font-medium mb-2" style={{ color: tokens.navy }}>
               Choose your website address
             </div>
             <Input
@@ -892,7 +893,7 @@ function MiniSitePage() {
               placeholder="your-name"
             />
             <div className="text-[12px] mt-2" style={{ color: "#6B7280" }}>
-              {SITE_BASE}<span style={{ color: "#1877D6", fontWeight: 600 }}>{slug || "your-slug"}</span>
+              {SITE_BASE}<span style={{ color: tokens.blue, fontWeight: 600 }}>{slug || "your-slug"}</span>
             </div>
             <div className="text-[12px] mt-1 flex items-center gap-1" style={{ minHeight: 18 }}>
               {!slugValidFormat && slug && (
@@ -902,7 +903,7 @@ function MiniSitePage() {
                 <span style={{ color: "#6B7280" }}>Checking…</span>
               )}
               {slugValidFormat && !slugChecking && slugAvailable === true && (
-                <span style={{ color: "#1877D6", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                <span style={{ color: tokens.blue, display: "inline-flex", alignItems: "center", gap: 4 }}>
                   <IconCheck size={14} /> Available
                 </span>
               )}
@@ -944,7 +945,7 @@ function MiniSitePage() {
                 className="w-full rounded-lg px-3 py-2 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
                 style={{
                   fontFamily: "Poppins, sans-serif",
-                  borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7",
+                  borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas,
                   resize: "vertical",
                 }}
               />
@@ -977,7 +978,7 @@ function MiniSitePage() {
                   onClick={() => heroInputRef.current?.click()}
                   className="w-full flex flex-col items-center justify-center"
                   style={{
-                    borderWidth: "1px", borderStyle: "dashed", borderColor: "#EEF2F7",
+                    borderWidth: "1px", borderStyle: "dashed", borderColor: tokens.canvas,
                     borderRadius: 8, padding: 24, background: "#FAFBFC", cursor: "pointer",
                   }}
                 >
@@ -1004,7 +1005,7 @@ function MiniSitePage() {
                 <label className="text-[12px] font-medium" style={{ color: "#6B7280" }}>
                   Gallery
                 </label>
-                <span className="text-[11px]" style={{ color: "#9CA3AF" }}>{gallery.length}/6</span>
+                <span className="text-[11px]" style={{ color: tokens.textMuted }}>{gallery.length}/6</span>
               </div>
 
               {gallery.length > 0 && (
@@ -1036,7 +1037,7 @@ function MiniSitePage() {
                   onClick={() => galleryInputRef.current?.click()}
                   className="w-full flex flex-col items-center justify-center"
                   style={{
-                    borderWidth: "1px", borderStyle: "dashed", borderColor: "#EEF2F7",
+                    borderWidth: "1px", borderStyle: "dashed", borderColor: tokens.canvas,
                     borderRadius: 8, padding: 16, background: "#FAFBFC", cursor: "pointer",
                   }}
                 >
@@ -1086,7 +1087,7 @@ function MiniSitePage() {
                           <span key={c} style={{ width: 18, height: 18, borderRadius: 8, background: c, border: "0.5px solid #EEF2F7" }} />
                         ))}
                       </div>
-                      <div className="text-[13px] font-medium" style={{ color: "#0B1F3A" }}>{t.label}</div>
+                      <div className="text-[13px] font-medium" style={{ color: tokens.navy }}>{t.label}</div>
                     </button>
                   );
                 })}
@@ -1112,7 +1113,7 @@ function MiniSitePage() {
                         borderColor: selected ? "#1877D6" : "#EEF2F7",
                         borderRadius: 8, padding: "10px 12px", background: "#fff",
                         cursor: "pointer", textAlign: "left",
-                        fontFamily: `${f}, sans-serif`, fontSize: 14, color: "#0B1F3A",
+                        fontFamily: `${f}, sans-serif`, fontSize: tokens.fontSize.md, color: tokens.navy,
                       }}
                     >
                       {f}
@@ -1141,7 +1142,7 @@ function MiniSitePage() {
                         borderColor: selected ? "#1877D6" : "#EEF2F7",
                         borderRadius: 8, padding: "10px 8px", background: "#fff",
                         cursor: "pointer", textAlign: "center",
-                        fontSize: 12, color: "#0B1F3A",
+                        fontSize: 12, color: tokens.navy,
                       }}
                     >
                       {h.label}
@@ -1196,10 +1197,10 @@ function MiniSitePage() {
             disabled={saving}
             style={{
               width: "100%",
-              background: "#1877D6",
+              background: tokens.blue,
               color: "#fff",
               fontSize: 15,
-              fontWeight: 800,
+              fontWeight: tokens.fontWeight.extrabold,
               padding: 16,
               borderRadius: 8,
               border: "none",
@@ -1237,7 +1238,7 @@ function MiniSitePage() {
                   width: 36,
                   height: 36,
                   borderRadius: 999,
-                  background: "#1877D6",
+                  background: tokens.blue,
                   color: "#fff",
                   display: "flex",
                   alignItems: "center",
@@ -1250,16 +1251,16 @@ function MiniSitePage() {
               <div style={{ minWidth: 0 }}>
                 <div
                   style={{
-                    color: "#1877D6",
+                    color: tokens.blue,
                     fontSize: 10.5,
-                    fontWeight: 800,
+                    fontWeight: tokens.fontWeight.extrabold,
                     textTransform: "uppercase",
                     letterSpacing: "0.06em",
                   }}
                 >
                   Current plan
                 </div>
-                <div style={{ fontSize: 15, fontWeight: 800, color: "#0B1F3A" }}>
+                <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy }}>
                   {TIER_NAMES[websiteTier]}
                 </div>
               </div>
@@ -1285,7 +1286,7 @@ function MiniSitePage() {
                       background: "#F2F2F7",
                       color: "#6B6B6F",
                       fontSize: 12,
-                      fontWeight: 700,
+                      fontWeight: tokens.fontWeight.bold,
                       borderRadius: 8,
                       padding: "4px 12px",
                     }}
@@ -1295,10 +1296,10 @@ function MiniSitePage() {
                   {websiteTier === "free" && (
                     <span
                       style={{
-                        background: "#1877D6",
+                        background: tokens.blue,
                         color: "#fff",
-                        fontSize: 10,
-                        fontWeight: 800,
+                        fontSize: tokens.fontSize.xs,
+                        fontWeight: tokens.fontWeight.extrabold,
                         borderRadius: 8,
                         padding: "3px 10px",
                       }}
@@ -1307,7 +1308,7 @@ function MiniSitePage() {
                     </span>
                   )}
                 </div>
-                <div style={{ fontSize: 16, fontWeight: 800, color: "#0B1F3A", marginTop: 8 }}>
+                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, marginTop: 8 }}>
                   DSM Mini Website (Free)
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 5, marginTop: 12 }}>
@@ -1320,7 +1321,7 @@ function MiniSitePage() {
                   ].map((f) => (
                     <div key={f} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <IconCheck size={12} color="#15803D" />
-                      <span style={{ fontSize: 12, color: "#6B7686" }}>{f}</span>
+                      <span style={{ fontSize: 12, color: tokens.textSecondary }}>{f}</span>
                     </div>
                   ))}
                 </div>
@@ -1342,9 +1343,9 @@ function MiniSitePage() {
                   <span
                     style={{
                       background: "#EFF6FF",
-                      color: "#1877D6",
+                      color: tokens.blue,
                       fontSize: 12,
-                      fontWeight: 700,
+                      fontWeight: tokens.fontWeight.bold,
                       borderRadius: 8,
                       padding: "4px 12px",
                     }}
@@ -1354,10 +1355,10 @@ function MiniSitePage() {
                   {websiteTier === "website" && (
                     <span
                       style={{
-                        background: "#1877D6",
+                        background: tokens.blue,
                         color: "#fff",
-                        fontSize: 10,
-                        fontWeight: 800,
+                        fontSize: tokens.fontSize.xs,
+                        fontWeight: tokens.fontWeight.extrabold,
                         borderRadius: 8,
                         padding: "3px 10px",
                       }}
@@ -1366,7 +1367,7 @@ function MiniSitePage() {
                     </span>
                   )}
                 </div>
-                <div style={{ fontSize: 16, fontWeight: 800, color: "#0B1F3A", marginTop: 8 }}>
+                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, marginTop: 8 }}>
                   DSM Website
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 5, marginTop: 12 }}>
@@ -1382,7 +1383,7 @@ function MiniSitePage() {
                   ].map((f) => (
                     <div key={f} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <IconCheck size={12} color="#15803D" />
-                      <span style={{ fontSize: 12, color: "#6B7686" }}>{f}</span>
+                      <span style={{ fontSize: 12, color: tokens.textSecondary }}>{f}</span>
                     </div>
                   ))}
                 </div>
@@ -1392,12 +1393,12 @@ function MiniSitePage() {
                     onClick={() => promptUpgrade("website")}
                     style={{
                       width: "100%",
-                      background: "#1877D6",
+                      background: tokens.blue,
                       color: "#fff",
                       borderRadius: 8,
                       padding: 13,
-                      fontSize: 14,
-                      fontWeight: 800,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.extrabold,
                       marginTop: 14,
                       border: "none",
                       cursor: "pointer",
@@ -1456,7 +1457,7 @@ function MiniSitePage() {
                       background: "rgba(255,255,255,0.15)",
                       color: "#fff",
                       fontSize: 12,
-                      fontWeight: 700,
+                      fontWeight: tokens.fontWeight.bold,
                       borderRadius: 8,
                       padding: "4px 12px",
                     }}
@@ -1468,10 +1469,10 @@ function MiniSitePage() {
                       style={{
                         display: "inline-block",
                         marginLeft: 8,
-                        background: "#1877D6",
+                        background: tokens.blue,
                         color: "#fff",
-                        fontSize: 10,
-                        fontWeight: 800,
+                        fontSize: tokens.fontSize.xs,
+                        fontWeight: tokens.fontWeight.extrabold,
                         borderRadius: 8,
                         padding: "3px 10px",
                       }}
@@ -1480,12 +1481,12 @@ function MiniSitePage() {
                     </span>
                   )}
                   <div style={{ marginTop: 10, display: "flex", alignItems: "baseline", gap: 6 }}>
-                    <span style={{ fontSize: 38, fontWeight: 800, color: "#fff", letterSpacing: -1 }}>
+                    <span style={{ fontSize: 38, fontWeight: tokens.fontWeight.extrabold, color: "#fff", letterSpacing: -1 }}>
                       £19.99
                     </span>
-                    <span style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>/month</span>
+                    <span style={{ fontSize: tokens.fontSize.md, color: "rgba(255,255,255,0.6)" }}>/month</span>
                   </div>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", marginTop: 2 }}>
+                  <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: "#fff", marginTop: 2 }}>
                     DSM Website Pro
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 12 }}>
@@ -1524,11 +1525,11 @@ function MiniSitePage() {
                       style={{
                         width: "100%",
                         background: "#fff",
-                        color: "#0B1F3A",
+                        color: tokens.navy,
                         borderRadius: 8,
                         padding: 13,
-                        fontSize: 14,
-                        fontWeight: 800,
+                        fontSize: tokens.fontSize.md,
+                        fontWeight: tokens.fontWeight.extrabold,
                         marginTop: 14,
                         border: "none",
                         cursor: "pointer",
@@ -1584,10 +1585,10 @@ function MiniSitePage() {
                     style={{
                       display: "inline-block",
                       marginLeft: 8,
-                      background: "#1877D6",
+                      background: tokens.blue,
                       color: "#fff",
-                      fontSize: 10,
-                      fontWeight: 800,
+                      fontSize: tokens.fontSize.xs,
+                      fontWeight: tokens.fontWeight.extrabold,
                       borderRadius: 8,
                       padding: "3px 10px",
                     }}
@@ -1596,12 +1597,12 @@ function MiniSitePage() {
                   </span>
                 )}
                 <div style={{ marginTop: 10, display: "flex", alignItems: "baseline", gap: 6 }}>
-                  <span style={{ fontSize: 38, fontWeight: 800, color: "#fff", letterSpacing: -1 }}>
+                  <span style={{ fontSize: 38, fontWeight: tokens.fontWeight.extrabold, color: "#fff", letterSpacing: -1 }}>
                     £29.99
                   </span>
-                  <span style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>/month</span>
+                  <span style={{ fontSize: tokens.fontSize.md, color: "rgba(255,255,255,0.6)" }}>/month</span>
                 </div>
-                <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", marginTop: 2 }}>
+                <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: "#fff", marginTop: 2 }}>
                   DSM Managed Website
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 12 }}>
@@ -1641,8 +1642,8 @@ function MiniSitePage() {
                     color: "#fff",
                     borderRadius: 8,
                     padding: 13,
-                    fontSize: 14,
-                    fontWeight: 800,
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.extrabold,
                     marginTop: 14,
                     border: "none",
                     cursor: "pointer",
@@ -1686,16 +1687,16 @@ function MiniSitePage() {
                       background: c.id === websiteTier ? "#F7FAFE" : "transparent",
                     }}
                   >
-                    <div style={{ fontSize: 11, fontWeight: 800, color: "#0B1F3A" }}>{c.name}</div>
+                    <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy }}>{c.name}</div>
                     <div style={{ fontSize: 9, color: "#8A8A8E", marginTop: 1 }}>{c.price}</div>
                     {c.id === websiteTier && (
                       <div
                         style={{
                           display: "inline-block",
-                          background: "#1877D6",
+                          background: tokens.blue,
                           color: "#fff",
                           fontSize: 9,
-                          fontWeight: 800,
+                          fontWeight: tokens.fontWeight.extrabold,
                           borderRadius: 8,
                           padding: "2px 7px",
                           marginTop: 4,
@@ -1722,9 +1723,9 @@ function MiniSitePage() {
                       style={{
                         gridColumn: "1 / -1",
                         padding: "8px 12px",
-                        fontSize: 10,
-                        fontWeight: 800,
-                        color: "#1877D6",
+                        fontSize: tokens.fontSize.xs,
+                        fontWeight: tokens.fontWeight.extrabold,
+                        color: tokens.blue,
                         letterSpacing: "0.04em",
                         textTransform: "uppercase",
                       }}
@@ -1743,7 +1744,7 @@ function MiniSitePage() {
                         background: groupIdx % 2 === 1 ? "rgba(243,248,255,0.35)" : "transparent",
                       }}
                     >
-                      <div style={{ fontSize: 11.5, color: "#0B1F3A", padding: "10px 12px" }}>{r.label}</div>
+                      <div style={{ fontSize: 11.5, color: tokens.navy, padding: "10px 12px" }}>{r.label}</div>
                       {COMPARE_COLS.map((c, i) => (
                         <div
                           key={c.id}
@@ -1797,9 +1798,9 @@ function MiniSitePage() {
                           style={{
                             display: "inline-block",
                             background: "#F2F2F7",
-                            color: "#9CA3AF",
-                            fontSize: 10,
-                            fontWeight: 800,
+                            color: tokens.textMuted,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.extrabold,
                             borderRadius: 8,
                             padding: "6px 8px",
                           }}
@@ -1813,8 +1814,8 @@ function MiniSitePage() {
                           style={{
                             background: "#D68A1B",
                             color: "#fff",
-                            fontSize: 10,
-                            fontWeight: 800,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.extrabold,
                             borderRadius: 8,
                             padding: "6px 8px",
                             border: "none",
@@ -1829,10 +1830,10 @@ function MiniSitePage() {
                           type="button"
                           onClick={() => promptUpgrade(c.id as "website" | "pro")}
                           style={{
-                            background: "#1877D6",
+                            background: tokens.blue,
                             color: "#fff",
-                            fontSize: 10,
-                            fontWeight: 800,
+                            fontSize: tokens.fontSize.xs,
+                            fontWeight: tokens.fontWeight.extrabold,
                             borderRadius: 8,
                             padding: "6px 8px",
                             border: "none",
@@ -1853,7 +1854,7 @@ function MiniSitePage() {
               style={{
                 textAlign: "center",
                 fontSize: 12,
-                color: "#6B7686",
+                color: tokens.textSecondary,
                 marginTop: 12,
               }}
             >
@@ -1889,10 +1890,10 @@ function MiniSitePage() {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ fontSize: 18, fontWeight: 800, color: "#0B1F3A", marginBottom: 4 }}>
+            <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, marginBottom: 4 }}>
               Confirm upgrade
             </div>
-            <div style={{ fontSize: 13, color: "#6B7686", marginBottom: 20 }}>
+            <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, marginBottom: 20 }}>
               You’re about to start upgrading to the {TIER_NAMES[confirmTier]}. You can choose or skip a custom domain on the next step.
             </div>
             <div
@@ -1904,12 +1905,12 @@ function MiniSitePage() {
               }}
             >
               <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{TIER_NAMES[confirmTier]}</span>
-                <span style={{ fontSize: 14, fontWeight: 800, color: "#1877D6" }}>
+                <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>{TIER_NAMES[confirmTier]}</span>
+                <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.extrabold, color: tokens.blue }}>
                   {confirmTier === "website" ? "£9.99" : confirmTier === "pro" ? "£19.99" : "£29.99"}/mo
                 </span>
               </div>
-              <div style={{ fontSize: 12, color: "#6B7686" }}>
+              <div style={{ fontSize: 12, color: tokens.textSecondary }}>
                 {confirmTier === "website" && "Your own .co.uk domain, gallery, video intro, Google reviews widget and analytics."}
                 {confirmTier === "pro" && "Everything in Website, plus blog & content pages, advanced SEO, promo codes and instructor login."}
                 {confirmTier === "managed" && "Everything in Pro, plus we build your site for you, monthly updates and dedicated account manager."}
@@ -1922,11 +1923,11 @@ function MiniSitePage() {
                 style={{
                   flex: 1,
                   background: "#F3F8FF",
-                  color: "#0B1F3A",
+                  color: tokens.navy,
                   borderRadius: 8,
                   padding: 13,
-                  fontSize: 14,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.bold,
                   border: "none",
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
@@ -1939,12 +1940,12 @@ function MiniSitePage() {
                 onClick={confirmUpgrade}
                 style={{
                   flex: 1,
-                  background: "#1877D6",
+                  background: tokens.blue,
                   color: "#fff",
                   borderRadius: 8,
                   padding: 13,
-                  fontSize: 14,
-                  fontWeight: 800,
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.extrabold,
                   border: "none",
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
@@ -1959,8 +1960,8 @@ function MiniSitePage() {
 
       {/* STEP 1 — DOMAIN SEARCH OVERLAY */}
       {upgradeStep === "domain" && (
-        <div style={{ position: "fixed", inset: 0, background: "#EEF2F7", zIndex: 200, overflowY: "auto" }}>
-          <div style={{ background: "#0B1F3A", padding: 16, display: "flex", gap: 12, alignItems: "center" }}>
+        <div style={{ position: "fixed", inset: 0, background: tokens.canvas, zIndex: 200, overflowY: "auto" }}>
+          <div style={{ background: tokens.navy, padding: 16, display: "flex", gap: 12, alignItems: "center" }}>
             <button
               type="button"
               onClick={() => setUpgradeStep("idle")}
@@ -1969,7 +1970,7 @@ function MiniSitePage() {
             >
               <IconChevronLeft size={22} />
             </button>
-            <div style={{ color: "#fff", fontSize: 18, fontWeight: 800 }}>Choose your domain</div>
+            <div style={{ color: "#fff", fontSize: tokens.fontSize.xl, fontWeight: 800 }}>Choose your domain</div>
           </div>
 
           <div style={{ maxWidth: 480, margin: "0 auto", padding: "24px 16px" }}>
@@ -1983,10 +1984,10 @@ function MiniSitePage() {
               }}
             >
               <div style={{ fontSize: 20, marginBottom: 6 }}>🌐</div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+              <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
                 Your domain is included free with your subscription
               </div>
-              <div style={{ fontSize: 12, color: "#6B7686", marginTop: 4 }}>
+              <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 4 }}>
                 Search for your school name — we'll register it automatically when you subscribe.
               </div>
             </div>
@@ -2005,9 +2006,9 @@ function MiniSitePage() {
                   border: "0.5px solid #E4E8EF",
                   borderRadius: 8,
                   padding: "12px 14px",
-                  fontSize: 14,
+                  fontSize: tokens.fontSize.md,
                   fontFamily: "Poppins, sans-serif",
-                  color: "#0B1F3A",
+                  color: tokens.navy,
                 }}
               />
               <button
@@ -2015,13 +2016,13 @@ function MiniSitePage() {
                 onClick={checkDomain}
                 disabled={domainChecking || domainQuery.trim().length < 3}
                 style={{
-                  background: "#1877D6",
+                  background: tokens.blue,
                   color: "#fff",
                   border: "none",
                   borderRadius: 8,
                   padding: "0 18px",
-                  fontSize: 14,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.bold,
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
                   opacity: domainChecking || domainQuery.trim().length < 3 ? 0.5 : 1,
@@ -2039,9 +2040,9 @@ function MiniSitePage() {
                   border: "0.5px solid #FECACA",
                   borderRadius: 8,
                   padding: 16,
-                  fontSize: 13,
-                  color: "#CC2229",
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.base,
+                  color: tokens.red,
+                  fontWeight: tokens.fontWeight.semibold,
                 }}
               >
                 {domainResult.domain} is already taken — try another name.
@@ -2058,8 +2059,8 @@ function MiniSitePage() {
                   padding: 16,
                 }}
               >
-                <div style={{ fontSize: 15, fontWeight: 800, color: "#0B1F3A" }}>{domainResult.domain}</div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "#15803D", marginTop: 4 }}>
+                <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy }}>{domainResult.domain}</div>
+                <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#15803D", marginTop: 4 }}>
                   ✓ Available — this domain is yours
                 </div>
                 <button
@@ -2074,8 +2075,8 @@ function MiniSitePage() {
                     color: "#fff",
                     borderRadius: 8,
                     padding: 12,
-                    fontSize: 14,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.bold,
                     marginTop: 12,
                     border: "none",
                     cursor: "pointer",
@@ -2102,7 +2103,7 @@ function MiniSitePage() {
                   background: "none",
                   border: "none",
                   cursor: "pointer",
-                  fontSize: 11,
+                  fontSize: tokens.fontSize.sm,
                   color: "#C7D0DC",
                   fontFamily: "Poppins, sans-serif",
                   padding: "4px 8px",
@@ -2117,8 +2118,8 @@ function MiniSitePage() {
 
       {/* STEP 2 — CHOOSE TIER OVERLAY */}
       {upgradeStep === "choose-tier" && (
-        <div style={{ position: "fixed", inset: 0, background: "#EEF2F7", zIndex: 200, overflowY: "auto" }}>
-          <div style={{ background: "#0B1F3A", padding: 16, display: "flex", gap: 12, alignItems: "center" }}>
+        <div style={{ position: "fixed", inset: 0, background: tokens.canvas, zIndex: 200, overflowY: "auto" }}>
+          <div style={{ background: tokens.navy, padding: 16, display: "flex", gap: 12, alignItems: "center" }}>
             <button
               type="button"
               onClick={() => setUpgradeStep("domain")}
@@ -2127,7 +2128,7 @@ function MiniSitePage() {
             >
               <IconChevronLeft size={22} />
             </button>
-            <div style={{ color: "#fff", fontSize: 18, fontWeight: 800 }}>Choose your plan</div>
+            <div style={{ color: "#fff", fontSize: tokens.fontSize.xl, fontWeight: 800 }}>Choose your plan</div>
           </div>
 
           <div style={{ maxWidth: 480, margin: "0 auto", padding: "24px 16px" }}>
@@ -2138,8 +2139,8 @@ function MiniSitePage() {
                     display: "inline-block",
                     background: "#DCFCE7",
                     color: "#15803D",
-                    fontSize: 11,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.bold,
                     borderRadius: 999,
                     padding: "4px 10px",
                   }}
@@ -2171,8 +2172,8 @@ function MiniSitePage() {
                   border: "none",
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
                   background: billingPeriod === "monthly" ? "#fff" : "transparent",
                   color: billingPeriod === "monthly" ? "#0B1F3A" : "#6B6B6F",
                   boxShadow: billingPeriod === "monthly" ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
@@ -2191,8 +2192,8 @@ function MiniSitePage() {
                   border: "none",
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
                   background: billingPeriod === "annual" ? "#fff" : "transparent",
                   color: billingPeriod === "annual" ? "#0B1F3A" : "#6B6B6F",
                   boxShadow: billingPeriod === "annual" ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
@@ -2207,7 +2208,7 @@ function MiniSitePage() {
                     background: "#15803D",
                     color: "#fff",
                     fontSize: 9,
-                    fontWeight: 800,
+                    fontWeight: tokens.fontWeight.extrabold,
                     borderRadius: 8,
                     padding: "2px 6px",
                     verticalAlign: "middle",
@@ -2236,7 +2237,7 @@ function MiniSitePage() {
           style={{
             position: "fixed",
             inset: 0,
-            background: "#EEF2F7",
+            background: tokens.canvas,
             zIndex: 210,
             display: "flex",
             alignItems: "center",
@@ -2245,7 +2246,7 @@ function MiniSitePage() {
           }}
         >
           <PageLoader />
-          <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+          <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
             Setting up your subscription...
           </div>
         </div>

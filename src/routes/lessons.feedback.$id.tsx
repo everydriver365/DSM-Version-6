@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
@@ -142,7 +143,7 @@ function LessonFeedbackPage() {
           onClick={handleSave}
           disabled={saving || loading}
           className="text-[13px] font-semibold"
-          style={{ color: "#1877D6", background: "none", border: "none", opacity: saving || loading ? 0.5 : 1 }}
+          style={{ color: tokens.blue, background: "none", border: "none", opacity: saving || loading ? 0.5 : 1 }}
         >
           {saving ? "Saving…" : "Save"}
         </button>
@@ -155,7 +156,7 @@ function LessonFeedbackPage() {
           {/* Header summary */}
           <div className="mt-3">
             <Card>
-              <div className="text-[16px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+              <div className="text-[16px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>
                 {pupilName}
               </div>
               <div className="text-[13px] text-[#6B7280] mt-1" style={POPPINS}>
@@ -221,7 +222,7 @@ function LessonFeedbackPage() {
               <span>Needs work</span>
               <span>Excellent</span>
             </div>
-            <div className="text-center text-[13px] font-medium mt-2" style={{ color: "#0B1F3A", ...POPPINS }}>
+            <div className="text-center text-[13px] font-medium mt-2" style={{ color: tokens.navy, ...POPPINS }}>
               {RATING_LABELS[rating - 1]}
             </div>
           </Card>
@@ -235,10 +236,10 @@ function LessonFeedbackPage() {
             placeholder="Private notes (not shared with pupil)"
             className="w-full rounded-lg px-3 py-2 text-[14px] bg-white focus:border-[#1877D6] focus:outline-none"
             style={{
-              color: "#0B1F3A",
+              color: tokens.navy,
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#EEF2F7",
+              borderColor: tokens.canvas,
               ...POPPINS,
             }}
           />
@@ -252,16 +253,16 @@ function LessonFeedbackPage() {
             placeholder="Shared with pupil"
             className="w-full rounded-lg px-3 py-2 text-[14px] bg-white focus:border-[#1877D6] focus:outline-none"
             style={{
-              color: "#0B1F3A",
+              color: tokens.navy,
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#EEF2F7",
+              borderColor: tokens.canvas,
               ...POPPINS,
             }}
           />
 
           {error && (
-            <p className="mt-3 text-[12px]" style={{ color: "#1877D6" }}>
+            <p className="mt-3 text-[12px]" style={{ color: tokens.blue }}>
               {error}
             </p>
           )}

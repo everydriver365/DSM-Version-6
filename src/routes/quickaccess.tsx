@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useMemo, useState } from "react";
 import { IconAlertCircle, IconAward, IconBell, IconBolt, IconBook, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarMonth, IconCar, IconChartBar, IconClipboardCheck, IconClipboardList, IconClock, IconCrown, IconCurrencyPound, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHeart, IconHelpCircle, IconInbox, IconLayoutGrid, IconMapPin, IconMessage, IconNavigation, IconPlayerPlay, IconReceipt, IconRefresh, IconSchool, IconSearch, IconSignature, IconSquareCheck, IconStar, IconSun, IconToggleLeft, IconTrendingUp, IconTrophy, IconUpload, IconUserCircle, IconUsers, IconWorld, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -98,7 +99,7 @@ function QuickAccessPage() {
           }}
           aria-label="Toggle search"
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
         >
           {searchOpen ? <IconX size={15} /> : <IconSearch size={15} />}
           {searchOpen ? "Close search" : "Search"}
@@ -113,11 +114,11 @@ function QuickAccessPage() {
             className="flex items-center gap-2 px-3"
             style={{
               height: 40,
-              backgroundColor: "#FFFFFF",
+              backgroundColor: tokens.white,
               borderRadius: 8,
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#EEF2F7",
+              borderColor: tokens.canvas,
             }}
           >
             <IconSearch size={16} color="#6B7280" />
@@ -161,7 +162,7 @@ function QuickAccessPage() {
             style={{
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#EEF2F7",
+              borderColor: tokens.canvas,
               borderRadius: 8,
               padding: 16,
               gap: 8,
@@ -181,7 +182,7 @@ function QuickAccessPage() {
             </span>
             <span
               className="text-[13px] text-center"
-              style={{ color: "#0B1F3A", fontWeight: 500 }}
+              style={{ color: tokens.navy, fontWeight: 500 }}
             >
               {t.label}
             </span>

@@ -1,4 +1,5 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
@@ -236,7 +237,7 @@ function CpdPage() {
       {/* Action bar */}
       <div
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           padding: "8px 16px",
           display: "flex",
           justifyContent: "flex-end",
@@ -253,7 +254,7 @@ function CpdPage() {
             setShowAdd(true);
           }}
           className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
-          style={{ backgroundColor: "#1877D6" }}
+          style={{ backgroundColor: tokens.blue }}
         >
           <IconPlus stroke={1.5} size={16} color="#fff" /> Add CPD
         </button>
@@ -378,7 +379,7 @@ function CpdPage() {
             type="button"
             onClick={exportCsv}
             className="w-full flex items-center justify-center gap-2 text-white text-[14px] font-semibold"
-            style={{ backgroundColor: "#1877D6", height: 44, borderRadius: 8}}
+            style={{ backgroundColor: tokens.blue, height: 44, borderRadius: 8}}
           >
             <IconDownload stroke={1.5} size={16} /> Export CPD log
           </button>
@@ -432,7 +433,7 @@ function StatCard({
   return (
     <div
       style={{
-        backgroundColor: "#FFFFFF",
+        backgroundColor: tokens.white,
         border: "0.5px solid #EEF2F7",
         borderRadius: 8,
         padding: 12,
@@ -468,7 +469,7 @@ function EntryCard({
     <div
       className="mb-2"
       style={{
-        backgroundColor: "#FFFFFF",
+        backgroundColor: tokens.white,
         border: "0.5px solid #EEF2F7",
         borderRadius: 8,
         padding: "14px 16px",
@@ -501,7 +502,7 @@ function EntryCard({
               <span
                 className="text-[10px] font-semibold"
                 style={{
-                  color: "#0B1F3A",
+                  color: tokens.navy,
                   backgroundColor: "#F3F4F6",
                   padding: "3px 8px",
                   borderRadius: 8,
@@ -523,7 +524,7 @@ function EntryCard({
             rel="noreferrer"
             onClick={(e) => e.stopPropagation()}
             className="inline-flex items-center gap-1 mt-2 text-[12px] font-medium"
-            style={{ color: "#1877D6" }}
+            style={{ color: tokens.blue }}
           >
             <IconPaperclip stroke={1.5} size={12} /> Certificate
           </a>
@@ -540,7 +541,7 @@ function EntryCard({
               height: 34,
               borderRadius: 8,
               backgroundColor: "#F3F4F6",
-              color: "#0B1F3A",
+              color: tokens.navy,
             }}
           >
             <IconPencil stroke={1.5} size={13} /> Edit
@@ -553,7 +554,7 @@ function EntryCard({
               height: 34,
               borderRadius: 8,
               backgroundColor: "#FEF2F2",
-              color: "#1877D6",
+              color: tokens.blue,
             }}
           >
             <IconTrash stroke={1.5} size={13} /> Delete
@@ -797,7 +798,7 @@ function AddSheet({
                   target="_blank"
                   rel="noreferrer"
                   className="text-[12px] font-medium truncate"
-                  style={{ color: "#1877D6" }}
+                  style={{ color: tokens.blue }}
                 >
                   View uploaded certificate
                 </a>
@@ -805,7 +806,7 @@ function AddSheet({
                   type="button"
                   onClick={() => setCertificateUrl(null)}
                   className="text-[12px]"
-                  style={{ color: "#1877D6" }}
+                  style={{ color: tokens.blue }}
                 >
                   Remove
                 </button>
@@ -817,7 +818,7 @@ function AddSheet({
                   height: 40,
                   borderRadius: 8,
                   border: "0.5px dashed #EEF2F7",
-                  color: "#0B1F3A",
+                  color: tokens.navy,
                 }}
               >
                 <IconUpload stroke={1.5} size={14} /> {uploading ? "Uploading…" : "Upload certificate"}
@@ -837,7 +838,7 @@ function AddSheet({
             onClick={submit}
             className="w-full text-white text-[14px] font-semibold mt-2"
             style={{
-              backgroundColor: "#1877D6",
+              backgroundColor: tokens.blue,
               height: 46,
               borderRadius: 8,
               opacity: saving ? 0.6 : 1,
@@ -855,9 +856,9 @@ const inputStyle: React.CSSProperties = {
   padding: "0 12px",
   borderRadius: 8,
   border: "0.5px solid #EEF2F7",
-  backgroundColor: "#FFFFFF",
-  color: "#0B1F3A",
-  fontSize: 14,
+  backgroundColor: tokens.white,
+  color: tokens.navy,
+  fontSize: tokens.fontSize.md,
   fontFamily: "Poppins, sans-serif",
 };
 

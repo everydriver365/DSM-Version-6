@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconCalendar, IconCheck, IconChevronDown, IconChevronUp, IconMapPin, IconMicrophone, IconMicrophoneOff, IconPlus, IconSearch, IconTrophy, IconUser } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -583,7 +584,7 @@ function DrivingTestPage() {
               height: 52,
               borderRadius: 8,
               backgroundColor: "#0F2044",
-              color: "#FFFFFF",
+              color: tokens.white,
               border: "none",
               opacity: saving ? 0.6 : 1,
             }}
@@ -604,7 +605,7 @@ function Card({ children }: { children: React.ReactNode }) {
     <div
       className="mx-4 mt-3"
       style={{
-        backgroundColor: "#FFFFFF",
+        backgroundColor: tokens.white,
         border: "0.5px solid #E2E6ED",
         borderRadius: 8,
         padding: 16,
@@ -656,8 +657,8 @@ const inputStyle: React.CSSProperties = {
   padding: "0 12px",
   borderRadius: 8,
   border: "0.5px solid #E2E6ED",
-  fontSize: 14,
-  backgroundColor: "#FFFFFF",
+  fontSize: tokens.fontSize.md,
+  backgroundColor: tokens.white,
   color: "#0F2044",
   fontFamily: "Poppins, sans-serif",
 };
@@ -780,7 +781,7 @@ function CentreSearchSelect({
                 top: "calc(100% + 4px)",
                 left: 0,
                 right: 0,
-                backgroundColor: "#FFFFFF",
+                backgroundColor: tokens.white,
                 border: "0.5px solid #E2E6ED",
                 borderRadius: 8,
                 boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
@@ -1212,7 +1213,7 @@ function RecordTab(props: any) {
               paddingRight: 44,
               borderRadius: 8,
               border: "0.5px solid #E2E6ED",
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               color: "#0F2044",
               resize: "vertical",
               fontFamily: "Poppins, sans-serif",
@@ -1264,8 +1265,8 @@ function NumBox({
           width: "100%",
           height: 44,
           textAlign: "center",
-          fontSize: 18,
-          fontWeight: 700,
+          fontSize: tokens.fontSize.xl,
+          fontWeight: tokens.fontWeight.bold,
           color,
           borderRadius: 8,
           border: `1px solid ${color}33`,
@@ -1315,7 +1316,7 @@ function HistoryTab({
             key={t.id}
             className="mx-4 mb-2"
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: tokens.white,
               border: "0.5px solid #E2E6ED",
               borderRadius: 8,
               padding: 16,
@@ -1344,7 +1345,7 @@ function HistoryTab({
                 {t.examiner_name ? ` · ${t.examiner_name}` : ""}
               </div>
               <div className="mt-2 text-[12px]" style={{ color: "#0F2044" }}>
-                <span style={{ color: "#1877D6" }}>{t.fault_count ?? 0} driver</span>
+                <span style={{ color: tokens.blue }}>{t.fault_count ?? 0} driver</span>
                 {" | "}
                 <span style={{ color: "#B45309" }}>{t.serious_faults ?? 0} serious</span>
                 {" | "}

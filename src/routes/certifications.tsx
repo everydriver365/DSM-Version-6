@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconAlertCircle, IconArrowLeft, IconAward, IconCalendar, IconCircleCheck, IconClock, IconDots, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -272,7 +273,7 @@ function CertificationsPage() {
 
   const groupHeader = (label: string, colour: string, count: number) => (
     count > 0 ? (
-      <div style={{ margin: "16px 16px 8px", fontSize: 10, fontWeight: 600, color: colour, textTransform: "uppercase", letterSpacing: 0.6, fontFamily: "Poppins, sans-serif" }}>
+      <div style={{ margin: "16px 16px 8px", fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, color: colour, textTransform: "uppercase", letterSpacing: 0.6, fontFamily: "Poppins, sans-serif" }}>
         {label}
       </div>
     ) : null
@@ -290,27 +291,27 @@ function CertificationsPage() {
     })();
     return (
       <div style={{
-        background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 8,
+        background: tokens.white, border: "0.5px solid #E2E6ED", borderRadius: 8,
         padding: 0, overflow: "hidden", margin: "0 16px 8px",
         borderLeft: `3px solid ${s.colour}`, fontFamily: "Poppins, sans-serif",
       }}>
         <div style={{ padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: s.colour, textTransform: "uppercase", letterSpacing: 0.6 }}>
+            <div style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, color: s.colour, textTransform: "uppercase", letterSpacing: 0.6 }}>
               {cert.cert_type || "Certification"}
             </div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#0F2044", marginTop: 2 }}>{cert.title}</div>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: "#0F2044", marginTop: 2 }}>{cert.title}</div>
             {cert.notes ? (
-              <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>{cert.notes}</div>
+              <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 2 }}>{cert.notes}</div>
             ) : null}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, position: "relative" }}>
-            <span style={{ background: s.bg, color: s.colour, fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 999 }}>
+            <span style={{ background: s.bg, color: s.colour, fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, padding: "2px 8px", borderRadius: 999 }}>
               {s.status === "expired" ? "Expired" : s.status === "expiring_soon" ? "Soon" : s.status === "valid" ? "Valid" : "No expiry"}
             </span>
             <button
               onClick={() => setMenuFor(menuFor === cert.id ? null : cert.id)}
-              style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4, color: "#9CA3AF" }}
+              style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4, color: tokens.textMuted }}
               aria-label="More"
             >
               <IconDots size={16} />
@@ -322,7 +323,7 @@ function CertificationsPage() {
                   { label: "Renew", onClick: () => openRenew(cert) },
                   { label: "Archive", onClick: () => archive(cert) },
                 ].map((it) => (
-                  <button key={it.label} onClick={it.onClick} style={{ display: "block", width: "100%", textAlign: "left", padding: "10px 14px", border: "none", background: "transparent", fontSize: 13, cursor: "pointer", color: "#0F2044" }}>
+                  <button key={it.label} onClick={it.onClick} style={{ display: "block", width: "100%", textAlign: "left", padding: "10px 14px", border: "none", background: "transparent", fontSize: tokens.fontSize.base, cursor: "pointer", color: "#0F2044" }}>
                     {it.label}
                   </button>
                 ))}
@@ -352,13 +353,13 @@ function CertificationsPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#FFFFFF", fontFamily: "Poppins, sans-serif", paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", background: tokens.white, fontFamily: "Poppins, sans-serif", paddingBottom: 100 }}>
       {/* Top bar */}
-      <div style={{ background: "#0F2044", padding: "calc(env(safe-area-inset-top, 0px) + 14px) 16px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, color: "#FFFFFF" }}>
+      <div style={{ background: "#0F2044", padding: "calc(env(safe-area-inset-top, 0px) + 14px) 16px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, color: tokens.white }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <button
             onClick={() => navigate({ to: "/home" as never })}
-            style={{ background: "transparent", border: "none", color: "#FFFFFF", cursor: "pointer", padding: 4 }}
+            style={{ background: "transparent", border: "none", color: tokens.white, cursor: "pointer", padding: 4 }}
             aria-label="Back"
           >
             <IconArrowLeft size={22} />
@@ -367,7 +368,7 @@ function CertificationsPage() {
         </div>
         <button
           onClick={() => navigate({ to: "/home" as never })}
-          style={{ background: "transparent", border: "none", color: "#FFFFFF", cursor: "pointer", padding: 4 }}
+          style={{ background: "transparent", border: "none", color: tokens.white, cursor: "pointer", padding: 4 }}
           aria-label="Close"
         >
           <IconX size={22} />
@@ -381,9 +382,9 @@ function CertificationsPage() {
           { count: expiringCount, label: "Expiring soon", colour: "#B45309" },
           { count: validCount, label: "Valid", colour: "#16A34A" },
         ].map((s) => (
-          <div key={s.label} style={{ flex: 1, background: "#FFFFFF", border: "0.5px solid #E2E6ED", borderRadius: 8, padding: 12, textAlign: "center" }}>
+          <div key={s.label} style={{ flex: 1, background: tokens.white, border: "0.5px solid #E2E6ED", borderRadius: 8, padding: 12, textAlign: "center" }}>
             <div style={{ fontSize: 20, fontWeight: 900, color: s.colour }}>{s.count}</div>
-            <div style={{ fontSize: 10, color: "#9CA3AF", marginTop: 2 }}>{s.label}</div>
+            <div style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted, marginTop: 2 }}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -393,10 +394,10 @@ function CertificationsPage() {
         <div style={{ margin: "12px 16px 0", background: "#FEF2F2", border: "0.5px solid #FECACA", borderRadius: 8, padding: "14px 16px", display: "flex", alignItems: "flex-start", gap: 10 }}>
           <IconAlertCircle size={16} color="#CC2229" style={{ marginTop: 1 }} />
           <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#CC2229" }}>
+            <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.red }}>
               {expiredCount} expired · {expiringCount} expiring soon
             </div>
-            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>
+            <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 4 }}>
               Renew these before your next standards check
             </div>
           </div>
@@ -405,12 +406,12 @@ function CertificationsPage() {
 
       {/* List */}
       {loading ? (
-        <div style={{ padding: 32, textAlign: "center", color: "#9CA3AF" }}>Loading…</div>
+        <div style={{ padding: 32, textAlign: "center", color: tokens.textMuted }}>Loading…</div>
       ) : certs.length === 0 ? (
         <div style={{ padding: "48px 24px 24px", textAlign: "center" }}>
           <IconAward size={48} color="#D1D5DB" style={{ margin: "0 auto 12px" }} />
-          <div style={{ fontSize: 15, fontWeight: 600, color: "#6B7280" }}>No certifications tracked</div>
-          <div style={{ fontSize: 13, color: "#9CA3AF", marginTop: 4 }}>
+          <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: "#6B7280" }}>No certifications tracked</div>
+          <div style={{ fontSize: tokens.fontSize.base, color: tokens.textMuted, marginTop: 4 }}>
             Add your ADI licence, DBS check and other important dates
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginTop: 20 }}>
@@ -418,7 +419,7 @@ function CertificationsPage() {
               <button
                 key={p.type}
                 onClick={() => openAdd(p)}
-                style={{ background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "6px 12px", borderRadius: 999, border: "none", cursor: "pointer" }}
+                style={{ background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "6px 12px", borderRadius: 999, border: "none", cursor: "pointer" }}
               >
                 {p.title}
               </button>
@@ -441,7 +442,7 @@ function CertificationsPage() {
       {/* FAB add */}
       <button
         onClick={() => openAdd()}
-        style={{ position: "fixed", right: 20, bottom: "calc(env(safe-area-inset-bottom, 0px) + 24px)", width: 56, height: 56, borderRadius: 8, background: "#0F2044", color: "#FFFFFF", border: "none", fontSize: 28, fontWeight: 300, cursor: "pointer", boxShadow: "0 6px 20px rgba(15,32,68,0.35)", zIndex: 30 }}
+        style={{ position: "fixed", right: 20, bottom: "calc(env(safe-area-inset-bottom, 0px) + 24px)", width: 56, height: 56, borderRadius: 8, background: "#0F2044", color: tokens.white, border: "none", fontSize: tokens.fontSize.hero, fontWeight: 300, cursor: "pointer", boxShadow: "0 6px 20px rgba(15,32,68,0.35)", zIndex: 30 }}
         aria-label="Add certification"
       >
         +
@@ -452,11 +453,11 @@ function CertificationsPage() {
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 40, display: "flex", alignItems: "flex-end" }} onClick={() => setSheetOpen(false)}>
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{ background: "#FFFFFF", width: "100%", maxHeight: "88vh", overflowY: "auto", borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: "20px 16px calc(env(safe-area-inset-bottom, 0px) + 20px)", fontFamily: "Poppins, sans-serif" }}
+            style={{ background: tokens.white, width: "100%", maxHeight: "88vh", overflowY: "auto", borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: "20px 16px calc(env(safe-area-inset-bottom, 0px) + 20px)", fontFamily: "Poppins, sans-serif" }}
           >
             <div style={{ width: 40, height: 4, background: "#E5E7EB", borderRadius: 8, margin: "0 auto 16px" }} />
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#0F2044" }}>
+              <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: "#0F2044" }}>
                 {editing ? "Edit certification" : "Add certification"}
               </div>
               <button
@@ -472,13 +473,13 @@ function CertificationsPage() {
               <div style={{ background: "#E0FFF4", borderRadius: 8, padding: 24, textAlign: "center" }}>
                 <IconCircleCheck size={48} color="#16A34A" style={{ margin: "0 auto 12px" }} />
                 <div style={{ fontSize: 20, fontWeight: 900, color: "#0F2044" }}>Saved!</div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "#16A34A", marginTop: 4 }}>{fTitle}</div>
+                <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: "#16A34A", marginTop: 4 }}>{fTitle}</div>
                 {fExpiry && !fNoExpiry ? (
-                  <div style={{ fontSize: 14, color: "#9CA3AF", marginTop: 4 }}>Expires {fmtDate(fExpiry)}</div>
+                  <div style={{ fontSize: tokens.fontSize.md, color: tokens.textMuted, marginTop: 4 }}>Expires {fmtDate(fExpiry)}</div>
                 ) : null}
                 <button
                   onClick={finishAndRefresh}
-                  style={{ background: "#0F2044", color: "#FFFFFF", width: "100%", borderRadius: 8, padding: "12px 16px", fontWeight: 600, border: "none", cursor: "pointer", marginTop: 16 }}
+                  style={{ background: "#0F2044", color: tokens.white, width: "100%", borderRadius: 8, padding: "12px 16px", fontWeight: tokens.fontWeight.semibold, border: "none", cursor: "pointer", marginTop: 16 }}
                 >
                   Done
                 </button>
@@ -487,13 +488,13 @@ function CertificationsPage() {
               <>
                 {!editing && (
                   <>
-                    <div style={{ fontSize: 12, color: "#9CA3AF", marginBottom: 8 }}>Quick add</div>
+                    <div style={{ fontSize: 12, color: tokens.textMuted, marginBottom: 8 }}>Quick add</div>
                     <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 8, marginBottom: 12 }}>
                       {CERT_PRESETS.map((p) => (
                         <button
                           key={p.type}
                           onClick={() => { setFTitle(p.title); setFType(p.type); setFReminder(p.reminder_days); }}
-                          style={{ background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "6px 12px", borderRadius: 999, border: "none", cursor: "pointer", whiteSpace: "nowrap" }}
+                          style={{ background: "#F0F4FF", color: "#1A52A0", fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "6px 12px", borderRadius: 999, border: "none", cursor: "pointer", whiteSpace: "nowrap" }}
                         >
                           {p.title}
                         </button>
@@ -544,7 +545,7 @@ function CertificationsPage() {
                 <button
                   onClick={save}
                   disabled={saving}
-                  style={{ background: "#0F2044", color: "#FFFFFF", width: "100%", borderRadius: 8, padding: "12px 16px", fontWeight: 600, border: "none", cursor: "pointer", marginTop: 8, opacity: saving ? 0.7 : 1 }}
+                  style={{ background: "#0F2044", color: tokens.white, width: "100%", borderRadius: 8, padding: "12px 16px", fontWeight: tokens.fontWeight.semibold, border: "none", cursor: "pointer", marginTop: 8, opacity: saving ? 0.7 : 1 }}
                 >
                   {saving ? "Saving…" : "Save"}
                 </button>
@@ -562,17 +563,17 @@ const inputStyle: React.CSSProperties = {
   border: "0.5px solid #E2E6ED",
   borderRadius: 8,
   padding: "10px 12px",
-  fontSize: 14,
+  fontSize: tokens.fontSize.md,
   fontFamily: "Poppins, sans-serif",
   color: "#0F2044",
-  background: "#FFFFFF",
+  background: tokens.white,
   boxSizing: "border-box",
 };
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: 12 }}>
-      <div style={{ fontSize: 12, color: "#6B7280", fontWeight: 600, marginBottom: 6 }}>{label}</div>
+      <div style={{ fontSize: 12, color: "#6B7280", fontWeight: tokens.fontWeight.semibold, marginBottom: 6 }}>{label}</div>
       {children}
     </div>
   );
