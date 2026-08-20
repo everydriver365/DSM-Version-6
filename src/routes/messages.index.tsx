@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { tapLight, tapMedium } from "@/lib/haptics";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import DSMPageSheet from "@/components/dsm/DSMPageSheet";
 import { useAdminGate } from "./admin";
 import { pupilColour } from "@/components/PupilAvatar";
 
