@@ -1,12 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { IconCalendar, IconDots, IconRefresh, IconSearch, IconUsers, IconX } from "@tabler/icons-react";
-import { PageHeader } from "@/components/dsm/PageHeader";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { BottomSheet } from "../components/dsm/BottomSheet";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -417,8 +416,8 @@ function LessonSeriesPage() {
   }
 
   return (
-    <PageLayout style={{ background: "#FFFFFF", ...POPPINS }}>
-      <PageHeader title="Lesson Series" backTo="/schedule" />
+    <DSMTopSheet title="Lesson Series" onBack={() => navigate({ to: "/schedule" as never })}>
+    <div style={{ background: "#FFFFFF", minHeight: "100%", ...POPPINS }}>
 
       {/* Intro card */}
       <div
@@ -1034,6 +1033,7 @@ function LessonSeriesPage() {
           </button>
         </div>
       </BottomSheet>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }

@@ -10,11 +10,10 @@ import {
 } from "@/lib/calendarSyncPrefs";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -584,18 +583,8 @@ function CalendarSyncPage() {
   }
 
   return (
-    <PageLayout style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Calendar sync"
-        onBack={() => navigate({ to: "/settings" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Calendar Sync" onBack={() => navigate({ to: "/settings" as never })}>
+    <div style={{ ...POPPINS, minHeight: "100%" }}>
 
       <div className="px-4 pb-12">
         {/* IconInfoCircle card */}
@@ -1261,6 +1250,7 @@ function CalendarSyncPage() {
           </AccordionItem>
         </Accordion>
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }

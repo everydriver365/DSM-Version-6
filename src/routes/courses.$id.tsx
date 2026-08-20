@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { toast } from "sonner";
 import { IconArchive, IconCalendar, IconCalendarStats, IconCalendarMonth, IconCamera, IconCheck, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMessage, IconMoon, IconPencil, IconPhone, IconPhoto, IconSchool, IconSettings, IconShield, IconSun, IconSunrise, IconTrash, IconX } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 import { Card } from "../components/dsm/Card";
 import { Input } from "../components/dsm/Input";
@@ -594,18 +594,8 @@ function CourseDetailPage() {
   const goBack = useGoBack();
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle={course?.name ?? "Course"}
-        onBack={() => goBack('/courses')}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Course Details" onBack={() => goBack('/courses')}>
+    <div style={{ minHeight: "100%", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
 
       {/* Hero image */}
       <div style={{ position: "relative", width: "100%", height: 180, overflow: "hidden" }}>
@@ -1787,6 +1777,7 @@ function CourseDetailPage() {
 
       {confirmSheet}
     </div>
+    </DSMTopSheet>
   );
 }
 
@@ -2364,4 +2355,3 @@ function PostcodeAutocomplete(props: {
     </div>
   );
 }
-

@@ -3,8 +3,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconAward, IconBolt, IconCalendarOff, IconCheck, IconChevronRight, IconDownload, IconMovie, IconPlayerPlay, IconShoppingBag, IconStar, IconTrendingUp, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
-import { PageLayout } from "@/components/PageLayout";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import LearnLibrarySection from "@/components/learn/LearnLibrarySection";
 import LearnVideosSection from "@/components/learn/LearnVideosSection";
@@ -454,18 +453,8 @@ function LearnPage() {
 
 
   return (
-    <PageLayout className="pb-24" style={{ fontFamily: FONT, background: CANVAS }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Learn"
-        onBack={() => navigate({ to: "/more" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Learn">
+    <div className="pb-24" style={{ fontFamily: FONT, background: CANVAS, minHeight: "100%" }}>
 
       <div style={{ padding: "8px 16px 0" }}>
         <p style={{ fontSize: 14, fontWeight: 500, color: "#8A8A8E", margin: "0 0 22px" }}>
@@ -675,6 +664,7 @@ function LearnPage() {
           />
         </div>
       )}
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }

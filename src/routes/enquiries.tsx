@@ -7,7 +7,7 @@ import { tapLight, tapMedium, hapticSuccess } from "@/lib/haptics";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import {
   IconMail,
   IconCheck,
@@ -1648,32 +1648,8 @@ function EnquiriesPage() {
   const selected = enquiries.find((e) => e.id === selectedId) ?? null;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#F3F8FF", paddingBottom: 90 }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Enquiries"
-        unreadCount={unreadCount}
-        titleStyle={{
-          fontSize: 24,
-          fontWeight: 800,
-          letterSpacing: "-0.4px",
-          color: "#fff",
-          textShadow: "none",
-          mixBlendMode: "normal",
-          filter: "none",
-          WebkitTextStroke: "0",
-          WebkitFontSmoothing: "antialiased",
-          MozOsxFontSmoothing: "grayscale",
-          fontFamily: "Sora, Poppins, sans-serif",
-        }}
-        onBack={() => goBack('/enquiries')}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Enquiries">
+    <div style={{ minHeight: "100%", background: "#F3F8FF", paddingBottom: 90 }}>
 
       <div style={{ padding: "4px 16px 24px" }}>
         {loading ? (
@@ -1703,5 +1679,6 @@ function EnquiriesPage() {
           identity (and focus) across re-renders. */}
       {selected && DetailSheet({ enquiry: selected })}
     </div>
+    </DSMTopSheet>
   );
 }
