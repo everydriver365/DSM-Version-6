@@ -127,7 +127,6 @@ function MicTextarea({
         {listening ? <IconMicrophoneOff size={16} /> : <IconMicrophone size={16} />}
       </button>
     </div>
-    </div>
   );
 }
 
