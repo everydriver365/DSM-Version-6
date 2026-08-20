@@ -127,7 +127,7 @@ function InvoicesPage() {
   const selectedRow = useMemo(() => filtered.find((r) => r.id === selectedId) ?? null, [filtered, selectedId]);
 
   return (
-    <DSMTopSheet title="Invoices" onBack={() => window.history.back()}>
+    <DSMTopSheet title="Invoices">
       <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {/* Summary */}

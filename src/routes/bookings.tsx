@@ -214,7 +214,7 @@ function BookingsPage() {
   const selectedBooking = selectedId ? bookings.find((b) => b.id === selectedId) : null;
 
   return (
-    <DSMTopSheet title="Bookings" onBack={() => window.history.back()}>
+    <DSMTopSheet title="Bookings">
       <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {loading ? (

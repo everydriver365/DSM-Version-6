@@ -131,7 +131,7 @@ function DocumentsPage() {
   );
 
   return (
-    <DSMTopSheet title="Documents" onBack={() => window.history.back()}>
+    <DSMTopSheet title="Documents">
       <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {/* Action bar */}
