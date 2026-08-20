@@ -587,7 +587,35 @@ function JobsPage() {
       {/* List */}
       {activeTab === "open" ? (
         jobs === null ? (
-          <div className="p-8 text-center text-[13px]" style={{ color: GREY, ...POPPINS }}>Loading…</div>
+          <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  background: "#FFFFFF",
+                  borderRadius: 8,
+                  boxShadow: "0 4px 0 #E4E4E8",
+                  padding: 14,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 10,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <DSMSkeleton width={40} height={40} borderRadius={8} />
+                  <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
+                    <DSMSkeleton width="60%" height={14} borderRadius={6} />
+                    <DSMSkeleton width="40%" height={12} borderRadius={6} />
+                  </div>
+                  <DSMSkeleton width={70} height={22} borderRadius={11} />
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <DSMSkeleton width="45%" height={12} borderRadius={6} />
+                  <DSMSkeleton width="35%" height={12} borderRadius={6} />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : jobs.length === 0 ? (
           <div className="p-10 text-center" style={POPPINS}>
             <IconBriefcase size={36} color="#9CA3AF" style={{ margin: "0 auto 12px" }} />
@@ -622,7 +650,35 @@ function JobsPage() {
         )
       ) : (
         claimedJobs === null ? (
-          <div className="p-8 text-center text-[13px]" style={{ color: GREY, ...POPPINS }}>Loading…</div>
+          <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  background: "#FFFFFF",
+                  borderRadius: 8,
+                  boxShadow: "0 4px 0 #E4E4E8",
+                  padding: 14,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 10,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <DSMSkeleton width={40} height={40} borderRadius={8} />
+                  <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
+                    <DSMSkeleton width="60%" height={14} borderRadius={6} />
+                    <DSMSkeleton width="40%" height={12} borderRadius={6} />
+                  </div>
+                  <DSMSkeleton width={70} height={22} borderRadius={11} />
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <DSMSkeleton width="45%" height={12} borderRadius={6} />
+                  <DSMSkeleton width="35%" height={12} borderRadius={6} />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : claimedJobs.length === 0 ? (
           <div className="p-10 text-center" style={POPPINS}>
             <IconBriefcase size={36} color="#9CA3AF" style={{ margin: "0 auto 12px" }} />
