@@ -386,7 +386,7 @@ END:VCALENDAR`;
                           background: "#F1F5F9",
                           color: "#0F2044",
                           fontSize: 11,
-                          padding: "3px 8px",
+                          padding: "4px 10px",
                           borderRadius: 999,
                         }}
                       >

@@ -158,10 +158,10 @@ function ListRow({
             style={{
               background: "#FEF3C7",
               color: "#B45309",
-              fontSize: 9,
+              fontSize: 11,
               fontWeight: 700,
-              borderRadius: 8,
-              padding: "2px 7px",
+              borderRadius: 999,
+              padding: "4px 10px",
             }}
           >
             Coming soon

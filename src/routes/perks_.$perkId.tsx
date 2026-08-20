@@ -317,8 +317,8 @@ function PerkDetailPage() {
               color: "#15803D",
               fontSize: 11,
               fontWeight: 700,
-              borderRadius: 8,
-              padding: "4px 12px",
+              borderRadius: 999,
+              padding: "4px 10px",
               marginTop: 8,
             }}
           >

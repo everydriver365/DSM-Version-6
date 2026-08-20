@@ -1286,10 +1286,10 @@ function CourseDetailPage() {
                                 style={{
                                   background: "#FEF3C7",
                                   color: "#B45309",
-                                  fontSize: 9,
+                                  fontSize: 11,
                                   fontWeight: 800,
-                                  borderRadius: 8,
-                                  padding: "2px 6px",
+                                  borderRadius: 999,
+                                  padding: "4px 10px",
                                   textTransform: "uppercase",
                                 }}
                               >

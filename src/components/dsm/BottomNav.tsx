@@ -357,8 +357,8 @@ export function BottomNav({
             alignItems: "center",
             justifyContent: "center",
             gap: 2,
-            padding: "6px 12px",
-            borderRadius: 8,
+            padding: "4px 10px",
+            borderRadius: 999,
             background: isActive ? "#E6F1FB" : "transparent",
           }}
         >
@@ -418,8 +418,8 @@ export function BottomNav({
             alignItems: "center",
             justifyContent: "center",
             gap: 2,
-            padding: "6px 12px",
-            borderRadius: 8,
+            padding: "4px 10px",
+            borderRadius: 999,
             background: isActive ? "#E6F1FB" : "transparent",
           }}
         >

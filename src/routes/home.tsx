@@ -4428,7 +4428,7 @@ function HomePage() {
                               <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "2px 7px", borderRadius: 20, background: "#EEF2F7", color: "#9CA3AF" }}>Done</span>
                             )}
                             {now && (
-                              <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "2px 7px", borderRadius: 20, background: "#DCFCE7", color: "#15803D" }}>Now</span>
+                              <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", padding: "4px 10px", borderRadius: 999, background: "#DCFCE7", color: "#15803D" }}>Now</span>
                             )}
 
                             {eolDue && (
@@ -4438,8 +4438,8 @@ function HomePage() {
                                   navigate({ to: "/end-of-day" });
                                 }}
                                 style={{
-                                  fontSize: 10, fontWeight: 700, textTransform: "uppercase",
-                                  padding: "3px 8px", borderRadius: 8,
+                                  fontSize: 11, fontWeight: 700, textTransform: "uppercase",
+                                  padding: "4px 10px", borderRadius: 999,
                                   background: "#FEF3C7", color: "#D68A1B",
                                   cursor: "pointer",
                                 }}
@@ -10139,13 +10139,13 @@ function OutstandingBreakdownModal({
                       alignItems: "center",
                       justifyContent: "center",
                       gap: 4,
-                      padding: "6px 8px",
+                      padding: "4px 10px",
                       fontSize: 11,
                       fontWeight: 600,
                       backgroundColor: "#F1F5F9",
                       color: "#0B1F3A",
                       border: "1px solid #CBD5E1",
-                      borderRadius: 8,
+                      borderRadius: 999,
                       cursor: "pointer",
                     }}
                   >
@@ -10534,7 +10534,7 @@ function LessonsBreakdownModal({
                   <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 600, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {r.pupilName}
                   </div>
-                  <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 8, backgroundColor: "#F1F5F9", color: "#0B1F3A" }}>
+                  <span style={{ fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 999, backgroundColor: "#F1F5F9", color: "#0B1F3A" }}>
                     {r.duration_minutes ?? 60}m
                   </span>
                   <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 8, backgroundColor: colors.bg, color: colors.fg, textTransform: "capitalize" }}>
@@ -10751,9 +10751,9 @@ function TestsBreakdownModal({
                     <span
                       onClick={(e) => { e.stopPropagation(); onOpenPupil(t.id); }}
                       style={{
-                        fontSize: 10,
+                        fontSize: 11,
                         fontWeight: 700,
-                        padding: "3px 8px",
+                        padding: "4px 10px",
                         borderRadius: 999,
                         backgroundColor: "#FEF3C7",
                         color: "#D68A1B",

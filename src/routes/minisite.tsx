@@ -494,10 +494,10 @@ function MiniSitePage() {
               style={{
                 background: "#FEF3C7",
                 color: "#B45309",
-                fontSize: 10,
+                fontSize: 11,
                 fontWeight: 700,
-                borderRadius: 8,
-                padding: "3px 8px",
+                borderRadius: 999,
+                padding: "4px 10px",
               }}
             >
               {t.badge}
@@ -2140,8 +2140,8 @@ function MiniSitePage() {
                     color: "#15803D",
                     fontSize: 11,
                     fontWeight: 700,
-                    borderRadius: 8,
-                    padding: "4px 12px",
+                    borderRadius: 999,
+                    padding: "4px 10px",
                   }}
                 >
                   ✓ {chosenDomain} reserved

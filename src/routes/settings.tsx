@@ -2395,7 +2395,7 @@ function MenuRow({
             fontSize: 11,
             fontWeight: 700,
             padding: "4px 10px",
-            borderRadius: 8,
+            borderRadius: 999,
             marginRight: 4,
             ...POPPINS,
           }}
@@ -2497,7 +2497,7 @@ function AccountRow({
             fontSize: 11,
             fontWeight: 700,
             padding: "4px 10px",
-            borderRadius: 8,
+            borderRadius: 999,
             marginRight: 4,
             ...POPPINS,
           }}

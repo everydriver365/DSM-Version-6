@@ -3074,7 +3074,7 @@ function PupilDetailPage() {
                               </div>
                               <div className="flex gap-1.5 shrink-0">
                                 {r.f > 0 && (<span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#F3F4F6", color: "#374151", padding: "2px 7px", borderRadius: 999 }}>{r.f}</span>)}
-                                {r.s > 0 && (<span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#FEF3C7", color: "#B45309", padding: "2px 7px", borderRadius: 999 }}>S {r.s}</span>)}
+                                {r.s > 0 && (<span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#FEF3C7", color: "#B45309", padding: "4px 10px", borderRadius: 999 }}>S {r.s}</span>)}
                                 {r.d > 0 && (<span style={{ fontSize: 11, fontWeight: 700, backgroundColor: "#FDECEA", color: "#CC2229", padding: "2px 7px", borderRadius: 999 }}>D {r.d}</span>)}
                               </div>
                             </SheetRow>

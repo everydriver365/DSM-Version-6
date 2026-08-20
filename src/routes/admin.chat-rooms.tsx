@@ -486,11 +486,11 @@ function AdminChatRooms() {
                   {room.is_opt_in && (
                     <span
                       style={{
-                        fontSize: 10.5,
+                        fontSize: 11.5,
                         fontWeight: 800,
                         color: "#B45309",
                         background: "#FEF3C7",
-                        borderRadius: 8,
+                        borderRadius: 999,
                         padding: "4px 10px",
                       }}
                     >

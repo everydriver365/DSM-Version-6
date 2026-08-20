@@ -363,7 +363,7 @@ function OnboardingPage() {
                         onClick={() => setAdiGrade(sel ? "" : g)}
                         style={{
                           ...POPPINS,
-                          padding: "6px 16px",
+                          padding: "4px 10px",
                           borderRadius: 999,
                           border: "none",
                           fontSize: 13,

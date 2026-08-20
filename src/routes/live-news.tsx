@@ -666,10 +666,10 @@ function LiveNewsPage() {
                                 style={{
                                   background: "#FEE2E2",
                                   color: "#CC2229",
-                                  fontSize: 10,
+                                  fontSize: 11,
                                   fontWeight: 700,
-                                  borderRadius: 8,
-                                  padding: "2px 8px",
+                                  borderRadius: 999,
+                                  padding: "4px 10px",
                                   display: "inline-block",
                                   marginTop: 6,
                                   alignSelf: "flex-start",
