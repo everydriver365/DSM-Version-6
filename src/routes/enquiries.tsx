@@ -2,6 +2,7 @@ import { useGoBack } from "@/hooks/useGoBack";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import DSMSkeleton from "@/components/dsm/DSMSkeleton";
 import { supabase } from "../lib/supabaseClient";
 import { tapLight, tapMedium, hapticSuccess } from "@/lib/haptics";
 import { toast } from "sonner";
