@@ -9,7 +9,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { buildPickup, getPickupParts } from "@/lib/pickup";
-import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { QuickActionsMenu, type QuickAction } from "@/components/dsm/QuickActionsMenu";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard.tsx";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
@@ -22,7 +22,7 @@ import { tapLight, hapticSuccess } from "@/lib/haptics";
 import { computeDayGaps } from "@/lib/gapDetection";
 import { DiscoverSection as DiscoverGrid } from "@/components/home/DiscoverSection";
 import { SectionHeader } from "@/components/dsm/SectionHeader";
-
+import { PageLayout } from "@/components/PageLayout";
 import { SheetQueueController } from "@/components/dsm/SheetQueue";
 import { LessonActionsSheet } from "@/components/lessons/LessonActionsSheet";
 import { LessonActionsMenu } from "@/components/lessons/LessonActionsMenu";
@@ -4212,8 +4212,19 @@ function HomePage() {
       fontSize: 12, fontWeight: 600, color: "#0B1F3A",
     };
     return (
-      <DSMTopSheet title="Home">
+      <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: TOP_BAR_SPACER }}>
         {notifBanner}
+        <InstructorTopBar
+          firstName={firstName}
+          avatarUrl={avatarUrl}
+          unreadCount={notifCount}
+          onProfile={() => navigate({ to: "/profile" })}
+          onPhone={() => navigate({ to: "/enquiries" })}
+          onLiveTrack={() => navigate({ to: "/live" })}
+          onBell={() => navigate({ to: "/notifications" })}
+          onMenu={() => window.dispatchEvent(new Event('dsm-open-menu'))}
+          onMicPress={() => toast.info("Voice commands coming soon!")}
+        />
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
           {/* HEADER */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
@@ -4631,12 +4642,12 @@ function HomePage() {
             </div>
           </div>
         </div>
-      </DSMTopSheet>
+      </div>
     );
   }
 
   return (
-    <DSMTopSheet title="Home">
+    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: TOP_BAR_SPACER, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
       {showWelcome && userId && (
         <WelcomeOverlay
           userId={userId}
@@ -4647,33 +4658,50 @@ function HomePage() {
       {notifBanner}
       <SheetQueueController userId={userId} />
       <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.carousel-hide-scrollbar::-webkit-scrollbar{display:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}@keyframes chipShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
+      {/* TOP BAR */}
+      <InstructorTopBar
+        firstName={firstName}
+        avatarUrl={avatarUrl}
+        unreadCount={notifCount}
+        onProfile={() => navigate({ to: "/profile" })}
+        onPhone={() => navigate({ to: "/enquiries" })}
+        onLiveTrack={() => navigate({ to: "/live" })}
+        onBell={() => navigate({ to: "/notifications" })}
+        onMenu={() => window.dispatchEvent(new Event('dsm-open-menu'))}
+        onMicPress={() => toast.info("Voice commands coming soon!")}
+      />
+
       <PushPermissionCard />
 
-      <section
-        data-workspace="today"
-        data-ws-index={0}
-        style={{
-          minWidth: '100vw',
-          width: '100vw',
-          maxWidth: '100vw',
-          height: '100%',
-          scrollSnapAlign: 'start',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          flexShrink: 0,
-          background: PAGE_BACKGROUND,
-          WebkitOverflowScrolling: 'touch',
-          touchAction: 'pan-y',
-          overscrollBehaviorX: 'none',
-          paddingBottom: 0,
-        }}
-      >
+
+
+
+
+<section
+          data-workspace="today"
+          data-ws-index={0}
+          style={{
+            minWidth: '100vw',
+            width: '100vw',
+            maxWidth: '100vw',
+            height: '100%',
+            scrollSnapAlign: 'start',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            flexShrink: 0,
+            background: PAGE_BACKGROUND,
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-y',
+            overscrollBehaviorX: 'none',
+            paddingBottom: 0,
+          }}
+        >
       {/* ============ NAVY HEADER BLOCK ============ */}
       <div
         style={{
           backgroundColor: '#0B1F3A',
-          marginTop: 0,
-          padding: '16px 16px 34px',
+          marginTop: `calc(-1 * ${TOP_BAR_SPACER})`,
+          padding: `calc(${TOP_BAR_SPACER} + 16px) 16px 34px`,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -9178,7 +9206,7 @@ function HomePage() {
         </div>
       )}
 
-    </DSMTopSheet>
+    </PageLayout>
 
 
   );
