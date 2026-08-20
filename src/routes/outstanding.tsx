@@ -2,7 +2,7 @@ import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { IconAward, IconCheckbox, IconChevronDown, IconChevronUp, IconCircleCheck, IconCurrencyPound, IconFileText, IconInbox, IconPhone, IconSchool, IconSquare, IconUserX } from "@tabler/icons-react";
 import { Card } from "../components/dsm/Card";
 import { supabase } from "../lib/supabaseClient";
@@ -203,19 +203,8 @@ function OutstandingPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 32 }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Outstanding tasks"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="Outstanding">
+      <div style={POPPINS}>
       {!loading && total > 0 && (
         <div
           style={{
@@ -404,7 +393,8 @@ function OutstandingPage() {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </DSMTopSheet>
   );
 }
 

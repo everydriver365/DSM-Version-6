@@ -1,13 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { IconCurrencyPound, IconMail, IconMessage, IconPencil, IconPlus, IconX } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 import { recordPayment, recordPaymentWithPackage } from "../lib/payments";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/pupils/payments/$id")({
   head: () => ({
@@ -294,20 +293,9 @@ function PupilPaymentsPage() {
   }
 
   return (
-    <PageLayout className="pb-8" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Payment history"
-        onBack={() => navigate({ to: "/pupils/$id", params: { id } } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
-
+    <DSMTopSheet title="Payments"
+      onBack={() => navigate({ to: "/pupils/$id", params: { id } } as never)}>
+      <div style={POPPINS}>
       <div className="px-4 mt-3">
         {pupilName && (
           <div className="text-[16px] font-semibold text-[#0B1F3A] mb-3" style={POPPINS}>
@@ -675,6 +663,7 @@ function PupilPaymentsPage() {
           </div>
         </div>
       )}
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }

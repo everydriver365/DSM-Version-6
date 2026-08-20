@@ -4,8 +4,7 @@ import { IconCalendar, IconChevronLeft, IconClock, IconExternalLink, IconUser } 
 
 import { sanitizeNewsContent, sanitizeNewsTitle } from "../lib/newsText";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
-import { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import { categoryOf } from "@/lib/newsCategories";
 import { getLearnItem } from "@/lib/learnLibrary";
@@ -384,17 +383,17 @@ function NewsArticlePage() {
 
   if (loading) {
     return (
-      <PageLayout style={{ background: "#0B1F3A" }}>
+      <div className="min-h-screen" style={{ background: "#0B1F3A" }}>
         <div className="flex items-center justify-center min-h-screen">
           <div className="animate-spin rounded-full border-2 border-white/30 border-t-white" style={{ width: 32, height: 32 }} />
         </div>
-      </PageLayout>
+      </div>
     );
   }
 
   if (!article) {
     return (
-      <PageLayout style={{ background: "#0B1F3A" }}>
+      <div className="min-h-screen" style={{ background: "#0B1F3A" }}>
         <div className="flex flex-col items-center justify-center min-h-screen text-white">
           <p className="text-[16px]" style={{ ...POPPINS, marginBottom: 16 }}>
             Article not found
@@ -409,7 +408,7 @@ function NewsArticlePage() {
             Back to home
           </button>
         </div>
-      </PageLayout>
+      </div>
     );
   }
 
@@ -417,43 +416,9 @@ function NewsArticlePage() {
   const index = Math.max(0, set.findIndex((a) => a.id === article.id));
 
   return (
-    <PageLayout style={{ background: "#F8F9FB" }}>
-      {/* Header */}
-      <div
-        className="flex items-center justify-between px-4"
-        style={{
-          height: TOP_BAR_SPACER,
-          paddingTop: "max(env(safe-area-inset-top, 0px), 24px)",
-          backgroundColor: "#0B1F3A",
-        }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" })}
-          className="flex items-center justify-center"
-          style={{ width: 36, height: 36, color: "#FFFFFF" }}
-        >
-          <IconChevronLeft size={28} />
-        </button>
-        <span
-          className="text-white"
-          style={{ fontSize: 15, fontWeight: 600, ...POPPINS }}
-        >
-          Industry news
-        </span>
-        <button
-          type="button"
-          aria-label="Open original article"
-          title="Open original article"
-          onClick={() => window.open(article?.link, "_blank")}
-          className="flex items-center justify-center"
-          style={{ width: 36, height: 36, color: "#FFFFFF" }}
-        >
-          <IconExternalLink size={22} />
-        </button>
-      </div>
-
+    <DSMTopSheet title="Article"
+      onBack={() => navigate({ to: "/home" })}>
+      <div style={POPPINS}>
       <SwipeableDetailShell<any>
         items={set}
         index={index}
@@ -472,6 +437,7 @@ function NewsArticlePage() {
         hintKey="dsm_swipe_news_hint_seen"
         renderItem={(a) => <ArticleBody article={a} />}
       />
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }

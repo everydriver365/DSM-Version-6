@@ -2,14 +2,13 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { IconChartBar } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { StatTile } from "../components/dsm/StatTile";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/reports")({
   head: () => ({
@@ -149,20 +148,8 @@ function ReportsPage() {
   }, [lessons]);
 
   return (
-    <PageLayout style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Reports"
-        onBack={() => navigate({ to: "/home" } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
-
+    <DSMTopSheet title="Reports">
+      <div style={POPPINS}>
       <div className="pt-[52px] pb-8">
         {/* OVERVIEW */}
         <div className="mx-4">
@@ -227,7 +214,8 @@ function ReportsPage() {
           </Card>
         </div>
       </div>
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }
 
