@@ -1,8 +1,9 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useGoBack } from "@/hooks/useGoBack";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
-import { PageHeader } from "@/components/dsm/PageHeader";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { IconBriefcase, IconCar, IconDots, IconGasStation, IconLeaf, IconMicrophone, IconPencil, IconPhone, IconPlus, IconRepeat, IconSchool, IconShield, IconSpeakerphone, IconTool, IconTrash, IconUpload, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -108,6 +109,7 @@ function monthLabel(key: string) {
 
 function ExpensesPage() {
   const navigate = useNavigate();
+  const goBack = useGoBack();
   const [rows, setRows] = useState<Expense[]>([]);
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -188,35 +190,34 @@ function ExpensesPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#fff", paddingBottom: 96 }}>
-      <PageHeader
-        title="Expenses"
-        right={
-          <button
-            type="button"
-            onClick={() => {
-              setEditing(null);
-              setAddExpenseOpen(true);
-            }}
-            style={{
-              background: "rgba(255,255,255,0.14)",
-              border: 0,
-              color: "#fff",
-              padding: "8px 12px",
-              borderRadius: 8,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              fontWeight: 600,
-              cursor: "pointer",
-              fontSize: 13,
-            }}
-          >
-            <IconPlus stroke={1.5} size={16} /> Add expense
-          </button>
-        }
-      />
-
+    <DSMTopSheet
+      title="Expenses"
+      onBack={() => goBack('/home')}
+      right={
+        <button
+          type="button"
+          onClick={() => {
+            setEditing(null);
+            setAddExpenseOpen(true);
+          }}
+          style={{
+            background: "rgba(255,255,255,0.14)",
+            border: 0,
+            color: "#fff",
+            padding: "8px 12px",
+            borderRadius: 8,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            fontWeight: 600,
+            cursor: "pointer",
+            fontSize: 13,
+          }}
+        >
+          <IconPlus stroke={1.5} size={16} /> Add expense
+        </button>
+      }
+    >
       {/* Summary cards */}
       <div
         style={{
@@ -253,7 +254,7 @@ function ExpensesPage() {
               style={{
                 whiteSpace: "nowrap",
                 border: active ? `1px solid ${NAVY}` : BORDER,
-                background: active ? NAVY : "#fff",
+                background: active ? NAVY : "#EEF2F7",
                 color: active ? "#fff" : colour,
                 padding: "8px 14px",
                 borderRadius: 999,
@@ -352,7 +353,7 @@ function ExpensesPage() {
         }}
       />
       {confirmSheet}
-    </div>
+    </DSMTopSheet>
   );
 }
 

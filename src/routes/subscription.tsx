@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useGoBack } from "@/hooks/useGoBack";
 import { toast } from "sonner";
 import { IconCheck, IconCrown, IconX } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
@@ -28,6 +29,7 @@ const DISPLAY_TIER_NAMES: Record<string, string> = {
 
 function SubscriptionPage() {
   const navigate = useNavigate();
+  const goBack = useGoBack();
 
   const [userId, setUserId] = useState<string | null>(null);
   const [instructorName, setInstructorName] = useState<string>("");
@@ -141,20 +143,7 @@ function SubscriptionPage() {
   const isPaid = websiteTier !== "free";
 
   return (
-    <div className="min-h-screen pb-8" style={{ ...POPPINS, backgroundColor: "#F3F8FF", margin: -8 }}>
-      {/* TOP BAR */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="My plan"
-        onBack={() => navigate({ to: "/settings" } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="Subscription" onBack={() => goBack('/settings')}>
       {/* CURRENT PLAN CARD */}
       <div
         className="mx-4 mt-3"
@@ -468,7 +457,7 @@ function SubscriptionPage() {
           </div>
         </div>
       )}
-    </div>
+    </DSMTopSheet>
   );
 }
 
