@@ -29,20 +29,22 @@ export default function DSMTopSheet({
     >
       <header
         style={{
-          paddingTop: "max(env(safe-area-inset-top, 0px), 24px)",
-          paddingBottom: 20,
-          paddingLeft: 20,
-          paddingRight: 20,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+          height: "calc(max(env(safe-area-inset-top, 0px), 24px) + 86px)",
           flexShrink: 0,
+          paddingTop: "calc(max(env(safe-area-inset-top, 0px), 24px) + 13px)",
+          paddingBottom: 28,
+          paddingLeft: 22,
+          paddingRight: 22,
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          boxSizing: "border-box",
         }}
       >
         <div
           style={{
             display: "flex",
-            alignItems: "center",
+            alignItems: "flex-start",
             gap: 10,
           }}
         >
@@ -52,15 +54,15 @@ export default function DSMTopSheet({
               aria-label="Go back"
               onClick={onBack}
               style={{
-                width: 36,
-                height: 36,
+                width: 40,
+                height: 40,
                 borderRadius: "50%",
                 border: 0,
                 padding: 0,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "rgba(255,255,255,0.15)",
+                background: "rgba(255,255,255,0.1)",
                 cursor: "pointer",
                 flexShrink: 0,
               }}
@@ -72,9 +74,9 @@ export default function DSMTopSheet({
             style={{
               margin: 0,
               color: "#FFFFFF",
-              fontFamily: "Poppins, sans-serif",
+              fontFamily: "Sora, sans-serif",
               fontSize: 22,
-              lineHeight: "28px",
+              lineHeight: "40px",
               fontWeight: 700,
             }}
           >
@@ -92,15 +94,15 @@ export default function DSMTopSheet({
               }
             }}
             style={{
-              width: 36,
-              height: 36,
+              width: 40,
+              height: 40,
               borderRadius: "50%",
               border: 0,
               padding: 0,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: "rgba(255,255,255,0.15)",
+              background: "rgba(255,255,255,0.1)",
               cursor: "pointer",
               flexShrink: 0,
             }}
@@ -123,18 +125,9 @@ export default function DSMTopSheet({
           overflowX: "hidden",
           display: "flex",
           flexDirection: "column",
+          paddingTop: 12,
         }}
       >
-        <div
-          style={{
-            width: 36,
-            height: 4,
-            borderRadius: 2,
-            background: "#DADFE5",
-            margin: "10px auto 6px",
-            flexShrink: 0,
-          }}
-        />
         {sticky && (
           <div style={{ flexShrink: 0 }}>
             {sticky}
