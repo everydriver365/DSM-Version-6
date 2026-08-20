@@ -1,6 +1,7 @@
 import { tokens } from "@/lib/tokens";
 import * as React from "react";
-import { pillStyle, type PillVariant } from "@/components/dsm/DSMPill";
+import { pillStyle, PILL_COLORS, type PillVariant } from "@/components/dsm/DSMPill";
+import { paymentStatusVariant } from "@/lib/statusVariants";
 
 export type LessonPaymentBadgeProps = {
   status: string | null | undefined;
@@ -22,7 +23,7 @@ export function getLessonPaymentBadge(
   isLive?: boolean,
 ): { label: string; variant: PillVariant; bg: string; color: string } | null {
   if (isLive) {
-    return { label: "Live", variant: "info", bg: "#E6F1FB", color: tokens.blue };
+    return { label: "Live", variant: "info", ...PILL_COLORS.info };
   }
 
   const s = (status ?? "").toLowerCase();
@@ -33,7 +34,8 @@ export function getLessonPaymentBadge(
   // Paid / prepaid / nothing outstanding / fully paid by amount
   if (s === "paid" || s === "prepaid" || prepaid || due <= 0 || paid >= due) {
     const label = s === "prepaid" || prepaid ? "Prepaid" : "Paid";
-    return { label, variant: "success", bg: "#DCFCE7", color: "#15803D" };
+    const variant = paymentStatusVariant(s === "prepaid" || prepaid ? "prepaid" : "paid");
+    return { label, variant, ...PILL_COLORS[variant] };
   }
 
 
@@ -41,12 +43,14 @@ export function getLessonPaymentBadge(
   if (s === "partial" || (paid > 0 && paid < due)) {
     const remaining = Math.max(0, due - paid);
     const label = remaining > 0 ? `Part paid · £${remaining.toFixed(0)}` : "Part paid";
-    return { label, variant: "warning", bg: "#FEF3C7", color: "#B45309" };
+    const variant = paymentStatusVariant("partial");
+    return { label, variant, ...PILL_COLORS[variant] };
   }
 
   // Unpaid / due
   if (due > 0) {
-    return { label: `£${due.toFixed(0)} due`, variant: "danger", bg: "#FEE2E2", color: "#B91C1C" };
+    const variant = paymentStatusVariant("unpaid");
+    return { label: `£${due.toFixed(0)} due`, variant, ...PILL_COLORS[variant] };
   }
 
   return null;
