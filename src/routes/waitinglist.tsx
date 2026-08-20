@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { IconHourglass, IconPlus, IconUsers, IconX } from "@tabler/icons-react";
+import { IconClock, IconHourglass, IconPlus, IconUsers, IconX } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -114,13 +115,11 @@ function WaitingListPage() {
       <div className="px-4">
         <SectionHeader>WAITING</SectionHeader>
         {entries.length === 0 ? (
-          <div
-            className="flex flex-col items-center justify-center text-[13px]"
-            style={{ color: "#6B7280", padding: "40px 0" }}
-          >
-            <IconUsers size={28} color="#6B7280" />
-            <div className="mt-2">No one on the waiting list</div>
-          </div>
+          <EmptyState
+            icon={<IconClock size={32} color="#9CA3AF" stroke={1.5} />}
+            title="Waiting list is empty"
+            subtitle="Pupils waiting for lessons will appear here"
+          />
         ) : (
           <div className="flex flex-col" style={{ gap: 8 }}>
             {entries.map((e, idx) => {

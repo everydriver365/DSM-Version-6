@@ -900,7 +900,7 @@ function NotificationsPage() {
                                     navigate({ to: "/gaps" });
                                   }}
                                   className="text-[12px] font-semibold text-white"
-                                  style={{ background: "#D97706", border: "none", borderRadius: 8, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
+                                  style={{ background: "#D97706", border: "none", borderRadius: 20, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
                                 >
                                   Fill slot →
                                 </button>
@@ -929,7 +929,7 @@ function NotificationsPage() {
                                       navigate({ to: "/lessons/reschedule/$id", params: { id: n.reference_id! } });
                                     }}
                                     className="text-[12px] font-semibold text-white"
-                                    style={{ background: "#1877D6", border: "none", borderRadius: 8, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
+                                    style={{ background: "#1877D6", border: "none", borderRadius: 20, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
                                   >
                                     Reschedule →
                                   </button>

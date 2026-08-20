@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { IconStar } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { Card } from "../components/dsm/Card";
@@ -100,13 +101,11 @@ function ReviewsPage() {
       <div className="px-4">
         <SectionHeader>RECENT REVIEWS</SectionHeader>
         {reviews.length === 0 ? (
-          <div
-            className="flex flex-col items-center justify-center text-[13px]"
-            style={{ color: "#6B7280", padding: "24px 0" }}
-          >
-            <IconStar size={24} color="#6B7280" />
-            <div className="mt-2">No reviews yet</div>
-          </div>
+          <EmptyState
+            icon={<IconStar size={32} color="#9CA3AF" stroke={1.5} />}
+            title="No reviews yet"
+            subtitle="Reviews from your pupils will appear here"
+          />
         ) : (
           <div className="flex flex-col" style={{ gap: 8 }}>
             {reviews.map((r) => {

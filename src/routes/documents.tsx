@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { IconAlertTriangle, IconArrowLeft, IconCar, IconExternalLink, IconFileCheck, IconFileText, IconFolderOpen, IconPlus, IconReceipt, IconRosette, IconShieldCheck, IconTrash, IconUpload, IconX } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
+import { IconFolder, IconAlertTriangle, IconArrowLeft, IconCar, IconExternalLink, IconFileCheck, IconFileText, IconFolderOpen, IconPlus, IconReceipt, IconRosette, IconShieldCheck, IconTrash, IconUpload, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { z } from "zod";
@@ -182,13 +183,11 @@ function DocumentsPage() {
       <div className="px-4">
         <SectionHeader>MY DOCUMENTS</SectionHeader>
         {docs.length === 0 ? (
-          <div
-            className="flex flex-col items-center justify-center text-[13px]"
-            style={{ color: "#6B7280", padding: "32px 0" }}
-          >
-            <IconFolderOpen size={28} color="#6B7280" />
-            <div className="mt-2">No documents stored</div>
-          </div>
+          <EmptyState
+            icon={<IconFolder size={32} color="#9CA3AF" stroke={1.5} />}
+            title="No documents yet"
+            subtitle="Upload and store important documents here"
+          />
         ) : (
           <div className="flex flex-col" style={{ gap: 8 }}>
             {docs.map((d) => {

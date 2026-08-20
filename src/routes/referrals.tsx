@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { IconGift, IconShare } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -251,47 +252,11 @@ function ReferralsPage() {
 
       <div className="px-4">
         {referrals.length === 0 ? (
-          <div
-            style={{
-              background: "#FFFFFF",
-              borderRadius: 8,
-              padding: "40px 30px",
-              textAlign: "center",
-              boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.05)",
-            }}
-          >
-            <div
-              className="flex items-center justify-center"
-              style={{
-                width: 56,
-                height: 56,
-                borderRadius: "50%",
-                backgroundColor: "#F2F2F7",
-                margin: "0 auto 16px",
-              }}
-            >
-              <IconGift size={24} color="#B0B0B5" />
-            </div>
-            <div
-              style={{
-                color: "#0B1F3A",
-                fontSize: 15,
-                fontWeight: 700,
-              }}
-            >
-              No referrals yet
-            </div>
-            <div
-              style={{
-                color: "#8A8A8E",
-                fontSize: 12.5,
-                marginTop: 6,
-                lineHeight: 1.5,
-              }}
-            >
-              Share your code with other instructors to start earning
-            </div>
-          </div>
+          <EmptyState
+            icon={<IconGift size={32} color="#9CA3AF" stroke={1.5} />}
+            title="No referrals yet"
+            subtitle="Share your referral link to earn rewards"
+          />
         ) : (
           <div className="flex flex-col" style={{ gap: 8 }}>
             {referrals.map((r) => (
