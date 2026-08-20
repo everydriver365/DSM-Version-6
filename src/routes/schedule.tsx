@@ -576,7 +576,7 @@ function TestLessonCard({
               }}
               style={{
                 background: "rgba(255,255,255,0.2)",
-                borderRadius: 8,
+                fontWeight: 700, borderRadius: 20, minHeight: 44,
                 padding: "4px 10px",
                 border: "none",
                 cursor: "pointer",
@@ -1538,7 +1538,7 @@ function SchedulePage() {
               fontSize: 12,
               fontWeight: 600,
               padding: '6px 12px',
-              borderRadius: 8,
+              borderRadius: 20, minHeight: 44,
               border: 'none',
               cursor: 'pointer',
               ...POPPINS,
@@ -2619,7 +2619,7 @@ function SchedulePage() {
               }}
               style={{
                 display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
-                border: '1px solid #E4E8EF', borderRadius: 8, padding: '14px 14px', background: '#fff',
+                border: '1px solid #E4E8EF', fontWeight: 700, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44, padding: '14px 14px', background: '#fff',
               }}
             >
               <span style={{ width: 38, height: 38, borderRadius: 8, background: '#E7F0FB', display: 'grid', placeItems: 'center' }}>
@@ -2639,7 +2639,7 @@ function SchedulePage() {
               }}
               style={{
                 display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
-                border: '1px solid #E4E8EF', borderRadius: 8, padding: '14px 14px', background: '#fff',
+                border: '1px solid #E4E8EF', fontWeight: 700, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44, padding: '14px 14px', background: '#fff',
               }}
             >
               <span style={{ width: 38, height: 38, borderRadius: 8, background: '#FBF1DA', display: 'grid', placeItems: 'center' }}>
@@ -2653,7 +2653,7 @@ function SchedulePage() {
             <button
               type="button"
               onClick={() => setAddChooserOpen(false)}
-              style={{ marginTop: 4, padding: '12px', borderRadius: 8, border: 'none', background: '#EEF2F7', color: '#0B1F3A', fontSize: 14, fontWeight: 700 }}
+              style={{ marginTop: 4, padding: '12px', fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44, border: 'none', background: '#EEF2F7', color: '#0B1F3A', fontSize: 14, fontWeight: 700 }}
             >
               Cancel
             </button>
@@ -2740,7 +2740,7 @@ function SchedulePage() {
                 fontWeight: 600,
                 fontSize: 14,
                 padding: '12px 0',
-                borderRadius: 8,
+                borderRadius: 20, minHeight: 44,
                 border: 'none',
                 cursor: 'pointer',
                 ...POPPINS,
@@ -2759,7 +2759,7 @@ function SchedulePage() {
                 fontWeight: 500,
                 fontSize: 14,
                 padding: '12px 0',
-                borderRadius: 8,
+                borderRadius: 20, minHeight: 44,
                 cursor: 'pointer',
                 marginTop: 8,
                 ...POPPINS,
@@ -2894,7 +2894,7 @@ function EntryRow({
             ...rowBase('#FF8C00', cancelled),
             background: '#FFF3E0',
             borderLeft: '3px solid #FF8C00',
-            borderRadius: 8,
+            fontWeight: 700, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44,
             padding: '10px 12px',
             width: '100%',
             textAlign: 'left',

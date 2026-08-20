@@ -380,7 +380,7 @@ function PaymentsPage() {
             fontSize: 14,
             fontWeight: 800,
             padding: "11px 20px",
-            borderRadius: 8,
+            borderRadius: 20, minHeight: 44,
             border: 0,
             boxShadow: "0 4px 0 #0F6B3D",
             cursor: "pointer",
@@ -484,7 +484,7 @@ function PaymentsPage() {
         onClick={() => setPupilPickerOpen(true)}
         style={{
           background: "#EEF2F7",
-          borderRadius: 8,
+          fontWeight: 700, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44,
           padding: "14px 16px",
           boxShadow: "0 4px 0 #E4E4E8",
 
@@ -539,7 +539,7 @@ function PaymentsPage() {
                 padding: "10px 18px",
                 fontSize: 13.5,
                 fontWeight: 700,
-                borderRadius: 8,
+                borderRadius: 20, minHeight: 44,
                 border: 0,
                 background: active ? "#0B1F3A" : "#EEF2F7",
                 color: active ? "#fff" : "#0B1F3A",
