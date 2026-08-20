@@ -1,16 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { IconCreditCard, IconCurrencyPound, IconDotsVertical, IconPlus, IconRotateClockwise2, IconSearch, IconX } from "@tabler/icons-react";
 import { IconCashBanknote, IconBuildingBank, IconQrcode, IconReceipt, IconWallet } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
 import { toast } from "sonner";
-import { PageLayout } from "@/components/PageLayout";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { recordPayment, recordRefund, correctPaymentRecord, getPupilBalance, type PupilBalance } from "@/lib/payments";
 import { hapticSuccess, hapticError } from "@/lib/haptics";
 import { calculateOutstandingOwed, calculatePaidOutstandingBreakdown } from "@/lib/paymentsOwed";
@@ -215,7 +213,6 @@ type MethodFilter = "all" | "cash" | "card" | "qr" | "bank_transfer" | "klarna" 
 // ---------- page ----------
 function PaymentsPage() {
   const navigate = useNavigate();
-  const unreadCount = useUnreadCount();
   const [userId, setUserId] = useState<string | null>(null);
   const [allPupils, setAllPupils] = useState<PupilLite[]>([]);
   const [history, setHistory] = useState<HistoryRow[] | null>(null);
@@ -233,8 +230,6 @@ function PaymentsPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [refundRow, setRefundRow] = useState<HistoryRow | null>(null);
-  const [instructor, setInstructor] = useState<{ name: string | null } | null>(null);
-
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
@@ -280,14 +275,6 @@ function PaymentsPage() {
     /* eslint-disable-next-line */
   }, [userId]);
 
-
-  useEffect(() => {
-    if (!userId) return;
-    (async () => {
-      const { data } = await supabase.from("instructors").select("name").eq("id", userId).maybeSingle();
-      setInstructor(data as { name: string | null } | null);
-    })();
-  }, [userId]);
 
   // stats
   const stats = useMemo(() => {
@@ -344,36 +331,24 @@ function PaymentsPage() {
   const pupilName = pupilFilter ? (allPupils.find((p) => p.id === pupilFilter)?.name ?? "") : "";
 
   return (
-    <PageLayout
-      className="pb-24 pb-safe relative"
-      style={POPPINS}
-      onTouchStart={(e) => {
-        (window as any).__wsSwipe = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      }}
-      onTouchEnd={(e) => {
-        const s = (window as any).__wsSwipe;
-        if (!s) return;
-        const dx = e.changedTouches[0].clientX - s.x;
-        const dy = e.changedTouches[0].clientY - s.y;
-        (window as any).__wsSwipe = null;
-        if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
-        // payments ≈ money = ws 3: left→market(4), right→pupils(2)
-        const target = dx < 0 ? 4 : 2;
-        navigate({ to: "/home" as never, search: { ws: target } as any });
-      }}
-    >
-      <InstructorTopBar
-        firstName={instructor?.name ?? ""}
-        pageTitle="Payments"
-        unreadCount={unreadCount}
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Payments">
+      <div
+        style={{ minHeight: "100%" }}
+        onTouchStart={(e) => {
+          (window as any).__wsSwipe = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }}
+        onTouchEnd={(e) => {
+          const s = (window as any).__wsSwipe;
+          if (!s) return;
+          const dx = e.changedTouches[0].clientX - s.x;
+          const dy = e.changedTouches[0].clientY - s.y;
+          (window as any).__wsSwipe = null;
+          if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
+          // payments ≈ money = ws 3: left→market(4), right→pupils(2)
+          const target = dx < 0 ? 4 : 2;
+          navigate({ to: "/home" as never, search: { ws: target } as any });
+        }}
+      >
 
       {/* Action bar */}
       <div
@@ -503,7 +478,7 @@ function PaymentsPage() {
         type="button"
         onClick={() => setPupilPickerOpen(true)}
         style={{
-          background: "#fff",
+          background: "#EEF2F7",
           borderRadius: 8,
           padding: "14px 16px",
           boxShadow: "0 4px 0 #E4E4E8",
@@ -561,7 +536,7 @@ function PaymentsPage() {
                 fontWeight: 700,
                 borderRadius: 8,
                 border: 0,
-                background: active ? "#0B1F3A" : "#fff",
+                background: active ? "#0B1F3A" : "#EEF2F7",
                 color: active ? "#fff" : "#0B1F3A",
                 boxShadow: active ? "0 4px 0 #050D1C" : "0 4px 0 #E4E4E8",
                 whiteSpace: "nowrap",
@@ -746,7 +721,8 @@ function PaymentsPage() {
       )}
 
       <style>{`.no-scrollbar::-webkit-scrollbar{display:none} .no-scrollbar{scrollbar-width:none}`}</style>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
 
@@ -778,7 +754,6 @@ function StatTile({ label, value, color, first = true }: { label: string; value:
       </div>
       <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.6px", marginTop: 6, color, ...POPPINS }}>{value}</div>
     </div>
-
   );
 }
 
