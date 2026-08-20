@@ -18,6 +18,7 @@ import { Button } from "../components/dsm/Button";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 import { BottomSheet as BottomSheetV2, SheetGroup, SheetRow, SheetDivider } from "../components/dsm/BottomSheetV2";
+import { DSMToggle } from "../components/dsm/DSMToggle";
 import { DL25Sheet } from "./tests";
 import { ChangeDateTimeSheet } from "../components/lessons/ChangeDateTimeSheet";
 import { CancelLessonSheet } from "../components/lessons/CancelLessonSheet";
@@ -1577,96 +1578,40 @@ function PupilDetailPage() {
           </div>
         )}
 
-        {/* Quick actions row: Call · Message · Text · Add lesson · More */}
-        {(() => {
-          const cellCls =
-            "relative flex flex-col items-center justify-center gap-1 py-3 active:opacity-60";
-          const cellStyle = (i: number): React.CSSProperties => ({
-            borderLeft: i === 0 ? "none" : "1px solid #E9E9EC",
-            background: "none",
-            color: "#0B1F3A",
-            textDecoration: "none",
-          });
-          const labelStyle: React.CSSProperties = {
-            fontSize: 11,
-            fontWeight: 600,
-            color: "#0B1F3A",
-            ...POPPINS,
-          };
-          const actions: {
-            label: string;
-            icon: React.ReactNode;
-            href?: string;
-            onClick?: () => void;
-            badge?: string;
-          }[] = [
-            {
-              label: "Call",
-              icon: <IconPhone stroke={1.5} size={20} />,
-              href: pupil?.phone ? `tel:${pupil.phone}` : undefined,
-            },
-            {
-              label: "Message",
-              icon: <IconMessage stroke={1.5} size={20} />,
-              onClick: () => { setSendMessagePupilId(pupil?.id ?? id); setSendMessageOpen(true); },
-              badge: unreadMessages > 0 ? String(unreadMessages) : undefined,
-            },
-            {
-              label: "Text",
-              icon: <IconSend stroke={1.5} size={20} />,
-              href: pupil?.phone ? `sms:${pupil.phone}` : undefined,
-            },
-            {
-              label: "Add lesson",
-              icon: <IconPlus stroke={1.5} size={20} />,
-              onClick: () => { setAddLessonDate(undefined); setAddLessonPupilId(pupil?.id ?? id); setAddLessonOpen(true); },
-            },
-            {
-              label: "More",
-              icon: <IconDots stroke={1.5} size={20} />,
-              onClick: () => setMoreOpen(true),
-            },
-          ];
-          return (
-            <div
-              className="grid grid-cols-5 mt-4"
-              style={{ background: "#FFFFFF", borderRadius: 8, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
+        {/* Action buttons: Call · Edit · Remove */}
+        {pupil && (
+          <div className="mt-4 flex gap-2">
+            <button
+              type="button"
+              onClick={() => { if (pupil.phone) window.location.href = `tel:${pupil.phone}`; }}
+              disabled={!pupil.phone}
+              className="flex-1 h-11 flex items-center justify-center gap-2 rounded-lg font-semibold text-[14px] active:opacity-70 disabled:opacity-40"
+              style={{ background: "#E8F4FD", color: "#1877D6", border: "none", ...POPPINS }}
             >
-              {actions.map((a, i) => {
-                const inner = (
-                  <>
-                    {a.icon}
-                    <span style={labelStyle}>{a.label}</span>
-                    {a.badge ? (
-                      <span
-                        className="absolute top-1.5 right-2 text-[10px] font-bold"
-                        style={{ color: "#CC2229" }}
-                      >
-                        {a.badge}
-                      </span>
-                    ) : null}
-                  </>
-                );
-                if (a.href) {
-                  return (
-                    <a key={a.label} href={a.href} className={cellCls} style={cellStyle(i)}>
-                      {inner}
-                    </a>
-                  );
-                }
-                return (
-                  <button key={a.label} type="button" onClick={a.onClick} className={cellCls} style={{ ...cellStyle(i), border: "none", borderLeft: i === 0 ? "none" : "1px solid #E9E9EC" }}>
-                    {inner}
-                  </button>
-                );
-              })}
-            </div>
-          );
-        })()}
-        {/* Tab bar — iOS segmented control */}
+              <IconPhone size={18} stroke={1.8} /> Call
+            </button>
+            <button
+              type="button"
+              onClick={openEditSheet}
+              className="flex-1 h-11 flex items-center justify-center gap-2 rounded-lg font-semibold text-[14px] active:opacity-70"
+              style={{ background: "#FFFFFF", color: "#0B1F3A", border: "1px solid #E2E6ED", ...POPPINS }}
+            >
+              <IconPencil size={18} stroke={1.8} /> Edit
+            </button>
+            <button
+              type="button"
+              onClick={() => setRemoveOpen(true)}
+              className="flex-1 h-11 flex items-center justify-center gap-2 rounded-lg font-semibold text-[14px] active:opacity-70"
+              style={{ background: "#FEF2F2", color: "#CC2229", border: "none", ...POPPINS }}
+            >
+              <IconTrash size={18} stroke={1.8} /> Remove
+            </button>
+          </div>
+        )}
+        {/* Tab bar — fixed-width segmented control */}
         <div
           className="mt-4 mb-2 flex gap-1"
-          style={{ background: "#E5E5EA", borderRadius: 8, padding: 3, ...POPPINS }}
+          style={{ background: "#EEF2F7", borderRadius: 8, padding: 3, ...POPPINS }}
         >
           {(["overview", "lessons", "payments", "profile"] as const).map((t) => (
             <button
@@ -3587,6 +3532,42 @@ function PupilDetailPage() {
         )}
 
         {activeTab === "profile" && (<>
+
+        {/* Settings / toggles */}
+        {pupil && (
+          <div className="mb-4" style={{ background: "#EEF2F7", borderRadius: 12, overflow: "hidden" }}>
+            <div className="flex items-center justify-between px-4 py-3.5" style={{ borderBottom: "0.5px solid #E2E6ED" }}>
+              <div className="flex items-center gap-2.5">
+                <IconCamera size={18} stroke={1.6} color="#0B1F3A" />
+                <span className="text-[15px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>Photo consent</span>
+              </div>
+              <DSMToggle checked={Boolean(pupil.photo_consent)} onChange={(v) => togglePhotoConsent(v)} />
+            </div>
+            <div className="flex items-center justify-between px-4 py-3.5">
+              <div className="flex items-center gap-2.5">
+                <IconRefresh size={18} stroke={1.6} color="#0B1F3A" />
+                <span className="text-[15px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>EverySwap</span>
+              </div>
+              <DSMToggle
+                checked={Boolean(pupil.wants_swap)}
+                onChange={async (v) => {
+                  if (!pupil) return;
+                  const { error } = await supabase
+                    .from("pupils")
+                    .update({ wants_swap: v })
+                    .eq("id", pupil.id);
+                  if (error) {
+                    toast.error("Failed to save — please try again");
+                    return;
+                  }
+                  setPupil({ ...pupil, wants_swap: v });
+                  toast.success(v ? "Added to EverySwap list" : "Removed from EverySwap list");
+                }}
+              />
+            </div>
+          </div>
+        )}
+
 
 
         <div className="flex items-center gap-2" style={{ marginBottom: 8 }}>
