@@ -1506,6 +1506,20 @@ function SchedulePage() {
 
 
 
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          flex: 1,
+          minHeight: 0,
+          marginTop: -18,
+          background: "#FFFFFF",
+          borderRadius: "28px 28px 0 0",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
       <MonthStrip
         viewMonth={viewMonth}
         selectedDate={selectedDate}
