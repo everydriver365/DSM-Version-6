@@ -1071,6 +1071,26 @@ function RootComponent() {
       )}
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <div style={Object.keys(wrapperStyle).length ? wrapperStyle : undefined}>
+        {!isOnline && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              padding: "10px 16px",
+              background: "#FEF3C7",
+              color: "#92400E",
+              fontSize: 13,
+              fontWeight: 500,
+              fontFamily: "Poppins, sans-serif",
+              textAlign: "center",
+            }}
+          >
+            <IconWifiOff size={16} stroke={1.8} />
+            <span>No internet connection — some features may be unavailable</span>
+          </div>
+        )}
         <Outlet />
       </div>
       {!hideNav && !sheetOpen && <BottomNav active={active} />}
