@@ -248,7 +248,8 @@ function PerformancePage() {
           )}
         </div>
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
 

@@ -642,6 +642,7 @@ function DataImportPage() {
           </div>
         </div>
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }

@@ -322,7 +322,8 @@ function HealthPage() {
           }}
         />
       )}
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
 

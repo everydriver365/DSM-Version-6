@@ -1496,7 +1496,7 @@ function LiveNewsPage() {
           }}
         />
       )}
-    </div>
+    </DSMTopSheet>
   );
 }
 

@@ -118,6 +118,6 @@ function NoteEditPage() {
         onConfirm={deleteNote}
         onCancel={() => setConfirmOpen(false)}
       />
-    </PageLayout>
+    </DSMTopSheet>
   );
 }

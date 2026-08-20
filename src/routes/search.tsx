@@ -475,7 +475,7 @@ function SearchPage() {
           </>
         )}
       </div>
-    </div>
+    </DSMTopSheet>
   );
 }
 

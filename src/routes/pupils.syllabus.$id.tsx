@@ -457,6 +457,7 @@ function PupilSyllabusPage() {
         </button>
         <style>{`@keyframes syllabus-spin { to { transform: rotate(360deg); } }`}</style>
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }

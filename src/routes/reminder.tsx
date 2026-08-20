@@ -274,6 +274,7 @@ function ReminderPage() {
           SMS sending requires Twilio integration. Messages will be queued.
         </div>
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }

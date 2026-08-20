@@ -313,6 +313,7 @@ function NoShowPolicyPage() {
           </div>
         )}
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }

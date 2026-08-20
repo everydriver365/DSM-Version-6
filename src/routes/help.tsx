@@ -175,7 +175,8 @@ function HelpPage() {
           <div className="text-[13px] text-[#6B7280] mt-1">© 2026 EveryDriver Ltd</div>
         </Card>
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
 
