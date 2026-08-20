@@ -1375,65 +1375,104 @@ function PupilDetailPage() {
   const goBack = useGoBack();
 
 
+
   return (
     <DSMTopSheet title={pupil?.name ?? "Pupil"} onBack={() => goBack('/pupils')}>
-      {/* Floating white information card */}
-      {pupil && (
-        <div className="mx-4 mt-4 relative z-20">
+      <div className="mx-auto w-full md:max-w-3xl md:px-4 md:pt-4">
+        <div className="px-4">
+
+        {/* Identity card */}
+        {pupil && (
+          <div
+            className="mt-4 flex items-center gap-3 p-4"
+            style={{ background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 8px rgba(15,32,68,0.06)" }}
+          >
+            <label className="relative shrink-0 cursor-pointer">
+              <input
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file || !pupil) return;
+                  setPhotoUploading(true);
+                  try {
+                    const url = await uploadImage(file, "pupil-photos");
+                    const { error } = await supabase.from("pupils").update({ profile_image_url: url }).eq("id", pupil.id);
+                    if (error) throw error;
+                    setPupil({ ...pupil, profile_image_url: url });
+                    toast.success("Photo updated");
+                  } catch (err: any) {
+                    toast.error(err?.message ?? "Upload failed");
+                  } finally {
+                    setPhotoUploading(false);
+                  }
+                }}
+              />
               <div
-                className="rounded-lg p-5 space-y-5"
+                className="flex items-center justify-center overflow-hidden"
                 style={{
-                  backgroundColor: "#FFFFFF",
-                  boxShadow: "0 8px 24px rgba(15,32,68,0.12)",
+                  width: 56,
+                  height: 56,
+                  borderRadius: 999,
+                  background: pupil.calendar_colour || "#1877D6",
+                  color: "#FFFFFF",
+                  fontSize: 19,
+                  fontWeight: 800,
+                  ...POPPINS,
                 }}
               >
-                {/* Actions row */}
-                <div className="flex items-center justify-end gap-2">
-                  <a href={pupil?.phone ? `tel:${pupil.phone}` : undefined} aria-label="Call pupil" className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A", textDecoration: "none" }}>
-                    <IconPhone stroke={1.5} size={15} /> Call
-                  </a>
-                  <button type="button" onClick={openEditSheet} className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A", textDecoration: "none" }}>
-                    <IconPencil stroke={1.5} size={15} /> Edit
-                  </button>
-                  <button type="button" onClick={() => setRemoveOpen(true)} className="inline-flex items-center gap-2 text-[13px] font-semibold" style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#CC2229" }}>
-                    <IconTrash stroke={1.5} size={15} /> Remove
-                  </button>
-                </div>
+                {pupil.profile_image_url ? (
+                  <img src={pupil.profile_image_url} alt={pupil.name} className="w-full h-full object-cover" />
+                ) : photoUploading ? (
+                  <IconLoader2 size={20} className="animate-spin" />
+                ) : (
+                  initials(pupil.name)
+                )}
+              </div>
+              <span
+                className="absolute flex items-center justify-center"
+                style={{ right: -2, bottom: -2, width: 20, height: 20, borderRadius: 999, background: "#FFFFFF", boxShadow: "0 1px 3px rgba(0,0,0,0.18)", color: "#0B1F3A" }}
+              >
+                <IconCamera size={12} stroke={1.7} />
+              </span>
+            </label>
 
-                {/* Grouped card: Photo consent + 3-up stat row */}
-                <div
-                  style={{
-                    background: "#FFFFFF",
-                    borderRadius: 8,
-                    boxShadow: "0 4px 0 #E4E4E8",
-                    overflow: "hidden",
-                  }}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 min-w-0">
+                <h1 className="truncate" style={{ fontSize: 18, fontWeight: 800, color: "#0B1F3A", letterSpacing: "-0.3px", ...POPPINS }}>
+                  {pupil.name}
+                </h1>
+                <span
+                  className="shrink-0"
+                  style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", padding: "2px 8px", borderRadius: 999, background: badge.bg, color: badge.fg, ...POPPINS }}
                 >
-                  {/* Photo consent row */}
-                  <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid #E9E9EC" }}>
-                    <span className="text-[14px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>
-                      Photo consent
-                    </span>
-                    <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                      <input
-                        type="checkbox"
-                        checked={Boolean(pupil.photo_consent)}
-                        onChange={(e) => togglePhotoConsent(e.target.checked)}
-                        className="sr-only peer"
-                      />
-                      <div
-                        className="w-11 h-6 rounded-full transition-colors"
-                        style={{ backgroundColor: pupil.photo_consent ? "#248A3D" : "#CBD5E1" }}
-                      />
-                      <div
-                        className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
-                        style={{
-                          transform: pupil.photo_consent ? "translateX(20px)" : "translateX(0)",
-                        }}
-                      />
-                    </label>
-                  </div>
+                  {badge.label}
+                </span>
+              </div>
+              <p className="truncate" style={{ fontSize: 12.5, color: "#6B7280", marginTop: 2, ...POPPINS }}>
+                {[pupil.phone, pupil.email].filter(Boolean).join("  ·  ") || "No contact details"}
+              </p>
+            </div>
 
+            <button
+              type="button"
+              aria-label="More options"
+              onClick={() => setMoreOpen(true)}
+              className="shrink-0 flex items-center justify-center active:opacity-60"
+              style={{ width: 34, height: 34, borderRadius: 999, background: "#F3F6FA", border: "none", color: "#0B1F3A" }}
+            >
+              <IconDots size={18} stroke={1.6} />
+            </button>
+          </div>
+        )}
+
+        {/* Key stats */}
+        {pupil && (
+          <div
+            className="mt-3"
+            style={{ background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
+          >
                   {/* 3-up stat row: Balance | Hours remaining | Days to test */}
                   {(() => {
                     const isBlock =
@@ -1535,8 +1574,120 @@ function PupilDetailPage() {
                       </div>
                     );
                   })()}
-                </div>
+          </div>
+        )}
 
+        {/* Quick actions row: Call · Message · Text · Add lesson · More */}
+        {(() => {
+          const cellCls =
+            "relative flex flex-col items-center justify-center gap-1 py-3 active:opacity-60";
+          const cellStyle = (i: number): React.CSSProperties => ({
+            borderLeft: i === 0 ? "none" : "1px solid #E9E9EC",
+            background: "none",
+            color: "#0B1F3A",
+            textDecoration: "none",
+          });
+          const labelStyle: React.CSSProperties = {
+            fontSize: 11,
+            fontWeight: 600,
+            color: "#0B1F3A",
+            ...POPPINS,
+          };
+          const actions: {
+            label: string;
+            icon: React.ReactNode;
+            href?: string;
+            onClick?: () => void;
+            badge?: string;
+          }[] = [
+            {
+              label: "Call",
+              icon: <IconPhone stroke={1.5} size={20} />,
+              href: pupil?.phone ? `tel:${pupil.phone}` : undefined,
+            },
+            {
+              label: "Message",
+              icon: <IconMessage stroke={1.5} size={20} />,
+              onClick: () => { setSendMessagePupilId(pupil?.id ?? id); setSendMessageOpen(true); },
+              badge: unreadMessages > 0 ? String(unreadMessages) : undefined,
+            },
+            {
+              label: "Text",
+              icon: <IconSend stroke={1.5} size={20} />,
+              href: pupil?.phone ? `sms:${pupil.phone}` : undefined,
+            },
+            {
+              label: "Add lesson",
+              icon: <IconPlus stroke={1.5} size={20} />,
+              onClick: () => { setAddLessonDate(undefined); setAddLessonPupilId(pupil?.id ?? id); setAddLessonOpen(true); },
+            },
+            {
+              label: "More",
+              icon: <IconDots stroke={1.5} size={20} />,
+              onClick: () => setMoreOpen(true),
+            },
+          ];
+          return (
+            <div
+              className="grid grid-cols-5 mt-4"
+              style={{ background: "#FFFFFF", borderRadius: 8, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
+            >
+              {actions.map((a, i) => {
+                const inner = (
+                  <>
+                    {a.icon}
+                    <span style={labelStyle}>{a.label}</span>
+                    {a.badge ? (
+                      <span
+                        className="absolute top-1.5 right-2 text-[10px] font-bold"
+                        style={{ color: "#CC2229" }}
+                      >
+                        {a.badge}
+                      </span>
+                    ) : null}
+                  </>
+                );
+                if (a.href) {
+                  return (
+                    <a key={a.label} href={a.href} className={cellCls} style={cellStyle(i)}>
+                      {inner}
+                    </a>
+                  );
+                }
+                return (
+                  <button key={a.label} type="button" onClick={a.onClick} className={cellCls} style={{ ...cellStyle(i), border: "none", borderLeft: i === 0 ? "none" : "1px solid #E9E9EC" }}>
+                    {inner}
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })()}
+        {/* Tab bar — iOS segmented control */}
+        <div
+          className="mt-4 mb-2 flex gap-1"
+          style={{ background: "#E5E5EA", borderRadius: 8, padding: 3, ...POPPINS }}
+        >
+          {(["overview", "lessons", "payments", "profile"] as const).map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setActiveTab(t)}
+              className="flex-1 h-9 rounded-lg text-[13px] font-semibold capitalize transition-colors"
+              style={{
+                background: activeTab === t ? "#FFFFFF" : "transparent",
+                color: activeTab === t ? "#0B1F3A" : "#6B7280",
+                boxShadow: activeTab === t ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                border: "none",
+                ...POPPINS,
+              }}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+        {activeTab === "overview" && pupil && (
+          <div className="space-y-4 pb-4">
                 {/* Readiness dashboard */}
                 {(() => {
                   const readiness = (() => {
@@ -1701,8 +1852,6 @@ function PupilDetailPage() {
                     </div>
                   );
                 })()}
-
-
                 {/* Recent payments */}
                 {paymentHistory.length > 0 && (
                   <div>
@@ -1802,122 +1951,9 @@ function PupilDetailPage() {
                     </div>
                   </div>
                 )}
-              </div>
-            </div>
-      )}
-      <div className="mx-auto w-full md:max-w-3xl md:px-4 md:pt-4">
-        <div className="px-4">
+          </div>
+        )}
 
-        {/* Quick actions row: Call · Message · Text · Add lesson · More */}
-        {(() => {
-          const cellCls =
-            "relative flex flex-col items-center justify-center gap-1 py-3 active:opacity-60";
-          const cellStyle = (i: number): React.CSSProperties => ({
-            borderLeft: i === 0 ? "none" : "1px solid #E9E9EC",
-            background: "none",
-            color: "#0B1F3A",
-            textDecoration: "none",
-          });
-          const labelStyle: React.CSSProperties = {
-            fontSize: 11,
-            fontWeight: 600,
-            color: "#0B1F3A",
-            ...POPPINS,
-          };
-          const actions: {
-            label: string;
-            icon: React.ReactNode;
-            href?: string;
-            onClick?: () => void;
-            badge?: string;
-          }[] = [
-            {
-              label: "Call",
-              icon: <IconPhone stroke={1.5} size={20} />,
-              href: pupil?.phone ? `tel:${pupil.phone}` : undefined,
-            },
-            {
-              label: "Message",
-              icon: <IconMessage stroke={1.5} size={20} />,
-              onClick: () => { setSendMessagePupilId(pupil?.id ?? id); setSendMessageOpen(true); },
-              badge: unreadMessages > 0 ? String(unreadMessages) : undefined,
-            },
-            {
-              label: "Text",
-              icon: <IconSend stroke={1.5} size={20} />,
-              href: pupil?.phone ? `sms:${pupil.phone}` : undefined,
-            },
-            {
-              label: "Add lesson",
-              icon: <IconPlus stroke={1.5} size={20} />,
-              onClick: () => { setAddLessonDate(undefined); setAddLessonPupilId(pupil?.id ?? id); setAddLessonOpen(true); },
-            },
-            {
-              label: "More",
-              icon: <IconDots stroke={1.5} size={20} />,
-              onClick: () => setMoreOpen(true),
-            },
-          ];
-          return (
-            <div
-              className="grid grid-cols-5 mt-4"
-              style={{ background: "#FFFFFF", borderRadius: 8, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
-            >
-              {actions.map((a, i) => {
-                const inner = (
-                  <>
-                    {a.icon}
-                    <span style={labelStyle}>{a.label}</span>
-                    {a.badge ? (
-                      <span
-                        className="absolute top-1.5 right-2 text-[10px] font-bold"
-                        style={{ color: "#CC2229" }}
-                      >
-                        {a.badge}
-                      </span>
-                    ) : null}
-                  </>
-                );
-                if (a.href) {
-                  return (
-                    <a key={a.label} href={a.href} className={cellCls} style={cellStyle(i)}>
-                      {inner}
-                    </a>
-                  );
-                }
-                return (
-                  <button key={a.label} type="button" onClick={a.onClick} className={cellCls} style={{ ...cellStyle(i), border: "none", borderLeft: i === 0 ? "none" : "1px solid #E9E9EC" }}>
-                    {inner}
-                  </button>
-                );
-              })}
-            </div>
-          );
-        })()}
-
-        {/* Tab bar — iOS segmented control */}
-        <div
-          className="mt-4 mb-2 flex gap-1"
-          style={{ background: "#E5E5EA", borderRadius: 8, padding: 3, ...POPPINS }}
-        >
-          {(["overview", "lessons", "payments", "profile"] as const).map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => setActiveTab(t)}
-              className="flex-1 h-9 rounded-lg text-[13px] font-semibold capitalize transition-colors"
-              style={{
-                background: activeTab === t ? "#FFFFFF" : "transparent",
-                color: activeTab === t ? "#0B1F3A" : "#6B7280",
-                boxShadow: activeTab === t ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                border: "none",
-                ...POPPINS,
-              }}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
 
         {activeTab === "lessons" && (<>
         <SectionHeader>UPCOMING LESSONS</SectionHeader>
