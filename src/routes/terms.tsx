@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
@@ -14,159 +15,228 @@ export const Route = createFileRoute("/terms")({
   component: TermsPage,
 });
 
-const NAVY = "#0B1F3A";
-const BLUE = "#1877D6";
-const BG = "#F8F9FB";
-const TEXT = "#374151";
-const FONT = "Poppins, sans-serif";
+const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+
+const sections: { title: string; content: React.ReactNode }[] = [
+  {
+    title: "1. ACCEPTANCE",
+    content: (
+      <>
+        <p>By using DSM you agree to these terms.</p>
+        <p style={{ marginTop: 8 }}>If you do not agree, do not use DSM.</p>
+      </>
+    ),
+  },
+  {
+    title: "2. THE SERVICE",
+    content: (
+      <p>
+        DSM (Driving School Manager) is a business management application for UK driving instructors provided by EveryDriver Ltd.
+      </p>
+    ),
+  },
+  {
+    title: "3. YOUR ACCOUNT",
+    content: (
+      <ul>
+        <li>You must be a UK driving instructor (ADI or PDI) to use DSM</li>
+        <li>You are responsible for keeping your account secure</li>
+        <li>You must provide accurate information</li>
+        <li>One account per instructor</li>
+      </ul>
+    ),
+  },
+  {
+    title: "4. ACCEPTABLE USE",
+    content: (
+      <>
+        <p>You must not:</p>
+        <ul>
+          <li>Use DSM for any unlawful purpose</li>
+          <li>Share your account with others</li>
+          <li>Attempt to access other instructors' data</li>
+          <li>Reverse engineer or copy the app</li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    title: "5. PUPIL DATA",
+    content: (
+      <ul>
+        <li>You are the data controller for your pupils' information</li>
+        <li>You are responsible for obtaining consent from pupils to store their data</li>
+        <li>DSM processes this data on your behalf as a data processor</li>
+      </ul>
+    ),
+  },
+  {
+    title: "6. SUBSCRIPTION",
+    content: (
+      <ul>
+        <li>Free tier available with limited features</li>
+        <li>Paid tiers billed monthly or annually</li>
+        <li>Cancellation takes effect at the end of the billing period</li>
+        <li>No refunds for partial periods</li>
+      </ul>
+    ),
+  },
+  {
+    title: "7. PAYMENTS",
+    content: (
+      <ul>
+        <li>DSM does not process payments on your behalf</li>
+        <li>Payment links connect to your own Square/Stripe/PayPal accounts</li>
+        <li>You are responsible for your own payment processing</li>
+      </ul>
+    ),
+  },
+  {
+    title: "8. INTELLECTUAL PROPERTY",
+    content: (
+      <p>
+        DSM and all content is owned by EveryDriver Ltd. You may not copy, modify or distribute the app.
+      </p>
+    ),
+  },
+  {
+    title: "9. LIABILITY",
+    content: (
+      <p>
+        DSM is provided "as is". EveryDriver Ltd is not liable for any loss of business, data or income arising from use of DSM.
+      </p>
+    ),
+  },
+  {
+    title: "10. TERMINATION",
+    content: (
+      <>
+        <p>We may suspend or terminate accounts that violate these terms.</p>
+        <p style={{ marginTop: 8 }}>You may delete your account at any time in Settings.</p>
+      </>
+    ),
+  },
+  {
+    title: "11. GOVERNING LAW",
+    content: (
+      <p>These terms are governed by the laws of England and Wales.</p>
+    ),
+  },
+  {
+    title: "12. CONTACT",
+    content: (
+      <>
+        <p>EveryDriver Ltd</p>
+        <p style={{ marginTop: 4 }}>
+          <a href="mailto:hello@everydriver.co.uk" style={{ color: "#1877D6" }}>hello@everydriver.co.uk</a>
+        </p>
+        <p style={{ marginTop: 4 }}>
+          <a href="https://drivingschoolmanager.co.uk" target="_blank" rel="noopener noreferrer" style={{ color: "#1877D6" }}>
+            drivingschoolmanager.co.uk
+          </a>
+        </p>
+      </>
+    ),
+  },
+];
 
 function TermsPage() {
+  const navigate = useNavigate();
+
   return (
-    <div style={{ minHeight: "100dvh", backgroundColor: BG, fontFamily: FONT }}>
-      {/* Header */}
-      <header
-        style={{
-          backgroundColor: NAVY,
-          padding: "16px 20px",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <span style={{ color: "#fff", fontSize: 18, fontWeight: 600 }}>
-          DSM by <span style={{ color: BLUE }}>EveryDriver</span>
-        </span>
-      </header>
-
-      {/* Content */}
-      <main
-        style={{
-          maxWidth: 760,
-          margin: "0 auto",
-          padding: "40px 20px 80px",
-        }}
-      >
-        <h1
-          style={{
-            fontSize: 28,
-            fontWeight: 700,
-            color: NAVY,
-            margin: "0 0 8px",
-          }}
-        >
-          Terms of Service
-        </h1>
-        <p style={{ fontSize: 14, color: "#6B7280", margin: "0 0 32px" }}>
-          Last updated: 30 July 2026
-        </p>
-
-        <Section title="1. Agreement">
-          <p>
-            By creating an account on DSM by EveryDriver you agree to these terms.
-          </p>
-        </Section>
-
-        <Section title="2. The service">
-          <p>
-            DSM is a business management platform for driving instructors and driving schools in the UK, including lesson scheduling, pupil management, payment processing, live tracking and related features.
-          </p>
-        </Section>
-
-        <Section title="3. Your account">
-          <ul>
-            <li>You must be a legitimate driving instructor or driving school operator</li>
-            <li>You are responsible for maintaining security of your login credentials</li>
-            <li>You must not share your account or use it for unlawful purposes</li>
-            <li>You are responsible for all activity under your account</li>
-          </ul>
-        </Section>
-
-        <Section title="4. Pupil data">
-          <p>
-            You are the data controller for your pupils' personal data. You are responsible for complying with UK GDPR. DSM processes pupil data as your data processor.
-          </p>
-        </Section>
-
-        <Section title="5. Payments">
-          <p>
-            Payment processing is handled by Square. A platform fee of 1% applies to card payments processed through DSM. Instructors pay Square's standard card processing fee. Course payments use the school skim amount. Fees subject to change with 30 days notice.
-          </p>
-        </Section>
-
-        <Section title="6. Google Calendar integration">
-          <p>
-            If you connect Google Calendar, you authorise DSM to create, update and delete calendar events on your behalf. We only access data needed to sync your DSM lessons. You can revoke access at any time from Settings.
-          </p>
-        </Section>
-
-        <Section title="7. Live tracking">
-          <p>
-            You are responsible for informing pupils that GPS routes may be recorded and for complying with applicable data protection obligations.
-          </p>
-        </Section>
-
-        <Section title="8. Acceptable use">
-          <p>
-            You must not use DSM to harass pupils or users, send unsolicited messages, attempt unauthorised access, or violate UK law.
-          </p>
-        </Section>
-
-        <Section title="9. Availability">
-          <p>
-            We aim for high availability but do not guarantee uninterrupted access.
-          </p>
-        </Section>
-
-        <Section title="10. Termination">
-          <p>
-            You may close your account at any time. Data deleted within 30 days of termination except where retention is required by law.
-          </p>
-        </Section>
-
-        <Section title="11. Limitation of liability">
-          <p>
-            DSM's liability is limited to fees paid in the three months preceding any claim. We are not liable for indirect or consequential losses.
-          </p>
-        </Section>
-
-        <Section title="12. Governing law">
-          <p>
-            Governed by the laws of England and Wales.
-          </p>
-        </Section>
-
-        <Section title="13. Contact">
-          <p>hello@everydriver.co.uk</p>
-        </Section>
-      </main>
-    </div>
-  );
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section style={{ marginBottom: 28 }}>
-      <h2
-        style={{
-          fontSize: 16,
-          fontWeight: 600,
-          color: NAVY,
-          margin: "0 0 12px",
-        }}
-      >
-        {title}
-      </h2>
+    <DSMTopSheet
+      title="Terms of Service"
+      onBack={() => navigate({ to: "/settings" })}
+    >
       <div
         style={{
-          fontSize: 14,
-          fontWeight: 400,
-          color: TEXT,
-          lineHeight: 1.6,
+          padding: "20px 16px 28px",
+          ...POPPINS,
         }}
       >
-        {children}
+        <div
+          style={{
+            marginBottom: 24,
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
+              fontSize: 13,
+              fontWeight: 600,
+              color: "#1877D6",
+              textTransform: "uppercase",
+              letterSpacing: "0.5px",
+            }}
+          >
+            DSM by EveryDriver
+          </p>
+          <h1
+            style={{
+              margin: "6px 0 4px",
+              fontSize: 26,
+              fontWeight: 700,
+              color: "#0B1F3A",
+              lineHeight: "32px",
+            }}
+          >
+            Terms of Service
+          </h1>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 13,
+              color: "#6B7280",
+            }}
+          >
+            Last updated: August 2026
+          </p>
+        </div>
+
+        {sections.map((section) => (
+          <div
+            key={section.title}
+            style={{
+              background: "#EEF2F7",
+              borderRadius: 12,
+              padding: "16px",
+              marginBottom: 14,
+            }}
+          >
+            <h2
+              style={{
+                margin: "0 0 10px",
+                fontSize: 14,
+                fontWeight: 700,
+                color: "#0B1F3A",
+                letterSpacing: "0.3px",
+              }}
+            >
+              {section.title}
+            </h2>
+            <div
+              style={{
+                fontSize: 14,
+                lineHeight: "22px",
+                color: "#374151",
+              }}
+            >
+              {section.content}
+            </div>
+          </div>
+        ))}
+
+        <p
+          style={{
+            marginTop: 10,
+            fontSize: 12,
+            color: "#8A8A8E",
+            textAlign: "center",
+          }}
+        >
+          © 2026 EveryDriver Ltd. All rights reserved.
+        </p>
       </div>
-    </section>
+    </DSMTopSheet>
   );
 }
-
-export default TermsPage;
