@@ -22,8 +22,6 @@ import { toast } from "sonner";
 import { tapLight, tapMedium } from "@/lib/haptics";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
-import DSMPageSheet from "@/components/dsm/DSMPageSheet";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { useAdminGate } from "./admin";
 import { pupilColour } from "@/components/PupilAvatar";
 
@@ -1096,54 +1094,115 @@ function MessagesIndexPage() {
   const router = useRouter();
 
   return (
-    <PageLayout style={{ ...FONT, background: "#EEF2F7", paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))" }}>
-      <InstructorTopBar
-        firstName={myName ?? ""}
-        pageTitle="Messages"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <PageLayout
+      style={{
+        ...FONT,
+        position: "fixed",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+        minHeight: 0,
+        background: NAVY,
+        overflow: "hidden",
+      }}
+    >
+      <header
+        style={{
+          height: "calc(max(env(safe-area-inset-top, 0px), 24px) + 86px)",
+          flexShrink: 0,
+          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 13px) 22px 28px",
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          background: NAVY,
+          boxSizing: "border-box",
+        }}
+      >
+        <h1
+          style={{
+            margin: 0,
+            color: "#FFFFFF",
+            fontFamily: "Sora, sans-serif",
+            fontSize: 22,
+            lineHeight: "40px",
+            fontWeight: 700,
+          }}
+        >
+          Messages
+        </h1>
+        <button
+          type="button"
+          aria-label="Notifications"
+          onClick={() => navigate({ to: "/notifications" as never })}
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            border: 0,
+            padding: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(255,255,255,0.1)",
+            cursor: "pointer",
+          }}
+        >
+          <IconBell size={20} color="#FFFFFF" stroke={1.8} />
+        </button>
+      </header>
 
       {view === "chat" ? (
-        <LocalChatView
-          areaName={areaName}
-          room={room}
-          myRooms={myRooms}
-          joinedRoomIds={joinedRoomIds}
-          homeOutcode={homeOutcode}
-          onBack={() => setView("inbox")}
-          onSelectRoom={(r) => {
-            setRoom(r);
-            setAreaName(r.area_name || r.outcode);
-          }}
-          messages={localMessages}
-          loading={localLoading}
-          userId={userId}
-          myName={myName}
-          newMessage={newMessage}
-          setNewMessage={setNewMessage}
-          onSend={sendLocalMessage}
-          onFlag={flagMessage}
-          messagesEndRef={messagesEndRef}
-          scrollBoxRef={scrollBoxRef}
-        />
+        <div style={{ flex: 1, minHeight: 0, background: "#FFFFFF" }}>
+          <LocalChatView
+            areaName={areaName}
+            room={room}
+            myRooms={myRooms}
+            joinedRoomIds={joinedRoomIds}
+            homeOutcode={homeOutcode}
+            onBack={() => setView("inbox")}
+            onSelectRoom={(r) => {
+              setRoom(r);
+              setAreaName(r.area_name || r.outcode);
+            }}
+            messages={localMessages}
+            loading={localLoading}
+            userId={userId}
+            myName={myName}
+            newMessage={newMessage}
+            setNewMessage={setNewMessage}
+            onSend={sendLocalMessage}
+            onFlag={flagMessage}
+            messagesEndRef={messagesEndRef}
+            scrollBoxRef={scrollBoxRef}
+          />
+        </div>
       ) : view === "rooms" ? (
-        <RoomBrowser
-          rooms={browseRooms}
-          joinedRoomIds={joinedRoomIds}
-          homeOutcode={homeOutcode}
-          onBack={() => setView("inbox")}
-          onOpen={openRoom}
-          onJoin={joinRoom}
-        />
+        <div style={{ flex: 1, minHeight: 0, background: "#FFFFFF" }}>
+          <RoomBrowser
+            rooms={browseRooms}
+            joinedRoomIds={joinedRoomIds}
+            homeOutcode={homeOutcode}
+            onBack={() => setView("inbox")}
+            onOpen={openRoom}
+            onJoin={joinRoom}
+          />
+        </div>
       ) : (
-        <DSMPageSheet>
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            flex: 1,
+            minHeight: 0,
+            marginTop: -18,
+            background: "#FFFFFF",
+            borderRadius: "28px 28px 0 0",
+            overflowY: "auto",
+            overflowX: "hidden",
+            paddingTop: 12,
+            paddingBottom: "calc(88px + env(safe-area-inset-bottom, 0px))",
+          }}
+        >
           {/* Segmented filter control + search */}
           <div
             style={{
@@ -1424,7 +1483,7 @@ function MessagesIndexPage() {
               </div>
             )}
           </div>
-        </DSMPageSheet>
+        </div>
       )}
 
       {menuItem && (
