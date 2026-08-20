@@ -17,7 +17,6 @@ import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
-import { DSMToggle } from "../components/dsm/DSMToggle";
 import { BottomSheet as BottomSheetV2, SheetGroup, SheetRow, SheetDivider } from "../components/dsm/BottomSheetV2";
 import { DL25Sheet } from "./tests";
 import { ChangeDateTimeSheet } from "../components/lessons/ChangeDateTimeSheet";
@@ -459,7 +458,7 @@ function PupilDetailPage() {
   const [adjNote, setAdjNote] = useState<string>("");
   const [adjSaving, setAdjSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<"overview" | "lessons" | "payments" | "profile">("overview");
-  
+  const [moreOpen, setMoreOpen] = useState(false);
   const [mockTests, setMockTests] = useState<MockTestResult[]>([]);
   const [latestTestResult, setLatestTestResult] = useState<{
     test_date: string | null;
@@ -1382,11 +1381,11 @@ function PupilDetailPage() {
       <div className="mx-auto w-full md:max-w-3xl md:px-4 md:pt-4">
         <div className="px-4">
 
-        {/* Profile card */}
+        {/* Identity card */}
         {pupil && (
           <div
             className="mt-4 flex items-center gap-3 p-4"
-            style={{ background: "#FFFFFF", borderRadius: 16, boxShadow: "0 2px 8px rgba(15,32,68,0.06)" }}
+            style={{ background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 8px rgba(15,32,68,0.06)" }}
           >
             <label className="relative shrink-0 cursor-pointer">
               <input
@@ -1456,101 +1455,218 @@ function PupilDetailPage() {
               </p>
             </div>
 
-            {/* Existing stats — compact right column */}
-            {(() => {
-              const isBlock = pricingType === "block" || pricingType === "national_intensives";
-              const accountCredit = Number(pupil.account_balance ?? 0);
-              const balanceLabel = isBlock
-                ? "Package"
-                : balance > 0
-                  ? "Balance owed"
-                  : accountCredit > 0
-                    ? "In credit"
-                    : "Balance";
-              const balanceValue = isBlock
-                ? balance > 0
-                  ? `£${balance.toFixed(2)} due`
-                  : "Paid"
-                : balance > 0
-                  ? `£${balance.toFixed(2)}`
-                  : accountCredit > 0
-                    ? `£${accountCredit.toFixed(2)}`
-                    : "Paid";
-              const balanceColor = isBlock
-                ? balance > 0
-                  ? "#CC2229"
-                  : "#248A3D"
-                : balance > 0
-                  ? "#CC2229"
-                  : accountCredit > 0
-                    ? "#248A3D"
-                    : "#0B1F3A";
-              const hoursRemaining = Math.max(0, Number(pupil.prepaid_hours ?? 0) - hoursCompleted);
-              const today = ymd(new Date());
-              let testValue = "Not booked";
-              let testColor = "#8A8A8E";
-              if (pupil.test_date) {
-                const d = daysBetween(today, pupil.test_date);
-                if (d === 0) { testValue = "Today"; testColor = "#1877D6"; }
-                else if (d === 1) { testValue = "Tomorrow"; testColor = "#1877D6"; }
-                else if (d < 0) { testValue = "Passed?"; testColor = "#8A8A8E"; }
-                else { testValue = `${d} days`; testColor = "#0B1F3A"; }
-              }
-              return (
-                <div className="shrink-0 flex flex-col items-end gap-0.5">
-                  <div className="text-right">
-                    <span className="text-[10px] font-bold uppercase tracking-wide" style={{ color: "#8A8A8E", ...POPPINS }}>{balanceLabel}</span>
-                    <div className="text-[13px] font-bold" style={{ color: balanceColor, ...POPPINS }}>{balanceValue}</div>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[10px] font-bold uppercase tracking-wide" style={{ color: "#8A8A8E", ...POPPINS }}>Hours left</span>
-                    <div className="text-[13px] font-bold" style={{ color: "#248A3D", ...POPPINS }}>{hoursRemaining.toFixed(1)}</div>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[10px] font-bold uppercase tracking-wide" style={{ color: "#8A8A8E", ...POPPINS }}>Test in</span>
-                    <div className="text-[13px] font-bold" style={{ color: testColor, ...POPPINS }}>{testValue}</div>
-                  </div>
-                </div>
-              );
-            })()}
+            <button
+              type="button"
+              aria-label="More options"
+              onClick={() => setMoreOpen(true)}
+              className="shrink-0 flex items-center justify-center active:opacity-60"
+              style={{ width: 34, height: 34, borderRadius: 999, background: "#F3F6FA", border: "none", color: "#0B1F3A" }}
+            >
+              <IconDots size={18} stroke={1.6} />
+            </button>
           </div>
         )}
 
-        {/* Action buttons: Call · Edit · Remove */}
+        {/* Key stats */}
         {pupil && (
-          <div className="mt-4 flex gap-2">
-            <button
-              type="button"
-              onClick={() => { if (pupil.phone) window.location.href = `tel:${pupil.phone}`; }}
-              disabled={!pupil.phone}
-              className="flex-1 h-11 flex items-center justify-center gap-2 rounded-lg font-semibold text-[14px] active:opacity-70 disabled:opacity-40"
-              style={{ background: "#E8F4FD", color: "#1877D6", border: "none", ...POPPINS }}
-            >
-              <IconPhone size={18} stroke={1.8} /> Call
-            </button>
-            <button
-              type="button"
-              onClick={openEditSheet}
-              className="flex-1 h-11 flex items-center justify-center gap-2 rounded-lg font-semibold text-[14px] active:opacity-70"
-              style={{ background: "#FFFFFF", color: "#0B1F3A", border: "1px solid #E2E6ED", ...POPPINS }}
-            >
-              <IconPencil size={18} stroke={1.8} /> Edit
-            </button>
-            <button
-              type="button"
-              onClick={() => setRemoveOpen(true)}
-              className="flex-1 h-11 flex items-center justify-center gap-2 rounded-lg font-semibold text-[14px] active:opacity-70"
-              style={{ background: "#FEF2F2", color: "#CC2229", border: "none", ...POPPINS }}
-            >
-              <IconTrash size={18} stroke={1.8} /> Remove
-            </button>
+          <div
+            className="mt-3"
+            style={{ background: "#FFFFFF", borderRadius: 12, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
+          >
+                  {/* 3-up stat row: Balance | Hours remaining | Days to test */}
+                  {(() => {
+                    const isBlock =
+                      pricingType === "block" || pricingType === "national_intensives";
+                    const accountCredit = Number(pupil.account_balance ?? 0);
+                    const balanceColor = isBlock
+                      ? balance > 0
+                        ? "#CC2229"
+                        : "#248A3D"
+                      : balance > 0
+                        ? "#CC2229"
+                        : accountCredit > 0
+                          ? "#248A3D"
+                          : "#000000";
+                    const hoursRemaining = Math.max(
+                      0,
+                      Number(pupil.prepaid_hours ?? 0) - hoursCompleted,
+                    );
+                    const hoursValue = hoursRemaining.toFixed(1);
+                    const balanceLabel = isBlock
+                      ? "Package"
+                      : balance > 0
+                        ? "Balance owed"
+                        : accountCredit > 0
+                          ? "In credit"
+                          : "Balance";
+                    const balanceValue = isBlock
+                      ? balance > 0
+                        ? `£${balance.toFixed(2)} due`
+                        : "Paid"
+                      : balance > 0
+                        ? `£${balance.toFixed(2)}`
+                        : accountCredit > 0
+                          ? `£${accountCredit.toFixed(2)}`
+                          : "Paid";
+                    const today = ymd(new Date());
+                    let testValue = "Not booked";
+                    let testColor = "#8A8A8E";
+                    if (pupil.test_date) {
+                      const d = daysBetween(today, pupil.test_date);
+                      if (d === 0) {
+                        testValue = "Today";
+                        testColor = "#1877D6";
+                      } else if (d === 1) {
+                        testValue = "Tomorrow";
+                        testColor = "#1877D6";
+                      } else if (d < 0) {
+                        testValue = "Passed?";
+                        testColor = "#8A8A8E";
+                      } else {
+                        testValue = `${d} days`;
+                        testColor = "#000000";
+                      }
+                    }
+                    const colLabel: React.CSSProperties = {
+                      fontSize: 10,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.06em",
+                      color: "#8A8A8E",
+                      ...POPPINS,
+                    };
+                    const colValue = (v: string): React.CSSProperties => ({
+                      fontSize: v.length > 9 ? 15 : v.length > 7 ? 16.5 : 19,
+                      fontWeight: 800,
+                      lineHeight: 1.2,
+                      marginTop: 2,
+                      whiteSpace: "normal",
+                      overflowWrap: "anywhere",
+                      ...POPPINS,
+                    });
+                    return (
+                      <div className="grid grid-cols-3 items-stretch">
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab("payments")}
+                          className="text-left px-3 py-3 min-w-0 active:opacity-70"
+                          style={{ background: "none", border: "none" }}
+                        >
+                          <p className="truncate" style={colLabel}>{balanceLabel}</p>
+                          <p style={{ ...colValue(balanceValue), color: balanceColor }}>{balanceValue}</p>
+                        </button>
+                        <div className="px-3 py-3 min-w-0" style={{ borderLeft: "1px solid #E9E9EC", borderRight: "1px solid #E9E9EC" }}>
+                          <p className="truncate" style={colLabel}>Hours left</p>
+                          <p style={{ ...colValue(hoursValue), color: "#248A3D" }}>{hoursValue}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveTab("profile");
+                            setPracticalEditing(true);
+                          }}
+                          className="text-left px-3 py-3 min-w-0 active:opacity-70"
+                          style={{ background: "none", border: "none" }}
+                        >
+                          <p className="truncate" style={colLabel}>Test in</p>
+                          <p style={{ ...colValue(testValue), color: testColor }}>{testValue}</p>
+                        </button>
+                      </div>
+                    );
+                  })()}
           </div>
         )}
 
-        {/* Tab bar — fixed-width segmented control */}
+        {/* Quick actions row: Call · Message · Text · Add lesson · More */}
+        {(() => {
+          const cellCls =
+            "relative flex flex-col items-center justify-center gap-1 py-3 active:opacity-60";
+          const cellStyle = (i: number): React.CSSProperties => ({
+            borderLeft: i === 0 ? "none" : "1px solid #E9E9EC",
+            background: "none",
+            color: "#0B1F3A",
+            textDecoration: "none",
+          });
+          const labelStyle: React.CSSProperties = {
+            fontSize: 11,
+            fontWeight: 600,
+            color: "#0B1F3A",
+            ...POPPINS,
+          };
+          const actions: {
+            label: string;
+            icon: React.ReactNode;
+            href?: string;
+            onClick?: () => void;
+            badge?: string;
+          }[] = [
+            {
+              label: "Call",
+              icon: <IconPhone stroke={1.5} size={20} />,
+              href: pupil?.phone ? `tel:${pupil.phone}` : undefined,
+            },
+            {
+              label: "Message",
+              icon: <IconMessage stroke={1.5} size={20} />,
+              onClick: () => { setSendMessagePupilId(pupil?.id ?? id); setSendMessageOpen(true); },
+              badge: unreadMessages > 0 ? String(unreadMessages) : undefined,
+            },
+            {
+              label: "Text",
+              icon: <IconSend stroke={1.5} size={20} />,
+              href: pupil?.phone ? `sms:${pupil.phone}` : undefined,
+            },
+            {
+              label: "Add lesson",
+              icon: <IconPlus stroke={1.5} size={20} />,
+              onClick: () => { setAddLessonDate(undefined); setAddLessonPupilId(pupil?.id ?? id); setAddLessonOpen(true); },
+            },
+            {
+              label: "More",
+              icon: <IconDots stroke={1.5} size={20} />,
+              onClick: () => setMoreOpen(true),
+            },
+          ];
+          return (
+            <div
+              className="grid grid-cols-5 mt-4"
+              style={{ background: "#FFFFFF", borderRadius: 8, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
+            >
+              {actions.map((a, i) => {
+                const inner = (
+                  <>
+                    {a.icon}
+                    <span style={labelStyle}>{a.label}</span>
+                    {a.badge ? (
+                      <span
+                        className="absolute top-1.5 right-2 text-[10px] font-bold"
+                        style={{ color: "#CC2229" }}
+                      >
+                        {a.badge}
+                      </span>
+                    ) : null}
+                  </>
+                );
+                if (a.href) {
+                  return (
+                    <a key={a.label} href={a.href} className={cellCls} style={cellStyle(i)}>
+                      {inner}
+                    </a>
+                  );
+                }
+                return (
+                  <button key={a.label} type="button" onClick={a.onClick} className={cellCls} style={{ ...cellStyle(i), border: "none", borderLeft: i === 0 ? "none" : "1px solid #E9E9EC" }}>
+                    {inner}
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })()}
+        {/* Tab bar — iOS segmented control */}
         <div
           className="mt-4 mb-2 flex gap-1"
-          style={{ background: "#EEF2F7", borderRadius: 8, padding: 3, ...POPPINS }}
+          style={{ background: "#E5E5EA", borderRadius: 8, padding: 3, ...POPPINS }}
         >
           {(["overview", "lessons", "payments", "profile"] as const).map((t) => (
             <button
@@ -1570,7 +1686,7 @@ function PupilDetailPage() {
             </button>
           ))}
         </div>
-        {activeTab === "overview" && pupil && (<>
+        {activeTab === "overview" && pupil && (
           <div className="space-y-4 pb-4">
                 {/* Readiness dashboard */}
                 {(() => {
@@ -2745,6 +2861,68 @@ function PupilDetailPage() {
                 )}
               </div>
 
+              <div
+                className="mt-3 pt-3 text-[11px] font-semibold uppercase tracking-wide"
+                style={{ color: "#6B7280", borderTop: "0.5px solid #EEF2F7", ...POPPINS }}
+              >
+                EverySwap
+              </div>
+              <div
+                className="flex items-center justify-between py-1.5"
+                style={{ borderTop: "0.5px solid #F3F4F6" }}
+              >
+                <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
+                  Swap status
+                </span>
+                {pupil.wants_swap ? (
+                  <span className="flex items-center gap-2">
+                    <span
+                      className="text-[11px] font-semibold text-white px-2 py-0.5 rounded-full"
+                      style={{ backgroundColor: "#1877D6", ...POPPINS }}
+                    >
+                      On EverySwap list
+                    </span>
+                    <span className="text-[11px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                      Seeking swap
+                    </span>
+                  </span>
+                ) : (
+                  <span className="text-[12px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+                    Not on swap list
+                  </span>
+                )}
+              </div>
+
+              <div className="mt-3 flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={openEditSheet}
+                  className="text-[13px] font-medium"
+                  style={{ color: "#1877D6", ...POPPINS }}
+                >
+                  Edit payment details
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const next = !pupil.wants_swap;
+                    const { error } = await supabase
+                      .from("pupils")
+                      .update({ wants_swap: next })
+                      .eq("id", pupil.id);
+                    if (error) { toast.error("Failed to save — please try again"); return; }
+                    setPupil({ ...pupil, wants_swap: next });
+                    toast.success(next ? "Added to EverySwap list" : "Removed from EverySwap list");
+                  }}
+                  className="text-[13px] font-medium"
+                  style={{ color: "#1877D6", ...POPPINS }}
+                >
+                  Manage swap
+                </button>
+              </div>
+            </div>
+          );
+        })()}
 
             {pupil && (
               <CustomRatesCard
@@ -3410,40 +3588,6 @@ function PupilDetailPage() {
 
         {activeTab === "profile" && (<>
 
-        {/* Settings / toggles */}
-        {pupil && (
-          <div className="mb-4" style={{ background: "#EEF2F7", borderRadius: 12, overflow: "hidden" }}>
-            <div className="flex items-center justify-between px-4 py-3.5" style={{ borderBottom: "0.5px solid #E2E6ED" }}>
-              <div className="flex items-center gap-2.5">
-                <IconCamera size={18} stroke={1.6} color="#0B1F3A" />
-                <span className="text-[15px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>Photo consent</span>
-              </div>
-              <DSMToggle checked={Boolean(pupil.photo_consent)} onChange={(v) => togglePhotoConsent(v)} />
-            </div>
-            <div className="flex items-center justify-between px-4 py-3.5">
-              <div className="flex items-center gap-2.5">
-                <IconRefresh size={18} stroke={1.6} color="#0B1F3A" />
-                <span className="text-[15px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>EverySwap</span>
-              </div>
-              <DSMToggle
-                checked={Boolean(pupil.wants_swap)}
-                onChange={async (v) => {
-                  if (!pupil) return;
-                  const { error } = await supabase
-                    .from("pupils")
-                    .update({ wants_swap: v })
-                    .eq("id", pupil.id);
-                  if (error) {
-                    toast.error("Failed to save — please try again");
-                    return;
-                  }
-                  setPupil({ ...pupil, wants_swap: v });
-                  toast.success(v ? "Added to EverySwap list" : "Removed from EverySwap list");
-                }}
-              />
-            </div>
-          </div>
-        )}
 
         <div className="flex items-center gap-2" style={{ marginBottom: 8 }}>
           <span style={{ width: 3, height: 14, borderRadius: 8, background: "#1877D6", display: "inline-block" }} />
@@ -3918,6 +4062,39 @@ function PupilDetailPage() {
         onCancel={() => setPermDeleteOpen(false)}
       />
 
+      {moreOpen && pupil && (
+        <BottomSheetV2 title="Pupil options" subtitle={pupil.name} onClose={() => setMoreOpen(false)}>
+          <SheetGroup>
+            <SheetRow onClick={() => { setMoreOpen(false); openEditSheet(); }}>
+              <IconPencil size={18} stroke={1.6} color="#0B1F3A" />
+              <span className="text-[15px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>Edit details</span>
+            </SheetRow>
+            <SheetDivider />
+            <SheetRow>
+              <IconCamera size={18} stroke={1.6} color="#0B1F3A" />
+              <span className="flex-1 text-[15px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>Photo consent</span>
+              <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                <input
+                  type="checkbox"
+                  checked={Boolean(pupil.photo_consent)}
+                  onChange={(e) => togglePhotoConsent(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 rounded-full transition-colors" style={{ backgroundColor: pupil.photo_consent ? "#248A3D" : "#CBD5E1" }} />
+                <div
+                  className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
+                  style={{ transform: pupil.photo_consent ? "translateX(20px)" : "translateX(0)" }}
+                />
+              </label>
+            </SheetRow>
+            <SheetDivider />
+            <SheetRow onClick={() => { setMoreOpen(false); setRemoveOpen(true); }}>
+              <IconTrash size={18} stroke={1.6} color="#CC2229" />
+              <span className="text-[15px] font-medium" style={{ color: "#CC2229", ...POPPINS }}>Remove pupil</span>
+            </SheetRow>
+          </SheetGroup>
+        </BottomSheetV2>
+      )}
 
 
       <ConfirmDialog
