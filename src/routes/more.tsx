@@ -1,10 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
-import { IconActivity, IconArrowsLeftRight, IconAward, IconBriefcase, IconCalculator, IconCalendar, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconFileText, IconGasStation, IconMapPin, IconMoon, IconPlayerPlay, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconShoppingBag, IconTrendingUp, IconUsers, IconWorld, IconX } from "@tabler/icons-react";
+import { IconActivity, IconArrowsLeftRight, IconAward, IconBell, IconBriefcase, IconCalculator, IconCalendar, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconFileText, IconGasStation, IconMapPin, IconMoon, IconPlayerPlay, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconShoppingBag, IconTrendingUp, IconUsers, IconWorld, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
-import InstructorTopBar from "@/components/dsm/InstructorTopBar";
 import { PageLayout } from "@/components/PageLayout";
 import { EmptyState } from "@/components/dsm/EmptyState";
 
