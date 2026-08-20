@@ -676,7 +676,7 @@ function TodayLessonsTile({
           width: 36,
           height: 36,
           borderRadius: 8,
-          background: "#E6F1FB",
+          background: "#EFF6FF",
           color: "#1877D6",
           display: "flex",
           alignItems: "center",
@@ -4440,7 +4440,7 @@ function HomePage() {
                                 style={{
                                   fontSize: 10, fontWeight: 700, textTransform: "uppercase",
                                   padding: "3px 8px", borderRadius: 8,
-                                  background: "#FEF3C7", color: "#B45309",
+                                  background: "#FEF3C7", color: "#D68A1B",
                                   cursor: "pointer",
                                 }}
                               >
@@ -4740,7 +4740,7 @@ function HomePage() {
         <div style={{ padding: '0 16px', marginTop: -22, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
         {[
           { label: 'Calls', value: String(naCalls), sub: 'Need callback', color: '#CC2229', route: '/messages' },
-          { label: "Jobs", value: String(naJobs), sub: 'Open', color: '#B5661E', route: '/jobs' },
+          { label: "Jobs", value: String(naJobs), sub: 'Open', color: '#D68A1B', route: '/jobs' },
           { label: "Enq's", value: String(naEnquiries), sub: 'New', color: '#1877D6', route: '/enquiries' },
         ].map((s) => (
           <button
@@ -5221,7 +5221,7 @@ function HomePage() {
                     height: 38,
                     borderRadius: 8,
                     border: 'none',
-                    background: '#F3F6FA',
+                    background: '#EEF2F7',
                     color: '#0B1F3A',
                     display: 'flex',
                     alignItems: 'center',
@@ -5249,8 +5249,8 @@ function HomePage() {
                     height: 38,
                     borderRadius: 8,
                     border: 'none',
-                    background: '#FEECEC',
-                    color: '#B3181F',
+                    background: '#FEE2E2',
+                    color: '#CC2229',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -5300,14 +5300,14 @@ function HomePage() {
                     </div>
                   )}
                   {isAdverseWeather && <div>⛅ {weatherCondition}</div>}
-                  {matchedAlert && <div style={{ fontSize: 'clamp(10px, 3vw, 11px)', lineHeight: 1.35, color: '#B45309' }}>⚠️ {(matchedAlert as any).description}</div>}
+                  {matchedAlert && <div style={{ fontSize: 'clamp(10px, 3vw, 11px)', lineHeight: 1.35, color: '#D68A1B' }}>⚠️ {(matchedAlert as any).description}</div>}
                 </div>
               )}
 
               {/* Late banner */}
               {isLate && (
                 <div style={{
-                  background: '#FEECEC', padding: '8px 12px',
+                  background: '#FEE2E2', padding: '8px 12px',
                   borderBottom: '1px solid #F5D5D5',
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
                 }}>
@@ -5805,7 +5805,7 @@ function HomePage() {
                   <div
                     style={{
                       marginTop: 16,
-                      background: '#FFFBEB',
+                      background: '#FEF3C7',
                       border: '0.5px solid #D97706',
                       borderLeft: '4px solid #D97706',
                       borderRadius: 8,
@@ -5824,7 +5824,7 @@ function HomePage() {
                       <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {pupilName} cancelled their lesson
                       </div>
-                      <div style={{ fontSize: 12, color: '#92400E', marginTop: 1 }}>
+                      <div style={{ fontSize: 12, color: '#D68A1B', marginTop: 1 }}>
                         {freedSlot.lesson_date} at {time} — {duration} min slot now free
                       </div>
                     </div>
@@ -6544,7 +6544,7 @@ function HomePage() {
                                     letterSpacing: 0.4,
                                     textTransform: 'uppercase',
                                     color: '#CC2229',
-                                    background: '#FCE9E9',
+                                    background: '#FEE2E2',
                                     padding: '2px 8px',
                                     borderRadius: 999,
                                     lineHeight: 1.4,
@@ -6582,7 +6582,7 @@ function HomePage() {
                                           {pickupLabel}
                                         </span>
                                         {custom && (
-                                          <span style={{ fontSize: 10, fontWeight: 700, color: '#92400E', flexShrink: 0 }}>
+                                          <span style={{ fontSize: 10, fontWeight: 700, color: '#D68A1B', flexShrink: 0 }}>
                                             {isTestDayRow ? 'TEST CENTRE' : 'CUSTOM'}
                                           </span>
                                         )}
@@ -6630,7 +6630,7 @@ function HomePage() {
                            return (
                              <div
                                style={{
-                                 background: '#FFFBEB',
+                                 background: '#FEF3C7',
                                  border: '1px solid #FDE68A',
                                  borderRadius: 8,
                                  padding: '6px 10px',
@@ -6641,7 +6641,7 @@ function HomePage() {
                                }}
                              >
                                <IconClockExclamation size={13} stroke={1.9} color="#92400E" style={{ flexShrink: 0 }} />
-                               <span style={{ fontSize: 11, fontWeight: 600, color: '#92400E', fontFamily: PF }}>
+                               <span style={{ fontSize: 11, fontWeight: 600, color: '#D68A1B', fontFamily: PF }}>
                                  End of lesson not completed
                                </span>
                                <button
@@ -7243,7 +7243,7 @@ function HomePage() {
                         style={{ background: '#FFFFFF', borderRadius: '8px 8px 0 0', padding: 20, width: '100%' }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                          <div style={{ width: 36, height: 36, borderRadius: 8, background: '#FBE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <div style={{ width: 36, height: 36, borderRadius: 8, background: '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <IconClock stroke={1.5} size={20} color="#C23B3B" />
                           </div>
                           <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Running late</div>
@@ -7464,7 +7464,7 @@ function HomePage() {
                           ) : (
                             <>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                                <div style={{ width: 36, height: 36, borderRadius: 8, background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{ width: 36, height: 36, borderRadius: 8, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                   <IconMapPin size={20} color="#1877D6" stroke={1.8} />
                                 </div>
                                 <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Find nearby</div>
@@ -7972,7 +7972,7 @@ function HomePage() {
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           {visibleAvatars.length === 0 ? (
                             <div style={{
-                              width: 32, height: 32, borderRadius: '50%', background: '#E6F1FB',
+                              width: 32, height: 32, borderRadius: '50%', background: '#EFF6FF',
                               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                             }}>
                               <IconUsers stroke={1.5} size={16} color="#1877D6" />
@@ -8003,7 +8003,7 @@ function HomePage() {
                                       key={key}
                                       style={{
                                         ...stackStyle,
-                                        background: '#FCE9E9',
+                                        background: '#FEE2E2',
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       }}
                                     >
@@ -8017,7 +8017,7 @@ function HomePage() {
                                       key={key}
                                       style={{
                                         ...stackStyle,
-                                        background: '#FDF0E3',
+                                        background: '#FEF3C7',
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       }}
                                     >
@@ -8108,7 +8108,7 @@ function HomePage() {
                     <div onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })} style={rowBase}>
                       <div style={{ position: 'relative', flexShrink: 0 }}>
                         <div style={{
-                          width: 36, height: 36, borderRadius: '50%', background: '#FCE9E9',
+                          width: 36, height: 36, borderRadius: '50%', background: '#FEE2E2',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>
                           <IconAlertTriangle stroke={1.5} size={18} color={RED_C} />
@@ -8359,7 +8359,7 @@ function HomePage() {
                                   {other?.name ?? 'DSM Instructor'}
                                 </span>
                                 <span style={{
-                                  background: '#E6F1FB',
+                                  background: '#EFF6FF',
                                   color: '#1877D6',
                                   fontSize: 8, fontWeight: 700,
                                   padding: '1px 5px',
@@ -8736,7 +8736,7 @@ function HomePage() {
                 border: '1px solid #E4E8EF', borderRadius: 8, padding: '14px 14px', background: '#fff',
               }}
             >
-              <span style={{ width: 38, height: 38, borderRadius: 8, background: '#FBF1DA', display: 'grid', placeItems: 'center' }}>
+              <span style={{ width: 38, height: 38, borderRadius: 8, background: '#FEF3C7', display: 'grid', placeItems: 'center' }}>
                 <IconCalendar size={19} stroke={1.8} color="#B8860B" />
               </span>
               <span>
@@ -9197,7 +9197,7 @@ function HomePage() {
                 type="button"
                 onClick={() => setBirthdaySheetOpen(false)}
                 className="w-full rounded-lg py-2.5 text-[13px] font-semibold"
-                style={{ background: '#F3F4F6', color: '#6B7686', border: 'none', cursor: 'pointer' }}
+                style={{ background: '#EEF2F7', color: '#6B7686', border: 'none', cursor: 'pointer' }}
               >
                 ✓ Done
               </button>
@@ -9247,7 +9247,7 @@ function HeroExpandedPanel({
   };
 
   const pillBase: React.CSSProperties = {
-    background: '#F2F2F7',
+    background: '#EEF2F7',
     border: 'none',
     borderRadius: 8,
     padding: '8px 4px',
@@ -9399,7 +9399,7 @@ function HeroExpandedPanel({
   };
 
   const gridBtn: React.CSSProperties = {
-    background: '#F5F7FA',
+    background: '#EEF2F7',
     border: '1px solid #E2E8F0',
     borderRadius: 8,
     padding: '10px 4px',
@@ -9416,7 +9416,7 @@ function HeroExpandedPanel({
   };
   const gridBtnDanger: React.CSSProperties = {
     ...gridBtn,
-    background: '#FCE9E9',
+    background: '#FEE2E2',
     border: '1px solid #F5CBCB',
     color: '#CC2229',
   };
@@ -9450,7 +9450,7 @@ function HeroExpandedPanel({
     }
     if (state === 'bad') {
       return (
-        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#B45309', fontFamily: 'Poppins, sans-serif' }}>
+        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#D68A1B', fontFamily: 'Poppins, sans-serif' }}>
           <IconAlertTriangle size={14} stroke={1.8} /> {badText}
         </div>
       );
@@ -9461,7 +9461,7 @@ function HeroExpandedPanel({
   };
 
   return (
-    <div style={{ background: '#F3F8FF', borderRadius: 8, padding: 12 }}>
+    <div style={{ background: '#EFF6FF', borderRadius: 8, padding: 12 }}>
       {/* Quick Actions */}
       <div style={sectionLabel}>Quick Actions</div>
       {/* Row 1 — Navigate / Text / Call */}
@@ -9502,7 +9502,7 @@ function HeroExpandedPanel({
           <span style={{ ...pillLabel, color: '#CC2229' }}>Running late</span>
         </button>
         <button
-          style={{ ...gridBtn, background: '#E8F5E9' }}
+          style={{ ...gridBtn, background: '#DCFCE7' }}
           onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
         >
           <IconCurrentLocation size={18} stroke={1.8} color="#0B1F3A" />
@@ -9675,7 +9675,7 @@ function HeroExpandedPanel({
       <div style={{ marginTop: 14 }}>
         <div style={sectionLabel}>Last Lesson</div>
         {prev ? (
-          <div style={{ background: '#F2F2F7', borderRadius: 8, padding: '10px 12px', fontFamily: 'Poppins, sans-serif' }}>
+          <div style={{ background: '#EEF2F7', borderRadius: 8, padding: '10px 12px', fontFamily: 'Poppins, sans-serif' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontSize: 12, fontWeight: 600, color: '#0B1F3A' }}>
                 {new Date(prev.lesson_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
@@ -9689,7 +9689,7 @@ function HeroExpandedPanel({
             )}
           </div>
         ) : (
-          <div style={{ background: '#F2F2F7', borderRadius: 8, padding: '10px 12px', color: '#9CA3AF', fontFamily: 'Poppins, sans-serif', fontSize: 12 }}>No previous lesson</div>
+          <div style={{ background: '#EEF2F7', borderRadius: 8, padding: '10px 12px', color: '#9CA3AF', fontFamily: 'Poppins, sans-serif', fontSize: 12 }}>No previous lesson</div>
         )}
       </div>
 
@@ -10181,7 +10181,7 @@ function OutstandingBreakdownModal({
               padding: "10px 16px",
               fontSize: 13,
               fontWeight: 600,
-              backgroundColor: "#F3F4F6",
+              backgroundColor: "#EEF2F7",
               color: "#374151",
               border: "1px solid #D1D5DB",
               borderRadius: 8,
@@ -10351,7 +10351,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={cancelEdit}
                           disabled={isBusy}
-                          style={{ padding: "6px 10px", fontSize: 12, background: "#F3F4F6", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: "#EEF2F7", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
                         >
                           Cancel
                         </button>
@@ -10389,7 +10389,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={() => setConfirmDeleteId(null)}
                           disabled={isBusy}
-                          style={{ padding: "6px 10px", fontSize: 12, background: "#F3F4F6", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: "#EEF2F7", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
                         >
                           Cancel
                         </button>
@@ -10432,7 +10432,7 @@ function EarningsBreakdownModal({
             </button>
             <button
               onClick={onClose}
-              style={{ padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+              style={{ padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#EEF2F7", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
             >
               Close
             </button>
@@ -10575,7 +10575,7 @@ function LessonsBreakdownModal({
           </div>
           <button
             onClick={onClose}
-            style={{ marginTop: 4, padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+            style={{ marginTop: 4, padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#EEF2F7", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
           >
             Close
           </button>
@@ -10756,7 +10756,7 @@ function TestsBreakdownModal({
                         padding: "3px 8px",
                         borderRadius: 999,
                         backgroundColor: "#FEF3C7",
-                        color: "#92400E",
+                        color: "#D68A1B",
                         whiteSpace: "nowrap",
                         cursor: "pointer",
                       }}
@@ -10852,7 +10852,7 @@ function TestsBreakdownModal({
         <div style={{ padding: 12, borderTop: "1px solid #e5e7eb" }}>
           <button
             onClick={onClose}
-            style={{ width: "100%", padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+            style={{ width: "100%", padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#EEF2F7", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
           >
             Close
           </button>

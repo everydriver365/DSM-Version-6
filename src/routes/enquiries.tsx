@@ -119,7 +119,7 @@ const STATUS_META: Record<
   { label: string; bg: string; color: string; Icon: typeof IconMail }
 > = {
   new: { label: "New", bg: "#EFF6FF", color: "#1877D6", Icon: IconMail },
-  contacted: { label: "Contacted", bg: "#FFF7E6", color: "#B45309", Icon: IconPhone },
+  contacted: { label: "Contacted", bg: "#FFF7E6", color: "#D68A1B", Icon: IconPhone },
   accepted: { label: "Accepted", bg: "#DCFCE7", color: "#15803D", Icon: IconCheck },
   declined: { label: "Declined", bg: "#FCE9E9", color: "#CC2229", Icon: IconX },
   on_jobs: { label: "On jobs board", bg: "#EEF2F7", color: "#0B1F3A", Icon: IconBriefcase },
@@ -559,7 +559,7 @@ function EnquiriesPage() {
             width: 42,
             height: 42,
             borderRadius: 8,
-            background: "#E7F1FC",
+            background: "#EFF6FF",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -641,7 +641,7 @@ function EnquiriesPage() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 5,
-                  background: "#E7F1FC",
+                  background: "#EFF6FF",
                   color: "#1877D6",
                   borderRadius: 8,
                   padding: "6px 12px",
@@ -984,7 +984,7 @@ function EnquiriesPage() {
     return (
       <div
         className="fixed inset-0 z-[3000] overflow-y-auto"
-        style={{ background: "#F3F8FF", animation: "dsmSlideUp 0.24s ease-out" }}
+        style={{ background: "#EFF6FF", animation: "dsmSlideUp 0.24s ease-out" }}
       >
         <div
           style={{
@@ -1489,7 +1489,7 @@ function EnquiriesPage() {
                         className="active:opacity-70"
                         style={{
                           flex: 1,
-                          background: "#F2F2F7",
+                          background: "#EEF2F7",
                           color: "#0B1F3A",
                           border: "none",
                           borderRadius: 8,
@@ -1655,7 +1655,7 @@ function EnquiriesPage() {
 
   return (
     <DSMTopSheet title="Enquiries">
-    <div {...pullToRefreshProps} style={{ minHeight: "100%", background: "#F3F8FF", paddingBottom: 90 }}>
+    <div {...pullToRefreshProps} style={{ minHeight: "100%", background: "#EFF6FF", paddingBottom: 90 }}>
 
       <div style={{ padding: "4px 16px 24px" }}>
         {loading ? (

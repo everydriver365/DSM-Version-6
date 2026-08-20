@@ -444,7 +444,7 @@ function PaymentsPage() {
               style={{
                 height: 8,
                 borderRadius: 8,
-                background: "#F2F2F7",
+                background: "#EEF2F7",
                 overflow: "hidden",
                 marginBottom: 14,
                 display: "flex",
@@ -466,7 +466,7 @@ function PaymentsPage() {
               </div>
               <div>
                 <div style={{ fontSize: 11.5, fontWeight: 600, color: "#9CA3AF", marginBottom: 3, ...POPPINS }}>Paid</div>
-                <div style={{ fontSize: 16, fontWeight: 800, color: "#1A9B5C", ...POPPINS }}>{formatGBP(paidBreakdown.totalPaid)}</div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: "#15803D", ...POPPINS }}>{formatGBP(paidBreakdown.totalPaid)}</div>
               </div>
               <div>
                 <div style={{ fontSize: 11.5, fontWeight: 600, color: "#9CA3AF", marginBottom: 3, ...POPPINS }}>Outstanding</div>

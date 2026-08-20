@@ -1771,7 +1771,7 @@ function NotificationsPage() {
                         width: 36,
                         height: 36,
                         borderRadius: "50%",
-                        background: "#F0FDF4",
+                        background: "#DCFCE7",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -3011,7 +3011,7 @@ function NotificationsPage() {
                       {actionSheet.rate && (
                         <div
                           style={{
-                            background: "#F0FDF4",
+                            background: "#DCFCE7",
                             border: "1px solid #DCFCE7",
                             borderRadius: 8,
                             padding: "10px 12px",
@@ -3247,7 +3247,7 @@ function NotificationsPage() {
                           justifyContent: "center",
                           fontSize: 18,
                           fontWeight: 700,
-                          color: "#92400E",
+                          color: "#D68A1B",
                           ...POPPINS,
                         }}
                       >
@@ -3292,7 +3292,7 @@ function NotificationsPage() {
                           style={{
                             fontSize: 11,
                             fontWeight: 600,
-                            color: "#92400E",
+                            color: "#D68A1B",
                             textTransform: "uppercase",
                             letterSpacing: "0.08em",
                             ...POPPINS,
@@ -3318,7 +3318,7 @@ function NotificationsPage() {
                         style={{
                           fontSize: 26,
                           fontWeight: 800,
-                          color: "#92400E",
+                          color: "#D68A1B",
                           ...POPPINS,
                         }}
                       >
