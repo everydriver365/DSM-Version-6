@@ -2,11 +2,10 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/pupils/progress/$id")({
   head: () => ({ meta: [{ title: "Progress — DSM by EveryDriver" }] }),
@@ -225,20 +224,8 @@ function PupilProgressPage() {
   const offset = c - (pct / 100) * c;
 
   return (
-    <PageLayout className="pb-32" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle={pupilName ? `Progress · ${pupilName}` : "Progress"}
-        onBack={() => navigate({ to: "/pupils/$id", params: { id } } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
-
+    <DSMTopSheet title="Progress" onBack={() => navigate({ to: "/pupils/$id", params: { id } } as never)}>
+      <div style={POPPINS}>
       <div className="flex flex-col items-center mt-6">
         <div style={{ width: size, height: size, position: "relative" }}>
           <svg width={size} height={size}>
@@ -435,7 +422,8 @@ function PupilProgressPage() {
           {saving ? "Saving…" : "Save progress"}
         </Button>
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
 

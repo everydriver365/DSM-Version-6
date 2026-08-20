@@ -2,9 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { IconCar, IconCurrencyPound, IconDownload, IconReceipt, IconTrendingUp } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/tax-report")({
   head: () => ({
@@ -268,21 +267,9 @@ function TaxReportPage() {
   };
 
   return (
-    <PageLayout className="pb-12" style={POPPINS}>
+    <DSMTopSheet title="Tax Report">
+      <div style={POPPINS}>
       {/* TOP BAR */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Tax report"
-        onBack={() => navigate({ to: "/home" } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
-
       {/* YEAR SELECTOR */}
       <div
         className="bg-white flex items-center justify-between"
@@ -433,7 +420,8 @@ function TaxReportPage() {
       {loading && (
         <div className="mt-3 text-center text-[12px] text-[#6B7280]">Loading…</div>
       )}
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
 

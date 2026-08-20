@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { IconBook, IconMicrophone, IconMicrophoneOff, IconPlus, IconSend, IconX } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 
@@ -127,6 +127,7 @@ function MicTextarea({
         {listening ? <IconMicrophoneOff size={16} /> : <IconMicrophone size={16} />}
       </button>
     </div>
+    </DSMTopSheet>
   );
 }
 
@@ -258,20 +259,8 @@ function ReflectiveLogPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#FFFFFF", ...INTER }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle={pupilName ? `Reflective log · ${pupilName}` : "Reflective log"}
-        onBack={() => navigate({ to: "/pupils/$id", params: { id: pupilId } } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
-
+    <DSMTopSheet title="Reflective Log" onBack={() => navigate({ to: "/pupils/$id", params: { id: pupilId } } as never)}>
+      <div style={INTER}>
       {loading ? (
         <div className="p-6 text-center text-[13px]" style={{ color: "#6B7280" }}>
           Loading…

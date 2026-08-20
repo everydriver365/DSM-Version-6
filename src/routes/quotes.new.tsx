@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 
@@ -186,20 +186,8 @@ function NewQuotePage() {
   }
 
   return (
-    <div className="min-h-screen pb-32" style={{ ...POPPINS, backgroundColor: "#fff" }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="New quote"
-        onBack={() => navigate({ to: "/quotes" } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
-
+    <DSMTopSheet title="New Quote" onBack={() => navigate({ to: "/quotes" } as never)}>
+      <div style={POPPINS}>
       {isRevised && (
         <div style={{ margin: "12px 16px 0", padding: "10px 12px", background: "#EEF4FB", border: "1px solid #BFDBFE", borderRadius: 8, color: "#1D4ED8", fontSize: 13 }}>
           Revised quote — pre-filled from the original. Update the price and resend.
@@ -287,5 +275,6 @@ function NewQuotePage() {
         }}>Save and send</button>
       </div>
     </div>
+    </DSMTopSheet>
   );
 }

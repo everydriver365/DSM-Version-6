@@ -1,13 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { IconArrowLeft } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/bulkmessage")({
   head: () => ({
@@ -207,19 +205,8 @@ function BulkMessagePage() {
   }
 
   return (
-    <PageLayout className="pb-32" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Bulk message"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => setToast("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="Bulk Message">
+      <div style={POPPINS}>
       <div className="px-4">
         <SectionHeader>FILTER PUPILS</SectionHeader>
         <div className="flex flex-wrap gap-2">
@@ -376,6 +363,7 @@ function BulkMessagePage() {
           {toast}
         </div>
       )}
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
