@@ -383,17 +383,17 @@ function NewsArticlePage() {
 
   if (loading) {
     return (
-      <PageLayout style={{ background: "#0B1F3A" }}>
+      <div className="min-h-screen" style={{ background: "#0B1F3A" }}>
         <div className="flex items-center justify-center min-h-screen">
           <div className="animate-spin rounded-full border-2 border-white/30 border-t-white" style={{ width: 32, height: 32 }} />
         </div>
-      </PageLayout>
+      </div>
     );
   }
 
   if (!article) {
     return (
-      <PageLayout style={{ background: "#0B1F3A" }}>
+      <div className="min-h-screen" style={{ background: "#0B1F3A" }}>
         <div className="flex flex-col items-center justify-center min-h-screen text-white">
           <p className="text-[16px]" style={{ ...POPPINS, marginBottom: 16 }}>
             Article not found
@@ -408,7 +408,7 @@ function NewsArticlePage() {
             Back to home
           </button>
         </div>
-      </PageLayout>
+      </div>
     );
   }
 
