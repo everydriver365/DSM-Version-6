@@ -10,7 +10,7 @@ import {
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { IconArrowDown, IconArrowsMove, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconMapPin, IconNavigation, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
+import { IconArrowDown, IconBell, IconArrowsMove, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconMapPin, IconNavigation, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { computeDayGaps } from "@/lib/gapDetection";
@@ -18,7 +18,6 @@ import { previewMatchForGap } from "@/lib/pupilMatching";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
 import { tapLight, tapMedium, hapticSuccess, hapticError } from "@/lib/haptics";
-import { PAGE_BACKGROUND } from "@/components/PageLayout";
 
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard.tsx";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
@@ -32,7 +31,6 @@ import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { filterEchoedBlocks } from "@/lib/calendarDedupe";
 import { resolveEventColour } from "@/lib/googleCalendarColours";
 
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
 import { TestDetailPanel } from "@/components/lessons/TestDetailPanel";
