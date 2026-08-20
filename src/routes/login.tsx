@@ -234,7 +234,7 @@ function LoginPage() {
             fontFamily: "Poppins, sans-serif",
             background: "rgba(255,255,255,0.1)",
             border: "1px solid rgba(255,255,255,0.15)",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 16,
             color: "#fff",
             fontSize: 15.5,
@@ -250,7 +250,7 @@ function LoginPage() {
       {askEnroll && (
         <div
           className="w-full max-w-[360px] bg-white mt-4"
-          style={{ borderRadius: 8, padding: 16, border: "1px solid #E2E8F0" }}
+          style={{ borderRadius: tokens.radiusCard, padding: 16, border: "1px solid #E2E8F0" }}
         >
           <p className="text-[14px] font-semibold text-[#0B1F3A]" style={{ fontFamily: "Poppins, sans-serif" }}>
             Enable Face ID for next time?
@@ -285,7 +285,7 @@ function LoginPage() {
         onSubmit={onSubmit}
         className="w-full max-w-[360px] bg-white flex flex-col mt-12"
         style={{
-          borderRadius: "8px",
+          borderRadius: tokens.radiusCard,
           padding: "32px",
           boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
         }}
@@ -325,7 +325,7 @@ function LoginPage() {
                 fontFamily: "Poppins, sans-serif",
                 background: "#F2F2F7",
                 border: "none",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "14px 16px",
               }}
             />
@@ -352,7 +352,7 @@ function LoginPage() {
                 fontFamily: "Poppins, sans-serif",
                 background: "#F2F2F7",
                 border: "none",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "14px 16px",
               }}
             />
@@ -384,7 +384,7 @@ function LoginPage() {
                 style={{
                   width: 20,
                   height: 20,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   background: remember ? "#1877D6" : "#F2F2F7",
                   display: "flex",
                   alignItems: "center",

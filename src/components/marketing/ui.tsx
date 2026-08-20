@@ -111,7 +111,7 @@ export function PrimaryBtn({ to, children, className, onClick }: { to: string; c
         alignItems: "center",
         gap: 8,
         padding: "10px 24px",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         background: BLUE,
         color: "#fff",
         fontWeight: tokens.fontWeight.semibold,
@@ -192,7 +192,7 @@ export function FeatureCard({
         style={{
           width: 44,
           height: 44,
-          borderRadius: 8,
+          borderRadius: 12,
           background: BLUE_TINT,
           color: BLUE_DARK,
           display: "grid",

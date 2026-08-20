@@ -142,7 +142,7 @@ export function WhatsNewSheet({
           style={{
             width: "100%",
             padding: "14px 16px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             background: NAVY,
             color: "white",
             fontWeight: tokens.fontWeight.semibold,

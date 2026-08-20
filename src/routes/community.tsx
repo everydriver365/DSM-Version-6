@@ -534,7 +534,7 @@ function CommunityPage() {
               type="button"
               onClick={() => setActiveTab(t.id)}
               style={{
-                flexShrink: 0, padding: "9px 16px", borderRadius: 8,
+                flexShrink: 0, padding: "9px 16px", borderRadius: tokens.radiusCard,
                 fontSize: 13.5, fontWeight: tokens.fontWeight.bold, border: "none", cursor: "pointer",
                 background: active ? "#0B1F3A" : "transparent",
                 color: active ? "#fff" : "#6B6B6F",
@@ -617,7 +617,7 @@ function CommunityPage() {
               onClick={() => setDmSearchOpen(true)}
               style={{
                 width: "100%", padding: "10px 14px", background: tokens.blue, color: "#fff",
-                border: "none", borderRadius: 8, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
+                border: "none", borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                 fontFamily: "Poppins, sans-serif", display: "flex", alignItems: "center",
                 justifyContent: "center", gap: 8,
               }}
@@ -637,7 +637,7 @@ function CommunityPage() {
             </div>
           ) : (
             <div style={{
-              margin: '0 16px', background: '#fff', borderRadius: 8,
+              margin: '0 16px', background: '#fff', borderRadius: tokens.radiusCard,
               boxShadow: '0 2px 8px rgba(15,32,68,0.06)', overflow: 'hidden',
             }}>
               {dmConversations.map((dm, index) => {
@@ -731,7 +731,7 @@ function CommunityPage() {
                   placeholder="Search instructors..."
                   style={{
                     width: "100%", boxSizing: "border-box", border: "1px solid #E4E8EF",
-                    borderRadius: 8, padding: "10px 12px", fontSize: tokens.fontSize.md, color: tokens.navy, outline: "none",
+                    borderRadius: tokens.radiusCard, padding: "10px 12px", fontSize: tokens.fontSize.md, color: tokens.navy, outline: "none",
                   }}
                 />
               </div>
@@ -888,7 +888,7 @@ function RoomsTab({
   }
 
   const rowStyle: React.CSSProperties = {
-    background: "#fff", borderRadius: 8, padding: 14,
+    background: "#fff", borderRadius: tokens.radiusCard, padding: 14,
     display: "flex", alignItems: "center", gap: 13,
     boxShadow: "0 4px 0 #E4E4E8",
   };
@@ -919,14 +919,14 @@ function RoomsTab({
             </div>
             <span style={{
               background: "#E7F1FC", color: tokens.blue, fontSize: 10.5, fontWeight: tokens.fontWeight.extrabold,
-              borderRadius: 8, padding: "3px 9px", whiteSpace: "nowrap", flexShrink: 0,
+              borderRadius: tokens.radiusCard, padding: "3px 9px", whiteSpace: "nowrap", flexShrink: 0,
             }}>
               {room.outcode}
             </span>
             {room.is_opt_in && (
               <span style={{
                 background: "#F1F3F7", color: "#6B7280", fontSize: 10.5, fontWeight: tokens.fontWeight.extrabold,
-                borderRadius: 8, padding: "3px 9px", whiteSpace: "nowrap", flexShrink: 0,
+                borderRadius: tokens.radiusCard, padding: "3px 9px", whiteSpace: "nowrap", flexShrink: 0,
               }}>
                 Private
               </span>
@@ -951,7 +951,7 @@ function RoomsTab({
   }
 
   const btn = (bg: string, shadow: string): React.CSSProperties => ({
-    padding: "10px 18px", borderRadius: 8, border: "none",
+    padding: "10px 18px", borderRadius: tokens.radiusCard, border: "none",
     background: bg, color: "#fff", fontSize: 13.5, fontWeight: tokens.fontWeight.extrabold,
     cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap", boxShadow: shadow,
   });
@@ -994,7 +994,7 @@ function RoomsTab({
         </div>
         <div style={{
           display: "flex", alignItems: "center", gap: 8, background: "#fff",
-          borderRadius: 8, padding: "13px 16px", marginBottom: 12,
+          borderRadius: tokens.radiusCard, padding: "13px 16px", marginBottom: 12,
           boxShadow: "0 4px 0 #E4E4E8",
         }}>
           <IconSearch stroke={1.5} size={16} color="#8A8A8E" />
@@ -1263,7 +1263,7 @@ function AlertsTab({
         key={a.id}
         onClick={() => setSelectedAlert(a)}
         style={{
-          background: "#fff", borderRadius: 8, marginBottom: 10,
+          background: "#fff", borderRadius: tokens.radiusCard, marginBottom: 10,
           padding: "13px 14px", display: "flex", alignItems: "center", gap: 12,
           boxShadow: "0 4px 0 #E4E4E8", cursor: "pointer",
         }}
@@ -1291,7 +1291,7 @@ function AlertsTab({
         <div style={{
           flexShrink: 0, background: "#F2F2F7",
           color: suspicious ? "#CC2229" : "#6B6B6F",
-          fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, padding: "5px 10px", borderRadius: 8,
+          fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, padding: "5px 10px", borderRadius: tokens.radiusCard,
           whiteSpace: "nowrap",
         }}>
           {formatCountdown(a.expires_at)}
@@ -1334,7 +1334,7 @@ function AlertsTab({
                 key={a.id}
                 onClick={() => setSelectedAlert(a)}
                 style={{
-                  background: "#fff", borderRadius: 8, marginBottom: 10,
+                  background: "#fff", borderRadius: tokens.radiusCard, marginBottom: 10,
                   padding: "13px 14px 13px 13px", borderLeft: "3px solid #1877D6",
                   display: "flex", alignItems: "center", gap: 12,
                   boxShadow: "0 4px 0 #E4E4E8", cursor: "pointer",
@@ -1366,7 +1366,7 @@ function AlertsTab({
                     onClick={(e) => { e.stopPropagation(); handleCancel(a); }}
                     aria-label="Cancel alert"
                     style={{
-                      width: 26, height: 26, borderRadius: 8, background: "#FDEDEC",
+                      width: 26, height: 26, borderRadius: 12, background: "#FDEDEC",
                       border: "none", display: "flex", alignItems: "center",
                       justifyContent: "center", cursor: "pointer", padding: 0, flexShrink: 0,
                     }}
@@ -1376,7 +1376,7 @@ function AlertsTab({
                 ) : (
                   <div style={{
                     flexShrink: 0, background: "#F2F2F7", color: "#6B6B6F",
-                    fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, padding: "5px 10px", borderRadius: 8,
+                    fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, padding: "5px 10px", borderRadius: tokens.radiusCard,
                     whiteSpace: "nowrap",
                   }}>
                     {formatCountdown(a.expires_at)}
@@ -1402,7 +1402,7 @@ function AlertsTab({
                 setReportSheetOpenWithEvent(true);
               }}
               style={{
-                background: tokens.red, color: "white", border: "none", borderRadius: 8,
+                background: tokens.red, color: "white", border: "none", borderRadius: tokens.radiusCard,
                 padding: "10px 24px", marginTop: 16, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
               }}
             >
@@ -1412,7 +1412,7 @@ function AlertsTab({
         ) : myAlerts.length === 0 ? (
           <div style={{
             padding: 20, textAlign: "center", background: "#fff",
-            border: "1.5px dashed #D1D1D6", borderRadius: 8,
+            border: "1.5px dashed #D1D1D6", borderRadius: tokens.radiusCard,
             fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: "#B0B0B5",
           }}>
             No instructor reports in your area
@@ -1449,7 +1449,7 @@ function AlertsTab({
               minHeight: 56,
               background: "#fff",
               border: "none",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "14px 16px",
               cursor: "pointer",
               boxShadow: "0 4px 0 #E4E4E8",
@@ -1462,7 +1462,7 @@ function AlertsTab({
                 style={{
                   width: 34,
                   height: 34,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -1532,7 +1532,7 @@ function AlertsTab({
                       background: active ? "#0B1F3A" : "#fff",
                       color: active ? "#fff" : "#0B1F3A",
                       boxShadow: active ? "0 4px 0 #050D1C" : "0 4px 0 #E4E4E8",
-                      borderRadius: 8, padding: "9px 16px",
+                      borderRadius: tokens.radiusCard, padding: "9px 16px",
                       fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, cursor: "pointer",
                       whiteSpace: "nowrap",
                     }}
@@ -1546,7 +1546,7 @@ function AlertsTab({
             {filteredOfficialAlerts.length === 0 ? (
               <div style={{
                 padding: 20, textAlign: "center", background: "#fff",
-                border: "1.5px dashed #D1D1D6", borderRadius: 8,
+                border: "1.5px dashed #D1D1D6", borderRadius: tokens.radiusCard,
                 fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: "#B0B0B5",
               }}>
                 No matching incidents
@@ -1673,13 +1673,13 @@ function AlertsTab({
               <>
                 <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#8A93A3", marginBottom: 6 }}>Affected roads</div>
                 <div style={{
-                  background: "white", borderRadius: 8, padding: "12px 14px", marginBottom: 14,
+                  background: "white", borderRadius: tokens.radiusCard, padding: "12px 14px", marginBottom: 14,
                   display: "flex", flexWrap: "wrap", gap: 6,
                 }}>
                   {affectedRoads.map((road) => (
                     <span key={road} style={{
                       background: "#E7F1FC", color: tokens.blue, fontSize: 12, fontWeight: tokens.fontWeight.bold,
-                      padding: "5px 11px", borderRadius: 8,
+                      padding: "5px 11px", borderRadius: tokens.radiusCard,
                     }}>
                       {road}
                     </span>
@@ -1692,7 +1692,7 @@ function AlertsTab({
 
             <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#8A93A3", marginBottom: 6 }}>Description</div>
             <div style={{
-              background: "white", borderRadius: 8, padding: "12px 14px",
+              background: "white", borderRadius: tokens.radiusCard, padding: "12px 14px",
               fontSize: 13.5, color: tokens.navy, lineHeight: 1.45, marginBottom: 14,
             }}>
               {selectedAlert.description}
@@ -1734,7 +1734,7 @@ function AlertsTab({
             )}
 
             <div style={{
-              background: "white", borderRadius: 8, padding: 8, marginBottom: 6,
+              background: "white", borderRadius: tokens.radiusCard, padding: 8, marginBottom: 6,
               display: "flex", alignItems: "center", gap: 8,
             }}>
               <div style={{
@@ -1790,12 +1790,12 @@ function AlertCard({
 
   return (
     <div onClick={() => onSelect?.(alert)} style={{
-      background: "white", borderRadius: 8, boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
+      background: "white", borderRadius: tokens.radiusCard, boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
       padding: "14px 16px", marginBottom: 8, cursor: "pointer",
     }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
         <div style={{
-          width: 28, height: 28, borderRadius: 8, background: "transparent",
+          width: 28, height: 28, borderRadius: 12, background: "transparent",
           display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
         }}>
           <AlertSignIcon type={alert.alert_type} size={28} />
@@ -1844,7 +1844,7 @@ function AlertCard({
           onClick={(e) => { e.stopPropagation(); onUpvote(alert); }}
           style={{
             display: "flex", alignItems: "center", gap: 4,
-            background: "#F7FAFC", border: "0.5px solid #E2E6ED", borderRadius: 8,
+            background: "#F7FAFC", border: "0.5px solid #E2E6ED", borderRadius: tokens.radiusCard,
             padding: "6px 12px", cursor: "pointer",
           }}
         >
@@ -2689,7 +2689,7 @@ function ChatTab({
                 />
                 <div style={{
                   position: "absolute", top: 32, right: 0, zIndex: 41,
-                  background: "white", border: "0.5px solid #E2E6ED", borderRadius: 8,
+                  background: "white", border: "0.5px solid #E2E6ED", borderRadius: tokens.radiusCard,
                   boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden", minWidth: 190,
                 }}>
                   {[
@@ -2758,7 +2758,7 @@ function ChatTab({
               />
               <div style={{
                 position: "absolute", top: 34, left: 16, right: 16, zIndex: 41,
-                background: "white", border: "0.5px solid #E2E6ED", borderRadius: 8,
+                background: "white", border: "0.5px solid #E2E6ED", borderRadius: tokens.radiusCard,
                 boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden", maxHeight: 260, overflowY: "auto",
               }}>
                 {myRooms.map((r) => (
@@ -2863,7 +2863,7 @@ function ChatTab({
                     <div style={{ maxWidth: "75%" }}>
                       <div style={{
                         background: "#0F2044", color: "white",
-                        borderRadius: "8px 8px 8px 8px", padding: "10px 14px",
+                        borderRadius: tokens.radiusCard, padding: "10px 14px",
                         fontSize: tokens.fontSize.base, whiteSpace: "pre-wrap", wordBreak: "break-word",
                       }}>
                         {messageNode}
@@ -2892,7 +2892,7 @@ function ChatTab({
                         onContextMenu={(e) => { e.preventDefault(); setContextMsg(m); }}
                         style={{
                           background: "white", border: "0.5px solid #E2E6ED",
-                          borderRadius: "8px 8px 8px 8px", padding: "10px 14px",
+                          borderRadius: tokens.radiusCard, padding: "10px 14px",
                           fontSize: tokens.fontSize.base, color: "#0F2044", whiteSpace: "pre-wrap", wordBreak: "break-word",
                           userSelect: "none", WebkitUserSelect: "none", cursor: "pointer",
                         }}
@@ -2955,7 +2955,7 @@ function ChatTab({
             placeholder={noRoom ? "No room available yet" : `Message ${areaLabel} ADIs...`}
             style={{
               flex: 1, background: "#F7FAFC", border: "0.5px solid #E2E6ED",
-              borderRadius: 8, padding: "10px 14px", fontSize: tokens.fontSize.base, outline: "none",
+              borderRadius: tokens.radiusCard, padding: "10px 14px", fontSize: tokens.fontSize.base, outline: "none",
               opacity: noRoom || !room ? 0.6 : 1,
             }}
           />
@@ -2986,7 +2986,7 @@ function ChatTab({
           <div style={{
             position: "fixed", left: 16, right: 16,
             bottom: "calc(24px + env(safe-area-inset-bottom, 0px))", zIndex: 61,
-            background: "white", borderRadius: 8, overflow: "hidden",
+            background: "white", borderRadius: tokens.radiusCard, overflow: "hidden",
             boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
           }}>
             <div style={{

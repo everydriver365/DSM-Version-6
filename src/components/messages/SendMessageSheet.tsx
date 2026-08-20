@@ -484,7 +484,7 @@ export function SendMessageSheet({
                 style={{
                   flex: 1,
                   height: 40,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   border: "none",
                   background: BLUE,
                   color: "#fff",
@@ -501,7 +501,7 @@ export function SendMessageSheet({
                 style={{
                   flex: 1,
                   height: 40,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   border: "1px solid #E2E8F0",
                   background: "#fff",
                   color: NAVY,

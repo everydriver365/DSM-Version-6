@@ -901,7 +901,7 @@ function InstructorDMThread() {
             <div
               style={{
                 background: tokens.canvas,
-                borderRadius: "8px 8px 8px 8px",
+                borderRadius: tokens.radiusCard,
                 padding: "11px 14px",
                 display: "flex",
                 alignItems: "center",
@@ -982,7 +982,7 @@ function InstructorDMThread() {
             background: tokens.canvas,
             border: 0,
             outline: "none",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: "10px 14px",
             fontSize: tokens.fontSize.base,
             color: NAVY,

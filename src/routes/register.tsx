@@ -116,7 +116,7 @@ function RegisterPage() {
         onSubmit={onSubmit}
         className="w-full max-w-[360px] bg-white flex flex-col mt-12"
         style={{
-          borderRadius: "8px",
+          borderRadius: tokens.radiusCard,
           padding: "32px",
           boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
         }}

@@ -58,7 +58,7 @@ type Article = {
 const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #E3E8F0",
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   padding: "9px 11px",
   fontSize: tokens.fontSize.base,
   color: tokens.navy,
@@ -184,7 +184,7 @@ function AdminNews() {
             style={{
               flex: 1,
               padding: "9px 12px",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               border: "none",
               cursor: "pointer",
               fontSize: tokens.fontSize.base,
@@ -216,7 +216,7 @@ function AdminNews() {
               background: tokens.blue,
               color: "#fff",
               border: "none",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "11px 14px",
               fontSize: tokens.fontSize.base,
               fontWeight: tokens.fontWeight.bold,
@@ -233,7 +233,7 @@ function AdminNews() {
               style={{
                 background: "#fff",
                 border: "1px solid #E3E8F0",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 12,
                 opacity: s.enabled ? 1 : 0.55,
                 ...POPPINS,
@@ -249,7 +249,7 @@ function AdminNews() {
                     fontWeight: tokens.fontWeight.extrabold,
                     background: tokens.canvas,
                     color: "#334155",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "3px 8px",
                   }}
                 >
@@ -313,7 +313,7 @@ function AdminNews() {
                 style={{
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.semibold,
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "6px 14px",
                   border: "none",
                   cursor: "pointer",
@@ -333,7 +333,7 @@ function AdminNews() {
               style={{
                 background: "#fff",
                 border: "1px solid #E3E8F0",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 12,
                 opacity: a.is_hidden ? 0.5 : 1,
                 ...POPPINS,
@@ -420,7 +420,7 @@ function AdminNews() {
             style={{
               width: "100%",
               background: "#fff",
-              borderRadius: "8px 8px 0 0",
+              borderRadius: "16px 16px 0 0",
               padding: 16,
               maxHeight: "88vh",
               overflowY: "auto",
@@ -505,7 +505,7 @@ function AdminNews() {
                 background: tokens.blue,
                 color: "#fff",
                 border: "none",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "12px 16px",
                 fontSize: tokens.fontSize.md,
                 fontWeight: tokens.fontWeight.bold,
@@ -537,7 +537,7 @@ function AdminNews() {
             style={{
               width: "100%",
               background: "#fff",
-              borderRadius: "8px 8px 0 0",
+              borderRadius: "16px 16px 0 0",
               padding: 16,
               maxHeight: "88vh",
               overflowY: "auto",
@@ -634,7 +634,7 @@ function AdminNews() {
                 background: tokens.blue,
                 color: "#fff",
                 border: "none",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "12px 16px",
                 fontSize: tokens.fontSize.md,
                 fontWeight: tokens.fontWeight.bold,

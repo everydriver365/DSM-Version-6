@@ -190,7 +190,7 @@ function MarketplaceProductPage() {
                   fontSize: tokens.fontSize.sm,
                   fontWeight: tokens.fontWeight.bold,
                   padding: "4px 8px",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                 }}
               >
                 {tile.badge}
@@ -236,7 +236,7 @@ function MarketplaceProductPage() {
               style={{
                 background: "#fff",
                 border: "0.5px solid #EEF2F7",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 16,
                 marginTop: 16,
               }}
@@ -288,7 +288,7 @@ function MarketplaceProductPage() {
                   color: "#fff",
                   border: "none",
                   padding: "14px",
-                  borderRadius: 8,
+                  borderRadius: 12,
                   fontSize: tokens.fontSize.lg,
                   fontWeight: tokens.fontWeight.bold,
                   cursor: "pointer",
@@ -311,7 +311,7 @@ function MarketplaceProductPage() {
                   color: "#fff",
                   border: "none",
                   padding: "14px",
-                  borderRadius: 8,
+                  borderRadius: 12,
                   fontSize: tokens.fontSize.lg,
                   fontWeight: tokens.fontWeight.bold,
                   cursor: "pointer",

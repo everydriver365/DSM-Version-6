@@ -1514,7 +1514,7 @@ function GapsPage() {
           style={{
             background: "#FEF2F2",
             border: "0.5px solid #FECACA",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: "14px 16px",
             margin: "12px 16px 0",
             display: "flex",
@@ -1650,7 +1650,7 @@ function GapsPage() {
                     background: isSelected ? "#1877D6" : "#FFFFFF",
                     color: isSelected ? "#FFFFFF" : "#0B1F3A",
                     border: "none",
-                    borderRadius: 8,
+                    borderRadius: 12,
                     padding: "8px 0 6px",
                     display: "flex",
                     flexDirection: "column",
@@ -1745,7 +1745,7 @@ function GapsPage() {
                   <div
                     style={{
                       background: "#F9FAFB",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: "8px 12px",
                       margin: "0 16px 10px",
                       display: "flex",
@@ -1822,7 +1822,7 @@ function GapsPage() {
                       style={{
                         position: "relative",
                         background: anySelected ? "#F0F7FF" : "#FFFFFF",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         border: anySelected ? "1.5px solid #1877D6" : "1px solid #DCEAF7",
                         boxShadow: "0 4px 14px rgba(24,95,165,0.12)",
                         margin: "0 16px 18px",
@@ -1948,7 +1948,7 @@ function GapsPage() {
                                   style={{
                                     width: 42,
                                     height: 42,
-                                    borderRadius: 8,
+                                    borderRadius: 12,
                                     background:
                                       "linear-gradient(135deg, #1877D6, #0B1F3A)",
                                     display: "flex",
@@ -2024,7 +2024,7 @@ function GapsPage() {
                         <div
                           style={{
                             background: "#E6F1FB",
-                            borderRadius: 8,
+                            borderRadius: tokens.radiusCard,
                             padding: "10px 14px",
                             marginTop: 10,
                             display: "flex",
@@ -2210,7 +2210,7 @@ function GapsPage() {
                 marginTop: 16,
                 width: "100%",
                 height: 48,
-                borderRadius: 8,
+                borderRadius: 12,
                 background: NAVY,
                 color: tokens.white,
                 fontWeight: tokens.fontWeight.semibold,
@@ -2231,7 +2231,7 @@ function GapsPage() {
           style={{
             background: "#E0FFF4",
             border: "1px solid #86EFAC",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 16,
             margin: "12px 16px 0",
             color: "#065F46",
@@ -2281,7 +2281,7 @@ function GapsPage() {
                 padding: 16,
                 background: "#FEF3C7",
                 border: "1px solid #FCD34D",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
               }}
             >
               <div
@@ -2307,7 +2307,7 @@ function GapsPage() {
                   background: tokens.navy,
                   color: tokens.white,
                   border: "none",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "8px 14px",
                   fontSize: tokens.fontSize.base,
                   fontWeight: tokens.fontWeight.semibold,
@@ -2502,7 +2502,7 @@ function GapsPage() {
                 key={o.id}
                 style={{
                   background: "#F8FAFC",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "10px 12px",
                   marginBottom: 6,
                   display: "flex",
@@ -2538,7 +2538,7 @@ function GapsPage() {
             bottom: 80,
             width: "70%",
             background: NAVY,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 12,
             boxShadow: "0 8px 24px rgba(11,31,58,0.3)",
             display: "flex",
@@ -2556,7 +2556,7 @@ function GapsPage() {
               color: NAVY,
               fontWeight: tokens.fontWeight.bold,
               fontSize: 15,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               border: "none",
               padding: "14px 20px",
               cursor: "pointer",
@@ -2595,7 +2595,7 @@ function GapsPage() {
               color: tokens.white,
               fontWeight: tokens.fontWeight.bold,
               fontSize: 15,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               border: "none",
               padding: "14px 20px",
               cursor: "pointer",
@@ -2637,7 +2637,7 @@ function GapsPage() {
                     gap: 12,
                     width: "100%",
                     background: "#F5F7FA",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: 12,
                     border: "none",
                     cursor: "pointer",
@@ -2742,7 +2742,7 @@ function GapsPage() {
                               style={{
                                 width: 20,
                                 height: 20,
-                                borderRadius: 8,
+                                borderRadius: 12,
                                 border: checked ? "none" : "1.5px solid #9CA3AF",
                                 background: checked ? "#1877D6" : "#FFFFFF",
                                 display: "flex",
@@ -2905,7 +2905,7 @@ function GapsPage() {
                               color: tokens.white,
                               fontWeight: tokens.fontWeight.bold,
                               fontSize: 15,
-                              borderRadius: 8,
+                              borderRadius: tokens.radiusCard,
                               border: "none",
                               padding: "14px 20px",
                               cursor: "pointer",
@@ -2941,7 +2941,7 @@ function GapsPage() {
               style={{
                 width: "100%",
                 border: "1px solid #D5DDE8",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 12,
                 fontSize: tokens.fontSize.md,
                 color: tokens.navy,
@@ -2972,7 +2972,7 @@ function GapsPage() {
               style={{
                 width: "100%",
                 border: "1px solid #D5DDE8",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "10px 12px",
                 fontSize: tokens.fontSize.md,
                 color: tokens.navy,
@@ -3017,7 +3017,7 @@ function GapsPage() {
 
               width: "100%",
               height: 48,
-              borderRadius: 8,
+              borderRadius: 12,
               background: BLUE_BRIGHT,
               color: tokens.white,
               fontWeight: tokens.fontWeight.bold,

@@ -212,7 +212,7 @@ export default function InstructorTopBar({
               fontWeight: tokens.fontWeight.semibold,
               minWidth: 17,
               height: 17,
-              borderRadius: 8,
+              borderRadius: 12,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",

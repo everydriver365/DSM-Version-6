@@ -491,7 +491,7 @@ function AdminListingsPage() {
           zIndex: 40,
           background: tokens.navy,
           color: "#fff",
-          borderRadius: "0 0 8px 8px",
+          borderRadius: "0 0 16px 16px",
           padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 14px",
           display: "flex",
           alignItems: "center",
@@ -546,7 +546,7 @@ function AdminListingsPage() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
               display: "flex",
               overflow: "hidden",
@@ -598,7 +598,7 @@ function AdminListingsPage() {
                   whiteSpace: "nowrap",
                   flexShrink: 0,
                   padding: "10px 18px",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   border: "none",
                   background: active ? "#1877D6" : "#fff",
                   color: active ? "#fff" : "#0B1F3A",
@@ -634,7 +634,7 @@ function AdminListingsPage() {
                 key={l.id}
                 style={{
                   background: "#fff",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 18,
                   marginLeft: 16,
                   marginRight: 16,
@@ -677,7 +677,7 @@ function AdminListingsPage() {
                           fontSize: 12,
                           fontWeight: tokens.fontWeight.extrabold,
                           padding: "6px 10px",
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                         }}
                       >
                         No price
@@ -1034,7 +1034,7 @@ function SupplierListingSheet({
                     style={{
                       flex: 1,
                       padding: "8px 10px",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       border: "0.5px solid #E2E6ED",
                       background: draft.priceType === t ? "#0B1F3A" : "#fff",
                       color: draft.priceType === t ? "#fff" : "#0B1F3A",
@@ -1062,7 +1062,7 @@ function SupplierListingSheet({
                     style={{
                       flex: 1,
                       padding: "8px 10px",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       border: "0.5px solid #E2E6ED",
                       background: draft.contactType === t ? "#0B1F3A" : "#fff",
                       color: draft.contactType === t ? "#fff" : "#0B1F3A",
@@ -1256,7 +1256,7 @@ function StatCard({ label, value }: { label: string; value: number; color?: stri
       style={{
         background: "#fff",
         border: "0.5px solid #E2E6ED",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: 12,
         fontFamily: "Poppins, sans-serif",
       }}
@@ -1296,7 +1296,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 const inputStyle: React.CSSProperties = {
   border: "0.5px solid #E2E6ED",
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   padding: "8px 10px",
   fontSize: tokens.fontSize.base,
   fontFamily: "Poppins, sans-serif",
@@ -1312,7 +1312,7 @@ function primaryBtn(bg: string): React.CSSProperties {
     background: bg,
     color: "#fff",
     border: "none",
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     padding: "8px 12px",
     fontSize: tokens.fontSize.base,
     fontWeight: tokens.fontWeight.semibold,
@@ -1324,7 +1324,7 @@ const ghostBtn: React.CSSProperties = {
   background: "#fff",
   color: tokens.navy,
   border: "1px solid #0B1F3A",
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   padding: "8px 12px",
   fontSize: tokens.fontSize.base,
   fontWeight: tokens.fontWeight.semibold,

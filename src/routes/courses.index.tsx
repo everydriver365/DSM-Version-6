@@ -56,7 +56,7 @@ function SectionBar({ label, count, color }: { label: string; count: number; col
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ width: 3, height: 14, borderRadius: 8, background: color }} />
+        <span style={{ width: 3, height: 14, borderRadius: 12, background: color }} />
         <span
           style={{
             fontSize: 12,
@@ -248,7 +248,7 @@ function CoursesPage() {
                 background: tokens.blue,
                 color: "#fff",
                 border: "none",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "10px 16px",
                 fontWeight: tokens.fontWeight.semibold,
                 fontSize: tokens.fontSize.md,
@@ -332,7 +332,7 @@ function CourseCard({
     <div
       style={{
         background: "#fff",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: 12,
         marginBottom: 14,
         boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
@@ -408,7 +408,7 @@ function CourseCard({
                 fontSize: tokens.fontSize.xs,
                 fontWeight: tokens.fontWeight.extrabold,
                 padding: "5px 10px",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 textTransform: "uppercase",
                 letterSpacing: "0.4px",
               }}
@@ -421,7 +421,7 @@ function CourseCard({
                 color: c.transmission === 'Automatic' ? '#0369A1' : c.transmission === 'Both' ? '#15803D' : '#475569',
                 fontSize: tokens.fontSize.xs,
                 fontWeight: tokens.fontWeight.bold,
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: '2px 8px',
                 fontFamily: 'Poppins, sans-serif',
                 textTransform: 'uppercase',
@@ -502,7 +502,7 @@ function CourseCard({
               fontSize: 10.5,
               fontWeight: tokens.fontWeight.extrabold,
               padding: "4px 11px",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
             }}
           >
             {soldOut ? "Sold out" : draft ? "Draft" : "Active"}
@@ -575,7 +575,7 @@ function CourseCard({
                   fontSize: 9.5,
                   fontWeight: tokens.fontWeight.extrabold,
                   padding: "2px 8px",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   flexShrink: 0,
                 }}
               >
@@ -598,7 +598,7 @@ function CourseCard({
             color: tokens.navy,
             border: "none",
             padding: 10,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             fontSize: 12.5,
             fontWeight: tokens.fontWeight.bold,
             textAlign: "center",
@@ -617,7 +617,7 @@ function CourseCard({
             color: "#fff",
             border: "none",
             padding: 10,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             fontSize: 12.5,
             fontWeight: tokens.fontWeight.bold,
             textAlign: "center",

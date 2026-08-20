@@ -100,7 +100,7 @@ function PostcodeRatesPage() {
     height: 44,
     padding: "0 12px",
     border: "0.5px solid #E2E6ED",
-    borderRadius: 8,
+    borderRadius: 12,
     fontSize: tokens.fontSize.md,
     color: tokens.navy,
     background: "#fff",
@@ -154,7 +154,7 @@ function PostcodeRatesPage() {
           <input style={{ ...inputStyle, marginTop: 6, marginBottom: 10 }} type="number" step="0.5" inputMode="decimal" value={rate} onChange={(e) => setRate(e.target.value)} placeholder="45" />
           <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Label (optional)</label>
           <input style={{ ...inputStyle, marginTop: 6, marginBottom: 14 }} value={label} onChange={(e) => setLabel(e.target.value)} placeholder="e.g. Winchester area" maxLength={60} />
-          <button type="button" onClick={addRule} disabled={saving} className="w-full text-white text-[14px] font-semibold" style={{ height: 48, borderRadius: 8, background: tokens.blue, opacity: saving ? 0.5 : 1, ...POPPINS }}>
+          <button type="button" onClick={addRule} disabled={saving} className="w-full text-white text-[14px] font-semibold" style={{ height: 48, borderRadius: 12, background: tokens.blue, opacity: saving ? 0.5 : 1, ...POPPINS }}>
             {saving ? "Saving…" : "Add rule"}
           </button>
           <p className="mt-3 text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>

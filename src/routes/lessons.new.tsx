@@ -521,7 +521,7 @@ function NewLessonPage() {
               padding: "14px 16px",
               background: "#F7FAFC",
               border: "0.5px solid #E2E6ED",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
             }}
           >
             <div className="flex items-center" style={{ flex: 1, gap: 8 }}>
@@ -570,7 +570,7 @@ function NewLessonPage() {
                       onClick={() => setRecurringFreq(f)}
                       style={{
                         padding: "10px 0",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         fontSize: tokens.fontSize.base,
                         fontWeight: tokens.fontWeight.semibold,
                         background: active ? "#0F2044" : "#F7FAFC",
@@ -592,7 +592,7 @@ function NewLessonPage() {
                 style={{
                   width: "100%",
                   height: 44,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   border: "0.5px solid #E2E6ED",
                   padding: "0 12px",
                   fontSize: tokens.fontSize.md,

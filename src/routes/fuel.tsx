@@ -447,7 +447,7 @@ function FuelPage() {
                 background: NAVY,
                 color: tokens.white,
                 border: "none",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 fontWeight: tokens.fontWeight.semibold,
                 fontSize: tokens.fontSize.md,
                 cursor: "pointer",
@@ -566,7 +566,7 @@ function FuelPage() {
 function pill(active: boolean): React.CSSProperties {
   return {
     padding: "6px 14px",
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     fontSize: 12,
     fontWeight: tokens.fontWeight.medium,
     cursor: "pointer",
@@ -767,7 +767,7 @@ function FindCheapFuel({
             style={{
               marginTop: 12,
               padding: "8px 18px",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               border: "none",
               background: tokens.blue,
               color: tokens.white,
@@ -810,7 +810,7 @@ function FindCheapFuel({
               style={{
                 background: tokens.white,
                 border: BORDER,
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 16,
                 fontSize: 12,
                 color: tokens.textSecondary,
@@ -1003,7 +1003,7 @@ function cardStyle({ mt }: { mt: number }): React.CSSProperties {
   return {
     background: tokens.white,
     border: BORDER,
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     padding: 16,
     marginLeft: 16,
     marginRight: 16,
@@ -1015,7 +1015,7 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   padding: "10px 12px",
   border: BORDER,
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   fontSize: tokens.fontSize.md,
   background: tokens.white,
   color: NAVY,
@@ -1044,7 +1044,7 @@ function SectionHeading({ icon, title }: { icon?: React.ReactNode; title: string
 
 function Stat({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
-    <div style={{ background: "#F8FAFC", border: BORDER, borderRadius: 8, padding: 10 }}>
+    <div style={{ background: "#F8FAFC", border: BORDER, borderRadius: tokens.radiusCard, padding: 10 }}>
       <div style={{ fontSize: tokens.fontSize.sm, color: "#6B7280", fontWeight: 500 }}>{label}</div>
       <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: color || NAVY, marginTop: 2 }}>{value}</div>
     </div>

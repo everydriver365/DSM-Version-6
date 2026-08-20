@@ -318,7 +318,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
           style={{
             width: 30,
             height: 30,
-            borderRadius: 8,
+            borderRadius: 12,
             background: "#F2F2F7",
             display: "inline-flex",
             alignItems: "center",
@@ -349,7 +349,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
 
   const cardStyle: React.CSSProperties = {
     background: "#fff",
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     overflow: "hidden",
     boxShadow: "0 1px 2px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.05)",
   };
@@ -439,7 +439,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
             style={{
               marginTop: 12,
               background: "rgba(255,255,255,0.08)",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "11px 14px",
               display: "flex",
               flexDirection: "row",
@@ -1052,7 +1052,7 @@ function RootComponent() {
               marginTop: 16,
               background: tokens.blue,
               color: "#fff",
-              borderRadius: 20,
+              borderRadius: tokens.radiusCard,
               padding: "14px 40px",
               fontSize: 15,
               fontWeight: tokens.fontWeight.extrabold,

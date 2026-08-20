@@ -162,7 +162,7 @@ function ChecklistPage() {
                       style={{
                         width: 22,
                         height: 22,
-                        borderRadius: 8,
+                        borderRadius: 12,
                         backgroundColor: on ? "#1877D6" : "#FFFFFF",
                         border: on ? "1px solid #1877D6" : "1.5px solid #CBD5E1",
                       }}

@@ -38,7 +38,7 @@ function TopBar({ onBack }: { onBack: () => void }) {
         zIndex: 40,
         background: tokens.navy,
         color: "#fff",
-        borderRadius: "0 0 8px 8px",
+        borderRadius: "0 0 16px 16px",
         padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 18px",
         display: "flex",
         alignItems: "center",
@@ -240,7 +240,7 @@ function AdminFeatured() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               boxShadow: CARD_SHADOW,
               display: "flex",
             }}
@@ -258,7 +258,7 @@ function AdminFeatured() {
               alignItems: "center",
               gap: 9,
               background: "#fff",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "13px 16px",
               boxShadow: CARD_SHADOW,
             }}
@@ -290,7 +290,7 @@ function AdminFeatured() {
             <div
               style={{
                 background: "#fff",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 overflow: "hidden",
                 boxShadow: CARD_SHADOW,
               }}
@@ -341,7 +341,7 @@ function AdminFeatured() {
                               color: "#B8860B",
                               background: "#FFF6DC",
                               padding: "3px 9px",
-                              borderRadius: 8,
+                              borderRadius: tokens.radiusCard,
                               letterSpacing: "0.3px",
                             }}
                           >

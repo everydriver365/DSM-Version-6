@@ -352,7 +352,7 @@ function NewMockTestSheet({
                 className="w-full flex items-center px-3 bg-white"
                 style={{
                   height: 44,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   border: "0.5px solid #EEF2F7",
                 }}
               >
@@ -395,7 +395,7 @@ function NewMockTestSheet({
                     marginTop: 4,
                     background: tokens.white,
                     border: "1px solid #EEF2F7",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                     zIndex: 20,
                     maxHeight: 220,
@@ -451,7 +451,7 @@ function NewMockTestSheet({
               className="w-full flex items-center justify-center text-[13px] font-semibold"
               style={{
                 height: 44,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: "1px dashed #1877D6",
                 color: tokens.blue,
                 background: "#F4F8FE",

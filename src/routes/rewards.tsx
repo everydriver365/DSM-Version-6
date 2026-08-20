@@ -234,7 +234,7 @@ function RewardsPage() {
         style={{
           background: tokens.white,
           border: "0.5px solid #E2E6ED",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: 16,
           margin: "16px",
         }}
@@ -252,7 +252,7 @@ function RewardsPage() {
                 flexDirection: "column",
                 gap: 6,
                 padding: 10,
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 background: "#F7F9FC",
                 border: "0.5px solid #E2E6ED",
               }}
@@ -283,7 +283,7 @@ function RewardsPage() {
         style={{
           background: tokens.white,
           border: "0.5px solid #E2E6ED",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: 16,
           margin: "12px 16px 0",
         }}
@@ -333,7 +333,7 @@ function RewardsPage() {
                     alignItems: "center",
                     gap: 10,
                     padding: "8px 10px",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     background: isMe ? "#E0F4FF" : "#FFFFFF",
                     borderLeft: isMe ? "4px solid #1A52A0" : "4px solid transparent",
                     border: isMe ? undefined : "0.5px solid #F0F2F5",
@@ -415,7 +415,7 @@ function RewardsPage() {
           style={{
             background: tokens.white,
             border: "0.5px solid #E2E6ED",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: "12px 14px",
             display: "flex",
             alignItems: "center",

@@ -104,7 +104,7 @@ function EarningsPage() {
       {/* Summary card */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: tokens.navy, borderRadius: 8, padding: 16 }}
+        style={{ backgroundColor: tokens.navy, borderRadius: tokens.radiusCard, padding: 16 }}
       >
         <SummaryRow label="THIS WEEK" value={formatGBP(week)} />
         <Divider />

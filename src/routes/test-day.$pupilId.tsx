@@ -100,7 +100,7 @@ function Card({ children }: { children: React.ReactNode }) {
       style={{
         backgroundColor: tokens.white,
         border: "0.5px solid #EEF2F7",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: 16,
         marginLeft: 16,
         marginRight: 16,
@@ -132,7 +132,7 @@ function Checkbox({
         style={{
           width: 22,
           height: 22,
-          borderRadius: 8,
+          borderRadius: 12,
           border: "1.5px solid #1877D6",
           backgroundColor: checked ? "#1877D6" : "#FFFFFF",
           color: tokens.white,
@@ -182,7 +182,7 @@ function QAItem({ type, q, a }: { type: "SHOW" | "TELL"; q: string; a: string })
             fontSize: tokens.fontSize.xs,
             fontWeight: tokens.fontWeight.bold,
             padding: "2px 6px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             flexShrink: 0,
             marginTop: 2,
             ...POPPINS,
@@ -599,7 +599,7 @@ function TestDayPage() {
                   width: "100%",
                   height: 40,
                   padding: "0 12px 0 36px",
-                  borderRadius: 8,
+                  borderRadius: 12,
                   border: "0.5px solid #E2E6ED",
                   fontSize: tokens.fontSize.md,
                   outline: "none",
@@ -666,7 +666,7 @@ function TestDayPage() {
             className="inline-flex items-center justify-center text-[13px] font-medium text-white"
             style={{
               height: 40,
-              borderRadius: 8,
+              borderRadius: 12,
               backgroundColor: tokens.blue,
               opacity: mapsQuery ? 1 : 0.5,
               pointerEvents: mapsQuery ? "auto" : "none",
@@ -686,7 +686,7 @@ function TestDayPage() {
             className="inline-flex items-center justify-center text-[13px] font-medium"
             style={{
               height: 40,
-              borderRadius: 8,
+              borderRadius: 12,
               backgroundColor: "#F3F4F6",
               color: tokens.navy,
               opacity: mapsQuery ? 1 : 0.5,

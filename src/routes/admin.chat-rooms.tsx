@@ -32,7 +32,7 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         background: tokens.navy,
         color: "#fff",
         padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 16px",
-        borderRadius: "0 0 8px 8px",
+        borderRadius: "0 0 16px 16px",
         display: "flex",
         alignItems: "center",
         gap: 12,
@@ -65,7 +65,7 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
 
 const inputStyle: React.CSSProperties = {
   background: "#F2F2F7",
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   border: "none",
   padding: "13px 15px",
   fontSize: tokens.fontSize.md,
@@ -80,7 +80,7 @@ const segmentWrapStyle: React.CSSProperties = {
   display: "flex",
   flexDirection: "row",
   background: "#F2F2F7",
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   padding: 4,
 };
 
@@ -88,7 +88,7 @@ function segmentStyle(active: boolean): React.CSSProperties {
   return {
     flex: 1,
     padding: "11px 4px",
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     fontSize: tokens.fontSize.md,
     fontWeight: tokens.fontWeight.bold,
     textAlign: "center",
@@ -287,7 +287,7 @@ function AdminChatRooms() {
           style={{
             background: "#fff",
             border: "none",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 18,
             display: "flex",
             flexDirection: "column",
@@ -342,7 +342,7 @@ function AdminChatRooms() {
             style={{
               width: "100%",
               padding: 15,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               background: tokens.blue,
               color: "#fff",
               border: "none",
@@ -377,7 +377,7 @@ function AdminChatRooms() {
             style={{
               background: "#fff",
               border: "none",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "13px 16px",
               fontSize: tokens.fontSize.md,
               fontFamily: "Poppins, sans-serif",
@@ -406,7 +406,7 @@ function AdminChatRooms() {
               cursor: "pointer",
               background: "#fff",
               border: "none",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "13px 16px",
               boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.05)",
             }}
@@ -432,7 +432,7 @@ function AdminChatRooms() {
                 style={{
                   background: "#fff",
                   border: "none",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 16,
                   boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
                 }}
@@ -452,7 +452,7 @@ function AdminChatRooms() {
                       fontWeight: tokens.fontWeight.extrabold,
                       color: tokens.blue,
                       background: "#E7F1FC",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: "5px 11px",
                       whiteSpace: "nowrap",
                     }}
@@ -511,7 +511,7 @@ function AdminChatRooms() {
                       alignItems: "center",
                       gap: 6,
                       padding: "8px 14px",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       border: "1.5px solid #FF3B30",
                       background: "#fff",
                       color: "#FF3B30",

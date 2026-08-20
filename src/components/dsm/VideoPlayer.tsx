@@ -175,7 +175,7 @@ export function VideoPlayer({
           style={{
             height: 3,
             background: 'rgba(255,255,255,0.3)',
-            borderRadius: 8,
+            borderRadius: 12,
             marginBottom: 8,
             cursor: 'pointer',
             position: 'relative',

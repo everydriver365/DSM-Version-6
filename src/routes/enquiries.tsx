@@ -132,7 +132,7 @@ function metaFor(status: string | null) {
 
 const CARD: React.CSSProperties = {
   background: "#fff",
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
   overflow: "hidden",
 };
@@ -550,7 +550,7 @@ function EnquiriesPage() {
           background: "#fff",
           border: "none",
           textAlign: "left",
-          fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44,
+          fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: tokens.radiusCard, minHeight: 44,
           marginBottom: 10,
           boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
         }}
@@ -559,7 +559,7 @@ function EnquiriesPage() {
           style={{
             width: 42,
             height: 42,
-            borderRadius: 8,
+            borderRadius: 12,
             background: "#EFF6FF",
             display: "flex",
             alignItems: "center",
@@ -611,7 +611,7 @@ function EnquiriesPage() {
                 fontSize: tokens.fontSize.sm,
                 fontWeight: tokens.fontWeight.bold,
                 padding: "3px 9px",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 marginTop: 5,
                 width: "fit-content",
                 ...POPPINS,
@@ -644,7 +644,7 @@ function EnquiriesPage() {
                   gap: 5,
                   background: "#EFF6FF",
                   color: tokens.blue,
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "6px 12px",
                   fontSize: 12.5,
                   fontWeight: tokens.fontWeight.extrabold,
@@ -708,7 +708,7 @@ function EnquiriesPage() {
           alignItems: "center",
           gap: 12,
           background: "linear-gradient(100deg, #0B1F3A, #14509E)",
-          fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44,
+          fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: tokens.radiusCard, minHeight: 44,
           padding: "14px 16px",
           marginTop: 20,
           marginBottom: 16,
@@ -721,7 +721,7 @@ function EnquiriesPage() {
           style={{
             width: 34,
             height: 34,
-            borderRadius: 8,
+            borderRadius: 12,
             background: "rgba(255,255,255,0.15)",
             display: "flex",
             alignItems: "center",
@@ -874,7 +874,7 @@ function EnquiriesPage() {
           style={{
             width: 34,
             height: 34,
-            borderRadius: 8,
+            borderRadius: 12,
             background: chipBg,
             display: "flex",
             alignItems: "center",
@@ -923,7 +923,7 @@ function EnquiriesPage() {
             style={{
               width: 38,
               height: 38,
-              borderRadius: 8,
+              borderRadius: 12,
               flexShrink: 0,
               display: "flex",
               alignItems: "center",
@@ -994,7 +994,7 @@ function EnquiriesPage() {
             zIndex: 2,
             background: tokens.navy,
             padding: "calc(12px + env(safe-area-inset-top, 0px)) 16px 16px",
-            borderRadius: "0 0 8px 8px",
+            borderRadius: "0 0 16px 16px",
             display: "flex",
             alignItems: "center",
             gap: 12,
@@ -1008,7 +1008,7 @@ function EnquiriesPage() {
             style={{
               width: 34,
               height: 34,
-              borderRadius: 8,
+              borderRadius: 12,
               background: "rgba(255,255,255,0.08)",
               border: "none",
               flexShrink: 0,
@@ -1036,7 +1036,7 @@ function EnquiriesPage() {
             style={{
               background: tokens.blue,
               color: "#fff",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "6px 14px",
               fontSize: 12,
               fontWeight: tokens.fontWeight.extrabold,
@@ -1082,7 +1082,7 @@ function EnquiriesPage() {
                     style={{
                       width: 10,
                       height: 10,
-                      borderRadius: 8,
+                      borderRadius: 12,
                       background: banner.dot,
                       flexShrink: 0,
                     }}
@@ -1175,7 +1175,7 @@ function EnquiriesPage() {
                   style={{
                     background: "#F7F9FC",
                     padding: 12,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     color: tokens.navy,
                     fontSize: 13.5,
                     fontWeight: tokens.fontWeight.medium,
@@ -1266,7 +1266,7 @@ function EnquiriesPage() {
                         background: tokens.blue,
                         color: "#fff",
                         border: "none",
-                        borderRadius: 20, minHeight: 44,
+                        borderRadius: tokens.radiusCard, minHeight: 44,
                         padding: "9px 14px",
                         fontSize: 12.5,
                         fontWeight: tokens.fontWeight.bold,
@@ -1410,7 +1410,7 @@ function EnquiriesPage() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               overflow: "hidden",
               boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
               opacity: busy ? 0.6 : 1,
@@ -1452,7 +1452,7 @@ function EnquiriesPage() {
                       style={{
                         width: "100%",
                         border: "1px solid #E4E4E8",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: 10,
                         fontSize: tokens.fontSize.md,
                         color: tokens.navy,
@@ -1472,7 +1472,7 @@ function EnquiriesPage() {
                           background: smsText.trim() ? "#1877D6" : "#E5E5EA",
                           color: "#fff",
                           border: "none",
-                          borderRadius: 20, minHeight: 44,
+                          borderRadius: tokens.radiusCard, minHeight: 44,
                           padding: "10px 12px",
                           fontSize: tokens.fontSize.md,
                           fontWeight: tokens.fontWeight.bold,
@@ -1493,7 +1493,7 @@ function EnquiriesPage() {
                           background: tokens.canvas,
                           color: tokens.navy,
                           border: "none",
-                          borderRadius: 20, minHeight: 44,
+                          borderRadius: tokens.radiusCard, minHeight: 44,
                           padding: "10px 12px",
                           fontSize: tokens.fontSize.md,
                           fontWeight: tokens.fontWeight.bold,
@@ -1630,7 +1630,7 @@ function EnquiriesPage() {
                 background: noteText.trim() ? "#1877D6" : "#E5E5EA",
                 color: "#fff",
                 border: "none",
-                borderRadius: 20, minHeight: 44,
+                borderRadius: tokens.radiusCard, minHeight: 44,
                 padding: "8px 12px",
                 fontSize: tokens.fontSize.base,
                 fontWeight: tokens.fontWeight.bold,
@@ -1666,7 +1666,7 @@ function EnquiriesPage() {
                 key={i}
                 style={{
                   background: tokens.white,
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   boxShadow: "0 4px 0 #E4E4E8",
                   padding: "15px 16px",
                   display: "flex",

@@ -275,7 +275,7 @@ function AdminDsmLive() {
                 style={{
                   flex: 1,
                   padding: "8px 0",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   border: on ? "0.5px solid #0B1F3A" : "0.5px solid #E2E6ED",
                   background: on ? "#0B1F3A" : "#FFFFFF",
                   color: on ? "#FFFFFF" : "#6B7280",
@@ -599,7 +599,7 @@ function AdminDsmLive() {
             background: tokens.blue,
             color: "#fff",
             border: "none",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: "11px 20px",
             fontSize: tokens.fontSize.md,
             fontWeight: tokens.fontWeight.extrabold,
@@ -620,7 +620,7 @@ function AdminDsmLive() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: "0 4px 0 #D9D2C2, 0 12px 28px rgba(0,0,0,0.08)",
             display: "flex",
             overflow: "hidden",
@@ -667,7 +667,7 @@ function AdminDsmLive() {
               key={s.id}
               style={{
                 background: "#fff",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 18,
                 marginLeft: 16,
                 marginRight: 16,
@@ -689,7 +689,7 @@ function AdminDsmLive() {
                     fontSize: 11.5,
                     fontWeight: tokens.fontWeight.bold,
                     padding: "6px 12px",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     background: isUpcoming ? "#1877D6" : isPast ? "#E5E5EA" : "#E5E5EA",
                     color: isUpcoming ? "#fff" : "#8A8A8E",
                   }}
@@ -948,7 +948,7 @@ function AdminDsmLive() {
               background: tokens.red,
               color: "#fff",
               border: "none",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "12px 16px",
               fontSize: tokens.fontSize.md,
               fontWeight: tokens.fontWeight.semibold,
@@ -992,7 +992,7 @@ function AdminDsmLive() {
               background: tokens.blue,
               color: "#fff",
               border: "none",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "12px 16px",
               fontSize: tokens.fontSize.md,
               fontWeight: tokens.fontWeight.semibold,
@@ -1107,7 +1107,7 @@ function AdminDsmLive() {
               background: "#0F2044",
               color: "#fff",
               border: "none",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "12px 16px",
               fontSize: tokens.fontSize.md,
               fontWeight: tokens.fontWeight.semibold,
@@ -1162,7 +1162,7 @@ function AdminDsmLive() {
             background: tokens.navy,
             color: "#fff",
             padding: "10px 16px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             fontSize: tokens.fontSize.base,
             zIndex: 60,
           }}
@@ -1189,7 +1189,7 @@ function AdminDsmLive() {
             onClick={(e) => e.stopPropagation()}
             style={{
               background: "#fff",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 20,
               width: "100%",
               maxWidth: 420,
@@ -1243,7 +1243,7 @@ function AdminDsmLive() {
                   background: "#fff",
                   color: tokens.navy,
                   border: "1px solid #E2E6ED",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "10px 14px",
                   fontSize: tokens.fontSize.base,
                   fontWeight: tokens.fontWeight.semibold,
@@ -1260,7 +1260,7 @@ function AdminDsmLive() {
                   background: tokens.navy,
                   color: "#fff",
                   border: "none",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "10px 14px",
                   fontSize: tokens.fontSize.base,
                   fontWeight: tokens.fontWeight.semibold,
@@ -1283,7 +1283,7 @@ function AdminDsmLive() {
 const inp: React.CSSProperties = {
   width: "100%",
   padding: "10px 12px",
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   border: "1px solid #E2E6ED",
   fontSize: tokens.fontSize.md,
   fontFamily: "Poppins, sans-serif",

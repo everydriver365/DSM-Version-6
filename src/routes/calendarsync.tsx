@@ -59,7 +59,7 @@ const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const SECTION_CARD: React.CSSProperties = {
   background: "#fff",
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   padding: 18,
   boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
   marginBottom: 24,
@@ -86,7 +86,7 @@ const FIELD_LABEL: React.CSSProperties = {
 const FIELD_INPUT: React.CSSProperties = {
   ...POPPINS,
   background: "#F2F2F7",
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   padding: "13px 15px",
   border: "none",
   outline: "none",
@@ -147,7 +147,7 @@ const BTN_OUTLINE_RED: React.CSSProperties = {
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 12 }}>
-      <span style={{ width: 3, height: 14, background: tokens.blue, borderRadius: 8, flexShrink: 0 }} />
+      <span style={{ width: 3, height: 14, background: tokens.blue, borderRadius: 12, flexShrink: 0 }} />
       <span
         style={{
           ...POPPINS,
@@ -593,7 +593,7 @@ function CalendarSyncPage() {
           className="mx-0 mt-3"
           style={{
             backgroundColor: "#E7F1FC",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: "14px 16px",
             display: "flex",
             flexDirection: "row",
@@ -847,7 +847,7 @@ function CalendarSyncPage() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             border: "1px solid #E4E8EF",
             overflow: "hidden",
             marginBottom: 16,
@@ -877,7 +877,7 @@ function CalendarSyncPage() {
               style={{
                 marginBottom: 12,
                 background: "#FEF2F2",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "12px 14px",
               }}
             >
@@ -977,7 +977,7 @@ function CalendarSyncPage() {
             borderWidth: "0.5px",
             borderStyle: "solid",
             borderColor: "#BFDBFE",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 16,
             marginLeft: 16,
             marginRight: 16,
@@ -1014,7 +1014,7 @@ function CalendarSyncPage() {
             borderWidth: "1px",
             borderStyle: "solid",
             borderColor: tokens.blue,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 12,
           }}
         >

@@ -69,7 +69,7 @@ export function SaveButton({
         background: bg,
         color,
         width: "100%",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: "13px 0",
         border: "none",
         fontSize: tokens.fontSize.md,

@@ -146,7 +146,7 @@ function AccordionCard({
   return (
     <div
       className="bg-white mb-3"
-      style={{ borderRadius: 8, boxShadow: '0 1px 3px rgba(11,31,58,0.06)', border: 'none' }}
+      style={{ borderRadius: tokens.radiusCard, boxShadow: '0 1px 3px rgba(11,31,58,0.06)', border: 'none' }}
     >
       <button
         type="button"
@@ -787,7 +787,7 @@ function ProfilePage() {
           onClick={saveAll}
           disabled={saving || loading}
           className="inline-flex items-center text-[13px] font-semibold disabled:opacity-50"
-          style={{ height: 34, padding: "0 14px", borderRadius: 8, border: "none", background: tokens.blue, color: tokens.white }}
+          style={{ height: 34, padding: "0 14px", borderRadius: 12, border: "none", background: tokens.blue, color: tokens.white }}
         >
           {saving ? "Saving…" : "Save"}
         </button>

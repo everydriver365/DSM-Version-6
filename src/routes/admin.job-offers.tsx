@@ -395,7 +395,7 @@ function AdminJobOffers() {
             type="button"
             onClick={openNew}
             style={{
-              background: "#fff", color: BLUE, border: "none", borderRadius: 8,
+              background: "#fff", color: BLUE, border: "none", borderRadius: tokens.radiusCard,
               padding: "8px 12px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
               display: "inline-flex", alignItems: "center", gap: 6,
               boxShadow: "0 3px 0 #B8CDE4",
@@ -422,7 +422,7 @@ function AdminJobOffers() {
                 key={o.id}
                 style={{
                   background: "#fff",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 18,
                   marginBottom: 14,
                   boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.07)",
@@ -457,7 +457,7 @@ function AdminJobOffers() {
                     style={{
                       fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.extrabold, letterSpacing: 0.3,
                       color: badge.color, background: badge.bg,
-                      padding: "6px 13px", borderRadius: 8, whiteSpace: "nowrap",
+                      padding: "6px 13px", borderRadius: tokens.radiusCard, whiteSpace: "nowrap",
                     }}
                   >
                     {badge.label}
@@ -497,7 +497,7 @@ function AdminJobOffers() {
                         style={{
                           flex: 1,
                           background: "#fff", color: "#FF3B30", border: "1.5px solid #FF3B30",
-                          borderRadius: 8, padding: 12, fontSize: 13.5, fontWeight: tokens.fontWeight.bold,
+                          borderRadius: tokens.radiusCard, padding: 12, fontSize: 13.5, fontWeight: tokens.fontWeight.bold,
                           cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
                         }}
                       >
@@ -524,7 +524,7 @@ function AdminJobOffers() {
                         onClick={() => setThreadJob(o)}
                         style={{
                           flex: 1.3,
-                          background: BLUE, color: "#fff", border: "none", borderRadius: 8,
+                          background: BLUE, color: "#fff", border: "none", borderRadius: tokens.radiusCard,
                           padding: 12, fontSize: 13.5, fontWeight: tokens.fontWeight.bold, cursor: "pointer",
                           display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
                           boxShadow: "0 3px 0 #0F52A8",
@@ -596,7 +596,7 @@ function AdminJobOffers() {
                     style={{
                       display: "flex", alignItems: "center", gap: 8,
                       background: "#E5F0FC", color: BLUE, padding: "8px 12px",
-                      borderRadius: 8, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold,
+                      borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold,
                     }}
                   >
                     <span style={{ flex: 1 }}>Linked: {linkedEnquiry.name}</span>
@@ -626,7 +626,7 @@ function AdminJobOffers() {
                       <div
                         style={{
                           position: "absolute", top: "100%", left: 0, right: 0, zIndex: 10,
-                          background: "#fff", border: "1px solid #E5E7EB", borderRadius: 8,
+                          background: "#fff", border: "1px solid #E5E7EB", borderRadius: tokens.radiusCard,
                           marginTop: 4, maxHeight: 220, overflowY: "auto",
                           boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                         }}
@@ -822,7 +822,7 @@ function AdminJobOffers() {
                 />
               </FieldLabel>
 
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", border: "1px solid #EEF2F7", borderRadius: 8, background: "#fff" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", border: "1px solid #EEF2F7", borderRadius: tokens.radiusCard, background: "#fff" }}>
                 <div style={{ fontSize: tokens.fontSize.md, color: tokens.navy, fontWeight: 500 }}>Test already booked?</div>
                 <label style={{ position: "relative", display: "inline-block", width: 44, height: 26 }}>
                   <input
@@ -875,7 +875,7 @@ function AdminJobOffers() {
                 </>
               )}
 
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", border: "1px solid #EEF2F7", borderRadius: 8, background: "#fff" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", border: "1px solid #EEF2F7", borderRadius: tokens.radiusCard, background: "#fff" }}>
                 <div style={{ fontSize: tokens.fontSize.md, color: tokens.navy, fontWeight: 500 }}>Wants to join the swap list?</div>
                 <label style={{ position: "relative", display: "inline-block", width: 44, height: 26 }}>
                   <input
@@ -903,7 +903,7 @@ function AdminJobOffers() {
                 onClick={save}
                 disabled={saving}
                 style={{
-                  background: BLUE, color: "#fff", border: "none", borderRadius: 8,
+                  background: BLUE, color: "#fff", border: "none", borderRadius: tokens.radiusCard,
                   padding: "12px 16px", fontSize: 15, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                   opacity: saving ? 0.6 : 1, marginTop: 6,
                 }}
@@ -943,7 +943,7 @@ function inputStyle(withIcon = false): React.CSSProperties {
     padding: withIcon ? "10px 12px 10px 30px" : "10px 12px",
     fontSize: tokens.fontSize.lg,
     border: "1px solid #D1D5DB",
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     outline: "none",
     background: "#fff",
     color: NAVY,
@@ -1054,7 +1054,7 @@ function AdminJobThread({
                 <div key={m.id} style={{ display: "flex", justifyContent: mine ? "flex-end" : "flex-start" }}>
                   <div
                     style={{
-                      maxWidth: "78%", background: bg, color, borderRadius: 8,
+                      maxWidth: "78%", background: bg, color, borderRadius: tokens.radiusCard,
                       padding: "8px 12px", fontSize: tokens.fontSize.md,
                       boxShadow: mine ? "none" : "0 1px 2px rgba(0,0,0,0.05)",
                     }}
@@ -1085,7 +1085,7 @@ function AdminJobThread({
             onKeyDown={(e) => { if (e.key === "Enter") send(); }}
             placeholder="Reply as admin…"
             style={{
-              flex: 1, background: "#F3F4F6", border: "none", borderRadius: 8,
+              flex: 1, background: "#F3F4F6", border: "none", borderRadius: tokens.radiusCard,
               padding: "10px 14px", fontSize: tokens.fontSize.lg, outline: "none", ...POPPINS,
             }}
           />
@@ -1093,7 +1093,7 @@ function AdminJobThread({
             onClick={send}
             disabled={!draft.trim() || sending}
             style={{
-              background: BLUE, color: "#fff", border: "none", borderRadius: 8,
+              background: BLUE, color: "#fff", border: "none", borderRadius: 12,
               width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center",
               cursor: draft.trim() ? "pointer" : "not-allowed", opacity: draft.trim() ? 1 : 0.5,
             }}

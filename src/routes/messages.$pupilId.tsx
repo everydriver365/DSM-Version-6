@@ -140,7 +140,7 @@ function HighlightedBody({ body, query }: { body: string; query: string }) {
         style={{
           backgroundColor: "#FACC15",
           color: tokens.navy,
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: "0 1px",
         }}
       >
@@ -796,7 +796,7 @@ function PupilThreadPage() {
                   alignItems: "center",
                   gap: 8,
                   background: "rgba(255,255,255,0.1)",
-                  borderRadius: 8,
+                  borderRadius: 12,
                   padding: "0 10px",
                   height: 36,
                 }}
@@ -942,7 +942,7 @@ function PupilThreadPage() {
                 style={{
                   width: 28,
                   height: 28,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   background: "rgba(255,255,255,0.1)",
                   border: "none",
                   display: "flex",
@@ -961,7 +961,7 @@ function PupilThreadPage() {
                 style={{
                   width: 28,
                   height: 28,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   background: "rgba(255,255,255,0.1)",
                   display: "flex",
                   alignItems: "center",
@@ -1072,7 +1072,7 @@ function PupilThreadPage() {
                     <div
                       style={{
                         background: "#F5F0E8",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: "7px 12px",
                         display: "inline-flex",
                         alignItems: "center",
@@ -1259,7 +1259,7 @@ function PupilThreadPage() {
             style={{
               background: "#ECFDF5",
               border: "1px solid #A7F3D0",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "10px 12px",
               display: "flex",
               alignItems: "flex-start",
@@ -1372,7 +1372,7 @@ function PupilThreadPage() {
             flex: 1,
             background: tokens.canvas,
             border: "none",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: "10px 16px",
             fontSize: tokens.fontSize.base,
             color: tokens.navy,

@@ -56,7 +56,7 @@ export function QuickActionsMenu({
                 right: coords.right,
                 zIndex: 40,
                 background: tokens.white,
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 border: "0.5px solid #E2E6ED",
                 boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
                 minWidth: 140,

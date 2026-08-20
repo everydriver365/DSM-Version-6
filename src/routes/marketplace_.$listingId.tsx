@@ -247,7 +247,7 @@ function ListingDetailPage() {
 
   const CARD: React.CSSProperties = {
     background: "#fff",
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     border: "1px solid #E4E8EF",
     padding: 16,
     boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
@@ -405,7 +405,7 @@ function ListingDetailPage() {
                     aspectRatio: "1 / 1.95",
                     background: tokens.white,
                     border: "3px solid #0B1F3A",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     overflow: "hidden",
                     marginRight: -10,
                     zIndex: 1,
@@ -418,9 +418,9 @@ function ListingDetailPage() {
                     ))}
                   </div>
                   <div style={{ padding: 8, display: "flex", flexDirection: "column", gap: 5 }}>
-                    <span style={{ height: 6, borderRadius: 8, background: "#E7EDF5" }} />
-                    <span style={{ height: 6, width: "70%", borderRadius: 8, background: "#E7EDF5" }} />
-                    <span style={{ height: 6, width: "45%", borderRadius: 8, background: "#E7EDF5" }} />
+                    <span style={{ height: 6, borderRadius: 12, background: "#E7EDF5" }} />
+                    <span style={{ height: 6, width: "70%", borderRadius: 12, background: "#E7EDF5" }} />
+                    <span style={{ height: 6, width: "45%", borderRadius: 12, background: "#E7EDF5" }} />
                   </div>
                 </div>
                 {/* Browser mock */}
@@ -430,7 +430,7 @@ function ListingDetailPage() {
                     aspectRatio: "1 / 0.68",
                     background: tokens.white,
                     border: "3px solid #0B1F3A",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     overflow: "hidden",
                     marginTop: 22,
                     boxShadow: "0 12px 28px rgba(0,0,0,0.3)",
@@ -442,9 +442,9 @@ function ListingDetailPage() {
                     ))}
                   </div>
                   <div style={{ padding: 10, display: "flex", flexDirection: "column", gap: 6 }}>
-                    <span style={{ height: 7, borderRadius: 8, background: "#E7EDF5" }} />
-                    <span style={{ height: 7, width: "80%", borderRadius: 8, background: "#E7EDF5" }} />
-                    <span style={{ height: 7, width: "55%", borderRadius: 8, background: "#E7EDF5" }} />
+                    <span style={{ height: 7, borderRadius: 12, background: "#E7EDF5" }} />
+                    <span style={{ height: 7, width: "80%", borderRadius: 12, background: "#E7EDF5" }} />
+                    <span style={{ height: 7, width: "55%", borderRadius: 12, background: "#E7EDF5" }} />
                   </div>
                 </div>
               </div>
@@ -576,7 +576,7 @@ function ListingDetailPage() {
               zIndex: 2,
               marginTop: -26,
               background: "#F5F6F8",
-              borderRadius: "8px 8px 0 0",
+              borderRadius: "16px 16px 0 0",
             }}
           >
             {/* Title + price */}
@@ -1108,7 +1108,7 @@ function ListingDetailPage() {
                       color: tokens.textSecondary,
                       background: tokens.canvas,
                       padding: "5px 11px",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                     }}
                   >
                     #{t}
@@ -1264,7 +1264,7 @@ function ContactActions({
     fontSize: tokens.fontSize.md,
     fontWeight: tokens.fontWeight.bold,
     padding: 13,
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     boxShadow: "0 3px 0 #0F52A8",
     cursor: "pointer",
     width: "100%",
@@ -1281,7 +1281,7 @@ function ContactActions({
     fontSize: tokens.fontSize.md,
     fontWeight: tokens.fontWeight.bold,
     padding: 13,
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     boxShadow: "none",
     cursor: "pointer",
     width: "100%",
@@ -1467,7 +1467,7 @@ function EnquirySheet({
           background: tokens.white,
           width: "100%",
           maxWidth: 520,
-          borderRadius: "8px 8px 0 0",
+          borderRadius: "16px 16px 0 0",
           padding: 20,
           maxHeight: "85vh",
           overflowY: "auto",
@@ -1519,7 +1519,7 @@ function EnquirySheet({
           style={{
             width: "100%",
             border: "0.5px solid #E2E6ED",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 10,
             fontSize: tokens.fontSize.md,
             fontFamily: "inherit",
@@ -1547,7 +1547,7 @@ function EnquirySheet({
           style={{
             width: "100%",
             border: "0.5px solid #E2E6ED",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 10,
             fontSize: tokens.fontSize.md,
             marginBottom: 12,
@@ -1573,7 +1573,7 @@ function EnquirySheet({
           style={{
             width: "100%",
             border: "0.5px solid #E2E6ED",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 10,
             fontSize: tokens.fontSize.md,
             marginBottom: 16,
@@ -1593,7 +1593,7 @@ function EnquirySheet({
             fontSize: tokens.fontSize.md,
             fontWeight: tokens.fontWeight.bold,
             padding: "12px 16px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             cursor: sending ? "not-allowed" : "pointer",
             opacity: sending ? 0.7 : 1,
           }}
@@ -1616,7 +1616,7 @@ function CategoryPill({ name }: { name: string }) {
         color: tokens.blue,
         background: "#EFF6FF",
         padding: "3px 10px",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
       }}
     >
       {name}
@@ -1687,7 +1687,7 @@ function SellerListingRow({
         gap: 12,
         background: "#fff",
         border: "1px solid #E4E8EF",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
         padding: 12,
         marginBottom: 10,
@@ -1750,7 +1750,7 @@ function SellerListingRow({
         style={{
           background: tokens.blue,
           color: "#fff",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: "6px 14px",
           fontSize: 12,
           fontWeight: tokens.fontWeight.bold,
@@ -1786,7 +1786,7 @@ function MiniListingCard({
         width: "100%",
         background: "#fff",
         border: "1px solid #E4E8EF",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
         overflow: "hidden",
         fontFamily: "Poppins, sans-serif",
@@ -1854,7 +1854,7 @@ function ListingPeek({ listing }: { listing: Listing }) {
       <div
         style={{
           background: "#fff",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           overflow: "hidden",
           boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
         }}
@@ -2026,7 +2026,7 @@ function WebsiteUpgradeSections() {
   const ctaBase: React.CSSProperties = {
     width: "100%",
     border: "none",
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     padding: 11,
     fontSize: tokens.fontSize.md,
     fontWeight: tokens.fontWeight.bold,
@@ -2063,7 +2063,7 @@ function WebsiteUpgradeSections() {
         style={{
           background: "#EFF6FF",
           border: "1px solid #1877D6",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: "10px 14px",
           display: "flex",
           alignItems: "center",
@@ -2113,7 +2113,7 @@ function WebsiteUpgradeSections() {
               color: "#fff",
               fontSize: 9,
               fontWeight: tokens.fontWeight.extrabold,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "3px 8px",
             }}
           >
@@ -2155,7 +2155,7 @@ function WebsiteUpgradeSections() {
               color: "#fff",
               fontSize: 9,
               fontWeight: tokens.fontWeight.extrabold,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "3px 8px",
             }}
           >
@@ -2203,7 +2203,7 @@ function WebsiteUpgradeSections() {
             flex: 1,
             minWidth: 0,
             border: "1px solid #E4E8EF",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: "11px 12px",
             fontSize: tokens.fontSize.md,
             color: tokens.navy,
@@ -2219,7 +2219,7 @@ function WebsiteUpgradeSections() {
             background: tokens.blue,
             color: "#fff",
             border: "none",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: "11px 16px",
             fontSize: tokens.fontSize.md,
             fontWeight: tokens.fontWeight.bold,
@@ -2445,7 +2445,7 @@ function WebsiteUpgradeSections() {
           paddingTop: "56.25%",
           position: "relative",
           background: "linear-gradient(135deg,#0B1F3A,#1877D6)",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           overflow: "hidden",
         }}
       >

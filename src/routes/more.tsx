@@ -171,7 +171,7 @@ function MorePage() {
         style={{
           background: '#EEF2F7',
           border: 'none',
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: '12px 16px',
           margin: '16px 16px 4px',
           display: 'flex',
@@ -226,7 +226,7 @@ function MorePage() {
                   width: '100%',
                   background: '#fff',
                   border: 'none',
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: '12px 16px',
                   display: 'flex',
                   alignItems: 'center',
@@ -237,7 +237,7 @@ function MorePage() {
                   boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                 }}
               >
-                <div style={{ width: 36, height: 36, borderRadius: 8, background: tool.colour + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 12, background: tool.colour + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <tool.icon size={18} color={tool.colour} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -265,7 +265,7 @@ function MorePage() {
                       width: '100%',
                       background: 'white',
                       border: 'none',
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: '12px 14px',
                       display: 'flex',
                       alignItems: 'center',
@@ -280,7 +280,7 @@ function MorePage() {
                       style={{
                         width: 34,
                         height: 34,
-                        borderRadius: 8,
+                        borderRadius: 12,
                         background: '#0F2044',
                         display: 'flex',
                         alignItems: 'center',
@@ -355,7 +355,7 @@ function MorePage() {
                       padding: '13px 16px',
                       background: '#fff',
                       border: 'none',
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       cursor: 'pointer',
                       textAlign: 'left',
                       width: '100%',
@@ -367,7 +367,7 @@ function MorePage() {
                       style={{
                         width: 36,
                         height: 36,
-                        borderRadius: 8,
+                        borderRadius: 12,
                         background: tool.gradient ?? tool.colour + '15',
                         display: 'flex',
                         alignItems: 'center',

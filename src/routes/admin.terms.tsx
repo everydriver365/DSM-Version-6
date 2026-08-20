@@ -240,7 +240,7 @@ function AdminTermsPage() {
               style={{
                 width: "100%",
                 height: 44,
-                borderRadius: 8,
+                borderRadius: 12,
                 background: BLUE,
                 color: "#fff",
                 border: "none",

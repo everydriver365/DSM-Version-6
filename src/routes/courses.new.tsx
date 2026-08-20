@@ -548,7 +548,7 @@ function NewCoursePage() {
                 background: active ? "#1877D6" : done ? "#e8eefb" : "#fff",
                 color: active ? "#fff" : "#1877D6",
                 border: "1px solid #e3e6ec",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "8px 6px",
                 fontSize: 12,
                 fontWeight: tokens.fontWeight.bold,
@@ -659,7 +659,7 @@ function NewCoursePage() {
             <div
               style={{
                 background: "#fff",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                 overflow: "hidden",
                 marginBottom: 12,
@@ -766,7 +766,7 @@ function NewCoursePage() {
                 background: "#fff",
                 color: tokens.blue,
                 border: "1px solid #1877D6",
-                borderRadius: 8,
+                borderRadius: 12,
                 fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
@@ -782,7 +782,7 @@ function NewCoursePage() {
                 background: tokens.blue,
                 color: "#fff",
                 border: "none",
-                borderRadius: 8,
+                borderRadius: 12,
                 fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
@@ -799,7 +799,7 @@ function NewCoursePage() {
                   background: "#fff",
                   color: tokens.blue,
                   border: "1px solid #1877D6",
-                  borderRadius: 8,
+                  borderRadius: 12,
                   fontWeight: tokens.fontWeight.semibold,
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
@@ -814,7 +814,7 @@ function NewCoursePage() {
                   background: tokens.blue,
                   color: "#fff",
                   border: "none",
-                  borderRadius: 8,
+                  borderRadius: 12,
                   fontWeight: tokens.fontWeight.bold,
                   cursor: saving ? "not-allowed" : "pointer",
                   fontFamily: "Poppins, sans-serif",
@@ -902,7 +902,7 @@ function Step1(props: {
           padding: 12,
           background: "#fff",
           border: "0.5px solid #EEF2F7",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           fontFamily: "Poppins, sans-serif",
         }}
       >
@@ -917,7 +917,7 @@ function Step1(props: {
                 style={{
                   background: active ? "#1877D6" : "#EEF2F7",
                   color: active ? "#fff" : "#6B7686",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "6px 14px",
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.bold,
@@ -984,7 +984,7 @@ function Step1(props: {
           rows={4}
           style={{
             width: "100%",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             border: "0.5px solid #EEF2F7",
             padding: 10,
             fontSize: tokens.fontSize.md,
@@ -1098,7 +1098,7 @@ function Step2(props: {
   const inputStyle: React.CSSProperties = {
     width: "100%",
     height: 44,
-    borderRadius: 8,
+    borderRadius: 12,
     border: "1px solid #E4E8EF",
     background: "#fff",
     padding: "0 12px",
@@ -1135,7 +1135,7 @@ function Step2(props: {
             padding: "0 12px",
             background: "#F3F8FF",
             border: "0.5px solid #EEF2F7",
-            borderRadius: 8,
+            borderRadius: 12,
             color: tokens.navy,
             fontSize: tokens.fontSize.md,
             fontFamily: "Poppins, sans-serif",
@@ -1189,7 +1189,7 @@ function Step2(props: {
           onClick={() => setUseCustomSessions(!useCustomSessions)}
           style={{
             background: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             border: "1px solid #E4E8EF",
             padding: "14px 16px",
             display: "flex",
@@ -1309,7 +1309,7 @@ function Step2(props: {
           <div
             style={{
               background: tokens.canvas,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "14px 16px",
               marginBottom: 12,
             }}
@@ -1388,7 +1388,7 @@ function Step2(props: {
                 width: "100%",
                 background: tokens.blue,
                 color: "#fff",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 11,
                 fontSize: tokens.fontSize.base,
                 fontWeight: tokens.fontWeight.bold,
@@ -1461,7 +1461,7 @@ function Step2(props: {
               style={{
                 flex: 1,
                 height: 40,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: "1px solid #EEF2F7",
                 background:
                   repeatDays.length === 5 && WEEKDAYS.every((d) => repeatDays.includes(d))
@@ -1485,7 +1485,7 @@ function Step2(props: {
               style={{
                 flex: 1,
                 height: 40,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: "1px solid #EEF2F7",
                 background:
                   repeatDays.length === 2 && [6, 0].every((d) => repeatDays.includes(d))
@@ -1509,7 +1509,7 @@ function Step2(props: {
               style={{
                 flex: 1,
                 height: 40,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: "1px solid #EEF2F7",
                 background:
                   repeatDays.length === 7 && ALL_DAYS.every((d) => repeatDays.includes(d))
@@ -1536,7 +1536,7 @@ function Step2(props: {
           <div
             style={{
               background: "#FEF3C7",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "10px 14px",
               display: "flex",
               alignItems: "flex-start",
@@ -1581,7 +1581,7 @@ function Step2(props: {
           padding: 12,
           background: "#F8F9FB",
           border: "0.5px solid #EEF2F7",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           fontSize: tokens.fontSize.base,
           color: tokens.navy,
           fontFamily: "Poppins, sans-serif",
@@ -1614,7 +1614,7 @@ function Step2(props: {
           style={{
             width: "100%",
             height: 44,
-            borderRadius: 8,
+            borderRadius: 12,
             border: "0.5px solid #EEF2F7",
             padding: "0 10px",
             fontSize: tokens.fontSize.md,
@@ -1688,7 +1688,7 @@ function Step2(props: {
                 value={lessonTimeFrom}
                 onChange={(e) => setLessonTimeFrom(e.target.value)}
                 style={{
-                  height: 44, borderRadius: 8, border: "1px solid #e3e6ec",
+                  height: 44, borderRadius: 12, border: "1px solid #e3e6ec",
                   padding: "0 10px", fontSize: tokens.fontSize.md, fontFamily: "Poppins, sans-serif",
                   color: tokens.navy, background: "#fff",
                 }}
@@ -1701,7 +1701,7 @@ function Step2(props: {
                 value={lessonTimeTo}
                 onChange={(e) => setLessonTimeTo(e.target.value)}
                 style={{
-                  height: 44, borderRadius: 8, border: "1px solid #e3e6ec",
+                  height: 44, borderRadius: 12, border: "1px solid #e3e6ec",
                   padding: "0 10px", fontSize: tokens.fontSize.md, fontFamily: "Poppins, sans-serif",
                   color: tokens.navy, background: "#fff",
                 }}
@@ -1774,7 +1774,7 @@ function Step3(props: {
             padding: 12,
             background: "#fff",
             border: "0.5px solid #EEF2F7",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             cursor: "pointer",
             textAlign: "left",
             fontFamily: "Poppins, sans-serif",
@@ -1891,7 +1891,7 @@ function ToggleRow({
         padding: 12,
         background: "#fff",
         border: "0.5px solid #EEF2F7",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         cursor: "pointer",
         textAlign: "left",
         fontFamily: "Poppins, sans-serif",
@@ -1907,7 +1907,7 @@ function ToggleRow({
         style={{
           width: 40,
           height: 24,
-          borderRadius: 8,
+          borderRadius: 12,
           background: value ? "#1877D6" : "#EEF2F7",
           position: "relative",
           transition: "background 150ms",
@@ -1951,7 +1951,7 @@ function CheckRow({
         padding: "10px 12px",
         background: "#fff",
         border: "0.5px solid #EEF2F7",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.5 : 1,
         textAlign: "left",
@@ -2165,7 +2165,7 @@ function PostcodeAutocomplete(props: {
             marginTop: 4,
             background: "#fff",
             border: "0.5px solid #EEF2F7",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
             maxHeight: 240,
             overflowY: "auto",

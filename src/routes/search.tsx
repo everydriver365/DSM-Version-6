@@ -286,7 +286,7 @@ function SearchPage() {
       <div className="px-3 pt-3">
         <div
           className="flex items-center"
-          style={{ backgroundColor: tokens.white, borderRadius: 8, height: 38, paddingLeft: 10, paddingRight: 10, gap: 8, border: "1px solid #E2E8F0" }}
+          style={{ backgroundColor: tokens.white, borderRadius: 12, height: 38, paddingLeft: 10, paddingRight: 10, gap: 8, border: "1px solid #E2E8F0" }}
         >
           <IconSearch size={16} color="#6B7280" />
           <input

@@ -191,7 +191,7 @@ function DiscountCodesPage() {
         style={{
           margin: "16px 16px 0",
           padding: 16,
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           backgroundColor: "#F0F4FF",
           border: "0.5px solid #BFDBFE",
         }}
@@ -273,7 +273,7 @@ function CodeCard({
       style={{
         margin: "0 16px 8px",
         padding: 16,
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         backgroundColor: tokens.white,
         border: "0.5px solid #EEF2F7",
         opacity: code.active ? 1 : 0.6,
@@ -295,7 +295,7 @@ function CodeCard({
               style={{
                 width: 28,
                 height: 28,
-                borderRadius: 8,
+                borderRadius: 12,
                 backgroundColor: "#F3F4F6",
                 display: "flex",
                 alignItems: "center",
@@ -312,7 +312,7 @@ function CodeCard({
                 color: typeColor,
                 backgroundColor: typeBg,
                 padding: "3px 8px",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
               }}
             >
               {isPct ? "% OFF" : "£ OFF"}
@@ -365,7 +365,7 @@ function CodeCard({
           type="button"
           onClick={onShare}
           className="flex-1 flex items-center justify-center gap-1 text-[12px] font-medium text-white"
-          style={{ height: 34, borderRadius: 8, backgroundColor: tokens.blue }}
+          style={{ height: 34, borderRadius: 12, backgroundColor: tokens.blue }}
         >
           <IconShare stroke={1.5} size={13} /> Share
         </button>
@@ -376,7 +376,7 @@ function CodeCard({
           style={{
             width: 40,
             height: 34,
-            borderRadius: 8,
+            borderRadius: 12,
             backgroundColor: "#FEF2F2",
             display: "flex",
             alignItems: "center",
@@ -557,7 +557,7 @@ function AddSheet({
             style={{
               backgroundColor: tokens.blue,
               height: 46,
-              borderRadius: 8,
+              borderRadius: 12,
               opacity: saving ? 0.6 : 1,
             }}
           >
@@ -600,7 +600,7 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   height: 40,
   padding: "0 12px",
-  borderRadius: 8,
+  borderRadius: 12,
   border: "0.5px solid #EEF2F7",
   backgroundColor: tokens.white,
   color: tokens.navy,

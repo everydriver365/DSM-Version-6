@@ -327,7 +327,7 @@ function CpdPage() {
                 style={{
                   height: 32,
                   padding: "0 12px",
-                  borderRadius: 8,
+                  borderRadius: 12,
                   backgroundColor: active ? "#0B1F3A" : "#F3F4F6",
                   color: active ? "#FFFFFF" : "#6B7280",
                 }}
@@ -435,7 +435,7 @@ function StatCard({
       style={{
         backgroundColor: tokens.white,
         border: "0.5px solid #EEF2F7",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: 12,
       }}
     >
@@ -471,7 +471,7 @@ function EntryCard({
       style={{
         backgroundColor: tokens.white,
         border: "0.5px solid #EEF2F7",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: "14px 16px",
       }}
     >
@@ -505,7 +505,7 @@ function EntryCard({
                   color: tokens.navy,
                   backgroundColor: "#F3F4F6",
                   padding: "3px 8px",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                 }}
               >
                 {Number(log.hours).toFixed(1)}h
@@ -539,7 +539,7 @@ function EntryCard({
             className="flex-1 flex items-center justify-center gap-1 text-[12px] font-medium"
             style={{
               height: 34,
-              borderRadius: 8,
+              borderRadius: 12,
               backgroundColor: "#F3F4F6",
               color: tokens.navy,
             }}
@@ -552,7 +552,7 @@ function EntryCard({
             className="flex-1 flex items-center justify-center gap-1 text-[12px] font-medium"
             style={{
               height: 34,
-              borderRadius: 8,
+              borderRadius: 12,
               backgroundColor: "#FEF2F2",
               color: tokens.blue,
             }}
@@ -774,7 +774,7 @@ function AddSheet({
                   top: 8,
                   width: 32,
                   height: 32,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   backgroundColor: listening ? "#1877D6" : "#F3F4F6",
                   display: "flex",
                   alignItems: "center",
@@ -816,7 +816,7 @@ function AddSheet({
                 className="flex items-center justify-center gap-2 text-[13px] font-medium cursor-pointer"
                 style={{
                   height: 40,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   border: "0.5px dashed #EEF2F7",
                   color: tokens.navy,
                 }}
@@ -840,7 +840,7 @@ function AddSheet({
             style={{
               backgroundColor: tokens.blue,
               height: 46,
-              borderRadius: 8,
+              borderRadius: 12,
               opacity: saving ? 0.6 : 1,
             }}
           >
@@ -854,7 +854,7 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   height: 40,
   padding: "0 12px",
-  borderRadius: 8,
+  borderRadius: 12,
   border: "0.5px solid #EEF2F7",
   backgroundColor: tokens.white,
   color: tokens.navy,

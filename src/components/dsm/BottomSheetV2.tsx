@@ -299,7 +299,7 @@ export function SheetGroup({
   return (
     <div
       className={`bg-white overflow-hidden ${className}`}
-      style={{ borderRadius: 8, border: "none", boxShadow: cardShadow, marginBottom: 12 }}
+      style={{ borderRadius: tokens.radiusCard, border: "none", boxShadow: cardShadow, marginBottom: 12 }}
     >
       {items.map((child, i) => (
         <React.Fragment key={i}>

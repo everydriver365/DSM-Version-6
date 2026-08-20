@@ -89,7 +89,7 @@ function QuickAvailabilityPage() {
           <div
             className="mx-4 mt-4"
             style={{
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 24,
               backgroundColor: isActive ? "#F3F8FF" : "#FEF2F2",
               borderWidth: 1,

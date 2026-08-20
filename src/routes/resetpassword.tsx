@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { IconCircleCheck, IconEye, IconEyeOff } from "@tabler/icons-react";
@@ -63,7 +64,7 @@ function ResetPasswordPage() {
 
       <div
         className="w-full max-w-[360px] bg-white flex flex-col"
-        style={{ borderRadius: "8px", padding: "28px", boxShadow: "0 8px 32px rgba(0,0,0,0.3)" }}
+        style={{ borderRadius: tokens.radiusCard, padding: "28px", boxShadow: "0 8px 32px rgba(0,0,0,0.3)" }}
       >
         {done ? (
           <div className="flex flex-col items-center text-center">

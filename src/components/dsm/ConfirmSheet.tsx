@@ -39,7 +39,7 @@ export function ConfirmSheet({
         <div
           style={{
             background: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
             padding: "15px 16px",
           }}
@@ -65,7 +65,7 @@ export function ConfirmSheet({
             background: destructive ? "#CC2229" : "#1877D6",
             color: "#fff",
             border: "none",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             fontSize: tokens.fontSize.lg,
             fontWeight: tokens.fontWeight.bold,
             cursor: "pointer",
@@ -83,7 +83,7 @@ export function ConfirmSheet({
             background: tokens.canvas,
             color: tokens.textSecondary,
             border: "none",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             fontSize: tokens.fontSize.lg,
             fontWeight: tokens.fontWeight.semibold,
             cursor: "pointer",

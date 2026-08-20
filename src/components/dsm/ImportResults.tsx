@@ -91,7 +91,7 @@ export default function ImportResults({
       className="mt-4"
       style={{
         backgroundColor: tokens.white,
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         boxShadow: "0 2px 10px rgba(11,31,58,0.08)",
         overflow: "hidden",
       }}
@@ -139,7 +139,7 @@ export default function ImportResults({
                 style={{
                   gap: 10,
                   padding: "10px 12px",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   backgroundColor: "#F7F9FC",
                 }}
               >
@@ -169,7 +169,7 @@ export default function ImportResults({
                   <div
                     key={f.row}
                     style={{
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       backgroundColor: v.valid ? "#F3F8FF" : "#FEF2F7",
                       padding: 12,
                     }}
@@ -212,7 +212,7 @@ export default function ImportResults({
                               style={{
                                 marginTop: 2,
                                 height: 36,
-                                borderRadius: 8,
+                                borderRadius: 12,
                                 backgroundColor: tokens.white,
                                 borderWidth: "0.5px",
                                 borderStyle: "solid",
@@ -242,7 +242,7 @@ export default function ImportResults({
                   style={{
                     gap: 8,
                     height: 48,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     backgroundColor: fixableCount === 0 ? "#9AA3AF" : "#1877D6",
                     opacity: retrying ? 0.7 : 1,
                   }}
@@ -258,7 +258,7 @@ export default function ImportResults({
                   style={{
                     width: 48,
                     height: 48,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     backgroundColor: "#F3F5F9",
                   }}
                 >

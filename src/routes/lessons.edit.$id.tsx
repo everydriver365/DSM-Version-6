@@ -454,7 +454,7 @@ function EditLessonPage() {
               display: "flex",
               gap: 0,
               background: "#E5E5EA",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 4,
               margin: "0 16px 16px",
             }}
@@ -468,7 +468,7 @@ function EditLessonPage() {
               style={{
                 flex: 1,
                 padding: "8px 0",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 border: "none",
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
@@ -491,7 +491,7 @@ function EditLessonPage() {
               style={{
                 flex: 1,
                 padding: "8px 0",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 border: "none",
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
@@ -547,7 +547,7 @@ function EditLessonPage() {
                   width: "100%",
                   background: "#fff",
                   border: "1px solid #E4E8EF",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "10px 12px",
                   fontSize: tokens.fontSize.md,
                   fontFamily: "Poppins, sans-serif",
@@ -598,7 +598,7 @@ function EditLessonPage() {
                     }}
                     style={{
                       height: 34,
-                      borderRadius: 8,
+                      borderRadius: 12,
                       padding: '0 16px',
                       fontSize: tokens.fontSize.base,
                       fontWeight: tokens.fontWeight.semibold,
@@ -652,7 +652,7 @@ function EditLessonPage() {
                       width: '100%',
                       background: '#fff',
                       border: '1px solid #E4E8EF',
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: '10px 12px 10px 34px',
                       fontSize: tokens.fontSize.md,
                       fontFamily: 'Poppins, sans-serif',
@@ -664,7 +664,7 @@ function EditLessonPage() {
                 {testCentreResults.length > 0 && (
                   <div style={{
                     background: '#fff',
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     border: '1px solid #E4E8EF',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                     maxHeight: 200,
@@ -709,7 +709,7 @@ function EditLessonPage() {
                     color: '#15803D',
                     fontSize: tokens.fontSize.sm,
                     fontWeight: tokens.fontWeight.bold,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: '4px 12px',
                     display: 'flex',
                     gap: 6,
@@ -751,7 +751,7 @@ function EditLessonPage() {
                     width: '100%',
                     background: '#fff',
                     border: '1px solid #E4E8EF',
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: '10px 12px',
                     fontSize: tokens.fontSize.md,
                     fontFamily: 'Poppins, sans-serif',
@@ -866,7 +866,7 @@ function EditLessonPage() {
                 style={{
                   background: "#fff",
                   border: "1px solid #FECACA",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 14,
                 }}
               >
@@ -919,7 +919,7 @@ function EditLessonPage() {
                   style={{
                     width: "100%",
                     border: "1px solid #E4E8EF",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     fontFamily: "Poppins, sans-serif",
                     fontSize: tokens.fontSize.base,
                     padding: 10,
@@ -972,7 +972,7 @@ function EditLessonPage() {
                               style={{
                                 flex: 1,
                                 border: "1px solid #E4E8EF",
-                                borderRadius: 8,
+                                borderRadius: tokens.radiusCard,
                                 padding: "10px 12px",
                                 fontFamily: "Poppins, sans-serif",
                                 fontSize: tokens.fontSize.base,
@@ -1141,7 +1141,7 @@ function EditLessonPage() {
                     style={{
                       background: tokens.red,
                       color: "#fff",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: 12,
                       width: "100%",
                       fontSize: tokens.fontSize.md,
@@ -1164,7 +1164,7 @@ function EditLessonPage() {
                     style={{
                       background: "#F3F4F6",
                       color: "#374151",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: 12,
                       width: "100%",
                       fontSize: tokens.fontSize.md,

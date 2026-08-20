@@ -492,7 +492,7 @@ function LiveNewsPage() {
             color: isActive ? "#fff" : "#9CA3AF",
             fontSize: tokens.fontSize.xs,
             fontWeight: tokens.fontWeight.bold,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: "1px 6px",
             marginLeft: 6,
             minWidth: 18,
@@ -509,7 +509,7 @@ function LiveNewsPage() {
               right: 0,
               height: 2,
               background: tokens.blue,
-              borderRadius: "8px 8px 0 0",
+              borderRadius: "16px 16px 0 0",
             }}
           />
         )}
@@ -595,7 +595,7 @@ function LiveNewsPage() {
                           }
                           style={{
                             background: "#fff",
-                            borderRadius: 8,
+                            borderRadius: tokens.radiusCard,
                             border: "1px solid #E4E8EF",
                             boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                             padding: 12,
@@ -624,7 +624,7 @@ function LiveNewsPage() {
                               width: 4,
                               alignSelf: "stretch",
                               minHeight: 48,
-                              borderRadius: 8,
+                              borderRadius: 12,
                               background: s.is_live ? "#CC2229" : "#1877D6",
                               flexShrink: 0,
                             }}
@@ -742,7 +742,7 @@ function LiveNewsPage() {
                     }
                     style={{
                       background: "#fff",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       border: "1px solid #E4E8EF",
                       boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                       padding: 12,
@@ -792,7 +792,7 @@ function LiveNewsPage() {
                           color: tokens.blue,
                           fontSize: tokens.fontSize.xs,
                           fontWeight: tokens.fontWeight.bold,
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           padding: "2px 8px",
                           display: "inline-block",
                           alignSelf: "flex-start",
@@ -899,7 +899,7 @@ function LiveNewsPage() {
                           gap: 12,
                           background: "#fff",
                           border: "1px solid #E4E8EF",
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                           padding: 12,
                           cursor: "pointer",
@@ -951,7 +951,7 @@ function LiveNewsPage() {
                               style={{
                                 flex: 1,
                                 height: 4,
-                                borderRadius: 8,
+                                borderRadius: 12,
                                 background: tokens.border,
                                 overflow: "hidden",
                               }}
@@ -976,7 +976,7 @@ function LiveNewsPage() {
                             style={{
                               width: 48,
                               height: 48,
-                              borderRadius: 8,
+                              borderRadius: 12,
                               border: "none",
                               background: tokens.blue,
                               display: "flex",
@@ -1109,7 +1109,7 @@ function LiveNewsPage() {
                                 bottom: 8,
                                 width: 34,
                                 height: 34,
-                                borderRadius: 8,
+                                borderRadius: 12,
                                 border: "none",
                                 background: "#fff",
                                 display: "flex",
@@ -1168,7 +1168,7 @@ function LiveNewsPage() {
                     style={{
                       width: 32,
                       height: 32,
-                      borderRadius: 8,
+                      borderRadius: 12,
                       border: "none",
                       background: searchOpen ? "#0B1F3A" : "#EEF2F7",
                       display: "flex",
@@ -1590,7 +1590,7 @@ function MiniPlayer({
               width: 40,
               height: 40,
               flexShrink: 0,
-              borderRadius: 8,
+              borderRadius: 12,
               overflow: "hidden",
               background: tokens.canvas,
               display: "flex",
@@ -1645,7 +1645,7 @@ function MiniPlayer({
           style={{
             width: 38,
             height: 38,
-            borderRadius: 8,
+            borderRadius: 12,
             border: "none",
             background: tokens.blue,
             display: "flex",
@@ -1667,7 +1667,7 @@ function MiniPlayer({
           style={{
             width: 34,
             height: 34,
-            borderRadius: 8,
+            borderRadius: 12,
             border: "none",
             background: "#EFF6FF",
             display: "flex",
@@ -1685,7 +1685,7 @@ function MiniPlayer({
           style={{
             width: 28,
             height: 28,
-            borderRadius: 8,
+            borderRadius: 12,
             border: "none",
             background: "transparent",
             display: "flex",
@@ -1786,7 +1786,7 @@ function EpisodeModal({
       style={{
         flex: 1,
         padding: "9px 8px",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         border: "none",
         background: tab === key ? "#fff" : "transparent",
         boxShadow: tab === key ? "0 1px 3px rgba(11,31,58,0.10)" : "none",
@@ -1834,7 +1834,7 @@ function EpisodeModal({
         }}
       >
         <div style={{ padding: "10px 0 0", display: "flex", justifyContent: "center" }}>
-          <div style={{ width: 42, height: 4, borderRadius: 8, background: "#D7DEE8" }} />
+          <div style={{ width: 42, height: 4, borderRadius: 12, background: "#D7DEE8" }} />
         </div>
 
         <div style={{ padding: "12px 16px 0", display: "flex", gap: 12 }}>
@@ -1866,7 +1866,7 @@ function EpisodeModal({
               style={{
                 display: "inline-block",
                 background: "#EFF6FF",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "2px 6px",
                 marginBottom: 5,
                 ...PODCAST_STYLES.pill,
@@ -1899,7 +1899,7 @@ function EpisodeModal({
               width: 32,
               height: 32,
               flexShrink: 0,
-              borderRadius: 8,
+              borderRadius: 12,
               border: "none",
               background: tokens.canvas,
               display: "flex",
@@ -1918,7 +1918,7 @@ function EpisodeModal({
               style={{
                 background: "#fff",
                 border: "1px solid #E4E8EF",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 12,
                 display: "flex",
                 alignItems: "center",
@@ -1932,7 +1932,7 @@ function EpisodeModal({
                 style={{
                   width: 52,
                   height: 52,
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   border: "none",
                   background: tokens.blue,
                   display: "flex",
@@ -1979,7 +1979,7 @@ function EpisodeModal({
                 style={{
                   width: 36,
                   height: 36,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   border: "none",
                   background: "#EFF6FF",
                   display: "flex",
@@ -2063,7 +2063,7 @@ function EpisodeModal({
                   alignItems: "center",
                   gap: 6,
                   border: "1px solid #1877D6",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   background: "#fff",
                   color: tokens.blue,
                   padding: "6px 10px",
@@ -2086,7 +2086,7 @@ function EpisodeModal({
               display: "flex",
               gap: 4,
               background: "#EAEFF6",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 4,
             }}
           >
@@ -2104,7 +2104,7 @@ function EpisodeModal({
             style={{
               background: "#fff",
               border: "1px solid #E4E8EF",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 14,
               fontSize: tokens.fontSize.base,
               lineHeight: 1.6,
@@ -2141,7 +2141,7 @@ function EmptyState({ message }: { message: string }) {
       style={{
         background: "#fff",
         border: "1px solid #E4E8EF",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: 32,
         textAlign: "center",
         color: tokens.textMuted,
@@ -2235,7 +2235,7 @@ function EpisodeCard({
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
               background: "#EFF6FF",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "2px 6px",
               letterSpacing: "0.02em",
               marginBottom: 5,
@@ -2254,7 +2254,7 @@ function EpisodeCard({
               verticalAlign: "middle",
               background: "#EFF6FF",
               color: tokens.blue,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: "2px 6px",
               fontSize: tokens.fontSize.xs,
               fontWeight: tokens.fontWeight.bold,
@@ -2308,7 +2308,7 @@ function EpisodeCard({
                 <div
                   style={{
                     height: 3,
-                    borderRadius: 8,
+                    borderRadius: 12,
                     background: tokens.border,
                     overflow: "hidden",
                   }}
@@ -2379,7 +2379,7 @@ function EpisodeCard({
             width: 48,
             height: 48,
             flexShrink: 0,
-            borderRadius: 8,
+            borderRadius: 12,
             border: "none",
             background: tokens.blue,
             display: "flex",

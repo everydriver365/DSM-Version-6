@@ -1388,7 +1388,7 @@ function PupilDetailPage() {
         {pupil && (
           <div
             className="mt-4 flex items-center gap-3 p-4"
-            style={{ background: tokens.white, borderRadius: 12, boxShadow: "0 2px 8px rgba(15,32,68,0.06)" }}
+            style={{ background: tokens.white, borderRadius: tokens.radiusCard, boxShadow: "0 2px 8px rgba(15,32,68,0.06)" }}
           >
             <label className="relative shrink-0 cursor-pointer">
               <input
@@ -1474,7 +1474,7 @@ function PupilDetailPage() {
         {pupil && (
           <div
             className="mt-3"
-            style={{ background: tokens.white, borderRadius: 12, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
+            style={{ background: tokens.white, borderRadius: tokens.radiusCard, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
           >
                   {/* 3-up stat row: Balance | Hours remaining | Days to test */}
                   {(() => {
@@ -1618,7 +1618,7 @@ function PupilDetailPage() {
         {/* Tab bar — fixed-width segmented control */}
         <div
           className="mt-4 mb-2 flex gap-1"
-          style={{ background: tokens.canvas, borderRadius: 8, padding: 3, ...POPPINS }}
+          style={{ background: tokens.canvas, borderRadius: tokens.radiusCard, padding: 3, ...POPPINS }}
         >
           {(["overview", "lessons", "payments", "profile"] as const).map((t) => (
             <button
@@ -1815,7 +1815,7 @@ function PupilDetailPage() {
                     </h3>
                     <div
                       className="flex flex-col"
-                      style={{ background: tokens.white, borderRadius: 8, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
+                      style={{ background: tokens.white, borderRadius: tokens.radiusCard, boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden" }}
                     >
                       {paymentHistory.map((p, pi) => {
                         const isRefund = p.payment_status === "refunded" || Number(p.lesson_cost ?? 0) < 0;
@@ -2002,7 +2002,7 @@ function PupilDetailPage() {
                         className="flex flex-col bg-white"
                         style={{
                           position: "absolute", zIndex: 60, top: 46, right: 14,
-                          borderRadius: 8, border: "0.5px solid #E2E6ED",
+                          borderRadius: tokens.radiusCard, border: "0.5px solid #E2E6ED",
                           boxShadow: "0 10px 25px rgba(0,0,0,0.12)", overflow: "hidden", minWidth: 180,
                         }}
                         onClick={(e) => e.stopPropagation()}
@@ -2038,7 +2038,7 @@ function PupilDetailPage() {
         )}
 
 
-        <div style={{ background: tokens.white, border: "0.5px solid #E2E6ED", borderRadius: 8, padding: 0, overflow: "hidden", margin: "12px 0 0 0" }}>
+        <div style={{ background: tokens.white, border: "0.5px solid #E2E6ED", borderRadius: tokens.radiusCard, padding: 0, overflow: "hidden", margin: "12px 0 0 0" }}>
           <div style={{ padding: "14px 16px", borderBottom: "0.5px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div className="flex items-center gap-2">
               <IconRefresh stroke={1.5} size={14} color="#1A52A0" />
@@ -2159,7 +2159,7 @@ function PupilDetailPage() {
                               className="flex flex-col bg-white"
                               style={{
                                 position: "absolute", zIndex: 60, top: 46, right: 14,
-                                borderRadius: 8, border: "0.5px solid #E2E6ED",
+                                borderRadius: tokens.radiusCard, border: "0.5px solid #E2E6ED",
                                 boxShadow: "0 10px 25px rgba(0,0,0,0.12)", overflow: "hidden", minWidth: 180,
                               }}
                               onClick={(e) => e.stopPropagation()}
@@ -2215,7 +2215,7 @@ function PupilDetailPage() {
         )}
 
         <SectionHeader>LESSON TRACKS</SectionHeader>
-        <div style={{ background: tokens.white, border: "0.5px solid #E2E6ED", borderRadius: 8, padding: 0, overflow: "hidden" }}>
+        <div style={{ background: tokens.white, border: "0.5px solid #E2E6ED", borderRadius: tokens.radiusCard, padding: 0, overflow: "hidden" }}>
           <div style={{ padding: "14px 16px", borderBottom: "0.5px solid #F3F4F6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div className="flex items-center gap-2">
               <IconMapPin stroke={1.5} size={14} color="#1A52A0" />
@@ -2397,14 +2397,14 @@ function PupilDetailPage() {
                 <button
                   type="button"
                   onClick={() => setViewingReport(null)}
-                  style={{ flex: 1, padding: "14px 16px", borderRadius: 8, border: "none", background: tokens.white, color: tokens.navy, fontSize: 15, fontWeight: tokens.fontWeight.bold, boxShadow: "0 2px 8px rgba(15,32,68,0.06)" }}
+                  style={{ flex: 1, padding: "14px 16px", borderRadius: tokens.radiusCard, border: "none", background: tokens.white, color: tokens.navy, fontSize: 15, fontWeight: tokens.fontWeight.bold, boxShadow: "0 2px 8px rgba(15,32,68,0.06)" }}
                 >
                   Close
                 </button>
                 <button
                   type="button"
                   onClick={exportReportText}
-                  style={{ flex: 1, padding: "14px 16px", borderRadius: 8, border: "none", background: tokens.blue, color: tokens.white, fontSize: 15, fontWeight: 700 }}
+                  style={{ flex: 1, padding: "14px 16px", borderRadius: tokens.radiusCard, border: "none", background: tokens.blue, color: tokens.white, fontSize: 15, fontWeight: 700 }}
                 >
                   Export
                 </button>
@@ -2466,7 +2466,7 @@ function PupilDetailPage() {
               <button
                 type="button"
                 onClick={() => setSelectedOverspeedEvent(null)}
-                style={{ width: "100%", padding: "14px 16px", borderRadius: 8, border: "none", background: tokens.blue, color: tokens.white, fontSize: 15, fontWeight: 700 }}
+                style={{ width: "100%", padding: "14px 16px", borderRadius: tokens.radiusCard, border: "none", background: tokens.blue, color: tokens.white, fontSize: 15, fontWeight: 700 }}
               >
                 Close
               </button>
@@ -2489,7 +2489,7 @@ function PupilDetailPage() {
                 display: 'flex', alignItems: 'center', gap: 8,
                 width: '100%', padding: '12px 16px',
                 background: '#fff', border: '0.5px solid #E2E8F0',
-                borderRadius: 8, marginBottom: 12, cursor: 'pointer',
+                borderRadius: tokens.radiusCard, marginBottom: 12, cursor: 'pointer',
               }}
             >
               <IconCreditCard stroke={1.5} size={16} color="#1877D6" />
@@ -2504,7 +2504,7 @@ function PupilDetailPage() {
               className="mt-3 w-full flex items-center justify-center gap-2"
               style={{
                 height: 44,
-                borderRadius: 8,
+                borderRadius: 12,
                 background: tokens.blue,
                 color: tokens.white,
                 fontSize: tokens.fontSize.md,
@@ -2574,7 +2574,7 @@ function PupilDetailPage() {
                     style={{
                       marginTop: 12,
                       padding: "10px 12px",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       backgroundColor: "#FEF2F2",
                       border: "1px solid #FECACA",
                       color: tokens.blue,
@@ -2590,7 +2590,7 @@ function PupilDetailPage() {
                     style={{
                       marginTop: 12,
                       padding: "10px 12px",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       backgroundColor: "#F0FDF4",
                       border: "1px solid #DBEAFE",
                       color: tokens.blue,
@@ -2641,7 +2641,7 @@ function PupilDetailPage() {
                       style={{
                         marginTop: 10,
                         height: 8,
-                        borderRadius: 8,
+                        borderRadius: 12,
                         backgroundColor: "#F3F8FF",
                         overflow: "hidden",
                       }}
@@ -2728,7 +2728,7 @@ function PupilDetailPage() {
                           width: "100%",
                           height: 36,
                           padding: "0 12px 0 36px",
-                          borderRadius: 8,
+                          borderRadius: 12,
                           border: "0.5px solid #E2E6ED",
                           fontSize: tokens.fontSize.base,
                           outline: "none",
@@ -2909,7 +2909,7 @@ function PupilDetailPage() {
             <div
               style={{
                 background: tokens.white,
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
                 overflow: "hidden",
               }}
@@ -3046,7 +3046,7 @@ function PupilDetailPage() {
                             type="button"
                             disabled={savingMockResult}
                             onClick={() => updateMockResult("Passed")}
-                            style={{ flex: 1, padding: "10px 12px", borderRadius: 8, border: "none", background: "#1E8E5A", color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: 600 }}
+                            style={{ flex: 1, padding: "10px 12px", borderRadius: tokens.radiusCard, border: "none", background: "#1E8E5A", color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: 600 }}
                           >
                             Passed
                           </button>
@@ -3054,7 +3054,7 @@ function PupilDetailPage() {
                             type="button"
                             disabled={savingMockResult}
                             onClick={() => updateMockResult("Failed")}
-                            style={{ flex: 1, padding: "10px 12px", borderRadius: 8, border: "none", background: tokens.red, color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: 600 }}
+                            style={{ flex: 1, padding: "10px 12px", borderRadius: tokens.radiusCard, border: "none", background: tokens.red, color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: 600 }}
                           >
                             Failed
                           </button>
@@ -3088,7 +3088,7 @@ function PupilDetailPage() {
                       <button
                         type="button"
                         onClick={() => setViewingDl25(mt)}
-                        style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #1877D6", background: tokens.white, color: tokens.blue, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, marginBottom: 16, ...POPPINS }}
+                        style={{ width: "100%", padding: "10px 12px", borderRadius: tokens.radiusCard, border: "1px solid #1877D6", background: tokens.white, color: tokens.blue, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, marginBottom: 16, ...POPPINS }}
                       >
                         View DL25
                       </button>
@@ -3102,14 +3102,14 @@ function PupilDetailPage() {
                       onChange={(e) => setMockNotesDraft(e.target.value)}
                       rows={4}
                       placeholder="Add notes for this mock test…"
-                      style={{ width: "100%", padding: 10, borderRadius: 8, border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.base, color: tokens.navy, resize: "vertical", ...POPPINS }}
+                      style={{ width: "100%", padding: 10, borderRadius: tokens.radiusCard, border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.base, color: tokens.navy, resize: "vertical", ...POPPINS }}
                     />
                     <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
                       <button
                         type="button"
                         disabled={savingMockNotes || mockNotesDraft === (mt.notes ?? "")}
                         onClick={saveMockNotes}
-                        style={{ padding: "8px 14px", borderRadius: 8, border: "none", background: tokens.blue, color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, opacity: (savingMockNotes || mockNotesDraft === (mt.notes ?? "")) ? 0.6 : 1 }}
+                        style={{ padding: "8px 14px", borderRadius: tokens.radiusCard, border: "none", background: tokens.blue, color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, opacity: (savingMockNotes || mockNotesDraft === (mt.notes ?? "")) ? 0.6 : 1 }}
                       >
                         {savingMockNotes ? "Saving…" : "Save"}
                       </button>
@@ -3119,14 +3119,14 @@ function PupilDetailPage() {
                       <button
                         type="button"
                         onClick={() => setViewingMock(null)}
-                        style={{ flex: 1, padding: "12px 16px", borderRadius: 8, border: "0.5px solid #E2E6ED", background: tokens.white, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: 600 }}
+                        style={{ flex: 1, padding: "12px 16px", borderRadius: tokens.radiusCard, border: "0.5px solid #E2E6ED", background: tokens.white, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: 600 }}
                       >
                         Close
                       </button>
                       <button
                         type="button"
                         onClick={shareMockText}
-                        style={{ flex: 1, padding: "12px 16px", borderRadius: 8, border: "none", background: tokens.blue, color: tokens.white, fontSize: tokens.fontSize.md, fontWeight: 600 }}
+                        style={{ flex: 1, padding: "12px 16px", borderRadius: tokens.radiusCard, border: "none", background: tokens.blue, color: tokens.white, fontSize: tokens.fontSize.md, fontWeight: 600 }}
                       >
                         Share
                       </button>
@@ -3150,7 +3150,7 @@ function PupilDetailPage() {
               <div
                 style={{
                   background: tokens.white,
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   border: "0.5px solid rgba(11,31,58,0.10)",
                   padding: "20px 16px",
                   marginTop: 12,
@@ -3315,7 +3315,7 @@ function PupilDetailPage() {
           };
 
           const segBase: React.CSSProperties = {
-            flex: 1, borderRadius: 8, border: 'none', padding: '9px 0',
+            flex: 1, borderRadius: tokens.radiusCard, border: 'none', padding: '9px 0',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             cursor: 'pointer', fontFamily: 'Poppins, sans-serif', fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold,
           };
@@ -3325,7 +3325,7 @@ function PupilDetailPage() {
             fontFamily: 'Poppins, sans-serif', fontSize: 15, color: tokens.navy, fontWeight: tokens.fontWeight.medium,
           };
           const rowChip = (color: string): React.CSSProperties => ({
-            width: 30, height: 30, borderRadius: 8, background: "#F2F2F7",
+            width: 30, height: 30, borderRadius: 12, background: "#F2F2F7",
             display: "inline-flex", alignItems: "center", justifyContent: "center",
             color, flexShrink: 0,
           });
@@ -3334,7 +3334,7 @@ function PupilDetailPage() {
             margin: "16px 0 8px", fontFamily: 'Poppins, sans-serif',
           };
           const groupCard: React.CSSProperties = {
-            background: tokens.white, borderRadius: 8,
+            background: tokens.white, borderRadius: tokens.radiusCard,
             boxShadow: "0 2px 8px rgba(15,32,68,0.06)", overflow: "hidden",
           };
           const hairline = <div style={{ height: 1, background: "#E9E9EC" }} />;
@@ -3405,7 +3405,7 @@ function PupilDetailPage() {
                     </div>
                   )}
                   {!isPast && !isCancelled && (
-                    <div style={{ display: 'flex', gap: 3, background: '#F2F2F7', borderRadius: 8, padding: 3, marginTop: 12 }}>
+                    <div style={{ display: 'flex', gap: 3, background: '#F2F2F7', borderRadius: tokens.radiusCard, padding: 3, marginTop: 12 }}>
                       {([
                         { key: "here" as const, label: "Here", icon: <IconMapPin stroke={1.5} size={15} />, msg: `Hi ${firstName}, I'm outside whenever you're ready 👋` },
                         { key: "going" as const, label: "Going", icon: <IconSend stroke={1.5} size={15} />, msg: `Hi ${firstName}, on the way!` },
@@ -3483,7 +3483,7 @@ function PupilDetailPage() {
                 </div>
                 <div
                   style={{
-                    background: "#F2F2F7", borderRadius: 8, padding: "10px 12px",
+                    background: "#F2F2F7", borderRadius: tokens.radiusCard, padding: "10px 12px",
                     fontSize: 13.5, color: lastMessage ? "#0B1F3A" : "#8A8A8E", ...POPPINS,
                     overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                   }}
@@ -3497,7 +3497,7 @@ function PupilDetailPage() {
 
               {/* Outstanding balance card */}
               {balance > 0 && !isPaid && (
-                <div style={{ background: "#FFF8E8", borderRadius: 8, border: "0.5px solid #F0D28A", padding: 14, marginTop: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ background: "#FFF8E8", borderRadius: tokens.radiusCard, border: "0.5px solid #F0D28A", padding: 14, marginTop: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div>
                     <div style={{ fontSize: 12, color: "#8A5A00", fontWeight: tokens.fontWeight.semibold, textTransform: "uppercase", letterSpacing: 0.3, ...POPPINS }}>Outstanding</div>
                     <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.bold, color: tokens.navy, ...POPPINS }}>£{balance.toFixed(2)}</div>
@@ -3578,7 +3578,7 @@ function PupilDetailPage() {
 
 
         <div className="flex items-center gap-2" style={{ marginBottom: 8 }}>
-          <span style={{ width: 3, height: 14, borderRadius: 8, background: tokens.blue, display: "inline-block" }} />
+          <span style={{ width: 3, height: 14, borderRadius: 12, background: tokens.blue, display: "inline-block" }} />
           <span style={{ color: tokens.blue, fontSize: 12, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "0.6px", textTransform: "uppercase", ...POPPINS }}>
             Notes
           </span>
@@ -3589,7 +3589,7 @@ function PupilDetailPage() {
           className="w-full text-left focus:outline-none"
           style={{
             background: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             border: "none",
             padding: "14px 16px",
             boxShadow: "0 4px 0 #E4E4E8",
@@ -3643,7 +3643,7 @@ function PupilDetailPage() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 16,
               marginBottom: 14,
               boxShadow: "0 4px 0 #E4E4E8",
@@ -3696,7 +3696,7 @@ function PupilDetailPage() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 16,
             marginBottom: 14,
             boxShadow: "0 4px 0 #E4E4E8",
@@ -3844,7 +3844,7 @@ function PupilDetailPage() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 16,
             marginBottom: 14,
             boxShadow: "0 4px 0 #E4E4E8",
@@ -3920,7 +3920,7 @@ function PupilDetailPage() {
                 <div
                   style={{
                     background: "#FDEDEC",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "10px 12px",
                     marginTop: 12,
                     color: "#B02318",
@@ -4024,7 +4024,7 @@ function PupilDetailPage() {
               className="w-full inline-flex items-center justify-center gap-2 text-[14px] font-semibold disabled:opacity-50"
               style={{
                 height: 44,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: "none",
                 background: tokens.red,
                 color: tokens.white,
@@ -4512,7 +4512,7 @@ function PupilDetailPage() {
                 toast.success("Certificate downloaded. Send to pupil manually.");
               }}
               className="w-full inline-flex items-center justify-center gap-2 text-[14px] font-medium text-white"
-              style={{ height: 44, borderRadius: 8, backgroundColor: tokens.blue, ...POPPINS }}
+              style={{ height: 44, borderRadius: 12, backgroundColor: tokens.blue, ...POPPINS }}
             >
               <IconAward stroke={1.5} size={16} color="#FFFFFF" />
               Generate & download
@@ -4998,7 +4998,7 @@ function NIRow({
 const RELATIONS = ["Parent", "Spouse", "Partner", "Sibling", "Friend", "Guardian", "Other"];
 const CAL_COLOURS = ["#1A52A0", "#16A34A", "#CC2229", "#B45309", "#7C3AED", "#0891B2", "#EC4899", "#0B1F3A"];
 const EXTRAS_CARD: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   border: "0.5px solid #E2E6ED",
   padding: 16,
   marginTop: 12,
@@ -5009,7 +5009,7 @@ const EXTRAS_INPUT: React.CSSProperties = {
   height: 40,
   padding: "0 12px",
   border: "0.5px solid #E2E6ED",
-  borderRadius: 8,
+  borderRadius: 12,
   fontSize: tokens.fontSize.md,
   color: tokens.navy,
   background: "#fff",
@@ -5109,7 +5109,7 @@ function PupilExtras({
         <div
           style={{
             background: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: "0 4px 0 #E4E4E8",
             overflow: "hidden",
             marginBottom: 14,
@@ -5199,7 +5199,7 @@ function PupilExtras({
         <div
           style={{
             background: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: "0 4px 0 #E4E4E8",
             overflow: "hidden",
           }}
@@ -5262,7 +5262,7 @@ function PupilExtras({
                       style={{
                         width: 22,
                         height: 22,
-                        borderRadius: 8,
+                        borderRadius: 12,
                         flexShrink: 0,
                         background: pupil.driving_licence_checked ? "#1877D6" : "#FFFFFF",
                         border: pupil.driving_licence_checked ? "none" : "1.5px solid #D8D8DE",
@@ -5543,7 +5543,7 @@ function PupilRatesAndColour({
   return (
     <>
       {/* Gap after lesson */}
-      <div className="flex justify-between items-center" style={{ margin: "8px 16px 0", borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "14px 16px", backgroundColor: "#fff" }}>
+      <div className="flex justify-between items-center" style={{ margin: "8px 16px 0", borderRadius: tokens.radiusCard, border: "0.5px solid #E2E6ED", padding: "14px 16px", backgroundColor: "#fff" }}>
         <div className="flex items-center gap-2">
           <IconClock stroke={1.5} size={16} color="#9CA3AF" />
           <div className="flex flex-col">
@@ -5557,7 +5557,7 @@ function PupilRatesAndColour({
           value={pupil.buffer_after_minutes ?? ""}
           onChange={(e) => void saveBuffer(e.target.value)}
           className="text-[13px]"
-          style={{ height: 34, borderRadius: 8, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: tokens.navy, ...POPPINS }}
+          style={{ height: 34, borderRadius: 12, border: "0.5px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: tokens.navy, ...POPPINS }}
         >
           <option value="">Use default</option>
           {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
@@ -5623,7 +5623,7 @@ function LeadSourceSection({
   const [source, setSource] = useState<string>(pupil.lead_source ?? "");
   const [detail, setDetail] = useState<string>(pupil.lead_source_detail ?? "");
   const inputStyle: React.CSSProperties = {
-    width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
+    width: "100%", height: 40, padding: "0 12px", borderRadius: 12,
     border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.md, outline: "none", ...POPPINS,
   };
   return (
@@ -5715,7 +5715,7 @@ function TheoryEditor({
   const showPassDate = status === "Passed";
   const showScore = status === "Passed" || status === "Failed";
   const inputStyle: React.CSSProperties = {
-    width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
+    width: "100%", height: 40, padding: "0 12px", borderRadius: 12,
     border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.md, outline: "none", ...POPPINS,
   };
   return (
@@ -5788,7 +5788,7 @@ function PracticalEditor({
   );
   const [examiner, setExaminer] = useState<string>(pupil.test_examiner ?? "");
   const inputStyle: React.CSSProperties = {
-    width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
+    width: "100%", height: 40, padding: "0 12px", borderRadius: 12,
     border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.md, outline: "none", ...POPPINS,
   };
   const filtered = search.trim()
@@ -6011,7 +6011,7 @@ function UnavailablePeriodsCard({ pupilId }: { pupilId: string }) {
   }
 
   const inputStyle: React.CSSProperties = {
-    width: "100%", height: 40, padding: "0 12px", borderRadius: 8,
+    width: "100%", height: 40, padding: "0 12px", borderRadius: 12,
     border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.lg, outline: "none", ...POPPINS,
   };
 

@@ -355,7 +355,7 @@ function TakePaymentPage() {
   const NAVY = "#0B1F3A";
   const fieldCardStyle: React.CSSProperties = {
     background: "#fff",
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     padding: "13px 15px",
     boxShadow: "0 3px 0 #E4E4E8",
   };
@@ -364,7 +364,7 @@ function TakePaymentPage() {
   // all centre identically instead of being sized by their own glyph metrics.
   const keyStyle: React.CSSProperties = {
     background: "#fff",
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     padding: 0,
     minHeight: 64,
     boxSizing: "border-box",
@@ -594,7 +594,7 @@ function TakePaymentPage() {
             flexDirection: "row",
             background: "#fff",
             padding: 4,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: "0 3px 0 #E4E4E8",
             flexShrink: 0,
             margin: "10px 16px 0",
@@ -617,7 +617,7 @@ function TakePaymentPage() {
                   flex: 1,
                   minWidth: 0,
                   padding: "11px 4px",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   border: "none",
                   background: active ? NAVY : "transparent",
                   color: active ? "#fff" : "#8A8A8E",
@@ -677,7 +677,7 @@ function TakePaymentPage() {
                   style={{
                     width: "100%",
                     padding: 17,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     background: NAVY,
                     color: "#fff",
                     border: "none",
@@ -704,7 +704,7 @@ function TakePaymentPage() {
                 style={{
                   width: "100%",
                   padding: 17,
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   background: NAVY,
                   color: "#fff",
                   border: "none",
@@ -785,7 +785,7 @@ function TakePaymentPage() {
                   style={{
                     flex: 1.2,
                     padding: 17,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     background: NAVY,
                     color: "#fff",
                     border: "none",
@@ -940,7 +940,7 @@ function TakePaymentPage() {
               style={{
                 background: "#fff",
                 padding: 14,
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -984,7 +984,7 @@ function TakePaymentPage() {
               style={{
                 width: "100%",
                 height: 42,
-                borderRadius: 8,
+                borderRadius: 12,
                 background: "#fff",
                 color: NAVY,
                 border: "none",
@@ -1006,7 +1006,7 @@ function TakePaymentPage() {
               style={{
                 width: "100%",
                 height: 42,
-                borderRadius: 8,
+                borderRadius: 12,
                 background: "transparent",
                 color: "#fff",
                 border: "1px solid rgba(255,255,255,0.4)",

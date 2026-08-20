@@ -154,7 +154,7 @@ function DsmLivePage() {
         <div
           style={{
             background: tokens.white,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             border: "0.5px solid #E2E6ED",
             padding: 18,
             display: "flex",
@@ -167,7 +167,7 @@ function DsmLivePage() {
             style={{
               width: 44,
               height: 44,
-              borderRadius: 8,
+              borderRadius: 12,
               background: "#E6F1FB",
               display: "flex",
               alignItems: "center",
@@ -348,7 +348,7 @@ function CommunitySection() {
       id="community"
       style={{
         background: "#0F2044",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: 20,
         margin: "12px 16px 16px",
       }}
@@ -394,7 +394,7 @@ function CommunitySection() {
             border: "1px solid rgba(255,255,255,0.2)",
             color: "#fff",
             padding: 12,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             marginTop: 16,
             fontSize: tokens.fontSize.md,
             outline: "none",
@@ -411,7 +411,7 @@ function CommunitySection() {
             color: "#fff",
             fontWeight: tokens.fontWeight.semibold,
             padding: 12,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             marginTop: 8,
             border: 0,
             cursor: "pointer",
@@ -447,7 +447,7 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
       style={{
         background: "#fff",
         border: "0.5px solid #E2E6ED",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: "14px 16px",
         marginBottom: 8,
         display: "flex",
@@ -518,7 +518,7 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
                 color: "#fff",
                 fontSize: 12,
                 fontWeight: tokens.fontWeight.semibold,
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "6px 12px",
                 border: 0,
                 cursor: "pointer",
@@ -540,7 +540,7 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
                 color: "#fff",
                 fontSize: 12,
                 fontWeight: tokens.fontWeight.semibold,
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "6px 12px",
                 border: 0,
                 cursor: "pointer",
@@ -562,7 +562,7 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
                 color: "#fff",
                 fontSize: 12,
                 fontWeight: tokens.fontWeight.semibold,
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "6px 12px",
                 border: 0,
                 cursor: "pointer",
@@ -654,7 +654,7 @@ function SessionCard({
       style={{
         background: tokens.white,
         border: "1px solid #E3E8F0",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: 12,
         marginBottom: 10,
         display: "flex",
@@ -683,7 +683,7 @@ function SessionCard({
           width: 4,
           alignSelf: "stretch",
           minHeight: 44,
-          borderRadius: 8,
+          borderRadius: 12,
           background: booked ? "#1D7A4C" : "#1877D6",
           flexShrink: 0,
         }}
@@ -734,7 +734,7 @@ function SessionCard({
                 fontWeight: tokens.fontWeight.bold,
                 letterSpacing: "0.02em",
                 padding: "3px 7px",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 background: "#E4F4EB",
                 color: "#1D7A4C",
                 textTransform: "uppercase",

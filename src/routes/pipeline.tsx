@@ -100,7 +100,7 @@ function PipelinePage() {
           type="button"
           onClick={() => setAddOpen(true)}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 12, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
         >
           <IconPlus size={15} />
           Add lead
@@ -124,7 +124,7 @@ function PipelinePage() {
                   style={{
                     backgroundColor: "#F8F9FB",
                     border: "0.5px solid #EEF2F7",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "8px 12px",
                     marginBottom: 8,
                   }}
@@ -157,7 +157,7 @@ function PipelinePage() {
                         color: tokens.textMuted,
                         padding: "16px 8px",
                         border: "0.5px dashed #EEF2F7",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                       }}
                     >
                       No leads
@@ -171,7 +171,7 @@ function PipelinePage() {
                       className="text-left bg-white"
                       style={{
                         border: "0.5px solid #EEF2F7",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: 12,
                       }}
                     >

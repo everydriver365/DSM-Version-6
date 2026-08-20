@@ -109,7 +109,7 @@ function ReferralsPage() {
         className="mx-4 mt-4"
         style={{
           background: "linear-gradient(150deg, #0F2A4D, #0B1F3A)",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: "26px 20px",
           textAlign: "center",
           boxShadow: "0 6px 0 #050D1C, 0 18px 36px rgba(0,0,0,0.3)",
@@ -177,7 +177,7 @@ function ReferralsPage() {
         className="mx-4 mt-4"
         style={{
           background: tokens.white,
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: 20,
           boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
         }}
@@ -216,7 +216,7 @@ function ReferralsPage() {
             fontSize: 15,
             fontWeight: tokens.fontWeight.extrabold,
             padding: 15,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: "0 4px 0 #0F52A8",
             gap: 8,
             border: "none",
@@ -235,7 +235,7 @@ function ReferralsPage() {
             width: 3,
             height: 14,
             backgroundColor: tokens.blue,
-            borderRadius: 8,
+            borderRadius: 12,
           }}
         />
         <div

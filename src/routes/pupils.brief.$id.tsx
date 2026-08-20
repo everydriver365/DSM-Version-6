@@ -53,7 +53,7 @@ function Card({
     <div
       style={{
         background: tokens.white,
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         border: BORDER,
         padding: 16,
         ...POPPINS,
@@ -286,7 +286,7 @@ function PupilBriefPage() {
                   style={{
                     marginTop: 12,
                     padding: "8px 10px",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     background: "rgba(255,255,255,0.14)",
                     fontSize: 12.5,
                     fontWeight: tokens.fontWeight.semibold,
@@ -348,7 +348,7 @@ function PupilBriefPage() {
                     style={{
                       marginTop: 10,
                       padding: 10,
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       background: "#F3FAE9",
                       fontSize: tokens.fontSize.base,
                       color: "#3F6212",
@@ -548,7 +548,7 @@ function PupilBriefPage() {
                       style={{
                         marginTop: 12,
                         padding: 10,
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         background: "#FFF8EB",
                         color: "#B45309",
                         fontSize: tokens.fontSize.base,
@@ -573,7 +573,7 @@ function PupilBriefPage() {
                       marginTop: 12,
                       width: "100%",
                       padding: "10px 12px",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       border: "none",
                       background: BLUE,
                       color: tokens.white,

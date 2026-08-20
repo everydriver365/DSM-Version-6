@@ -203,7 +203,7 @@ function QuotesPage() {
             background: "#fff",
             color: tokens.blue,
             border: "1px solid #e3e6ec",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: "10px 12px",
             fontSize: tokens.fontSize.md,
             fontWeight: tokens.fontWeight.bold,
@@ -243,7 +243,7 @@ function QuotesPage() {
             <button onClick={() => navigate({ to: "/quotes/new" })}
               style={{
                 marginTop: 8, background: tokens.blue, color: "#fff", border: "none",
-                borderRadius: 8, padding: "10px 16px", fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md,
+                borderRadius: tokens.radiusCard, padding: "10px 16px", fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md,
                 cursor: "pointer", fontFamily: "Poppins, sans-serif",
               }}>
               + New quote
@@ -274,13 +274,13 @@ function QuotesPage() {
                         {isRev && (
                           <span style={{
                             background: tokens.blue, color: "#fff", fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold,
-                            padding: "2px 6px", borderRadius: 8, letterSpacing: 0.4,
+                            padding: "2px 6px", borderRadius: tokens.radiusCard, letterSpacing: 0.4,
                           }}>REVISION</span>
                         )}
                         {isResent && (
                           <span style={{
                             background: tokens.blue, color: "#fff", fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold,
-                            padding: "2px 6px", borderRadius: 8, letterSpacing: 0.4,
+                            padding: "2px 6px", borderRadius: tokens.radiusCard, letterSpacing: 0.4,
                           }}>FOLLOWED UP ✓</span>
                         )}
                       </div>
@@ -307,14 +307,14 @@ function QuotesPage() {
                     </div>
                     <span style={{
                       background: statusColor(displayStatus), color: "#fff", fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold,
-                      padding: "2px 6px", borderRadius: 8, textTransform: "uppercase", letterSpacing: 0.4,
+                      padding: "2px 6px", borderRadius: tokens.radiusCard, textTransform: "uppercase", letterSpacing: 0.4,
                     }}>
                       {displayStatus}
                     </span>
                   </div>
                   {isDeclined && (counter != null || reason) && (
                     <div style={{
-                      marginTop: 10, padding: 10, borderRadius: 8,
+                      marginTop: 10, padding: 10, borderRadius: tokens.radiusCard,
                       background: "#FEF2F2", border: "1px solid #FECACA",
                       display: "flex", flexDirection: "column", gap: 6,
                     }}>
@@ -355,7 +355,7 @@ function QuotesPage() {
                         style={{
                           display: "inline-flex", alignItems: "center", gap: 6,
                           background: tokens.blue, border: "1px solid #1877D6", color: "#fff",
-                          fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "6px 10px", borderRadius: 8,
+                          fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "6px 10px", borderRadius: tokens.radiusCard,
                           cursor: "pointer", fontFamily: "Poppins, sans-serif",
                         }}
                       >
@@ -399,7 +399,7 @@ function QuotesPage() {
                         style={{
                           display: "inline-flex", alignItems: "center", gap: 6,
                           background: "#fff", border: "1px solid #1877D6", color: tokens.blue,
-                          fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "6px 10px", borderRadius: 8,
+                          fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "6px 10px", borderRadius: tokens.radiusCard,
                           cursor: "pointer", fontFamily: "Poppins, sans-serif",
                         }}
                       >
@@ -436,7 +436,7 @@ function QuotesPage() {
                           style={{
                             display: "inline-flex", alignItems: "center", gap: 6,
                             background: tokens.navy, border: "1px solid #0B1F3A", color: "#fff",
-                            fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "6px 10px", borderRadius: 8,
+                            fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "6px 10px", borderRadius: tokens.radiusCard,
                             cursor: "pointer", fontFamily: "Poppins, sans-serif",
                           }}
                         >

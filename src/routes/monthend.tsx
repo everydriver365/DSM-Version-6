@@ -298,7 +298,7 @@ function MonthEndPage() {
       {/* Summary card */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: tokens.navy, borderRadius: 8, padding: 16 }}
+        style={{ backgroundColor: tokens.navy, borderRadius: tokens.radiusCard, padding: 16 }}
       >
         <div
           className="text-[10px] uppercase"

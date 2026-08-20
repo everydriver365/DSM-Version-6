@@ -356,7 +356,7 @@ function LessonDetailPage() {
           />
           <div
             className="animate-pulse"
-            style={{ height: 40, borderRadius: 8, backgroundColor: "#E5E7EB" }}
+            style={{ height: 40, borderRadius: 12, backgroundColor: "#E5E7EB" }}
           />
           <div
             className="animate-pulse"
@@ -389,7 +389,7 @@ function LessonDetailPage() {
             className="mt-6 text-[13px] font-medium text-white"
             style={{
               height: 40,
-              borderRadius: 8,
+              borderRadius: 12,
               backgroundColor: tokens.blue,
               padding: "0 24px",
               border: "none",
@@ -410,7 +410,7 @@ function LessonDetailPage() {
                 <div
                   style={{
                     background: "#fff",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     border: "1px solid #E4E8EF",
                     padding: 16,
                   }}
@@ -421,7 +421,7 @@ function LessonDetailPage() {
                       color: tokens.blue,
                       fontSize: tokens.fontSize.xs,
                       fontWeight: tokens.fontWeight.extrabold,
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: "3px 10px",
                       display: "inline-block",
                       marginBottom: 8,
@@ -556,7 +556,7 @@ function LessonDetailPage() {
               href={phone ? `tel:${phone}` : undefined}
               aria-label="Call"
               className="inline-flex items-center justify-center text-[13px] font-medium text-white"
-              style={{ height: 40, borderRadius: 8, backgroundColor: tokens.blue, ...POPPINS }}
+              style={{ height: 40, borderRadius: 12, backgroundColor: tokens.blue, ...POPPINS }}
             >
               Call
             </a>
@@ -566,7 +566,7 @@ function LessonDetailPage() {
               className="inline-flex items-center justify-center text-[13px] font-medium"
               style={{
                 height: 40,
-                borderRadius: 8,
+                borderRadius: 12,
                 backgroundColor: "#F3F4F6",
                 color: tokens.navy,
                 ...POPPINS,
@@ -580,7 +580,7 @@ function LessonDetailPage() {
               className="inline-flex items-center justify-center gap-1 text-[13px] font-medium text-white"
               style={{
                 height: 40,
-                borderRadius: 8,
+                borderRadius: 12,
                 backgroundColor: tokens.blue,
                 border: "none",
                 ...POPPINS,
@@ -658,7 +658,7 @@ function LessonDetailPage() {
                   marginTop: 12,
                   background: "#FDF2F2",
                   border: "1px solid #F3C9CB",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 12,
                 }}
               >
@@ -694,7 +694,7 @@ function LessonDetailPage() {
                   className="bg-white"
                   style={{
                     border: "0.5px solid #EEF2F7",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: 16,
                   }}
                 >

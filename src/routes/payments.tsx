@@ -381,7 +381,7 @@ function PaymentsPage() {
             fontSize: tokens.fontSize.md,
             fontWeight: tokens.fontWeight.extrabold,
             padding: "11px 20px",
-            borderRadius: 20, minHeight: 44,
+            borderRadius: tokens.radiusCard, minHeight: 44,
             border: 0,
             boxShadow: "0 4px 0 #0F6B3D",
             cursor: "pointer",
@@ -397,7 +397,7 @@ function PaymentsPage() {
         <div
           style={{
             background: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: "0 4px 0 #D9D2C2",
             display: "flex",
             overflow: "hidden",
@@ -426,7 +426,7 @@ function PaymentsPage() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 18,
               boxShadow: "0 4px 0 #E4E4E8",
             }}
@@ -444,7 +444,7 @@ function PaymentsPage() {
             <div
               style={{
                 height: 8,
-                borderRadius: 8,
+                borderRadius: 12,
                 background: tokens.canvas,
                 overflow: "hidden",
                 marginBottom: 14,
@@ -485,7 +485,7 @@ function PaymentsPage() {
         onClick={() => setPupilPickerOpen(true)}
         style={{
           background: tokens.canvas,
-          fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44,
+          fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: tokens.radiusCard, minHeight: 44,
           padding: "14px 16px",
           boxShadow: "0 4px 0 #E4E4E8",
 
@@ -540,7 +540,7 @@ function PaymentsPage() {
                 padding: "10px 18px",
                 fontSize: 13.5,
                 fontWeight: tokens.fontWeight.bold,
-                borderRadius: 20, minHeight: 44,
+                borderRadius: tokens.radiusCard, minHeight: 44,
                 border: 0,
                 background: active ? "#0B1F3A" : "#EEF2F7",
                 color: active ? "#fff" : "#0B1F3A",
@@ -572,7 +572,7 @@ function PaymentsPage() {
                   gap: 12,
                   padding: "14px 16px",
                   background: "#fff",
-                  borderRadius: 16,
+                  borderRadius: tokens.radiusCard,
                   boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                   marginBottom: 8,
                 }}
@@ -620,7 +620,7 @@ function PaymentsPage() {
                       key={row.id}
                       style={{
                         background: "#fff",
-                        borderRadius: 16,
+                        borderRadius: tokens.radiusCard,
                         marginBottom: 8,
                         opacity: isNonRevenue ? 0.65 : 1,
                         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
@@ -694,7 +694,7 @@ function PaymentsPage() {
                               type="button"
                               aria-label="More"
                               onClick={onClick}
-                              style={{ width: 28, height: 28, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: 0, cursor: "pointer", flexShrink: 0 }}
+                              style={{ width: 28, height: 28, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: 0, cursor: "pointer", flexShrink: 0 }}
                             >
                               <IconDotsVertical stroke={1.5} size={16} color="#B0B0B5" />
                             </button>

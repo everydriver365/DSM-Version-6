@@ -129,7 +129,7 @@ export function DeleteLessonSheet({
               className="w-full px-3 bg-white"
               style={{
                 height: 44,
-                borderRadius: 8,
+                borderRadius: 12,
                 border: "1px solid #EEF2F7",
                 color: tokens.navy,
                 fontSize: tokens.fontSize.md,
@@ -145,7 +145,7 @@ export function DeleteLessonSheet({
             onClick={() => onConfirm(resolvedReason)}
             disabled={!canSubmit}
             className="inline-flex items-center justify-center text-[14px] font-semibold text-white disabled:opacity-50"
-            style={{ height: 44, borderRadius: 8, backgroundColor: tokens.red, ...POPPINS }}
+            style={{ height: 44, borderRadius: 12, backgroundColor: tokens.red, ...POPPINS }}
           >
             {submitting ? "Deleting…" : "Delete"}
           </button>
@@ -156,7 +156,7 @@ export function DeleteLessonSheet({
             className="inline-flex items-center justify-center text-[13px] font-medium disabled:opacity-50"
             style={{
               height: 40,
-              borderRadius: 8,
+              borderRadius: 12,
               backgroundColor: "transparent",
               color: tokens.navy,
               ...POPPINS,

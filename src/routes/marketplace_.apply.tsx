@@ -380,7 +380,7 @@ function ApplyPage() {
                   style={{
                     flex: 2,
                     padding: "12px",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     border: "none",
                     background: canNext ? BLUE : "#94A3B8",
                     color: "#FFF",
@@ -399,7 +399,7 @@ function ApplyPage() {
                   style={{
                     flex: 2,
                     padding: "12px",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     border: "none",
                     background: confirm && !submitting ? BLUE : "#94A3B8",
                     color: "#FFF",
@@ -617,7 +617,7 @@ function SuccessScreen({ onBack }: { onBack: () => void }) {
         style={{
           marginTop: 28,
           padding: "12px 20px",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           border: "none",
           background: BLUE,
           color: "#FFF",
@@ -718,7 +718,7 @@ function Banner({
           style={{
             marginTop: 16,
             padding: "10px 18px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             border: "none",
             background: BLUE,
             color: "#FFF",

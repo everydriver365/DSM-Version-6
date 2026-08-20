@@ -129,7 +129,7 @@ function SubscriptionSuccessPage() {
     <div
       style={{
         background: "linear-gradient(135deg, #15803D, #15803D)",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: "28px 24px",
         textAlign: "center",
         marginBottom: 20,
@@ -153,7 +153,7 @@ function SubscriptionSuccessPage() {
           style={{
             marginTop: 12,
             backgroundColor: "rgba(255,255,255,0.2)",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: "6px 16px",
             display: "inline-flex",
             alignItems: "center",
@@ -204,7 +204,7 @@ function SubscriptionSuccessPage() {
 
   const actionCardBase: React.CSSProperties = {
     background: "#fff",
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     border: "1px solid #E4E8EF",
     padding: "14px 16px",
     display: "flex",
@@ -301,7 +301,7 @@ function SubscriptionSuccessPage() {
     <div
       style={{
         background: "#FEF3C7",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: "14px 16px",
         display: "flex",
         gap: 12,
@@ -341,7 +341,7 @@ function SubscriptionSuccessPage() {
         width: "100%",
         background: tokens.navy,
         color: "#fff",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: 15,
         fontSize: 15,
         fontWeight: tokens.fontWeight.extrabold,
@@ -360,7 +360,7 @@ function SubscriptionSuccessPage() {
     <div
       style={{
         background: "#fff",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         border: "1px solid #E4E8EF",
         padding: 20,
         textAlign: "center",
@@ -401,7 +401,7 @@ function SubscriptionSuccessPage() {
       <div
         style={{
           backgroundColor: tokens.navy,
-          borderRadius: "0 0 8px 8px",
+          borderRadius: "0 0 16px 16px",
           padding: "20px 16px",
           textAlign: "center",
           color: "#fff",

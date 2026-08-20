@@ -261,7 +261,7 @@ function MarketplacePage() {
                 boxSizing: "border-box",
                 height: 44,
                 background: tokens.canvas,
-                borderRadius: 8,
+                borderRadius: 12,
                 padding: "0 14px 0 38px",
                 outline: "none",
                 fontSize: tokens.fontSize.md,
@@ -275,7 +275,7 @@ function MarketplacePage() {
         {/* Categories */}
         <style>{`.mkt-cat-row::-webkit-scrollbar{display:none}.mkt-search-input::placeholder{color:#9CA3AF}`}</style>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, padding: "0 16px" }}>
-          <span style={{ width: 4, height: 14, borderRadius: 8, background: tokens.blue }} />
+          <span style={{ width: 4, height: 14, borderRadius: 12, background: tokens.blue }} />
           <span
             style={{
               fontSize: 12,
@@ -311,7 +311,7 @@ function MarketplacePage() {
                 style={{
                   height: 34,
                   background: isActive ? "#0B1F3A" : "#EEF2F7",
-                  borderRadius: 8,
+                  borderRadius: 12,
                   padding: "0 14px",
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.semibold,
@@ -461,7 +461,7 @@ const CATEGORY_PILL: React.CSSProperties = {
 const VIEW_BUTTON: React.CSSProperties = {
   background: tokens.blue,
   color: tokens.white,
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   padding: "7px 16px",
   fontSize: tokens.fontSize.base,
   fontWeight: tokens.fontWeight.bold,
@@ -507,7 +507,7 @@ function FeaturedCard({
       style={{
         margin: "0 16px 10px",
         background: "#fff",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         border: "1px solid #E4E8EF",
         overflow: "hidden",
         boxShadow: CARD_SHADOW,
@@ -601,7 +601,7 @@ function ProductCard({
       style={{
         margin: "0 16px 10px",
         background: "#fff",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         border: "1px solid #E4E8EF",
         boxShadow: CARD_SHADOW,
         padding: 12,

@@ -622,7 +622,7 @@ function WeeklyReportPage() {
           style={{
             ...POPPINS,
             padding: "12px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             border: "0.5px solid #1877D6",
             color: tokens.blue,
             background: tokens.white,
@@ -672,7 +672,7 @@ function StatTile({
       style={{
         background: tokens.white,
         border: "0.5px solid #EEF2F7",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: 14,
       }}
     >
@@ -692,7 +692,7 @@ function CardBox({ children }: { children: React.ReactNode }) {
       style={{
         background: tokens.white,
         border: "0.5px solid #EEF2F7",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: 16,
       }}
     >

@@ -469,7 +469,7 @@ function MiniSitePage() {
         key={t.id}
         style={{
           background: "#fff",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
           padding: 16,
           marginBottom: 10,
@@ -543,7 +543,7 @@ function MiniSitePage() {
             width: "100%",
             background: t.btnBg,
             color: "#fff",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 12,
             fontSize: tokens.fontSize.md,
             fontWeight: tokens.fontWeight.bold,
@@ -582,7 +582,7 @@ function MiniSitePage() {
   function Eyebrow({ label }: { label: string }) {
     return (
       <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "18px 0 10px" }}>
-        <span style={{ width: 3, height: 14, borderRadius: 8, background: tokens.blue }} />
+        <span style={{ width: 3, height: 14, borderRadius: 12, background: tokens.blue }} />
         <span
           style={{
             color: tokens.blue,
@@ -616,7 +616,7 @@ function MiniSitePage() {
       <div
         style={{
           background: "#fff",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           padding: "14px 16px",
           boxShadow: rowShadow,
           marginBottom: 10,
@@ -642,7 +642,7 @@ function MiniSitePage() {
             style={{
               width: 34,
               height: 34,
-              borderRadius: 8,
+              borderRadius: 12,
               background: "#E7F1FC",
               color: tokens.blue,
               display: "flex",
@@ -706,7 +706,7 @@ function MiniSitePage() {
 
       <div className="px-4 pt-4">
         {/* URL / STATUS CARD */}
-        <div style={{ background: "#fff", borderRadius: 8, padding: 18, boxShadow: cardShadow }}>
+        <div style={{ background: "#fff", borderRadius: tokens.radiusCard, padding: 18, boxShadow: cardShadow }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div
@@ -740,7 +740,7 @@ function MiniSitePage() {
               style={{
                 width: 32,
                 height: 32,
-                borderRadius: 8,
+                borderRadius: 12,
                 background: "#F2F2F7",
                 border: "none",
                 cursor: "pointer",
@@ -767,7 +767,7 @@ function MiniSitePage() {
               fontSize: tokens.fontSize.md,
               fontWeight: tokens.fontWeight.bold,
               padding: 13,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               border: "none",
               cursor: originalSlug ? "pointer" : "not-allowed",
               opacity: originalSlug ? 1 : 0.5,
@@ -836,7 +836,7 @@ function MiniSitePage() {
             gridTemplateColumns: "1fr 1fr 1fr",
             gap: 4,
             background: "#E5E5EA",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             padding: 4,
             marginTop: 14,
           }}
@@ -965,7 +965,7 @@ function MiniSitePage() {
                     style={{
                       position: "absolute", bottom: 8, right: 8,
                       background: "rgba(11,31,58,0.85)", color: "#fff",
-                      border: "none", borderRadius: 8, padding: "6px 10px",
+                      border: "none", borderRadius: tokens.radiusCard, padding: "6px 10px",
                       fontSize: 12, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 4,
                     }}
                   >
@@ -979,7 +979,7 @@ function MiniSitePage() {
                   className="w-full flex flex-col items-center justify-center"
                   style={{
                     borderWidth: "1px", borderStyle: "dashed", borderColor: tokens.canvas,
-                    borderRadius: 8, padding: 24, background: "#FAFBFC", cursor: "pointer",
+                    borderRadius: tokens.radiusCard, padding: 24, background: "#FAFBFC", cursor: "pointer",
                   }}
                 >
                   {uploadingHero ? (
@@ -1038,7 +1038,7 @@ function MiniSitePage() {
                   className="w-full flex flex-col items-center justify-center"
                   style={{
                     borderWidth: "1px", borderStyle: "dashed", borderColor: tokens.canvas,
-                    borderRadius: 8, padding: 16, background: "#FAFBFC", cursor: "pointer",
+                    borderRadius: tokens.radiusCard, padding: 16, background: "#FAFBFC", cursor: "pointer",
                   }}
                 >
                   {uploadingGallery ? (
@@ -1078,13 +1078,13 @@ function MiniSitePage() {
                       style={{
                         borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
                         borderColor: selected ? "#1877D6" : "#EEF2F7",
-                        borderRadius: 8, padding: 10, background: "#fff",
+                        borderRadius: tokens.radiusCard, padding: 10, background: "#fff",
                         cursor: "pointer", textAlign: "left",
                       }}
                     >
                       <div className="flex gap-1 mb-2">
                         {t.swatch.map((c) => (
-                          <span key={c} style={{ width: 18, height: 18, borderRadius: 8, background: c, border: "0.5px solid #EEF2F7" }} />
+                          <span key={c} style={{ width: 18, height: 18, borderRadius: 12, background: c, border: "0.5px solid #EEF2F7" }} />
                         ))}
                       </div>
                       <div className="text-[13px] font-medium" style={{ color: tokens.navy }}>{t.label}</div>
@@ -1140,7 +1140,7 @@ function MiniSitePage() {
                       style={{
                         borderWidth: selected ? "2px" : "0.5px", borderStyle: "solid",
                         borderColor: selected ? "#1877D6" : "#EEF2F7",
-                        borderRadius: 8, padding: "10px 8px", background: "#fff",
+                        borderRadius: tokens.radiusCard, padding: "10px 8px", background: "#fff",
                         cursor: "pointer", textAlign: "center",
                         fontSize: 12, color: tokens.navy,
                       }}
@@ -1161,7 +1161,7 @@ function MiniSitePage() {
               <div className="flex items-center gap-2 mb-2">
                 <span
                   style={{
-                    width: 32, height: 32, borderRadius: 8,
+                    width: 32, height: 32, borderRadius: 12,
                     background: brandColour, border: "0.5px solid #EEF2F7",
                   }}
                 />
@@ -1202,7 +1202,7 @@ function MiniSitePage() {
               fontSize: 15,
               fontWeight: tokens.fontWeight.extrabold,
               padding: 16,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               border: "none",
               cursor: "pointer",
               boxShadow: "0 4px 0 #0F52A8",
@@ -1225,7 +1225,7 @@ function MiniSitePage() {
               style={{
                 background: "#E7F1FC",
                 border: "1.5px solid #1877D6",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 16,
                 display: "flex",
                 gap: 12,
@@ -1273,7 +1273,7 @@ function MiniSitePage() {
               <div
                 style={{
                   background: "#fff",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 18,
                   boxShadow: cardShadow,
                   marginBottom: 12,
@@ -1287,7 +1287,7 @@ function MiniSitePage() {
                       color: "#6B6B6F",
                       fontSize: 12,
                       fontWeight: tokens.fontWeight.bold,
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: "4px 12px",
                     }}
                   >
@@ -1300,7 +1300,7 @@ function MiniSitePage() {
                         color: "#fff",
                         fontSize: tokens.fontSize.xs,
                         fontWeight: tokens.fontWeight.extrabold,
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: "3px 10px",
                       }}
                     >
@@ -1333,7 +1333,7 @@ function MiniSitePage() {
               <div
                 style={{
                   background: "#fff",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 18,
                   boxShadow: cardShadow,
                   marginBottom: 12,
@@ -1346,7 +1346,7 @@ function MiniSitePage() {
                       color: tokens.blue,
                       fontSize: 12,
                       fontWeight: tokens.fontWeight.bold,
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: "4px 12px",
                     }}
                   >
@@ -1359,7 +1359,7 @@ function MiniSitePage() {
                         color: "#fff",
                         fontSize: tokens.fontSize.xs,
                         fontWeight: tokens.fontWeight.extrabold,
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: "3px 10px",
                       }}
                     >
@@ -1395,7 +1395,7 @@ function MiniSitePage() {
                       width: "100%",
                       background: tokens.blue,
                       color: "#fff",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: 13,
                       fontSize: tokens.fontSize.md,
                       fontWeight: tokens.fontWeight.extrabold,
@@ -1417,7 +1417,7 @@ function MiniSitePage() {
               <div
                 style={{
                   background: "linear-gradient(150deg, #14509E, #0B1F3A)",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 18,
                   position: "relative",
                   overflow: "hidden",
@@ -1458,7 +1458,7 @@ function MiniSitePage() {
                       color: "#fff",
                       fontSize: 12,
                       fontWeight: tokens.fontWeight.bold,
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: "4px 12px",
                     }}
                   >
@@ -1473,7 +1473,7 @@ function MiniSitePage() {
                         color: "#fff",
                         fontSize: tokens.fontSize.xs,
                         fontWeight: tokens.fontWeight.extrabold,
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: "3px 10px",
                       }}
                     >
@@ -1526,7 +1526,7 @@ function MiniSitePage() {
                         width: "100%",
                         background: "#fff",
                         color: tokens.navy,
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         padding: 13,
                         fontSize: tokens.fontSize.md,
                         fontWeight: tokens.fontWeight.extrabold,
@@ -1548,7 +1548,7 @@ function MiniSitePage() {
             <div
               style={{
                 background: "linear-gradient(150deg, #1a1a1a, #000)",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 18,
                 position: "relative",
                 overflow: "hidden",
@@ -1575,7 +1575,7 @@ function MiniSitePage() {
                     fontSize: 9,
                     fontWeight: 900,
                     padding: "3px 10px",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                   }}
                 >
                   WHITE GLOVE
@@ -1589,7 +1589,7 @@ function MiniSitePage() {
                       color: "#fff",
                       fontSize: tokens.fontSize.xs,
                       fontWeight: tokens.fontWeight.extrabold,
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: "3px 10px",
                     }}
                   >
@@ -1640,7 +1640,7 @@ function MiniSitePage() {
                     width: "100%",
                     background: "#D68A1B",
                     color: "#fff",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: 13,
                     fontSize: tokens.fontSize.md,
                     fontWeight: tokens.fontWeight.extrabold,
@@ -1661,7 +1661,7 @@ function MiniSitePage() {
             <div
               style={{
                 background: "#fff",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 overflow: "hidden",
                 boxShadow: cardShadow,
               }}
@@ -1697,7 +1697,7 @@ function MiniSitePage() {
                           color: "#fff",
                           fontSize: 9,
                           fontWeight: tokens.fontWeight.extrabold,
-                          borderRadius: 8,
+                          borderRadius: tokens.radiusCard,
                           padding: "2px 7px",
                           marginTop: 4,
                         }}
@@ -1801,7 +1801,7 @@ function MiniSitePage() {
                             color: tokens.textMuted,
                             fontSize: tokens.fontSize.xs,
                             fontWeight: tokens.fontWeight.extrabold,
-                            borderRadius: 8,
+                            borderRadius: tokens.radiusCard,
                             padding: "6px 8px",
                           }}
                         >
@@ -1816,7 +1816,7 @@ function MiniSitePage() {
                             color: "#fff",
                             fontSize: tokens.fontSize.xs,
                             fontWeight: tokens.fontWeight.extrabold,
-                            borderRadius: 8,
+                            borderRadius: tokens.radiusCard,
                             padding: "6px 8px",
                             border: "none",
                             cursor: "pointer",
@@ -1834,7 +1834,7 @@ function MiniSitePage() {
                             color: "#fff",
                             fontSize: tokens.fontSize.xs,
                             fontWeight: tokens.fontWeight.extrabold,
-                            borderRadius: 8,
+                            borderRadius: tokens.radiusCard,
                             padding: "6px 8px",
                             border: "none",
                             cursor: "pointer",
@@ -1882,7 +1882,7 @@ function MiniSitePage() {
           <div
             style={{
               background: "#fff",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 24,
               maxWidth: 400,
               width: "100%",
@@ -1899,7 +1899,7 @@ function MiniSitePage() {
             <div
               style={{
                 background: "#F3F8FF",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 16,
                 marginBottom: 20,
               }}
@@ -1924,7 +1924,7 @@ function MiniSitePage() {
                   flex: 1,
                   background: "#F3F8FF",
                   color: tokens.navy,
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 13,
                   fontSize: tokens.fontSize.md,
                   fontWeight: tokens.fontWeight.bold,
@@ -1942,7 +1942,7 @@ function MiniSitePage() {
                   flex: 1,
                   background: tokens.blue,
                   color: "#fff",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 13,
                   fontSize: tokens.fontSize.md,
                   fontWeight: tokens.fontWeight.extrabold,
@@ -1977,7 +1977,7 @@ function MiniSitePage() {
             <div
               style={{
                 background: "#fff",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 16,
                 marginBottom: 16,
                 boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
@@ -2004,7 +2004,7 @@ function MiniSitePage() {
                   flex: 1,
                   background: "#fff",
                   border: "0.5px solid #E4E8EF",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "12px 14px",
                   fontSize: tokens.fontSize.md,
                   fontFamily: "Poppins, sans-serif",
@@ -2019,7 +2019,7 @@ function MiniSitePage() {
                   background: tokens.blue,
                   color: "#fff",
                   border: "none",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: "0 18px",
                   fontSize: tokens.fontSize.md,
                   fontWeight: tokens.fontWeight.bold,
@@ -2038,7 +2038,7 @@ function MiniSitePage() {
                   marginTop: 12,
                   background: "#FEF2F2",
                   border: "0.5px solid #FECACA",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 16,
                   fontSize: tokens.fontSize.base,
                   color: tokens.red,
@@ -2055,7 +2055,7 @@ function MiniSitePage() {
                   marginTop: 12,
                   background: "#F0FDF4",
                   border: "0.5px solid #BBF7D0",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 16,
                 }}
               >
@@ -2073,7 +2073,7 @@ function MiniSitePage() {
                     width: "100%",
                     background: "#15803D",
                     color: "#fff",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: 12,
                     fontSize: tokens.fontSize.md,
                     fontWeight: tokens.fontWeight.bold,
@@ -2157,7 +2157,7 @@ function MiniSitePage() {
                 justifyContent: "center",
                 gap: 0,
                 background: "#E5E5EA",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: 4,
                 margin: "0 0 16px",
               }}
@@ -2168,7 +2168,7 @@ function MiniSitePage() {
                 style={{
                   flex: 1,
                   padding: "8px 0",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   border: "none",
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
@@ -2188,7 +2188,7 @@ function MiniSitePage() {
                 style={{
                   flex: 1,
                   padding: "8px 0",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   border: "none",
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
@@ -2209,7 +2209,7 @@ function MiniSitePage() {
                     color: "#fff",
                     fontSize: 9,
                     fontWeight: tokens.fontWeight.extrabold,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "2px 6px",
                     verticalAlign: "middle",
                   }}

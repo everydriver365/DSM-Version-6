@@ -206,7 +206,7 @@ function ExpensesPage() {
             border: 0,
             color: "#fff",
             padding: "8px 12px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
@@ -372,7 +372,7 @@ function SummaryCard({
       style={{
         background: "#fff",
         border: BORDER,
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: 14,
       }}
     >
@@ -403,7 +403,7 @@ function ExpenseRow({
       style={{
         background: "#fff",
         border: BORDER,
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: "14px 16px",
         marginBottom: 8,
       }}
@@ -429,7 +429,7 @@ function ExpenseRow({
             style={{
               width: 36,
               height: 36,
-              borderRadius: 8,
+              borderRadius: 12,
               background: categoryColour(row.category) + '26',
               display: 'flex',
               alignItems: 'center',
@@ -489,7 +489,7 @@ function ExpenseRow({
             style={{
               flex: 1,
               padding: "8px 12px",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               border: BORDER,
               background: "#fff",
               color: NAVY,
@@ -510,7 +510,7 @@ function ExpenseRow({
             style={{
               flex: 1,
               padding: "8px 12px",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               border: `1px solid #FCA5A5`,
               background: "#FEF2F2",
               color: "#B91C1C",
@@ -533,7 +533,7 @@ function ExpenseRow({
               style={{
                 flex: 1,
                 padding: "8px 12px",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 border: BORDER,
                 background: "#fff",
                 color: NAVY,
@@ -728,7 +728,7 @@ function AddEditSheet({
                 background: listening ? "#FEE2E2" : "#F3F4F6",
                 color: listening ? "#B91C1C" : NAVY,
                 border: 0,
-                borderRadius: 8,
+                borderRadius: 12,
                 width: 32,
                 height: 32,
                 cursor: "pointer",
@@ -782,7 +782,7 @@ function AddEditSheet({
               gap: 8,
               padding: "10px 12px",
               border: BORDER,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               cursor: "pointer",
               color: NAVY,
               fontSize: tokens.fontSize.base,
@@ -811,7 +811,7 @@ function AddEditSheet({
             color: "#fff",
             padding: "14px 16px",
             border: 0,
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             fontWeight: tokens.fontWeight.bold,
             cursor: saving ? "not-allowed" : "pointer",
             opacity: saving ? 0.7 : 1,
@@ -827,7 +827,7 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   padding: "12px 14px",
   border: BORDER,
-  borderRadius: 8,
+  borderRadius: tokens.radiusCard,
   fontSize: 15,
   color: NAVY,
   background: "#fff",

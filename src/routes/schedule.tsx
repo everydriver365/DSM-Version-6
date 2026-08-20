@@ -375,7 +375,7 @@ function TestLessonCard({
       style={{
         position: "relative",
         background: "linear-gradient(135deg, #1877D6, #0B1F3A)",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         border: "none",
         boxShadow: "0 2px 0 #0B1F3A",
         marginBottom: 8,
@@ -426,7 +426,7 @@ function TestLessonCard({
           aria-hidden
           style={{
             width: 3,
-            borderRadius: 8,
+            borderRadius: 12,
             background: "rgba(255,255,255,0.3)",
             flexShrink: 0,
             alignSelf: "stretch",
@@ -441,7 +441,7 @@ function TestLessonCard({
                 color: "#fff",
                 fontSize: 9,
                 fontWeight: tokens.fontWeight.extrabold,
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 padding: "2px 8px",
                 letterSpacing: "0.08em",
                 fontFamily: "Poppins, sans-serif",
@@ -536,7 +536,7 @@ function TestLessonCard({
                     color: "#fff",
                     fontSize: 9,
                     fontWeight: tokens.fontWeight.extrabold,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "3px 10px",
                     fontFamily: "Poppins, sans-serif",
                   }}
@@ -550,7 +550,7 @@ function TestLessonCard({
                     color: "rgba(255,255,255,0.8)",
                     fontSize: 9,
                     fontWeight: tokens.fontWeight.extrabold,
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: "3px 10px",
                     fontFamily: "Poppins, sans-serif",
                   }}
@@ -1539,7 +1539,7 @@ function SchedulePage() {
               fontSize: 12,
               fontWeight: tokens.fontWeight.semibold,
               padding: '6px 12px',
-              borderRadius: 20, minHeight: 44,
+              borderRadius: tokens.radiusCard, minHeight: 44,
               border: 'none',
               cursor: 'pointer',
               ...POPPINS,
@@ -1561,7 +1561,7 @@ function SchedulePage() {
           minHeight: 0,
           marginTop: -18,
           background: tokens.white,
-          borderRadius: "28px 28px 0 0",
+          borderRadius: "16px 16px 0 0",
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
@@ -1604,15 +1604,15 @@ function SchedulePage() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px 4px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 8, background: '#1877D6' }} />
+          <div style={{ width: 8, height: 8, borderRadius: 12, background: '#1877D6' }} />
           <span style={{ fontSize: tokens.fontSize.xs, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>DSM lesson</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 8, background: '#9CA3AF' }} />
+          <div style={{ width: 8, height: 8, borderRadius: 12, background: '#9CA3AF' }} />
           <span style={{ fontSize: tokens.fontSize.xs, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Google Calendar</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 8, background: '#B45309' }} />
+          <div style={{ width: 8, height: 8, borderRadius: 12, background: '#B45309' }} />
           <span style={{ fontSize: tokens.fontSize.xs, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>Free slot</span>
         </div>
       </div>
@@ -1675,7 +1675,7 @@ function SchedulePage() {
                     style={{
                       background: tokens.canvas,
                       border: "1.5px dashed #D0D5DD",
-                      borderRadius: 8,
+                      borderRadius: tokens.radiusCard,
                       padding: "10px 14px",
                       textAlign: "center",
                       fontSize: 12,
@@ -1828,7 +1828,7 @@ function SchedulePage() {
                                   className="focus-within:ring-2 focus-within:ring-[#0B1F3A] focus-within:ring-offset-2"
                                   style={{
                                     background: "#FDFBF6",
-                                    borderRadius: 8,
+                                    borderRadius: tokens.radiusCard,
                                     border: "2px dashed #D4A853",
                                     padding: "12px 14px",
                                     display: "flex",
@@ -1927,7 +1927,7 @@ function SchedulePage() {
                                   style={{
                                     background: '#E0FFF4',
                                     border: '0.5px solid #86EFAC',
-                                    borderRadius: 8,
+                                    borderRadius: tokens.radiusCard,
                                     padding: '10px 14px',
                                     margin: '2px 0',
                                     display: 'flex',
@@ -2071,7 +2071,7 @@ function SchedulePage() {
                                   tabIndex={0}
                                   style={{
                                     background: '#fff',
-                                    borderRadius: 8,
+                                    borderRadius: tokens.radiusCard,
                                     border: '2px solid #1877D6',
                                     padding: '14px 16px',
                                     marginBottom: 8,
@@ -2080,7 +2080,7 @@ function SchedulePage() {
                                   }}
                                 >
                                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ background: '#EFF6FF', color: '#1877D6', fontSize: 9, fontWeight: tokens.fontWeight.extrabold, borderRadius: 20, padding: '3px 10px' }}>
+                                    <span style={{ background: '#EFF6FF', color: '#1877D6', fontSize: 9, fontWeight: tokens.fontWeight.extrabold, borderRadius: tokens.radiusCard, padding: '3px 10px' }}>
                                       📅 EVENT
                                     </span>
                                     <span style={{ fontSize: 12, color: '#9CA3AF' }}>{fmtTime(e.start)}</span>
@@ -2109,7 +2109,7 @@ function SchedulePage() {
                                   tabIndex={clickable ? 0 : undefined}
                                   style={{
                                     background: isTestDay ? '#FFF3E0' : '#FFFFFF',
-                                    borderRadius: 8,
+                                    borderRadius: tokens.radiusCard,
                                     boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
                                     padding: "12px 14px",
                                     display: "flex",
@@ -2148,7 +2148,7 @@ function SchedulePage() {
                                         aria-hidden
                                         style={{
                                           width: 3,
-                                          borderRadius: 8,
+                                          borderRadius: 12,
                                           background: Date.now() >= e.end.getTime() ? '#34A853' : '#1877D6',
                                           flexShrink: 0,
                                           alignSelf: 'stretch',
@@ -2243,7 +2243,7 @@ function SchedulePage() {
                                                         alignItems: 'center',
                                                         fontSize: tokens.fontSize.xs,
                                                         fontWeight: tokens.fontWeight.bold,
-                                                        borderRadius: 8,
+                                                        borderRadius: tokens.radiusCard,
                                                         padding: '2px 7px',
                                                         lineHeight: 1.4,
                                                         fontFamily: 'Poppins, sans-serif',
@@ -2282,7 +2282,7 @@ function SchedulePage() {
                                                        fontSize: tokens.fontSize.xs,
                                                        fontWeight: tokens.fontWeight.bold,
                                                        padding: '2px 8px',
-                                                       borderRadius: 8,
+                                                       borderRadius: tokens.radiusCard,
                                                        lineHeight: 1.4,
                                                        border: 'none',
                                                        background: eolDone ? '#E4F5EA' : '#FBE7E7',
@@ -2620,10 +2620,10 @@ function SchedulePage() {
               }}
               style={{
                 display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
-                border: '1px solid #E4E8EF', fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44, padding: '14px 14px', background: '#fff',
+                border: '1px solid #E4E8EF', fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: tokens.radiusCard, minHeight: 44, padding: '14px 14px', background: '#fff',
               }}
             >
-              <span style={{ width: 38, height: 38, borderRadius: 8, background: '#E7F0FB', display: 'grid', placeItems: 'center' }}>
+              <span style={{ width: 38, height: 38, borderRadius: 12, background: '#E7F0FB', display: 'grid', placeItems: 'center' }}>
                 <IconPlus size={19} stroke={1.8} color="#1877D6" />
               </span>
               <span>
@@ -2640,10 +2640,10 @@ function SchedulePage() {
               }}
               style={{
                 display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left',
-                border: '1px solid #E4E8EF', fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44, padding: '14px 14px', background: '#fff',
+                border: '1px solid #E4E8EF', fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: tokens.radiusCard, minHeight: 44, padding: '14px 14px', background: '#fff',
               }}
             >
-              <span style={{ width: 38, height: 38, borderRadius: 8, background: '#FBF1DA', display: 'grid', placeItems: 'center' }}>
+              <span style={{ width: 38, height: 38, borderRadius: 12, background: '#FBF1DA', display: 'grid', placeItems: 'center' }}>
                 <IconCalendar size={19} stroke={1.8} color="#B8860B" />
               </span>
               <span>
@@ -2654,7 +2654,7 @@ function SchedulePage() {
             <button
               type="button"
               onClick={() => setAddChooserOpen(false)}
-              style={{ marginTop: 4, padding: '12px', fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44, border: 'none', background: '#EEF2F7', color: '#0B1F3A', fontSize: tokens.fontSize.md, fontWeight: 700 }}
+              style={{ marginTop: 4, padding: '12px', fontFamily: 'Poppins, sans-serif', borderRadius: tokens.radiusCard, minHeight: 44, border: 'none', background: '#EEF2F7', color: '#0B1F3A', fontSize: tokens.fontSize.md, fontWeight: 700 }}
             >
               Cancel
             </button>
@@ -2741,7 +2741,7 @@ function SchedulePage() {
                 fontWeight: tokens.fontWeight.semibold,
                 fontSize: tokens.fontSize.md,
                 padding: '12px 0',
-                borderRadius: 20, minHeight: 44,
+                borderRadius: tokens.radiusCard, minHeight: 44,
                 border: 'none',
                 cursor: 'pointer',
                 ...POPPINS,
@@ -2760,7 +2760,7 @@ function SchedulePage() {
                 fontWeight: tokens.fontWeight.medium,
                 fontSize: tokens.fontSize.md,
                 padding: '12px 0',
-                borderRadius: 20, minHeight: 44,
+                borderRadius: tokens.radiusCard, minHeight: 44,
                 cursor: 'pointer',
                 marginTop: 8,
                 ...POPPINS,
@@ -2779,7 +2779,7 @@ function SchedulePage() {
 const iconBtn: React.CSSProperties = {
   width: 40,
   height: 40,
-  borderRadius: 8,
+  borderRadius: 12,
   border: 0,
   background: "transparent",
   display: "inline-flex",
@@ -2895,7 +2895,7 @@ function EntryRow({
             ...rowBase('#FF8C00', cancelled),
             background: '#FFF3E0',
             borderLeft: '3px solid #FF8C00',
-            fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44,
+            fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: tokens.radiusCard, minHeight: 44,
             padding: '10px 12px',
             width: '100%',
             textAlign: 'left',
@@ -2945,7 +2945,7 @@ function EntryRow({
                   alignItems: 'center',
                   gap: 3,
                   background: '#FF8C00',
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: '2px 8px',
                 }}>
                   <span style={{
@@ -2963,7 +2963,7 @@ function EntryRow({
                   alignItems: 'center',
                   gap: 3,
                   background: 'rgba(255,140,0,0.15)',
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: '2px 8px',
                 }}>
                   <span style={{
@@ -3130,7 +3130,7 @@ function rowBase(bg: string, cancelled: boolean): React.CSSProperties {
     width: "100%",
     textAlign: "left",
     border: 0,
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     padding: "12px 14px",
     background: bg,
     color: tokens.white,
@@ -3200,7 +3200,7 @@ function MonthCalendar({
         top: 0,
         zIndex: 5,
         background: tokens.white,
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
         padding: 12,
         boxSizing: "border-box",
@@ -3362,7 +3362,7 @@ function MonthCalendar({
 const calChevronBtn: React.CSSProperties = {
   width: 22,
   height: 22,
-  borderRadius: 8,
+  borderRadius: 12,
   border: 0,
   background: "transparent",
   display: "inline-flex",
@@ -3375,7 +3375,7 @@ const calChevronBtn: React.CSSProperties = {
 const calChip: React.CSSProperties = {
   width: 26,
   height: 26,
-  borderRadius: 8,
+  borderRadius: 12,
   border: 0,
   display: "inline-flex",
   alignItems: "center",
@@ -3567,7 +3567,7 @@ function MonthStrip({
             gap: 6,
             marginBottom: 8,
             padding: "6px 10px",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             background: syncMessage.type === "success" ? "rgba(34, 197, 94, 0.12)" : "rgba(239, 68, 68, 0.12)",
             color: syncMessage.type === "success" ? "#16A34A" : "#B91C1C",
             fontSize: 12,

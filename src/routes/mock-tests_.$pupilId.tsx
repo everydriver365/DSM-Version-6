@@ -144,7 +144,7 @@ function StatCard({ label, value, tone }: { label: string; value: string; tone?:
       style={{
         backgroundColor: tokens.white,
         border: "0.5px solid #E2E6ED",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         padding: 12,
       }}
     >
@@ -330,7 +330,7 @@ function MockTestsPage() {
             setAddOpen(true);
           }}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 12, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
         >
           <IconPlus size={15} />
           Record mock test
@@ -355,7 +355,7 @@ function MockTestsPage() {
           className="w-full inline-flex items-center justify-center gap-2 text-[13px] font-semibold"
           style={{
             height: 44,
-            borderRadius: 8,
+            borderRadius: 12,
             backgroundColor: "#0F2044",
             color: tokens.white,
             border: "none",
@@ -373,7 +373,7 @@ function MockTestsPage() {
             style={{
               backgroundColor: tokens.white,
               border: "0.5px solid #E2E6ED",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               padding: 12,
             }}
           >
@@ -426,7 +426,7 @@ function MockTestsPage() {
                 style={{
                   backgroundColor: tokens.white,
                   border: "0.5px solid #E2E6ED",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 16,
                   marginLeft: 16,
                   marginRight: 16,
@@ -647,7 +647,7 @@ function MockTestsPage() {
                 className="w-full text-white text-[14px] font-semibold inline-flex items-center justify-center gap-2"
                 style={{
                   height: 48,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   backgroundColor: "#0891B2",
                   border: "none",
                   opacity: saving ? 0.7 : 1,

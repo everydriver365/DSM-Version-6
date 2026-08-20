@@ -744,7 +744,7 @@ function DetailSheet({
           width: "100%",
           marginTop: 14,
           padding: "14px 16px",
-          borderRadius: 8,
+          borderRadius: tokens.radiusCard,
           background: BLUE,
           color: tokens.white,
           fontWeight: tokens.fontWeight.semibold,

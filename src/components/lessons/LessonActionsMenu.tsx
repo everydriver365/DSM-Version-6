@@ -78,7 +78,7 @@ export function LessonActionsMenu({
             minWidth: 140,
             background: tokens.white,
             border: "1px solid #E5E7EB",
-            borderRadius: 8,
+            borderRadius: tokens.radiusCard,
             boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
             zIndex,
             overflow: "hidden",

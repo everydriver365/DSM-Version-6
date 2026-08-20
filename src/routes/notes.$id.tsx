@@ -87,7 +87,7 @@ function NoteEditPage() {
           aria-label="Delete note"
           onClick={() => setConfirmOpen(true)}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.red }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 12, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.red }}
         >
           <IconTrash size={15} />
           Delete

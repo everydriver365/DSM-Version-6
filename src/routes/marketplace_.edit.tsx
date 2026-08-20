@@ -191,7 +191,7 @@ function MarketplaceEditPage() {
     width: "100%",
     padding: "8px 10px",
     border: "1px solid #e2e8f0",
-    borderRadius: 8,
+    borderRadius: tokens.radiusCard,
     fontSize: tokens.fontSize.md,
     background: "#fff",
     color: "#0f172a",
@@ -210,7 +210,7 @@ function MarketplaceEditPage() {
               border: "1px solid #fecaca",
               color: "#B91C1C",
               padding: 12,
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               marginBottom: 12,
               fontSize: tokens.fontSize.base,
               whiteSpace: "pre-wrap",
@@ -227,7 +227,7 @@ function MarketplaceEditPage() {
               <div
                 style={{
                   border: "1px dashed #cbd5e1",
-                  borderRadius: 8,
+                  borderRadius: tokens.radiusCard,
                   padding: 16,
                   marginBottom: 12,
                   color: "#64748b",
@@ -245,7 +245,7 @@ function MarketplaceEditPage() {
                   key={key}
                   style={{
                     border: "1px solid #e2e8f0",
-                    borderRadius: 8,
+                    borderRadius: tokens.radiusCard,
                     padding: 14,
                     marginBottom: 14,
                     background: "#fff",
@@ -394,7 +394,7 @@ function MarketplaceEditPage() {
                         color: "#fff",
                         border: "none",
                         padding: "10px 14px",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         fontWeight: tokens.fontWeight.semibold,
                         cursor: "pointer",
                       }}
@@ -408,7 +408,7 @@ function MarketplaceEditPage() {
                         color: "#b91c1c",
                         border: "1px solid #fecaca",
                         padding: "10px 14px",
-                        borderRadius: 8,
+                        borderRadius: tokens.radiusCard,
                         fontWeight: tokens.fontWeight.semibold,
                         cursor: "pointer",
                       }}
@@ -428,7 +428,7 @@ function MarketplaceEditPage() {
                 color: tokens.navy,
                 border: "2px dashed #0B1F3A",
                 padding: "14px",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 marginTop: 8,

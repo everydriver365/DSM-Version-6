@@ -208,7 +208,7 @@ function HealthPage() {
                     style={{
                       width: 28,
                       height: 32,
-                      borderRadius: 8,
+                      borderRadius: 12,
                       backgroundColor: filled ? "#DBEAFE" : "#F8F9FB",
                       border: "0.5px solid #EEF2F7",
                     }}
@@ -270,7 +270,7 @@ function HealthPage() {
                 style={{
                   width: 6,
                   height: 6,
-                  borderRadius: 8,
+                  borderRadius: 12,
                   backgroundColor: i === tipIndex ? "#1877D6" : "#EEF2F7",
                 }}
               />
@@ -347,7 +347,7 @@ function QuickLog({
       style={{
         gap: 10,
         padding: 12,
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         border: "0.5px solid #EEF2F7",
         backgroundColor: tokens.white,
       }}
@@ -357,7 +357,7 @@ function QuickLog({
         style={{
           width: 32,
           height: 32,
-          borderRadius: 8,
+          borderRadius: 12,
           backgroundColor: tint,
         }}
       >
@@ -378,7 +378,7 @@ function MiniStat({ label, value }: { label: string; value: string }) {
     <div
       style={{
         padding: 10,
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         backgroundColor: "#F8F9FB",
         border: "0.5px solid #EEF2F7",
       }}

@@ -368,7 +368,7 @@ function EndOfDayPage() {
               style={{
                 marginTop: 10,
                 padding: "8px 12px",
-                borderRadius: 8,
+                borderRadius: tokens.radiusCard,
                 background: tokens.blue,
                 color: tokens.white,
                 fontSize: 12,
@@ -399,7 +399,7 @@ function EndOfDayPage() {
               fontSize: tokens.fontSize.base,
               fontFamily: "Poppins, sans-serif",
               border: "1px solid #EEF2F7",
-              borderRadius: 8,
+              borderRadius: tokens.radiusCard,
               resize: "vertical",
               outline: "none",
               color: tokens.navy,
@@ -450,7 +450,7 @@ function EndOfDayPage() {
             style={{
               width: 34,
               height: 34,
-              borderRadius: 8,
+              borderRadius: 12,
               background: "#FBE2E2",
               display: "inline-flex",
               alignItems: "center",
@@ -488,7 +488,7 @@ function EndOfDayPage() {
             style={{
               width: 34,
               height: 34,
-              borderRadius: 8,
+              borderRadius: 12,
               background: "#E6F1FB",
               display: "inline-flex",
               alignItems: "center",
@@ -541,7 +541,7 @@ function Card({ children }: { children: React.ReactNode }) {
         padding: 16,
         backgroundColor: tokens.white,
         border: "0.5px solid #EEF2F7",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
       }}
     >
       {children}
@@ -584,7 +584,7 @@ function SmallBtn({ children, color, onClick }: { children: React.ReactNode; col
       onClick={onClick}
       style={{
         padding: "6px 10px",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         background: color,
         color: tokens.white,
         fontSize: 12,
@@ -612,7 +612,7 @@ function Stat({ label, value, color, hint }: { label: string; value: string; col
       style={{
         padding: 14,
         border: "0.5px solid #EEF2F7",
-        borderRadius: 8,
+        borderRadius: tokens.radiusCard,
         backgroundColor: tokens.white,
       }}
     >
