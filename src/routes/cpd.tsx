@@ -296,10 +296,10 @@ function CpdPage() {
                 style={{
                   color:
                     renewalDaysLeft > 90
-                      ? "#166534"
+                      ? "#15803D"
                       : renewalDaysLeft >= 30
                         ? "#0B1F3A"
-                        : "#991B1B",
+                        : "#B91C1C",
                 }}
               >
                 {renewalDaysLeft} days until ADI renewal

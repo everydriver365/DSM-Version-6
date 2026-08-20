@@ -332,7 +332,7 @@ function SquarePage() {
             {/* Hero banner */}
             <div
               style={{
-                background: "linear-gradient(135deg, #F59E0B, #D97706)",
+                background: "linear-gradient(135deg, #F59E0B, #B45309)",
                 borderRadius: 8,
                 padding: 20,
                 display: "flex",
@@ -498,10 +498,10 @@ function SquarePage() {
             >
               <IconAlertTriangle
                 size={18}
-                color="#D97706"
+                color="#B45309"
                 style={{ flexShrink: 0, marginTop: 1 }}
               />
-              <div style={{ fontSize: 12.5, color: "#92400E", lineHeight: 1.5 }}>
+              <div style={{ fontSize: 12.5, color: "#B45309", lineHeight: 1.5 }}>
                 Without Square, card payments take up to <strong>2 days</strong>{" "}
                 to reach you via EveryDriver. Connect Square for instant payouts.
               </div>

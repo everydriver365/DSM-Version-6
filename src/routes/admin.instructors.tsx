@@ -579,7 +579,7 @@ function AdminInstructorsPage() {
               padding: 14,
               borderRadius: 8,
               backgroundColor: "#FEF3C7",
-              color: "#92400E",
+              color: "#B45309",
               fontSize: 13,
               boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
             }}

@@ -894,7 +894,7 @@ function CancelTestSheet({
             padding: 14,
             background: "#FEF3C7",
             borderRadius: 8,
-            color: "#92400E",
+            color: "#B45309",
           }}
         >
           <span style={{ fontSize: 18, lineHeight: 1 }}>⚠️</span>

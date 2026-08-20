@@ -369,7 +369,7 @@ function CommunitySection() {
         <span
           style={{
             display: "inline-block",
-            background: "#D97706",
+            background: "#B45309",
             color: "#fff",
             fontSize: 12,
             fontWeight: 700,

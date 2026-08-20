@@ -1214,7 +1214,7 @@ function CourseDetailPage() {
                       statusLabel = "Cancelled";
                     } else if (isToday) {
                       statusBg = "#FEF3C7";
-                      statusColor = "#92400E";
+                      statusColor = "#B45309";
                       statusLabel = "Today";
                     } else if (isPast) {
                       statusBg = "#EEF2F7";
@@ -1240,7 +1240,7 @@ function CourseDetailPage() {
                       numberContent = <IconX size={16} />;
                     } else if (isToday) {
                       numberBg = "#FEF3C7";
-                      numberColor = "#92400E";
+                      numberColor = "#B45309";
                       numberContent = i + 1;
                     } else {
                       numberBg = "#EFF6FF";
@@ -1285,7 +1285,7 @@ function CourseDetailPage() {
                               <span
                                 style={{
                                   background: "#FEF3C7",
-                                  color: "#92400E",
+                                  color: "#B45309",
                                   fontSize: 9,
                                   fontWeight: 800,
                                   borderRadius: 8,

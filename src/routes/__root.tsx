@@ -1080,7 +1080,7 @@ function RootComponent() {
               gap: 8,
               padding: "10px 16px",
               background: "#FEF3C7",
-              color: "#92400E",
+              color: "#B45309",
               fontSize: 13,
               fontWeight: 500,
               fontFamily: "Poppins, sans-serif",

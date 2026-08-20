@@ -252,14 +252,14 @@ function MarketplaceListPage() {
           alignItems: "flex-start",
         }}
       >
-        <IconTag stroke={1.5} size={18} color="#D97706" style={{ flexShrink: 0, marginTop: 2 }} />
+        <IconTag stroke={1.5} size={18} color="#B45309" style={{ flexShrink: 0, marginTop: 2 }} />
         <div>
           <div style={{ fontSize: 14, color: "#0F2044", fontWeight: 600 }}>
             List your product or service free. Reach thousands of driving
             instructors.
           </div>
           <div
-            style={{ fontSize: 12, color: "#92400E", marginTop: 4 }}
+            style={{ fontSize: 12, color: "#B45309", marginTop: 4 }}
           >
             DSM listings are moderated before going live.
           </div>
@@ -652,7 +652,7 @@ function Field({
       >
         <label style={{ fontSize: 13, fontWeight: 600, color: "#0F2044" }}>
           {label}
-          {required && <span style={{ color: "#DC2626" }}> *</span>}
+          {required && <span style={{ color: "#B91C1C" }}> *</span>}
         </label>
         {hint && <span style={{ fontSize: 11, color: "#6B7280" }}>{hint}</span>}
       </div>

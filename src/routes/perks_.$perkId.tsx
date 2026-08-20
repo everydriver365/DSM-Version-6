@@ -244,7 +244,7 @@ function PerkDetailPage() {
           {canAccess ? (
             <IconCircleCheck size={20} color="#15803D" stroke={2} />
           ) : (
-            <IconLock size={20} color="#92400E" stroke={1.5} />
+            <IconLock size={20} color="#B45309" stroke={1.5} />
           )}
         </div>
 
@@ -260,10 +260,10 @@ function PerkDetailPage() {
             </>
           ) : (
             <>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#92400E" }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#B45309" }}>
                 Requires {TIER_DISPLAY[perk.min_tier] ?? perk.min_tier} or above
               </div>
-              <div style={{ fontSize: 12, color: "#92400E", opacity: 0.8 }}>
+              <div style={{ fontSize: 12, color: "#B45309", opacity: 0.8 }}>
                 Upgrade to unlock this perk
               </div>
             </>

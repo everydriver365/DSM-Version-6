@@ -93,7 +93,7 @@ function typeIcon(type: string | null) {
     case "lesson_cancelled_by_pupil":
       return { bg: "#CC2229", node: <IconCircleX stroke={1.5} size={18} color="#FFFFFF" /> };
     case "reschedule_request":
-      return { bg: "#D97706", node: <IconRefresh stroke={1.5} size={18} color="#FFFFFF" /> };
+      return { bg: "#B45309", node: <IconRefresh stroke={1.5} size={18} color="#FFFFFF" /> };
     default:
       return { bg: "#6B7280", node: <IconBell stroke={1.5} size={18} color="#FFFFFF" /> };
   }
@@ -900,7 +900,7 @@ function NotificationsPage() {
                                     navigate({ to: "/gaps" });
                                   }}
                                   className="text-[12px] font-semibold text-white"
-                                  style={{ background: "#D97706", border: "none", borderRadius: 20, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
+                                  style={{ background: "#B45309", border: "none", borderRadius: 20, padding: "6px 12px", cursor: "pointer", ...POPPINS }}
                                 >
                                   Fill slot →
                                 </button>
@@ -1269,7 +1269,7 @@ function NotificationsPage() {
                       <div
                         style={{
                           fontSize: 13,
-                          color: "#991B1B",
+                          color: "#B91C1C",
                           lineHeight: 1.5,
                           ...POPPINS,
                         }}
@@ -1528,7 +1528,7 @@ function NotificationsPage() {
                   style={{
                     margin: "16px 16px 8px",
                     background: actionSheet.isLiveNow
-                      ? "linear-gradient(135deg, #CC2229, #991B1B)"
+                      ? "linear-gradient(135deg, #CC2229, #B91C1C)"
                       : "linear-gradient(135deg, #14509E, #0B1F3A)",
                     borderRadius: 8,
                     padding: 16,
@@ -1843,11 +1843,11 @@ function NotificationsPage() {
                     overflow: "hidden",
                     background:
                       actionSheet.testResult === "pass"
-                        ? "linear-gradient(135deg, #15803D, #166534)"
+                        ? "linear-gradient(135deg, #15803D, #15803D)"
                         : actionSheet.testResult === "fail"
                           ? "linear-gradient(135deg, #6B7280, #4B5563)"
                           : actionSheet.isToday
-                            ? "linear-gradient(135deg, #CC2229, #991B1B)"
+                            ? "linear-gradient(135deg, #CC2229, #B91C1C)"
                             : "linear-gradient(135deg, #14509E, #0B1F3A)",
                     boxShadow:
                       actionSheet.testResult === "pass"

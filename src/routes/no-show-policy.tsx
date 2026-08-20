@@ -139,7 +139,7 @@ function NoShowPolicyPage() {
           padding: 16,
         }}
       >
-        <IconAlertTriangle size={20} color="#D97706" className="shrink-0 mt-0.5" />
+        <IconAlertTriangle size={20} color="#B45309" className="shrink-0 mt-0.5" />
         <div className="text-[13px] text-[#78350F] leading-snug" style={FONT}>
           Set your policy for late cancellations and no-shows. This appears on your DSM mini website and booking
           confirmation emails.

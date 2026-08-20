@@ -944,7 +944,7 @@ function EditLessonPage() {
                       <button
                         type="button"
                         onClick={() => setChargeOption("fee")}
-                        style={chargeRow(activeOption === "fee", "#FEF3C7", "#D97706")}
+                        style={chargeRow(activeOption === "fee", "#FEF3C7", "#B45309")}
                       >
                         <div style={chargeTitle}>Charge cancellation fee</div>
                         <div style={chargeSub}>{feeDesc.subtitle}</div>

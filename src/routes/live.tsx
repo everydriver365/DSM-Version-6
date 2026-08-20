@@ -1728,7 +1728,7 @@ function LivePage() {
                     fontSize: 18,
                     fontWeight: 800,
                     lineHeight: 1,
-                    color: speedLimit == null ? "#6B7686" : over ? "#fff" : zone20 ? "#92400E" : "#0B1F3A",
+                    color: speedLimit == null ? "#6B7686" : over ? "#fff" : zone20 ? "#B45309" : "#0B1F3A",
                   }}
                 >
                   {speedLimit ?? "—"}
@@ -1770,7 +1770,7 @@ function LivePage() {
                   style={{
                     flexShrink: 0,
                     background: "#F59E0B",
-                    color: "#92400E",
+                    color: "#B45309",
                     fontSize: 11,
                     fontWeight: 700,
                     padding: "4px 8px",

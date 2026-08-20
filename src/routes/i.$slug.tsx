@@ -69,7 +69,7 @@ const THEMES: Record<Theme, { bg: string; primary: string; accent: string; surfa
   classic: { bg: "#FFFFFF", primary: "#0B1F3A", accent: "#1877D6", surface: "#F8FAFC", muted: "#475569", border: "#E2E8F0", isDark: false },
   modern: { bg: "#0A0A0A", primary: "#FFFFFF", accent: "#6366F1", surface: "#171717", muted: "#A3A3A3", border: "#262626", isDark: true },
   warm: { bg: "#FFF8F0", primary: "#7C2D12", accent: "#EA580C", surface: "#FFEDD5", muted: "#78350F", border: "#FED7AA", isDark: false },
-  bold: { bg: "#0A0A0A", primary: "#DC2626", accent: "#FFFFFF", surface: "#171717", muted: "#A3A3A3", border: "#262626", isDark: true },
+  bold: { bg: "#0A0A0A", primary: "#B91C1C", accent: "#FFFFFF", surface: "#171717", muted: "#A3A3A3", border: "#262626", isDark: true },
 };
 
 const FONT_FAMILY: Record<Font, string> = {

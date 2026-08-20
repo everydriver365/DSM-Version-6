@@ -138,7 +138,7 @@ function getBlockColour(title: string): { bg: string; border: string; icon: stri
     t.includes("school") || t.includes("pickup") || t.includes("drop") ||
     t.includes("kids") || t.includes("child") || t.includes("nursery")
   )
-    return { bg: "#FFFBEB", border: "#D97706", icon: "🎒", text: "#D97706" };
+    return { bg: "#FFFBEB", border: "#B45309", icon: "🎒", text: "#B45309" };
   if (
     t.includes("lunch") || t.includes("dinner") || t.includes("coffee") ||
     t.includes("birthday") || t.includes("party") || t.includes("wedding")
@@ -2288,7 +2288,7 @@ function GapsPage() {
                   display: "flex",
                   gap: 8,
                   alignItems: "center",
-                  color: "#92400E",
+                  color: "#B45309",
                   fontWeight: 700,
                   fontSize: 14,
                 }}
@@ -3162,7 +3162,7 @@ function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { bg: string; fg: string; label: string }> = {
     sent: { bg: "#DBEAFE", fg: "#1E40AF", label: "Sent" },
     accepted: { bg: "#D1FAE5", fg: "#065F46", label: "Accepted" },
-    declined: { bg: "#FEE2E2", fg: "#991B1B", label: "Declined" },
+    declined: { bg: "#FEE2E2", fg: "#B91C1C", label: "Declined" },
     expired: { bg: "#E5E7EB", fg: "#374151", label: "Expired" },
   };
   const s = map[status] || { bg: "#E5E7EB", fg: "#374151", label: status };
@@ -3183,7 +3183,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function rankColor(rank: number) {
-  if (rank === 1) return { bg: "#FEF3C7", fg: "#92400E" };
+  if (rank === 1) return { bg: "#FEF3C7", fg: "#B45309" };
   if (rank === 2) return { bg: "#E5E7EB", fg: "#374151" };
   if (rank === 3) return { bg: "#FED7AA", fg: "#7C2D12" };
   return { bg: "#F3F4F6", fg: "#6B7280" };

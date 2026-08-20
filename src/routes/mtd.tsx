@@ -329,7 +329,7 @@ function MtdPage() {
     if (submitted) return { label: "Submitted", color: "#0B1F3A", bg: "#D1FAE5", dueColor: MUTED };
     const msToDue = q.due.getTime() - now.getTime();
     const daysToDue = msToDue / 86400000;
-    if (now > q.due) return { label: "Overdue", color: "#991B1B", bg: "#FEE2E2", dueColor: "#1877D6" };
+    if (now > q.due) return { label: "Overdue", color: "#B91C1C", bg: "#FEE2E2", dueColor: "#1877D6" };
     if (now < q.periodEnd) return { label: "Not due", color: "#374151", bg: "#E5E7EB", dueColor: MUTED };
     if (daysToDue <= 30) return { label: "Due soon", color: "#0B1F3A", bg: "#EEF2F7", dueColor: "#1877D6" };
     return { label: "Not due", color: "#374151", bg: "#E5E7EB", dueColor: MUTED };

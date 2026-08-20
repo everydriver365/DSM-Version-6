@@ -1223,7 +1223,7 @@ function ListingDetailPage() {
 function ConditionBadge({ condition }: { condition: string }) {
   const map: Record<string, { bg: string; color: string }> = {
     new: { bg: "#D1FAE5", color: "#065F46" },
-    used: { bg: "#FEF3C7", color: "#92400E" },
+    used: { bg: "#FEF3C7", color: "#B45309" },
     refurbished: { bg: "#DBEAFE", color: "#1E40AF" },
   };
   const key = condition.toLowerCase();

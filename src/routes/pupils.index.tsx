@@ -725,12 +725,12 @@ function PupilsIndexPage() {
                   ✓ Passed
                 </span>
               ) : testResultState === "failed" ? (
-                <span style={{ ...PILL_BASE, backgroundColor: "#FEF3C7", color: "#92400E" }}>
+                <span style={{ ...PILL_BASE, backgroundColor: "#FEF3C7", color: "#B45309" }}>
                   Retest
                 </span>
               ) : null}
               {!testResultState && testSoon && testDate && (
-                <span style={{ ...PILL_BASE, backgroundColor: "#FEF3C7", color: "#92400E" }}>
+                <span style={{ ...PILL_BASE, backgroundColor: "#FEF3C7", color: "#B45309" }}>
                   🎯 Test {formatShortDate(testDate)}
                 </span>
               )}

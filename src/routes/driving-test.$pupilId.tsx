@@ -466,7 +466,7 @@ function DrivingTestPage() {
   }
 
   const resultColor = (r: string | null) =>
-    r === "pass" ? "#059669" : r === "fail" ? "#DC2626" : "#6B7280";
+    r === "pass" ? "#059669" : r === "fail" ? "#B91C1C" : "#6B7280";
 
   return (
     <DSMTopSheet title="Driving Test" onBack={() => window.history.back()}>
@@ -941,7 +941,7 @@ function RecordTab(props: any) {
               style={{
                 height: 44,
                 borderRadius: 999,
-                backgroundColor: testType === t ? (t === "mock" ? "#D97706" : "#0F2044") : "#F1F4F9",
+                backgroundColor: testType === t ? (t === "mock" ? "#B45309" : "#0F2044") : "#F1F4F9",
                 color: testType === t ? "#FFFFFF" : "#0F2044",
                 border: "none",
               }}
@@ -955,7 +955,7 @@ function RecordTab(props: any) {
           style={{
             borderRadius: 8,
             backgroundColor: testType === "mock" ? "#FEF3C7" : "#DCE6F5",
-            color: testType === "mock" ? "#92400E" : "#0F2044",
+            color: testType === "mock" ? "#B45309" : "#0F2044",
           }}
         >
           {testType === "mock" ? "Recording a mock test" : "Recording a practical test"}
@@ -1081,7 +1081,7 @@ function RecordTab(props: any) {
         <div className="grid grid-cols-3 gap-2">
           {[
             { k: "pass", label: "PASS 🎉", bg: "#059669" },
-            { k: "fail", label: "FAIL", bg: "#DC2626" },
+            { k: "fail", label: "FAIL", bg: "#B91C1C" },
             { k: "terminated", label: "Terminated", bg: "#6B7280" },
           ].map((r) => (
             <button
@@ -1110,8 +1110,8 @@ function RecordTab(props: any) {
           <SectionTitle>Faults</SectionTitle>
           <div className="grid grid-cols-3 gap-2">
             <NumBox label="Driver" value={driverFaults} onChange={setDriverFaults} color="#1877D6" />
-            <NumBox label="Serious" value={seriousFaults} onChange={setSeriousFaults} color="#D97706" />
-            <NumBox label="Dangerous" value={dangerousFaults} onChange={setDangerousFaults} color="#DC2626" />
+            <NumBox label="Serious" value={seriousFaults} onChange={setSeriousFaults} color="#B45309" />
+            <NumBox label="Dangerous" value={dangerousFaults} onChange={setDangerousFaults} color="#B91C1C" />
           </div>
           <div className="mt-3 text-[12px]" style={{ color: "#6B7280" }}>
             Total faults: <span className="font-semibold" style={{ color: "#0F2044" }}>{faultTotal}</span>
@@ -1157,7 +1157,7 @@ function RecordTab(props: any) {
                         {sub === "_" ? "—" : sub}
                       </div>
                       {(["d", "s", "dn"] as const).map((col) => {
-                        const colColor = col === "d" ? "#1877D6" : col === "s" ? "#D97706" : "#DC2626";
+                        const colColor = col === "d" ? "#1877D6" : col === "s" ? "#B45309" : "#B91C1C";
                         return (
                           <button
                             key={col}
@@ -1225,7 +1225,7 @@ function RecordTab(props: any) {
             style={{
               width: 32,
               height: 32,
-              backgroundColor: notesMic.listening ? "#DC2626" : "#F1F4F9",
+              backgroundColor: notesMic.listening ? "#B91C1C" : "#F1F4F9",
               color: notesMic.listening ? "#FFFFFF" : "#0F2044",
               border: "none",
             }}
@@ -1293,7 +1293,7 @@ function HistoryTab({
   if (history.length === 0) {
     return (
       <div className="px-6 py-14 flex flex-col items-center text-center">
-        <IconTrophy size={48} color="#D97706" />
+        <IconTrophy size={48} color="#B45309" />
         <div className="mt-4 text-[16px] font-bold" style={{ color: "#0F2044" }}>
           No test reports yet
         </div>
@@ -1308,7 +1308,7 @@ function HistoryTab({
       {history.map((t) => {
         const badge =
           t.test_type === "mock" ? "MOCK" : t.result === "pass" ? "PASS" : t.result === "fail" ? "FAIL" : "TERM";
-        const badgeBg = t.test_type === "mock" ? "#D97706" : resultColor(t.result);
+        const badgeBg = t.test_type === "mock" ? "#B45309" : resultColor(t.result);
         const isOpen = expandedId === t.id;
         return (
           <div
@@ -1346,9 +1346,9 @@ function HistoryTab({
               <div className="mt-2 text-[12px]" style={{ color: "#0F2044" }}>
                 <span style={{ color: "#1877D6" }}>{t.fault_count ?? 0} driver</span>
                 {" | "}
-                <span style={{ color: "#D97706" }}>{t.serious_faults ?? 0} serious</span>
+                <span style={{ color: "#B45309" }}>{t.serious_faults ?? 0} serious</span>
                 {" | "}
-                <span style={{ color: "#DC2626" }}>{t.dangerous_faults ?? 0} dangerous</span>
+                <span style={{ color: "#B91C1C" }}>{t.dangerous_faults ?? 0} dangerous</span>
               </div>
               <div className="mt-1 text-[11px]" style={{ color: "#6B7280" }}>
                 {t.transmission === "automatic" ? "Automatic" : "Manual"}

@@ -488,7 +488,7 @@ function AdminChatRooms() {
                       style={{
                         fontSize: 10.5,
                         fontWeight: 800,
-                        color: "#92400E",
+                        color: "#B45309",
                         background: "#FEF3C7",
                         borderRadius: 8,
                         padding: "4px 10px",

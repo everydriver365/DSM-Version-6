@@ -1521,7 +1521,7 @@ function ProfilePage() {
                 style={{ backgroundColor: "#FFFBEB", borderWidth: "1px", borderStyle: "solid", borderColor: "#FCD34D" }}
               >
                 <IconAlertTriangle size={18} stroke={1.6} color="#B45309" style={{ flexShrink: 0 }} />
-                <div className="text-[12px]" style={{ ...POPPINS, color: "#92400E" }}>
+                <div className="text-[12px]" style={{ ...POPPINS, color: "#B45309" }}>
                   Without Square, card payments take up to 2 days to reach you via EveryDriver. Connect
                   Square for instant payouts.
                 </div>
@@ -1558,8 +1558,8 @@ function ProfilePage() {
               className="rounded-lg p-3"
               style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#FCA5A5", backgroundColor: "#FEF2F2" }}
             >
-              <div className="text-[14px] font-medium text-[#991B1B]" style={POPPINS}>Delete account</div>
-              <div className="text-[12px] text-[#991B1B] mb-2" style={POPPINS}>
+              <div className="text-[14px] font-medium text-[#B91C1C]" style={POPPINS}>Delete account</div>
+              <div className="text-[12px] text-[#B91C1C] mb-2" style={POPPINS}>
                 Permanently delete your account and data. Type DELETE to confirm.
               </div>
               <div className="flex items-center gap-2">
@@ -1575,7 +1575,7 @@ function ProfilePage() {
                   onClick={deleteAccount}
                   disabled={deleteConfirm !== "DELETE"}
                   className="text-[13px] font-medium px-3 py-2 rounded-lg disabled:opacity-50"
-                  style={{ backgroundColor: "#DC2626", color: "#FFFFFF", ...POPPINS }}
+                  style={{ backgroundColor: "#B91C1C", color: "#FFFFFF", ...POPPINS }}
                 >
                   Delete
                 </button>

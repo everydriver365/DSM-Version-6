@@ -393,13 +393,13 @@ function SubscriptionPage() {
             >
               <span style={{ fontSize: 20, flexShrink: 0 }}>🎓</span>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#92400E" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#B45309" }}>
                   Your free DIA membership will end
                 </div>
                 <div
                   style={{
                     fontSize: 12,
-                    color: "#92400E",
+                    color: "#B45309",
                     opacity: 0.8,
                     lineHeight: 1.4,
                     marginTop: 3,

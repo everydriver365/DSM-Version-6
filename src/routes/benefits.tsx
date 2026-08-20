@@ -120,7 +120,7 @@ const BENEFITS = [
     icon: IconHeartHandshake,
     imageUrl: bennendenLogoAsset.url,
     iconBg: '#FEE2E2',
-    iconColor: '#991B1B',
+    iconColor: '#B91C1C',
     minTier: 'pro',
     description: 'Bennenden Health provides affordable healthcare for everyone. As a DSM member you get free access — including 24/7 GP helpline, mental health support and medical treatment.',
     perks: [
@@ -158,7 +158,7 @@ const DEALS = [
     tagline: 'Save up to 10p per litre',
     icon: IconGasStation,
     iconBg: '#FEF3C7',
-    iconColor: '#92400E',
+    iconColor: '#B45309',
     minTier: 'website',
     description: 'Save on every fill-up with a DSM partner fuel card. Works at thousands of forecourts across the UK.',
     dealLabel: 'Apply free →',
@@ -182,7 +182,7 @@ const DEALS = [
     tagline: 'ADI-specific cover',
     icon: IconTool,
     iconBg: '#FEE2E2',
-    iconColor: '#991B1B',
+    iconColor: '#B91C1C',
     minTier: 'website',
     description: 'Breakdown cover designed for driving instructors — includes dual-control vehicle cover and roadside assistance.',
     dealLabel: 'Get a quote →',
@@ -215,7 +215,7 @@ const MIN_TIER_COLOR: Record<string, { bg: string; color: string }> = {
   free: { bg: '#F0FDF4', color: '#15803D' },
   website: { bg: '#EFF6FF', color: '#1877D6' },
   pro: { bg: '#EDE9FE', color: '#7C3AED' },
-  managed: { bg: '#FEF3C7', color: '#92400E' },
+  managed: { bg: '#FEF3C7', color: '#B45309' },
 };
 
 const BENEFIT_COMPARISON = [
@@ -426,7 +426,7 @@ function BenefitsPage() {
             <span
               style={{
                 background: '#FEF3C7',
-                color: '#92400E',
+                color: '#B45309',
                 fontSize: 10,
                 fontWeight: 700,
                 borderRadius: 8,
@@ -507,7 +507,7 @@ function BenefitsPage() {
         <div
           style={{
             margin: 16,
-            background: 'linear-gradient(135deg, #15803D, #166534)',
+            background: 'linear-gradient(135deg, #15803D, #15803D)',
             borderRadius: 8,
             padding: '16px 20px',
             boxShadow: '0 4px 0 #14532D',
@@ -722,7 +722,7 @@ function BenefitsPage() {
                     <span
                       style={{
                         background: '#FEF3C7',
-                        color: '#92400E',
+                        color: '#B45309',
                         fontSize: 11,
                         fontWeight: 700,
                         borderRadius: 8,
@@ -793,7 +793,7 @@ function BenefitsPage() {
                   <span
                     style={{
                       background: '#FEF3C7',
-                      color: '#92400E',
+                      color: '#B45309',
                       fontSize: 11,
                       fontWeight: 700,
                       borderRadius: 8,
@@ -925,7 +925,7 @@ function BenefitsPage() {
                   <span
                     style={{
                       background: '#FEF3C7',
-                      color: '#92400E',
+                      color: '#B45309',
                       fontSize: 9,
                       fontWeight: 700,
                       borderRadius: 8,

@@ -457,11 +457,11 @@ function BroadcastPage() {
             onClick={startDictation}
             className="flex items-center gap-1.5 px-3 h-8 rounded-full text-[12px] font-medium"
             style={{
-              backgroundColor: listening ? "#DC2626" : "#F8F9FB",
+              backgroundColor: listening ? "#B91C1C" : "#F8F9FB",
               color: listening ? "#FFFFFF" : NAVY,
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: listening ? "#DC2626" : BORDER,
+              borderColor: listening ? "#B91C1C" : BORDER,
               ...POPPINS,
             }}
           >

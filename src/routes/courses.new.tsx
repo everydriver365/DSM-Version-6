@@ -1547,7 +1547,7 @@ function Step2(props: {
             <div
               style={{
                 fontSize: 12,
-                color: "#92400E",
+                color: "#B45309",
                 fontFamily: "Poppins, sans-serif",
                 lineHeight: 1.5,
               }}

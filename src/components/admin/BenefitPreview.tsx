@@ -157,7 +157,7 @@ function ListRow({
           <span
             style={{
               background: "#FEF3C7",
-              color: "#92400E",
+              color: "#B45309",
               fontSize: 9,
               fontWeight: 700,
               borderRadius: 8,
