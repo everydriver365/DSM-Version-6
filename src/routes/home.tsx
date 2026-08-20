@@ -5242,16 +5242,15 @@ function HomePage() {
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (!upcoming?.pupil_id) return;
-                    navigate({ to: '/pupils/$id', params: { id: upcoming.pupil_id } as any });
+                    setLateOpen(true);
                   }}
                   style={{
                     flex: 1,
                     height: 38,
                     borderRadius: 8,
                     border: 'none',
-                    background: '#F3F6FA',
-                    color: '#0B1F3A',
+                    background: '#FEECEC',
+                    color: '#B3181F',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -5263,9 +5262,10 @@ function HomePage() {
                     padding: 0,
                   }}
                 >
-                  <span>More</span>
-                  <IconChevronRight stroke={1.5} size={14} color="#0B1F3A" />
+                  <IconClock stroke={1.5} size={14} color="#B3181F" />
+                  <span>Late</span>
                 </button>
+
               </div>
 
               {/* Address row */}
