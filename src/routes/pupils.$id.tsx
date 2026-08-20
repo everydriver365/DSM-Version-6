@@ -3533,6 +3533,42 @@ function PupilDetailPage() {
 
         {activeTab === "profile" && (<>
 
+        {/* Settings / toggles */}
+        {pupil && (
+          <div className="mb-4" style={{ background: "#EEF2F7", borderRadius: 12, overflow: "hidden" }}>
+            <div className="flex items-center justify-between px-4 py-3.5" style={{ borderBottom: "0.5px solid #E2E6ED" }}>
+              <div className="flex items-center gap-2.5">
+                <IconCamera size={18} stroke={1.6} color="#0B1F3A" />
+                <span className="text-[15px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>Photo consent</span>
+              </div>
+              <DSMToggle checked={Boolean(pupil.photo_consent)} onChange={(v) => togglePhotoConsent(v)} />
+            </div>
+            <div className="flex items-center justify-between px-4 py-3.5">
+              <div className="flex items-center gap-2.5">
+                <IconRefresh size={18} stroke={1.6} color="#0B1F3A" />
+                <span className="text-[15px] font-medium" style={{ color: "#0B1F3A", ...POPPINS }}>EverySwap</span>
+              </div>
+              <DSMToggle
+                checked={Boolean(pupil.wants_swap)}
+                onChange={async (v) => {
+                  if (!pupil) return;
+                  const { error } = await supabase
+                    .from("pupils")
+                    .update({ wants_swap: v })
+                    .eq("id", pupil.id);
+                  if (error) {
+                    toast.error("Failed to save — please try again");
+                    return;
+                  }
+                  setPupil({ ...pupil, wants_swap: v });
+                  toast.success(v ? "Added to EverySwap list" : "Removed from EverySwap list");
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+
 
         <div className="flex items-center gap-2" style={{ marginBottom: 8 }}>
           <span style={{ width: 3, height: 14, borderRadius: 8, background: "#1877D6", display: "inline-block" }} />
