@@ -1,11 +1,11 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { IconAlertTriangle, IconApple, IconBell, IconBriefcase, IconCalendar, IconCamera, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconCreditCard, IconDeviceMobile, IconExternalLink, IconLoader2, IconMail, IconPhoto, IconPuzzle, IconShield, IconTrash, IconUser } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { useGoBack } from "@/hooks/useGoBack";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 
 export const Route = createFileRoute("/profile")({
@@ -773,19 +773,11 @@ function ProfilePage() {
   const currentAvatarBg = AVATAR_COLORS[avatarColor] ?? AVATAR_COLORS.blue;
 
 
+  const goBack = useGoBack();
+
   return (
-    <PageLayout style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="My profile"
-        onBack={() => navigate({ to: "/settings" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Profile" onBack={() => goBack("/more")}>
+      <div style={POPPINS}>
 
       {/* Actions row */}
       <div className="flex justify-end px-4 pt-3">
@@ -1592,6 +1584,7 @@ function ProfilePage() {
           </div>
         </AccordionCard>
       </div>
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }
