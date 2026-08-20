@@ -291,9 +291,11 @@ function CoursesPage() {
           </>
         )}
       </div>
-    </div>
+      </div>
+    </DSMTopSheet>
   );
 }
+
 
 function CourseCard({
   course: c,
@@ -625,8 +627,8 @@ function CourseCard({
           View bookings
         </button>
       </div>
-      </div>
-    </DSMTopSheet>
+    </div>
   );
 }
+
 
