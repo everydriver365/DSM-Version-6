@@ -7,7 +7,7 @@ import { tapLight, tapMedium, hapticSuccess } from "@/lib/haptics";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import {
   IconMail,
   IconCheck,
@@ -1679,5 +1679,6 @@ function EnquiriesPage() {
           identity (and focus) across re-renders. */}
       {selected && DetailSheet({ enquiry: selected })}
     </div>
+    </DSMTopSheet>
   );
 }
