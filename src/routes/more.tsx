@@ -356,6 +356,8 @@ function MorePage() {
           );
         })
       )}
+      </div>
     </PageLayout>
+
   );
 }
