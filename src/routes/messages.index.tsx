@@ -23,6 +23,7 @@ import { tapLight, tapMedium } from "@/lib/haptics";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import DSMPageSheet from "@/components/dsm/DSMPageSheet";
+import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { useAdminGate } from "./admin";
 import { pupilColour } from "@/components/PupilAvatar";
 
