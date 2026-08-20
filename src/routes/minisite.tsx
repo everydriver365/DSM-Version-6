@@ -1,3 +1,4 @@
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
@@ -699,39 +700,8 @@ function MiniSitePage() {
   const gridCols = "1.4fr 1fr 1fr 1fr 1fr";
 
   return (
-    <div className="min-h-screen pb-32" style={{ ...POPPINS, backgroundColor: "#F3F8FF" }}>
-      {/* HEADER */}
-      <div
-        style={{
-          background: "#0B1F3A",
-          borderRadius: "0 0 8px 8px",
-          padding: "calc(16px + env(safe-area-inset-top, 0px)) 16px 22px",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-        }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => navigate({ to: "/home" as never })}
-          style={{
-            width: 34,
-            height: 34,
-            borderRadius: 999,
-            background: "rgba(255,255,255,0.08)",
-            border: "none",
-            cursor: "pointer",
-            color: "#fff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <IconChevronLeft size={20} />
-        </button>
-        <div style={{ color: "#fff", fontSize: 22, fontWeight: 800 }}>My Mini Website</div>
-      </div>
+    <DSMTopSheet title="My Website">
+    <div className="pb-32" style={{ ...POPPINS, backgroundColor: "#F3F8FF", minHeight: "100%" }}>
 
       <div className="px-4 pt-4">
         {/* URL / STATUS CARD */}
@@ -2281,5 +2251,6 @@ function MiniSitePage() {
         </div>
       )}
     </div>
+    </DSMTopSheet>
   );
 }
