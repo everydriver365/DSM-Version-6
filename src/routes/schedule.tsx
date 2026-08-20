@@ -2983,8 +2983,16 @@ function EntryRow({
     return (
       <button
         type="button"
-        onClick={() => onLessonTap(l.id)}
-        style={rowBase(bg, cancelled)}
+        onClick={() => { tapLight(); onLessonTap(l.id); }}
+        onTouchStart={(e) => {
+          e.currentTarget.style.transform = 'scale(0.98)';
+          e.currentTarget.style.opacity = '0.9';
+        }}
+        onTouchEnd={(e) => {
+          e.currentTarget.style.transform = 'scale(1)';
+          e.currentTarget.style.opacity = '1';
+        }}
+        style={{ ...rowBase(bg, cancelled), transition: 'transform 0.1s ease, opacity 0.1s ease' }}
       >
         <div style={rowTitle}>{label}</div>
         <div style={rowSub}>
