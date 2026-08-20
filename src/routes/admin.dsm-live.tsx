@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconCamera, IconPencil, IconPlus, IconTrash, IconUsers, IconX } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useAdminGate } from "./admin";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
@@ -579,19 +579,8 @@ function AdminDsmLive() {
   if (status === "denied") return null;
 
   return (
-    <div style={{ background: "#F4F6FA", minHeight: "100vh", paddingBottom: 40, ...POPPINS }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="DSM live sessions"
-        onBack={() => navigate({ to: "/admin" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => setToast("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="DSM Live Admin">
+      <div style={{ background: "#F4F6FA", minHeight: "100vh", paddingBottom: 40, ...POPPINS }}>
       {/* Action row */}
       <div
         style={{
@@ -1285,7 +1274,8 @@ function AdminDsmLive() {
         </div>
       )}
       {confirmSheet}
-    </div>
+      </div>
+    </DSMTopSheet>
   );
 }
 

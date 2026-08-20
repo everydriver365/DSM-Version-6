@@ -1,6 +1,6 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconArrowLeft, IconClipboardList, IconGripVertical, IconMicrophone, IconMicrophoneOff, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -273,20 +273,9 @@ function IntakeQuestionsPage() {
   }, [questions]);
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#FFFFFF", ...POPPINS }}>
-      {/* Top bar */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Intake questions"
-        onBack={() => navigate({ to: "/settings" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="Intake Questions"
+      onBack={() => navigate({ to: "/settings" as never })}>
+      <div style={{ minHeight: "100vh", backgroundColor: "#FFFFFF", ...POPPINS }}>
       {/* Action bar */}
       <div
         style={{
@@ -607,7 +596,8 @@ function IntakeQuestionsPage() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </DSMTopSheet>
   );
 }
 

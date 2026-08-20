@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconAlertTriangle, IconArrowLeft, IconBolt, IconCalendar, IconCheck, IconChevronDown, IconChevronRight, IconChevronUp, IconCircleX, IconClock, IconCoffee, IconMessage, IconPlus, IconRefresh, IconSend, IconSparkles, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -1492,32 +1492,8 @@ function GapsPage() {
   const TEXT_SUBTLE = "#8A94A6";
 
   return (
-    <div
-      className="min-h-screen"
-      style={{
-        ...FONT,
-        backgroundColor: "#F7F9FC",
-        maxWidth: 430,
-        margin: "0 auto",
-        border: "1px solid #E2E6ED",
-        borderRadius: 8,
-        overflow: "hidden",
-      }}
-    >
-      {/* Header — shared instructor top bar */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Fill My Slots"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
-
+    <DSMTopSheet title="Available Gaps">
+      <div className="min-h-screen" style={{ ...FONT, backgroundColor: "#F7F9FC", maxWidth: 430, margin: "0 auto", border: "1px solid #E2E6ED", borderRadius: 8, overflow: "hidden" }}>
       {/* Pulse animation for the freed-slot highlight */}
       <style>{`
         @keyframes gapsPrefilterPulse {
@@ -3111,7 +3087,7 @@ function GapsPage() {
 
       <Toaster />
     </div>
-
+    </DSMTopSheet>
   );
 }
 
