@@ -3171,8 +3171,7 @@ function SummaryStats({
           </span>
         </div>
       )}
-      </div>
-    </DSMTopSheet>
+    </div>
   );
 }
 
@@ -3411,6 +3410,7 @@ function PupilCard({
         </div>
       )}
 
-    </div>
+      </div>
+    </DSMTopSheet>
   );
 }
