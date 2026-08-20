@@ -2079,7 +2079,7 @@ function SchedulePage() {
                                   }}
                                 >
                                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ background: '#EFF6FF', color: '#1877D6', fontSize: 9, fontWeight: 800, borderRadius: 8, padding: '3px 10px' }}>
+                                    <span style={{ background: '#EFF6FF', color: '#1877D6', fontSize: 9, fontWeight: 800, borderRadius: 20, padding: '3px 10px' }}>
                                       📅 EVENT
                                     </span>
                                     <span style={{ fontSize: 12, color: '#9CA3AF' }}>{fmtTime(e.start)}</span>
