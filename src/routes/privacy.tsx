@@ -220,7 +220,7 @@ function PrivacyPage() {
             textAlign: "center",
           }}
         >
-          © {new Date().getFullYear()} EveryDriver Ltd. All rights reserved.
+          © 2026 EveryDriver Ltd. All rights reserved.
         </p>
       </div>
     </DSMTopSheet>
