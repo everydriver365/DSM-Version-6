@@ -4655,25 +4655,25 @@ function HomePage() {
 
 
 
-<section
-          data-workspace="today"
-          data-ws-index={0}
-          style={{
-            minWidth: '100vw',
-            width: '100vw',
-            maxWidth: '100vw',
-            height: '100%',
-            scrollSnapAlign: 'start',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            flexShrink: 0,
-            background: PAGE_BACKGROUND,
-            WebkitOverflowScrolling: 'touch',
-            touchAction: 'pan-y',
-            overscrollBehaviorX: 'none',
-            paddingBottom: 0,
-          }}
-        >
+      <section
+        data-workspace="today"
+        data-ws-index={0}
+        style={{
+          minWidth: '100vw',
+          width: '100vw',
+          maxWidth: '100vw',
+          height: '100%',
+          scrollSnapAlign: 'start',
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          flexShrink: 0,
+          background: PAGE_BACKGROUND,
+          WebkitOverflowScrolling: 'touch',
+          touchAction: 'pan-y',
+          overscrollBehaviorX: 'none',
+          paddingBottom: 0,
+        }}
+      >
       {/* ============ NAVY HEADER BLOCK ============ */}
       <div
         style={{
