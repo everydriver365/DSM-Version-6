@@ -7,7 +7,6 @@ import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 import { recordPayment } from "@/lib/payments";
 import { cancelLessonWithUndo, UNDO_WINDOW_MS } from "@/lib/cancelLesson";
