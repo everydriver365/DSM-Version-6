@@ -14,7 +14,7 @@ export default function DSMPageSheet({
       background: '#fff',
       borderRadius: '28px 28px 0 0',
       boxShadow: '0 -12px 28px rgba(0,0,0,0.25)',
-      minHeight: '100%',
+      minHeight: 'calc(100vh - 56px)',
       flex: 1,
       overflow: 'hidden',
     }}>
