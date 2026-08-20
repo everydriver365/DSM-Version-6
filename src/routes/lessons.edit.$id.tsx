@@ -3,7 +3,7 @@ import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { IconCheck, IconCurrencyPound, IconMapPin } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
@@ -397,19 +397,7 @@ function EditLessonPage() {
   }
 
   return (
-    <PageLayout className="pb-8" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Edit lesson"
-        onBack={() => navigate({ to: "/lessons/$id", params: { id } } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="Edit Lesson" onBack={() => navigate({ to: "/lessons/$id", params: { id } } as never)}>
       {/* Action bar */}
       <div className="flex items-start justify-between px-4 py-2">
         {isTestDay ? (
@@ -1316,6 +1304,6 @@ function EditLessonPage() {
           )}
         </form>
       )}
-    </PageLayout>
+    </DSMTopSheet>
   );
 }

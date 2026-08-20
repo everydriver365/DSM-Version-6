@@ -1,7 +1,7 @@
 import { useGoBack } from "@/hooks/useGoBack";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { IconAward, IconCalendar, IconCamera, IconCar, IconChartBar, IconCheck, IconChevronDown, IconChevronRight, IconClipboardCheck, IconClipboardList, IconClock, IconCreditCard, IconCurrencyPound, IconDots, IconExternalLink, IconFlag, IconHeart, IconLoader2, IconMail, IconMapPin, IconMessage, IconPalette, IconPencil, IconPhone, IconPlus, IconRefresh, IconSearch, IconSend, IconTrash, IconTrophy, IconX } from "@tabler/icons-react";
 import { IconBook, IconHistory } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
@@ -1376,19 +1376,7 @@ function PupilDetailPage() {
 
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-8" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle={pupil?.name ?? ""}
-        onBack={() => goBack('/pupils')}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title={pupil?.name ?? "Pupil"} onBack={() => goBack('/pupils')}>
       {/* Profile header card */}
       {pupil && (
         <div className="mt-0 overflow-hidden rounded-b-lg">
@@ -5047,7 +5035,7 @@ function PupilDetailPage() {
       <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
       </div>
     </div>
-    </div>
+    </DSMTopSheet>
   );
 }
 

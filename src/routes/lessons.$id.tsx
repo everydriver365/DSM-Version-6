@@ -1,7 +1,7 @@
 import { useGoBack } from "@/hooks/useGoBack";
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { IconAlertTriangle, IconChevronRight, IconMap, IconMapPin, IconNavigation, IconPencil, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
@@ -333,19 +333,7 @@ function LessonDetailPage() {
   const goBack = useGoBack();
 
   return (
-    <PageLayout className="pb-8" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Lesson"
-        onBack={() => goBack('/schedule')}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="Lesson Details" onBack={() => goBack('/schedule')}>
       {/* Action bar */}
       <div className="flex items-center justify-end px-4 py-2">
         <button
@@ -889,7 +877,7 @@ function LessonDetailPage() {
           }}
         />
       )}
-    </PageLayout>
+    </DSMTopSheet>
   );
 }
 
