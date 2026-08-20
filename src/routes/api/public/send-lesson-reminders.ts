@@ -33,8 +33,11 @@ function fmtTime(t: string | null | undefined): string {
 }
 
 async function runReminders(request: Request): Promise<Response> {
-  const secret = process.env["REMINDERS_CRON_SECRET"];
-  const serviceKey = process.env["SUPABASE_SERVICE_ROLE_KEY"];
+  // Hardcoded per request (server-only file; never sent to the browser).
+  const secret = process.env["REMINDERS_CRON_SECRET"] ?? "dsm-reminders-2026-secret";
+  const serviceKey =
+    process.env["SUPABASE_SERVICE_ROLE_KEY"] ??
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTQ3NDgyMSwiZXhwIjoyMDk3MDUwODIxfQ.R_Z7M_UdjnvUBHyGiiiIqqCrxl4docXN2Bw-7eK20_Q";
 
   if (!secret || !serviceKey) {
     return Response.json(
@@ -42,6 +45,7 @@ async function runReminders(request: Request): Promise<Response> {
       { status: 503 },
     );
   }
+
 
   const provided =
     request.headers.get("x-cron-secret") ??
