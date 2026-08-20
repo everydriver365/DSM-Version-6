@@ -1,38 +1,183 @@
-# Roll out the navy top-sheet design across the app
+# Create DSMTopSheet shared layout component
 
-Apply the same look already used on Messages, Pupils, Schedule and More to the rest of the app's pages: a fixed navy header with the page title (plus a back arrow on sub-pages) and a notification bell, and a white rounded panel that overlaps the header and holds all scrolling content.
+Create ONLY the new component `src/components/dsm/DSMTopSheet.tsx`. No existing pages are changed.
 
-This is a visual change only. No data fetching, handlers, state, business logic, or navigation targets change.
+## Component contract
 
-## Shared component first
+- Props: `title: string`, `onBack?: () => void`, `right?: React.ReactNode`, `sticky?: React.ReactNode`, `children: React.ReactNode`.
+- Pure layout wrapper: no data fetching, no hooks, no Supabase calls.
+- Renders a fixed full-screen navy (`#0B1F3A`) flex column container.
+- Header: `paddingTop: max(env(safe-area-inset-top, 0px), 24px)`, `paddingBottom: 20px`, `paddingLeft/Right: 20px`, `display: flex`, `alignItems: center`, `justifyContent: space-between`.
+  - Left side: if `onBack` is provided, a circular 36×36 translucent (`rgba(255,255,255,0.15)`) chevron-left button; then the page title in Poppins 22px/700 white.
+  - Right side: if `right` is provided, render it; otherwise a circular 36×36 translucent bell button that navigates to `/notifications` using `@tabler/icons-react` `IconBell`.
+- White panel: background `#fff`, `borderRadius: 28px 28px 0 0`, `marginTop: -18px`, `flex: 1`, `overflowY: auto`, `paddingBottom: calc(88px + env(safe-area-inset-bottom, 0px))`.
+  - Drag handle at top: 36×4 px, `#DADFE5`, rounded 2px, `margin: 10px auto 6px`.
+  - If `sticky` is provided, render it pinned below the drag handle.
+  - Then render `children`.
+- Export default.
 
-Right now the layout is hand-copied into four pages. First extract it once so every other page is a small, low-risk edit:
+## Complete component code
 
-`src/components/dsm/DSMTopSheet.tsx`
-- Props: `title`, optional `onBack` (renders a back chevron left of the title), optional `right` (custom header action; defaults to the notification bell with unread dot), optional `sticky` (content pinned under the panel's top edge, e.g. the Schedule month strip / filter pills), `children`.
-- Renders: fixed full-screen navy (`#0B1F3A`) container, header sized with `max(env(safe-area-inset-top), 24px) + 86px`, Sora 22/700 white title, translucent round bell button, then the white panel (`borderRadius: 28px 28px 0 0`, `marginTop: -18`, scrollable, bottom padding `calc(88px + env(safe-area-inset-bottom))`).
-- Pure layout; no hooks other than the unread-count read the current pages already do (kept as an optional prop so the component stays dumb).
+```tsx
+import * as React from "react";
+import { IconChevronLeft, IconBell } from "@tabler/icons-react";
 
-Then convert Messages, Pupils, Schedule and More to use it so the four existing pages and all new ones stay pixel-identical.
+export interface DSMTopSheetProps {
+  title: string;
+  onBack?: () => void;
+  right?: React.ReactNode;
+  sticky?: React.ReactNode;
+  children: React.ReactNode;
+}
 
-## Rollout
+export default function DSMTopSheet({
+  title,
+  onBack,
+  right,
+  sticky,
+  children,
+}: DSMTopSheetProps) {
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+        background: "#0B1F3A",
+        overflow: "hidden",
+      }}
+    >
+      <header
+        style={{
+          paddingTop: "max(env(safe-area-inset-top, 0px), 24px)",
+          paddingBottom: 20,
+          paddingLeft: 20,
+          paddingRight: 20,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexShrink: 0,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          {onBack && (
+            <button
+              type="button"
+              aria-label="Go back"
+              onClick={onBack}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                border: 0,
+                padding: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "rgba(255,255,255,0.15)",
+                cursor: "pointer",
+                flexShrink: 0,
+              }}
+            >
+              <IconChevronLeft size={20} color="#FFFFFF" stroke={2} />
+            </button>
+          )}
+          <h1
+            style={{
+              margin: 0,
+              color: "#FFFFFF",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: 22,
+              lineHeight: "28px",
+              fontWeight: 700,
+            }}
+          >
+            {title}
+          </h1>
+        </div>
 
-93 routes currently render `InstructorTopBar`. Convert them in phases, verifying each phase in the preview before moving on:
+        {right ?? (
+          <button
+            type="button"
+            aria-label="Notifications"
+            onClick={() => {
+              if (typeof window !== "undefined") {
+                window.location.href = "/notifications";
+              }
+            }}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              border: 0,
+              padding: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "rgba(255,255,255,0.15)",
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            <IconBell size={20} color="#FFFFFF" stroke={1.8} />
+          </button>
+        )}
+      </header>
 
-1. Core daily pages: home, diary, todos, gaps, notifications, search, quickaccess, checklist, briefing, end-of-day/eod.
-2. Pupils & lessons sub-pages: pupils.$id and its tabs, lessons.*, tests, testday, mock-tests, driving-test, upcoming-tests, waitlist/waitinglist. These get the back arrow variant.
-3. Money: earnings, payments, invoices, expenses, mileage, fuel, tax, mtd, monthend, outstanding, quotes, take-payment, discount-codes, subscription.
-4. Business & content: marketplace, courses, community, learn, news, dsm-live, live-news, perks, benefits, discover, resources, jobs, referrals, rewards.
-5. Settings & admin: settings, profile, vehicle, availability, minisite, calendarsync, notificationsettings, plus the `admin.*` pages.
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          flex: 1,
+          minHeight: 0,
+          marginTop: -18,
+          background: "#FFFFFF",
+          borderRadius: "28px 28px 0 0",
+          overflowY: "auto",
+          overflowX: "hidden",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            width: 36,
+            height: 4,
+            borderRadius: 2,
+            background: "#DADFE5",
+            margin: "10px auto 6px",
+            flexShrink: 0,
+          }}
+        />
+        {sticky && (
+          <div style={{ flexShrink: 0 }}>
+            {sticky}
+          </div>
+        )}
+        <div
+          style={{
+            flex: 1,
+            minHeight: 0,
+            paddingBottom: "calc(88px + env(safe-area-inset-bottom, 0px))",
+          }}
+        >
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+```
 
-Excluded (different shells by design, unless you want them included): marketing pages (`_marketing.*`), auth pages (login/register/forgot/reset), public share pages (`i.$slug`, `quote.$token`, `terms_.sign`, `pay`, `payment-complete`, `marketplace_.$slug`), and the immersive `live.tsx` tracking screen.
+## Constraints
 
-## Per-page edit shape
-
-For each page: remove `InstructorTopBar` and its spacer, wrap the existing returned content in `DSMTopSheet` with the page's existing title, keep every child element, prop and handler exactly as-is, and move only page-level background/padding styles onto the panel. Filter pills, search bars and segmented controls that sat on navy get the `#EEF2F7` background used on Messages/Pupils so they stay visible on white.
-
-## Notes
-
-- Some pages have sticky sub-headers (Schedule's month strip, tab bars). Those go through the `sticky` slot so they stay pinned inside the white panel.
-- Pages with floating action buttons or sticky bottom bars keep them; bottom padding accounts for the nav bar and safe area.
-- `capacitor.config.ts` is not touched.
+- No existing files touched.
+- `capacitor.config.ts` is not modified.
+- No data fetching, no hooks, no Supabase calls inside the component.
