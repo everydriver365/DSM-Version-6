@@ -2,7 +2,7 @@ import { SkeletonCard } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
-import { IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
+import { IconBell, IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { tapLight, tapMedium, hapticSuccess } from "@/lib/haptics";
@@ -15,7 +15,6 @@ import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 
 export const Route = createFileRoute("/pupils/")({
   head: () => ({
@@ -973,7 +972,7 @@ function PupilsIndexPage() {
         style={{
           margin: "12px 16px",
           display: "flex",
-          background: "#FFFFFF",
+          background: "#EEF2F7",
           borderRadius: 8,
           boxShadow: "0 4px 0 #E4E4E8",
           padding: 3,
