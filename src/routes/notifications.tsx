@@ -709,6 +709,7 @@ function NotificationsPage() {
 
   return (
     <DSMTopSheet title="Notifications" onBack={() => navigate({ to: "/home" as never })}>
+      <div {...pullToRefreshProps} style={{ minHeight: "100%" }}>
 
       {/* Action bar */}
       <div
@@ -4123,6 +4124,7 @@ function NotificationsPage() {
           </div>
         </div>
       )}
+    </div>
     </DSMTopSheet>
   );
 }

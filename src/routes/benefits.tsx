@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { toast } from 'sonner';
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { EmptyState } from "@/components/dsm/EmptyState";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { PageLoader } from '@/components/dsm/LoadingSpinner';
 import diaLogoAsset from '@/assets/dia-logo.png.asset.json';
@@ -594,6 +595,14 @@ function BenefitsPage() {
       >
         Included benefits
       </div>
+
+      {benefits.length === 0 && (
+        <EmptyState
+          icon={IconGift}
+          title="No benefits available"
+          subtitle="Benefits will appear here based on your plan."
+        />
+      )}
 
       {benefits.map((benefit) => {
         const Icon = iconFor(benefit.icon);
