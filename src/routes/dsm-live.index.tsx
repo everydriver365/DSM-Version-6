@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { toast } from "sonner";
 import { IconBroadcast, IconMicrophone, IconPlayerPlay, IconSteeringWheel, IconUsers } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { supabase } from "@/lib/supabaseClient";
 import {
   CATEGORIES,
@@ -114,18 +114,8 @@ function DsmLivePage() {
   const poppins = "Poppins, sans-serif";
 
   return (
-    <div style={{ background: "#DCE4F0", minHeight: "calc(100vh - 80px)", fontFamily: poppins }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="DSM Live"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="DSM Live">
+      <div style={{ fontFamily: poppins }}>
 
       {/* Live status pill */}
       <div style={{ background: "#0B1F3A", padding: "0 16px 12px", display: "flex" }}>
@@ -341,6 +331,7 @@ function DsmLivePage() {
 
       <CommunitySection />
     </div>
+    </DSMTopSheet>
   );
 }
 

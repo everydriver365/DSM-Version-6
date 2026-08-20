@@ -1,11 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
+
 
 export const Route = createFileRoute("/lessons/reschedule/$id")({
   head: () => ({ meta: [{ title: "Reschedule lesson — DSM by EveryDriver" }] }),
@@ -151,18 +151,8 @@ function RescheduleLessonPage() {
   }
 
   return (
-    <PageLayout className="pb-12" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Reschedule lesson"
-        onBack={() => navigate({ to: "/lessons/$id", params: { id } } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Reschedule Lesson" onBack={() => navigate({ to: "/lessons/$id", params: { id } } as never)}>
+      <div className="pb-12" style={POPPINS}>
 
       {lesson && currentDateObj && (
         <div className="px-4">
@@ -331,6 +321,7 @@ function RescheduleLessonPage() {
           </button>
         </div>
       )}
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }

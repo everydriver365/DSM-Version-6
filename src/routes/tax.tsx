@@ -2,11 +2,11 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
+
 
 export const Route = createFileRoute("/tax")({
   head: () => ({
@@ -99,20 +99,8 @@ function TaxPage() {
   const progressPct = Math.min(100, (elapsed / totalMs) * 100);
 
   return (
-    <PageLayout className="pb-12" style={POPPINS}>
-      {/* TOP BAR */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Tax estimate"
-        onBack={() => navigate({ to: "/home" } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="Tax">
+      <div className="pb-12" style={POPPINS}>
 
       {/* YEAR TABS */}
       <div className="mx-4 mt-3 flex" style={{ gap: 8 }}>
@@ -206,7 +194,8 @@ function TaxPage() {
           This is an estimate only. Consult a qualified accountant.
         </div>
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
 

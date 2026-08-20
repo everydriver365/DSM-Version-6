@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { IconChevronLeft, IconCopy, IconMapPin, IconNavigation, IconPlus } from "@tabler/icons-react";
@@ -8,7 +8,7 @@ import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
+
 
 export const Route = createFileRoute("/locations")({
   head: () => ({
@@ -146,19 +146,8 @@ function LocationsPage() {
   };
 
   return (
-    <PageLayout className="pb-8" style={POPPINS}>
-      {/* TOP BAR */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Saved locations"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Locations">
+      <div className="pb-8" style={POPPINS}>
 
       {/* Action bar */}
       <div
@@ -351,6 +340,7 @@ function LocationsPage() {
           to { transform: translateY(0); }
         }
       `}</style>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
