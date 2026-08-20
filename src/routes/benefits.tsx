@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { toast } from 'sonner';
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { PageLoader } from '@/components/dsm/LoadingSpinner';
 import diaLogoAsset from '@/assets/dia-logo.png.asset.json';
 import perkboxLogoAsset from '@/assets/perkbox-logo.jpeg.asset.json';
@@ -270,6 +271,7 @@ export const Route = createFileRoute('/benefits')({
 });
 
 function BenefitsPage() {
+  const [reloadKey, setReloadKey] = useState(0);
   const [websiteTier, setWebsiteTier] = useState<string>('free');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -295,7 +297,11 @@ function BenefitsPage() {
       setWebsiteTier(data?.website_tier ?? 'free');
       setLoading(false);
     })();
-  }, []);
+  }, [reloadKey]);
+
+  const { pullToRefreshProps } = usePullToRefresh({
+    onRefresh: async () => { setReloadKey((k) => k + 1); },
+  });
 
   // Benefit partners are managed from the admin hub; fall back to the built-in
   // list when the table is empty or unavailable.
@@ -488,6 +494,7 @@ function BenefitsPage() {
   return (
     <DSMTopSheet title="Benefits">
     <div
+      {...pullToRefreshProps}
       style={{
         background: '#EEF2F7',
         minHeight: '100%',
@@ -627,6 +634,7 @@ function BenefitsPage() {
                   <img
                     src={benefit.imageUrl}
                     alt={benefit.name}
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 ) : (

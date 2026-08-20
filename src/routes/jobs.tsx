@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { IconBriefcase, IconCheck, IconSend, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -458,6 +459,8 @@ function JobsPage() {
 
   useEffect(() => { load(); }, []);
 
+  const { pullToRefreshProps } = usePullToRefresh({ onRefresh: async () => { await load(); } });
+
   const accept = async (job: JobOffer) => {
     if (!uid) {
       toast.error("Please sign in");
@@ -527,7 +530,7 @@ function JobsPage() {
 
   return (
     <DSMTopSheet title="Jobs">
-    <div className="pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: "#DCE4F0", minHeight: "100%" }}>
+    <div {...pullToRefreshProps} className="pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: "#DCE4F0", minHeight: "100%" }}>
 
       <div className="sticky top-0 z-30">
         <div
