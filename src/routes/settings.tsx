@@ -706,7 +706,7 @@ function SettingsPage() {
           style={{
             background: tokens.white,
             borderRadius: tokens.radiusCard,
-            padding: 18,
+            padding: 16,
             boxShadow: "0 4px 0 #E4E4E8",
             display: "flex",
             alignItems: "center",
@@ -775,7 +775,7 @@ function SettingsPage() {
               background: "#F2F2F7",
               border: "none",
               borderRadius: tokens.radiusCard,
-              padding: "10px 16px",
+              padding: "12px 16px",
               fontSize: 12.5,
               fontWeight: tokens.fontWeight.bold,
               color: tokens.navy,
@@ -994,7 +994,7 @@ function SettingsPage() {
                     className="w-full text-[14px] text-[#0B1F3A]"
                     style={{
                       ...POPPINS,
-                      padding: "10px 12px",
+                      padding: "12px 16px",
                       border: "1px solid #E2E6ED",
                       borderRadius: tokens.radiusCard,
                       background: tokens.white,
@@ -1302,7 +1302,7 @@ function SettingsPage() {
                         gap: 8,
                         border: "1px solid #E2E6ED",
                         borderRadius: tokens.radiusCard,
-                        padding: 12,
+                        padding: 16,
                         background: "#fff",
                       }}
                     >
@@ -1425,7 +1425,7 @@ function SettingsPage() {
                             key={d.key}
                             style={{
                               display: "inline-flex", alignItems: "center", gap: 6,
-                              padding: "6px 10px", border: "1px solid #E2E6ED",
+                              padding: "6px 16px", border: "1px solid #E2E6ED",
                               borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.base, cursor: "pointer", ...POPPINS,
                             }}
                           >
@@ -1822,7 +1822,7 @@ function SettingsPage() {
               <div className="text-[12px] text-[#9CA3AF]" style={{ ...POPPINS, marginBottom: 12 }}>Set different charges based on how much notice the pupil gives:</div>
 
               {cancellationTiers.map((tier, i) => (
-                <div key={i} className="flex items-center" style={{ gap: 8, padding: "10px 12px", background: "#F7FAFC", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, marginBottom: 6 }}>
+                <div key={i} className="flex items-center" style={{ gap: 8, padding: "12px 16px", background: "#F7FAFC", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, marginBottom: 6 }}>
                   <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Less than</span>
                   <input
                     type="number"
@@ -1833,7 +1833,7 @@ function SettingsPage() {
                       setCancellationTiers((prev) => prev.map((t, idx) => idx === i ? { ...t, hours: v } : t));
                     }}
                     className="bg-white"
-                    style={{ width: 60, textAlign: "center", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, padding: "6px 4px", fontSize: tokens.fontSize.base, color: tokens.navy, ...POPPINS }}
+                    style={{ width: 60, textAlign: "center", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, padding: "6px 16px", fontSize: tokens.fontSize.base, color: tokens.navy, ...POPPINS }}
                   />
                   <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>hours notice</span>
                   <span className="text-[12px]" style={{ color: tokens.textMuted, ...POPPINS }}>→</span>
@@ -1844,7 +1844,7 @@ function SettingsPage() {
                       setCancellationTiers((prev) => prev.map((t, idx) => idx === i ? { ...t, charge_percent: v } : t));
                     }}
                     className="bg-white"
-                    style={{ border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, padding: "6px 4px", fontSize: tokens.fontSize.base, color: tokens.navy, ...POPPINS }}
+                    style={{ border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, padding: "6px 16px", fontSize: tokens.fontSize.base, color: tokens.navy, ...POPPINS }}
                   >
                     {[0, 25, 50, 75, 100].map((p) => <option key={p} value={p}>{p}</option>)}
                   </select>
@@ -2067,7 +2067,7 @@ function SettingsPage() {
                 value={taxCode}
                 onChange={(e) => setTaxCode(e.target.value.toUpperCase())}
                 className="w-full text-[14px] text-[#0B1F3A]"
-                style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }}
+                style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }}
               />
               <FieldLabel>Vehicle type</FieldLabel>
               <div className="flex gap-2">
@@ -2081,7 +2081,7 @@ function SettingsPage() {
                     onClick={() => setIsElectric(opt.key)}
                     className="flex-1 text-[13px]"
                     style={{
-                      padding: "9px 10px",
+                      padding: "9px 16px",
                       borderRadius: tokens.radiusCard,
                       border: "1px solid #E2E6ED",
                       background: isElectric === opt.key ? "#1877D6" : "#FFFFFF",
@@ -2099,22 +2099,22 @@ function SettingsPage() {
                   <FieldLabel>Vehicle MPG</FieldLabel>
                   <input type="number" value={vehicleMpg} onChange={(e) => setVehicleMpg(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
+                    style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
                   <FieldLabel>Fuel cost per litre (£)</FieldLabel>
                   <input type="number" step="0.01" value={fuelCostPerLitre} onChange={(e) => setFuelCostPerLitre(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
+                    style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
                 </>
               ) : (
                 <>
                   <FieldLabel>Battery capacity (kWh)</FieldLabel>
                   <input type="number" value={batteryKwh} onChange={(e) => setBatteryKwh(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
+                    style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
                   <FieldLabel>Electricity cost per kWh (£)</FieldLabel>
                   <input type="number" step="0.01" value={electricityCostPerKwh} onChange={(e) => setElectricityCostPerKwh(Number(e.target.value) || 0)}
                     className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
+                    style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
                 </>
               )}
               <FieldLabel>Allowable deductions</FieldLabel>
@@ -2177,7 +2177,7 @@ function SettingsPage() {
                       readOnly
                       value={referralCode}
                       className="flex-1 text-[14px] text-[#0B1F3A] font-mono"
-                      style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: "#F7FAFC", ...POPPINS }}
+                      style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: "#F7FAFC", ...POPPINS }}
                     />
                     <button
                       type="button"
@@ -2188,7 +2188,7 @@ function SettingsPage() {
                         } catch { toast.error("Copy failed"); }
                       }}
                       className="flex items-center gap-1 text-[13px]"
-                      style={{ padding: "10px 14px", borderRadius: tokens.radiusCard, background: tokens.canvas, color: tokens.navy, border: "none", cursor: "pointer", ...POPPINS }}
+                      style={{ padding: "12px 16px", borderRadius: tokens.radiusCard, background: tokens.canvas, color: tokens.navy, border: "none", cursor: "pointer", ...POPPINS }}
                     >
                       <IconCopy size={14} /> IconCopy
                     </button>
@@ -2200,7 +2200,7 @@ function SettingsPage() {
                       value={referralDiscountAmount}
                       onChange={(e) => setReferralDiscountAmount(Number(e.target.value) || 0)}
                       className="flex-1 text-[14px] text-[#0B1F3A]"
-                      style={{ padding: "10px 12px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }}
+                      style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }}
                     />
                     <div className="flex" style={{ border: "1px solid #E2E6ED", borderRadius: 8, overflow: "hidden" }}>
                       {(["fixed", "percent"] as const).map((t) => (
@@ -2585,7 +2585,7 @@ function PoundInput({ value, onChange }: { value: number; onChange: (n: number) 
         onChange={(e) => onChange(Number(e.target.value) || 0)}
         className="flex-1 text-[14px] text-[#0B1F3A]"
         style={{
-          padding: "10px 12px",
+          padding: "12px 16px",
           border: "1px solid #E2E6ED",
           borderRadius: tokens.radiusCard,
           background: tokens.white,
@@ -2611,7 +2611,7 @@ function SelectBox({
       onChange={(e) => onChange(e.target.value)}
       className="w-full text-[14px] text-[#0B1F3A]"
       style={{
-        padding: "10px 12px",
+        padding: "12px 16px",
         border: "1px solid #E2E6ED",
         borderRadius: tokens.radiusCard,
         background: tokens.white,

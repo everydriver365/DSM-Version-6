@@ -228,7 +228,7 @@ function TestsPage() {
           className="inline-flex items-center gap-2"
           style={{
             background: "#fff", color: tokens.navy, fontSize: 13.5, fontWeight: tokens.fontWeight.extrabold,
-            padding: "10px 18px", borderRadius: tokens.radiusCard, border: "none",
+            padding: "12px 16px", borderRadius: tokens.radiusCard, border: "none",
             boxShadow: "0 3px 0 #C7D0DC", ...POPPINS,
           }}
         >
@@ -545,7 +545,7 @@ function TestCard({
                   backgroundColor: "#E7F1FC",
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.extrabold,
-                  padding: "5px 12px",
+                  padding: "5px 16px",
                   borderRadius: tokens.radiusCard,
                   ...POPPINS,
                 }}
@@ -604,7 +604,7 @@ function TestCard({
               style={{
                 width: "100%",
                 marginTop: 14,
-                padding: 12,
+                padding: 16,
                 borderRadius: tokens.radiusCard,
                 background: "#fff",
                 border: "1.5px solid #1877D6",
@@ -771,7 +771,7 @@ function EditTestSheet({
             onChange={(e) => setDate(e.target.value)}
             style={{
               width: "100%",
-              padding: "10px 12px",
+              padding: "12px 16px",
               border: "1px solid #E4E8EF",
               borderRadius: tokens.radiusCard,
               fontSize: tokens.fontSize.md,
@@ -791,7 +791,7 @@ function EditTestSheet({
             onChange={(e) => setTime(e.target.value)}
             style={{
               width: "100%",
-              padding: "10px 12px",
+              padding: "12px 16px",
               border: "1px solid #E4E8EF",
               borderRadius: tokens.radiusCard,
               fontSize: tokens.fontSize.md,
@@ -817,7 +817,7 @@ function EditTestSheet({
           onClick={save}
           style={{
             width: "100%",
-            padding: 13,
+            padding: 16,
             background: saving ? "#9CA3AF" : "#1877D6",
             color: "#fff",
             border: "none",
@@ -892,7 +892,7 @@ function CancelTestSheet({
           style={{
             display: "flex",
             gap: 12,
-            padding: 14,
+            padding: 16,
             background: "#FEF3C7",
             borderRadius: tokens.radiusCard,
             color: "#B45309",
@@ -919,7 +919,7 @@ function CancelTestSheet({
             onChange={(e) => onReasonChange(e.target.value)}
             style={{
               width: "100%",
-              padding: "10px 12px",
+              padding: "12px 16px",
               border: "1px solid #E4E8EF",
               borderRadius: tokens.radiusCard,
               fontSize: tokens.fontSize.base,
@@ -935,7 +935,7 @@ function CancelTestSheet({
           onClick={confirm}
           style={{
             width: "100%",
-            padding: 13,
+            padding: 16,
             background: tokens.red,
             color: "#fff",
             border: "none",
@@ -953,7 +953,7 @@ function CancelTestSheet({
           onClick={onClose}
           style={{
             width: "100%",
-            padding: 13,
+            padding: 16,
             background: "#F1F5F9",
             color: tokens.textSecondary,
             border: "none",
@@ -2233,7 +2233,7 @@ function DL25ItemRow({
     <div
       className="flex items-center justify-between"
       style={{
-        padding: "8px 10px",
+        padding: "8px 16px",
         borderRadius: tokens.radiusCard,
         border: "0.5px solid #EEF2F7",
         background: tokens.white,

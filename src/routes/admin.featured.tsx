@@ -256,10 +256,10 @@ function AdminFeatured() {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 9,
+              gap: 8,
               background: "#fff",
               borderRadius: tokens.radiusCard,
-              padding: "13px 16px",
+              padding: "14px 16px",
               boxShadow: CARD_SHADOW,
             }}
           >
@@ -303,7 +303,7 @@ function AdminFeatured() {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      gap: 13,
+                      gap: 12,
                       padding: "14px 16px",
                       borderTop: idx === 0 ? "none" : "1px solid #EFEFF2",
                     }}
@@ -340,7 +340,7 @@ function AdminFeatured() {
                               fontWeight: tokens.fontWeight.extrabold,
                               color: "#B8860B",
                               background: "#FFF6DC",
-                              padding: "3px 9px",
+                              padding: "3px 16px",
                               borderRadius: tokens.radiusCard,
                               letterSpacing: "0.3px",
                             }}

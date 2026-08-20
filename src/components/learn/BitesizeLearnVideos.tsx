@@ -93,7 +93,7 @@ export default function BitesizeLearnVideos({ limitPerSection = 12 }: { limitPer
                 padding: "0 16px 2px",
                 display: "flex",
                 alignItems: "center",
-                gap: 7,
+                gap: 8,
                 ...POPPINS,
               }}
             >
@@ -166,7 +166,7 @@ export default function BitesizeLearnVideos({ limitPerSection = 12 }: { limitPer
                             position: "absolute",
                             bottom: 6,
                             right: 6,
-                            padding: "2px 7px",
+                            padding: "2px 16px",
                             borderRadius: tokens.radiusCard,
                             background: "rgba(0,0,0,0.65)",
                             color: "#fff",
@@ -194,7 +194,7 @@ export default function BitesizeLearnVideos({ limitPerSection = 12 }: { limitPer
                           marginTop: 8,
                           display: "flex",
                           alignItems: "center",
-                          gap: 5,
+                          gap: 4,
                           color: BLUE,
                           fontSize: 12,
                           fontWeight: tokens.fontWeight.bold,

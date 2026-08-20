@@ -517,7 +517,7 @@ function SendToPupilSheet({
               backgroundColor: "#EEF4FB",
               border: "0.5px solid #1877D6",
               borderRadius: tokens.radiusCard,
-              padding: 12,
+              padding: 16,
             }}
           >
             <div className="text-[12px] font-medium mb-1" style={{ color: tokens.navy }}>

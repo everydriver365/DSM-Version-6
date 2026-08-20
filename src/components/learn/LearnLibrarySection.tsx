@@ -83,7 +83,7 @@ function ItemCard({
         background: tokens.white,
         borderRadius: tokens.radiusCard,
         boxShadow: CARD_SHADOW,
-        padding: 13,
+        padding: 16,
         display: "flex",
         flexDirection: "column",
         gap: 6,

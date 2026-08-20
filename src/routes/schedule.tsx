@@ -380,7 +380,7 @@ function TestLessonCard({
         boxShadow: "0 2px 0 #0B1F3A",
         marginBottom: 8,
         overflow: "visible",
-        padding: "10px 12px",
+        padding: "12px 16px",
         cursor: "pointer",
         ...POPPINS,
       }}
@@ -442,7 +442,7 @@ function TestLessonCard({
                 fontSize: 9,
                 fontWeight: tokens.fontWeight.extrabold,
                 borderRadius: tokens.radiusCard,
-                padding: "2px 8px",
+                padding: "2px 16px",
                 letterSpacing: "0.08em",
                 fontFamily: "Poppins, sans-serif",
               }}
@@ -537,7 +537,7 @@ function TestLessonCard({
                     fontSize: 9,
                     fontWeight: tokens.fontWeight.extrabold,
                     borderRadius: tokens.radiusCard,
-                    padding: "3px 10px",
+                    padding: "3px 16px",
                     fontFamily: "Poppins, sans-serif",
                   }}
                 >
@@ -551,7 +551,7 @@ function TestLessonCard({
                     fontSize: 9,
                     fontWeight: tokens.fontWeight.extrabold,
                     borderRadius: tokens.radiusCard,
-                    padding: "3px 10px",
+                    padding: "3px 16px",
                     fontFamily: "Poppins, sans-serif",
                   }}
                 >
@@ -1676,7 +1676,7 @@ function SchedulePage() {
                       background: tokens.canvas,
                       border: "1.5px dashed #D0D5DD",
                       borderRadius: tokens.radiusCard,
-                      padding: "10px 14px",
+                      padding: "12px 16px",
                       textAlign: "center",
                       fontSize: 12,
                       color: "#B0BAC9",
@@ -1830,7 +1830,7 @@ function SchedulePage() {
                                     background: "#FDFBF6",
                                     borderRadius: tokens.radiusCard,
                                     border: "2px dashed #D4A853",
-                                    padding: "12px 14px",
+                                    padding: "12px 16px",
                                     display: "flex",
                                     alignItems: "stretch",
                                     gap: 12,
@@ -2111,7 +2111,7 @@ function SchedulePage() {
                                     background: isTestDay ? '#FFF3E0' : '#FFFFFF',
                                     borderRadius: tokens.radiusCard,
                                     boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
-                                    padding: "12px 14px",
+                                    padding: "12px 16px",
                                     display: "flex",
                                     alignItems: (isBlockRow || isLessonRow) ? "stretch" : "center",
                                     gap: (isBlockRow || isLessonRow) ? 12 : 10,
@@ -2278,7 +2278,7 @@ function SchedulePage() {
                                                        flexShrink: 0,
                                                        display: 'inline-flex',
                                                        alignItems: 'center',
-                                                       gap: 3,
+                                                       gap: 4,
                                                        fontSize: tokens.fontSize.xs,
                                                        fontWeight: tokens.fontWeight.bold,
                                                        padding: '2px 8px',
@@ -2943,7 +2943,7 @@ function EntryRow({
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 3,
+                  gap: 4,
                   background: '#FF8C00',
                   borderRadius: tokens.radiusCard,
                   padding: '2px 8px',
@@ -2961,7 +2961,7 @@ function EntryRow({
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 3,
+                  gap: 4,
                   background: 'rgba(255,140,0,0.15)',
                   borderRadius: tokens.radiusCard,
                   padding: '2px 8px',
@@ -3131,7 +3131,7 @@ function rowBase(bg: string, cancelled: boolean): React.CSSProperties {
     textAlign: "left",
     border: 0,
     borderRadius: tokens.radiusCard,
-    padding: "12px 14px",
+    padding: "12px 16px",
     background: bg,
     color: tokens.white,
     cursor: "pointer",
@@ -3202,7 +3202,7 @@ function MonthCalendar({
         background: tokens.white,
         borderRadius: tokens.radiusCard,
         boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
-        padding: 12,
+        padding: 16,
         boxSizing: "border-box",
       }}
     >
@@ -3566,7 +3566,7 @@ function MonthStrip({
             alignItems: "center",
             gap: 6,
             marginBottom: 8,
-            padding: "6px 10px",
+            padding: "6px 16px",
             borderRadius: tokens.radiusCard,
             background: syncMessage.type === "success" ? "rgba(34, 197, 94, 0.12)" : "rgba(239, 68, 68, 0.12)",
             color: syncMessage.type === "success" ? "#16A34A" : "#B91C1C",

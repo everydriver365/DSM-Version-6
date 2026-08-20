@@ -3738,7 +3738,7 @@ function HomePage() {
                 fontWeight: tokens.fontWeight.bold,
                 textTransform: "uppercase",
                 borderRadius: tokens.radiusCard,
-                padding: "2px 8px",
+                padding: "2px 16px",
                 cursor: "pointer",
               }}
             >
@@ -3822,7 +3822,7 @@ function HomePage() {
 
     const cardBase: React.CSSProperties = {
       minHeight: 56,
-      padding: "8px 12px",
+      padding: "8px 16px",
       borderRadius: tokens.radiusCard,
       backgroundColor: tokens.white,
       display: "flex",
@@ -4207,7 +4207,7 @@ function HomePage() {
     };
     const quickBtn: React.CSSProperties = {
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      gap: 6, padding: "14px 8px", borderRadius: tokens.radiusCard,
+      gap: 6, padding: "14px 16px", borderRadius: tokens.radiusCard,
       border: "0.5px solid #E2E6ED", background: "#F8FAFF",
       cursor: "pointer", fontFamily: "Poppins, sans-serif",
       fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.navy,
@@ -4314,7 +4314,7 @@ function HomePage() {
                             ].map((s) => (
                               <div key={s.label} style={{
                                 flex: 1, background: "#F7FAFC", border: "0.5px solid #E2E6ED",
-                                borderRadius: tokens.radiusCard, padding: "10px 14px", textAlign: "center",
+                                borderRadius: tokens.radiusCard, padding: "12px 16px", textAlign: "center",
                               }}>
                                 <div style={{ fontWeight: tokens.fontWeight.bold, fontSize: tokens.fontSize.xl, color: s.color }}>{s.value}</div>
                                 <div style={{ fontSize: 12, color: tokens.textMuted }}>{s.label}</div>
@@ -4404,7 +4404,7 @@ function HomePage() {
                             }}
                             style={{
                               display: "grid", gridTemplateColumns: "70px 1fr auto auto auto auto",
-                              gap: 12, alignItems: "center", padding: "10px 12px",
+                              gap: 12, alignItems: "center", padding: "12px 16px",
                               borderRadius: tokens.radiusCard, border: now ? "2px solid #15803D" : "0.5px solid #E2E6ED",
                               background: tokens.white, cursor: "pointer", textAlign: "left",
                               fontFamily: "Poppins, sans-serif",
@@ -4426,7 +4426,7 @@ function HomePage() {
                             )}
 
                             {(past || l.status === 'completed') && (
-                              <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, textTransform: "uppercase", padding: "2px 7px", borderRadius: tokens.radiusCard, background: tokens.canvas, color: tokens.textMuted }}>Done</span>
+                              <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, textTransform: "uppercase", padding: "2px 16px", borderRadius: tokens.radiusCard, background: tokens.canvas, color: tokens.textMuted }}>Done</span>
                             )}
                             {now && (
                               <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, textTransform: "uppercase", padding: "4px 10px", borderRadius: 999, background: "#DCFCE7", color: "#15803D" }}>Now</span>
@@ -4458,7 +4458,7 @@ function HomePage() {
                   <button
                     onClick={() => navigate({ to: "/schedule" })}
                     style={{
-                      flex: 1, padding: "10px 12px",
+                      flex: 1, padding: "12px 16px",
                       borderRadius: tokens.radiusCard, border: "1px dashed #1877D6",
                       background: "transparent", color: tokens.blue,
                       fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
@@ -4505,7 +4505,7 @@ function HomePage() {
                       <div key={p.pupilId + p.type}
                         style={{
                           display: "grid", gridTemplateColumns: "1fr auto auto",
-                          gap: 12, alignItems: "center", padding: "10px 12px",
+                          gap: 12, alignItems: "center", padding: "12px 16px",
                           borderRadius: tokens.radiusCard, border: "0.5px solid #E2E6ED", boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                           fontFamily: "Poppins, sans-serif",
                         }}
@@ -4519,7 +4519,7 @@ function HomePage() {
                           <a
                             href={`sms:${p.phone}?body=${encodeURIComponent(`Hi ${p.firstName}, just a reminder that £${p.amount.toFixed(2)} is outstanding on your lesson account. Thanks!`)}`}
                             style={{
-                              padding: "6px 10px", borderRadius: tokens.radiusCard,
+                              padding: "6px 16px", borderRadius: tokens.radiusCard,
                               background: tokens.blue, color: tokens.white,
                               fontSize: 12, fontWeight: tokens.fontWeight.semibold, textDecoration: "none",
                             }}
@@ -4552,7 +4552,7 @@ function HomePage() {
                       <div key={n.id}
                         style={{
                           display: "flex", gap: 10, alignItems: "flex-start",
-                          padding: "10px 12px", borderRadius: tokens.radiusCard,
+                          padding: "12px 16px", borderRadius: tokens.radiusCard,
                           border: "0.5px solid #E2E6ED",
                           background: n.read ? "#FFFFFF" : "#F0F7FF",
                           fontFamily: "Poppins, sans-serif",
@@ -4593,7 +4593,7 @@ function HomePage() {
                       <div key={t.id}
                         style={{
                           display: "grid", gridTemplateColumns: "1fr auto",
-                          gap: 12, alignItems: "center", padding: "10px 12px",
+                          gap: 12, alignItems: "center", padding: "12px 16px",
                           borderRadius: tokens.radiusCard, border: "0.5px solid #E2E6ED",
                           fontFamily: "Poppins, sans-serif",
                         }}
@@ -4750,7 +4750,7 @@ function HomePage() {
             onClick={() => navigate({ to: s.route as never })}
             style={{
               flex: 1, background: '#FFFFFF', borderRadius: tokens.radiusCard,
-              boxShadow: '0 4px 0 #E4E4E8', padding: 12, minWidth: 0,
+              boxShadow: '0 4px 0 #E4E4E8', padding: 16, minWidth: 0,
               border: 'none', textAlign: 'left', cursor: 'pointer', fontFamily: 'Poppins, sans-serif',
             }}
           >
@@ -5060,7 +5060,7 @@ function HomePage() {
                           border: '1px solid rgba(255,255,255,0.6)',
                           borderRadius: 999, padding: '4px 10px',
                           boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                          display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5,
+                          display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4,
                         }}>
                           <IconCar stroke={1.5} size={13} color="#1877D6" />
                           <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
@@ -5094,7 +5094,7 @@ function HomePage() {
                         padding: '4px 10px',
                         display: 'inline-flex',
                         alignSelf: 'flex-start',
-                        alignItems: 'center', gap: 5,
+                        alignItems: 'center', gap: 4,
                         fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A',
                         fontFamily: 'Poppins, sans-serif',
                         whiteSpace: 'nowrap',
@@ -5131,7 +5131,7 @@ function HomePage() {
                           fontWeight: tokens.fontWeight.bold,
                           cursor: 'pointer',
                           fontFamily: 'Poppins, sans-serif',
-                          display: 'flex', alignItems: 'center', gap: 5,
+                          display: 'flex', alignItems: 'center', gap: 4,
                         }}
                       >
                         <IconNavigation stroke={1.5} size={13} color="#1877D6" />
@@ -5289,7 +5289,7 @@ function HomePage() {
               {anyReason && (
                 <div style={{
                   marginTop: 0, padding: '10px 16px',
-                  display: 'flex', flexDirection: 'column', gap: 3,
+                  display: 'flex', flexDirection: 'column', gap: 4,
                   fontSize: tokens.fontSize.sm, color: '#5A6270',
                   borderBottom: '1px solid #E4E8EF',
                 }}>
@@ -5961,7 +5961,7 @@ function HomePage() {
                         <button
                           type="button"
                           onClick={() => navigate({ to: '/gaps' })}
-                          style={{ marginTop: 4, width: '100%', background: '#0B1F3A', color: '#FFFFFF', border: 'none', borderRadius: tokens.radiusCard, padding: 12, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer' }}
+                          style={{ marginTop: 4, width: '100%', background: '#0B1F3A', color: '#FFFFFF', border: 'none', borderRadius: tokens.radiusCard, padding: 16, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, fontFamily: 'Poppins, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer' }}
                         >
                           <IconBolt size={16} color="#FFFFFF" stroke={2} />
                           Open gap filler
@@ -6288,7 +6288,7 @@ function HomePage() {
                             >
                               {cleanTitle}
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 3, minWidth: 0 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3, minWidth: 0 }}>
                               <IconCalendarEvent size={13} stroke={1.8} color="#6B7686" style={{ flexShrink: 0 }} />
                               <span style={{ fontSize: 12, color: '#6B7686', fontWeight: tokens.fontWeight.medium, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Google Calendar</span>
                             </div>
@@ -8064,7 +8064,7 @@ function HomePage() {
                       </div>
 
                       {/* Row 3 — labels */}
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, flexWrap: 'wrap' }}>
                         <Label
                           text="Issues" colour={RED_C} count={alerts.length}
                           onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })}
@@ -9256,7 +9256,7 @@ function HeroExpandedPanel({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 3,
+    gap: 4,
     cursor: 'pointer',
     fontFamily: 'Poppins, sans-serif',
     fontSize: tokens.fontSize.sm,
@@ -9408,7 +9408,7 @@ function HeroExpandedPanel({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 5,
+    gap: 4,
     cursor: 'pointer',
     fontFamily: 'Poppins, sans-serif',
     fontSize: tokens.fontSize.sm,
@@ -9444,14 +9444,14 @@ function HeroExpandedPanel({
     }
     if (state === 'ok') {
       return (
-        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: tokens.fontSize.sm, color: '#1F6B2E', fontFamily: 'Poppins, sans-serif' }}>
+        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 4, fontSize: tokens.fontSize.sm, color: '#1F6B2E', fontFamily: 'Poppins, sans-serif' }}>
           <IconCircleCheck size={14} stroke={1.8} /> {okText}
         </div>
       );
     }
     if (state === 'bad') {
       return (
-        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: tokens.fontSize.sm, color: '#D68A1B', fontFamily: 'Poppins, sans-serif' }}>
+        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 4, fontSize: tokens.fontSize.sm, color: '#D68A1B', fontFamily: 'Poppins, sans-serif' }}>
           <IconAlertTriangle size={14} stroke={1.8} /> {badText}
         </div>
       );
@@ -9774,7 +9774,7 @@ function TabBtn({
         backgroundColor: active ? "#ffffff" : "transparent",
         color: active ? "#0B1F3A" : "#6B7280",
         borderRadius: tokens.radiusCard,
-        padding: "8px 6px",
+        padding: "8px 16px",
         fontWeight: tokens.fontWeight.medium,
         fontSize: tokens.fontSize.base,
         fontFamily: "Poppins, sans-serif",
@@ -9888,7 +9888,7 @@ function EndOfDayBanner() {
       style={{
         backgroundColor: "#F0F4FF",
         border: "1px solid #BFDBFE",
-        padding: "10px 16px",
+        padding: "12px 16px",
         borderRadius: tokens.radiusCard,
         fontFamily: "Poppins, sans-serif",
       }}
@@ -10075,7 +10075,7 @@ function OutstandingBreakdownModal({
                         alignSelf: "flex-start",
                         fontSize: tokens.fontSize.xs,
                         fontWeight: tokens.fontWeight.semibold,
-                        padding: "2px 6px",
+                        padding: "2px 16px",
                         borderRadius: tokens.radiusCard,
                         backgroundColor: r.type === "NI Course" ? "#EEF2F7" : "#DBEAFE",
                         color: r.type === "NI Course" ? "#0B1F3A" : "#1E40AF",
@@ -10164,7 +10164,7 @@ function OutstandingBreakdownModal({
             disabled={rows.length === 0}
             style={{
               flex: 1,
-              padding: "10px 12px",
+              padding: "12px 16px",
               fontSize: tokens.fontSize.base,
               fontWeight: tokens.fontWeight.bold,
               backgroundColor: rows.length === 0 ? "#E5E7EB" : "#1877D6",
@@ -10179,7 +10179,7 @@ function OutstandingBreakdownModal({
           <button
             onClick={onClose}
             style={{
-              padding: "10px 16px",
+              padding: "12px 16px",
               fontSize: tokens.fontSize.base,
               fontWeight: tokens.fontWeight.semibold,
               backgroundColor: tokens.canvas,
@@ -10284,7 +10284,7 @@ function EarningsBreakdownModal({
                       </div>
                       <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, marginTop: 2 }}>{fmtDate(r.date)}</div>
                     </div>
-                    <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, padding: "2px 6px", borderRadius: tokens.radiusCard, backgroundColor: "#EFF6FF", color: "#1E40AF", textTransform: "capitalize" }}>
+                    <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, padding: "2px 16px", borderRadius: tokens.radiusCard, backgroundColor: "#EFF6FF", color: "#1E40AF", textTransform: "capitalize" }}>
                       {r.method}
                     </span>
                     <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy, minWidth: 60, textAlign: "right" }}>
@@ -10296,7 +10296,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={() => startEdit(r)}
                           aria-label="Edit payment"
-                          style={{ background: "none", border: "1px solid #E5E7EB", borderRadius: tokens.radiusCard, padding: "4px 6px", cursor: "pointer", color: "#374151", fontSize: 11 }}
+                          style={{ background: "none", border: "1px solid #E5E7EB", borderRadius: tokens.radiusCard, padding: "4px 16px", cursor: "pointer", color: "#374151", fontSize: 11 }}
                         >
                           Edit
                         </button>
@@ -10304,7 +10304,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={() => setConfirmDeleteId(r.id)}
                           aria-label="Delete payment"
-                          style={{ background: "none", border: "1px solid #FCA5A5", borderRadius: tokens.radiusCard, padding: "4px 6px", cursor: "pointer", color: "#B91C1C", fontSize: 11 }}
+                          style={{ background: "none", border: "1px solid #FCA5A5", borderRadius: tokens.radiusCard, padding: "4px 16px", cursor: "pointer", color: "#B91C1C", fontSize: 11 }}
                         >
                           Delete
                         </button>
@@ -10322,7 +10322,7 @@ function EarningsBreakdownModal({
                             min="0"
                             value={editAmount}
                             onChange={(e) => setEditAmount(e.target.value)}
-                            style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: tokens.radiusCard, fontSize: 13 }}
+                            style={{ width: "100%", marginTop: 2, padding: "6px 16px", border: "1px solid #E5E7EB", borderRadius: tokens.radiusCard, fontSize: 13 }}
                           />
                         </label>
                         <label style={{ flex: 1, fontSize: tokens.fontSize.sm, color: tokens.textSecondary }}>
@@ -10331,7 +10331,7 @@ function EarningsBreakdownModal({
                             type="date"
                             value={editDate}
                             onChange={(e) => setEditDate(e.target.value)}
-                            style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: tokens.radiusCard, fontSize: 13 }}
+                            style={{ width: "100%", marginTop: 2, padding: "6px 16px", border: "1px solid #E5E7EB", borderRadius: tokens.radiusCard, fontSize: 13 }}
                           />
                         </label>
                       </div>
@@ -10340,7 +10340,7 @@ function EarningsBreakdownModal({
                         <select
                           value={editMethod}
                           onChange={(e) => setEditMethod(e.target.value)}
-                          style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.base, backgroundColor: "#fff" }}
+                          style={{ width: "100%", marginTop: 2, padding: "6px 16px", border: "1px solid #E5E7EB", borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.base, backgroundColor: "#fff" }}
                         >
                           <option value="cash">Cash</option>
                           <option value="bank_transfer">Bank transfer</option>
@@ -10352,7 +10352,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={cancelEdit}
                           disabled={isBusy}
-                          style={{ padding: "6px 10px", fontSize: 12, background: tokens.canvas, border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, cursor: "pointer" }}
+                          style={{ padding: "6px 16px", fontSize: 12, background: tokens.canvas, border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, cursor: "pointer" }}
                         >
                           Cancel
                         </button>
@@ -10373,7 +10373,7 @@ function EarningsBreakdownModal({
                               setBusyId(null);
                             }
                           }}
-                          style={{ padding: "6px 10px", fontSize: 12, background: tokens.blue, color: "#fff", border: "none", borderRadius: tokens.radiusCard, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
+                          style={{ padding: "6px 16px", fontSize: 12, background: tokens.blue, color: "#fff", border: "none", borderRadius: tokens.radiusCard, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
                         >
                           {isBusy ? "Saving..." : "Save"}
                         </button>
@@ -10390,7 +10390,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={() => setConfirmDeleteId(null)}
                           disabled={isBusy}
-                          style={{ padding: "6px 10px", fontSize: 12, background: tokens.canvas, border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, cursor: "pointer" }}
+                          style={{ padding: "6px 16px", fontSize: 12, background: tokens.canvas, border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, cursor: "pointer" }}
                         >
                           Cancel
                         </button>
@@ -10406,7 +10406,7 @@ function EarningsBreakdownModal({
                               setBusyId(null);
                             }
                           }}
-                          style={{ padding: "6px 10px", fontSize: 12, background: "#B91C1C", color: "#fff", border: "none", borderRadius: tokens.radiusCard, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
+                          style={{ padding: "6px 16px", fontSize: 12, background: "#B91C1C", color: "#fff", border: "none", borderRadius: tokens.radiusCard, cursor: "pointer", opacity: isBusy ? 0.6 : 1 }}
                         >
                           {isBusy ? "Deleting..." : "Delete"}
                         </button>
@@ -10427,13 +10427,13 @@ function EarningsBreakdownModal({
           <div style={{ display: "flex", gap: 8 }}>
             <button
               onClick={onViewMTD}
-              style={{ flex: 1, padding: "10px 12px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, backgroundColor: tokens.blue, color: tokens.white, border: "none", borderRadius: tokens.radiusCard, cursor: "pointer" }}
+              style={{ flex: 1, padding: "12px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, backgroundColor: tokens.blue, color: tokens.white, border: "none", borderRadius: tokens.radiusCard, cursor: "pointer" }}
             >
               View MTD →
             </button>
             <button
               onClick={onClose}
-              style={{ padding: "10px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, backgroundColor: tokens.canvas, color: "#374151", border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, cursor: "pointer" }}
+              style={{ padding: "12px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, backgroundColor: tokens.canvas, color: "#374151", border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, cursor: "pointer" }}
             >
               Close
             </button>
@@ -10538,7 +10538,7 @@ function LessonsBreakdownModal({
                   <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, padding: "4px 10px", borderRadius: 999, backgroundColor: "#F1F5F9", color: tokens.navy }}>
                     {r.duration_minutes ?? 60}m
                   </span>
-                  <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, padding: "2px 6px", borderRadius: tokens.radiusCard, backgroundColor: colors.bg, color: colors.fg, textTransform: "capitalize" }}>
+                  <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, padding: "2px 16px", borderRadius: tokens.radiusCard, backgroundColor: colors.bg, color: colors.fg, textTransform: "capitalize" }}>
                     {r.status}
                   </span>
                 </button>
@@ -10576,7 +10576,7 @@ function LessonsBreakdownModal({
           </div>
           <button
             onClick={onClose}
-            style={{ marginTop: 4, padding: "10px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, backgroundColor: tokens.canvas, color: "#374151", border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, cursor: "pointer" }}
+            style={{ marginTop: 4, padding: "12px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, backgroundColor: tokens.canvas, color: "#374151", border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, cursor: "pointer" }}
           >
             Close
           </button>
@@ -10595,7 +10595,7 @@ function LessonsBreakdownModal({
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: tokens.fontSize.base, border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, background: "#fff" }}
+              style={{ marginTop: 4, width: "100%", padding: "8px 16px", fontSize: tokens.fontSize.base, border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, background: "#fff" }}
             >
               <option>Created in error</option>
               <option>Duplicate entry</option>
@@ -10609,7 +10609,7 @@ function LessonsBreakdownModal({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              style={{ marginTop: 4, width: "100%", padding: "8px 10px", fontSize: tokens.fontSize.base, border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, resize: "vertical", fontFamily: "inherit" }}
+              style={{ marginTop: 4, width: "100%", padding: "8px 16px", fontSize: tokens.fontSize.base, border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, resize: "vertical", fontFamily: "inherit" }}
             />
           </label>
         </div>
@@ -10617,7 +10617,7 @@ function LessonsBreakdownModal({
           <button
             onClick={closeConfirm}
             disabled={deleting}
-            style={{ padding: "8px 14px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, background: "transparent", color: "#374151", border: "none", borderRadius: tokens.radiusCard, cursor: "pointer" }}
+            style={{ padding: "8px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, background: "transparent", color: "#374151", border: "none", borderRadius: tokens.radiusCard, cursor: "pointer" }}
           >
             Cancel
           </button>
@@ -10633,7 +10633,7 @@ function LessonsBreakdownModal({
               }
             }}
             disabled={deleting}
-            style={{ padding: "8px 14px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, backgroundColor: "#B91C1C", color: "#fff", border: "none", borderRadius: tokens.radiusCard, cursor: deleting ? "not-allowed" : "pointer", opacity: deleting ? 0.7 : 1 }}
+            style={{ padding: "8px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, backgroundColor: "#B91C1C", color: "#fff", border: "none", borderRadius: tokens.radiusCard, cursor: deleting ? "not-allowed" : "pointer", opacity: deleting ? 0.7 : 1 }}
           >
             {deleting ? "Deleting…" : "Delete lesson"}
           </button>
@@ -10805,7 +10805,7 @@ function TestsBreakdownModal({
                       background: "#fff",
                       border: "0.5px solid #EEF2F7",
                       borderRadius: tokens.radiusCard,
-                      padding: "10px 12px",
+                      padding: "12px 16px",
                       display: "flex",
                       alignItems: "center",
                       gap: 8,
@@ -10853,7 +10853,7 @@ function TestsBreakdownModal({
         <div style={{ padding: 12, borderTop: "1px solid #e5e7eb" }}>
           <button
             onClick={onClose}
-            style={{ width: "100%", padding: "10px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, backgroundColor: tokens.canvas, color: "#374151", border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, cursor: "pointer" }}
+            style={{ width: "100%", padding: "12px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, backgroundColor: tokens.canvas, color: "#374151", border: "1px solid #D1D5DB", borderRadius: tokens.radiusCard, cursor: "pointer" }}
           >
             Close
           </button>

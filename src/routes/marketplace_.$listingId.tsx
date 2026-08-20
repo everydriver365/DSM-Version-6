@@ -412,7 +412,7 @@ function ListingDetailPage() {
                     boxShadow: "0 10px 24px rgba(0,0,0,0.28)",
                   }}
                 >
-                  <div style={{ height: 18, background: tokens.navy, display: "flex", alignItems: "center", gap: 3, padding: "0 6px" }}>
+                  <div style={{ height: 18, background: tokens.navy, display: "flex", alignItems: "center", gap: 4, padding: "0 6px" }}>
                     {[0, 1, 2].map((i) => (
                       <span key={i} style={{ width: 4, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.55)" }} />
                     ))}
@@ -547,7 +547,7 @@ function ListingDetailPage() {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  gap: 5,
+                  gap: 4,
                 }}
               >
                 {photos.map((p, i) => (
@@ -710,7 +710,7 @@ function ListingDetailPage() {
               style={{
                 ...CARD,
                 display: "flex",
-                gap: 13,
+                gap: 12,
                 alignItems: "center",
                 cursor: hasSellerProfile ? "pointer" : "default",
               }}
@@ -1107,7 +1107,7 @@ function ListingDetailPage() {
                       fontWeight: tokens.fontWeight.bold,
                       color: tokens.textSecondary,
                       background: tokens.canvas,
-                      padding: "5px 11px",
+                      padding: "5px 16px",
                       borderRadius: tokens.radiusCard,
                     }}
                   >
@@ -1263,7 +1263,7 @@ function ContactActions({
     border: "none",
     fontSize: tokens.fontSize.md,
     fontWeight: tokens.fontWeight.bold,
-    padding: 13,
+    padding: 16,
     borderRadius: tokens.radiusCard,
     boxShadow: "0 3px 0 #0F52A8",
     cursor: "pointer",
@@ -1280,7 +1280,7 @@ function ContactActions({
     border: "1px solid #1877D6",
     fontSize: tokens.fontSize.md,
     fontWeight: tokens.fontWeight.bold,
-    padding: 13,
+    padding: 16,
     borderRadius: tokens.radiusCard,
     boxShadow: "none",
     cursor: "pointer",
@@ -1520,7 +1520,7 @@ function EnquirySheet({
             width: "100%",
             border: "0.5px solid #E2E6ED",
             borderRadius: tokens.radiusCard,
-            padding: 10,
+            padding: 16,
             fontSize: tokens.fontSize.md,
             fontFamily: "inherit",
             marginBottom: 12,
@@ -1548,7 +1548,7 @@ function EnquirySheet({
             width: "100%",
             border: "0.5px solid #E2E6ED",
             borderRadius: tokens.radiusCard,
-            padding: 10,
+            padding: 16,
             fontSize: tokens.fontSize.md,
             marginBottom: 12,
             color: "#0F2044",
@@ -1574,7 +1574,7 @@ function EnquirySheet({
             width: "100%",
             border: "0.5px solid #E2E6ED",
             borderRadius: tokens.radiusCard,
-            padding: 10,
+            padding: 16,
             fontSize: tokens.fontSize.md,
             marginBottom: 16,
             color: "#0F2044",
@@ -1615,7 +1615,7 @@ function CategoryPill({ name }: { name: string }) {
         fontWeight: tokens.fontWeight.bold,
         color: tokens.blue,
         background: "#EFF6FF",
-        padding: "3px 10px",
+        padding: "3px 16px",
         borderRadius: tokens.radiusCard,
       }}
     >
@@ -1689,7 +1689,7 @@ function SellerListingRow({
         border: "1px solid #E4E8EF",
         borderRadius: tokens.radiusCard,
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-        padding: 12,
+        padding: 16,
         marginBottom: 10,
         fontFamily: "Poppins, sans-serif",
         cursor: "pointer",
@@ -1751,7 +1751,7 @@ function SellerListingRow({
           background: tokens.blue,
           color: "#fff",
           borderRadius: tokens.radiusCard,
-          padding: "6px 14px",
+          padding: "6px 16px",
           fontSize: 12,
           fontWeight: tokens.fontWeight.bold,
           border: "none",
@@ -2045,7 +2045,7 @@ function WebsiteUpgradeSections() {
       style={{
         display: "flex",
         alignItems: "center",
-        gap: 7,
+        gap: 8,
         fontSize: 12,
         color: textColour,
         marginTop: 7,
@@ -2064,7 +2064,7 @@ function WebsiteUpgradeSections() {
           background: "#EFF6FF",
           border: "1px solid #1877D6",
           borderRadius: tokens.radiusCard,
-          padding: "10px 14px",
+          padding: "12px 16px",
           display: "flex",
           alignItems: "center",
           gap: 10,
@@ -2114,7 +2114,7 @@ function WebsiteUpgradeSections() {
               fontSize: 9,
               fontWeight: tokens.fontWeight.extrabold,
               borderRadius: tokens.radiusCard,
-              padding: "3px 8px",
+              padding: "3px 16px",
             }}
           >
             Most popular
@@ -2156,7 +2156,7 @@ function WebsiteUpgradeSections() {
               fontSize: 9,
               fontWeight: tokens.fontWeight.extrabold,
               borderRadius: tokens.radiusCard,
-              padding: "3px 8px",
+              padding: "3px 16px",
             }}
           >
             White glove
@@ -2204,7 +2204,7 @@ function WebsiteUpgradeSections() {
             minWidth: 0,
             border: "1px solid #E4E8EF",
             borderRadius: tokens.radiusCard,
-            padding: "11px 12px",
+            padding: "12px 16px",
             fontSize: tokens.fontSize.md,
             color: tokens.navy,
             background: "#fff",
@@ -2220,7 +2220,7 @@ function WebsiteUpgradeSections() {
             color: "#fff",
             border: "none",
             borderRadius: tokens.radiusCard,
-            padding: "11px 16px",
+            padding: "12px 16px",
             fontSize: tokens.fontSize.md,
             fontWeight: tokens.fontWeight.bold,
             cursor: "pointer",

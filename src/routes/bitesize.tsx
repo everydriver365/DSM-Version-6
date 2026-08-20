@@ -95,7 +95,7 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #E4E8EF",
   borderRadius: tokens.radiusCard,
-  padding: "10px 12px",
+  padding: "12px 16px",
   fontSize: tokens.fontSize.md,
   color: tokens.navy,
   background: "#fff",
@@ -387,7 +387,7 @@ function BitesizePage() {
             padding: "10px 16px",
             borderBottom: "0.5px solid #E4E8EF",
             display: "flex",
-            gap: 20,
+            gap: 16,
             overflowX: "auto",
           }}
         >
@@ -532,7 +532,7 @@ function BitesizePage() {
                           background: "#fff",
                           border: "0.5px solid #E4E8EF",
                           borderRadius: tokens.radiusCard,
-                          padding: 12,
+                          padding: 16,
                           marginTop: 8,
                         }}
                       >
@@ -686,7 +686,7 @@ function BitesizePage() {
                       fontSize: 9,
                       fontWeight: tokens.fontWeight.semibold,
                       borderRadius: tokens.radiusCard,
-                      padding: "2px 6px",
+                      padding: "2px 16px",
                       ...POPPINS,
                     }}
                   >
@@ -704,7 +704,7 @@ function BitesizePage() {
                       fontSize: 8,
                       fontWeight: tokens.fontWeight.bold,
                       borderRadius: tokens.radiusCard,
-                      padding: "2px 6px",
+                      padding: "2px 16px",
                       ...POPPINS,
                     }}
                   >
@@ -739,7 +739,7 @@ function BitesizePage() {
                       color: "#7C3AED",
                       background: "#EFE7FB",
                       borderRadius: tokens.radiusCard,
-                      padding: "2px 6px",
+                      padding: "2px 16px",
                       ...POPPINS,
                     }}
                   >

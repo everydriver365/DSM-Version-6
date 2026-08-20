@@ -205,7 +205,7 @@ function ExpensesPage() {
             background: "rgba(255,255,255,0.14)",
             border: 0,
             color: "#fff",
-            padding: "8px 12px",
+            padding: "8px 16px",
             borderRadius: tokens.radiusCard,
             display: "inline-flex",
             alignItems: "center",
@@ -373,7 +373,7 @@ function SummaryCard({
         background: "#fff",
         border: BORDER,
         borderRadius: tokens.radiusCard,
-        padding: 14,
+        padding: 16,
       }}
     >
       <div style={{ fontSize: 12, color: "#6B7280", marginBottom: 6 }}>{label}</div>
@@ -488,7 +488,7 @@ function ExpenseRow({
             onClick={onEdit}
             style={{
               flex: 1,
-              padding: "8px 12px",
+              padding: "8px 16px",
               borderRadius: tokens.radiusCard,
               border: BORDER,
               background: "#fff",
@@ -509,7 +509,7 @@ function ExpenseRow({
             onClick={onDelete}
             style={{
               flex: 1,
-              padding: "8px 12px",
+              padding: "8px 16px",
               borderRadius: tokens.radiusCard,
               border: `1px solid #FCA5A5`,
               background: "#FEF2F2",
@@ -532,7 +532,7 @@ function ExpenseRow({
               rel="noreferrer"
               style={{
                 flex: 1,
-                padding: "8px 12px",
+                padding: "8px 16px",
                 borderRadius: tokens.radiusCard,
                 border: BORDER,
                 background: "#fff",
@@ -780,7 +780,7 @@ function AddEditSheet({
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
-              padding: "10px 12px",
+              padding: "12px 16px",
               border: BORDER,
               borderRadius: tokens.radiusCard,
               cursor: "pointer",
@@ -825,7 +825,7 @@ function AddEditSheet({
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
-  padding: "12px 14px",
+  padding: "12px 16px",
   border: BORDER,
   borderRadius: tokens.radiusCard,
   fontSize: 15,

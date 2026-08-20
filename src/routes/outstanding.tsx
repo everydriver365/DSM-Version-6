@@ -221,7 +221,7 @@ function OutstandingPage() {
           <span
             style={{
               background: tokens.blue, color: "#fff", fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold,
-              padding: "2px 7px", borderRadius: tokens.radiusCard, minWidth: 22, textAlign: "center",
+              padding: "2px 16px", borderRadius: tokens.radiusCard, minWidth: 22, textAlign: "center",
             }}
           >
             {total}

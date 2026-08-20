@@ -165,7 +165,7 @@ function DocumentsPage() {
           className="mx-4 mt-3 flex items-center"
           style={{
             gap: 10,
-            padding: 12,
+            padding: 16,
             borderRadius: tokens.radiusCard,
             backgroundColor: tokens.canvas,
             border: "0.5px solid #1877D6",
@@ -535,7 +535,7 @@ function DocSheet({
             style={{
               border: "0.5px solid #EEF2F7",
               borderRadius: tokens.radiusCard,
-              padding: 10,
+              padding: 16,
               color: tokens.navy,
               outline: "none",
               resize: "vertical",

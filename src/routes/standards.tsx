@@ -425,7 +425,7 @@ function AddCheckSheet({
             style={{
               border: "0.5px solid #EEF2F7",
               borderRadius: tokens.radiusCard,
-              padding: 10,
+              padding: 16,
               color: tokens.navy,
               outline: "none",
               resize: "vertical",

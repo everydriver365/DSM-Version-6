@@ -436,7 +436,7 @@ function StatCard({
         backgroundColor: tokens.white,
         border: "0.5px solid #EEF2F7",
         borderRadius: tokens.radiusCard,
-        padding: 12,
+        padding: 16,
       }}
     >
       <div className="text-[10px] uppercase tracking-wider text-[#6B7280]">{label}</div>
@@ -504,7 +504,7 @@ function EntryCard({
                 style={{
                   color: tokens.navy,
                   backgroundColor: "#F3F4F6",
-                  padding: "3px 8px",
+                  padding: "3px 16px",
                   borderRadius: tokens.radiusCard,
                 }}
               >

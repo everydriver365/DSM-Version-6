@@ -540,7 +540,7 @@ export function SendMessageSheet({
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 5,
+            gap: 4,
             fontSize: tokens.fontSize.sm,
             fontWeight: tokens.fontWeight.bold,
             color: DRAFT_UI[draftStatus].color,

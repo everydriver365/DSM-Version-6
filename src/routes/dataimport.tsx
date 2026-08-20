@@ -390,7 +390,7 @@ function DataImportPage() {
                         className="text-[13px] text-[#0B1F3A]"
                         style={{
                           maxWidth: "55%",
-                          padding: "6px 8px",
+                          padding: "6px 16px",
                           borderRadius: tokens.radiusCard,
                           borderWidth: "0.5px",
                           borderStyle: "solid",
@@ -423,7 +423,7 @@ function DataImportPage() {
                 borderStyle: "solid",
                 borderColor: invalidRowCount > 0 ? "#CC2229" : "#EEF2F7",
                 borderRadius: tokens.radiusCard,
-                padding: 14,
+                padding: 16,
               }}
             >
               <div className="flex items-center" style={{ gap: 10 }}>
@@ -453,7 +453,7 @@ function DataImportPage() {
                       style={{
                         backgroundColor: "#FDF2F2",
                         borderRadius: tokens.radiusCard,
-                        padding: "8px 10px",
+                        padding: "8px 16px",
                         color: tokens.navy,
                       }}
                     >
@@ -520,7 +520,7 @@ function DataImportPage() {
                                 {(err || warn) && (
                                   <div
                                     className="flex items-start mt-0.5 text-[10px]"
-                                    style={{ gap: 3, color: err ? "#CC2229" : "#B26B00", maxWidth: 170 }}
+                                    style={{ gap: 4, color: err ? "#CC2229" : "#B26B00", maxWidth: 170 }}
                                   >
                                     {err ? (
                                       <IconAlertCircle size={11} style={{ flexShrink: 0, marginTop: 1 }} />
@@ -563,7 +563,7 @@ function DataImportPage() {
                     borderStyle: "solid",
                     borderColor: tokens.canvas,
                     borderRadius: tokens.radiusCard,
-                    padding: 14,
+                    padding: 16,
                   }}
                 >
                   <div className="flex items-center justify-between">

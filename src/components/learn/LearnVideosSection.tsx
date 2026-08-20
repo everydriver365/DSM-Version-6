@@ -244,7 +244,7 @@ function VideoCard({
               position: "absolute",
               bottom: 6,
               right: 6,
-              padding: "2px 7px",
+              padding: "2px 16px",
               borderRadius: tokens.radiusCard,
               background: "rgba(0,0,0,0.65)",
               color: "#fff",
@@ -257,7 +257,7 @@ function VideoCard({
         )}
       </button>
 
-      <div style={{ padding: 12, display: "flex", flexDirection: "column", gap: 5, flex: 1 }}>
+      <div style={{ padding: 12, display: "flex", flexDirection: "column", gap: 4, flex: 1 }}>
         {cat && (
           <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: BLUE }}>
             {VIDEO_CATEGORY_EMOJI[cat] ?? "🎥"} {cat}
@@ -298,7 +298,7 @@ function VideoCard({
             color: BLUE,
             fontWeight: tokens.fontWeight.bold,
             fontSize: 12.5,
-            padding: "8px 10px",
+            padding: "8px 16px",
             cursor: "pointer",
             fontFamily: FONT,
           }}
@@ -366,7 +366,7 @@ export default function LearnVideosSection() {
 
   return (
     <div style={{ marginTop: 26, fontFamily: FONT }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "0 16px 10px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "0 16px 10px" }}>
         <span style={{ fontSize: 15 }}>🎥</span>
         <span style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: NAVY }}>Videos</span>
         <span style={{ fontSize: 12, color: GRAY_LABEL, marginLeft: "auto" }}>
@@ -382,7 +382,7 @@ export default function LearnVideosSection() {
             gap: 8,
             background: tokens.white,
             borderRadius: tokens.radiusCard,
-            padding: "9px 12px",
+            padding: "9px 16px",
             boxShadow: CARD_SHADOW,
           }}
         >

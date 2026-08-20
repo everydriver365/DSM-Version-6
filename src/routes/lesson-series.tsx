@@ -457,7 +457,7 @@ function LessonSeriesPage() {
               marginTop: 20,
               background: "#0F2044",
               color: tokens.white,
-              padding: "10px 18px",
+              padding: "12px 16px",
               borderRadius: tokens.radiusCard,
               fontWeight: tokens.fontWeight.semibold,
               fontSize: tokens.fontSize.md,
@@ -649,7 +649,7 @@ function LessonSeriesPage() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{ background: tokens.white, borderRadius: tokens.radiusCard, padding: 20, width: "100%", maxWidth: 360 }}
+            style={{ background: tokens.white, borderRadius: tokens.radiusCard, padding: 16, width: "100%", maxWidth: 360 }}
           >
             <p style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: "#0F2044", marginBottom: 8 }}>End series</p>
             <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 12 }}>
@@ -705,7 +705,7 @@ function LessonSeriesPage() {
             style={{
               border: "0.5px solid #E2E6ED",
               borderRadius: tokens.radiusCard,
-              padding: "8px 10px",
+              padding: "8px 16px",
               display: "flex",
               alignItems: "center",
               gap: 8,
@@ -984,7 +984,7 @@ function LessonSeriesPage() {
               width: "100%",
               borderRadius: tokens.radiusCard,
               border: "0.5px solid #E2E6ED",
-              padding: "10px 12px",
+              padding: "12px 16px",
               fontSize: tokens.fontSize.md,
               color: "#0F2044",
               resize: "vertical",
@@ -997,7 +997,7 @@ function LessonSeriesPage() {
               background: "#F7FAFC",
               border: "0.5px solid #E2E6ED",
               borderRadius: tokens.radiusCard,
-              padding: 12,
+              padding: 16,
               marginTop: 12,
             }}
           >

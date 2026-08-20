@@ -171,7 +171,7 @@ function ArticleBody({ article }: { article: any }) {
                   textTransform: "uppercase",
                   letterSpacing: "0.3px",
                   borderRadius: tokens.radiusCard,
-                  padding: "4px 9px",
+                  padding: "4px 16px",
                   ...POPPINS,
                 }}
               >
@@ -186,7 +186,7 @@ function ArticleBody({ article }: { article: any }) {
                     fontWeight: tokens.fontWeight.extrabold,
                     textTransform: "uppercase",
                     borderRadius: tokens.radiusCard,
-                    padding: "4px 9px",
+                    padding: "4px 16px",
                     ...POPPINS,
                   }}
                 >
@@ -211,7 +211,7 @@ function ArticleBody({ article }: { article: any }) {
               background: "#FFF8E7",
               border: "1px solid #F3E3BC",
               borderRadius: tokens.radiusCard,
-              padding: 12,
+              padding: 16,
               marginBottom: 16,
               ...POPPINS,
             }}
@@ -251,7 +251,7 @@ function ArticleBody({ article }: { article: any }) {
               background: "#EFEAFE",
               border: "1px solid #DCD2FB",
               borderRadius: tokens.radiusCard,
-              padding: 12,
+              padding: 16,
               textAlign: "left",
               cursor: "pointer",
               ...POPPINS,
@@ -283,7 +283,7 @@ function ArticleBody({ article }: { article: any }) {
               background: "#E7F1FC",
               border: "1px solid #CFE2F8",
               borderRadius: tokens.radiusCard,
-              padding: 12,
+              padding: 16,
               textAlign: "left",
               cursor: "pointer",
               ...POPPINS,

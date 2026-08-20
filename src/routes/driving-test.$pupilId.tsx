@@ -721,7 +721,7 @@ function CentreSearchSelect({
         <div
           className="flex items-center justify-between"
           style={{
-            padding: "10px 12px",
+            padding: "12px 16px",
             borderRadius: tokens.radiusCard,
             border: "0.5px solid #E2E6ED",
             backgroundColor: "#F0FDF4",
@@ -1209,7 +1209,7 @@ function RecordTab(props: any) {
             placeholder="Any notes about the test…"
             style={{
               width: "100%",
-              padding: 12,
+              padding: 16,
               paddingRight: 44,
               borderRadius: tokens.radiusCard,
               border: "0.5px solid #E2E6ED",

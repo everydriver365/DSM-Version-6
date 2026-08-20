@@ -30,7 +30,7 @@ const SUPABASE_ANON_KEY =
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
-  padding: "12px 14px",
+  padding: "12px 16px",
   border: BORDER,
   borderRadius: tokens.radiusCard,
   fontSize: 15,
@@ -348,7 +348,7 @@ export default function AddExpenseSheet({ open, onClose, onSaved }: AddExpenseSh
             display: "inline-flex",
             alignItems: "center",
             gap: 8,
-            padding: "10px 12px",
+            padding: "12px 16px",
             border: BORDER,
             background: "#fff",
             borderRadius: tokens.radiusCard,

@@ -335,7 +335,7 @@ function SquarePage() {
               style={{
                 background: "linear-gradient(135deg, #F59E0B, #B45309)",
                 borderRadius: tokens.radiusCard,
-                padding: 20,
+                padding: 16,
                 display: "flex",
                 flexDirection: "column",
                 gap: 12,
@@ -494,7 +494,7 @@ function SquarePage() {
                 background: "#FEF3C7",
                 border: "1px solid #FDE68A",
                 borderRadius: tokens.radiusCard,
-                padding: 14,
+                padding: 16,
               }}
             >
               <IconAlertTriangle

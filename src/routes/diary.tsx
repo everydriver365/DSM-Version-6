@@ -341,7 +341,7 @@ function DiaryPage() {
                   >
                     {d.getDate()}
                   </div>
-                  <div className="flex items-center" style={{ gap: 3, height: 6 }}>
+                  <div className="flex items-center" style={{ gap: 4, height: 6 }}>
                     {hasLesson && (
                       <span
                         className="rounded-full"

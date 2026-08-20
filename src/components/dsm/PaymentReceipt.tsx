@@ -118,7 +118,7 @@ export function PaymentReceipt({
           onClick={handlePrint}
           className="flex items-center gap-2"
           style={{
-            padding: "8px 14px",
+            padding: "8px 16px",
             borderRadius: tokens.radiusCard,
             backgroundColor: tokens.blue,
             color: "#fff",
@@ -156,7 +156,7 @@ export function PaymentReceipt({
           background: "#fff",
           border: "1px dashed #E4E8EF",
           borderRadius: tokens.radiusCard,
-          padding: "24px 20px",
+          padding: "24px 16px",
           boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
         }}
       >

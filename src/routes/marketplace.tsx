@@ -604,7 +604,7 @@ function ProductCard({
         borderRadius: tokens.radiusCard,
         border: "1px solid #E4E8EF",
         boxShadow: CARD_SHADOW,
-        padding: 12,
+        padding: 16,
         display: "flex",
         gap: 12,
         alignItems: "center",

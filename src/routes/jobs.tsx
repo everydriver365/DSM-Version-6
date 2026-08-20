@@ -302,7 +302,7 @@ function JobCard({
                 fontWeight: tokens.fontWeight.bold,
                 color: badge.color,
                 background: badge.bg,
-                padding: "6px 12px",
+                padding: "6px 16px",
                 borderRadius: tokens.radiusCard,
                 whiteSpace: "nowrap",
                 ...POPPINS,
@@ -334,7 +334,7 @@ function JobCard({
                 color: "#000",
                 height: "auto",
                 borderRadius: tokens.radiusCard,
-                padding: 14,
+                padding: 16,
                 border: "none",
                 fontSize: 14.5,
                 fontWeight: tokens.fontWeight.bold,
@@ -358,7 +358,7 @@ function JobCard({
               color: "#FFF",
               height: "auto",
               borderRadius: tokens.radiusCard,
-              padding: 14,
+              padding: 16,
               border: "none",
               fontSize: 14.5,
               fontWeight: tokens.fontWeight.bold,
@@ -564,7 +564,7 @@ function JobsPage() {
                     background: active ? "#fff" : "transparent",
                     border: "none",
                     borderRadius: tokens.radiusCard,
-                    padding: "8px 18px",
+                    padding: "8px 16px",
                     fontSize: 13.5,
                     fontWeight: tokens.fontWeight.semibold,
                     color: active ? "#000" : "#6B6B6F",
@@ -596,7 +596,7 @@ function JobsPage() {
                   background: tokens.white,
                   borderRadius: tokens.radiusCard,
                   boxShadow: "0 4px 0 #E4E4E8",
-                  padding: 14,
+                  padding: 16,
                   display: "flex",
                   flexDirection: "column",
                   gap: 10,
@@ -659,7 +659,7 @@ function JobsPage() {
                   background: tokens.white,
                   borderRadius: tokens.radiusCard,
                   boxShadow: "0 4px 0 #E4E4E8",
-                  padding: 14,
+                  padding: 16,
                   display: "flex",
                   flexDirection: "column",
                   gap: 10,
@@ -848,7 +848,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
                     background: mine ? BLUE : "#FFFFFF",
                     color: mine ? "#FFFFFF" : NAVY,
                     borderRadius: tokens.radiusCard,
-                    padding: "8px 12px",
+                    padding: "8px 16px",
                     fontSize: tokens.fontSize.md,
                     boxShadow: mine ? "none" : "0 1px 2px rgba(0,0,0,0.05)",
                   }}>
@@ -874,7 +874,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
             placeholder="Type a message…"
             style={{
               flex: 1, background: tokens.canvas, border: "none", borderRadius: tokens.radiusCard,
-              padding: "10px 14px", fontSize: tokens.fontSize.lg, outline: "none", ...POPPINS,
+              padding: "12px 16px", fontSize: tokens.fontSize.lg, outline: "none", ...POPPINS,
             }}
           />
           <button
@@ -1026,7 +1026,7 @@ function JobDetailSheet({
           )}
 
           {job.test_booked && (
-            <div style={{ marginTop: 16, padding: 12, background: "#EFF6FF", borderRadius: tokens.radiusCard, border: "1px solid #CCE0FA" }}>
+            <div style={{ marginTop: 16, padding: 16, background: "#EFF6FF", borderRadius: tokens.radiusCard, border: "1px solid #CCE0FA" }}>
               <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: BLUE, textTransform: "uppercase", letterSpacing: 0.3, marginBottom: 6 }}>
                 Test booked
               </div>

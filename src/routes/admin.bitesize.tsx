@@ -67,7 +67,7 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #E4E8EF",
   borderRadius: tokens.radiusCard,
-  padding: "10px 12px",
+  padding: "12px 16px",
   fontSize: tokens.fontSize.md,
   color: tokens.navy,
   background: "#fff",
@@ -494,7 +494,7 @@ function AdminBitesizePage() {
               style={{
                 background: "#fff",
                 borderRadius: tokens.radiusCard,
-                padding: 18,
+                padding: 16,
                 marginBottom: 14,
                 boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
               }}
@@ -606,7 +606,7 @@ function AdminBitesizePage() {
                   paddingTop: 14,
                   borderTop: "1px solid #F0F0F2",
                   display: "flex",
-                  gap: 9,
+                  gap: 8,
                 }}
               >
                 <button

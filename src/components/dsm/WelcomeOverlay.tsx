@@ -193,7 +193,7 @@ export function WelcomeOverlay({ userId, instructorName, onDismiss }: WelcomeOve
           style={{
             ...POPPINS,
             width: "100%",
-            padding: 15,
+            padding: 16,
             background: tokens.blue,
             color: "#fff",
             borderRadius: tokens.radiusCard,

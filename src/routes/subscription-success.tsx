@@ -130,7 +130,7 @@ function SubscriptionSuccessPage() {
       style={{
         background: "linear-gradient(135deg, #15803D, #15803D)",
         borderRadius: tokens.radiusCard,
-        padding: "28px 24px",
+        padding: "28px 16px",
         textAlign: "center",
         marginBottom: 20,
         boxShadow: "0 4px 0 #14532D",
@@ -342,7 +342,7 @@ function SubscriptionSuccessPage() {
         background: tokens.navy,
         color: "#fff",
         borderRadius: tokens.radiusCard,
-        padding: 15,
+        padding: 16,
         fontSize: 15,
         fontWeight: tokens.fontWeight.extrabold,
         border: "none",
@@ -362,7 +362,7 @@ function SubscriptionSuccessPage() {
         background: "#fff",
         borderRadius: tokens.radiusCard,
         border: "1px solid #E4E8EF",
-        padding: 20,
+        padding: 16,
         textAlign: "center",
         marginBottom: 16,
       }}

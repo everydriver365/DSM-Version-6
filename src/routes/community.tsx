@@ -616,7 +616,7 @@ function CommunityPage() {
               type="button"
               onClick={() => setDmSearchOpen(true)}
               style={{
-                width: "100%", padding: "10px 14px", background: tokens.blue, color: "#fff",
+                width: "100%", padding: "12px 16px", background: tokens.blue, color: "#fff",
                 border: "none", borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                 fontFamily: "Poppins, sans-serif", display: "flex", alignItems: "center",
                 justifyContent: "center", gap: 8,
@@ -731,7 +731,7 @@ function CommunityPage() {
                   placeholder="Search instructors..."
                   style={{
                     width: "100%", boxSizing: "border-box", border: "1px solid #E4E8EF",
-                    borderRadius: tokens.radiusCard, padding: "10px 12px", fontSize: tokens.fontSize.md, color: tokens.navy, outline: "none",
+                    borderRadius: tokens.radiusCard, padding: "12px 16px", fontSize: tokens.fontSize.md, color: tokens.navy, outline: "none",
                   }}
                 />
               </div>
@@ -888,8 +888,8 @@ function RoomsTab({
   }
 
   const rowStyle: React.CSSProperties = {
-    background: "#fff", borderRadius: tokens.radiusCard, padding: 14,
-    display: "flex", alignItems: "center", gap: 13,
+    background: "#fff", borderRadius: tokens.radiusCard, padding: 16,
+    display: "flex", alignItems: "center", gap: 12,
     boxShadow: "0 4px 0 #E4E4E8",
   };
 
@@ -919,14 +919,14 @@ function RoomsTab({
             </div>
             <span style={{
               background: "#E7F1FC", color: tokens.blue, fontSize: 10.5, fontWeight: tokens.fontWeight.extrabold,
-              borderRadius: tokens.radiusCard, padding: "3px 9px", whiteSpace: "nowrap", flexShrink: 0,
+              borderRadius: tokens.radiusCard, padding: "3px 16px", whiteSpace: "nowrap", flexShrink: 0,
             }}>
               {room.outcode}
             </span>
             {room.is_opt_in && (
               <span style={{
                 background: "#F1F3F7", color: "#6B7280", fontSize: 10.5, fontWeight: tokens.fontWeight.extrabold,
-                borderRadius: tokens.radiusCard, padding: "3px 9px", whiteSpace: "nowrap", flexShrink: 0,
+                borderRadius: tokens.radiusCard, padding: "3px 16px", whiteSpace: "nowrap", flexShrink: 0,
               }}>
                 Private
               </span>
@@ -940,7 +940,7 @@ function RoomsTab({
               {room.description}
             </div>
           ) : null}
-          <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 4, fontSize: 12, fontWeight: tokens.fontWeight.medium, color: "#8A8A8E" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 4, fontSize: 12, fontWeight: tokens.fontWeight.medium, color: "#8A8A8E" }}>
             <IconUsers stroke={1.5} size={12} />
             {room.instructor_count ?? 0} instructors
           </div>
@@ -951,7 +951,7 @@ function RoomsTab({
   }
 
   const btn = (bg: string, shadow: string): React.CSSProperties => ({
-    padding: "10px 18px", borderRadius: tokens.radiusCard, border: "none",
+    padding: "12px 16px", borderRadius: tokens.radiusCard, border: "none",
     background: bg, color: "#fff", fontSize: 13.5, fontWeight: tokens.fontWeight.extrabold,
     cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap", boxShadow: shadow,
   });
@@ -994,7 +994,7 @@ function RoomsTab({
         </div>
         <div style={{
           display: "flex", alignItems: "center", gap: 8, background: "#fff",
-          borderRadius: tokens.radiusCard, padding: "13px 16px", marginBottom: 12,
+          borderRadius: tokens.radiusCard, padding: "14px 16px", marginBottom: 12,
           boxShadow: "0 4px 0 #E4E4E8",
         }}>
           <IconSearch stroke={1.5} size={16} color="#8A8A8E" />
@@ -1264,7 +1264,7 @@ function AlertsTab({
         onClick={() => setSelectedAlert(a)}
         style={{
           background: "#fff", borderRadius: tokens.radiusCard, marginBottom: 10,
-          padding: "13px 14px", display: "flex", alignItems: "center", gap: 12,
+          padding: "14px 16px", display: "flex", alignItems: "center", gap: 12,
           boxShadow: "0 4px 0 #E4E4E8", cursor: "pointer",
         }}
       >
@@ -1291,7 +1291,7 @@ function AlertsTab({
         <div style={{
           flexShrink: 0, background: "#F2F2F7",
           color: suspicious ? "#CC2229" : "#6B6B6F",
-          fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, padding: "5px 10px", borderRadius: tokens.radiusCard,
+          fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, padding: "5px 16px", borderRadius: tokens.radiusCard,
           whiteSpace: "nowrap",
         }}>
           {formatCountdown(a.expires_at)}
@@ -1376,7 +1376,7 @@ function AlertsTab({
                 ) : (
                   <div style={{
                     flexShrink: 0, background: "#F2F2F7", color: "#6B6B6F",
-                    fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, padding: "5px 10px", borderRadius: tokens.radiusCard,
+                    fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, padding: "5px 16px", borderRadius: tokens.radiusCard,
                     whiteSpace: "nowrap",
                   }}>
                     {formatCountdown(a.expires_at)}
@@ -1403,7 +1403,7 @@ function AlertsTab({
               }}
               style={{
                 background: tokens.red, color: "white", border: "none", borderRadius: tokens.radiusCard,
-                padding: "10px 24px", marginTop: 16, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
+                padding: "12px 16px", marginTop: 16, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
               }}
             >
               Report alert
@@ -1411,7 +1411,7 @@ function AlertsTab({
           </div>
         ) : myAlerts.length === 0 ? (
           <div style={{
-            padding: 20, textAlign: "center", background: "#fff",
+            padding: 16, textAlign: "center", background: "#fff",
             border: "1.5px dashed #D1D1D6", borderRadius: tokens.radiusCard,
             fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: "#B0B0B5",
           }}>
@@ -1545,7 +1545,7 @@ function AlertsTab({
 
             {filteredOfficialAlerts.length === 0 ? (
               <div style={{
-                padding: 20, textAlign: "center", background: "#fff",
+                padding: 16, textAlign: "center", background: "#fff",
                 border: "1.5px dashed #D1D1D6", borderRadius: tokens.radiusCard,
                 fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: "#B0B0B5",
               }}>
@@ -1673,13 +1673,13 @@ function AlertsTab({
               <>
                 <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#8A93A3", marginBottom: 6 }}>Affected roads</div>
                 <div style={{
-                  background: "white", borderRadius: tokens.radiusCard, padding: "12px 14px", marginBottom: 14,
+                  background: "white", borderRadius: tokens.radiusCard, padding: "12px 16px", marginBottom: 14,
                   display: "flex", flexWrap: "wrap", gap: 6,
                 }}>
                   {affectedRoads.map((road) => (
                     <span key={road} style={{
                       background: "#E7F1FC", color: tokens.blue, fontSize: 12, fontWeight: tokens.fontWeight.bold,
-                      padding: "5px 11px", borderRadius: tokens.radiusCard,
+                      padding: "5px 16px", borderRadius: tokens.radiusCard,
                     }}>
                       {road}
                     </span>
@@ -1692,7 +1692,7 @@ function AlertsTab({
 
             <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#8A93A3", marginBottom: 6 }}>Description</div>
             <div style={{
-              background: "white", borderRadius: tokens.radiusCard, padding: "12px 14px",
+              background: "white", borderRadius: tokens.radiusCard, padding: "12px 16px",
               fontSize: 13.5, color: tokens.navy, lineHeight: 1.45, marginBottom: 14,
             }}>
               {selectedAlert.description}
@@ -1845,7 +1845,7 @@ function AlertCard({
           style={{
             display: "flex", alignItems: "center", gap: 4,
             background: "#F7FAFC", border: "0.5px solid #E2E6ED", borderRadius: tokens.radiusCard,
-            padding: "6px 12px", cursor: "pointer",
+            padding: "6px 16px", cursor: "pointer",
           }}
         >
           <IconThumbUp stroke={1.5}
@@ -2863,7 +2863,7 @@ function ChatTab({
                     <div style={{ maxWidth: "75%" }}>
                       <div style={{
                         background: "#0F2044", color: "white",
-                        borderRadius: tokens.radiusCard, padding: "10px 14px",
+                        borderRadius: tokens.radiusCard, padding: "12px 16px",
                         fontSize: tokens.fontSize.base, whiteSpace: "pre-wrap", wordBreak: "break-word",
                       }}>
                         {messageNode}
@@ -2892,7 +2892,7 @@ function ChatTab({
                         onContextMenu={(e) => { e.preventDefault(); setContextMsg(m); }}
                         style={{
                           background: "white", border: "0.5px solid #E2E6ED",
-                          borderRadius: tokens.radiusCard, padding: "10px 14px",
+                          borderRadius: tokens.radiusCard, padding: "12px 16px",
                           fontSize: tokens.fontSize.base, color: "#0F2044", whiteSpace: "pre-wrap", wordBreak: "break-word",
                           userSelect: "none", WebkitUserSelect: "none", cursor: "pointer",
                         }}
@@ -2955,7 +2955,7 @@ function ChatTab({
             placeholder={noRoom ? "No room available yet" : `Message ${areaLabel} ADIs...`}
             style={{
               flex: 1, background: "#F7FAFC", border: "0.5px solid #E2E6ED",
-              borderRadius: tokens.radiusCard, padding: "10px 14px", fontSize: tokens.fontSize.base, outline: "none",
+              borderRadius: tokens.radiusCard, padding: "12px 16px", fontSize: tokens.fontSize.base, outline: "none",
               opacity: noRoom || !room ? 0.6 : 1,
             }}
           />

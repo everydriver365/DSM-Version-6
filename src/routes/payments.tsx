@@ -380,7 +380,7 @@ function PaymentsPage() {
             color: "#fff",
             fontSize: tokens.fontSize.md,
             fontWeight: tokens.fontWeight.extrabold,
-            padding: "11px 20px",
+            padding: "12px 16px",
             borderRadius: tokens.radiusCard, minHeight: 44,
             border: 0,
             boxShadow: "0 4px 0 #0F6B3D",
@@ -427,7 +427,7 @@ function PaymentsPage() {
             style={{
               background: "#fff",
               borderRadius: tokens.radiusCard,
-              padding: 18,
+              padding: 16,
               boxShadow: "0 4px 0 #E4E4E8",
             }}
           >
@@ -537,7 +537,7 @@ function PaymentsPage() {
               type="button"
               onClick={() => setDatePreset(v)}
               style={{
-                padding: "10px 18px",
+                padding: "12px 16px",
                 fontSize: 13.5,
                 fontWeight: tokens.fontWeight.bold,
                 borderRadius: tokens.radiusCard, minHeight: 44,
@@ -627,7 +627,7 @@ function PaymentsPage() {
                         transition: "transform 0.1s ease, opacity 0.1s ease",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: 13, padding: 16 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: 16 }}>
                         <div
                           style={{
                             width: 44,

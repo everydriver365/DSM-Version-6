@@ -1374,7 +1374,7 @@ function LivePage() {
               { label: "Max speed", value: `${Math.round(r.overallMaxSpeed)} mph` },
               { label: "Overspeed", value: `${r.overspeedCount}`, red: r.overspeedCount > 0 },
             ].map((s) => (
-              <div key={s.label} style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB", borderRadius: tokens.radiusCard, padding: 12, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+              <div key={s.label} style={{ backgroundColor: "#fff", border: "1px solid #E5E7EB", borderRadius: tokens.radiusCard, padding: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
                 <div style={{ fontSize: tokens.fontSize.sm, letterSpacing: 0.5, color: "#6B7280", textTransform: "uppercase" }}>{s.label}</div>
                 <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.bold, color: s.red ? "#CC2229" : "#0B1F3A", marginTop: 4 }}>{s.value}</div>
               </div>
@@ -1599,7 +1599,7 @@ function LivePage() {
             transform: "translateX(-50%)",
             background: "#EF4444",
             color: "#fff",
-            padding: "10px 16px",
+            padding: "12px 16px",
             borderRadius: tokens.radiusCard,
             fontSize: tokens.fontSize.base,
             fontWeight: tokens.fontWeight.bold,
@@ -1622,7 +1622,7 @@ function LivePage() {
             left: "50%",
             transform: "translate(-50%, -50%)",
             background: "#fff",
-            padding: "16px 20px",
+            padding: "16px 16px",
             borderRadius: tokens.radiusCard,
             maxWidth: 300,
             width: "calc(100% - 40px)",
@@ -1774,7 +1774,7 @@ function LivePage() {
                     color: "#B45309",
                     fontSize: tokens.fontSize.sm,
                     fontWeight: tokens.fontWeight.bold,
-                    padding: "4px 8px",
+                    padding: "4px 16px",
                     borderRadius: tokens.radiusCard,
                     whiteSpace: "nowrap",
                   }}
@@ -1993,7 +1993,7 @@ function LivePage() {
               style={{
                 background: tokens.canvas,
                 borderRadius: tokens.radiusCard,
-                padding: "6px 10px",
+                padding: "6px 16px",
                 gap: 10,
                 flexShrink: 0,
               }}
@@ -2081,7 +2081,7 @@ function LivePage() {
                       style={{
                         background: "#F3F4F6",
                         borderRadius: tokens.radiusCard,
-                        padding: "10px 12px",
+                        padding: "12px 16px",
                       }}
                     >
                       <div className="flex items-center justify-between">
@@ -2156,7 +2156,7 @@ function LivePage() {
                 style={{
                   background: "#fff",
                   borderRadius: tokens.radiusCard,
-                  padding: "13px 16px",
+                  padding: "14px 16px",
                   gap: 10,
                   boxShadow: "0 3px 0 #E4E4E8",
                 }}
@@ -2227,7 +2227,7 @@ function LivePage() {
                       borderRadius: tokens.radiusCard,
                       padding: "14px 16px",
                       marginBottom: 10,
-                      gap: 13,
+                      gap: 12,
                       boxShadow: "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
                     }}
                   >

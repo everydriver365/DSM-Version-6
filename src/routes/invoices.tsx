@@ -140,7 +140,7 @@ function InvoicesPage() {
 
       {/* IconSearch */}
       <div style={{ margin: "0 16px 12px" }}>
-        <div style={{ background: "white", borderRadius: tokens.radiusCard, padding: "10px 12px", boxShadow: "0 1px 3px rgba(0,0,0,0.06)", display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ background: "white", borderRadius: tokens.radiusCard, padding: "12px 16px", boxShadow: "0 1px 3px rgba(0,0,0,0.06)", display: "flex", alignItems: "center", gap: 8 }}>
           <IconSearch size={16} color="#9CA3AF" />
           <input
             type="text"
@@ -180,7 +180,7 @@ function InvoicesPage() {
                     background: "white",
                     borderRadius: tokens.radiusCard,
                     boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                    padding: 14,
+                    padding: 16,
                     border: "none",
                     textAlign: "left",
                     cursor: "pointer",

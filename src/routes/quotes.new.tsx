@@ -33,7 +33,7 @@ const COURSE_TYPES = ["Intensive", "Semi-intensive", "Weekly lessons", "Pass Plu
 const POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
 
 const inputStyle: React.CSSProperties = {
-  width: "100%", padding: "10px 12px", border: "1px solid #EEF2F7",
+  width: "100%", padding: "12px 16px", border: "1px solid #EEF2F7",
   borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.md, fontFamily: "Poppins, sans-serif",
   background: "#fff", color: tokens.navy, boxSizing: "border-box",
 };
@@ -190,7 +190,7 @@ function NewQuotePage() {
     <DSMTopSheet title="New Quote" onBack={() => navigate({ to: "/quotes" } as never)}>
       <div style={POPPINS}>
       {isRevised && (
-        <div style={{ margin: "12px 16px 0", padding: "10px 12px", background: "#EEF4FB", border: "1px solid #BFDBFE", borderRadius: tokens.radiusCard, color: "#1D4ED8", fontSize: 13 }}>
+        <div style={{ margin: "12px 16px 0", padding: "12px 16px", background: "#EEF4FB", border: "1px solid #BFDBFE", borderRadius: tokens.radiusCard, color: "#1D4ED8", fontSize: 13 }}>
           Revised quote — pre-filled from the original. Update the price and resend.
         </div>
       )}

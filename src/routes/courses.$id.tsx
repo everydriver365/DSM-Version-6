@@ -640,7 +640,7 @@ function CourseDetailPage() {
             color: tokens.navy,
             fontSize: 12,
             fontWeight: tokens.fontWeight.extrabold,
-            padding: "8px 14px",
+            padding: "8px 16px",
             borderRadius: tokens.radiusCard,
             border: "none",
             cursor: "pointer",
@@ -726,7 +726,7 @@ function CourseDetailPage() {
                     color: "#fff",
                     fontSize: 11.5,
                     fontWeight: tokens.fontWeight.extrabold,
-                    padding: "6px 14px",
+                    padding: "6px 16px",
                     borderRadius: tokens.radiusCard,
                     textTransform: "uppercase",
                     letterSpacing: "0.3px",
@@ -1098,7 +1098,7 @@ function CourseDetailPage() {
                         width: "100%",
                         borderRadius: tokens.radiusCard,
                         border: "0.5px solid #EEF2F7",
-                        padding: 10,
+                        padding: 16,
                         fontFamily: "Poppins, sans-serif",
                         fontSize: tokens.fontSize.md,
                         color: tokens.navy,
@@ -1179,7 +1179,7 @@ function CourseDetailPage() {
                       fontSize: tokens.fontSize.sm,
                       fontWeight: tokens.fontWeight.bold,
                       borderRadius: tokens.radiusCard,
-                      padding: "3px 10px",
+                      padding: "3px 16px",
                       marginLeft: 8,
                     }}
                   >
@@ -1314,7 +1314,7 @@ function CourseDetailPage() {
                             fontSize: tokens.fontSize.xs,
                             fontWeight: tokens.fontWeight.bold,
                             borderRadius: tokens.radiusCard,
-                            padding: "3px 8px",
+                            padding: "3px 16px",
                             flexShrink: 0,
                             textTransform: "uppercase",
                           }}
@@ -1447,7 +1447,7 @@ function CourseDetailPage() {
                           color: "#fff",
                           fontSize: tokens.fontSize.xs,
                           fontWeight: tokens.fontWeight.bold,
-                          padding: "3px 7px",
+                          padding: "3px 16px",
                           borderRadius: tokens.radiusCard,
                           textTransform: "uppercase",
                           letterSpacing: 0.4,
@@ -1618,11 +1618,11 @@ function CourseDetailPage() {
             <div
               style={{
                 background: "#E6F7EC",
-                padding: "11px 13px",
+                padding: "12px 16px",
                 borderRadius: tokens.radiusCard,
                 marginBottom: 16,
                 display: "flex",
-                gap: 9,
+                gap: 8,
                 alignItems: "flex-start",
               }}
             >
@@ -1675,7 +1675,7 @@ function CourseDetailPage() {
                       : "0 3px 0 #E4E4E8, 0 8px 18px rgba(0,0,0,0.04)",
                     marginBottom: 10,
                     display: "flex",
-                    gap: 13,
+                    gap: 12,
                     alignItems: "center",
                     cursor: "pointer",
                     border: selected ? "1.5px solid #1877D6" : "1.5px solid transparent",
@@ -1738,7 +1738,7 @@ function CourseDetailPage() {
               onClick={handleScopeConfirm}
               style={{
                 width: "100%",
-                padding: 15,
+                padding: 16,
                 background: tokens.navy,
                 color: "#fff",
                 fontSize: 15,

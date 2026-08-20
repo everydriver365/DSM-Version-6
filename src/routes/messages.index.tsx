@@ -1319,7 +1319,7 @@ function MessagesIndexPage() {
                   gap: 8,
                   background: CANVAS,
                   borderRadius: tokens.radiusCard,
-                  padding: "9px 12px",
+                  padding: "9px 16px",
                 }}
               >
                 <IconSearch size={17} color={GREY} stroke={1.8} />
@@ -1924,7 +1924,7 @@ function InboxRow({
               borderRadius: tokens.radiusCard,
               fontSize: tokens.fontSize.xs,
               fontWeight: tokens.fontWeight.semibold,
-              padding: "2px 8px",
+              padding: "2px 16px",
               fontFamily: "Poppins, sans-serif",
               background: tag.bg,
               color: tag.color,
@@ -2143,7 +2143,7 @@ function RoomBrowser({
             gap: 8,
             background: CANVAS,
             borderRadius: tokens.radiusCard,
-            padding: "10px 12px",
+            padding: "12px 16px",
           }}
         >
           <IconSearch size={17} color={GREY} stroke={1.8} />
@@ -2523,7 +2523,7 @@ function LocalChatView(props: {
                           background: tokens.navy,
                           color: tokens.white,
                           borderRadius: tokens.radiusCard,
-                          padding: "10px 14px",
+                          padding: "12px 16px",
                           fontSize: tokens.fontSize.base,
                           lineHeight: 1.35,
                           wordBreak: "break-word",
@@ -2582,7 +2582,7 @@ function LocalChatView(props: {
                           background: tokens.white,
                           border: "0.5px solid #E2E6ED",
                           borderRadius: tokens.radiusCard,
-                          padding: "10px 14px",
+                          padding: "12px 16px",
                           fontSize: tokens.fontSize.base,
                           lineHeight: 1.35,
                           color: tokens.navy,
@@ -2662,7 +2662,7 @@ function LocalChatView(props: {
             background: "#F7FAFC",
             border: "0.5px solid #E2E6ED",
             borderRadius: tokens.radiusCard,
-            padding: "10px 14px",
+            padding: "12px 16px",
             fontSize: tokens.fontSize.base,
             outline: "none",
             color: tokens.navy,
@@ -2854,7 +2854,7 @@ function AdminJobThreadSheet({
                       background: bg,
                       color,
                       borderRadius: tokens.radiusCard,
-                      padding: "8px 12px",
+                      padding: "8px 16px",
                       fontSize: tokens.fontSize.md,
                       boxShadow: mine ? "none" : "0 1px 2px rgba(0,0,0,0.05)",
                     }}
@@ -2904,7 +2904,7 @@ function AdminJobThreadSheet({
               background: "#F3F4F6",
               border: "none",
               borderRadius: tokens.radiusCard,
-              padding: "10px 14px",
+              padding: "12px 16px",
               fontSize: tokens.fontSize.lg,
               outline: "none",
               ...FONT,

@@ -285,7 +285,7 @@ function PupilBriefPage() {
                 <div
                   style={{
                     marginTop: 12,
-                    padding: "8px 10px",
+                    padding: "8px 16px",
                     borderRadius: tokens.radiusCard,
                     background: "rgba(255,255,255,0.14)",
                     fontSize: 12.5,
@@ -347,7 +347,7 @@ function PupilBriefPage() {
                   <div
                     style={{
                       marginTop: 10,
-                      padding: 10,
+                      padding: 16,
                       borderRadius: tokens.radiusCard,
                       background: "#F3FAE9",
                       fontSize: tokens.fontSize.base,
@@ -547,7 +547,7 @@ function PupilBriefPage() {
                     <div
                       style={{
                         marginTop: 12,
-                        padding: 10,
+                        padding: 16,
                         borderRadius: tokens.radiusCard,
                         background: "#FFF8EB",
                         color: "#B45309",
@@ -572,7 +572,7 @@ function PupilBriefPage() {
                       ...POPPINS,
                       marginTop: 12,
                       width: "100%",
-                      padding: "10px 12px",
+                      padding: "12px 16px",
                       borderRadius: tokens.radiusCard,
                       border: "none",
                       background: BLUE,

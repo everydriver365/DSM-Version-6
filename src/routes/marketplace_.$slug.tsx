@@ -189,7 +189,7 @@ function MarketplaceProductPage() {
                   color: "#fff",
                   fontSize: tokens.fontSize.sm,
                   fontWeight: tokens.fontWeight.bold,
-                  padding: "4px 8px",
+                  padding: "4px 16px",
                   borderRadius: tokens.radiusCard,
                 }}
               >

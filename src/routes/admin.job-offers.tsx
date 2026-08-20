@@ -396,7 +396,7 @@ function AdminJobOffers() {
             onClick={openNew}
             style={{
               background: "#fff", color: BLUE, border: "none", borderRadius: tokens.radiusCard,
-              padding: "8px 12px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
+              padding: "8px 16px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
               display: "inline-flex", alignItems: "center", gap: 6,
               boxShadow: "0 3px 0 #B8CDE4",
             }}
@@ -423,7 +423,7 @@ function AdminJobOffers() {
                 style={{
                   background: "#fff",
                   borderRadius: tokens.radiusCard,
-                  padding: 18,
+                  padding: 16,
                   marginBottom: 14,
                   boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.07)",
                 }}
@@ -457,14 +457,14 @@ function AdminJobOffers() {
                     style={{
                       fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.extrabold, letterSpacing: 0.3,
                       color: badge.color, background: badge.bg,
-                      padding: "6px 13px", borderRadius: tokens.radiusCard, whiteSpace: "nowrap",
+                      padding: "6px 16px", borderRadius: tokens.radiusCard, whiteSpace: "nowrap",
                     }}
                   >
                     {badge.label}
                   </span>
                 </div>
 
-                <div style={{ display: "flex", gap: 9, marginTop: 16, flexWrap: "wrap" }}>
+                <div style={{ display: "flex", gap: 8, marginTop: 16, flexWrap: "wrap" }}>
                   {o.status === "open" && (
                     <>
                       <button
@@ -497,7 +497,7 @@ function AdminJobOffers() {
                         style={{
                           flex: 1,
                           background: "#fff", color: "#FF3B30", border: "1.5px solid #FF3B30",
-                          borderRadius: tokens.radiusCard, padding: 12, fontSize: 13.5, fontWeight: tokens.fontWeight.bold,
+                          borderRadius: tokens.radiusCard, padding: 16, fontSize: 13.5, fontWeight: tokens.fontWeight.bold,
                           cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
                         }}
                       >
@@ -525,7 +525,7 @@ function AdminJobOffers() {
                         style={{
                           flex: 1.3,
                           background: BLUE, color: "#fff", border: "none", borderRadius: tokens.radiusCard,
-                          padding: 12, fontSize: 13.5, fontWeight: tokens.fontWeight.bold, cursor: "pointer",
+                          padding: 16, fontSize: 13.5, fontWeight: tokens.fontWeight.bold, cursor: "pointer",
                           display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
                           boxShadow: "0 3px 0 #0F52A8",
                         }}
@@ -595,7 +595,7 @@ function AdminJobOffers() {
                   <div
                     style={{
                       display: "flex", alignItems: "center", gap: 8,
-                      background: "#E5F0FC", color: BLUE, padding: "8px 12px",
+                      background: "#E5F0FC", color: BLUE, padding: "8px 16px",
                       borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold,
                     }}
                   >
@@ -822,7 +822,7 @@ function AdminJobOffers() {
                 />
               </FieldLabel>
 
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", border: "1px solid #EEF2F7", borderRadius: tokens.radiusCard, background: "#fff" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", border: "1px solid #EEF2F7", borderRadius: tokens.radiusCard, background: "#fff" }}>
                 <div style={{ fontSize: tokens.fontSize.md, color: tokens.navy, fontWeight: 500 }}>Test already booked?</div>
                 <label style={{ position: "relative", display: "inline-block", width: 44, height: 26 }}>
                   <input
@@ -875,7 +875,7 @@ function AdminJobOffers() {
                 </>
               )}
 
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", border: "1px solid #EEF2F7", borderRadius: tokens.radiusCard, background: "#fff" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", border: "1px solid #EEF2F7", borderRadius: tokens.radiusCard, background: "#fff" }}>
                 <div style={{ fontSize: tokens.fontSize.md, color: tokens.navy, fontWeight: 500 }}>Wants to join the swap list?</div>
                 <label style={{ position: "relative", display: "inline-block", width: 44, height: 26 }}>
                   <input
@@ -1055,7 +1055,7 @@ function AdminJobThread({
                   <div
                     style={{
                       maxWidth: "78%", background: bg, color, borderRadius: tokens.radiusCard,
-                      padding: "8px 12px", fontSize: tokens.fontSize.md,
+                      padding: "8px 16px", fontSize: tokens.fontSize.md,
                       boxShadow: mine ? "none" : "0 1px 2px rgba(0,0,0,0.05)",
                     }}
                   >
@@ -1086,7 +1086,7 @@ function AdminJobThread({
             placeholder="Reply as admin…"
             style={{
               flex: 1, background: "#F3F4F6", border: "none", borderRadius: tokens.radiusCard,
-              padding: "10px 14px", fontSize: tokens.fontSize.lg, outline: "none", ...POPPINS,
+              padding: "12px 16px", fontSize: tokens.fontSize.lg, outline: "none", ...POPPINS,
             }}
           />
           <button

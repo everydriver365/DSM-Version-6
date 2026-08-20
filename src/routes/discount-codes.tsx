@@ -311,7 +311,7 @@ function CodeCard({
               style={{
                 color: typeColor,
                 backgroundColor: typeBg,
-                padding: "3px 8px",
+                padding: "3px 16px",
                 borderRadius: tokens.radiusCard,
               }}
             >

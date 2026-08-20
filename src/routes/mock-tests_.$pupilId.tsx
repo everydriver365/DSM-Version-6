@@ -145,7 +145,7 @@ function StatCard({ label, value, tone }: { label: string; value: string; tone?:
         backgroundColor: tokens.white,
         border: "0.5px solid #E2E6ED",
         borderRadius: tokens.radiusCard,
-        padding: 12,
+        padding: 16,
       }}
     >
       <div className="text-[11px]" style={{ color: "#6B7280" }}>
@@ -374,7 +374,7 @@ function MockTestsPage() {
               backgroundColor: tokens.white,
               border: "0.5px solid #E2E6ED",
               borderRadius: tokens.radiusCard,
-              padding: 12,
+              padding: 16,
             }}
           >
             <div className="text-xs font-semibold mb-2" style={{ color: "#0F2044" }}>

@@ -285,7 +285,7 @@ function PublicQuotePage() {
           </div>
 
           {quote.personal_message && (
-            <div style={{ marginTop: 16, padding: 12, background: "#EFF6FF", borderRadius: tokens.radiusCard, fontStyle: "italic", color: "#475569", fontSize: 14 }}>
+            <div style={{ marginTop: 16, padding: 16, background: "#EFF6FF", borderRadius: tokens.radiusCard, fontStyle: "italic", color: "#475569", fontSize: 14 }}>
               {quote.personal_message}
             </div>
           )}
@@ -319,7 +319,7 @@ function PublicQuotePage() {
               )}
 
               {needsDeposit && (
-                <div style={{ width: "100%", marginTop: 16, padding: 20, background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: tokens.radiusCard, textAlign: "left" }}>
+                <div style={{ width: "100%", marginTop: 16, padding: 16, background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: tokens.radiusCard, textAlign: "left" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                     <IconLock size={18} color="#1877D6" />
                     <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>Secure your booking</div>
@@ -332,13 +332,13 @@ function PublicQuotePage() {
                   </div>
 
                   {payError && (
-                    <div style={{ background: "#fef2f2", color: "#b91c1c", padding: 10, borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.base, marginBottom: 12 }}>
+                    <div style={{ background: "#fef2f2", color: "#b91c1c", padding: 16, borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.base, marginBottom: 12 }}>
                       {payError}
                     </div>
                   )}
 
                   {noSquare && (
-                    <div style={{ background: "#FFFBEB", color: "#B45309", padding: 12, borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.base, marginBottom: 12 }}>
+                    <div style={{ background: "#FFFBEB", color: "#B45309", padding: 16, borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.base, marginBottom: 12 }}>
                       Your instructor hasn't connected Square yet. Please pay by bank transfer or contact your instructor directly.
                       {(instructor?.bank_account_name || instructor?.bank_sort_code || instructor?.bank_account_number) && (
                         <div style={{ marginTop: 8, color: tokens.navy }}>

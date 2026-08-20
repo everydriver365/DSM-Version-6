@@ -261,7 +261,7 @@ function AdminInstructorsPage() {
               className="flex items-center relative"
               onClick={() => setSelectedInstructor(inst)}
               style={{
-                gap: 13,
+                gap: 12,
                 padding: "15px 16px",
                 borderTop: idx === 0 ? "none" : "1px solid #EFEFF2",
                 cursor: "pointer",
@@ -577,7 +577,7 @@ function AdminInstructorsPage() {
           <div
             className="mb-3"
             style={{
-              padding: 14,
+              padding: 16,
               borderRadius: tokens.radiusCard,
               backgroundColor: "#FEF3C7",
               color: "#B45309",
@@ -753,7 +753,7 @@ function AdminInstructorsPage() {
               }}
               style={{
                 width: "100%",
-                padding: 14,
+                padding: 16,
                 background: tokens.blue,
                 color: "#fff",
                 border: "none",
@@ -778,7 +778,7 @@ function AdminInstructorsPage() {
               }}
               style={{
                 width: "100%",
-                padding: 14,
+                padding: 16,
                 background: "#FCE9E9",
                 color: tokens.red,
                 border: "none",

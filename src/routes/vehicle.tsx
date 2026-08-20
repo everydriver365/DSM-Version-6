@@ -209,7 +209,7 @@ function VehiclePage() {
             backgroundColor: "#FEE2E2",
             border: "0.5px solid #FECACA",
             borderRadius: tokens.radiusCard,
-            padding: "10px 12px",
+            padding: "12px 16px",
           }}
         >
           <IconAlertTriangle stroke={1.5} size={16} color="#1877D6" />
@@ -357,7 +357,7 @@ function VehiclePage() {
               <div
                 key={j.id}
                 className="flex items-center justify-between"
-                style={{ border: BORDER, borderRadius: tokens.radiusCard, padding: "10px 12px" }}
+                style={{ border: BORDER, borderRadius: tokens.radiusCard, padding: "12px 16px" }}
               >
                 <div className="min-w-0">
                   <div className="text-[13px] font-semibold" style={{ color: NAVY }}>
@@ -449,7 +449,7 @@ function StatusCard({
         backgroundColor: tokens.white,
         border: BORDER,
         borderRadius: tokens.radiusCard,
-        padding: 12,
+        padding: 16,
       }}
     >
       <div className="flex items-center" style={{ gap: 6 }}>

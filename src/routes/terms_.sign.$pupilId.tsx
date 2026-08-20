@@ -29,7 +29,7 @@ const BLUE = "#1877D6";
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
-  padding: "10px 12px",
+  padding: "12px 16px",
   border: "1px solid #EEF2F7",
   borderRadius: tokens.radiusCard,
   fontSize: tokens.fontSize.md,
@@ -339,7 +339,7 @@ function SignTermsPage() {
               background: "#fff",
               border: "1px solid #FEE2E2",
               color: "#B91C1C",
-              padding: 14,
+              padding: 16,
               borderRadius: tokens.radiusCard,
               fontSize: tokens.fontSize.md,
             }}
@@ -352,7 +352,7 @@ function SignTermsPage() {
               background: "#fff",
               border: "1px solid #EEF2F7",
               borderRadius: tokens.radiusCard,
-              padding: 20,
+              padding: 16,
               textAlign: "center",
               boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
             }}
@@ -379,7 +379,7 @@ function SignTermsPage() {
                 color: "#fff",
                 border: "none",
                 borderRadius: tokens.radiusCard,
-                padding: "10px 16px",
+                padding: "12px 16px",
                 fontSize: tokens.fontSize.md,
                 fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
@@ -410,7 +410,7 @@ function SignTermsPage() {
                 background: "#fff",
                 border: "1px solid #EEF2F7",
                 borderRadius: tokens.radiusCard,
-                padding: 14,
+                padding: 16,
                 marginBottom: 12,
                 boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               }}
@@ -428,7 +428,7 @@ function SignTermsPage() {
                 background: "#fff",
                 border: "1px solid #EEF2F7",
                 borderRadius: tokens.radiusCard,
-                padding: 14,
+                padding: 16,
                 marginBottom: 12,
                 boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               }}
@@ -447,7 +447,7 @@ function SignTermsPage() {
                   background: "#F9FAFC",
                   border: "1px solid #EEF2F7",
                   borderRadius: tokens.radiusCard,
-                  padding: 12,
+                  padding: 16,
                 }}
               >
                 {terms.content}
@@ -461,7 +461,7 @@ function SignTermsPage() {
                   background: "#FFF7E6",
                   border: "1px solid #FDE7B5",
                   color: "#8A5A00",
-                  padding: 12,
+                  padding: 16,
                   borderRadius: tokens.radiusCard,
                   fontSize: tokens.fontSize.base,
                   marginBottom: 12,
@@ -477,7 +477,7 @@ function SignTermsPage() {
                 background: "#fff",
                 border: "1px solid #EEF2F7",
                 borderRadius: tokens.radiusCard,
-                padding: 14,
+                padding: 16,
                 marginBottom: 12,
                 boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               }}
@@ -499,7 +499,7 @@ function SignTermsPage() {
                     border: "1px solid #EEF2F7",
                     color: NAVY,
                     borderRadius: tokens.radiusCard,
-                    padding: "6px 10px",
+                    padding: "6px 16px",
                     fontSize: 12,
                     fontWeight: tokens.fontWeight.semibold,
                     cursor: "pointer",
@@ -541,7 +541,7 @@ function SignTermsPage() {
                 background: "#fff",
                 border: "1px solid #EEF2F7",
                 borderRadius: tokens.radiusCard,
-                padding: 14,
+                padding: 16,
                 marginBottom: 12,
                 boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               }}

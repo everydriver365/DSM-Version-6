@@ -356,7 +356,7 @@ function TakePaymentPage() {
   const fieldCardStyle: React.CSSProperties = {
     background: "#fff",
     borderRadius: tokens.radiusCard,
-    padding: "13px 15px",
+    padding: "14px 16px",
     boxShadow: "0 3px 0 #E4E4E8",
   };
   // Every key is the same box on every device: padding is replaced by a fixed
@@ -616,7 +616,7 @@ function TakePaymentPage() {
                 style={{
                   flex: 1,
                   minWidth: 0,
-                  padding: "11px 4px",
+                  padding: "12px 16px",
                   borderRadius: tokens.radiusCard,
                   border: "none",
                   background: active ? NAVY : "transparent",
@@ -939,7 +939,7 @@ function TakePaymentPage() {
             <div
               style={{
                 background: "#fff",
-                padding: 14,
+                padding: 16,
                 borderRadius: tokens.radiusCard,
                 display: "inline-flex",
                 alignItems: "center",

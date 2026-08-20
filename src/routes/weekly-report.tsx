@@ -673,7 +673,7 @@ function StatTile({
         background: tokens.white,
         border: "0.5px solid #EEF2F7",
         borderRadius: tokens.radiusCard,
-        padding: 14,
+        padding: 16,
       }}
     >
       <div className="text-[11px] uppercase tracking-wide" style={{ ...POPPINS, color: "#6B7280" }}>

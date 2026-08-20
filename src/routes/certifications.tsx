@@ -382,7 +382,7 @@ function CertificationsPage() {
           { count: expiringCount, label: "Expiring soon", colour: "#B45309" },
           { count: validCount, label: "Valid", colour: "#16A34A" },
         ].map((s) => (
-          <div key={s.label} style={{ flex: 1, background: tokens.white, border: "0.5px solid #E2E6ED", borderRadius: tokens.radiusCard, padding: 12, textAlign: "center" }}>
+          <div key={s.label} style={{ flex: 1, background: tokens.white, border: "0.5px solid #E2E6ED", borderRadius: tokens.radiusCard, padding: 16, textAlign: "center" }}>
             <div style={{ fontSize: 20, fontWeight: 900, color: s.colour }}>{s.count}</div>
             <div style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted, marginTop: 2 }}>{s.label}</div>
           </div>
@@ -562,7 +562,7 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "0.5px solid #E2E6ED",
   borderRadius: tokens.radiusCard,
-  padding: "10px 12px",
+  padding: "12px 16px",
   fontSize: tokens.fontSize.md,
   fontFamily: "Poppins, sans-serif",
   color: "#0F2044",

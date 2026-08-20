@@ -390,7 +390,7 @@ function UpcomingTestsPage() {
           <div
             className="flex gap-3 mb-3"
             style={{
-              padding: 14,
+              padding: 16,
               background: "#FEF3C7",
               borderRadius: tokens.radiusCard,
               color: "#B45309",
@@ -480,7 +480,7 @@ function TestRow({
         borderRadius: tokens.radiusCard,
         border: "1px solid #E2E8F0",
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-        padding: "16px 18px",
+        padding: "16px 16px",
       }}
     >
       <div className="flex items-start" style={{ gap: 12 }}>

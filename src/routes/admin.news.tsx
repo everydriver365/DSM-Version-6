@@ -59,7 +59,7 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #E3E8F0",
   borderRadius: tokens.radiusCard,
-  padding: "9px 11px",
+  padding: "9px 16px",
   fontSize: tokens.fontSize.base,
   color: tokens.navy,
   background: "#fff",
@@ -183,7 +183,7 @@ function AdminNews() {
             onClick={() => setTab(t)}
             style={{
               flex: 1,
-              padding: "9px 12px",
+              padding: "9px 16px",
               borderRadius: tokens.radiusCard,
               border: "none",
               cursor: "pointer",
@@ -217,7 +217,7 @@ function AdminNews() {
               color: "#fff",
               border: "none",
               borderRadius: tokens.radiusCard,
-              padding: "11px 14px",
+              padding: "12px 16px",
               fontSize: tokens.fontSize.base,
               fontWeight: tokens.fontWeight.bold,
               cursor: "pointer",
@@ -234,7 +234,7 @@ function AdminNews() {
                 background: "#fff",
                 border: "1px solid #E3E8F0",
                 borderRadius: tokens.radiusCard,
-                padding: 12,
+                padding: 16,
                 opacity: s.enabled ? 1 : 0.55,
                 ...POPPINS,
               }}
@@ -250,7 +250,7 @@ function AdminNews() {
                     background: tokens.canvas,
                     color: "#334155",
                     borderRadius: tokens.radiusCard,
-                    padding: "3px 8px",
+                    padding: "3px 16px",
                   }}
                 >
                   Tier {s.tier}
@@ -314,7 +314,7 @@ function AdminNews() {
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.semibold,
                   borderRadius: tokens.radiusCard,
-                  padding: "6px 14px",
+                  padding: "6px 16px",
                   border: "none",
                   cursor: "pointer",
                   background: articleFilter === f ? "#1877D6" : "#FFFFFF",
@@ -334,7 +334,7 @@ function AdminNews() {
                 background: "#fff",
                 border: "1px solid #E3E8F0",
                 borderRadius: tokens.radiusCard,
-                padding: 12,
+                padding: 16,
                 opacity: a.is_hidden ? 0.5 : 1,
                 ...POPPINS,
               }}

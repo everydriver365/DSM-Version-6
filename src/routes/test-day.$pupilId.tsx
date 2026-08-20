@@ -181,7 +181,7 @@ function QAItem({ type, q, a }: { type: "SHOW" | "TELL"; q: string; a: string })
             color: tokens.white,
             fontSize: tokens.fontSize.xs,
             fontWeight: tokens.fontWeight.bold,
-            padding: "2px 6px",
+            padding: "2px 16px",
             borderRadius: tokens.radiusCard,
             flexShrink: 0,
             marginTop: 2,

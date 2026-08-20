@@ -2398,7 +2398,7 @@ export function UnifiedPaymentSheet({
                 style={{
                   background: "#FEF3C7",
                   borderRadius: tokens.radiusCard,
-                  padding: "12px 14px",
+                  padding: "12px 16px",
                   marginBottom: 12,
                   fontSize: tokens.fontSize.base,
                   lineHeight: 1.5,

@@ -310,7 +310,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
           cursor: "pointer",
           display: "flex",
           alignItems: "center",
-          gap: 13,
+          gap: 12,
           fontFamily: "Poppins, sans-serif",
         }}
       >
@@ -440,11 +440,11 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
               marginTop: 12,
               background: "rgba(255,255,255,0.08)",
               borderRadius: tokens.radiusCard,
-              padding: "11px 14px",
+              padding: "12px 16px",
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              gap: 9,
+              gap: 8,
             }}
           >
             <IconSearch size={16} color="rgba(255,255,255,0.5)" />
@@ -1053,7 +1053,7 @@ function RootComponent() {
               background: tokens.blue,
               color: "#fff",
               borderRadius: tokens.radiusCard,
-              padding: "14px 40px",
+              padding: "14px 16px",
               fontSize: 15,
               fontWeight: tokens.fontWeight.extrabold,
               border: "none",

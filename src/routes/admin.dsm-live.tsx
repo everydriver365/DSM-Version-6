@@ -600,7 +600,7 @@ function AdminDsmLive() {
             color: "#fff",
             border: "none",
             borderRadius: tokens.radiusCard,
-            padding: "11px 20px",
+            padding: "12px 16px",
             fontSize: tokens.fontSize.md,
             fontWeight: tokens.fontWeight.extrabold,
             display: "inline-flex",
@@ -668,7 +668,7 @@ function AdminDsmLive() {
               style={{
                 background: "#fff",
                 borderRadius: tokens.radiusCard,
-                padding: 18,
+                padding: 16,
                 marginLeft: 16,
                 marginRight: 16,
                 marginBottom: 14,
@@ -688,7 +688,7 @@ function AdminDsmLive() {
                   style={{
                     fontSize: 11.5,
                     fontWeight: tokens.fontWeight.bold,
-                    padding: "6px 12px",
+                    padding: "6px 16px",
                     borderRadius: tokens.radiusCard,
                     background: isUpcoming ? "#1877D6" : isPast ? "#E5E5EA" : "#E5E5EA",
                     color: isUpcoming ? "#fff" : "#8A8A8E",
@@ -708,7 +708,7 @@ function AdminDsmLive() {
                   priceText
                 )}
               </div>
-              <div style={{ display: "flex", gap: 9, marginTop: 16 }}>
+              <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
                 <button
                   type="button"
                   onClick={() => openEdit(s)}
@@ -1161,7 +1161,7 @@ function AdminDsmLive() {
             transform: "translateX(-50%)",
             background: tokens.navy,
             color: "#fff",
-            padding: "10px 16px",
+            padding: "12px 16px",
             borderRadius: tokens.radiusCard,
             fontSize: tokens.fontSize.base,
             zIndex: 60,
@@ -1190,7 +1190,7 @@ function AdminDsmLive() {
             style={{
               background: "#fff",
               borderRadius: tokens.radiusCard,
-              padding: 20,
+              padding: 16,
               width: "100%",
               maxWidth: 420,
               boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
@@ -1244,7 +1244,7 @@ function AdminDsmLive() {
                   color: tokens.navy,
                   border: "1px solid #E2E6ED",
                   borderRadius: tokens.radiusCard,
-                  padding: "10px 14px",
+                  padding: "12px 16px",
                   fontSize: tokens.fontSize.base,
                   fontWeight: tokens.fontWeight.semibold,
                   cursor: "pointer",
@@ -1261,7 +1261,7 @@ function AdminDsmLive() {
                   color: "#fff",
                   border: "none",
                   borderRadius: tokens.radiusCard,
-                  padding: "10px 14px",
+                  padding: "12px 16px",
                   fontSize: tokens.fontSize.base,
                   fontWeight: tokens.fontWeight.semibold,
                   cursor: saving ? "wait" : "pointer",
@@ -1282,7 +1282,7 @@ function AdminDsmLive() {
 
 const inp: React.CSSProperties = {
   width: "100%",
-  padding: "10px 12px",
+  padding: "12px 16px",
   borderRadius: tokens.radiusCard,
   border: "1px solid #E2E6ED",
   fontSize: tokens.fontSize.md,

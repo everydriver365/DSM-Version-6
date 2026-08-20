@@ -114,7 +114,7 @@ function PaymentCompletePage() {
           color: "#fff",
           border: "none",
           borderRadius: tokens.radiusCard,
-          padding: "12px 24px",
+          padding: "12px 16px",
           fontSize: tokens.fontSize.md,
           fontWeight: tokens.fontWeight.bold,
           cursor: "pointer",

@@ -65,7 +65,7 @@ function SavingBadge({ text }: { text?: string | null }) {
         fontSize: 9,
         fontWeight: tokens.fontWeight.bold,
         borderRadius: tokens.radiusCard,
-        padding: "2px 7px",
+        padding: "2px 16px",
         marginTop: 4,
       }}
     >
@@ -84,7 +84,7 @@ function TierBadge({ tier }: { tier?: string | null }) {
         fontSize: 9,
         fontWeight: tokens.fontWeight.bold,
         borderRadius: tokens.radiusCard,
-        padding: "2px 7px",
+        padding: "2px 16px",
       }}
     >
       {TIER_DISPLAY[tier] ?? tier} and above
@@ -117,7 +117,7 @@ function ListRow({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        padding: "13px 16px",
+        padding: "14px 16px",
         background: "#fff",
         borderRadius: tokens.radiusCard,
         border: "1px solid #E4E8EF",
@@ -209,7 +209,7 @@ export function PartnerPreview({ partner }: { partner: any }) {
             background: "#fff",
             borderRadius: tokens.radiusCard,
             border: "1px solid #E4E8EF",
-            padding: 14,
+            padding: 16,
             marginTop: 10,
           }}
         >
@@ -343,7 +343,7 @@ export function PerkPreview({ perk, partnerName }: { perk: any; partnerName?: st
               background: tokens.blue,
               color: "#fff",
               borderRadius: tokens.radiusCard,
-              padding: "10px 16px",
+              padding: "12px 16px",
               textAlign: "center",
               fontSize: tokens.fontSize.base,
               fontWeight: tokens.fontWeight.bold,
