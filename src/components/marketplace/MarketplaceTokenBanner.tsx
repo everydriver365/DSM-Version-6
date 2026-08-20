@@ -23,7 +23,7 @@ const NAVY = "#0B1F3A";
 const cardStyle = (bg: string): CSSProperties => ({
   position: "relative",
   width: "100%",
-  borderRadius: tokens.radiusCard,
+  borderRadius: dsm.radiusCard,
   background: bg,
   overflow: "hidden",
   boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
@@ -75,7 +75,7 @@ function PhoneMock() {
       style={{
         width: 96,
         height: 132,
-        borderRadius: tokens.radiusCard,
+        borderRadius: dsm.radiusCard,
         border: "3px solid #0A1526",
         background: dsm.white,
         overflow: "hidden",
@@ -171,7 +171,7 @@ export function MarketplaceTokenBanner({
               width: 96,
               height: 132,
               objectFit: "cover",
-              borderRadius: tokens.radiusCard,
+              borderRadius: dsm.radiusCard,
               flexShrink: 0,
               boxShadow: "0 8px 20px rgba(0,0,0,0.28)",
             }}
