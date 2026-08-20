@@ -773,7 +773,7 @@ function RootComponent() {
     };
   }, []);
 
-  // in-app PushPermissionCard so the user sees a clear prompt first.
+  // Register the service worker only. Permission is requested by the
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return;
     navigator.serviceWorker
