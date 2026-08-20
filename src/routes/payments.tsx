@@ -4,6 +4,7 @@ import { IconCreditCard, IconCurrencyPound, IconDotsVertical, IconPlus, IconRota
 import { IconCashBanknote, IconBuildingBank, IconQrcode, IconReceipt, IconWallet } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 
 import { Button } from "../components/dsm/Button";
 import { Input } from "../components/dsm/Input";
@@ -266,6 +267,8 @@ function PaymentsPage() {
 
   useEffect(() => { if (userId) refetch(); /* eslint-disable-next-line */ }, [userId]);
 
+  const { pullToRefreshProps } = usePullToRefresh({ onRefresh: async () => { await refetch(); } });
+
   // Keep totals and history in sync with payments recorded elsewhere.
   useEffect(() => {
     if (!userId) return;
@@ -333,6 +336,7 @@ function PaymentsPage() {
   return (
     <DSMTopSheet title="Payments">
       <div
+        {...pullToRefreshProps}
         style={{ minHeight: "100%" }}
         onTouchStart={(e) => {
           (window as any).__wsSwipe = { x: e.touches[0].clientX, y: e.touches[0].clientY };

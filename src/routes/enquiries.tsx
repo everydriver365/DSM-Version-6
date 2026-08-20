@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import {
   IconMail,
   IconCheck,
@@ -147,6 +148,7 @@ const SECTION_HEADER: React.CSSProperties = {
 
 
 function EnquiriesPage() {
+  const [reloadKey, setReloadKey] = useState(0);
   const navigate = useNavigate();
   const goBack = useGoBack();
   const unreadCount = useUnreadCount();
@@ -241,7 +243,11 @@ function EnquiriesPage() {
 
       setLoading(false);
     })();
-  }, []);
+  }, [reloadKey]);
+
+  const { pullToRefreshProps } = usePullToRefresh({
+    onRefresh: async () => { setReloadKey((k) => k + 1); },
+  });
 
   // Always refresh the activity log when a detail sheet opens
   useEffect(() => {
@@ -1649,7 +1655,7 @@ function EnquiriesPage() {
 
   return (
     <DSMTopSheet title="Enquiries">
-    <div style={{ minHeight: "100%", background: "#F3F8FF", paddingBottom: 90 }}>
+    <div {...pullToRefreshProps} style={{ minHeight: "100%", background: "#F3F8FF", paddingBottom: 90 }}>
 
       <div style={{ padding: "4px 16px 24px" }}>
         {loading ? (
