@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { IconBell } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
@@ -19,7 +19,7 @@ import {
   getCurrentPushStatus,
   pushSupported,
 } from "../lib/pushSubscription";
-import { PageLayout } from "@/components/PageLayout";
+
 
 
 export const Route = createFileRoute("/notificationsettings")({
@@ -162,18 +162,8 @@ function NotificationSettingsPage() {
   }
 
   return (
-    <PageLayout className="pb-24" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Notification settings"
-        onBack={() => navigate({ to: "/settings" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Notification Settings" onBack={() => navigate({ to: "/settings" as never })}>
+      <div className="pb-24" style={POPPINS}>
 
 
       <div className="px-4">
@@ -356,7 +346,8 @@ function NotificationSettingsPage() {
           </Button>
         </div>
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
 

@@ -1,10 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { IconMapPin, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
+
 
 export const Route = createFileRoute("/postcode-rates")({
   head: () => ({ meta: [{ title: "Postcode rates — DSM by EveryDriver" }] }),
@@ -107,18 +107,8 @@ function PostcodeRatesPage() {
   };
 
   return (
-    <PageLayout className="pb-12" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Postcode rates"
-        onBack={() => navigate({ to: "/settings" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Postcode Rates">
+      <div className="pb-12" style={POPPINS}>
 
 
       <div className="px-4 pt-4">
@@ -171,6 +161,8 @@ function PostcodeRatesPage() {
           </p>
         </div>
       </div>
-    </PageLayout>
+    </div>
+    </div>
+    </DSMTopSheet>
   );
 }
