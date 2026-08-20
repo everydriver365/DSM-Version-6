@@ -512,5 +512,6 @@ function ReflectiveLogPage() {
         </div>
       )}
     </div>
+    </DSMTopSheet>
   );
 }
