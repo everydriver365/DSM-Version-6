@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { tapLight, tapMedium } from "@/lib/haptics";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
+import DSMPageSheet from "@/components/dsm/DSMPageSheet";
 import { useAdminGate } from "./admin";
 import { pupilColour } from "@/components/PupilAvatar";
 
@@ -1223,7 +1224,7 @@ function MessagesIndexPage() {
           onJoin={joinRoom}
         />
       ) : (
-        <>
+        <DSMPageSheet>
           {/* Segmented filter control + search */}
           <div
             style={{
@@ -1231,14 +1232,14 @@ function MessagesIndexPage() {
               alignItems: "center",
               gap: 8,
               padding: "12px 16px",
-              background: "transparent",
+              background: CANVAS,
             }}
           >
             <div
               style={{
                 display: "flex",
                 flex: 1,
-                background: "#FFFFFF",
+                background: CANVAS,
                 borderRadius: 8,
                 boxShadow: "0 3px 0 #E4E4E8",
                 padding: 3,
@@ -1504,7 +1505,7 @@ function MessagesIndexPage() {
               </div>
             )}
           </div>
-        </>
+        </DSMPageSheet>
       )}
 
       {menuItem && (
