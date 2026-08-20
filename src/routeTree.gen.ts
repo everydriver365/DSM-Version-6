@@ -177,6 +177,7 @@ import { Route as LessonsFeedbackIdRouteImport } from './routes/lessons.feedback
 import { Route as LessonsEditIdRouteImport } from './routes/lessons.edit.$id'
 import { Route as DsmLivePodcastPodcastIdRouteImport } from './routes/dsm-live.podcast.$podcastId'
 import { Route as ApiPublicSquareWebhookRouteImport } from './routes/api/public/square-webhook'
+import { Route as ApiPublicSendLessonRemindersRouteImport } from './routes/api/public/send-lesson-reminders'
 import { Route as ApiPublicNewsIngestRouteImport } from './routes/api/public/news-ingest'
 import { Route as ApiPublicCarplayV1LessonRouteImport } from './routes/api/public/carplay/v1/lesson'
 import { Route as ApiPublicCarplayV1DirectionsRouteImport } from './routes/api/public/carplay/v1/directions'
@@ -1025,6 +1026,12 @@ const ApiPublicSquareWebhookRoute = ApiPublicSquareWebhookRouteImport.update({
   path: '/api/public/square-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicSendLessonRemindersRoute =
+  ApiPublicSendLessonRemindersRouteImport.update({
+    id: '/api/public/send-lesson-reminders',
+    path: '/api/public/send-lesson-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicNewsIngestRoute = ApiPublicNewsIngestRouteImport.update({
   id: '/api/public/news-ingest',
   path: '/api/public/news-ingest',
@@ -1210,6 +1217,7 @@ export interface FileRoutesByFullPath {
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
   '/api/public/news-ingest': typeof ApiPublicNewsIngestRoute
+  '/api/public/send-lesson-reminders': typeof ApiPublicSendLessonRemindersRoute
   '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
   '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
@@ -1381,6 +1389,7 @@ export interface FileRoutesByTo {
   '/pupils': typeof PupilsIndexRoute
   '/quotes': typeof QuotesIndexRoute
   '/api/public/news-ingest': typeof ApiPublicNewsIngestRoute
+  '/api/public/send-lesson-reminders': typeof ApiPublicSendLessonRemindersRoute
   '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
   '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
@@ -1557,6 +1566,7 @@ export interface FileRoutesById {
   '/pupils/': typeof PupilsIndexRoute
   '/quotes/': typeof QuotesIndexRoute
   '/api/public/news-ingest': typeof ApiPublicNewsIngestRoute
+  '/api/public/send-lesson-reminders': typeof ApiPublicSendLessonRemindersRoute
   '/api/public/square-webhook': typeof ApiPublicSquareWebhookRoute
   '/dsm-live/podcast/$podcastId': typeof DsmLivePodcastPodcastIdRoute
   '/lessons/edit/$id': typeof LessonsEditIdRoute
@@ -1733,6 +1743,7 @@ export interface FileRouteTypes {
     | '/pupils/'
     | '/quotes/'
     | '/api/public/news-ingest'
+    | '/api/public/send-lesson-reminders'
     | '/api/public/square-webhook'
     | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
@@ -1904,6 +1915,7 @@ export interface FileRouteTypes {
     | '/pupils'
     | '/quotes'
     | '/api/public/news-ingest'
+    | '/api/public/send-lesson-reminders'
     | '/api/public/square-webhook'
     | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
@@ -2079,6 +2091,7 @@ export interface FileRouteTypes {
     | '/pupils/'
     | '/quotes/'
     | '/api/public/news-ingest'
+    | '/api/public/send-lesson-reminders'
     | '/api/public/square-webhook'
     | '/dsm-live/podcast/$podcastId'
     | '/lessons/edit/$id'
@@ -2231,6 +2244,7 @@ export interface RootRouteChildren {
   NotesIndexRoute: typeof NotesIndexRoute
   PupilsIndexRoute: typeof PupilsIndexRoute
   ApiPublicNewsIngestRoute: typeof ApiPublicNewsIngestRoute
+  ApiPublicSendLessonRemindersRoute: typeof ApiPublicSendLessonRemindersRoute
   ApiPublicSquareWebhookRoute: typeof ApiPublicSquareWebhookRoute
   LessonsEditIdRoute: typeof LessonsEditIdRoute
   LessonsFeedbackIdRoute: typeof LessonsFeedbackIdRoute
@@ -3427,6 +3441,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSquareWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/send-lesson-reminders': {
+      id: '/api/public/send-lesson-reminders'
+      path: '/api/public/send-lesson-reminders'
+      fullPath: '/api/public/send-lesson-reminders'
+      preLoaderRoute: typeof ApiPublicSendLessonRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/news-ingest': {
       id: '/api/public/news-ingest'
       path: '/api/public/news-ingest'
@@ -3695,6 +3716,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotesIndexRoute: NotesIndexRoute,
   PupilsIndexRoute: PupilsIndexRoute,
   ApiPublicNewsIngestRoute: ApiPublicNewsIngestRoute,
+  ApiPublicSendLessonRemindersRoute: ApiPublicSendLessonRemindersRoute,
   ApiPublicSquareWebhookRoute: ApiPublicSquareWebhookRoute,
   LessonsEditIdRoute: LessonsEditIdRoute,
   LessonsFeedbackIdRoute: LessonsFeedbackIdRoute,
