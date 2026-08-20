@@ -1608,10 +1608,10 @@ function PupilDetailPage() {
             </button>
           </div>
         )}
-        {/* Tab bar — iOS segmented control */}
+        {/* Tab bar — fixed-width segmented control */}
         <div
           className="mt-4 mb-2 flex gap-1"
-          style={{ background: "#E5E5EA", borderRadius: 8, padding: 3, ...POPPINS }}
+          style={{ background: "#EEF2F7", borderRadius: 8, padding: 3, ...POPPINS }}
         >
           {(["overview", "lessons", "payments", "profile"] as const).map((t) => (
             <button
