@@ -416,8 +416,8 @@ function NewsArticlePage() {
   const index = Math.max(0, set.findIndex((a) => a.id === article.id));
 
   return (
-    <DSMTopSheet title="Article">
-      onBack=() => navigate({ to: "/home" })
+    <DSMTopSheet title="Article"
+      onBack={() => navigate({ to: "/home" })}>
       <div style={POPPINS}>
       <SwipeableDetailShell<any>
         items={set}

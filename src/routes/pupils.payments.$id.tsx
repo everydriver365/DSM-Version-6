@@ -293,8 +293,8 @@ function PupilPaymentsPage() {
   }
 
   return (
-    <DSMTopSheet title="Payments">
-      onBack=() => navigate({ to: "/pupils/$id", params: { id } } as never)
+    <DSMTopSheet title="Payments"
+      onBack={() => navigate({ to: "/pupils/$id", params: { id } } as never)}>
       <div style={POPPINS}>
       <div className="px-4 mt-3">
         {pupilName && (

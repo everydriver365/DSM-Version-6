@@ -281,8 +281,8 @@ function TestDayPage() {
 
 
   return (
-    <DSMTopSheet title="Test Day">
-      onBack=() => navigate({ to: "/home" } as never)
+    <DSMTopSheet title="Test Day"
+      onBack={() => navigate({ to: "/home" } as never)}>
       <div style={POPPINS}>
       {loading ? (
         <div className="px-4 mt-6 text-[13px]" style={{ color: "#6B7280" }}>
