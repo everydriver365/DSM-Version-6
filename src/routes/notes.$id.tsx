@@ -2,10 +2,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { supabase } from "../lib/supabaseClient";
 import { ConfirmDialog } from "../components/ConfirmDialog";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/notes/$id")({
   head: () => ({
@@ -77,19 +76,8 @@ function NoteEditPage() {
   };
 
   return (
-    <PageLayout className="flex flex-col" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Note"
-        onBack={() => navigate({ to: "/notes" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="Notes"
+      onBack={() => navigate({ to: "/notes" as never })}>
       {/* Actions row */}
       <div className="flex items-center justify-between px-4 pt-3">
         <span className="text-[11px]" style={{ color: "#1877D6" }}>{savedFlag ? "Saved" : ""}</span>

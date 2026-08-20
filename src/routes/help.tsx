@@ -1,11 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { useState } from "react";
 import { IconArrowLeft, IconChevronDown, IconChevronRight, IconMail, IconMessage } from "@tabler/icons-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Card } from "../components/dsm/Card";
-import { PageLayout } from "@/components/PageLayout";
 
 export const Route = createFileRoute("/help")({
   head: () => ({
@@ -81,20 +80,9 @@ function HelpPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   return (
-    <PageLayout className="pb-8" style={POPPINS}>
+    <DSMTopSheet title="Help">
+      <div className="pb-8" style={POPPINS}>
       {/* Top bar */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Help & support"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
       {/* GET IN TOUCH */}
       <div className="px-4">
         <SectionHeader>GET IN TOUCH</SectionHeader>
