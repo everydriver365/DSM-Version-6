@@ -868,6 +868,7 @@ function PupilsIndexPage() {
       </header>
 
       <div
+        {...pullToRefreshProps}
         style={{
           position: "relative",
           zIndex: 1,

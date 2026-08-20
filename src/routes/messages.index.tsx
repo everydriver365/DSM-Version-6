@@ -1192,6 +1192,7 @@ function MessagesIndexPage() {
         </div>
       ) : (
         <div
+          {...pullToRefreshProps}
           style={{
             position: "relative",
             zIndex: 1,
