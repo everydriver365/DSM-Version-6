@@ -248,7 +248,6 @@ function EndOfDayPage() {
   return (
     <DSMTopSheet title="End of Day">
       <div style={{ fontFamily: "Poppins, sans-serif" }}>
-      {/* Top bar */}
       {/* Date sub-bar */}
       <div
         style={{

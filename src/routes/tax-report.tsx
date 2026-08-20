@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { IconCar, IconCurrencyPound, IconDownload, IconReceipt, IconTrendingUp } from "@tabler/icons-react";
-import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { supabase } from "../lib/supabaseClient";
 
@@ -269,7 +268,6 @@ function TaxReportPage() {
   return (
     <DSMTopSheet title="Tax Report">
       <div style={POPPINS}>
-      {/* TOP BAR */}
       {/* YEAR SELECTOR */}
       <div
         className="bg-white flex items-center justify-between"
