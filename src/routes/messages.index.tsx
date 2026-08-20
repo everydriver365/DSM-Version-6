@@ -1232,7 +1232,7 @@ function MessagesIndexPage() {
               alignItems: "center",
               gap: 8,
               padding: "12px 16px",
-              background: CANVAS,
+              background: "transparent",
             }}
           >
             <div
