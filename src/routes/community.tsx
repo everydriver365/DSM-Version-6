@@ -1,4 +1,5 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -480,56 +481,40 @@ function CommunityPage() {
     })();
   }, []);
 
+  const reportButton = (
+    <button
+      type="button"
+      onClick={() => {
+        setActiveTab("alerts");
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("dsm-open-report-sheet"));
+        }
+      }}
+      aria-label="Report local issue"
+      style={{
+        width: 36,
+        height: 36,
+        borderRadius: "50%",
+        background: "rgba(255,255,255,0.15)",
+        border: "none",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+        flexShrink: 0,
+      }}
+    >
+      <IconPlus size={18} color="#fff" stroke={2} />
+    </button>
+  );
+
   return (
-    <div style={{ background: "#F7FAFC", minHeight: "100vh", paddingBottom: 80, fontFamily: "Poppins, sans-serif" }}>
-      {/* TOP BAR */}
-      <div style={{
-        background: "#0B1F3A", padding: "16px", display: "flex",
-        alignItems: "center", gap: 12, color: "white",
-        borderRadius: "0 0 8px 8px",
-      }}>
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/home" as never })}
-          aria-label="Back"
-          style={{
-            width: 34, height: 34, borderRadius: 999,
-            background: "rgba(255,255,255,0.08)", border: "none", color: "white",
-            cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
-          <IconArrowLeft stroke={1.5} size={19} />
-        </button>
-        <div style={{ fontWeight: 800, fontSize: 24, letterSpacing: "-0.4px", color: "#fff", flex: 1, minWidth: 0 }}>Community</div>
-        <button
-          type="button"
-          onClick={() => {
-            setActiveTab("alerts");
-            if (typeof window !== "undefined") {
-              window.dispatchEvent(new Event("dsm-open-report-sheet"));
-            }
-          }}
-          aria-label="Report local issue"
-          style={{
-            width: 34, height: 34,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.15)",
-            border: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            flexShrink: 0,
-          }}
-        >
-          <IconPlus size={18} color="#fff" stroke={2} />
-        </button>
-      </div>
+    <DSMTopSheet title="Community" right={reportButton}>
+      <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       {/* TABS */}
       <div style={{
-        background: "#F7FAFC",
+        background: "#EEF2F7",
         display: "flex", gap: 6, overflowX: "auto",
         padding: "12px 16px 8px", position: "sticky", top: 0, zIndex: 10,
       }}>
