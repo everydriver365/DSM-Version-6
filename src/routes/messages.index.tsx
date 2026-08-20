@@ -1815,7 +1815,15 @@ function InboxRow({
     <div
       role="button"
       tabIndex={0}
-      onClick={item.open}
+      onClick={() => { tapLight(); item.open(); }}
+      onTouchStart={(e) => {
+        e.currentTarget.style.transform = "scale(0.98)";
+        e.currentTarget.style.opacity = "0.9";
+      }}
+      onTouchEnd={(e) => {
+        e.currentTarget.style.transform = "scale(1)";
+        e.currentTarget.style.opacity = "1";
+      }}
       style={{
         display: "flex",
         alignItems: "center",
@@ -1828,6 +1836,7 @@ function InboxRow({
         cursor: "pointer",
         borderLeft: unread ? "3px solid #1877D6" : "3px solid transparent",
         WebkitTapHighlightColor: "transparent",
+        transition: "transform 0.1s ease, opacity 0.1s ease",
       }}
     >
       {/* Avatar */}
