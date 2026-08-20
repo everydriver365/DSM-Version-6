@@ -722,7 +722,7 @@ function NotificationsPage() {
           onClick={clearAllRead}
           disabled={!(items ?? []).some((n) => n.read)}
           className="inline-flex items-center gap-1 text-[12px] font-medium px-2 py-1 rounded-lg disabled:opacity-50"
-          style={{ color: "#6B7280", ...POPPINS }}
+          style={{ color: "#6B7686", ...POPPINS }}
           aria-label="Clear read notifications"
         >
           <IconTrash stroke={1.5} size={14} color="#6B7280" />
@@ -1947,7 +1947,7 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 9,
+                            fontSize: 10,
                             fontWeight: 700,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
@@ -1979,7 +1979,7 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 9,
+                            fontSize: 10,
                             fontWeight: 700,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
@@ -2021,7 +2021,7 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 9,
+                            fontSize: 10,
                             fontWeight: 700,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
@@ -2055,7 +2055,7 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 9,
+                            fontSize: 10,
                             fontWeight: 700,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
@@ -2399,7 +2399,7 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 9,
+                            fontSize: 10,
                             fontWeight: 700,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
@@ -2431,7 +2431,7 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 9,
+                            fontSize: 10,
                             fontWeight: 700,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
@@ -2464,7 +2464,7 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 9,
+                            fontSize: 10,
                             fontWeight: 700,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
@@ -2497,7 +2497,7 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 9,
+                            fontSize: 10,
                             fontWeight: 700,
                             color: "rgba(255,255,255,0.6)",
                             letterSpacing: "0.08em",
@@ -2532,7 +2532,7 @@ function NotificationsPage() {
                     >
                       <div
                         style={{
-                          fontSize: 9,
+                          fontSize: 10,
                           fontWeight: 700,
                           color: "rgba(255,255,255,0.6)",
                           letterSpacing: "0.08em",
@@ -2850,7 +2850,7 @@ function NotificationsPage() {
                               display: "flex",
                               alignItems: "center",
                               gap: 4,
-                              fontSize: 9,
+                              fontSize: 10,
                               fontWeight: 700,
                               color: "#9CA3AF",
                               letterSpacing: 0.08,
@@ -2884,7 +2884,7 @@ function NotificationsPage() {
                         >
                           <div
                             style={{
-                              fontSize: 9,
+                              fontSize: 10,
                               fontWeight: 700,
                               color: "#9CA3AF",
                               letterSpacing: 0.08,
@@ -2917,7 +2917,7 @@ function NotificationsPage() {
                         >
                           <div
                             style={{
-                              fontSize: 9,
+                              fontSize: 10,
                               fontWeight: 700,
                               color: "#9CA3AF",
                               letterSpacing: 0.08,
@@ -2950,7 +2950,7 @@ function NotificationsPage() {
                         >
                           <div
                             style={{
-                              fontSize: 9,
+                              fontSize: 10,
                               fontWeight: 700,
                               color: "#9CA3AF",
                               letterSpacing: 0.08,
@@ -2983,7 +2983,7 @@ function NotificationsPage() {
                         >
                           <div
                             style={{
-                              fontSize: 9,
+                              fontSize: 10,
                               fontWeight: 700,
                               color: "#9CA3AF",
                               letterSpacing: 0.08,
@@ -3019,7 +3019,7 @@ function NotificationsPage() {
                         >
                           <div
                             style={{
-                              fontSize: 9,
+                              fontSize: 10,
                               fontWeight: 700,
                               color: "#15803D",
                               letterSpacing: 0.08,
@@ -3054,7 +3054,7 @@ function NotificationsPage() {
                       >
                         <div
                           style={{
-                            fontSize: 9,
+                            fontSize: 10,
                             fontWeight: 700,
                             color: "#9CA3AF",
                             letterSpacing: 0.08,
@@ -3713,7 +3713,7 @@ function NotificationsPage() {
                       <div>
                         <div
                           style={{
-                            fontSize: 9,
+                            fontSize: 10,
                             fontWeight: 700,
                             color: "rgba(255,255,255,0.5)",
                             letterSpacing: "0.08em",

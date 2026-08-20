@@ -236,7 +236,7 @@ function JobCard({
           gap: 12,
         }}
       >
-        <div style={{ fontSize: 12.5, fontWeight: 500, color: "#8A8A8E", ...POPPINS }}>
+        <div style={{ fontSize: 12.5, fontWeight: 500, color: "#9CA3AF", ...POPPINS }}>
           {variant === "claimed"
             ? `Job accepted · ${job.claimed_at ? relTime(job.claimed_at) : "—"}`
             : `Job offer · Posted ${relTime(job.created_at)}`}
@@ -273,7 +273,7 @@ function JobCard({
           style={{
             fontSize: 13.5,
             fontWeight: 500,
-            color: "#8A8A8E",
+            color: "#9CA3AF",
             lineHeight: 1.5,
             marginBottom: variant === "claimed" ? 14 : 0,
             ...POPPINS,
@@ -578,7 +578,7 @@ function JobsPage() {
               );
             })}
           </div>
-          <div style={{ fontSize: 13, fontWeight: 500, color: "#8A8A8E", ...POPPINS }}>
+          <div style={{ fontSize: 13, fontWeight: 500, color: "#9CA3AF", ...POPPINS }}>
             {activeTab === "open" ? `${jobs?.length ?? 0} open` : `${claimedJobs?.length ?? 0} claimed`}
           </div>
         </div>

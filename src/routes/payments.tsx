@@ -432,7 +432,7 @@ function PaymentsPage() {
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
               <div style={{ fontSize: 15.5, fontWeight: 800, color: "#000", ...POPPINS }}>Paid vs outstanding</div>
-              <div style={{ fontSize: 12.5, fontWeight: 600, color: "#8A8A8E", textAlign: "right", ...POPPINS }}>
+              <div style={{ fontSize: 12.5, fontWeight: 600, color: "#9CA3AF", textAlign: "right", ...POPPINS }}>
                 {paidBreakdown.paidPercent >= 1
                   ? "Fully collected"
                   : paidBreakdown.paidPercent > 0
@@ -461,15 +461,15 @@ function PaymentsPage() {
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
               <div>
-                <div style={{ fontSize: 11.5, fontWeight: 600, color: "#8A8A8E", marginBottom: 3, ...POPPINS }}>Total due</div>
+                <div style={{ fontSize: 11.5, fontWeight: 600, color: "#9CA3AF", marginBottom: 3, ...POPPINS }}>Total due</div>
                 <div style={{ fontSize: 16, fontWeight: 800, color: "#000", ...POPPINS }}>{formatGBP(paidBreakdown.totalDue)}</div>
               </div>
               <div>
-                <div style={{ fontSize: 11.5, fontWeight: 600, color: "#8A8A8E", marginBottom: 3, ...POPPINS }}>Paid</div>
+                <div style={{ fontSize: 11.5, fontWeight: 600, color: "#9CA3AF", marginBottom: 3, ...POPPINS }}>Paid</div>
                 <div style={{ fontSize: 16, fontWeight: 800, color: "#1A9B5C", ...POPPINS }}>{formatGBP(paidBreakdown.totalPaid)}</div>
               </div>
               <div>
-                <div style={{ fontSize: 11.5, fontWeight: 600, color: "#8A8A8E", marginBottom: 3, ...POPPINS }}>Outstanding</div>
+                <div style={{ fontSize: 11.5, fontWeight: 600, color: "#9CA3AF", marginBottom: 3, ...POPPINS }}>Outstanding</div>
                 <div style={{ fontSize: 16, fontWeight: 800, color: "#FF3B30", ...POPPINS }}>{formatGBP(paidBreakdown.outstanding)}</div>
               </div>
             </div>
@@ -597,7 +597,7 @@ function PaymentsPage() {
           groups.map((g) => (
             <div key={g.label + g.rows[0].id}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", marginBottom: 8 }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#8A8A8E', textTransform: 'uppercase', letterSpacing: '0.4px', ...POPPINS }}>{g.label}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.4px', ...POPPINS }}>{g.label}</div>
                 <div style={{ fontSize: 13, fontWeight: 800, color: "#000", ...POPPINS }}>{formatGBP(g.total)}</div>
               </div>
 
@@ -669,7 +669,7 @@ function PaymentsPage() {
                           >
                             {displayPupilName(row.pupils?.name) || "Unknown pupil"}
                           </div>
-                          <div style={{ fontSize: 12.5, fontWeight: 500, color: "#8A8A8E", marginTop: 2, ...POPPINS }}>
+                          <div style={{ fontSize: 12.5, fontWeight: 500, color: "#9CA3AF", marginTop: 2, ...POPPINS }}>
                             {methodLabel(isRefund ? "refund" : row.payment_method)} · {formatTime(row.created_at)}
                           </div>
                         </button>
@@ -780,7 +780,7 @@ function StatTile({ label, value, color, first = true }: { label: string; value:
         style={{
           fontSize: 10,
           fontWeight: 700,
-          color: "#8A8A8E",
+          color: "#9CA3AF",
           textTransform: "uppercase",
           letterSpacing: "0.3px",
           whiteSpace: "nowrap",
@@ -790,7 +790,7 @@ function StatTile({ label, value, color, first = true }: { label: string; value:
       >
         {label}
       </div>
-      <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.6px", marginTop: 6, color, ...POPPINS }}>{value}</div>
+      <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.6px", marginTop: 6, color, ...POPPINS }}>{value}</div>
     </div>
   );
 }
