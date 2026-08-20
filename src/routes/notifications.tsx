@@ -743,7 +743,31 @@ function NotificationsPage() {
 
 
       <div className="px-4">
-        {items === null ? null : items.length === 0 ? (
+        {items === null ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: "0 12px" }}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 12,
+                  padding: "13px 16px",
+                  background: "#FFFFFF",
+                  borderRadius: 8,
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                }}
+              >
+                <DSMSkeleton width={36} height={36} borderRadius={18} />
+                <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+                  <DSMSkeleton width="55%" height={14} borderRadius={6} />
+                  <DSMSkeleton width="80%" height={12} borderRadius={6} />
+                </div>
+                <DSMSkeleton width={34} height={10} borderRadius={5} />
+              </div>
+            ))}
+          </div>
+        ) : items.length === 0 ? (
           <EmptyState
             icon={<IconBell size={32} color="#9CA3AF" stroke={1.5} />}
             title="All caught up"

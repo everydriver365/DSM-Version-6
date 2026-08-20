@@ -561,7 +561,32 @@ function PaymentsPage() {
       {/* History */}
       <div>
         {loading ? (
-          <div style={{ fontSize: 13, textAlign: "center", padding: "32px 0", color: "#B0BAC9" }}>Loading…</div>
+          <div style={{ padding: "0 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: 16,
+                  background: "#fff",
+                  borderRadius: 8,
+                  boxShadow: "0 4px 0 #E4E4E8",
+                }}
+              >
+                <DSMSkeleton width={44} height={44} borderRadius={22} />
+                <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+                  <DSMSkeleton width="55%" height={14} borderRadius={6} />
+                  <DSMSkeleton width="35%" height={12} borderRadius={6} />
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+                  <DSMSkeleton width={64} height={16} borderRadius={6} />
+                  <DSMSkeleton width={48} height={20} borderRadius={10} />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : groups.length === 0 ? (
           <EmptyState
             icon={<IconCurrencyPound size={32} color="#9CA3AF" stroke={1.5} />}

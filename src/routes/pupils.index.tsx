@@ -1074,7 +1074,29 @@ function PupilsIndexPage() {
       {/* List */}
       <div>
         {filtered === null ? (
-          <SkeletonCard rows={5} />
+          <div style={{ padding: "0 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: 14,
+                  background: "#fff",
+                  borderRadius: 8,
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                }}
+              >
+                <DSMSkeleton width={44} height={44} borderRadius={22} />
+                <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+                  <DSMSkeleton width="60%" height={14} borderRadius={6} />
+                  <DSMSkeleton width="40%" height={12} borderRadius={6} />
+                </div>
+                <DSMSkeleton width={56} height={24} borderRadius={12} />
+              </div>
+            ))}
+          </div>
         ) : filtered.length === 0 ? (
           (() => {
             const emptyConfig: Record<StatusKey, { title: string; description: string; action?: ReactNode }> = {
