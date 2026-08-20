@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { IconChevronRight, IconMapPin, IconPlus, IconSchool } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { PupilAvatar } from "@/components/PupilAvatar";
 import { supabase } from "../lib/supabaseClient";
 
@@ -203,19 +203,8 @@ function CoursesPage() {
 
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="My courses"
-        unreadCount={unreadCount}
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Courses">
+      <div style={{ ...POPPINS }}>
 
       {/* Action bar */}
       <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 16px" }}>
@@ -636,7 +625,8 @@ function CourseCard({
           View bookings
         </button>
       </div>
-    </div>
+      </div>
+    </DSMTopSheet>
   );
 }
 
