@@ -115,6 +115,7 @@ export default function DSMTopSheet({
       </header>
 
       <div
+        className="page-enter"
         style={{
           position: "relative",
           zIndex: 1,
