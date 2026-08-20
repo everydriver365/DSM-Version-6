@@ -170,6 +170,8 @@ function PupilsIndexPage() {
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [archiveTarget, setArchiveTarget] = useState<{ id: string; name: string } | null>(null);
+  const [swipedId, setSwipedId] = useState<string | null>(null);
+  const touchStartX = useRef(0);
   const [unreadMap, setUnreadMap] = useState<Record<string, number>>({});
   const [nextLessonMap, setNextLessonMap] = useState<Record<string, string>>({});
   const [testDateMap, setTestDateMap] = useState<Record<string, string>>({});
