@@ -1445,7 +1445,7 @@ function PupilDetailPage() {
                 </h1>
                 <span
                   className="shrink-0"
-                  style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", padding: "2px 8px", borderRadius: 999, background: badge.bg, color: badge.fg, ...POPPINS }}
+                  style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", padding: "2px 8px", borderRadius: 999, background: badge.bg, color: "#FFFFFF", ...POPPINS }}
                 >
                   {badge.label}
                 </span>
