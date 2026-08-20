@@ -119,7 +119,7 @@ const STATUS_META: Record<
   { label: string; bg: string; color: string; Icon: typeof IconMail }
 > = {
   new: { label: "New", bg: "#EFF6FF", color: "#1877D6", Icon: IconMail },
-  contacted: { label: "Contacted", bg: "#FFF7E6", color: "#B45309", Icon: IconPhone },
+  contacted: { label: "Contacted", bg: "#FFF7E6", color: "#D68A1B", Icon: IconPhone },
   accepted: { label: "Accepted", bg: "#DCFCE7", color: "#15803D", Icon: IconCheck },
   declined: { label: "Declined", bg: "#FCE9E9", color: "#CC2229", Icon: IconX },
   on_jobs: { label: "On jobs board", bg: "#EEF2F7", color: "#0B1F3A", Icon: IconBriefcase },
@@ -140,7 +140,7 @@ const SECTION_HEADER: React.CSSProperties = {
   fontSize: 12,
   fontWeight: 700,
   letterSpacing: "0.5px",
-  color: "#8A8A8E",
+  color: "#9CA3AF",
   textTransform: "uppercase",
   margin: "18px 4px 8px",
   ...POPPINS,
@@ -559,7 +559,7 @@ function EnquiriesPage() {
             width: 42,
             height: 42,
             borderRadius: 8,
-            background: "#E7F1FC",
+            background: "#EFF6FF",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -632,7 +632,7 @@ function EnquiriesPage() {
               ...POPPINS,
             }}
           >
-            <span style={{ color: "#B0B0B5", fontSize: 12, fontWeight: 500 }}>
+            <span style={{ color: "#9CA3AF", fontSize: 12, fontWeight: 500 }}>
               {timeAgo(enquiry.created_at)}
             </span>
             {enquiry.phone && (
@@ -641,7 +641,7 @@ function EnquiriesPage() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 5,
-                  background: "#E7F1FC",
+                  background: "#EFF6FF",
                   color: "#1877D6",
                   borderRadius: 8,
                   padding: "6px 12px",
@@ -795,7 +795,7 @@ function EnquiriesPage() {
           style={{
             marginLeft: "auto",
             fontSize: 14,
-            color: "#6B7280",
+            color: "#6B7686",
             ...POPPINS,
             maxWidth: "55%",
             textAlign: "right",
@@ -898,7 +898,7 @@ function EnquiriesPage() {
             <div
               style={{
                 marginTop: 2,
-                color: "#8A8A8E",
+                color: "#9CA3AF",
                 fontSize: 11.5,
                 fontWeight: 500,
                 lineHeight: 1.35,
@@ -914,7 +914,7 @@ function EnquiriesPage() {
           )}
         </div>
         {value && (
-          <span style={{ fontSize: 12, color: "#8A8A8E", flexShrink: 0, ...POPPINS }}>{value}</span>
+          <span style={{ fontSize: 12, color: "#9CA3AF", flexShrink: 0, ...POPPINS }}>{value}</span>
         )}
         {(onClick || href) && (
           <span
@@ -984,7 +984,7 @@ function EnquiriesPage() {
     return (
       <div
         className="fixed inset-0 z-[3000] overflow-y-auto"
-        style={{ background: "#F3F8FF", animation: "dsmSlideUp 0.24s ease-out" }}
+        style={{ background: "#EFF6FF", animation: "dsmSlideUp 0.24s ease-out" }}
       >
         <div
           style={{
@@ -1090,7 +1090,7 @@ function EnquiriesPage() {
                     {banner.text}
                   </span>
                 </div>
-                <span style={{ color: "#8A8A8E", fontSize: 12, fontWeight: 500, ...POPPINS }}>
+                <span style={{ color: "#9CA3AF", fontSize: 12, fontWeight: 500, ...POPPINS }}>
                   {timeAgo(lastChange)}
                 </span>
               </div>
@@ -1137,7 +1137,7 @@ function EnquiriesPage() {
                     borderTop: i === 0 ? "none" : "1px solid #F0F0F2",
                   }}
                 >
-                  <span style={{ color: "#8A8A8E", fontSize: 13, fontWeight: 600, ...POPPINS }}>
+                  <span style={{ color: "#9CA3AF", fontSize: 13, fontWeight: 600, ...POPPINS }}>
                     {r.label}
                   </span>
                   <span
@@ -1159,7 +1159,7 @@ function EnquiriesPage() {
               <div style={{ marginTop: 14 }}>
                 <div
                   style={{
-                    color: "#8A8A8E",
+                    color: "#9CA3AF",
                     fontSize: 11,
                     fontWeight: 700,
                     letterSpacing: "0.3px",
@@ -1248,7 +1248,7 @@ function EnquiriesPage() {
                       >
                         {m.text}
                       </div>
-                      <div style={{ marginTop: 3, fontSize: 10, color: "#B0B0B5", ...POPPINS }}>
+                      <div style={{ marginTop: 3, fontSize: 10, color: "#9CA3AF", ...POPPINS }}>
                         {m.outgoing ? "You" : (enquiry.name ?? "Reply")} · {timeAgo(m.at)}
                       </div>
                     </div>
@@ -1319,7 +1319,7 @@ function EnquiriesPage() {
                 });
 
               const metaFor = (it: Item) => {
-                if (it.pending) return { label: "Pending", color: "#B0B0B5", dot: "#D1D1D6" };
+                if (it.pending) return { label: "Pending", color: "#9CA3AF", dot: "#D1D1D6" };
                 switch (it.type) {
                   case "note":
                     return { label: "Note", color: "#D68A1B", dot: "#D68A1B" };
@@ -1330,7 +1330,7 @@ function EnquiriesPage() {
                   case "received":
                     return { label: "Enquiry", color: "#1877D6", dot: "#1877D6" };
                   default:
-                    return { label: "Activity", color: "#8A8A8E", dot: "#B0B0B5" };
+                    return { label: "Activity", color: "#9CA3AF", dot: "#B0B0B5" };
                 }
               };
 
@@ -1377,7 +1377,7 @@ function EnquiriesPage() {
                           {label}
                         </span>
                         <span
-                          style={{ fontSize: 11, color: "#B0B0B5", flexShrink: 0, ...POPPINS }}
+                          style={{ fontSize: 11, color: "#9CA3AF", flexShrink: 0, ...POPPINS }}
                         >
                           {it.at ? timeAgo(it.at) : ""}
                         </span>
@@ -1489,7 +1489,7 @@ function EnquiriesPage() {
                         className="active:opacity-70"
                         style={{
                           flex: 1,
-                          background: "#F2F2F7",
+                          background: "#EEF2F7",
                           color: "#0B1F3A",
                           border: "none",
                           borderRadius: 8,
@@ -1655,7 +1655,7 @@ function EnquiriesPage() {
 
   return (
     <DSMTopSheet title="Enquiries">
-    <div {...pullToRefreshProps} style={{ minHeight: "100%", background: "#F3F8FF", paddingBottom: 90 }}>
+    <div {...pullToRefreshProps} style={{ minHeight: "100%", background: "#EFF6FF", paddingBottom: 90 }}>
 
       <div style={{ padding: "4px 16px 24px" }}>
         {loading ? (

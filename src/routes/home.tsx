@@ -279,12 +279,12 @@ function NextLessonMap({
     >
       <div ref={ref} style={{ position: 'absolute', inset: 0 }} />
       {!ready && !error && (
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#6B7280' }}>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#6B7686' }}>
           Loading map…
         </div>
       )}
       {error && (
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#6B7280' }}>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#6B7686' }}>
           Map unavailable
         </div>
       )}
@@ -676,7 +676,7 @@ function TodayLessonsTile({
           width: 36,
           height: 36,
           borderRadius: 8,
-          background: "#E6F1FB",
+          background: "#EFF6FF",
           color: "#1877D6",
           display: "flex",
           alignItems: "center",
@@ -860,7 +860,7 @@ function SwipeableStatsCard({
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 15, fontWeight: 600, color: "#12142B" }}>{s.title}</div>
             <div style={{ fontSize: 12, color: "#8A94A6", marginTop: 1 }}>{s.subtitleTop}</div>
-          <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 2 }}>{s.subtitleBottom}</div>
+          <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>{s.subtitleBottom}</div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0 }}>
           {s.right.kind === "circle" ? (
@@ -883,7 +883,7 @@ function SwipeableStatsCard({
           ) : (
             <>
               <div style={{ fontSize: 20, fontWeight: 700, color: "#1877D6", lineHeight: 1 }}>{s.right.value}</div>
-              {s.right.label && <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 2 }}>{s.right.label}</div>}
+              {s.right.label && <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>{s.right.label}</div>}
             </>
           )}
         </div>
@@ -1093,7 +1093,7 @@ function TileCard({
         style={{
           fontSize: 12,
           fontWeight: 500,
-          color: "#8A93A3",
+          color: "#9CA3AF",
           overflow: "hidden",
           textOverflow: "ellipsis",
           maxWidth: "calc(100% - 56px)",
@@ -1179,7 +1179,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
       }}
     >
       {t.badge ? (
-        <span style={{ position: 'absolute', top: 5, right: 5, fontSize: 9, fontWeight: 700, background: '#CC2229', color: '#fff', borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{t.badge}</span>
+        <span style={{ position: 'absolute', top: 5, right: 5, fontSize: 10, fontWeight: 700, background: '#CC2229', color: '#fff', borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{t.badge}</span>
       ) : null}
       <span
         style={{
@@ -1285,7 +1285,7 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
         style={{ touchAction: 'pan-y' }}
       >
         {showFiltered && filtered.length === 0 ? (
-          <div style={{ textAlign: 'center', fontSize: 14, color: '#B0BAC9', padding: '24px 0' }}>
+          <div style={{ textAlign: 'center', fontSize: 14, color: '#9CA3AF', padding: '24px 0' }}>
             No actions found
           </div>
         ) : (
@@ -3717,7 +3717,7 @@ function HomePage() {
                 <span>{postcode ?? "No pickup set"}</span>
               </div>
             )}
-            <div style={{ fontSize: 13, color: "#6B7280" }}>
+            <div style={{ fontSize: 13, color: "#6B7686" }}>
               {isTestLesson(l) ? "Test day" : formatDuration(l.duration_minutes)}
             </div>
           </div>
@@ -4118,7 +4118,7 @@ function HomePage() {
             className="animate-spin rounded-full"
             style={{ width: 32, height: 32, border: '3px solid #EEF2F7', borderTopColor: '#1877D6' }}
           />
-          <div style={{ fontSize: 14, color: '#6B7280' }}>Checking access…</div>
+          <div style={{ fontSize: 14, color: '#6B7686' }}>Checking access…</div>
         </div>
       </div>
     );
@@ -4190,11 +4190,11 @@ function HomePage() {
       borderRadius: 8, padding: 16, boxShadow: '0 4px 0 #E4E4E8',
     };
     const statLabel: React.CSSProperties = {
-      fontSize: 12, fontWeight: 600, color: "#6B7280",
+      fontSize: 12, fontWeight: 600, color: "#6B7686",
       marginTop: 4, letterSpacing: 0.2,
     };
     const statValue: React.CSSProperties = {
-      fontSize: 28, fontWeight: 900, color: "#0B1F3A", letterSpacing: -0.5,
+      fontSize: 28, fontWeight: 800, color: "#0B1F3A", letterSpacing: -0.5,
     };
     const panelHeading: React.CSSProperties = {
       fontSize: 16, fontWeight: 800, color: "#0B1F3A", marginBottom: 12,
@@ -4228,10 +4228,10 @@ function HomePage() {
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
           {/* HEADER */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-            <h1 style={{ fontSize: 24, fontWeight: 900, color: "#0B1F3A", margin: 0, fontFamily: "Sora, sans-serif" }}>
+            <h1 style={{ fontSize: 24, fontWeight: 800, color: "#0B1F3A", margin: 0, fontFamily: "Sora, sans-serif" }}>
               Good morning, {firstName} 👋
             </h1>
-            <div style={{ fontSize: 14, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>
+            <div style={{ fontSize: 14, color: "#6B7686", fontFamily: "Poppins, sans-serif" }}>
               {dateHeader}
             </div>
           </div>
@@ -4273,7 +4273,7 @@ function HomePage() {
               <div style={cardStyle}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
                   <div style={panelHeading}>Today's schedule</div>
-                  <div style={{ fontSize: 12, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>{dateHeader}</div>
+                  <div style={{ fontSize: 12, color: "#6B7686", fontFamily: "Poppins, sans-serif" }}>{dateHeader}</div>
                 </div>
                 {todayLessons.length === 0 ? (
                   (() => {
@@ -4302,7 +4302,7 @@ function HomePage() {
                         <div style={{ height: 4, background: "linear-gradient(90deg, #00B5A5, #1877D6)" }} />
                         <div style={{ padding: 20 }}>
                           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-                            <div style={{ fontWeight: 900, fontSize: 18, color: "#0B1F3A" }}>📅 Free day today</div>
+                            <div style={{ fontWeight: 800, fontSize: 18, color: "#0B1F3A" }}>📅 Free day today</div>
                             <div style={{ fontSize: 13, color: "#9CA3AF" }}>{workingLabel}</div>
                           </div>
                           <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
@@ -4413,7 +4413,7 @@ function HomePage() {
                           >
                             <span style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{formatTime(l)}</span>
                             <span style={{ fontSize: 14, fontWeight: 600, color: past ? "#9CA3AF" : "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textDecoration: past ? 'line-through' : 'none' }}>{isEvent ? (l.event_title || "Event") : pupilName(l)}</span>
-                            <span style={{ fontSize: 12, color: "#6B7280" }}>{isEvent ? "Event" : formatDuration(l.duration_minutes)}</span>
+                            <span style={{ fontSize: 12, color: "#6B7686" }}>{isEvent ? "Event" : formatDuration(l.duration_minutes)}</span>
                             {!isEvent && (
                               <LessonPaymentBadge
                                 status={l.payment_status}
@@ -4425,10 +4425,10 @@ function HomePage() {
                             )}
 
                             {(past || l.status === 'completed') && (
-                              <span style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", padding: "2px 7px", borderRadius: 20, background: "#EEF2F7", color: "#9CA3AF" }}>Done</span>
+                              <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "2px 7px", borderRadius: 20, background: "#EEF2F7", color: "#9CA3AF" }}>Done</span>
                             )}
                             {now && (
-                              <span style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", padding: "2px 7px", borderRadius: 20, background: "#DCFCE7", color: "#15803D" }}>Now</span>
+                              <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", padding: "2px 7px", borderRadius: 20, background: "#DCFCE7", color: "#15803D" }}>Now</span>
                             )}
 
                             {eolDue && (
@@ -4440,7 +4440,7 @@ function HomePage() {
                                 style={{
                                   fontSize: 10, fontWeight: 700, textTransform: "uppercase",
                                   padding: "3px 8px", borderRadius: 8,
-                                  background: "#FEF3C7", color: "#B45309",
+                                  background: "#FEF3C7", color: "#D68A1B",
                                   cursor: "pointer",
                                 }}
                               >
@@ -4495,7 +4495,7 @@ function HomePage() {
                   <button onClick={() => navigate({ to: "/payments" })} style={viewAllLink}>View all →</button>
                 </div>
                 {outstandingBreakdown.length === 0 ? (
-                  <div style={{ fontSize: 13, color: "#6B7280", padding: "12px 0", fontFamily: "Poppins, sans-serif" }}>
+                  <div style={{ fontSize: 13, color: "#6B7686", padding: "12px 0", fontFamily: "Poppins, sans-serif" }}>
                     All pupils paid up.
                   </div>
                 ) : (
@@ -4511,7 +4511,7 @@ function HomePage() {
                       >
                         <div style={{ minWidth: 0 }}>
                           <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</div>
-                          <div style={{ fontSize: 11, color: "#6B7280" }}>{p.type}</div>
+                          <div style={{ fontSize: 11, color: "#6B7686" }}>{p.type}</div>
                         </div>
                         <div style={{ fontSize: 14, fontWeight: 800, color: "#CC2229" }}>£{p.amount.toFixed(2)}</div>
                         {p.phone ? (
@@ -4542,7 +4542,7 @@ function HomePage() {
                   <button onClick={() => navigate({ to: "/notifications" })} style={viewAllLink}>View all →</button>
                 </div>
                 {recentActivity.length === 0 ? (
-                  <div style={{ fontSize: 13, color: "#6B7280", padding: "12px 0", fontFamily: "Poppins, sans-serif" }}>
+                  <div style={{ fontSize: 13, color: "#6B7686", padding: "12px 0", fontFamily: "Poppins, sans-serif" }}>
                     No recent activity.
                   </div>
                 ) : (
@@ -4567,7 +4567,7 @@ function HomePage() {
                         <div style={{ minWidth: 0, flex: 1 }}>
                           <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A", lineHeight: 1.3 }}>{n.title}</div>
                           {n.body && (
-                            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
+                            <div style={{ fontSize: 12, color: "#6B7686", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
                               {n.body}
                             </div>
                           )}
@@ -4583,7 +4583,7 @@ function HomePage() {
               <div style={{ ...cardStyle, marginTop: 16 }}>
                 <div style={panelHeading}>Upcoming tests</div>
                 {upcomingTests30.length === 0 ? (
-                  <div style={{ fontSize: 13, color: "#6B7280", padding: "12px 0", fontFamily: "Poppins, sans-serif" }}>
+                  <div style={{ fontSize: 13, color: "#6B7686", padding: "12px 0", fontFamily: "Poppins, sans-serif" }}>
                     No tests in the next 30 days.
                   </div>
                 ) : (
@@ -4599,7 +4599,7 @@ function HomePage() {
                       >
                         <div style={{ minWidth: 0 }}>
                           <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.name}</div>
-                          <div style={{ fontSize: 12, color: "#6B7280" }}>
+                          <div style={{ fontSize: 12, color: "#6B7686" }}>
                             {new Date(t.test_date + "T00:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })}
                             {t.test_time ? ` · ${t.test_time.slice(0, 5)}` : ""}
                             {t.test_centre ? ` · ${t.test_centre}` : ""}
@@ -4711,7 +4711,7 @@ function HomePage() {
       >
         <div style={{ minWidth: 0 }}>
           <div style={{ fontSize: 18, fontWeight: 600, color: '#FFFFFF', lineHeight: 1.2 }}>Dashboard</div>
-          <div style={{ fontSize: 13, color: '#9AA6BC', marginTop: 4 }}>
+          <div style={{ fontSize: 13, color: '#9CA3AF', marginTop: 4 }}>
             Welcome back, {firstName || 'there'} 👋
           </div>
         </div>
@@ -4740,7 +4740,7 @@ function HomePage() {
         <div style={{ padding: '0 16px', marginTop: -22, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
         {[
           { label: 'Calls', value: String(naCalls), sub: 'Need callback', color: '#CC2229', route: '/messages' },
-          { label: "Jobs", value: String(naJobs), sub: 'Open', color: '#B5661E', route: '/jobs' },
+          { label: "Jobs", value: String(naJobs), sub: 'Open', color: '#D68A1B', route: '/jobs' },
           { label: "Enq's", value: String(naEnquiries), sub: 'New', color: '#1877D6', route: '/enquiries' },
         ].map((s) => (
           <button
@@ -4758,7 +4758,7 @@ function HomePage() {
             {s.label === 'Jobs' && claimedAwaitingPaymentCount > 0 ? (
               <div style={{ fontSize: 10, color: '#1877D6', marginTop: 4 }}>{claimedAwaitingPaymentCount} claimed</div>
             ) : s.label === 'Jobs' ? null : (
-              <div style={{ fontSize: 10, color: '#8A93A3', marginTop: 4 }}>{s.sub}</div>
+              <div style={{ fontSize: 10, color: '#9CA3AF', marginTop: 4 }}>{s.sub}</div>
             )}
           </button>
         ))}
@@ -4937,7 +4937,7 @@ function HomePage() {
 
           if (!upcoming) {
             return (
-              <div style={{ padding: '14px 12px 20px', textAlign: 'center', color: '#8A93A3', fontSize: 12, fontFamily: 'Poppins, sans-serif' }}>
+              <div style={{ padding: '14px 12px 20px', textAlign: 'center', color: '#9CA3AF', fontSize: 12, fontFamily: 'Poppins, sans-serif' }}>
                 No upcoming lessons
               </div>
             );
@@ -5188,7 +5188,7 @@ function HomePage() {
                       {upcomingSmsCount > 0 && (
                         <span style={{
                           minWidth: 14, height: 14, borderRadius: '50%', background: '#CC2229',
-                          color: '#FFFFFF', fontSize: 9, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
+                          color: '#FFFFFF', fontSize: 10, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           padding: '0 3px', boxSizing: 'border-box',
                         }}>
@@ -5198,7 +5198,7 @@ function HomePage() {
                       {upcomingAppCount > 0 && (
                         <span style={{
                           minWidth: 14, height: 14, borderRadius: '50%', background: '#1877D6',
-                          color: '#FFFFFF', fontSize: 9, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
+                          color: '#FFFFFF', fontSize: 10, fontWeight: 700, fontFamily: 'Poppins, sans-serif',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           padding: '0 3px', boxSizing: 'border-box',
                         }}>
@@ -5221,7 +5221,7 @@ function HomePage() {
                     height: 38,
                     borderRadius: 8,
                     border: 'none',
-                    background: '#F3F6FA',
+                    background: '#EEF2F7',
                     color: '#0B1F3A',
                     display: 'flex',
                     alignItems: 'center',
@@ -5249,8 +5249,8 @@ function HomePage() {
                     height: 38,
                     borderRadius: 8,
                     border: 'none',
-                    background: '#FEECEC',
-                    color: '#B3181F',
+                    background: '#FEE2E2',
+                    color: '#CC2229',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -5300,14 +5300,14 @@ function HomePage() {
                     </div>
                   )}
                   {isAdverseWeather && <div>⛅ {weatherCondition}</div>}
-                  {matchedAlert && <div style={{ fontSize: 'clamp(10px, 3vw, 11px)', lineHeight: 1.35, color: '#B45309' }}>⚠️ {(matchedAlert as any).description}</div>}
+                  {matchedAlert && <div style={{ fontSize: 'clamp(10px, 3vw, 11px)', lineHeight: 1.35, color: '#D68A1B' }}>⚠️ {(matchedAlert as any).description}</div>}
                 </div>
               )}
 
               {/* Late banner */}
               {isLate && (
                 <div style={{
-                  background: '#FEECEC', padding: '8px 12px',
+                  background: '#FEE2E2', padding: '8px 12px',
                   borderBottom: '1px solid #F5D5D5',
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
                 }}>
@@ -5352,7 +5352,7 @@ function HomePage() {
 
                   {driveData?.durationMinutes != null && (
                     <>
-                      <span style={{ color: '#C7CDD6', fontSize: 12 }}>·</span>
+                      <span style={{ color: '#9CA3AF', fontSize: 12 }}>·</span>
                       <span style={{ fontSize: 13, fontWeight: 600, color: '#1877D6' }}>
                         {driveData.durationMinutes} min
                       </span>
@@ -5375,7 +5375,7 @@ function HomePage() {
                       : '⛅';
                     return (
                       <>
-                        <span style={{ color: '#C7CDD6', fontSize: 12 }}>·</span>
+                        <span style={{ color: '#9CA3AF', fontSize: 12 }}>·</span>
                         {iconUrl ? (
                           <img
                             src={iconUrl}
@@ -5765,7 +5765,7 @@ function HomePage() {
             key: 'month',
             title: 'This month',
             subtitleTop: `${monthLessonsCompleted} lessons completed`,
-            subtitleBottom: <span style={{ color: '#B0BAC9' }}>— vs last month</span>,
+            subtitleBottom: <span style={{ color: '#9CA3AF' }}>— vs last month</span>,
             icon: <IconCurrencyPound stroke={1.5} size={20} />,
             right: { kind: 'value', value: `£${Math.round(monthEarnings)}`, label: 'earned' },
           },
@@ -5773,7 +5773,7 @@ function HomePage() {
             key: 'ytd',
             title: 'Year to date',
             subtitleTop: `${ytdLessonsCompleted} lessons completed`,
-            subtitleBottom: <span style={{ color: '#B0BAC9' }}>— vs last year</span>,
+            subtitleBottom: <span style={{ color: '#9CA3AF' }}>— vs last year</span>,
             icon: <IconChartBar stroke={1.5} size={20} />,
             right: { kind: 'value', value: `£${Math.round(ytdEarnings)}`, label: 'earned' },
           },
@@ -5805,7 +5805,7 @@ function HomePage() {
                   <div
                     style={{
                       marginTop: 16,
-                      background: '#FFFBEB',
+                      background: '#FEF3C7',
                       border: '0.5px solid #D97706',
                       borderLeft: '4px solid #D97706',
                       borderRadius: 8,
@@ -5824,7 +5824,7 @@ function HomePage() {
                       <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {pupilName} cancelled their lesson
                       </div>
-                      <div style={{ fontSize: 12, color: '#92400E', marginTop: 1 }}>
+                      <div style={{ fontSize: 12, color: '#D68A1B', marginTop: 1 }}>
                         {freedSlot.lesson_date} at {time} — {duration} min slot now free
                       </div>
                     </div>
@@ -5956,7 +5956,7 @@ function HomePage() {
                           <IconBolt size={22} color="#FFFFFF" stroke={2} />
                         </div>
                         <div style={{ fontSize: 15, fontWeight: 600, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>Your day is wide open</div>
-                        <div style={{ fontSize: 13, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>{hours} hours free {dayLabel} — fill a gap before it goes to waste.</div>
+                        <div style={{ fontSize: 13, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>{hours} hours free {dayLabel} — fill a gap before it goes to waste.</div>
                         <button
                           type="button"
                           onClick={() => navigate({ to: '/gaps' })}
@@ -6124,7 +6124,7 @@ function HomePage() {
                               <div style={{ fontSize: 22, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.1 }}>
                                 {fmtT(gs)}
                               </div>
-                              <div style={{ fontSize: 12, fontWeight: 500, color: '#8A93A3', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
+                              <div style={{ fontSize: 12, fontWeight: 500, color: '#9CA3AF', marginTop: 2, fontVariantNumeric: 'tabular-nums' }}>
                                 {durLabel}
                               </div>
                             </div>
@@ -6267,7 +6267,7 @@ function HomePage() {
                             <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
                               {fmtT(cs)}
                             </div>
-                            <div style={{ fontSize: 11.5, fontWeight: 500, color: '#8A93A3', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
+                            <div style={{ fontSize: 11.5, fontWeight: 500, color: '#9CA3AF', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
                               {durLabel}
                             </div>
                           </div>
@@ -6428,7 +6428,7 @@ function HomePage() {
                                     alignItems: 'center',
                                     background: 'rgba(255,255,255,0.2)',
                                     color: '#fff',
-                                    fontSize: 9,
+                                    fontSize: 10,
                                     fontWeight: 800,
                                     borderRadius: 999,
                                     padding: '2px 8px',
@@ -6515,7 +6515,7 @@ function HomePage() {
                               <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, textDecoration: isCancelled ? 'line-through' : 'none' }}>
                                 {timeLabel}
                               </div>
-                              <div style={{ fontSize: 11.5, fontWeight: 500, color: '#8A93A3', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
+                              <div style={{ fontSize: 11.5, fontWeight: 500, color: '#9CA3AF', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
                                 {durLabel}
                               </div>
                             </div>
@@ -6544,7 +6544,7 @@ function HomePage() {
                                     letterSpacing: 0.4,
                                     textTransform: 'uppercase',
                                     color: '#CC2229',
-                                    background: '#FCE9E9',
+                                    background: '#FEE2E2',
                                     padding: '2px 8px',
                                     borderRadius: 999,
                                     lineHeight: 1.4,
@@ -6582,7 +6582,7 @@ function HomePage() {
                                           {pickupLabel}
                                         </span>
                                         {custom && (
-                                          <span style={{ fontSize: 9, fontWeight: 700, color: '#92400E', flexShrink: 0 }}>
+                                          <span style={{ fontSize: 10, fontWeight: 700, color: '#D68A1B', flexShrink: 0 }}>
                                             {isTestDayRow ? 'TEST CENTRE' : 'CUSTOM'}
                                           </span>
                                         )}
@@ -6630,7 +6630,7 @@ function HomePage() {
                            return (
                              <div
                                style={{
-                                 background: '#FFFBEB',
+                                 background: '#FEF3C7',
                                  border: '1px solid #FDE68A',
                                  borderRadius: 8,
                                  padding: '6px 10px',
@@ -6641,7 +6641,7 @@ function HomePage() {
                                }}
                              >
                                <IconClockExclamation size={13} stroke={1.9} color="#92400E" style={{ flexShrink: 0 }} />
-                               <span style={{ fontSize: 11, fontWeight: 600, color: '#92400E', fontFamily: PF }}>
+                               <span style={{ fontSize: 11, fontWeight: 600, color: '#D68A1B', fontFamily: PF }}>
                                  End of lesson not completed
                                </span>
                                <button
@@ -7243,7 +7243,7 @@ function HomePage() {
                         style={{ background: '#FFFFFF', borderRadius: '8px 8px 0 0', padding: 20, width: '100%' }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                          <div style={{ width: 36, height: 36, borderRadius: 8, background: '#FBE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <div style={{ width: 36, height: 36, borderRadius: 8, background: '#FEE2E2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <IconClock stroke={1.5} size={20} color="#C23B3B" />
                           </div>
                           <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Running late</div>
@@ -7464,7 +7464,7 @@ function HomePage() {
                           ) : (
                             <>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                                <div style={{ width: 36, height: 36, borderRadius: 8, background: '#E6F1FB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{ width: 36, height: 36, borderRadius: 8, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                   <IconMapPin size={20} color="#1877D6" stroke={1.8} />
                                 </div>
                                 <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>Find nearby</div>
@@ -7682,7 +7682,7 @@ function HomePage() {
             <span style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
               minWidth: 16, height: 16, borderRadius: 8, background: colour,
-              color: '#FFFFFF', fontSize: 9, fontWeight: 700, fontFamily: PF_C,
+              color: '#FFFFFF', fontSize: 10, fontWeight: 700, fontFamily: PF_C,
               padding: '0 3px', marginLeft: 2,
             }}>
               {value}
@@ -7972,7 +7972,7 @@ function HomePage() {
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           {visibleAvatars.length === 0 ? (
                             <div style={{
-                              width: 32, height: 32, borderRadius: '50%', background: '#E6F1FB',
+                              width: 32, height: 32, borderRadius: '50%', background: '#EFF6FF',
                               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                             }}>
                               <IconUsers stroke={1.5} size={16} color="#1877D6" />
@@ -8003,7 +8003,7 @@ function HomePage() {
                                       key={key}
                                       style={{
                                         ...stackStyle,
-                                        background: '#FCE9E9',
+                                        background: '#FEE2E2',
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       }}
                                     >
@@ -8017,7 +8017,7 @@ function HomePage() {
                                       key={key}
                                       style={{
                                         ...stackStyle,
-                                        background: '#FDF0E3',
+                                        background: '#FEF3C7',
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       }}
                                     >
@@ -8045,7 +8045,7 @@ function HomePage() {
                                   width: 28, height: 28, borderRadius: '50%', background: '#E4E8EF',
                                   border: '2px solid #fff', marginLeft: -10, zIndex: visibleAvatars.length + 1,
                                   position: 'relative', flexShrink: 0,
-                                  fontSize: 9, fontWeight: 600, color: '#6B7686',
+                                  fontSize: 10, fontWeight: 600, color: '#6B7686',
                                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 }}>
                                   +{extraAvatarCount}
@@ -8108,7 +8108,7 @@ function HomePage() {
                     <div onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })} style={rowBase}>
                       <div style={{ position: 'relative', flexShrink: 0 }}>
                         <div style={{
-                          width: 36, height: 36, borderRadius: '50%', background: '#FCE9E9',
+                          width: 36, height: 36, borderRadius: '50%', background: '#FEE2E2',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>
                           <IconAlertTriangle stroke={1.5} size={18} color={RED_C} />
@@ -8116,7 +8116,7 @@ function HomePage() {
                         <span style={{
                           position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
                           borderRadius: 999, background: RED_C, color: '#FFFFFF',
-                          fontSize: 9, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
+                          fontSize: 10, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>
                           {alerts.length}
@@ -8192,7 +8192,7 @@ function HomePage() {
                           <span style={{
                             position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
                             borderRadius: 999, background: '#7C3AED', color: '#FFFFFF',
-                            fontSize: 9, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
+                            fontSize: 10, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                           }}>
                             {unreadChat}
@@ -8237,7 +8237,7 @@ function HomePage() {
                           <span style={{
                             position: 'absolute', top: -2, right: -4, minWidth: 16, height: 16,
                             borderRadius: 999, background: '#7C3AED', color: '#FFFFFF',
-                            fontSize: 9, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
+                            fontSize: 10, fontWeight: 700, fontFamily: PF_C, padding: '0 4px',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                           }}>
                             {room.unread}
@@ -8264,7 +8264,7 @@ function HomePage() {
                     <div style={{ marginTop: 12 }}>
                       {/* Section header */}
                       <div style={{
-                        fontSize: 9, fontWeight: 700,
+                        fontSize: 10, fontWeight: 700,
                         color: '#9CA3AF',
                         textTransform: 'uppercase',
                         letterSpacing: '0.06em',
@@ -8359,7 +8359,7 @@ function HomePage() {
                                   {other?.name ?? 'DSM Instructor'}
                                 </span>
                                 <span style={{
-                                  background: '#E6F1FB',
+                                  background: '#EFF6FF',
                                   color: '#1877D6',
                                   fontSize: 8, fontWeight: 700,
                                   padding: '1px 5px',
@@ -8736,7 +8736,7 @@ function HomePage() {
                 border: '1px solid #E4E8EF', borderRadius: 8, padding: '14px 14px', background: '#fff',
               }}
             >
-              <span style={{ width: 38, height: 38, borderRadius: 8, background: '#FBF1DA', display: 'grid', placeItems: 'center' }}>
+              <span style={{ width: 38, height: 38, borderRadius: 8, background: '#FEF3C7', display: 'grid', placeItems: 'center' }}>
                 <IconCalendar size={19} stroke={1.8} color="#B8860B" />
               </span>
               <span>
@@ -8835,11 +8835,11 @@ function HomePage() {
           }
         >
           {lessonMsgsLoading ? (
-            <div style={{ padding: '18px 4px', textAlign: 'center', color: '#8A93A3', fontSize: 13, fontFamily: 'Poppins, sans-serif' }}>
+            <div style={{ padding: '18px 4px', textAlign: 'center', color: '#9CA3AF', fontSize: 13, fontFamily: 'Poppins, sans-serif' }}>
               Loading messages…
             </div>
           ) : lessonMsgs.length === 0 ? (
-            <div style={{ padding: '18px 4px', textAlign: 'center', color: '#8A93A3', fontSize: 13, fontFamily: 'Poppins, sans-serif' }}>
+            <div style={{ padding: '18px 4px', textAlign: 'center', color: '#9CA3AF', fontSize: 13, fontFamily: 'Poppins, sans-serif' }}>
               No messages yet with {lessonMsgsPupil.name}.
             </div>
           ) : (
@@ -8880,7 +8880,7 @@ function HomePage() {
                       {unread && (
                         <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#CC2229' }} />
                       )}
-                      <span style={{ marginLeft: 'auto', fontSize: 11, color: '#8A93A3', fontFamily: 'Poppins, sans-serif' }}>
+                      <span style={{ marginLeft: 'auto', fontSize: 11, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>
                         {when.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                         {' · '}
                         {when.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
@@ -9197,7 +9197,7 @@ function HomePage() {
                 type="button"
                 onClick={() => setBirthdaySheetOpen(false)}
                 className="w-full rounded-lg py-2.5 text-[13px] font-semibold"
-                style={{ background: '#F3F4F6', color: '#6B7280', border: 'none', cursor: 'pointer' }}
+                style={{ background: '#EEF2F7', color: '#6B7686', border: 'none', cursor: 'pointer' }}
               >
                 ✓ Done
               </button>
@@ -9247,7 +9247,7 @@ function HeroExpandedPanel({
   };
 
   const pillBase: React.CSSProperties = {
-    background: '#F2F2F7',
+    background: '#EEF2F7',
     border: 'none',
     borderRadius: 8,
     padding: '8px 4px',
@@ -9266,7 +9266,7 @@ function HeroExpandedPanel({
   const sectionLabel: React.CSSProperties = {
     fontSize: 11,
     fontWeight: 600,
-    color: '#8E8E93',
+    color: '#9CA3AF',
     textTransform: 'uppercase',
     letterSpacing: 0.2,
     marginBottom: 6,
@@ -9399,7 +9399,7 @@ function HeroExpandedPanel({
   };
 
   const gridBtn: React.CSSProperties = {
-    background: '#F5F7FA',
+    background: '#EEF2F7',
     border: '1px solid #E2E8F0',
     borderRadius: 8,
     padding: '10px 4px',
@@ -9416,7 +9416,7 @@ function HeroExpandedPanel({
   };
   const gridBtnDanger: React.CSSProperties = {
     ...gridBtn,
-    background: '#FCE9E9',
+    background: '#FEE2E2',
     border: '1px solid #F5CBCB',
     color: '#CC2229',
   };
@@ -9439,7 +9439,7 @@ function HeroExpandedPanel({
     badText: string,
   ) => {
     if (state === 'checking') {
-      return <div style={{ marginTop: 6, fontSize: 11, color: '#8E8E93', fontFamily: 'Poppins, sans-serif' }}>Checking…</div>;
+      return <div style={{ marginTop: 6, fontSize: 11, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>Checking…</div>;
     }
     if (state === 'ok') {
       return (
@@ -9450,18 +9450,18 @@ function HeroExpandedPanel({
     }
     if (state === 'bad') {
       return (
-        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#B45309', fontFamily: 'Poppins, sans-serif' }}>
+        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#D68A1B', fontFamily: 'Poppins, sans-serif' }}>
           <IconAlertTriangle size={14} stroke={1.8} /> {badText}
         </div>
       );
     }
     return (
-      <div style={{ marginTop: 6, fontSize: 11, color: '#8E8E93', fontFamily: 'Poppins, sans-serif' }}>Not yet verified</div>
+      <div style={{ marginTop: 6, fontSize: 11, color: '#9CA3AF', fontFamily: 'Poppins, sans-serif' }}>Not yet verified</div>
     );
   };
 
   return (
-    <div style={{ background: '#F3F8FF', borderRadius: 8, padding: 12 }}>
+    <div style={{ background: '#EFF6FF', borderRadius: 8, padding: 12 }}>
       {/* Quick Actions */}
       <div style={sectionLabel}>Quick Actions</div>
       {/* Row 1 — Navigate / Text / Call */}
@@ -9502,7 +9502,7 @@ function HeroExpandedPanel({
           <span style={{ ...pillLabel, color: '#CC2229' }}>Running late</span>
         </button>
         <button
-          style={{ ...gridBtn, background: '#E8F5E9' }}
+          style={{ ...gridBtn, background: '#DCFCE7' }}
           onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
         >
           <IconCurrentLocation size={18} stroke={1.8} color="#0B1F3A" />
@@ -9583,7 +9583,7 @@ function HeroExpandedPanel({
             <button
               type="button"
               onClick={() => setIsEditingPickup(true)}
-              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#8E8E93', flexShrink: 0 }}
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#9CA3AF', flexShrink: 0 }}
               aria-label="Edit pickup address"
             >
               <IconPencil stroke={1.5} size={16} />
@@ -9675,12 +9675,12 @@ function HeroExpandedPanel({
       <div style={{ marginTop: 14 }}>
         <div style={sectionLabel}>Last Lesson</div>
         {prev ? (
-          <div style={{ background: '#F2F2F7', borderRadius: 8, padding: '10px 12px', fontFamily: 'Poppins, sans-serif' }}>
+          <div style={{ background: '#EEF2F7', borderRadius: 8, padding: '10px 12px', fontFamily: 'Poppins, sans-serif' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontSize: 12, fontWeight: 600, color: '#0B1F3A' }}>
                 {new Date(prev.lesson_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
               </span>
-              <span style={{ fontSize: 9, fontWeight: 500, padding: '2px 8px', borderRadius: 999, color: '#5A6270', background: '#E9EDF2', textTransform: 'capitalize' }}>{prev.status}</span>
+              <span style={{ fontSize: 10, fontWeight: 500, padding: '2px 8px', borderRadius: 999, color: '#5A6270', background: '#E9EDF2', textTransform: 'capitalize' }}>{prev.status}</span>
             </div>
             {prev.notes && (
               <div style={{ marginTop: 5, color: '#5A6270', fontSize: 11, lineHeight: 1.4 }}>
@@ -9689,7 +9689,7 @@ function HeroExpandedPanel({
             )}
           </div>
         ) : (
-          <div style={{ background: '#F2F2F7', borderRadius: 8, padding: '10px 12px', color: '#8A93A3', fontFamily: 'Poppins, sans-serif', fontSize: 12 }}>No previous lesson</div>
+          <div style={{ background: '#EEF2F7', borderRadius: 8, padding: '10px 12px', color: '#9CA3AF', fontFamily: 'Poppins, sans-serif', fontSize: 12 }}>No previous lesson</div>
         )}
       </div>
 
@@ -9747,7 +9747,7 @@ function QuickTile({
       </div>
       <div
         className="text-[9px] uppercase mt-1"
-        style={{ color: "#6B7280", letterSpacing: "0.06em" }}
+        style={{ color: "#6B7686", letterSpacing: "0.06em" }}
       >
         {label}
       </div>
@@ -9965,11 +9965,11 @@ function TodayTile({
         {value}
       </div>
       {subValue && (
-        <div style={{ fontSize: 10, color: '#6B7280', marginTop: 2, lineHeight: 1.1 }}>
+        <div style={{ fontSize: 10, color: '#6B7686', marginTop: 2, lineHeight: 1.1 }}>
           {subValue}
         </div>
       )}
-      <div style={{ fontSize: 10, color: '#999', marginTop: subValue ? 2 : 4, textAlign: 'center' }}>
+      <div style={{ fontSize: 10, color: '#9CA3AF', marginTop: subValue ? 2 : 4, textAlign: 'center' }}>
         {label}
       </div>
     </div>
@@ -10046,7 +10046,7 @@ function OutstandingBreakdownModal({
 
         <div style={{ flex: 1, overflowY: "auto", padding: "8px 12px" }}>
           {rows.length === 0 && (
-            <div style={{ padding: 24, textAlign: "center", color: "#6B7280", fontSize: 13 }}>
+            <div style={{ padding: 24, textAlign: "center", color: "#6B7686", fontSize: 13 }}>
               No outstanding payments. 🎉
             </div>
           )}
@@ -10181,7 +10181,7 @@ function OutstandingBreakdownModal({
               padding: "10px 16px",
               fontSize: 13,
               fontWeight: 600,
-              backgroundColor: "#F3F4F6",
+              backgroundColor: "#EEF2F7",
               color: "#374151",
               border: "1px solid #D1D5DB",
               borderRadius: 8,
@@ -10258,7 +10258,7 @@ function EarningsBreakdownModal({
 
         <div style={{ flex: 1, overflowY: "auto", padding: "8px 12px" }}>
           {rows.length === 0 ? (
-            <div style={{ padding: 24, textAlign: "center", color: "#6B7280", fontSize: 13 }}>
+            <div style={{ padding: 24, textAlign: "center", color: "#6B7686", fontSize: 13 }}>
               No payments recorded this week
               <div style={{ marginTop: 8 }}>
                 <button
@@ -10281,7 +10281,7 @@ function EarningsBreakdownModal({
                       <div style={{ fontSize: 13, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {r.pupilName}
                       </div>
-                      <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{fmtDate(r.date)}</div>
+                      <div style={{ fontSize: 11, color: "#6B7686", marginTop: 2 }}>{fmtDate(r.date)}</div>
                     </div>
                     <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 8, backgroundColor: "#EFF6FF", color: "#1E40AF", textTransform: "capitalize" }}>
                       {r.method}
@@ -10313,7 +10313,7 @@ function EarningsBreakdownModal({
                   {isEditing && (
                     <div style={{ padding: "0 12px 12px", display: "flex", flexDirection: "column", gap: 8 }}>
                       <div style={{ display: "flex", gap: 8 }}>
-                        <label style={{ flex: 1, fontSize: 11, color: "#6B7280" }}>
+                        <label style={{ flex: 1, fontSize: 11, color: "#6B7686" }}>
                           Amount (£)
                           <input
                             type="number"
@@ -10324,7 +10324,7 @@ function EarningsBreakdownModal({
                             style={{ width: "100%", marginTop: 2, padding: "6px 8px", border: "1px solid #E5E7EB", borderRadius: 8, fontSize: 13 }}
                           />
                         </label>
-                        <label style={{ flex: 1, fontSize: 11, color: "#6B7280" }}>
+                        <label style={{ flex: 1, fontSize: 11, color: "#6B7686" }}>
                           Date
                           <input
                             type="date"
@@ -10334,7 +10334,7 @@ function EarningsBreakdownModal({
                           />
                         </label>
                       </div>
-                      <label style={{ fontSize: 11, color: "#6B7280" }}>
+                      <label style={{ fontSize: 11, color: "#6B7686" }}>
                         Method
                         <select
                           value={editMethod}
@@ -10351,7 +10351,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={cancelEdit}
                           disabled={isBusy}
-                          style={{ padding: "6px 10px", fontSize: 12, background: "#F3F4F6", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: "#EEF2F7", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
                         >
                           Cancel
                         </button>
@@ -10389,7 +10389,7 @@ function EarningsBreakdownModal({
                           type="button"
                           onClick={() => setConfirmDeleteId(null)}
                           disabled={isBusy}
-                          style={{ padding: "6px 10px", fontSize: 12, background: "#F3F4F6", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+                          style={{ padding: "6px 10px", fontSize: 12, background: "#EEF2F7", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
                         >
                           Cancel
                         </button>
@@ -10432,7 +10432,7 @@ function EarningsBreakdownModal({
             </button>
             <button
               onClick={onClose}
-              style={{ padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+              style={{ padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#EEF2F7", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
             >
               Close
             </button>
@@ -10495,7 +10495,7 @@ function LessonsBreakdownModal({
 
         <div style={{ flex: 1, overflowY: "auto", padding: "8px 12px" }}>
           {rows.length === 0 && (
-            <div style={{ padding: 24, textAlign: "center", color: "#6B7280", fontSize: 13 }}>
+            <div style={{ padding: 24, textAlign: "center", color: "#6B7686", fontSize: 13 }}>
               No lessons this week.
             </div>
           )}
@@ -10575,7 +10575,7 @@ function LessonsBreakdownModal({
           </div>
           <button
             onClick={onClose}
-            style={{ marginTop: 4, padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+            style={{ marginTop: 4, padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#EEF2F7", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
           >
             Close
           </button>
@@ -10694,11 +10694,11 @@ function TestsBreakdownModal({
         </DialogHeader>
 
         <div style={{ flex: 1, overflowY: "auto" }}>
-          <div style={{ padding: "10px 16px", fontSize: 11, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.5 }}>
+          <div style={{ padding: "10px 16px", fontSize: 11, fontWeight: 700, color: "#6B7686", textTransform: "uppercase", letterSpacing: 0.5 }}>
             Upcoming tests
           </div>
           {tests.length === 0 && (
-            <div style={{ padding: "12px 20px 18px", color: "#6B7280", fontSize: 13 }}>
+            <div style={{ padding: "12px 20px 18px", color: "#6B7686", fontSize: 13 }}>
               No upcoming tests scheduled.
             </div>
           )}
@@ -10756,7 +10756,7 @@ function TestsBreakdownModal({
                         padding: "3px 8px",
                         borderRadius: 999,
                         backgroundColor: "#FEF3C7",
-                        color: "#92400E",
+                        color: "#D68A1B",
                         whiteSpace: "nowrap",
                         cursor: "pointer",
                       }}
@@ -10790,7 +10790,7 @@ function TestsBreakdownModal({
             </span>
           </div>
           {swapRequests.length === 0 ? (
-            <div style={{ padding: "8px 20px 18px", color: "#6B7280", fontSize: 12, textAlign: "center" }}>
+            <div style={{ padding: "8px 20px 18px", color: "#6B7686", fontSize: 12, textAlign: "center" }}>
               No active swap requests
             </div>
           ) : (
@@ -10814,7 +10814,7 @@ function TestsBreakdownModal({
                       <div style={{ fontSize: 13, fontWeight: 700, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {s.name}
                       </div>
-                      <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
+                      <div style={{ fontSize: 12, color: "#6B7686", marginTop: 2 }}>
                         {s.current_test_date ? fmtShort(s.current_test_date) : "No date"}
                         {s.current_test_time ? ` · ${String(s.current_test_time).slice(0, 5)}` : ""}
                         {s.test_centre ? ` · ${s.test_centre}` : ""}
@@ -10852,7 +10852,7 @@ function TestsBreakdownModal({
         <div style={{ padding: 12, borderTop: "1px solid #e5e7eb" }}>
           <button
             onClick={onClose}
-            style={{ width: "100%", padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#F3F4F6", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
+            style={{ width: "100%", padding: "10px 16px", fontSize: 13, fontWeight: 600, backgroundColor: "#EEF2F7", color: "#374151", border: "1px solid #D1D5DB", borderRadius: 8, cursor: "pointer" }}
           >
             Close
           </button>
@@ -11060,11 +11060,11 @@ function DiscoverSection() {
                     )}
                   </div>
                   <div style={{ flex: 1, padding: '8px 10px', minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <div style={{ fontSize: 8, color: '#8A93A3', textTransform: 'uppercase', letterSpacing: 0.3 }}>
+                    <div style={{ fontSize: 8, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 0.3 }}>
                       {formatDiscoverDay(s.session_date)} {formatDiscoverMonth(s.session_date)} · {formatDiscoverTime(s.session_time)}
                     </div>
                     <div style={{ fontSize: 11, fontWeight: 700, color: '#0B1F3A', lineHeight: 1.2, ...truncate, marginTop: 2 }}>{s.title}</div>
-                    <div style={{ fontSize: 9, fontWeight: 600, color: '#3B6D11', marginTop: 3 }}>Free</div>
+                    <div style={{ fontSize: 10, fontWeight: 600, color: '#3B6D11', marginTop: 3 }}>Free</div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px', flexShrink: 0 }}>
                     <span style={{ background: '#1877D6', color: '#FFFFFF', fontSize: 11, fontWeight: 600, padding: '6px 10px', borderRadius: 8}}>Join</span>

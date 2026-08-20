@@ -236,7 +236,7 @@ function JobCard({
           gap: 12,
         }}
       >
-        <div style={{ fontSize: 12.5, fontWeight: 500, color: "#8A8A8E", ...POPPINS }}>
+        <div style={{ fontSize: 12.5, fontWeight: 500, color: "#9CA3AF", ...POPPINS }}>
           {variant === "claimed"
             ? `Job accepted · ${job.claimed_at ? relTime(job.claimed_at) : "—"}`
             : `Job offer · Posted ${relTime(job.created_at)}`}
@@ -273,7 +273,7 @@ function JobCard({
           style={{
             fontSize: 13.5,
             fontWeight: 500,
-            color: "#8A8A8E",
+            color: "#9CA3AF",
             lineHeight: 1.5,
             marginBottom: variant === "claimed" ? 14 : 0,
             ...POPPINS,
@@ -329,7 +329,7 @@ function JobCard({
                 onDecline?.();
               }}
               style={{
-                background: "#F2F2F7",
+                background: "#EEF2F7",
                 color: "#000",
                 height: "auto",
                 borderRadius: 8,
@@ -578,7 +578,7 @@ function JobsPage() {
               );
             })}
           </div>
-          <div style={{ fontSize: 13, fontWeight: 500, color: "#8A8A8E", ...POPPINS }}>
+          <div style={{ fontSize: 13, fontWeight: 500, color: "#9CA3AF", ...POPPINS }}>
             {activeTab === "open" ? `${jobs?.length ?? 0} open` : `${claimedJobs?.length ?? 0} claimed`}
           </div>
         </div>
@@ -808,7 +808,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: "#F3F8FF", borderTopLeftRadius: 16, borderTopRightRadius: 16,
+          background: "#EFF6FF", borderTopLeftRadius: 16, borderTopRightRadius: 16,
           maxHeight: "85vh", display: "flex", flexDirection: "column", ...POPPINS,
         }}
       >
@@ -872,7 +872,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
             onKeyDown={(e) => { if (e.key === "Enter") send(); }}
             placeholder="Type a message…"
             style={{
-              flex: 1, background: "#F3F4F6", border: "none", borderRadius: 8,
+              flex: 1, background: "#EEF2F7", border: "none", borderRadius: 8,
               padding: "10px 14px", fontSize: 16, outline: "none", ...POPPINS,
             }}
           />
@@ -1025,7 +1025,7 @@ function JobDetailSheet({
           )}
 
           {job.test_booked && (
-            <div style={{ marginTop: 16, padding: 12, background: "#F3F8FF", borderRadius: 8, border: "1px solid #CCE0FA" }}>
+            <div style={{ marginTop: 16, padding: 12, background: "#EFF6FF", borderRadius: 8, border: "1px solid #CCE0FA" }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: BLUE, textTransform: "uppercase", letterSpacing: 0.3, marginBottom: 6 }}>
                 Test booked
               </div>
@@ -1063,7 +1063,7 @@ function JobDetailSheet({
             style={{
               marginTop: 20,
               width: "100%",
-              background: "#F3F8FF",
+              background: "#EFF6FF",
               color: BLUE,
               border: "1px solid #CCE0FA",
               borderRadius: 8,
@@ -1086,7 +1086,7 @@ function JobDetailSheet({
           <button
             onClick={onDecline}
             style={{
-              flex: 1, background: "#F3F4F6", color: NAVY, border: "none", borderRadius: 8,
+              flex: 1, background: "#EEF2F7", color: NAVY, border: "none", borderRadius: 8,
               padding: "12px 16px", fontSize: 14, fontWeight: 600, cursor: "pointer",
             }}
           >
