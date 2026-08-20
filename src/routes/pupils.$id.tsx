@@ -1,6 +1,7 @@
 import { useGoBack } from "@/hooks/useGoBack";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState, Fragment, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { IconAward, IconCalendar, IconCamera, IconCar, IconChartBar, IconCheck, IconChevronDown, IconChevronRight, IconClipboardCheck, IconClipboardList, IconClock, IconCreditCard, IconCurrencyPound, IconDots, IconExternalLink, IconFlag, IconHeart, IconLoader2, IconMail, IconMapPin, IconMessage, IconPalette, IconPencil, IconPhone, IconPlus, IconRefresh, IconSearch, IconSend, IconTrash, IconTrophy, IconX } from "@tabler/icons-react";
 import { IconBook, IconHistory } from "@tabler/icons-react";
@@ -4762,7 +4763,8 @@ function PupilDetailPage() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
 
 
@@ -4904,7 +4906,7 @@ function PupilDetailPage() {
 
 
 
-      <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }`}</style>
+      <style>{`@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } } @keyframes fadeInSheet { from { opacity: 0; } to { opacity: 1; } }`}</style>
       </div>
     </div>
     </DSMTopSheet>
