@@ -1,4 +1,4 @@
-import { tokens } from "@/lib/tokens";
+import { tokens as dsm } from "@/lib/tokens";
 import type { CSSProperties } from "react";
 
 export type MarketplaceToken = {
@@ -77,7 +77,7 @@ function PhoneMock() {
         height: 132,
         borderRadius: 8,
         border: "3px solid #0A1526",
-        background: tokens.white,
+        background: dsm.white,
         overflow: "hidden",
         transform: "rotate(-4deg)",
         boxShadow: "0 8px 20px rgba(0,0,0,0.28)",
@@ -184,10 +184,10 @@ export function MarketplaceTokenBanner({
           <h3
             style={{
               margin: 0,
-              color: tokens.white,
+              color: dsm.white,
               fontSize: 19,
               lineHeight: 1.2,
-              fontWeight: tokens.fontWeight.bold,
+              fontWeight: dsm.fontWeight.bold,
               letterSpacing: "-0.01em",
             }}
           >
@@ -199,7 +199,7 @@ export function MarketplaceTokenBanner({
               color: "rgba(255,255,255,0.78)",
               fontSize: 12.5,
               lineHeight: 1.4,
-              fontWeight: tokens.fontWeight.medium,
+              fontWeight: dsm.fontWeight.medium,
             }}
           >
             {token.body}
@@ -208,10 +208,10 @@ export function MarketplaceTokenBanner({
             style={{
               display: "inline-block",
               marginTop: 14,
-              background: tokens.white,
+              background: dsm.white,
               color: token.background ?? NAVY,
-              fontSize: tokens.fontSize.base,
-              fontWeight: tokens.fontWeight.bold,
+              fontSize: dsm.fontSize.base,
+              fontWeight: dsm.fontWeight.bold,
               padding: "9px 20px",
               borderRadius: 999,
               boxShadow: "0 1px 3px rgba(0,0,0,0.18)",
