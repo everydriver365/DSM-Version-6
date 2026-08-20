@@ -805,6 +805,80 @@ function PupilsIndexPage() {
     );
   };
 
+  const swipeActionBtn = {
+    width: 72,
+    color: "#fff",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 12,
+    fontWeight: 700,
+    border: "none",
+    cursor: "pointer",
+    ...POPPINS,
+  } as const;
+
+  const renderSwipeRow = (p: any, cardStyle: React.CSSProperties) => {
+    const swiped = swipedId === p.id;
+    return (
+      <div
+        key={p.id}
+        style={{ position: "relative", overflow: "hidden", ...cardStyle }}
+      >
+        <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, display: "flex" }}>
+          <button
+            type="button"
+            style={{ ...swipeActionBtn, background: "#1877D6" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              tapLight();
+              setSwipedId(null);
+              navigate({ to: "/messages/$pupilId", params: { pupilId: p.id } });
+            }}
+          >
+            Message
+          </button>
+          <button
+            type="button"
+            style={{ ...swipeActionBtn, background: "#CC2229" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              tapHeavy();
+              setSwipedId(null);
+              setArchiveTarget({ id: p.id, name: displayName(p.name) });
+            }}
+          >
+            Archive
+          </button>
+        </div>
+        <div
+          onTouchStart={(e) => {
+            touchStartX.current = e.touches[0].clientX;
+          }}
+          onTouchEnd={(e) => {
+            const diff = touchStartX.current - e.changedTouches[0].clientX;
+            if (diff > 60) {
+              tapLight();
+              setSwipedId(p.id);
+            } else if (diff < -20) {
+              setSwipedId(null);
+            }
+          }}
+          style={{
+            position: "relative",
+            background: "#fff",
+            transform: swiped ? "translateX(-144px)" : "translateX(0)",
+            transition: "transform 0.2s ease",
+          }}
+        >
+          {renderRow(p, 0, 1)}
+        </div>
+      </div>
+    );
+  };
+
+
+
 
   return (
     <PageLayout
