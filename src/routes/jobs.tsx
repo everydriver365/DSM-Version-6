@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { IconBriefcase, IconCheck, IconSend, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -526,20 +526,8 @@ function JobsPage() {
   };
 
   return (
-    <div className="min-h-screen pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: "#DCE4F0" }}>
-      {/* Header */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Jobs"
-        titleStyle={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.5px", color: "#fff" }}
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Jobs">
+    <div className="pb-24 pb-safe" style={{ ...POPPINS, backgroundColor: "#DCE4F0", minHeight: "100%" }}>
 
       <div className="sticky top-0 z-30">
         <div
@@ -1055,6 +1043,6 @@ function JobDetailSheet({
         </div>
       </div>
     </div>
+    </DSMTopSheet>
   );
 }
-

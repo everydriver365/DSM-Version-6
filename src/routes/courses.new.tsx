@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { IconCalendar, IconCalendarCheck, IconCalendarMonth, IconCalendarPlus, IconCheck, IconChevronRight, IconClock, IconLoader2, IconMapPin, IconMoon, IconPhoto, IconRepeat, IconSchool, IconSettings, IconSun, IconSunrise, IconTrash } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import DSMToggle from "@/components/dsm/DSMToggle";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
@@ -501,18 +501,8 @@ function NewCoursePage() {
 
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 24 }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="New course"
-        onBack={() => navigate({ to: "/courses" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="New Course" onBack={() => navigate({ to: "/courses" as never })}>
+    <div style={{ minHeight: "100%", backgroundColor: "#F3F8FF", ...POPPINS, paddingBottom: 24 }}>
 
       {/* Action bar */}
       <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 16px" }}>
@@ -2205,6 +2195,6 @@ function PostcodeAutocomplete(props: {
         </div>
       )}
     </div>
+    </DSMTopSheet>
   );
 }
-
