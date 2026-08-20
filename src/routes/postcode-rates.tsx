@@ -162,7 +162,6 @@ function PostcodeRatesPage() {
         </div>
       </div>
     </div>
-    </div>
     </DSMTopSheet>
   );
 }
