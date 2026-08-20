@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconCheckbox, IconPlus, IconSquareCheck, IconTrash } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
@@ -199,7 +200,7 @@ function TodosPage() {
         <span
           className="text-[10px] uppercase font-medium px-2 py-0.5 rounded-full"
           style={{
-            color: "#FFFFFF",
+            color: tokens.white,
             backgroundColor: priorityColor(t.priority),
             letterSpacing: "0.05em",
             flexShrink: 0,
@@ -230,7 +231,7 @@ function TodosPage() {
           type="button"
           onClick={openSheet}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
         >
           <IconPlus stroke={1.5} size={15} />
           Add to-do
@@ -334,7 +335,7 @@ function TodosPage() {
                     fontFamily: "Poppins, sans-serif",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#EEF2F7",
+                    borderColor: tokens.canvas,
                   }}
                 />
               </div>
@@ -361,7 +362,7 @@ function TodosPage() {
                           fontFamily: "Poppins, sans-serif",
                           borderWidth: active ? 0 : "0.5px",
                           borderStyle: "solid",
-                          borderColor: "#EEF2F7",
+                          borderColor: tokens.canvas,
                         }}
                       >
                         {p}
@@ -372,7 +373,7 @@ function TodosPage() {
               </div>
 
               {sheetError && (
-                <div className="text-[12px]" style={{ color: "#1877D6" }}>
+                <div className="text-[12px]" style={{ color: tokens.blue }}>
                   {sheetError}
                 </div>
               )}

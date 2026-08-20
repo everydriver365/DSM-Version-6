@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconClock, IconHourglass, IconPlus, IconUsers, IconX } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
@@ -104,7 +105,7 @@ function WaitingListPage() {
           type="button"
           onClick={() => setAddOpen(true)}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
         >
           <IconPlus size={15} />
           Add entry
@@ -134,8 +135,8 @@ function WaitingListPage() {
                         height: 36,
                         borderRadius: 8,
                         backgroundColor: "#1877D614",
-                        color: "#1877D6",
-                        fontSize: 18,
+                        color: tokens.blue,
+                        fontSize: tokens.fontSize.xl,
                         ...POPPINS,
                       }}
                     >
@@ -146,7 +147,7 @@ function WaitingListPage() {
                         <div className="min-w-0">
                           <div
                             className="text-[14px] font-semibold truncate"
-                            style={{ color: "#0B1F3A", ...POPPINS }}
+                            style={{ color: tokens.navy, ...POPPINS }}
                           >
                             {e.name}
                           </div>
@@ -164,8 +165,8 @@ function WaitingListPage() {
                         <span
                           className="shrink-0 text-[11px] font-semibold px-2 py-[3px]"
                           style={{
-                            color: "#1877D6",
-                            backgroundColor: "#EEF2F7",
+                            color: tokens.blue,
+                            backgroundColor: tokens.canvas,
                             borderRadius: 8,
                           }}
                         >
@@ -181,7 +182,7 @@ function WaitingListPage() {
                           onClick={() => setConfirmRemove(e)}
                           className="w-full text-[13px] font-semibold py-2"
                           style={{
-                            color: "#1877D6",
+                            color: tokens.blue,
                             border: "0.5px solid #EEF2F7",
                             borderRadius: 8,
                             backgroundColor: "white",
@@ -347,8 +348,8 @@ function AddEntrySheet({
             style={{
               borderRadius: 8,
               border: "0.5px solid #EEF2F7",
-              color: "#0B1F3A",
-              fontSize: 14,
+              color: tokens.navy,
+              fontSize: tokens.fontSize.md,
               resize: "none",
               ...POPPINS,
             }}
@@ -382,7 +383,7 @@ function ConfirmSheet({
         <div className="flex items-center justify-center" style={{ paddingTop: 8 }}>
           <IconHourglass size={28} color="#1877D6" />
         </div>
-        <div className="text-[14px] text-center" style={{ color: "#0B1F3A" }}>
+        <div className="text-[14px] text-center" style={{ color: tokens.navy }}>
           Remove <span className="font-semibold">{name}</span> from the waiting list?
         </div>
         <div className="grid grid-cols-2" style={{ gap: 8 }}>
@@ -395,7 +396,7 @@ function ConfirmSheet({
             className="w-full text-[14px] font-semibold py-2"
             style={{
               color: "white",
-              backgroundColor: "#1877D6",
+              backgroundColor: tokens.blue,
               borderRadius: 8,
               ...POPPINS,
             }}

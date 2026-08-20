@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconGift, IconShare } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
@@ -120,7 +121,7 @@ function ReferralsPage() {
               style={{
                 color: "#7C8BA3",
                 fontSize: 10.5,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 letterSpacing: 0.6,
                 textTransform: "uppercase",
               }}
@@ -133,7 +134,7 @@ function ReferralsPage() {
                 fontWeight: 900,
                 letterSpacing: -1,
                 marginTop: 8,
-                color: "#FFFFFF",
+                color: tokens.white,
                 ...POPPINS,
               }}
             >
@@ -148,7 +149,7 @@ function ReferralsPage() {
               style={{
                 color: "#7C8BA3",
                 fontSize: 10.5,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 letterSpacing: 0.6,
                 textTransform: "uppercase",
               }}
@@ -175,7 +176,7 @@ function ReferralsPage() {
       <div
         className="mx-4 mt-4"
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           borderRadius: 8,
           padding: 20,
           boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
@@ -185,7 +186,7 @@ function ReferralsPage() {
           style={{
             color: "#8A8A8E",
             fontSize: 11.5,
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
             letterSpacing: 0.4,
             textTransform: "uppercase",
             marginBottom: 8,
@@ -210,10 +211,10 @@ function ReferralsPage() {
           onClick={share}
           className="w-full flex items-center justify-center"
           style={{
-            background: "#1877D6",
-            color: "#FFFFFF",
+            background: tokens.blue,
+            color: tokens.white,
             fontSize: 15,
-            fontWeight: 800,
+            fontWeight: tokens.fontWeight.extrabold,
             padding: 15,
             borderRadius: 8,
             boxShadow: "0 4px 0 #0F52A8",
@@ -233,15 +234,15 @@ function ReferralsPage() {
           style={{
             width: 3,
             height: 14,
-            backgroundColor: "#1877D6",
+            backgroundColor: tokens.blue,
             borderRadius: 8,
           }}
         />
         <div
           style={{
-            color: "#1877D6",
+            color: tokens.blue,
             fontSize: 12,
-            fontWeight: 800,
+            fontWeight: tokens.fontWeight.extrabold,
             letterSpacing: 0.6,
             textTransform: "uppercase",
           }}
@@ -265,7 +266,7 @@ function ReferralsPage() {
                   <div className="min-w-0">
                     <div
                       className="text-[14px] font-semibold truncate"
-                      style={{ color: "#0B1F3A", ...POPPINS }}
+                      style={{ color: tokens.navy, ...POPPINS }}
                     >
                       {r.referred_name}
                     </div>
@@ -290,7 +291,7 @@ function ReferralsPage() {
                   {r.status === "paid" && Number(r.reward_amount) > 0 && (
                     <div
                       className="shrink-0 text-[14px] font-bold"
-                      style={{ color: "#1877D6", ...POPPINS }}
+                      style={{ color: tokens.blue, ...POPPINS }}
                     >
                       £{Number(r.reward_amount).toFixed(2)}
                     </div>

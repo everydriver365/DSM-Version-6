@@ -1,4 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useCallback, useEffect, useState, type ComponentType, type ReactNode } from "react";
 import {
   IconHome,
@@ -215,10 +216,10 @@ function UnreadBadge({ count }: { count: number }) {
         height: 16,
         padding: "0 4px",
         borderRadius: 8,
-        background: "#CC2229",
-        color: "#FFFFFF",
+        background: tokens.red,
+        color: tokens.white,
         fontSize: 9,
-        fontWeight: 700,
+        fontWeight: tokens.fontWeight.bold,
         lineHeight: 1,
         border: "2px solid #FFFFFF",
         ...POPPINS,
@@ -369,7 +370,7 @@ export function BottomNav({
           <span
             style={{
               ...POPPINS,
-              fontSize: 11,
+              fontSize: tokens.fontSize.sm,
               fontWeight: isActive ? 600 : 400,
               color,
               lineHeight: 1,
@@ -430,7 +431,7 @@ export function BottomNav({
           <span
             style={{
               ...POPPINS,
-              fontSize: 11,
+              fontSize: tokens.fontSize.sm,
               fontWeight: isActive ? 600 : 400,
               color,
               lineHeight: 1,

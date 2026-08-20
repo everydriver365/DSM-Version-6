@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 
 import { toast } from "sonner";
@@ -118,7 +119,7 @@ function DsmLivePage() {
       <div style={{ fontFamily: poppins }}>
 
       {/* Live status pill */}
-      <div style={{ background: "#0B1F3A", padding: "0 16px 12px", display: "flex" }}>
+      <div style={{ background: tokens.navy, padding: "0 16px 12px", display: "flex" }}>
         <span
           style={{
             display: "inline-flex",
@@ -126,9 +127,9 @@ function DsmLivePage() {
             gap: 6,
             background: "rgba(255,255,255,0.1)",
             border: "0.5px solid rgba(255,255,255,0.25)",
-            color: "#FFFFFF",
-            fontSize: 11,
-            fontWeight: 500,
+            color: tokens.white,
+            fontSize: tokens.fontSize.sm,
+            fontWeight: tokens.fontWeight.medium,
             padding: "4px 12px",
             borderRadius: 999,
             fontFamily: poppins,
@@ -152,7 +153,7 @@ function DsmLivePage() {
       <div style={{ padding: "16px 16px 18px" }}>
         <div
           style={{
-            background: "#FFFFFF",
+            background: tokens.white,
             borderRadius: 8,
             border: "0.5px solid #E2E6ED",
             padding: 18,
@@ -180,9 +181,9 @@ function DsmLivePage() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: 18,
-                fontWeight: 500,
-                color: "#0B1F3A",
+                fontSize: tokens.fontSize.xl,
+                fontWeight: tokens.fontWeight.medium,
+                color: tokens.navy,
                 marginBottom: 6,
                 fontFamily: poppins,
               }}
@@ -192,7 +193,7 @@ function DsmLivePage() {
             <p
               style={{
                 margin: 0,
-                fontSize: 13,
+                fontSize: tokens.fontSize.base,
                 color: "#5A6270",
                 lineHeight: 1.5,
                 fontFamily: poppins,
@@ -233,7 +234,7 @@ function DsmLivePage() {
                 border: active ? "1px solid #0B1F3A" : "1px solid #E3E8F0",
                 borderRadius: 999,
                 padding: "8px 16px",
-                fontSize: 13,
+                fontSize: tokens.fontSize.base,
                 fontWeight: active ? 500 : 400,
                 fontFamily: poppins,
                 cursor: "pointer",
@@ -257,7 +258,7 @@ function DsmLivePage() {
                 border: active ? "1px solid #0B1F3A" : "1px solid #E3E8F0",
                 borderRadius: 999,
                 padding: "8px 16px",
-                fontSize: 13,
+                fontSize: tokens.fontSize.base,
                 fontWeight: active ? 500 : 400,
                 fontFamily: poppins,
                 cursor: "pointer",
@@ -277,8 +278,8 @@ function DsmLivePage() {
           style={{
             margin: "0 0 12px",
             fontSize: 15,
-            fontWeight: 500,
-            color: "#0B1F3A",
+            fontWeight: tokens.fontWeight.medium,
+            color: tokens.navy,
             fontFamily: poppins,
           }}
         >
@@ -314,14 +315,14 @@ function DsmLivePage() {
 
       {/* Podcasts */}
       <div id="podcasts" style={{ padding: 16 }}>
-        <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "#0F2044", fontFamily: poppins }}>
+        <h2 style={{ margin: 0, fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: "#0F2044", fontFamily: poppins }}>
           🎙️ DSM Podcast
         </h2>
-        <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2, marginBottom: 16 }}>
+        <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 2, marginBottom: 16 }}>
           Latest episodes
         </div>
         {podcasts.length === 0 ? (
-          <div style={{ color: "#9CA3AF", fontSize: 13, padding: "12px 0" }}>
+          <div style={{ color: tokens.textMuted, fontSize: tokens.fontSize.base, padding: "12px 0" }}>
             No episodes yet — check back soon.
           </div>
         ) : (
@@ -357,7 +358,7 @@ function CommunitySection() {
       <div
         style={{
           color: "rgba(255,255,255,0.7)",
-          fontSize: 13,
+          fontSize: tokens.fontSize.base,
           marginTop: 8,
           lineHeight: 1.5,
         }}
@@ -372,7 +373,7 @@ function CommunitySection() {
             background: "#B45309",
             color: "#fff",
             fontSize: 12,
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
             padding: "4px 12px",
             borderRadius: 999,
           }}
@@ -395,7 +396,7 @@ function CommunitySection() {
             padding: 12,
             borderRadius: 8,
             marginTop: 16,
-            fontSize: 14,
+            fontSize: tokens.fontSize.md,
             outline: "none",
             boxSizing: "border-box",
           }}
@@ -406,15 +407,15 @@ function CommunitySection() {
           type="submit"
           style={{
             width: "100%",
-            background: "#CC2229",
+            background: tokens.red,
             color: "#fff",
-            fontWeight: 600,
+            fontWeight: tokens.fontWeight.semibold,
             padding: 12,
             borderRadius: 8,
             marginTop: 8,
             border: 0,
             cursor: "pointer",
-            fontSize: 14,
+            fontSize: tokens.fontSize.md,
           }}
         >
           Notify me when it launches →
@@ -475,9 +476,9 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
       <div style={{ paddingLeft: 12, flex: 1, minWidth: 0 }}>
         <div
           style={{
-            fontSize: 10,
-            fontWeight: 700,
-            color: "#CC2229",
+            fontSize: tokens.fontSize.xs,
+            fontWeight: tokens.fontWeight.bold,
+            color: tokens.red,
             textTransform: "uppercase",
             letterSpacing: "0.04em",
           }}
@@ -486,8 +487,8 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
         </div>
         <div
           style={{
-            fontSize: 13,
-            fontWeight: 600,
+            fontSize: tokens.fontSize.base,
+            fontWeight: tokens.fontWeight.semibold,
             color: "#0F2044",
             display: "-webkit-box",
             WebkitLineClamp: 2,
@@ -498,7 +499,7 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
           {p.title}
         </div>
         {p.guest_name && (
-          <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+          <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 2 }}>
             with {p.guest_name}
             {p.guest_title ? ` · ${p.guest_title}` : ""}
           </div>
@@ -516,7 +517,7 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
                 background: "#1DB954",
                 color: "#fff",
                 fontSize: 12,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 borderRadius: 8,
                 padding: "6px 12px",
                 border: 0,
@@ -538,7 +539,7 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
                 background: "#FC3C44",
                 color: "#fff",
                 fontSize: 12,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 borderRadius: 8,
                 padding: "6px 12px",
                 border: 0,
@@ -560,7 +561,7 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
                 background: "#0F2044",
                 color: "#fff",
                 fontSize: 12,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 borderRadius: 8,
                 padding: "6px 12px",
                 border: 0,
@@ -575,7 +576,7 @@ function PodcastCard({ podcast: p }: { podcast: Podcast }) {
             </button>
           )}
           {!hasAny && (
-            <span style={{ color: "#9CA3AF", fontSize: 12, fontStyle: "italic" }}>
+            <span style={{ color: tokens.textMuted, fontSize: 12, fontStyle: "italic" }}>
               Coming soon
             </span>
           )}
@@ -651,7 +652,7 @@ function SessionCard({
     <div
       onClick={onOpen}
       style={{
-        background: "#FFFFFF",
+        background: tokens.white,
         border: "1px solid #E3E8F0",
         borderRadius: 8,
         padding: 12,
@@ -666,11 +667,11 @@ function SessionCard({
     >
       {/* Time column */}
       <div style={{ width: 48, flexShrink: 0 }}>
-        <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", lineHeight: 1.1 }}>
+        <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy, lineHeight: 1.1 }}>
           {timeLabel ?? "--:--"}
         </div>
         {durLabel && (
-          <div style={{ fontSize: 12, fontWeight: 600, color: "#8792A2", marginTop: 2 }}>
+          <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#8792A2", marginTop: 2 }}>
             {durLabel}
           </div>
         )}
@@ -692,9 +693,9 @@ function SessionCard({
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            fontSize: 14,
-            fontWeight: 700,
-            color: "#0B1F3A",
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.bold,
+            color: tokens.navy,
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -719,7 +720,7 @@ function SessionCard({
             <span
               style={{
                 fontSize: 12,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 color: isFree ? "#1D7A4C" : "#0B1F3A",
               }}
             >
@@ -730,7 +731,7 @@ function SessionCard({
             <span
               style={{
                 fontSize: 9,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 letterSpacing: "0.02em",
                 padding: "3px 7px",
                 borderRadius: 8,

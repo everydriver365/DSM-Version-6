@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconFileText, IconPlus, IconSignature, IconX } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -137,7 +138,7 @@ function WaiversPage() {
           type="button"
           onClick={() => setCreateOpen(true)}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
         >
           <IconPlus stroke={1.5} size={15} />
           Create waiver
@@ -176,7 +177,7 @@ function WaiversPage() {
                   <IconFileText stroke={1.5} size={18} color="#1877D6" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-semibold truncate" style={{ color: "#0B1F3A" }}>
+                  <div className="text-[14px] font-semibold truncate" style={{ color: tokens.navy }}>
                     {t.name}
                   </div>
                   <div className="text-[12px]" style={{ color: "#6B7280" }}>
@@ -222,12 +223,12 @@ function WaiversPage() {
                 <div className="flex items-center" style={{ gap: 12 }}>
                   <div
                     className="flex items-center justify-center rounded-full flex-shrink-0 text-white text-[12px] font-semibold"
-                    style={{ width: 36, height: 36, backgroundColor: "#1877D6" }}
+                    style={{ width: 36, height: 36, backgroundColor: tokens.blue }}
                   >
                     {initials(pupilName)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[14px] font-semibold truncate" style={{ color: "#0B1F3A" }}>
+                    <div className="text-[14px] font-semibold truncate" style={{ color: tokens.navy }}>
                       {pupilName}
                     </div>
                     <div className="text-[13px] truncate" style={{ color: "#6B7280" }}>
@@ -317,7 +318,7 @@ function SheetShell({
           className="sticky top-0 flex items-center justify-between bg-white"
           style={{ padding: "14px 16px", borderBottom: "0.5px solid #EEF2F7" }}
         >
-          <div className="text-[15px] font-semibold" style={{ color: "#0B1F3A" }}>
+          <div className="text-[15px] font-semibold" style={{ color: tokens.navy }}>
             {title}
           </div>
           <button
@@ -398,7 +399,7 @@ function CreateWaiverSheet({
             className="w-full rounded-lg px-3 py-2 text-[14px] bg-white"
             style={{
               border: "0.5px solid #EEF2F7",
-              color: "#0B1F3A",
+              color: tokens.navy,
               fontFamily: "Poppins, sans-serif",
               resize: "vertical",
             }}
@@ -497,7 +498,7 @@ function SendToPupilSheet({
             className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
             style={{
               border: "0.5px solid #EEF2F7",
-              color: "#0B1F3A",
+              color: tokens.navy,
               fontFamily: "Poppins, sans-serif",
             }}
           >
@@ -519,16 +520,16 @@ function SendToPupilSheet({
               padding: 12,
             }}
           >
-            <div className="text-[12px] font-medium mb-1" style={{ color: "#0B1F3A" }}>
+            <div className="text-[12px] font-medium mb-1" style={{ color: tokens.navy }}>
               Signing link
             </div>
-            <div className="text-[12px] break-all" style={{ color: "#1877D6" }}>
+            <div className="text-[12px] break-all" style={{ color: tokens.blue }}>
               {link}
             </div>
             <button
               type="button"
               className="mt-2 text-[12px] font-medium"
-              style={{ color: "#1877D6" }}
+              style={{ color: tokens.blue }}
               onClick={() => {
                 if (typeof navigator !== "undefined" && navigator.clipboard) {
                   navigator.clipboard.writeText(link);
@@ -568,7 +569,7 @@ function TemplateDetailSheet({
     <SheetShell title={template.name} onClose={onClose}>
       <div
         className="text-[13px] whitespace-pre-wrap"
-        style={{ color: "#0B1F3A", lineHeight: 1.5 }}
+        style={{ color: tokens.navy, lineHeight: 1.5 }}
       >
         {template.content}
       </div>

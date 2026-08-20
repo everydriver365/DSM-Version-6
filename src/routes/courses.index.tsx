@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { IconChevronRight, IconMapPin, IconPlus, IconSchool } from "@tabler/icons-react";
@@ -59,7 +60,7 @@ function SectionBar({ label, count, color }: { label: string; count: number; col
         <span
           style={{
             fontSize: 12,
-            fontWeight: 800,
+            fontWeight: tokens.fontWeight.extrabold,
             letterSpacing: "0.6px",
             textTransform: "uppercase",
             color,
@@ -68,7 +69,7 @@ function SectionBar({ label, count, color }: { label: string; count: number; col
           {label}
         </span>
       </div>
-      <span style={{ fontSize: 12, fontWeight: 600, color: "#8A8A8E" }}>{count}</span>
+      <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#8A8A8E" }}>{count}</span>
     </div>
   );
 }
@@ -210,10 +211,10 @@ function CoursesPage() {
       <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 16px" }}>
         <button
           onClick={() => navigate({ to: "/courses/new" })}
-          style={{ background: "none", border: "none", cursor: "pointer", color: "#1877D6", display: "flex", alignItems: "center", gap: 8, fontSize: 14.5, fontWeight: 600, fontFamily: "Poppins, sans-serif", padding: 0 }}
+          style={{ background: "none", border: "none", cursor: "pointer", color: tokens.blue, display: "flex", alignItems: "center", gap: 8, fontSize: 14.5, fontWeight: tokens.fontWeight.semibold, fontFamily: "Poppins, sans-serif", padding: 0 }}
           aria-label="New course"
         >
-          <span style={{ width: 22, height: 22, borderRadius: "50%", background: "#1877D6", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ width: 22, height: 22, borderRadius: "50%", background: tokens.blue, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
             <IconPlus size={14} color="#fff" stroke={3} />
           </span>
           New course
@@ -237,20 +238,20 @@ function CoursesPage() {
             }}
           >
             <IconSchool size={48} color="#9CA3AF" />
-            <div style={{ fontSize: 14, fontWeight: 600 }}>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: 600 }}>
               No courses yet — create your first course
             </div>
             <button
               onClick={() => navigate({ to: "/courses/new" })}
               style={{
                 marginTop: 8,
-                background: "#1877D6",
+                background: tokens.blue,
                 color: "#fff",
                 border: "none",
                 borderRadius: 8,
                 padding: "10px 16px",
-                fontWeight: 600,
-                fontSize: 14,
+                fontWeight: tokens.fontWeight.semibold,
+                fontSize: tokens.fontSize.md,
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
               }}
@@ -404,8 +405,8 @@ function CourseCard({
                 backdropFilter: "blur(4px)",
                 WebkitBackdropFilter: "blur(4px)",
                 color: "#fff",
-                fontSize: 10,
-                fontWeight: 800,
+                fontSize: tokens.fontSize.xs,
+                fontWeight: tokens.fontWeight.extrabold,
                 padding: "5px 10px",
                 borderRadius: 8,
                 textTransform: "uppercase",
@@ -418,8 +419,8 @@ function CourseCard({
               <div style={{
                 background: c.transmission === 'Automatic' ? '#E0F2FE' : c.transmission === 'Both' ? '#F0FDF4' : '#F1F5F9',
                 color: c.transmission === 'Automatic' ? '#0369A1' : c.transmission === 'Both' ? '#15803D' : '#475569',
-                fontSize: 10,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.xs,
+                fontWeight: tokens.fontWeight.bold,
                 borderRadius: 8,
                 padding: '2px 8px',
                 fontFamily: 'Poppins, sans-serif',
@@ -437,7 +438,7 @@ function CourseCard({
               borderRadius: "50%",
               background: soldOut ? "#8A8A8E" : "#FF3B30",
               color: "#fff",
-              fontSize: 11,
+              fontSize: tokens.fontSize.sm,
               fontWeight: 900,
               display: "inline-flex",
               alignItems: "center",
@@ -454,7 +455,7 @@ function CourseCard({
             style={{
               color: "#fff",
               fontSize: 17,
-              fontWeight: 800,
+              fontWeight: tokens.fontWeight.extrabold,
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
@@ -469,7 +470,7 @@ function CourseCard({
               alignItems: "center",
               gap: 4,
               color: "rgba(255,255,255,0.7)",
-              fontSize: 11,
+              fontSize: tokens.fontSize.sm,
             }}
           >
             <IconMapPin size={10} color="rgba(255,255,255,0.7)" />
@@ -489,7 +490,7 @@ function CourseCard({
           padding: "12px 4px 4px",
         }}
       >
-        <div style={{ color: "#0B1F3A", fontSize: 19, fontWeight: 900 }}>
+        <div style={{ color: tokens.navy, fontSize: 19, fontWeight: 900 }}>
           £{Number(c.price).toFixed(0)}
         </div>
         <div style={{ textAlign: "right" }}>
@@ -499,7 +500,7 @@ function CourseCard({
               background: soldOut ? "#F2F2F7" : "#E6F7EC",
               color: soldOut ? "#6B6B6F" : "#248A3D",
               fontSize: 10.5,
-              fontWeight: 800,
+              fontWeight: tokens.fontWeight.extrabold,
               padding: "4px 11px",
               borderRadius: 8,
             }}
@@ -546,8 +547,8 @@ function CourseCard({
             <div
               style={{
                 color: "#8A8A8E",
-                fontSize: 10,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.xs,
+                fontWeight: tokens.fontWeight.bold,
                 letterSpacing: "0.3px",
                 textTransform: "uppercase",
               }}
@@ -557,9 +558,9 @@ function CourseCard({
             <div style={{ display: "flex", alignItems: "center", gap: 7, minWidth: 0 }}>
               <span
                 style={{
-                  color: "#0B1F3A",
+                  color: tokens.navy,
                   fontSize: 13.5,
-                  fontWeight: 800,
+                  fontWeight: tokens.fontWeight.extrabold,
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
@@ -572,7 +573,7 @@ function CourseCard({
                   background: paid ? "#E6F7EC" : "#FDEDEC",
                   color: paid ? "#248A3D" : "#FF3B30",
                   fontSize: 9.5,
-                  fontWeight: 800,
+                  fontWeight: tokens.fontWeight.extrabold,
                   padding: "2px 8px",
                   borderRadius: 8,
                   flexShrink: 0,
@@ -594,12 +595,12 @@ function CourseCard({
           style={{
             flex: 1,
             background: "#F2F2F7",
-            color: "#0B1F3A",
+            color: tokens.navy,
             border: "none",
             padding: 10,
             borderRadius: 8,
             fontSize: 12.5,
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
             textAlign: "center",
             cursor: "pointer",
             fontFamily: "Poppins, sans-serif",
@@ -612,13 +613,13 @@ function CourseCard({
           onClick={() => navigate({ to: "/bookings" })}
           style={{
             flex: 1,
-            background: "#0B1F3A",
+            background: tokens.navy,
             color: "#fff",
             border: "none",
             padding: 10,
             borderRadius: 8,
             fontSize: 12.5,
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
             textAlign: "center",
             cursor: "pointer",
             fontFamily: "Poppins, sans-serif",

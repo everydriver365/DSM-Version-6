@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconCurrencyPound, IconMail, IconMessage, IconPencil, IconPlus, IconX } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -365,7 +366,7 @@ function PupilPaymentsPage() {
             setShowRecord(true);
           }}
           className="w-full flex items-center justify-center gap-2 rounded-lg py-3 mb-4 text-[14px] font-semibold text-white"
-          style={{ backgroundColor: "#1877D6", ...POPPINS }}
+          style={{ backgroundColor: tokens.blue, ...POPPINS }}
         >
           <IconPlus size={18} color="#FFFFFF" />
           Record payment
@@ -548,7 +549,7 @@ function PupilPaymentsPage() {
               disabled={editSaving}
               onClick={submitEditPayment}
               className="w-full rounded-lg py-3 text-[14px] font-semibold text-white"
-              style={{ backgroundColor: "#1877D6", opacity: editSaving ? 0.6 : 1, ...POPPINS }}
+              style={{ backgroundColor: tokens.blue, opacity: editSaving ? 0.6 : 1, ...POPPINS }}
             >
               {editSaving ? "Saving..." : "Save changes"}
             </button>
@@ -656,7 +657,7 @@ function PupilPaymentsPage() {
               disabled={recSaving}
               onClick={submitRecordPayment}
               className="w-full rounded-lg py-3 text-[14px] font-semibold text-white"
-              style={{ backgroundColor: "#1877D6", opacity: recSaving ? 0.6 : 1, ...POPPINS }}
+              style={{ backgroundColor: tokens.blue, opacity: recSaving ? 0.6 : 1, ...POPPINS }}
             >
               {recSaving ? "Saving..." : "Save payment"}
             </button>

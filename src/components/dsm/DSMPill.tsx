@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import * as React from "react";
 
 /**
@@ -17,8 +18,8 @@ export const PILL_COLORS: Record<PillVariant, { bg: string; color: string }> = {
   success: { bg: "#DCFCE7", color: "#15803D" },
   danger: { bg: "#FEE2E2", color: "#B91C1C" },
   warning: { bg: "#FEF3C7", color: "#B45309" },
-  info: { bg: "#E6F1FB", color: "#1877D6" },
-  neutral: { bg: "#F1F5F9", color: "#6B7686" },
+  info: { bg: "#E6F1FB", color: tokens.blue },
+  neutral: { bg: "#F1F5F9", color: tokens.textSecondary },
   purple: { bg: "#EDE9FE", color: "#7C3AED" },
 };
 
@@ -33,7 +34,7 @@ export function pillStyle(
     gap: 4,
     fontFamily: "Poppins, sans-serif",
     fontSize: size === "sm" ? 11 : 12,
-    fontWeight: 700,
+    fontWeight: tokens.fontWeight.bold,
     lineHeight: 1.2,
     letterSpacing: 0.2,
     padding: size === "sm" ? "4px 10px" : "6px 12px",

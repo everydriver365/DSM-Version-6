@@ -1,4 +1,5 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconEye, IconEyeOff, IconMusic, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
@@ -247,12 +248,12 @@ function AdminPodcasts() {
             onClick={openAdd}
             style={{
               background: "#fff",
-              color: "#0B1F3A",
+              color: tokens.navy,
               border: 0,
               padding: "9px 15px",
               borderRadius: 8,
-              fontWeight: 800,
-              fontSize: 13,
+              fontWeight: tokens.fontWeight.extrabold,
+              fontSize: tokens.fontSize.base,
               boxShadow: "0 3px 0 #B0B8C4",
               cursor: "pointer",
               display: "inline-flex",
@@ -303,7 +304,7 @@ function AdminPodcasts() {
               <div
                 style={{
                   fontSize: 10.5,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   color: "#8A8A8E",
                   textTransform: "uppercase",
                   marginTop: 6,
@@ -323,8 +324,8 @@ function AdminPodcasts() {
       ) : items.length === 0 ? (
         <div style={{ padding: 32, textAlign: "center", color: "#6B7280" }}>
           <IconMusic size={40} style={{ margin: "0 auto", opacity: 0.4 }} />
-          <div style={{ marginTop: 12, fontWeight: 600, color: "#0F2044" }}>No episodes yet</div>
-          <div style={{ fontSize: 13, marginTop: 4 }}>Tap "Add episode" to create one.</div>
+          <div style={{ marginTop: 12, fontWeight: tokens.fontWeight.semibold, color: "#0F2044" }}>No episodes yet</div>
+          <div style={{ fontSize: tokens.fontSize.base, marginTop: 4 }}>Tap "Add episode" to create one.</div>
         </div>
       ) : (
         items.map((p) => (
@@ -339,13 +340,13 @@ function AdminPodcasts() {
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.5px", color: "#FF3B30" }}>
+              <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "0.5px", color: "#FF3B30" }}>
                 EP {p.episode_number ?? "?"}
               </div>
               <span
                 style={{
-                  fontSize: 11,
-                  fontWeight: 800,
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.extrabold,
                   padding: "5px 12px",
                   borderRadius: 8,
                   background: p.is_published ? "#E6F7EC" : "#FFF6DC",
@@ -356,10 +357,10 @@ function AdminPodcasts() {
                 {p.is_published ? "Published" : "Draft"}
               </span>
             </div>
-            <div style={{ fontWeight: 800, color: "#000", fontSize: 19, letterSpacing: "-0.3px", marginTop: 6 }}>
+            <div style={{ fontWeight: tokens.fontWeight.extrabold, color: "#000", fontSize: 19, letterSpacing: "-0.3px", marginTop: 6 }}>
               {p.title}
             </div>
-            <div style={{ fontSize: 13.5, fontWeight: 500, color: "#8A8A8E", marginTop: 8 }}>
+            <div style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.medium, color: "#8A8A8E", marginTop: 8 }}>
               {p.guest_name || "—"}
               {p.duration_minutes ? ` · ${p.duration_minutes} mins` : ""}
             </div>
@@ -375,11 +376,11 @@ function AdminPodcasts() {
                   padding: 12,
                   borderRadius: 8,
                   border: 0,
-                  background: "#0B1F3A",
+                  background: tokens.navy,
                   color: "#fff",
                   boxShadow: "0 3px 0 #050D1C",
                   fontSize: 13.5,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -400,7 +401,7 @@ function AdminPodcasts() {
                   background: "#F2F2F7",
                   color: "#6B6B6F",
                   fontSize: 13.5,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -422,7 +423,7 @@ function AdminPodcasts() {
                   color: "#FF3B30",
                   border: "1.5px solid #FF3B30",
                   fontSize: 13.5,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -464,7 +465,7 @@ function AdminPodcasts() {
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <div style={{ fontWeight: 700, fontSize: 16, color: "#0F2044" }}>
+              <div style={{ fontWeight: tokens.fontWeight.bold, fontSize: tokens.fontSize.lg, color: "#0F2044" }}>
                 {editing ? "Edit episode" : "New episode"}
               </div>
               <button
@@ -581,7 +582,7 @@ function AdminPodcasts() {
                     checked={!!form.is_published}
                     onChange={(e) => setForm({ ...form, is_published: e.target.checked })}
                   />
-                  <span style={{ fontSize: 13, color: "#0F2044" }}>Visible to users</span>
+                  <span style={{ fontSize: tokens.fontSize.base, color: "#0F2044" }}>Visible to users</span>
                 </label>
               </Field>
               <Field label="Published date">
@@ -600,13 +601,13 @@ function AdminPodcasts() {
               disabled={saving}
               style={{
                 width: "100%",
-                background: "#CC2229",
+                background: tokens.red,
                 color: "#fff",
                 border: 0,
                 padding: "12px",
                 borderRadius: 8,
-                fontWeight: 700,
-                fontSize: 14,
+                fontWeight: tokens.fontWeight.bold,
+                fontSize: tokens.fontSize.md,
                 marginTop: 12,
                 cursor: saving ? "wait" : "pointer",
                 opacity: saving ? 0.7 : 1,
@@ -629,7 +630,7 @@ function AdminPodcasts() {
             color: "#fff",
             padding: "10px 16px",
             borderRadius: 999,
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
             zIndex: 60,
           }}
         >
@@ -645,7 +646,7 @@ function AdminPodcasts() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: 10 }}>
-      <div style={{ fontSize: 12, fontWeight: 600, color: "#374151", marginBottom: 4 }}>{label}</div>
+      <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#374151", marginBottom: 4 }}>{label}</div>
       {children}
     </div>
   );
@@ -656,7 +657,7 @@ const inputStyle: React.CSSProperties = {
   padding: "10px 12px",
   border: "1px solid #E2E6ED",
   borderRadius: 8,
-  fontSize: 14,
+  fontSize: tokens.fontSize.md,
   color: "#0F2044",
   fontFamily: "inherit",
   background: "#fff",
@@ -671,7 +672,7 @@ function btn(bg: string, color: string, border?: string): React.CSSProperties {
     padding: "6px 12px",
     borderRadius: 8,
     fontSize: 12,
-    fontWeight: 600,
+    fontWeight: tokens.fontWeight.semibold,
     cursor: "pointer",
     display: "inline-flex",
     alignItems: "center",

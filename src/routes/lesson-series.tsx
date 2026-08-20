@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconCalendar, IconDots, IconRefresh, IconSearch, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -417,7 +418,7 @@ function LessonSeriesPage() {
 
   return (
     <DSMTopSheet title="Lesson Series" onBack={() => navigate({ to: "/schedule" as never })}>
-    <div style={{ background: "#FFFFFF", minHeight: "100%", ...POPPINS }}>
+    <div style={{ background: tokens.white, minHeight: "100%", ...POPPINS }}>
 
       {/* Intro card */}
       <div
@@ -432,7 +433,7 @@ function LessonSeriesPage() {
         <div className="flex items-start gap-3">
           <IconRefresh stroke={1.5} size={18} color="#1A52A0" />
           <div>
-            <p style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>Recurring lesson series</p>
+            <p style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: "#0F2044" }}>Recurring lesson series</p>
             <p style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
               Set up weekly or fortnightly lessons that generate automatically.
             </p>
@@ -444,8 +445,8 @@ function LessonSeriesPage() {
       {series === null ? null : series.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center px-6 py-12">
           <IconRefresh stroke={1.5} size={48} color="#D1D5DB" style={{ marginBottom: 12 }} />
-          <p style={{ fontSize: 15, fontWeight: 600, color: "#6B7280" }}>No recurring series</p>
-          <p style={{ fontSize: 13, color: "#9CA3AF", marginTop: 4 }}>
+          <p style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: "#6B7280" }}>No recurring series</p>
+          <p style={{ fontSize: tokens.fontSize.base, color: tokens.textMuted, marginTop: 4 }}>
             Set up weekly lessons to save time booking
           </p>
           <button
@@ -455,11 +456,11 @@ function LessonSeriesPage() {
             style={{
               marginTop: 20,
               background: "#0F2044",
-              color: "#FFFFFF",
+              color: tokens.white,
               padding: "10px 18px",
               borderRadius: 8,
-              fontWeight: 600,
-              fontSize: 14,
+              fontWeight: tokens.fontWeight.semibold,
+              fontSize: tokens.fontSize.md,
             }}
           >
             + Create your first series
@@ -476,7 +477,7 @@ function LessonSeriesPage() {
               <div
                 key={s.id}
                 style={{
-                  background: "#FFFFFF",
+                  background: tokens.white,
                   border: "0.5px solid #E2E6ED",
                   borderRadius: 8,
                   padding: 16,
@@ -492,22 +493,22 @@ function LessonSeriesPage() {
                         height: 36,
                         borderRadius: 999,
                         background: colour,
-                        color: "#FFFFFF",
+                        color: tokens.white,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         fontSize: 12,
-                        fontWeight: 700,
+                        fontWeight: tokens.fontWeight.bold,
                         flexShrink: 0,
                       }}
                     >
                       {initialsOf(p)}
                     </div>
                     <div style={{ minWidth: 0 }}>
-                      <p style={{ fontSize: 14, fontWeight: 600, color: "#0F2044" }}>
+                      <p style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: "#0F2044" }}>
                         {p?.name ?? p?.first_name ?? "Pupil"}
                       </p>
-                      <p style={{ fontSize: 12, color: "#9CA3AF" }}>
+                      <p style={{ fontSize: 12, color: tokens.textMuted }}>
                         {s.day_of_week} at {fmtTime(s.lesson_time)} · {s.duration_minutes} mins
                       </p>
                     </div>
@@ -517,8 +518,8 @@ function LessonSeriesPage() {
                       style={{
                         background: "#F0F4FF",
                         color: "#1A52A0",
-                        fontSize: 11,
-                        fontWeight: 700,
+                        fontSize: tokens.fontSize.sm,
+                        fontWeight: tokens.fontWeight.bold,
                         padding: "2px 8px",
                         borderRadius: 999,
                       }}
@@ -543,7 +544,7 @@ function LessonSeriesPage() {
                       position: "absolute",
                       top: 46,
                       right: 12,
-                      background: "#FFFFFF",
+                      background: tokens.white,
                       border: "0.5px solid #E2E6ED",
                       borderRadius: 8,
                       boxShadow: "0 6px 20px rgba(11,31,58,0.12)",
@@ -556,7 +557,7 @@ function LessonSeriesPage() {
                       type="button"
                       onClick={() => openEdit(s)}
                       className="cf-tap w-full text-left"
-                      style={{ padding: "10px 14px", fontSize: 13, color: "#0F2044" }}
+                      style={{ padding: "10px 14px", fontSize: tokens.fontSize.base, color: "#0F2044" }}
                     >
                       Edit
                     </button>
@@ -564,7 +565,7 @@ function LessonSeriesPage() {
                       type="button"
                       onClick={() => pauseSeries(s)}
                       className="cf-tap w-full text-left"
-                      style={{ padding: "10px 14px", fontSize: 13, color: "#0F2044", borderTop: "0.5px solid #F3F4F6" }}
+                      style={{ padding: "10px 14px", fontSize: tokens.fontSize.base, color: "#0F2044", borderTop: "0.5px solid #F3F4F6" }}
                     >
                       Pause
                     </button>
@@ -576,7 +577,7 @@ function LessonSeriesPage() {
                         setMenuOpenId(null);
                       }}
                       className="cf-tap w-full text-left"
-                      style={{ padding: "10px 14px", fontSize: 13, color: "#B91C1C", borderTop: "0.5px solid #F3F4F6" }}
+                      style={{ padding: "10px 14px", fontSize: tokens.fontSize.base, color: "#B91C1C", borderTop: "0.5px solid #F3F4F6" }}
                     >
                       End series
                     </button>
@@ -596,14 +597,14 @@ function LessonSeriesPage() {
                 </div>
 
                 <div style={{ marginTop: 6 }}>
-                  <span style={{ fontSize: 12, color: "#9CA3AF" }}>Next lesson: </span>
+                  <span style={{ fontSize: 12, color: tokens.textMuted }}>Next lesson: </span>
                   <span style={{ fontSize: 12, color: "#0F2044", fontWeight: 600 }}>
                     {next ? fmtLongDate(next) : "—"}
                   </span>
                 </div>
 
                 <div style={{ marginTop: 6 }}>
-                  <span style={{ fontSize: 12, color: "#9CA3AF" }}>{generated} lessons generated</span>
+                  <span style={{ fontSize: 12, color: tokens.textMuted }}>{generated} lessons generated</span>
                 </div>
               </div>
             );
@@ -616,11 +617,11 @@ function LessonSeriesPage() {
             style={{
               display: "block",
               background: "#0F2044",
-              color: "#FFFFFF",
+              color: tokens.white,
               padding: "12px",
               borderRadius: 8,
-              fontWeight: 600,
-              fontSize: 14,
+              fontWeight: tokens.fontWeight.semibold,
+              fontSize: tokens.fontSize.md,
               margin: "12px 16px 24px 16px",
               width: "calc(100% - 32px)",
             }}
@@ -648,9 +649,9 @@ function LessonSeriesPage() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{ background: "#FFFFFF", borderRadius: 8, padding: 20, width: "100%", maxWidth: 360 }}
+            style={{ background: tokens.white, borderRadius: 8, padding: 20, width: "100%", maxWidth: 360 }}
           >
-            <p style={{ fontSize: 15, fontWeight: 600, color: "#0F2044", marginBottom: 8 }}>End series</p>
+            <p style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: "#0F2044", marginBottom: 8 }}>End series</p>
             <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 12 }}>
               Pick the last date. Lessons after this date will be cancelled.
             </p>
@@ -664,7 +665,7 @@ function LessonSeriesPage() {
                 borderRadius: 8,
                 border: "0.5px solid #E2E6ED",
                 padding: "0 12px",
-                fontSize: 14,
+                fontSize: tokens.fontSize.md,
                 color: "#0F2044",
               }}
             />
@@ -673,7 +674,7 @@ function LessonSeriesPage() {
                 type="button"
                 onClick={() => setEndSeriesId(null)}
                 className="cf-tap flex-1"
-                style={{ padding: "10px", borderRadius: 8, border: "0.5px solid #E2E6ED", fontSize: 14, color: "#0F2044" }}
+                style={{ padding: "10px", borderRadius: 8, border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.md, color: "#0F2044" }}
               >
                 Cancel
               </button>
@@ -681,7 +682,7 @@ function LessonSeriesPage() {
                 type="button"
                 onClick={confirmEndSeries}
                 className="cf-tap flex-1"
-                style={{ padding: "10px", borderRadius: 8, background: "#0F2044", color: "#FFFFFF", fontSize: 14, fontWeight: 600 }}
+                style={{ padding: "10px", borderRadius: 8, background: "#0F2044", color: tokens.white, fontSize: tokens.fontSize.md, fontWeight: 600 }}
               >
                 Confirm
               </button>
@@ -699,7 +700,7 @@ function LessonSeriesPage() {
       >
         <div style={POPPINS}>
           {/* Pupil */}
-          <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6 }}>Pupil</label>
+          <label style={{ display: "block", fontSize: 12, color: tokens.textMuted, marginBottom: 6 }}>Pupil</label>
           <div
             style={{
               border: "0.5px solid #E2E6ED",
@@ -716,7 +717,7 @@ function LessonSeriesPage() {
               placeholder={pupilId ? pupils.find((p) => p.id === pupilId)?.name ?? "Search pupils…" : "Search pupils…"}
               value={pupilSearch}
               onChange={(e) => setPupilSearch(e.target.value)}
-              style={{ border: "none", outline: "none", flex: 1, fontSize: 14, color: "#0F2044", background: "transparent" }}
+              style={{ border: "none", outline: "none", flex: 1, fontSize: tokens.fontSize.md, color: "#0F2044", background: "transparent" }}
             />
             {pupilId && (
               <button type="button" onClick={() => setPupilId("")} aria-label="Clear">
@@ -767,9 +768,9 @@ function LessonSeriesPage() {
                           height: 24,
                           borderRadius: 999,
                           background: c,
-                          color: "#FFFFFF",
-                          fontSize: 10,
-                          fontWeight: 700,
+                          color: tokens.white,
+                          fontSize: tokens.fontSize.xs,
+                          fontWeight: tokens.fontWeight.bold,
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -777,7 +778,7 @@ function LessonSeriesPage() {
                       >
                         {initialsOf(p)}
                       </span>
-                      <span style={{ fontSize: 13, color: "#0F2044" }}>{p.name ?? p.first_name}</span>
+                      <span style={{ fontSize: tokens.fontSize.base, color: "#0F2044" }}>{p.name ?? p.first_name}</span>
                     </button>
                   );
                 })
@@ -786,7 +787,7 @@ function LessonSeriesPage() {
           )}
 
           {/* Day */}
-          <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6, marginTop: 12 }}>Day</label>
+          <label style={{ display: "block", fontSize: 12, color: tokens.textMuted, marginBottom: 6, marginTop: 12 }}>Day</label>
           <div className="grid grid-cols-7 gap-1">
             {DAY_LABELS.map((label, i) => {
               const full = DAYS[i];
@@ -801,7 +802,7 @@ function LessonSeriesPage() {
                     padding: "8px 0",
                     borderRadius: 999,
                     fontSize: 12,
-                    fontWeight: 600,
+                    fontWeight: tokens.fontWeight.semibold,
                     background: active ? "#0F2044" : "#F7FAFC",
                     color: active ? "#FFFFFF" : "#0F2044",
                     border: active ? "none" : "0.5px solid #E2E6ED",
@@ -814,7 +815,7 @@ function LessonSeriesPage() {
           </div>
 
           {/* Time */}
-          <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6, marginTop: 12 }}>Time</label>
+          <label style={{ display: "block", fontSize: 12, color: tokens.textMuted, marginBottom: 6, marginTop: 12 }}>Time</label>
           <input
             type="time"
             value={lessonTime}
@@ -825,13 +826,13 @@ function LessonSeriesPage() {
               borderRadius: 8,
               border: "0.5px solid #E2E6ED",
               padding: "0 12px",
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               color: "#0F2044",
             }}
           />
 
           {/* Duration */}
-          <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6, marginTop: 12 }}>Duration</label>
+          <label style={{ display: "block", fontSize: 12, color: tokens.textMuted, marginBottom: 6, marginTop: 12 }}>Duration</label>
           <div className="grid grid-cols-4 gap-2">
             {[45, 60, 90, 120].map((m) => {
               const active = duration === m;
@@ -844,8 +845,8 @@ function LessonSeriesPage() {
                   style={{
                     padding: "10px 0",
                     borderRadius: 8,
-                    fontSize: 13,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
                     background: active ? "#0F2044" : "#F7FAFC",
                     color: active ? "#FFFFFF" : "#0F2044",
                     border: active ? "none" : "0.5px solid #E2E6ED",
@@ -858,7 +859,7 @@ function LessonSeriesPage() {
           </div>
 
           {/* Frequency */}
-          <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6, marginTop: 12 }}>Frequency</label>
+          <label style={{ display: "block", fontSize: 12, color: tokens.textMuted, marginBottom: 6, marginTop: 12 }}>Frequency</label>
           <div className="grid grid-cols-2 gap-2">
             {(["weekly", "fortnightly"] as const).map((f) => {
               const active = frequency === f;
@@ -871,8 +872,8 @@ function LessonSeriesPage() {
                   style={{
                     padding: "10px 0",
                     borderRadius: 8,
-                    fontSize: 13,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
                     background: active ? "#0F2044" : "#F7FAFC",
                     color: active ? "#FFFFFF" : "#0F2044",
                     border: active ? "none" : "0.5px solid #E2E6ED",
@@ -886,7 +887,7 @@ function LessonSeriesPage() {
           </div>
 
           {/* Start date */}
-          <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6, marginTop: 12 }}>First lesson</label>
+          <label style={{ display: "block", fontSize: 12, color: tokens.textMuted, marginBottom: 6, marginTop: 12 }}>First lesson</label>
           <input
             type="date"
             value={startDate}
@@ -897,13 +898,13 @@ function LessonSeriesPage() {
               borderRadius: 8,
               border: "0.5px solid #E2E6ED",
               padding: "0 12px",
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               color: "#0F2044",
             }}
           />
 
           {/* End date */}
-          <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6, marginTop: 12 }}>End date</label>
+          <label style={{ display: "block", fontSize: 12, color: tokens.textMuted, marginBottom: 6, marginTop: 12 }}>End date</label>
           <div className="grid grid-cols-2 gap-2">
             {[
               { k: false, label: "Ongoing" },
@@ -919,8 +920,8 @@ function LessonSeriesPage() {
                   style={{
                     padding: "10px 0",
                     borderRadius: 8,
-                    fontSize: 13,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
                     background: active ? "#0F2044" : "#F7FAFC",
                     color: active ? "#FFFFFF" : "#0F2044",
                     border: active ? "none" : "0.5px solid #E2E6ED",
@@ -942,7 +943,7 @@ function LessonSeriesPage() {
                 borderRadius: 8,
                 border: "0.5px solid #E2E6ED",
                 padding: "0 12px",
-                fontSize: 14,
+                fontSize: tokens.fontSize.md,
                 color: "#0F2044",
                 marginTop: 8,
               }}
@@ -950,7 +951,7 @@ function LessonSeriesPage() {
           )}
 
           {/* Price */}
-          <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6, marginTop: 12 }}>Price per lesson</label>
+          <label style={{ display: "block", fontSize: 12, color: tokens.textMuted, marginBottom: 6, marginTop: 12 }}>Price per lesson</label>
           <div
             style={{
               display: "flex",
@@ -961,19 +962,19 @@ function LessonSeriesPage() {
               height: 44,
             }}
           >
-            <span style={{ color: "#9CA3AF", fontSize: 14, marginRight: 6 }}>£</span>
+            <span style={{ color: tokens.textMuted, fontSize: tokens.fontSize.md, marginRight: 6 }}>£</span>
             <input
               type="number"
               inputMode="decimal"
               step="0.01"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              style={{ border: "none", outline: "none", flex: 1, fontSize: 14, color: "#0F2044" }}
+              style={{ border: "none", outline: "none", flex: 1, fontSize: tokens.fontSize.md, color: "#0F2044" }}
             />
           </div>
 
           {/* Notes */}
-          <label style={{ display: "block", fontSize: 12, color: "#9CA3AF", marginBottom: 6, marginTop: 12 }}>Notes</label>
+          <label style={{ display: "block", fontSize: 12, color: tokens.textMuted, marginBottom: 6, marginTop: 12 }}>Notes</label>
           <textarea
             rows={3}
             value={notes}
@@ -984,7 +985,7 @@ function LessonSeriesPage() {
               borderRadius: 8,
               border: "0.5px solid #E2E6ED",
               padding: "10px 12px",
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               color: "#0F2044",
               resize: "vertical",
             }}
@@ -1002,10 +1003,10 @@ function LessonSeriesPage() {
           >
             <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 6 }}>This will generate lessons on:</p>
             {previewDates.length === 0 ? (
-              <p style={{ fontSize: 13, color: "#9CA3AF" }}>Pick a day and start date to preview.</p>
+              <p style={{ fontSize: tokens.fontSize.base, color: tokens.textMuted }}>Pick a day and start date to preview.</p>
             ) : (
               previewDates.map((d) => (
-                <p key={d} style={{ fontSize: 13, color: "#0F2044" }}>
+                <p key={d} style={{ fontSize: tokens.fontSize.base, color: "#0F2044" }}>
                   {fmtLongDate(d)}
                 </p>
               ))
@@ -1020,11 +1021,11 @@ function LessonSeriesPage() {
             style={{
               width: "100%",
               background: "#0F2044",
-              color: "#FFFFFF",
+              color: tokens.white,
               padding: "12px",
               borderRadius: 8,
-              fontWeight: 600,
-              fontSize: 14,
+              fontWeight: tokens.fontWeight.semibold,
+              fontSize: tokens.fontSize.md,
               marginTop: 16,
               opacity: saving ? 0.6 : 1,
             }}

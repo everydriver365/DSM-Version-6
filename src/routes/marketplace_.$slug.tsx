@@ -1,4 +1,5 @@
 import * as React from "react";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
@@ -101,7 +102,7 @@ function MarketplaceProductPage() {
       {/* TOP BAR */}
       <div
         style={{
-          background: "#0B1F3A",
+          background: tokens.navy,
           color: "#fff",
           height: TOP_BAR_HEIGHT,
           padding: "0 16px",
@@ -132,8 +133,8 @@ function MarketplaceProductPage() {
         </button>
         <div
           style={{
-            fontSize: 18,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.xl,
+            fontWeight: tokens.fontWeight.bold,
             marginLeft: 12,
             flex: 1,
             whiteSpace: "nowrap",
@@ -151,12 +152,12 @@ function MarketplaceProductPage() {
         </div>
       ) : !tile ? (
         <div style={{ padding: 40, textAlign: "center" }}>
-          <p style={{ fontSize: 16, color: "#374151", marginBottom: 16 }}>
+          <p style={{ fontSize: tokens.fontSize.lg, color: "#374151", marginBottom: 16 }}>
             Product not found
           </p>
           <Link
             to="/marketplace"
-            style={{ color: "#1877D6", fontWeight: 600, fontSize: 14 }}
+            style={{ color: tokens.blue, fontWeight: tokens.fontWeight.semibold, fontSize: 14 }}
           >
             Back to marketplace
           </Link>
@@ -184,10 +185,10 @@ function MarketplaceProductPage() {
                   position: "absolute",
                   top: 12,
                   left: 12,
-                  background: "#1877D6",
+                  background: tokens.blue,
                   color: "#fff",
-                  fontSize: 11,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.bold,
                   padding: "4px 8px",
                   borderRadius: 8,
                 }}
@@ -201,9 +202,9 @@ function MarketplaceProductPage() {
           <div style={{ padding: 20 }}>
             <div
               style={{
-                fontSize: 22,
-                fontWeight: 700,
-                color: "#0B1F3A",
+                fontSize: tokens.fontSize.xxl,
+                fontWeight: tokens.fontWeight.bold,
+                color: tokens.navy,
                 marginBottom: 6,
               }}
             >
@@ -211,9 +212,9 @@ function MarketplaceProductPage() {
             </div>
             <div
               style={{
-                fontSize: 18,
-                fontWeight: 700,
-                color: "#1877D6",
+                fontSize: tokens.fontSize.xl,
+                fontWeight: tokens.fontWeight.bold,
+                color: tokens.blue,
                 marginBottom: 12,
               }}
             >
@@ -221,7 +222,7 @@ function MarketplaceProductPage() {
             </div>
             <div
               style={{
-                fontSize: 14,
+                fontSize: tokens.fontSize.md,
                 color: "#6B7280",
                 lineHeight: 1.6,
                 marginBottom: 16,
@@ -254,7 +255,7 @@ function MarketplaceProductPage() {
                     }}
                   >
                     <IconCircleCheck size={18} color="#1877D6" />
-                    <span style={{ fontSize: 13, color: "#374151" }}>
+                    <span style={{ fontSize: tokens.fontSize.base, color: "#374151" }}>
                       {feature}
                     </span>
                   </div>
@@ -283,13 +284,13 @@ function MarketplaceProductPage() {
                 }
                 style={{
                   width: "100%",
-                  background: "#0B1F3A",
+                  background: tokens.navy,
                   color: "#fff",
                   border: "none",
                   padding: "14px",
                   borderRadius: 8,
-                  fontSize: 16,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.lg,
+                  fontWeight: tokens.fontWeight.bold,
                   cursor: "pointer",
                   height: 48,
                 }}
@@ -306,13 +307,13 @@ function MarketplaceProductPage() {
                 }
                 style={{
                   width: "100%",
-                  background: "#1877D6",
+                  background: tokens.blue,
                   color: "#fff",
                   border: "none",
                   padding: "14px",
                   borderRadius: 8,
-                  fontSize: 16,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.lg,
+                  fontWeight: tokens.fontWeight.bold,
                   cursor: "pointer",
                   height: 48,
                 }}

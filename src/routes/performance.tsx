@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -268,12 +269,12 @@ function ResultBar({
   return (
     <div>
       <div className="flex items-center justify-between">
-        <span className="text-[13px] font-medium" style={{ color: "#0B1F3A" }}>{label}</span>
+        <span className="text-[13px] font-medium" style={{ color: tokens.navy }}>{label}</span>
         <span className="text-[13px]" style={{ color: "#6B7280" }}>{count}</span>
       </div>
       <div
         className="mt-1 overflow-hidden"
-        style={{ height: 8, borderRadius: 8, backgroundColor: "#EEF2F7" }}
+        style={{ height: 8, borderRadius: 8, backgroundColor: tokens.canvas }}
       >
         <div style={{ width: `${pct}%`, height: "100%", backgroundColor: color }} />
       </div>

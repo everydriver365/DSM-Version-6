@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconChevronLeft, IconSearch, IconStar } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
@@ -35,7 +36,7 @@ function TopBar({ onBack }: { onBack: () => void }) {
         left: 0,
         right: 0,
         zIndex: 40,
-        background: "#0B1F3A",
+        background: tokens.navy,
         color: "#fff",
         borderRadius: "0 0 8px 8px",
         padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 18px",
@@ -64,7 +65,7 @@ function TopBar({ onBack }: { onBack: () => void }) {
       >
         <IconChevronLeft stroke={1.5} size={18} />
       </button>
-      <span style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.4px", color: "#fff" }}>
+      <span style={{ fontSize: 24, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.4px", color: "#fff" }}>
         Featured listings
       </span>
     </div>
@@ -80,11 +81,11 @@ function StatColumn({ label, value, divider }: { label: string; value: string; d
         borderLeft: divider ? "1px solid #EFEFF2" : undefined,
       }}
     >
-      <div style={{ fontSize: 26, fontWeight: 800, color: "#000", letterSpacing: "-0.5px" }}>{value}</div>
+      <div style={{ fontSize: 26, fontWeight: tokens.fontWeight.extrabold, color: "#000", letterSpacing: "-0.5px" }}>{value}</div>
       <div
         style={{
           fontSize: 10.5,
-          fontWeight: 700,
+          fontWeight: tokens.fontWeight.bold,
           color: "#8A8A8E",
           textTransform: "uppercase",
           letterSpacing: "0.4px",
@@ -224,7 +225,7 @@ function AdminFeatured() {
   if (status === "denied") {
     return (
       <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
-        <div style={{ fontSize: 18, fontWeight: 600, color: "#1877D6" }}>Access denied</div>
+        <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: tokens.blue }}>Access denied</div>
         <div style={{ color: "#6B7280", marginTop: 8 }}>Redirecting…</div>
       </div>
     );
@@ -272,7 +273,7 @@ function AdminFeatured() {
                 border: "none",
                 outline: "none",
                 background: "transparent",
-                fontSize: 14,
+                fontSize: tokens.fontSize.md,
                 color: "#000",
               }}
             />
@@ -314,8 +315,8 @@ function AdminFeatured() {
                         borderRadius: "50%",
                         background: featured ? "#0B1F3A" : "#F2F2F7",
                         color: featured ? "#fff" : "#0B1F3A",
-                        fontSize: 13,
-                        fontWeight: 700,
+                        fontSize: tokens.fontSize.base,
+                        fontWeight: tokens.fontWeight.bold,
                         display: "inline-flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -326,7 +327,7 @@ function AdminFeatured() {
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: "#000" }}>
+                        <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: "#000" }}>
                           {inst.name ?? "Unnamed"}
                         </div>
                         {featured && (
@@ -335,8 +336,8 @@ function AdminFeatured() {
                               display: "inline-flex",
                               alignItems: "center",
                               gap: 4,
-                              fontSize: 10,
-                              fontWeight: 800,
+                              fontSize: tokens.fontSize.xs,
+                              fontWeight: tokens.fontWeight.extrabold,
                               color: "#B8860B",
                               background: "#FFF6DC",
                               padding: "3px 9px",
@@ -352,7 +353,7 @@ function AdminFeatured() {
                         {inst.app_slug ?? "no slug"}
                       </div>
                       {featured && inst.featured_until && (
-                        <div style={{ fontSize: 11.5, fontWeight: 500, color: "#B8860B", marginTop: 2 }}>
+                        <div style={{ fontSize: 11.5, fontWeight: tokens.fontWeight.medium, color: "#B8860B", marginTop: 2 }}>
                           Until {new Date(inst.featured_until).toLocaleDateString()}
                         </div>
                       )}

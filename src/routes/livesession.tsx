@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState } from "react";
 import { IconChevronLeft, IconNavigation, IconNote, IconPhone, IconSquareCheck, IconX } from "@tabler/icons-react";
 import { SectionHeader } from "../components/dsm/SectionHeader";
@@ -149,11 +150,11 @@ function LiveSessionPage() {
   const startTimeLabel = lesson ? (lesson.lesson_time ?? "").slice(0, 5) : "—";
 
   return (
-    <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#1877D6", margin: -8 }}>
+    <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: tokens.blue, margin: -8 }}>
       {/* TOP BAR */}
       <div
         className="sticky top-0 z-40 h-[52px] px-4 flex items-center justify-between"
-        style={{ backgroundColor: "#1877D6" }}
+        style={{ backgroundColor: tokens.blue }}
       >
         <button
           type="button"
@@ -182,7 +183,7 @@ function LiveSessionPage() {
           style={{
             color: "#ffffff",
             fontSize: 48,
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
             letterSpacing: 1,
             fontVariantNumeric: "tabular-nums",
           }}
@@ -210,19 +211,19 @@ function LiveSessionPage() {
               width: 48,
               height: 48,
               borderRadius: 8,
-              background: "#1877D6",
+              background: tokens.blue,
               color: "#fff",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontWeight: 700,
-              fontSize: 16,
+              fontWeight: tokens.fontWeight.bold,
+              fontSize: tokens.fontSize.lg,
             }}
           >
             {initials(pupilName)}
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: "#0B1F3A" }}>{pupilName}</div>
+            <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>{pupilName}</div>
             <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
               Start {startTimeLabel} · {lesson?.duration_minutes ?? 60} min
             </div>
@@ -283,8 +284,8 @@ function LiveSessionPage() {
               borderRadius: 8,
               padding: 12,
               background: "#ffffff",
-              color: "#0B1F3A",
-              fontSize: 14,
+              color: tokens.navy,
+              fontSize: tokens.fontSize.md,
               border: "none",
               resize: "vertical",
               fontFamily: "Poppins, sans-serif",
@@ -295,7 +296,7 @@ function LiveSessionPage() {
               position: "absolute",
               right: 10,
               bottom: 10,
-              fontSize: 10,
+              fontSize: tokens.fontSize.xs,
               color: "#6B7280",
               background: "rgba(255,255,255,0.9)",
               padding: "2px 6px",
@@ -331,7 +332,7 @@ function LiveSessionPage() {
               padding: 16,
             }}
           >
-            <div style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A", marginBottom: 12 }}>
+            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, marginBottom: 12 }}>
               Quick note
             </div>
             <textarea
@@ -345,7 +346,7 @@ function LiveSessionPage() {
                 borderRadius: 8,
                 padding: 10,
                 border: "0.5px solid #EEF2F7",
-                fontSize: 14,
+                fontSize: tokens.fontSize.md,
                 fontFamily: "Poppins, sans-serif",
               }}
             />
@@ -374,8 +375,8 @@ function actionBtn(bg: string): React.CSSProperties {
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
-    fontSize: 14,
-    fontWeight: 600,
+    fontSize: tokens.fontSize.md,
+    fontWeight: tokens.fontWeight.semibold,
     fontFamily: "Poppins, sans-serif",
     cursor: "pointer",
   };

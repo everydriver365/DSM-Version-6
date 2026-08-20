@@ -1,4 +1,5 @@
 import DSMSkeleton from "@/components/dsm/DSMSkeleton";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
@@ -98,7 +99,7 @@ function pupilMatchesStatus(
 
 const PILL_BASE = {
   fontSize: 9.5,
-  fontWeight: 700,
+  fontWeight: tokens.fontWeight.bold,
   borderRadius: 8,
   padding: "3px 8px",
   fontFamily: "Poppins, sans-serif",
@@ -696,7 +697,7 @@ function PupilsIndexPage() {
                   width: 11,
                   height: 11,
                   borderRadius: "50%",
-                  background: "#CC2229",
+                  background: tokens.red,
                   border: "2px solid #fff",
                 }}
               />
@@ -706,13 +707,13 @@ function PupilsIndexPage() {
           <div className="min-w-0 flex-1 flex flex-col">
             <div
               className="truncate"
-              style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}
+              style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, ...POPPINS }}
             >
               {displayName(p.name)}
             </div>
             <div className="flex flex-wrap items-center" style={{ gap: 6, marginTop: 4 }}>
               {hasBalance ? (
-                <span style={{ ...PILL_BASE, backgroundColor: "#FCEBEB", color: "#CC2229" }}>
+                <span style={{ ...PILL_BASE, backgroundColor: "#FCEBEB", color: tokens.red }}>
                   £{balanceOwed.toFixed(2)} owed
                 </span>
               ) : (
@@ -739,7 +740,7 @@ function PupilsIndexPage() {
               </span>
             </div>
             {(lp || nextLesson) && (
-              <div style={{ fontSize: 11, color: "#B0BAC9", marginTop: 3, ...POPPINS }}>
+              <div style={{ fontSize: tokens.fontSize.sm, color: "#B0BAC9", marginTop: 3, ...POPPINS }}>
                 {lp
                   ? `Last seen: ${formatRelativeDate(lp.date)}`
                   : `Next: ${formatShortDate(nextLesson)}`}
@@ -750,8 +751,8 @@ function PupilsIndexPage() {
           <div className="flex flex-col items-end shrink-0" style={{ gap: 4 }}>
             <span
               style={{
-                fontSize: 13,
-                fontWeight: 500,
+                fontSize: tokens.fontSize.base,
+                fontWeight: tokens.fontWeight.medium,
                 color: lessons > 0 ? "#8A94A6" : "#B0BAC9",
                 ...POPPINS,
               }}
@@ -812,7 +813,7 @@ function PupilsIndexPage() {
     alignItems: "center",
     justifyContent: "center",
     fontSize: 12,
-    fontWeight: 700,
+    fontWeight: tokens.fontWeight.bold,
     border: "none",
     cursor: "pointer",
     ...POPPINS,
@@ -828,7 +829,7 @@ function PupilsIndexPage() {
         <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, display: "flex" }}>
           <button
             type="button"
-            style={{ ...swipeActionBtn, background: "#1877D6" }}
+            style={{ ...swipeActionBtn, background: tokens.blue }}
             onClick={(e) => {
               e.stopPropagation();
               tapLight();
@@ -840,7 +841,7 @@ function PupilsIndexPage() {
           </button>
           <button
             type="button"
-            style={{ ...swipeActionBtn, background: "#CC2229" }}
+            style={{ ...swipeActionBtn, background: tokens.red }}
             onClick={(e) => {
               e.stopPropagation();
               tapHeavy();
@@ -889,7 +890,7 @@ function PupilsIndexPage() {
         display: "flex",
         flexDirection: "column",
         minHeight: 0,
-        background: "#0B1F3A",
+        background: tokens.navy,
         overflow: "hidden",
       }}
     >
@@ -901,18 +902,18 @@ function PupilsIndexPage() {
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "space-between",
-          background: "#0B1F3A",
+          background: tokens.navy,
           boxSizing: "border-box",
         }}
       >
         <h1
           style={{
             margin: 0,
-            color: "#FFFFFF",
+            color: tokens.white,
             fontFamily: "Sora, sans-serif",
-            fontSize: 22,
+            fontSize: tokens.fontSize.xxl,
             lineHeight: "40px",
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
           }}
         >
           Pupils
@@ -945,7 +946,7 @@ function PupilsIndexPage() {
                 minWidth: 8,
                 height: 8,
                 borderRadius: 999,
-                background: "#CC2229",
+                background: tokens.red,
               }}
             />
           )}
@@ -960,7 +961,7 @@ function PupilsIndexPage() {
           flex: 1,
           minHeight: 0,
           marginTop: -18,
-          background: "#FFFFFF",
+          background: tokens.white,
           borderRadius: "28px 28px 0 0",
           overflowY: "auto",
           overflowX: "hidden",
@@ -981,7 +982,7 @@ function PupilsIndexPage() {
           justifyContent: "space-between",
         }}
       >
-        <span style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}>
+        <span style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, ...POPPINS }}>
           {filtered === null ? "" : `${filtered.length} ${filtered.length === 1 ? "pupil" : "pupils"}`}
         </span>
         <div className="flex items-center" style={{ gap: 8 }}>
@@ -994,7 +995,7 @@ function PupilsIndexPage() {
               width: 32,
               height: 32,
               borderRadius: "50%",
-              backgroundColor: "#1877D6",
+              backgroundColor: tokens.blue,
               flexShrink: 0,
             }}
           >
@@ -1012,7 +1013,7 @@ function PupilsIndexPage() {
             }}
           >
             <IconSpeakerphone size={14} color="#1877D6" />
-            <span style={{ fontSize: 12, fontWeight: 600, color: "#1877D6", ...POPPINS }}>Message all</span>
+            <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.blue, ...POPPINS }}>Message all</span>
           </Link>
           <button
             type="button"
@@ -1065,7 +1066,7 @@ function PupilsIndexPage() {
         style={{
           margin: "12px 16px",
           display: "flex",
-          background: "#EEF2F7",
+          background: tokens.canvas,
           borderRadius: 8,
           boxShadow: "0 4px 0 #E4E4E8",
           padding: 3,
@@ -1105,8 +1106,8 @@ function PupilsIndexPage() {
               <span>{tab.label}</span>
               <span
                 style={{
-                  fontSize: 10,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.xs,
+                  fontWeight: tokens.fontWeight.bold,
                   padding: "2px 6px",
                   borderRadius: 999,
                   background: active ? "rgba(255,255,255,0.2)" : "#F3F4F6",
@@ -1194,7 +1195,7 @@ function PupilsIndexPage() {
                   <Link
                     to="/pupils/new"
                     className="inline-flex items-center gap-1.5 h-10 px-4 rounded-lg text-[13px] font-semibold text-white"
-                    style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
+                    style={{ backgroundColor: tokens.blue, fontFamily: "Poppins, sans-serif" }}
                   >
                     <IconPlus stroke={1.5} size={16} /> Add pupil
                   </Link>
@@ -1211,7 +1212,7 @@ function PupilsIndexPage() {
                   <Link
                     to="/pupils/new"
                     className="inline-flex items-center gap-1.5 h-10 px-4 rounded-lg text-[13px] font-semibold text-white"
-                    style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif" }}
+                    style={{ backgroundColor: tokens.blue, fontFamily: "Poppins, sans-serif" }}
                   >
                     <IconPlus stroke={1.5} size={16} /> Add pupil
                   </Link>
@@ -1227,7 +1228,7 @@ function PupilsIndexPage() {
               <div style={{ margin: '0 16px', background: '#fff', borderRadius: 8, boxShadow: '0 1px 3px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
                 <div className="flex flex-col items-center justify-center text-center px-6 py-12">
                   <IconUsers size={48} color="#D1D5DB" stroke={1.5} style={{ marginBottom: 12 }} />
-                  <p className="font-semibold" style={{ fontSize: 14, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>
+                  <p className="font-semibold" style={{ fontSize: tokens.fontSize.md, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>
                     {config.title}
                   </p>
                   {config.action && <div className="mt-5">{config.action}</div>}
@@ -1242,7 +1243,7 @@ function PupilsIndexPage() {
                 <div
                   style={{
                     fontSize: 12,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     color: '#FF3B30',
                     textTransform: 'uppercase',
                     letterSpacing: '0.5px',
@@ -1268,7 +1269,7 @@ function PupilsIndexPage() {
               <div
                 style={{
                   fontSize: 12,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   color: '#8A8A8E',
                   textTransform: 'uppercase',
                   letterSpacing: '0.5px',

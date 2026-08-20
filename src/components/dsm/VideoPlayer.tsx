@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useRef, useState, useEffect } from 'react';
 import {
   IconPlayerPlay,
@@ -210,7 +211,7 @@ export function VideoPlayer({
 
           <span
             style={{
-              fontSize: 11,
+              fontSize: tokens.fontSize.sm,
               color: 'rgba(255,255,255,0.85)',
               fontFamily: 'Poppins, sans-serif',
             }}

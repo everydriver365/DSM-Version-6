@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconUpload } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -41,7 +42,7 @@ const inputStyle: React.CSSProperties = {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: 12 }}>
-      <div style={{ fontSize: 12, fontWeight: 600, color: "#6B7280", marginBottom: 6 }}>{label}</div>
+      <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#6B7280", marginBottom: 6 }}>{label}</div>
       {children}
     </div>
   );
@@ -67,7 +68,7 @@ function ToggleRow({
         marginBottom: 4,
       }}
     >
-      <span style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>{label}</span>
+      <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>{label}</span>
       <button
         type="button"
         role="switch"
@@ -254,7 +255,7 @@ export default function AddExpenseSheet({ open, onClose, onSaved }: AddExpenseSh
             padding: "14px 16px",
             border: 0,
             borderRadius: 8,
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
             fontSize: 15,
             cursor: saving ? "not-allowed" : "pointer",
             opacity: saving ? 0.7 : 1,
@@ -294,7 +295,7 @@ export default function AddExpenseSheet({ open, onClose, onSaved }: AddExpenseSh
               transform: "translateY(-50%)",
               fontSize: 15,
               color: "#6B7280",
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
             }}
           >
             £
@@ -353,8 +354,8 @@ export default function AddExpenseSheet({ open, onClose, onSaved }: AddExpenseSh
             borderRadius: 8,
             cursor: "pointer",
             color: NAVY,
-            fontSize: 13,
-            fontWeight: 600,
+            fontSize: tokens.fontSize.base,
+            fontWeight: tokens.fontWeight.semibold,
           }}
         >
           <IconUpload stroke={1.5} size={16} />

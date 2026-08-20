@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconChevronDown } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -85,12 +86,12 @@ const TOTAL_COMPETENCIES = DVSA_SYLLABUS.reduce((sum, c) => sum + c.items.length
 const MAX_POINTS = TOTAL_COMPETENCIES * 5;
 
 const LEVEL_META: { n: 0 | 1 | 2 | 3 | 4 | 5; label: string; color: string }[] = [
-  { n: 0, label: "Not started", color: "#9CA3AF" },
+  { n: 0, label: "Not started", color: tokens.textMuted },
   { n: 1, label: "Introduced", color: "#B91C1C" },
   { n: 2, label: "Under guidance", color: "#EA580C" },
   { n: 3, label: "Prompted", color: "#EAB308" },
-  { n: 4, label: "Seldom prompted", color: "#1877D6" },
-  { n: 5, label: "Independent", color: "#1877D6" },
+  { n: 4, label: "Seldom prompted", color: tokens.blue },
+  { n: 5, label: "Independent", color: tokens.blue },
 ];
 
 function levelColor(n: number) {
@@ -219,13 +220,13 @@ function PupilSyllabusPage() {
       }
 
       setInitial({ ...levels });
-      toast.success("Progress saved ✓", { style: { background: "#1877D6", color: "#fff" } });
+      toast.success("Progress saved ✓", { style: { background: tokens.blue, color: "#fff" } });
       setJustSaved(true);
       setTimeout(() => setJustSaved(false), 2000);
     } catch (e) {
       console.error("[syllabus] save", e);
       toast.error("Failed to save — please try again", {
-        style: { background: "#1877D6", color: "#fff" },
+        style: { background: tokens.blue, color: "#fff" },
       });
     } finally {
       setSaving(false);
@@ -246,7 +247,7 @@ function PupilSyllabusPage() {
             borderRadius: 8,
             borderWidth: "0.5px",
             borderStyle: "solid",
-            borderColor: "#EEF2F7",
+            borderColor: tokens.canvas,
           }}
         >
           <div className="flex items-center justify-between mb-2">
@@ -262,7 +263,7 @@ function PupilSyllabusPage() {
           </div>
           <div
             className="h-2 rounded-full overflow-hidden"
-            style={{ backgroundColor: "#EEF2F7" }}
+            style={{ backgroundColor: tokens.canvas }}
           >
             <div
               className="h-full rounded-full transition-all"
@@ -278,7 +279,7 @@ function PupilSyllabusPage() {
       {/* Category accordions */}
       <div className="mx-4 mt-3 flex flex-col gap-2">
         {loading ? (
-          <div className="text-[13px] py-6 text-center" style={{ color: "#9CA3AF" }}>
+          <div className="text-[13px] py-6 text-center" style={{ color: tokens.textMuted }}>
             Loading…
           </div>
         ) : (
@@ -295,7 +296,7 @@ function PupilSyllabusPage() {
                   borderRadius: 8,
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: "#EEF2F7",
+                  borderColor: tokens.canvas,
                   overflow: "hidden",
                 }}
               >
@@ -309,7 +310,7 @@ function PupilSyllabusPage() {
                   aria-expanded={isOpen}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <div className="text-[14px] font-bold" style={{ color: "#0B1F3A" }}>
+                    <div className="text-[14px] font-bold" style={{ color: tokens.navy }}>
                       {cat.title}
                     </div>
                     <div className="flex items-center gap-2">
@@ -328,11 +329,11 @@ function PupilSyllabusPage() {
                   </div>
                   <div
                     className="rounded-full overflow-hidden mt-2"
-                    style={{ height: 4, backgroundColor: "#EEF2F7" }}
+                    style={{ height: 4, backgroundColor: tokens.canvas }}
                   >
                     <div
                       className="h-full rounded-full transition-all"
-                      style={{ width: `${catPct}%`, backgroundColor: "#1877D6" }}
+                      style={{ width: `${catPct}%`, backgroundColor: tokens.blue }}
                     />
                   </div>
                 </button>
@@ -350,10 +351,10 @@ function PupilSyllabusPage() {
                             borderRadius: 8,
                             borderWidth: "0.5px",
                             borderStyle: "solid",
-                            borderColor: "#EEF2F7",
+                            borderColor: tokens.canvas,
                           }}
                         >
-                          <div className="text-[14px] font-bold" style={{ color: "#0B1F3A" }}>
+                          <div className="text-[14px] font-bold" style={{ color: tokens.navy }}>
                             {item.name}
                           </div>
                           <div className="text-[11px] mt-0.5" style={{ color: "#6B7280" }}>
@@ -409,7 +410,7 @@ function PupilSyllabusPage() {
         className="fixed left-0 right-0 px-4 py-3"
         style={{
           bottom: "calc(64px + env(safe-area-inset-bottom, 0px))",
-          backgroundColor: "#FFFFFF",
+          backgroundColor: tokens.white,
           borderTop: "0.5px solid #EEF2F7",
         }}
       >

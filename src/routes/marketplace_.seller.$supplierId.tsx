@@ -1,4 +1,5 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
+import { tokens } from "@/lib/tokens";
 import { PageHeader } from "@/components/dsm/PageHeader";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
@@ -58,7 +59,7 @@ const CARD: React.CSSProperties = {
 const LABEL: React.CSSProperties = {
   color: "#8A8A8E",
   fontSize: 12,
-  fontWeight: 700,
+  fontWeight: tokens.fontWeight.bold,
   letterSpacing: "0.5px",
   textTransform: "uppercase",
   margin: "0 4px 8px",
@@ -118,8 +119,8 @@ function SellerProfilePage() {
               background: supplier?.logo_url
                 ? `#E7F1FC url(${supplier.logo_url}) center/cover`
                 : "#E7F1FC",
-              color: "#1877D6",
-              fontWeight: 800,
+              color: tokens.blue,
+              fontWeight: tokens.fontWeight.extrabold,
               fontSize: 20,
               display: "flex",
               alignItems: "center",
@@ -132,9 +133,9 @@ function SellerProfilePage() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <h1
               style={{
-                color: "#0B1F3A",
-                fontSize: 18,
-                fontWeight: 800,
+                color: tokens.navy,
+                fontSize: tokens.fontSize.xl,
+                fontWeight: tokens.fontWeight.extrabold,
                 margin: 0,
                 display: "flex",
                 alignItems: "center",
@@ -167,8 +168,8 @@ function SellerProfilePage() {
               <div
                 style={{
                   color: "#6B6B6F",
-                  fontSize: 14,
-                  fontWeight: 500,
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.medium,
                   lineHeight: 1.6,
                   whiteSpace: "pre-wrap",
                 }}
@@ -190,9 +191,9 @@ function SellerProfilePage() {
               display: "flex",
               alignItems: "center",
               gap: 10,
-              color: "#1877D6",
+              color: tokens.blue,
               fontSize: 14.5,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               textDecoration: "none",
             }}
           >
@@ -209,8 +210,8 @@ function SellerProfilePage() {
                 ...CARD,
                 textAlign: "center",
                 color: "#B0B0B5",
-                fontSize: 14,
-                fontWeight: 500,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.medium,
               }}
             >
               No active listings from this seller
@@ -255,9 +256,9 @@ function SellerProfilePage() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div
                         style={{
-                          color: "#0B1F3A",
+                          color: tokens.navy,
                           fontSize: 14.5,
-                          fontWeight: 800,
+                          fontWeight: tokens.fontWeight.extrabold,
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
@@ -270,7 +271,7 @@ function SellerProfilePage() {
                           style={{
                             color: "#8A8A8E",
                             fontSize: 12,
-                            fontWeight: 600,
+                            fontWeight: tokens.fontWeight.semibold,
                             marginTop: 2,
                             display: "flex",
                             alignItems: "center",
@@ -284,9 +285,9 @@ function SellerProfilePage() {
                       {l.price_display && (
                         <div
                           style={{
-                            color: "#1877D6",
-                            fontSize: 14,
-                            fontWeight: 800,
+                            color: tokens.blue,
+                            fontSize: tokens.fontSize.md,
+                            fontWeight: tokens.fontWeight.extrabold,
                             marginTop: 3,
                           }}
                         >

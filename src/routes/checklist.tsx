@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconArrowLeft, IconCheck } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -171,7 +172,7 @@ function ChecklistPage() {
                     <span
                       className="text-[14px]"
                       style={{
-                        color: "#0B1F3A",
+                        color: tokens.navy,
                         textDecoration: on ? "line-through" : "none",
                         opacity: on ? 0.7 : 1,
                       }}

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 
 import { toast } from "sonner";
@@ -128,25 +129,25 @@ function TaxPage() {
       {/* SUMMARY CARD */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: "#0B1F3A", borderRadius: 8, padding: 16 }}
+        style={{ backgroundColor: tokens.navy, borderRadius: 8, padding: 16 }}
       >
-        <div className="text-[10px] uppercase" style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}>
+        <div className="text-[10px] uppercase" style={{ color: tokens.textMuted, letterSpacing: "0.08em" }}>
           GROSS INCOME
         </div>
-        <div className="text-[24px] font-bold" style={{ color: "#1877D6" }}>
+        <div className="text-[24px] font-bold" style={{ color: tokens.blue }}>
           £{fmt(income)}
         </div>
-        <div className="mt-3 text-[10px] uppercase" style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}>
+        <div className="mt-3 text-[10px] uppercase" style={{ color: tokens.textMuted, letterSpacing: "0.08em" }}>
           TOTAL EXPENSES
         </div>
-        <div className="text-[24px] font-bold" style={{ color: "#1877D6" }}>
+        <div className="text-[24px] font-bold" style={{ color: tokens.blue }}>
           £{fmt(expenses)}
         </div>
         <div
           className="my-3"
           style={{ height: "0.5px", backgroundColor: "rgba(255,255,255,0.2)" }}
         />
-        <div className="text-[10px] uppercase" style={{ color: "#9CA3AF", letterSpacing: "0.08em" }}>
+        <div className="text-[10px] uppercase" style={{ color: tokens.textMuted, letterSpacing: "0.08em" }}>
           NET PROFIT
         </div>
         <div className="text-[28px] font-bold text-white">£{fmt(netProfit)}</div>
@@ -164,10 +165,10 @@ function TaxPage() {
           />
           <Row label="Class 2 NI (£3.45/wk)" value={`£${fmt(class2)}`} color="#1877D6" />
           <Row label="Class 4 NI (9%)" value={`£${fmt(class4)}`} color="#1877D6" />
-          <div className="my-2" style={{ height: "0.5px", backgroundColor: "#EEF2F7" }} />
+          <div className="my-2" style={{ height: "0.5px", backgroundColor: tokens.canvas }} />
           <div className="flex items-center justify-between">
             <span className="text-[14px] font-bold text-[#0B1F3A]">ESTIMATED TAX BILL</span>
-            <span className="text-[20px] font-bold" style={{ color: "#1877D6" }}>
+            <span className="text-[20px] font-bold" style={{ color: tokens.blue }}>
               £{fmt(totalTax)}
             </span>
           </div>
@@ -186,7 +187,7 @@ function TaxPage() {
             className="mt-2 overflow-hidden"
             style={{ height: 6, borderRadius: 8, backgroundColor: "#F3F4F6" }}
           >
-            <div style={{ height: "100%", width: `${progressPct}%`, backgroundColor: "#1877D6" }} />
+            <div style={{ height: "100%", width: `${progressPct}%`, backgroundColor: tokens.blue }} />
           </div>
         </Card>
 

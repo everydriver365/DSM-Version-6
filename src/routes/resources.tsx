@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { IconAward, IconBook, IconCalendar, IconCar, IconCloud, IconExternalLink, IconId, IconMapPin, IconNavigation } from "@tabler/icons-react";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -27,35 +28,35 @@ const dvsaResources: ResourceItem[] = [
     description: "Official DVSA instructor guidance and updates",
     url: "https://www.gov.uk/government/organisations/driver-and-vehicle-standards-agency",
     Icon: IconBook,
-    iconColor: "#1877D6",
+    iconColor: tokens.blue,
   },
   {
     title: "Check a driving licence",
     description: "Verify a pupil's licence details",
     url: "https://www.gov.uk/check-driving-information",
     Icon: IconId,
-    iconColor: "#1877D6",
+    iconColor: tokens.blue,
   },
   {
     title: "Book a theory test",
     description: "Help pupils book their theory test",
     url: "https://www.gov.uk/book-theory-test",
     Icon: IconCalendar,
-    iconColor: "#1877D6",
+    iconColor: tokens.blue,
   },
   {
     title: "Book a driving test",
     description: "Help pupils book their practical test",
     url: "https://www.gov.uk/book-driving-test",
     Icon: IconCar,
-    iconColor: "#1877D6",
+    iconColor: tokens.blue,
   },
   {
     title: "ADI register",
     description: "Check the approved driving instructor register",
     url: "https://www.gov.uk/find-driving-instructor",
     Icon: IconAward,
-    iconColor: "#1877D6",
+    iconColor: tokens.blue,
   },
   {
     title: "Highway Code",
@@ -72,14 +73,14 @@ const usefulTools: ResourceItem[] = [
     description: "Find precise pickup locations",
     url: "https://what3words.com",
     Icon: IconMapPin,
-    iconColor: "#1877D6",
+    iconColor: tokens.blue,
   },
   {
     title: "Google Maps",
     description: "Navigate to your next lesson",
     url: "https://maps.google.com",
     Icon: IconNavigation,
-    iconColor: "#1877D6",
+    iconColor: tokens.blue,
   },
   {
     title: "Met Office",
@@ -134,7 +135,7 @@ function ResourceCard({ resource }: { resource: ResourceItem }) {
       style={{
         borderWidth: "0.5px",
         borderStyle: "solid",
-        borderColor: "#EEF2F7",
+        borderColor: tokens.canvas,
         textDecoration: "none",
       }}
     >

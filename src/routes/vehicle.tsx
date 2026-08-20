@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconAlertTriangle, IconCalendar, IconCircle, IconFileText, IconGauge, IconPlus, IconReceipt, IconShield, IconTool, IconX } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -288,7 +289,7 @@ function VehiclePage() {
       {/* Odometer */}
       <div
         className="mx-4"
-        style={{ backgroundColor: "#FFFFFF", border: BORDER, borderRadius: 8, padding: 16 }}
+        style={{ backgroundColor: tokens.white, border: BORDER, borderRadius: 8, padding: 16 }}
       >
         <div className="flex items-center" style={{ gap: 8 }}>
           <IconGauge size={18} color={NAVY} />
@@ -309,8 +310,8 @@ function VehiclePage() {
               borderRadius: 8,
               border: BORDER,
               color: NAVY,
-              fontSize: 22,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.xxl,
+              fontWeight: tokens.fontWeight.bold,
               ...POPPINS,
             }}
           />
@@ -331,7 +332,7 @@ function VehiclePage() {
             type="button"
             onClick={() => setAddOpen(true)}
             className="text-[13px] font-semibold"
-            style={{ height: 40, borderRadius: 8, backgroundColor: "#FFFFFF", border: BORDER, color: NAVY }}
+            style={{ height: 40, borderRadius: 8, backgroundColor: tokens.white, border: BORDER, color: NAVY }}
           >
             Log journey
           </button>
@@ -341,7 +342,7 @@ function VehiclePage() {
       {/* Mileage log */}
       <div
         className="mx-4 mt-3"
-        style={{ backgroundColor: "#FFFFFF", border: BORDER, borderRadius: 8, padding: 16 }}
+        style={{ backgroundColor: tokens.white, border: BORDER, borderRadius: 8, padding: 16 }}
       >
         <div className="text-[14px] font-semibold mb-2" style={{ color: NAVY }}>
           Recent journeys
@@ -367,7 +368,7 @@ function VehiclePage() {
                   </div>
                 </div>
                 {j.fuel_cost != null && (
-                  <div className="text-[12px] font-semibold" style={{ color: "#1877D6" }}>
+                  <div className="text-[12px] font-semibold" style={{ color: tokens.blue }}>
                     £{Number(j.fuel_cost).toFixed(2)}
                   </div>
                 )}
@@ -445,7 +446,7 @@ function StatusCard({
       onClick={onClick}
       className="text-left"
       style={{
-        backgroundColor: "#FFFFFF",
+        backgroundColor: tokens.white,
         border: BORDER,
         borderRadius: 8,
         padding: 12,
@@ -528,14 +529,14 @@ function EditFieldModal({
             value={v}
             onChange={(e) => setV(e.target.value)}
             className="w-full px-3 bg-white"
-            style={{ height: 44, borderRadius: 8, border: BORDER, color: NAVY, fontSize: 14, ...POPPINS }}
+            style={{ height: 44, borderRadius: 8, border: BORDER, color: NAVY, fontSize: tokens.fontSize.md, ...POPPINS }}
           />
           <div className="grid grid-cols-2 mt-4" style={{ gap: 8 }}>
             <button
               type="button"
               onClick={onClose}
               className="text-[13px] font-semibold"
-              style={{ height: 40, borderRadius: 8, backgroundColor: "#FFFFFF", border: BORDER, color: NAVY }}
+              style={{ height: 40, borderRadius: 8, backgroundColor: tokens.white, border: BORDER, color: NAVY }}
             >
               Cancel
             </button>
@@ -733,7 +734,7 @@ function AddJourneyModal({
               type="button"
               onClick={onClose}
               className="text-[13px] font-semibold"
-              style={{ height: 40, borderRadius: 8, backgroundColor: "#FFFFFF", border: BORDER, color: NAVY }}
+              style={{ height: 40, borderRadius: 8, backgroundColor: tokens.white, border: BORDER, color: NAVY }}
             >
               Cancel
             </button>
@@ -758,7 +759,7 @@ const inputStyle: React.CSSProperties = {
   borderRadius: 8,
   border: BORDER,
   color: NAVY,
-  fontSize: 14,
+  fontSize: tokens.fontSize.md,
   ...POPPINS,
 };
 

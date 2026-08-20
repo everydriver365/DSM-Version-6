@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { IconBell } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { BottomSheet, PrimaryButton, GhostButton } from "./BottomSheetV2";
@@ -76,7 +77,7 @@ export function PushPermissionSheet({ userId }: PushPermissionSheetProps) {
           <IconBell size={20} color="#1877D6" />
         </div>
         <div className="min-w-0">
-          <div className="text-[14px] font-semibold" style={{ ...FONT, color: "#0B1F3A" }}>
+          <div className="text-[14px] font-semibold" style={{ ...FONT, color: tokens.navy }}>
             Turn on push notifications
           </div>
           <div className="text-[13px] mt-1 leading-relaxed" style={{ ...FONT, color: "#4A5A73" }}>

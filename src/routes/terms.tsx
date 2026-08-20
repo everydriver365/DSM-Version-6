@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 export const Route = createFileRoute("/terms")({
@@ -128,10 +129,10 @@ const sections: { title: string; content: React.ReactNode }[] = [
       <>
         <p>EveryDriver Ltd</p>
         <p style={{ marginTop: 4 }}>
-          <a href="mailto:hello@everydriver.co.uk" style={{ color: "#1877D6" }}>hello@everydriver.co.uk</a>
+          <a href="mailto:hello@everydriver.co.uk" style={{ color: tokens.blue }}>hello@everydriver.co.uk</a>
         </p>
         <p style={{ marginTop: 4 }}>
-          <a href="https://drivingschoolmanager.co.uk" target="_blank" rel="noopener noreferrer" style={{ color: "#1877D6" }}>
+          <a href="https://drivingschoolmanager.co.uk" target="_blank" rel="noopener noreferrer" style={{ color: tokens.blue }}>
             drivingschoolmanager.co.uk
           </a>
         </p>
@@ -162,9 +163,9 @@ function TermsPage() {
           <p
             style={{
               margin: 0,
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#1877D6",
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.semibold,
+              color: tokens.blue,
               textTransform: "uppercase",
               letterSpacing: "0.5px",
             }}
@@ -175,8 +176,8 @@ function TermsPage() {
             style={{
               margin: "6px 0 4px",
               fontSize: 26,
-              fontWeight: 700,
-              color: "#0B1F3A",
+              fontWeight: tokens.fontWeight.bold,
+              color: tokens.navy,
               lineHeight: "32px",
             }}
           >
@@ -185,7 +186,7 @@ function TermsPage() {
           <p
             style={{
               margin: 0,
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               color: "#6B7280",
             }}
           >
@@ -197,7 +198,7 @@ function TermsPage() {
           <div
             key={section.title}
             style={{
-              background: "#EEF2F7",
+              background: tokens.canvas,
               borderRadius: 12,
               padding: "16px",
               marginBottom: 14,
@@ -206,9 +207,9 @@ function TermsPage() {
             <h2
               style={{
                 margin: "0 0 10px",
-                fontSize: 14,
-                fontWeight: 700,
-                color: "#0B1F3A",
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.bold,
+                color: tokens.navy,
                 letterSpacing: "0.3px",
               }}
             >
@@ -216,7 +217,7 @@ function TermsPage() {
             </h2>
             <div
               style={{
-                fontSize: 14,
+                fontSize: tokens.fontSize.md,
                 lineHeight: "22px",
                 color: "#374151",
               }}

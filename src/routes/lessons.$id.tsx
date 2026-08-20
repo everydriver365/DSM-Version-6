@@ -1,4 +1,5 @@
 import { useGoBack } from "@/hooks/useGoBack";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -340,7 +341,7 @@ function LessonDetailPage() {
           aria-label="Edit lesson"
           onClick={() => navigate({ to: "/lessons/edit/$id", params: { id } })}
           className="flex items-center gap-1 text-[13px] font-semibold"
-          style={{ color: "#1877D6", background: "none", border: "none" }}
+          style={{ color: tokens.blue, background: "none", border: "none" }}
         >
           <IconPencil size={16} color="#1877D6" />
           Edit
@@ -372,7 +373,7 @@ function LessonDetailPage() {
         <div className="flex flex-col items-center justify-center mt-20 px-6">
           <div
             className="text-[16px] font-semibold"
-            style={{ color: "#0B1F3A", ...POPPINS }}
+            style={{ color: tokens.navy, ...POPPINS }}
           >
             Lesson not found
           </div>
@@ -389,7 +390,7 @@ function LessonDetailPage() {
             style={{
               height: 40,
               borderRadius: 8,
-              backgroundColor: "#1877D6",
+              backgroundColor: tokens.blue,
               padding: "0 24px",
               border: "none",
               ...POPPINS,
@@ -417,9 +418,9 @@ function LessonDetailPage() {
                   <span
                     style={{
                       background: "#EFF6FF",
-                      color: "#1877D6",
-                      fontSize: 10,
-                      fontWeight: 800,
+                      color: tokens.blue,
+                      fontSize: tokens.fontSize.xs,
+                      fontWeight: tokens.fontWeight.extrabold,
                       borderRadius: 8,
                       padding: "3px 10px",
                       display: "inline-block",
@@ -432,8 +433,8 @@ function LessonDetailPage() {
                   <div
                     style={{
                       fontSize: 20,
-                      fontWeight: 800,
-                      color: "#0B1F3A",
+                      fontWeight: tokens.fontWeight.extrabold,
+                      color: tokens.navy,
                       marginBottom: 8,
                       fontFamily: "Poppins, sans-serif",
                     }}
@@ -442,8 +443,8 @@ function LessonDetailPage() {
                   </div>
                   <div
                     style={{
-                      fontSize: 14,
-                      color: "#6B7686",
+                      fontSize: tokens.fontSize.md,
+                      color: tokens.textSecondary,
                       fontFamily: "Poppins, sans-serif",
                     }}
                   >
@@ -456,8 +457,8 @@ function LessonDetailPage() {
                         alignItems: "center",
                         gap: 4,
                         marginTop: 8,
-                        fontSize: 13,
-                        color: "#6B7686",
+                        fontSize: tokens.fontSize.base,
+                        color: tokens.textSecondary,
                         fontFamily: "Poppins, sans-serif",
                       }}
                     >
@@ -468,8 +469,8 @@ function LessonDetailPage() {
                   {lesson.notes && (
                     <div
                       style={{
-                        fontSize: 13,
-                        color: "#6B7686",
+                        fontSize: tokens.fontSize.base,
+                        color: tokens.textSecondary,
                         marginTop: 8,
                         fontFamily: "Poppins, sans-serif",
                       }}
@@ -501,7 +502,7 @@ function LessonDetailPage() {
             <Card>
               <div
                 className="text-[32px] font-bold leading-tight"
-                style={{ color: "#0B1F3A", ...POPPINS }}
+                style={{ color: tokens.navy, ...POPPINS }}
               >
                 {formatTime(lesson.lesson_time)}
               </div>
@@ -510,7 +511,7 @@ function LessonDetailPage() {
               </div>
               <div
                 className="text-[16px] font-semibold mt-3 truncate"
-                style={{ color: "#0B1F3A", ...POPPINS }}
+                style={{ color: tokens.navy, ...POPPINS }}
               >
                 {pupilName}
               </div>
@@ -530,7 +531,7 @@ function LessonDetailPage() {
                   <div className="flex items-center gap-2">
                     <span
                       className="text-[10px] font-extrabold px-2 py-0.5 rounded-full text-white"
-                      style={{ backgroundColor: "#CC2229", fontFamily: "Poppins, sans-serif", letterSpacing: "0.06em" }}
+                      style={{ backgroundColor: tokens.red, fontFamily: "Poppins, sans-serif", letterSpacing: "0.06em" }}
                     >
                       🚗 TEST DAY
                     </span>
@@ -555,7 +556,7 @@ function LessonDetailPage() {
               href={phone ? `tel:${phone}` : undefined}
               aria-label="Call"
               className="inline-flex items-center justify-center text-[13px] font-medium text-white"
-              style={{ height: 40, borderRadius: 8, backgroundColor: "#1877D6", ...POPPINS }}
+              style={{ height: 40, borderRadius: 8, backgroundColor: tokens.blue, ...POPPINS }}
             >
               Call
             </a>
@@ -567,7 +568,7 @@ function LessonDetailPage() {
                 height: 40,
                 borderRadius: 8,
                 backgroundColor: "#F3F4F6",
-                color: "#0B1F3A",
+                color: tokens.navy,
                 ...POPPINS,
               }}
             >
@@ -580,7 +581,7 @@ function LessonDetailPage() {
               style={{
                 height: 40,
                 borderRadius: 8,
-                backgroundColor: "#1877D6",
+                backgroundColor: tokens.blue,
                 border: "none",
                 ...POPPINS,
               }}
@@ -602,10 +603,10 @@ function LessonDetailPage() {
               <div className="mx-4 mt-3" style={{ position: 'relative', background: '#FFFFFF', border: `0.5px solid ${BORDER}`, borderRadius: 8, padding: '13px 16px 13px 19px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, fontFamily: 'Poppins, sans-serif' }}>
                 <span aria-hidden style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: ACCENT_INSIGHT, borderRadius: '8px 0 0 8px'}} />
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 11, fontWeight: 500, color: ACCENT_INSIGHT, letterSpacing: '0.02em', marginBottom: 3 }}>AI INSIGHT</div>
-                  <div style={{ fontSize: 14, fontWeight: 500, color: NAVY, lineHeight: 1.4, marginBottom: 8 }}>{lessonInsight.text}</div>
+                  <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.medium, color: ACCENT_INSIGHT, letterSpacing: '0.02em', marginBottom: 3 }}>AI INSIGHT</div>
+                  <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: NAVY, lineHeight: 1.4, marginBottom: 8 }}>{lessonInsight.text}</div>
                   {lessonInsight.onAction && (
-                    <button type="button" onClick={lessonInsight.onAction} style={{ background: 'none', border: 'none', padding: 0, fontFamily: 'Poppins, sans-serif', fontSize: 12, fontWeight: 500, color: ACCENT, cursor: 'pointer' }}>{lessonInsight.actionLabel} →</button>
+                    <button type="button" onClick={lessonInsight.onAction} style={{ background: 'none', border: 'none', padding: 0, fontFamily: 'Poppins, sans-serif', fontSize: 12, fontWeight: tokens.fontWeight.medium, color: ACCENT, cursor: 'pointer' }}>{lessonInsight.actionLabel} →</button>
                   )}
                 </div>
                 <button
@@ -661,7 +662,7 @@ function LessonDetailPage() {
                   padding: 12,
                 }}
               >
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.4, color: "#CC2229" }}>
+                <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, letterSpacing: 0.4, color: tokens.red }}>
                   CANCELLED
                   {lesson.cancelled_at
                     ? ` · ${new Date(lesson.cancelled_at).toLocaleDateString("en-GB", {
@@ -671,16 +672,16 @@ function LessonDetailPage() {
                       })}`
                     : ""}
                 </div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", marginTop: 6 }}>
+                <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, marginTop: 6 }}>
                   {lesson.cancellation_reason || "No reason recorded"}
                 </div>
                 {lesson.cancellation_notes ? (
-                  <div style={{ fontSize: 13, color: "#4A5568", marginTop: 4, lineHeight: 1.4 }}>
+                  <div style={{ fontSize: tokens.fontSize.base, color: "#4A5568", marginTop: 4, lineHeight: 1.4 }}>
                     {lesson.cancellation_notes}
                   </div>
                 ) : null}
                 {cancelOutcome ? (
-                  <div style={{ fontSize: 12, color: "#6B7686", marginTop: 8 }}>{cancelOutcome}</div>
+                  <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 8 }}>{cancelOutcome}</div>
                 ) : null}
               </div>
             )}
@@ -701,7 +702,7 @@ function LessonDetailPage() {
                     <IconMap size={18} color="#1877D6" />
                     <span
                       className="text-[11px] font-semibold tracking-wider"
-                      style={{ color: "#1877D6", ...POPPINS }}
+                      style={{ color: tokens.blue, ...POPPINS }}
                     >
                       Route & tracking
                     </span>
@@ -711,7 +712,7 @@ function LessonDetailPage() {
                     <div className="text-center">
                       <div
                         className="text-[16px] font-bold"
-                        style={{ color: "#0B1F3A", ...POPPINS }}
+                        style={{ color: tokens.navy, ...POPPINS }}
                       >
                         {(route.distance_miles ?? 0).toFixed(1)} mi
                       </div>
@@ -725,7 +726,7 @@ function LessonDetailPage() {
                     <div className="text-center">
                       <div
                         className="text-[16px] font-bold"
-                        style={{ color: "#0B1F3A", ...POPPINS }}
+                        style={{ color: tokens.navy, ...POPPINS }}
                       >
                         {route.duration_minutes ?? 0} mins
                       </div>
@@ -739,7 +740,7 @@ function LessonDetailPage() {
                     <div className="text-center">
                       <div
                         className="text-[16px] font-bold"
-                        style={{ color: "#0B1F3A", ...POPPINS }}
+                        style={{ color: tokens.navy, ...POPPINS }}
                       >
                         {(route.max_speed_mph ?? 0).toFixed(0)} mph
                       </div>
@@ -758,7 +759,7 @@ function LessonDetailPage() {
                         <IconAlertTriangle size={16} color="#1877D6" />
                         <span
                           className="text-[12px] font-semibold"
-                          style={{ color: "#1877D6", ...POPPINS }}
+                          style={{ color: tokens.blue, ...POPPINS }}
                         >
                           Overspeed events
                         </span>
@@ -792,7 +793,7 @@ function LessonDetailPage() {
                     style={{
                       background: "transparent",
                       border: "none",
-                      color: "#1877D6",
+                      color: tokens.blue,
                       padding: "10px 0",
                       cursor: "pointer",
                       ...POPPINS,
@@ -903,7 +904,7 @@ function DetailRow({
           : {
               borderTopWidth: "0.5px",
               borderTopStyle: "solid",
-              borderTopColor: "#EEF2F7",
+              borderTopColor: tokens.canvas,
             }),
         alignItems: multiline ? "flex-start" : "center",
         justifyContent: "space-between",
@@ -951,7 +952,7 @@ function ActionRow({
           : {
               borderTopWidth: "0.5px",
               borderTopStyle: "solid",
-              borderTopColor: "#EEF2F7",
+              borderTopColor: tokens.canvas,
             }
       }
     >

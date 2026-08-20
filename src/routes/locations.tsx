@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
@@ -152,13 +153,13 @@ function LocationsPage() {
       {/* Action bar */}
       <div
         className="flex items-center justify-end"
-        style={{ background: "#FFFFFF", padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
+        style={{ background: tokens.white, padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
       >
         <button
           type="button"
           onClick={openAdd}
           className="inline-flex items-center gap-1 text-[13px] font-semibold text-white"
-          style={{ background: "#1877D6", borderRadius: 999, padding: "8px 14px", border: "none" }}
+          style={{ background: tokens.blue, borderRadius: 999, padding: "8px 14px", border: "none" }}
         >
           <IconPlus size={16} color="#FFFFFF" /> Add location
         </button>
@@ -245,7 +246,7 @@ function LocationsPage() {
                         height: 32,
                         gap: 4,
                         flexShrink: 0,
-                        color: "#1877D6",
+                        color: tokens.blue,
                       }}
                     >
                       <IconNavigation size={14} color="#1877D6" />
@@ -310,7 +311,7 @@ function LocationsPage() {
               />
 
               {sheetError && (
-                <div className="text-[12px]" style={{ color: "#1877D6" }}>
+                <div className="text-[12px]" style={{ color: tokens.blue }}>
                   {sheetError}
                 </div>
               )}
@@ -324,7 +325,7 @@ function LocationsPage() {
                   type="button"
                   onClick={remove}
                   className="text-[13px] font-medium py-2"
-                  style={{ color: "#1877D6" }}
+                  style={{ color: tokens.blue }}
                 >
                   Delete location
                 </button>

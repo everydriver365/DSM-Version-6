@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconPencil, IconPlus, IconSearch, IconSend, IconX } from "@tabler/icons-react";
 import { PageHeader } from "@/components/dsm/PageHeader";
@@ -378,7 +379,7 @@ function AdminJobOffers() {
   if (gate === "denied") {
     return (
       <div style={{ background: "#fff", minHeight: "100vh", padding: 24, ...POPPINS }}>
-        <div style={{ fontSize: 18, fontWeight: 600, color: BLUE }}>Access denied</div>
+        <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: BLUE }}>Access denied</div>
       </div>
     );
   }
@@ -395,7 +396,7 @@ function AdminJobOffers() {
             onClick={openNew}
             style={{
               background: "#fff", color: BLUE, border: "none", borderRadius: 8,
-              padding: "8px 12px", fontSize: 13, fontWeight: 600, cursor: "pointer",
+              padding: "8px 12px", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
               display: "inline-flex", alignItems: "center", gap: 6,
               boxShadow: "0 3px 0 #B8CDE4",
             }}
@@ -429,10 +430,10 @@ function AdminJobOffers() {
               >
                 <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 19, fontWeight: 800, color: "#000", letterSpacing: -0.3 }}>
+                    <div style={{ fontSize: 19, fontWeight: tokens.fontWeight.extrabold, color: "#000", letterSpacing: -0.3 }}>
                       {o.pupil_name || "New pupil"}
                     </div>
-                    <div style={{ fontSize: 13.5, color: "#6B6B6F", fontWeight: 500, marginTop: 8, lineHeight: 1.5 }}>
+                    <div style={{ fontSize: 13.5, color: "#6B6B6F", fontWeight: tokens.fontWeight.medium, marginTop: 8, lineHeight: 1.5 }}>
                       {[
                         o.transmission,
                         o.course_hours ? `${o.course_hours} hrs` : null,
@@ -441,12 +442,12 @@ function AdminJobOffers() {
                       ].filter(Boolean).join(" · ")}
                     </div>
                     {o.offered_rate != null && (
-                      <div style={{ fontSize: 17, fontWeight: 800, color: "#000", marginTop: 8 }}>
+                      <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.extrabold, color: "#000", marginTop: 8 }}>
                         £{Number(o.offered_rate).toFixed(2)}/hr
                       </div>
                     )}
                     {o.status === "claimed" && o.claimed_by && (
-                      <div style={{ fontSize: 12.5, color: BLUE, fontWeight: 600, marginTop: 10 }}>
+                      <div style={{ fontSize: 12.5, color: BLUE, fontWeight: tokens.fontWeight.semibold, marginTop: 10 }}>
                         Claimed by {instructorNames[o.claimed_by] ?? o.claimed_by.slice(0, 8)}
                         {o.claimed_at ? ` · ${new Date(o.claimed_at).toLocaleString()}` : ""}
                       </div>
@@ -454,7 +455,7 @@ function AdminJobOffers() {
                   </div>
                   <span
                     style={{
-                      fontSize: 11, fontWeight: 800, letterSpacing: 0.3,
+                      fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.extrabold, letterSpacing: 0.3,
                       color: badge.color, background: badge.bg,
                       padding: "6px 13px", borderRadius: 8, whiteSpace: "nowrap",
                     }}
@@ -472,7 +473,7 @@ function AdminJobOffers() {
                         style={{
                           flex: 1,
                           background: "#fff", color: BLUE, border: `1.5px solid ${BLUE}`,
-                          borderRadius: 8, padding: 12, fontSize: 13.5, fontWeight: 700,
+                          borderRadius: 8, padding: 12, fontSize: 13.5, fontWeight: tokens.fontWeight.bold,
                           cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
                         }}
                       >
@@ -484,7 +485,7 @@ function AdminJobOffers() {
                         style={{
                           flex: 1,
                           background: "#fff", color: BLUE, border: `1.5px solid ${BLUE}`,
-                          borderRadius: 8, padding: 12, fontSize: 13.5, fontWeight: 700,
+                          borderRadius: 8, padding: 12, fontSize: 13.5, fontWeight: tokens.fontWeight.bold,
                           cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
                         }}
                       >
@@ -496,7 +497,7 @@ function AdminJobOffers() {
                         style={{
                           flex: 1,
                           background: "#fff", color: "#FF3B30", border: "1.5px solid #FF3B30",
-                          borderRadius: 8, padding: 12, fontSize: 13.5, fontWeight: 700,
+                          borderRadius: 8, padding: 12, fontSize: 13.5, fontWeight: tokens.fontWeight.bold,
                           cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
                         }}
                       >
@@ -512,7 +513,7 @@ function AdminJobOffers() {
                         style={{
                           flex: 0.7,
                           background: "#fff", color: BLUE, border: `1.5px solid ${BLUE}`,
-                          borderRadius: 8, padding: 12, fontSize: 13.5, fontWeight: 700,
+                          borderRadius: 8, padding: 12, fontSize: 13.5, fontWeight: tokens.fontWeight.bold,
                           cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
                         }}
                       >
@@ -524,7 +525,7 @@ function AdminJobOffers() {
                         style={{
                           flex: 1.3,
                           background: BLUE, color: "#fff", border: "none", borderRadius: 8,
-                          padding: 12, fontSize: 13.5, fontWeight: 700, cursor: "pointer",
+                          padding: 12, fontSize: 13.5, fontWeight: tokens.fontWeight.bold, cursor: "pointer",
                           display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
                           boxShadow: "0 3px 0 #0F52A8",
                         }}
@@ -540,7 +541,7 @@ function AdminJobOffers() {
                       style={{
                         flex: 1,
                         background: "#fff", color: BLUE, border: `1.5px solid ${BLUE}`,
-                        borderRadius: 8, padding: 12, fontSize: 13.5, fontWeight: 700,
+                        borderRadius: 8, padding: 12, fontSize: 13.5, fontWeight: tokens.fontWeight.bold,
                         cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
                       }}
                     >
@@ -576,7 +577,7 @@ function AdminJobOffers() {
                 borderBottom: "1px solid #E5E7EB",
               }}
             >
-              <div style={{ flex: 1, fontSize: 16, fontWeight: 700, color: NAVY }}>
+              <div style={{ flex: 1, fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: NAVY }}>
                 {editingOffer ? "Edit job offer" : "New job offer"}
               </div>
               <button
@@ -595,7 +596,7 @@ function AdminJobOffers() {
                     style={{
                       display: "flex", alignItems: "center", gap: 8,
                       background: "#E5F0FC", color: BLUE, padding: "8px 12px",
-                      borderRadius: 8, fontSize: 13, fontWeight: 600,
+                      borderRadius: 8, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold,
                     }}
                   >
                     <span style={{ flex: 1 }}>Linked: {linkedEnquiry.name}</span>
@@ -638,11 +639,11 @@ function AdminJobOffers() {
                             style={{
                               display: "block", width: "100%", textAlign: "left",
                               padding: "10px 12px", background: "transparent", border: "none",
-                              borderBottom: "1px solid #F3F4F6", cursor: "pointer", fontSize: 13,
+                              borderBottom: "1px solid #F3F4F6", cursor: "pointer", fontSize: tokens.fontSize.base,
                             }}
                           >
-                            <div style={{ fontWeight: 600, color: NAVY }}>{e.name}</div>
-                            <div style={{ fontSize: 11, color: GREY }}>
+                            <div style={{ fontWeight: tokens.fontWeight.semibold, color: NAVY }}>{e.name}</div>
+                            <div style={{ fontSize: tokens.fontSize.sm, color: GREY }}>
                               {[e.phone, e.email, e.course_interest].filter(Boolean).join(" · ")}
                             </div>
                           </button>
@@ -715,7 +716,7 @@ function AdminJobOffers() {
                           border: `1px solid ${active ? BLUE : "#D1D5DB"}`,
                           background: active ? BLUE : "#fff",
                           color: active ? "#fff" : NAVY,
-                          fontSize: 12, fontWeight: 600, cursor: "pointer",
+                          fontSize: 12, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                         }}
                       >
                         {t.label}
@@ -739,7 +740,7 @@ function AdminJobOffers() {
                           border: `1px solid ${active ? BLUE : "#D1D5DB"}`,
                           background: active ? BLUE : "#fff",
                           color: active ? "#fff" : NAVY,
-                          fontSize: 12, fontWeight: 600, cursor: "pointer",
+                          fontSize: 12, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                         }}
                       >
                         {d.short}
@@ -822,7 +823,7 @@ function AdminJobOffers() {
               </FieldLabel>
 
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", border: "1px solid #EEF2F7", borderRadius: 8, background: "#fff" }}>
-                <div style={{ fontSize: 14, color: "#0B1F3A", fontWeight: 500 }}>Test already booked?</div>
+                <div style={{ fontSize: tokens.fontSize.md, color: tokens.navy, fontWeight: 500 }}>Test already booked?</div>
                 <label style={{ position: "relative", display: "inline-block", width: 44, height: 26 }}>
                   <input
                     type="checkbox"
@@ -875,7 +876,7 @@ function AdminJobOffers() {
               )}
 
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", border: "1px solid #EEF2F7", borderRadius: 8, background: "#fff" }}>
-                <div style={{ fontSize: 14, color: "#0B1F3A", fontWeight: 500 }}>Wants to join the swap list?</div>
+                <div style={{ fontSize: tokens.fontSize.md, color: tokens.navy, fontWeight: 500 }}>Wants to join the swap list?</div>
                 <label style={{ position: "relative", display: "inline-block", width: 44, height: 26 }}>
                   <input
                     type="checkbox"
@@ -903,7 +904,7 @@ function AdminJobOffers() {
                 disabled={saving}
                 style={{
                   background: BLUE, color: "#fff", border: "none", borderRadius: 8,
-                  padding: "12px 16px", fontSize: 15, fontWeight: 600, cursor: "pointer",
+                  padding: "12px 16px", fontSize: 15, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
                   opacity: saving ? 0.6 : 1, marginTop: 6,
                 }}
               >
@@ -930,7 +931,7 @@ function AdminJobOffers() {
 function FieldLabel({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-      <span style={{ fontSize: 12, fontWeight: 600, color: NAVY }}>{label}</span>
+      <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>{label}</span>
       {children}
     </label>
   );
@@ -940,7 +941,7 @@ function inputStyle(withIcon = false): React.CSSProperties {
   return {
     width: "100%",
     padding: withIcon ? "10px 12px 10px 30px" : "10px 12px",
-    fontSize: 16,
+    fontSize: tokens.fontSize.lg,
     border: "1px solid #D1D5DB",
     borderRadius: 8,
     outline: "none",
@@ -1025,10 +1026,10 @@ function AdminJobThread({
           }}
         >
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>
+            <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY }}>
               {job.pupil_name || "Job enquiry"}
             </div>
-            <div style={{ fontSize: 11, color: GREY }}>
+            <div style={{ fontSize: tokens.fontSize.sm, color: GREY }}>
               {[job.postcode_area, job.preferred_timing?.join(", "), `status: ${job.status}`].filter(Boolean).join(" · ")}
             </div>
           </div>
@@ -1039,9 +1040,9 @@ function AdminJobThread({
 
         <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 8 }}>
           {messages === null ? (
-            <div style={{ color: GREY, fontSize: 13, textAlign: "center", padding: 20 }}>Loading…</div>
+            <div style={{ color: GREY, fontSize: tokens.fontSize.base, textAlign: "center", padding: 20 }}>Loading…</div>
           ) : messages.length === 0 ? (
-            <div style={{ color: GREY, fontSize: 13, textAlign: "center", padding: 20 }}>
+            <div style={{ color: GREY, fontSize: tokens.fontSize.base, textAlign: "center", padding: 20 }}>
               No messages yet.
             </div>
           ) : (
@@ -1054,15 +1055,15 @@ function AdminJobThread({
                   <div
                     style={{
                       maxWidth: "78%", background: bg, color, borderRadius: 8,
-                      padding: "8px 12px", fontSize: 14,
+                      padding: "8px 12px", fontSize: tokens.fontSize.md,
                       boxShadow: mine ? "none" : "0 1px 2px rgba(0,0,0,0.05)",
                     }}
                   >
-                    <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 2, textTransform: "uppercase", letterSpacing: 0.3 }}>
+                    <div style={{ fontSize: tokens.fontSize.xs, opacity: 0.7, marginBottom: 2, textTransform: "uppercase", letterSpacing: 0.3 }}>
                       {m.sender_type}
                     </div>
                     <div>{m.message}</div>
-                    <div style={{ fontSize: 10, opacity: 0.7, marginTop: 2, textAlign: "right" }}>
+                    <div style={{ fontSize: tokens.fontSize.xs, opacity: 0.7, marginTop: 2, textAlign: "right" }}>
                       {fmtTime(m.created_at)}
                     </div>
                   </div>
@@ -1085,7 +1086,7 @@ function AdminJobThread({
             placeholder="Reply as admin…"
             style={{
               flex: 1, background: "#F3F4F6", border: "none", borderRadius: 8,
-              padding: "10px 14px", fontSize: 16, outline: "none", ...POPPINS,
+              padding: "10px 14px", fontSize: tokens.fontSize.lg, outline: "none", ...POPPINS,
             }}
           />
           <button

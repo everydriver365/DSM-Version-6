@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconClipboard, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -153,13 +154,13 @@ function MockTestsPage() {
       {/* Action bar */}
       <div
         className="flex items-center justify-end"
-        style={{ background: "#FFFFFF", padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
+        style={{ background: tokens.white, padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
       >
         <button
           type="button"
           onClick={() => setAddOpen(true)}
           className="inline-flex items-center gap-1 text-[13px] font-semibold text-white"
-          style={{ background: "#1877D6", borderRadius: 999, padding: "8px 14px", border: "none" }}
+          style={{ background: tokens.blue, borderRadius: 999, padding: "8px 14px", border: "none" }}
         >
           <IconPlus stroke={1.5} size={16} color="#FFFFFF" /> New mock test
         </button>
@@ -187,13 +188,13 @@ function MockTestsPage() {
                   <div className="flex items-start" style={{ gap: 12 }}>
                     <div
                       className="flex items-center justify-center text-white text-[13px] font-semibold shrink-0"
-                      style={{ width: 40, height: 40, borderRadius: 999, backgroundColor: "#1877D6", ...POPPINS }}
+                      style={{ width: 40, height: 40, borderRadius: 999, backgroundColor: tokens.blue, ...POPPINS }}
                     >
                       {initials(name)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between" style={{ gap: 8 }}>
-                        <div className="text-[14px] font-semibold truncate" style={{ color: "#0B1F3A", ...POPPINS }}>
+                        <div className="text-[14px] font-semibold truncate" style={{ color: tokens.navy, ...POPPINS }}>
                           {name}
                         </div>
                         <span
@@ -203,7 +204,7 @@ function MockTestsPage() {
                           {result}
                         </span>
                       </div>
-                      <div className="text-[13px] font-bold mt-1" style={{ color: "#0B1F3A", ...POPPINS }}>
+                      <div className="text-[13px] font-bold mt-1" style={{ color: tokens.navy, ...POPPINS }}>
                         {formatDateLong(r.test_date)}
                       </div>
                       {total > 0 && (
@@ -216,7 +217,7 @@ function MockTestsPage() {
                           type="button"
                           onClick={() => setViewingDl25(r)}
                           className="text-[12px] font-semibold mt-2"
-                          style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+                          style={{ color: tokens.blue, background: "none", border: "none", padding: 0, ...POPPINS }}
                         >
                           View DL25
                         </button>
@@ -367,7 +368,7 @@ function NewMockTestSheet({
                   }}
                   onFocus={() => setOpen(true)}
                   className="w-full bg-transparent outline-none text-[14px]"
-                  style={{ color: "#0B1F3A", ...POPPINS }}
+                  style={{ color: tokens.navy, ...POPPINS }}
                 />
                 {selectedPupil && (
                   <button
@@ -392,7 +393,7 @@ function NewMockTestSheet({
                     left: 0,
                     right: 0,
                     marginTop: 4,
-                    background: "#FFFFFF",
+                    background: tokens.white,
                     border: "1px solid #EEF2F7",
                     borderRadius: 8,
                     boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
@@ -404,7 +405,7 @@ function NewMockTestSheet({
                   {!pupilId && filtered.length > 0 && (
                     <div
                       className="px-3 py-2 text-[12px]"
-                      style={{ color: "#9CA3AF", ...POPPINS }}
+                      style={{ color: tokens.textMuted, ...POPPINS }}
                     >
                       Select pupil…
                     </div>
@@ -419,7 +420,7 @@ function NewMockTestSheet({
                         setOpen(false);
                       }}
                       className="w-full text-left px-3 py-2 text-[14px]"
-                      style={{ color: "#0B1F3A", ...POPPINS }}
+                      style={{ color: tokens.navy, ...POPPINS }}
                     >
                       {p.name}
                     </button>
@@ -427,7 +428,7 @@ function NewMockTestSheet({
                   {filtered.length === 0 && (
                     <div
                       className="px-3 py-2 text-[12px]"
-                      style={{ color: "#9CA3AF", ...POPPINS }}
+                      style={{ color: tokens.textMuted, ...POPPINS }}
                     >
                       No pupils found
                     </div>
@@ -452,7 +453,7 @@ function NewMockTestSheet({
                 height: 44,
                 borderRadius: 8,
                 border: "1px dashed #1877D6",
-                color: "#1877D6",
+                color: tokens.blue,
                 background: "#F4F8FE",
                 opacity: !pupilId || !date ? 0.5 : 1,
                 ...POPPINS,
@@ -507,7 +508,7 @@ function ResultPromptSheet({
           </button>
         </div>
         <div className="px-4 pt-2 pb-4 overflow-y-auto" style={{ flex: 1, minHeight: 0 }}>
-          <p className="text-[14px] mb-4" style={{ color: "#0B1F3A", ...POPPINS }}>
+          <p className="text-[14px] mb-4" style={{ color: tokens.navy, ...POPPINS }}>
             How did the mock test go?
           </p>
           <div className="grid grid-cols-2" style={{ gap: 8 }}>

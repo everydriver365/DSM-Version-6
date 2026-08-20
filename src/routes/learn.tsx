@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { supabase } from "@/lib/supabaseClient";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconAward, IconBolt, IconCalendarOff, IconCheck, IconChevronRight, IconDownload, IconMovie, IconPlayerPlay, IconShoppingBag, IconStar, IconTrendingUp, IconX } from "@tabler/icons-react";
@@ -230,7 +231,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
             background: "rgba(0,0,0,0.6)",
             color: "#fff",
             fontSize: 10.5,
-            fontWeight: 700,
+            fontWeight: tokens.fontWeight.bold,
           }}
         >
           {formatDuration(v.duration)}
@@ -268,7 +269,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
         style={{
           marginTop: 10,
           fontSize: 14.5,
-          fontWeight: 700,
+          fontWeight: tokens.fontWeight.bold,
           letterSpacing: "-0.1px",
           color: "#000",
           lineHeight: 1.3,
@@ -340,7 +341,7 @@ function ArticleRow({ onGo, isLast }: { onGo: () => void; isLast: boolean }) {
         <IconStar stroke={1.5} size={17} color={BLUE} fill={BLUE} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 600, color: NAVY, lineHeight: 1.3 }}>
+        <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: NAVY, lineHeight: 1.3 }}>
           Get more 5 star reviews
         </div>
         <div style={{ fontSize: 12, color: GRAY_SUBTITLE, lineHeight: 1.35, marginTop: 1 }}>
@@ -387,7 +388,7 @@ function GuideRow({ g, onGo, isLast }: { g: Guide; onGo: () => void; isLast: boo
         <Icon size={17} color={BLUE} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: NAVY, lineHeight: 1.3 }}>
+        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY, lineHeight: 1.3 }}>
           {g.title}
         </div>
         <div style={{ fontSize: 12.5, color: GRAY_BODY, lineHeight: 1.35, marginTop: 1 }}>
@@ -457,7 +458,7 @@ function LearnPage() {
     <div className="pb-24" style={{ fontFamily: FONT, background: CANVAS, minHeight: "100%" }}>
 
       <div style={{ padding: "8px 16px 0" }}>
-        <p style={{ fontSize: 14, fontWeight: 500, color: "#8A8A8E", margin: "0 0 22px" }}>
+        <p style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: "#8A8A8E", margin: "0 0 22px" }}>
           Quick guides to get more out of DSM.
         </p>
       </div>

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import squareLogo from "../assets/square-logo.png.asset.json";
@@ -41,9 +42,9 @@ function SectionHeader({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
-        fontSize: 11,
-        fontWeight: 600,
-        color: "#9CA3AF",
+        fontSize: tokens.fontSize.sm,
+        fontWeight: tokens.fontWeight.semibold,
+        color: tokens.textMuted,
         textTransform: "uppercase",
         letterSpacing: "0.08em",
         padding: "16px 4px 6px",
@@ -91,13 +92,13 @@ function InfoRow({
           fontFamily: FONT,
         }}
       >
-        <span style={{ fontSize: 14, fontWeight: 500, color: NAVY }}>
+        <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: NAVY }}>
           {label}
         </span>
         <span
           style={{
-            fontSize: 13,
-            color: "#6B7686",
+            fontSize: tokens.fontSize.base,
+            color: tokens.textSecondary,
             textAlign: "right",
             minWidth: 0,
           }}
@@ -106,7 +107,7 @@ function InfoRow({
         </span>
       </div>
       {divider ? (
-        <div style={{ height: 1, background: "#E4E8EF", marginLeft: 16 }} />
+        <div style={{ height: 1, background: tokens.border, marginLeft: 16 }} />
       ) : null}
     </>
   );
@@ -195,7 +196,7 @@ function SquarePage() {
     : null;
 
   return (
-    <div style={{ minHeight: "100dvh", background: "#EEF2F7", fontFamily: FONT }}>
+    <div style={{ minHeight: "100dvh", background: tokens.canvas, fontFamily: FONT }}>
       {/* Header */}
       <div
         style={{
@@ -232,8 +233,8 @@ function SquarePage() {
         <h1
           style={{
             margin: 0,
-            fontSize: 18,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.xl,
+            fontWeight: tokens.fontWeight.bold,
             color: "#fff",
             fontFamily: FONT,
           }}
@@ -272,11 +273,11 @@ function SquarePage() {
                   <IconCheck size={18} color="#16A34A" />
                 </div>
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>
+                  <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>
                     Square connected
                   </div>
                   {connectedDate ? (
-                    <div style={{ fontSize: 12, color: "#6B7686", marginTop: 1 }}>
+                    <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 1 }}>
                       Connected {connectedDate}
                     </div>
                   ) : null}
@@ -317,10 +318,10 @@ function SquarePage() {
               >
                 <IconUnlink size={18} color="#CC2229" />
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "#CC2229" }}>
+                  <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.red }}>
                     {disconnecting ? "Disconnecting…" : "Disconnect Square"}
                   </div>
-                  <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 1 }}>
+                  <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 1 }}>
                     Card payments will be disabled
                   </div>
                 </div>
@@ -361,12 +362,12 @@ function SquarePage() {
               </div>
 
               <div>
-                <div style={{ fontSize: 18, fontWeight: 700 }}>
+                <div style={{ fontSize: tokens.fontSize.xl, fontWeight: 700 }}>
                   Accept card payments
                 </div>
                 <div
                   style={{
-                    fontSize: 13,
+                    fontSize: tokens.fontSize.base,
                     color: "rgba(255,255,255,0.9)",
                     marginTop: 4,
                     lineHeight: 1.45,
@@ -415,17 +416,17 @@ function SquarePage() {
                   <IconCreditCard size={18} color="#F59E0B" />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>
+                  <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>
                     Connect Square account
                   </div>
-                  <div style={{ fontSize: 12, color: "#6B7686", marginTop: 1 }}>
+                  <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 1 }}>
                     Already have Square? Connect here
                   </div>
                 </div>
                 <IconChevronRight size={18} color="#C7D0DC" />
               </button>
 
-              <div style={{ height: 1, background: "#E4E8EF", marginLeft: 64 }} />
+              <div style={{ height: 1, background: tokens.border, marginLeft: 64 }} />
 
               <button
                 type="button"
@@ -460,10 +461,10 @@ function SquarePage() {
                   <IconExternalLink size={18} color="#4F46E5" />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: NAVY }}>
+                  <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>
                     Create a Square account
                   </div>
-                  <div style={{ fontSize: 12, color: "#6B7686", marginTop: 1 }}>
+                  <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 1 }}>
                     Free sign up via our partner link
                   </div>
                 </div>

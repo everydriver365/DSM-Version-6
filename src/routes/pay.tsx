@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 
 export const Route = createFileRoute("/pay")({
   component: PayPage,
@@ -37,8 +38,8 @@ function PayPage() {
             color: "#fff",
             padding: 16,
             textAlign: "center",
-            fontWeight: 700,
-            fontSize: 18,
+            fontWeight: tokens.fontWeight.bold,
+            fontSize: tokens.fontSize.xl,
             letterSpacing: 0.3,
           }}
         >
@@ -60,10 +61,10 @@ function PayPage() {
                 width: 56,
                 height: 56,
                 borderRadius: "50%",
-                background: "#0B1F3A",
+                background: tokens.navy,
                 color: "#fff",
                 fontSize: 26,
-                fontWeight: 800,
+                fontWeight: tokens.fontWeight.extrabold,
                 lineHeight: "56px",
                 margin: "0 auto 14px",
               }}
@@ -71,21 +72,21 @@ function PayPage() {
             >
               □
             </div>
-            <h1 style={{ fontSize: 20, fontWeight: 700, color: NAVY, margin: 0 }}>
+            <h1 style={{ fontSize: 20, fontWeight: tokens.fontWeight.bold, color: NAVY, margin: 0 }}>
               Payment processing via Square
             </h1>
-            <p style={{ color: "#6B7686", marginTop: 10, fontSize: 14, lineHeight: 1.6 }}>
+            <p style={{ color: tokens.textSecondary, marginTop: 10, fontSize: tokens.fontSize.md, lineHeight: 1.6 }}>
               Payments for DSM by EveryDriver are now processed securely by Square. Please use the
               Square payment link or QR code your instructor sent you.
             </p>
-            <p style={{ color: "#6B7686", marginTop: 10, fontSize: 13 }}>
+            <p style={{ color: tokens.textSecondary, marginTop: 10, fontSize: 13 }}>
               If you don't have a link, ask your instructor to send a new one.
             </p>
             <div
               style={{
                 marginTop: 18,
                 fontSize: 12,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 color: BLUE,
                 letterSpacing: 0.3,
               }}

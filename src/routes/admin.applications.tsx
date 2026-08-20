@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconChevronDown, IconChevronLeft, IconChevronUp, IconClipboardList } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -214,12 +215,12 @@ function AdminApplicationsPage() {
   if (status === "denied") {
     return (
       <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
-        <div style={{ fontSize: 18, fontWeight: 600, color: RED }}>Access denied</div>
+        <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: RED }}>Access denied</div>
         <div style={{ color: MUTED, marginTop: 8 }}>Your account doesn't have admin access.</div>
         <button
           type="button"
           onClick={() => navigate({ to: "/home" })}
-          style={{ marginTop: 20, height: 44, padding: "0 20px", borderRadius: 8, background: NAVY, color: "#fff", border: "none", fontWeight: 600, cursor: "pointer" }}
+          style={{ marginTop: 20, height: 44, padding: "0 20px", borderRadius: 8, background: NAVY, color: "#fff", border: "none", fontWeight: tokens.fontWeight.semibold, cursor: "pointer" }}
         >
           Go to home
         </button>
@@ -235,7 +236,7 @@ function AdminApplicationsPage() {
           position: "sticky",
           top: 0,
           zIndex: 10,
-          background: "#0B1F3A",
+          background: tokens.navy,
           color: "#fff",
           borderRadius: "0 0 8px 8px",
           padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 18px",
@@ -264,7 +265,7 @@ function AdminApplicationsPage() {
         >
           <IconChevronLeft stroke={1.5} size={18} />
         </button>
-        <span style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.4px", color: "#fff" }}>
+        <span style={{ fontSize: 24, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.4px", color: "#fff" }}>
           Featured applications
         </span>
       </div>
@@ -300,7 +301,7 @@ function AdminApplicationsPage() {
                 padding: "10px 18px",
                 borderRadius: 8,
                 fontSize: 13.5,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 cursor: "pointer",
                 border: "none",
                 background: active ? "#0B1F3A" : "#fff",
@@ -348,7 +349,7 @@ function AdminApplicationsPage() {
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>
+                  <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY }}>
                     {app.business_name || app.trading_name || "Unnamed business"}
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -368,7 +369,7 @@ function AdminApplicationsPage() {
                 {app.coverage_areas && (
                   <div style={{ fontSize: 12, color: MUTED, marginTop: 4 }}>{app.coverage_areas}</div>
                 )}
-                <div style={{ fontSize: 11, color: MUTED, marginTop: 6 }}>
+                <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, marginTop: 6 }}>
                   Submitted {fmt(app.submitted_at)}
                 </div>
               </button>
@@ -395,12 +396,12 @@ function AdminApplicationsPage() {
                   </Detail>
                   {app.bio && (
                     <Detail title="Bio">
-                      <div style={{ fontSize: 13, color: NAVY, whiteSpace: "pre-wrap" }}>{app.bio}</div>
+                      <div style={{ fontSize: tokens.fontSize.base, color: NAVY, whiteSpace: "pre-wrap" }}>{app.bio}</div>
                     </Detail>
                   )}
                   {app.why_featured && (
                     <Detail title="Why featured">
-                      <div style={{ fontSize: 13, color: NAVY, whiteSpace: "pre-wrap" }}>{app.why_featured}</div>
+                      <div style={{ fontSize: tokens.fontSize.base, color: NAVY, whiteSpace: "pre-wrap" }}>{app.why_featured}</div>
                     </Detail>
                   )}
                   <Detail title="Online presence">
@@ -411,7 +412,7 @@ function AdminApplicationsPage() {
                   </Detail>
                   {app.admin_notes && app.status !== "pending" && (
                     <Detail title="Admin notes">
-                      <div style={{ fontSize: 13, color: NAVY, whiteSpace: "pre-wrap" }}>{app.admin_notes}</div>
+                      <div style={{ fontSize: tokens.fontSize.base, color: NAVY, whiteSpace: "pre-wrap" }}>{app.admin_notes}</div>
                     </Detail>
                   )}
 
@@ -429,8 +430,8 @@ function AdminApplicationsPage() {
                           border: "none",
                           background: GREEN,
                           color: "#fff",
-                          fontWeight: 700,
-                          fontSize: 13,
+                          fontWeight: tokens.fontWeight.bold,
+                          fontSize: tokens.fontSize.base,
                           cursor: busyId === app.id ? "wait" : "pointer",
                           opacity: app.status === "approved" ? 0.5 : 1,
                         }}
@@ -448,8 +449,8 @@ function AdminApplicationsPage() {
                           border: "none",
                           background: RED,
                           color: "#fff",
-                          fontWeight: 700,
-                          fontSize: 13,
+                          fontWeight: tokens.fontWeight.bold,
+                          fontSize: tokens.fontSize.base,
                           cursor: "pointer",
                         }}
                       >
@@ -466,8 +467,8 @@ function AdminApplicationsPage() {
                         border: `1px solid ${NAVY}`,
                         background: "#fff",
                         color: NAVY,
-                        fontWeight: 700,
-                        fontSize: 13,
+                        fontWeight: tokens.fontWeight.bold,
+                        fontSize: tokens.fontSize.base,
                         cursor: "pointer",
                       }}
                     >
@@ -486,7 +487,7 @@ function AdminApplicationsPage() {
                             padding: 10,
                             borderRadius: 8,
                             border: `1px solid ${BORDER}`,
-                            fontSize: 13,
+                            fontSize: tokens.fontSize.base,
                             fontFamily: "inherit",
                             color: NAVY,
                             outline: "none",
@@ -505,8 +506,8 @@ function AdminApplicationsPage() {
                             border: "none",
                             background: RED,
                             color: "#fff",
-                            fontWeight: 700,
-                            fontSize: 13,
+                            fontWeight: tokens.fontWeight.bold,
+                            fontSize: tokens.fontSize.base,
                             cursor: "pointer",
                           }}
                         >
@@ -527,7 +528,7 @@ function AdminApplicationsPage() {
                             padding: 10,
                             borderRadius: 8,
                             border: `1px solid ${BORDER}`,
-                            fontSize: 13,
+                            fontSize: tokens.fontSize.base,
                             fontFamily: "inherit",
                             color: NAVY,
                             outline: "none",
@@ -546,8 +547,8 @@ function AdminApplicationsPage() {
                             border: `1px solid ${NAVY}`,
                             background: "#fff",
                             color: NAVY,
-                            fontWeight: 700,
-                            fontSize: 13,
+                            fontWeight: tokens.fontWeight.bold,
+                            fontSize: tokens.fontSize.base,
                             cursor: "pointer",
                           }}
                         >
@@ -592,7 +593,7 @@ function StatColumn({ label, value, color, divider }: { label: string; value: nu
       <div
         style={{
           fontSize: 10.5,
-          fontWeight: 700,
+          fontWeight: tokens.fontWeight.bold,
           color: "#8A8A8E",
           textTransform: "uppercase",
           letterSpacing: "0.2px",
@@ -615,8 +616,8 @@ function StatusBadge({ status }: { status: string }) {
   return (
     <span
       style={{
-        fontSize: 10,
-        fontWeight: 700,
+        fontSize: tokens.fontSize.xs,
+        fontWeight: tokens.fontWeight.bold,
         textTransform: "uppercase",
         letterSpacing: "0.04em",
         padding: "3px 8px",
@@ -633,7 +634,7 @@ function StatusBadge({ status }: { status: string }) {
 function Detail({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div style={{ marginTop: 10 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>
+      <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, color: MUTED, textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>
         {title}
       </div>
       {children}
@@ -646,7 +647,7 @@ function Row({ k, v }: { k: string; v: string | null | undefined }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", gap: 10, fontSize: 12, padding: "3px 0" }}>
       <span style={{ color: MUTED }}>{k}</span>
-      <span style={{ color: NAVY, fontWeight: 600, textAlign: "right", maxWidth: "65%", wordBreak: "break-word" }}>{v}</span>
+      <span style={{ color: NAVY, fontWeight: tokens.fontWeight.semibold, textAlign: "right", maxWidth: "65%", wordBreak: "break-word" }}>{v}</span>
     </div>
   );
 }
@@ -688,7 +689,7 @@ function EmptyState({ filter }: { filter: FilterKey }) {
       >
         <IconClipboardList size={28} color="#C7C7CC" stroke={1.5} />
       </div>
-      <div style={{ fontSize: 17, fontWeight: 800, color: "#0B1F3A", marginTop: 18 }}>{titles[filter]}</div>
+      <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, marginTop: 18 }}>{titles[filter]}</div>
       <div style={{ fontSize: 13.5, color: "#8A8A8E", lineHeight: 1.5, marginTop: 6, textAlign: "center" }}>
         New feature requests from instructors will appear here for review
       </div>

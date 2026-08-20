@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
@@ -112,11 +113,11 @@ function DetailRow({
         {icon}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 11, color: MUTED, fontWeight: 500 }}>{label}</div>
+        <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, fontWeight: 500 }}>{label}</div>
         <div
           style={{
-            fontSize: 14,
-            fontWeight: 600,
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.semibold,
             color: highlight ? RED : NAVY,
             marginTop: 1,
             overflow: "hidden",
@@ -291,7 +292,7 @@ export function PaymentDetailsSheet({
             gap: 12,
             marginBottom: 12,
             padding: "14px 16px",
-            background: "#FFFFFF",
+            background: tokens.white,
             borderRadius: 8,
             boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
           }}
@@ -324,8 +325,8 @@ export function PaymentDetailsSheet({
             >
               <span
                 style={{
-                  fontSize: 16,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.lg,
+                  fontWeight: tokens.fontWeight.bold,
                   color: colors.fg,
                 }}
               >
@@ -333,8 +334,8 @@ export function PaymentDetailsSheet({
               </span>
               <span
                 style={{
-                  fontSize: 14,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.semibold,
                   color: amountDue > 0 && !prepaidHours ? RED : NAVY,
                 }}
               >
@@ -385,8 +386,8 @@ export function PaymentDetailsSheet({
         <div style={{ marginTop: 16 }}>
           <div
             style={{
-              fontSize: 11,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.sm,
+              fontWeight: tokens.fontWeight.bold,
               letterSpacing: "0.05em",
               color: MUTED,
               textTransform: "uppercase",
@@ -396,13 +397,13 @@ export function PaymentDetailsSheet({
             Payment history
           </div>
           {payments.length === 0 ? (
-            <div style={{ fontSize: 13, color: MUTED, padding: "8px 0" }}>
+            <div style={{ fontSize: tokens.fontSize.base, color: MUTED, padding: "8px 0" }}>
               No payments recorded yet
             </div>
           ) : (
             <div
               style={{
-                background: "#FFFFFF",
+                background: tokens.white,
                 borderRadius: 8,
                 boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                 overflow: "hidden",
@@ -421,14 +422,14 @@ export function PaymentDetailsSheet({
                   }}
                 >
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: NAVY }}>
+                    <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>
                       {formatDay(p.date) || "Unknown date"}
                     </div>
-                    <div style={{ fontSize: 11, color: MUTED, marginTop: 1 }}>
+                    <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, marginTop: 1 }}>
                       {methodLabel(p.method) || "—"}
                     </div>
                   </div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: GREEN, flexShrink: 0 }}>
+                  <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: GREEN, flexShrink: 0 }}>
                     {formatMoney(p.amount)}
                   </div>
                 </div>

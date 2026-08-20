@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import diaLogoAsset from "@/assets/dia-logo.png.asset.json";
@@ -554,8 +555,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           <span
             style={{
               color: BLUE,
-              fontSize: 11,
-              fontWeight: 800,
+              fontSize: tokens.fontSize.sm,
+              fontWeight: tokens.fontWeight.extrabold,
               letterSpacing: "0.6px",
               textTransform: "uppercase",
               fontFamily: FONT,
@@ -568,7 +569,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           role="button"
           tabIndex={0}
           onClick={() => navigate({ to: "/marketplace" as never })}
-          style={{ color: BLUE, fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: FONT }}
+          style={{ color: BLUE, fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, cursor: "pointer", fontFamily: FONT }}
         >
           See all →
         </span>
@@ -635,7 +636,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                         zIndex: 2,
                         background: "#1A9B5C",
                         color: "#fff",
-                        fontSize: 10,
+                        fontSize: tokens.fontSize.xs,
                         fontWeight: 900,
                         letterSpacing: "0.4px",
                         padding: "5px 12px",
@@ -661,8 +662,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       <div
                         style={{
                           color: "#7CE8A8",
-                          fontSize: 10,
-                          fontWeight: 800,
+                          fontSize: tokens.fontSize.xs,
+                          fontWeight: tokens.fontWeight.extrabold,
                           letterSpacing: "0.4px",
                           textTransform: "uppercase",
                           marginTop: 2,
@@ -676,7 +677,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                         style={{
                           color: "#fff",
                           fontSize: 17,
-                          fontWeight: 800,
+                          fontWeight: tokens.fontWeight.extrabold,
                           lineHeight: 1.2,
                           letterSpacing: "-0.3px",
                         }}
@@ -687,7 +688,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                         style={{
                           color: "rgba(255,255,255,0.72)",
                           fontSize: 12,
-                          fontWeight: 500,
+                          fontWeight: tokens.fontWeight.medium,
                           marginTop: 4,
                         }}
                       >
@@ -700,8 +701,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                         bottom: 16,
                         right: 16,
                         color: "#fff",
-                        fontSize: 13,
-                        fontWeight: 700,
+                        fontSize: tokens.fontSize.base,
+                        fontWeight: tokens.fontWeight.bold,
                         fontFamily: FONT,
                       }}
                     >
@@ -792,7 +793,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                         zIndex: 2,
                         background: slide.badgeColor,
                         color: "#fff",
-                        fontSize: 10,
+                        fontSize: tokens.fontSize.xs,
                         fontWeight: 900,
                         letterSpacing: "0.4px",
                         padding: "5px 12px",
@@ -823,10 +824,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                           <span
                             style={{
                               display: "inline-block",
-                              background: "#EEF2F7",
-                              color: "#6B7686",
+                              background: tokens.canvas,
+                              color: tokens.textSecondary,
                               fontSize: 9,
-                              fontWeight: 800,
+                              fontWeight: tokens.fontWeight.extrabold,
                               letterSpacing: "0.3px",
                               textTransform: "uppercase",
                               padding: "3px 9px",
@@ -840,8 +841,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                         <div
                           style={{
                             color: NAVY,
-                            fontSize: 16,
-                            fontWeight: 800,
+                            fontSize: tokens.fontSize.lg,
+                            fontWeight: tokens.fontWeight.extrabold,
                             letterSpacing: "-0.3px",
                             marginTop: 8,
                             lineHeight: 1.15,
@@ -857,7 +858,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                           style={{
                             color: "#B0B0B5",
                             fontSize: 10.5,
-                            fontWeight: 600,
+                            fontWeight: tokens.fontWeight.semibold,
                             marginTop: 2,
                           }}
                         >
@@ -878,7 +879,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                             style={{
                               color: "#B0B0B5",
                               fontSize: 8.5,
-                              fontWeight: 700,
+                              fontWeight: tokens.fontWeight.bold,
                               letterSpacing: "0.3px",
                             }}
                           >
@@ -904,7 +905,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                             background: NAVY,
                             color: "#fff",
                             fontSize: 9,
-                            fontWeight: 700,
+                            fontWeight: tokens.fontWeight.bold,
                             padding: "4px 9px",
                             borderRadius: 8,
                             boxShadow: "0 2px 0 #050D1C",
@@ -969,8 +970,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         <span
           style={{
             color: BLUE,
-            fontSize: 11,
-            fontWeight: 800,
+            fontSize: tokens.fontSize.sm,
+            fontWeight: tokens.fontWeight.extrabold,
             letterSpacing: "0.6px",
             textTransform: "uppercase",
             fontFamily: FONT,
@@ -1010,8 +1011,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             <span style={{ ...chipBase, background: "#fff", color: BLUE, boxShadow: "0 1px 2px rgba(11,31,58,0.06)" }}>
               <IconRosetteDiscount size={20} color={BLUE} stroke={1.6} />
             </span>
-            <div style={{ fontSize: 15, fontWeight: 700, color: NAVY, marginTop: 10 }}>Perks</div>
-            <div style={{ fontSize: 11, color: MUTED, lineHeight: 1.4, marginTop: 4 }}>
+            <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 10 }}>Perks</div>
+            <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, lineHeight: 1.4, marginTop: 4 }}>
               {isFreeTier
                 ? "Free DIA membership & exclusive member benefits"
                 : "4 benefits active"}
@@ -1033,8 +1034,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                       borderRadius: "50%",
                       background: m.bg,
                       color: "#fff",
-                      fontSize: 11,
-                      fontWeight: 700,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.bold,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -1086,7 +1087,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             style={{
               color: BLUE,
               fontSize: 12,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               textDecoration: "underline",
               display: "inline-block",
               alignSelf: "flex-start",
@@ -1114,8 +1115,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             <span style={{ ...chipBase, background: "#E8F9ED", color: "#16A34A" }}>
               <IconBook size={17} color="#16A34A" stroke={1.6} />
             </span>
-            <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8 }}>Learn</div>
-            <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Training video</div>
+            <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 8 }}>Learn</div>
+            <div style={{ fontSize: tokens.fontSize.xs, color: MUTED, marginTop: 1 }}>Training video</div>
           </div>
         </div>
 
@@ -1137,8 +1138,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             <span style={{ ...chipBase, background: "#EDE9FD", color: "#7C3AED" }}>
               <IconBolt size={17} color="#7C3AED" stroke={1.6} />
             </span>
-            <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8 }}>Bitesize</div>
-            <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Short information videos.</div>
+            <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 8 }}>Bitesize</div>
+            <div style={{ fontSize: tokens.fontSize.xs, color: MUTED, marginTop: 1 }}>Short information videos.</div>
           </div>
         </div>
 
@@ -1175,8 +1176,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             <span style={{ ...chipBase, background: "#E3E9F7", color: BLUE }}>
               <IconPlayerPlay size={17} color={BLUE} stroke={1.6} />
             </span>
-            <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8 }}>Showcase</div>
-            <div style={{ fontSize: 10, color: MUTED, marginTop: 1 }}>Short fun videos</div>
+            <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 8 }}>Showcase</div>
+            <div style={{ fontSize: tokens.fontSize.xs, color: MUTED, marginTop: 1 }}>Short fun videos</div>
           </div>
         </div>
 
@@ -1236,7 +1237,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     borderRadius: 8,
                     padding: "2px 8px",
                     fontSize: 9,
-                    fontWeight: 800,
+                    fontWeight: tokens.fontWeight.extrabold,
                     marginTop: 8,
                   }}
                 >
@@ -1253,8 +1254,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 </span>
                 <div
                   style={{
-                    fontSize: 13,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.bold,
                     color: NAVY,
                     marginTop: 4,
                     whiteSpace: "nowrap",
@@ -1267,12 +1268,12 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               </>
             ) : (
               <>
-                <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginTop: 8 }}>
+                <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 8 }}>
                   Live, News & Podcasts
                 </div>
                 <div
                   style={{
-                    fontSize: 10,
+                    fontSize: tokens.fontSize.xs,
                     color: MUTED,
                     marginTop: 1,
                     whiteSpace: "nowrap",

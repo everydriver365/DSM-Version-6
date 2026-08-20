@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState } from "react";
 import { IconDotsVertical, IconPencil, IconPlus, IconX, IconX as IconClose } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
@@ -226,7 +227,7 @@ function TestsPage() {
           onClick={() => setAddOpen(true)}
           className="inline-flex items-center gap-2"
           style={{
-            background: "#fff", color: "#0B1F3A", fontSize: 13.5, fontWeight: 800,
+            background: "#fff", color: tokens.navy, fontSize: 13.5, fontWeight: tokens.fontWeight.extrabold,
             padding: "10px 18px", borderRadius: 8, border: "none",
             boxShadow: "0 3px 0 #C7D0DC", ...POPPINS,
           }}
@@ -243,9 +244,9 @@ function TestsPage() {
         {sections.map((section) => (
           <div key={section.key}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "18px 0 10px" }}>
-              <span style={{ width: 3, height: 14, background: "#1877D6", borderRadius: 8, flexShrink: 0 }} />
+              <span style={{ width: 3, height: 14, background: tokens.blue, borderRadius: 8, flexShrink: 0 }} />
               <span style={{
-                color: "#1877D6", fontSize: 12, fontWeight: 800,
+                color: tokens.blue, fontSize: 12, fontWeight: tokens.fontWeight.extrabold,
                 letterSpacing: "0.6px", textTransform: "uppercase", ...POPPINS,
               }}>
                 {section.title}
@@ -382,12 +383,12 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
     <div
       className="mb-4"
       style={{
-        borderRadius: 8, background: "#FFFFFF", overflow: "hidden",
+        borderRadius: 8, background: tokens.white, overflow: "hidden",
         boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.08)",
       }}
     >
-      <div style={{ background: "#0B1F3A", padding: "16px 18px" }}>
-        <div style={{ color: "#fff", fontSize: 17, fontWeight: 800, letterSpacing: "-0.2px", ...POPPINS }}>
+      <div style={{ background: tokens.navy, padding: "16px 18px" }}>
+        <div style={{ color: "#fff", fontSize: 17, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.2px", ...POPPINS }}>
           DVSA Standards Check risk
         </div>
         <div style={{ color: "#7C8BA3", fontSize: 12, marginTop: 3, ...POPPINS }}>
@@ -435,9 +436,9 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
       </div>
       <div style={{
         background: "#F7F9FC", padding: "14px 18px", color: "#6B6B6F",
-        fontSize: 12.5, fontWeight: 500, lineHeight: 1.5, ...POPPINS,
+        fontSize: 12.5, fontWeight: tokens.fontWeight.medium, lineHeight: 1.5, ...POPPINS,
       }}>
-        <span style={{ color: "#0B1F3A", fontWeight: 800 }}>{metrics.triggerCount} of 4 triggers met</span>
+        <span style={{ color: tokens.navy, fontWeight: 800 }}>{metrics.triggerCount} of 4 triggers met</span>
         {" "}— DVSA typically requests a check at 3 or more. Based on {metrics.totalTests} completed tests.
       </div>
     </div>
@@ -470,10 +471,10 @@ function DvsaMetricRow({
       className="flex items-center justify-between"
       style={{ padding: "14px 18px", borderTop: first ? "none" : "1px solid #F0F0F2" }}
     >
-      <span style={{ color: "#6B6B6F", fontSize: 14, fontWeight: 600, ...POPPINS }}>{label}</span>
-      <span style={{ color: colour, fontSize: 14.5, fontWeight: 800, textAlign: "right", ...POPPINS }}>
+      <span style={{ color: "#6B6B6F", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, ...POPPINS }}>{label}</span>
+      <span style={{ color: colour, fontSize: 14.5, fontWeight: tokens.fontWeight.extrabold, textAlign: "right", ...POPPINS }}>
         {formatted}{valueSuffix}
-        <span style={{ fontWeight: 500, fontSize: 12.5, opacity: 0.7 }}> (trigger: {threshold})</span>
+        <span style={{ fontWeight: tokens.fontWeight.medium, fontSize: 12.5, opacity: 0.7 }}> (trigger: {threshold})</span>
       </span>
     </div>
   );
@@ -527,23 +528,23 @@ function TestCard({
       <div className="flex items-start" style={{ gap: 12 }}>
         <div
           className="flex items-center justify-center text-white shrink-0"
-          style={{ width: 42, height: 42, borderRadius: 999, backgroundColor: "#1877D6", fontSize: 14, fontWeight: 800, ...POPPINS }}
+          style={{ width: 42, height: 42, borderRadius: 999, backgroundColor: tokens.blue, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.extrabold, ...POPPINS }}
         >
           {initials(name)}
         </div>
         <div className="flex-1 min-w-0" style={{ paddingRight: showMenu ? 28 : 0 }}>
           <div className="flex items-start justify-between" style={{ gap: 8 }}>
-            <div className="truncate" style={{ color: "#000", fontSize: 16, fontWeight: 800, ...POPPINS }}>
+            <div className="truncate" style={{ color: "#000", fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, ...POPPINS }}>
               {name}
             </div>
             {showDaysBadge && (
               <span
                 className="shrink-0"
                 style={{
-                  color: "#1877D6",
+                  color: tokens.blue,
                   backgroundColor: "#E7F1FC",
                   fontSize: 12,
-                  fontWeight: 800,
+                  fontWeight: tokens.fontWeight.extrabold,
                   padding: "5px 12px",
                   borderRadius: 8,
                   ...POPPINS,
@@ -567,7 +568,7 @@ function TestCard({
               </span>
             )}
           </div>
-          <div style={{ color: "#0B1F3A", fontSize: 14, fontWeight: 700, marginTop: 4, ...POPPINS }}>
+          <div style={{ color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, marginTop: 4, ...POPPINS }}>
             {formatDateLong(test.test_date)}
           </div>
           {timeLocation && (
@@ -607,9 +608,9 @@ function TestCard({
                 borderRadius: 8,
                 background: "#fff",
                 border: "1.5px solid #1877D6",
-                color: "#1877D6",
-                fontSize: 14,
-                fontWeight: 700,
+                color: tokens.blue,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.bold,
                 ...POPPINS,
               }}
             >
@@ -671,9 +672,9 @@ function TestCard({
                     padding: "10px 12px",
                     background: "#fff",
                     border: "none",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "#0B1F3A",
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.navy,
                     cursor: "pointer",
                     fontFamily: "Poppins, sans-serif",
                     textAlign: "left",
@@ -699,9 +700,9 @@ function TestCard({
                     background: "#fff",
                     border: "none",
                     borderTop: onEdit ? "1px solid #F1F5F9" : "none",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "#CC2229",
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.red,
                     cursor: "pointer",
                     fontFamily: "Poppins, sans-serif",
                     textAlign: "left",
@@ -773,9 +774,9 @@ function EditTestSheet({
               padding: "10px 12px",
               border: "1px solid #E4E8EF",
               borderRadius: 8,
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               fontFamily: "Poppins, sans-serif",
-              color: "#0B1F3A",
+              color: tokens.navy,
             }}
           />
         </div>
@@ -793,9 +794,9 @@ function EditTestSheet({
               padding: "10px 12px",
               border: "1px solid #E4E8EF",
               borderRadius: 8,
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               fontFamily: "Poppins, sans-serif",
-              color: "#0B1F3A",
+              color: tokens.navy,
             }}
           />
         </div>
@@ -821,8 +822,8 @@ function EditTestSheet({
             color: "#fff",
             border: "none",
             borderRadius: 8,
-            fontSize: 14,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.bold,
             cursor: saving ? "not-allowed" : "pointer",
             fontFamily: "Poppins, sans-serif",
           }}
@@ -897,12 +898,12 @@ function CancelTestSheet({
             color: "#B45309",
           }}
         >
-          <span style={{ fontSize: 18, lineHeight: 1 }}>⚠️</span>
+          <span style={{ fontSize: tokens.fontSize.xl, lineHeight: 1 }}>⚠️</span>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, ...POPPINS }}>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, marginBottom: 4, ...POPPINS }}>
               Cancel test for {test.pupils?.name ?? "this pupil"}?
             </div>
-            <div style={{ fontSize: 13, ...POPPINS }}>
+            <div style={{ fontSize: tokens.fontSize.base, ...POPPINS }}>
               This will clear the test date, time and centre from the pupil&apos;s record.
             </div>
           </div>
@@ -921,9 +922,9 @@ function CancelTestSheet({
               padding: "10px 12px",
               border: "1px solid #E4E8EF",
               borderRadius: 8,
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               fontFamily: "Poppins, sans-serif",
-              color: "#0B1F3A",
+              color: tokens.navy,
               resize: "none",
             }}
           />
@@ -935,12 +936,12 @@ function CancelTestSheet({
           style={{
             width: "100%",
             padding: 13,
-            background: "#CC2229",
+            background: tokens.red,
             color: "#fff",
             border: "none",
             borderRadius: 8,
-            fontSize: 14,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.bold,
             cursor: "pointer",
             fontFamily: "Poppins, sans-serif",
           }}
@@ -954,11 +955,11 @@ function CancelTestSheet({
             width: "100%",
             padding: 13,
             background: "#F1F5F9",
-            color: "#6B7686",
+            color: tokens.textSecondary,
             border: "none",
             borderRadius: 8,
-            fontSize: 14,
-            fontWeight: 600,
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.semibold,
             cursor: "pointer",
             fontFamily: "Poppins, sans-serif",
           }}
@@ -1034,8 +1035,8 @@ function computeExaminerStats(tests: DrivingTest[]): ExaminerStat[] {
 function ExaminerStatsCard({ stats }: { stats: ExaminerStat[] }) {
   const [openKey, setOpenKey] = useState<string | null>(null);
   return (
-    <div className="mb-4" style={{ borderRadius: 8, background: "#FFFFFF", border: "0.5px solid #EEF2F7", overflow: "hidden" }}>
-      <div className="px-3 py-3" style={{ background: "#0B1F3A" }}>
+    <div className="mb-4" style={{ borderRadius: 8, background: tokens.white, border: "0.5px solid #EEF2F7", overflow: "hidden" }}>
+      <div className="px-3 py-3" style={{ background: tokens.navy }}>
         <div className="text-[13px] font-semibold text-white" style={POPPINS}>Examiner stats</div>
         <div className="text-[11px] text-white/80 mt-0.5" style={POPPINS}>Completed tests grouped by examiner</div>
       </div>
@@ -1051,8 +1052,8 @@ function ExaminerStatsCard({ stats }: { stats: ExaminerStat[] }) {
                 style={POPPINS}
               >
                 <div className="flex items-center justify-between" style={{ gap: 8 }}>
-                  <span className="text-[13px] font-semibold" style={{ color: "#0B1F3A" }}>{s.name}</span>
-                  <span className="text-[11px] font-medium" style={{ color: "#1877D6", backgroundColor: "#EEF4FB", padding: "2px 8px", borderRadius: 999 }}>
+                  <span className="text-[13px] font-semibold" style={{ color: tokens.navy }}>{s.name}</span>
+                  <span className="text-[11px] font-medium" style={{ color: tokens.blue, backgroundColor: "#EEF4FB", padding: "2px 8px", borderRadius: 999 }}>
                     {s.total} test{s.total === 1 ? "" : "s"}
                   </span>
                 </div>
@@ -1077,7 +1078,7 @@ function ExaminerStatsCard({ stats }: { stats: ExaminerStat[] }) {
                         style={{ background: "#F9FAFB", borderRadius: 8, ...POPPINS }}
                       >
                         <div className="min-w-0">
-                          <div className="text-[12px] font-medium truncate" style={{ color: "#0B1F3A" }}>
+                          <div className="text-[12px] font-medium truncate" style={{ color: tokens.navy }}>
                             {t.pupils?.name ?? "Pupil"}
                           </div>
                           <div className="text-[11px]" style={{ color: "#6B7280" }}>
@@ -1153,7 +1154,7 @@ function SheetShell({
             style={{
               position: "sticky",
               bottom: 0,
-              background: "#FFFFFF",
+              background: tokens.white,
               borderTop: "1px solid #EEF2F7",
               padding: 16,
               zIndex: 10,
@@ -1285,8 +1286,8 @@ function AddTestSheet({
                 height: 44,
                 borderRadius: 8,
                 border: "0.5px solid #EEF2F7",
-                color: "#0B1F3A",
-                fontSize: 14,
+                color: tokens.navy,
+                fontSize: tokens.fontSize.md,
                 ...POPPINS,
               }}
             >
@@ -1315,7 +1316,7 @@ function AddTestSheet({
               height: 44,
               borderRadius: 8,
               border: "1px dashed #1877D6",
-              color: "#1877D6",
+              color: tokens.blue,
               background: "#F4F8FE",
               opacity: !pupilId || !date ? 0.5 : 1,
               ...POPPINS,
@@ -1396,7 +1397,7 @@ function ExaminerNameInput({
             left: 0,
             right: 0,
             marginTop: 4,
-            background: "#FFFFFF",
+            background: tokens.white,
             border: "1px solid #EEF2F7",
             borderRadius: 8,
             boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
@@ -1415,7 +1416,7 @@ function ExaminerNameInput({
                 setOpen(false);
               }}
               className="w-full text-left px-3 py-2 text-[14px]"
-              style={{ color: "#0B1F3A", ...POPPINS }}
+              style={{ color: tokens.navy, ...POPPINS }}
             >
               {s}
             </button>
@@ -1554,7 +1555,7 @@ function LogResultSheet({
   const numInputStyle = {
     borderWidth: "0.5px",
     borderStyle: "solid",
-    borderColor: "#EEF2F7",
+    borderColor: tokens.canvas,
   } as const;
 
   return (
@@ -1573,7 +1574,7 @@ function LogResultSheet({
     >
       <div className="flex flex-col" style={{ gap: 12 }}>
         <div className="rounded-lg p-3" style={{ backgroundColor: "#F3F4F6" }}>
-          <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A" }}>
+          <div className="text-[14px] font-semibold" style={{ color: tokens.navy }}>
             {test.pupils?.name ?? "Pupil"}
           </div>
           <div className="text-[12px]" style={{ color: "#6B7280" }}>
@@ -1681,8 +1682,8 @@ function LogResultSheet({
             style={{
               borderRadius: 8,
               border: "0.5px solid #EEF2F7",
-              color: "#0B1F3A",
-              fontSize: 14,
+              color: tokens.navy,
+              fontSize: tokens.fontSize.md,
               resize: "none",
               ...POPPINS,
             }}
@@ -1697,7 +1698,7 @@ function LogResultSheet({
             height: 44,
             borderRadius: 8,
             border: "1px dashed #1877D6",
-            color: "#1877D6",
+            color: tokens.blue,
             background: "#F4F8FE",
             ...POPPINS,
           }}
@@ -1740,11 +1741,11 @@ function ToggleRow({
       style={{
         borderRadius: 8,
         border: "0.5px solid #EEF2F7",
-        background: "#FFFFFF",
+        background: tokens.white,
         textAlign: "left",
       }}
     >
-      <span className="text-[13px] pr-3" style={{ color: "#0B1F3A", ...POPPINS }}>
+      <span className="text-[13px] pr-3" style={{ color: tokens.navy, ...POPPINS }}>
         {label}
       </span>
       <span
@@ -1766,7 +1767,7 @@ function ToggleRow({
             width: 20,
             height: 20,
             borderRadius: 999,
-            background: "#FFFFFF",
+            background: tokens.white,
             transition: "left 0.15s",
             boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
           }}
@@ -2100,9 +2101,9 @@ export function DL25Sheet({
           <div className="flex items-center justify-between text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>
             <span>Totals</span>
             <span>
-              <span style={{ color: "#0B1F3A", fontWeight: 600 }}>{t.minor}</span> minor ·{" "}
+              <span style={{ color: tokens.navy, fontWeight: 600 }}>{t.minor}</span> minor ·{" "}
               <span style={{ color: "#B5661E", fontWeight: 600 }}>{t.serious}</span> serious ·{" "}
-              <span style={{ color: "#CC2229", fontWeight: 600 }}>{t.dangerous}</span> dangerous
+              <span style={{ color: tokens.red, fontWeight: 600 }}>{t.dangerous}</span> dangerous
             </span>
           </div>
           {readOnly ? (
@@ -2181,8 +2182,8 @@ export function DL25Sheet({
                     height: 44,
                     borderRadius: 8,
                     border: "0.5px solid #EEF2F7",
-                    color: "#0B1F3A",
-                    fontSize: 14,
+                    color: tokens.navy,
+                    fontSize: tokens.fontSize.md,
                     ...POPPINS,
                   }}
                 >
@@ -2235,10 +2236,10 @@ function DL25ItemRow({
         padding: "8px 10px",
         borderRadius: 8,
         border: "0.5px solid #EEF2F7",
-        background: "#FFFFFF",
+        background: tokens.white,
       }}
     >
-      <span className="text-[13px] pr-2" style={{ color: "#0B1F3A", ...POPPINS }}>
+      <span className="text-[13px] pr-2" style={{ color: tokens.navy, ...POPPINS }}>
         {label}
       </span>
       <div className="flex" style={{ gap: 8 }}>
@@ -2280,8 +2281,8 @@ function NumberInput({
           textAlign: "center",
           borderRadius: 8,
           border: "1px solid #E5E7EB",
-          fontSize: 14,
-          color: "#0B1F3A",
+          fontSize: tokens.fontSize.md,
+          color: tokens.navy,
           ...(readOnly ? { opacity: 0.7, cursor: "default", background: "#F8F9FB" } : null),
           ...POPPINS,
         }}

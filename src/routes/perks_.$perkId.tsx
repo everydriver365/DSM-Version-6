@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -85,9 +86,9 @@ const CARD: React.CSSProperties = {
 };
 
 const LABEL: React.CSSProperties = {
-  color: "#9CA3AF",
-  fontSize: 11,
-  fontWeight: 600,
+  color: tokens.textMuted,
+  fontSize: tokens.fontSize.sm,
+  fontWeight: tokens.fontWeight.semibold,
   letterSpacing: "0.08em",
   textTransform: "uppercase",
   marginBottom: 10,
@@ -164,8 +165,8 @@ function PerkDetailPage() {
   if (!perk) {
     return (
       <DSMTopSheet title="Perk Details" onBack={() => goBack("/perks")}>
-        <div style={{ background: "#EEF2F7", minHeight: "100%", fontFamily: "Poppins, sans-serif" }}>
-          <div style={{ ...CARD, textAlign: "center", color: "#6B7686", fontSize: 14 }}>
+        <div style={{ background: tokens.canvas, minHeight: "100%", fontFamily: "Poppins, sans-serif" }}>
+          <div style={{ ...CARD, textAlign: "center", color: tokens.textSecondary, fontSize: 14 }}>
             This perk is no longer available.
           </div>
         </div>
@@ -184,7 +185,7 @@ function PerkDetailPage() {
     <DSMTopSheet title="Perk Details" onBack={() => goBack("/perks")}>
     <div
       style={{
-        background: "#EEF2F7",
+        background: tokens.canvas,
         minHeight: "100%",
         paddingBottom: 100,
         fontFamily: "Poppins, sans-serif",
@@ -209,7 +210,7 @@ function PerkDetailPage() {
             justifyContent: "center",
             color: "#fff",
             fontSize: 44,
-            fontWeight: 800,
+            fontWeight: tokens.fontWeight.extrabold,
           }}
         >
           {partnerName.charAt(0).toUpperCase()}
@@ -251,7 +252,7 @@ function PerkDetailPage() {
         <div style={{ flex: 1, minWidth: 0 }}>
           {canAccess ? (
             <>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#15803D" }}>
+              <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: "#15803D" }}>
                 Included in your plan
               </div>
               <div style={{ fontSize: 12, color: "#15803D", opacity: 0.8 }}>
@@ -260,7 +261,7 @@ function PerkDetailPage() {
             </>
           ) : (
             <>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#B45309" }}>
+              <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: "#B45309" }}>
                 Requires {TIER_DISPLAY[perk.min_tier] ?? perk.min_tier} or above
               </div>
               <div style={{ fontSize: 12, color: "#B45309", opacity: 0.8 }}>
@@ -275,12 +276,12 @@ function PerkDetailPage() {
             type="button"
             onClick={() => startUpgrade(perk.min_tier)}
             style={{
-              background: "#1877D6",
+              background: tokens.blue,
               color: "#fff",
               borderRadius: 8,
               padding: "7px 14px",
               fontSize: 12,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               border: "none",
               cursor: "pointer",
               fontFamily: "Poppins, sans-serif",
@@ -298,9 +299,9 @@ function PerkDetailPage() {
           style={{
             display: "inline-block",
             background: "#EFF6FF",
-            color: "#1877D6",
-            fontSize: 10,
-            fontWeight: 700,
+            color: tokens.blue,
+            fontSize: tokens.fontSize.xs,
+            fontWeight: tokens.fontWeight.bold,
             borderRadius: 8,
             padding: "3px 10px",
             marginBottom: 8,
@@ -308,15 +309,15 @@ function PerkDetailPage() {
         >
           {partnerName}
         </span>
-        <div style={{ fontSize: 20, fontWeight: 800, color: "#0B1F3A" }}>{perk.name}</div>
+        <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy }}>{perk.name}</div>
         {perk.saving && (
           <span
             style={{
               display: "inline-block",
               background: "#DCFCE7",
               color: "#15803D",
-              fontSize: 11,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.sm,
+              fontWeight: tokens.fontWeight.bold,
               borderRadius: 999,
               padding: "4px 10px",
               marginTop: 8,
@@ -326,7 +327,7 @@ function PerkDetailPage() {
           </span>
         )}
         {perk.category && (
-          <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 6 }}>{perk.category}</div>
+          <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 6 }}>{perk.category}</div>
         )}
       </div>
 
@@ -334,7 +335,7 @@ function PerkDetailPage() {
       {body && (
         <div style={CARD}>
           <div style={LABEL}>About this perk</div>
-          <div style={{ color: "#6B7686", fontSize: 14, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
+          <div style={{ color: tokens.textSecondary, fontSize: tokens.fontSize.md, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
             {body}
           </div>
         </div>
@@ -361,8 +362,8 @@ function PerkDetailPage() {
                   display: "flex",
                   alignItems: "flex-start",
                   gap: 8,
-                  color: "#6B7686",
-                  fontSize: 14,
+                  color: tokens.textSecondary,
+                  fontSize: tokens.fontSize.md,
                   lineHeight: 1.5,
                 }}
               >
@@ -393,7 +394,7 @@ function PerkDetailPage() {
               }}
             >
               <IconExternalLink size={18} color="#1877D6" stroke={1.8} />
-              <span style={{ flex: 1, color: "#0B1F3A", fontSize: 14, fontWeight: 600 }}>
+              <span style={{ flex: 1, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: 600 }}>
                 {link.label}
               </span>
               <IconChevronRight size={18} color="#B0B0B5" stroke={1.8} />
@@ -470,12 +471,12 @@ function PerkDetailPage() {
               type="button"
               onClick={() => startUpgrade(perk.min_tier)}
               style={{
-                background: "#1877D6",
+                background: tokens.blue,
                 color: "#fff",
                 borderRadius: 8,
                 padding: 14,
                 fontSize: 15,
-                fontWeight: 800,
+                fontWeight: tokens.fontWeight.extrabold,
                 width: "100%",
                 border: "none",
                 cursor: "pointer",
@@ -493,9 +494,9 @@ function PerkDetailPage() {
                   key={t}
                   style={{
                     background: "#EFF6FF",
-                    color: "#1877D6",
-                    fontSize: 10,
-                    fontWeight: 700,
+                    color: tokens.blue,
+                    fontSize: tokens.fontSize.xs,
+                    fontWeight: tokens.fontWeight.bold,
                     borderRadius: 8,
                     padding: "3px 10px",
                   }}
@@ -510,10 +511,10 @@ function PerkDetailPage() {
         {canAccess && perk.coming_soon && (
           <div style={{ textAlign: "center", padding: "8px 0" }}>
             <div style={{ fontSize: 32, marginBottom: 8 }}>🚀</div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A", marginBottom: 6 }}>
+            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy, marginBottom: 6 }}>
               Coming soon
             </div>
-            <div style={{ fontSize: 13, color: "#6B7686", lineHeight: 1.5 }}>
+            <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, lineHeight: 1.5 }}>
               We're setting this up for you. We'll notify you as soon as it's ready.
             </div>
           </div>
@@ -529,7 +530,7 @@ function PerkDetailPage() {
               borderRadius: 8,
               padding: 14,
               fontSize: 15,
-              fontWeight: 800,
+              fontWeight: tokens.fontWeight.extrabold,
               width: "100%",
               border: "none",
               cursor: "pointer",
@@ -567,16 +568,16 @@ function PerkDetailPage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: 16,
-            fontWeight: 800,
+            fontSize: tokens.fontSize.lg,
+            fontWeight: tokens.fontWeight.extrabold,
             flexShrink: 0,
           }}
         >
           {partnerName.charAt(0).toUpperCase()}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 11, color: "#9CA3AF" }}>Provided by</div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>{partnerName}</div>
+          <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted }}>Provided by</div>
+          <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>{partnerName}</div>
         </div>
         <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
       </div>
@@ -630,7 +631,7 @@ function PerkDetailPage() {
               position: "absolute",
               bottom: 32,
               color: "rgba(255,255,255,0.6)",
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
             }}
           >
             {lightboxIndex + 1} of {galleryPhotos.length}

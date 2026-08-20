@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconClipboardCheck, IconPlus, IconX } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -110,7 +111,7 @@ function StandardsPage() {
           type="button"
           onClick={() => setAddOpen(true)}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
         >
           <IconPlus size={15} />
           Add check
@@ -123,7 +124,7 @@ function StandardsPage() {
         <div
           className="mx-4 mt-3 flex items-center"
           style={{
-            backgroundColor: "#0B1F3A",
+            backgroundColor: tokens.navy,
             borderRadius: 8,
             padding: 16,
             gap: 16,
@@ -144,7 +145,7 @@ function StandardsPage() {
           <div className="flex-1 min-w-0">
             <div
               className="text-[11px] tracking-wider font-semibold"
-              style={{ color: "#9CA3AF" }}
+              style={{ color: tokens.textMuted }}
             >
               LAST GRADE
             </div>
@@ -155,7 +156,7 @@ function StandardsPage() {
             {latest.examiner_name && (
               <div
                 className="text-[12px] mt-0.5"
-                style={{ color: "#9CA3AF" }}
+                style={{ color: tokens.textMuted }}
               >
                 {latest.examiner_name}
               </div>
@@ -201,7 +202,7 @@ function StandardsPage() {
                       <div className="flex-1 min-w-0">
                         <div
                           className="text-[14px] font-bold"
-                          style={{ color: "#0B1F3A" }}
+                          style={{ color: tokens.navy }}
                         >
                           {formatShortDate(c.check_date)}
                         </div>
@@ -388,7 +389,7 @@ function AddCheckSheet({
                     border: active
                       ? "1px solid transparent"
                       : "0.5px solid #EEF2F7",
-                    fontSize: 18,
+                    fontSize: tokens.fontSize.xl,
                   }}
                 >
                   {g}
@@ -425,7 +426,7 @@ function AddCheckSheet({
               border: "0.5px solid #EEF2F7",
               borderRadius: 8,
               padding: 10,
-              color: "#0B1F3A",
+              color: tokens.navy,
               outline: "none",
               resize: "vertical",
             }}

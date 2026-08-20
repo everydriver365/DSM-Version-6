@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 interface Props {
   value: string | number;
   label: string;
@@ -10,7 +11,7 @@ export function StatTile({ value, label }: Props) {
       style={{
         borderWidth: "0.5px",
         borderStyle: "solid",
-        borderColor: "#EEF2F7",
+        borderColor: tokens.canvas,
         fontFamily: "Poppins, sans-serif",
       }}
     >

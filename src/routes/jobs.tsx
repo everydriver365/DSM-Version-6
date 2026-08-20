@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import DSMSkeleton from "@/components/dsm/DSMSkeleton";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
@@ -220,7 +221,7 @@ function JobCard({
     <div
       onClick={() => setDetailJob(job)}
       style={{
-        background: "#FFFFFF",
+        background: tokens.white,
         borderRadius: 8,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
         overflow: "hidden",
@@ -236,7 +237,7 @@ function JobCard({
           gap: 12,
         }}
       >
-        <div style={{ fontSize: 12.5, fontWeight: 500, color: "#9CA3AF", ...POPPINS }}>
+        <div style={{ fontSize: 12.5, fontWeight: tokens.fontWeight.medium, color: tokens.textMuted, ...POPPINS }}>
           {variant === "claimed"
             ? `Job accepted · ${job.claimed_at ? relTime(job.claimed_at) : "—"}`
             : `Job offer · Posted ${relTime(job.created_at)}`}
@@ -244,8 +245,8 @@ function JobCard({
         {worth != null && (
           <div
             style={{
-              fontSize: 22,
-              fontWeight: 800,
+              fontSize: tokens.fontSize.xxl,
+              fontWeight: tokens.fontWeight.extrabold,
               color: worth === 0 ? "#C7C7CC" : "#000",
               ...POPPINS,
             }}
@@ -259,7 +260,7 @@ function JobCard({
         <div
           style={{
             fontSize: 19,
-            fontWeight: 800,
+            fontWeight: tokens.fontWeight.extrabold,
             letterSpacing: "-0.3px",
             color: "#000",
             marginBottom: variant === "claimed" ? 6 : 0,
@@ -272,8 +273,8 @@ function JobCard({
         <div
           style={{
             fontSize: 13.5,
-            fontWeight: 500,
-            color: "#9CA3AF",
+            fontWeight: tokens.fontWeight.medium,
+            color: tokens.textMuted,
             lineHeight: 1.5,
             marginBottom: variant === "claimed" ? 14 : 0,
             ...POPPINS,
@@ -298,7 +299,7 @@ function JobCard({
                 alignItems: "center",
                 gap: 6,
                 fontSize: 11.5,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 color: badge.color,
                 background: badge.bg,
                 padding: "6px 12px",
@@ -329,14 +330,14 @@ function JobCard({
                 onDecline?.();
               }}
               style={{
-                background: "#EEF2F7",
+                background: tokens.canvas,
                 color: "#000",
                 height: "auto",
                 borderRadius: 8,
                 padding: 14,
                 border: "none",
                 fontSize: 14.5,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 cursor: "pointer",
                 whiteSpace: "nowrap",
                 flex: 1,
@@ -360,7 +361,7 @@ function JobCard({
               padding: 14,
               border: "none",
               fontSize: 14.5,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               cursor: "pointer",
               whiteSpace: "nowrap",
               flex: 1,
@@ -540,7 +541,7 @@ function JobsPage() {
             alignItems: "center",
             justifyContent: "space-between",
             gap: 12,
-            background: "#FFFFFF",
+            background: tokens.white,
             padding: "10px 16px 12px",
           }}
         >
@@ -565,7 +566,7 @@ function JobsPage() {
                     borderRadius: 8,
                     padding: "8px 18px",
                     fontSize: 13.5,
-                    fontWeight: 600,
+                    fontWeight: tokens.fontWeight.semibold,
                     color: active ? "#000" : "#6B6B6F",
                     cursor: "pointer",
                     textTransform: "capitalize",
@@ -578,7 +579,7 @@ function JobsPage() {
               );
             })}
           </div>
-          <div style={{ fontSize: 13, fontWeight: 500, color: "#9CA3AF", ...POPPINS }}>
+          <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: tokens.textMuted, ...POPPINS }}>
             {activeTab === "open" ? `${jobs?.length ?? 0} open` : `${claimedJobs?.length ?? 0} claimed`}
           </div>
         </div>
@@ -592,7 +593,7 @@ function JobsPage() {
               <div
                 key={i}
                 style={{
-                  background: "#FFFFFF",
+                  background: tokens.white,
                   borderRadius: 8,
                   boxShadow: "0 4px 0 #E4E4E8",
                   padding: 14,
@@ -655,7 +656,7 @@ function JobsPage() {
               <div
                 key={i}
                 style={{
-                  background: "#FFFFFF",
+                  background: tokens.white,
                   borderRadius: 8,
                   boxShadow: "0 4px 0 #E4E4E8",
                   padding: 14,
@@ -814,14 +815,14 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
       >
         <div style={{
           display: "flex", alignItems: "center", padding: "14px 16px",
-          borderBottom: "1px solid #E5E7EB", background: "#FFFFFF",
+          borderBottom: "1px solid #E5E7EB", background: tokens.white,
           borderTopLeftRadius: 16, borderTopRightRadius: 16,
         }}>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>
+            <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY }}>
               {job.pupil_name || "Job enquiry"}
             </div>
-            <div style={{ fontSize: 11, color: GREY }}>
+            <div style={{ fontSize: tokens.fontSize.sm, color: GREY }}>
               {[job.postcode_area, job.preferred_timing?.join(", ")].filter(Boolean).join(" · ")}
             </div>
           </div>
@@ -832,9 +833,9 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
 
         <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 8 }}>
           {messages === null ? (
-            <div style={{ color: GREY, fontSize: 13, textAlign: "center", padding: 20 }}>Loading…</div>
+            <div style={{ color: GREY, fontSize: tokens.fontSize.base, textAlign: "center", padding: 20 }}>Loading…</div>
           ) : messages.length === 0 ? (
-            <div style={{ color: GREY, fontSize: 13, textAlign: "center", padding: 20 }}>
+            <div style={{ color: GREY, fontSize: tokens.fontSize.base, textAlign: "center", padding: 20 }}>
               No messages yet. Say hello!
             </div>
           ) : (
@@ -848,11 +849,11 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
                     color: mine ? "#FFFFFF" : NAVY,
                     borderRadius: 8,
                     padding: "8px 12px",
-                    fontSize: 14,
+                    fontSize: tokens.fontSize.md,
                     boxShadow: mine ? "none" : "0 1px 2px rgba(0,0,0,0.05)",
                   }}>
                     <div>{m.message}</div>
-                    <div style={{ fontSize: 10, opacity: 0.7, marginTop: 2, textAlign: "right" }}>
+                    <div style={{ fontSize: tokens.fontSize.xs, opacity: 0.7, marginTop: 2, textAlign: "right" }}>
                       {fmtTime(m.created_at)}
                     </div>
                   </div>
@@ -864,7 +865,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
 
         <div style={{
           display: "flex", gap: 8, padding: 12, borderTop: "1px solid #E5E7EB",
-          background: "#FFFFFF", paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
+          background: tokens.white, paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
         }}>
           <input
             value={draft}
@@ -872,8 +873,8 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
             onKeyDown={(e) => { if (e.key === "Enter") send(); }}
             placeholder="Type a message…"
             style={{
-              flex: 1, background: "#EEF2F7", border: "none", borderRadius: 8,
-              padding: "10px 14px", fontSize: 16, outline: "none", ...POPPINS,
+              flex: 1, background: tokens.canvas, border: "none", borderRadius: 8,
+              padding: "10px 14px", fontSize: tokens.fontSize.lg, outline: "none", ...POPPINS,
             }}
           />
           <button
@@ -927,8 +928,8 @@ function HistoryTimeline({ job }: { job: JobOffer }) {
               {!last && <div style={{ width: 2, flex: 1, background: "#E5E7EB", marginTop: 4 }} />}
             </div>
             <div style={{ flex: 1, paddingBottom: last ? 0 : 12 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: NAVY }}>{e.label}</div>
-              <div style={{ fontSize: 11, color: GREY, marginTop: 1 }}>{fmt(e.time)}</div>
+              <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: NAVY }}>{e.label}</div>
+              <div style={{ fontSize: tokens.fontSize.sm, color: GREY, marginTop: 1 }}>{fmt(e.time)}</div>
             </div>
           </div>
         );
@@ -958,7 +959,7 @@ function JobDetailSheet({
   const Row = ({ label, value }: { label: string; value: React.ReactNode }) => (
     <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "10px 0", borderBottom: "1px solid #F1F3F7" }}>
       <div style={{ fontSize: 12, color: GREY, fontWeight: 500 }}>{label}</div>
-      <div style={{ fontSize: 13, color: NAVY, fontWeight: 600, textAlign: "right", maxWidth: "60%", wordBreak: "break-word" }}>{value}</div>
+      <div style={{ fontSize: tokens.fontSize.base, color: NAVY, fontWeight: tokens.fontWeight.semibold, textAlign: "right", maxWidth: "60%", wordBreak: "break-word" }}>{value}</div>
     </div>
   );
 
@@ -973,7 +974,7 @@ function JobDetailSheet({
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: "#FFFFFF", borderTopLeftRadius: 16, borderTopRightRadius: 16,
+          background: tokens.white, borderTopLeftRadius: 16, borderTopRightRadius: 16,
           maxHeight: "90vh", display: "flex", flexDirection: "column", ...POPPINS,
         }}
       >
@@ -982,10 +983,10 @@ function JobDetailSheet({
           borderBottom: "1px solid #E5E7EB",
         }}>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: NAVY }}>
+            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: NAVY }}>
               {job.pupil_name || "New pupil"}
             </div>
-            <div style={{ fontSize: 11, color: GREY, marginTop: 2 }}>
+            <div style={{ fontSize: tokens.fontSize.sm, color: GREY, marginTop: 2 }}>
               Posted {relTime(job.created_at)}
             </div>
           </div>
@@ -1026,20 +1027,20 @@ function JobDetailSheet({
 
           {job.test_booked && (
             <div style={{ marginTop: 16, padding: 12, background: "#EFF6FF", borderRadius: 8, border: "1px solid #CCE0FA" }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: BLUE, textTransform: "uppercase", letterSpacing: 0.3, marginBottom: 6 }}>
+              <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: BLUE, textTransform: "uppercase", letterSpacing: 0.3, marginBottom: 6 }}>
                 Test booked
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {job.test_date && (
-                  <div style={{ fontSize: 13, color: NAVY, fontWeight: 600 }}>
+                  <div style={{ fontSize: tokens.fontSize.base, color: NAVY, fontWeight: 600 }}>
                     {new Date(job.test_date).toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" })}
                   </div>
                 )}
                 {job.test_time && (
-                  <div style={{ fontSize: 13, color: GREY }}>{job.test_time}</div>
+                  <div style={{ fontSize: tokens.fontSize.base, color: GREY }}>{job.test_time}</div>
                 )}
                 {job.test_centre && (
-                  <div style={{ fontSize: 13, color: GREY }}>{job.test_centre}</div>
+                  <div style={{ fontSize: tokens.fontSize.base, color: GREY }}>{job.test_centre}</div>
                 )}
               </div>
             </div>
@@ -1052,7 +1053,7 @@ function JobDetailSheet({
           )}
 
           <div style={{ marginTop: 20 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: NAVY, textTransform: "uppercase", letterSpacing: 0.3, marginBottom: 10 }}>
+            <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: NAVY, textTransform: "uppercase", letterSpacing: 0.3, marginBottom: 10 }}>
               History
             </div>
             <HistoryTimeline job={job} />
@@ -1068,8 +1069,8 @@ function JobDetailSheet({
               border: "1px solid #CCE0FA",
               borderRadius: 8,
               padding: "12px 16px",
-              fontSize: 14,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.semibold,
               cursor: "pointer",
               textAlign: "center",
               ...POPPINS,
@@ -1086,8 +1087,8 @@ function JobDetailSheet({
           <button
             onClick={onDecline}
             style={{
-              flex: 1, background: "#EEF2F7", color: NAVY, border: "none", borderRadius: 8,
-              padding: "12px 16px", fontSize: 14, fontWeight: 600, cursor: "pointer",
+              flex: 1, background: tokens.canvas, color: NAVY, border: "none", borderRadius: 8,
+              padding: "12px 16px", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, cursor: "pointer",
             }}
           >
             Decline
@@ -1096,7 +1097,7 @@ function JobDetailSheet({
             onClick={onAccept}
             style={{
               flex: 1, background: BLUE, color: "#FFF", border: "none", borderRadius: 8,
-              padding: "12px 16px", fontSize: 14, fontWeight: 700, cursor: "pointer",
+              padding: "12px 16px", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, cursor: "pointer",
             }}
           >
             Accept

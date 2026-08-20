@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useState, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { IconMenu2, IconX, IconChevronDown, IconCalendar, IconCreditCard, IconUsers, IconSchool, IconWorld, IconGauge, IconCamera, IconNews, IconHelpCircle, IconStar, IconPlayerPlay, IconArrowUpRight } from "@tabler/icons-react";
@@ -93,7 +94,7 @@ export function MarketingNav() {
               flexDirection: "column",
               lineHeight: 1,
               color: NAVY,
-              fontWeight: 800,
+              fontWeight: tokens.fontWeight.extrabold,
               fontFamily: "'Poppins', sans-serif",
               whiteSpace: "nowrap"}}
           >
@@ -119,8 +120,8 @@ export function MarketingNav() {
               background: ACCENT,
               color: "#fff",
               textDecoration: "none",
-              fontSize: 14,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.bold,
               padding: "12px 22px",
               borderRadius: 8,
               lineHeight: 1,
@@ -135,8 +136,8 @@ export function MarketingNav() {
               background: "#fff",
               color: ACCENT,
               textDecoration: "none",
-              fontSize: 14,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.bold,
               padding: "12px 22px",
               borderRadius: 8,
               border: `1.5px solid ${ACCENT}`,
@@ -253,7 +254,7 @@ export function MarketingNav() {
                 textAlign: "center",
                 padding: "12px 16px",
                 borderRadius: 8,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 textDecoration: "none",
                 fontSize: 14}}
             >
@@ -269,9 +270,9 @@ export function MarketingNav() {
                 textAlign: "center",
                 padding: "12px 16px",
                 borderRadius: 8,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 textDecoration: "none",
-                fontSize: 14,
+                fontSize: tokens.fontSize.md,
                 border: `1.5px solid ${ACCENT}`}}
             >
               Sign in
@@ -302,7 +303,7 @@ function triggerStyle(active: boolean): React.CSSProperties {
     color: active ? ACCENT : NAVY,
     textDecoration: "none",
     fontSize: 15,
-    fontWeight: 600,
+    fontWeight: tokens.fontWeight.semibold,
     padding: "10px 16px",
     display: "inline-flex",
     alignItems: "center",
@@ -415,13 +416,13 @@ function MegaPanel({
                     style={{
                       color: NAVY,
                       fontSize: 15,
-                      fontWeight: 700,
+                      fontWeight: tokens.fontWeight.bold,
                       marginBottom: f.desc ? 4 : 0,
                       transition: "color .15s ease"}}
                   >
                     {f.label}
                   </div>
-                  {f.desc && <div style={{ color: "#5A6B82", fontSize: 13, lineHeight: 1.45 }}>{f.desc}</div>}
+                  {f.desc && <div style={{ color: "#5A6B82", fontSize: tokens.fontSize.base, lineHeight: 1.45 }}>{f.desc}</div>}
                 </div>
               </Link>
             );
@@ -442,7 +443,7 @@ function MegaPanel({
                 color: NAVY,
                 textDecoration: "none",
                 fontSize: 15,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 padding: "10px 0",
                 transition: "color .15s ease"}}
             >
@@ -482,7 +483,7 @@ function MegaPanel({
               style={{
                 color: NAVY,
                 fontSize: 15,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 marginBottom: 4,
                 display: "inline-flex",
                 alignItems: "center",
@@ -491,7 +492,7 @@ function MegaPanel({
             >
               {rightHeadline} <IconArrowUpRight size={14} />
             </div>
-            <div style={{ color: "#5A6B82", fontSize: 13, lineHeight: 1.5, marginBottom: 14 }}>{rightDesc}</div>
+            <div style={{ color: "#5A6B82", fontSize: tokens.fontSize.base, lineHeight: 1.5, marginBottom: 14 }}>{rightDesc}</div>
             <span
               style={{
                 display: "inline-block",
@@ -499,7 +500,7 @@ function MegaPanel({
                 color: "#fff",
                 padding: "9px 16px",
                 borderRadius: 8,
-                fontSize: 13,
+                fontSize: tokens.fontSize.base,
                 fontWeight: 700}}
             >
               {rightCta}
@@ -517,8 +518,8 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
       <div
         style={{
           color: "#5A6B82",
-          fontSize: 11,
-          fontWeight: 700,
+          fontSize: tokens.fontSize.sm,
+          fontWeight: tokens.fontWeight.bold,
           letterSpacing: "0.14em",
           textTransform: "uppercase",
           paddingBottom: 12,
@@ -536,7 +537,7 @@ const mobileLink: React.CSSProperties = {
   color: NAVY,
   textDecoration: "none",
   fontSize: 15,
-  fontWeight: 600,
+  fontWeight: tokens.fontWeight.semibold,
   borderBottom: "1px solid #F1F5F9",
 };
 

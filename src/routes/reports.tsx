@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 
 import { toast } from "sonner";
@@ -202,7 +203,7 @@ function ReportsPage() {
                 <div className="flex items-center px-3 py-3">
                   <div
                     className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[12px] font-semibold"
-                    style={{ background: "#1877D6" }}
+                    style={{ background: tokens.blue }}
                   >
                     {initials(p.name)}
                   </div>

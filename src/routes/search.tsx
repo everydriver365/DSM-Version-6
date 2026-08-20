@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconChevronRight, IconClock, IconSearch } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
@@ -285,7 +286,7 @@ function SearchPage() {
       <div className="px-3 pt-3">
         <div
           className="flex items-center"
-          style={{ backgroundColor: "#FFFFFF", borderRadius: 8, height: 38, paddingLeft: 10, paddingRight: 10, gap: 8, border: "1px solid #E2E8F0" }}
+          style={{ backgroundColor: tokens.white, borderRadius: 8, height: 38, paddingLeft: 10, paddingRight: 10, gap: 8, border: "1px solid #E2E8F0" }}
         >
           <IconSearch size={16} color="#6B7280" />
           <input
@@ -499,7 +500,7 @@ function ResultGroup({
             type="button"
             onClick={onSeeAll}
             className="text-[12px] font-medium"
-            style={{ color: "#1877D6", ...POPPINS }}
+            style={{ color: tokens.blue, ...POPPINS }}
           >
             See all {total}
           </button>
@@ -531,7 +532,7 @@ function Row({
         borderRadius: 8,
         borderWidth: "0.5px",
         borderStyle: "solid",
-        borderColor: "#EEF2F7",
+        borderColor: tokens.canvas,
         gap: 12,
         fontFamily: "Poppins, sans-serif",
       }}
@@ -547,7 +548,7 @@ function Avatar({ name }: { name: string }) {
   return (
     <span
       className="flex items-center justify-center rounded-full text-white text-[12px] font-semibold"
-      style={{ width: 32, height: 32, backgroundColor: "#1877D6" }}
+      style={{ width: 32, height: 32, backgroundColor: tokens.blue }}
     >
       {initial}
     </span>

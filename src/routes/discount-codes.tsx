@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconArrowLeft, IconCopy, IconCurrencyPound, IconPercentage, IconPlus, IconShare, IconTag, IconTrash, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -165,7 +166,7 @@ function DiscountCodesPage() {
       {/* Action bar */}
       <div
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           padding: "8px 16px",
           display: "flex",
           justifyContent: "flex-end",
@@ -179,7 +180,7 @@ function DiscountCodesPage() {
           type="button"
           onClick={() => setShowAdd(true)}
           className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
-          style={{ backgroundColor: "#1877D6" }}
+          style={{ backgroundColor: tokens.blue }}
         >
           <IconPlus stroke={1.5} size={16} color="#fff" /> New code
         </button>
@@ -273,7 +274,7 @@ function CodeCard({
         margin: "0 16px 8px",
         padding: 16,
         borderRadius: 8,
-        backgroundColor: "#FFFFFF",
+        backgroundColor: tokens.white,
         border: "0.5px solid #EEF2F7",
         opacity: code.active ? 1 : 0.6,
       }}
@@ -342,7 +343,7 @@ function CodeCard({
                 width: 16,
                 height: 16,
                 borderRadius: 999,
-                backgroundColor: "#FFFFFF",
+                backgroundColor: tokens.white,
                 transition: "left 0.15s",
               }}
             />
@@ -364,7 +365,7 @@ function CodeCard({
           type="button"
           onClick={onShare}
           className="flex-1 flex items-center justify-center gap-1 text-[12px] font-medium text-white"
-          style={{ height: 34, borderRadius: 8, backgroundColor: "#1877D6" }}
+          style={{ height: 34, borderRadius: 8, backgroundColor: tokens.blue }}
         >
           <IconShare stroke={1.5} size={13} /> Share
         </button>
@@ -463,7 +464,7 @@ function AddSheet({
               style={{
                 ...inputStyle,
                 fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 letterSpacing: 0.5,
               }}
             />
@@ -480,7 +481,7 @@ function AddSheet({
                       padding: "0 10px",
                       borderRadius: 999,
                       backgroundColor: "#F3F4F6",
-                      color: "#0B1F3A",
+                      color: tokens.navy,
                     }}
                   >
                     {s}
@@ -554,7 +555,7 @@ function AddSheet({
             onClick={submit}
             className="w-full text-white text-[14px] font-semibold mt-2"
             style={{
-              backgroundColor: "#1877D6",
+              backgroundColor: tokens.blue,
               height: 46,
               borderRadius: 8,
               opacity: saving ? 0.6 : 1,
@@ -601,9 +602,9 @@ const inputStyle: React.CSSProperties = {
   padding: "0 12px",
   borderRadius: 8,
   border: "0.5px solid #EEF2F7",
-  backgroundColor: "#FFFFFF",
-  color: "#0B1F3A",
-  fontSize: 14,
+  backgroundColor: tokens.white,
+  color: tokens.navy,
+  fontSize: tokens.fontSize.md,
   fontFamily: "Poppins, sans-serif",
 };
 

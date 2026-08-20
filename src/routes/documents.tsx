@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { IconFolder, IconAlertTriangle, IconArrowLeft, IconCar, IconExternalLink, IconFileCheck, IconFileText, IconFolderOpen, IconPlus, IconReceipt, IconRosette, IconShieldCheck, IconTrash, IconUpload, IconX } from "@tabler/icons-react";
@@ -34,10 +35,10 @@ interface Doc {
 }
 
 const TYPES: { value: DocType; label: string; color: string; tint: string }[] = [
-  { value: "adi", label: "ADI Badge", color: "#1877D6", tint: "#DBEAFE" },
-  { value: "insurance", label: "Insurance", color: "#1877D6", tint: "#F3F8FF" },
-  { value: "mot", label: "MOT", color: "#1877D6", tint: "#EEF2F7" },
-  { value: "dbs", label: "DBS Check", color: "#1877D6", tint: "#FEE2E2" },
+  { value: "adi", label: "ADI Badge", color: tokens.blue, tint: "#DBEAFE" },
+  { value: "insurance", label: "Insurance", color: tokens.blue, tint: "#F3F8FF" },
+  { value: "mot", label: "MOT", color: tokens.blue, tint: "#EEF2F7" },
+  { value: "dbs", label: "DBS Check", color: tokens.blue, tint: "#FEE2E2" },
   { value: "tax", label: "Tax", color: "#5B21B6", tint: "#EDE9FE" },
   { value: "other", label: "Other", color: "#6B7280", tint: "#F4F4F5" },
 ];
@@ -138,7 +139,7 @@ function DocumentsPage() {
       {/* Action bar */}
       <div
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           padding: "8px 16px",
           display: "flex",
           justifyContent: "flex-end",
@@ -153,7 +154,7 @@ function DocumentsPage() {
           aria-label="Add document"
           onClick={() => setAddOpen(true)}
           className="flex items-center gap-1 px-3 h-9 rounded-lg text-[13px] font-semibold text-white"
-          style={{ backgroundColor: "#1877D6" }}
+          style={{ backgroundColor: tokens.blue }}
         >
           <IconPlus stroke={1.5} size={16} color="#fff" /> Add document
         </button>
@@ -166,14 +167,14 @@ function DocumentsPage() {
             gap: 10,
             padding: 12,
             borderRadius: 8,
-            backgroundColor: "#EEF2F7",
+            backgroundColor: tokens.canvas,
             border: "0.5px solid #1877D6",
           }}
         >
           <IconAlertTriangle stroke={1.5} size={18} color="#0B1F3A" />
           <span
             className="text-[13px] font-semibold"
-            style={{ color: "#0B1F3A" }}
+            style={{ color: tokens.navy }}
           >
             {expiringSoon} document{expiringSoon === 1 ? "" : "s"} expiring soon
           </span>
@@ -218,7 +219,7 @@ function DocumentsPage() {
                           <div className="min-w-0">
                             <div
                               className="text-[14px] font-semibold truncate"
-                              style={{ color: "#0B1F3A" }}
+                              style={{ color: tokens.navy }}
                             >
                               {d.name}
                             </div>
@@ -263,7 +264,7 @@ function DocumentsPage() {
                         padding: "0 12px",
                         borderRadius: 8,
                         backgroundColor: "#F1F5F9",
-                        color: "#1877D6",
+                        color: tokens.blue,
                         border: "0.5px solid #CBD5E1",
                       }}
                     >
@@ -535,7 +536,7 @@ function DocSheet({
               border: "0.5px solid #EEF2F7",
               borderRadius: 8,
               padding: 10,
-              color: "#0B1F3A",
+              color: tokens.navy,
               outline: "none",
               resize: "vertical",
             }}
@@ -556,7 +557,7 @@ function DocSheet({
               height: 44,
               borderRadius: 8,
               backgroundColor: "#F8F9FB",
-              color: "#1877D6",
+              color: tokens.blue,
               border: "1px dashed #1877D6",
             }}
           >
@@ -570,7 +571,7 @@ function DocSheet({
             />
           </label>
           {file ? (
-            <div className="mt-1 text-[12px]" style={{ color: "#0B1F3A" }}>
+            <div className="mt-1 text-[12px]" style={{ color: tokens.navy }}>
               {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
             </div>
           ) : existingUrl ? (
@@ -596,7 +597,7 @@ function DocSheet({
             type="button"
             onClick={remove}
             className="flex items-center justify-center mt-1 text-[13px] font-semibold"
-            style={{ gap: 6, color: "#1877D6", padding: 10 }}
+            style={{ gap: 6, color: tokens.blue, padding: 10 }}
           >
             <IconTrash stroke={1.5} size={14} color="#1877D6" /> Delete document
           </button>

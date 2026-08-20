@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconStar } from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
@@ -85,7 +86,7 @@ function ReviewsPage() {
       {/* Summary card */}
       <div
         className="mx-4 mt-3 flex flex-col items-center"
-        style={{ backgroundColor: "#0B1F3A", borderRadius: 8, padding: 16 }}
+        style={{ backgroundColor: tokens.navy, borderRadius: 8, padding: 16 }}
       >
         <div className="text-white font-bold" style={{ fontSize: 36, lineHeight: 1, ...POPPINS }}>
           {count > 0 ? average.toFixed(1) : "—"}
@@ -93,7 +94,7 @@ function ReviewsPage() {
         <div className="mt-2">
           <Stars rating={average} size={20} />
         </div>
-        <div className="mt-1 text-[13px]" style={{ color: "#9CA3AF", ...POPPINS }}>
+        <div className="mt-1 text-[13px]" style={{ color: tokens.textMuted, ...POPPINS }}>
           {count} {count === 1 ? "review" : "reviews"}
         </div>
       </div>
@@ -113,7 +114,7 @@ function ReviewsPage() {
               return (
                 <Card key={r.id}>
                   <div className="flex items-start justify-between" style={{ gap: 8 }}>
-                    <div className="text-[14px] font-semibold truncate" style={{ color: "#0B1F3A", ...POPPINS }}>
+                    <div className="text-[14px] font-semibold truncate" style={{ color: tokens.navy, ...POPPINS }}>
                       {name}
                     </div>
                     <div className="text-[11px] shrink-0" style={{ color: "#6B7280", ...POPPINS }}>

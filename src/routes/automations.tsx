@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconBolt, IconPencil, IconPlus } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -168,7 +169,7 @@ function AutomationsPage() {
           type="button"
           onClick={openAdd}
           className="flex items-center gap-1 text-[13px] font-semibold"
-          style={{ color: "#1877D6", background: "none", border: "none" }}
+          style={{ color: tokens.blue, background: "none", border: "none" }}
           aria-label="Add automation"
         >
           <IconPlus size={18} color="#1877D6" />
@@ -184,12 +185,12 @@ function AutomationsPage() {
               backgroundColor: "#EEF4FB",
               borderWidth: "0.5px",
               borderStyle: "solid",
-              borderColor: "#1877D6",
+              borderColor: tokens.blue,
               borderRadius: 8,
               padding: 16,
             }}
           >
-            <div className="text-[13px]" style={{ color: "#0B1F3A" }}>
+            <div className="text-[13px]" style={{ color: tokens.navy }}>
               Automations send messages to pupils automatically based on triggers. SMS
               requires Twilio integration.
             </div>
@@ -319,7 +320,7 @@ function AutomationsPage() {
                     fontFamily: "Poppins, sans-serif",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#EEF2F7",
+                    borderColor: tokens.canvas,
                   }}
                 >
                   {TRIGGERS.map((t) => (
@@ -347,7 +348,7 @@ function AutomationsPage() {
                     fontFamily: "Poppins, sans-serif",
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#EEF2F7",
+                    borderColor: tokens.canvas,
                     resize: "vertical",
                   }}
                 />
@@ -360,7 +361,7 @@ function AutomationsPage() {
                       className="text-[11px] rounded-lg px-2 py-1"
                       style={{
                         backgroundColor: "#EEF4FB",
-                        color: "#1877D6",
+                        color: tokens.blue,
                         fontFamily: "Poppins, sans-serif",
                       }}
                     >
@@ -398,7 +399,7 @@ function AutomationsPage() {
               </div>
 
               {sheetError && (
-                <div className="text-[12px]" style={{ color: "#1877D6" }}>
+                <div className="text-[12px]" style={{ color: tokens.blue }}>
                   {sheetError}
                 </div>
               )}
@@ -412,7 +413,7 @@ function AutomationsPage() {
                   type="button"
                   onClick={remove}
                   className="text-[13px] font-medium py-2"
-                  style={{ color: "#1877D6" }}
+                  style={{ color: tokens.blue }}
                 >
                   Delete automation
                 </button>

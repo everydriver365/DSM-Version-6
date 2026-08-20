@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconX } from "@tabler/icons-react";
 
@@ -47,14 +48,14 @@ export function ChangeDateTimeSheet({
     height: 44,
     borderRadius: 8,
     border: "1px solid #EEF2F7",
-    color: "#0B1F3A",
-    fontSize: 14,
+    color: tokens.navy,
+    fontSize: tokens.fontSize.md,
     ...POPPINS,
   } as const;
 
   const labelStyle = {
-    fontSize: 11,
-    fontWeight: 600,
+    fontSize: tokens.fontSize.sm,
+    fontWeight: tokens.fontWeight.semibold,
     color: "#6B7280",
     textTransform: "uppercase" as const,
     letterSpacing: "0.05em",
@@ -163,7 +164,7 @@ export function ChangeDateTimeSheet({
             onClick={() => onConfirm(newDate, newTime, newDuration)}
             disabled={!canSubmit}
             className="inline-flex items-center justify-center text-[14px] font-semibold text-white disabled:opacity-50"
-            style={{ height: 44, borderRadius: 8, backgroundColor: "#1877D6", ...POPPINS }}
+            style={{ height: 44, borderRadius: 8, backgroundColor: tokens.blue, ...POPPINS }}
           >
             {submitting ? "Saving…" : "Save"}
           </button>
@@ -176,7 +177,7 @@ export function ChangeDateTimeSheet({
               height: 40,
               borderRadius: 8,
               backgroundColor: "transparent",
-              color: "#0B1F3A",
+              color: tokens.navy,
               ...POPPINS,
             }}
           >

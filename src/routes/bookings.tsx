@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { toast } from "sonner";
@@ -236,13 +237,13 @@ function BookingsPage() {
           >
             <div>
               <div style={{ fontSize: 12.5, color: "#8A8A8E", fontWeight: 500 }}>Total received</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: "#000", letterSpacing: "-0.5px" }}>
+              <div style={{ fontSize: tokens.fontSize.hero, fontWeight: 900, color: "#000", letterSpacing: "-0.5px" }}>
                 {money(totalReceived)}
               </div>
             </div>
             <div style={{ textAlign: "right" }}>
               <div style={{ fontSize: 12.5, color: "#8A8A8E", fontWeight: 500 }}>Bookings</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: "#000" }}>{bookings.length}</div>
+              <div style={{ fontSize: tokens.fontSize.hero, fontWeight: 900, color: "#000" }}>{bookings.length}</div>
             </div>
           </div>
 
@@ -282,7 +283,7 @@ function BookingsPage() {
                 padding: "6px 12px",
                 borderRadius: 8,
                 fontSize: 12,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 background: `${statusColour(selectedBooking.status ?? "")}15`,
                 color: statusColour(selectedBooking.status ?? ""),
               }}
@@ -375,14 +376,14 @@ function SectionHeader({ label }: { label: string }) {
           width: 3,
           height: 12,
           borderRadius: 8,
-          backgroundColor: "#1877D6",
+          backgroundColor: tokens.blue,
         }}
       />
       <span
         className="text-[11px] font-semibold uppercase"
         style={{
           letterSpacing: "0.12em",
-          color: "#1877D6",
+          color: tokens.blue,
           fontFamily: "Poppins, sans-serif",
         }}
       >
@@ -419,12 +420,12 @@ function DetailRow({ label, value, href }: { label: string; value: string; href?
         borderBottom: "1px solid #E4E8EF",
       }}
     >
-      <span style={{ fontSize: 13, color: "#6B7686", fontWeight: 500 }}>{label}</span>
+      <span style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, fontWeight: 500 }}>{label}</span>
       <span
         style={{
-          fontSize: 14,
-          color: "#0B1F3A",
-          fontWeight: 600,
+          fontSize: tokens.fontSize.md,
+          color: tokens.navy,
+          fontWeight: tokens.fontWeight.semibold,
           textAlign: "right",
           flex: 1,
           minWidth: 0,
@@ -479,8 +480,8 @@ function ActionRow({
     >
       <div style={{ flexShrink: 0 }}>{icon}</div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: destructive ? "#CC2229" : "#0B1F3A" }}>{label}</div>
-        <div style={{ fontSize: 12, color: "#6B7686", marginTop: 2 }}>{description}</div>
+        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: destructive ? "#CC2229" : "#0B1F3A" }}>{label}</div>
+        <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 2 }}>{description}</div>
       </div>
       <IconChevronRight size={18} color="#C7CDD6" />
     </button>
@@ -534,8 +535,8 @@ function Section({
               <div
                 style={{
                   fontSize: 15,
-                  fontWeight: 700,
-                  color: "#0B1F3A",
+                  fontWeight: tokens.fontWeight.bold,
+                  color: tokens.navy,
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
@@ -543,14 +544,14 @@ function Section({
               >
                 {pupilName(booking)}
               </div>
-              <div style={{ fontSize: 12.5, color: "#6B7686", marginTop: 2 }}>
+              <div style={{ fontSize: 12.5, color: tokens.textSecondary, marginTop: 2 }}>
                 {booking.course?.name ?? "Course"} · {timeAgo(booking.booked_at)}
               </div>
             </div>
 
             {/* Amount */}
             {booking.amount_paid != null && booking.amount_paid > 0 && (
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#0B1F3A", flexShrink: 0 }}>
+              <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy, flexShrink: 0 }}>
                 {money(booking.amount_paid)}
               </div>
             )}

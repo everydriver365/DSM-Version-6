@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
@@ -295,7 +296,7 @@ export function PupilQuickActionsSheet({
                   fontFamily: font,
                   color: navy,
                   border: "1px solid #E3E7ED",
-                  backgroundColor: "#FFFFFF",
+                  backgroundColor: tokens.white,
                 }}
               />
               <PrimaryButton
@@ -332,7 +333,7 @@ export function PupilQuickActionsSheet({
                   className="flex items-center rounded-lg px-3 flex-1"
                   style={{
                     border: "1px solid #E3E7ED",
-                    backgroundColor: "#FFFFFF",
+                    backgroundColor: tokens.white,
                   }}
                 >
                   <IconCurrencyPound stroke={1.5} size={16} color={muted} />
@@ -354,7 +355,7 @@ export function PupilQuickActionsSheet({
                     fontFamily: font,
                     color: navy,
                     border: "1px solid #E3E7ED",
-                    backgroundColor: "#FFFFFF",
+                    backgroundColor: tokens.white,
                   }}
                 >
                   <option value="cash">Cash</option>
@@ -374,7 +375,7 @@ export function PupilQuickActionsSheet({
                     fontFamily: font,
                     color: navy,
                     border: "1px solid #E3E7ED",
-                    backgroundColor: "#FFFFFF",
+                    backgroundColor: tokens.white,
                   }}
                 />
               ) : (
@@ -382,7 +383,7 @@ export function PupilQuickActionsSheet({
                   type="button"
                   onClick={() => setShowPayNotes(true)}
                   className="text-[12px] font-medium self-start"
-                  style={{ color: "#1877D6", fontFamily: font }}
+                  style={{ color: tokens.blue, fontFamily: font }}
                 >
                   + Add notes
                 </button>
@@ -418,7 +419,7 @@ export function PupilQuickActionsSheet({
                   fontFamily: font,
                   color: navy,
                   border: "1px solid #E3E7ED",
-                  backgroundColor: "#FFFFFF",
+                  backgroundColor: tokens.white,
                 }}
               />
               <PrimaryButton
@@ -495,7 +496,7 @@ export function PupilQuickActionsSheet({
             className="w-full flex items-center gap-3 active:bg-black/[0.03]"
             style={{ fontFamily: font, padding: "15px 16px" }}
           >
-            <div className="flex-1 text-left" style={{ color: "#CC2229", fontSize: 16, fontWeight: 600 }}>
+            <div className="flex-1 text-left" style={{ color: tokens.red, fontSize: tokens.fontSize.lg, fontWeight: 600 }}>
               Mark inactive
             </div>
           </button>
@@ -541,7 +542,7 @@ function ActionRow({
       <div className="shrink-0">{icon}</div>
       <div
         className="flex-1 text-left"
-        style={{ color: navy, fontSize: 16, fontWeight: 600 }}
+        style={{ color: navy, fontSize: tokens.fontSize.lg, fontWeight: 600 }}
       >
         {label}
       </div>
@@ -576,7 +577,7 @@ function NavRow({
       <div className="shrink-0">{icon}</div>
       <div
         className="flex-1 text-left"
-        style={{ color: navy, fontSize: 16, fontWeight: 600 }}
+        style={{ color: navy, fontSize: tokens.fontSize.lg, fontWeight: 600 }}
       >
         {label}
       </div>

@@ -7,6 +7,18 @@ export const tokens = {
   amber: '#D68A1B',
   purple: '#7C3AED',
 
+  // Status pill palette (see components/dsm/DSMPill)
+  statusSuccessBg: '#DCFCE7',
+  statusSuccessText: '#15803D',
+  statusDangerBg: '#FEE2E2',
+  statusDangerText: '#B91C1C',
+  statusWarningBg: '#FEF3C7',
+  statusWarningText: '#B45309',
+  statusInfoBg: '#E6F1FB',
+  statusInfoText: '#1877D6',
+  statusNeutralBg: '#F1F5F9',
+  statusNeutralText: '#6B7686',
+
   // Backgrounds
   canvas: '#EEF2F7',
   white: '#FFFFFF',

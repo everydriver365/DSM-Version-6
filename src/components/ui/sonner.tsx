@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { Toaster as Sonner } from 'sonner';
 
 const Toaster = ({ ...props }) => (
@@ -17,8 +18,8 @@ const Toaster = ({ ...props }) => (
         padding: '12px 14px',
         boxShadow: '0 4px 24px rgba(11,31,58,0.35)',
         fontFamily: 'Poppins, sans-serif',
-        fontSize: 13,
-        fontWeight: 500,
+        fontSize: tokens.fontSize.base,
+        fontWeight: tokens.fontWeight.medium,
         display: 'flex',
         alignItems: 'center',
         gap: 10,

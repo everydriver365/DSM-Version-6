@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState } from "react";
 import { IconBook, IconMicrophone, IconMicrophoneOff, IconPlus, IconSend, IconX } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -283,7 +284,7 @@ function ReflectiveLogPage() {
               <div
                 key={log.id}
                 style={{
-                  backgroundColor: "#FFFFFF",
+                  backgroundColor: tokens.white,
                   border: "0.5px solid #E2E6ED",
                   borderRadius: 8,
                   padding: 16,
@@ -335,17 +336,17 @@ function ReflectiveLogPage() {
                     className="rounded-lg mt-3"
                     style={{ backgroundColor: "#0F2044", padding: 12 }}
                   >
-                    <div className="text-xs font-semibold" style={{ color: "#FFFFFF", opacity: 0.75 }}>
+                    <div className="text-xs font-semibold" style={{ color: tokens.white, opacity: 0.75 }}>
                       Your response
                     </div>
                     <div
                       className="text-sm italic mt-1"
-                      style={{ color: "#FFFFFF", whiteSpace: "pre-wrap" }}
+                      style={{ color: tokens.white, whiteSpace: "pre-wrap" }}
                     >
                       {log.instructor_response}
                     </div>
                     {log.responded_at && (
-                      <div className="text-xs mt-2" style={{ color: "#FFFFFF", opacity: 0.6 }}>
+                      <div className="text-xs mt-2" style={{ color: tokens.white, opacity: 0.6 }}>
                         {formatLongDate(log.responded_at)}
                       </div>
                     )}
@@ -422,7 +423,7 @@ function ReflectiveLogPage() {
           width: 56,
           height: 56,
           backgroundColor: "#7C3AED",
-          color: "#FFFFFF",
+          color: tokens.white,
           border: "none",
           boxShadow: "0 10px 24px rgba(124,58,237,0.35)",
           zIndex: 30,
@@ -441,7 +442,7 @@ function ReflectiveLogPage() {
           <div
             className="w-full"
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: tokens.white,
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
               maxHeight: "85vh",

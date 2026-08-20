@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconArchive, IconCalendar, IconChevronDown, IconChevronLeft, IconChevronUp, IconCurrencyPound, IconDotsVertical, IconId, IconMapPin, IconPencil, IconPhone, IconSearch, IconTrash } from "@tabler/icons-react";
 import { PageHeader } from "@/components/dsm/PageHeader";
@@ -200,10 +201,10 @@ function AdminInstructorsPage() {
               width: 34,
               height: 34,
               borderRadius: "50%",
-              backgroundColor: "#1877D6",
+              backgroundColor: tokens.blue,
               color: "#fff",
-              fontSize: 14,
-              fontWeight: 800,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.extrabold,
               boxShadow: "0 3px 0 #0F52A8",
               display: "flex",
               alignItems: "center",
@@ -248,7 +249,7 @@ function AdminInstructorsPage() {
           }}
         >
         {active.length === 0 && (
-          <div style={{ padding: 24, textAlign: "center", fontSize: 13, color: MUTED }}>
+          <div style={{ padding: 24, textAlign: "center", fontSize: tokens.fontSize.base, color: MUTED }}>
             No instructors found
           </div>
         )}
@@ -273,8 +274,8 @@ function AdminInstructorsPage() {
                   height: 44,
                   backgroundColor: deleted ? BORDER : BLUE,
                   color: deleted ? "#9CA3AF" : "#fff",
-                  fontSize: 14,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.bold,
                 }}
               >
                 {inst.profile_image_url ? (
@@ -292,8 +293,8 @@ function AdminInstructorsPage() {
                 <div className="flex items-center gap-1.5">
                   <span
                     style={{
-                      fontSize: 16,
-                      fontWeight: 800,
+                      fontSize: tokens.fontSize.lg,
+                      fontWeight: tokens.fontWeight.extrabold,
                       letterSpacing: "-0.1px",
                       color: "#000",
                       textDecoration: deleted ? "line-through" : "none",
@@ -309,8 +310,8 @@ function AdminInstructorsPage() {
                 <div
                   className="truncate"
                   style={{
-                    fontSize: 13,
-                    fontWeight: 500,
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.medium,
                     color: inst.phone ? "#6B6B6F" : "#C7C7CC",
                     marginTop: 2,
                   }}
@@ -359,7 +360,7 @@ function AdminInstructorsPage() {
                       type="button"
                       onClick={() => openEdit(inst)}
                       className="flex items-center gap-2 w-full text-left px-3 py-3"
-                      style={{ fontSize: 13, color: NAVY }}
+                      style={{ fontSize: tokens.fontSize.base, color: NAVY }}
                     >
                       <IconPencil stroke={1.5} size={15} color={NAVY} /> Edit details
                     </button>
@@ -370,7 +371,7 @@ function AdminInstructorsPage() {
                         setConfirmDelete(inst);
                       }}
                       className="flex items-center gap-2 w-full text-left px-3 py-3"
-                      style={{ fontSize: 13, color: RED, borderTop: `0.5px solid ${BORDER}` }}
+                      style={{ fontSize: tokens.fontSize.base, color: RED, borderTop: `0.5px solid ${BORDER}` }}
                     >
                       <IconTrash stroke={1.5} size={15} color={RED} /> Remove instructor
                     </button>
@@ -415,7 +416,7 @@ function AdminInstructorsPage() {
             >
               <IconArchive size={17} color="#6B6B6F" />
             </div>
-            <span style={{ flex: 1, fontSize: 15, fontWeight: 700, color: "#000", fontFamily: "Poppins, sans-serif" }}>
+            <span style={{ flex: 1, fontSize: 15, fontWeight: tokens.fontWeight.bold, color: "#000", fontFamily: "Poppins, sans-serif" }}>
               Archive <span style={{ color: "#8A8A8E", fontWeight: 500 }}>({archived.length})</span>
             </span>
 
@@ -443,9 +444,9 @@ function AdminInstructorsPage() {
                       width: 40,
                       height: 40,
                       backgroundColor: BORDER,
-                      color: "#9CA3AF",
-                      fontSize: 13,
-                      fontWeight: 600,
+                      color: tokens.textMuted,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.semibold,
                     }}
                   >
                     {instructor.profile_image_url ? (
@@ -466,7 +467,7 @@ function AdminInstructorsPage() {
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <div style={{ fontSize: 14, fontWeight: 600, color: NAVY, textDecoration: "line-through" }} className="truncate">
+                    <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY, textDecoration: "line-through" }} className="truncate">
                       {instructor.name ?? "Unknown"}
                     </div>
                     <div style={{ fontSize: 12, color: MUTED }}>
@@ -500,12 +501,12 @@ function AdminInstructorsPage() {
                     }}
                     style={{
                       background: "#E6F1FB",
-                      color: "#1877D6",
+                      color: tokens.blue,
                       border: "none",
                       borderRadius: 999,
                       padding: "4px 10px",
                       fontSize: 12,
-                      fontWeight: 600,
+                      fontWeight: tokens.fontWeight.semibold,
                       cursor: "pointer",
                       fontFamily: "Poppins, sans-serif",
                       flexShrink: 0,
@@ -541,11 +542,11 @@ function AdminInstructorsPage() {
 
           <SheetGroup>
             <div className="flex items-center justify-between" style={{ padding: "15px 16px" }}>
-              <div style={{ fontSize: 13, fontWeight: 500, color: MUTED }}>Account status</div>
+              <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: MUTED }}>Account status</div>
               <div
                 style={{
-                  fontSize: 13,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.bold,
                   color: editInstructor?.deleted_at ? RED : "#1A9B5C",
                 }}
               >
@@ -580,7 +581,7 @@ function AdminInstructorsPage() {
               borderRadius: 8,
               backgroundColor: "#FEF3C7",
               color: "#B45309",
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
             }}
           >
@@ -590,7 +591,7 @@ function AdminInstructorsPage() {
 
           <SheetGroup>
             <div className="flex items-center justify-between" style={{ padding: "15px 16px" }}>
-              <div style={{ fontSize: 16, fontWeight: 600, color: RED }}>
+              <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: RED }}>
                 Remove {confirmDelete?.name}
               </div>
             </div>
@@ -625,7 +626,7 @@ function AdminInstructorsPage() {
             >
               <IconChevronLeft size={22} color="#fff" />
             </button>
-            <div style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>Instructor Record</div>
+            <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: "#fff" }}>Instructor Record</div>
           </div>
 
           {/* Profile card */}
@@ -643,7 +644,7 @@ function AdminInstructorsPage() {
                   backgroundColor: BLUE,
                   color: "#fff",
                   fontSize: 20,
-                  fontWeight: 600,
+                  fontWeight: tokens.fontWeight.semibold,
                 }}
               >
                 {selectedInstructor.profile_image_url ? (
@@ -666,12 +667,12 @@ function AdminInstructorsPage() {
 
               <div className="flex-1 min-w-0">
                 <div
-                  style={{ fontSize: 18, fontWeight: 700, color: NAVY }}
+                  style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.bold, color: NAVY }}
                   className="truncate"
                 >
                   {selectedInstructor.name ?? "Unknown"}
                 </div>
-                <div style={{ fontSize: 13, color: MUTED }}>
+                <div style={{ fontSize: tokens.fontSize.base, color: MUTED }}>
                   {selectedInstructor.adi_grade ? `Grade ${selectedInstructor.adi_grade} ADI` : "ADI"}
                 </div>
               </div>
@@ -697,8 +698,8 @@ function AdminInstructorsPage() {
                   <Icon size={16} color={BLUE} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div style={{ fontSize: 11, color: MUTED, fontWeight: 600 }}>{label}</div>
-                  <div style={{ fontSize: 14, color: NAVY, fontWeight: 600 }} className="truncate">
+                  <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, fontWeight: 600 }}>{label}</div>
+                  <div style={{ fontSize: tokens.fontSize.md, color: NAVY, fontWeight: 600 }} className="truncate">
                     {value}
                   </div>
                 </div>
@@ -711,7 +712,7 @@ function AdminInstructorsPage() {
             className="mx-4 mt-4 rounded-lg p-4"
             style={{ backgroundColor: "#fff", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
           >
-            <div style={{ fontSize: 14, fontWeight: 700, color: NAVY, marginBottom: 12 }}>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: NAVY, marginBottom: 12 }}>
               Activity
             </div>
 
@@ -722,20 +723,20 @@ function AdminInstructorsPage() {
             ) : (
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { label: "Pupils", value: instructorStats?.pupilCount ?? 0, color: "#1877D6", bg: "#E6F1FB" },
+                  { label: "Pupils", value: instructorStats?.pupilCount ?? 0, color: tokens.blue, bg: "#E6F1FB" },
                   { label: "Lessons", value: instructorStats?.lessonCount ?? 0, color: "#7C3AED", bg: "#EFE7FB" },
                   { label: "Total revenue", value: `£${(instructorStats?.totalEarnings ?? 0).toFixed(2)}`, color: "#15803D", bg: "#DCFCE7" },
-                  { label: "ADI grade", value: selectedInstructor.adi_grade ?? "—", color: "#CC2229", bg: "#FCE9E9" },
+                  { label: "ADI grade", value: selectedInstructor.adi_grade ?? "—", color: tokens.red, bg: "#FCE9E9" },
                 ].map(({ label, value, color, bg }) => (
                   <div
                     key={label}
                     className="rounded-lg p-3"
                     style={{ backgroundColor: bg }}
                   >
-                    <div style={{ fontSize: 11, color, fontWeight: 600, marginBottom: 4 }}>
+                    <div style={{ fontSize: tokens.fontSize.sm, color, fontWeight: tokens.fontWeight.semibold, marginBottom: 4 }}>
                       {label}
                     </div>
-                    <div style={{ fontSize: 18, color, fontWeight: 700 }}>{value}</div>
+                    <div style={{ fontSize: tokens.fontSize.xl, color, fontWeight: 700 }}>{value}</div>
                   </div>
                 ))}
               </div>
@@ -753,12 +754,12 @@ function AdminInstructorsPage() {
               style={{
                 width: "100%",
                 padding: 14,
-                background: "#1877D6",
+                background: tokens.blue,
                 color: "#fff",
                 border: "none",
                 borderRadius: 8,
-                fontSize: 14,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.bold,
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
                 display: "flex",
@@ -779,11 +780,11 @@ function AdminInstructorsPage() {
                 width: "100%",
                 padding: 14,
                 background: "#FCE9E9",
-                color: "#CC2229",
+                color: tokens.red,
                 border: "none",
                 borderRadius: 8,
-                fontSize: 14,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.bold,
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
                 display: "flex",
@@ -817,13 +818,13 @@ function Field({
   return (
     <>
       <div className="flex items-center justify-between gap-3" style={{ padding: "15px 16px" }}>
-        <div style={{ fontSize: 13, fontWeight: 500, color: MUTED, flexShrink: 0 }}>{label}</div>
+        <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: MUTED, flexShrink: 0 }}>{label}</div>
         <input
           value={value}
           inputMode={inputMode}
           onChange={(e) => onChange(e.target.value)}
           className="text-right outline-none bg-transparent"
-          style={{ fontSize: 16, fontWeight: 600, color: NAVY, minWidth: 0, flex: 1 }}
+          style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY, minWidth: 0, flex: 1 }}
         />
       </div>
       {!last && <SheetDivider />}

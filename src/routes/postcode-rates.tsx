@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { IconMapPin, IconTrash } from "@tabler/icons-react";
@@ -100,8 +101,8 @@ function PostcodeRatesPage() {
     padding: "0 12px",
     border: "0.5px solid #E2E6ED",
     borderRadius: 8,
-    fontSize: 14,
-    color: "#0B1F3A",
+    fontSize: tokens.fontSize.md,
+    color: tokens.navy,
     background: "#fff",
     ...POPPINS,
   };
@@ -112,10 +113,10 @@ function PostcodeRatesPage() {
 
 
       <div className="px-4 pt-4">
-        <p className="text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+        <p className="text-[13px]" style={{ color: tokens.navy, ...POPPINS }}>
           Set different hourly rates for different postcode areas. The outward code is the first part of the postcode (e.g. SO22, PO15, GU11).
         </p>
-        <div className="mt-3 rounded-lg px-3 py-2" style={{ background: "#E0F2FE", color: "#0B1F3A", ...POPPINS, fontSize: 13 }}>
+        <div className="mt-3 rounded-lg px-3 py-2" style={{ background: "#E0F2FE", color: tokens.navy, ...POPPINS, fontSize: 13 }}>
           Your default rate: {defaultRate != null ? `£${defaultRate}/hr` : "not set"} — applies where no postcode rule exists.
         </div>
 
@@ -131,7 +132,7 @@ function PostcodeRatesPage() {
                   {r.outward_code}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>£{Number(r.hourly_rate).toFixed(2)}/hr</div>
+                  <div className="text-[14px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>£{Number(r.hourly_rate).toFixed(2)}/hr</div>
                   {r.label && <div className="text-[12px] truncate" style={{ color: "#6B7280", ...POPPINS }}>{r.label}</div>}
                 </div>
                 <button type="button" aria-label="Delete" onClick={() => delRule(r.id)} className="flex items-center justify-center rounded-lg" style={{ width: 36, height: 36, background: "#FEECEE" }}>
@@ -145,7 +146,7 @@ function PostcodeRatesPage() {
         <div className="mt-6 bg-white rounded-lg p-4" style={{ border: "0.5px solid #E2E6ED" }}>
           <div className="flex items-center gap-2 mb-3">
             <IconMapPin size={18} color="#1877D6" />
-            <span className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>Add rule</span>
+            <span className="text-[14px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>Add rule</span>
           </div>
           <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Outward code</label>
           <input style={{ ...inputStyle, marginTop: 6, marginBottom: 10, textTransform: "uppercase" }} value={outward} onChange={(e) => setOutward(e.target.value.toUpperCase().slice(0, 4))} maxLength={4} placeholder="e.g. SO22" />
@@ -153,7 +154,7 @@ function PostcodeRatesPage() {
           <input style={{ ...inputStyle, marginTop: 6, marginBottom: 10 }} type="number" step="0.5" inputMode="decimal" value={rate} onChange={(e) => setRate(e.target.value)} placeholder="45" />
           <label className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Label (optional)</label>
           <input style={{ ...inputStyle, marginTop: 6, marginBottom: 14 }} value={label} onChange={(e) => setLabel(e.target.value)} placeholder="e.g. Winchester area" maxLength={60} />
-          <button type="button" onClick={addRule} disabled={saving} className="w-full text-white text-[14px] font-semibold" style={{ height: 48, borderRadius: 8, background: "#1877D6", opacity: saving ? 0.5 : 1, ...POPPINS }}>
+          <button type="button" onClick={addRule} disabled={saving} className="w-full text-white text-[14px] font-semibold" style={{ height: 48, borderRadius: 8, background: tokens.blue, opacity: saving ? 0.5 : 1, ...POPPINS }}>
             {saving ? "Saving…" : "Add rule"}
           </button>
           <p className="mt-3 text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>

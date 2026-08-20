@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { tokens } from "@/lib/tokens";
 import { IconAlertCircle, IconCheck } from "@tabler/icons-react";
 import type { SaveState } from "@/hooks/useSaveState";
 
@@ -71,8 +72,8 @@ export function SaveButton({
         borderRadius: 8,
         padding: "13px 0",
         border: "none",
-        fontSize: 14,
-        fontWeight: 500,
+        fontSize: tokens.fontSize.md,
+        fontWeight: tokens.fontWeight.medium,
         marginTop: 14,
         opacity: disabled ? 0.6 : 1,
         cursor: disabled || isBusy ? "default" : "pointer",

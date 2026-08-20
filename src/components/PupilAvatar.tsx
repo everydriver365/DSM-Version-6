@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { tokens } from "@/lib/tokens";
 
 const PUPIL_PALETTE = [
   "#1877D6",
@@ -80,12 +81,12 @@ export function PupilAvatar({ pupil, pupilId, size = 32, className }: PupilAvata
         height: size,
         borderRadius: "50%",
         background: colour,
-        color: "#FFFFFF",
+        color: tokens.white,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         fontSize: Math.max(10, Math.round(size * 0.375)),
-        fontWeight: 700,
+        fontWeight: tokens.fontWeight.bold,
         flexShrink: 0,
         fontFamily: "Poppins, sans-serif",
         overflow: "hidden",

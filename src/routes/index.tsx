@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { IconActivity, IconArrowRight, IconBuilding, IconCalendar, IconCheck, IconDeviceMobile, IconPlayerPlay, IconSparkles, IconStar, IconWorld } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
@@ -392,7 +393,7 @@ function SectionHead({
         <Reveal delay={120}>
           <p
             className="mt-5"
-            style={{ color: MUTED, fontSize: 18, lineHeight: 1.65 }}
+            style={{ color: MUTED, fontSize: tokens.fontSize.xl, lineHeight: 1.65 }}
           >
             {body}
           </p>
@@ -664,7 +665,7 @@ function FeaturesShowcase() {
                             {b}
                             {b === "AI coaching tips" && (
                               <span
-                                style={{ fontSize: 11, color: '#6B7686', display: 'block' }}
+                                style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', display: 'block' }}
                               >
                                 ✓ Does not use your Google account data
                               </span>
@@ -673,7 +674,7 @@ function FeaturesShowcase() {
                         </li>
                       ))}
                       {f.title === "Call Answering Service" && (
-                        <li style={{ fontSize: 11, color: '#6B7686' }}>
+                        <li style={{ fontSize: tokens.fontSize.sm, color: '#6B7686' }}>
                           Does not access Google account data
                         </li>
                       )}

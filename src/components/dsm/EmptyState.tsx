@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { tokens } from "@/lib/tokens";
 import { IconMoodEmpty } from "@tabler/icons-react";
 
 type IconComponent = (props: { size?: number; color?: string }) => ReactNode;
@@ -33,7 +34,7 @@ export function EmptyState({ icon, title, subtitle, description, action }: Empty
         type="button"
         onClick={(action as { label: string; onClick: () => void }).onClick}
         className="inline-flex items-center justify-center h-10 px-4 rounded-lg text-[13px] font-semibold text-white"
-        style={{ backgroundColor: "#1877D6", fontFamily: "Poppins, sans-serif", border: "none" }}
+        style={{ backgroundColor: tokens.blue, fontFamily: "Poppins, sans-serif", border: "none" }}
       >
         {(action as { label: string }).label}
       </button>
@@ -56,7 +57,7 @@ export function EmptyState({ icon, title, subtitle, description, action }: Empty
       </div>
       <h3
         className="text-[16px] font-semibold"
-        style={{ color: "#0B1F3A", fontFamily: "Sora, Poppins, sans-serif" }}
+        style={{ color: tokens.navy, fontFamily: "Sora, Poppins, sans-serif" }}
       >
         {title}
       </h3>

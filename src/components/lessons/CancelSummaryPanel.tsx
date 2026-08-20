@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { describeChargeOption, normalizePayState, type ChargeOption } from "@/lib/cancelCharge";
 
 export function CancelSummaryPanel({
@@ -29,9 +30,9 @@ export function CancelSummaryPanel({
       <span
         style={{
           fontFamily: "Poppins, sans-serif",
-          fontSize: 11,
-          color: "#6B7686",
-          fontWeight: 500,
+          fontSize: tokens.fontSize.sm,
+          color: tokens.textSecondary,
+          fontWeight: tokens.fontWeight.medium,
           textTransform: "uppercase",
           letterSpacing: 0.3,
         }}
@@ -41,9 +42,9 @@ export function CancelSummaryPanel({
       <span
         style={{
           fontFamily: "Poppins, sans-serif",
-          fontSize: 13,
-          color: "#0B1F3A",
-          fontWeight: 500,
+          fontSize: tokens.fontSize.base,
+          color: tokens.navy,
+          fontWeight: tokens.fontWeight.medium,
           lineHeight: 1.4,
         }}
       >
@@ -66,9 +67,9 @@ export function CancelSummaryPanel({
       <div
         style={{
           fontFamily: "Poppins, sans-serif",
-          fontSize: 13,
-          fontWeight: 600,
-          color: "#0B1F3A",
+          fontSize: tokens.fontSize.base,
+          fontWeight: tokens.fontWeight.semibold,
+          color: tokens.navy,
           marginBottom: 10,
         }}
       >
@@ -81,9 +82,9 @@ export function CancelSummaryPanel({
           <span
             style={{
               fontFamily: "Poppins, sans-serif",
-              fontSize: 11,
-              color: "#6B7686",
-              fontWeight: 500,
+              fontSize: tokens.fontSize.sm,
+              color: tokens.textSecondary,
+              fontWeight: tokens.fontWeight.medium,
               textTransform: "uppercase",
               letterSpacing: 0.3,
             }}
@@ -93,13 +94,13 @@ export function CancelSummaryPanel({
           <span
             style={{
               fontFamily: "Poppins, sans-serif",
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               color: chargeOption === "none" && payState !== "unpaid"
                 ? "#16A34A"
                 : chargeOption === "full" || chargeOption === "fee"
                   ? "#CC2229"
                   : "#0B1F3A",
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
               lineHeight: 1.4,
             }}
           >

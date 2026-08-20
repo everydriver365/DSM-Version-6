@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { BottomSheet } from "./BottomSheetV2";
 
 export interface ConfirmSheetProps {
@@ -46,7 +47,7 @@ export function ConfirmSheet({
           <p
             style={{
               fontSize: 15,
-              color: "#6B7686",
+              color: tokens.textSecondary,
               fontFamily: POPPINS,
               lineHeight: 1.5,
               margin: 0,
@@ -65,8 +66,8 @@ export function ConfirmSheet({
             color: "#fff",
             border: "none",
             borderRadius: 8,
-            fontSize: 16,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.lg,
+            fontWeight: tokens.fontWeight.bold,
             cursor: "pointer",
             fontFamily: POPPINS,
           }}
@@ -79,12 +80,12 @@ export function ConfirmSheet({
           style={{
             width: "100%",
             padding: 15,
-            background: "#EEF2F7",
-            color: "#6B7686",
+            background: tokens.canvas,
+            color: tokens.textSecondary,
             border: "none",
             borderRadius: 8,
-            fontSize: 16,
-            fontWeight: 600,
+            fontSize: tokens.fontSize.lg,
+            fontWeight: tokens.fontWeight.semibold,
             cursor: "pointer",
             fontFamily: POPPINS,
           }}

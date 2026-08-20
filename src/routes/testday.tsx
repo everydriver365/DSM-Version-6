@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconSchool } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -294,7 +295,7 @@ function TestDayPage() {
           style={{ marginTop: 80, gap: 12 }}
         >
           <IconSchool size={40} color="#6B7280" />
-          <div className="text-[15px] font-semibold" style={{ color: "#0B1F3A" }}>
+          <div className="text-[15px] font-semibold" style={{ color: tokens.navy }}>
             No upcoming tests
           </div>
           <div className="w-full max-w-[240px]">
@@ -307,15 +308,15 @@ function TestDayPage() {
           <div
             className="mx-4 mt-3"
             style={{
-              backgroundColor: "#0B1F3A",
+              backgroundColor: tokens.navy,
               borderRadius: 8,
               padding: 16,
-              color: "#FFFFFF",
+              color: tokens.white,
             }}
           >
             <div
               className="text-[10px] uppercase"
-              style={{ color: "#9CA3AF", letterSpacing: "0.06em" }}
+              style={{ color: tokens.textMuted, letterSpacing: "0.06em" }}
             >
               Next test
             </div>
@@ -326,15 +327,15 @@ function TestDayPage() {
               {formatDateLong(test.test_date)}
               {fmtTime(test.test_time) ? ` · ${fmtTime(test.test_time)}` : ""}
             </div>
-            <div className="text-[14px]" style={{ color: "#9CA3AF" }}>
+            <div className="text-[14px]" style={{ color: tokens.textMuted }}>
               {test.test_centre || "Test centre TBC"}
             </div>
             <div className="mt-3 inline-flex">
               <span
                 className="text-[14px] font-semibold"
                 style={{
-                  backgroundColor: "#1877D6",
-                  color: "#0B1F3A",
+                  backgroundColor: tokens.blue,
+                  color: tokens.navy,
                   borderRadius: 8,
                   padding: "8px 16px",
                 }}
@@ -365,12 +366,12 @@ function TestDayPage() {
                         type="checkbox"
                         checked={checked}
                         onChange={() => toggleCheck(item)}
-                        style={{ width: 18, height: 18, accentColor: "#1877D6" }}
+                        style={{ width: 18, height: 18, accentColor: tokens.blue }}
                       />
                       <span
                         className="text-[14px]"
                         style={{
-                          color: "#0B1F3A",
+                          color: tokens.navy,
                           textDecoration: checked ? "line-through" : "none",
                           opacity: checked ? 0.7 : 1,
                           ...POPPINS,
@@ -392,7 +393,7 @@ function TestDayPage() {
               >
                 Pre-test lesson
               </div>
-              <div className="text-[14px] mt-1" style={{ color: "#0B1F3A" }}>
+              <div className="text-[14px] mt-1" style={{ color: tokens.navy }}>
                 {lesson
                   ? `${new Date(lesson.lesson_date).toLocaleTimeString("en-GB", {
                       hour: "2-digit",
@@ -416,8 +417,8 @@ function TestDayPage() {
                 style={{
                   borderWidth: "0.5px",
                   borderStyle: "solid",
-                  borderColor: "#EEF2F7",
-                  color: "#0B1F3A",
+                  borderColor: tokens.canvas,
+                  color: tokens.navy,
                   ...POPPINS,
                 }}
               />
@@ -480,8 +481,8 @@ function TestDayPage() {
                   style={{
                     borderWidth: "0.5px",
                     borderStyle: "solid",
-                    borderColor: "#EEF2F7",
-                    color: "#0B1F3A",
+                    borderColor: tokens.canvas,
+                    color: tokens.navy,
                     ...POPPINS,
                   }}
                 />

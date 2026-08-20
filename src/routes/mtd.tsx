@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconCar, IconDownload } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -326,12 +327,12 @@ function MtdPage() {
     dueColor: string;
   } {
     const submitted = row[`${q.key}_submitted` as const] as boolean;
-    if (submitted) return { label: "Submitted", color: "#0B1F3A", bg: "#D1FAE5", dueColor: MUTED };
+    if (submitted) return { label: "Submitted", color: tokens.navy, bg: "#D1FAE5", dueColor: MUTED };
     const msToDue = q.due.getTime() - now.getTime();
     const daysToDue = msToDue / 86400000;
-    if (now > q.due) return { label: "Overdue", color: "#B91C1C", bg: "#FEE2E2", dueColor: "#1877D6" };
+    if (now > q.due) return { label: "Overdue", color: "#B91C1C", bg: "#FEE2E2", dueColor: tokens.blue };
     if (now < q.periodEnd) return { label: "Not due", color: "#374151", bg: "#E5E7EB", dueColor: MUTED };
-    if (daysToDue <= 30) return { label: "Due soon", color: "#0B1F3A", bg: "#EEF2F7", dueColor: "#1877D6" };
+    if (daysToDue <= 30) return { label: "Due soon", color: tokens.navy, bg: "#EEF2F7", dueColor: tokens.blue };
     return { label: "Not due", color: "#374151", bg: "#E5E7EB", dueColor: MUTED };
   }
 
@@ -412,10 +413,10 @@ function MtdPage() {
             background: "#EEF4FB",
             borderWidth: "0.5px",
             borderStyle: "solid",
-            borderColor: "#1877D6",
+            borderColor: tokens.blue,
             borderRadius: 8,
             padding: 16,
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
             color: VALUE,
             lineHeight: 1.5,
           }}
@@ -427,14 +428,14 @@ function MtdPage() {
         <SectionHeader>YOUR MTD STATUS</SectionHeader>
         <Card>
           <div className="flex items-center justify-between mb-3">
-            <span style={{ fontSize: 13, color: MUTED }}>Tax year {taxYearLabel}</span>
+            <span style={{ fontSize: tokens.fontSize.base, color: MUTED }}>Tax year {taxYearLabel}</span>
             {row.is_enrolled ? (
               <span
                 style={{
                   background: "#D1FAE5",
-                  color: "#0B1F3A",
-                  fontSize: 11,
-                  fontWeight: 600,
+                  color: tokens.navy,
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.semibold,
                   padding: "4px 10px",
                   borderRadius: 999,
                 }}
@@ -444,10 +445,10 @@ function MtdPage() {
             ) : (
               <span
                 style={{
-                  background: "#EEF2F7",
-                  color: "#0B1F3A",
-                  fontSize: 11,
-                  fontWeight: 600,
+                  background: tokens.canvas,
+                  color: tokens.navy,
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.semibold,
                   padding: "4px 10px",
                   borderRadius: 999,
                 }}
@@ -458,13 +459,13 @@ function MtdPage() {
           </div>
 
           <label className="flex items-center justify-between py-2">
-            <span style={{ fontSize: 14, color: VALUE }}>I am enrolled in MTD</span>
+            <span style={{ fontSize: tokens.fontSize.md, color: VALUE }}>I am enrolled in MTD</span>
             <input
               type="checkbox"
               checked={row.is_enrolled}
               disabled={saving}
               onChange={(e) => persist({ is_enrolled: e.target.checked })}
-              style={{ width: 20, height: 20, accentColor: "#1877D6" }}
+              style={{ width: 20, height: 20, accentColor: tokens.blue }}
             />
           </label>
 
@@ -498,13 +499,13 @@ function MtdPage() {
             return (
               <Card key={q.key} style={{ padding: 12 }}>
                 <div className="flex items-center justify-between mb-2">
-                  <span style={{ fontSize: 14, fontWeight: 600, color: VALUE }}>{q.label}</span>
+                  <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: VALUE }}>{q.label}</span>
                   <span
                     style={{
                       background: s.bg,
                       color: s.color,
-                      fontSize: 10,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.xs,
+                      fontWeight: tokens.fontWeight.semibold,
                       padding: "3px 8px",
                       borderRadius: 999,
                     }}
@@ -537,9 +538,9 @@ function MtdPage() {
           >
             <span
               style={{
-                fontSize: 13,
+                fontSize: tokens.fontSize.base,
                 color: VALUE,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
@@ -547,7 +548,7 @@ function MtdPage() {
             >
               <IconCar size={14} color="#1877D6" /> Miles this month
             </span>
-            <span style={{ fontSize: 14, fontWeight: 600, color: VALUE }}>
+            <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: VALUE }}>
               {mtdMiles.toLocaleString("en-GB", { maximumFractionDigits: 1 })}
             </span>
           </div>
@@ -557,7 +558,7 @@ function MtdPage() {
           />
           <Row label="Income (payments)" value={fmtMoney(income)} />
           <div className="flex items-start gap-1.5 text-[11px] text-[#6B7280] mt-1 mb-2">
-            <span style={{ color: "#1877D6" }}>ⓘ</span>
+            <span style={{ color: tokens.blue }}>ⓘ</span>
             <span>
               Earnings calculated using per-pupil custom rates and postcode pricing rules where
               applicable.
@@ -571,7 +572,7 @@ function MtdPage() {
           <div
             style={{
               height: 1,
-              background: "#EEF2F7",
+              background: tokens.canvas,
               margin: "10px 0",
             }}
           />
@@ -600,13 +601,13 @@ function MtdPage() {
                   style={{
                     borderWidth: "1px",
                     borderStyle: "solid",
-                    borderColor: "#EEF2F7",
+                    borderColor: tokens.canvas,
                     borderRadius: 8,
                     padding: 16,
                     background: "#fff",
                   }}
                 >
-                  <div style={{ fontSize: 14, fontWeight: 600, color: VALUE }}>{platform}</div>
+                  <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: VALUE }}>{platform}</div>
                   <div style={{ fontSize: 12, color: MUTED, marginTop: 4, marginBottom: 12, lineHeight: 1.4 }}>
                     Sync your income and expenses automatically
                   </div>
@@ -657,8 +658,8 @@ function Row({
 }) {
   return (
     <div className="flex items-center justify-between py-1.5">
-      <span style={{ fontSize: 13, color: MUTED }}>{label}</span>
-      <span style={{ fontSize: 14, fontWeight: bold ? 700 : 500, color: valueColor }}>{value}</span>
+      <span style={{ fontSize: tokens.fontSize.base, color: MUTED }}>{label}</span>
+      <span style={{ fontSize: tokens.fontSize.md, fontWeight: bold ? 700 : 500, color: valueColor }}>{value}</span>
     </div>
   );
 }

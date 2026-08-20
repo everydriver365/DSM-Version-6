@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useState } from "react";
 import MarketplaceTokenBanner, {
   type MarketplaceToken,
@@ -38,7 +39,7 @@ const TOKENS: MarketplaceToken[] = [
     headline: "Dashcam deals",
     body: "Protect every lesson with instructor-rated dual dashcams.",
     cta: "Shop now",
-    background: "#1877D6",
+    background: tokens.blue,
   },
   {
     id: "cover",
@@ -52,7 +53,7 @@ const TOKENS: MarketplaceToken[] = [
     headline: "Fill your diary",
     body: "Get matched with learners searching in your coverage areas.",
     cta: "See pupils",
-    background: "#0B1F3A",
+    background: tokens.navy,
   },
 ];
 
@@ -70,15 +71,15 @@ function MarketplaceTokenPreview() {
     >
       <h1
         style={{
-          fontSize: 18,
-          fontWeight: 700,
-          color: "#0B1F3A",
+          fontSize: tokens.fontSize.xl,
+          fontWeight: tokens.fontWeight.bold,
+          color: tokens.navy,
           margin: "8px 0 4px",
         }}
       >
         Marketplace promo token
       </h1>
-      <p style={{ fontSize: 13, color: "#64748B", margin: "0 0 16px" }}>
+      <p style={{ fontSize: tokens.fontSize.base, color: "#64748B", margin: "0 0 16px" }}>
         Mock-up only — not wired into Discover yet.
       </p>
 

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -97,7 +98,7 @@ function HelpPage() {
               style={{
                 borderWidth: "0.5px",
                 borderStyle: "solid",
-                borderColor: "#EEF2F7",
+                borderColor: tokens.canvas,
                 textDecoration: "none",
               }}
             >
@@ -134,7 +135,7 @@ function HelpPage() {
                       : {
                           borderTopWidth: "0.5px",
                           borderTopStyle: "solid",
-                          borderTopColor: "#EEF2F7",
+                          borderTopColor: tokens.canvas,
                         }
                   }
                 >
@@ -153,7 +154,7 @@ function HelpPage() {
                     style={{
                       borderTopWidth: "0.5px",
                       borderTopStyle: "solid",
-                      borderTopColor: "#EEF2F7",
+                      borderTopColor: tokens.canvas,
                       ...POPPINS,
                     }}
                   >

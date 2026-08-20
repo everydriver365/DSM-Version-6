@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { EmptyState } from "@/components/dsm/EmptyState";
@@ -781,7 +782,7 @@ function GapsPage() {
                 start: hmToMin(lunchInfo.start),
                 end: hmToMin(lunchInfo.end),
                 title: "🍽 Lunch break",
-                color: "#9CA3AF" as string | null,
+                color: tokens.textMuted as string | null,
                 bufAfter: 0,
               }]
             : [];
@@ -1523,10 +1524,10 @@ function GapsPage() {
         >
           <IconCircleX size={16} color="#CC2229" style={{ flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontWeight: 600, fontSize: 13, color: "#0B1F3A" }}>
+            <div style={{ fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.base, color: tokens.navy }}>
               Lesson cancelled — fill this slot?
             </div>
-            <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+            <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 2 }}>
               {prefilterDateLabel} at {prefilter.time} · {prefilter.duration} mins
             </div>
             {prefilterFound === false && (
@@ -1547,7 +1548,7 @@ function GapsPage() {
               border: "none",
               padding: 4,
               cursor: "pointer",
-              color: "#9CA3AF",
+              color: tokens.textMuted,
               flexShrink: 0,
             }}
           >
@@ -1568,7 +1569,7 @@ function GapsPage() {
           marginBottom: 2,
         }}
       >
-        <div style={{ fontSize: 19, fontWeight: 600, color: "#0B1F3A" }}>
+        <div style={{ fontSize: 19, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
           Your free slots
         </div>
         {freeSlots.length > 0 && (
@@ -1590,9 +1591,9 @@ function GapsPage() {
               background: "transparent",
               border: "none",
               padding: 0,
-              fontSize: 13,
-              fontWeight: 500,
-              color: "#1877D6",
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.medium,
+              color: tokens.blue,
               cursor: "pointer",
             }}
           >
@@ -1662,8 +1663,8 @@ function GapsPage() {
                 >
                   <span
                     style={{
-                      fontSize: 10,
-                      fontWeight: 500,
+                      fontSize: tokens.fontSize.xs,
+                      fontWeight: tokens.fontWeight.medium,
                       letterSpacing: "0.04em",
                       textTransform: "uppercase",
                       color: isSelected ? "rgba(255,255,255,0.85)" : "#8A93A3",
@@ -1671,7 +1672,7 @@ function GapsPage() {
                   >
                     {dow}
                   </span>
-                  <span style={{ fontSize: 16, fontWeight: 600, lineHeight: 1.1 }}>
+                  <span style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, lineHeight: 1.1 }}>
                     {dom}
                   </span>
                   <span
@@ -1717,9 +1718,9 @@ function GapsPage() {
                     marginBottom: 10,
                   }}
                 >
-                  <span style={{ fontSize: 13, fontWeight: 700, color: "#0B1F3A" }}>
+                  <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>
                     {dayDate.toLocaleDateString("en-GB", { weekday: "long" })}
-                    <span style={{ fontWeight: 500, marginLeft: 6 }}>
+                    <span style={{ fontWeight: tokens.fontWeight.medium, marginLeft: 6 }}>
                       {dayDate.toLocaleDateString("en-GB", {
                         weekday: "short",
                         day: "numeric",
@@ -1729,8 +1730,8 @@ function GapsPage() {
                   </span>
                   <span
                     style={{
-                      fontSize: 13,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.semibold,
                       color: hasGaps ? "#1877D6" : "#8A93A3",
                     }}
                   >
@@ -1753,13 +1754,13 @@ function GapsPage() {
                     }}
                   >
                     <IconCoffee size={14} color="#9CA3AF" />
-                    <span style={{ fontSize: 13, color: "#6B7280" }}>
+                    <span style={{ fontSize: tokens.fontSize.base, color: "#6B7280" }}>
                       Lunch break
                     </span>
                     <span
                       style={{
                         fontSize: 12,
-                        color: "#9CA3AF",
+                        color: tokens.textMuted,
                         marginLeft: "auto",
                       }}
                     >
@@ -1780,9 +1781,9 @@ function GapsPage() {
                         background: "transparent",
                         border: "none",
                         padding: 0,
-                        fontSize: 14,
-                        fontWeight: 500,
-                        color: "#1877D6",
+                        fontSize: tokens.fontSize.md,
+                        fontWeight: tokens.fontWeight.medium,
+                        color: tokens.blue,
                         cursor: "pointer",
                       }}
                     >
@@ -1927,9 +1928,9 @@ function GapsPage() {
                                           background:
                                             p.calendar_colour ?? "#6B7280",
                                           border: "2px solid #FFFFFF",
-                                          color: "#FFFFFF",
-                                          fontSize: 11,
-                                          fontWeight: 700,
+                                          color: tokens.white,
+                                          fontSize: tokens.fontSize.sm,
+                                          fontWeight: tokens.fontWeight.bold,
                                           display: "flex",
                                           alignItems: "center",
                                           justifyContent: "center",
@@ -1962,8 +1963,8 @@ function GapsPage() {
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 <div
                                   style={{
-                                    color: "#0B1F3A",
-                                    fontWeight: 600,
+                                    color: tokens.navy,
+                                    fontWeight: tokens.fontWeight.semibold,
                                     fontSize: 15,
                                     overflow: "hidden",
                                     textOverflow: "ellipsis",
@@ -1991,7 +1992,7 @@ function GapsPage() {
                                     width: 16,
                                     height: 16,
                                     borderRadius: "50%",
-                                    background: "#1877D6",
+                                    background: tokens.blue,
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
@@ -2034,9 +2035,9 @@ function GapsPage() {
                           <IconClock size={14} color="#1877D6" />
                           <span
                             style={{
-                              fontSize: 13,
-                              color: "#1877D6",
-                              fontWeight: 500,
+                              fontSize: tokens.fontSize.base,
+                              color: tokens.blue,
+                              fontWeight: tokens.fontWeight.medium,
                             }}
                           >
                             {slot.gapReason}
@@ -2103,8 +2104,8 @@ function GapsPage() {
                                   border: `1px solid ${isSelected ? "#1877D6" : "#EEF2F7"}`,
                                   borderRadius: 999,
                                   padding: "4px 10px",
-                                  fontSize: 11,
-                                  fontWeight: 500,
+                                  fontSize: tokens.fontSize.sm,
+                                  fontWeight: tokens.fontWeight.medium,
                                   cursor: "pointer",
                                 }}
                               >
@@ -2139,7 +2140,7 @@ function GapsPage() {
               border: "none",
               color: BLUE,
               fontSize: 12,
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
               cursor: "pointer",
             }}
           >
@@ -2152,7 +2153,7 @@ function GapsPage() {
         {manualMode && (
           <div
             style={{
-              background: "#FFFFFF",
+              background: tokens.white,
               border: `0.5px solid ${BORDER}`,
               borderRadius: 8,
               padding: 16,
@@ -2211,8 +2212,8 @@ function GapsPage() {
                 height: 48,
                 borderRadius: 8,
                 background: NAVY,
-                color: "#FFFFFF",
-                fontWeight: 600,
+                color: tokens.white,
+                fontWeight: tokens.fontWeight.semibold,
                 fontSize: 15,
                 border: "none",
                 cursor: "pointer",
@@ -2234,8 +2235,8 @@ function GapsPage() {
             padding: 16,
             margin: "12px 16px 0",
             color: "#065F46",
-            fontWeight: 600,
-            fontSize: 14,
+            fontWeight: tokens.fontWeight.semibold,
+            fontSize: tokens.fontSize.md,
           }}
         >
           💰 Revenue recovered this month: £{monthlyRevenue.toFixed(2)}
@@ -2260,14 +2261,14 @@ function GapsPage() {
                 textAlign: "center",
                 border: `0.5px solid ${BORDER}`,
                 borderRadius: 8,
-                background: "#FFFFFF",
+                background: tokens.white,
               }}
             >
               <IconUsers size={40} color="#9CA3AF" style={{ margin: "0 auto" }} />
-              <div style={{ fontWeight: 600, color: NAVY, marginTop: 8 }}>
+              <div style={{ fontWeight: tokens.fontWeight.semibold, color: NAVY, marginTop: 8 }}>
                 No active pupils found
               </div>
-              <div style={{ color: MUTED, fontSize: 13, marginTop: 4 }}>
+              <div style={{ color: MUTED, fontSize: tokens.fontSize.base, marginTop: 4 }}>
                 Add pupils to DSM to use gap filler
               </div>
             </div>
@@ -2289,13 +2290,13 @@ function GapsPage() {
                   gap: 8,
                   alignItems: "center",
                   color: "#B45309",
-                  fontWeight: 700,
-                  fontSize: 14,
+                  fontWeight: tokens.fontWeight.bold,
+                  fontSize: tokens.fontSize.md,
                 }}
               >
                 <IconAlertTriangle size={16} /> No strong matches for this slot
               </div>
-              <div style={{ color: "#78350F", fontSize: 13, marginTop: 6 }}>
+              <div style={{ color: "#78350F", fontSize: tokens.fontSize.base, marginTop: 6 }}>
                 These pupils have low availability for this time — consider
                 offering to EveryDriver instead.
               </div>
@@ -2303,13 +2304,13 @@ function GapsPage() {
                 onClick={() => navigate({ to: "/marketplace" })}
                 style={{
                   marginTop: 10,
-                  background: "#0B1F3A",
-                  color: "#FFFFFF",
+                  background: tokens.navy,
+                  color: tokens.white,
                   border: "none",
                   borderRadius: 8,
                   padding: "8px 14px",
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
                   cursor: "pointer",
                 }}
               >
@@ -2375,9 +2376,9 @@ function GapsPage() {
                               height: 32,
                               borderRadius: 999,
                               background: r.pupil.calendar_colour ?? "#6B7280",
-                              color: "#FFFFFF",
+                              color: tokens.white,
                               fontSize: 12,
-                              fontWeight: 700,
+                              fontWeight: tokens.fontWeight.bold,
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
@@ -2403,7 +2404,7 @@ function GapsPage() {
           onClick={() => setOffersOpen((o) => !o)}
           style={{
             width: "100%",
-            background: "#FFFFFF",
+            background: tokens.white,
             border: `1px solid ${BORDER}`,
             borderRadius: 8,
             padding: "14px 16px",
@@ -2415,9 +2416,9 @@ function GapsPage() {
         >
           <span
             style={{
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               color: NAVY,
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
@@ -2428,8 +2429,8 @@ function GapsPage() {
               style={{
                 background: TINT,
                 color: BLUE,
-                fontSize: 11,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.sm,
+                fontWeight: tokens.fontWeight.bold,
                 padding: "2px 8px",
                 borderRadius: 999,
               }}
@@ -2488,7 +2489,7 @@ function GapsPage() {
               <div
                 style={{
                   color: MUTED,
-                  fontSize: 13,
+                  fontSize: tokens.fontSize.base,
                   padding: "10px 4px",
                   textAlign: "center",
                 }}
@@ -2510,7 +2511,7 @@ function GapsPage() {
                 }}
               >
                 <div>
-                  <div style={{ color: NAVY, fontWeight: 600, fontSize: 13 }}>
+                  <div style={{ color: NAVY, fontWeight: tokens.fontWeight.semibold, fontSize: 13 }}>
                     {o.pupils?.name || o.pupils?.first_name || "Pupil"}
                   </div>
                   <div style={{ color: MUTED, fontSize: 12 }}>
@@ -2551,9 +2552,9 @@ function GapsPage() {
             onClick={openMessageSheet}
             style={{
               width: "100%",
-              background: "#FFFFFF",
+              background: tokens.white,
               color: NAVY,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               fontSize: 15,
               borderRadius: 8,
               border: "none",
@@ -2591,8 +2592,8 @@ function GapsPage() {
             style={{
               width: "100%",
               background: BLUE_BRIGHT,
-              color: "#FFFFFF",
-              fontWeight: 700,
+              color: tokens.white,
+              fontWeight: tokens.fontWeight.bold,
               fontSize: 15,
               borderRadius: 8,
               border: "none",
@@ -2669,9 +2670,9 @@ function GapsPage() {
                               height: 28,
                               borderRadius: 999,
                               background: r.pupil.calendar_colour ?? "#6B7280",
-                              color: "#FFFFFF",
-                              fontSize: 11,
-                              fontWeight: 700,
+                              color: tokens.white,
+                              fontSize: tokens.fontSize.sm,
+                              fontWeight: tokens.fontWeight.bold,
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
@@ -2686,7 +2687,7 @@ function GapsPage() {
                     )}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A" }}>
+                    <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
                       Sending to {selectedPupilIds.size} pupil
                       {selectedPupilIds.size === 1 ? "" : "s"}
                     </div>
@@ -2771,9 +2772,9 @@ function GapsPage() {
                                 height: 32,
                                 borderRadius: 999,
                                 background: r.pupil.calendar_colour ?? "#6B7280",
-                                color: "#FFFFFF",
+                                color: tokens.white,
                                 fontSize: 12,
-                                fontWeight: 700,
+                                fontWeight: tokens.fontWeight.bold,
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
@@ -2788,7 +2789,7 @@ function GapsPage() {
                               style={{
                                 flex: 1,
                                 minWidth: 0,
-                                fontSize: 14,
+                                fontSize: tokens.fontSize.md,
                                 color: hasPhone ? "#0B1F3A" : "#9CA3AF",
                                 cursor: "pointer",
                                 overflow: "hidden",
@@ -2799,7 +2800,7 @@ function GapsPage() {
                               {name}
                             </div>
                             {hasPhone ? (
-                              <div style={{ fontSize: 13, color: "#6B7280", flexShrink: 0 }}>
+                              <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280", flexShrink: 0 }}>
                                 {r.pupil.phone}
                               </div>
                             ) : (
@@ -2813,9 +2814,9 @@ function GapsPage() {
                                 style={{
                                   background: "none",
                                   border: "none",
-                                  color: "#1877D6",
-                                  fontWeight: 600,
-                                  fontSize: 13,
+                                  color: tokens.blue,
+                                  fontWeight: tokens.fontWeight.semibold,
+                                  fontSize: tokens.fontSize.base,
                                   cursor: "pointer",
                                   padding: 0,
                                   flexShrink: 0,
@@ -2845,9 +2846,9 @@ function GapsPage() {
                               style={{
                                 background: "none",
                                 border: "none",
-                                color: "#1877D6",
-                                fontWeight: 600,
-                                fontSize: 13,
+                                color: tokens.blue,
+                                fontWeight: tokens.fontWeight.semibold,
+                                fontSize: tokens.fontSize.base,
                                 cursor: "pointer",
                                 padding: 0,
                                 opacity: allSelected ? 0.4 : 1,
@@ -2862,9 +2863,9 @@ function GapsPage() {
                               style={{
                                 background: "none",
                                 border: "none",
-                                color: "#1877D6",
-                                fontWeight: 600,
-                                fontSize: 13,
+                                color: tokens.blue,
+                                fontWeight: tokens.fontWeight.semibold,
+                                fontSize: tokens.fontSize.base,
                                 cursor: "pointer",
                                 padding: 0,
                                 opacity: selectedPupilIds.size === 0 ? 0.4 : 1,
@@ -2880,9 +2881,9 @@ function GapsPage() {
                             <>
                               <div
                                 style={{
-                                  fontSize: 10,
-                                  fontWeight: 700,
-                                  color: "#9CA3AF",
+                                  fontSize: tokens.fontSize.xs,
+                                  fontWeight: tokens.fontWeight.bold,
+                                  color: tokens.textMuted,
                                   letterSpacing: 0.4,
                                   marginTop: 12,
                                   padding: "0 4px",
@@ -2900,9 +2901,9 @@ function GapsPage() {
                             style={{
                               marginTop: 12,
                               width: "100%",
-                              background: "#0B1F3A",
-                              color: "#FFFFFF",
-                              fontWeight: 700,
+                              background: tokens.navy,
+                              color: tokens.white,
+                              fontWeight: tokens.fontWeight.bold,
                               fontSize: 15,
                               borderRadius: 8,
                               border: "none",
@@ -2926,7 +2927,7 @@ function GapsPage() {
               style={{
                 display: "block",
                 fontSize: 12,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 color: "#4A5A73",
                 marginBottom: 6,
               }}
@@ -2942,13 +2943,13 @@ function GapsPage() {
                 border: "1px solid #D5DDE8",
                 borderRadius: 8,
                 padding: 12,
-                fontSize: 14,
-                color: "#0B1F3A",
+                fontSize: tokens.fontSize.md,
+                color: tokens.navy,
                 fontFamily: "inherit",
                 resize: "vertical",
               }}
             />
-            <p style={{ fontSize: 11, color: "#6B7280", marginTop: 6 }}>
+            <p style={{ fontSize: tokens.fontSize.sm, color: "#6B7280", marginTop: 6 }}>
               {"{name}"} and {"{instructor_name}"} will be replaced for each pupil.
             </p>
           </div>
@@ -2958,7 +2959,7 @@ function GapsPage() {
               style={{
                 display: "block",
                 fontSize: 12,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 color: "#4A5A73",
                 marginBottom: 6,
               }}
@@ -2973,9 +2974,9 @@ function GapsPage() {
                 border: "1px solid #D5DDE8",
                 borderRadius: 8,
                 padding: "10px 12px",
-                fontSize: 14,
-                color: "#0B1F3A",
-                background: "#FFFFFF",
+                fontSize: tokens.fontSize.md,
+                color: tokens.navy,
+                background: tokens.white,
               }}
             >
               <option value="">No discount</option>
@@ -2989,7 +2990,7 @@ function GapsPage() {
               ))}
             </select>
             {discountCodes.length === 0 && (
-              <p style={{ fontSize: 11, color: "#6B7280", marginTop: 6 }}>
+              <p style={{ fontSize: tokens.fontSize.sm, color: "#6B7280", marginTop: 6 }}>
                 No active discount codes.
               </p>
             )}
@@ -3003,7 +3004,7 @@ function GapsPage() {
             left: 0,
             right: 0,
             padding: "12px 16px",
-            background: "#FFFFFF",
+            background: tokens.white,
             borderTop: "1px solid #E2E8F0",
             zIndex: 10,
           }}
@@ -3018,8 +3019,8 @@ function GapsPage() {
               height: 48,
               borderRadius: 8,
               background: BLUE_BRIGHT,
-              color: "#FFFFFF",
-              fontWeight: 700,
+              color: tokens.white,
+              fontWeight: tokens.fontWeight.bold,
               fontSize: 15,
               border: "none",
               cursor: "pointer",
@@ -3082,7 +3083,7 @@ function SummaryStats({
   return (
     <div
       style={{
-        background: "#FFFFFF",
+        background: tokens.white,
         border: `0.5px solid ${BORDER}`,
         borderRadius: 8,
         padding: 14,
@@ -3094,7 +3095,7 @@ function SummaryStats({
           display: "flex",
           justifyContent: "space-between",
           padding: "4px 0",
-          fontSize: 13,
+          fontSize: tokens.fontSize.base,
         }}
       >
         <span style={{ color: MUTED }}>Busiest day this week:</span>
@@ -3107,7 +3108,7 @@ function SummaryStats({
           display: "flex",
           justifyContent: "space-between",
           padding: "4px 0",
-          fontSize: 13,
+          fontSize: tokens.fontSize.base,
         }}
       >
         <span style={{ color: MUTED }}>Most free time:</span>
@@ -3123,7 +3124,7 @@ function SummaryStats({
             display: "flex",
             justifyContent: "space-between",
             padding: "4px 0",
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
           }}
         >
           <span style={{ color: MUTED }}>Potential revenue if filled:</span>
@@ -3142,16 +3143,16 @@ const inputStyle: React.CSSProperties = {
   borderRadius: 8,
   border: `0.5px solid ${BORDER}`,
   padding: "0 12px",
-  fontSize: 14,
+  fontSize: tokens.fontSize.md,
   color: NAVY,
-  background: "#FFFFFF",
+  background: tokens.white,
   fontFamily: "Poppins, sans-serif",
 };
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
   return (
     <div
-      style={{ fontSize: 12, color: MUTED, fontWeight: 500, marginBottom: 4 }}
+      style={{ fontSize: 12, color: MUTED, fontWeight: tokens.fontWeight.medium, marginBottom: 4 }}
     >
       {children}
     </div>
@@ -3173,8 +3174,8 @@ function StatusBadge({ status }: { status: string }) {
         color: s.fg,
         borderRadius: 999,
         padding: "3px 10px",
-        fontSize: 11,
-        fontWeight: 600,
+        fontSize: tokens.fontSize.sm,
+        fontWeight: tokens.fontWeight.semibold,
       }}
     >
       {s.label}
@@ -3219,7 +3220,7 @@ function PupilCard({
   return (
     <div
       style={{
-        background: "#FFFFFF",
+        background: tokens.white,
         border: `0.5px solid ${BORDER}`,
         borderRadius: 8,
         padding: "14px 16px",
@@ -3261,12 +3262,12 @@ function PupilCard({
               alignItems: "center",
               justifyContent: "center",
               fontSize: 12,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
             }}
           >
             #{rank}
           </span>
-          <span style={{ color: NAVY, fontWeight: 700, fontSize: 14 }}>
+          <span style={{ color: NAVY, fontWeight: tokens.fontWeight.bold, fontSize: 14 }}>
             {fullNameOf(r.pupil)}
           </span>
         </div>
@@ -3274,8 +3275,8 @@ function PupilCard({
           style={{
             background: "#E0F4FF",
             color: BLUE,
-            fontWeight: 700,
-            fontSize: 11,
+            fontWeight: tokens.fontWeight.bold,
+            fontSize: tokens.fontSize.sm,
             padding: "2px 8px",
             borderRadius: 999,
           }}
@@ -3360,8 +3361,8 @@ function PupilCard({
                   border: `0.5px solid ${m.match ? "#86EFAC" : "#E5E7EB"}`,
                   borderRadius: 999,
                   padding: "2px 8px",
-                  fontSize: 11,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.semibold,
                 }}
               >
                 {m.match ? "✓" : "✗"} {label}

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconArrowLeft, IconCircle, IconMapPin, IconPlus, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -288,7 +289,7 @@ function CoverageAreasPage() {
         >
           <IconArrowLeft size={22} />
         </button>
-        <h1 style={{ fontSize: 17, fontWeight: 700, margin: 0, ...POPPINS }}>Coverage Areas</h1>
+        <h1 style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, margin: 0, ...POPPINS }}>Coverage Areas</h1>
       </div>
 
       {/* Intro card */}
@@ -303,7 +304,7 @@ function CoverageAreasPage() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <IconMapPin size={16} color="#1A52A0" />
-          <div style={{ fontWeight: 600, fontSize: 14, color: "#0F2044" }}>Define where you teach</div>
+          <div style={{ fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md, color: "#0F2044" }}>Define where you teach</div>
         </div>
         <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
           Add each area you cover. Learners searching in these areas will find you on EveryDriver.
@@ -312,12 +313,12 @@ function CoverageAreasPage() {
 
       {/* List / empty state */}
       {loading ? (
-        <div style={{ padding: 24, textAlign: "center", color: "#9CA3AF", fontSize: 13 }}>Loading…</div>
+        <div style={{ padding: 24, textAlign: "center", color: tokens.textMuted, fontSize: 13 }}>Loading…</div>
       ) : areas.length === 0 ? (
         <div style={{ padding: "40px 16px 0", textAlign: "center" }}>
           <IconMapPin size={48} color="#D1D5DB" style={{ marginBottom: 12 }} />
-          <div style={{ fontWeight: 600, fontSize: 14, color: "#6B7280" }}>No coverage areas set</div>
-          <div style={{ fontSize: 13, color: "#9CA3AF", marginTop: 4 }}>
+          <div style={{ fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md, color: "#6B7280" }}>No coverage areas set</div>
+          <div style={{ fontSize: tokens.fontSize.base, color: tokens.textMuted, marginTop: 4 }}>
             Add your first area to appear on EveryDriver
           </div>
           <div style={{ padding: "16px 0 0" }}>
@@ -331,8 +332,8 @@ function CoverageAreasPage() {
                 borderRadius: 8,
                 padding: "12px 0",
                 border: "none",
-                fontSize: 14,
-                fontWeight: 600,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 ...POPPINS,
               }}
@@ -362,8 +363,8 @@ function CoverageAreasPage() {
                 borderRadius: 8,
                 padding: "12px 0",
                 border: "none",
-                fontSize: 14,
-                fontWeight: 600,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 display: "inline-flex",
                 alignItems: "center",
@@ -422,14 +423,14 @@ function AreaCard({
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0, flexWrap: "wrap" }}>
-          <div style={{ fontWeight: 700, fontSize: 15, color: "#0F2044" }}>{area.area_name}</div>
+          <div style={{ fontWeight: tokens.fontWeight.bold, fontSize: 15, color: "#0F2044" }}>{area.area_name}</div>
           {area.is_nationwide && (
             <span
               style={{
                 backgroundColor: "#0F2044",
                 color: "#fff",
-                fontSize: 11,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.sm,
+                fontWeight: tokens.fontWeight.bold,
                 padding: "2px 8px",
                 borderRadius: 999,
               }}
@@ -442,8 +443,8 @@ function AreaCard({
               style={{
                 backgroundColor: "#1A52A0",
                 color: "#fff",
-                fontSize: 11,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.sm,
+                fontWeight: tokens.fontWeight.bold,
                 padding: "2px 8px",
                 borderRadius: 999,
               }}
@@ -464,7 +465,7 @@ function AreaCard({
             type="button"
             onClick={onDelete}
             aria-label="Delete"
-            style={{ background: "none", border: "none", color: "#CC2229", fontSize: 18, cursor: "pointer", padding: 0, lineHeight: 1 }}
+            style={{ background: "none", border: "none", color: tokens.red, fontSize: tokens.fontSize.xl, cursor: "pointer", padding: 0, lineHeight: 1 }}
           >
             ×
           </button>
@@ -767,8 +768,8 @@ function AreaEditor({
             borderRadius: 8,
             padding: "12px 0",
             border: "none",
-            fontSize: 14,
-            fontWeight: 600,
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.semibold,
             cursor: !canSave || saving ? "not-allowed" : "pointer",
             opacity: !canSave || saving ? 0.5 : 1,
             ...POPPINS,
@@ -784,8 +785,8 @@ function AreaEditor({
             style={{
               backgroundColor: "#0F2044",
               color: "#fff",
-              fontSize: 11,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.sm,
+              fontWeight: tokens.fontWeight.bold,
               padding: "2px 8px",
               borderRadius: 999,
             }}
@@ -798,7 +799,7 @@ function AreaEditor({
 
       {/* Area name */}
       <div style={{ position: "relative", opacity: isNationwide ? 0.5 : 1, pointerEvents: isNationwide ? "none" : "auto" }}>
-        <label style={{ fontSize: 12, color: "#9CA3AF", ...POPPINS }}>Area name</label>
+        <label style={{ fontSize: 12, color: tokens.textMuted, ...POPPINS }}>Area name</label>
         <input
           ref={inputRef}
           type="text"
@@ -821,14 +822,14 @@ function AreaEditor({
             marginTop: 6,
             border: "0.5px solid #E2E6ED",
             borderRadius: 8,
-            fontSize: 14,
+            fontSize: tokens.fontSize.md,
             background: isNationwide ? "#F3F4F6" : "#fff",
             color: "#0F2044",
             ...POPPINS,
           }}
         />
         {placesError && (
-          <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 4, ...POPPINS }}>
+          <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, marginTop: 4, ...POPPINS }}>
             Address lookup unavailable — type the area name and add a postcode below.
           </div>
         )}
@@ -866,9 +867,9 @@ function AreaEditor({
                   ...POPPINS,
                 }}
               >
-                <div style={{ fontSize: 14, color: "#0F2044" }}>{s.main}</div>
+                <div style={{ fontSize: tokens.fontSize.md, color: "#0F2044" }}>{s.main}</div>
                 {s.secondary && (
-                  <div style={{ fontSize: 12, color: "#9CA3AF" }}>{s.secondary}</div>
+                  <div style={{ fontSize: 12, color: tokens.textMuted }}>{s.secondary}</div>
                 )}
               </button>
             ))}
@@ -879,8 +880,8 @@ function AreaEditor({
 
       {/* Outcodes */}
       <div style={{ marginTop: 12 }}>
-        <label style={{ fontSize: 12, color: "#9CA3AF", ...POPPINS }}>Postcode areas covered</label>
-        <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+        <label style={{ fontSize: 12, color: tokens.textMuted, ...POPPINS }}>Postcode areas covered</label>
+        <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 2 }}>
           Add the outward codes for this area e.g. SO22 SO23
         </div>
         <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
@@ -901,7 +902,7 @@ function AreaEditor({
               padding: "0 12px",
               border: "0.5px solid #E2E6ED",
               borderRadius: 8,
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               textTransform: "uppercase",
               ...POPPINS,
             }}
@@ -915,8 +916,8 @@ function AreaEditor({
               color: "#fff",
               border: "none",
               borderRadius: 8,
-              fontSize: 13,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.semibold,
               cursor: "pointer",
               ...POPPINS,
             }}
@@ -925,7 +926,7 @@ function AreaEditor({
           </button>
         </div>
         {outcodeError && (
-          <div style={{ fontSize: 12, color: "#CC2229", marginTop: 6 }}>{outcodeError}</div>
+          <div style={{ fontSize: 12, color: tokens.red, marginTop: 6 }}>{outcodeError}</div>
         )}
         {outcodes.length > 0 && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }}>
@@ -938,7 +939,7 @@ function AreaEditor({
                   backgroundColor: "#F0F4FF",
                   color: "#1A52A0",
                   fontSize: 12,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   padding: "4px 10px",
                   borderRadius: 999,
                   border: "none",
@@ -967,8 +968,8 @@ function AreaEditor({
         }}
       >
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 14, color: "#0F2044", ...POPPINS }}>Covers the whole UK</div>
-          <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+          <div style={{ fontSize: tokens.fontSize.md, color: "#0F2044", ...POPPINS }}>Covers the whole UK</div>
+          <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 2 }}>
             Skip the radius below — for national/intensive course providers
           </div>
         </div>
@@ -1005,8 +1006,8 @@ function AreaEditor({
 
       {/* Radius */}
       <div style={{ marginTop: 16, opacity: isNationwide ? 0.5 : 1, pointerEvents: isNationwide ? "none" : "auto" }}>
-        <label style={{ fontSize: 12, color: "#9CA3AF", ...POPPINS }}>Teaching radius</label>
-        <div style={{ fontSize: 14, fontWeight: 700, color: "#0F2044", marginTop: 4 }}>
+        <label style={{ fontSize: 12, color: tokens.textMuted, ...POPPINS }}>Teaching radius</label>
+        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: "#0F2044", marginTop: 4 }}>
           {radius} miles
         </div>
         <input
@@ -1019,7 +1020,7 @@ function AreaEditor({
           onChange={(e) => setRadius(Number(e.target.value))}
           style={{ width: "100%", marginTop: 4, accentColor: "#1A52A0" }}
         />
-        <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+        <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 2 }}>
           How far from the centre of this area you're willing to travel
         </div>
       </div>
@@ -1035,8 +1036,8 @@ function AreaEditor({
         }}
       >
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 14, color: "#0F2044", ...POPPINS }}>Set as primary area</div>
-          <div style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+          <div style={{ fontSize: tokens.fontSize.md, color: "#0F2044", ...POPPINS }}>Set as primary area</div>
+          <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 2 }}>
             Your primary area appears first on EveryDriver
           </div>
         </div>

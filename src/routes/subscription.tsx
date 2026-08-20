@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { useGoBack } from "@/hooks/useGoBack";
 import { toast } from "sonner";
@@ -148,16 +149,16 @@ function SubscriptionPage() {
       <div
         className="mx-4 mt-3"
         style={{
-          backgroundColor: "#0B1F3A",
+          backgroundColor: tokens.navy,
           borderRadius: 8,
           padding: 16,
         }}
       >
         <div
           style={{
-            fontSize: 10,
-            fontWeight: 700,
-            color: "#9CA3AF",
+            fontSize: tokens.fontSize.xs,
+            fontWeight: tokens.fontWeight.bold,
+            color: tokens.textMuted,
             letterSpacing: 0.8,
             textTransform: "uppercase",
             marginBottom: 8,
@@ -165,10 +166,10 @@ function SubscriptionPage() {
         >
           CURRENT PLAN
         </div>
-        <div style={{ fontSize: 24, fontWeight: 700, color: "#ffffff", marginBottom: 4 }}>
+        <div style={{ fontSize: 24, fontWeight: tokens.fontWeight.bold, color: "#ffffff", marginBottom: 4 }}>
           {DISPLAY_TIER_NAMES[websiteTier] ?? "DSM Free"}
         </div>
-        <div style={{ fontSize: 13, color: "#9CA3AF", marginBottom: 12 }}>
+        <div style={{ fontSize: tokens.fontSize.base, color: tokens.textMuted, marginBottom: 12 }}>
           {isPaid ? "All paid features included" : "All core features included"}
         </div>
         <div
@@ -176,10 +177,10 @@ function SubscriptionPage() {
             display: "inline-flex",
             alignItems: "center",
             gap: 4,
-            backgroundColor: "#1877D6",
+            backgroundColor: tokens.blue,
             color: "#ffffff",
-            fontSize: 11,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.sm,
+            fontWeight: tokens.fontWeight.bold,
             padding: "2px 8px",
             borderRadius: 8,
           }}
@@ -198,8 +199,8 @@ function SubscriptionPage() {
               background: "none",
               border: "none",
               cursor: "pointer",
-              fontSize: 13,
-              color: "#9CA3AF",
+              fontSize: tokens.fontSize.base,
+              color: tokens.textMuted,
               fontFamily: "Poppins, sans-serif",
               textDecoration: "underline",
             }}
@@ -224,8 +225,8 @@ function SubscriptionPage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <div style={{ fontSize: 20, fontWeight: 700, color: "#0B1F3A" }}>DSM Pro</div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#1877D6" }}>£19.99/month</div>
+          <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>DSM Pro</div>
+          <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.blue }}>£19.99/month</div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
@@ -252,10 +253,10 @@ function SubscriptionPage() {
             position: "absolute",
             top: 8,
             right: 8,
-            backgroundColor: "#1877D6",
+            backgroundColor: tokens.blue,
             color: "#ffffff",
-            fontSize: 10,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.xs,
+            fontWeight: tokens.fontWeight.bold,
             padding: "2px 8px",
             borderRadius: 8,
           }}
@@ -304,7 +305,7 @@ function SubscriptionPage() {
           <div
             style={{
               position: "relative",
-              background: "#EEF2F7",
+              background: tokens.canvas,
               borderRadius: "8px 8px 0 0",
               padding: "0 0 40px",
               maxHeight: "90vh",
@@ -326,7 +327,7 @@ function SubscriptionPage() {
                   width: 30,
                   height: 30,
                   borderRadius: "50%",
-                  background: "#EEF2F7",
+                  background: tokens.canvas,
                   border: "1px solid #E4E8EF",
                   cursor: "pointer",
                   display: "flex",
@@ -341,10 +342,10 @@ function SubscriptionPage() {
             {/* Warning header */}
             <div style={{ padding: "20px 16px 0", textAlign: "center" }}>
               <div style={{ fontSize: 32, marginBottom: 8 }}>⚠️</div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: "#0B1F3A", marginBottom: 6 }}>
+              <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, marginBottom: 6 }}>
                 Before you cancel
               </div>
-              <div style={{ fontSize: 13, color: "#6B7686" }}>
+              <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary }}>
                 You'll immediately lose access to:
               </div>
             </div>
@@ -371,7 +372,7 @@ function SubscriptionPage() {
                   }}
                 >
                   <span style={{ fontSize: 20, flexShrink: 0 }}>{item.icon}</span>
-                  <span style={{ fontSize: 14, fontWeight: 500, color: "#0B1F3A" }}>
+                  <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: tokens.navy }}>
                     {item.text}
                   </span>
                 </div>
@@ -393,7 +394,7 @@ function SubscriptionPage() {
             >
               <span style={{ fontSize: 20, flexShrink: 0 }}>🎓</span>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#B45309" }}>
+                <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: "#B45309" }}>
                   Your free DIA membership will end
                 </div>
                 <div
@@ -419,12 +420,12 @@ function SubscriptionPage() {
               style={{
                 margin: "16px 16px 0",
                 width: "calc(100% - 32px)",
-                background: "#0B1F3A",
+                background: tokens.navy,
                 color: "#fff",
                 borderRadius: 8,
                 padding: 15,
                 fontSize: 15,
-                fontWeight: 800,
+                fontWeight: tokens.fontWeight.extrabold,
                 border: "none",
                 cursor: "pointer",
                 fontFamily: "Poppins, sans-serif",
@@ -446,7 +447,7 @@ function SubscriptionPage() {
                   border: "none",
                   cursor: cancelling ? "not-allowed" : "pointer",
                   fontSize: 12,
-                  color: "#9CA3AF",
+                  color: tokens.textMuted,
                   fontFamily: "Poppins, sans-serif",
                   textDecoration: "underline",
                 }}
@@ -465,7 +466,7 @@ function Feature({ text }: { text: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
       <IconCheck size={16} color="#1877D6" stroke={3} />
-      <span style={{ fontSize: 14, color: "#0B1F3A" }}>{text}</span>
+      <span style={{ fontSize: tokens.fontSize.md, color: tokens.navy }}>{text}</span>
     </div>
   );
 }

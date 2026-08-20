@@ -1,4 +1,5 @@
 import { DSMToggle } from "@/components/dsm/DSMToggle";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -52,11 +53,11 @@ const CATEGORIES = [
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const labelStyle: React.CSSProperties = {
-  fontSize: 10,
-  fontWeight: 700,
+  fontSize: tokens.fontSize.xs,
+  fontWeight: tokens.fontWeight.bold,
   letterSpacing: "0.06em",
   textTransform: "uppercase",
-  color: "#6B7686",
+  color: tokens.textSecondary,
   marginBottom: 6,
   display: "block",
   ...POPPINS,
@@ -67,8 +68,8 @@ const inputStyle: React.CSSProperties = {
   border: "1px solid #E4E8EF",
   borderRadius: 8,
   padding: "10px 12px",
-  fontSize: 14,
-  color: "#0B1F3A",
+  fontSize: tokens.fontSize.md,
+  color: tokens.navy,
   background: "#fff",
   outline: "none",
   ...POPPINS,
@@ -311,7 +312,7 @@ function AdminBitesizePage() {
       }}
     >
       <div
-        style={{ fontSize: 14, fontWeight: 600, color: "#0B1F3A", ...POPPINS }}
+        style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, ...POPPINS }}
       >
         {editVideo ? "Published" : "Publish immediately"}
       </div>
@@ -333,9 +334,9 @@ function AdminBitesizePage() {
       >
         <div
           style={{
-            fontSize: 16,
-            fontWeight: 700,
-            color: "#0B1F3A",
+            fontSize: tokens.fontSize.lg,
+            fontWeight: tokens.fontWeight.bold,
+            color: tokens.navy,
             ...POPPINS,
           }}
         >
@@ -350,7 +351,7 @@ function AdminBitesizePage() {
             border: "none",
             padding: 0,
             display: "flex",
-            color: "#6B7686",
+            color: tokens.textSecondary,
             cursor: "pointer",
           }}
         >
@@ -378,7 +379,7 @@ function AdminBitesizePage() {
               width: 36,
               height: 36,
               borderRadius: "50%",
-              background: "#1877D6",
+              background: tokens.blue,
               boxShadow: "0 3px 0 #0F52A8",
               border: "none",
               display: "flex",
@@ -428,7 +429,7 @@ function AdminBitesizePage() {
               <div
                 style={{
                   fontSize: 9.5,
-                  fontWeight: 700,
+                  fontWeight: tokens.fontWeight.bold,
                   color: "#8A8A8E",
                   textTransform: "uppercase",
                   marginTop: 5,
@@ -463,9 +464,9 @@ function AdminBitesizePage() {
           <IconBook size={48} color="#7C3AED" />
           <div
             style={{
-              fontSize: 16,
-              fontWeight: 600,
-              color: "#0B1F3A",
+              fontSize: tokens.fontSize.lg,
+              fontWeight: tokens.fontWeight.semibold,
+              color: tokens.navy,
               marginTop: 12,
               ...POPPINS,
             }}
@@ -473,7 +474,7 @@ function AdminBitesizePage() {
             No videos yet
           </div>
           <div
-            style={{ fontSize: 13, color: "#6B7686", marginTop: 6, ...POPPINS }}
+            style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, marginTop: 6, ...POPPINS }}
           >
             Tap + to upload the first video
           </div>
@@ -542,7 +543,7 @@ function AdminBitesizePage() {
                     <div
                       style={{
                         fontSize: 17,
-                        fontWeight: 800,
+                        fontWeight: tokens.fontWeight.extrabold,
                         letterSpacing: "-0.2px",
                         color: "#000",
                         overflow: "hidden",
@@ -556,8 +557,8 @@ function AdminBitesizePage() {
                     <span
                       style={{
                         flexShrink: 0,
-                        fontSize: 10,
-                        fontWeight: 800,
+                        fontSize: tokens.fontSize.xs,
+                        fontWeight: tokens.fontWeight.extrabold,
                         borderRadius: 8,
                         padding: "4px 10px",
                         background: video.is_published ? "#E6F7EC" : "#FFF6DC",
@@ -570,8 +571,8 @@ function AdminBitesizePage() {
                   </div>
                   <div
                     style={{
-                      fontSize: 13,
-                      fontWeight: 500,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.medium,
                       color: "#8A8A8E",
                       marginTop: 6,
                       ...POPPINS,
@@ -624,7 +625,7 @@ function AdminBitesizePage() {
                     justifyContent: "center",
                     gap: 6,
                     fontSize: 12.5,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     color: video.is_published ? "#248A3D" : "#B0B0B5",
                     cursor: "pointer",
                     ...POPPINS,
@@ -653,8 +654,8 @@ function AdminBitesizePage() {
                     justifyContent: "center",
                     gap: 6,
                     fontSize: 12.5,
-                    fontWeight: 700,
-                    color: "#1877D6",
+                    fontWeight: tokens.fontWeight.bold,
+                    color: tokens.blue,
                     cursor: "pointer",
                     ...POPPINS,
                   }}
@@ -678,7 +679,7 @@ function AdminBitesizePage() {
                     justifyContent: "center",
                     gap: 6,
                     fontSize: 12.5,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     color: "#FF3B30",
                     cursor: "pointer",
                     ...POPPINS,
@@ -736,22 +737,22 @@ function AdminBitesizePage() {
                 <IconUpload size={48} color="#7C3AED" />
                 <div
                   style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: "#0B1F3A",
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.navy,
                     ...POPPINS,
                   }}
                 >
                   Tap to select video
                 </div>
-                <div style={{ fontSize: 12, color: "#6B7686", ...POPPINS }}>
+                <div style={{ fontSize: 12, color: tokens.textSecondary, ...POPPINS }}>
                   MP4 or MOV · max 500MB
                 </div>
                 {videoFile && (
                   <div
                     style={{
                       fontSize: 12,
-                      fontWeight: 600,
+                      fontWeight: tokens.fontWeight.semibold,
                       color: "#16A34A",
                       marginTop: 4,
                       wordBreak: "break-all",
@@ -811,9 +812,9 @@ function AdminBitesizePage() {
                   <label
                     htmlFor="ab-thumb"
                     style={{
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: "#1877D6",
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.semibold,
+                      color: tokens.blue,
                       cursor: "pointer",
                       ...POPPINS,
                     }}
@@ -849,7 +850,7 @@ function AdminBitesizePage() {
                 borderRadius: 8,
                 padding: "14px 16px",
                 fontSize: 15,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 cursor:
                   !videoFile || !title.trim() || uploading
                     ? "not-allowed"
@@ -896,13 +897,13 @@ function AdminBitesizePage() {
               disabled={!title.trim() || saving}
               style={{
                 width: "100%",
-                background: "#1877D6",
+                background: tokens.blue,
                 color: "#fff",
                 border: "none",
                 borderRadius: 8,
                 padding: "14px 16px",
                 fontSize: 15,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 cursor: !title.trim() || saving ? "not-allowed" : "pointer",
                 opacity: !title.trim() || saving ? 0.5 : 1,
                 ...POPPINS,

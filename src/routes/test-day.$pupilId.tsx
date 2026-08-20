@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconArrowLeft, IconBook, IconChevronDown, IconChevronUp, IconFileCheck, IconNavigation, IconSearch, IconShield, IconTrophy } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -97,7 +98,7 @@ function Card({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
-        backgroundColor: "#FFFFFF",
+        backgroundColor: tokens.white,
         border: "0.5px solid #EEF2F7",
         borderRadius: 8,
         padding: 16,
@@ -134,13 +135,13 @@ function Checkbox({
           borderRadius: 8,
           border: "1.5px solid #1877D6",
           backgroundColor: checked ? "#1877D6" : "#FFFFFF",
-          color: "#FFFFFF",
+          color: tokens.white,
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
-          fontSize: 14,
-          fontWeight: 700,
+          fontSize: tokens.fontSize.md,
+          fontWeight: tokens.fontWeight.bold,
         }}
       >
         {checked ? "✓" : ""}
@@ -177,9 +178,9 @@ function QAItem({ type, q, a }: { type: "SHOW" | "TELL"; q: string; a: string })
         <span
           style={{
             backgroundColor: bg,
-            color: "#FFFFFF",
-            fontSize: 10,
-            fontWeight: 700,
+            color: tokens.white,
+            fontSize: tokens.fontSize.xs,
+            fontWeight: tokens.fontWeight.bold,
             padding: "2px 6px",
             borderRadius: 8,
             flexShrink: 0,
@@ -189,7 +190,7 @@ function QAItem({ type, q, a }: { type: "SHOW" | "TELL"; q: string; a: string })
         >
           {type}
         </span>
-        <span className="flex-1 text-[13px]" style={{ color: "#0B1F3A", ...POPPINS }}>
+        <span className="flex-1 text-[13px]" style={{ color: tokens.navy, ...POPPINS }}>
           {q}
         </span>
         {open ? (
@@ -421,12 +422,12 @@ function TestDayPage() {
   };
 
   return (
-    <div style={{ backgroundColor: "#FFFFFF", minHeight: "100vh", paddingBottom: 32 }}>
+    <div style={{ backgroundColor: tokens.white, minHeight: "100vh", paddingBottom: 32 }}>
       {/* Top bar */}
       <div
         style={{
-          backgroundColor: "#1877D6",
-          color: "#FFFFFF",
+          backgroundColor: tokens.blue,
+          color: tokens.white,
           padding: "12px 16px",
           display: "flex",
           alignItems: "center",
@@ -438,7 +439,7 @@ function TestDayPage() {
           onClick={() => navigate({ to: "/pupils/$id", params: { id: pupilId } })}
           aria-label="Back"
           className="inline-flex items-center justify-center"
-          style={{ background: "transparent", border: "none", color: "#FFFFFF" }}
+          style={{ background: "transparent", border: "none", color: tokens.white }}
         >
           <IconArrowLeft size={22} color="#FFFFFF" />
         </button>
@@ -450,8 +451,8 @@ function TestDayPage() {
       {/* Countdown banner */}
       <div
         style={{
-          backgroundColor: "#1877D6",
-          color: "#FFFFFF",
+          backgroundColor: tokens.blue,
+          color: tokens.white,
           padding: 16,
           textAlign: "center",
           ...POPPINS,
@@ -479,7 +480,7 @@ function TestDayPage() {
       <Card>
         <div className="flex items-center gap-2 mb-2">
           <IconFileCheck size={18} color="#1877D6" />
-          <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+          <h2 className="text-[15px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>
             Documents to bring
           </h2>
         </div>
@@ -499,7 +500,7 @@ function TestDayPage() {
       <Card>
         <div className="flex items-center gap-2 mb-2">
           <IconShield size={18} color="#1877D6" />
-          <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+          <h2 className="text-[15px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>
             Pre-test preparation
           </h2>
         </div>
@@ -526,7 +527,7 @@ function TestDayPage() {
             <IconBook size={18} color="#1877D6" />
             <span
               className="text-[15px] font-semibold"
-              style={{ color: "#0B1F3A", ...POPPINS }}
+              style={{ color: tokens.navy, ...POPPINS }}
             >
               Show Me / Tell Me
             </span>
@@ -558,11 +559,11 @@ function TestDayPage() {
       <Card>
         <div className="flex items-center gap-2 mb-2">
           <IconNavigation size={18} color="#1877D6" />
-          <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+          <h2 className="text-[15px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>
             Navigate to test centre
           </h2>
         </div>
-        <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+        <div className="text-[14px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>
           {centreDisplayName ?? "No test centre set"}
         </div>
         {centreFullAddress && (
@@ -577,7 +578,7 @@ function TestDayPage() {
             setCentreSearch("");
           }}
           className="text-[12px] font-semibold mt-2"
-          style={{ color: "#1877D6", background: "none", border: "none", padding: 0, ...POPPINS }}
+          style={{ color: tokens.blue, background: "none", border: "none", padding: 0, ...POPPINS }}
         >
           {showCentrePicker ? "Cancel" : "Change test centre"}
         </button>
@@ -600,7 +601,7 @@ function TestDayPage() {
                   padding: "0 12px 0 36px",
                   borderRadius: 8,
                   border: "0.5px solid #E2E6ED",
-                  fontSize: 14,
+                  fontSize: tokens.fontSize.md,
                   outline: "none",
                   ...POPPINS,
                 }}
@@ -613,7 +614,7 @@ function TestDayPage() {
                 borderRadius: 8,
                 maxHeight: 220,
                 overflowY: "auto",
-                backgroundColor: "#FFFFFF",
+                backgroundColor: tokens.white,
               }}
             >
               {(() => {
@@ -639,7 +640,7 @@ function TestDayPage() {
                     className="cursor-pointer"
                     style={{ padding: "10px 12px", borderBottom: "0.5px solid #F3F4F6" }}
                   >
-                    <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+                    <div className="text-[14px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>
                       {c.name}
                     </div>
                     {c.town ? (
@@ -666,7 +667,7 @@ function TestDayPage() {
             style={{
               height: 40,
               borderRadius: 8,
-              backgroundColor: "#1877D6",
+              backgroundColor: tokens.blue,
               opacity: mapsQuery ? 1 : 0.5,
               pointerEvents: mapsQuery ? "auto" : "none",
               ...POPPINS,
@@ -687,7 +688,7 @@ function TestDayPage() {
               height: 40,
               borderRadius: 8,
               backgroundColor: "#F3F4F6",
-              color: "#0B1F3A",
+              color: tokens.navy,
               opacity: mapsQuery ? 1 : 0.5,
               pointerEvents: mapsQuery ? "auto" : "none",
               ...POPPINS,
@@ -702,7 +703,7 @@ function TestDayPage() {
       <Card>
         <div className="flex items-center gap-2 mb-3">
           <IconTrophy size={18} color="#1877D6" />
-          <h2 className="text-[15px] font-semibold" style={{ color: "#0B1F3A", ...POPPINS }}>
+          <h2 className="text-[15px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>
             Record test result
           </h2>
         </div>
@@ -714,7 +715,7 @@ function TestDayPage() {
             style={{
               height: 56,
               borderRadius: 8,
-              backgroundColor: "#1877D6",
+              backgroundColor: tokens.blue,
               border: "none",
               ...POPPINS,
             }}
@@ -728,7 +729,7 @@ function TestDayPage() {
             style={{
               height: 56,
               borderRadius: 8,
-              backgroundColor: "#1877D6",
+              backgroundColor: tokens.blue,
               border: "none",
               ...POPPINS,
             }}
@@ -740,12 +741,12 @@ function TestDayPage() {
           <div
             className="mt-3 p-3"
             style={{
-              backgroundColor: "#EEF2F7",
+              backgroundColor: tokens.canvas,
               borderRadius: 8,
               ...POPPINS,
             }}
           >
-            <p className="text-[13px]" style={{ color: "#0B1F3A" }}>
+            <p className="text-[13px]" style={{ color: tokens.navy }}>
               Would you like to claim the free re-test guarantee?
             </p>
             <div className="flex gap-2 mt-2">
@@ -756,7 +757,7 @@ function TestDayPage() {
                   setAskRetest(false);
                 }}
                 className="text-[12px] font-medium text-white px-3 py-1.5"
-                style={{ borderRadius: 8, backgroundColor: "#1877D6", border: "none" }}
+                style={{ borderRadius: 8, backgroundColor: tokens.blue, border: "none" }}
               >
                 Yes, claim
               </button>
@@ -766,8 +767,8 @@ function TestDayPage() {
                 className="text-[12px] font-medium px-3 py-1.5"
                 style={{
                   borderRadius: 8,
-                  backgroundColor: "#FFFFFF",
-                  color: "#0B1F3A",
+                  backgroundColor: tokens.white,
+                  color: tokens.navy,
                   border: "1px solid #EEF2F7",
                 }}
               >

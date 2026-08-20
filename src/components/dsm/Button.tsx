@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, CSSProperties } from "react";
+import { tokens } from "@/lib/tokens";
 
 type Variant = "primary" | "destructive" | "ghost";
 
@@ -28,7 +29,7 @@ export function Button({
     variantClasses = "bg-[#B91C1C] text-white hover:bg-[#B91C1C]";
   } else {
     variantClasses = "bg-white text-[#0B1F3A] hover:bg-[#F3F8FF]";
-    extraStyle = { borderWidth: "1px", borderStyle: "solid", borderColor: "#EEF2F7" };
+    extraStyle = { borderWidth: "1px", borderStyle: "solid", borderColor: tokens.canvas };
   }
 
   return (

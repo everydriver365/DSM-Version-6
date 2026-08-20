@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState } from "react";
 import { IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -80,13 +81,13 @@ function NoteEditPage() {
       onBack={() => navigate({ to: "/notes" as never })}>
       {/* Actions row */}
       <div className="flex items-center justify-between px-4 pt-3">
-        <span className="text-[11px]" style={{ color: "#1877D6" }}>{savedFlag ? "Saved" : ""}</span>
+        <span className="text-[11px]" style={{ color: tokens.blue }}>{savedFlag ? "Saved" : ""}</span>
         <button
           type="button"
           aria-label="Delete note"
           onClick={() => setConfirmOpen(true)}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#CC2229" }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.red }}
         >
           <IconTrash size={15} />
           Delete

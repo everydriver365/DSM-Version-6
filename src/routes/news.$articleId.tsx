@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconCalendar, IconChevronLeft, IconClock, IconExternalLink, IconUser } from "@tabler/icons-react";
 
@@ -88,15 +89,15 @@ function ArticleBody({ article }: { article: any }) {
       )}
 
       {/* Article body */}
-      <div style={{ padding: 16, background: "#FFFFFF" }}>
+      <div style={{ padding: 16, background: tokens.white }}>
         {/* Source pill */}
         <div
           style={{
             display: "inline-flex",
             backgroundColor: "#E6F1FB",
-            color: "#1877D6",
-            fontSize: 11,
-            fontWeight: 700,
+            color: tokens.blue,
+            fontSize: tokens.fontSize.sm,
+            fontWeight: tokens.fontWeight.bold,
             textTransform: "uppercase",
             borderRadius: 999,
             padding: "4px 10px",
@@ -112,8 +113,8 @@ function ArticleBody({ article }: { article: any }) {
         <h1
           style={{
             fontSize: 20,
-            fontWeight: 700,
-            color: "#0B1F3A",
+            fontWeight: tokens.fontWeight.bold,
+            color: tokens.navy,
             marginBottom: 8,
             ...POPPINS,
             lineHeight: 1.3,
@@ -129,8 +130,8 @@ function ArticleBody({ article }: { article: any }) {
             flexWrap: "wrap",
             gap: 12,
             marginBottom: 16,
-            color: "#9CA3AF",
-            fontSize: 13,
+            color: tokens.textMuted,
+            fontSize: tokens.fontSize.base,
             ...INTER,
           }}
         >
@@ -153,7 +154,7 @@ function ArticleBody({ article }: { article: any }) {
         </div>
 
         {/* Divider */}
-        <div style={{ width: "100%", height: 1, backgroundColor: "#E4E8EF", marginBottom: 16 }} />
+        <div style={{ width: "100%", height: 1, backgroundColor: tokens.border, marginBottom: 16 }} />
 
         {/* Category + importance */}
         {(() => {
@@ -165,8 +166,8 @@ function ArticleBody({ article }: { article: any }) {
                 style={{
                   background: cat.bg,
                   color: cat.colour,
-                  fontSize: 10,
-                  fontWeight: 800,
+                  fontSize: tokens.fontSize.xs,
+                  fontWeight: tokens.fontWeight.extrabold,
                   textTransform: "uppercase",
                   letterSpacing: "0.3px",
                   borderRadius: 8,
@@ -179,10 +180,10 @@ function ArticleBody({ article }: { article: any }) {
               {important ? (
                 <span
                   style={{
-                    background: "#CC2229",
+                    background: tokens.red,
                     color: "#fff",
-                    fontSize: 10,
-                    fontWeight: 800,
+                    fontSize: tokens.fontSize.xs,
+                    fontWeight: tokens.fontWeight.extrabold,
                     textTransform: "uppercase",
                     borderRadius: 8,
                     padding: "4px 9px",
@@ -198,7 +199,7 @@ function ArticleBody({ article }: { article: any }) {
 
         {/* Short summary */}
         {article.summary ? (
-          <p style={{ fontSize: 14, lineHeight: 1.6, color: "#0B1F3A", fontWeight: 600, marginBottom: 12, ...POPPINS }}>
+          <p style={{ fontSize: tokens.fontSize.md, lineHeight: 1.6, color: tokens.navy, fontWeight: tokens.fontWeight.semibold, marginBottom: 12, ...POPPINS }}>
             {article.summary}
           </p>
         ) : null}
@@ -215,17 +216,17 @@ function ArticleBody({ article }: { article: any }) {
               ...POPPINS,
             }}
           >
-            <div style={{ fontSize: 12, fontWeight: 800, color: "#7A5B10", marginBottom: 4 }}>
+            <div style={{ fontSize: 12, fontWeight: tokens.fontWeight.extrabold, color: "#7A5B10", marginBottom: 4 }}>
               Why this matters
             </div>
-            <div style={{ fontSize: 13, lineHeight: 1.5, color: "#7A5B10" }}>{article.why_matters}</div>
+            <div style={{ fontSize: tokens.fontSize.base, lineHeight: 1.5, color: "#7A5B10" }}>{article.why_matters}</div>
           </div>
         ) : null}
 
         {/* Content body */}
         <div
           style={{
-            fontSize: 14,
+            fontSize: tokens.fontSize.md,
             lineHeight: 1.7,
             color: "#374151",
             whiteSpace: "pre-wrap",
@@ -258,10 +259,10 @@ function ArticleBody({ article }: { article: any }) {
           >
             <span style={{ fontSize: 18 }}>🎓</span>
             <span style={{ minWidth: 0 }}>
-              <span style={{ display: "block", fontSize: 11, fontWeight: 800, color: "#5B21B6" }}>
+              <span style={{ display: "block", fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.extrabold, color: "#5B21B6" }}>
                 DSM Learn
               </span>
-              <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
+              <span style={{ display: "block", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
                 {relatedLearn.title}
               </span>
             </span>
@@ -290,8 +291,8 @@ function ArticleBody({ article }: { article: any }) {
           >
             <span style={{ fontSize: 18 }}>🎙️</span>
             <span style={{ minWidth: 0 }}>
-              <span style={{ display: "block", fontSize: 11, fontWeight: 800, color: "#1877D6" }}>Listen</span>
-              <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
+              <span style={{ display: "block", fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.extrabold, color: tokens.blue }}>Listen</span>
+              <span style={{ display: "block", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
                 {relatedShow.name}
               </span>
             </span>
@@ -309,14 +310,14 @@ function ArticleBody({ article }: { article: any }) {
             justifyContent: "space-between",
           }}
         >
-          <span style={{ fontSize: 12, color: "#9CA3AF", ...INTER }}>
+          <span style={{ fontSize: 12, color: tokens.textMuted, ...INTER }}>
             {sources.length > 1 ? `Sources: ${sources.join(" · ")}` : `Source: ${article.source}`}
           </span>
           <button
             type="button"
             aria-label="Open original article"
             onClick={() => window.open(article.link, "_blank")}
-            style={{ color: "#1877D6", display: "flex", alignItems: "center", gap: 4 }}
+            style={{ color: tokens.blue, display: "flex", alignItems: "center", gap: 4 }}
           >
             <IconExternalLink size={14} />
           </button>
@@ -328,13 +329,13 @@ function ArticleBody({ article }: { article: any }) {
           style={{
             marginTop: 14,
             width: "100%",
-            background: "#1877D6",
+            background: tokens.blue,
             color: "#fff",
             border: "none",
             borderRadius: 8,
             padding: "12px 16px",
-            fontSize: 14,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.bold,
             cursor: "pointer",
             ...POPPINS,
           }}
@@ -383,7 +384,7 @@ function NewsArticlePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen" style={{ background: "#0B1F3A" }}>
+      <div className="min-h-screen" style={{ background: tokens.navy }}>
         <div className="flex items-center justify-center min-h-screen">
           <div className="animate-spin rounded-full border-2 border-white/30 border-t-white" style={{ width: 32, height: 32 }} />
         </div>
@@ -393,7 +394,7 @@ function NewsArticlePage() {
 
   if (!article) {
     return (
-      <div className="min-h-screen" style={{ background: "#0B1F3A" }}>
+      <div className="min-h-screen" style={{ background: tokens.navy }}>
         <div className="flex flex-col items-center justify-center min-h-screen text-white">
           <p className="text-[16px]" style={{ ...POPPINS, marginBottom: 16 }}>
             Article not found
@@ -402,7 +403,7 @@ function NewsArticlePage() {
             type="button"
             onClick={() => navigate({ to: "/home" })}
             className="flex items-center gap-2 text-white"
-            style={{ fontSize: 14, ...POPPINS }}
+            style={{ fontSize: tokens.fontSize.md, ...POPPINS }}
           >
             <IconChevronLeft size={18} />
             Back to home

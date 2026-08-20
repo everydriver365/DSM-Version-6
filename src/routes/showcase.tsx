@@ -1,4 +1,5 @@
 import { DSMToggle } from "@/components/dsm/DSMToggle";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
@@ -128,11 +129,11 @@ const RED = "#CC2229";
 const BLUE = "#1877D6";
 
 const labelStyle: React.CSSProperties = {
-  fontSize: 10,
-  fontWeight: 700,
+  fontSize: tokens.fontSize.xs,
+  fontWeight: tokens.fontWeight.bold,
   letterSpacing: "0.06em",
   textTransform: "uppercase",
-  color: "#6B7686",
+  color: tokens.textSecondary,
   marginBottom: 6,
   display: "block",
   ...POPPINS,
@@ -143,7 +144,7 @@ const inputStyle: React.CSSProperties = {
   border: "1px solid #E4E8EF",
   borderRadius: 8,
   padding: "10px 12px",
-  fontSize: 14,
+  fontSize: tokens.fontSize.md,
   color: NAVY,
   background: "#fff",
   outline: "none",
@@ -709,7 +710,7 @@ function ShowcasePage() {
                 borderRadius: 8,
                 padding: "6px 14px",
                 fontSize: 12,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 background: active ? BLUE : "#fff",
                 color: active ? "#fff" : "#5B6472",
                 ...POPPINS,
@@ -743,8 +744,8 @@ function ShowcasePage() {
           <IconPlayerPlay size={48} color={RED} />
           <div
             style={{
-              fontSize: 16,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.lg,
+              fontWeight: tokens.fontWeight.semibold,
               color: NAVY,
               marginTop: 12,
               ...POPPINS,
@@ -752,7 +753,7 @@ function ShowcasePage() {
           >
             No clips yet
           </div>
-          <div style={{ fontSize: 13, color: "#6B7686", marginTop: 6, ...POPPINS }}>
+          <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, marginTop: 6, ...POPPINS }}>
             Tap + to share the first Showcase clip
           </div>
         </div>
@@ -869,8 +870,8 @@ function ShowcasePage() {
                 >
                   <div
                     style={{
-                      fontSize: 13,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.semibold,
                       color: "#fff",
                       flex: 1,
                       minWidth: 0,
@@ -921,8 +922,8 @@ function ShowcasePage() {
                         padding: "9px 14px",
                         border: "none",
                         cursor: "pointer",
-                        fontSize: 13,
-                        fontWeight: 700,
+                        fontSize: tokens.fontSize.base,
+                        fontWeight: tokens.fontWeight.bold,
                         background:
                           votes[playing.id] === "up" ? BLUE : "transparent",
                         color: votes[playing.id] === "up" ? "#fff" : BLUE,
@@ -950,8 +951,8 @@ function ShowcasePage() {
                         padding: "9px 14px",
                         border: "none",
                         cursor: "pointer",
-                        fontSize: 13,
-                        fontWeight: 700,
+                        fontSize: tokens.fontSize.base,
+                        fontWeight: tokens.fontWeight.bold,
                         background:
                           votes[playing.id] === "down" ? RED : "transparent",
                         color: votes[playing.id] === "down" ? "#fff" : "#6B6B6F",
@@ -983,8 +984,8 @@ function ShowcasePage() {
                       border: "none",
                       cursor: "pointer",
                       color: "#6B6B6F",
-                      fontSize: 13,
-                      fontWeight: 700,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.bold,
                       ...POPPINS,
                     }}
                   >
@@ -1001,7 +1002,7 @@ function ShowcasePage() {
                       marginLeft: "auto",
                       color: "#B0B0B5",
                       fontSize: 12.5,
-                      fontWeight: 600,
+                      fontWeight: tokens.fontWeight.semibold,
                       ...POPPINS,
                     }}
                   >
@@ -1081,9 +1082,9 @@ function ShowcasePage() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div
                         style={{
-                          fontSize: 10,
-                          fontWeight: 600,
-                          color: "#9CA3AF",
+                          fontSize: tokens.fontSize.xs,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.textMuted,
                           textTransform: "uppercase",
                           letterSpacing: "0.06em",
                           fontFamily: "Poppins, sans-serif",
@@ -1095,8 +1096,8 @@ function ShowcasePage() {
                       <div
                         style={{
                           fontSize: 12,
-                          fontWeight: 600,
-                          color: "#0B1F3A",
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.navy,
                           fontFamily: "Poppins, sans-serif",
                           whiteSpace: "nowrap",
                           overflow: "hidden",
@@ -1195,7 +1196,7 @@ function ShowcasePage() {
                         background: "#FEF3C7",
                         color: "#B45309",
                         fontSize: 8,
-                        fontWeight: 700,
+                        fontWeight: tokens.fontWeight.bold,
                         borderRadius: 8,
                         padding: "2px 6px",
                         ...POPPINS,
@@ -1211,7 +1212,7 @@ function ShowcasePage() {
                   <div
                     style={{
                       fontSize: 12,
-                      fontWeight: 700,
+                      fontWeight: tokens.fontWeight.bold,
                       color: NAVY,
                       display: "-webkit-box",
                       WebkitLineClamp: 2,
@@ -1228,7 +1229,7 @@ function ShowcasePage() {
                         display: "inline-block",
                         marginTop: 5,
                         fontSize: 9,
-                        fontWeight: 600,
+                        fontWeight: tokens.fontWeight.semibold,
                         color: RED,
                         background: "#FCE9E9",
                         borderRadius: 8,
@@ -1245,7 +1246,7 @@ function ShowcasePage() {
                       alignItems: "center",
                       gap: 12,
                       marginTop: 8,
-                      fontSize: 11,
+                      fontSize: tokens.fontSize.sm,
                       color: "#8A8A8E",
                       ...POPPINS,
                     }}
@@ -1263,8 +1264,8 @@ function ShowcasePage() {
                         padding: 0,
                         cursor: "pointer",
                         color: upvoted ? BLUE : "#8A8A8E",
-                        fontSize: 11,
-                        fontWeight: 600,
+                        fontSize: tokens.fontSize.sm,
+                        fontWeight: tokens.fontWeight.semibold,
                         ...POPPINS,
                       }}
                     >
@@ -1288,8 +1289,8 @@ function ShowcasePage() {
                         padding: 0,
                         cursor: "pointer",
                         color: "#8A8A8E",
-                        fontSize: 11,
-                        fontWeight: 600,
+                        fontSize: tokens.fontSize.sm,
+                        fontWeight: tokens.fontWeight.semibold,
                         ...POPPINS,
                       }}
                     >
@@ -1302,8 +1303,8 @@ function ShowcasePage() {
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 4,
-                        fontSize: 11,
-                        fontWeight: 600,
+                        fontSize: tokens.fontSize.sm,
+                        fontWeight: tokens.fontWeight.semibold,
                         color: "#8A8A8E",
                       }}
                     >
@@ -1358,8 +1359,8 @@ function ShowcasePage() {
               <div
                 style={{
                   color: "#000",
-                  fontSize: 16,
-                  fontWeight: 800,
+                  fontSize: tokens.fontSize.lg,
+                  fontWeight: tokens.fontWeight.extrabold,
                   ...POPPINS,
                 }}
               >
@@ -1375,7 +1376,7 @@ function ShowcasePage() {
                       borderRadius: 8,
                       padding: "5px 12px",
                       fontSize: 12,
-                      fontWeight: 700,
+                      fontWeight: tokens.fontWeight.bold,
                       border: "none",
                       cursor: "pointer",
                       background: commentSort === s ? BLUE : "#F2F2F7",
@@ -1416,7 +1417,7 @@ function ShowcasePage() {
                   style={{
                     textAlign: "center",
                     color: "#B0B0B5",
-                    fontSize: 13,
+                    fontSize: tokens.fontSize.base,
                     padding: "30px 0",
                     ...POPPINS,
                   }}
@@ -1494,7 +1495,7 @@ function ShowcasePage() {
                             justifyContent: "center",
                             color: "#fff",
                             fontSize: isReply ? 10.5 : 12,
-                            fontWeight: 700,
+                            fontWeight: tokens.fontWeight.bold,
                             ...POPPINS,
                           }}
                         >
@@ -1512,7 +1513,7 @@ function ShowcasePage() {
                             <span
                               style={{
                                 fontSize: isReply ? 12.5 : 13.5,
-                                fontWeight: 700,
+                                fontWeight: tokens.fontWeight.bold,
                                 color: "#000",
                                 ...POPPINS,
                               }}
@@ -1522,8 +1523,8 @@ function ShowcasePage() {
                             {isCreator && (
                               <span
                                 style={{
-                                  fontSize: 10,
-                                  fontWeight: 700,
+                                  fontSize: tokens.fontSize.xs,
+                                  fontWeight: tokens.fontWeight.bold,
                                   color: "#fff",
                                   background: BLUE,
                                   borderRadius: 999,
@@ -1537,8 +1538,8 @@ function ShowcasePage() {
                             {isMine && !isCreator && (
                               <span
                                 style={{
-                                  fontSize: 10,
-                                  fontWeight: 700,
+                                  fontSize: tokens.fontSize.xs,
+                                  fontWeight: tokens.fontWeight.bold,
                                   color: "#6B6B6F",
                                   background: "#F2F2F7",
                                   borderRadius: 999,
@@ -1550,7 +1551,7 @@ function ShowcasePage() {
                               </span>
                             )}
                             <span
-                              style={{ fontSize: 11, color: "#B0B0B5", ...POPPINS }}
+                              style={{ fontSize: tokens.fontSize.sm, color: "#B0B0B5", ...POPPINS }}
                             >
                               {timeAgo(c.created_at)}
                             </span>
@@ -1558,7 +1559,7 @@ function ShowcasePage() {
                           <div
                             style={{
                               fontSize: isReply ? 13.5 : 14,
-                              fontWeight: 400,
+                              fontWeight: tokens.fontWeight.regular,
                               color: NAVY,
                               marginTop: 3,
                               lineHeight: 1.4,
@@ -1569,7 +1570,7 @@ function ShowcasePage() {
                               <span
                                 style={{
                                   color: BLUE,
-                                  fontWeight: 600,
+                                  fontWeight: tokens.fontWeight.semibold,
                                   marginRight: 5,
                                 }}
                               >
@@ -1601,7 +1602,7 @@ function ShowcasePage() {
                                 background: liked ? "#E7F1FC" : "#F2F2F7",
                                 color: liked ? BLUE : "#6B6B6F",
                                 fontSize: 12,
-                                fontWeight: 600,
+                                fontWeight: tokens.fontWeight.semibold,
                                 ...POPPINS,
                               }}
                             >
@@ -1628,7 +1629,7 @@ function ShowcasePage() {
                                 background: "#F2F2F7",
                                 color: "#6B6B6F",
                                 fontSize: 12,
-                                fontWeight: 600,
+                                fontWeight: tokens.fontWeight.semibold,
                                 ...POPPINS,
                               }}
                             >
@@ -1723,7 +1724,7 @@ function ShowcasePage() {
                       borderRadius: 999,
                       padding: "7px 16px",
                       fontSize: 12.5,
-                      fontWeight: 700,
+                      fontWeight: tokens.fontWeight.bold,
                       ...POPPINS,
                     }}
                   >
@@ -1796,8 +1797,8 @@ function ShowcasePage() {
                   alignItems: "center",
                   justifyContent: "center",
                   color: "#fff",
-                  fontSize: 11,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.bold,
                   ...POPPINS,
                 }}
               >
@@ -1910,7 +1911,7 @@ function ShowcasePage() {
                     setReportReason(e.target.value ? e.target.value : "Other")
                   }
                   className="w-full bg-transparent focus:outline-none resize-none"
-                  style={{ fontSize: 16, color: NAVY, ...POPPINS }}
+                  style={{ fontSize: tokens.fontSize.lg, color: NAVY, ...POPPINS }}
                 />
               </SheetRow>
             </SheetGroup>
@@ -1940,7 +1941,7 @@ function ShowcasePage() {
               borderBottom: "0.5px solid #E4E8EF",
             }}
           >
-            <div style={{ fontSize: 16, fontWeight: 700, color: NAVY, ...POPPINS }}>
+            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: NAVY, ...POPPINS }}>
               Share a clip
             </div>
             <button
@@ -1952,7 +1953,7 @@ function ShowcasePage() {
                 border: "none",
                 padding: 0,
                 display: "flex",
-                color: "#6B7686",
+                color: tokens.textSecondary,
                 cursor: "pointer",
               }}
             >
@@ -2041,18 +2042,18 @@ function ShowcasePage() {
               >
                 <IconUpload size={48} color={RED} />
                 <div
-                  style={{ fontSize: 14, fontWeight: 600, color: NAVY, ...POPPINS }}
+                  style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY, ...POPPINS }}
                 >
                   Tap to select video
                 </div>
-                <div style={{ fontSize: 12, color: "#6B7686", ...POPPINS }}>
+                <div style={{ fontSize: 12, color: tokens.textSecondary, ...POPPINS }}>
                   MP4 or MOV · max 500MB
                 </div>
                 {videoFile && (
                   <div
                     style={{
                       fontSize: 12,
-                      fontWeight: 600,
+                      fontWeight: tokens.fontWeight.semibold,
                       color: "#16A34A",
                       marginTop: 4,
                       wordBreak: "break-all",
@@ -2108,8 +2109,8 @@ function ShowcasePage() {
                   <label
                     htmlFor="sc-thumb"
                     style={{
-                      fontSize: 13,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.semibold,
                       color: BLUE,
                       cursor: "pointer",
                       ...POPPINS,
@@ -2144,8 +2145,8 @@ function ShowcasePage() {
                 <div>
                   <div
                     style={{
-                      fontSize: 14,
-                      fontWeight: 600,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.semibold,
                       color: NAVY,
                       ...POPPINS,
                     }}
@@ -2153,7 +2154,7 @@ function ShowcasePage() {
                     Publish immediately
                   </div>
                   {!uploadPublished && (
-                    <div style={{ fontSize: 12, color: "#6B7686", ...POPPINS }}>
+                    <div style={{ fontSize: 12, color: tokens.textSecondary, ...POPPINS }}>
                       Save as draft
                     </div>
                   )}
@@ -2174,7 +2175,7 @@ function ShowcasePage() {
                 borderRadius: 8,
                 padding: "14px 16px",
                 fontSize: 15,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 cursor:
                   !videoFile || !uploadTitle.trim() || uploading
                     ? "not-allowed"

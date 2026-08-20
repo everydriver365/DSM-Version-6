@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { tokens } from "@/lib/tokens";
 
 const TIER_DISPLAY: Record<string, string> = {
   free: "Free",
@@ -37,18 +38,18 @@ function PreviewShell({
           alignItems: "center",
           justifyContent: "space-between",
           padding: "12px 14px",
-          background: "#0B1F3A",
+          background: tokens.navy,
           border: "none",
           cursor: "pointer",
           fontFamily: font,
         }}
       >
-        <span style={{ fontSize: 12, fontWeight: 700, color: "#fff", letterSpacing: 0.3 }}>
+        <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: "#fff", letterSpacing: 0.3 }}>
           {title}
         </span>
-        <span style={{ fontSize: 11, color: "#9FB6D4" }}>{open ? "Hide" : "Show"}</span>
+        <span style={{ fontSize: tokens.fontSize.sm, color: "#9FB6D4" }}>{open ? "Hide" : "Show"}</span>
       </button>
-      {open && <div style={{ padding: 14, background: "#EEF2F7" }}>{children}</div>}
+      {open && <div style={{ padding: 14, background: tokens.canvas }}>{children}</div>}
     </div>
   );
 }
@@ -62,7 +63,7 @@ function SavingBadge({ text }: { text?: string | null }) {
         background: "#F0FDF4",
         color: "#15803D",
         fontSize: 9,
-        fontWeight: 700,
+        fontWeight: tokens.fontWeight.bold,
         borderRadius: 8,
         padding: "2px 7px",
         marginTop: 4,
@@ -79,9 +80,9 @@ function TierBadge({ tier }: { tier?: string | null }) {
     <span
       style={{
         background: "#EFF6FF",
-        color: "#1877D6",
+        color: tokens.blue,
         fontSize: 9,
-        fontWeight: 700,
+        fontWeight: tokens.fontWeight.bold,
         borderRadius: 8,
         padding: "2px 7px",
       }}
@@ -132,9 +133,9 @@ function ListRow({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: 16,
-          fontWeight: 800,
-          color: "#0B1F3A",
+          fontSize: tokens.fontSize.lg,
+          fontWeight: tokens.fontWeight.extrabold,
+          color: tokens.navy,
           flexShrink: 0,
           overflow: "hidden",
         }}
@@ -146,10 +147,10 @@ function ListRow({
         )}
       </span>
       <span style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 600, color: "#0B1F3A" }}>
+        <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
           {title || "Untitled"}
         </div>
-        <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 2 }}>{subtitle}</div>
+        <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, marginTop: 2 }}>{subtitle}</div>
         <SavingBadge text={saving} />
       </span>
       <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3 }}>
@@ -158,8 +159,8 @@ function ListRow({
             style={{
               background: "#FEF3C7",
               color: "#B45309",
-              fontSize: 11,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.sm,
+              fontWeight: tokens.fontWeight.bold,
               borderRadius: 999,
               padding: "4px 10px",
             }}
@@ -213,23 +214,23 @@ export function PartnerPreview({ partner }: { partner: any }) {
           }}
         >
           {partner?.description && (
-            <div style={{ fontSize: 12, color: "#6B7686", lineHeight: 1.5 }}>
+            <div style={{ fontSize: 12, color: tokens.textSecondary, lineHeight: 1.5 }}>
               {partner.description}
             </div>
           )}
           {perks.map((p, i) => (
             <div
               key={i}
-              style={{ fontSize: 12, color: "#0B1F3A", marginTop: 8, display: "flex", gap: 8 }}
+              style={{ fontSize: 12, color: tokens.navy, marginTop: 8, display: "flex", gap: 8 }}
             >
-              <span style={{ color: "#1877D6" }}>•</span>
+              <span style={{ color: tokens.blue }}>•</span>
               <span>{p}</span>
             </div>
           ))}
         </div>
       )}
       {!partner?.active && (
-        <div style={{ fontSize: 11, color: "#CC2229", marginTop: 10, fontWeight: 600 }}>
+        <div style={{ fontSize: tokens.fontSize.sm, color: tokens.red, marginTop: 10, fontWeight: 600 }}>
           Inactive — this partner will be hidden on the public site.
         </div>
       )}
@@ -270,16 +271,16 @@ export function PerkPreview({ perk, partnerName }: { perk: any; partnerName?: st
           />
         )}
         <div style={{ padding: 14 }}>
-          <div style={{ fontSize: 15, fontWeight: 800, color: "#0B1F3A" }}>
+          <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy }}>
             {perk?.name || "Untitled perk"}
           </div>
           {perk?.description && (
-            <div style={{ fontSize: 12, color: "#6B7686", marginTop: 6, lineHeight: 1.5 }}>
+            <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 6, lineHeight: 1.5 }}>
               {perk.description}
             </div>
           )}
           {perk?.detail_text && (
-            <div style={{ fontSize: 12, color: "#6B7686", marginTop: 8, lineHeight: 1.5 }}>
+            <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 8, lineHeight: 1.5 }}>
               {perk.detail_text}
             </div>
           )}
@@ -289,9 +290,9 @@ export function PerkPreview({ perk, partnerName }: { perk: any; partnerName?: st
               {bullets.map((b, i) => (
                 <div
                   key={i}
-                  style={{ fontSize: 12, color: "#0B1F3A", marginTop: 6, display: "flex", gap: 8 }}
+                  style={{ fontSize: 12, color: tokens.navy, marginTop: 6, display: "flex", gap: 8 }}
                 >
-                  <span style={{ color: "#1877D6" }}>✓</span>
+                  <span style={{ color: tokens.blue }}>✓</span>
                   <span>{b}</span>
                 </div>
               ))}
@@ -324,8 +325,8 @@ export function PerkPreview({ perk, partnerName }: { perk: any; partnerName?: st
                   key={i}
                   style={{
                     fontSize: 12,
-                    color: "#1877D6",
-                    fontWeight: 600,
+                    color: tokens.blue,
+                    fontWeight: tokens.fontWeight.semibold,
                     marginTop: 6,
                     wordBreak: "break-all",
                   }}
@@ -339,13 +340,13 @@ export function PerkPreview({ perk, partnerName }: { perk: any; partnerName?: st
           <div
             style={{
               marginTop: 14,
-              background: "#1877D6",
+              background: tokens.blue,
               color: "#fff",
               borderRadius: 8,
               padding: "10px 16px",
               textAlign: "center",
-              fontSize: 13,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.bold,
             }}
           >
             {perk?.cta_label || "View perk"}
@@ -354,7 +355,7 @@ export function PerkPreview({ perk, partnerName }: { perk: any; partnerName?: st
       </div>
 
       {!perk?.active && (
-        <div style={{ fontSize: 11, color: "#CC2229", marginTop: 10, fontWeight: 600 }}>
+        <div style={{ fontSize: tokens.fontSize.sm, color: tokens.red, marginTop: 10, fontWeight: 600 }}>
           Inactive — this perk will be hidden on the public site.
         </div>
       )}

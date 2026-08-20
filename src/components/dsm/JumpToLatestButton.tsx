@@ -1,4 +1,5 @@
 import { useEffect, useState, type RefObject } from "react";
+import { tokens } from "@/lib/tokens";
 import { IconArrowDown } from "@tabler/icons-react";
 
 /**
@@ -54,10 +55,10 @@ export default function JumpToLatestButton({
         padding: "8px 14px",
         borderRadius: 999,
         border: "none",
-        background: "#0B1F3A",
+        background: tokens.navy,
         color: "#fff",
         fontSize: 12.5,
-        fontWeight: 700,
+        fontWeight: tokens.fontWeight.bold,
         boxShadow: "0 6px 18px rgba(11,31,58,0.28)",
         cursor: "pointer",
       }}

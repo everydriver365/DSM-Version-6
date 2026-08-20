@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { IconPlus, IconX } from "@tabler/icons-react";
@@ -99,7 +100,7 @@ function PipelinePage() {
           type="button"
           onClick={() => setAddOpen(true)}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
         >
           <IconPlus size={15} />
           Add lead
@@ -128,14 +129,14 @@ function PipelinePage() {
                     marginBottom: 8,
                   }}
                 >
-                  <span className="text-[13px] font-semibold" style={{ color: "#0B1F3A" }}>
+                  <span className="text-[13px] font-semibold" style={{ color: tokens.navy }}>
                     {s.label}
                   </span>
                   <span
                     className="text-[11px] font-medium"
                     style={{
-                      backgroundColor: "#EEF2F7",
-                      color: "#0B1F3A",
+                      backgroundColor: tokens.canvas,
+                      color: tokens.navy,
                       padding: "2px 8px",
                       borderRadius: 999,
                     }}
@@ -153,7 +154,7 @@ function PipelinePage() {
                     <div
                       className="text-[12px] text-center"
                       style={{
-                        color: "#9CA3AF",
+                        color: tokens.textMuted,
                         padding: "16px 8px",
                         border: "0.5px dashed #EEF2F7",
                         borderRadius: 8,
@@ -174,7 +175,7 @@ function PipelinePage() {
                         padding: 12,
                       }}
                     >
-                      <div className="text-[14px] font-semibold" style={{ color: "#0B1F3A" }}>
+                      <div className="text-[14px] font-semibold" style={{ color: tokens.navy }}>
                         {lead.name}
                       </div>
                       {lead.phone && (
@@ -183,7 +184,7 @@ function PipelinePage() {
                         </div>
                       )}
                       {lead.course_interest && (
-                        <div className="text-[12px] mt-1" style={{ color: "#0B1F3A" }}>
+                        <div className="text-[12px] mt-1" style={{ color: tokens.navy }}>
                           {lead.course_interest}
                         </div>
                       )}
@@ -191,7 +192,7 @@ function PipelinePage() {
                         className="inline-block mt-2 text-[10px] font-medium"
                         style={{
                           backgroundColor: "#EEF4FB",
-                          color: "#1877D6",
+                          color: tokens.blue,
                           padding: "2px 8px",
                           borderRadius: 999,
                         }}
@@ -272,7 +273,7 @@ function SheetShell({
             borderBottom: "0.5px solid #EEF2F7",
           }}
         >
-          <div className="text-[15px] font-semibold" style={{ color: "#0B1F3A" }}>
+          <div className="text-[15px] font-semibold" style={{ color: tokens.navy }}>
             {title}
           </div>
           <button
@@ -360,7 +361,7 @@ function AddLeadSheet({
             className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
             style={{
               border: "0.5px solid #EEF2F7",
-              color: "#0B1F3A",
+              color: tokens.navy,
               fontFamily: "Poppins, sans-serif",
             }}
           >
@@ -386,7 +387,7 @@ function AddLeadSheet({
             className="w-full rounded-lg px-3 py-2 text-[14px] bg-white"
             style={{
               border: "0.5px solid #EEF2F7",
-              color: "#0B1F3A",
+              color: tokens.navy,
               fontFamily: "Poppins, sans-serif",
               resize: "vertical",
             }}
@@ -519,7 +520,7 @@ function LeadDetailSheet({
             className="h-11 w-full rounded-lg px-3 text-[14px] bg-white"
             style={{
               border: "0.5px solid #EEF2F7",
-              color: "#0B1F3A",
+              color: tokens.navy,
               fontFamily: "Poppins, sans-serif",
             }}
           >
@@ -545,7 +546,7 @@ function LeadDetailSheet({
             className="w-full rounded-lg px-3 py-2 text-[14px] bg-white"
             style={{
               border: "0.5px solid #EEF2F7",
-              color: "#0B1F3A",
+              color: tokens.navy,
               fontFamily: "Poppins, sans-serif",
               resize: "vertical",
             }}

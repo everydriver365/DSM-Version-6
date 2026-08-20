@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PageHeader } from "@/components/dsm/PageHeader";
 import {
@@ -329,7 +330,7 @@ function FuelPage() {
       />
 
       {/* Tabs */}
-      <div style={{ display: "flex", background: "#FFFFFF", borderBottom: BORDER }}>
+      <div style={{ display: "flex", background: tokens.white, borderBottom: BORDER }}>
         {([
           { key: "find", label: "Find cheap fuel" },
           { key: "costs", label: "Fuel costs" },
@@ -346,8 +347,8 @@ function FuelPage() {
                 border: "none",
                 borderBottom: active ? "2px solid #1877D6" : "2px solid transparent",
                 color: active ? "#1877D6" : "#9CA3AF",
-                fontSize: 13,
-                fontWeight: 600,
+                fontSize: tokens.fontSize.base,
+                fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 ...POPPINS,
               }}
@@ -444,11 +445,11 @@ function FuelPage() {
                 width: "100%",
                 padding: "12px 14px",
                 background: NAVY,
-                color: "#FFFFFF",
+                color: tokens.white,
                 border: "none",
                 borderRadius: 8,
-                fontWeight: 600,
-                fontSize: 14,
+                fontWeight: tokens.fontWeight.semibold,
+                fontSize: tokens.fontSize.md,
                 cursor: "pointer",
                 opacity: saving ? 0.7 : 1,
                 ...POPPINS,
@@ -496,21 +497,21 @@ function FuelPage() {
                       alignItems: "center",
                       padding: "8px 0",
                       borderBottom: BORDER,
-                      fontSize: 13,
+                      fontSize: tokens.fontSize.base,
                     }}
                   >
                     <div>
-                      <div style={{ fontWeight: 600, color: NAVY }}>{l.name}</div>
-                      <div style={{ fontSize: 11, color: "#6B7280" }}>
+                      <div style={{ fontWeight: tokens.fontWeight.semibold, color: NAVY }}>{l.name}</div>
+                      <div style={{ fontSize: tokens.fontSize.sm, color: "#6B7280" }}>
                         {l.date} · ~{l.miles.toFixed(1)} mi
                       </div>
                     </div>
-                    <div style={{ fontWeight: 600, color: NAVY }}>£{l.cost.toFixed(2)}</div>
+                    <div style={{ fontWeight: tokens.fontWeight.semibold, color: NAVY }}>£{l.cost.toFixed(2)}</div>
                   </div>
                 ))}
               </div>
             )}
-            <div style={{ marginTop: 8, fontSize: 11, color: "#94A3B8", fontStyle: "italic" }}>
+            <div style={{ marginTop: 8, fontSize: tokens.fontSize.sm, color: "#94A3B8", fontStyle: "italic" }}>
               Based on estimated lesson mileage ({LESSON_AVG_SPEED_MPH} mph avg).
             </div>
           </section>
@@ -519,12 +520,12 @@ function FuelPage() {
           <section style={cardStyle({ mt: 12 })}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <SectionHeading title="Journey log" />
-              <Link to="/vehicle" style={{ fontSize: 12, color: "#1877D6", textDecoration: "none", fontWeight: 600 }}>
+              <Link to="/vehicle" style={{ fontSize: 12, color: tokens.blue, textDecoration: "none", fontWeight: 600 }}>
                 View all →
               </Link>
             </div>
             {journeys.length === 0 ? (
-              <div style={{ fontSize: 13, color: "#6B7280", marginTop: 8 }}>No journeys logged yet.</div>
+              <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280", marginTop: 8 }}>No journeys logged yet.</div>
             ) : (
               <div style={{ marginTop: 6 }}>
                 {journeys.map((j) => (
@@ -536,17 +537,17 @@ function FuelPage() {
                       alignItems: "center",
                       padding: "8px 0",
                       borderBottom: BORDER,
-                      fontSize: 13,
+                      fontSize: tokens.fontSize.base,
                     }}
                   >
                     <div>
-                      <div style={{ fontWeight: 600, color: NAVY }}>{j.trip_date || "—"}</div>
-                      <div style={{ fontSize: 11, color: "#6B7280" }}>{j.purpose || "Journey"}</div>
+                      <div style={{ fontWeight: tokens.fontWeight.semibold, color: NAVY }}>{j.trip_date || "—"}</div>
+                      <div style={{ fontSize: tokens.fontSize.sm, color: "#6B7280" }}>{j.purpose || "Journey"}</div>
                     </div>
                     <div style={{ textAlign: "right" }}>
-                      <div style={{ fontWeight: 600, color: NAVY }}>{Number(j.distance_miles || 0).toFixed(1)} mi</div>
+                      <div style={{ fontWeight: tokens.fontWeight.semibold, color: NAVY }}>{Number(j.distance_miles || 0).toFixed(1)} mi</div>
                       {j.fuel_cost != null && (
-                        <div style={{ fontSize: 11, color: "#6B7280" }}>£{Number(j.fuel_cost).toFixed(2)}</div>
+                        <div style={{ fontSize: tokens.fontSize.sm, color: "#6B7280" }}>£{Number(j.fuel_cost).toFixed(2)}</div>
                       )}
                     </div>
                   </div>
@@ -567,7 +568,7 @@ function pill(active: boolean): React.CSSProperties {
     padding: "6px 14px",
     borderRadius: 8,
     fontSize: 12,
-    fontWeight: 500,
+    fontWeight: tokens.fontWeight.medium,
     cursor: "pointer",
     background: active ? NAVY : "#FFFFFF",
     color: active ? "#FFFFFF" : NAVY,
@@ -740,7 +741,7 @@ function FindCheapFuel({
       {location ? (
         <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 10 }}>
           <IconMapPin size={12} color="#6B7686" stroke={1.8} />
-          <span style={{ fontSize: 11, color: "#6B7686" }}>Prices near {location}</span>
+          <span style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary }}>Prices near {location}</span>
         </div>
       ) : null}
 
@@ -753,14 +754,14 @@ function FindCheapFuel({
             style={{ animation: "spin 1s linear infinite" }}
           />
           <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
-          <div style={{ fontSize: 12, color: "#6B7686", marginTop: 8 }}>
+          <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 8 }}>
             Fetching live prices from Tesco, Asda, Shell and more...
           </div>
         </div>
       ) : error ? (
         <div style={{ textAlign: "center", padding: "36px 16px" }}>
           <IconAlertCircle size={24} color="#CC2229" stroke={1.8} />
-          <div style={{ fontSize: 13, color: "#CC2229", marginTop: 8 }}>{error}</div>
+          <div style={{ fontSize: tokens.fontSize.base, color: tokens.red, marginTop: 8 }}>{error}</div>
           <button
             onClick={retry}
             style={{
@@ -768,10 +769,10 @@ function FindCheapFuel({
               padding: "8px 18px",
               borderRadius: 8,
               border: "none",
-              background: "#1877D6",
-              color: "#FFFFFF",
-              fontSize: 13,
-              fontWeight: 600,
+              background: tokens.blue,
+              color: tokens.white,
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.semibold,
               cursor: "pointer",
               ...POPPINS,
             }}
@@ -794,9 +795,9 @@ function FindCheapFuel({
 
           <div
             style={{
-              fontSize: 10,
-              fontWeight: 600,
-              color: "#9CA3AF",
+              fontSize: tokens.fontSize.xs,
+              fontWeight: tokens.fontWeight.semibold,
+              color: tokens.textMuted,
               textTransform: "uppercase",
               margin: "12px 0 6px",
             }}
@@ -807,19 +808,19 @@ function FindCheapFuel({
           {stations.length === 0 ? (
             <div
               style={{
-                background: "#FFFFFF",
+                background: tokens.white,
                 border: BORDER,
                 borderRadius: 8,
                 padding: 16,
                 fontSize: 12,
-                color: "#6B7686",
+                color: tokens.textSecondary,
                 textAlign: "center",
               }}
             >
               No stations found within {radiusKm}km.
             </div>
           ) : (
-            <div style={{ background: "#FFFFFF", border: BORDER, borderRadius: 8, overflow: "hidden" }}>
+            <div style={{ background: tokens.white, border: BORDER, borderRadius: 8, overflow: "hidden" }}>
               {stations.map((s, i) => {
                 const bs = brandStyle(s?.brand || s?.name || "");
                 const initial = String(s?.brand || s?.name || "?").trim().charAt(0).toUpperCase();
@@ -852,8 +853,8 @@ function FindCheapFuel({
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          fontSize: 13,
-                          fontWeight: 600,
+                          fontSize: tokens.fontSize.base,
+                          fontWeight: tokens.fontWeight.semibold,
                           flexShrink: 0,
                         }}
                       >
@@ -863,7 +864,7 @@ function FindCheapFuel({
                         <div
                           style={{
                             fontSize: 12,
-                            fontWeight: 500,
+                            fontWeight: tokens.fontWeight.medium,
                             color: NAVY,
                             whiteSpace: one,
                             overflow: "hidden",
@@ -874,8 +875,8 @@ function FindCheapFuel({
                         </div>
                         <div
                           style={{
-                            fontSize: 11,
-                            color: "#6B7686",
+                            fontSize: tokens.fontSize.sm,
+                            color: tokens.textSecondary,
                             whiteSpace: one,
                             overflow: "hidden",
                             textOverflow: "ellipsis",
@@ -885,8 +886,8 @@ function FindCheapFuel({
                         </div>
                       </div>
                       <div style={{ textAlign: "right", flexShrink: 0 }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>{fmtPrice(s?.price)}</div>
-                        <div style={{ fontSize: 10, color: "#6B7686" }}>{fmtMiles(s)}</div>
+                        <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: NAVY }}>{fmtPrice(s?.price)}</div>
+                        <div style={{ fontSize: tokens.fontSize.xs, color: tokens.textSecondary }}>{fmtMiles(s)}</div>
                       </div>
                       <button
                         aria-label="Show opening hours"
@@ -897,7 +898,7 @@ function FindCheapFuel({
                         style={{ background: "none", border: "none", padding: 4, cursor: "pointer", flexShrink: 0 }}
                       >
                         {isLoadingThis ? (
-                          <span style={{ fontSize: 10, color: "#9CA3AF" }}>…</span>
+                          <span style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted }}>…</span>
                         ) : (
                           <IconClock size={14} color="#9CA3AF" stroke={1.8} />
                         )}
@@ -907,14 +908,14 @@ function FindCheapFuel({
                     {hours !== undefined && !isLoadingThis && (
                       <div style={{ padding: "0 14px 9px 56px" }}>
                         {hours === null ? (
-                          <div style={{ fontSize: 10, color: "#9CA3AF" }}>Hours not available</div>
+                          <div style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted }}>Hours not available</div>
                         ) : parsed && /open 24 hours/i.test(parsed.text) ? (
-                          <div style={{ fontSize: 10, fontWeight: 600, color: "#15803D" }}>● Open 24 hours</div>
+                          <div style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, color: "#15803D" }}>● Open 24 hours</div>
                         ) : (
-                          <div style={{ fontSize: 11, color: "#6B7686" }}>
+                          <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary }}>
                             <span
                               style={{
-                                fontWeight: 600,
+                                fontWeight: tokens.fontWeight.semibold,
                                 color: parsed?.open === false ? "#CC2229" : parsed?.open ? "#15803D" : "#6B7686",
                               }}
                             >
@@ -933,7 +934,7 @@ function FindCheapFuel({
             </div>
           )}
 
-          <div style={{ fontSize: 10, color: "#9CA3AF", textAlign: "center", padding: 16 }}>
+          <div style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted, textAlign: "center", padding: 16 }}>
             Prices sourced from CMA fuel price scheme · Updated daily
           </div>
         </>
@@ -955,13 +956,13 @@ function TopCard({
 }) {
   return (
     <div style={{ background: bg, border: `1px solid ${accent}`, borderRadius: 8, padding: 12, minWidth: 0 }}>
-      <div style={{ fontSize: 9, fontWeight: 600, color: accent, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+      <div style={{ fontSize: 9, fontWeight: tokens.fontWeight.semibold, color: accent, textTransform: "uppercase", letterSpacing: "0.06em" }}>
         {eyebrow}
       </div>
       <div
         style={{
-          fontSize: 13,
-          fontWeight: 600,
+          fontSize: tokens.fontSize.base,
+          fontWeight: tokens.fontWeight.semibold,
           color: NAVY,
           marginTop: 4,
           whiteSpace: "nowrap",
@@ -972,10 +973,10 @@ function TopCard({
         {stationTitle(s)}
       </div>
       <div style={{ marginTop: 4, display: "flex", alignItems: "baseline", gap: 3 }}>
-        <span style={{ fontSize: 28, fontWeight: 700, color: accent, lineHeight: 1 }}>{fmtPrice(s?.price)}</span>
-        <span style={{ fontSize: 12, color: "#6B7686" }}>/litre</span>
+        <span style={{ fontSize: tokens.fontSize.hero, fontWeight: tokens.fontWeight.bold, color: accent, lineHeight: 1 }}>{fmtPrice(s?.price)}</span>
+        <span style={{ fontSize: 12, color: tokens.textSecondary }}>/litre</span>
       </div>
-      <div style={{ fontSize: 11, color: "#6B7686", marginTop: 4 }}>{fmtMiles(s)}</div>
+      <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textSecondary, marginTop: 4 }}>{fmtMiles(s)}</div>
       <button
         onClick={() => openDirections(s?.lat, s?.lng)}
         style={{
@@ -984,8 +985,8 @@ function TopCard({
           border: "none",
           padding: 0,
           color: accent,
-          fontSize: 11,
-          fontWeight: 500,
+          fontSize: tokens.fontSize.sm,
+          fontWeight: tokens.fontWeight.medium,
           cursor: "pointer",
           ...POPPINS,
         }}
@@ -1000,7 +1001,7 @@ function TopCard({
 
 function cardStyle({ mt }: { mt: number }): React.CSSProperties {
   return {
-    background: "#FFFFFF",
+    background: tokens.white,
     border: BORDER,
     borderRadius: 8,
     padding: 16,
@@ -1015,8 +1016,8 @@ const inputStyle: React.CSSProperties = {
   padding: "10px 12px",
   border: BORDER,
   borderRadius: 8,
-  fontSize: 14,
-  background: "#FFFFFF",
+  fontSize: tokens.fontSize.md,
+  background: tokens.white,
   color: NAVY,
   ...POPPINS,
 };
@@ -1036,7 +1037,7 @@ function SectionHeading({ icon, title }: { icon?: React.ReactNode; title: string
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
       {icon}
-      <h2 style={{ fontSize: 14, fontWeight: 600, color: NAVY, margin: 0 }}>{title}</h2>
+      <h2 style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY, margin: 0 }}>{title}</h2>
     </div>
   );
 }
@@ -1044,8 +1045,8 @@ function SectionHeading({ icon, title }: { icon?: React.ReactNode; title: string
 function Stat({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
     <div style={{ background: "#F8FAFC", border: BORDER, borderRadius: 8, padding: 10 }}>
-      <div style={{ fontSize: 11, color: "#6B7280", fontWeight: 500 }}>{label}</div>
-      <div style={{ fontSize: 16, fontWeight: 700, color: color || NAVY, marginTop: 2 }}>{value}</div>
+      <div style={{ fontSize: tokens.fontSize.sm, color: "#6B7280", fontWeight: 500 }}>{label}</div>
+      <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: color || NAVY, marginTop: 2 }}>{value}</div>
     </div>
   );
 }

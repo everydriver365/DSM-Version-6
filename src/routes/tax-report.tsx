@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconCar, IconCurrencyPound, IconDownload, IconReceipt, IconTrendingUp } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -257,12 +258,12 @@ function TaxReportPage() {
   }
 
   const cardStyle = {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: tokens.white,
     borderRadius: 8,
     padding: 16,
     borderWidth: "0.5px",
     borderStyle: "solid" as const,
-    borderColor: "#EEF2F7",
+    borderColor: tokens.canvas,
   };
 
   return (
@@ -300,11 +301,11 @@ function TaxReportPage() {
           <IconCurrencyPound size={18} color="#1877D6" />
           <div className="text-[15px] font-semibold text-[#0B1F3A]">Income</div>
         </div>
-        <div className="mt-2 text-[26px] font-bold" style={{ color: "#1877D6" }}>
+        <div className="mt-2 text-[26px] font-bold" style={{ color: tokens.blue }}>
           £{fmt(totalIncome)}
         </div>
         <div className="mt-2 flex items-start gap-1.5 text-[11px] text-[#6B7280]">
-          <span style={{ color: "#1877D6" }}>ⓘ</span>
+          <span style={{ color: tokens.blue }}>ⓘ</span>
           <span>
             Earnings calculated using per-pupil custom rates and postcode pricing rules where
             applicable.
@@ -326,7 +327,7 @@ function TaxReportPage() {
           <IconReceipt size={18} color="#1877D6" />
           <div className="text-[15px] font-semibold text-[#0B1F3A]">Allowable expenses</div>
         </div>
-        <div className="mt-2 text-[26px] font-bold" style={{ color: "#1877D6" }}>
+        <div className="mt-2 text-[26px] font-bold" style={{ color: tokens.blue }}>
           £{fmt(expensesTotal)}
         </div>
         <div className="mt-3 space-y-1.5">
@@ -348,7 +349,7 @@ function TaxReportPage() {
           <IconTrendingUp size={18} color="#0B1F3A" />
           <div className="text-[15px] font-semibold text-[#0B1F3A]">Net profit</div>
         </div>
-        <div className="mt-2 text-[26px] font-bold" style={{ color: "#0B1F3A" }}>
+        <div className="mt-2 text-[26px] font-bold" style={{ color: tokens.navy }}>
           £{fmt(netProfit)}
         </div>
         <div className="mt-3 space-y-1.5">
@@ -366,7 +367,7 @@ function TaxReportPage() {
           <IconCar size={18} color="#1877D6" />
           <div className="text-[15px] font-semibold text-[#0B1F3A]">Mileage allowance</div>
         </div>
-        <div className="mt-2 text-[26px] font-bold" style={{ color: "#1877D6" }}>
+        <div className="mt-2 text-[26px] font-bold" style={{ color: tokens.blue }}>
           £{fmt(mileageAllowance)}
         </div>
         <div className="mt-3 space-y-1.5">
@@ -388,7 +389,7 @@ function TaxReportPage() {
       {/* SUMMARY */}
       <div
         style={{
-          backgroundColor: "#0B1F3A",
+          backgroundColor: tokens.navy,
           borderRadius: 8,
           marginLeft: 16,
           marginRight: 16,
@@ -409,7 +410,7 @@ function TaxReportPage() {
           type="button"
           onClick={downloadSummary}
           className="mt-4 w-full flex items-center justify-center gap-2 text-white text-[14px] font-semibold"
-          style={{ backgroundColor: "#1877D6", height: 44, borderRadius: 8}}
+          style={{ backgroundColor: tokens.blue, height: 44, borderRadius: 8}}
         >
           <IconDownload size={16} /> IconDownload summary
         </button>

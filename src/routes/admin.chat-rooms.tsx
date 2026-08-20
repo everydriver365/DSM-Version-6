@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconCheck, IconChevronLeft, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -28,7 +29,7 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
         left: 0,
         right: 0,
         zIndex: 40,
-        background: "#0B1F3A",
+        background: tokens.navy,
         color: "#fff",
         padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 16px",
         borderRadius: "0 0 8px 8px",
@@ -57,7 +58,7 @@ function AdminTopBar({ title, onBack }: { title: string; onBack: () => void }) {
       >
         <IconChevronLeft size={18} />
       </button>
-      <span style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.4px", color: "#fff" }}>{title}</span>
+      <span style={{ fontSize: 24, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.4px", color: "#fff" }}>{title}</span>
     </div>
   );
 }
@@ -67,7 +68,7 @@ const inputStyle: React.CSSProperties = {
   borderRadius: 8,
   border: "none",
   padding: "13px 15px",
-  fontSize: 14,
+  fontSize: tokens.fontSize.md,
   fontFamily: "Poppins, sans-serif",
   color: "#000",
   width: "100%",
@@ -88,8 +89,8 @@ function segmentStyle(active: boolean): React.CSSProperties {
     flex: 1,
     padding: "11px 4px",
     borderRadius: 8,
-    fontSize: 14,
-    fontWeight: 700,
+    fontSize: tokens.fontSize.md,
+    fontWeight: tokens.fontWeight.bold,
     textAlign: "center",
     border: "none",
     cursor: "pointer",
@@ -295,7 +296,7 @@ function AdminChatRooms() {
             boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
           }}
         >
-          <div style={{ fontSize: 17, fontWeight: 800, color: "#000", letterSpacing: "-0.2px", marginBottom: 2 }}>
+          <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.extrabold, color: "#000", letterSpacing: "-0.2px", marginBottom: 2 }}>
             Create room
           </div>
           <input
@@ -325,16 +326,16 @@ function AdminChatRooms() {
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               color: "#000",
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
               cursor: "pointer",
             }}
           >
             Opt-in only
             <DSMCheckbox checked={isOptIn} onChange={setIsOptIn} />
           </label>
-          {error && <div style={{ color: "#CC2229", fontSize: 13 }}>{error}</div>}
+          {error && <div style={{ color: tokens.red, fontSize: 13 }}>{error}</div>}
           <button
             type="submit"
             disabled={creating}
@@ -342,10 +343,10 @@ function AdminChatRooms() {
               width: "100%",
               padding: 15,
               borderRadius: 8,
-              background: "#1877D6",
+              background: tokens.blue,
               color: "#fff",
               border: "none",
-              fontWeight: 800,
+              fontWeight: tokens.fontWeight.extrabold,
               fontSize: 15,
               fontFamily: "Poppins, sans-serif",
               cursor: "pointer",
@@ -358,10 +359,10 @@ function AdminChatRooms() {
         </form>
 
         {/* List */}
-        <div style={{ fontSize: 19, fontWeight: 800, color: "#000", letterSpacing: "-0.3px", marginBottom: 12 }}>
+        <div style={{ fontSize: 19, fontWeight: tokens.fontWeight.extrabold, color: "#000", letterSpacing: "-0.3px", marginBottom: 12 }}>
           Existing rooms
           {filteredRooms.length ? (
-            <span style={{ fontSize: 15, fontWeight: 500, color: "#8A8A8E" }}> ({filteredRooms.length})</span>
+            <span style={{ fontSize: 15, fontWeight: tokens.fontWeight.medium, color: "#8A8A8E" }}> ({filteredRooms.length})</span>
           ) : null}
         </div>
 
@@ -378,7 +379,7 @@ function AdminChatRooms() {
               border: "none",
               borderRadius: 8,
               padding: "13px 16px",
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               fontFamily: "Poppins, sans-serif",
               color: "#000",
               width: "100%",
@@ -399,8 +400,8 @@ function AdminChatRooms() {
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              fontSize: 14,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.semibold,
               color: "#000",
               cursor: "pointer",
               background: "#fff",
@@ -438,18 +439,18 @@ function AdminChatRooms() {
               >
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 16.5, fontWeight: 800, color: "#000", letterSpacing: "-0.2px" }}>
+                    <div style={{ fontSize: 16.5, fontWeight: tokens.fontWeight.extrabold, color: "#000", letterSpacing: "-0.2px" }}>
                       {room.outcode}
                     </div>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: "#8A8A8E", marginTop: 4 }}>
+                    <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: "#8A8A8E", marginTop: 4 }}>
                       {room.area_name ? titleCase(room.area_name) : "—"}
                     </div>
                   </div>
                   <div
                     style={{
-                      fontSize: 11,
-                      fontWeight: 800,
-                      color: "#1877D6",
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.extrabold,
+                      color: tokens.blue,
                       background: "#E7F1FC",
                       borderRadius: 8,
                       padding: "5px 11px",
@@ -473,7 +474,7 @@ function AdminChatRooms() {
                   <span
                     style={{
                       fontSize: 10.5,
-                      fontWeight: 800,
+                      fontWeight: tokens.fontWeight.extrabold,
                       textTransform: "uppercase",
                       color: room.room_type === "uk" ? "#1877D6" : "#248A3D",
                       background: room.room_type === "uk" ? "#E7F1FC" : "#E6F7EC",
@@ -487,7 +488,7 @@ function AdminChatRooms() {
                     <span
                       style={{
                         fontSize: 11.5,
-                        fontWeight: 800,
+                        fontWeight: tokens.fontWeight.extrabold,
                         color: "#B45309",
                         background: "#FEF3C7",
                         borderRadius: 999,
@@ -515,7 +516,7 @@ function AdminChatRooms() {
                       background: "#fff",
                       color: "#FF3B30",
                       fontSize: 12.5,
-                      fontWeight: 700,
+                      fontWeight: tokens.fontWeight.bold,
                       fontFamily: "Poppins, sans-serif",
                       cursor: "pointer",
                       opacity: deletingId === room.id ? 0.6 : 1,

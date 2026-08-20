@@ -1,4 +1,5 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -275,11 +276,11 @@ function IntakeQuestionsPage() {
   return (
     <DSMTopSheet title="Intake Questions"
       onBack={() => navigate({ to: "/settings" as never })}>
-      <div style={{ minHeight: "100vh", backgroundColor: "#FFFFFF", ...POPPINS }}>
+      <div style={{ minHeight: "100vh", backgroundColor: tokens.white, ...POPPINS }}>
       {/* Action bar */}
       <div
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           padding: "8px 16px",
           display: "flex",
           justifyContent: "flex-end",
@@ -295,13 +296,13 @@ function IntakeQuestionsPage() {
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
-            backgroundColor: "#1877D6",
-            color: "#FFFFFF",
+            backgroundColor: tokens.blue,
+            color: tokens.white,
             border: "none",
             borderRadius: 999,
             padding: "8px 14px",
-            fontSize: 13,
-            fontWeight: 600,
+            fontSize: tokens.fontSize.base,
+            fontWeight: tokens.fontWeight.semibold,
             cursor: "pointer",
             ...POPPINS,
           }}
@@ -324,7 +325,7 @@ function IntakeQuestionsPage() {
         }}
       >
         <IconClipboardList stroke={1.5} size={20} color="#1877D6" style={{ flexShrink: 0, marginTop: 2 }} />
-        <div style={{ fontSize: 13, lineHeight: 1.5, color: "#0B1F3A" }}>
+        <div style={{ fontSize: tokens.fontSize.base, lineHeight: 1.5, color: tokens.navy }}>
           These questions are shown to new pupils when they register or book for the first
           time. Use them to gather important information upfront.
         </div>
@@ -335,8 +336,8 @@ function IntakeQuestionsPage() {
         <div style={{ margin: "12px 16px" }}>
           <div
             style={{
-              fontSize: 11,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.sm,
+              fontWeight: tokens.fontWeight.semibold,
               letterSpacing: 0.5,
               color: "#6B7280",
               marginBottom: 8,
@@ -348,7 +349,7 @@ function IntakeQuestionsPage() {
             <div
               key={i}
               style={{
-                backgroundColor: "#FFFFFF",
+                backgroundColor: tokens.white,
                 border: "0.5px solid #EEF2F7",
                 borderRadius: 8,
                 padding: "12px 14px",
@@ -358,20 +359,20 @@ function IntakeQuestionsPage() {
                 gap: 12,
               }}
             >
-              <div style={{ flex: 1, fontSize: 14, color: "#0B1F3A" }}>{s.text}</div>
+              <div style={{ flex: 1, fontSize: tokens.fontSize.md, color: tokens.navy }}>{s.text}</div>
               <button
                 onClick={() => addStarter(s)}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 4,
-                  background: "#0B1F3A",
-                  color: "#FFFFFF",
+                  background: tokens.navy,
+                  color: tokens.white,
                   border: "none",
                   borderRadius: 8,
                   padding: "6px 10px",
                   fontSize: 12,
-                  fontWeight: 600,
+                  fontWeight: tokens.fontWeight.semibold,
                   cursor: "pointer",
                   ...POPPINS,
                 }}
@@ -399,7 +400,7 @@ function IntakeQuestionsPage() {
                 dragId.current = null;
               }}
               style={{
-                backgroundColor: "#FFFFFF",
+                backgroundColor: tokens.white,
                 border: "0.5px solid #EEF2F7",
                 borderRadius: 8,
                 padding: "14px 16px",
@@ -412,7 +413,7 @@ function IntakeQuestionsPage() {
             >
               <div
                 style={{
-                  color: "#9CA3AF",
+                  color: tokens.textMuted,
                   cursor: "grab",
                   paddingTop: 2,
                   touchAction: "none",
@@ -423,9 +424,9 @@ function IntakeQuestionsPage() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: "#0B1F3A",
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.navy,
                     marginBottom: 6,
                   }}
                 >
@@ -434,12 +435,12 @@ function IntakeQuestionsPage() {
                 <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
                   <span
                     style={{
-                      fontSize: 11,
+                      fontSize: tokens.fontSize.sm,
                       padding: "2px 8px",
                       borderRadius: 8,
                       backgroundColor: "#EEF2FF",
-                      color: "#1877D6",
-                      fontWeight: 500,
+                      color: tokens.blue,
+                      fontWeight: tokens.fontWeight.medium,
                     }}
                   >
                     {TYPE_LABEL[q.type]}
@@ -447,12 +448,12 @@ function IntakeQuestionsPage() {
                   {q.required && (
                     <span
                       style={{
-                        fontSize: 11,
+                        fontSize: tokens.fontSize.sm,
                         padding: "2px 8px",
                         borderRadius: 8,
                         backgroundColor: "#FEECEE",
-                        color: "#1877D6",
-                        fontWeight: 500,
+                        color: tokens.blue,
+                        fontWeight: tokens.fontWeight.medium,
                       }}
                     >
                       Required
@@ -473,9 +474,9 @@ function IntakeQuestionsPage() {
                     style={{
                       background: "transparent",
                       border: "none",
-                      color: "#1877D6",
-                      fontSize: 13,
-                      fontWeight: 500,
+                      color: tokens.blue,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.medium,
                       cursor: "pointer",
                       display: "inline-flex",
                       alignItems: "center",
@@ -490,9 +491,9 @@ function IntakeQuestionsPage() {
                     style={{
                       background: "transparent",
                       border: "none",
-                      color: "#1877D6",
-                      fontSize: 13,
-                      fontWeight: 500,
+                      color: tokens.blue,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.medium,
                       cursor: "pointer",
                       display: "inline-flex",
                       alignItems: "center",
@@ -547,7 +548,7 @@ function IntakeQuestionsPage() {
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: tokens.white,
               borderRadius: 8,
               padding: 20,
               maxWidth: 380,
@@ -555,10 +556,10 @@ function IntakeQuestionsPage() {
               ...POPPINS,
             }}
           >
-            <div style={{ fontSize: 16, fontWeight: 600, color: "#0B1F3A", marginBottom: 8 }}>
+            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, marginBottom: 8 }}>
               Delete this question?
             </div>
-            <div style={{ fontSize: 13, color: "#6B7280", marginBottom: 16 }}>
+            <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280", marginBottom: 16 }}>
               {confirmDelete.question}
             </div>
             <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
@@ -568,9 +569,9 @@ function IntakeQuestionsPage() {
                   padding: "8px 14px",
                   borderRadius: 8,
                   border: "1px solid #EEF2F7",
-                  background: "#FFFFFF",
-                  color: "#0B1F3A",
-                  fontWeight: 500,
+                  background: tokens.white,
+                  color: tokens.navy,
+                  fontWeight: tokens.fontWeight.medium,
                   cursor: "pointer",
                   ...POPPINS,
                 }}
@@ -583,9 +584,9 @@ function IntakeQuestionsPage() {
                   padding: "8px 14px",
                   borderRadius: 8,
                   border: "none",
-                  background: "#1877D6",
-                  color: "#FFFFFF",
-                  fontWeight: 600,
+                  background: tokens.blue,
+                  color: tokens.white,
+                  fontWeight: tokens.fontWeight.semibold,
                   cursor: "pointer",
                   ...POPPINS,
                 }}
@@ -632,7 +633,7 @@ function Toggle({
           width: 20,
           height: 20,
           borderRadius: "50%",
-          backgroundColor: "#FFFFFF",
+          backgroundColor: tokens.white,
           transition: "left 0.15s",
         }}
       />
@@ -722,8 +723,8 @@ function QuestionSheet({
   return (
     <div>
           {/* Question text */}
-          <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>
-            Question <span style={{ color: "#1877D6" }}>*</span>
+          <label style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#374151" }}>
+            Question <span style={{ color: tokens.blue }}>*</span>
           </label>
           <div style={{ position: "relative", marginTop: 6, marginBottom: 16 }}>
             <textarea
@@ -736,10 +737,10 @@ function QuestionSheet({
                 border: "1px solid #EEF2F7",
                 borderRadius: 8,
                 padding: "10px 40px 10px 12px",
-                fontSize: 14,
+                fontSize: tokens.fontSize.md,
                 fontFamily: "Poppins, sans-serif",
                 resize: "vertical",
-                color: "#0B1F3A",
+                color: tokens.navy,
                 outline: "none",
               }}
             />
@@ -764,7 +765,7 @@ function QuestionSheet({
           </div>
 
           {/* Type */}
-          <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>Answer type</label>
+          <label style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#374151" }}>Answer type</label>
           <select
             value={type}
             onChange={(e) => setType(e.target.value as QType)}
@@ -775,10 +776,10 @@ function QuestionSheet({
               border: "1px solid #EEF2F7",
               borderRadius: 8,
               padding: "10px 12px",
-              fontSize: 14,
+              fontSize: tokens.fontSize.md,
               fontFamily: "Poppins, sans-serif",
-              backgroundColor: "#FFFFFF",
-              color: "#0B1F3A",
+              backgroundColor: tokens.white,
+              color: tokens.navy,
               outline: "none",
             }}
           >
@@ -791,7 +792,7 @@ function QuestionSheet({
           {/* Options */}
           {type === "multiple_choice" && (
             <div style={{ marginBottom: 16 }}>
-              <label style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>
+              <label style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#374151" }}>
                 Options (up to 6)
               </label>
               <div style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 8 }}>
@@ -810,9 +811,9 @@ function QuestionSheet({
                         border: "1px solid #EEF2F7",
                         borderRadius: 8,
                         padding: "8px 12px",
-                        fontSize: 14,
+                        fontSize: tokens.fontSize.md,
                         fontFamily: "Poppins, sans-serif",
-                        color: "#0B1F3A",
+                        color: tokens.navy,
                         outline: "none",
                       }}
                     />
@@ -823,7 +824,7 @@ function QuestionSheet({
                         style={{
                           background: "transparent",
                           border: "none",
-                          color: "#1877D6",
+                          color: tokens.blue,
                           cursor: "pointer",
                           padding: 4,
                         }}
@@ -841,11 +842,11 @@ function QuestionSheet({
                     marginTop: 8,
                     background: "transparent",
                     border: "1px dashed #BFDBFE",
-                    color: "#1877D6",
+                    color: tokens.blue,
                     borderRadius: 8,
                     padding: "8px 12px",
-                    fontSize: 13,
-                    fontWeight: 500,
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.medium,
                     cursor: "pointer",
                     display: "inline-flex",
                     alignItems: "center",
@@ -872,7 +873,7 @@ function QuestionSheet({
             }}
           >
             <div>
-              <div style={{ fontSize: 14, fontWeight: 500, color: "#0B1F3A" }}>
+              <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: tokens.navy }}>
                 Required
               </div>
               <div style={{ fontSize: 12, color: "#6B7280" }}>
@@ -889,11 +890,11 @@ function QuestionSheet({
               width: "100%",
               height: 48,
               borderRadius: 8,
-              backgroundColor: "#0B1F3A",
-              color: "#FFFFFF",
+              backgroundColor: tokens.navy,
+              color: tokens.white,
               border: "none",
               fontSize: 15,
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
               cursor: saving ? "not-allowed" : "pointer",
               opacity: saving ? 0.6 : 1,
               fontFamily: "Poppins, sans-serif",

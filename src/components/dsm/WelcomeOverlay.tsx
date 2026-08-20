@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { IconCalendar, IconChevronRight, IconClock, IconUsers } from "@tabler/icons-react";
@@ -98,15 +99,15 @@ export function WelcomeOverlay({ userId, instructorName, onDismiss }: WelcomeOve
         position: "fixed",
         inset: 0,
         zIndex: 9999,
-        background: "#0B1F3A",
+        background: tokens.navy,
         overflowY: "auto",
         paddingTop: "env(safe-area-inset-top, 0px)",
       }}
     >
       {/* HEADER */}
       <div style={{ padding: "32px 24px 0" }}>
-        <div style={{ color: "#fff", fontSize: 28, fontWeight: 800, letterSpacing: -0.5 }}>DSM</div>
-        <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 2 }}>by EveryDriver</div>
+        <div style={{ color: "#fff", fontSize: tokens.fontSize.hero, fontWeight: tokens.fontWeight.extrabold, letterSpacing: -0.5 }}>DSM</div>
+        <div style={{ fontSize: tokens.fontSize.base, color: "rgba(255,255,255,0.5)", marginTop: 2 }}>by EveryDriver</div>
       </div>
 
       {/* HERO */}
@@ -125,10 +126,10 @@ export function WelcomeOverlay({ userId, instructorName, onDismiss }: WelcomeOve
         >
           <IconRocket size={40} color="#fff" />
         </div>
-        <div style={{ fontSize: 24, fontWeight: 700, color: "#fff", marginTop: 16 }}>
+        <div style={{ fontSize: 24, fontWeight: tokens.fontWeight.bold, color: "#fff", marginTop: 16 }}>
           {`Welcome${firstName ? ", " + firstName : ""}!`}
         </div>
-        <div style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>
+        <div style={{ fontSize: tokens.fontSize.md, color: "rgba(255,255,255,0.6)", marginTop: 8 }}>
           You're all set up. Here's what to do first.
         </div>
       </div>
@@ -169,7 +170,7 @@ export function WelcomeOverlay({ userId, instructorName, onDismiss }: WelcomeOve
               {s.icon}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>{s.title}</div>
+              <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: "#fff" }}>{s.title}</div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 2 }}>{s.subtitle}</div>
             </div>
             <IconChevronRight stroke={1.5} size={16} color="rgba(255,255,255,0.3)" />
@@ -193,12 +194,12 @@ export function WelcomeOverlay({ userId, instructorName, onDismiss }: WelcomeOve
             ...POPPINS,
             width: "100%",
             padding: 15,
-            background: "#1877D6",
+            background: tokens.blue,
             color: "#fff",
             borderRadius: 8,
             border: "none",
-            fontSize: 16,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.lg,
+            fontWeight: tokens.fontWeight.bold,
             cursor: "pointer",
           }}
         >
@@ -210,8 +211,8 @@ export function WelcomeOverlay({ userId, instructorName, onDismiss }: WelcomeOve
           disabled={dismissing}
           style={{
             ...POPPINS,
-            fontSize: 13,
-            color: "#6B7686",
+            fontSize: tokens.fontSize.base,
+            color: tokens.textSecondary,
             background: "none",
             border: "none",
             cursor: "pointer",

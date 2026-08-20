@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconBackspace, IconCashBanknote, IconChevronDown, IconChevronLeft, IconCircleCheck, IconCopy, IconCreditCard, IconQrcode, IconShare, IconX } from "@tabler/icons-react";
 import { QRCodeSVG } from "qrcode.react";
@@ -375,7 +376,7 @@ function TakePaymentPage() {
     textAlign: "center",
     color: NAVY,
     fontSize: 24,
-    fontWeight: 800,
+    fontWeight: tokens.fontWeight.extrabold,
     fontVariantNumeric: "tabular-nums",
     boxShadow: "0 3px 0 #E4E4E8",
     cursor: "pointer",
@@ -429,7 +430,7 @@ function TakePaymentPage() {
             flex: 1,
             textAlign: "center",
             fontSize: 19,
-            fontWeight: 800,
+            fontWeight: tokens.fontWeight.extrabold,
             letterSpacing: "-0.3px",
             color: "#fff",
           }}
@@ -510,8 +511,8 @@ function TakePaymentPage() {
                 border: "none",
                 outline: "none",
                 background: "transparent",
-                fontSize: 14,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.bold,
                 color: NAVY,
                 paddingRight: 16,
                 textOverflow: "ellipsis",
@@ -539,8 +540,8 @@ function TakePaymentPage() {
               minWidth: 0,
               border: "none",
               outline: "none",
-              fontSize: 14,
-              fontWeight: 500,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.medium,
               color: NAVY,
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
@@ -564,8 +565,8 @@ function TakePaymentPage() {
                 border: "none",
                 outline: "none",
                 background: "transparent",
-                fontSize: 14,
-                fontWeight: 800,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.extrabold,
                 color: NAVY,
                 textAlign: "center",
                 padding: 0,
@@ -576,7 +577,7 @@ function TakePaymentPage() {
                 textAlign: "center",
                 color: "#B0B0B5",
                 fontSize: 9.5,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 marginTop: 2,
               }}
             >
@@ -620,8 +621,8 @@ function TakePaymentPage() {
                   border: "none",
                   background: active ? NAVY : "transparent",
                   color: active ? "#fff" : "#8A8A8E",
-                  fontSize: 13,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.bold,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -680,8 +681,8 @@ function TakePaymentPage() {
                     background: NAVY,
                     color: "#fff",
                     border: "none",
-                    fontSize: 16,
-                    fontWeight: 800,
+                    fontSize: tokens.fontSize.lg,
+                    fontWeight: tokens.fontWeight.extrabold,
                     boxShadow: "0 4px 0 #050D1C",
                     opacity: qrGenerating ? 0.7 : 1,
                     cursor: "pointer",
@@ -707,8 +708,8 @@ function TakePaymentPage() {
                   background: NAVY,
                   color: "#fff",
                   border: "none",
-                  fontSize: 16,
-                  fontWeight: 800,
+                  fontSize: tokens.fontSize.lg,
+                  fontWeight: tokens.fontWeight.extrabold,
                   boxShadow: "0 4px 0 #050D1C",
                   opacity: cardLoading ? 0.7 : 1,
                   cursor: "pointer",
@@ -716,7 +717,7 @@ function TakePaymentPage() {
               >
                 {cardLoading ? "Loading…" : `Pay by card with Square · £${amountNum.toFixed(2)}`}
               </button>
-              <div style={{ textAlign: "center", color: "#9CA3AF", fontSize: 13, marginTop: 12 }}>
+              <div style={{ textAlign: "center", color: tokens.textMuted, fontSize: tokens.fontSize.base, marginTop: 12 }}>
                 Opens a secure Square checkout page
               </div>
             </div>
@@ -766,8 +767,8 @@ function TakePaymentPage() {
                       border: "none",
                       outline: "none",
                       background: "transparent",
-                      fontSize: 14,
-                      fontWeight: 700,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.bold,
                       color: NAVY,
                       paddingRight: 16,
                     }}
@@ -788,8 +789,8 @@ function TakePaymentPage() {
                     background: NAVY,
                     color: "#fff",
                     border: "none",
-                    fontSize: 16,
-                    fontWeight: 800,
+                    fontSize: tokens.fontSize.lg,
+                    fontWeight: tokens.fontWeight.extrabold,
                     boxShadow: "0 4px 0 #050D1C",
                     opacity: cashSaving ? 0.7 : 1,
                     cursor: "pointer",
@@ -825,7 +826,7 @@ function TakePaymentPage() {
                 width: 72,
                 height: 72,
                 borderRadius: "50%",
-                background: "#1877D6",
+                background: tokens.blue,
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -836,8 +837,8 @@ function TakePaymentPage() {
             </div>
             <div
               style={{
-                fontSize: 18,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.xl,
+                fontWeight: tokens.fontWeight.bold,
                 color: NAVY,
                 textAlign: "center",
               }}
@@ -846,9 +847,9 @@ function TakePaymentPage() {
             </div>
             <div
               style={{
-                fontSize: 14,
-                fontWeight: 500,
-                color: "#1877D6",
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.medium,
+                color: tokens.blue,
                 textAlign: "center",
               }}
             >
@@ -906,8 +907,8 @@ function TakePaymentPage() {
               color: "#fff",
             }}
           >
-            <div style={{ fontSize: 16, fontWeight: 500, opacity: 0.85 }}>Scan to pay</div>
-            <div style={{ fontSize: 40, fontWeight: 700, marginTop: 4, lineHeight: 1.05 }}>
+            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.medium, opacity: 0.85 }}>Scan to pay</div>
+            <div style={{ fontSize: 40, fontWeight: tokens.fontWeight.bold, marginTop: 4, lineHeight: 1.05 }}>
               £{amountNum.toFixed(2)}
             </div>
             {(pupilName || description) && (
@@ -916,7 +917,7 @@ function TakePaymentPage() {
                   <div style={{ fontSize: 15, fontWeight: 600 }}>{pupilName}</div>
                 )}
                 {description && (
-                  <div style={{ fontSize: 13, opacity: 0.8, marginTop: 2 }}>{description}</div>
+                  <div style={{ fontSize: tokens.fontSize.base, opacity: 0.8, marginTop: 2 }}>{description}</div>
                 )}
               </div>
             )}
@@ -950,8 +951,8 @@ function TakePaymentPage() {
             {intentPaid ? (
               <div
                 style={{
-                  fontSize: 14,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.bold,
                   color: "#fff",
                   display: "inline-flex",
                   alignItems: "center",
@@ -987,8 +988,8 @@ function TakePaymentPage() {
                 background: "#fff",
                 color: NAVY,
                 border: "none",
-                fontSize: 14,
-                fontWeight: 600,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.semibold,
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -1009,8 +1010,8 @@ function TakePaymentPage() {
                 background: "transparent",
                 color: "#fff",
                 border: "1px solid rgba(255,255,255,0.4)",
-                fontSize: 14,
-                fontWeight: 500,
+                fontSize: tokens.fontSize.md,
+                fontWeight: tokens.fontWeight.medium,
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",

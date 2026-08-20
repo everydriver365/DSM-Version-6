@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState } from "react";
 import { IconAlertTriangle, IconApple, IconBell, IconBriefcase, IconCalendar, IconCamera, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconCreditCard, IconDeviceMobile, IconExternalLink, IconLoader2, IconMail, IconPhoto, IconPuzzle, IconShield, IconTrash, IconUser } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -39,13 +40,13 @@ const SECTION_META: {
   icon: React.ComponentType<{ size?: number; color?: string }>;
   iconColor: string;
 }[] = [
-  { key: "personal", label: "Personal", icon: IconUser, iconColor: "#1877D6" },
-  { key: "business", label: "Business", icon: IconBriefcase, iconColor: "#1877D6" },
-  { key: "vehicle", label: "Vehicle", icon: IconCar, iconColor: "#1877D6" },
-  { key: "notifications", label: "Notifications", icon: IconBell, iconColor: "#1877D6" },
-  { key: "security", label: "Security", icon: IconShield, iconColor: "#1877D6" },
-  { key: "integrations", label: "Integrations", icon: IconPuzzle, iconColor: "#1877D6" },
-  { key: "danger", label: "Danger zone", icon: IconAlertTriangle, iconColor: "#1877D6" },
+  { key: "personal", label: "Personal", icon: IconUser, iconColor: tokens.blue },
+  { key: "business", label: "Business", icon: IconBriefcase, iconColor: tokens.blue },
+  { key: "vehicle", label: "Vehicle", icon: IconCar, iconColor: tokens.blue },
+  { key: "notifications", label: "Notifications", icon: IconBell, iconColor: tokens.blue },
+  { key: "security", label: "Security", icon: IconShield, iconColor: tokens.blue },
+  { key: "integrations", label: "Integrations", icon: IconPuzzle, iconColor: tokens.blue },
+  { key: "danger", label: "Danger zone", icon: IconAlertTriangle, iconColor: tokens.blue },
 ];
 
 const NOTIF_EVENTS: { key: string; label: string }[] = [
@@ -233,7 +234,7 @@ function VerifiedPill() {
   return (
     <span
       className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium"
-      style={{ backgroundColor: "#EEF2F7", color: "#0B1F3A", ...POPPINS }}
+      style={{ backgroundColor: tokens.canvas, color: tokens.navy, ...POPPINS }}
     >
       <IconCheck stroke={1.5} size={11} color="#0B1F3A" /> Verified
     </span>
@@ -786,7 +787,7 @@ function ProfilePage() {
           onClick={saveAll}
           disabled={saving || loading}
           className="inline-flex items-center text-[13px] font-semibold disabled:opacity-50"
-          style={{ height: 34, padding: "0 14px", borderRadius: 8, border: "none", background: "#1877D6", color: "#FFFFFF" }}
+          style={{ height: 34, padding: "0 14px", borderRadius: 8, border: "none", background: tokens.blue, color: tokens.white }}
         >
           {saving ? "Saving…" : "Save"}
         </button>
@@ -823,7 +824,7 @@ function ProfilePage() {
                 style={{
                   width: 26,
                   height: 26,
-                  backgroundColor: "#FFFFFF",
+                  backgroundColor: tokens.white,
                   border: "1px solid #EEF2F7",
                 }}
               >
@@ -842,7 +843,7 @@ function ProfilePage() {
               onClick={() => fileRef.current?.click()}
               disabled={uploading}
               className="mt-2 inline-flex items-center gap-1.5 text-[13px] disabled:opacity-50"
-              style={{ color: "#1877D6", ...POPPINS }}
+              style={{ color: tokens.blue, ...POPPINS }}
             >
               {uploading ? "Uploading…" : imageUrl ? "Change photo" : "Upload photo"}
             </button>
@@ -973,7 +974,7 @@ function ProfilePage() {
               type="button"
               onClick={() => dbsRef.current?.click()}
               className="w-full flex items-center justify-between rounded-lg px-3 py-2 bg-white text-left"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
             >
               <span className="flex items-center gap-2 text-[14px]" style={POPPINS}>
                 {dbsUploaded ? (
@@ -988,7 +989,7 @@ function ProfilePage() {
                   </>
                 )}
               </span>
-              <span className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
+              <span className="text-[13px]" style={{ color: tokens.blue, ...POPPINS }}>
                 {dbsUploaded ? "Replace" : "Upload"}
               </span>
             </button>
@@ -1000,7 +1001,7 @@ function ProfilePage() {
             </label>
             <div
               className="rounded-lg bg-white px-2 py-2 flex flex-wrap gap-2"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7", minHeight: 44 }}
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas, minHeight: 44 }}
             >
               {coverageAreas.length === 0 ? (
                 <span className="text-[13px] text-[#6B7280] px-1 py-1" style={POPPINS}>
@@ -1014,7 +1015,7 @@ function ProfilePage() {
                     <span
                       key={a.id}
                       className="inline-flex items-center px-2 py-1 rounded-full text-[12px]"
-                      style={{ backgroundColor: "#E0ECFA", color: "#0B1F3A", ...POPPINS }}
+                      style={{ backgroundColor: "#E0ECFA", color: tokens.navy, ...POPPINS }}
                     >
                       {label} — {radius}mi
                     </span>
@@ -1025,7 +1026,7 @@ function ProfilePage() {
             <Link
               to="/coverage-areas"
               className="inline-block mt-2 text-[13px]"
-              style={{ color: "#1877D6", ...POPPINS }}
+              style={{ color: tokens.blue, ...POPPINS }}
             >
               Manage coverage areas
             </Link>
@@ -1037,7 +1038,7 @@ function ProfilePage() {
             </label>
             <div
               className="rounded-lg bg-white overflow-hidden"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
             >
               {logoUrl ? (
                 <>
@@ -1154,7 +1155,7 @@ function ProfilePage() {
                     onClick={() => vehiclePhotoRef.current?.click()}
                     disabled={uploadingVehicle}
                     className="text-[13px] disabled:opacity-50"
-                    style={{ color: "#1877D6", ...POPPINS }}
+                    style={{ color: tokens.blue, ...POPPINS }}
                   >
                     {uploadingVehicle ? "Uploading…" : "Change photo"}
                   </button>
@@ -1163,7 +1164,7 @@ function ProfilePage() {
                     onClick={removeVehiclePhoto}
                     disabled={uploadingVehicle}
                     className="text-[13px] disabled:opacity-50"
-                    style={{ color: "#1877D6", ...POPPINS }}
+                    style={{ color: tokens.blue, ...POPPINS }}
                   >
                     Remove photo
                   </button>
@@ -1178,7 +1179,7 @@ function ProfilePage() {
                 style={{
                   borderWidth: "1px",
                   borderStyle: "dashed",
-                  borderColor: "#EEF2F7",
+                  borderColor: tokens.canvas,
                   borderRadius: 8,
                   padding: 24,
                 }}
@@ -1190,7 +1191,7 @@ function ProfilePage() {
                 )}
                 <span
                   className="mt-2 text-[13px]"
-                  style={{ color: "#1877D6", ...POPPINS }}
+                  style={{ color: tokens.blue, ...POPPINS }}
                 >
                   {uploadingVehicle ? "Uploading…" : "Tap to upload vehicle photo"}
                 </span>
@@ -1232,7 +1233,7 @@ function ProfilePage() {
                   style={POPPINS}
                 />
                 {insuranceWarning ? (
-                  <span className="inline-flex items-center gap-1 text-[12px] shrink-0" style={{ color: "#0B1F3A", ...POPPINS }}>
+                  <span className="inline-flex items-center gap-1 text-[12px] shrink-0" style={{ color: tokens.navy, ...POPPINS }}>
                     <IconAlertTriangle stroke={1.5} size={14} color="#0B1F3A" /> Expiring soon
                   </span>
                 ) : null}
@@ -1255,9 +1256,9 @@ function ProfilePage() {
                 <div key={ev.key}>
                   <div
                     style={{
-                      fontSize: 11,
-                      fontWeight: 600,
-                      color: "#9CA3AF",
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.semibold,
+                      color: tokens.textMuted,
                       textTransform: "uppercase",
                       letterSpacing: 0.4,
                       padding: "0 4px 6px",
@@ -1284,7 +1285,7 @@ function ProfilePage() {
                           borderBottom: i === rows.length - 1 ? "none" : "1px solid #E4E8EF",
                         }}
                       >
-                        <span style={{ fontSize: 15, color: "#0B1F3A" }}>{r.label}</span>
+                        <span style={{ fontSize: 15, color: tokens.navy }}>{r.label}</span>
                         <DSMToggle
                           checked={pref[r.k]}
                           onChange={(v: boolean) => setNotif(ev.key, r.k, v)}
@@ -1307,7 +1308,7 @@ function ProfilePage() {
                 <span className="text-[12px] text-[#6B7686]" style={POPPINS}>
                   Last changed: {passwordChangedAt ? new Date(passwordChangedAt).toLocaleDateString() : "—"}
                 </span>
-                <Link to="/resetpassword" className="text-[13px]" style={{ color: "#1877D6", ...POPPINS }}>
+                <Link to="/resetpassword" className="text-[13px]" style={{ color: tokens.blue, ...POPPINS }}>
                   Change
                 </Link>
               </div>
@@ -1360,7 +1361,7 @@ function ProfilePage() {
             <Link
               to="/calendarsync"
               className="flex items-center gap-3 rounded-lg bg-white px-3 py-3 hover:bg-[#F8F9FB]"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
             >
               <div
                 className="flex items-center justify-center rounded-lg"
@@ -1379,7 +1380,7 @@ function ProfilePage() {
             <Link
               to="/calendarsync"
               className="flex items-center gap-3 rounded-lg bg-white px-3 py-3 hover:bg-[#F8F9FB]"
-              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+              style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
             >
               <div
                 className="flex items-center justify-center rounded-lg"
@@ -1435,8 +1436,8 @@ function ProfilePage() {
                       border: "none",
                       cursor: "pointer",
                       fontSize: 12,
-                      fontWeight: 600,
-                      color: "#CC2229",
+                      fontWeight: tokens.fontWeight.semibold,
+                      color: tokens.red,
                       fontFamily: "Poppins, sans-serif",
                       flexShrink: 0,
                       opacity: squareBusy ? 0.6 : 1,
@@ -1548,7 +1549,7 @@ function ProfilePage() {
                 type="button"
                 onClick={deactivate}
                 className="text-[13px] font-medium px-3 py-2 rounded-lg"
-                style={{ backgroundColor: "#0B1F3A", color: "#FFFFFF", ...POPPINS }}
+                style={{ backgroundColor: tokens.navy, color: tokens.white, ...POPPINS }}
               >
                 Deactivate
               </button>
@@ -1575,7 +1576,7 @@ function ProfilePage() {
                   onClick={deleteAccount}
                   disabled={deleteConfirm !== "DELETE"}
                   className="text-[13px] font-medium px-3 py-2 rounded-lg disabled:opacity-50"
-                  style={{ backgroundColor: "#B91C1C", color: "#FFFFFF", ...POPPINS }}
+                  style={{ backgroundColor: "#B91C1C", color: tokens.white, ...POPPINS }}
                 >
                   Delete
                 </button>

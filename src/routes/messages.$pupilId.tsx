@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IconAlertTriangle, IconChevronDown, IconChevronLeft, IconChevronUp, IconCircleCheck, IconPaperclip, IconPhone, IconSearch, IconSend, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -138,7 +139,7 @@ function HighlightedBody({ body, query }: { body: string; query: string }) {
         key={key++}
         style={{
           backgroundColor: "#FACC15",
-          color: "#0B1F3A",
+          color: tokens.navy,
           borderRadius: 8,
           padding: "0 1px",
         }}
@@ -756,7 +757,7 @@ function PupilThreadPage() {
           zIndex: 60,
           maxWidth: 480,
           margin: "0 auto",
-          background: "#0B1F3A",
+          background: tokens.navy,
           paddingTop: "env(safe-area-inset-top, 0px)",
         }}
       >
@@ -818,8 +819,8 @@ function PupilThreadPage() {
                     minWidth: 0,
                     background: "transparent",
                     border: "none",
-                    color: "#FFFFFF",
-                    fontSize: 14,
+                    color: tokens.white,
+                    fontSize: tokens.fontSize.md,
                     outline: "none",
                     ...POPPINS,
                   }}
@@ -838,7 +839,7 @@ function PupilThreadPage() {
                 style={{
                   color: "#C7D0DE",
                   fontSize: 12,
-                  fontWeight: 500,
+                  fontWeight: tokens.fontWeight.medium,
                   flexShrink: 0,
                   minWidth: 28,
                   textAlign: "center",
@@ -889,9 +890,9 @@ function PupilThreadPage() {
                     height: 30,
                     borderRadius: "50%",
                     background: "#D9E6F5",
-                    color: "#0B1F3A",
-                    fontSize: 11,
-                    fontWeight: 600,
+                    color: tokens.navy,
+                    fontSize: tokens.fontSize.sm,
+                    fontWeight: tokens.fontWeight.semibold,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -905,9 +906,9 @@ function PupilThreadPage() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
-                    color: "#FFFFFF",
-                    fontSize: 14,
-                    fontWeight: 600,
+                    color: tokens.white,
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.semibold,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
@@ -920,8 +921,8 @@ function PupilThreadPage() {
                   <div
                     style={{
                       color: "#7FB6F2",
-                      fontSize: 11,
-                      fontWeight: 500,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.medium,
                       lineHeight: "14px",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -1010,7 +1011,7 @@ function PupilThreadPage() {
       <div
         ref={scrollerRef}
         className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3"
-        style={{ paddingBottom: 150, background: "#FFFFFF" }}
+        style={{ paddingBottom: 150, background: tokens.white }}
       >
         {loadingOlder && (
           <div className="flex items-center justify-center py-2 shrink-0">
@@ -1042,19 +1043,19 @@ function PupilThreadPage() {
 
             const separator = showDate ? (
               <div key={`sep-${m.id}`} style={{ display: "flex", alignItems: "center", gap: 8, margin: "6px 0" }}>
-                <div style={{ flex: 1, height: 0.5, background: "#E4E8EF" }} />
+                <div style={{ flex: 1, height: 0.5, background: tokens.border }} />
                 <div
                   style={{
-                    fontSize: 10,
-                    fontWeight: 600,
-                    color: "#9CA3AF",
+                    fontSize: tokens.fontSize.xs,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: tokens.textMuted,
                     letterSpacing: "0.05em",
                     ...POPPINS,
                   }}
                 >
                   {dayLabel(m.created_at)}
                 </div>
-                <div style={{ flex: 1, height: 0.5, background: "#E4E8EF" }} />
+                <div style={{ flex: 1, height: 0.5, background: tokens.border }} />
               </div>
             ) : null;
 
@@ -1076,8 +1077,8 @@ function PupilThreadPage() {
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 6,
-                        fontSize: 11,
-                        fontWeight: 600,
+                        fontSize: tokens.fontSize.sm,
+                        fontWeight: tokens.fontWeight.semibold,
                         color: "#8A5A0F",
                         ...POPPINS,
                       }}
@@ -1111,10 +1112,10 @@ function PupilThreadPage() {
                         width: 28,
                         height: 28,
                         borderRadius: "50%",
-                        background: "#0B1F3A",
-                        color: "#FFFFFF",
-                        fontSize: 10,
-                        fontWeight: 600,
+                        background: tokens.navy,
+                        color: tokens.white,
+                        fontSize: tokens.fontSize.xs,
+                        fontWeight: tokens.fontWeight.semibold,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -1137,9 +1138,9 @@ function PupilThreadPage() {
                         height: 28,
                         borderRadius: "50%",
                         background: "#D9E6F5",
-                        color: "#0B1F3A",
-                        fontSize: 10,
-                        fontWeight: 600,
+                        color: tokens.navy,
+                        fontSize: tokens.fontSize.xs,
+                        fontWeight: tokens.fontWeight.semibold,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -1163,9 +1164,9 @@ function PupilThreadPage() {
                     {!mine && (
                       <div
                         style={{
-                          fontSize: 11,
-                          fontWeight: 600,
-                          color: "#6B7686",
+                          fontSize: tokens.fontSize.sm,
+                          fontWeight: tokens.fontWeight.semibold,
+                          color: tokens.textSecondary,
                           marginBottom: 3,
                           ...POPPINS,
                         }}
@@ -1182,8 +1183,8 @@ function PupilThreadPage() {
                         color: mine ? "#FFFFFF" : "#0B1F3A",
                         borderRadius: mine ? "8px 8px 8px 8px" : "8px 8px 8px 8px",
                         padding: "9px 12px",
-                        fontSize: 13,
-                        fontWeight: 400,
+                        fontSize: tokens.fontSize.base,
+                        fontWeight: tokens.fontWeight.regular,
                         whiteSpace: "pre-wrap",
                         wordBreak: "break-word",
                         ...POPPINS,
@@ -1201,14 +1202,14 @@ function PupilThreadPage() {
                         ...POPPINS,
                       }}
                     >
-                      <span style={{ fontSize: 10, color: "#9CA3AF" }}>
+                      <span style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted }}>
                         {formatTime(m.created_at)}
                       </span>
                     </div>
                     {mine && i === lastReadSentIndex && m.read_at && (
                       <div
                         style={{
-                          fontSize: 10,
+                          fontSize: tokens.fontSize.xs,
                           color: "rgba(255,255,255,0.5)",
                           textAlign: "right",
                           marginTop: 2,
@@ -1221,7 +1222,7 @@ function PupilThreadPage() {
                     {mine && i === lastSentIndex && !m.read_at && (
                       <div
                         style={{
-                          fontSize: 10,
+                          fontSize: tokens.fontSize.xs,
                           color: "rgba(255,255,255,0.35)",
                           textAlign: "right",
                           marginTop: 2,
@@ -1269,7 +1270,7 @@ function PupilThreadPage() {
           >
             <IconCircleCheck stroke={1.5} size={18} color="#059669" style={{ marginTop: 2, flexShrink: 0 }} />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 13, color: "#064E3B", lineHeight: 1.35 }}>
+              <div style={{ fontSize: tokens.fontSize.base, color: "#064E3B", lineHeight: 1.35 }}>
                 Looks like {pupil?.first_name ?? pupil?.name ?? "this pupil"} accepted the{" "}
                 <strong>{formatSlotWhen(pendingOffer.slot_date, pendingOffer.slot_time)}</strong> slot
               </div>
@@ -1280,12 +1281,12 @@ function PupilThreadPage() {
                   disabled={booking}
                   style={{
                     background: "#059669",
-                    color: "#FFFFFF",
+                    color: tokens.white,
                     border: "none",
                     borderRadius: 999,
                     padding: "6px 14px",
-                    fontSize: 13,
-                    fontWeight: 600,
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
                     cursor: booking ? "default" : "pointer",
                     opacity: booking ? 0.6 : 1,
                     ...POPPINS,
@@ -1301,8 +1302,8 @@ function PupilThreadPage() {
                     background: "transparent",
                     color: "#065F46",
                     border: "none",
-                    fontSize: 13,
-                    fontWeight: 500,
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.medium,
                     cursor: booking ? "default" : "pointer",
                     padding: "6px 4px",
                     ...POPPINS,
@@ -1324,7 +1325,7 @@ function PupilThreadPage() {
           left: 0,
           right: 0,
           zIndex: 50,
-          background: "#FFFFFF",
+          background: tokens.white,
           borderTop: "0.5px solid #E4E8EF",
           padding: "10px 12px",
           display: "flex",
@@ -1369,12 +1370,12 @@ function PupilThreadPage() {
           rows={1}
           style={{
             flex: 1,
-            background: "#EEF2F7",
+            background: tokens.canvas,
             border: "none",
             borderRadius: 8,
             padding: "10px 16px",
-            fontSize: 13,
-            color: "#0B1F3A",
+            fontSize: tokens.fontSize.base,
+            color: tokens.navy,
             resize: "none",
             outline: "none",
             maxHeight: 120,

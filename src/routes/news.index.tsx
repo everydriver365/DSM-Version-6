@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconAlertTriangle, IconChevronLeft, IconClock, IconMapPin, IconNews, IconStar } from "@tabler/icons-react";
 import { sanitizeNewsTitle } from "../lib/newsText";
@@ -97,7 +98,7 @@ function NewsCard({
       style={{
         display: "flex",
         gap: 12,
-        background: "#FFFFFF",
+        background: tokens.white,
         border: important ? "1px solid #F3C0C2" : "1px solid #E3E8F0",
         borderRadius: 8,
         padding: 12,
@@ -138,8 +139,8 @@ function NewsCard({
             style={{
               background: important ? "#CC2229" : cat.bg,
               color: important ? "#FFFFFF" : cat.colour,
-              fontSize: 10,
-              fontWeight: 800,
+              fontSize: tokens.fontSize.xs,
+              fontWeight: tokens.fontWeight.extrabold,
               textTransform: "uppercase",
               letterSpacing: "0.3px",
               borderRadius: 8,
@@ -154,8 +155,8 @@ function NewsCard({
         <div
           style={{
             fontSize: 15.5,
-            fontWeight: 800,
-            color: "#0B1F3A",
+            fontWeight: tokens.fontWeight.extrabold,
+            color: tokens.navy,
             letterSpacing: "-0.2px",
             lineHeight: 1.25,
             display: "-webkit-box",
@@ -209,8 +210,8 @@ function NewsCard({
               display: "flex",
               alignItems: "center",
               gap: 5,
-              fontSize: 11,
-              color: "#9CA3AF",
+              fontSize: tokens.fontSize.sm,
+              color: tokens.textMuted,
               minWidth: 0,
               ...POPPINS,
             }}
@@ -224,10 +225,10 @@ function NewsCard({
           </div>
           <span
             style={{
-              background: "#1877D6",
+              background: tokens.blue,
               color: "#fff",
               fontSize: 12,
-              fontWeight: 600,
+              fontWeight: tokens.fontWeight.semibold,
               padding: "7px 13px",
               borderRadius: 8,
               flexShrink: 0,
@@ -245,7 +246,7 @@ function NewsCard({
 function SectionHeading({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <div style={{ padding: "4px 0 8px" }}>
-      <div style={{ fontSize: 16, fontWeight: 800, color: "#0B1F3A", letterSpacing: "-0.3px", ...POPPINS }}>
+      <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, letterSpacing: "-0.3px", ...POPPINS }}>
         {title}
       </div>
       {subtitle ? (
@@ -392,7 +393,7 @@ function NewsIndexPage() {
               onClick={() => setFilter(f.key as "all" | NewsCategoryKey)}
               style={{
                 fontSize: 12,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 whiteSpace: "nowrap",
                 borderRadius: 999,
                 padding: "4px 10px",
@@ -420,7 +421,7 @@ function NewsIndexPage() {
           </div>
         ) : articles.length === 0 ? (
           <div className="flex items-center justify-center" style={{ minHeight: "60vh", padding: 24 }}>
-            <p style={{ fontSize: 14, color: "#9CA3AF", ...POPPINS }}>No articles yet</p>
+            <p style={{ fontSize: tokens.fontSize.md, color: tokens.textMuted, ...POPPINS }}>No articles yet</p>
           </div>
         ) : (
           <div style={{ padding: "16px 16px 40px", display: "flex", flexDirection: "column", gap: 18 }}>
@@ -452,7 +453,7 @@ function NewsIndexPage() {
                           display: "flex",
                           alignItems: "center",
                           gap: 6,
-                          fontSize: 11,
+                          fontSize: tokens.fontSize.sm,
                           color: "#5B6472",
                           padding: "6px 4px 0",
                           ...POPPINS,
@@ -524,7 +525,7 @@ function NewsIndexPage() {
                 }}
               >
                 <IconAlertTriangle size={18} color="#CC2229" />
-                <span style={{ fontSize: 12.5, color: "#0B1F3A", fontWeight: 600 }}>
+                <span style={{ fontSize: 12.5, color: tokens.navy, fontWeight: 600 }}>
                   Live traffic, closures and incidents live in Road Alerts
                 </span>
                 <IconMapPin size={16} color="#CC2229" style={{ marginLeft: "auto" }} />
@@ -537,7 +538,7 @@ function NewsIndexPage() {
               <SectionHeading title={filter === "all" ? "Latest" : `${categoryOf(filter).emoji} ${categoryOf(filter).label}`} />
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {latest.length === 0 ? (
-                  <p style={{ fontSize: 13, color: "#9CA3AF", ...POPPINS }}>Nothing here yet</p>
+                  <p style={{ fontSize: tokens.fontSize.base, color: tokens.textMuted, ...POPPINS }}>Nothing here yet</p>
                 ) : (
                   latest.slice(0, 40).map((a) => (
                     <NewsCard key={a.id} article={a} onOpen={() => open(a.id)} />

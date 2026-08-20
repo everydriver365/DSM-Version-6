@@ -1,4 +1,5 @@
 import { forwardRef, useId, type InputHTMLAttributes } from "react";
+import { tokens } from "@/lib/tokens";
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -30,7 +31,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(function Input(
           fontFamily: "Poppins, sans-serif",
           borderWidth: "0.5px",
           borderStyle: "solid",
-          borderColor: "#EEF2F7",
+          borderColor: tokens.canvas,
           ...style,
         }}
       />

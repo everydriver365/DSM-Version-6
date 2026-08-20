@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState, type CSSProperties } from "react";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -181,7 +182,7 @@ function MarketplaceEditPage() {
 
   const labelStyle: CSSProperties = {
     fontSize: 12,
-    fontWeight: 600,
+    fontWeight: tokens.fontWeight.semibold,
     color: "#475569",
     marginBottom: 4,
     display: "block",
@@ -191,7 +192,7 @@ function MarketplaceEditPage() {
     padding: "8px 10px",
     border: "1px solid #e2e8f0",
     borderRadius: 8,
-    fontSize: 14,
+    fontSize: tokens.fontSize.md,
     background: "#fff",
     color: "#0f172a",
   };
@@ -211,7 +212,7 @@ function MarketplaceEditPage() {
               padding: 12,
               borderRadius: 8,
               marginBottom: 12,
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               whiteSpace: "pre-wrap",
             }}
           >
@@ -230,7 +231,7 @@ function MarketplaceEditPage() {
                   padding: 16,
                   marginBottom: 12,
                   color: "#64748b",
-                  fontSize: 14,
+                  fontSize: tokens.fontSize.md,
                   textAlign: "center",
                 }}
               >
@@ -371,7 +372,7 @@ function MarketplaceEditPage() {
                       alignItems: "center",
                       gap: 8,
                       marginBottom: 12,
-                      fontSize: 14,
+                      fontSize: tokens.fontSize.md,
                       color: "#0f172a",
                     }}
                   >
@@ -389,12 +390,12 @@ function MarketplaceEditPage() {
                       disabled={savingId === key}
                       style={{
                         flex: 1,
-                        background: "#0B1F3A",
+                        background: tokens.navy,
                         color: "#fff",
                         border: "none",
                         padding: "10px 14px",
                         borderRadius: 8,
-                        fontWeight: 600,
+                        fontWeight: tokens.fontWeight.semibold,
                         cursor: "pointer",
                       }}
                     >
@@ -408,7 +409,7 @@ function MarketplaceEditPage() {
                         border: "1px solid #fecaca",
                         padding: "10px 14px",
                         borderRadius: 8,
-                        fontWeight: 600,
+                        fontWeight: tokens.fontWeight.semibold,
                         cursor: "pointer",
                       }}
                     >
@@ -424,11 +425,11 @@ function MarketplaceEditPage() {
               style={{
                 width: "100%",
                 background: "#fff",
-                color: "#0B1F3A",
+                color: tokens.navy,
                 border: "2px dashed #0B1F3A",
                 padding: "14px",
                 borderRadius: 8,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
                 marginTop: 8,
               }}

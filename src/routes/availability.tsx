@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -119,7 +120,7 @@ function AvailabilityPage() {
               <div
                 key={d.key}
                 className="px-4 py-3"
-                style={i === 0 ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: "#EEF2F7" }}
+                style={i === 0 ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: tokens.canvas }}
               >
                 <div className="flex items-center justify-between">
                   <span className="text-[14px] text-[#0B1F3A]">{d.label}</span>
@@ -149,7 +150,7 @@ function AvailabilityPage() {
                         value={startTime}
                         onChange={(e) => setStartTime(e.target.value)}
                         className="h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-                        style={{ fontFamily: "Poppins, sans-serif", borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                        style={{ fontFamily: "Poppins, sans-serif", borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
                       />
                     </div>
                     <div className="flex-1">
@@ -161,7 +162,7 @@ function AvailabilityPage() {
                         value={endTime}
                         onChange={(e) => setEndTime(e.target.value)}
                         className="h-10 w-full rounded-lg px-3 text-[14px] text-[#0B1F3A] bg-white focus:border-[#1877D6] focus:outline-none"
-                        style={{ fontFamily: "Poppins, sans-serif", borderWidth: "0.5px", borderStyle: "solid", borderColor: "#EEF2F7" }}
+                        style={{ fontFamily: "Poppins, sans-serif", borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
                       />
                     </div>
                   </div>
@@ -196,8 +197,8 @@ function AvailabilityPage() {
           />
         </Card>
 
-        {error && <div className="mt-3 text-[12px]" style={{ color: "#1877D6" }}>{error}</div>}
-        {savedMsg && <div className="mt-3 text-[12px]" style={{ color: "#1877D6" }}>{savedMsg}</div>}
+        {error && <div className="mt-3 text-[12px]" style={{ color: tokens.blue }}>{error}</div>}
+        {savedMsg && <div className="mt-3 text-[12px]" style={{ color: tokens.blue }}>{savedMsg}</div>}
 
         <div className="mt-6">
           <Button onClick={save} disabled={saving || !userId}>

@@ -1,3 +1,4 @@
+import { tokens } from "@/lib/tokens";
 import React from "react";
 import { IconCalendar, IconClock, IconCurrencyPound, IconMapPin, IconMessage, IconNavigation, IconPhone, IconUser, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -320,7 +321,7 @@ export function LessonDetailsSheet({
               type="button"
               onClick={onViewPupil}
               className="py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2"
-              style={{ backgroundColor: navy, color: "#FFFFFF" }}
+              style={{ backgroundColor: navy, color: tokens.white }}
             >
               <IconUser stroke={1.5} size={16} />
               View pupil
@@ -329,7 +330,7 @@ export function LessonDetailsSheet({
               type="button"
               onClick={handleSms}
               className="py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2"
-              style={{ backgroundColor: "#FFFFFF", color: navy, border: "1px solid #E2E8F0" }}
+              style={{ backgroundColor: tokens.white, color: navy, border: "1px solid #E2E8F0" }}
             >
               <IconMessage stroke={1.5} size={16} />
               Message
@@ -341,7 +342,7 @@ export function LessonDetailsSheet({
                 type="button"
                 onClick={onOpenLive}
                 className="py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2"
-                style={{ backgroundColor: blue, color: "#FFFFFF" }}
+                style={{ backgroundColor: blue, color: tokens.white }}
               >
                 Start lesson
               </button>

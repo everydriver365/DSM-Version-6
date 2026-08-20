@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconBolt, IconBriefcase, IconCalendarCheck, IconCalendarX, IconChevronRight, IconCircleCheck, IconCreditCard, IconMail, IconMessage, IconPlayerPlay, IconShoppingBag, IconVideo } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -420,7 +421,7 @@ function WhatsChangedPage() {
 
   return (
     <DSMTopSheet title="What's Changed">
-      <div className="pb-24" style={{ ...FONT, backgroundColor: "#EEF2F7" }}>
+      <div className="pb-24" style={{ ...FONT, backgroundColor: tokens.canvas }}>
       <div style={{ padding: "8px 16px 12px", fontSize: 12, color: GRAY, textAlign: "right" }}>
         Last updated: {formatLastUpdated(lastUpdated)}
       </div>
@@ -433,8 +434,8 @@ function WhatsChangedPage() {
         ) : sections.length === 0 ? (
           <div style={{ padding: "56px 0", textAlign: "center" }}>
             <IconCircleCheck size={44} color="#1B7F3B" style={{ margin: "0 auto 12px" }} />
-            <div style={{ fontSize: 17, fontWeight: 700, color: NAVY }}>You're all caught up</div>
-            <div style={{ fontSize: 13, color: GRAY, marginTop: 4 }}>
+            <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, color: NAVY }}>You're all caught up</div>
+            <div style={{ fontSize: tokens.fontSize.base, color: GRAY, marginTop: 4 }}>
               Nothing new since your last visit.
             </div>
           </div>
@@ -451,12 +452,12 @@ function WhatsChangedPage() {
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   {s.icon}
-                  <span style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>{s.label}</span>
+                  <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: NAVY }}>{s.label}</span>
                 </div>
                 <span
                   style={{
                     fontSize: 11.5,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     color: BLUE,
                     background: "#E5EFFA",
                     borderRadius: 999,
@@ -479,7 +480,7 @@ function WhatsChangedPage() {
                       gap: 10,
                       width: "100%",
                       textAlign: "left",
-                      background: "#FFFFFF",
+                      background: tokens.white,
                       border: `0.5px solid ${BORDER}`,
                       borderRadius: 8,
                       padding: "12px 14px",
@@ -490,8 +491,8 @@ function WhatsChangedPage() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div
                         style={{
-                          fontSize: 14,
-                          fontWeight: 600,
+                          fontSize: tokens.fontSize.md,
+                          fontWeight: tokens.fontWeight.semibold,
                           color: NAVY,
                           whiteSpace: "nowrap",
                           overflow: "hidden",
@@ -541,7 +542,7 @@ function Field({ label, value }: { label: string; value: React.ReactNode }) {
       }}
     >
       <span style={{ fontSize: 12.5, color: GRAY }}>{label}</span>
-      <span style={{ fontSize: 13.5, fontWeight: 600, color: NAVY, textAlign: "right" }}>
+      <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: NAVY, textAlign: "right" }}>
         {value}
       </span>
     </div>
@@ -596,7 +597,7 @@ function DetailSheet({
         <>
           <Field label="Pupil" value={pupilName(r)} />
           <Field label="Sent" value={fmtDateTime(r.created_at)} />
-          <div style={{ paddingTop: 12, fontSize: 14, color: NAVY, lineHeight: 1.5 }}>{r.body}</div>
+          <div style={{ paddingTop: 12, fontSize: tokens.fontSize.md, color: NAVY, lineHeight: 1.5 }}>{r.body}</div>
         </>
       );
       cta = { label: "Reply →", to: `/messages/${r.pupil_id}` };
@@ -646,7 +647,7 @@ function DetailSheet({
           {r.postcode && <Field label="Postcode" value={r.postcode} />}
           <Field label="Received" value={fmtDateTime(r.created_at)} />
           {r.notes && (
-            <div style={{ paddingTop: 12, fontSize: 14, color: NAVY, lineHeight: 1.5 }}>
+            <div style={{ paddingTop: 12, fontSize: tokens.fontSize.md, color: NAVY, lineHeight: 1.5 }}>
               {r.notes}
             </div>
           )}
@@ -727,7 +728,7 @@ function DetailSheet({
     <BottomSheet title={title} onClose={onClose}>
       <div
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           borderRadius: 8,
           border: `0.5px solid ${BORDER}`,
           padding: "4px 14px 14px",
@@ -745,8 +746,8 @@ function DetailSheet({
           padding: "14px 16px",
           borderRadius: 8,
           background: BLUE,
-          color: "#FFFFFF",
-          fontWeight: 600,
+          color: tokens.white,
+          fontWeight: tokens.fontWeight.semibold,
           fontSize: 15,
           border: "none",
           cursor: "pointer",

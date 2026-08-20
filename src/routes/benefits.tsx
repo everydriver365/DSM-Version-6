@@ -1,4 +1,5 @@
 import { useGoBack } from "@/hooks/useGoBack";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
@@ -414,7 +415,7 @@ function BenefitsPage() {
               background: t.pillBg,
               color: t.pillColor,
               fontSize: 12,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               borderRadius: 8,
               padding: '4px 10px',
               fontFamily: 'Poppins, sans-serif',
@@ -427,8 +428,8 @@ function BenefitsPage() {
               style={{
                 background: '#FEF3C7',
                 color: '#B45309',
-                fontSize: 10,
-                fontWeight: 700,
+                fontSize: tokens.fontSize.xs,
+                fontWeight: tokens.fontWeight.bold,
                 borderRadius: 8,
                 padding: '3px 8px',
                 fontFamily: 'Poppins, sans-serif',
@@ -440,8 +441,8 @@ function BenefitsPage() {
         </div>
         <div
           style={{
-            fontSize: 16,
-            fontWeight: 800,
+            fontSize: tokens.fontSize.lg,
+            fontWeight: tokens.fontWeight.extrabold,
             color: '#0B1F3A',
             marginTop: 8,
             fontFamily: 'Poppins, sans-serif',
@@ -476,8 +477,8 @@ function BenefitsPage() {
             color: '#fff',
             borderRadius: 8,
             padding: 12,
-            fontSize: 14,
-            fontWeight: 700,
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.bold,
             marginTop: 12,
             border: 'none',
             cursor: 'pointer',
@@ -518,7 +519,7 @@ function BenefitsPage() {
         >
           <IconCircleCheck size={32} color="#fff" stroke={1.5} />
           <div>
-            <div style={{ fontSize: 16, fontWeight: 800, color: '#fff' }}>
+            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: '#fff' }}>
               Your benefits are active
             </div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>
@@ -539,8 +540,8 @@ function BenefitsPage() {
           <IconRosetteDiscount size={28} color="#fff" stroke={1.5} />
           <div
             style={{
-              fontSize: 16,
-              fontWeight: 800,
+              fontSize: tokens.fontSize.lg,
+              fontWeight: tokens.fontWeight.extrabold,
               color: '#fff',
               marginTop: 8,
               marginBottom: 6,
@@ -550,7 +551,7 @@ function BenefitsPage() {
           </div>
           <div
             style={{
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               color: 'rgba(255,255,255,0.7)',
               lineHeight: 1.5,
               marginBottom: 16,
@@ -569,8 +570,8 @@ function BenefitsPage() {
               color: '#14509E',
               borderRadius: 8,
               padding: '12px 24px',
-              fontSize: 14,
-              fontWeight: 800,
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.extrabold,
               border: 'none',
               cursor: 'pointer',
               fontFamily: 'Poppins, sans-serif',
@@ -584,8 +585,8 @@ function BenefitsPage() {
 
       <div
         style={{
-          fontSize: 11,
-          fontWeight: 600,
+          fontSize: tokens.fontSize.sm,
+          fontWeight: tokens.fontWeight.semibold,
           color: '#9CA3AF',
           textTransform: 'uppercase',
           letterSpacing: '0.08em',
@@ -651,10 +652,10 @@ function BenefitsPage() {
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#0B1F3A' }}>
+                <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>
                   {benefit.name}
                 </div>
-                <div style={{ fontSize: 11, color: '#6B7686', marginTop: 2 }}>
+                <div style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', marginTop: 2 }}>
                   {benefit.tagline}
                 </div>
               </div>
@@ -664,7 +665,7 @@ function BenefitsPage() {
                     background: MIN_TIER_COLOR[benefit.minTier].bg,
                     color: MIN_TIER_COLOR[benefit.minTier].color,
                     fontSize: 9,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     borderRadius: 8,
                     padding: '3px 8px',
                     whiteSpace: 'nowrap',
@@ -705,7 +706,7 @@ function BenefitsPage() {
               {benefit.perks.map((perk) => (
                 <div key={perk} style={{ display: 'flex', gap: 5, alignItems: 'flex-start' }}>
                   <IconCheck size={12} color="#15803D" stroke={2} style={{ marginTop: 1, flexShrink: 0 }} />
-                  <span style={{ fontSize: 11, color: '#6B7686', lineHeight: 1.4 }}>{perk}</span>
+                  <span style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', lineHeight: 1.4 }}>{perk}</span>
                 </div>
               ))}
             </div>
@@ -723,8 +724,8 @@ function BenefitsPage() {
                       style={{
                         background: '#FEF3C7',
                         color: '#B45309',
-                        fontSize: 11,
-                        fontWeight: 700,
+                        fontSize: tokens.fontSize.sm,
+                        fontWeight: tokens.fontWeight.bold,
                         borderRadius: 8,
                         padding: '5px 12px',
                         display: 'inline-block',
@@ -733,7 +734,7 @@ function BenefitsPage() {
                     >
                       Coming soon
                     </span>
-                    <div style={{ fontSize: 10, color: '#9CA3AF', display: 'block', marginTop: 4 }}>
+                    <div style={{ fontSize: tokens.fontSize.xs, color: '#9CA3AF', display: 'block', marginTop: 4 }}>
                       We'll notify you when this goes live
                     </div>
                   </div>
@@ -747,8 +748,8 @@ function BenefitsPage() {
                       color: '#fff',
                       borderRadius: 8,
                       padding: 11,
-                      fontSize: 14,
-                      fontWeight: 700,
+                      fontSize: tokens.fontSize.md,
+                      fontWeight: tokens.fontWeight.bold,
                       border: 'none',
                       cursor: 'pointer',
                       fontFamily: 'Poppins, sans-serif',
@@ -777,8 +778,8 @@ function BenefitsPage() {
                       color: '#fff',
                       borderRadius: 8,
                       padding: '6px 14px',
-                      fontSize: 11,
-                      fontWeight: 700,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.bold,
                       border: 'none',
                       cursor: 'pointer',
                       fontFamily: 'Poppins, sans-serif',
@@ -794,8 +795,8 @@ function BenefitsPage() {
                     style={{
                       background: '#FEF3C7',
                       color: '#B45309',
-                      fontSize: 11,
-                      fontWeight: 700,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.bold,
                       borderRadius: 8,
                       padding: '5px 12px',
                       display: 'inline-block',
@@ -804,7 +805,7 @@ function BenefitsPage() {
                   >
                     Coming soon
                   </span>
-                  <div style={{ fontSize: 10, color: '#9CA3AF', display: 'block', marginTop: 4 }}>
+                  <div style={{ fontSize: tokens.fontSize.xs, color: '#9CA3AF', display: 'block', marginTop: 4 }}>
                     Available now.
                   </div>
                 </div>
@@ -818,8 +819,8 @@ function BenefitsPage() {
                     color: '#fff',
                     borderRadius: 8,
                     padding: 11,
-                    fontSize: 14,
-                    fontWeight: 700,
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.bold,
                     border: 'none',
                     cursor: 'pointer',
                     fontFamily: 'Poppins, sans-serif',
@@ -836,8 +837,8 @@ function BenefitsPage() {
 
       <div
         style={{
-          fontSize: 11,
-          fontWeight: 600,
+          fontSize: tokens.fontSize.sm,
+          fontWeight: tokens.fontWeight.semibold,
           color: '#9CA3AF',
           textTransform: 'uppercase',
           letterSpacing: '0.08em',
@@ -896,10 +897,10 @@ function BenefitsPage() {
                 <Icon size={18} color={deal.iconColor} stroke={1.5} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#0B1F3A' }}>
+                <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>
                   {deal.name}
                 </div>
-                <div style={{ fontSize: 11, color: '#6B7686', marginTop: 2 }}>
+                <div style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', marginTop: 2 }}>
                   {deal.tagline}
                 </div>
               </div>
@@ -909,7 +910,7 @@ function BenefitsPage() {
                     background: MIN_TIER_COLOR[deal.minTier].bg,
                     color: MIN_TIER_COLOR[deal.minTier].color,
                     fontSize: 9,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     borderRadius: 8,
                     padding: '3px 8px',
                     whiteSpace: 'nowrap',
@@ -927,7 +928,7 @@ function BenefitsPage() {
                       background: '#FEF3C7',
                       color: '#B45309',
                       fontSize: 9,
-                      fontWeight: 700,
+                      fontWeight: tokens.fontWeight.bold,
                       borderRadius: 8,
                       padding: '2px 7px',
                       flexShrink: 0,
@@ -963,7 +964,7 @@ function BenefitsPage() {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <IconTable size={18} color="#1877D6" stroke={1.5} />
-          <span style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+          <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
             Compare all plans
           </span>
         </div>
@@ -1001,8 +1002,8 @@ function BenefitsPage() {
             >
               <div
                 style={{
-                  fontSize: 10,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.xs,
+                  fontWeight: tokens.fontWeight.bold,
                   color: col.id === websiteTier ? '#1877D6' : '#0B1F3A',
                   fontFamily: 'Poppins, sans-serif',
                 }}
@@ -1025,7 +1026,7 @@ function BenefitsPage() {
                     background: '#1877D6',
                     color: '#fff',
                     fontSize: 8,
-                    fontWeight: 800,
+                    fontWeight: tokens.fontWeight.extrabold,
                     borderRadius: 8,
                     padding: '1px 5px',
                     marginTop: 3,
@@ -1047,8 +1048,8 @@ function BenefitsPage() {
                   gridColumn: '1 / -1',
                   background: '#F8FAFC',
                   padding: '8px 12px',
-                  fontSize: 10,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.xs,
+                  fontWeight: tokens.fontWeight.bold,
                   color: '#9CA3AF',
                   textTransform: 'uppercase',
                   letterSpacing: '0.06em',
@@ -1062,7 +1063,7 @@ function BenefitsPage() {
                   <div
                     style={{
                       padding: '9px 12px',
-                      fontSize: 11,
+                      fontSize: tokens.fontSize.sm,
                       color: '#6B7686',
                       borderBottom: '1px solid #F1F5F9',
                       fontFamily: 'Poppins, sans-serif',
@@ -1117,7 +1118,7 @@ function BenefitsPage() {
                     background: '#EEF2F7',
                     color: '#9CA3AF',
                     fontSize: 9,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     borderRadius: 8,
                     padding: '4px 8px',
                     border: 'none',
@@ -1140,7 +1141,7 @@ function BenefitsPage() {
                     background: '#D68A1B',
                     color: '#fff',
                     fontSize: 9,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     borderRadius: 8,
                     padding: '4px 8px',
                     border: 'none',
@@ -1161,7 +1162,7 @@ function BenefitsPage() {
                     background: '#1877D6',
                     color: '#fff',
                     fontSize: 9,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     borderRadius: 8,
                     padding: '4px 8px',
                     border: 'none',
@@ -1211,7 +1212,7 @@ function BenefitsPage() {
             >
               <IconChevronLeft size={22} />
             </button>
-            <div style={{ color: '#fff', fontSize: 18, fontWeight: 800, fontFamily: 'Poppins, sans-serif' }}>
+            <div style={{ color: '#fff', fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.extrabold, fontFamily: 'Poppins, sans-serif' }}>
               Choose your plan
             </div>
           </div>
@@ -1243,7 +1244,7 @@ function BenefitsPage() {
           }}
         >
           <PageLoader />
-          <div style={{ fontSize: 14, fontWeight: 600, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+          <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
             Setting up your subscription...
           </div>
         </div>

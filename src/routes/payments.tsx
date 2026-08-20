@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import DSMSkeleton from "@/components/dsm/DSMSkeleton";
 import { IconCreditCard, IconCurrencyPound, IconDotsVertical, IconPlus, IconRotateClockwise2, IconSearch, IconX } from "@tabler/icons-react";
@@ -358,7 +359,7 @@ function PaymentsPage() {
       {/* Action bar */}
       <div
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           padding: "8px 16px",
           display: "flex",
           justifyContent: "flex-end",
@@ -377,8 +378,8 @@ function PaymentsPage() {
             gap: 6,
             background: "#1A9B5C",
             color: "#fff",
-            fontSize: 14,
-            fontWeight: 800,
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.extrabold,
             padding: "11px 20px",
             borderRadius: 20, minHeight: 44,
             border: 0,
@@ -431,8 +432,8 @@ function PaymentsPage() {
             }}
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-              <div style={{ fontSize: 15.5, fontWeight: 800, color: "#000", ...POPPINS }}>Paid vs outstanding</div>
-              <div style={{ fontSize: 12.5, fontWeight: 600, color: "#9CA3AF", textAlign: "right", ...POPPINS }}>
+              <div style={{ fontSize: 15.5, fontWeight: tokens.fontWeight.extrabold, color: "#000", ...POPPINS }}>Paid vs outstanding</div>
+              <div style={{ fontSize: 12.5, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, textAlign: "right", ...POPPINS }}>
                 {paidBreakdown.paidPercent >= 1
                   ? "Fully collected"
                   : paidBreakdown.paidPercent > 0
@@ -444,7 +445,7 @@ function PaymentsPage() {
               style={{
                 height: 8,
                 borderRadius: 8,
-                background: "#EEF2F7",
+                background: tokens.canvas,
                 overflow: "hidden",
                 marginBottom: 14,
                 display: "flex",
@@ -461,16 +462,16 @@ function PaymentsPage() {
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
               <div>
-                <div style={{ fontSize: 11.5, fontWeight: 600, color: "#9CA3AF", marginBottom: 3, ...POPPINS }}>Total due</div>
-                <div style={{ fontSize: 16, fontWeight: 800, color: "#000", ...POPPINS }}>{formatGBP(paidBreakdown.totalDue)}</div>
+                <div style={{ fontSize: 11.5, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, marginBottom: 3, ...POPPINS }}>Total due</div>
+                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: "#000", ...POPPINS }}>{formatGBP(paidBreakdown.totalDue)}</div>
               </div>
               <div>
-                <div style={{ fontSize: 11.5, fontWeight: 600, color: "#9CA3AF", marginBottom: 3, ...POPPINS }}>Paid</div>
-                <div style={{ fontSize: 16, fontWeight: 800, color: "#15803D", ...POPPINS }}>{formatGBP(paidBreakdown.totalPaid)}</div>
+                <div style={{ fontSize: 11.5, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, marginBottom: 3, ...POPPINS }}>Paid</div>
+                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: "#15803D", ...POPPINS }}>{formatGBP(paidBreakdown.totalPaid)}</div>
               </div>
               <div>
-                <div style={{ fontSize: 11.5, fontWeight: 600, color: "#9CA3AF", marginBottom: 3, ...POPPINS }}>Outstanding</div>
-                <div style={{ fontSize: 16, fontWeight: 800, color: "#FF3B30", ...POPPINS }}>{formatGBP(paidBreakdown.outstanding)}</div>
+                <div style={{ fontSize: 11.5, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, marginBottom: 3, ...POPPINS }}>Outstanding</div>
+                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: "#FF3B30", ...POPPINS }}>{formatGBP(paidBreakdown.outstanding)}</div>
               </div>
             </div>
           </div>
@@ -483,8 +484,8 @@ function PaymentsPage() {
         type="button"
         onClick={() => setPupilPickerOpen(true)}
         style={{
-          background: "#EEF2F7",
-          fontWeight: 700, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44,
+          background: tokens.canvas,
+          fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: 20, minHeight: 44,
           padding: "14px 16px",
           boxShadow: "0 4px 0 #E4E4E8",
 
@@ -501,7 +502,7 @@ function PaymentsPage() {
         <IconSearch stroke={1.5} size={15} color="#B0BAC9" />
         <div
           style={{
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
             color: pupilFilter ? "#0B1F3A" : "#B0BAC9",
             flex: 1,
             overflow: "hidden",
@@ -538,7 +539,7 @@ function PaymentsPage() {
               style={{
                 padding: "10px 18px",
                 fontSize: 13.5,
-                fontWeight: 700,
+                fontWeight: tokens.fontWeight.bold,
                 borderRadius: 20, minHeight: 44,
                 border: 0,
                 background: active ? "#0B1F3A" : "#EEF2F7",
@@ -598,8 +599,8 @@ function PaymentsPage() {
           groups.map((g) => (
             <div key={g.label + g.rows[0].id}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", marginBottom: 8 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, ...POPPINS }}>{g.label}</div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#000", ...POPPINS }}>{formatGBP(g.total)}</div>
+                <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, ...POPPINS }}>{g.label}</div>
+                <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.extrabold, color: "#000", ...POPPINS }}>{formatGBP(g.total)}</div>
               </div>
 
               <div
@@ -633,9 +634,9 @@ function PaymentsPage() {
                             height: 44,
                             borderRadius: "50%",
                             background: avatarBg,
-                            color: "#FFFFFF",
+                            color: tokens.white,
                             fontSize: 14.5,
-                            fontWeight: 800,
+                            fontWeight: tokens.fontWeight.extrabold,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -661,7 +662,7 @@ function PaymentsPage() {
                           <div
                             style={{
                               fontSize: 15,
-                              fontWeight: 800,
+                              fontWeight: tokens.fontWeight.extrabold,
                               color: "#000",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
@@ -671,14 +672,14 @@ function PaymentsPage() {
                           >
                             {displayPupilName(row.pupils?.name) || "Unknown pupil"}
                           </div>
-                          <div style={{ fontSize: 12.5, fontWeight: 500, color: "#9CA3AF", marginTop: 2, ...POPPINS }}>
+                          <div style={{ fontSize: 12.5, fontWeight: tokens.fontWeight.medium, color: tokens.textMuted, marginTop: 2, ...POPPINS }}>
                             {methodLabel(isRefund ? "refund" : row.payment_method)} · {formatTime(row.created_at)}
                           </div>
                         </button>
                         <div
                           style={{
                             fontSize: 15.5,
-                            fontWeight: 800,
+                            fontWeight: tokens.fontWeight.extrabold,
                             color: isNonRevenue ? "#B0B0B5" : isRefund ? "#FF3B30" : "#1A9B5C",
                             textAlign: "right",
                             flexShrink: 0,
@@ -724,7 +725,7 @@ function PaymentsPage() {
                           {editingId === row.id ? (
                             <EditPaymentForm row={row} onCancel={() => setEditingId(null)} onSaved={async () => { setEditingId(null); await refetch(); setTimeout(() => { window.dispatchEvent(new Event('dsm-payment-recorded')); }, 300); }} />
                           ) : (
-                            <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 13, color: NAVY }}>
+                            <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: tokens.fontSize.base, color: NAVY }}>
                               {row.lesson_id && <div><span style={{ color: MUTED }}>Lesson:</span> {row.lesson_id.slice(0,8)}…</div>}
                               {row.notes ? <div><span style={{ color: MUTED }}>Notes:</span> {row.notes}</div> : <div style={{ color: MUTED }}>No notes</div>}
                             </div>
@@ -780,9 +781,9 @@ function StatTile({ label, value, color, first = true }: { label: string; value:
     >
       <div
         style={{
-          fontSize: 10,
-          fontWeight: 700,
-          color: "#9CA3AF",
+          fontSize: tokens.fontSize.xs,
+          fontWeight: tokens.fontWeight.bold,
+          color: tokens.textMuted,
           textTransform: "uppercase",
           letterSpacing: "0.3px",
           whiteSpace: "nowrap",
@@ -792,7 +793,7 @@ function StatTile({ label, value, color, first = true }: { label: string; value:
       >
         {label}
       </div>
-      <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.6px", marginTop: 6, color, ...POPPINS }}>{value}</div>
+      <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.6px", marginTop: 6, color, ...POPPINS }}>{value}</div>
     </div>
   );
 }
@@ -954,7 +955,7 @@ function RefundSheet({ row, userId, onClose, onSaved }: { row: HistoryRow; userI
       <SheetGroup>
         <SheetRow>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 13, fontWeight: 500, color: "#6B7686" }}>Refund amount (£)</div>
+            <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: tokens.textSecondary }}>Refund amount (£)</div>
           </div>
           <input
             type="number"
@@ -965,18 +966,18 @@ function RefundSheet({ row, userId, onClose, onSaved }: { row: HistoryRow; userI
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             className="text-right bg-transparent focus:outline-none"
-            style={{ fontFamily: "Poppins, sans-serif", fontSize: 16, fontWeight: 600, color: NAVY, width: 120 }}
+            style={{ fontFamily: "Poppins, sans-serif", fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: NAVY, width: 120 }}
           />
         </SheetRow>
         <SheetRow>
           <div style={{ width: "100%" }}>
-            <div style={{ fontSize: 13, fontWeight: 500, color: "#6B7686", marginBottom: 6 }}>Refund reason</div>
+            <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: tokens.textSecondary, marginBottom: 6 }}>Refund reason</div>
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               rows={3}
               className="w-full bg-transparent focus:outline-none"
-              style={{ fontFamily: "Poppins, sans-serif", fontSize: 14, color: NAVY, resize: "none" }}
+              style={{ fontFamily: "Poppins, sans-serif", fontSize: tokens.fontSize.md, color: NAVY, resize: "none" }}
               placeholder="Why is this being refunded?"
             />
           </div>
@@ -985,7 +986,7 @@ function RefundSheet({ row, userId, onClose, onSaved }: { row: HistoryRow; userI
 
       <SheetGroup>
         <SheetRow onClick={saving ? undefined : handleRefund}>
-          <div style={{ flex: 1, textAlign: "center", fontSize: 16, fontWeight: 700, color: "#CC2229" }}>
+          <div style={{ flex: 1, textAlign: "center", fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.red }}>
             {saving ? "Processing…" : "Confirm refund"}
           </div>
         </SheetRow>

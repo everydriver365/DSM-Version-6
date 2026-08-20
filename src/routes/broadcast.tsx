@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconArrowLeft, IconMessage, IconMicrophone, IconMicrophoneOff, IconUsers } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -261,7 +262,7 @@ function BroadcastPage() {
     borderColor: BORDER,
     borderRadius: 8,
     padding: 16,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: tokens.white,
   };
 
   const filters: { k: FilterKey; label: string }[] = [
@@ -291,7 +292,7 @@ function BroadcastPage() {
           onChange={(e) => setFilter(e.target.value as FilterKey)}
           style={{
             width: "100%",
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
             padding: "10px 12px",
             borderRadius: 8,
             backgroundColor: "#F8F9FB",
@@ -320,7 +321,7 @@ function BroadcastPage() {
             type="button"
             onClick={toggleAll}
             className="text-[12px] font-medium"
-            style={{ color: "#1877D6", ...POPPINS }}
+            style={{ color: tokens.blue, ...POPPINS }}
           >
             {allSelectedInList ? "Deselect all" : "Select all"}
           </button>
@@ -354,7 +355,7 @@ function BroadcastPage() {
                       borderStyle: "solid",
                       borderColor: checked ? NAVY : "#9CA3AF",
                       backgroundColor: checked ? NAVY : "transparent",
-                      color: "#FFFFFF",
+                      color: tokens.white,
                       fontSize: 12,
                       lineHeight: 1,
                     }}
@@ -411,7 +412,7 @@ function BroadcastPage() {
           defaultValue=""
           style={{
             width: "100%",
-            fontSize: 13,
+            fontSize: tokens.fontSize.base,
             padding: "10px 12px",
             borderRadius: 8,
             backgroundColor: "#F8F9FB",
@@ -514,7 +515,7 @@ function BroadcastPage() {
           bottom: 0,
           paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 12px)",
           paddingTop: 12,
-          backgroundColor: "#FFFFFF",
+          backgroundColor: tokens.white,
           borderTop: `0.5px solid ${BORDER}`,
         }}
       >
@@ -526,7 +527,7 @@ function BroadcastPage() {
           style={{
             height: 52,
             backgroundColor: canSend ? NAVY : "#9CA3AF",
-            color: "#FFFFFF",
+            color: tokens.white,
             ...POPPINS,
           }}
         >

@@ -1,4 +1,5 @@
 import type { HTMLAttributes } from "react";
+import { tokens } from "@/lib/tokens";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   interactive?: boolean;
@@ -14,7 +15,7 @@ export function Card({ className = "", style, children, interactive, onClick, ..
       style={{
         borderWidth: "1px",
         borderStyle: "solid",
-        borderColor: "#EEF2F7",
+        borderColor: tokens.canvas,
         boxShadow: "0 1px 2px rgba(11,31,58,0.04)",
         ...style,
       }}

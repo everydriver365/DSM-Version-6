@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -251,15 +252,15 @@ function EndOfDayPage() {
       {/* Date sub-bar */}
       <div
         style={{
-          background: "#FFFFFF",
+          background: tokens.white,
           padding: "8px 16px",
           display: "flex",
           justifyContent: "flex-end",
           alignItems: "center",
           borderBottom: "1px solid #EEF2F7",
-          color: "#0B1F3A",
-          fontSize: 13,
-          fontWeight: 500,
+          color: tokens.navy,
+          fontSize: tokens.fontSize.base,
+          fontWeight: tokens.fontWeight.medium,
         }}
       >
         {fmtDateLong(today)}
@@ -319,10 +320,10 @@ function EndOfDayPage() {
                 gap: 10,
               }}
             >
-              <span style={{ fontSize: 12, fontWeight: 600, color: "#0B1F3A", minWidth: 50 }}>
+              <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, minWidth: 50 }}>
                 {l.lesson_time?.slice(0, 5) ?? "--:--"}
               </span>
-              <span style={{ fontSize: 13, color: "#0B1F3A", flex: 1 }}>
+              <span style={{ fontSize: tokens.fontSize.base, color: tokens.navy, flex: 1 }}>
                 {pupilName(l.pupils) || "Pupil"}
               </span>
               {!l.eol_completed && (
@@ -351,12 +352,12 @@ function EndOfDayPage() {
           />
         ) : (
           <>
-            <div style={{ fontSize: 13, color: "#0B1F3A", marginBottom: 8 }}>
+            <div style={{ fontSize: tokens.fontSize.base, color: tokens.navy, marginBottom: 8 }}>
               {tomorrowLessons.length} lesson{tomorrowLessons.length === 1 ? "" : "s"} tomorrow
               {earliestTomorrow ? ` starting at ${earliestTomorrow}` : ""}
             </div>
             {tomorrowLessons.slice(0, 3).map((l) => (
-              <div key={l.id} style={{ display: "flex", gap: 10, padding: "6px 0", fontSize: 13, color: "#0B1F3A" }}>
+              <div key={l.id} style={{ display: "flex", gap: 10, padding: "6px 0", fontSize: tokens.fontSize.base, color: tokens.navy }}>
                 <span style={{ minWidth: 50, fontWeight: 600 }}>{l.lesson_time?.slice(0, 5) ?? "--:--"}</span>
                 <span>{pupilName(l.pupils) || "Pupil"}</span>
               </div>
@@ -368,10 +369,10 @@ function EndOfDayPage() {
                 marginTop: 10,
                 padding: "8px 12px",
                 borderRadius: 8,
-                background: "#1877D6",
-                color: "#FFFFFF",
+                background: tokens.blue,
+                color: tokens.white,
                 fontSize: 12,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 cursor: "pointer",
               }}
             >
@@ -395,14 +396,14 @@ function EndOfDayPage() {
               width: "100%",
               padding: 10,
               paddingRight: 40,
-              fontSize: 13,
+              fontSize: tokens.fontSize.base,
               fontFamily: "Poppins, sans-serif",
               border: "1px solid #EEF2F7",
               borderRadius: 8,
               resize: "vertical",
               outline: "none",
-              color: "#0B1F3A",
-              backgroundColor: "#FFFFFF",
+              color: tokens.navy,
+              backgroundColor: tokens.white,
             }}
           />
           <button
@@ -423,7 +424,7 @@ function EndOfDayPage() {
             {listening ? <IconMicrophoneOff stroke={1.5} size={16} color="#FFFFFF" /> : <IconMicrophone stroke={1.5} size={16} color="#0B1F3A" />}
           </button>
         </div>
-        <div style={{ marginTop: 6, fontSize: 11, color: "#6B7280" }}>
+        <div style={{ marginTop: 6, fontSize: tokens.fontSize.sm, color: "#6B7280" }}>
           {savingNote ? "Saving…" : "Auto-saves on blur"}
         </div>
         <style>{`@keyframes eod-pulse{0%,100%{opacity:1}50%{opacity:.55}}`}</style>
@@ -460,7 +461,7 @@ function EndOfDayPage() {
             <IconReceipt size={17} color="#C23B3B" />
           </span>
           <span style={{ flex: 1 }}>
-            <span style={{ display: "block", fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>Log an expense</span>
+            <span style={{ display: "block", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>Log an expense</span>
             <span style={{ display: "block", fontSize: 12, color: "#6B7280" }}>Add today's costs</span>
           </span>
           <IconChevronRight stroke={1.5} size={18} color="#94A3B8" />
@@ -498,7 +499,7 @@ function EndOfDayPage() {
             <IconCar stroke={1.5} size={17} color="#1877D6" />
           </span>
           <span style={{ flex: 1 }}>
-            <span style={{ display: "block", fontSize: 14, fontWeight: 700, color: "#0B1F3A" }}>Log mileage</span>
+            <span style={{ display: "block", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>Log mileage</span>
             <span style={{ display: "block", fontSize: 12, color: "#6B7280" }}>Track a trip</span>
           </span>
           <IconChevronRight stroke={1.5} size={18} color="#94A3B8" />
@@ -538,7 +539,7 @@ function Card({ children }: { children: React.ReactNode }) {
       style={{
         margin: "12px 16px 0 16px",
         padding: 16,
-        backgroundColor: "#FFFFFF",
+        backgroundColor: tokens.white,
         border: "0.5px solid #EEF2F7",
         borderRadius: 8,
       }}
@@ -552,7 +553,7 @@ function Heading({ icon, title }: { icon?: React.ReactNode; title: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
       {icon}
-      <div style={{ fontSize: 16, fontWeight: 700, color: "#0B1F3A" }}>{title}</div>
+      <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>{title}</div>
     </div>
   );
 }
@@ -567,8 +568,8 @@ function Row({ children }: { children: React.ReactNode }) {
         gap: 10,
         padding: "8px 0",
         borderBottom: "1px solid #F3F4F6",
-        fontSize: 13,
-        color: "#0B1F3A",
+        fontSize: tokens.fontSize.base,
+        color: tokens.navy,
       }}
     >
       {children}
@@ -585,9 +586,9 @@ function SmallBtn({ children, color, onClick }: { children: React.ReactNode; col
         padding: "6px 10px",
         borderRadius: 8,
         background: color,
-        color: "#FFFFFF",
+        color: tokens.white,
         fontSize: 12,
-        fontWeight: 600,
+        fontWeight: tokens.fontWeight.semibold,
         cursor: "pointer",
         whiteSpace: "nowrap",
       }}
@@ -599,7 +600,7 @@ function SmallBtn({ children, color, onClick }: { children: React.ReactNode; col
 
 function Badge({ children, bg, color }: { children: React.ReactNode; bg: string; color: string }) {
   return (
-    <span style={{ padding: "2px 8px", borderRadius: 999, backgroundColor: bg, color, fontSize: 11, fontWeight: 600 }}>
+    <span style={{ padding: "2px 8px", borderRadius: 999, backgroundColor: bg, color, fontSize: tokens.fontSize.sm, fontWeight: 600 }}>
       {children}
     </span>
   );
@@ -612,14 +613,14 @@ function Stat({ label, value, color, hint }: { label: string; value: string; col
         padding: 14,
         border: "0.5px solid #EEF2F7",
         borderRadius: 8,
-        backgroundColor: "#FFFFFF",
+        backgroundColor: tokens.white,
       }}
     >
-      <div style={{ fontSize: 20, fontWeight: 700, color: color ?? "#0B1F3A" }}>
+      <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.bold, color: color ?? "#0B1F3A" }}>
         {value}
-        {hint && <span style={{ fontSize: 11, fontWeight: 500, color: "#6B7280", marginLeft: 4 }}>{hint}</span>}
+        {hint && <span style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.medium, color: "#6B7280", marginLeft: 4 }}>{hint}</span>}
       </div>
-      <div style={{ fontSize: 11, color: "#6B7280", marginTop: 2 }}>{label}</div>
+      <div style={{ fontSize: tokens.fontSize.sm, color: "#6B7280", marginTop: 2 }}>{label}</div>
     </div>
   );
 }

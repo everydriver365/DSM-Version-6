@@ -1,4 +1,5 @@
 import { useRef, useState, useLayoutEffect } from "react";
+import { tokens } from "@/lib/tokens";
 import { createPortal } from "react-dom";
 
 export type QuickAction = {
@@ -54,7 +55,7 @@ export function QuickActionsMenu({
                 top: coords.top,
                 right: coords.right,
                 zIndex: 40,
-                background: "#FFFFFF",
+                background: tokens.white,
                 borderRadius: 8,
                 border: "0.5px solid #E2E6ED",
                 boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
@@ -78,7 +79,7 @@ export function QuickActionsMenu({
                     background: "none",
                     border: "none",
                     borderBottom: i < items.length - 1 ? "0.5px solid #E2E6ED" : "none",
-                    fontSize: 13,
+                    fontSize: tokens.fontSize.base,
                     fontFamily: "Poppins, sans-serif",
                     color: item.destructive ? "#CC2229" : "#0B1F3A",
                     cursor: "pointer",

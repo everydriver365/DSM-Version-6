@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconBell, IconCalendar, IconClock, IconDotsVertical, IconMapPin, IconPencil, IconX } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -141,7 +142,7 @@ function UpcomingTestsPage() {
         <div
           className="flex"
           style={{
-            background: "#FFFFFF",
+            background: tokens.white,
             borderRadius: 8,
             boxShadow: "0 4px 0 #E4E4E8",
             padding: 3,
@@ -189,7 +190,7 @@ function UpcomingTestsPage() {
           type="button"
           onClick={() => navigate({ to: "/tests" })}
           className="inline-flex items-center gap-2 text-[13px] font-semibold"
-          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#0B1F3A" }}
+          style={{ height: 34, padding: "0 12px", borderRadius: 8, border: "1px solid #E2E8F0", background: tokens.white, color: tokens.navy }}
         >
           <IconBell stroke={1.5} size={15} />
           Test reminders
@@ -270,7 +271,7 @@ function UpcomingTestsPage() {
         <SheetGroup>
           {/* Date */}
           <div style={{ padding: "13px 16px" }}>
-            <label className="block" style={{ fontSize: 13, fontWeight: 500, color: "#6B7686", marginBottom: 6, ...POPPINS }}>
+            <label className="block" style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: tokens.textSecondary, marginBottom: 6, ...POPPINS }}>
               Test date
             </label>
             <input
@@ -279,10 +280,10 @@ function UpcomingTestsPage() {
               onChange={(e) => setEditDate(e.target.value)}
               style={{
                 width: "100%",
-                fontSize: 16,
-                fontWeight: 600,
+                fontSize: tokens.fontSize.lg,
+                fontWeight: tokens.fontWeight.semibold,
                 fontFamily: "Poppins, sans-serif",
-                color: "#0B1F3A",
+                color: tokens.navy,
                 border: "none",
                 outline: "none",
                 background: "transparent",
@@ -290,11 +291,11 @@ function UpcomingTestsPage() {
             />
           </div>
 
-          <div style={{ height: 1, backgroundColor: "#E4E8EF" }} />
+          <div style={{ height: 1, backgroundColor: tokens.border }} />
 
           {/* Time */}
           <div style={{ padding: "13px 16px" }}>
-            <label className="block" style={{ fontSize: 13, fontWeight: 500, color: "#6B7686", marginBottom: 6, ...POPPINS }}>
+            <label className="block" style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: tokens.textSecondary, marginBottom: 6, ...POPPINS }}>
               Test time
             </label>
             <input
@@ -303,10 +304,10 @@ function UpcomingTestsPage() {
               onChange={(e) => setEditTime(e.target.value)}
               style={{
                 width: "100%",
-                fontSize: 16,
-                fontWeight: 600,
+                fontSize: tokens.fontSize.lg,
+                fontWeight: tokens.fontWeight.semibold,
                 fontFamily: "Poppins, sans-serif",
-                color: "#0B1F3A",
+                color: tokens.navy,
                 border: "none",
                 outline: "none",
                 background: "transparent",
@@ -314,11 +315,11 @@ function UpcomingTestsPage() {
             />
           </div>
 
-          <div style={{ height: 1, backgroundColor: "#E4E8EF" }} />
+          <div style={{ height: 1, backgroundColor: tokens.border }} />
 
           {/* Test centre — searchable */}
           <div style={{ padding: "13px 16px" }}>
-            <label className="block" style={{ fontSize: 13, fontWeight: 500, color: "#6B7686", marginBottom: 6, ...POPPINS }}>
+            <label className="block" style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: tokens.textSecondary, marginBottom: 6, ...POPPINS }}>
               Test centre
             </label>
             <AddressLookup
@@ -396,12 +397,12 @@ function UpcomingTestsPage() {
               boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
             }}
           >
-            <span style={{ fontSize: 18, lineHeight: 1 }}>⚠️</span>
+            <span style={{ fontSize: tokens.fontSize.xl, lineHeight: 1 }}>⚠️</span>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, ...POPPINS }}>
+              <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, marginBottom: 4, ...POPPINS }}>
                 Cancel test for {cancelTest?.name}?
               </div>
-              <div style={{ fontSize: 13, ...POPPINS }}>
+              <div style={{ fontSize: tokens.fontSize.base, ...POPPINS }}>
                 This will clear the test date, time and centre from the pupil&apos;s record.
               </div>
             </div>
@@ -410,7 +411,7 @@ function UpcomingTestsPage() {
           {/* Reason */}
           <SheetGroup>
             <div style={{ padding: "13px 16px" }}>
-              <label className="block" style={{ fontSize: 13, fontWeight: 500, color: "#6B7686", marginBottom: 6, ...POPPINS }}>
+              <label className="block" style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: tokens.textSecondary, marginBottom: 6, ...POPPINS }}>
                 Reason (optional)
               </label>
               <textarea
@@ -419,10 +420,10 @@ function UpcomingTestsPage() {
                 onChange={(e) => setCancelReason(e.target.value)}
                 style={{
                   width: "100%",
-                  fontSize: 14,
-                  fontWeight: 600,
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.semibold,
                   fontFamily: "Poppins, sans-serif",
-                  color: "#0B1F3A",
+                  color: tokens.navy,
                   border: "none",
                   outline: "none",
                   background: "transparent",
@@ -475,7 +476,7 @@ function TestRow({
     <div
       style={{
         position: "relative",
-        background: "#FFFFFF",
+        background: tokens.white,
         borderRadius: 8,
         border: "1px solid #E2E8F0",
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
@@ -491,7 +492,7 @@ function TestRow({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between" style={{ gap: 8 }}>
-            <div className="text-[15px] font-semibold truncate" style={{ color: "#0B1F3A", ...POPPINS }}>
+            <div className="text-[15px] font-semibold truncate" style={{ color: tokens.navy, ...POPPINS }}>
               {test.name}
             </div>
             <span
@@ -508,7 +509,7 @@ function TestRow({
             </span>
           </div>
 
-          <div className="text-[13px] font-bold mt-1" style={{ color: "#0B1F3A", ...POPPINS }}>
+          <div className="text-[13px] font-bold mt-1" style={{ color: tokens.navy, ...POPPINS }}>
             {formatDateLong(test.test_date)}
           </div>
 
@@ -581,9 +582,9 @@ function TestRow({
                   padding: "10px 12px",
                   background: "#fff",
                   border: "none",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "#0B1F3A",
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
+                  color: tokens.navy,
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
                   textAlign: "left",
@@ -607,9 +608,9 @@ function TestRow({
                   background: "#fff",
                   border: "none",
                   borderTop: "1px solid #F1F5F9",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "#CC2229",
+                  fontSize: tokens.fontSize.base,
+                  fontWeight: tokens.fontWeight.semibold,
+                  color: tokens.red,
                   cursor: "pointer",
                   fontFamily: "Poppins, sans-serif",
                   textAlign: "left",

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -104,7 +105,7 @@ function PupilHistoryPage() {
           groups.map((g) => (
             <div key={g.key}>
               <SectionHeader>{g.label}</SectionHeader>
-              <div style={{ background: "#FFFFFF", borderRadius: 8, overflow: "hidden", border: "0.5px solid rgba(15,32,68,0.10)" }}>
+              <div style={{ background: tokens.white, borderRadius: 8, overflow: "hidden", border: "0.5px solid rgba(15,32,68,0.10)" }}>
                 {g.items.map((l, idx) => {
                   const d = new Date(`${l.lesson_date}T00:00:00`);
                   const isCompleted = l.status === "completed";
@@ -121,11 +122,11 @@ function PupilHistoryPage() {
                         ...POPPINS,
                       }}
                     >
-                      <div style={{ width: 40, height: 40, borderRadius: 999, background: bg, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, letterSpacing: 0.2, flexShrink: 0 }}>
+                      <div style={{ width: 40, height: 40, borderRadius: 999, background: bg, color: tokens.white, display: "flex", alignItems: "center", justifyContent: "center", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, letterSpacing: 0.2, flexShrink: 0 }}>
                         <IconCalendar size={18} color="#FFFFFF" />
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 15, fontWeight: 600, color: isCancelled ? "#64748B" : "#0F2044", textDecoration: isCancelled ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
+                        <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: isCancelled ? "#64748B" : "#0F2044", textDecoration: isCancelled ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...POPPINS }}>
                           {formatDateShort(d)}
                         </div>
                         <div style={{ fontSize: 12, color: "#64748B", marginTop: 2, fontVariantNumeric: "tabular-nums", ...POPPINS }}>
@@ -133,7 +134,7 @@ function PupilHistoryPage() {
                         </div>
                       </div>
                       {isCancelled ? (
-                        <span style={{ background: "#FDECEA", color: "#B91C1C", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Cancelled</span>
+                        <span style={{ background: "#FDECEA", color: "#B91C1C", fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "4px 10px", borderRadius: 999, ...POPPINS }}>Cancelled</span>
                       ) : isCompleted ? (
                         <Button
                           variant="ghost"
@@ -147,7 +148,7 @@ function PupilHistoryPage() {
                           Feedback
                         </Button>
                       ) : (
-                        <span style={{ background: "#DBEAFE", color: "#1A52A0", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, ...POPPINS, textTransform: "capitalize" }}>
+                        <span style={{ background: "#DBEAFE", color: "#1A52A0", fontSize: 12, fontWeight: tokens.fontWeight.semibold, padding: "4px 10px", borderRadius: 999, ...POPPINS, textTransform: "capitalize" }}>
                           {l.status}
                         </span>
                       )}

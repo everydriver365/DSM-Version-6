@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { IconBroadcast, IconPlayerPlay, IconChevronRight } from "@tabler/icons-react";
@@ -165,7 +166,7 @@ function SectionBlock({
             style={{
               margin: 0,
               fontSize: 17,
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
               color: NAVY,
               letterSpacing: "-0.01em",
               fontFamily: FONT,
@@ -188,8 +189,8 @@ function SectionBlock({
             border: "none",
             padding: 0,
             fontFamily: FONT,
-            fontSize: 13,
-            fontWeight: 600,
+            fontSize: tokens.fontSize.base,
+            fontWeight: tokens.fontWeight.semibold,
             color: BLUE,
             cursor: "pointer",
             flexShrink: 0,
@@ -228,7 +229,7 @@ function Row({
         if (e.key === "Enter" || e.key === " ") onClick();
       }}
       style={{
-        background: "#FFFFFF",
+        background: tokens.white,
         border: `1px solid ${HAIRLINE}`,
         borderRadius: 8,
         boxShadow: SHADOW,
@@ -259,8 +260,8 @@ function Row({
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            fontSize: 14,
-            fontWeight: 600,
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.semibold,
             color: NAVY,
             lineHeight: 1.25,
             whiteSpace: "nowrap",
@@ -286,11 +287,11 @@ function Row({
       <span
         style={{
           background: NAVY,
-          color: "#FFFFFF",
+          color: tokens.white,
           borderRadius: 8,
           padding: "7px 12px",
-          fontSize: 11,
-          fontWeight: 700,
+          fontSize: tokens.fontSize.sm,
+          fontWeight: tokens.fontWeight.bold,
           letterSpacing: "0.04em",
           textTransform: "uppercase",
           flexShrink: 0,
@@ -359,8 +360,8 @@ function TabBar({
               background: isActive ? NAVY : "#FFFFFF",
               color: isActive ? "#FFFFFF" : NAVY,
               fontFamily: FONT,
-              fontSize: 13,
-              fontWeight: 600,
+              fontSize: tokens.fontSize.base,
+              fontWeight: tokens.fontWeight.semibold,
               cursor: "pointer",
               boxShadow: isActive ? "none" : SHADOW,
               borderWidth: isActive ? 0 : 1,
@@ -384,8 +385,8 @@ function TabBar({
                   borderRadius: 8,
                   background: isActive ? "rgba(255,255,255,0.22)" : "#EAF2FC",
                   color: isActive ? "#FFFFFF" : "#1877D6",
-                  fontSize: 11,
-                  fontWeight: 700,
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.bold,
                   lineHeight: "18px",
                   display: "inline-flex",
                   alignItems: "center",
@@ -473,10 +474,10 @@ function DiscoverPage() {
       <div style={{ fontFamily: "Poppins, sans-serif" }}>
 
       <div style={{ padding: "8px 16px 0" }}>
-        <h1 style={{ fontSize: 26, fontWeight: 700, color: NAVY, margin: 0, lineHeight: 1.15 }}>
+        <h1 style={{ fontSize: 26, fontWeight: tokens.fontWeight.bold, color: NAVY, margin: 0, lineHeight: 1.15 }}>
           Discover
         </h1>
-        <p style={{ fontSize: 14, color: "#6B7A90", margin: "4px 0 0" }}>
+        <p style={{ fontSize: tokens.fontSize.md, color: "#6B7A90", margin: "4px 0 0" }}>
           Live sessions, learning and the marketplace — all in one place.
         </p>
       </div>
@@ -523,9 +524,9 @@ function DiscoverPage() {
                           top: 4,
                           left: 4,
                           background: RED,
-                          color: "#FFFFFF",
+                          color: tokens.white,
                           fontSize: 8.5,
-                          fontWeight: 700,
+                          fontWeight: tokens.fontWeight.bold,
                           letterSpacing: "0.04em",
                           padding: "2px 5px",
                           borderRadius: 8,

@@ -1,4 +1,5 @@
 import { useGoBack } from "@/hooks/useGoBack";
+import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
@@ -399,8 +400,8 @@ function PerksPage() {
               color: '#fff',
               borderRadius: 8,
               padding: '5px 12px',
-              fontSize: 11,
-              fontWeight: 700,
+              fontSize: tokens.fontSize.sm,
+              fontWeight: tokens.fontWeight.bold,
               border: 'none',
               cursor: 'pointer',
               fontFamily: 'Poppins, sans-serif',
@@ -435,7 +436,7 @@ function PerksPage() {
             border: '1px solid #E4E8EF',
             borderRadius: 8,
             padding: '10px 36px 10px 34px',
-            fontSize: 14,
+            fontSize: tokens.fontSize.md,
             color: '#0B1F3A',
             fontFamily: 'Poppins, sans-serif',
             outline: 'none',
@@ -489,7 +490,7 @@ function PerksPage() {
                 borderRadius: 8,
                 padding: '0 14px',
                 fontSize: 12,
-                fontWeight: 600,
+                fontWeight: tokens.fontWeight.semibold,
                 cursor: 'pointer',
                 border: isActive ? 'none' : '1px solid #E4E8EF',
                 whiteSpace: 'nowrap',
@@ -505,7 +506,7 @@ function PerksPage() {
       </div>
 
       {/* RESULTS COUNT */}
-      <div style={{ padding: '0 16px 8px', fontSize: 11, color: '#9CA3AF' }}>
+      <div style={{ padding: '0 16px 8px', fontSize: tokens.fontSize.sm, color: '#9CA3AF' }}>
         {filteredPerks.length} perks
         {search && ` matching '${search}'`}
       </div>
@@ -574,8 +575,8 @@ function PerksPage() {
               </span>
 
               <span style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#0B1F3A' }}>{perk.name}</div>
-                <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>
+                <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A' }}>{perk.name}</div>
+                <div style={{ fontSize: tokens.fontSize.sm, color: '#9CA3AF', marginTop: 2 }}>
                   {perk.provider} · {perk.category}
                 </div>
                 <span
@@ -584,7 +585,7 @@ function PerksPage() {
                     background: '#F0FDF4',
                     color: '#15803D',
                     fontSize: 9,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     borderRadius: 8,
                     padding: '2px 7px',
                     marginTop: 4,
@@ -603,7 +604,7 @@ function PerksPage() {
                         background: '#EFF6FF',
                         color: '#1877D6',
                         fontSize: 9,
-                        fontWeight: 700,
+                        fontWeight: tokens.fontWeight.bold,
                         borderRadius: 8,
                         padding: '2px 7px',
                       }}
@@ -621,7 +622,7 @@ function PerksPage() {
         {filteredPerks.length === 0 && (
           <div style={{ padding: '32px 16px', textAlign: 'center' }}>
             <IconSearch size={32} color="#D1D5DB" stroke={1.5} />
-            <div style={{ fontSize: 14, fontWeight: 600, color: '#6B7686', marginTop: 8 }}>No perks found</div>
+            <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: '#6B7686', marginTop: 8 }}>No perks found</div>
             <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 4 }}>Try a different search or category</div>
           </div>
         )}
@@ -644,7 +645,7 @@ function PerksPage() {
           <div
             style={{
               position: "relative",
-              background: "#EEF2F7",
+              background: tokens.canvas,
               borderRadius: "8px 8px 0 0",
               padding: "0 0 32px",
               maxHeight: "90vh",
@@ -666,7 +667,7 @@ function PerksPage() {
                   width: 30,
                   height: 30,
                   borderRadius: "50%",
-                  background: "#EEF2F7",
+                  background: tokens.canvas,
                   border: "1px solid #E4E8EF",
                   cursor: "pointer",
                   display: "flex",
@@ -701,14 +702,14 @@ function PerksPage() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 22,
+                  fontSize: tokens.fontSize.xxl,
                   flexShrink: 0,
                 }}
               >
                 {selectedPerk.logo}
               </span>
               <span style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 16, fontWeight: 700, color: '#0B1F3A' }}>{selectedPerk.name}</div>
+                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>{selectedPerk.name}</div>
                 <div style={{ fontSize: 12, color: '#6B7686', marginTop: 2 }}>
                   {selectedPerk.provider} · {selectedPerk.category}
                 </div>
@@ -718,7 +719,7 @@ function PerksPage() {
                     background: '#F0FDF4',
                     color: '#15803D',
                     fontSize: 9,
-                    fontWeight: 700,
+                    fontWeight: tokens.fontWeight.bold,
                     borderRadius: 8,
                     padding: '2px 7px',
                     marginTop: 4,
@@ -726,12 +727,12 @@ function PerksPage() {
                 >
                   {selectedPerk.saving}
                 </span>
-                <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 6 }}>Unlock this perk</div>
+                <div style={{ fontSize: tokens.fontSize.sm, color: '#9CA3AF', marginTop: 6 }}>Unlock this perk</div>
               </span>
             </div>
 
             {/* What you get */}
-            <div style={{ padding: '0 16px 8px', fontSize: 11, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase' }}>
+            <div style={{ padding: '0 16px 8px', fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#9CA3AF', textTransform: 'uppercase' }}>
               What's included
             </div>
             {unlockedPerks.length > 0 ? (
@@ -756,10 +757,10 @@ function PerksPage() {
                     }}
                   >
                     <IconCheck size={14} color="#15803D" stroke={2} />
-                    <span style={{ fontSize: 13, fontWeight: 500, color: '#0B1F3A', flex: 1, minWidth: 0 }}>
+                    <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: '#0B1F3A', flex: 1, minWidth: 0 }}>
                       {perk.name}
                     </span>
-                    <span style={{ fontSize: 11, color: '#9CA3AF', marginLeft: 'auto' }}>{perk.provider}</span>
+                    <span style={{ fontSize: tokens.fontSize.sm, color: '#9CA3AF', marginLeft: 'auto' }}>{perk.provider}</span>
                   </div>
                 ))}
               </div>
@@ -771,7 +772,7 @@ function PerksPage() {
                   borderRadius: 8,
                   border: '1px solid #E4E8EF',
                   padding: 16,
-                  fontSize: 14,
+                  fontSize: tokens.fontSize.md,
                   color: '#15803D',
                   textAlign: 'center',
                 }}
@@ -781,7 +782,7 @@ function PerksPage() {
             )}
 
             {/* Plan required */}
-            <div style={{ padding: '0 16px 8px', fontSize: 11, fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase' }}>
+            <div style={{ padding: '0 16px 8px', fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#9CA3AF', textTransform: 'uppercase' }}>
               Plan required
             </div>
             <div
@@ -805,8 +806,8 @@ function PerksPage() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 14,
-                  fontWeight: 800,
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.extrabold,
                   color: planCircle.color,
                   flexShrink: 0,
                 }}
@@ -814,7 +815,7 @@ function PerksPage() {
                 {planCircle.letter}
               </div>
               <span style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#0B1F3A' }}>
+                <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>
                   {TIER_DISPLAY[selectedPerk.minTier] ?? selectedPerk.minTier} and above
                 </div>
                 <div style={{ fontSize: 12, color: '#6B7686', marginTop: 2 }}>
@@ -853,7 +854,7 @@ function PerksPage() {
                 borderRadius: 8,
                 padding: 15,
                 fontSize: 15,
-                fontWeight: 800,
+                fontWeight: tokens.fontWeight.extrabold,
                 border: 'none',
                 cursor: 'pointer',
                 fontFamily: 'Poppins, sans-serif',
@@ -867,7 +868,7 @@ function PerksPage() {
               style={{
                 textAlign: 'center',
                 marginTop: 12,
-                fontSize: 13,
+                fontSize: tokens.fontSize.base,
                 color: '#9CA3AF',
                 cursor: 'pointer',
               }}
