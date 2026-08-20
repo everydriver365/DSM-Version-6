@@ -4,11 +4,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { IconArrowLeft, IconDownload, IconMicrophone, IconMicrophoneOff, IconPaperclip, IconPencil, IconPlus, IconSchool, IconTrash, IconUpload, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { BottomSheet } from "../components/dsm/BottomSheet";
 import { EmptyState } from "../components/dsm/EmptyState";
 import { supabase } from "../lib/supabaseClient";
-import { PageLayout } from "@/components/PageLayout";
 
 async function awardPoints(instructorId: string, event: string, token: string, metadata?: any) {
   try {
@@ -232,19 +231,8 @@ function CpdPage() {
   }
 
   return (
-    <PageLayout className="pb-24" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="CPD log"
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
+    <DSMTopSheet title="CPD">
+      <div style={POPPINS}>
       {/* Action bar */}
       <div
         style={{
@@ -425,7 +413,8 @@ function CpdPage() {
         )}
       </BottomSheet>
       {confirmSheet}
-    </PageLayout>
+      </div>
+    </DSMTopSheet>
   );
 }
 
