@@ -155,6 +155,7 @@ interface Pupil {
   prepaid_hours?: number | null;
   address?: string | null;
   postcode?: string | null;
+  phone?: string | null;
   test_status?: string | null;
 
 }
