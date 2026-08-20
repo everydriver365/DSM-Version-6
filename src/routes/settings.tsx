@@ -2238,6 +2238,12 @@ function SettingsPage() {
             onClick={() => navigate({ to: "/privacy" })}
             isFirst
           />
+          <MenuRow
+            icon={<IconFileText size={18} color="#1877D6" />}
+            iconBg="#E7F1FC"
+            label="Terms of Service"
+            onClick={() => navigate({ to: "/terms" })}
+          />
         </SectionCard>
 
         <Label>SUPPORT</Label>
