@@ -1,12 +1,12 @@
 import DSMSkeleton from "@/components/dsm/DSMSkeleton";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { IconBell, IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
-import { tapLight, tapMedium, hapticSuccess } from "@/lib/haptics";
+import { tapLight, tapMedium, tapHeavy, hapticSuccess } from "@/lib/haptics";
 import { getPupilBalance } from "@/lib/payments";
 
 import { PageLayout } from "@/components/PageLayout";
@@ -170,6 +170,8 @@ function PupilsIndexPage() {
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [addLessonPupilId, setAddLessonPupilId] = useState<string | undefined>();
   const [archiveTarget, setArchiveTarget] = useState<{ id: string; name: string } | null>(null);
+  const [swipedId, setSwipedId] = useState<string | null>(null);
+  const touchStartX = useRef(0);
   const [unreadMap, setUnreadMap] = useState<Record<string, number>>({});
   const [nextLessonMap, setNextLessonMap] = useState<Record<string, string>>({});
   const [testDateMap, setTestDateMap] = useState<Record<string, string>>({});
@@ -654,6 +656,7 @@ function PupilsIndexPage() {
         role="button"
         tabIndex={0}
         onClick={() => {
+          if (swipedId === p.id) { setSwipedId(null); return; }
           tapLight();
           navigate({ to: "/pupils/$id", params: { id: p.id } });
         }}
@@ -663,12 +666,21 @@ function PupilsIndexPage() {
             navigate({ to: "/pupils/$id", params: { id: p.id } });
           }
         }}
+        onTouchStart={(e) => {
+          e.currentTarget.style.transform = "scale(0.98)";
+          e.currentTarget.style.opacity = "0.9";
+        }}
+        onTouchEnd={(e) => {
+          e.currentTarget.style.transform = "scale(1)";
+          e.currentTarget.style.opacity = "1";
+        }}
         onContextMenu={(e) => e.preventDefault()}
         className="block cursor-pointer select-none"
         style={{
           background: "transparent",
           padding: "13px 16px",
           WebkitTouchCallout: "none",
+          transition: "transform 0.1s ease, opacity 0.1s ease",
         }}
       >
         <div className="flex items-center" style={{ gap: 12 }}>
@@ -792,6 +804,80 @@ function PupilsIndexPage() {
       </div>
     );
   };
+
+  const swipeActionBtn = {
+    width: 72,
+    color: "#fff",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 12,
+    fontWeight: 700,
+    border: "none",
+    cursor: "pointer",
+    ...POPPINS,
+  } as const;
+
+  const renderSwipeRow = (p: any, cardStyle: React.CSSProperties) => {
+    const swiped = swipedId === p.id;
+    return (
+      <div
+        key={p.id}
+        style={{ position: "relative", overflow: "hidden", ...cardStyle }}
+      >
+        <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, display: "flex" }}>
+          <button
+            type="button"
+            style={{ ...swipeActionBtn, background: "#1877D6" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              tapLight();
+              setSwipedId(null);
+              navigate({ to: "/messages/$pupilId", params: { pupilId: p.id } });
+            }}
+          >
+            Message
+          </button>
+          <button
+            type="button"
+            style={{ ...swipeActionBtn, background: "#CC2229" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              tapHeavy();
+              setSwipedId(null);
+              setArchiveTarget({ id: p.id, name: displayName(p.name) });
+            }}
+          >
+            Archive
+          </button>
+        </div>
+        <div
+          onTouchStart={(e) => {
+            touchStartX.current = e.touches[0].clientX;
+          }}
+          onTouchEnd={(e) => {
+            const diff = touchStartX.current - e.changedTouches[0].clientX;
+            if (diff > 60) {
+              tapLight();
+              setSwipedId(p.id);
+            } else if (diff < -20) {
+              setSwipedId(null);
+            }
+          }}
+          style={{
+            position: "relative",
+            background: "#fff",
+            transform: swiped ? "translateX(-144px)" : "translateX(0)",
+            transition: "transform 0.2s ease",
+          }}
+        >
+          {renderRow(p, 0, 1)}
+        </div>
+      </div>
+    );
+  };
+
+
 
 
   return (
@@ -1166,20 +1252,14 @@ function PupilsIndexPage() {
                   Needs Attention
                 </div>
                 <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {needsAttention.map((p, index) => (
-                    <div
-                      key={p.id}
-                      style={{
-                        background: '#fff',
-                        borderRadius: 8,
-                        padding: 14,
-                        boxShadow: '0 3px 0 #F7C9C6, 0 8px 18px rgba(255,59,48,0.1)',
-                        border: '1.5px solid #FDEDEC',
-                      }}
-                    >
-                      {renderRow(p, index, needsAttention.length)}
-                    </div>
-                  ))}
+                  {needsAttention.map((p) =>
+                    renderSwipeRow(p, {
+                      background: '#fff',
+                      borderRadius: 8,
+                      boxShadow: '0 3px 0 #F7C9C6, 0 8px 18px rgba(255,59,48,0.1)',
+                      border: '1.5px solid #FDEDEC',
+                    })
+                  )}
                 </div>
               </>
             )}
@@ -1199,19 +1279,13 @@ function PupilsIndexPage() {
               </div>
             )}
             <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {(statusFilter === "active" ? activePupils : filtered).map((p) => (
-                <div
-                  key={p.id}
-                  style={{
-                    background: '#fff',
-                    borderRadius: 8,
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                    overflow: 'hidden',
-                  }}
-                >
-                  {renderRow(p, 0, 1)}
-                </div>
-              ))}
+              {(statusFilter === "active" ? activePupils : filtered).map((p) =>
+                renderSwipeRow(p, {
+                  background: '#fff',
+                  borderRadius: 8,
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                })
+              )}
             </div>
           </>
         )}

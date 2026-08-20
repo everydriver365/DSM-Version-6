@@ -806,12 +806,21 @@ function NotificationsPage() {
                       <div
                         role="button"
                         tabIndex={0}
-                        onClick={() => { void handleNotificationTap(n); }}
+                        onClick={() => { tapLight(); void handleNotificationTap(n); }}
+                        onTouchStart={(e) => {
+                          e.currentTarget.style.transform = "scale(0.98)";
+                          e.currentTarget.style.opacity = "0.9";
+                        }}
+                        onTouchEnd={(e) => {
+                          e.currentTarget.style.transform = "scale(1)";
+                          e.currentTarget.style.opacity = "1";
+                        }}
                         className="w-full text-left cursor-pointer"
                         style={{
                           background: n.read ? "#FFFFFF" : "#F5F9FF",
                           padding: "13px 16px",
                           position: "relative",
+                          transition: "transform 0.1s ease, opacity 0.1s ease",
                         }}
                       >
                         <div className="flex items-start gap-3">
