@@ -298,7 +298,7 @@ function AdminApplicationsPage() {
               onClick={() => setFilter(k)}
               style={{
                 flexShrink: 0,
-                padding: "10px 18px",
+                padding: "12px 16px",
                 borderRadius: tokens.radiusCard,
                 fontSize: 13.5,
                 fontWeight: tokens.fontWeight.bold,

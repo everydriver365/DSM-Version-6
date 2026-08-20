@@ -52,7 +52,7 @@ interface Listing {
 const CARD: React.CSSProperties = {
   background: "#fff",
   borderRadius: tokens.radiusCard,
-  padding: 18,
+  padding: 16,
   boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
 };
 
@@ -110,7 +110,7 @@ function SellerProfilePage() {
       <PageHeader title={supplier?.name ?? "Seller"} backTo="/marketplace" />
 
       <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 16 }}>
-        <div style={{ ...CARD, display: "flex", gap: 13, alignItems: "center" }}>
+        <div style={{ ...CARD, display: "flex", gap: 12, alignItems: "center" }}>
           <div
             style={{
               width: 56,

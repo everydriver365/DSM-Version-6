@@ -189,7 +189,7 @@ function MarketplaceEditPage() {
   };
   const inputStyle: CSSProperties = {
     width: "100%",
-    padding: "8px 10px",
+    padding: "8px 16px",
     border: "1px solid #e2e8f0",
     borderRadius: tokens.radiusCard,
     fontSize: tokens.fontSize.md,
@@ -209,7 +209,7 @@ function MarketplaceEditPage() {
               background: "#fef2f2",
               border: "1px solid #fecaca",
               color: "#B91C1C",
-              padding: 12,
+              padding: 16,
               borderRadius: tokens.radiusCard,
               marginBottom: 12,
               fontSize: tokens.fontSize.base,
@@ -246,7 +246,7 @@ function MarketplaceEditPage() {
                   style={{
                     border: "1px solid #e2e8f0",
                     borderRadius: tokens.radiusCard,
-                    padding: 14,
+                    padding: 16,
                     marginBottom: 14,
                     background: "#fff",
                   }}
@@ -393,7 +393,7 @@ function MarketplaceEditPage() {
                         background: tokens.navy,
                         color: "#fff",
                         border: "none",
-                        padding: "10px 14px",
+                        padding: "12px 16px",
                         borderRadius: tokens.radiusCard,
                         fontWeight: tokens.fontWeight.semibold,
                         cursor: "pointer",
@@ -407,7 +407,7 @@ function MarketplaceEditPage() {
                         background: "#fff",
                         color: "#b91c1c",
                         border: "1px solid #fecaca",
-                        padding: "10px 14px",
+                        padding: "12px 16px",
                         borderRadius: tokens.radiusCard,
                         fontWeight: tokens.fontWeight.semibold,
                         cursor: "pointer",

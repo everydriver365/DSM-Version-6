@@ -158,7 +158,7 @@ function TimeField({ value, onChange }: { value: string; onChange: (v: string) =
   return (
     <label style={{
       flex: 1, background: FIELD_BG, borderRadius: tokens.radiusCard,
-      padding: "7px 10px", display: "flex", alignItems: "center",
+      padding: "7px 16px", display: "flex", alignItems: "center",
       justifyContent: "space-between", cursor: "pointer", position: "relative",
     }}>
       <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: NAVY }}>{value}</span>
@@ -184,7 +184,7 @@ function SelectField({ value, onChange, options, label }: {
       <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, marginBottom: 6 }}>{label}</div>
       <div style={{
         position: "relative", background: FIELD_BG, borderRadius: tokens.radiusCard,
-        padding: "10px 12px", display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <span style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: NAVY }}>
           {options.find(o => o.v === value)?.label ?? value}
@@ -441,7 +441,7 @@ function AvailabilitySettingsPage() {
       </div>
 
       {savedFlash ? (
-        <div style={{ margin: "12px 16px 0", padding: "8px 12px", background: "#E0FFF4", border: "0.5px solid #86EFAC", color: "#15803D", borderRadius: tokens.radiusCard, fontSize: 13 }}>
+        <div style={{ margin: "12px 16px 0", padding: "8px 16px", background: "#E0FFF4", border: "0.5px solid #86EFAC", color: "#15803D", borderRadius: tokens.radiusCard, fontSize: 13 }}>
           {savedFlash}
         </div>
       ) : null}
@@ -506,7 +506,7 @@ function AvailabilitySettingsPage() {
                     <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1 }}>
                       <label style={{
                         flex: 1, background: "#F2F2F7", borderRadius: tokens.radiusCard,
-                        padding: "9px 11px", display: "flex", alignItems: "center", justifyContent: "space-between",
+                        padding: "9px 16px", display: "flex", alignItems: "center", justifyContent: "space-between",
                         cursor: "pointer", position: "relative",
                       }}>
                         <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: "#000", ...FONT }}>{cfg.start}</span>
@@ -523,7 +523,7 @@ function AvailabilitySettingsPage() {
                       <span style={{ fontSize: 12.5, fontWeight: tokens.fontWeight.medium, color: "#B0B0B5", ...FONT }}>to</span>
                       <label style={{
                         flex: 1, background: "#F2F2F7", borderRadius: tokens.radiusCard,
-                        padding: "9px 11px", display: "flex", alignItems: "center", justifyContent: "space-between",
+                        padding: "9px 16px", display: "flex", alignItems: "center", justifyContent: "space-between",
                         cursor: "pointer", position: "relative",
                       }}>
                         <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: "#000", ...FONT }}>{cfg.end}</span>

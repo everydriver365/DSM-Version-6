@@ -2573,7 +2573,7 @@ function PupilDetailPage() {
                   <div
                     style={{
                       marginTop: 12,
-                      padding: "10px 12px",
+                      padding: "12px 16px",
                       borderRadius: tokens.radiusCard,
                       backgroundColor: "#FEF2F2",
                       border: "1px solid #FECACA",
@@ -2589,7 +2589,7 @@ function PupilDetailPage() {
                   <div
                     style={{
                       marginTop: 12,
-                      padding: "10px 12px",
+                      padding: "12px 16px",
                       borderRadius: tokens.radiusCard,
                       backgroundColor: "#F0FDF4",
                       border: "1px solid #DBEAFE",
@@ -3046,7 +3046,7 @@ function PupilDetailPage() {
                             type="button"
                             disabled={savingMockResult}
                             onClick={() => updateMockResult("Passed")}
-                            style={{ flex: 1, padding: "10px 12px", borderRadius: tokens.radiusCard, border: "none", background: "#1E8E5A", color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: 600 }}
+                            style={{ flex: 1, padding: "12px 16px", borderRadius: tokens.radiusCard, border: "none", background: "#1E8E5A", color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: 600 }}
                           >
                             Passed
                           </button>
@@ -3054,7 +3054,7 @@ function PupilDetailPage() {
                             type="button"
                             disabled={savingMockResult}
                             onClick={() => updateMockResult("Failed")}
-                            style={{ flex: 1, padding: "10px 12px", borderRadius: tokens.radiusCard, border: "none", background: tokens.red, color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: 600 }}
+                            style={{ flex: 1, padding: "12px 16px", borderRadius: tokens.radiusCard, border: "none", background: tokens.red, color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: 600 }}
                           >
                             Failed
                           </button>
@@ -3088,7 +3088,7 @@ function PupilDetailPage() {
                       <button
                         type="button"
                         onClick={() => setViewingDl25(mt)}
-                        style={{ width: "100%", padding: "10px 12px", borderRadius: tokens.radiusCard, border: "1px solid #1877D6", background: tokens.white, color: tokens.blue, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, marginBottom: 16, ...POPPINS }}
+                        style={{ width: "100%", padding: "12px 16px", borderRadius: tokens.radiusCard, border: "1px solid #1877D6", background: tokens.white, color: tokens.blue, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, marginBottom: 16, ...POPPINS }}
                       >
                         View DL25
                       </button>
@@ -3102,14 +3102,14 @@ function PupilDetailPage() {
                       onChange={(e) => setMockNotesDraft(e.target.value)}
                       rows={4}
                       placeholder="Add notes for this mock test…"
-                      style={{ width: "100%", padding: 10, borderRadius: tokens.radiusCard, border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.base, color: tokens.navy, resize: "vertical", ...POPPINS }}
+                      style={{ width: "100%", padding: 16, borderRadius: tokens.radiusCard, border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.base, color: tokens.navy, resize: "vertical", ...POPPINS }}
                     />
                     <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
                       <button
                         type="button"
                         disabled={savingMockNotes || mockNotesDraft === (mt.notes ?? "")}
                         onClick={saveMockNotes}
-                        style={{ padding: "8px 14px", borderRadius: tokens.radiusCard, border: "none", background: tokens.blue, color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, opacity: (savingMockNotes || mockNotesDraft === (mt.notes ?? "")) ? 0.6 : 1 }}
+                        style={{ padding: "8px 16px", borderRadius: tokens.radiusCard, border: "none", background: tokens.blue, color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, opacity: (savingMockNotes || mockNotesDraft === (mt.notes ?? "")) ? 0.6 : 1 }}
                       >
                         {savingMockNotes ? "Saving…" : "Save"}
                       </button>
@@ -3152,7 +3152,7 @@ function PupilDetailPage() {
                   background: tokens.white,
                   borderRadius: tokens.radiusCard,
                   border: "0.5px solid rgba(11,31,58,0.10)",
-                  padding: "20px 16px",
+                  padding: "16px 16px",
                   marginTop: 12,
                   textAlign: "center",
                   ...POPPINS,
@@ -3405,7 +3405,7 @@ function PupilDetailPage() {
                     </div>
                   )}
                   {!isPast && !isCancelled && (
-                    <div style={{ display: 'flex', gap: 3, background: '#F2F2F7', borderRadius: tokens.radiusCard, padding: 3, marginTop: 12 }}>
+                    <div style={{ display: 'flex', gap: 4, background: '#F2F2F7', borderRadius: tokens.radiusCard, padding: 3, marginTop: 12 }}>
                       {([
                         { key: "here" as const, label: "Here", icon: <IconMapPin stroke={1.5} size={15} />, msg: `Hi ${firstName}, I'm outside whenever you're ready 👋` },
                         { key: "going" as const, label: "Going", icon: <IconSend stroke={1.5} size={15} />, msg: `Hi ${firstName}, on the way!` },
@@ -3483,7 +3483,7 @@ function PupilDetailPage() {
                 </div>
                 <div
                   style={{
-                    background: "#F2F2F7", borderRadius: tokens.radiusCard, padding: "10px 12px",
+                    background: "#F2F2F7", borderRadius: tokens.radiusCard, padding: "12px 16px",
                     fontSize: 13.5, color: lastMessage ? "#0B1F3A" : "#8A8A8E", ...POPPINS,
                     overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                   }}
@@ -3497,7 +3497,7 @@ function PupilDetailPage() {
 
               {/* Outstanding balance card */}
               {balance > 0 && !isPaid && (
-                <div style={{ background: "#FFF8E8", borderRadius: tokens.radiusCard, border: "0.5px solid #F0D28A", padding: 14, marginTop: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ background: "#FFF8E8", borderRadius: tokens.radiusCard, border: "0.5px solid #F0D28A", padding: 16, marginTop: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div>
                     <div style={{ fontSize: 12, color: "#8A5A00", fontWeight: tokens.fontWeight.semibold, textTransform: "uppercase", letterSpacing: 0.3, ...POPPINS }}>Outstanding</div>
                     <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.bold, color: tokens.navy, ...POPPINS }}>£{balance.toFixed(2)}</div>
@@ -3921,7 +3921,7 @@ function PupilDetailPage() {
                   style={{
                     background: "#FDEDEC",
                     borderRadius: tokens.radiusCard,
-                    padding: "10px 12px",
+                    padding: "12px 16px",
                     marginTop: 12,
                     color: "#B02318",
                     fontSize: 11.5,
@@ -5119,7 +5119,7 @@ function PupilExtras({
             type="button"
             onClick={() => setEmgOpen((v) => !v)}
             aria-expanded={emgOpen}
-            style={{ width: "100%", padding: 16, display: "flex", flexDirection: "row", gap: 11, alignItems: "center", background: "none", border: "none", textAlign: "left" }}
+            style={{ width: "100%", padding: 16, display: "flex", flexDirection: "row", gap: 12, alignItems: "center", background: "none", border: "none", textAlign: "left" }}
           >
             <IconHeart stroke={1.6} size={18} color="#FF3B30" style={{ flexShrink: 0 }} />
             <span style={{ flex: 1, minWidth: 0 }}>
@@ -5208,7 +5208,7 @@ function PupilExtras({
             type="button"
             onClick={() => setLicOpen((v) => !v)}
             aria-expanded={licOpen}
-            style={{ width: "100%", padding: 16, display: "flex", flexDirection: "row", gap: 11, alignItems: "center", background: "none", border: "none", textAlign: "left" }}
+            style={{ width: "100%", padding: 16, display: "flex", flexDirection: "row", gap: 12, alignItems: "center", background: "none", border: "none", textAlign: "left" }}
           >
             <IconCreditCard stroke={1.6} size={18} color="#1877D6" style={{ flexShrink: 0 }} />
             <span style={{ flex: 1, minWidth: 0 }}>

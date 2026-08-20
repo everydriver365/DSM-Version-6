@@ -279,7 +279,7 @@ function PerkDetailPage() {
               background: tokens.blue,
               color: "#fff",
               borderRadius: tokens.radiusCard,
-              padding: "7px 14px",
+              padding: "7px 16px",
               fontSize: 12,
               fontWeight: tokens.fontWeight.bold,
               border: "none",
@@ -303,7 +303,7 @@ function PerkDetailPage() {
             fontSize: tokens.fontSize.xs,
             fontWeight: tokens.fontWeight.bold,
             borderRadius: tokens.radiusCard,
-            padding: "3px 10px",
+            padding: "3px 16px",
             marginBottom: 8,
           }}
         >
@@ -474,7 +474,7 @@ function PerkDetailPage() {
                 background: tokens.blue,
                 color: "#fff",
                 borderRadius: tokens.radiusCard,
-                padding: 14,
+                padding: 16,
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.extrabold,
                 width: "100%",
@@ -498,7 +498,7 @@ function PerkDetailPage() {
                     fontSize: tokens.fontSize.xs,
                     fontWeight: tokens.fontWeight.bold,
                     borderRadius: tokens.radiusCard,
-                    padding: "3px 10px",
+                    padding: "3px 16px",
                   }}
                 >
                   ✓ {TIER_DISPLAY[t] ?? t}
@@ -528,7 +528,7 @@ function PerkDetailPage() {
               background: "#15803D",
               color: "#fff",
               borderRadius: tokens.radiusCard,
-              padding: 14,
+              padding: 16,
               fontSize: 15,
               fontWeight: tokens.fontWeight.extrabold,
               width: "100%",

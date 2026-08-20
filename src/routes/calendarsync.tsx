@@ -60,7 +60,7 @@ const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const SECTION_CARD: React.CSSProperties = {
   background: "#fff",
   borderRadius: tokens.radiusCard,
-  padding: 18,
+  padding: 16,
   boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.06)",
   marginBottom: 24,
 };
@@ -87,7 +87,7 @@ const FIELD_INPUT: React.CSSProperties = {
   ...POPPINS,
   background: "#F2F2F7",
   borderRadius: tokens.radiusCard,
-  padding: "13px 15px",
+  padding: "14px 16px",
   border: "none",
   outline: "none",
   color: "#6B6B6F",
@@ -878,7 +878,7 @@ function CalendarSyncPage() {
                 marginBottom: 12,
                 background: "#FEF2F2",
                 borderRadius: tokens.radiusCard,
-                padding: "12px 14px",
+                padding: "12px 16px",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -1015,7 +1015,7 @@ function CalendarSyncPage() {
             borderStyle: "solid",
             borderColor: tokens.blue,
             borderRadius: tokens.radiusCard,
-            padding: 12,
+            padding: 16,
           }}
         >
           <IconAlertTriangle size={20} color="#1877D6" className="shrink-0 mt-0.5" />

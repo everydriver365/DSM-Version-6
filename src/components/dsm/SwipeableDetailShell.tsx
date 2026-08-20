@@ -141,7 +141,7 @@ export function SwipeableDetailShell<T>({
             left: 16,
             right: 16,
             display: "flex",
-            gap: 5,
+            gap: 4,
             pointerEvents: "none",
             zIndex: 5,
           }}
@@ -172,7 +172,7 @@ export function SwipeableDetailShell<T>({
             fontSize: tokens.fontSize.base,
             fontWeight: tokens.fontWeight.bold,
             background: "rgba(0,0,0,0.3)",
-            padding: "6px 12px",
+            padding: "6px 16px",
             borderRadius: tokens.radiusCard,
             ...POPPINS,
           }}

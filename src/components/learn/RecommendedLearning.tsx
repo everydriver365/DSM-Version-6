@@ -91,11 +91,11 @@ export default function RecommendedLearning({ faults }: { faults: FaultMap | nul
         background: tokens.white,
         borderRadius: tokens.radiusCard,
         boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-        padding: 14,
+        padding: 16,
         fontFamily: FONT,
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 4 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
         <IconSparkles stroke={1.6} size={17} color={BLUE} />
         <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: NAVY }}>Recommended learning</div>
       </div>
@@ -159,7 +159,7 @@ export default function RecommendedLearning({ faults }: { faults: FaultMap | nul
                 background: "#F7F9FC",
                 border: "none",
                 borderRadius: tokens.radiusCard,
-                padding: "9px 10px",
+                padding: "9px 16px",
                 marginBottom: 6,
                 cursor: "pointer",
                 fontFamily: FONT,

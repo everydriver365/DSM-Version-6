@@ -525,7 +525,7 @@ function AdminListingsPage() {
             marginLeft: "auto",
             display: "inline-flex",
             alignItems: "center",
-            gap: 5,
+            gap: 4,
             background: tokens.blue,
             color: "#fff",
             border: "none",
@@ -597,7 +597,7 @@ function AdminListingsPage() {
                 style={{
                   whiteSpace: "nowrap",
                   flexShrink: 0,
-                  padding: "10px 18px",
+                  padding: "12px 16px",
                   borderRadius: tokens.radiusCard,
                   border: "none",
                   background: active ? "#1877D6" : "#fff",
@@ -635,7 +635,7 @@ function AdminListingsPage() {
                 style={{
                   background: "#fff",
                   borderRadius: tokens.radiusCard,
-                  padding: 18,
+                  padding: 16,
                   marginLeft: 16,
                   marginRight: 16,
                   marginBottom: 14,
@@ -676,7 +676,7 @@ function AdminListingsPage() {
                           color: "#FF3B30",
                           fontSize: 12,
                           fontWeight: tokens.fontWeight.extrabold,
-                          padding: "6px 10px",
+                          padding: "6px 16px",
                           borderRadius: tokens.radiusCard,
                         }}
                       >
@@ -1033,7 +1033,7 @@ function SupplierListingSheet({
                     onClick={() => upd("priceType", t)}
                     style={{
                       flex: 1,
-                      padding: "8px 10px",
+                      padding: "8px 16px",
                       borderRadius: tokens.radiusCard,
                       border: "0.5px solid #E2E6ED",
                       background: draft.priceType === t ? "#0B1F3A" : "#fff",
@@ -1061,7 +1061,7 @@ function SupplierListingSheet({
                     onClick={() => upd("contactType", t)}
                     style={{
                       flex: 1,
-                      padding: "8px 10px",
+                      padding: "8px 16px",
                       borderRadius: tokens.radiusCard,
                       border: "0.5px solid #E2E6ED",
                       background: draft.contactType === t ? "#0B1F3A" : "#fff",
@@ -1257,7 +1257,7 @@ function StatCard({ label, value }: { label: string; value: number; color?: stri
         background: "#fff",
         border: "0.5px solid #E2E6ED",
         borderRadius: tokens.radiusCard,
-        padding: 12,
+        padding: 16,
         fontFamily: "Poppins, sans-serif",
       }}
     >
@@ -1297,7 +1297,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 const inputStyle: React.CSSProperties = {
   border: "0.5px solid #E2E6ED",
   borderRadius: tokens.radiusCard,
-  padding: "8px 10px",
+  padding: "8px 16px",
   fontSize: tokens.fontSize.base,
   fontFamily: "Poppins, sans-serif",
   color: tokens.navy,
@@ -1313,7 +1313,7 @@ function primaryBtn(bg: string): React.CSSProperties {
     color: "#fff",
     border: "none",
     borderRadius: tokens.radiusCard,
-    padding: "8px 12px",
+    padding: "8px 16px",
     fontSize: tokens.fontSize.base,
     fontWeight: tokens.fontWeight.semibold,
     cursor: "pointer",
@@ -1325,7 +1325,7 @@ const ghostBtn: React.CSSProperties = {
   color: tokens.navy,
   border: "1px solid #0B1F3A",
   borderRadius: tokens.radiusCard,
-  padding: "8px 12px",
+  padding: "8px 16px",
   fontSize: tokens.fontSize.base,
   fontWeight: tokens.fontWeight.semibold,
   cursor: "pointer",

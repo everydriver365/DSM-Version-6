@@ -616,7 +616,7 @@ function SuccessScreen({ onBack }: { onBack: () => void }) {
         onClick={onBack}
         style={{
           marginTop: 28,
-          padding: "12px 20px",
+          padding: "12px 16px",
           borderRadius: tokens.radiusCard,
           border: "none",
           background: BLUE,
@@ -717,7 +717,7 @@ function Banner({
           onClick={onAction}
           style={{
             marginTop: 16,
-            padding: "10px 18px",
+            padding: "12px 16px",
             borderRadius: tokens.radiusCard,
             border: "none",
             background: BLUE,

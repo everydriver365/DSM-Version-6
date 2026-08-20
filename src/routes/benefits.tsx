@@ -476,7 +476,7 @@ function BenefitsPage() {
             background: t.id === 'managed' ? '#D68A1B' : t.btnBg,
             color: '#fff',
             borderRadius: tokens.radiusCard,
-            padding: 12,
+            padding: 16,
             fontSize: tokens.fontSize.md,
             fontWeight: tokens.fontWeight.bold,
             marginTop: 12,
@@ -533,7 +533,7 @@ function BenefitsPage() {
             margin: 16,
             background: 'linear-gradient(135deg, #14509E, #0B1F3A)',
             borderRadius: tokens.radiusCard,
-            padding: 20,
+            padding: 16,
             boxShadow: '0 4px 0 #091628',
           }}
         >
@@ -700,11 +700,11 @@ function BenefitsPage() {
                 padding: '0 16px 12px',
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
-                gap: 5,
+                gap: 4,
               }}
             >
               {benefit.perks.map((perk) => (
-                <div key={perk} style={{ display: 'flex', gap: 5, alignItems: 'flex-start' }}>
+                <div key={perk} style={{ display: 'flex', gap: 4, alignItems: 'flex-start' }}>
                   <IconCheck size={12} color="#15803D" stroke={2} style={{ marginTop: 1, flexShrink: 0 }} />
                   <span style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', lineHeight: 1.4 }}>{perk}</span>
                 </div>

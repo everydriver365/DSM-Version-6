@@ -110,7 +110,7 @@ export function PrimaryBtn({ to, children, className, onClick }: { to: string; c
         display: "inline-flex",
         alignItems: "center",
         gap: 8,
-        padding: "10px 24px",
+        padding: "12px 16px",
         borderRadius: tokens.radiusCard,
         background: BLUE,
         color: "#fff",

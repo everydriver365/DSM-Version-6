@@ -593,7 +593,7 @@ export function PersonalEventSheet({
             disabled={saving}
             style={{
               width: "100%",
-              padding: "13px 16px",
+              padding: "14px 16px",
               borderRadius: tokens.radiusCard,
               border: "none",
               background: saving ? "#8FB6E4" : blue,

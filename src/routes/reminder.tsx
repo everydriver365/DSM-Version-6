@@ -261,7 +261,7 @@ function ReminderPage() {
           <div
             className="mt-3 text-[13px]"
             style={{
-              padding: 12,
+              padding: 16,
               borderRadius: tokens.radiusCard,
               backgroundColor: "#F3F8FF",
               color: tokens.navy,

@@ -110,7 +110,7 @@ export function DailyCatchUpSheet({
                 display: "flex",
                 alignItems: "center",
                 gap: 12,
-                padding: "12px 14px",
+                padding: "12px 16px",
                 borderRadius: tokens.radiusCard,
                 background: "#F5F7FB",
                 border: "none",

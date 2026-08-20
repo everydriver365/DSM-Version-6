@@ -293,7 +293,7 @@ function BroadcastPage() {
           style={{
             width: "100%",
             fontSize: tokens.fontSize.base,
-            padding: "10px 12px",
+            padding: "12px 16px",
             borderRadius: tokens.radiusCard,
             backgroundColor: "#F8F9FB",
             color: NAVY,
@@ -413,7 +413,7 @@ function BroadcastPage() {
           style={{
             width: "100%",
             fontSize: tokens.fontSize.base,
-            padding: "10px 12px",
+            padding: "12px 16px",
             borderRadius: tokens.radiusCard,
             backgroundColor: "#F8F9FB",
             color: NAVY,

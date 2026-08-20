@@ -155,7 +155,7 @@ function AdminSectionTile({
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        gap: 13,
+        gap: 12,
         cursor: "pointer",
         textAlign: "left",
         fontFamily: "Poppins, sans-serif",
@@ -315,7 +315,7 @@ function FlaggedMessagesSection() {
                 key={m.id}
                 style={{
                   background: "#fff", border: "0.5px solid #EEF2F7", borderRadius: tokens.radiusCard,
-                  padding: 14, boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                  padding: 16, boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
@@ -332,7 +332,7 @@ function FlaggedMessagesSection() {
                 </div>
                 <div style={{
                   marginTop: 8, fontSize: tokens.fontSize.base, color: tokens.navy, lineHeight: 1.45,
-                  background: "#F7FAFC", borderRadius: tokens.radiusCard, padding: "10px 12px",
+                  background: "#F7FAFC", borderRadius: tokens.radiusCard, padding: "12px 16px",
                   whiteSpace: "pre-wrap", wordBreak: "break-word",
                 }}>
                   {m.message}
@@ -341,7 +341,7 @@ function FlaggedMessagesSection() {
                 {confirmBanId === m.id ? (
                   <div style={{
                     marginTop: 10, background: "#FEF2F2", border: "0.5px solid #FCA5A5",
-                    borderRadius: tokens.radiusCard, padding: 12,
+                    borderRadius: tokens.radiusCard, padding: 16,
                   }}>
                     <div style={{ fontSize: 12.5, color: "#7F1D1D", lineHeight: 1.45 }}>
                       Ban {who} from {roomName}? They will no longer be able to send messages.
@@ -713,7 +713,7 @@ function ChatRoomsSection() {
             <div
               key={room.id}
               style={{
-                padding: 12,
+                padding: 16,
                 borderRadius: tokens.radiusCard,
                 background: "#F8FAFC",
                 border: "1px solid #EEF2F7",
@@ -889,7 +889,7 @@ function ChatRoomsSection() {
                     style={{
                       borderRadius: tokens.radiusCard,
                       border: "1px solid #E4E8EF",
-                      padding: 10,
+                      padding: 16,
                       fontSize: tokens.fontSize.md,
                       background: "#fff",
                       resize: "vertical",
@@ -1296,7 +1296,7 @@ const removeImageBtnStyle: React.CSSProperties = {
   color: tokens.red,
   border: "none",
   borderRadius: tokens.radiusCard,
-  padding: "6px 12px",
+  padding: "6px 16px",
   fontSize: tokens.fontSize.sm,
   fontWeight: tokens.fontWeight.bold,
   cursor: "pointer",
@@ -1315,7 +1315,7 @@ const partnerInputStyle: React.CSSProperties = {
   background: "#fff",
   border: "1px solid #E4E8EF",
   borderRadius: tokens.radiusCard,
-  padding: "10px 12px",
+  padding: "12px 16px",
   fontSize: tokens.fontSize.md,
   fontFamily: "Poppins, sans-serif",
   width: "100%",
@@ -1647,7 +1647,7 @@ export function BenefitPartnersSection() {
             background: tokens.blue,
             color: "#fff",
             borderRadius: tokens.radiusCard,
-            padding: "6px 14px",
+            padding: "6px 16px",
             fontSize: 12,
             fontWeight: tokens.fontWeight.bold,
             border: "none",
@@ -1666,7 +1666,7 @@ export function BenefitPartnersSection() {
           background: "#fff",
           borderRadius: tokens.radiusCard,
           border: "1px solid #E4E8EF",
-          padding: 12,
+          padding: 16,
         }}
       >
         <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: tokens.navy, marginBottom: 10 }}>
@@ -1763,7 +1763,7 @@ export function BenefitPartnersSection() {
                   display: "flex",
                   alignItems: "center",
                   gap: 10,
-                  padding: "10px 12px",
+                  padding: "12px 16px",
                   background: "#F8FAFC",
                   borderRadius: tokens.radiusCard,
                   border: "1px solid #F0F4F8",
@@ -1890,7 +1890,7 @@ export function BenefitPartnersSection() {
                     fontSize: 9,
                     fontWeight: tokens.fontWeight.bold,
                     borderRadius: tokens.radiusCard,
-                    padding: "2px 7px",
+                    padding: "2px 16px",
                   }}
                 >
                   {PARTNER_TIERS.find((t) => t.id === partner.min_tier)?.label ?? partner.min_tier}
@@ -1961,7 +1961,7 @@ export function BenefitPartnersSection() {
                   background: tokens.canvas,
                   color: tokens.textSecondary,
                   borderRadius: tokens.radiusCard,
-                  padding: "4px 12px",
+                  padding: "4px 16px",
                   fontSize: tokens.fontSize.sm,
                   fontWeight: tokens.fontWeight.semibold,
                   border: "none",
@@ -2066,7 +2066,7 @@ export function BenefitPartnersSection() {
                     background: "#EFF6FF",
                     color: tokens.blue,
                     borderRadius: tokens.radiusCard,
-                    padding: "5px 12px",
+                    padding: "5px 16px",
                     fontSize: tokens.fontSize.sm,
                     fontWeight: tokens.fontWeight.bold,
                     border: "none",
@@ -2379,7 +2379,7 @@ export function BenefitPartnersSection() {
                   background: "#fff",
                   border: "1px solid #E4E8EF",
                   borderRadius: tokens.radiusCard,
-                  padding: "8px 14px",
+                  padding: "8px 16px",
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.bold,
                   color: tokens.blue,
@@ -2432,7 +2432,7 @@ export function BenefitPartnersSection() {
                 background: tokens.blue,
                 color: "#fff",
                 borderRadius: tokens.radiusCard,
-                padding: 14,
+                padding: 16,
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.extrabold,
                 border: "none",
@@ -2661,7 +2661,7 @@ export function BenefitPartnersSection() {
                   background: "#fff",
                   border: "1px solid #E4E8EF",
                   borderRadius: tokens.radiusCard,
-                  padding: "8px 14px",
+                  padding: "8px 16px",
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.bold,
                   color: tokens.blue,
@@ -2726,7 +2726,7 @@ export function BenefitPartnersSection() {
                   background: "#fff",
                   border: "1px solid #E4E8EF",
                   borderRadius: tokens.radiusCard,
-                  padding: "8px 14px",
+                  padding: "8px 16px",
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.bold,
                   color: tokens.blue,
@@ -2860,7 +2860,7 @@ export function BenefitPartnersSection() {
                           color: "#fff",
                           borderRadius: tokens.radiusCard,
                           fontSize: tokens.fontSize.xs,
-                          padding: "1px 5px",
+                          padding: "1px 16px",
                           fontFamily: "Poppins, sans-serif",
                         }}
                       >
@@ -2989,7 +2989,7 @@ export function BenefitPartnersSection() {
                     flex: 1,
                     borderRadius: tokens.radiusCard,
                     border: "none",
-                    padding: "6px 12px",
+                    padding: "6px 16px",
                     fontSize: tokens.fontSize.base,
                     fontWeight: tokens.fontWeight.semibold,
                     fontFamily: "Poppins, sans-serif",
@@ -3008,7 +3008,7 @@ export function BenefitPartnersSection() {
                     flex: 1,
                     borderRadius: tokens.radiusCard,
                     border: "none",
-                    padding: "6px 12px",
+                    padding: "6px 16px",
                     fontSize: tokens.fontSize.base,
                     fontWeight: tokens.fontWeight.semibold,
                     fontFamily: "Poppins, sans-serif",
@@ -3034,7 +3034,7 @@ export function BenefitPartnersSection() {
                       width: "100%",
                       border: "1px solid #E4E8EF",
                       borderRadius: tokens.radiusCard,
-                      padding: "10px 12px",
+                      padding: "12px 16px",
                       fontSize: tokens.fontSize.base,
                       fontFamily: "Poppins, sans-serif",
                       resize: "vertical",
@@ -3168,7 +3168,7 @@ export function BenefitPartnersSection() {
                 background: tokens.blue,
                 color: "#fff",
                 borderRadius: tokens.radiusCard,
-                padding: 14,
+                padding: 16,
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.extrabold,
                 border: "none",

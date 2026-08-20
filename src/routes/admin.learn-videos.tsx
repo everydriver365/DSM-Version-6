@@ -403,7 +403,7 @@ function VideoForm({
           placeholder="What will instructors learn from this video?"
           style={{
             width: "100%",
-            padding: "10px 12px",
+            padding: "12px 16px",
             border: "1px solid #E4E8EF",
             borderRadius: tokens.radiusCard,
             fontSize: tokens.fontSize.base,
@@ -1090,7 +1090,7 @@ function AdminLearnVideosPage() {
               border: "none",
               fontSize: 15,
               fontWeight: tokens.fontWeight.extrabold,
-              padding: 15,
+              padding: 16,
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -1135,7 +1135,7 @@ function AdminLearnVideosPage() {
                 style={{
                   background: "#fff",
                   borderRadius: tokens.radiusCard,
-                  padding: 14,
+                  padding: 16,
                   marginBottom: 0,
                   display: "flex",
                   alignItems: "center",

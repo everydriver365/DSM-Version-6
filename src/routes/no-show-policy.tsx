@@ -175,7 +175,7 @@ function NoShowPolicyPage() {
             style={{
               border: "0.5px solid #E2E6ED",
               borderRadius: tokens.radiusCard,
-              padding: "10px 12px",
+              padding: "12px 16px",
               ...FONT,
             }}
           >
@@ -202,7 +202,7 @@ function NoShowPolicyPage() {
               style={{
                 border: "0.5px solid #E2E6ED",
                 borderRadius: tokens.radiusCard,
-                padding: "10px 12px",
+                padding: "12px 16px",
                 ...FONT,
               }}
             />
@@ -229,7 +229,7 @@ function NoShowPolicyPage() {
               style={{
                 border: "0.5px solid #E2E6ED",
                 borderRadius: tokens.radiusCard,
-                padding: "10px 12px",
+                padding: "12px 16px",
                 ...FONT,
               }}
             />

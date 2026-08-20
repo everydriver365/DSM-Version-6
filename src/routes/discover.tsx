@@ -289,7 +289,7 @@ function Row({
           background: NAVY,
           color: tokens.white,
           borderRadius: tokens.radiusCard,
-          padding: "7px 12px",
+          padding: "7px 16px",
           fontSize: tokens.fontSize.sm,
           fontWeight: tokens.fontWeight.bold,
           letterSpacing: "0.04em",
@@ -354,7 +354,7 @@ function TabBar({
             onClick={() => onChange(t.id)}
             style={{
               flex: 1,
-              padding: "10px 8px",
+              padding: "12px 16px",
               borderRadius: tokens.radiusCard,
               border: "none",
               background: isActive ? NAVY : "#FFFFFF",
@@ -528,7 +528,7 @@ function DiscoverPage() {
                           fontSize: 8.5,
                           fontWeight: tokens.fontWeight.bold,
                           letterSpacing: "0.04em",
-                          padding: "2px 5px",
+                          padding: "2px 16px",
                           borderRadius: tokens.radiusCard,
                         }}
                       >

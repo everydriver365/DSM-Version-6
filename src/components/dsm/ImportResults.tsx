@@ -138,7 +138,7 @@ export default function ImportResults({
                 className="flex items-center"
                 style={{
                   gap: 10,
-                  padding: "10px 12px",
+                  padding: "12px 16px",
                   borderRadius: tokens.radiusCard,
                   backgroundColor: "#F7F9FC",
                 }}
@@ -171,7 +171,7 @@ export default function ImportResults({
                     style={{
                       borderRadius: tokens.radiusCard,
                       backgroundColor: v.valid ? "#F3F8FF" : "#FEF2F7",
-                      padding: 12,
+                      padding: 16,
                     }}
                   >
                     <div className="flex items-center justify-between">

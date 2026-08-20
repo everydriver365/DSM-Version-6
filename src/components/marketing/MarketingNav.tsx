@@ -453,7 +453,7 @@ function MegaPanel({
         </div>
       </div>
 
-      <div style={{ background: PANEL_BG, borderRadius: tokens.radiusCard, padding: "24px 26px", marginLeft: -8 }}>
+      <div style={{ background: PANEL_BG, borderRadius: tokens.radiusCard, padding: "24px 16px", marginLeft: -8 }}>
         <SectionLabel>{rightTitle}</SectionLabel>
         <Link
           to={rightHref}

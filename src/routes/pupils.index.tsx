@@ -1006,7 +1006,7 @@ function PupilsIndexPage() {
             aria-label="Message all pupils"
             className="inline-flex items-center gap-1.5"
             style={{
-              padding: "6px 12px",
+              padding: "6px 16px",
               borderRadius: tokens.radiusCard,
               backgroundColor: "#F3F8FF",
               border: "1px solid #EEF2F7",

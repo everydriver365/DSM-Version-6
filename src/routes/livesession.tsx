@@ -282,7 +282,7 @@ function LiveSessionPage() {
               width: "100%",
               minHeight: 160,
               borderRadius: tokens.radiusCard,
-              padding: 12,
+              padding: 16,
               background: "#ffffff",
               color: tokens.navy,
               fontSize: tokens.fontSize.md,
@@ -299,7 +299,7 @@ function LiveSessionPage() {
               fontSize: tokens.fontSize.xs,
               color: "#6B7280",
               background: "rgba(255,255,255,0.9)",
-              padding: "2px 6px",
+              padding: "2px 16px",
               borderRadius: tokens.radiusCard,
             }}
           >
@@ -344,7 +344,7 @@ function LiveSessionPage() {
                 width: "100%",
                 minHeight: 100,
                 borderRadius: tokens.radiusCard,
-                padding: 10,
+                padding: 16,
                 border: "0.5px solid #EEF2F7",
                 fontSize: tokens.fontSize.md,
                 fontFamily: "Poppins, sans-serif",

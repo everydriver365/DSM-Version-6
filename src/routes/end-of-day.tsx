@@ -367,7 +367,7 @@ function EndOfDayPage() {
               onClick={() => toast.success("Reminder set for 30 mins before first lesson")}
               style={{
                 marginTop: 10,
-                padding: "8px 12px",
+                padding: "8px 16px",
                 borderRadius: tokens.radiusCard,
                 background: tokens.blue,
                 color: tokens.white,
@@ -394,7 +394,7 @@ function EndOfDayPage() {
             rows={4}
             style={{
               width: "100%",
-              padding: 10,
+              padding: 16,
               paddingRight: 40,
               fontSize: tokens.fontSize.base,
               fontFamily: "Poppins, sans-serif",
@@ -583,7 +583,7 @@ function SmallBtn({ children, color, onClick }: { children: React.ReactNode; col
       type="button"
       onClick={onClick}
       style={{
-        padding: "6px 10px",
+        padding: "6px 16px",
         borderRadius: tokens.radiusCard,
         background: color,
         color: tokens.white,
@@ -610,7 +610,7 @@ function Stat({ label, value, color, hint }: { label: string; value: string; col
   return (
     <div
       style={{
-        padding: 14,
+        padding: 16,
         border: "0.5px solid #EEF2F7",
         borderRadius: tokens.radiusCard,
         backgroundColor: tokens.white,

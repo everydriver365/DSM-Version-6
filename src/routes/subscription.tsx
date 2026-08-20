@@ -181,7 +181,7 @@ function SubscriptionPage() {
             color: "#ffffff",
             fontSize: tokens.fontSize.sm,
             fontWeight: tokens.fontWeight.bold,
-            padding: "2px 8px",
+            padding: "2px 16px",
             borderRadius: tokens.radiusCard,
           }}
         >
@@ -257,7 +257,7 @@ function SubscriptionPage() {
             color: "#ffffff",
             fontSize: tokens.fontSize.xs,
             fontWeight: tokens.fontWeight.bold,
-            padding: "2px 8px",
+            padding: "2px 16px",
             borderRadius: tokens.radiusCard,
           }}
         >
@@ -423,7 +423,7 @@ function SubscriptionPage() {
                 background: tokens.navy,
                 color: "#fff",
                 borderRadius: tokens.radiusCard,
-                padding: 15,
+                padding: 16,
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.extrabold,
                 border: "none",

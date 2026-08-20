@@ -171,7 +171,7 @@ function InstructorMiniSite() {
 
   const btnPrimary: React.CSSProperties = {
     display: "inline-block",
-    padding: "14px 28px",
+    padding: "14px 16px",
     borderRadius: tokens.radiusCard,
     background: accent,
     color: theme.isDark && accent === "#FFFFFF" ? "#000" : "#FFFFFF",

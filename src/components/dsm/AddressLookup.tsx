@@ -464,7 +464,7 @@ export function AddressLookup({
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
-              padding: "6px 12px",
+              padding: "6px 16px",
               borderRadius: tokens.radiusCard,
               border: "0.5px solid #E2E6ED",
               background: "#fff",
@@ -611,7 +611,7 @@ export function AddressLookup({
         <div
           style={{
             marginTop: 6,
-            padding: "10px 12px",
+            padding: "12px 16px",
             background: "#F8FAFC",
             border: "0.5px solid #EEF2F7",
             borderRadius: tokens.radiusCard,

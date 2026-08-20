@@ -233,7 +233,7 @@ function NewPupilPage() {
               background: "#fff",
               border: "1px solid #E4E8EF",
               borderRadius: tokens.radiusCard,
-              padding: "13px 16px",
+              padding: "14px 16px",
               display: "flex",
               alignItems: "center",
               gap: 12,

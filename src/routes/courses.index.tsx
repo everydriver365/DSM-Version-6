@@ -249,7 +249,7 @@ function CoursesPage() {
                 color: "#fff",
                 border: "none",
                 borderRadius: tokens.radiusCard,
-                padding: "10px 16px",
+                padding: "12px 16px",
                 fontWeight: tokens.fontWeight.semibold,
                 fontSize: tokens.fontSize.md,
                 cursor: "pointer",
@@ -333,7 +333,7 @@ function CourseCard({
       style={{
         background: "#fff",
         borderRadius: tokens.radiusCard,
-        padding: 12,
+        padding: 16,
         marginBottom: 14,
         boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
       }}
@@ -407,7 +407,7 @@ function CourseCard({
                 color: "#fff",
                 fontSize: tokens.fontSize.xs,
                 fontWeight: tokens.fontWeight.extrabold,
-                padding: "5px 10px",
+                padding: "5px 16px",
                 borderRadius: tokens.radiusCard,
                 textTransform: "uppercase",
                 letterSpacing: "0.4px",
@@ -501,7 +501,7 @@ function CourseCard({
               color: soldOut ? "#6B6B6F" : "#248A3D",
               fontSize: 10.5,
               fontWeight: tokens.fontWeight.extrabold,
-              padding: "4px 11px",
+              padding: "4px 16px",
               borderRadius: tokens.radiusCard,
             }}
           >
@@ -555,7 +555,7 @@ function CourseCard({
             >
               Booked by
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 7, minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
               <span
                 style={{
                   color: tokens.navy,
@@ -574,7 +574,7 @@ function CourseCard({
                   color: paid ? "#248A3D" : "#FF3B30",
                   fontSize: 9.5,
                   fontWeight: tokens.fontWeight.extrabold,
-                  padding: "2px 8px",
+                  padding: "2px 16px",
                   borderRadius: tokens.radiusCard,
                   flexShrink: 0,
                 }}
@@ -597,7 +597,7 @@ function CourseCard({
             background: "#F2F2F7",
             color: tokens.navy,
             border: "none",
-            padding: 10,
+            padding: 16,
             borderRadius: tokens.radiusCard,
             fontSize: 12.5,
             fontWeight: tokens.fontWeight.bold,
@@ -616,7 +616,7 @@ function CourseCard({
             background: tokens.navy,
             color: "#fff",
             border: "none",
-            padding: 10,
+            padding: 16,
             borderRadius: tokens.radiusCard,
             fontSize: 12.5,
             fontWeight: tokens.fontWeight.bold,

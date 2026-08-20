@@ -346,7 +346,7 @@ function QuickLog({
       className="flex items-center"
       style={{
         gap: 10,
-        padding: 12,
+        padding: 16,
         borderRadius: tokens.radiusCard,
         border: "0.5px solid #EEF2F7",
         backgroundColor: tokens.white,
@@ -377,7 +377,7 @@ function MiniStat({ label, value }: { label: string; value: string }) {
   return (
     <div
       style={{
-        padding: 10,
+        padding: 16,
         borderRadius: tokens.radiusCard,
         backgroundColor: "#F8F9FB",
         border: "0.5px solid #EEF2F7",

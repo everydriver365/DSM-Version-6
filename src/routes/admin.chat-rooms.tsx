@@ -67,7 +67,7 @@ const inputStyle: React.CSSProperties = {
   background: "#F2F2F7",
   borderRadius: tokens.radiusCard,
   border: "none",
-  padding: "13px 15px",
+  padding: "14px 16px",
   fontSize: tokens.fontSize.md,
   fontFamily: "Poppins, sans-serif",
   color: "#000",
@@ -87,7 +87,7 @@ const segmentWrapStyle: React.CSSProperties = {
 function segmentStyle(active: boolean): React.CSSProperties {
   return {
     flex: 1,
-    padding: "11px 4px",
+    padding: "12px 16px",
     borderRadius: tokens.radiusCard,
     fontSize: tokens.fontSize.md,
     fontWeight: tokens.fontWeight.bold,
@@ -288,7 +288,7 @@ function AdminChatRooms() {
             background: "#fff",
             border: "none",
             borderRadius: tokens.radiusCard,
-            padding: 18,
+            padding: 16,
             display: "flex",
             flexDirection: "column",
             gap: 12,
@@ -341,7 +341,7 @@ function AdminChatRooms() {
             disabled={creating}
             style={{
               width: "100%",
-              padding: 15,
+              padding: 16,
               borderRadius: tokens.radiusCard,
               background: tokens.blue,
               color: "#fff",
@@ -378,7 +378,7 @@ function AdminChatRooms() {
               background: "#fff",
               border: "none",
               borderRadius: tokens.radiusCard,
-              padding: "13px 16px",
+              padding: "14px 16px",
               fontSize: tokens.fontSize.md,
               fontFamily: "Poppins, sans-serif",
               color: "#000",
@@ -407,7 +407,7 @@ function AdminChatRooms() {
               background: "#fff",
               border: "none",
               borderRadius: tokens.radiusCard,
-              padding: "13px 16px",
+              padding: "14px 16px",
               boxShadow: "0 4px 0 #E4E4E8, 0 10px 22px rgba(0,0,0,0.05)",
             }}
           >
@@ -453,7 +453,7 @@ function AdminChatRooms() {
                       color: tokens.blue,
                       background: "#E7F1FC",
                       borderRadius: tokens.radiusCard,
-                      padding: "5px 11px",
+                      padding: "5px 16px",
                       whiteSpace: "nowrap",
                     }}
                   >
@@ -510,7 +510,7 @@ function AdminChatRooms() {
                       display: "inline-flex",
                       alignItems: "center",
                       gap: 6,
-                      padding: "8px 14px",
+                      padding: "8px 16px",
                       borderRadius: tokens.radiusCard,
                       border: "1.5px solid #FF3B30",
                       background: "#fff",

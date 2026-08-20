@@ -548,7 +548,7 @@ function EditLessonPage() {
                   background: "#fff",
                   border: "1px solid #E4E8EF",
                   borderRadius: tokens.radiusCard,
-                  padding: "10px 12px",
+                  padding: "12px 16px",
                   fontSize: tokens.fontSize.md,
                   fontFamily: "Poppins, sans-serif",
                   outline: "none",
@@ -867,7 +867,7 @@ function EditLessonPage() {
                   background: "#fff",
                   border: "1px solid #FECACA",
                   borderRadius: tokens.radiusCard,
-                  padding: 14,
+                  padding: 16,
                 }}
               >
                 <div
@@ -922,7 +922,7 @@ function EditLessonPage() {
                     borderRadius: tokens.radiusCard,
                     fontFamily: "Poppins, sans-serif",
                     fontSize: tokens.fontSize.base,
-                    padding: 10,
+                    padding: 16,
                     boxSizing: "border-box",
                     resize: "vertical",
                   }}
@@ -973,7 +973,7 @@ function EditLessonPage() {
                                 flex: 1,
                                 border: "1px solid #E4E8EF",
                                 borderRadius: tokens.radiusCard,
-                                padding: "10px 12px",
+                                padding: "12px 16px",
                                 fontFamily: "Poppins, sans-serif",
                                 fontSize: tokens.fontSize.base,
                                 boxSizing: "border-box",
@@ -1142,7 +1142,7 @@ function EditLessonPage() {
                       background: tokens.red,
                       color: "#fff",
                       borderRadius: tokens.radiusCard,
-                      padding: 12,
+                      padding: 16,
                       width: "100%",
                       fontSize: tokens.fontSize.md,
                       fontWeight: tokens.fontWeight.semibold,
@@ -1165,7 +1165,7 @@ function EditLessonPage() {
                       background: "#F3F4F6",
                       color: "#374151",
                       borderRadius: tokens.radiusCard,
-                      padding: 12,
+                      padding: 16,
                       width: "100%",
                       fontSize: tokens.fontSize.md,
                       fontWeight: tokens.fontWeight.medium,

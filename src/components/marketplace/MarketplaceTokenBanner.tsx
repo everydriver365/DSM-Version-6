@@ -105,7 +105,7 @@ function PhoneMock() {
           marginTop: 8,
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: 5,
+          gap: 4,
         }}
       >
         {[0, 1, 2, 3].map((i) => (

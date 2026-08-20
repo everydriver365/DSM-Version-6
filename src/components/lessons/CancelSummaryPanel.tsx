@@ -59,7 +59,7 @@ export function CancelSummaryPanel({
         border: "1px solid #E4E8EF",
         borderRadius: tokens.radiusCard,
         background: "#F8FAFC",
-        padding: 12,
+        padding: 16,
         marginTop: 12,
         marginBottom: 12,
       }}

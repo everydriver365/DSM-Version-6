@@ -143,7 +143,7 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #E4E8EF",
   borderRadius: tokens.radiusCard,
-  padding: "10px 12px",
+  padding: "12px 16px",
   fontSize: tokens.fontSize.md,
   color: NAVY,
   background: "#fff",
@@ -708,7 +708,7 @@ function ShowcasePage() {
                 border: "none",
                 cursor: "pointer",
                 borderRadius: tokens.radiusCard,
-                padding: "6px 14px",
+                padding: "6px 16px",
                 fontSize: 12,
                 fontWeight: tokens.fontWeight.semibold,
                 background: active ? BLUE : "#fff",
@@ -980,7 +980,7 @@ function ShowcasePage() {
                       gap: 6,
                       background: "#F2F2F7",
                       borderRadius: tokens.radiusCard,
-                      padding: "9px 14px",
+                      padding: "9px 16px",
                       border: "none",
                       cursor: "pointer",
                       color: "#6B6B6F",
@@ -998,7 +998,7 @@ function ShowcasePage() {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      gap: 5,
+                      gap: 4,
                       marginLeft: "auto",
                       color: "#B0B0B5",
                       fontSize: 12.5,
@@ -1044,7 +1044,7 @@ function ShowcasePage() {
                       border: "none",
                       borderRadius: tokens.radiusCard,
                       boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-                      padding: "10px 12px",
+                      padding: "12px 16px",
                       display: "flex",
                       alignItems: "center",
                       gap: 10,
@@ -1198,7 +1198,7 @@ function ShowcasePage() {
                         fontSize: 8,
                         fontWeight: tokens.fontWeight.bold,
                         borderRadius: tokens.radiusCard,
-                        padding: "2px 6px",
+                        padding: "2px 16px",
                         ...POPPINS,
                       }}
                     >
@@ -1233,7 +1233,7 @@ function ShowcasePage() {
                         color: RED,
                         background: "#FCE9E9",
                         borderRadius: tokens.radiusCard,
-                        padding: "2px 6px",
+                        padding: "2px 16px",
                         ...POPPINS,
                       }}
                     >
@@ -1374,7 +1374,7 @@ function ShowcasePage() {
                     onClick={() => setCommentSort(s)}
                     style={{
                       borderRadius: tokens.radiusCard,
-                      padding: "5px 12px",
+                      padding: "5px 16px",
                       fontSize: 12,
                       fontWeight: tokens.fontWeight.bold,
                       border: "none",
@@ -1478,7 +1478,7 @@ function ShowcasePage() {
                         key={c.id}
                         style={{
                           display: "flex",
-                          gap: 11,
+                          gap: 12,
                           marginBottom: isReply ? 14 : 18,
                           alignItems: "flex-start",
                         }}
@@ -1506,7 +1506,7 @@ function ShowcasePage() {
                             style={{
                               display: "flex",
                               alignItems: "center",
-                              gap: 7,
+                              gap: 8,
                               flexWrap: "wrap",
                             }}
                           >
@@ -1595,7 +1595,7 @@ function ShowcasePage() {
                               style={{
                                 display: "inline-flex",
                                 alignItems: "center",
-                                gap: 5,
+                                gap: 4,
                                 padding: "5px 10px",
                                 borderRadius: 999,
                                 border: "none",
@@ -1622,7 +1622,7 @@ function ShowcasePage() {
                               style={{
                                 display: "inline-flex",
                                 alignItems: "center",
-                                gap: 5,
+                                gap: 4,
                                 padding: "5px 10px",
                                 borderRadius: 999,
                                 border: "none",

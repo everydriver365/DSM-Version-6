@@ -852,7 +852,7 @@ function PerksPage() {
                 background: '#1877D6',
                 color: '#fff',
                 borderRadius: tokens.radiusCard,
-                padding: 15,
+                padding: 16,
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.extrabold,
                 border: 'none',

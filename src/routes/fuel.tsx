@@ -443,7 +443,7 @@ function FuelPage() {
               style={{
                 marginTop: 12,
                 width: "100%",
-                padding: "12px 14px",
+                padding: "12px 16px",
                 background: NAVY,
                 color: tokens.white,
                 border: "none",
@@ -565,7 +565,7 @@ function FuelPage() {
 
 function pill(active: boolean): React.CSSProperties {
   return {
-    padding: "6px 14px",
+    padding: "6px 16px",
     borderRadius: tokens.radiusCard,
     fontSize: 12,
     fontWeight: tokens.fontWeight.medium,
@@ -766,7 +766,7 @@ function FindCheapFuel({
             onClick={retry}
             style={{
               marginTop: 12,
-              padding: "8px 18px",
+              padding: "8px 16px",
               borderRadius: tokens.radiusCard,
               border: "none",
               background: tokens.blue,
@@ -1013,7 +1013,7 @@ function cardStyle({ mt }: { mt: number }): React.CSSProperties {
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
-  padding: "10px 12px",
+  padding: "12px 16px",
   border: BORDER,
   borderRadius: tokens.radiusCard,
   fontSize: tokens.fontSize.md,

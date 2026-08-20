@@ -394,7 +394,7 @@ function TaxReportPage() {
           marginLeft: 16,
           marginRight: 16,
           marginTop: 12,
-          padding: 20,
+          padding: 16,
         }}
       >
         <div className="text-white text-[16px] font-semibold">Self assessment summary</div>

@@ -226,7 +226,7 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
             position: "absolute",
             bottom: 8,
             right: 8,
-            padding: "3px 8px",
+            padding: "3px 16px",
             borderRadius: tokens.radiusCard,
             background: "rgba(0,0,0,0.6)",
             color: "#fff",

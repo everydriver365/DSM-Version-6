@@ -329,7 +329,7 @@ function BriefingPage() {
                   </div>
                   <span style={{
                     background: statusColor(l.status), color: "#fff", fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold,
-                    padding: "2px 6px", borderRadius: tokens.radiusCard, textTransform: "uppercase", letterSpacing: 0.4,
+                    padding: "2px 16px", borderRadius: tokens.radiusCard, textTransform: "uppercase", letterSpacing: 0.4,
                   }}>
                     {l.status}
                   </span>

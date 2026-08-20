@@ -422,7 +422,7 @@ function LessonDetailPage() {
                       fontSize: tokens.fontSize.xs,
                       fontWeight: tokens.fontWeight.extrabold,
                       borderRadius: tokens.radiusCard,
-                      padding: "3px 10px",
+                      padding: "3px 16px",
                       display: "inline-block",
                       marginBottom: 8,
                       fontFamily: "Poppins, sans-serif",
@@ -659,7 +659,7 @@ function LessonDetailPage() {
                   background: "#FDF2F2",
                   border: "1px solid #F3C9CB",
                   borderRadius: tokens.radiusCard,
-                  padding: 12,
+                  padding: 16,
                 }}
               >
                 <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, letterSpacing: 0.4, color: tokens.red }}>

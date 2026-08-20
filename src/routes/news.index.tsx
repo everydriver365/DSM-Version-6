@@ -101,7 +101,7 @@ function NewsCard({
         background: tokens.white,
         border: important ? "1px solid #F3C0C2" : "1px solid #E3E8F0",
         borderRadius: tokens.radiusCard,
-        padding: 12,
+        padding: 16,
         cursor: "pointer",
         minWidth: compact ? 268 : undefined,
         maxWidth: compact ? 268 : undefined,
@@ -144,7 +144,7 @@ function NewsCard({
               textTransform: "uppercase",
               letterSpacing: "0.3px",
               borderRadius: tokens.radiusCard,
-              padding: "4px 9px",
+              padding: "4px 16px",
               ...POPPINS,
             }}
           >
@@ -192,7 +192,7 @@ function NewsCard({
               background: "#FFF8E7",
               border: "1px solid #F3E3BC",
               borderRadius: tokens.radiusCard,
-              padding: "6px 9px",
+              padding: "6px 16px",
               fontSize: 11.5,
               color: "#7A5B10",
               lineHeight: 1.35,
@@ -209,7 +209,7 @@ function NewsCard({
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 5,
+              gap: 4,
               fontSize: tokens.fontSize.sm,
               color: tokens.textMuted,
               minWidth: 0,
@@ -229,7 +229,7 @@ function NewsCard({
               color: "#fff",
               fontSize: 12,
               fontWeight: tokens.fontWeight.semibold,
-              padding: "7px 13px",
+              padding: "7px 16px",
               borderRadius: tokens.radiusCard,
               flexShrink: 0,
               ...POPPINS,
@@ -520,7 +520,7 @@ function NewsIndexPage() {
                   background: "#FFF3F3",
                   border: "1px solid #F3C0C2",
                   borderRadius: tokens.radiusCard,
-                  padding: "12px 14px",
+                  padding: "12px 16px",
                   ...POPPINS,
                 }}
               >

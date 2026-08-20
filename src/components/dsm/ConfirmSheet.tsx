@@ -41,7 +41,7 @@ export function ConfirmSheet({
             background: "#fff",
             borderRadius: tokens.radiusCard,
             boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-            padding: "15px 16px",
+            padding: "14px 16px",
           }}
         >
           <p
@@ -61,7 +61,7 @@ export function ConfirmSheet({
           onClick={onConfirm}
           style={{
             width: "100%",
-            padding: 15,
+            padding: 16,
             background: destructive ? "#CC2229" : "#1877D6",
             color: "#fff",
             border: "none",
@@ -79,7 +79,7 @@ export function ConfirmSheet({
           onClick={onCancel}
           style={{
             width: "100%",
-            padding: 15,
+            padding: 16,
             background: tokens.canvas,
             color: tokens.textSecondary,
             border: "none",

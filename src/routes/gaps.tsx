@@ -1746,7 +1746,7 @@ function GapsPage() {
                     style={{
                       background: "#F9FAFB",
                       borderRadius: tokens.radiusCard,
-                      padding: "8px 12px",
+                      padding: "8px 16px",
                       margin: "0 16px 10px",
                       display: "flex",
                       alignItems: "center",
@@ -1826,7 +1826,7 @@ function GapsPage() {
                         border: anySelected ? "1.5px solid #1877D6" : "1px solid #DCEAF7",
                         boxShadow: "0 4px 14px rgba(24,95,165,0.12)",
                         margin: "0 16px 18px",
-                        padding: "12px 14px",
+                        padding: "12px 16px",
                       }}
                     >
                       {anySelected && (
@@ -2025,7 +2025,7 @@ function GapsPage() {
                           style={{
                             background: "#E6F1FB",
                             borderRadius: tokens.radiusCard,
-                            padding: "10px 14px",
+                            padding: "12px 16px",
                             marginTop: 10,
                             display: "flex",
                             alignItems: "center",
@@ -2308,7 +2308,7 @@ function GapsPage() {
                   color: tokens.white,
                   border: "none",
                   borderRadius: tokens.radiusCard,
-                  padding: "8px 14px",
+                  padding: "8px 16px",
                   fontSize: tokens.fontSize.base,
                   fontWeight: tokens.fontWeight.semibold,
                   cursor: "pointer",
@@ -2503,7 +2503,7 @@ function GapsPage() {
                 style={{
                   background: "#F8FAFC",
                   borderRadius: tokens.radiusCard,
-                  padding: "10px 12px",
+                  padding: "12px 16px",
                   marginBottom: 6,
                   display: "flex",
                   alignItems: "center",
@@ -2539,7 +2539,7 @@ function GapsPage() {
             width: "70%",
             background: NAVY,
             borderRadius: tokens.radiusCard,
-            padding: 12,
+            padding: 16,
             boxShadow: "0 8px 24px rgba(11,31,58,0.3)",
             display: "flex",
             flexDirection: "column",
@@ -2558,7 +2558,7 @@ function GapsPage() {
               fontSize: 15,
               borderRadius: tokens.radiusCard,
               border: "none",
-              padding: "14px 20px",
+              padding: "14px 16px",
               cursor: "pointer",
               display: "inline-flex",
               alignItems: "center",
@@ -2597,7 +2597,7 @@ function GapsPage() {
               fontSize: 15,
               borderRadius: tokens.radiusCard,
               border: "none",
-              padding: "14px 20px",
+              padding: "14px 16px",
               cursor: "pointer",
               opacity: loading ? 0.6 : 1,
               boxShadow:
@@ -2638,7 +2638,7 @@ function GapsPage() {
                     width: "100%",
                     background: "#F5F7FA",
                     borderRadius: tokens.radiusCard,
-                    padding: 12,
+                    padding: 16,
                     border: "none",
                     cursor: "pointer",
                     textAlign: "left",
@@ -2907,7 +2907,7 @@ function GapsPage() {
                               fontSize: 15,
                               borderRadius: tokens.radiusCard,
                               border: "none",
-                              padding: "14px 20px",
+                              padding: "14px 16px",
                               cursor: "pointer",
                             }}
                           >
@@ -2942,7 +2942,7 @@ function GapsPage() {
                 width: "100%",
                 border: "1px solid #D5DDE8",
                 borderRadius: tokens.radiusCard,
-                padding: 12,
+                padding: 16,
                 fontSize: tokens.fontSize.md,
                 color: tokens.navy,
                 fontFamily: "inherit",
@@ -2973,7 +2973,7 @@ function GapsPage() {
                 width: "100%",
                 border: "1px solid #D5DDE8",
                 borderRadius: tokens.radiusCard,
-                padding: "10px 12px",
+                padding: "12px 16px",
                 fontSize: tokens.fontSize.md,
                 color: tokens.navy,
                 background: tokens.white,

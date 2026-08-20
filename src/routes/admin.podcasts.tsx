@@ -250,7 +250,7 @@ function AdminPodcasts() {
               background: "#fff",
               color: tokens.navy,
               border: 0,
-              padding: "9px 15px",
+              padding: "9px 16px",
               borderRadius: tokens.radiusCard,
               fontWeight: tokens.fontWeight.extrabold,
               fontSize: tokens.fontSize.base,
@@ -334,7 +334,7 @@ function AdminPodcasts() {
             style={{
               background: "#fff",
               borderRadius: tokens.radiusCard,
-              padding: 18,
+              padding: 16,
               margin: "0 16px 16px",
               boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.07)",
             }}
@@ -347,7 +347,7 @@ function AdminPodcasts() {
                 style={{
                   fontSize: tokens.fontSize.sm,
                   fontWeight: tokens.fontWeight.extrabold,
-                  padding: "5px 12px",
+                  padding: "5px 16px",
                   borderRadius: tokens.radiusCard,
                   background: p.is_published ? "#E6F7EC" : "#FFF6DC",
                   color: p.is_published ? "#248A3D" : "#B8860B",
@@ -367,13 +367,13 @@ function AdminPodcasts() {
             <div style={{ fontSize: 12.5, color: "#B0B0B5", marginTop: 6 }}>
               {p.play_count ?? 0} plays
             </div>
-            <div style={{ display: "flex", gap: 9, marginTop: 14 }}>
+            <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
               <button
                 type="button"
                 onClick={() => openEdit(p)}
                 style={{
                   flex: 1,
-                  padding: 12,
+                  padding: 16,
                   borderRadius: tokens.radiusCard,
                   border: 0,
                   background: tokens.navy,
@@ -395,7 +395,7 @@ function AdminPodcasts() {
                 onClick={() => togglePublish(p)}
                 style={{
                   flex: 1,
-                  padding: 12,
+                  padding: 16,
                   borderRadius: tokens.radiusCard,
                   border: 0,
                   background: "#F2F2F7",
@@ -417,7 +417,7 @@ function AdminPodcasts() {
                 onClick={() => handleDelete(p)}
                 style={{
                   flex: 1,
-                  padding: 12,
+                  padding: 16,
                   borderRadius: tokens.radiusCard,
                   background: "#fff",
                   color: "#FF3B30",
@@ -654,7 +654,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
-  padding: "10px 12px",
+  padding: "12px 16px",
   border: "1px solid #E2E6ED",
   borderRadius: tokens.radiusCard,
   fontSize: tokens.fontSize.md,

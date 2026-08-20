@@ -352,7 +352,7 @@ function IntakeQuestionsPage() {
                 backgroundColor: tokens.white,
                 border: "0.5px solid #EEF2F7",
                 borderRadius: tokens.radiusCard,
-                padding: "12px 14px",
+                padding: "12px 16px",
                 marginBottom: 8,
                 display: "flex",
                 alignItems: "center",
@@ -370,7 +370,7 @@ function IntakeQuestionsPage() {
                   color: tokens.white,
                   border: "none",
                   borderRadius: tokens.radiusCard,
-                  padding: "6px 10px",
+                  padding: "6px 16px",
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.semibold,
                   cursor: "pointer",
@@ -436,7 +436,7 @@ function IntakeQuestionsPage() {
                   <span
                     style={{
                       fontSize: tokens.fontSize.sm,
-                      padding: "2px 8px",
+                      padding: "2px 16px",
                       borderRadius: tokens.radiusCard,
                       backgroundColor: "#EEF2FF",
                       color: tokens.blue,
@@ -449,7 +449,7 @@ function IntakeQuestionsPage() {
                     <span
                       style={{
                         fontSize: tokens.fontSize.sm,
-                        padding: "2px 8px",
+                        padding: "2px 16px",
                         borderRadius: tokens.radiusCard,
                         backgroundColor: "#FEECEE",
                         color: tokens.blue,
@@ -550,7 +550,7 @@ function IntakeQuestionsPage() {
             style={{
               backgroundColor: tokens.white,
               borderRadius: tokens.radiusCard,
-              padding: 20,
+              padding: 16,
               maxWidth: 380,
               width: "100%",
               ...POPPINS,
@@ -566,7 +566,7 @@ function IntakeQuestionsPage() {
               <button
                 onClick={() => setConfirmDelete(null)}
                 style={{
-                  padding: "8px 14px",
+                  padding: "8px 16px",
                   borderRadius: tokens.radiusCard,
                   border: "1px solid #EEF2F7",
                   background: tokens.white,
@@ -581,7 +581,7 @@ function IntakeQuestionsPage() {
               <button
                 onClick={() => removeQuestion(confirmDelete)}
                 style={{
-                  padding: "8px 14px",
+                  padding: "8px 16px",
                   borderRadius: tokens.radiusCard,
                   border: "none",
                   background: tokens.blue,
@@ -775,7 +775,7 @@ function QuestionSheet({
               marginBottom: 16,
               border: "1px solid #EEF2F7",
               borderRadius: tokens.radiusCard,
-              padding: "10px 12px",
+              padding: "12px 16px",
               fontSize: tokens.fontSize.md,
               fontFamily: "Poppins, sans-serif",
               backgroundColor: tokens.white,
@@ -810,7 +810,7 @@ function QuestionSheet({
                         flex: 1,
                         border: "1px solid #EEF2F7",
                         borderRadius: tokens.radiusCard,
-                        padding: "8px 12px",
+                        padding: "8px 16px",
                         fontSize: tokens.fontSize.md,
                         fontFamily: "Poppins, sans-serif",
                         color: tokens.navy,
@@ -844,7 +844,7 @@ function QuestionSheet({
                     border: "1px dashed #BFDBFE",
                     color: tokens.blue,
                     borderRadius: tokens.radiusCard,
-                    padding: "8px 12px",
+                    padding: "8px 16px",
                     fontSize: tokens.fontSize.base,
                     fontWeight: tokens.fontWeight.medium,
                     cursor: "pointer",

@@ -1185,7 +1185,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
                 <div
                   style={{
                     background: "#fff",
-                    padding: 12,
+                    padding: 16,
                     borderRadius: tokens.radiusCard,
                     border: "1px solid #EEF2F7",
                   }}

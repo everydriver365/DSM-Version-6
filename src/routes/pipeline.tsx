@@ -125,7 +125,7 @@ function PipelinePage() {
                     backgroundColor: "#F8F9FB",
                     border: "0.5px solid #EEF2F7",
                     borderRadius: tokens.radiusCard,
-                    padding: "8px 12px",
+                    padding: "8px 16px",
                     marginBottom: 8,
                   }}
                 >
@@ -155,7 +155,7 @@ function PipelinePage() {
                       className="text-[12px] text-center"
                       style={{
                         color: tokens.textMuted,
-                        padding: "16px 8px",
+                        padding: "16px 16px",
                         border: "0.5px dashed #EEF2F7",
                         borderRadius: tokens.radiusCard,
                       }}
@@ -172,7 +172,7 @@ function PipelinePage() {
                       style={{
                         border: "0.5px solid #EEF2F7",
                         borderRadius: tokens.radiusCard,
-                        padding: 12,
+                        padding: 16,
                       }}
                     >
                       <div className="text-[14px] font-semibold" style={{ color: tokens.navy }}>

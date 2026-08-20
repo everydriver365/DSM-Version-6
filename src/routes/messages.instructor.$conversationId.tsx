@@ -231,7 +231,7 @@ function DeliveryIndicator({
           ...POPPINS,
           display: "inline-flex",
           alignItems: "center",
-          gap: 3,
+          gap: 4,
           background: "transparent",
           border: "none",
           padding: 0,
@@ -819,7 +819,7 @@ function InstructorDMThread() {
                       display: "flex",
                       flexDirection: "column",
                       alignItems: g.mine ? "flex-end" : "flex-start",
-                      gap: 3,
+                      gap: 4,
                     }}
                   >
                     {!g.mine && (
@@ -902,7 +902,7 @@ function InstructorDMThread() {
               style={{
                 background: tokens.canvas,
                 borderRadius: tokens.radiusCard,
-                padding: "11px 14px",
+                padding: "12px 16px",
                 display: "flex",
                 alignItems: "center",
                 gap: 4,
@@ -983,7 +983,7 @@ function InstructorDMThread() {
             border: 0,
             outline: "none",
             borderRadius: tokens.radiusCard,
-            padding: "10px 14px",
+            padding: "12px 16px",
             fontSize: tokens.fontSize.base,
             color: NAVY,
             resize: "none",
