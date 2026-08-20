@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
@@ -108,18 +108,8 @@ function AvailabilityPage() {
   };
 
   return (
-    <PageLayout className="pb-8 pb-safe" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Availability"
-        onBack={() => navigate({ to: "/settings" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="Availability">
+    <div className="pb-8 pb-safe" style={{ ...POPPINS, minHeight: "100%" }}>
 
       <div className="px-4">
         <SectionHeader>WORKING DAYS</SectionHeader>
@@ -216,7 +206,8 @@ function AvailabilityPage() {
           </Button>
         </div>
       </div>
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
 

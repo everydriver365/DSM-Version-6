@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { IconAlertTriangle, IconCalendar, IconCircle, IconFileText, IconGauge, IconPlus, IconReceipt, IconShield, IconTool, IconX } from "@tabler/icons-react";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -196,19 +196,8 @@ function VehiclePage() {
   }
 
   return (
-    <PageLayout className="pb-24" style={POPPINS}>
-      {/* Top bar */}
-      <InstructorTopBar
-        firstName=""
-        pageTitle="My vehicle"
-        onBack={() => navigate({ to: "/home" } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <DSMTopSheet title="My Vehicle" onBack={() => navigate({ to: "/home" } as never)}>
+    <div className="pb-24" style={{ ...POPPINS, minHeight: "100%" }}>
 
 
       {/* Alerts */}
@@ -431,7 +420,8 @@ function VehiclePage() {
           }}
         />
       )}
-    </PageLayout>
+    </div>
+    </DSMTopSheet>
   );
 }
 
