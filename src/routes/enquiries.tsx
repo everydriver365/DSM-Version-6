@@ -2,11 +2,11 @@ import { useGoBack } from "@/hooks/useGoBack";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import DSMSkeleton from "@/components/dsm/DSMSkeleton";
 import { supabase } from "../lib/supabaseClient";
 import { tapLight, tapMedium, hapticSuccess } from "@/lib/haptics";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/dsm/EmptyState";
-import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import {
@@ -1659,7 +1659,29 @@ function EnquiriesPage() {
 
       <div style={{ padding: "4px 16px 24px" }}>
         {loading ? (
-          <PageLoader />
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  background: "#FFFFFF",
+                  borderRadius: 8,
+                  boxShadow: "0 4px 0 #E4E4E8",
+                  padding: "15px 16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 13,
+                }}
+              >
+                <DSMSkeleton width={42} height={42} borderRadius={8} />
+                <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+                  <DSMSkeleton width="55%" height={15} borderRadius={6} />
+                  <DSMSkeleton width="40%" height={12} borderRadius={6} />
+                </div>
+                <DSMSkeleton width={60} height={22} borderRadius={11} />
+              </div>
+            ))}
+          </div>
         ) : enquiries.length === 0 ? (
           <div style={{ marginTop: 32 }}>
             <EmptyState

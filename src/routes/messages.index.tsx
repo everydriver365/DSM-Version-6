@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import DSMSkeleton from "@/components/dsm/DSMSkeleton";
 import {
   IconAdjustmentsHorizontal,
   IconArchive,
@@ -20,6 +21,7 @@ import {
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { tapLight, tapMedium } from "@/lib/haptics";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { useAdminGate } from "./admin";
@@ -212,6 +214,7 @@ function MessagesIndexPage() {
   const [openThreadJobId, setOpenThreadJobId] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(true);
+  const { pullToRefreshProps } = usePullToRefresh({ onRefresh: async () => loadConvos() });
   const [convos, setConvos] = useState<Conversation[]>([]);
   const [query, setQuery] = useState("");
 
@@ -1189,6 +1192,7 @@ function MessagesIndexPage() {
         </div>
       ) : (
         <div
+          {...pullToRefreshProps}
           style={{
             position: "relative",
             zIndex: 1,
@@ -1382,8 +1386,31 @@ function MessagesIndexPage() {
           {/* Unified list */}
           <div style={{ padding: "0 16px" }}>
             {loading && items.length === 0 ? (
-              <div style={{ padding: 32, textAlign: "center", color: GREY, fontSize: 13 }}>
-                Loading…
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: "0 0 12px" }}>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      padding: "14px 16px",
+                      background: "#FFFFFF",
+                      borderRadius: 8,
+                      boxShadow: "0 4px 0 #E4E4E8",
+                    }}
+                  >
+                    <DSMSkeleton width={44} height={44} borderRadius={22} />
+                    <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                        <DSMSkeleton width="45%" height={14} borderRadius={6} />
+                        <DSMSkeleton width={34} height={10} borderRadius={5} />
+                      </div>
+                      <DSMSkeleton width="80%" height={12} borderRadius={6} />
+                      <DSMSkeleton width={44} height={20} borderRadius={10} />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : visibleItems.length === 0 ? (
               <div

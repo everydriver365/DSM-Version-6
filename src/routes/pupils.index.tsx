@@ -1,7 +1,8 @@
-import { SkeletonCard } from "@/components/dsm/LoadingSpinner";
+import DSMSkeleton from "@/components/dsm/DSMSkeleton";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { IconBell, IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
@@ -175,6 +176,11 @@ function PupilsIndexPage() {
   const [lastLessonMap, setLastLessonMap] = useState<Record<string, string>>({});
   const [sortBy, setSortBy] = useState<"name" | "balance" | "next_lesson">("name");
   const [statusFilter, setStatusFilter] = useState<StatusKey>("active");
+  const { pullToRefreshProps } = usePullToRefresh({
+    onRefresh: async () => {
+      setReloadKey((k) => k + 1);
+    },
+  });
 
   // Refresh balances/owing badges whenever a payment is recorded anywhere.
   useEffect(() => {
@@ -861,6 +867,7 @@ function PupilsIndexPage() {
       </header>
 
       <div
+        {...pullToRefreshProps}
         style={{
           position: "relative",
           zIndex: 1,
@@ -1067,7 +1074,29 @@ function PupilsIndexPage() {
       {/* List */}
       <div>
         {filtered === null ? (
-          <SkeletonCard rows={5} />
+          <div style={{ padding: "0 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: 14,
+                  background: "#fff",
+                  borderRadius: 8,
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                }}
+              >
+                <DSMSkeleton width={44} height={44} borderRadius={22} />
+                <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+                  <DSMSkeleton width="60%" height={14} borderRadius={6} />
+                  <DSMSkeleton width="40%" height={12} borderRadius={6} />
+                </div>
+                <DSMSkeleton width={56} height={24} borderRadius={12} />
+              </div>
+            ))}
+          </div>
         ) : filtered.length === 0 ? (
           (() => {
             const emptyConfig: Record<StatusKey, { title: string; description: string; action?: ReactNode }> = {
