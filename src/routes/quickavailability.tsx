@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { IconChevronRight, IconToggleLeft } from "@tabler/icons-react";
 import { toast } from "sonner";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { Card } from "../components/dsm/Card";
 import { Input } from "../components/dsm/Input";
 import { Button } from "../components/dsm/Button";
@@ -78,20 +78,8 @@ function QuickAvailabilityPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: "#F3F8FF", margin: -8 }}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Quick availability"
-        onBack={() => navigate({ to: "/home" } as never)}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
-
-
+    <DSMTopSheet title="Availability">
+      <div style={POPPINS}>
       {loading ? (
         <div className="p-6 text-[13px] text-[#6B7280]">Loading…</div>
       ) : (
@@ -195,7 +183,8 @@ function QuickAvailabilityPage() {
           <div style={{ height: 32 }} />
         </>
       )}
-    </div>
+      </div>
+    </DSMTopSheet>
   );
 }
 
