@@ -2,7 +2,7 @@ import { SkeletonCard } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
-import { IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
+import { IconBell, IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { tapLight, tapMedium, hapticSuccess } from "@/lib/haptics";
@@ -15,7 +15,6 @@ import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 
 export const Route = createFileRoute("/pupils/")({
   head: () => ({
@@ -790,19 +789,93 @@ function PupilsIndexPage() {
 
 
   return (
-    <PageLayout className="pb-24 pb-safe relative" style={POPPINS}>
-      <InstructorTopBar
-        firstName=""
-        pageTitle="Pupils"
-        unreadCount={unreadCount}
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+    <PageLayout
+      style={{
+        ...POPPINS,
+        position: "fixed",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+        minHeight: 0,
+        background: "#0B1F3A",
+        overflow: "hidden",
+      }}
+    >
+      <header
+        style={{
+          height: "calc(max(env(safe-area-inset-top, 0px), 24px) + 86px)",
+          flexShrink: 0,
+          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 13px) 22px 28px",
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          background: "#0B1F3A",
+          boxSizing: "border-box",
+        }}
+      >
+        <h1
+          style={{
+            margin: 0,
+            color: "#FFFFFF",
+            fontFamily: "Sora, sans-serif",
+            fontSize: 22,
+            lineHeight: "40px",
+            fontWeight: 700,
+          }}
+        >
+          Pupils
+        </h1>
+        <button
+          type="button"
+          aria-label="Notifications"
+          onClick={() => navigate({ to: "/notifications" as never })}
+          style={{
+            position: "relative",
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            border: 0,
+            padding: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(255,255,255,0.1)",
+            cursor: "pointer",
+          }}
+        >
+          <IconBell size={20} color="#FFFFFF" stroke={1.8} />
+          {unreadCount > 0 && (
+            <span
+              style={{
+                position: "absolute",
+                top: 4,
+                right: 4,
+                minWidth: 8,
+                height: 8,
+                borderRadius: 999,
+                background: "#CC2229",
+              }}
+            />
+          )}
+        </button>
+      </header>
+
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          flex: 1,
+          minHeight: 0,
+          marginTop: -18,
+          background: "#FFFFFF",
+          borderRadius: "28px 28px 0 0",
+          overflowY: "auto",
+          overflowX: "hidden",
+          paddingTop: 12,
+          paddingBottom: "calc(88px + env(safe-area-inset-bottom, 0px))",
+        }}
+      >
+
 
 
 
@@ -899,7 +972,7 @@ function PupilsIndexPage() {
         style={{
           margin: "12px 16px",
           display: "flex",
-          background: "#FFFFFF",
+          background: "#EEF2F7",
           borderRadius: 8,
           boxShadow: "0 4px 0 #E4E4E8",
           padding: 3,
@@ -1114,6 +1187,8 @@ function PupilsIndexPage() {
           </>
         )}
       </div>
+      </div>
+
 
 
 
