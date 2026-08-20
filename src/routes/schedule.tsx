@@ -10,7 +10,7 @@ import {
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { IconArrowDown, IconArrowsMove, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconMapPin, IconNavigation, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
+import { IconArrowDown, IconBell, IconArrowsMove, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconMapPin, IconNavigation, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { computeDayGaps } from "@/lib/gapDetection";
@@ -18,7 +18,6 @@ import { previewMatchForGap } from "@/lib/pupilMatching";
 import { supabase } from "../lib/supabaseClient";
 import { useMinGapMinutes } from "../lib/gapPrefs";
 import { tapLight, tapMedium, hapticSuccess, hapticError } from "@/lib/haptics";
-import { PAGE_BACKGROUND } from "@/components/PageLayout";
 
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard.tsx";
 import { CancelLessonSheet } from "@/components/lessons/CancelLessonSheet";
@@ -32,7 +31,6 @@ import { SendMessageSheet } from "@/components/messages/SendMessageSheet";
 import { filterEchoedBlocks } from "@/lib/calendarDedupe";
 import { resolveEventColour } from "@/lib/googleCalendarColours";
 
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
 import { TestDetailPanel } from "@/components/lessons/TestDetailPanel";
@@ -1444,23 +1442,70 @@ function SchedulePage() {
         inset: 0,
         display: "flex",
         flexDirection: "column",
-        background: PAGE_BACKGROUND,
+        background: "#0B1F3A",
         color: "#111827",
         ...POPPINS,
       }}
     >
-      <InstructorTopBar
-        firstName={instructor?.name ?? ""}
-        pageTitle="Schedule"
-        unreadCount={unreadCount}
-        onBack={() => navigate({ to: "/home" as never })}
-        onBell={() => navigate({ to: "/notifications" as never })}
-        onPhone={() => navigate({ to: "/enquiries" as never })}
-        onLiveTrack={() => navigate({ to: "/live" as never })}
-        onMenu={() => navigate({ to: "/more" as never })}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
-      <div style={{ height: TOP_BAR_SPACER }} />
+      <header
+        style={{
+          height: "calc(max(env(safe-area-inset-top, 0px), 24px) + 86px)",
+          flexShrink: 0,
+          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 13px) 22px 28px",
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          background: "#0B1F3A",
+          boxSizing: "border-box",
+        }}
+      >
+        <h1
+          style={{
+            margin: 0,
+            color: "#FFFFFF",
+            fontFamily: "Sora, sans-serif",
+            fontSize: 22,
+            lineHeight: "40px",
+            fontWeight: 700,
+          }}
+        >
+          Schedule
+        </h1>
+        <button
+          type="button"
+          aria-label="Notifications"
+          onClick={() => navigate({ to: "/notifications" as never })}
+          style={{
+            position: "relative",
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            border: 0,
+            padding: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(255,255,255,0.1)",
+            cursor: "pointer",
+          }}
+        >
+          <IconBell size={20} color="#FFFFFF" stroke={1.8} />
+          {unreadCount > 0 && (
+            <span
+              style={{
+                position: "absolute",
+                top: 4,
+                right: 4,
+                minWidth: 8,
+                height: 8,
+                borderRadius: 999,
+                background: "#CC2229",
+              }}
+            />
+          )}
+        </button>
+      </header>
+
       <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
 
       {moveMode && movingLesson && (
@@ -1506,6 +1551,20 @@ function SchedulePage() {
 
 
 
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          flex: 1,
+          minHeight: 0,
+          marginTop: -18,
+          background: "#FFFFFF",
+          borderRadius: "28px 28px 0 0",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
       <MonthStrip
         viewMonth={viewMonth}
         selectedDate={selectedDate}
@@ -2352,6 +2411,8 @@ function SchedulePage() {
         </div>
 
       </div>
+      </div>
+
 
       {eolLesson && (
         <EndLessonWizard
