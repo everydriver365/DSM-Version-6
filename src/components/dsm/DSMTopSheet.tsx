@@ -1,4 +1,5 @@
 import * as React from "react";
+import { tapLight } from "@/lib/haptics";
 import { IconChevronLeft, IconBell } from "@tabler/icons-react";
 import { tokens } from "@/lib/tokens";
 
@@ -54,7 +55,7 @@ export default function DSMTopSheet({
             <button
               type="button"
               aria-label="Go back"
-              onClick={onBack}
+              onClick={() => { tapLight(); onBack(); }}
               style={{
                 width: 40,
                 height: 40,
@@ -91,6 +92,7 @@ export default function DSMTopSheet({
             type="button"
             aria-label="Notifications"
             onClick={() => {
+              tapLight();
               if (typeof window !== "undefined") {
                 window.location.href = "/notifications";
               }
