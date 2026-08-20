@@ -1232,6 +1232,7 @@ function BenefitsPage() {
         </div>
       )}
     </div>
+    </DSMTopSheet>
   );
 }
 

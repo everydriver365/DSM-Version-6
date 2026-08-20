@@ -879,5 +879,6 @@ function PerksPage() {
         </div>
       )}
     </div>
+    </DSMTopSheet>
   );
 }
