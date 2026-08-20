@@ -10,6 +10,7 @@ import {
   IconDots,
 } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
+import { tapLight } from "@/lib/haptics";
 
 /**
  * Unread pupil replies count. Kept inside BottomNav so every screen gets the
@@ -343,6 +344,7 @@ export function BottomNav({
       const isActive = wsMatch || (typeof it.ws !== 'number' && realIndex === activeIndex);
       const color = isActive ? activeColor : inactiveColor;
       const handleClick = () => {
+        tapLight();
         if (typeof it.ws === 'number' && onSelectWs) onSelectWs(it.ws);
         it.onClick?.();
       };
@@ -381,7 +383,7 @@ export function BottomNav({
       const cls = "flex flex-col items-center justify-center select-none relative";
       if (it.to && !it.onClick && typeof it.ws !== 'number') {
         return (
-          <Link key={it.key} to={it.to} className={cls} style={{ color }}>
+          <Link key={it.key} to={it.to} className={cls} style={{ color }} onClick={() => tapLight()}>
             {inner}
           </Link>
         );
@@ -442,7 +444,7 @@ export function BottomNav({
       const cls = "flex flex-col items-center justify-center select-none relative";
       if (to) {
         return (
-          <Link key={key} to={to} className={cls} style={{ color }}>
+          <Link key={key} to={to} className={cls} style={{ color }} onClick={() => tapLight()}>
             {inner}
           </Link>
         );
@@ -451,7 +453,7 @@ export function BottomNav({
         <button
           key={key}
           type="button"
-          onClick={onClick}
+          onClick={() => { tapLight(); onClick?.(); }}
           className={cls}
           style={{ color, background: "none", border: "none", padding: 0, cursor: "pointer" }}
         >
