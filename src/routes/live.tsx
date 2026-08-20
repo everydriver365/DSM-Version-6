@@ -1108,6 +1108,19 @@ function LivePage() {
       }
 
       stopSilentAudio();
+
+      // Wait up to 5 seconds for route ID to be available
+      if (!routeIdRef.current) {
+        console.log('[live] waiting for route ID...');
+        await waitForRouteId(5000);
+      }
+      if (!routeIdRef.current) {
+        console.warn('[live] no route ID after waiting — track was too short');
+        // Don't show error — just skip save
+        setTracking(false);
+        return;
+      }
+
       await saveCoordinates(true);
 
       try {
