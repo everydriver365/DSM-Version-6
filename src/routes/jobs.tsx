@@ -672,6 +672,7 @@ function JobsPage() {
         />
       )}
     </div>
+    </DSMTopSheet>
   );
 }
 
@@ -1043,6 +1044,5 @@ function JobDetailSheet({
         </div>
       </div>
     </div>
-    </DSMTopSheet>
   );
 }
