@@ -1,5 +1,6 @@
 import * as React from "react";
 import { IconChevronLeft, IconBell } from "@tabler/icons-react";
+import { tokens } from "@/lib/tokens";
 
 export interface DSMTopSheetProps {
   title: string;
@@ -23,7 +24,7 @@ export default function DSMTopSheet({
         inset: 0,
         display: "flex",
         flexDirection: "column",
-        background: "#0B1F3A",
+        background: tokens.canvas,
         overflow: "hidden",
       }}
     >
@@ -33,12 +34,13 @@ export default function DSMTopSheet({
           flexShrink: 0,
           paddingTop: "calc(max(env(safe-area-inset-top, 0px), 24px) + 13px)",
           paddingBottom: 28,
-          paddingLeft: 22,
-          paddingRight: 22,
+          paddingLeft: tokens.pagePadding,
+          paddingRight: tokens.pagePadding,
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "space-between",
           boxSizing: "border-box",
+          background: tokens.navy,
         }}
       >
         <div
@@ -67,17 +69,17 @@ export default function DSMTopSheet({
                 flexShrink: 0,
               }}
             >
-              <IconChevronLeft size={20} color="#FFFFFF" stroke={2} />
+              <IconChevronLeft size={20} color={tokens.white} stroke={2} />
             </button>
           )}
           <h1
             style={{
               margin: 0,
-              color: "#FFFFFF",
+              color: tokens.white,
               fontFamily: "Sora, sans-serif",
-              fontSize: 22,
+              fontSize: tokens.fontSize.xxl,
               lineHeight: "40px",
-              fontWeight: 700,
+              fontWeight: tokens.fontWeight.bold,
             }}
           >
             {title}
@@ -107,7 +109,7 @@ export default function DSMTopSheet({
               flexShrink: 0,
             }}
           >
-            <IconBell size={20} color="#FFFFFF" stroke={1.8} />
+            <IconBell size={20} color={tokens.white} stroke={1.8} />
           </button>
         )}
       </header>
@@ -119,8 +121,9 @@ export default function DSMTopSheet({
           flex: 1,
           minHeight: 0,
           marginTop: -18,
-          background: "#FFFFFF",
-          borderRadius: "28px 28px 0 0",
+          background: tokens.white,
+          borderRadius: `${tokens.radiusSheet}px ${tokens.radiusSheet}px 0 0`,
+          boxShadow: tokens.shadowSheet,
           overflowY: "auto",
           overflowX: "hidden",
           display: "flex",
