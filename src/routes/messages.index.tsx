@@ -1505,7 +1505,7 @@ function MessagesIndexPage() {
               </div>
             )}
           </div>
-        </>
+        </DSMPageSheet>
       )}
 
       {menuItem && (
