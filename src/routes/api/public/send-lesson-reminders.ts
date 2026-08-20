@@ -32,19 +32,16 @@ function fmtTime(t: string | null | undefined): string {
   return t ? String(t).slice(0, 5) : "";
 }
 
-async function runReminders(request: Request): Promise<Response> {
-  // Hardcoded per request (server-only file; never sent to the browser).
-  const secret = process.env["REMINDERS_CRON_SECRET"] ?? "dsm-reminders-2026-secret";
-  const serviceKey =
-    process.env["SUPABASE_SERVICE_ROLE_KEY"] ??
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTQ3NDgyMSwiZXhwIjoyMDk3MDUwODIxfQ.R_Z7M_UdjnvUBHyGiiiIqqCrxl4docXN2Bw-7eK20_Q";
+// Hardcoded per request (server-only file; never sent to the browser).
+const CRON_SECRET = "dsm-reminders-2026-secret";
+const SUPABASE_SERVICE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTQ3NDgyMSwiZXhwIjoyMDk3MDUwODIxfQ.R_Z7M_UdjnvUBHyGiiiIqqCrxl4docXN2Bw-7eK20_Q";
 
-  if (!secret || !serviceKey) {
-    return Response.json(
-      { error: "Reminders not configured (REMINDERS_CRON_SECRET / SUPABASE_SERVICE_ROLE_KEY missing)" },
-      { status: 503 },
-    );
-  }
+async function runReminders(request: Request): Promise<Response> {
+  const secret = CRON_SECRET;
+  const serviceKey = SUPABASE_SERVICE_KEY;
+
+
 
 
   const provided =
