@@ -1437,9 +1437,20 @@ function LiveNewsPage() {
           ref={audioRef}
           src={playing.audioUrl}
           preload="metadata"
-          onPlay={() => setIsPlaying(true)}
+          onPlay={() => {
+            setIsPlaying(true);
+            updateNowPlaying(
+              playing.title,
+              playing.showName || "DSM by EveryDriver",
+              playing.showName || "DSM Learn",
+              playing.imageUrl,
+            );
+          }}
           onPause={(e) => {
             setIsPlaying(false);
+            if (typeof navigator !== "undefined" && "mediaSession" in navigator) {
+              navigator.mediaSession.playbackState = "paused";
+            }
             commitProgress(playing.id, e.currentTarget.currentTime, e.currentTarget.duration || 0, {
               force: true,
             });
