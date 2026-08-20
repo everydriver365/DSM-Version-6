@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 import { IconAlertTriangle, IconArrowLeft, IconBolt, IconCalendar, IconCheck, IconChevronDown, IconChevronRight, IconChevronUp, IconCircleX, IconClock, IconCoffee, IconMessage, IconPlus, IconRefresh, IconSend, IconSparkles, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
@@ -1614,51 +1615,11 @@ function GapsPage() {
 
       <div>
         {!slotsLoading && freeSlots.length === 0 && (
-          <div
-            style={{
-              background: "#FFFFFF",
-              borderRadius: 8,
-              padding: 24,
-              margin: "0 16px 14px",
-              textAlign: "center",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-            }}
-          >
-            <div
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 999,
-                background: CHIP_BG,
-                margin: "0 auto 10px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <IconCalendar size={20} color={ACCENT} />
-            </div>
-            <div style={{ color: TEXT_PRIMARY, fontWeight: 600, fontSize: 15 }}>
-              No free slots in the next 14 days
-            </div>
-            <div style={{ color: TEXT_SUBTLE, fontSize: 13, marginTop: 6 }}>
-              Your diary looks full — check your schedule
-            </div>
-            <button
-              onClick={() => navigate({ to: "/schedule" })}
-              style={{
-                marginTop: 12,
-                background: "transparent",
-                border: "none",
-                color: ACCENT,
-                fontWeight: 600,
-                fontSize: 13,
-                cursor: "pointer",
-              }}
-            >
-              View schedule →
-            </button>
-          </div>
+          <EmptyState
+            icon={<IconCalendar size={32} color="#9CA3AF" stroke={1.5} />}
+            title="No gaps found"
+            subtitle="Available slots in your schedule will show here"
+          />
         )}
 
         {/* Horizontal date strip */}

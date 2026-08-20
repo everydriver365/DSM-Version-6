@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { IconCheckbox, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconCheckbox, IconPlus, IconSquareCheck, IconTrash } from "@tabler/icons-react";
+import { EmptyState } from "@/components/dsm/EmptyState";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { Card } from "../components/dsm/Card";
@@ -248,6 +249,14 @@ function TodosPage() {
             </>
           )}
 
+          {overdue.length === 0 && dueToday.length === 0 && upcoming.length === 0 && completed.length === 0 ? (
+            <EmptyState
+              icon={<IconSquareCheck size={32} color="#9CA3AF" stroke={1.5} />}
+              title="No tasks yet"
+              subtitle="Add tasks to keep track of everything you need to do"
+            />
+          ) : (
+          <>
           <SectionHeader>DUE TODAY</SectionHeader>
           {dueToday.length === 0 ? (
             <div className="text-[13px] text-[#6B7280] py-2">Nothing due today</div>
@@ -273,6 +282,8 @@ function TodosPage() {
             <div className="flex flex-col" style={{ gap: 8 }}>
               {completed.map(renderRow)}
             </div>
+          )}
+          </>
           )}
         </div>
       </div>
