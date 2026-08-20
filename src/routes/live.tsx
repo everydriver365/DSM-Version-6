@@ -629,10 +629,25 @@ function LivePage() {
     }
   }
 
+  async function waitForRouteId(timeoutMs = 5000): Promise<string | null> {
+    if (routeIdRef.current) {
+      return routeIdRef.current;
+    }
+    const start = Date.now();
+    while (Date.now() - start < timeoutMs) {
+      await new Promise((r) => setTimeout(r, 200));
+      if (routeIdRef.current) {
+        return routeIdRef.current;
+      }
+    }
+    return null;
+  }
+
   async function saveCoordinates(final = false, extras: Record<string, any> = {}) {
     if (!routeIdRef.current) {
-      if (final) toast.error('Could not save route');
+      console.warn('[live] no route ID — skipping save');
       return false;
+      // No toast — handled by stopTracking
     }
     const speeds = coordsRef.current.map((c) => c.speed_mph).filter((s) => s > 0);
     const maxSpeed = speeds.length ? Math.max(...speeds) : 0;
