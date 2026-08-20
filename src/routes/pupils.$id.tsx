@@ -1570,7 +1570,7 @@ function PupilDetailPage() {
             </button>
           ))}
         </div>
-        {activeTab === "overview" && pupil && (
+        {activeTab === "overview" && pupil && (<>
           <div className="space-y-4 pb-4">
                 {/* Readiness dashboard */}
                 {(() => {
