@@ -2041,7 +2041,7 @@ function SchedulePage() {
                                   return;
                                 }
                                 tapLight();
-                                setActionsOpenFor(lesson);
+                                setActionsLesson(lesson);
                               }
                             : isBlockRow
                               ? () => {
