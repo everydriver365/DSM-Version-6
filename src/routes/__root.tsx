@@ -526,8 +526,6 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [isOnline, setIsOnline] = useState(true);
-  const [bannerDismissed, setBannerDismissed] = useState(false);
   const active = getActiveNav(router.state.location.pathname);
   const pathname = router.state.location.pathname;
   const hideNavExact = new Set([
