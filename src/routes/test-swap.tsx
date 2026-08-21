@@ -856,170 +856,217 @@ function SwapRequestList({
             style={{
               background: "#EEF2F7",
               borderRadius: 16,
-              padding: "14px 16px",
+              padding: filtersExpanded ? "14px 16px" : "10px 14px",
               display: "flex",
               flexDirection: "column",
-              gap: 14,
+              gap: filtersExpanded ? 14 : 0,
             }}
           >
-            <div
+            <button
+              type="button"
+              onClick={() => {
+                tapLight();
+                setFiltersExpanded((v) => !v);
+              }}
               style={{
-                color: "#9CA3AF",
-                fontSize: 11,
-                fontWeight: 700,
-                textTransform: "uppercase",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+                background: "transparent",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
                 ...POPPINS,
               }}
             >
-              FILTER SWAPS
-            </div>
-
-            {/* Test centre search */}
-            <div style={{ position: "relative" }}>
-              <input
-                type="text"
-                placeholder="Search test centre..."
-                value={filterCentre}
-                onChange={handleCentreSearch}
-                style={{
-                  ...fieldStyle,
-                  borderRadius: 12,
-                  padding: "10px 12px",
-                  fontSize: 14,
-                }}
-              />
-              {filterCentreResults.length > 0 && (
-                <div
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <IconFilter size={15} color="#9CA3AF" stroke={2} />
+                <span
                   style={{
-                    position: "absolute",
-                    top: "100%",
-                    left: 0,
-                    right: 0,
-                    marginTop: 4,
-                    background: "#fff",
-                    borderRadius: 12,
-                    boxShadow: "0 4px 12px rgba(11,31,58,0.12)",
-                    zIndex: 10,
-                    overflow: "hidden",
+                    color: "#9CA3AF",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
                   }}
                 >
-                  {filterCentreResults.map((c) => (
-                    <button
-                      key={String(c.id)}
-                      type="button"
-                      onClick={() => selectCentre(c)}
-                      style={{
-                        width: "100%",
-                        textAlign: "left",
-                        padding: "10px 12px",
-                        border: "none",
-                        background: "transparent",
-                        borderBottom: "1px solid #E4E8EF",
-                        cursor: "pointer",
-                        ...POPPINS,
-                        fontSize: 14,
-                        color: tokens.navy,
-                      }}
-                    >
-                      {c.name}
-                      {c.town ? ` — ${c.town}` : ""}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Test date */}
-            <div>
-              <div
-                style={{
-                  color: "#9CA3AF",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  marginBottom: 6,
-                  ...POPPINS,
-                }}
-              >
-                TEST DATE
+                  FILTER SWAPS
+                </span>
+                {hasActiveFilters && (
+                  <span
+                    style={{
+                      background: tokens.blue,
+                      color: "#fff",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      borderRadius: 999,
+                      padding: "2px 6px",
+                    }}
+                  >
+                    {activeFilterCount}
+                  </span>
+                )}
               </div>
-              <input
-                type="date"
-                value={filterDate}
-                onChange={(e) => setFilterDate(e.target.value)}
-                placeholder="Any date"
+              <IconChevronDown
+                size={18}
+                color="#9CA3AF"
+                stroke={2}
                 style={{
-                  ...fieldStyle,
-                  borderRadius: 12,
-                  padding: "10px 12px",
-                  fontSize: 14,
+                  transform: filtersExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 200ms ease",
                 }}
               />
-            </div>
+            </button>
 
-            {/* Time range */}
-            <div>
-              <div
-                style={{
-                  color: "#9CA3AF",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  marginBottom: 6,
-                  ...POPPINS,
-                }}
-              >
-                TIME WINDOW
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <input
-                  type="time"
-                  value={filterTimeFrom}
-                  onChange={(e) => setFilterTimeFrom(e.target.value)}
-                  style={{
-                    ...fieldStyle,
-                    borderRadius: 12,
-                    padding: "10px 12px",
-                    fontSize: 14,
-                    flex: 1,
-                  }}
-                />
-                <span style={{ color: tokens.textSecondary, fontSize: 13, ...POPPINS }}>to</span>
-                <input
-                  type="time"
-                  value={filterTimeTo}
-                  onChange={(e) => setFilterTimeTo(e.target.value)}
-                  style={{
-                    ...fieldStyle,
-                    borderRadius: 12,
-                    padding: "10px 12px",
-                    fontSize: 14,
-                    flex: 1,
-                  }}
-                />
-              </div>
-            </div>
+            {filtersExpanded && (
+              <>
+                {/* Test centre search */}
+                <div style={{ position: "relative" }}>
+                  <input
+                    type="text"
+                    placeholder="Search test centre..."
+                    value={filterCentre}
+                    onChange={handleCentreSearch}
+                    style={{
+                      ...fieldStyle,
+                      borderRadius: 12,
+                      padding: "10px 12px",
+                      fontSize: 14,
+                    }}
+                  />
+                  {filterCentreResults.length > 0 && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        right: 0,
+                        marginTop: 4,
+                        background: "#fff",
+                        borderRadius: 12,
+                        boxShadow: "0 4px 12px rgba(11,31,58,0.12)",
+                        zIndex: 10,
+                        overflow: "hidden",
+                      }}
+                    >
+                      {filterCentreResults.map((c) => (
+                        <button
+                          key={String(c.id)}
+                          type="button"
+                          onClick={() => selectCentre(c)}
+                          style={{
+                            width: "100%",
+                            textAlign: "left",
+                            padding: "10px 12px",
+                            border: "none",
+                            background: "transparent",
+                            borderBottom: "1px solid #E4E8EF",
+                            cursor: "pointer",
+                            ...POPPINS,
+                            fontSize: 14,
+                            color: tokens.navy,
+                          }}
+                        >
+                          {c.name}
+                          {c.town ? ` — ${c.town}` : ""}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
+                {/* Test date */}
+                <div>
+                  <div
+                    style={{
+                      color: "#9CA3AF",
+                      fontSize: 11,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      marginBottom: 6,
+                      ...POPPINS,
+                    }}
+                  >
+                    TEST DATE
+                  </div>
+                  <input
+                    type="date"
+                    value={filterDate}
+                    onChange={(e) => setFilterDate(e.target.value)}
+                    placeholder="Any date"
+                    style={{
+                      ...fieldStyle,
+                      borderRadius: 12,
+                      padding: "10px 12px",
+                      fontSize: 14,
+                    }}
+                  />
+                </div>
 
-            {/* Clear all */}
-            {hasActiveFilters && (
-              <button
-                type="button"
-                onClick={clearFilters}
-                style={{
-                  alignSelf: "flex-start",
-                  background: "transparent",
-                  border: "none",
-                  color: "#CC2229",
-                  fontSize: 12,
-                  fontWeight: tokens.fontWeight.bold,
-                  cursor: "pointer",
-                  padding: 0,
-                  ...POPPINS,
-                }}
-              >
-                Clear all
-              </button>
+                {/* Time range */}
+                <div>
+                  <div
+                    style={{
+                      color: "#9CA3AF",
+                      fontSize: 11,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      marginBottom: 6,
+                      ...POPPINS,
+                    }}
+                  >
+                    TIME WINDOW
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <input
+                      type="time"
+                      value={filterTimeFrom}
+                      onChange={(e) => setFilterTimeFrom(e.target.value)}
+                      style={{
+                        ...fieldStyle,
+                        borderRadius: 12,
+                        padding: "10px 12px",
+                        fontSize: 14,
+                        flex: 1,
+                      }}
+                    />
+                    <span style={{ color: tokens.textSecondary, fontSize: 13, ...POPPINS }}>to</span>
+                    <input
+                      type="time"
+                      value={filterTimeTo}
+                      onChange={(e) => setFilterTimeTo(e.target.value)}
+                      style={{
+                        ...fieldStyle,
+                        borderRadius: 12,
+                        padding: "10px 12px",
+                        fontSize: 14,
+                        flex: 1,
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Clear all */}
+                {hasActiveFilters && (
+                  <button
+                    type="button"
+                    onClick={clearFilters}
+                    style={{
+                      alignSelf: "flex-start",
+                      background: "transparent",
+                      border: "none",
+                      color: "#CC2229",
+                      fontSize: 12,
+                      fontWeight: tokens.fontWeight.bold,
+                      cursor: "pointer",
+                      padding: 0,
+                      ...POPPINS,
+                    }}
+                  >
+                    Clear all
+                  </button>
+                )}
+              </>
             )}
           </div>
 
