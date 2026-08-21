@@ -769,7 +769,7 @@ function SwapRequestList({
   const myRequests = rows.filter((r) => r.instructor_id === userId);
   const communityRequests = rows.filter((r) => r.instructor_id !== userId);
 
-  const filtered = communityRequests.filter((r) => {
+  const filtered = rows.filter((r) => {
     if (filterCentre && !r.test_centre?.toLowerCase().includes(filterCentre.toLowerCase())) return false;
     if (filterFrom && r.current_test_date && r.current_test_date < filterFrom) return false;
     if (filterTo && r.current_test_date && r.current_test_date > filterTo) return false;
