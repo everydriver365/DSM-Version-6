@@ -42,6 +42,8 @@ import {
   isFinished,
   resumePosition,
   remainingLabel,
+  loadLastPlayedId,
+  saveLastPlayedId,
   type EpisodeProgress,
   type ProgressMap,
 } from "@/lib/podcastProgress";
