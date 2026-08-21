@@ -149,11 +149,31 @@ export function MarketingNav() {
           </Link>
         </div>
 
+        <Link
+          to="/login"
+          className="ed-nav-signin-mobile"
+          style={{
+            display: "none",
+            background: "#fff",
+            color: ACCENT,
+            textDecoration: "none",
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.bold,
+            padding: "10px 16px",
+            borderRadius: 8,
+            border: `1.5px solid ${ACCENT}`,
+            lineHeight: 1,
+            marginRight: 8,
+          }}
+        >
+          Sign in
+        </Link>
+
         <button
           aria-label="Menu"
           onClick={() => setOpen((v) => !v)}
           className="ed-nav-burger"
-          style={{ display: "none", background: "transparent", border: 0, cursor: "pointer", color: NAVY, marginLeft: 8 }}
+          style={{ display: "none", background: "transparent", border: 0, cursor: "pointer", color: NAVY, marginLeft: 0 }}
         >
           {open ? <IconX size={24} /> : <IconMenu2 size={24} />}
         </button>
