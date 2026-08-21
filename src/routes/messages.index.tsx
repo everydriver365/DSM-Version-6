@@ -1252,7 +1252,7 @@ function MessagesIndexPage() {
                         flexShrink: 0,
                         textAlign: "center",
                         padding: "7px 12px",
-                        fontSize: 12,
+                        fontSize: 13,
                         fontFamily: "Poppins, sans-serif",
                         cursor: "pointer",
                         border: "none",
@@ -1260,7 +1260,7 @@ function MessagesIndexPage() {
                         background: active ? "#0B1F3A" : "transparent",
                         color: active ? "#FFFFFF" : "#8A94A6",
                         borderRadius: active ? 8 : 0,
-                        fontWeight: active ? 600 : 500,
+                        fontWeight: active ? 700 : 600,
                         whiteSpace: "nowrap",
                       }}
                     >
