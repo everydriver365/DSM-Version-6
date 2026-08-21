@@ -2970,7 +2970,6 @@ function SchedulePage() {
           </div>
         </div>
       )}
-      </div>
 
       {/* Lesson actions bottom sheet */}
       {actionsLesson && (
