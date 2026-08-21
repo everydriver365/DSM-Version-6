@@ -1241,6 +1241,43 @@ function JobDetailSheet({
         }}
       >
         <div style={{
+          position: "sticky",
+          top: 0,
+          background: "#EEF2F7",
+          zIndex: 10,
+          paddingTop: 12,
+          paddingBottom: 8,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+          <div style={{
+            width: 36, height: 5,
+            borderRadius: 3,
+            background: "#DADFE5",
+          }} />
+          <button
+            onClick={onClose}
+            style={{
+              position: "absolute",
+              right: 16,
+              top: "50%",
+              transform: "translateY(-50%)",
+              width: 30, height: 30,
+              borderRadius: "50%",
+              background: "#E4E8EF",
+              border: "none",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <IconX size={16} color="#6B7686" stroke={2} />
+          </button>
+        </div>
+
+        <div style={{
           display: "flex", alignItems: "center", padding: "14px 16px",
           borderBottom: "1px solid #E5E7EB",
         }}>
@@ -1252,9 +1289,6 @@ function JobDetailSheet({
               Posted {relTime(job.created_at)}
             </div>
           </div>
-          <button onClick={onClose} style={{ padding: 6, background: "transparent", border: "none", cursor: "pointer" }}>
-            <IconX size={20} color={GREY} />
-          </button>
         </div>
 
         <div style={{ flex: 1, padding: "8px 16px 80px" }}>
