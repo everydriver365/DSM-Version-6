@@ -1,0 +1,671 @@
+import { useEffect, useState } from "react";
+import { tokens } from "@/lib/tokens";
+import { supabase } from "@/lib/supabaseClient";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { IconAward, IconBolt, IconCalendarOff, IconCheck, IconChevronRight, IconDownload, IconMovie, IconPlayerPlay, IconShoppingBag, IconStar, IconTrendingUp, IconX } from "@tabler/icons-react";
+import { toast } from "sonner";
+import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
+import LearnLibrarySection from "@/components/learn/LearnLibrarySection";
+import LearnVideosSection from "@/components/learn/LearnVideosSection";
+
+export const Route = createFileRoute("/learn")({
+  head: () => ({
+    meta: [
+      { title: "Learn — DSM" },
+      { name: "description", content: "Quick guides and how-to videos to help you get more out of DSM." },
+      { property: "og:title", content: "Learn — DSM" },
+      { property: "og:description", content: "Quick guides and how-to videos to help you get more out of DSM." },
+    ],
+  }),
+  component: LearnPage,
+});
+
+const NAVY = "#0B1F3A";
+const BLUE = "#1877D6";
+const CANVAS = "#EEF2F7";
+const CARD_SHADOW = "0 1px 3px rgba(0,0,0,0.06)";
+const GRAY_BODY = "#6B7A90";
+const GRAY_LABEL = "#5F6B7A";
+const GRAY_SUBTITLE = "#8A94A3";
+const FONT = "Poppins, sans-serif";
+
+type Video = { id?: string; title: string; duration: string; url: string | null; thumbnail_url?: string | null };
+
+type Guide = { icon: any; title: string; description: string; route: string };
+
+const GROUPS: { heading: string; items: Guide[] }[] = [
+  {
+    heading: "Grow your business",
+    items: [
+      { icon: IconShoppingBag, title: "Marketplace", description: "Sell courses, resources and services to other ADIs.", route: "/marketplace" },
+      { icon: IconAward, title: "Accreditations", description: "Show pupils the qualifications you've earned.", route: "/certifications" },
+    ],
+  },
+  {
+    heading: "Organize your day",
+    items: [
+      { icon: IconCalendarOff, title: "Gap Filler", description: "Find pupils to book into empty slots automatically.", route: "/gaps" },
+      { icon: IconBolt, title: "Auto-booking", description: "Let pupils book themselves into your free time.", route: "/availability" },
+    ],
+  },
+];
+
+function getYouTubeEmbedUrl(url: string): string | null {
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+  );
+  return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1` : null;
+}
+
+// Display-only: append a "min" unit to the stored duration value.
+function formatDuration(d: string | number | null | undefined): string {
+  if (d == null) return "";
+  const raw = String(d).trim();
+  if (!raw) return "";
+  if (/min|hour|hr|sec/i.test(raw)) return raw;
+  if (/^\d+:\d{2}$/.test(raw)) {
+    const [m] = raw.split(":");
+    return `${Number(m)} min`;
+  }
+  if (/^\d+(\.\d+)?$/.test(raw)) return `${raw} min`;
+  return raw;
+}
+
+
+
+const LEARN_VIDEO_CACHE = "dsm-learn-videos-v1";
+
+async function isVideoCached(url: string): Promise<boolean> {
+  if (typeof window === "undefined" || !("caches" in window)) return false;
+  try {
+    const cache = await caches.open(LEARN_VIDEO_CACHE);
+    const match = await cache.match(url);
+    return !!match;
+  } catch {
+    return false;
+  }
+}
+
+async function downloadVideoForOffline(url: string): Promise<void> {
+  if (typeof window === "undefined" || !("caches" in window)) return;
+  const cache = await caches.open(LEARN_VIDEO_CACHE);
+  await cache.add(url);
+}
+
+async function getCachedObjectUrl(url: string): Promise<string | null> {
+  if (typeof window === "undefined" || !("caches" in window)) return null;
+  try {
+    const cache = await caches.open(LEARN_VIDEO_CACHE);
+    const match = await cache.match(url);
+    if (!match) return null;
+    const blob = await match.blob();
+    return URL.createObjectURL(blob);
+  } catch {
+    return null;
+  }
+}
+
+function youtubeThumbnailFromUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+  );
+  return match ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg` : null;
+}
+
+function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () => void }) {
+  const downloadable = !!v.url && !getYouTubeEmbedUrl(v.url);
+  const thumb = v.thumbnail_url || youtubeThumbnailFromUrl(v.url);
+  const [cached, setCached] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!downloadable || !v.url) return;
+    isVideoCached(v.url).then((r) => {
+      if (!cancelled) setCached(r);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [v.url, downloadable]);
+
+  const handleDownload = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!v.url || cached || downloading) return;
+    setDownloading(true);
+    try {
+      await downloadVideoForOffline(v.url);
+      setCached(true);
+      toast.success("Available offline");
+    } catch {
+      toast.error("Couldn't download this video");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={onPlay}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") onPlay();
+      }}
+      style={{
+        background: "transparent",
+        border: "none",
+        padding: 0,
+        cursor: "pointer",
+        textAlign: "left",
+        fontFamily: FONT,
+      }}
+    >
+
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          aspectRatio: "1 / 1",
+          borderRadius: 8,
+          overflow: "hidden",
+          background: color,
+          ...(thumb
+            ? {
+                backgroundImage: `url(${thumb})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }
+            : null),
+          boxShadow: "0 4px 12px rgba(11,31,58,0.12)",
+        }}
+      >
+        {!thumb && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: 0.18,
+            }}
+          >
+            <IconMovie size={64} color="#fff" stroke={1} />
+          </div>
+        )}
+
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: "50%",
+              background: "#fff",
+              boxShadow: "0 3px 10px rgba(0,0,0,0.25)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <IconPlayerPlay size={16} color={NAVY} stroke={2} fill={NAVY} style={{ marginLeft: 2 }} />
+          </div>
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            bottom: 8,
+            right: 8,
+            padding: "3px 16px",
+            borderRadius: tokens.radiusCard,
+            background: "rgba(0,0,0,0.6)",
+            color: "#fff",
+            fontSize: 10.5,
+            fontWeight: tokens.fontWeight.bold,
+          }}
+        >
+          {formatDuration(v.duration)}
+        </div>
+        {downloadable && (
+          <button
+            type="button"
+            onClick={handleDownload}
+            aria-label={cached ? "Available offline" : "Download for offline"}
+            style={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              width: 30,
+              height: 30,
+              borderRadius: "50%",
+              border: "none",
+              background: cached ? "#1E8E3E" : "rgba(0,0,0,0.5)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: cached ? "default" : "pointer",
+              opacity: downloading ? 0.6 : 1,
+            }}
+          >
+            {cached ? (
+              <IconCheck stroke={1.5} size={13} color="#FFFFFF" strokeWidth={3} />
+            ) : (
+              <IconDownload stroke={1.5} size={13} color="#FFFFFF" />
+            )}
+          </button>
+        )}
+      </div>
+      <div
+        style={{
+          marginTop: 10,
+          fontSize: 14.5,
+          fontWeight: tokens.fontWeight.bold,
+          letterSpacing: "-0.1px",
+          color: "#000",
+          lineHeight: 1.3,
+        }}
+      >
+        {v.title}
+      </div>
+    </div>
+
+  );
+}
+
+function SectionLabel({ icon, label, strong }: { icon: React.ReactNode; label: string; strong?: boolean }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: strong ? 7 : 6,
+        padding: "0 16px 12px",
+      }}
+    >
+      {icon}
+      <span
+        style={{
+          fontSize: strong ? 15 : 12,
+          fontWeight: strong ? 800 : 600,
+          color: strong ? NAVY : GRAY_LABEL,
+          fontFamily: FONT,
+        }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
+
+function ArticleRow({ onGo, isLast }: { onGo: () => void; isLast: boolean }) {
+  return (
+    <button
+      type="button"
+      onClick={onGo}
+      style={{
+        width: "100%",
+        background: "white",
+        border: "none",
+        padding: "12px 14px",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        cursor: "pointer",
+        textAlign: "left",
+        fontFamily: FONT,
+        borderBottom: isLast ? "none" : "1px solid #F0F3F7",
+      }}
+    >
+      <div
+        style={{
+          width: 36,
+          height: 36,
+          borderRadius: 12,
+          background: "#E6F1FB",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <IconStar stroke={1.5} size={17} color={BLUE} fill={BLUE} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: NAVY, lineHeight: 1.3 }}>
+          Get more 5 star reviews
+        </div>
+        <div style={{ fontSize: 12, color: GRAY_SUBTITLE, lineHeight: 1.35, marginTop: 1 }}>
+          2 min read
+        </div>
+      </div>
+      <IconChevronRight stroke={1.5} size={18} color={GRAY_SUBTITLE} />
+    </button>
+  );
+}
+
+function GuideRow({ g, onGo, isLast }: { g: Guide; onGo: () => void; isLast: boolean }) {
+  const Icon = g.icon;
+  return (
+    <button
+      type="button"
+      onClick={onGo}
+      style={{
+        width: "100%",
+        background: "white",
+        border: "none",
+        padding: "12px 14px",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        cursor: "pointer",
+        textAlign: "left",
+        fontFamily: FONT,
+        borderBottom: isLast ? "none" : "1px solid #F0F3F7",
+      }}
+    >
+      <div
+        style={{
+          width: 34,
+          height: 34,
+          borderRadius: 12,
+          background: "#E5EFFA",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <Icon size={17} color={BLUE} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY, lineHeight: 1.3 }}>
+          {g.title}
+        </div>
+        <div style={{ fontSize: 12.5, color: GRAY_BODY, lineHeight: 1.35, marginTop: 1 }}>
+          {g.description}
+        </div>
+      </div>
+      <IconChevronRight stroke={1.5} size={18} color={GRAY_SUBTITLE} />
+    </button>
+  );
+}
+
+function LearnPage() {
+  const navigate = useNavigate();
+  const [playing, setPlaying] = useState<Video | null>(null);
+  const [playbackSrc, setPlaybackSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    let objectUrl: string | null = null;
+    let cancelled = false;
+    setPlaybackSrc(null);
+    const url = playing?.url;
+    if (url && !getYouTubeEmbedUrl(url)) {
+      getCachedObjectUrl(url).then((blobUrl) => {
+        if (!blobUrl) return;
+        if (cancelled) {
+          URL.revokeObjectURL(blobUrl);
+          return;
+        }
+        objectUrl = blobUrl;
+        setPlaybackSrc(blobUrl);
+      });
+    }
+    return () => {
+      cancelled = true;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [playing]);
+
+  const [videos, setVideos] = useState<Video[]>([]);
+  const playVideos = videos.filter((v) => !!v.url);
+  const playIndex = playing ? playVideos.findIndex((v) => v.id === playing.id) : -1;
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("learn_videos")
+        .select("*")
+        .order("sort_order", { ascending: true });
+      // Library videos render in the Videos section below, not the How-to grid.
+      if (!cancelled && !error && data)
+        setVideos(
+          (data as (Video & { kind?: string | null })[]).filter(
+            (v) => (v.kind ?? "howto") === "howto",
+          ),
+        );
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+
+
+  return (
+    <DSMTopSheet title="Learn">
+    <div className="pb-24" style={{ fontFamily: FONT, background: CANVAS, minHeight: "100%" }}>
+
+      <div style={{ padding: "8px 16px 0" }}>
+        <p style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: "#8A8A8E", margin: "0 0 22px" }}>
+          Quick guides to get more out of DSM.
+        </p>
+      </div>
+
+      <div>
+        <SectionLabel
+          strong
+          icon={<IconPlayerPlay stroke={1.5} size={13} color={BLUE} fill={BLUE} />}
+          label="How to"
+        />
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 14,
+            padding: "0 16px",
+          }}
+        >
+          {videos.map((v, i) => (
+            <VideoCard
+              key={v.id ?? i}
+              v={v}
+              color={i % 2 === 0 ? NAVY : BLUE}
+              onPlay={() => {
+                if (v.url) setPlaying(v);
+                else toast.info("Video coming soon");
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      <LearnVideosSection />
+
+      <LearnLibrarySection />
+
+      <div style={{ marginTop: 24 }}>
+        <SectionLabel
+          icon={<IconTrendingUp stroke={1.5} size={14} color={BLUE} />}
+          label="Grow your business"
+        />
+        <div
+          style={{
+            margin: "0 16px",
+            background: "white",
+            borderRadius: tokens.radiusCard,
+            boxShadow: CARD_SHADOW,
+            overflow: "hidden",
+          }}
+        >
+          <ArticleRow
+            onGo={() => navigate({ to: "/reviews" as never })}
+            isLast={false}
+          />
+          {GROUPS[0].items.map((g, i) => (
+            <GuideRow
+              key={g.title}
+              g={g}
+              onGo={() => navigate({ to: g.route as never })}
+              isLast={i === GROUPS[0].items.length - 1}
+            />
+          ))}
+        </div>
+      </div>
+
+      {GROUPS.slice(1).map((group) => (
+        <div key={group.heading} style={{ marginTop: 24 }}>
+          <SectionLabel
+            icon={<IconPlayerPlay stroke={1.5} size={14} color={BLUE} />}
+            label={group.heading}
+          />
+          <div
+            style={{
+              margin: "0 16px",
+              background: "white",
+              borderRadius: tokens.radiusCard,
+              boxShadow: CARD_SHADOW,
+              overflow: "hidden",
+            }}
+          >
+            {group.items.map((g, i) => (
+              <GuideRow
+                key={g.title}
+                g={g}
+                onGo={() => navigate({ to: g.route as never })}
+                isLast={i === group.items.length - 1}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+
+      {playing && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 2000,
+            background: "rgba(0,0,0,0.94)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={() => setPlaying(null)}
+        >
+          <SwipeableDetailShell
+            items={playVideos}
+            index={Math.max(0, playIndex)}
+            onIndexChange={(i) => {
+              const next = playVideos[i];
+              if (next) setPlaying(next);
+            }}
+            getKey={(v, i) => String(v.id ?? i)}
+            variant="video"
+            style={{ width: "100%" }}
+            panelStyle={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "0 8px",
+            }}
+            topLeft={
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPlaying(null);
+                }}
+                aria-label="Close video"
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: "50%",
+                  border: "none",
+                  background: "rgba(255,255,255,0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  marginTop: "env(safe-area-inset-top, 0px)",
+                }}
+              >
+                <IconX stroke={1.5} size={20} color="#FFFFFF" />
+              </button>
+            }
+            renderItem={(v, isActive) => {
+              const embed = v.url ? getYouTubeEmbedUrl(v.url) : null;
+              if (embed) {
+                return isActive ? (
+                  <iframe
+                    src={embed}
+                    title={v.title ?? "Video"}
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                      width: "100%",
+                      maxHeight: "80vh",
+                      aspectRatio: "16 / 9",
+                      border: "none",
+                      borderRadius: tokens.radiusCard,
+                      boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                      background: "#000",
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      aspectRatio: "16 / 9",
+                      borderRadius: 8,
+                      background: "#000",
+                    }}
+                  />
+                );
+              }
+              return (
+                <video
+                  src={
+                    isActive
+                      ? (playbackSrc ?? v.url ?? undefined)
+                      : (v.url ?? undefined)
+                  }
+                  poster={v.thumbnail_url ?? undefined}
+                  preload={isActive ? "auto" : "metadata"}
+                  controls={isActive}
+                  controlsList="nodownload noplaybackrate noremoteplayback"
+                  disablePictureInPicture
+                  disableRemotePlayback
+                  onContextMenu={(e) => e.preventDefault()}
+                  autoPlay={isActive}
+                  playsInline
+                  onClick={(e) => e.stopPropagation()}
+                  style={{
+                    width: "100%",
+                    maxHeight: "80vh",
+                    borderRadius: tokens.radiusCard,
+                    boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                    background: "#000",
+                  }}
+                />
+              );
+            }}
+          />
+        </div>
+      )}
+    </div>
+    </DSMTopSheet>
+  );
+}
