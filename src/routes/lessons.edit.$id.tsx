@@ -41,6 +41,31 @@ async function triggerCalendarSync() {
   }
 }
 
+async function pushToGoogleCalendar(
+  lessonId: string,
+  instructorId: string
+) {
+  try {
+    await fetch(
+      'https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/push-lesson-to-google',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo',
+        },
+        body: JSON.stringify({
+          lesson_id: lessonId,
+          instructor_id: instructorId,
+        }),
+      }
+    );
+  } catch {
+    // Fail silently — never block lesson save
+  }
+}
+
+
 
 export const Route = createFileRoute("/lessons/edit/$id")({
   head: () => ({
