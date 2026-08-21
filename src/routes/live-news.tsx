@@ -2185,6 +2185,10 @@ function EpisodeCard({
   progressEntry,
   isSaved,
   onToggleSave,
+  currentTime,
+  duration,
+  onSeek,
+  onRestart,
 }: {
   ep: PodcastEpisode;
   isOpen: boolean;
@@ -2195,7 +2199,15 @@ function EpisodeCard({
   progressEntry?: EpisodeProgress;
   isSaved: boolean;
   onToggleSave: () => void;
+  currentTime?: number;
+  duration?: number;
+  onSeek?: (secs: number) => void;
+  onRestart?: () => void;
 }) {
+  const liveTime = isCurrent && isPlaying ? currentTime : undefined;
+  const total = isCurrent && duration ? duration : ep.durationSecs ?? 0;
+  const current = liveTime ?? 0;
+
   return (
     <div
       key={ep.id}
@@ -2206,6 +2218,7 @@ function EpisodeCard({
         boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
         padding: 12,
         marginBottom: 10,
+        overflow: "hidden",
       }}
     >
       <div
@@ -2250,42 +2263,49 @@ function EpisodeCard({
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
-              display: "inline-block",
+              display: "inline-flex",
               maxWidth: "100%",
               overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              background: "#EFF6FF",
-              borderRadius: tokens.radiusCard,
-              padding: "2px 16px",
-              letterSpacing: "0.02em",
-              marginBottom: 5,
-              ...PODCAST_STYLES.pill,
-            }}
-          >
-            {ep.showName}
-          </div>
-        {isSaved ? (
-          <span
-            style={{
-              display: "inline-flex",
               alignItems: "center",
-              gap: 4,
-              marginLeft: 6,
               verticalAlign: "middle",
-              background: "#EFF6FF",
-              color: tokens.blue,
-              borderRadius: tokens.radiusCard,
-              padding: "2px 16px",
-              fontSize: tokens.fontSize.xs,
-              fontWeight: tokens.fontWeight.bold,
+              gap: 4,
               marginBottom: 5,
             }}
           >
-            <IconBookmarkFilled size={10} color="#1877D6" />
-            Saved
-          </span>
-        ) : null}
+            <span
+              style={{
+                display: "inline-block",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                background: "#EFF6FF",
+                borderRadius: tokens.radiusCard,
+                padding: "2px 16px",
+                letterSpacing: "0.02em",
+                ...PODCAST_STYLES.pill,
+              }}
+            >
+              {ep.showName}
+            </span>
+            {isSaved ? (
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  background: "#EFF6FF",
+                  color: tokens.blue,
+                  borderRadius: tokens.radiusCard,
+                  padding: "2px 16px",
+                  fontSize: tokens.fontSize.xs,
+                  fontWeight: tokens.fontWeight.bold,
+                }}
+              >
+                <IconBookmarkFilled size={10} color="#1877D6" />
+                Saved
+              </span>
+            ) : null}
+          </div>
           <div
             style={{
               ...PODCAST_STYLES.title,
@@ -2357,7 +2377,6 @@ function EpisodeCard({
           })()}
         </div>
 
-
         <button
           type="button"
           aria-label={isSaved ? "Remove from saved" : "Save episode"}
@@ -2422,6 +2441,105 @@ function EpisodeCard({
         </button>
       </div>
 
+      {/* Compact audio player for the selected episode */}
+      {isOpen && ep.audioUrl && (
+        <div
+          style={{
+            marginTop: 12,
+            paddingTop: 12,
+            borderTop: "1px solid #E4E8EF",
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+            ...POPPINS,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <button
+              type="button"
+              onClick={onPlay}
+              aria-label={isCurrent && isPlaying ? "Pause" : "Play"}
+              style={{
+                width: 44,
+                height: 44,
+                flexShrink: 0,
+                borderRadius: 12,
+                border: "none",
+                background: tokens.blue,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                boxShadow: "0 3px 8px rgba(24,119,214,0.25)",
+              }}
+            >
+              {isCurrent && isPlaying ? (
+                <IconPlayerPauseFilled size={20} color="#fff" />
+              ) : (
+                <IconPlayerPlayFilled size={20} color="#fff" />
+              )}
+            </button>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  fontSize: 12.5,
+                  fontWeight: tokens.fontWeight.bold,
+                  color: tokens.navy,
+                  lineHeight: 1.35,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {ep.title}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  fontSize: tokens.fontSize.xs,
+                  color: tokens.textMuted,
+                  marginTop: 2,
+                }}
+              >
+                <span>{formatClock(current)}</span>
+                <span>{formatClock(total)}</span>
+              </div>
+            </div>
+            {isCurrent && onRestart && (
+              <button
+                type="button"
+                onClick={onRestart}
+                aria-label="Start from beginning"
+                style={{
+                  width: 34,
+                  height: 34,
+                  flexShrink: 0,
+                  borderRadius: 10,
+                  border: "none",
+                  background: "#EFF6FF",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <IconPlayerPlayFilled size={14} color="#1877D6" />
+              </button>
+            )}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ flex: 1 }}>
+              <ProgressBar
+                currentTime={isCurrent ? current : 0}
+                duration={isCurrent ? total : 0}
+                onSeek={(secs) => onSeek?.(secs)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
