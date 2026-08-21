@@ -603,6 +603,142 @@ function TestLessonCard({
           </div>
         </div>
       </div>
+
+      {/* Test lesson actions bottom sheet */}
+      {testActionsOpen && (
+        <div
+          onClick={() => setTestActionsOpen(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.45)",
+            zIndex: 9999,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: "#fff",
+              borderTopLeftRadius: 24,
+              borderTopRightRadius: 24,
+              padding: "20px 16px 24px",
+              maxWidth: 480,
+              width: "100%",
+              margin: "0 auto",
+              boxShadow: "0 -8px 30px rgba(0,0,0,0.2)",
+            }}
+          >
+            {/* Drag handle */}
+            <div
+              style={{
+                width: 40,
+                height: 5,
+                borderRadius: 3,
+                backgroundColor: "#E5E7EB",
+                margin: "0 auto 20px",
+              }}
+            />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+              <span style={{ fontFamily: "Sora, sans-serif", fontWeight: 600, fontSize: 18, color: "#111827" }}>
+                Lesson options
+              </span>
+              <button
+                type="button"
+                onClick={() => setTestActionsOpen(false)}
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  background: "#F3F4F6",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 0,
+                }}
+              >
+                <IconX size={18} color="#6B7280" stroke={2} />
+              </button>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <button
+                type="button"
+                onClick={() => { setTestActionsOpen(false); setPanelOpen(true); }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconCalendar size={20} color="#111827" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
+                  View test details
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => { setTestActionsOpen(false); goEdit(); }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconEdit size={20} color="#111827" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
+                  Edit lesson
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => { setTestActionsOpen(false); goProfile(); }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconNavigation size={20} color="#111827" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
+                  Full profile
+                </span>
+              </button>
+              {onCancel && (
+                <button
+                  type="button"
+                  onClick={() => { setTestActionsOpen(false); onCancel(); }}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                    border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                  }}
+                >
+                  <IconX size={20} color="#CC2229" stroke={1.5} />
+                  <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#CC2229" }}>
+                    Cancel lesson
+                  </span>
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  type="button"
+                  onClick={() => { setTestActionsOpen(false); onDelete(); }}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                    border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                  }}
+                >
+                  <IconTrash size={20} color="#CC2229" stroke={1.5} />
+                  <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#CC2229" }}>
+                    Delete lesson
+                  </span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
     </>
   );
