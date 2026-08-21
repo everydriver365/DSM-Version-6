@@ -532,6 +532,8 @@ function JobCard({
           </div>
         )}
       </div>
+      )}
+
 
       {/* Actions */}
       <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
