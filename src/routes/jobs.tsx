@@ -13,6 +13,7 @@ import {
   IconCircleCheck,
   IconCircleX,
   IconClock,
+  IconMapPin,
   IconSend,
   IconSun,
   IconX,
