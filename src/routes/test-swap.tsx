@@ -1547,95 +1547,97 @@ function SwapRequestList({
                 gap: 8,
               }}
             >
-              {selectedSwap.instructor_phone && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    tapLight();
-                    window.open(`tel:${selectedSwap.instructor_phone}`, "_blank");
-                  }}
-                  style={{
-                    background: "#DCFCE7",
-                    color: "#15803D",
-                    borderRadius: 20,
-                    padding: 13,
-                    fontSize: 14,
-                    fontWeight: 700,
-                    width: "100%",
-                    border: "none",
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    ...POPPINS,
-                  }}
-                >
-                  <IconPhone size={16} stroke={2} />
-                  Call instructor
-                </button>
-              )}
-              {selectedSwap.instructor_phone && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    tapLight();
-                    window.open(
-                      `sms:${selectedSwap.instructor_phone}?body=${encodeURIComponent(
-                        "Hi, I saw your test swap request on DSM. I may be able to help — can we chat?"
-                      )}`,
-                      "_blank"
-                    );
-                  }}
-                  style={{
-                    background: "#EFF6FF",
-                    color: "#1877D6",
-                    borderRadius: 20,
-                    padding: 13,
-                    fontSize: 14,
-                    fontWeight: 700,
-                    width: "100%",
-                    border: "none",
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    ...POPPINS,
-                  }}
-                >
-                  <IconMessage size={16} stroke={2} />
-                  Send a text
-                </button>
-              )}
+              {/* Primary: express interest + open a DM */}
               <button
                 type="button"
+                disabled={swapping}
                 onClick={() => {
                   tapLight();
-                  navigate({ to: "/messages" });
-                  setSelectedSwap(null);
+                  void handleICanSwap();
                 }}
                 style={{
-                  background: "#fff",
-                  border: "1px solid #E4E8EF",
-                  color: "#0B1F3A",
+                  background: "linear-gradient(135deg, #14509E, #0B1F3A)",
+                  color: "#fff",
                   borderRadius: 20,
-                  padding: 13,
+                  padding: 14,
                   fontSize: 14,
-                  fontWeight: 700,
+                  fontWeight: 800,
                   width: "100%",
-                  cursor: "pointer",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
+                  border: "none",
+                  cursor: swapping ? "default" : "pointer",
+                  boxShadow: "0 4px 0 #091628",
+                  opacity: swapping ? 0.6 : 1,
                   ...POPPINS,
                 }}
               >
-                <IconMessageCircle size={16} stroke={2} />
-                Message on DSM
+                {swapping ? "Sending…" : "I can swap this 🔄"}
               </button>
+
+              <div style={{ display: "flex", gap: 8 }}>
+                {selectedSwap.instructor_phone && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      tapLight();
+                      window.open(`tel:${selectedSwap.instructor_phone}`, "_blank");
+                    }}
+                    style={{
+                      flex: 1,
+                      height: 44,
+                      background: "#fff",
+                      color: "#15803D",
+                      border: "1px solid #E4E8EF",
+                      borderRadius: 20,
+                      fontSize: 13,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 6,
+                      ...POPPINS,
+                    }}
+                  >
+                    <IconPhone size={15} stroke={2} />
+                    Call
+                  </button>
+                )}
+                {selectedSwap.instructor_phone && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      tapLight();
+                      window.open(
+                        `sms:${selectedSwap.instructor_phone}?body=${encodeURIComponent(
+                          "Hi, I saw your test swap request on DSM. I may be able to help — can we chat?"
+                        )}`,
+                        "_blank"
+                      );
+                    }}
+                    style={{
+                      flex: 1,
+                      height: 44,
+                      background: "#fff",
+                      color: "#1877D6",
+                      border: "1px solid #E4E8EF",
+                      borderRadius: 20,
+                      fontSize: 13,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 6,
+                      ...POPPINS,
+                    }}
+                  >
+                    <IconMessage size={15} stroke={2} />
+                    Text
+                  </button>
+                )}
+              </div>
             </div>
+
 
             {/* Dismiss button */}
             <button
