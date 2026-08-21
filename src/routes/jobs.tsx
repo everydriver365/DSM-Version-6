@@ -13,6 +13,7 @@ import {
   IconCircleCheck,
   IconCircleX,
   IconClock,
+  IconMapPin,
   IconSend,
   IconSun,
   IconX,
@@ -334,10 +335,13 @@ function JobCard({
               <IconClock key="i2" size={16} stroke={2} color={tokens.textSecondary} />,
               job.course_hours ? `${job.course_hours} hrs` : null,
             ],
-            [null, job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : null],
+            [
+              <IconMapPin key="i3" size={16} stroke={2} color={tokens.textSecondary} />,
+              job.postcode_area ? `Pick up ${job.postcode_area}` : null,
+            ],
             [null, variant === "claimed" && distanceKnown ? `${distanceMi!.toFixed(1)} mi` : null],
             [
-              <IconSun key="i3" size={16} stroke={2} color={tokens.textSecondary} />,
+              <IconSun key="i4" size={16} stroke={2} color={tokens.textSecondary} />,
               sentenceCase(job.preferred_timing?.join(", ")),
             ],
           ] as [React.ReactNode, string | null][]
@@ -1157,7 +1161,7 @@ function JobDetailSheet({
           <Row label="Course hours" value={job.course_hours != null ? `${job.course_hours} hrs` : "—"} />
           <Row label="Preferred timing" value={job.preferred_timing?.length ? job.preferred_timing.join(", ") : "—"} />
           <Row label="Preferred start" value={job.preferred_start_date ? new Date(job.preferred_start_date).toLocaleDateString() : "—"} />
-          <Row label="Rate" value={job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : "Rate TBC"} />
+          <Row label="Pick up" value={job.postcode_area || "—"} />
           <Row label="Worth" value={worth != null ? <span style={{ color: GREEN }}>£{worth.toFixed(2)}</span> : "—"} />
           {amountPaid > 0 && (
             <>
