@@ -562,9 +562,17 @@ function LiveNewsPage() {
           background: "#fff",
           borderBottom: "1px solid #E4E8EF",
           display: "flex",
-          padding: "0 16px",
+          overflowX: "auto",
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "none",
+          padding: "0 8px",
         }}
       >
+        <style>{`
+          div::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
         {tabButton("live", "Live", sessions?.length ?? 0)}
         {tabButton("news", "News", articles?.length ?? 0)}
         {tabButton("podcasts", "Podcasts", episodes?.length ?? 0)}
