@@ -478,7 +478,8 @@ function SwapCard({
           {mode === "mine" && (
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 tapLight();
                 handleDelete();
               }}
