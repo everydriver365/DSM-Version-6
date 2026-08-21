@@ -518,7 +518,7 @@ function LiveNewsPage() {
   };
 
   return (
-    <DSMTopSheet title="DSM News">
+    <DSMTopSheet title="DSM Radio">
       <div
         style={{
           background: "#fff",
