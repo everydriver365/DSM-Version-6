@@ -35,7 +35,6 @@ import {
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const db = supabase as any;
 
-
 interface ShowcaseVideo {
   id: string;
   title: string;
@@ -143,9 +142,7 @@ export default function ShowcasePageBody() {
 
   // Votes
   const [votes, setVotes] = useState<Record<string, "up" | "down" | null>>({});
-  const [voteCounts, setVoteCounts] = useState<
-    Record<string, { up: number; down: number }>
-  >({});
+  const [voteCounts, setVoteCounts] = useState<Record<string, { up: number; down: number }>>({});
 
   // Comments
   const [commentsOpen, setCommentsOpen] = useState(false);
@@ -184,7 +181,6 @@ export default function ShowcasePageBody() {
   const [thumbPreview, setThumbPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
-
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
@@ -226,9 +222,7 @@ export default function ShowcasePageBody() {
         .select("video_id, instructor_id, vote_type")
         .in("video_id", ids);
       const rows =
-        (data as
-          | { video_id: string; instructor_id: string; vote_type: string }[]
-          | null) ?? [];
+        (data as { video_id: string; instructor_id: string; vote_type: string }[] | null) ?? [];
       const counts: Record<string, { up: number; down: number }> = {};
       const myVotes: Record<string, "up" | "down" | null> = {};
       rows.forEach((r) => {
@@ -403,11 +397,8 @@ export default function ShowcasePageBody() {
     }
   }
 
-
   const filtered =
-    activeCategory === "All"
-      ? videos
-      : videos.filter((v) => v.category === activeCategory);
+    activeCategory === "All" ? videos : videos.filter((v) => v.category === activeCategory);
 
   async function incrementView(video: ShowcaseVideo) {
     try {
@@ -419,9 +410,7 @@ export default function ShowcasePageBody() {
       /* non-critical */
     }
     setVideos((prev) =>
-      prev.map((v) =>
-        v.id === video.id ? { ...v, views: (v.views ?? 0) + 1 } : v,
-      ),
+      prev.map((v) => (v.id === video.id ? { ...v, views: (v.views ?? 0) + 1 } : v)),
     );
   }
 
@@ -578,9 +567,6 @@ export default function ShowcasePageBody() {
     }
   }
 
-
-
-
   async function handleUpload() {
     if (!videoFile || !uploadTitle.trim()) return;
     setUploading(true);
@@ -602,19 +588,13 @@ export default function ShowcasePageBody() {
           video_url: videoUrl,
           thumbnail_url: thumbnailUrl ?? null,
           caption:
-            uploadTitle.trim() +
-            (uploadDescription.trim()
-              ? " — " + uploadDescription.trim()
-              : ""),
+            uploadTitle.trim() + (uploadDescription.trim() ? " — " + uploadDescription.trim() : ""),
           category: uploadCategory || null,
-          tags: uploadTags
-            ? uploadTags.split(" ").filter((t) => t.startsWith("#"))
-            : [],
+          tags: uploadTags ? uploadTags.split(" ").filter((t) => t.startsWith("#")) : [],
           views: 0,
         })
         .select()
         .single();
-
 
       if (error) throw error;
       if (data) setVideos((prev) => [data as ShowcaseVideo, ...prev]);
@@ -628,7 +608,6 @@ export default function ShowcasePageBody() {
       setThumbFile(null);
       setThumbPreview(null);
       toast.success("Clip uploaded!");
-
     } catch (err: any) {
       toast.error(err?.message ?? "Upload failed");
     } finally {
@@ -640,30 +619,29 @@ export default function ShowcasePageBody() {
   return (
     <div style={{ background: "#DCE4F0", ...POPPINS }}>
       <div style={{ display: "flex", justifyContent: "flex-end", padding: "10px 16px 0" }}>
-          <button
-            type="button"
-            aria-label="Upload clip"
-            onClick={() => setUploadOpen(true)}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              borderRadius: tokens.radiusCard,
-              border: "none",
-              background: "#0B1F3A",
-              color: "#fff",
-              padding: "8px 14px",
-              fontSize: 13,
-              fontWeight: tokens.fontWeight.semibold,
-              cursor: "pointer",
-              ...POPPINS,
-            }}
-          >
-            <IconPlus size={16} />
-            Upload clip
-          </button>
-        </div>
-
+        <button
+          type="button"
+          aria-label="Upload clip"
+          onClick={() => setUploadOpen(true)}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            borderRadius: tokens.radiusCard,
+            border: "none",
+            background: "#0B1F3A",
+            color: "#fff",
+            padding: "8px 14px",
+            fontSize: 13,
+            fontWeight: tokens.fontWeight.semibold,
+            cursor: "pointer",
+            ...POPPINS,
+          }}
+        >
+          <IconPlus size={16} />
+          Upload clip
+        </button>
+      </div>
 
       {/* CATEGORY CHIPS */}
       <div
@@ -703,9 +681,7 @@ export default function ShowcasePageBody() {
 
       {/* CONTENT */}
       {loading ? (
-        <div
-          style={{ display: "flex", justifyContent: "center", padding: "60px 0" }}
-        >
+        <div style={{ display: "flex", justifyContent: "center", padding: "60px 0" }}>
           <div
             style={{
               width: 28,
@@ -732,7 +708,14 @@ export default function ShowcasePageBody() {
           >
             No clips yet
           </div>
-          <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, marginTop: 6, ...POPPINS }}>
+          <div
+            style={{
+              fontSize: tokens.fontSize.base,
+              color: tokens.textSecondary,
+              marginTop: 6,
+              ...POPPINS,
+            }}
+          >
             Tap + to share the first Showcase clip
           </div>
         </div>
@@ -747,353 +730,347 @@ export default function ShowcasePageBody() {
         >
           {playing && (
             <div style={{ gridColumn: "1 / -1" }}>
-            <SwipeableDetailShell<ShowcaseVideo>
-              items={filtered}
-              index={Math.max(0, filtered.findIndex((v) => v.id === playing.id))}
-              onIndexChange={(i) => {
-                const nx = filtered[i];
-                if (nx) openPlayer(nx);
-              }}
-              getKey={(v, i) => String(v.id ?? i)}
-              variant="video"
-              renderItem={(panelVideo, isActive) =>
-                !isActive ? (
-                  <div
-                    style={{
-                      borderRadius: 8,
-                      overflow: "hidden",
-                      background: "#000",
-                      aspectRatio: "16 / 9",
-                    }}
-                  >
-                    {panelVideo.thumbnail_url && (
-                      <img
-                        src={panelVideo.thumbnail_url}
-                        alt={panelVideo.title ?? "Clip"}
-                        loading="lazy"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          opacity: 0.7,
-                        }}
-                      />
-                    )}
-                  </div>
-                ) : (
-            <div
-              style={{
-                gridColumn: "1 / -1",
-                background: "#000",
-                borderRadius: 8,
-                overflow: "hidden",
-                marginBottom: 12,
-                position: "relative",
-              }}
-            >
-              <video
-                ref={videoRef}
-                key={playing.id}
-                src={playing.video_url}
-                poster={playing.thumbnail_url ?? undefined}
-                autoPlay
-                controls
-                controlsList="nodownload noplaybackrate noremoteplayback"
-                disablePictureInPicture
-                disableRemotePlayback
-                onContextMenu={(e) => e.preventDefault()}
-                playsInline
-                onCanPlay={(e) => {
-                  const v = e.currentTarget;
-                  // Attempt autoplay with audio
-                  v.play().catch(() => {
-                    // Browser blocked autoplay with audio
-                    // — user must tap play manually
-                    // Do nothing, controls are visible
-                  });
+              <SwipeableDetailShell<ShowcaseVideo>
+                items={filtered}
+                index={Math.max(
+                  0,
+                  filtered.findIndex((v) => v.id === playing.id),
+                )}
+                onIndexChange={(i) => {
+                  const nx = filtered[i];
+                  if (nx) openPlayer(nx);
                 }}
-                style={{
-                  width: "100%",
-                  maxHeight: 260,
-                  display: "block",
-                  objectFit: "contain",
-                  background: "#000",
-                }}
-                onEnded={() => {
-                  // Pause on last frame — don't black out
-                  if (videoRef.current) {
-                    videoRef.current.pause();
-                    videoRef.current.currentTime = Math.max(
-                      0,
-                      videoRef.current.duration - 0.1,
-                    );
-                  }
-                  setPlaying((prev) => prev); // keep playing state
-                  // Show next up card below instead of overlay
-                  const currentIndex = videos.findIndex(
-                    (v) => v.id === playing?.id,
-                  );
-                  const next = videos[currentIndex + 1];
-                  if (next) setNextVideo(next);
-                }}
-              />
-
-              <div style={{ background: "#111", padding: "10px 12px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginBottom: 6,
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: tokens.fontSize.base,
-                      fontWeight: tokens.fontWeight.semibold,
-                      color: "#fff",
-                      flex: 1,
-                      minWidth: 0,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      ...POPPINS,
-                    }}
-                  >
-                    {playing.caption ?? playing.title}
-                  </div>
-                  <button
-                    type="button"
-                    aria-label="Close player"
-                    onClick={() => setPlaying(null)}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      padding: 4,
-                      flexShrink: 0,
-                      display: "flex",
-                    }}
-                  >
-                    <IconX size={16} color="rgba(255,255,255,0.6)" />
-                  </button>
-                </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  {/* Merged vote pill */}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      background: "#F2F2F7",
-                      borderRadius: 8,
-                      overflow: "hidden",
-                    }}
-                  >
-                    <button
-                      type="button"
-                      aria-label="Upvote"
-                      onClick={() => toggleVote(playing.id, "up")}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 6,
-                        padding: "9px 14px",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: tokens.fontSize.base,
-                        fontWeight: tokens.fontWeight.bold,
-                        background:
-                          votes[playing.id] === "up" ? BLUE : "transparent",
-                        color: votes[playing.id] === "up" ? "#fff" : BLUE,
-                        ...POPPINS,
-                      }}
-                    >
-                      <IconThumbUp
-                        size={15}
-                        stroke={1.8}
-                        color={votes[playing.id] === "up" ? "#fff" : BLUE}
-                      />
-                      {voteCounts[playing.id]?.up ?? 0}
-                    </button>
-                    <div
-                      style={{ width: 1, height: 18, background: "#E0E0E4" }}
-                    />
-                    <button
-                      type="button"
-                      aria-label="Downvote"
-                      onClick={() => toggleVote(playing.id, "down")}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 6,
-                        padding: "9px 14px",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: tokens.fontSize.base,
-                        fontWeight: tokens.fontWeight.bold,
-                        background:
-                          votes[playing.id] === "down" ? RED : "transparent",
-                        color: votes[playing.id] === "down" ? "#fff" : "#6B6B6F",
-                        ...POPPINS,
-                      }}
-                    >
-                      <IconThumbDown
-                        size={15}
-                        stroke={1.8}
-                        color={
-                          votes[playing.id] === "down" ? "#fff" : "#6B6B6F"
-                        }
-                      />
-                    </button>
-                  </div>
-
-                  {/* Comment pill */}
-                  <button
-                    type="button"
-                    aria-label="Comments"
-                    onClick={() => setCommentsOpen(true)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 6,
-                      background: "#F2F2F7",
-                      borderRadius: tokens.radiusCard,
-                      padding: "9px 16px",
-                      border: "none",
-                      cursor: "pointer",
-                      color: "#6B6B6F",
-                      fontSize: tokens.fontSize.base,
-                      fontWeight: tokens.fontWeight.bold,
-                      ...POPPINS,
-                    }}
-                  >
-                    <IconMessageCircle size={15} stroke={1.8} color="#6B6B6F" />
-                    {commentCounts[playing.id] ?? 0}
-                  </button>
-
-                  {/* View count (non-interactive) */}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 4,
-                      marginLeft: "auto",
-                      color: "#B0B0B5",
-                      fontSize: 12.5,
-                      fontWeight: tokens.fontWeight.semibold,
-                      ...POPPINS,
-                    }}
-                  >
-                    <IconEye size={14} stroke={1.8} color="#B0B0B5" />
-                    {playing.views ?? 0}
-                  </div>
-
-                  <button
-                    type="button"
-                    aria-label="Report video"
-                    onClick={() => {
-                      setReportingId(playing.id);
-                      setReportOpen(true);
-                    }}
-                    style={{
-                      width: 30,
-                      height: 30,
-                      borderRadius: "50%",
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      padding: 0,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <IconFlag size={14} stroke={1.8} color="#C7C7CC" />
-                  </button>
-                </div>
-
-
-                {nextVideo && (
-                  <div
-                    style={{
-                      margin: "8px 0 0",
-                      background: "#fff",
-                      border: "none",
-                      borderRadius: tokens.radiusCard,
-                      boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-                      padding: "12px 16px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      cursor: "pointer",
-                    }}
-                    onClick={() => {
-                      openPlayer(nextVideo);
-                    }}
-                  >
-                    {/* Thumbnail */}
+                getKey={(v, i) => String(v.id ?? i)}
+                variant="video"
+                renderItem={(panelVideo, isActive) =>
+                  !isActive ? (
                     <div
                       style={{
-                        width: 52,
-                        height: 36,
                         borderRadius: 8,
                         overflow: "hidden",
-                        flexShrink: 0,
-                        background: "linear-gradient(135deg, #CC2229, #7C1D1D)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+                        background: "#000",
+                        aspectRatio: "16 / 9",
                       }}
                     >
-                      {nextVideo.thumbnail_url ? (
+                      {panelVideo.thumbnail_url && (
                         <img
-                          src={nextVideo.thumbnail_url}
-                          alt=""
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                          src={panelVideo.thumbnail_url}
+                          alt={panelVideo.title ?? "Clip"}
+                          loading="lazy"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            opacity: 0.7,
+                          }}
                         />
-                      ) : (
-                        <IconPlayerPlay size={16} color="#fff" stroke={1.5} />
                       )}
                     </div>
-                    {/* Text */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontSize: tokens.fontSize.xs,
-                          fontWeight: tokens.fontWeight.semibold,
-                          color: tokens.textMuted,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.06em",
-                          fontFamily: "Poppins, sans-serif",
-                          marginBottom: 2,
+                  ) : (
+                    <div
+                      style={{
+                        gridColumn: "1 / -1",
+                        background: "#000",
+                        borderRadius: 8,
+                        overflow: "hidden",
+                        marginBottom: 12,
+                        position: "relative",
+                      }}
+                    >
+                      <video
+                        ref={videoRef}
+                        key={playing.id}
+                        src={playing.video_url}
+                        poster={playing.thumbnail_url ?? undefined}
+                        autoPlay
+                        controls
+                        controlsList="nodownload noplaybackrate noremoteplayback"
+                        disablePictureInPicture
+                        disableRemotePlayback
+                        onContextMenu={(e) => e.preventDefault()}
+                        playsInline
+                        onCanPlay={(e) => {
+                          const v = e.currentTarget;
+                          // Attempt autoplay with audio
+                          v.play().catch(() => {
+                            // Browser blocked autoplay with audio
+                            // — user must tap play manually
+                            // Do nothing, controls are visible
+                          });
                         }}
-                      >
-                        Up next
-                      </div>
-                      <div
                         style={{
-                          fontSize: 12,
-                          fontWeight: tokens.fontWeight.semibold,
-                          color: tokens.navy,
-                          fontFamily: "Poppins, sans-serif",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
+                          width: "100%",
+                          maxHeight: 260,
+                          display: "block",
+                          objectFit: "contain",
+                          background: "#000",
                         }}
-                      >
-                        {nextVideo.caption ?? "Next video"}
+                        onEnded={() => {
+                          // Pause on last frame — don't black out
+                          if (videoRef.current) {
+                            videoRef.current.pause();
+                            videoRef.current.currentTime = Math.max(
+                              0,
+                              videoRef.current.duration - 0.1,
+                            );
+                          }
+                          setPlaying((prev) => prev); // keep playing state
+                          // Show next up card below instead of overlay
+                          const currentIndex = videos.findIndex((v) => v.id === playing?.id);
+                          const next = videos[currentIndex + 1];
+                          if (next) setNextVideo(next);
+                        }}
+                      />
+
+                      <div style={{ background: "#111", padding: "10px 12px" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            marginBottom: 6,
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: tokens.fontSize.base,
+                              fontWeight: tokens.fontWeight.semibold,
+                              color: "#fff",
+                              flex: 1,
+                              minWidth: 0,
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              ...POPPINS,
+                            }}
+                          >
+                            {playing.caption ?? playing.title}
+                          </div>
+                          <button
+                            type="button"
+                            aria-label="Close player"
+                            onClick={() => setPlaying(null)}
+                            style={{
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer",
+                              padding: 4,
+                              flexShrink: 0,
+                              display: "flex",
+                            }}
+                          >
+                            <IconX size={16} color="rgba(255,255,255,0.6)" />
+                          </button>
+                        </div>
+
+                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                          {/* Merged vote pill */}
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              background: "#F2F2F7",
+                              borderRadius: 8,
+                              overflow: "hidden",
+                            }}
+                          >
+                            <button
+                              type="button"
+                              aria-label="Upvote"
+                              onClick={() => toggleVote(playing.id, "up")}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 6,
+                                padding: "9px 14px",
+                                border: "none",
+                                cursor: "pointer",
+                                fontSize: tokens.fontSize.base,
+                                fontWeight: tokens.fontWeight.bold,
+                                background: votes[playing.id] === "up" ? BLUE : "transparent",
+                                color: votes[playing.id] === "up" ? "#fff" : BLUE,
+                                ...POPPINS,
+                              }}
+                            >
+                              <IconThumbUp
+                                size={15}
+                                stroke={1.8}
+                                color={votes[playing.id] === "up" ? "#fff" : BLUE}
+                              />
+                              {voteCounts[playing.id]?.up ?? 0}
+                            </button>
+                            <div style={{ width: 1, height: 18, background: "#E0E0E4" }} />
+                            <button
+                              type="button"
+                              aria-label="Downvote"
+                              onClick={() => toggleVote(playing.id, "down")}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 6,
+                                padding: "9px 14px",
+                                border: "none",
+                                cursor: "pointer",
+                                fontSize: tokens.fontSize.base,
+                                fontWeight: tokens.fontWeight.bold,
+                                background: votes[playing.id] === "down" ? RED : "transparent",
+                                color: votes[playing.id] === "down" ? "#fff" : "#6B6B6F",
+                                ...POPPINS,
+                              }}
+                            >
+                              <IconThumbDown
+                                size={15}
+                                stroke={1.8}
+                                color={votes[playing.id] === "down" ? "#fff" : "#6B6B6F"}
+                              />
+                            </button>
+                          </div>
+
+                          {/* Comment pill */}
+                          <button
+                            type="button"
+                            aria-label="Comments"
+                            onClick={() => setCommentsOpen(true)}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 6,
+                              background: "#F2F2F7",
+                              borderRadius: tokens.radiusCard,
+                              padding: "9px 16px",
+                              border: "none",
+                              cursor: "pointer",
+                              color: "#6B6B6F",
+                              fontSize: tokens.fontSize.base,
+                              fontWeight: tokens.fontWeight.bold,
+                              ...POPPINS,
+                            }}
+                          >
+                            <IconMessageCircle size={15} stroke={1.8} color="#6B6B6F" />
+                            {commentCounts[playing.id] ?? 0}
+                          </button>
+
+                          {/* View count (non-interactive) */}
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 4,
+                              marginLeft: "auto",
+                              color: "#B0B0B5",
+                              fontSize: 12.5,
+                              fontWeight: tokens.fontWeight.semibold,
+                              ...POPPINS,
+                            }}
+                          >
+                            <IconEye size={14} stroke={1.8} color="#B0B0B5" />
+                            {playing.views ?? 0}
+                          </div>
+
+                          <button
+                            type="button"
+                            aria-label="Report video"
+                            onClick={() => {
+                              setReportingId(playing.id);
+                              setReportOpen(true);
+                            }}
+                            style={{
+                              width: 30,
+                              height: 30,
+                              borderRadius: "50%",
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer",
+                              padding: 0,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              flexShrink: 0,
+                            }}
+                          >
+                            <IconFlag size={14} stroke={1.8} color="#C7C7CC" />
+                          </button>
+                        </div>
+
+                        {nextVideo && (
+                          <div
+                            style={{
+                              margin: "8px 0 0",
+                              background: "#fff",
+                              border: "none",
+                              borderRadius: tokens.radiusCard,
+                              boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                              padding: "12px 16px",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 10,
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              openPlayer(nextVideo);
+                            }}
+                          >
+                            {/* Thumbnail */}
+                            <div
+                              style={{
+                                width: 52,
+                                height: 36,
+                                borderRadius: 8,
+                                overflow: "hidden",
+                                flexShrink: 0,
+                                background: "linear-gradient(135deg, #CC2229, #7C1D1D)",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              {nextVideo.thumbnail_url ? (
+                                <img
+                                  src={nextVideo.thumbnail_url}
+                                  alt=""
+                                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                />
+                              ) : (
+                                <IconPlayerPlay size={16} color="#fff" stroke={1.5} />
+                              )}
+                            </div>
+                            {/* Text */}
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div
+                                style={{
+                                  fontSize: tokens.fontSize.xs,
+                                  fontWeight: tokens.fontWeight.semibold,
+                                  color: tokens.textMuted,
+                                  textTransform: "uppercase",
+                                  letterSpacing: "0.06em",
+                                  fontFamily: "Poppins, sans-serif",
+                                  marginBottom: 2,
+                                }}
+                              >
+                                Up next
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: 12,
+                                  fontWeight: tokens.fontWeight.semibold,
+                                  color: tokens.navy,
+                                  fontFamily: "Poppins, sans-serif",
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                }}
+                              >
+                                {nextVideo.caption ?? "Next video"}
+                              </div>
+                            </div>
+                            <IconChevronRight size={16} color="#9CA3AF" stroke={1.5} />
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <IconChevronRight size={16} color="#9CA3AF" stroke={1.5} />
-                  </div>
-                )}
-              </div>
-            </div>
-                )
-              }
-            />
+                  )
+                }
+              />
             </div>
           )}
 
@@ -1113,7 +1090,6 @@ export default function ShowcasePageBody() {
                 {/* THUMBNAIL */}
                 <div
                   onClick={() => openPlayer(video)}
-
                   style={{ height: 160, position: "relative", cursor: "pointer" }}
                 >
                   {video.thumbnail_url ? (
@@ -1291,7 +1267,6 @@ export default function ShowcasePageBody() {
                       {video.views ?? 0}
                     </span>
                   </div>
-
                 </div>
               </div>
             );
@@ -1300,8 +1275,6 @@ export default function ShowcasePageBody() {
       )}
 
       {/* PLAYER */}
-
-
 
       {/* COMMENTS SHEET */}
       {commentsOpen && playing && (
@@ -1405,13 +1378,10 @@ export default function ShowcasePageBody() {
                 </div>
               ) : (
                 (() => {
-                  const nameOf = (c: any) =>
-                    c?.instructor?.name ?? c?.author_name ?? "Instructor";
+                  const nameOf = (c: any) => c?.instructor?.name ?? c?.author_name ?? "Instructor";
                   const byId: Record<string, any> = {};
                   comments.forEach((c: any) => (byId[c.id] = c));
-                  const roots = comments.filter(
-                    (c: any) => !c.parent_id || !byId[c.parent_id],
-                  );
+                  const roots = comments.filter((c: any) => !c.parent_id || !byId[c.parent_id]);
                   const repliesByParent: Record<string, any[]> = {};
                   comments.forEach((c: any) => {
                     if (!c.parent_id || !byId[c.parent_id]) return;
@@ -1419,30 +1389,20 @@ export default function ShowcasePageBody() {
                   });
                   Object.values(repliesByParent).forEach((list) =>
                     list.sort(
-                      (a, b) =>
-                        new Date(a.created_at).getTime() -
-                        new Date(b.created_at).getTime(),
+                      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
                     ),
                   );
                   const sortedRoots =
                     commentSort === "newest"
                       ? [...roots].sort(
                           (a, b) =>
-                            new Date(b.created_at).getTime() -
-                            new Date(a.created_at).getTime(),
+                            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
                         )
                       : [...roots].sort(
-                          (a, b) =>
-                            (commentLikeCounts[b.id] ?? 0) -
-                            (commentLikeCounts[a.id] ?? 0),
+                          (a, b) => (commentLikeCounts[b.id] ?? 0) - (commentLikeCounts[a.id] ?? 0),
                         );
 
-                  const renderComment = (
-                    c: any,
-                    i: number,
-                    isReply: boolean,
-                    parent?: any,
-                  ) => {
+                  const renderComment = (c: any, i: number, isReply: boolean, parent?: any) => {
                     const name = nameOf(c);
                     const liked = !!myCommentLikes[c.id];
                     const count = commentLikeCounts[c.id] ?? 0;
@@ -1594,9 +1554,7 @@ export default function ShowcasePageBody() {
                             </button>
                             <button
                               type="button"
-                              onClick={() =>
-                                setReplyTo({ id: threadParent.id, name })
-                              }
+                              onClick={() => setReplyTo({ id: threadParent.id, name })}
                               aria-label={`Reply to ${name}`}
                               style={{
                                 display: "inline-flex",
@@ -1623,9 +1581,7 @@ export default function ShowcasePageBody() {
                                   disabled={reported}
                                   onClick={() => setReportCommentId(c.id)}
                                   aria-label={
-                                    reported
-                                      ? "Comment reported"
-                                      : `Report comment by ${name}`
+                                    reported ? "Comment reported" : `Report comment by ${name}`
                                   }
                                   title={reported ? "Reported" : "Report"}
                                   style={{
@@ -1693,9 +1649,7 @@ export default function ShowcasePageBody() {
                   <button
                     type="button"
                     disabled={loadingMoreComments}
-                    onClick={() =>
-                      playing && void loadCommentPage(playing.id, false)
-                    }
+                    onClick={() => playing && void loadCommentPage(playing.id, false)}
                     style={{
                       border: "none",
                       background: "#F2F2F7",
@@ -1726,13 +1680,8 @@ export default function ShowcasePageBody() {
                 }}
               >
                 <IconMessageCircle size={14} stroke={1.7} color={BLUE} />
-                <span
-                  style={{ fontSize: 12.5, color: "#6B6B6F", flex: 1, ...POPPINS }}
-                >
-                  Replying to{" "}
-                  <span style={{ color: BLUE, fontWeight: 600 }}>
-                    @{replyTo.name}
-                  </span>
+                <span style={{ fontSize: 12.5, color: "#6B6B6F", flex: 1, ...POPPINS }}>
+                  Replying to <span style={{ color: BLUE, fontWeight: 600 }}>@{replyTo.name}</span>
                 </span>
                 <button
                   type="button"
@@ -1792,9 +1741,7 @@ export default function ShowcasePageBody() {
                     sendComment();
                   }
                 }}
-                placeholder={
-                  replyTo ? `Reply to @${replyTo.name}...` : "Add a comment..."
-                }
+                placeholder={replyTo ? `Reply to @${replyTo.name}...` : "Add a comment..."}
                 aria-label={replyTo ? "Write a reply" : "Add a comment"}
                 style={{
                   flex: 1,
@@ -1835,7 +1782,6 @@ export default function ShowcasePageBody() {
           </div>
         </div>
       )}
-
 
       {/* REPORT SHEET */}
       <ConfirmSheet
@@ -1886,9 +1832,7 @@ export default function ShowcasePageBody() {
                   rows={3}
                   placeholder="Tell us more..."
                   aria-label="Report details"
-                  onChange={(e) =>
-                    setReportReason(e.target.value ? e.target.value : "Other")
-                  }
+                  onChange={(e) => setReportReason(e.target.value ? e.target.value : "Other")}
                   className="w-full bg-transparent focus:outline-none resize-none"
                   style={{ fontSize: tokens.fontSize.lg, color: NAVY, ...POPPINS }}
                 />
@@ -1897,7 +1841,6 @@ export default function ShowcasePageBody() {
           )}
         </BottomSheet>
       )}
-
 
       {/* UPLOAD SHEET */}
       {uploadOpen && (
@@ -1920,7 +1863,14 @@ export default function ShowcasePageBody() {
               borderBottom: "0.5px solid #E4E8EF",
             }}
           >
-            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: NAVY, ...POPPINS }}>
+            <div
+              style={{
+                fontSize: tokens.fontSize.lg,
+                fontWeight: tokens.fontWeight.bold,
+                color: NAVY,
+                ...POPPINS,
+              }}
+            >
               Share a clip
             </div>
             <button
@@ -1940,9 +1890,7 @@ export default function ShowcasePageBody() {
             </button>
           </div>
 
-          <div
-            style={{ padding: 16, display: "flex", flexDirection: "column", gap: 16 }}
-          >
+          <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 16 }}>
             <div>
               <label style={labelStyle} htmlFor="sc-title">
                 Title
@@ -2001,7 +1949,6 @@ export default function ShowcasePageBody() {
               />
             </div>
 
-
             <div>
               <span style={labelStyle}>Video file</span>
               <label
@@ -2021,7 +1968,12 @@ export default function ShowcasePageBody() {
               >
                 <IconUpload size={48} color={RED} />
                 <div
-                  style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY, ...POPPINS }}
+                  style={{
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: NAVY,
+                    ...POPPINS,
+                  }}
                 >
                   Tap to select video
                 </div>
@@ -2062,9 +2014,7 @@ export default function ShowcasePageBody() {
                     width: 64,
                     height: 64,
                     borderRadius: 8,
-                    border: thumbPreview
-                      ? "1px solid #E4E8EF"
-                      : "2px dashed #E4E8EF",
+                    border: thumbPreview ? "1px solid #E4E8EF" : "2px dashed #E4E8EF",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -2155,10 +2105,7 @@ export default function ShowcasePageBody() {
                 padding: "14px 16px",
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.bold,
-                cursor:
-                  !videoFile || !uploadTitle.trim() || uploading
-                    ? "not-allowed"
-                    : "pointer",
+                cursor: !videoFile || !uploadTitle.trim() || uploading ? "not-allowed" : "pointer",
                 opacity: !videoFile || !uploadTitle.trim() || uploading ? 0.5 : 1,
                 ...POPPINS,
               }}

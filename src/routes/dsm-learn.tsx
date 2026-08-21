@@ -59,9 +59,7 @@ function DSMLearnPage() {
               <button
                 key={t.id}
                 type="button"
-                onClick={() =>
-                  navigate({ to: "/dsm-learn", search: { tab: t.id }, replace: true })
-                }
+                onClick={() => navigate({ to: "/dsm-learn", search: { tab: t.id }, replace: true })}
                 style={{
                   flex: 1,
                   padding: "11px 12px",

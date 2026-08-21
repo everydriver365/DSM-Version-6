@@ -2,12 +2,24 @@ import { useEffect, useState } from "react";
 import { tokens } from "@/lib/tokens";
 import { supabase } from "@/lib/supabaseClient";
 import { useNavigate } from "@tanstack/react-router";
-import { IconAward, IconBolt, IconCalendarOff, IconCheck, IconChevronRight, IconDownload, IconMovie, IconPlayerPlay, IconShoppingBag, IconStar, IconTrendingUp, IconX } from "@tabler/icons-react";
+import {
+  IconAward,
+  IconBolt,
+  IconCalendarOff,
+  IconCheck,
+  IconChevronRight,
+  IconDownload,
+  IconMovie,
+  IconPlayerPlay,
+  IconShoppingBag,
+  IconStar,
+  IconTrendingUp,
+  IconX,
+} from "@tabler/icons-react";
 import { toast } from "sonner";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import LearnLibrarySection from "@/components/learn/LearnLibrarySection";
 import LearnVideosSection from "@/components/learn/LearnVideosSection";
-
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
@@ -18,7 +30,13 @@ const GRAY_LABEL = "#5F6B7A";
 const GRAY_SUBTITLE = "#8A94A3";
 const FONT = "Poppins, sans-serif";
 
-type Video = { id?: string; title: string; duration: string; url: string | null; thumbnail_url?: string | null };
+type Video = {
+  id?: string;
+  title: string;
+  duration: string;
+  url: string | null;
+  thumbnail_url?: string | null;
+};
 
 type Guide = { icon: any; title: string; description: string; route: string };
 
@@ -26,15 +44,35 @@ const GROUPS: { heading: string; items: Guide[] }[] = [
   {
     heading: "Grow your business",
     items: [
-      { icon: IconShoppingBag, title: "Marketplace", description: "Sell courses, resources and services to other ADIs.", route: "/marketplace" },
-      { icon: IconAward, title: "Accreditations", description: "Show pupils the qualifications you've earned.", route: "/certifications" },
+      {
+        icon: IconShoppingBag,
+        title: "Marketplace",
+        description: "Sell courses, resources and services to other ADIs.",
+        route: "/marketplace",
+      },
+      {
+        icon: IconAward,
+        title: "Accreditations",
+        description: "Show pupils the qualifications you've earned.",
+        route: "/certifications",
+      },
     ],
   },
   {
     heading: "Organize your day",
     items: [
-      { icon: IconCalendarOff, title: "Gap Filler", description: "Find pupils to book into empty slots automatically.", route: "/gaps" },
-      { icon: IconBolt, title: "Auto-booking", description: "Let pupils book themselves into your free time.", route: "/availability" },
+      {
+        icon: IconCalendarOff,
+        title: "Gap Filler",
+        description: "Find pupils to book into empty slots automatically.",
+        route: "/gaps",
+      },
+      {
+        icon: IconBolt,
+        title: "Auto-booking",
+        description: "Let pupils book themselves into your free time.",
+        route: "/availability",
+      },
     ],
   },
 ];
@@ -59,8 +97,6 @@ function formatDuration(d: string | number | null | undefined): string {
   if (/^\d+(\.\d+)?$/.test(raw)) return `${raw} min`;
   return raw;
 }
-
-
 
 const LEARN_VIDEO_CACHE = "dsm-learn-videos-v1";
 
@@ -151,7 +187,6 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
         fontFamily: FONT,
       }}
     >
-
       <div
         style={{
           position: "relative",
@@ -206,7 +241,13 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
               justifyContent: "center",
             }}
           >
-            <IconPlayerPlay size={16} color={NAVY} stroke={2} fill={NAVY} style={{ marginLeft: 2 }} />
+            <IconPlayerPlay
+              size={16}
+              color={NAVY}
+              stroke={2}
+              fill={NAVY}
+              style={{ marginLeft: 2 }}
+            />
           </div>
         </div>
         <div
@@ -266,11 +307,18 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
         {v.title}
       </div>
     </div>
-
   );
 }
 
-function SectionLabel({ icon, label, strong }: { icon: React.ReactNode; label: string; strong?: boolean }) {
+function SectionLabel({
+  icon,
+  label,
+  strong,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  strong?: boolean;
+}) {
   return (
     <div
       style={{
@@ -329,7 +377,14 @@ function ArticleRow({ onGo, isLast }: { onGo: () => void; isLast: boolean }) {
         <IconStar stroke={1.5} size={17} color={BLUE} fill={BLUE} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: NAVY, lineHeight: 1.3 }}>
+        <div
+          style={{
+            fontSize: tokens.fontSize.base,
+            fontWeight: tokens.fontWeight.semibold,
+            color: NAVY,
+            lineHeight: 1.3,
+          }}
+        >
           Get more 5 star reviews
         </div>
         <div style={{ fontSize: 12, color: GRAY_SUBTITLE, lineHeight: 1.35, marginTop: 1 }}>
@@ -376,7 +431,14 @@ function GuideRow({ g, onGo, isLast }: { g: Guide; onGo: () => void; isLast: boo
         <Icon size={17} color={BLUE} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: NAVY, lineHeight: 1.3 }}>
+        <div
+          style={{
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.semibold,
+            color: NAVY,
+            lineHeight: 1.3,
+          }}
+        >
           {g.title}
         </div>
         <div style={{ fontSize: 12.5, color: GRAY_BODY, lineHeight: 1.35, marginTop: 1 }}>
@@ -439,13 +501,17 @@ export default function LearnPageBody() {
     };
   }, []);
 
-
-
   return (
     <div className="pb-24" style={{ fontFamily: FONT, background: CANVAS, minHeight: "100%" }}>
-
       <div style={{ padding: "8px 16px 0" }}>
-        <p style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: "#8A8A8E", margin: "0 0 22px" }}>
+        <p
+          style={{
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.medium,
+            color: "#8A8A8E",
+            margin: "0 0 22px",
+          }}
+        >
           Quick guides to get more out of DSM.
         </p>
       </div>
@@ -496,10 +562,7 @@ export default function LearnPageBody() {
             overflow: "hidden",
           }}
         >
-          <ArticleRow
-            onGo={() => navigate({ to: "/reviews" as never })}
-            isLast={false}
-          />
+          <ArticleRow onGo={() => navigate({ to: "/reviews" as never })} isLast={false} />
           {GROUPS[0].items.map((g, i) => (
             <GuideRow
               key={g.title}
@@ -624,11 +687,7 @@ export default function LearnPageBody() {
               }
               return (
                 <video
-                  src={
-                    isActive
-                      ? (playbackSrc ?? v.url ?? undefined)
-                      : (v.url ?? undefined)
-                  }
+                  src={isActive ? (playbackSrc ?? v.url ?? undefined) : (v.url ?? undefined)}
                   poster={v.thumbnail_url ?? undefined}
                   preload={isActive ? "auto" : "metadata"}
                   controls={isActive}

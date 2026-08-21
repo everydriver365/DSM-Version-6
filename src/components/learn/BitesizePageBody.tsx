@@ -31,8 +31,6 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 
-
-
 interface BitesizeVideo {
   id: string;
   title: string;
@@ -156,9 +154,7 @@ export default function BitesizePageBody() {
   }, [isAdmin]);
 
   const filtered =
-    activeCategory === "All"
-      ? videos
-      : videos.filter((v) => v.category === activeCategory);
+    activeCategory === "All" ? videos : videos.filter((v) => v.category === activeCategory);
 
   async function handleUpload() {
     if (!videoFile || !uploadTitle.trim()) return;
@@ -217,9 +213,7 @@ export default function BitesizePageBody() {
       .update({ views: (video.views ?? 0) + 1 })
       .eq("id", video.id);
     setVideos((prev) =>
-      prev.map((v) =>
-        v.id === video.id ? { ...v, views: (v.views ?? 0) + 1 } : v,
-      ),
+      prev.map((v) => (v.id === video.id ? { ...v, views: (v.views ?? 0) + 1 } : v)),
     );
   }
 
@@ -229,14 +223,19 @@ export default function BitesizePageBody() {
       .update({ is_published: !video.is_published })
       .eq("id", video.id);
     setVideos((prev) =>
-      prev.map((v) =>
-        v.id === video.id ? { ...v, is_published: !v.is_published } : v,
-      ),
+      prev.map((v) => (v.id === video.id ? { ...v, is_published: !v.is_published } : v)),
     );
   }
 
   async function deleteVideo(video: BitesizeVideo) {
-    if (!(await askConfirm({ title: "Delete video", message: `Delete "${video.title}"? Cannot be undone.`, confirmLabel: "Delete" }))) return;
+    if (
+      !(await askConfirm({
+        title: "Delete video",
+        message: `Delete "${video.title}"? Cannot be undone.`,
+        confirmLabel: "Delete",
+      }))
+    )
+      return;
     await supabase
       .from("bitesize_videos")
       .update({ deleted_at: new Date().toISOString() })
@@ -294,7 +293,7 @@ export default function BitesizePageBody() {
   return (
     <div style={{ background: "#DCE4F0", ...POPPINS }}>
       {isAdmin && (
-  <div style={{ display: "flex", justifyContent: "flex-end", padding: "10px 16px 0" }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", padding: "10px 16px 0" }}>
           <button
             type="button"
             aria-label="Upload video"
@@ -317,8 +316,8 @@ export default function BitesizePageBody() {
             <IconPlus size={16} />
             Upload video
           </button>
-        </div>)}
-
+        </div>
+      )}
 
       {/* CATEGORY CHIPS */}
       <div
@@ -585,9 +584,7 @@ export default function BitesizePageBody() {
             </div>
           )}
 
-
           {filtered.map((video) => (
-
             <div
               key={video.id}
               onClick={() => playVideo(video)}
@@ -619,8 +616,7 @@ export default function BitesizePageBody() {
                     style={{
                       width: "100%",
                       height: "100%",
-                      background:
-                        "linear-gradient(135deg, #7C3AED, #4C1D95)",
+                      background: "linear-gradient(135deg, #7C3AED, #4C1D95)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -845,9 +841,6 @@ export default function BitesizePageBody() {
         </div>
       )}
 
-
-
-
       {/* UPLOAD SHEET */}
       {uploadOpen && isAdmin && (
         <div
@@ -1028,9 +1021,7 @@ export default function BitesizePageBody() {
                     width: 64,
                     height: 64,
                     borderRadius: 8,
-                    border: thumbPreview
-                      ? "1px solid #E4E8EF"
-                      : "2px dashed #E4E8EF",
+                    border: thumbPreview ? "1px solid #E4E8EF" : "2px dashed #E4E8EF",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -1102,9 +1093,7 @@ export default function BitesizePageBody() {
                   Publish immediately
                 </div>
                 {!uploadPublished && (
-                  <div
-                    style={{ fontSize: 12, color: tokens.textSecondary, ...POPPINS }}
-                  >
+                  <div style={{ fontSize: 12, color: tokens.textSecondary, ...POPPINS }}>
                     Save as draft
                   </div>
                 )}
@@ -1125,12 +1114,8 @@ export default function BitesizePageBody() {
                 padding: "14px 16px",
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.bold,
-                cursor:
-                  !videoFile || !uploadTitle.trim() || uploading
-                    ? "not-allowed"
-                    : "pointer",
-                opacity:
-                  !videoFile || !uploadTitle.trim() || uploading ? 0.5 : 1,
+                cursor: !videoFile || !uploadTitle.trim() || uploading ? "not-allowed" : "pointer",
+                opacity: !videoFile || !uploadTitle.trim() || uploading ? 0.5 : 1,
                 ...POPPINS,
               }}
             >
@@ -1147,17 +1132,10 @@ export default function BitesizePageBody() {
           onClose={() => setEditVideo(null)}
           footer={
             <>
-              <PrimaryButton
-                disabled={!editTitle.trim() || saving}
-                onClick={saveEdit}
-              >
+              <PrimaryButton disabled={!editTitle.trim() || saving} onClick={saveEdit}>
                 {saving ? "Saving..." : "Save changes"}
               </PrimaryButton>
-              <GhostButton
-                color="#6B7686"
-                bg="#F1F5F9"
-                onClick={() => setEditVideo(null)}
-              >
+              <GhostButton color="#6B7686" bg="#F1F5F9" onClick={() => setEditVideo(null)}>
                 Cancel
               </GhostButton>
             </>
@@ -1303,9 +1281,7 @@ export default function BitesizePageBody() {
                     color: tokens.textSecondary,
                   }}
                 >
-                  {editPublished
-                    ? "Visible to all instructors"
-                    : "Saved as draft"}
+                  {editPublished ? "Visible to all instructors" : "Saved as draft"}
                 </div>
               </div>
               <DSMToggle checked={editPublished} onChange={(v) => setEditPublished(v)} />
@@ -1317,4 +1293,3 @@ export default function BitesizePageBody() {
     </div>
   );
 }
-

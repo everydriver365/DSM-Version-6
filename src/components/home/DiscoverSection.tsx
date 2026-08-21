@@ -8,11 +8,9 @@ import vitalityLogoAsset from "@/assets/vitality-logo.png.asset.json";
 import hmacaLogoAsset from "@/assets/hmaca-logo.png.asset.json";
 
 import {
-  IconPlayerPlay,
   IconChevronRight,
   IconBroadcast,
   IconBook,
-  IconBolt,
   IconShoppingBag,
   IconNews,
   IconBrowser,
