@@ -1161,7 +1161,7 @@ function JobDetailSheet({
           <Row label="Course hours" value={job.course_hours != null ? `${job.course_hours} hrs` : "—"} />
           <Row label="Preferred timing" value={job.preferred_timing?.length ? job.preferred_timing.join(", ") : "—"} />
           <Row label="Preferred start" value={job.preferred_start_date ? new Date(job.preferred_start_date).toLocaleDateString() : "—"} />
-          <Row label="Rate" value={job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : "Rate TBC"} />
+          <Row label="Pick up" value={job.postcode_area || "—"} />
           <Row label="Worth" value={worth != null ? <span style={{ color: GREEN }}>£{worth.toFixed(2)}</span> : "—"} />
           {amountPaid > 0 && (
             <>
