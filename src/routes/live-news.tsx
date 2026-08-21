@@ -220,6 +220,9 @@ function LiveNewsPage() {
   const lastSaveRef = useRef(0);
   const restartRef = useRef<string | null>(null);
   const resumeTargetRef = useRef<{ id: string; target: number; startedAt: number } | null>(null);
+  const autoplayRef = useRef(true);
+  const restoredRef = useRef(false);
+
 
   useEffect(() => {
     const stored = loadProgress();
