@@ -1084,49 +1084,6 @@ function RootComponent() {
       )}
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <div style={Object.keys(wrapperStyle).length ? wrapperStyle : undefined}>
-        {!isOnline && !bannerDismissed && (
-          <div
-            style={{
-              position: "fixed",
-              top: "env(safe-area-inset-top, 0px)",
-              left: 0,
-              right: 0,
-              zIndex: 9999,
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              paddingTop: 8,
-              paddingBottom: 8,
-              paddingLeft: 16,
-              paddingRight: 16,
-              background: "#FEF3C7",
-              color: "#B45309",
-              fontSize: tokens.fontSize.base,
-              fontWeight: tokens.fontWeight.medium,
-              fontFamily: "Poppins, sans-serif",
-              textAlign: "left",
-            }}
-          >
-            <IconWifiOff size={16} stroke={1.8} />
-            <span style={{ flex: 1 }}>No internet connection — some features may be unavailable</span>
-            <button
-              onClick={() => setBannerDismissed(true)}
-              aria-label="Dismiss offline banner"
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                padding: 4,
-                marginLeft: "auto",
-                display: "flex",
-                alignItems: "center",
-                flexShrink: 0,
-              }}
-            >
-              <IconX size={14} color="#fff" stroke={2} />
-            </button>
-          </div>
-        )}
         <Outlet />
       </div>
       {!hideNav && !sheetOpen && <BottomNav active={active} />}
