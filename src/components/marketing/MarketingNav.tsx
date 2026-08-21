@@ -71,6 +71,7 @@ export function MarketingNav() {
         top: 0,
         zIndex: 50,
         background: "#fff",
+        paddingTop: "max(env(safe-area-inset-top, 0px), 12px)",
         borderBottom: `1px solid ${BORDER}`}}
     >
       <div
