@@ -1252,7 +1252,7 @@ function MessagesIndexPage() {
                         flexShrink: 0,
                         textAlign: "center",
                         padding: "7px 12px",
-                        fontSize: 12,
+                        fontSize: 13,
                         fontFamily: "Poppins, sans-serif",
                         cursor: "pointer",
                         border: "none",
@@ -1260,7 +1260,7 @@ function MessagesIndexPage() {
                         background: active ? "#0B1F3A" : "transparent",
                         color: active ? "#FFFFFF" : "#8A94A6",
                         borderRadius: active ? 8 : 0,
-                        fontWeight: active ? 600 : 500,
+                        fontWeight: active ? 700 : 600,
                         whiteSpace: "nowrap",
                       }}
                     >
@@ -1333,7 +1333,7 @@ function MessagesIndexPage() {
                     border: 0,
                     outline: "none",
                     background: "transparent",
-                    fontSize: tokens.fontSize.md,
+                    fontSize: 15,
                     color: NAVY,
                     ...FONT,
                   }}
@@ -1478,20 +1478,20 @@ function MessagesIndexPage() {
                       {sections.map(
                         (s) =>
                           s.items.length > 0 && (
-                            <div key={s.label}>
-                              <div
-                                style={{
-                                  fontSize: tokens.fontSize.xs,
-                                  fontWeight: tokens.fontWeight.semibold,
-                                  textTransform: "uppercase",
-                                  letterSpacing: "0.12em",
-                                  color: "#8A94A6",
-                                  margin: "16px 16px 8px",
-                                  fontFamily: "Poppins, sans-serif",
-                                }}
-                              >
-                                {s.label}
-                              </div>
+                              <div key={s.label}>
+                                <div
+                                  style={{
+                                    fontSize: 13,
+                                    fontWeight: tokens.fontWeight.bold,
+                                    textTransform: "uppercase",
+                                    letterSpacing: "0.6px",
+                                    color: "#8A94A6",
+                                    margin: "16px 16px 8px",
+                                    fontFamily: "Poppins, sans-serif",
+                                  }}
+                                >
+                                  {s.label}
+                                </div>
                               <div style={{ display: "flex", flexDirection: "column" }}>
                                 {s.items.map((item) => (
                                   <InboxRow
@@ -1881,43 +1881,45 @@ function InboxRow({
             minWidth: 0,
           }}
         >
+            <div
+              style={{
+                fontSize: 17,
+                fontWeight: tokens.fontWeight.bold,
+                color: NAVY,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                letterSpacing: "-0.2px",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              {item.name}
+            </div>
+            <div
+              style={{
+                fontSize: 13.5,
+                fontWeight: tokens.fontWeight.semibold,
+                color: unread ? BLUE : "#8A94A6",
+                flexShrink: 0,
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
+            </div>
+        </div>
           <div
             style={{
-              fontSize: tokens.fontSize.md,
-              fontWeight: unread ? 700 : 500,
-              color: NAVY,
+              fontSize: 13.5,
+              fontWeight: tokens.fontWeight.semibold,
+              color: "#5A6270",
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
               fontFamily: "Poppins, sans-serif",
             }}
           >
-            {item.name}
+            {item.preview}
           </div>
-          <div
-            style={{
-              fontSize: tokens.fontSize.sm,
-              fontWeight: unread ? 700 : 500,
-              color: unread ? BLUE : "#8A94A6",
-              flexShrink: 0,
-              fontFamily: "Poppins, sans-serif",
-            }}
-          >
-            {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
-          </div>
-        </div>
-        <div
-          style={{
-            fontSize: tokens.fontSize.base,
-            color: "#5A6270",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            fontFamily: "Poppins, sans-serif",
-          }}
-        >
-          {item.preview}
-        </div>
         <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
           <span
             style={{
