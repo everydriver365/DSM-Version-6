@@ -411,25 +411,24 @@ function TakePaymentPage() {
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
+        background: NAVY,
       }}
     >
-      {/* Top bar */}
+      {/* Header */}
       <div
         style={{
           background: NAVY,
-          color: "#fff",
+          height: 52,
           padding: "0 16px",
           display: "flex",
           alignItems: "center",
+          justifyContent: "center",
           flexShrink: 0,
-          height: 52,
+          position: "relative",
         }}
       >
-        <div style={{ width: 32 }} />
         <div
           style={{
-            flex: 1,
-            textAlign: "center",
             fontSize: 19,
             fontWeight: tokens.fontWeight.extrabold,
             letterSpacing: "-0.3px",
@@ -444,7 +443,11 @@ function TakePaymentPage() {
           aria-label="Close"
           onClick={() => navigate({ to: "/home" })}
           style={{
-            background: "rgba(255,255,255,0.10)",
+            position: "absolute",
+            right: 16,
+            top: "50%",
+            transform: "translateY(-50%)",
+            background: "#fff",
             border: "none",
             width: 32,
             height: 32,
@@ -452,7 +455,7 @@ function TakePaymentPage() {
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "#fff",
+            color: NAVY,
             cursor: "pointer",
           }}
         >
@@ -467,6 +470,9 @@ function TakePaymentPage() {
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
+          background: "#fff",
+          borderTopLeftRadius: tokens.radiusSheet,
+          borderTopRightRadius: tokens.radiusSheet,
           maxWidth: 480,
           width: "100%",
           margin: "0 auto",
@@ -478,29 +484,54 @@ function TakePaymentPage() {
           style={{
             textAlign: "center",
             flexShrink: 0,
-            padding: "10px 16px",
-            fontSize: 46,
-            fontWeight: 900,
-            letterSpacing: "-1.5px",
-            color: NAVY,
-            lineHeight: 1.05,
+            padding: "24px 16px 8px",
           }}
         >
-          £{amountNum.toFixed(2)}
+          <div
+            style={{
+              fontSize: 12,
+              fontWeight: tokens.fontWeight.semibold,
+              letterSpacing: 1.5,
+              color: tokens.textMuted,
+              textTransform: "uppercase",
+              marginBottom: 4,
+            }}
+          >
+            AMOUNT
+          </div>
+          <div
+            style={{
+              fontSize: 56,
+              fontWeight: tokens.fontWeight.extrabold,
+              letterSpacing: "-2px",
+              color: NAVY,
+              lineHeight: 1.05,
+            }}
+          >
+            £{amountNum.toFixed(2)}
+          </div>
         </div>
 
-
-        {/* Pupil + Description — compact single row */}
+        {/* Pupil + Description + Hours */}
         <div
           style={{
             display: "flex",
             gap: 8,
             flexShrink: 0,
-            padding: "12px 16px 0",
+            padding: "0 16px",
             alignItems: "stretch",
           }}
         >
-          <div style={{ ...fieldCardStyle, width: 118, flexShrink: 0, position: "relative", display: "flex", alignItems: "center" }}>
+          <div
+            style={{
+              ...fieldCardStyle,
+              width: 120,
+              flexShrink: 0,
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
             <select
               value={pupilId}
               onChange={(e) => setPupilId(e.target.value)}
@@ -534,7 +565,7 @@ function TakePaymentPage() {
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Description"
+            placeholder="Description (optional)"
             style={{
               ...fieldCardStyle,
               flex: 1,
@@ -549,8 +580,7 @@ function TakePaymentPage() {
               overflow: "hidden",
             }}
           />
-          <div style={{ ...fieldCardStyle, width: 52, flexShrink: 0, padding: "11px 10px" }}>
-
+          <div style={{ ...fieldCardStyle, width: 56, flexShrink: 0, padding: "11px 10px" }}>
             <input
               type="number"
               inputMode="decimal"
@@ -587,7 +617,6 @@ function TakePaymentPage() {
           </div>
         </div>
 
-
         {/* Tabs */}
         <div
           style={{
@@ -596,9 +625,9 @@ function TakePaymentPage() {
             background: "#fff",
             padding: 4,
             borderRadius: tokens.radiusCard,
-            boxShadow: "0 3px 0 #E4E4E8",
+            border: "1px solid #E8ECF2",
             flexShrink: 0,
-            margin: "10px 16px 0",
+            margin: "12px 16px 0",
           }}
         >
           {(
@@ -638,7 +667,6 @@ function TakePaymentPage() {
           })}
         </div>
 
-
         {/* Main area — numpad or tab-specific content */}
         <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", overflow: "hidden" }}>
           {tab === "qr" && (
@@ -647,7 +675,7 @@ function TakePaymentPage() {
                 style={{
                   flex: "0 0 auto",
                   minHeight: 0,
-                  padding: "10px 16px 12px",
+                  padding: "12px 16px",
                   display: "grid",
                   gridTemplateColumns: "repeat(3, 1fr)",
                   gap: 10,
@@ -677,22 +705,76 @@ function TakePaymentPage() {
                   disabled={qrGenerating}
                   style={{
                     width: "100%",
-                    padding: 17,
+                    padding: 16,
                     borderRadius: tokens.radiusCard,
                     background: NAVY,
                     color: "#fff",
                     border: "none",
                     fontSize: tokens.fontSize.lg,
                     fontWeight: tokens.fontWeight.extrabold,
-                    boxShadow: "0 4px 0 #050D1C",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
                     opacity: qrGenerating ? 0.7 : 1,
                     cursor: "pointer",
                   }}
                 >
+                  <IconQrcode size={20} />
                   {qrGenerating ? "Generating…" : "Generate QR code"}
                 </button>
               </div>
 
+              {/* Security note */}
+              <div style={{ padding: "0 16px 16px", flexShrink: 0 }}>
+                <div
+                  style={{
+                    background: "#F4F7FA",
+                    borderRadius: tokens.radiusCard,
+                    padding: "12px 16px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: "50%",
+                      background: tokens.statusInfoBg,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      color: tokens.blue,
+                    }}
+                  >
+                    <IconShieldCheck size={20} />
+                  </div>
+                  <div>
+                    <div
+                      style={{
+                        fontSize: tokens.fontSize.md,
+                        fontWeight: tokens.fontWeight.bold,
+                        color: NAVY,
+                      }}
+                    >
+                      Secure and instant
+                    </div>
+                    <div
+                      style={{
+                        fontSize: tokens.fontSize.base,
+                        fontWeight: tokens.fontWeight.medium,
+                        color: tokens.textSecondary,
+                        marginTop: 2,
+                      }}
+                    >
+                      Payments are encrypted and processed securely.
+                    </div>
+                  </div>
+                </div>
+              </div>
             </>
           )}
 
@@ -704,25 +786,28 @@ function TakePaymentPage() {
                 disabled={cardLoading}
                 style={{
                   width: "100%",
-                  padding: 17,
+                  padding: 16,
                   borderRadius: tokens.radiusCard,
                   background: NAVY,
                   color: "#fff",
                   border: "none",
                   fontSize: tokens.fontSize.lg,
                   fontWeight: tokens.fontWeight.extrabold,
-                  boxShadow: "0 4px 0 #050D1C",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
                   opacity: cardLoading ? 0.7 : 1,
                   cursor: "pointer",
                 }}
               >
+                <IconCreditCard size={20} />
                 {cardLoading ? "Loading…" : `Pay by card with Square · £${amountNum.toFixed(2)}`}
               </button>
               <div style={{ textAlign: "center", color: tokens.textMuted, fontSize: tokens.fontSize.base, marginTop: 12 }}>
                 Opens a secure Square checkout page
               </div>
             </div>
-
           )}
 
           {tab === "cash" && (
@@ -731,7 +816,7 @@ function TakePaymentPage() {
                 style={{
                   flex: "0 0 auto",
                   minHeight: 0,
-                  padding: "10px 16px 12px",
+                  padding: "12px 16px",
                   display: "grid",
                   gridTemplateColumns: "repeat(3, 1fr)",
                   gap: 10,
@@ -752,7 +837,6 @@ function TakePaymentPage() {
                   </button>
                 ))}
               </div>
-
 
               {/* Cash controls */}
               <div style={{ padding: "0 16px 12px", flexShrink: 0, display: "flex", gap: 8, alignItems: "center" }}>
@@ -785,22 +869,25 @@ function TakePaymentPage() {
                   disabled={cashSaving}
                   style={{
                     flex: 1.2,
-                    padding: 17,
+                    padding: 16,
                     borderRadius: tokens.radiusCard,
                     background: NAVY,
                     color: "#fff",
                     border: "none",
                     fontSize: tokens.fontSize.lg,
                     fontWeight: tokens.fontWeight.extrabold,
-                    boxShadow: "0 4px 0 #050D1C",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
                     opacity: cashSaving ? 0.7 : 1,
                     cursor: "pointer",
                   }}
                 >
+                  <IconCashBanknote size={20} />
                   {cashSaving ? "Saving…" : "Record"}
                 </button>
               </div>
-
             </>
           )}
         </div>
