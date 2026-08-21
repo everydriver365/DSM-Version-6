@@ -290,10 +290,15 @@ export function MarketingNav() {
         .ed-mega-item:hover .ed-mega-icon { background: ${ACCENT}; color: #fff !important; }
         .ed-mega-list-item:hover { color: ${ACCENT} !important; }
         @media (max-width: 1024px) {
-          .ed-nav-center, .ed-nav-actions { display: none !important; }
+          .ed-nav-center { display: none !important; }
+          .ed-nav-actions { display: none !important; }
           .ed-nav-burger { display: inline-flex !important; }
+          .ed-nav-signin { display: inline-flex !important; }
           .ed-nav-mobile { display: block !important; }
           .ed-nav-inner { padding: 0 20px !important; height: 64px !important; }
+        }
+        @media (max-width: 480px) {
+          .ed-nav-signin { padding: 10px 14px !important; font-size: 14px !important; }
         }
       `}</style>
     </header>
