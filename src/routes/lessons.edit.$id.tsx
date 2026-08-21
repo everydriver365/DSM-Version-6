@@ -23,6 +23,25 @@ import {
 import { pushLessonToGoogle } from "@/lib/calendarSyncPrefs";
 
 
+async function triggerCalendarSync() {
+  try {
+    await fetch(
+      'https://bjpqxfrihwjcqprmoqfs.supabase.co/functions/v1/sync-google-calendar',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo',
+        },
+        body: JSON.stringify({}),
+      }
+    );
+  } catch {
+    // Fail silently — don't block lesson save
+  }
+}
+
+
 export const Route = createFileRoute("/lessons/edit/$id")({
   head: () => ({
     meta: [{ title: "Edit lesson — DSM by EveryDriver" }],
@@ -393,7 +412,9 @@ function EditLessonPage() {
       );
     }
     toast.success("Lesson updated");
+    triggerCalendarSync();
     navigate({ to: "/home" });
+
   }
 
   return (
