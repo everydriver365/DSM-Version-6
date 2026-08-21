@@ -583,6 +583,20 @@ function JobsPage() {
       }));
     setCoverage(cov);
 
+    // Fill missing postcode_area from the linked enquiry, when there is one.
+    const backfillPostcodes = async (rows: JobOffer[]): Promise<JobOffer[]> => {
+      const needed = rows.filter((j) => !j.postcode_area?.trim() && j.enquiry_id).map((j) => j.enquiry_id!) as string[];
+      if (needed.length === 0) return rows;
+      const { data: enq } = await supabase.from("enquiries").select("id, postcode").in("id", needed);
+      if (!enq?.length) return rows;
+      const map = new Map(enq.map((e: any) => [e.id, (e.postcode ?? "").trim()]));
+      return rows.map((j) => {
+        if (j.postcode_area?.trim() || !j.enquiry_id) return j;
+        const pc = map.get(j.enquiry_id);
+        return pc ? { ...j, postcode_area: pc.split(" ")[0].toUpperCase() } : j;
+      });
+    };
+
     // Open jobs
     const { data, error } = await supabase
       .from("job_offers")
@@ -603,7 +617,7 @@ function JobsPage() {
       });
       // Filter out jobs already declined by this instructor.
       const filtered2 = filtered.filter((job) => !(job.declined_by ?? []).includes(id));
-      setJobs(filtered2);
+      setJobs(await backfillPostcodes(filtered2));
     }
 
     // Claimed jobs
@@ -615,7 +629,7 @@ function JobsPage() {
     if (claimedError) {
       setClaimedJobs([]);
     } else {
-      setClaimedJobs((claimed ?? []) as JobOffer[]);
+      setClaimedJobs(await backfillPostcodes((claimed ?? []) as JobOffer[]));
     }
   };
 
