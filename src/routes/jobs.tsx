@@ -217,27 +217,54 @@ function JobCard({
     }
   }
 
+  const startDate = job.preferred_start_date
+    ? new Date(job.preferred_start_date).toLocaleDateString("en-GB", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+    : null;
+
   return (
     <div
       onClick={() => setDetailJob(job)}
       style={{
-        background: tokens.white,
+        background: "#F5F8FC",
         borderRadius: tokens.radiusCard,
-        boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+        border: "1px solid #E7EDF5",
+        boxShadow: "0 1px 3px rgba(11,31,58,0.05)",
         overflow: "hidden",
         cursor: "pointer",
+        padding: 16,
       }}
     >
-      <div
-        style={{
-          padding: "16px 18px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 12,
-        }}
-      >
-        <div style={{ fontSize: 12.5, fontWeight: tokens.fontWeight.medium, color: tokens.textMuted, ...POPPINS }}>
+      {/* Header row */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: 12,
+            background: "#E6EEFB",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <IconCalendarEvent size={20} stroke={2} color={BLUE} />
+        </div>
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            fontSize: tokens.fontSize.base,
+            fontWeight: tokens.fontWeight.semibold,
+            color: tokens.textSecondary,
+            ...POPPINS,
+          }}
+        >
           {variant === "claimed"
             ? `Job accepted · ${job.claimed_at ? relTime(job.claimed_at) : "—"}`
             : `Job offer · Posted ${relTime(job.created_at)}`}
@@ -245,9 +272,12 @@ function JobCard({
         {worth != null && (
           <div
             style={{
-              fontSize: tokens.fontSize.xxl,
+              background: "#DCE8FA",
+              borderRadius: 12,
+              padding: "8px 14px",
+              fontSize: tokens.fontSize.xl,
               fontWeight: tokens.fontWeight.extrabold,
-              color: worth === 0 ? "#C7C7CC" : "#000",
+              color: NAVY,
               ...POPPINS,
             }}
           >
@@ -256,125 +286,239 @@ function JobCard({
         )}
       </div>
 
-      <div style={{ padding: "0 18px" }}>
-        <div
-          style={{
-            fontSize: 19,
-            fontWeight: tokens.fontWeight.extrabold,
-            letterSpacing: "-0.3px",
-            color: "#000",
-            marginBottom: variant === "claimed" ? 6 : 0,
-            ...POPPINS,
-          }}
-        >
-          {titleCase(job.pupil_name) || "New pupil"}
-          {variant === "claimed" && job.postcode_area ? ` · ${job.postcode_area}` : ""}
-        </div>
-        <div
-          style={{
-            fontSize: 13.5,
-            fontWeight: tokens.fontWeight.medium,
-            color: tokens.textMuted,
-            lineHeight: 1.5,
-            marginBottom: variant === "claimed" ? 14 : 0,
-            ...POPPINS,
-          }}
-        >
-          {[
-            sentenceCase(job.transmission),
-            job.course_hours ? `${job.course_hours} hrs` : null,
-            job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : null,
-            variant === "claimed" && distanceKnown ? `${distanceMi!.toFixed(1)} mi` : null,
-            sentenceCase(job.preferred_timing?.join(", ")),
-          ]
-            .filter(Boolean)
-            .join(" · ")}
-        </div>
+      {/* Name */}
+      <div
+        style={{
+          marginTop: 12,
+          fontSize: 24,
+          fontWeight: tokens.fontWeight.extrabold,
+          letterSpacing: "-0.4px",
+          color: NAVY,
+          ...POPPINS,
+        }}
+      >
+        {titleCase(job.pupil_name) || "New pupil"}
+        {variant === "claimed" && job.postcode_area ? ` · ${job.postcode_area}` : ""}
+      </div>
 
+      {/* Meta row with icons */}
+      <div
+        style={{
+          marginTop: 8,
+          display: "flex",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 8,
+          fontSize: tokens.fontSize.md,
+          fontWeight: tokens.fontWeight.medium,
+          color: tokens.textSecondary,
+          ...POPPINS,
+        }}
+      >
+        {(
+          [
+            [<IconCar key="i1" size={16} stroke={2} color={tokens.textSecondary} />, sentenceCase(job.transmission)],
+            [
+              <IconClock key="i2" size={16} stroke={2} color={tokens.textSecondary} />,
+              job.course_hours ? `${job.course_hours} hrs` : null,
+            ],
+            [null, job.offered_rate != null ? `£${Number(job.offered_rate).toFixed(2)}/hr` : null],
+            [null, variant === "claimed" && distanceKnown ? `${distanceMi!.toFixed(1)} mi` : null],
+            [
+              <IconSun key="i3" size={16} stroke={2} color={tokens.textSecondary} />,
+              sentenceCase(job.preferred_timing?.join(", ")),
+            ],
+          ] as [React.ReactNode, string | null][]
+        )
+          .filter(([, label]) => !!label)
+          .map(([icon, label], i, arr) => (
+            <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              {icon}
+              {label}
+              {i < arr.length - 1 && <span style={{ color: tokens.textMuted, marginLeft: 4 }}>·</span>}
+            </span>
+          ))}
+      </div>
+
+      <div style={{ height: 1, background: "#E3E9F1", margin: "16px 0" }} />
+
+      {/* Fit + start + duration */}
+      <div style={{ display: "flex", alignItems: "stretch", gap: 12 }}>
         {badge && (
-          <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                fontSize: 11.5,
-                fontWeight: tokens.fontWeight.bold,
-                color: badge.color,
-                background: badge.bg,
-                padding: "6px 16px",
-                borderRadius: tokens.radiusCard,
-                whiteSpace: "nowrap",
-                ...POPPINS,
-              }}
-            >
-              {variant === "claimed" ? (
-                <div style={{ width: 6, height: 6, borderRadius: "50%", background: badge.color }} />
-              ) : (
-                <IconCheck size={11} stroke={2.5} color={badge.color} />
-              )}
-              {sentenceCase(badge.label)}
+          <div
+            style={{
+              flex: 1,
+              minWidth: 0,
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              background: badge.bg,
+              borderRadius: 12,
+              padding: "10px 12px",
+              ...POPPINS,
+            }}
+          >
+            {variant === "claimed" ? (
+              <IconCircleCheck size={24} stroke={2} color={badge.color} />
+            ) : (
+              <IconCircleCheck size={24} stroke={2} color={badge.color} />
+            )}
+            <div style={{ minWidth: 0 }}>
+              <div
+                style={{
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.bold,
+                  color: badge.color,
+                }}
+              >
+                {sentenceCase(badge.label)}
+              </div>
+              <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: badge.color }}>
+                Works well for you
+              </div>
             </div>
           </div>
         )}
 
-        <div style={{ height: 1, background: "#E9E9EC", margin: "16px 0" }} />
-
-        <div style={{ display: "flex", gap: 10, paddingBottom: 16 }}>
-          {variant === "offer" && (
-            <button
-              type="button"
-              onClick={async (e) => {
-                e.stopPropagation();
-                if (!uid) return;
-                onDecline?.();
-              }}
+        {startDate && (
+          <div
+            style={{
+              paddingLeft: 12,
+              borderLeft: "1px solid #E3E9F1",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              ...POPPINS,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <IconCalendarEvent size={16} stroke={2} color={tokens.textSecondary} />
+              <span
+                style={{
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.semibold,
+                  color: tokens.textSecondary,
+                }}
+              >
+                Start
+              </span>
+            </div>
+            <div
               style={{
-                background: tokens.canvas,
-                color: "#000",
-                height: "auto",
-                borderRadius: tokens.radiusCard,
-                padding: 16,
-                border: "none",
-                fontSize: 14.5,
-                fontWeight: tokens.fontWeight.bold,
-                cursor: "pointer",
+                marginTop: 2,
+                fontSize: tokens.fontSize.base,
+                fontWeight: tokens.fontWeight.medium,
+                color: tokens.textSecondary,
                 whiteSpace: "nowrap",
-                flex: 1,
-                ...POPPINS,
               }}
             >
-              Decline
-            </button>
-          )}
+              {startDate}
+            </div>
+          </div>
+        )}
+
+        {job.course_hours != null && (
+          <div
+            style={{
+              paddingLeft: 12,
+              borderLeft: "1px solid #E3E9F1",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              ...POPPINS,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <IconClock size={16} stroke={2} color={tokens.textSecondary} />
+              <span
+                style={{
+                  fontSize: tokens.fontSize.md,
+                  fontWeight: tokens.fontWeight.semibold,
+                  color: tokens.textSecondary,
+                }}
+              >
+                Duration
+              </span>
+            </div>
+            <div
+              style={{
+                marginTop: 2,
+                fontSize: tokens.fontSize.base,
+                fontWeight: tokens.fontWeight.medium,
+                color: tokens.textSecondary,
+                whiteSpace: "nowrap",
+              }}
+            >
+              {job.course_hours} hours
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Actions */}
+      <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
+        {variant === "offer" && (
           <button
             type="button"
-            onClick={(e) => {
+            onClick={async (e) => {
               e.stopPropagation();
-              setDetailJob(job);
+              if (!uid) return;
+              onDecline?.();
             }}
             style={{
-              background: BLUE,
-              color: "#FFF",
-              height: "auto",
-              borderRadius: tokens.radiusCard,
-              padding: 16,
-              border: "none",
-              fontSize: 14.5,
+              background: "#FFFFFF",
+              color: NAVY,
+              borderRadius: 12,
+              padding: "14px 16px",
+              border: "1px solid #E3E9F1",
+              fontSize: tokens.fontSize.lg,
               fontWeight: tokens.fontWeight.bold,
               cursor: "pointer",
               whiteSpace: "nowrap",
               flex: 1,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
               ...POPPINS,
             }}
           >
-            More details
+            <IconCircleX size={20} stroke={2} color={NAVY} />
+            Decline
           </button>
-        </div>
+        )}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setDetailJob(job);
+          }}
+          style={{
+            background: "#0B5ED7",
+            color: "#FFF",
+            borderRadius: 12,
+            padding: "14px 16px",
+            border: "none",
+            fontSize: tokens.fontSize.lg,
+            fontWeight: tokens.fontWeight.bold,
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+            flex: 1,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            ...POPPINS,
+          }}
+        >
+          More details
+          <IconChevronRight size={20} stroke={2.5} color="#FFF" />
+        </button>
       </div>
     </div>
   );
 }
+
 
 function JobsPage() {
   const [uid, setUid] = useState<string | null>(null);
