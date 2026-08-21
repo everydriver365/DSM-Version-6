@@ -1236,6 +1236,7 @@ type BenefitPartner = {
   name: string;
   tagline: string | null;
   description: string | null;
+
   icon: string | null;
   icon_bg: string | null;
   icon_color: string | null;
@@ -2984,25 +2985,6 @@ export function BenefitPartnersSection() {
               >
                 <button
                   type="button"
-                  onClick={() => setPerkVideoMode("upload")}
-                  style={{
-                    flex: 1,
-                    borderRadius: tokens.radiusCard,
-                    border: "none",
-                    padding: "6px 16px",
-                    fontSize: tokens.fontSize.base,
-                    fontWeight: tokens.fontWeight.semibold,
-                    fontFamily: "Poppins, sans-serif",
-                    cursor: "pointer",
-                    background: perkVideoMode === "upload" ? "#fff" : "transparent",
-                    color: perkVideoMode === "upload" ? "#0B1F3A" : "#6B6B6F",
-                    boxShadow: perkVideoMode === "upload" ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
-                  }}
-                >
-                  Upload
-                </button>
-                <button
-                  type="button"
                   onClick={() => setPerkVideoMode("embed")}
                   style={{
                     flex: 1,
@@ -3020,16 +3002,36 @@ export function BenefitPartnersSection() {
                 >
                   Embed URL
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setPerkVideoMode("upload")}
+                  style={{
+                    flex: 1,
+                    borderRadius: tokens.radiusCard,
+                    border: "none",
+                    padding: "6px 16px",
+                    fontSize: tokens.fontSize.base,
+                    fontWeight: tokens.fontWeight.semibold,
+                    fontFamily: "Poppins, sans-serif",
+                    cursor: "pointer",
+                    background: perkVideoMode === "upload" ? "#fff" : "transparent",
+                    color: perkVideoMode === "upload" ? "#0B1F3A" : "#6B6B6F",
+                    boxShadow: perkVideoMode === "upload" ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+                  }}
+                >
+                  Upload
+                </button>
               </div>
 
               {perkVideoMode === "embed" ? (
                 <>
-                  <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, marginBottom: 6 }}>Embed URL</div>
-                  <textarea
-                    rows={3}
+                  <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, marginBottom: 6 }}>
+                    YouTube or Vimeo URL
+                  </div>
+                  <input
                     value={editingPerk.video_embed_url ?? ""}
                     onChange={(e) => patchPerk({ video_embed_url: e.target.value })}
-                    placeholder="YouTube embed URL e.g. https://www.youtube.com/embed/xxxxx"
+                    placeholder="https://www.youtube.com/watch?v=... or https://vimeo.com/..."
                     style={{
                       width: "100%",
                       border: "1px solid #E4E8EF",
@@ -3037,24 +3039,27 @@ export function BenefitPartnersSection() {
                       padding: "12px 16px",
                       fontSize: tokens.fontSize.base,
                       fontFamily: "Poppins, sans-serif",
-                      resize: "vertical",
                     }}
                   />
-                  {editingPerk.video_embed_url ? (
+                  <div style={{ fontSize: 11, color: "#9CA3AF", marginTop: 6 }}>
+                    Paste a YouTube or Vimeo URL — it will be embedded on the perk page
+                  </div>
+                  {toEmbedUrl(editingPerk.video_embed_url ?? "") ? (
                     <iframe
-                      src={editingPerk.video_embed_url}
+                      src={toEmbedUrl(editingPerk.video_embed_url ?? "") ?? undefined}
                       title="Video preview"
                       allowFullScreen
                       style={{
                         width: "100%",
                         aspectRatio: "16/9",
-                        borderRadius: 8,
+                        borderRadius: 10,
                         border: "1px solid #E4E8EF",
                         marginTop: 8,
                       }}
                     />
                   ) : null}
                 </>
+
               ) : (
                 <>
                   <input
@@ -3186,4 +3191,14 @@ export function BenefitPartnersSection() {
     </div>
 
   );
+}
+
+function toEmbedUrl(url: string): string | null {
+  if (!url) return null;
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  if (url.includes("/embed/") || url.includes("player.vimeo")) return url;
+  return null;
 }
