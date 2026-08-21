@@ -745,6 +745,101 @@ function SwapRequestList({
   const [moreOpen, setMoreOpen] = useState(false);
   const [tab, setTab] = useState<"all" | "mine" | "matches">("all");
   const [selectedSwap, setSelectedSwap] = useState<any | null>(null);
+  const [swapping, setSwapping] = useState(false);
+
+  /** Register interest in a community swap, open a DM, notify the poster. */
+  async function handleICanSwap() {
+    if (!selectedSwap || swapping) return;
+    const swap = selectedSwap;
+    const otherId = swap.instructor_id as string | undefined;
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user || !otherId || otherId === user.id) return;
+
+    setSwapping(true);
+    try {
+      // 1. Record the expression of interest (table is optional — ignore if absent).
+      await supabase
+        .from("swap_expressions")
+        .insert({
+          swap_request_id: swap.id,
+          instructor_id: user.id,
+          status: "interested",
+        } as never);
+
+      // 2. Reuse an existing instructor conversation or create one.
+      let conversationId: string | null = null;
+      const { data: existing } = await supabase
+        .from("instructor_conversations")
+        .select("id")
+        .or(
+          `and(instructor_a_id.eq.${user.id},instructor_b_id.eq.${otherId}),and(instructor_a_id.eq.${otherId},instructor_b_id.eq.${user.id})`,
+        )
+        .maybeSingle();
+      if (existing) {
+        conversationId = (existing as any).id;
+      } else {
+        const { data: created, error: convError } = await supabase
+          .from("instructor_conversations")
+          .insert({ instructor_a_id: user.id, instructor_b_id: otherId } as never)
+          .select("id")
+          .single();
+        if (convError || !created) {
+          toast.error("Could not register interest");
+          return;
+        }
+        conversationId = (created as any).id;
+      }
+
+      // 3. Send the opening message.
+      const body = `Hi! I saw your test swap request for ${swap.test_centre ?? "your test centre"} on ${formatDate(swap.current_test_date)}. I may be able to help — can we arrange a swap?`;
+      if (conversationId) {
+        await supabase.from("instructor_messages").insert({
+          conversation_id: conversationId,
+          from_instructor_id: user.id,
+          to_instructor_id: otherId,
+          body,
+        } as never);
+        await supabase
+          .from("instructor_conversations")
+          .update({
+            last_message: body,
+            last_message_at: new Date().toISOString(),
+          } as never)
+          .eq("id", conversationId);
+      }
+
+      // 4. Push notification to the poster (best effort).
+      try {
+        await supabase.functions.invoke("send-push", {
+          body: {
+            instructor_id: otherId,
+            title: "🔄 Test swap interest!",
+            body: `An instructor is interested in your ${swap.test_centre ?? "test"} swap — tap to message them`,
+            url: conversationId ? `/messages/instructor/${conversationId}` : "/messages",
+            type: "swap_interest",
+          },
+        });
+      } catch {
+        /* non-fatal */
+      }
+
+      toast.success("Interest registered! Opening messages…");
+      setSelectedSwap(null);
+      if (conversationId) {
+        navigate({
+          to: "/messages/instructor/$conversationId" as never,
+          params: { conversationId } as never,
+        });
+      } else {
+        navigate({ to: "/messages" });
+      }
+    } finally {
+      setSwapping(false);
+    }
+  }
+
 
   const myRequests = rows.filter((r) => r.instructor_id === userId);
 
