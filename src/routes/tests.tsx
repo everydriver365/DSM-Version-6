@@ -454,7 +454,7 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
             <IconShieldCheck stroke={1.5} size={24} color={tokens.blue} />
           </span>
           <div>
-            <div style={{ color: "#fff", fontSize: 17, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.2px", ...POPPINS }}>
+            <div style={{ color: "#fff", fontSize: 15, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.2px", ...POPPINS }}>
               DVSA Standards Check risk
             </div>
             <div style={{ color: "#7C8BA3", fontSize: 12, marginTop: 3, ...POPPINS }}>
