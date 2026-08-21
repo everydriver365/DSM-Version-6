@@ -92,6 +92,7 @@ import { Route as EnquiriesRouteImport } from './routes/enquiries'
 import { Route as EndOfDayRouteImport } from './routes/end-of-day'
 import { Route as EarningsRouteImport } from './routes/earnings'
 import { Route as DsmLiveRouteImport } from './routes/dsm-live'
+import { Route as DsmLearnRouteImport } from './routes/dsm-learn'
 import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as DiscountCodesRouteImport } from './routes/discount-codes'
@@ -600,6 +601,11 @@ const DsmLiveRoute = DsmLiveRouteImport.update({
   path: '/dsm-live',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DsmLearnRoute = DsmLearnRouteImport.update({
+  id: '/dsm-learn',
+  path: '/dsm-learn',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DocumentsRoute = DocumentsRouteImport.update({
   id: '/documents',
   path: '/documents',
@@ -1091,6 +1097,7 @@ export interface FileRoutesByFullPath {
   '/discount-codes': typeof DiscountCodesRoute
   '/discover': typeof DiscoverRoute
   '/documents': typeof DocumentsRoute
+  '/dsm-learn': typeof DsmLearnRoute
   '/dsm-live': typeof DsmLiveRouteWithChildren
   '/earnings': typeof EarningsRoute
   '/end-of-day': typeof EndOfDayRoute
@@ -1267,6 +1274,7 @@ export interface FileRoutesByTo {
   '/discount-codes': typeof DiscountCodesRoute
   '/discover': typeof DiscoverRoute
   '/documents': typeof DocumentsRoute
+  '/dsm-learn': typeof DsmLearnRoute
   '/earnings': typeof EarningsRoute
   '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
@@ -1442,6 +1450,7 @@ export interface FileRoutesById {
   '/discount-codes': typeof DiscountCodesRoute
   '/discover': typeof DiscoverRoute
   '/documents': typeof DocumentsRoute
+  '/dsm-learn': typeof DsmLearnRoute
   '/dsm-live': typeof DsmLiveRouteWithChildren
   '/earnings': typeof EarningsRoute
   '/end-of-day': typeof EndOfDayRoute
@@ -1620,6 +1629,7 @@ export interface FileRouteTypes {
     | '/discount-codes'
     | '/discover'
     | '/documents'
+    | '/dsm-learn'
     | '/dsm-live'
     | '/earnings'
     | '/end-of-day'
@@ -1796,6 +1806,7 @@ export interface FileRouteTypes {
     | '/discount-codes'
     | '/discover'
     | '/documents'
+    | '/dsm-learn'
     | '/earnings'
     | '/end-of-day'
     | '/enquiries'
@@ -1970,6 +1981,7 @@ export interface FileRouteTypes {
     | '/discount-codes'
     | '/discover'
     | '/documents'
+    | '/dsm-learn'
     | '/dsm-live'
     | '/earnings'
     | '/end-of-day'
@@ -2148,6 +2160,7 @@ export interface RootRouteChildren {
   DiscountCodesRoute: typeof DiscountCodesRoute
   DiscoverRoute: typeof DiscoverRoute
   DocumentsRoute: typeof DocumentsRoute
+  DsmLearnRoute: typeof DsmLearnRoute
   DsmLiveRoute: typeof DsmLiveRouteWithChildren
   EarningsRoute: typeof EarningsRoute
   EndOfDayRoute: typeof EndOfDayRoute
@@ -2857,6 +2870,13 @@ declare module '@tanstack/react-router' {
       path: '/dsm-live'
       fullPath: '/dsm-live'
       preLoaderRoute: typeof DsmLiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dsm-learn': {
+      id: '/dsm-learn'
+      path: '/dsm-learn'
+      fullPath: '/dsm-learn'
+      preLoaderRoute: typeof DsmLearnRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/documents': {
@@ -3628,6 +3648,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiscountCodesRoute: DiscountCodesRoute,
   DiscoverRoute: DiscoverRoute,
   DocumentsRoute: DocumentsRoute,
+  DsmLearnRoute: DsmLearnRoute,
   DsmLiveRoute: DsmLiveRouteWithChildren,
   EarningsRoute: EarningsRoute,
   EndOfDayRoute: EndOfDayRoute,
