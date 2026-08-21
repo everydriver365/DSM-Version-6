@@ -1089,12 +1089,11 @@ function PupilsIndexPage() {
       {/* Status filter tabs */}
       <div
         style={{
-          margin: "12px 16px",
+          margin: "4px 16px 12px",
           display: "flex",
-          background: tokens.canvas,
-          borderRadius: tokens.radiusCard,
-          boxShadow: "0 4px 0 #E4E4E8",
-          padding: 3,
+          background: "#F4F6FA",
+          borderRadius: 18,
+          padding: 5,
           overflowX: "auto",
           scrollbarWidth: "none",
         }}
@@ -1113,36 +1112,37 @@ function PupilsIndexPage() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 4,
+                gap: 6,
                 textAlign: "center",
-                padding: "8px 4px",
-                fontSize: 12,
+                padding: "12px 6px",
+                fontSize: 14,
                 fontFamily: "Poppins, sans-serif",
                 cursor: "pointer",
                 border: "none",
                 outline: "none",
-                background: active ? "#0B1F3A" : "transparent",
-                color: active ? "#FFFFFF" : "#8A94A6",
-                borderRadius: active ? 8 : 0,
-                fontWeight: active ? 600 : 500,
+                background: active ? tokens.navy : "transparent",
+                color: active ? "#FFFFFF" : "#7C8698",
+                borderRadius: 14,
+                fontWeight: active ? 700 : 600,
                 whiteSpace: "nowrap",
               }}
             >
               <span>{tab.label}</span>
               <span
                 style={{
-                  fontSize: tokens.fontSize.xs,
+                  fontSize: 12,
                   fontWeight: tokens.fontWeight.bold,
-                  padding: "2px 6px",
+                  padding: "2px 7px",
                   borderRadius: 999,
-                  background: active ? "rgba(255,255,255,0.2)" : "#F3F4F6",
+                  background: active ? tokens.blue : "transparent",
                   color: active ? "#FFFFFF" : "#6B7280",
-                  minWidth: 16,
-                  lineHeight: "14px",
+                  minWidth: 18,
+                  lineHeight: "16px",
                 }}
               >
                 {count}
               </span>
+
             </button>
           );
         })}
