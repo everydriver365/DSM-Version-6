@@ -649,7 +649,9 @@ function PupilsIndexPage() {
         ? "failed"
         : null;
     const nextLesson = nextLessonMap[p.id];
+    const lastLesson = lastLessonMap[p.id];
     const hasBalance = balanceOwed > 0;
+
 
     return (
       <div
