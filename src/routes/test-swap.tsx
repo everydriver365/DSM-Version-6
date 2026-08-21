@@ -317,7 +317,10 @@ function NewSwapRequestSheet({
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      const pupilQuery = supabase.from("pupils").select("id, name").order("name", { ascending: true });
+      const pupilQuery = supabase
+        .from("pupils")
+        .select("id, name, email, phone")
+        .order("name", { ascending: true });
       if (user) pupilQuery.eq("instructor_id", user.id);
       const [{ data: p }, { data: c }] = await Promise.all([
         pupilQuery,
@@ -340,8 +343,15 @@ function NewSwapRequestSheet({
   async function save() {
     if (!canSave || saving) return;
     setSaving(true);
+    const selected = pupils.find((p) => (p.name ?? "") === pupilName);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     const payload: Record<string, unknown> = {
       name: pupilName,
+      // email is NOT NULL on this table — fall back to the instructor's address
+      email: selected?.email || user?.email || "noreply@drivingschoolmanager.co.uk",
+      phone: selected?.phone || null,
       current_test_date: date,
       current_test_time: time || null,
       test_centre: centre,
@@ -349,6 +359,11 @@ function NewSwapRequestSheet({
       status: "pending",
     };
     let { error } = await supabase.from("test_swap_requests").insert(payload);
+    if (error && /notes/i.test(error.message)) {
+      delete payload.notes;
+      ({ error } = await supabase.from("test_swap_requests").insert(payload));
+    }
+
     if (error && /notes/i.test(error.message)) {
       delete payload.notes;
       ({ error } = await supabase.from("test_swap_requests").insert(payload));
