@@ -99,29 +99,8 @@ function initials(name?: string | null): string {
 
 function TestSwapPage() {
   const navigate = useNavigate();
-  const [rows, setRows] = useState<SwapRequest[]>([
-    {
-      id: 1,
-      name: "dave bumsocket",
-      test_centre: "Winchester Test Centre",
-      current_test_date: "2026-09-01",
-      current_test_time: "11:11:00",
-      status: "pending",
-      notes: null,
-      created_at: "2026-08-21T06:00:00Z",
-    },
-    {
-      id: 2,
-      name: "dave farts",
-      test_centre: "Winchester Test Centre",
-      current_test_date: "2026-06-28",
-      current_test_time: "11:11:00",
-      status: "pending",
-      notes: null,
-      created_at: "2026-08-20T06:00:00Z",
-    },
-  ]);
-  const [loading, setLoading] = useState(false);
+  const [rows, setRows] = useState<SwapRequest[]>([]);
+  const [loading, setLoading] = useState(true);
   const [sheetOpen, setSheetOpen] = useState(false);
 
   async function load() {
