@@ -583,22 +583,8 @@ function PupilsIndexPage() {
       const ub = (unreadMap[b.p.id] ?? 0) > 0 ? 1 : 0;
       if (ua !== ub) return ub - ua;
 
-      if (sortBy === "balance") {
-        const diff = (balanceMap[b.p.id] || 0) - (balanceMap[a.p.id] || 0);
-        if (diff !== 0) return diff;
-        return a.i - b.i;
-      }
-      if (sortBy === "next_lesson") {
-        const na = nextLessonMap[a.p.id];
-        const nb = nextLessonMap[b.p.id];
-        if (na && nb) {
-          if (na !== nb) return na < nb ? -1 : 1;
-          return a.i - b.i;
-        }
-        if (na) return -1;
-        if (nb) return 1;
-        return a.i - b.i;
-      }
+      // Always alphabetical by name.
+
       // name
       const cmp = displayName(a.p.name).localeCompare(displayName(b.p.name), "en-GB", {
         sensitivity: "base",
