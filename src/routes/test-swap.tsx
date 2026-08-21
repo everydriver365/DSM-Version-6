@@ -542,6 +542,40 @@ function SwapCard({
   );
 }
 
+function SwapRequestList({
+  rows,
+  userId,
+  onRefresh,
+}: {
+  rows: SwapRequest[];
+  userId: string | null;
+  onRefresh: () => void;
+}) {
+  const myRequests = rows.filter((r) => r.instructor_id === userId);
+  const communityRequests = rows.filter((r) => r.instructor_id !== userId);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {myRequests.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <SectionHeader title="My requests" count={myRequests.length} />
+          {myRequests.map((r) => (
+            <SwapCard key={String(r.id)} request={r} mode="mine" onRefresh={onRefresh} />
+          ))}
+        </div>
+      )}
+      {communityRequests.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <SectionHeader title="Community requests" count={communityRequests.length} />
+          {communityRequests.map((r) => (
+            <SwapCard key={String(r.id)} request={r} mode="community" onRefresh={onRefresh} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function TestSwapPage() {
   const navigate = useNavigate();
   const [rows, setRows] = useState<SwapRequest[]>([]);
