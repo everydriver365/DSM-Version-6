@@ -1156,14 +1156,18 @@ function SwapRequestList({
               No matched swaps yet
             </div>
           ) : (
-            matched.map((r) => (
-              <SwapCard
-                key={String(r.id)}
-                request={r}
-                mode={r.instructor_id === userId ? "mine" : "community"}
-                onRefresh={onRefresh}
-              />
-            ))
+            matched.map((r) => {
+              const isMine = r.instructor_id === userId;
+              return (
+                <SwapCard
+                  key={String(r.id)}
+                  request={r}
+                  mode={isMine ? "mine" : "community"}
+                  onRefresh={onRefresh}
+                  onSelect={isMine ? undefined : () => setSelectedSwap(r)}
+                />
+              );
+            })
           )}
         </div>
       )}
