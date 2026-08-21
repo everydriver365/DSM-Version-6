@@ -1041,12 +1041,10 @@ function SwapRequestList({
       {/* Tabs */}
       <div
         style={{
-          background: "#fff",
-          borderRadius: 16,
-          boxShadow: "0 1px 4px rgba(11,31,58,0.06)",
           display: "grid",
           gridTemplateColumns: "1fr 1fr 1fr",
-          overflow: "hidden",
+          borderBottom: "1px solid #E4E8EF",
+          margin: "2px 0 4px",
         }}
       >
         {tabs.map((t) => {
