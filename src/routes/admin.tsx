@@ -1236,6 +1236,7 @@ type BenefitPartner = {
   name: string;
   tagline: string | null;
   description: string | null;
+
   icon: string | null;
   icon_bg: string | null;
   icon_color: string | null;
