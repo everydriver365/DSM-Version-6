@@ -4649,7 +4649,7 @@ function HomePage() {
   }
 
   return (
-    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 'env(safe-area-inset-top, 0px)', left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: TOP_BAR_SPACER, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
+    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: TOP_BAR_SPACER, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
       {showWelcome && userId && (
         <WelcomeOverlay
           userId={userId}
