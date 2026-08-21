@@ -2189,6 +2189,7 @@ function EpisodeCard({
   ep,
   isOpen,
   onOpen,
+  onOpenDetails,
   isCurrent,
   isPlaying,
   onPlay,
@@ -2203,6 +2204,7 @@ function EpisodeCard({
   ep: PodcastEpisode;
   isOpen: boolean;
   onOpen: () => void;
+  onOpenDetails?: () => void;
   isCurrent: boolean;
   isPlaying: boolean;
   onPlay: () => void;
