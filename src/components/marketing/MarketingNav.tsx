@@ -133,6 +133,7 @@ export function MarketingNav() {
           </Link>
           <Link
             to="/login"
+            className="ed-nav-signin"
             style={{
               background: "#fff",
               color: ACCENT,
@@ -152,7 +153,7 @@ export function MarketingNav() {
           aria-label="Menu"
           onClick={() => setOpen((v) => !v)}
           className="ed-nav-burger"
-          style={{ display: "none", background: "transparent", border: 0, cursor: "pointer", color: NAVY }}
+          style={{ display: "none", background: "transparent", border: 0, cursor: "pointer", color: NAVY, marginLeft: 8 }}
         >
           {open ? <IconX size={24} /> : <IconMenu2 size={24} />}
         </button>
