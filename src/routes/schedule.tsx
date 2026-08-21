@@ -2126,16 +2126,18 @@ function SchedulePage() {
                                 >
                                   <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
                                     <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
-                                      {e.allDay ? "All" : fmtTime(e.start)}
+                                      {e.allDay ? "All day" : fmtTime(e.start)}
                                     </div>
-                                    <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
-                                      {e.allDay ? "day" : (() => {
-                                        const durMin = Math.max(0, Math.round((e.end.getTime() - e.start.getTime()) / 60000));
-                                        const h = Math.floor(durMin / 60);
-                                        const m = durMin % 60;
-                                        return h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
-                                      })()}
-                                    </div>
+                                    {!e.allDay && (
+                                      <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                                        {(() => {
+                                          const durMin = Math.max(0, Math.round((e.end.getTime() - e.start.getTime()) / 60000));
+                                          const h = Math.floor(durMin / 60);
+                                          const m = durMin % 60;
+                                          return h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
+                                        })()}
+                                      </div>
+                                    )}
                                   </div>
                                   <div
                                     aria-hidden
@@ -2199,10 +2201,11 @@ function SchedulePage() {
 
                                   {isBlockRow ? (
                                     <>
-                                      <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
-                                        <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
-                                          {fmtTime(e.start)}
-                                        </div>
+                                    <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
+                                      <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                                        {e.allDay ? "All day" : fmtTime(e.start)}
+                                      </div>
+                                      {!e.allDay && (
                                         <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
                                           {(() => {
                                             const durMin = Math.max(0, Math.round((e.end.getTime() - e.start.getTime()) / 60000));
@@ -2211,7 +2214,8 @@ function SchedulePage() {
                                             return h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
                                           })()}
                                         </div>
-                                      </div>
+                                      )}
+                                    </div>
                                       <div
                                         aria-hidden
                                         style={{
