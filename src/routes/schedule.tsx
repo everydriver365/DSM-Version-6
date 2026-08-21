@@ -13,7 +13,7 @@ import {
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { IconArrowDown, IconBell, IconArrowsMove, IconCalendar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconLock, IconMapPin, IconNavigation, IconPhone, IconPlus, IconRefresh, IconSearch, IconTrash } from "@tabler/icons-react";
+import { IconArrowDown, IconBell, IconArrowsMove, IconCalendar, IconCalendarEvent, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconClock, IconDots, IconEdit, IconLock, IconMapPin, IconNavigation, IconPhone, IconPlus, IconRefresh, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { computeDayGaps } from "@/lib/gapDetection";
@@ -37,7 +37,6 @@ import { resolveEventColour } from "@/lib/googleCalendarColours";
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
 import { TestDetailPanel } from "@/components/lessons/TestDetailPanel";
-import { LessonActionsMenu } from "@/components/lessons/LessonActionsMenu";
 
 
 
@@ -315,9 +314,13 @@ const testTimeOf = (lesson: any): string | null => {
 function TestLessonCard({
   lesson,
   onClick,
+  onCancel,
+  onDelete,
 }: {
   lesson: Lesson;
   onClick: () => void;
+  onCancel?: () => void;
+  onDelete?: () => void;
 }) {
   // Priority: the lesson's own result, then the pupil's recorded test status.
   const testResult = (() => {
@@ -343,7 +346,7 @@ function TestLessonCard({
   })();
   const navigate = useNavigate({ from: Route.fullPath });
   const [panelOpen, setPanelOpen] = useState(false);
-  const [actionsOpen, setActionsOpen] = useState(false);
+  const [testActionsOpen, setTestActionsOpen] = useState(false);
   const goNavigate = () => {
     void navigate({
       to: "/lessons/$id",
@@ -481,40 +484,28 @@ function TestLessonCard({
                 </span>
               ) : null}
               <div style={{ flexShrink: 0, marginLeft: 4, display: "flex", flexDirection: "row", alignItems: "center" }}>
-                <LessonActionsMenu
-                  open={actionsOpen}
-                  onOpenChange={setActionsOpen}
-                  top={40}
-                  right={10}
-                  items={[
-                    { label: "View test details", onClick: () => setPanelOpen(true) },
-                    { label: "Edit lesson", onClick: goEdit },
-                    { label: "Full profile", onClick: goProfile },
-                  ]}
+                <button
+                  type="button"
+                  onClick={(ev) => {
+                    ev.stopPropagation();
+                    setTestActionsOpen(true);
+                  }}
+                  aria-label="More test options"
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: "50%",
+                    background: "rgba(255,255,255,0.15)",
+                    border: "0.5px solid rgba(255,255,255,0.28)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    padding: 0,
+                  }}
                 >
-                  <button
-                    type="button"
-                    onClick={(ev) => {
-                      ev.stopPropagation();
-                      setActionsOpen((cur) => !cur);
-                    }}
-                    aria-label="More test options"
-                    style={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: "50%",
-                      background: "rgba(255,255,255,0.15)",
-                      border: "0.5px solid rgba(255,255,255,0.28)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      padding: 0,
-                    }}
-                  >
-                    <IconDots stroke={1.5} size={14} color="#ffffff" />
-                  </button>
-                </LessonActionsMenu>
+                  <IconDots stroke={1.5} size={14} color="#ffffff" />
+                </button>
               </div>
             </div>
           </div>
@@ -612,6 +603,142 @@ function TestLessonCard({
           </div>
         </div>
       </div>
+
+      {/* Test lesson actions bottom sheet */}
+      {testActionsOpen && (
+        <div
+          onClick={() => setTestActionsOpen(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.45)",
+            zIndex: 9999,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: "#fff",
+              borderTopLeftRadius: 24,
+              borderTopRightRadius: 24,
+              padding: "20px 16px 24px",
+              maxWidth: 480,
+              width: "100%",
+              margin: "0 auto",
+              boxShadow: "0 -8px 30px rgba(0,0,0,0.2)",
+            }}
+          >
+            {/* Drag handle */}
+            <div
+              style={{
+                width: 40,
+                height: 5,
+                borderRadius: 3,
+                backgroundColor: "#E5E7EB",
+                margin: "0 auto 20px",
+              }}
+            />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+              <span style={{ fontFamily: "Sora, sans-serif", fontWeight: 600, fontSize: 18, color: "#111827" }}>
+                Lesson options
+              </span>
+              <button
+                type="button"
+                onClick={() => setTestActionsOpen(false)}
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  background: "#F3F4F6",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 0,
+                }}
+              >
+                <IconX size={18} color="#6B7280" stroke={2} />
+              </button>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <button
+                type="button"
+                onClick={() => { setTestActionsOpen(false); setPanelOpen(true); }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconCalendar size={20} color="#111827" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
+                  View test details
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => { setTestActionsOpen(false); goEdit(); }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconEdit size={20} color="#111827" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
+                  Edit lesson
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => { setTestActionsOpen(false); goProfile(); }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconNavigation size={20} color="#111827" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
+                  Full profile
+                </span>
+              </button>
+              {onCancel && (
+                <button
+                  type="button"
+                  onClick={() => { setTestActionsOpen(false); onCancel(); }}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                    border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                  }}
+                >
+                  <IconX size={20} color="#CC2229" stroke={1.5} />
+                  <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#CC2229" }}>
+                    Cancel lesson
+                  </span>
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  type="button"
+                  onClick={() => { setTestActionsOpen(false); onDelete(); }}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                    border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                  }}
+                >
+                  <IconTrash size={20} color="#CC2229" stroke={1.5} />
+                  <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#CC2229" }}>
+                    Delete lesson
+                  </span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
     </>
   );
@@ -687,7 +814,7 @@ function SchedulePage() {
   const [confirmMove, setConfirmMove] = useState<{ date: string; time: string } | null>(null);
   const [allPupils, setAllPupils] = useState<Array<{ id: string; name: string | null; first_name: string | null; last_name?: string | null; calendar_colour: string | null }>>([]);
   const [allAvailability, setAllAvailability] = useState<any[]>([]);
-  const [actionsOpenFor, setActionsOpenFor] = useState<Lesson | null>(null);
+  const [actionsLesson, setActionsLesson] = useState<any | null>(null);
   const [eolLesson, setEolLesson] = useState<any | null>(null);
   const [sendMessageOpen, setSendMessageOpen] = useState(false);
   const [sendMessagePupilId, setSendMessagePupilId] = useState<string | undefined>();
@@ -2042,7 +2169,7 @@ function SchedulePage() {
                                   return;
                                 }
                                 tapLight();
-                                setActionsOpenFor(lesson);
+                                setActionsLesson(lesson);
                               }
                             : isBlockRow
                               ? () => {
@@ -2115,6 +2242,8 @@ function SchedulePage() {
                                 <TestLessonCard
                                   lesson={(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson}
                                   onClick={onCardClick || (() => {})}
+                                  onCancel={() => setCancelSheetFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson)}
+                                  onDelete={() => setDeleteSheetFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson)}
                                 />
                               ) : isPersonalRow ? (
                                 <div
@@ -2460,41 +2589,29 @@ function SchedulePage() {
                                                   >
                                                     <IconPhone size={14} color="#fff" stroke={1.5} />
                                                   </button>
-                                                  <LessonActionsMenu
-                                                    open={actionsOpenFor?.id === lesson.id}
-                                                    onOpenChange={(open) => setActionsOpenFor(open ? lesson : null)}
-                                                    top={44}
-                                                    right={14}
-                                                    items={[
-                                                      { label: 'Edit lesson', onClick: () => { setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: lesson.id } }), 0); } },
-                                                      { label: 'Take payment', onClick: () => { setUnifiedPayPupilId(lesson.pupil_id ?? undefined); setUnifiedPayOpen(true); } },
-                                                      { label: 'Full profile', onClick: () => { const pid = lesson.pupil_id; if (pid) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: pid } }), 0); } },
-                                                    ]}
+                                                  <button
+                                                    type="button"
+                                                    data-lesson-actions-trigger
+                                                    onClick={(ev) => {
+                                                      ev.stopPropagation();
+                                                      setActionsLesson(lesson);
+                                                    }}
+                                                    aria-label="More lesson options"
+                                                    style={{
+                                                      width: 28,
+                                                      height: 28,
+                                                      borderRadius: '50%',
+                                                      background: '#F8F9FB',
+                                                      border: '0.5px solid #E5E7EB',
+                                                      display: 'flex',
+                                                      alignItems: 'center',
+                                                      justifyContent: 'center',
+                                                      cursor: 'pointer',
+                                                      padding: 0,
+                                                    }}
                                                   >
-                                                    <button
-                                                      type="button"
-                                                      data-lesson-actions-trigger
-                                                      onClick={(ev) => {
-                                                        ev.stopPropagation();
-                                                        setActionsOpenFor((cur) => (cur?.id === lesson.id ? null : lesson));
-                                                      }}
-                                                      aria-label="More lesson options"
-                                                      style={{
-                                                        width: 28,
-                                                        height: 28,
-                                                        borderRadius: '50%',
-                                                        background: '#F8F9FB',
-                                                        border: '0.5px solid #E5E7EB',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
-                                                        cursor: 'pointer',
-                                                        padding: 0,
-                                                      }}
-                                                    >
-                                                      <IconDots stroke={1.5} size={14} color="#D1D5DB" />
-                                                    </button>
-                                                  </LessonActionsMenu>
+                                                    <IconDots stroke={1.5} size={14} color="#D1D5DB" />
+                                                  </button>
                                                 </div>
                                                 );
                                               })()}
@@ -2853,8 +2970,172 @@ function SchedulePage() {
           </div>
         </div>
       )}
-    </div>
 
+      {/* Lesson actions bottom sheet */}
+      {actionsLesson && (
+        <div
+          onClick={() => setActionsLesson(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.45)",
+            zIndex: 9999,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: "#fff",
+              borderTopLeftRadius: 24,
+              borderTopRightRadius: 24,
+              padding: "20px 16px 24px",
+              maxWidth: 480,
+              width: "100%",
+              margin: "0 auto",
+              boxShadow: "0 -8px 30px rgba(0,0,0,0.2)",
+            }}
+          >
+            {/* Drag handle */}
+            <div
+              style={{
+                width: 40,
+                height: 5,
+                borderRadius: 3,
+                backgroundColor: "#E5E7EB",
+                margin: "0 auto 20px",
+              }}
+            />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+              <span style={{ fontFamily: "Sora, sans-serif", fontWeight: 600, fontSize: 18, color: "#111827" }}>
+                Lesson options
+              </span>
+              <button
+                type="button"
+                onClick={() => setActionsLesson(null)}
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  background: "#F3F4F6",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 0,
+                }}
+              >
+                <IconX size={18} color="#6B7280" stroke={2} />
+              </button>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setActionsLesson(null);
+                  setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: actionsLesson.id } }), 0);
+                }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconEdit size={20} color="#111827" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
+                  Edit lesson
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActionsLesson(null);
+                  setTimeout(() => navigate({ to: '/lessons/reschedule/$id', params: { id: actionsLesson.id } }), 0);
+                }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconCalendarEvent size={20} color="#111827" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
+                  Reschedule
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActionsLesson(null);
+                  setUnifiedPayPupilId(actionsLesson.pupil_id ?? undefined);
+                  setUnifiedPayOpen(true);
+                }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconCheck size={20} color="#111827" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
+                  Take payment
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActionsLesson(null);
+                  const pid = actionsLesson.pupil_id;
+                  if (pid) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: pid } }), 0);
+                }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconNavigation size={20} color="#111827" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#111827" }}>
+                  Full profile
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActionsLesson(null);
+                  setCancelSheetFor(actionsLesson);
+                }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconX size={20} color="#CC2229" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#CC2229" }}>
+                  Cancel lesson
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActionsLesson(null);
+                  setDeleteSheetFor(actionsLesson);
+                }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
+                }}
+              >
+                <IconTrash size={20} color="#CC2229" stroke={1.5} />
+                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#CC2229" }}>
+                  Delete lesson
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -3867,6 +4148,7 @@ function MonthStrip({
           );
         })}
       </div>
+
     </div>
   );
 }
