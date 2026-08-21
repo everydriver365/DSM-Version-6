@@ -2105,6 +2105,44 @@ function SchedulePage() {
                                   lesson={(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson}
                                   onClick={onCardClick || (() => {})}
                                 />
+                              ) : isPersonalRow ? (
+                                <div
+                                  onClick={onCardClick}
+                                  role="button"
+                                  tabIndex={0}
+                                  style={{
+                                    background: '#fff',
+                                    borderRadius: 16,
+                                    border: '2px solid #1877D6',
+                                    padding: '14px 16px',
+                                    marginBottom: 8,
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 6,
+                                    opacity: isDimmed ? 0.4 : 1,
+                                    ...POPPINS,
+                                  }}
+                                >
+                                  <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', lineHeight: 1.3 }}>
+                                    {title}
+                                  </div>
+                                  <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
+                                    {e.allDay ? (
+                                      <span style={{ background: '#EFF6FF', color: '#1877D6', fontSize: 9, fontWeight: 800, borderRadius: 20, padding: '3px 8px', letterSpacing: '0.08em', fontFamily: 'Poppins, sans-serif' }}>
+                                        ALL DAY
+                                      </span>
+                                    ) : (
+                                      <span style={{ fontSize: 12, color: '#6B7280', fontVariantNumeric: 'tabular-nums' }}>
+                                        {fmtTime(e.start)} – {fmtTime(e.end)}
+                                      </span>
+                                    )}
+                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: '#EDE9FE', color: '#7C3AED', fontSize: 9, fontWeight: 800, borderRadius: 20, padding: '3px 8px', letterSpacing: '0.08em', fontFamily: 'Poppins, sans-serif' }}>
+                                      <IconLock size={9} color="#7C3AED" stroke={2} />
+                                      PRIVATE
+                                    </span>
+                                  </div>
+                                </div>
                               ) : (
                                 <div style={{ position: "relative", overflow: "hidden", borderRadius: 8}}>
                                   <div
