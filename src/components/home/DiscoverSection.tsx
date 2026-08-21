@@ -1144,19 +1144,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </div>
         </div>
 
-        {/* LIVE & NEWS */}
+        {/* DSM RADIO */}
         <div
-          role="button"
-          tabIndex={0}
-          onClick={() => navigate({ to: "/live-news" as never })}
           style={{
             ...tileBase,
             gridColumn: 2,
             gridRow: 2,
-
             height: 116,
             background: "linear-gradient(160deg, #FFF9FA 0%, #FDF2F5 100%)",
             borderColor: "#F9E4EB",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
           }}
         >
           <div>
@@ -1246,10 +1245,45 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                   }}
                 >
                   {"Live, news and podcasts"}
-
                 </div>
               </>
             )}
+          </div>
+
+          {/* Deep-link tabs */}
+          <div style={{ display: "flex", gap: 4, marginTop: 6 }}>
+            {[
+              { key: "live", label: "Live" },
+              { key: "news", label: "News" },
+              { key: "podcasts", label: "Pods" },
+              { key: "saved", label: "Saved" },
+            ].map((t) => (
+              <button
+                key={t.key}
+                type="button"
+                onClick={() =>
+                  navigate({
+                    to: "/live-news" as never,
+                    search: { tab: t.key as never } as never,
+                  })
+                }
+                style={{
+                  flex: 1,
+                  padding: "4px 0",
+                  borderRadius: 8,
+                  border: "none",
+                  background: "#FCE8EF",
+                  color: "#E91E63",
+                  fontFamily: FONT,
+                  fontSize: 10,
+                  fontWeight: tokens.fontWeight.bold,
+                  cursor: "pointer",
+                  lineHeight: 1,
+                }}
+              >
+                {t.label}
+              </button>
+            ))}
           </div>
         </div>
 
