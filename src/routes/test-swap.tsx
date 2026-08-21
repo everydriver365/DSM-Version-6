@@ -191,8 +191,8 @@ function SwapCard({
       style={{
         background: "#fff",
         borderRadius: tokens.radiusCard,
-        boxShadow: "0 1px 4px rgba(11,31,58,0.08)",
-        padding: 16,
+        boxShadow: "0 2px 10px rgba(11,31,58,0.08)",
+        padding: 20,
       }}
     >
       {/* Header row */}
@@ -201,13 +201,13 @@ function SwapCard({
           display: "flex",
           alignItems: "center",
           gap: 12,
-          marginBottom: 16,
+          marginBottom: 20,
         }}
       >
         <div
           style={{
-            width: 42,
-            height: 42,
+            width: 44,
+            height: 44,
             borderRadius: "50%",
             display: "flex",
             alignItems: "center",
@@ -248,8 +248,8 @@ function SwapCard({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 10,
+          gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
+          gap: 14,
           position: "relative",
           alignItems: "stretch",
         }}
@@ -258,11 +258,12 @@ function SwapCard({
         <div
           style={{
             background: "#F5F9FF",
-            borderRadius: 14,
-            padding: 14,
+            borderRadius: 16,
+            padding: 16,
             display: "flex",
             flexDirection: "column",
-            gap: 10,
+            gap: 12,
+            minWidth: 0,
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -294,10 +295,11 @@ function SwapCard({
           <div
             style={{
               color: tokens.navy,
-              fontSize: 18,
+              fontSize: 15,
               fontWeight: tokens.fontWeight.bold,
-              lineHeight: 1.25,
+              lineHeight: 1.35,
               ...SORA,
+              wordBreak: "break-word",
             }}
           >
             {formatDate(r.current_test_date)}
@@ -321,7 +323,7 @@ function SwapCard({
               alignItems: "flex-start",
               gap: 6,
               marginTop: "auto",
-              paddingTop: 10,
+              paddingTop: 12,
               borderTop: "1px solid rgba(24,119,214,0.12)",
               color: tokens.textSecondary,
               fontSize: 13,
@@ -346,29 +348,30 @@ function SwapCard({
             top: "50%",
             transform: "translate(-50%, -50%)",
             zIndex: 2,
-            width: 36,
-            height: 36,
+            width: 44,
+            height: 44,
             borderRadius: "50%",
             background: "#fff",
-            boxShadow: "0 2px 8px rgba(11,31,58,0.12)",
+            boxShadow: "0 2px 10px rgba(11,31,58,0.14)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             color: tokens.blue,
           }}
         >
-          <IconArrowsLeftRight size={18} stroke={2} />
+          <IconArrowsLeftRight size={20} stroke={2} />
         </div>
 
         {/* Wants */}
         <div
           style={{
             background: "#F7F5FF",
-            borderRadius: 14,
-            padding: 14,
+            borderRadius: 16,
+            padding: 16,
             display: "flex",
             flexDirection: "column",
-            gap: 10,
+            gap: 12,
+            minWidth: 0,
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -400,10 +403,11 @@ function SwapCard({
           <div
             style={{
               color: tokens.navy,
-              fontSize: 18,
+              fontSize: 15,
               fontWeight: tokens.fontWeight.bold,
-              lineHeight: 1.25,
+              lineHeight: 1.35,
               ...SORA,
+              wordBreak: "break-word",
             }}
           >
             Any day, any time
@@ -414,7 +418,7 @@ function SwapCard({
               alignItems: "flex-start",
               gap: 6,
               marginTop: "auto",
-              paddingTop: 10,
+              paddingTop: 12,
               borderTop: "1px solid rgba(124,58,237,0.12)",
               color: tokens.textSecondary,
               fontSize: 13,
@@ -436,13 +440,14 @@ function SwapCard({
       {mode === "community" && r.instructor_name && (
         <div
           style={{
-            marginTop: 14,
-            paddingTop: 12,
+            marginTop: 16,
+            paddingTop: 14,
             borderTop: "1px solid #E4E8EF",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: 10,
+            gap: 12,
+            flexWrap: "wrap",
             ...POPPINS,
           }}
         >
@@ -481,13 +486,14 @@ function SwapCard({
       {/* Footer: created date + my request actions */}
       <div
         style={{
-          marginTop: 14,
-          paddingTop: 12,
+          marginTop: 16,
+          paddingTop: 14,
           borderTop: mode === "community" && r.instructor_name ? "none" : "1px solid #E4E8EF",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: 10,
+          gap: 12,
+          flexWrap: "wrap",
           ...POPPINS,
         }}
       >
@@ -495,7 +501,7 @@ function SwapCard({
           Created {formatCreated(r.created_at)}
         </span>
         {mode === "mine" && (
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             {isPending && (
               <button
                 type="button"
