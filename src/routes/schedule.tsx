@@ -37,7 +37,6 @@ import { resolveEventColour } from "@/lib/googleCalendarColours";
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
 import { TestDetailPanel } from "@/components/lessons/TestDetailPanel";
-import { LessonActionsMenu } from "@/components/lessons/LessonActionsMenu";
 
 
 
