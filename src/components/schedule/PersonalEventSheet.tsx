@@ -265,7 +265,7 @@ export function PersonalEventSheet({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ fontFamily: font }}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ position: "fixed", fontFamily: font }}>
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
       <div
         className="relative w-full max-w-md"
