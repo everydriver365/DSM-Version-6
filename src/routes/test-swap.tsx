@@ -857,53 +857,10 @@ function SwapRequestList({
 
 function TestSwapPage() {
   const navigate = useNavigate();
-  const [rows, setRows] = useState<SwapRequest[]>([
-    {
-      id: 1,
-      name: "dave bumsocket",
-      test_centre: "Winchester Test Centre",
-      current_test_date: "2026-09-01",
-      current_test_time: "11:11:00",
-      status: "pending",
-      notes: null,
-      transmission: "manual",
-      created_at: "2026-08-21T06:00:00Z",
-      instructor_id: "me",
-      instructor_name: "Me",
-      instructor_phone: null,
-    },
-    {
-      id: 2,
-      name: "dave farts",
-      test_centre: "Winchester Test Centre",
-      current_test_date: "2026-06-28",
-      current_test_time: "11:11:00",
-      status: "pending",
-      notes: null,
-      transmission: "automatic",
-      created_at: "2026-08-20T06:00:00Z",
-      instructor_id: "someone-else",
-      instructor_name: "Jane Smith",
-      instructor_phone: "+441234567890",
-    },
-    {
-      id: 3,
-      name: "alice cooper",
-      test_centre: "Southampton Test Centre",
-      current_test_date: "2026-07-15",
-      current_test_time: "09:30:00",
-      status: "pending",
-      notes: null,
-      transmission: "manual",
-      created_at: "2026-08-19T06:00:00Z",
-      instructor_id: "someone-else",
-      instructor_name: "Bob Jones",
-      instructor_phone: "+447890123456",
-    },
-  ]);
-  const [loading, setLoading] = useState(false);
+  const [rows, setRows] = useState<SwapRequest[]>([]);
+  const [loading, setLoading] = useState(true);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [userId, setUserId] = useState<string | null>("me");
+  const [userId, setUserId] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
