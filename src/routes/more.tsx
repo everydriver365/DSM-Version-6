@@ -321,12 +321,12 @@ function MorePage() {
               )}
               <div
                 style={{
-                  fontSize: tokens.fontSize.sm,
-                  fontWeight: tokens.fontWeight.semibold,
-                  color: '#9CA3AF',
+                  fontSize: 12,
+                  fontWeight: tokens.fontWeight.bold,
+                  color: '#8592A6',
                   textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                  padding: '16px 16px 6px',
+                  letterSpacing: '0.1em',
+                  padding: '22px 16px 8px',
                   fontFamily: 'Poppins, sans-serif',
                 }}
               >
@@ -352,42 +352,43 @@ function MorePage() {
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 12,
-                      padding: '13px 16px',
+                      gap: 14,
+                      padding: '16px 16px',
                       background: '#fff',
                       border: 'none',
-                      borderRadius: tokens.radiusCard,
+                      borderRadius: 14,
                       cursor: 'pointer',
                       textAlign: 'left',
                       width: '100%',
                       fontFamily: 'Poppins, sans-serif',
-                      boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
+                      boxShadow: '0 1px 3px rgba(15,32,68,0.06)',
                     }}
                   >
                     <div
                       style={{
-                        width: 36,
-                        height: 36,
+                        width: 44,
+                        height: 44,
                         borderRadius: 12,
-                        background: tool.gradient ?? tool.colour + '15',
+                        background: tool.gradient ?? tool.colour + '1A',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
                       }}
                     >
-                      <tool.icon size={tool.gradient ? 20 : 18} color={tool.gradient ? '#fff' : tool.colour} />
+                      <tool.icon size={22} color={tool.gradient ? '#fff' : tool.colour} stroke={2} />
                     </div>
-                    <div>
-                      <div style={{ fontWeight: tokens.fontWeight.medium, fontSize: 15, color: '#0B1F3A' }}>{tool.label}</div>
-                      <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 1, display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: tokens.fontWeight.semibold, fontSize: 17, color: '#0B1F3A' }}>{tool.label}</div>
+                      <div style={{ fontSize: 14, color: '#8592A6', marginTop: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
                         {isSquare && squareConnected && (
                           <span style={{ width: 7, height: 7, borderRadius: 999, background: '#16A34A', flexShrink: 0 }} />
                         )}
                         {sub}
                       </div>
                     </div>
-                    <IconChevronRight size={14} color="#C7D0DC" style={{ marginLeft: 'auto', flexShrink: 0 }} />
+                    <IconChevronRight size={22} color="#8592A6" stroke={2.2} style={{ marginLeft: 'auto', flexShrink: 0 }} />
+
                   </button>
                   );
                 })}
