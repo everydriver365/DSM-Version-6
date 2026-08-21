@@ -158,6 +158,7 @@ async function handleShareEpisode(episode: PodcastEpisode) {
 function LiveNewsPage() {
   const navigate = useNavigate();
   const router = useRouter();
+  const { tab } = Route.useSearch();
   function goBack(fallback: string) {
     if (typeof window !== "undefined" && window.history.length > 1) {
       router.history.back();
@@ -165,7 +166,7 @@ function LiveNewsPage() {
       navigate({ to: fallback as never });
     }
   }
-  const [activeTab, setActiveTab] = useState<"live" | "news" | "podcasts" | "saved">("live");
+  const [activeTab, setActiveTab] = useState<"live" | "news" | "podcasts" | "saved">(tab ?? "live");
   const [sessions, setSessions] = useState<LiveSession[] | null>(null);
   const [articles, setArticles] = useState<any[] | null>(null);
   const [episodes, setEpisodes] = useState<PodcastEpisode[] | null>(null);
@@ -179,6 +180,21 @@ function LiveNewsPage() {
   const [podcastQuery, setPodcastQuery] = useState("");
   const [topicFilter, setTopicFilter] = useState<string>("all");
   const [searchOpen, setSearchOpen] = useState(false);
+
+  // Sync active tab with URL search param.
+  const goToTab = useCallback(
+    (next: "live" | "news" | "podcasts" | "saved") => {
+      setActiveTab(next);
+      navigate({ to: "/live-news", search: (prev) => ({ ...prev, tab: next }), replace: true });
+    },
+    [navigate],
+  );
+
+  useEffect(() => {
+    if (tab && tab !== activeTab) {
+      setActiveTab(tab);
+    }
+  }, [tab]);
 
   // ---- saved / bookmarked episodes (per device) ----
   const [saved, setSaved] = useState<SavedMap>({});
