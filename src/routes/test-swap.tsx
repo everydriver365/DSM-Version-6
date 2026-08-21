@@ -1119,7 +1119,12 @@ function SwapRequestList({
       {tab === "all" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {filtered.map((r) => (
-            <SwapCard key={String(r.id)} request={r} mode="community" onRefresh={onRefresh} />
+            <SwapCard
+              key={String(r.id)}
+              request={r}
+              mode={r.instructor_id === userId ? "mine" : "community"}
+              onRefresh={onRefresh}
+            />
           ))}
           {filtered.length === 0 && (
             <div
