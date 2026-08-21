@@ -54,6 +54,7 @@ type SwapRequest = {
   current_test_time: string | null;
   status: string | null;
   notes?: string | null;
+  transmission?: string | null;
   created_at: string | null;
   instructor_id?: string | null;
   instructor_name?: string | null;
