@@ -442,7 +442,7 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
           </span>
           <div>
             <div style={{ color: "#fff", fontSize: 15, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.2px", ...POPPINS }}>
-              Standards Check risk
+              Standards Check Risk
             </div>
             <div style={{ color: "#7C8BA3", fontSize: 12, marginTop: 3, ...POPPINS }}>
               Last 12 months · completed tests only
