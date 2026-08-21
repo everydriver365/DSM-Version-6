@@ -260,7 +260,7 @@ function TestsPage() {
           type="button"
           onClick={() => setAddOpen(true)}
           className="inline-flex items-center gap-2"
-          style={{ border: "none", background: "transparent", padding: 0, ...POPPINS }}
+          style={{ border: "none", background: "transparent", padding: 0, marginBottom: 10, ...POPPINS }}
         >
           <span
             className="text-[15px] font-semibold"
