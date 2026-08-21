@@ -1907,18 +1907,19 @@ function InboxRow({
               {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
             </div>
         </div>
-        <div
-          style={{
-            fontSize: tokens.fontSize.base,
-            color: "#5A6270",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            fontFamily: "Poppins, sans-serif",
-          }}
-        >
-          {item.preview}
-        </div>
+          <div
+            style={{
+              fontSize: 13.5,
+              fontWeight: tokens.fontWeight.semibold,
+              color: "#5A6270",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            {item.preview}
+          </div>
         <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
           <span
             style={{
