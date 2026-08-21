@@ -266,7 +266,7 @@ function TestsPage() {
             className="text-[15px] font-semibold"
             style={{ color: tokens.blue, ...POPPINS }}
           >
-            Add test
+            + Add test
           </span>
         </button>
       </div>
