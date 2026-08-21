@@ -676,6 +676,26 @@ function LiveNewsPage() {
       </header>
 
       <div
+        style={{
+          flexShrink: 0,
+          margin: "-22px 12px 0",
+          background: "#fff",
+          borderRadius: 24,
+          boxShadow: "0 12px 30px -14px rgba(11,31,58,0.28)",
+          padding: 8,
+          display: "flex",
+          alignItems: "stretch",
+          position: "relative",
+          zIndex: 3,
+        }}
+      >
+        {tabButton("live", "Live", sessions?.length ?? 0, IconBroadcast, false)}
+        {tabButton("news", "News", articles?.length ?? 0, IconNews, true)}
+        {tabButton("podcasts", "Podcasts", episodes?.length ?? 0, IconMicrophone, true)}
+        {tabButton("saved", "Saved", savedEpisodes.length, IconBookmark, true)}
+      </div>
+
+      <div
         className="page-enter"
         style={{
           flex: 1,
@@ -687,26 +707,8 @@ function LiveNewsPage() {
           zIndex: 2,
         }}
       >
-        <div
-          style={{
-            margin: "-22px 12px 0",
-            background: "#fff",
-            borderRadius: 24,
-            boxShadow: "0 12px 30px -14px rgba(11,31,58,0.28)",
-            padding: 8,
-            display: "flex",
-            alignItems: "stretch",
-            position: "relative",
-            zIndex: 2,
-          }}
-        >
-          {tabButton("live", "Live", sessions?.length ?? 0, IconBroadcast, false)}
-          {tabButton("news", "News", articles?.length ?? 0, IconNews, true)}
-          {tabButton("podcasts", "Podcasts", episodes?.length ?? 0, IconMicrophone, true)}
-          {tabButton("saved", "Saved", savedEpisodes.length, IconBookmark, true)}
-        </div>
-
       <div
+
         style={{
           padding: "16px 16px 24px",
           paddingBottom: "calc(100px + env(safe-area-inset-bottom, 0px))",
