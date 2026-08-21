@@ -1044,7 +1044,7 @@ function PupilsIndexPage() {
           margin: "18px 16px 14px",
           display: "flex",
           alignItems: "center",
-          gap: 10,
+          gap: 8,
         }}
       >
         <Link
@@ -1054,15 +1054,15 @@ function PupilsIndexPage() {
           className="inline-flex items-center justify-center"
           style={{
             flex: 1,
-            gap: 8,
+            gap: 6,
             height: 52,
             borderRadius: 26,
             backgroundColor: tokens.blue,
             boxShadow: "0 6px 16px rgba(24,119,214,0.28)",
           }}
         >
-          <IconCirclePlus size={20} color="#FFFFFF" stroke={2} />
-          <span style={{ fontSize: 14.5, fontWeight: tokens.fontWeight.bold, color: tokens.white, whiteSpace: "nowrap", ...POPPINS }}>
+          <IconCirclePlus size={18} color="#FFFFFF" stroke={2} />
+          <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.bold, color: tokens.white, whiteSpace: "nowrap", ...POPPINS }}>
             Add pupil
           </span>
         </Link>
@@ -1072,7 +1072,7 @@ function PupilsIndexPage() {
           className="inline-flex items-center justify-center"
           style={{
             flex: 1,
-            gap: 8,
+            gap: 6,
             height: 52,
             borderRadius: 26,
             backgroundColor: tokens.white,
@@ -1080,8 +1080,8 @@ function PupilsIndexPage() {
             boxShadow: "0 2px 8px rgba(11,31,58,0.06)",
           }}
         >
-          <IconMessageCircle size={19} color={tokens.navy} stroke={1.8} />
-          <span style={{ fontSize: 14.5, fontWeight: tokens.fontWeight.bold, color: tokens.navy, whiteSpace: "nowrap", ...POPPINS }}>
+          <IconMessageCircle size={18} color={tokens.navy} stroke={1.8} />
+          <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.bold, color: tokens.navy, whiteSpace: "nowrap", ...POPPINS }}>
             Message all
           </span>
         </Link>
@@ -1097,8 +1097,8 @@ function PupilsIndexPage() {
           }}
           className="flex items-center justify-center"
           style={{
-            width: 48,
-            height: 48,
+            width: 46,
+            height: 46,
             flexShrink: 0,
             borderRadius: "50%",
             backgroundColor: tokens.white,
@@ -1121,8 +1121,8 @@ function PupilsIndexPage() {
           title={`Sort by ${SORT_LABELS[sortBy]}`}
           className="flex items-center justify-center"
           style={{
-            width: 48,
-            height: 48,
+            width: 46,
+            height: 46,
             flexShrink: 0,
             borderRadius: "50%",
             backgroundColor: tokens.white,
