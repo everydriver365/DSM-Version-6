@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
-import { IconActivity, IconArrowsLeftRight, IconAward, IconBell, IconBriefcase, IconCalculator, IconCalendar, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconFileText, IconGasStation, IconMapPin, IconMoon, IconPlayerPlay, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconShoppingBag, IconTrendingUp, IconUsers, IconWorld, IconX } from "@tabler/icons-react";
+import { IconActivity, IconArrowsLeftRight, IconAward, IconBell, IconBriefcase, IconCalculator, IconCalendar, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconFileText, IconGasStation, IconLogout, IconMapPin, IconMoon, IconPlayerPlay, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconShieldCheck, IconShoppingBag, IconTrendingUp, IconUsers, IconWorld, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 
@@ -86,16 +86,28 @@ function MorePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
   const [squareConnected, setSquareConnected] = useState(false);
+  const [instructorName, setInstructorName] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) return;
-      const { data: inst } = await supabase
-        .from('instructors')
-        .select('square_merchant_id')
-        .eq('id', data.user.id)
-        .maybeSingle();
+      const userId = data.user.id;
+      const [{ data: inst }, { data: adminRows }] = await Promise.all([
+        supabase
+          .from('instructors')
+          .select('name, square_merchant_id')
+          .eq('id', userId)
+          .maybeSingle(),
+        supabase
+          .from('admin_users')
+          .select('role')
+          .eq('user_id', userId)
+          .limit(1),
+      ]);
+      setInstructorName(inst?.name ?? '');
       setSquareConnected(!!inst?.square_merchant_id);
+      setIsAdmin(!!adminRows && adminRows.length > 0);
     });
   }, [reloadKey]);
 
@@ -124,6 +136,20 @@ function MorePage() {
   const goSquare = () => {
     navigate({ to: '/square' as never });
   };
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) toast.error('Sign out failed');
+    navigate({ to: '/auth' as never });
+  };
+
+  const initials = instructorName
+    .split(' ')
+    .filter(Boolean)
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
 
   return (
     <DSMTopSheet
@@ -164,7 +190,7 @@ function MorePage() {
         </button>
       }
     >
-      <div {...pullToRefreshProps} style={{ minHeight: '100%' }}>
+      <div {...pullToRefreshProps} style={{ minHeight: '100%', paddingBottom: 'calc(96px + env(safe-area-inset-bottom, 0px))' }}>
 
       {/* IconSearch */}
       <div
@@ -397,6 +423,145 @@ function MorePage() {
             </div>
           );
         })
+      )}
+
+      {!q && (
+        <div style={{ margin: '0 16px' }}>
+          <div
+            style={{
+              fontSize: 12,
+              fontWeight: tokens.fontWeight.bold,
+              color: '#8592A6',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              padding: '22px 0 8px',
+              fontFamily: 'Poppins, sans-serif',
+            }}
+          >
+            Account
+          </div>
+          <div
+            style={{
+              background: '#fff',
+              borderRadius: 14,
+              padding: 16,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 12,
+              boxShadow: '0 1px 3px rgba(15,32,68,0.06)',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+              }}
+            >
+              <div
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 12,
+                  background: '#1877D615',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 17,
+                    fontWeight: tokens.fontWeight.bold,
+                    color: '#1877D6',
+                    fontFamily: 'Sora, sans-serif',
+                  }}
+                >
+                  {initials || '?'}
+                </span>
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    fontWeight: tokens.fontWeight.semibold,
+                    fontSize: 17,
+                    color: '#0B1F3A',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}
+                >
+                  {instructorName || 'Instructor'}
+                </div>
+                <div
+                  style={{
+                    fontSize: 14,
+                    color: '#8592A6',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}
+                >
+                  Signed in
+                </div>
+              </div>
+            </div>
+
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={() => go('/admin')}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  padding: '12px 14px',
+                  background: '#F1F4F9',
+                  border: 'none',
+                  borderRadius: 12,
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  width: '100%',
+                  fontFamily: 'Poppins, sans-serif',
+                }}
+              >
+                <IconShieldCheck size={20} color="#1877D6" stroke={1.5} />
+                <span
+                  style={{
+                    flex: 1,
+                    fontSize: 15,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: '#0B1F3A',
+                  }}
+                >
+                  Admin
+                </span>
+                <IconChevronRight size={18} color="#8592A6" stroke={2} />
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={handleSignOut}
+              style={{
+                marginBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 10,
+                padding: '14px 16px',
+                borderRadius: 12,
+                border: 'none',
+                background: '#CC2229',
+                color: '#fff',
+                fontFamily: 'Poppins, sans-serif',
+                fontSize: 16,
+                fontWeight: tokens.fontWeight.semibold,
+                cursor: 'pointer',
+              }}
+            >
+              <IconLogout size={18} color="#fff" stroke={1.5} />
+              Sign out
+            </button>
+          </div>
+        </div>
       )}
     </div>
     </DSMTopSheet>
