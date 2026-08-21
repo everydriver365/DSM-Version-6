@@ -1062,7 +1062,7 @@ function PupilsIndexPage() {
           }}
         >
           <IconCirclePlus size={20} color="#FFFFFF" stroke={2} />
-          <span style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: tokens.white, ...POPPINS }}>
+          <span style={{ fontSize: 14.5, fontWeight: tokens.fontWeight.bold, color: tokens.white, whiteSpace: "nowrap", ...POPPINS }}>
             Add pupil
           </span>
         </Link>
@@ -1081,7 +1081,7 @@ function PupilsIndexPage() {
           }}
         >
           <IconMessageCircle size={19} color={tokens.navy} stroke={1.8} />
-          <span style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: tokens.navy, ...POPPINS }}>
+          <span style={{ fontSize: 14.5, fontWeight: tokens.fontWeight.bold, color: tokens.navy, whiteSpace: "nowrap", ...POPPINS }}>
             Message all
           </span>
         </Link>
@@ -1097,8 +1097,8 @@ function PupilsIndexPage() {
           }}
           className="flex items-center justify-center"
           style={{
-            width: 52,
-            height: 52,
+            width: 48,
+            height: 48,
             flexShrink: 0,
             borderRadius: "50%",
             backgroundColor: tokens.white,
@@ -1121,8 +1121,8 @@ function PupilsIndexPage() {
           title={`Sort by ${SORT_LABELS[sortBy]}`}
           className="flex items-center justify-center"
           style={{
-            width: 52,
-            height: 52,
+            width: 48,
+            height: 48,
             flexShrink: 0,
             borderRadius: "50%",
             backgroundColor: tokens.white,
