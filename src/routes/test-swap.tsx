@@ -422,7 +422,8 @@ function SwapCard({
           {mode === "community" && r.instructor_phone && (
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 tapLight();
                 handleContact();
               }}
