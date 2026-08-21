@@ -2242,8 +2242,8 @@ function SchedulePage() {
                                 <TestLessonCard
                                   lesson={(e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson}
                                   onClick={onCardClick || (() => {})}
-                                  onCancel={() => setCancelSheetFor(lesson)}
-                                  onDelete={() => setDeleteSheetFor(lesson)}
+                                  onCancel={() => setCancelSheetFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson)}
+                                  onDelete={() => setDeleteSheetFor((e as Extract<AgendaEntry, { kind: 'lesson' }>).lesson)}
                                 />
                               ) : isPersonalRow ? (
                                 <div
