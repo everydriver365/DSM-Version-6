@@ -761,20 +761,28 @@ function RootComponent() {
 
 
 
-  // Offline/online state banner.
+  // Offline/online toast notifications.
   useEffect(() => {
-    function update() {
-      const online = navigator.onLine;
-      setIsOnline(online);
-      if (online) setBannerDismissed(false);
+    function handleOffline() {
+      toast.error('No internet connection', {
+        duration: Infinity,
+        id: 'offline-toast',
+        icon: '📡',
+      });
     }
-    // Only show offline if browser explicitly says offline
-    setIsOnline(navigator.onLine);
-    window.addEventListener('online', update);
-    window.addEventListener('offline', update);
+    function handleOnline() {
+      toast.dismiss('offline-toast');
+      toast.success('Back online', {
+        duration: 2000,
+        id: 'online-toast',
+        icon: '✅',
+      });
+    }
+    window.addEventListener('offline', handleOffline);
+    window.addEventListener('online', handleOnline);
     return () => {
-      window.removeEventListener('online', update);
-      window.removeEventListener('offline', update);
+      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('online', handleOnline);
     };
   }, []);
 
