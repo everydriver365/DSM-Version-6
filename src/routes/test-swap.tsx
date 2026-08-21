@@ -450,7 +450,8 @@ function SwapCard({
           {mode === "mine" && isPending && (
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 tapLight();
                 handleMarkMatched();
               }}
