@@ -189,7 +189,8 @@ interface Lesson {
 // is a matter of pushing entries into the same list — no UI rewrite.
 type AgendaEntry =
   | { kind: "lesson"; id: string; start: Date; end: Date; allDay: false; lesson: Lesson }
-  | { kind: "block"; id: string; start: Date; end: Date; allDay: false; title: string; colour?: string | null }
+  // Calendar blocks (external imports) can be all-day or timed.
+  | { kind: "block"; id: string; start: Date; end: Date; allDay: boolean; title: string; colour?: string | null }
   // Reserved for future wiring:
   | { kind: "external"; id: string; start: Date; end: Date; allDay: boolean; title: string; colour?: string | null }
   | { kind: "personal"; id: string; start: Date; end: Date; allDay: boolean; title: string; colour?: string | null; event?: PersonalEvent }
@@ -1208,13 +1209,17 @@ function SchedulePage() {
       const key = b.start_datetime.substring(0, 10);
       const start = new Date(b.start_datetime);
       const end = new Date(b.end_datetime);
+      const isAllDay =
+        b.is_all_day === true ||
+        b.start_datetime.endsWith("T00:00:00") ||
+        (start.getHours() === 0 && start.getMinutes() === 0 && end.getHours() === 0 && end.getMinutes() === 0);
       const arr = map.get(key) ?? [];
       arr.push({
         kind: "block",
         id: `block-${b.id}`,
         start,
         end,
-        allDay: false,
+        allDay: isAllDay,
         title: b.title || "Busy",
         colour: (b as { colour?: string | null }).colour ?? null,
       });
@@ -3022,6 +3027,45 @@ function EntryRow({
   if (entry.kind === "block") {
     const c = getBlockColour(entry.title);
     const accent = resolveEventColour(entry.colour, c.border);
+    if (entry.allDay) {
+      return (
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 16,
+            border: "2px solid #1877D6",
+            padding: "14px 16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 8,
+            ...POPPINS,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+            <span style={{ fontSize: 14 }} aria-hidden>{c.icon}</span>
+            <div style={{ fontSize: tokens.fontSize.base, color: "#0B1F3A", fontWeight: tokens.fontWeight.medium, flex: 1, minWidth: 0 }}>
+              {entry.title}
+            </div>
+          </div>
+          <span
+            style={{
+              background: "#EFF6FF",
+              color: "#1877D6",
+              fontSize: 9,
+              fontWeight: 800,
+              borderRadius: 20,
+              padding: "3px 8px",
+              letterSpacing: "0.08em",
+              fontFamily: "Poppins, sans-serif",
+              flexShrink: 0,
+            }}
+          >
+            ALL DAY
+          </span>
+        </div>
+      );
+    }
     return (
       <div
         style={{
