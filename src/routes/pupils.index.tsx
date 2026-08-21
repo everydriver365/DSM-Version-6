@@ -1112,26 +1112,6 @@ function PupilsIndexPage() {
             <IconSearch stroke={1.8} size={20} color={tokens.navy} />
           )}
         </button>
-        <button
-          type="button"
-          onClick={() =>
-            setSortBy((s) => (s === "name" ? "balance" : s === "balance" ? "next_lesson" : "name"))
-          }
-          aria-label={`Sort by ${SORT_LABELS[sortBy]}. Tap to change.`}
-          title={`Sort by ${SORT_LABELS[sortBy]}`}
-          className="flex items-center justify-center"
-          style={{
-            width: 46,
-            height: 46,
-            flexShrink: 0,
-            borderRadius: "50%",
-            backgroundColor: tokens.white,
-            border: "1px solid #E6EAF0",
-            boxShadow: "0 2px 8px rgba(11,31,58,0.06)",
-          }}
-        >
-          <IconArrowsUpDown size={20} stroke={1.8} color={tokens.navy} />
-        </button>
       </div>
 
 
