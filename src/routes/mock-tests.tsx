@@ -161,30 +161,6 @@ function MockTestsPage() {
   return (
     <DSMTopSheet title="Mock Tests">
       <div style={POPPINS}>
-        {/* Action bar */}
-        <div
-          className="flex items-center justify-end"
-          style={{ background: tokens.white, padding: "12px 16px", borderBottom: "1px solid #EEF2F7" }}
-        >
-          <div className="flex items-center" style={{ gap: 10 }}>
-            <button
-              type="button"
-              onClick={() => setAddOpen(true)}
-              className="inline-flex items-center justify-center"
-              style={{ width: 36, height: 36, borderRadius: 999, background: tokens.blue, border: "none" }}
-            >
-              <IconPlus stroke={2} size={18} color="#FFFFFF" />
-            </button>
-            <button
-              type="button"
-              className="inline-flex items-center justify-center"
-              style={{ width: 36, height: 36, borderRadius: 999, background: "#EEF2F7", border: "none" }}
-            >
-              <IconSearch stroke={1.5} size={18} color="#6B7280" />
-            </button>
-          </div>
-        </div>
-
         <div className="px-4 pt-4">
           <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
             <div className="flex items-center" style={{ gap: 8 }}>
@@ -193,6 +169,23 @@ function MockTestsPage() {
                 Mock test history
               </span>
               <IconInfoCircle stroke={1.5} size={16} color="#9CA3AF" />
+            </div>
+            <div className="flex items-center" style={{ gap: 10 }}>
+              <button
+                type="button"
+                onClick={() => setAddOpen(true)}
+                className="inline-flex items-center justify-center"
+                style={{ width: 36, height: 36, borderRadius: 999, background: tokens.blue, border: "none" }}
+              >
+                <IconPlus stroke={2} size={18} color="#FFFFFF" />
+              </button>
+              <button
+                type="button"
+                className="inline-flex items-center justify-center"
+                style={{ width: 36, height: 36, borderRadius: 999, background: "#EEF2F7", border: "none" }}
+              >
+                <IconSearch stroke={1.5} size={18} color="#6B7280" />
+              </button>
             </div>
           </div>
 
