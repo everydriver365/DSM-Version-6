@@ -1344,8 +1344,14 @@ function JobDetailSheet({
         </div>
 
         <div style={{
-          display: "flex", gap: 8, padding: 12, borderTop: "1px solid #E5E7EB",
+          position: "sticky",
+          bottom: 0,
+          background: "#EEF2F7",
+          padding: "12px 16px",
           paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
+          borderTop: "1px solid #E4E8EF",
+          display: "flex",
+          gap: 8,
         }}>
           <button
             onClick={onDecline}
