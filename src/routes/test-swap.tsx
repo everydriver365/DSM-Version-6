@@ -146,6 +146,21 @@ function SectionHeader({ title, count }: { title: string; count: number }) {
   );
 }
 
+const AVATAR_COLORS = [
+  { bg: "#E6F1FB", color: "#1877D6" },
+  { bg: "#EDE9FE", color: "#7C3AED" },
+  { bg: "#D8F3EC", color: "#0E9384" },
+  { bg: "#FDE9E9", color: "#CC2229" },
+  { bg: "#FEF3C7", color: "#B45309" },
+];
+
+function avatarColor(name?: string | null) {
+  const key = (name || "?").toLowerCase();
+  let sum = 0;
+  for (let i = 0; i < key.length; i++) sum += key.charCodeAt(i);
+  return AVATAR_COLORS[sum % AVATAR_COLORS.length];
+}
+
 function SwapCard({
   request: r,
   mode,
@@ -185,36 +200,34 @@ function SwapCard({
   }
 
   const isPending = (r.status ?? "pending").toLowerCase() === "pending";
+  const av = avatarColor(r.name);
+  const time = r.current_test_time ? String(r.current_test_time).slice(0, 5) : null;
+
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   return (
     <div
       style={{
         background: "#fff",
-        borderRadius: tokens.radiusCard,
-        boxShadow: "0 2px 10px rgba(11,31,58,0.08)",
-        padding: 20,
+        borderRadius: 18,
+        boxShadow: "0 1px 4px rgba(11,31,58,0.07)",
+        padding: 16,
+        ...POPPINS,
       }}
     >
       {/* Header row */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          marginBottom: 20,
-        }}
-      >
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <div
           style={{
-            width: 44,
-            height: 44,
+            width: 38,
+            height: 38,
             borderRadius: "50%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "#E6F1FB",
-            color: tokens.blue,
-            fontSize: 15,
+            background: av.bg,
+            color: av.color,
+            fontSize: 13,
             fontWeight: tokens.fontWeight.bold,
             ...SORA,
             flexShrink: 0,
@@ -238,223 +251,163 @@ function SwapCard({
           {r.name || "Pupil"}
         </div>
         <DSMPill variant={statusVariant(r.status)}>
-          <IconHourglass size={12} stroke={2.5} />
+          <IconHourglass size={11} stroke={2.5} />
           {(r.status ?? "pending").toUpperCase()}
         </DSMPill>
-        <IconChevronRight size={20} color={tokens.textMuted} stroke={1.8} />
+        <IconChevronRight size={18} color="#C3CAD6" stroke={2} style={{ flexShrink: 0 }} />
       </div>
 
-      {/* Two-column swap card */}
+      {/* Two columns with centre divider + swap icon */}
       <div
         style={{
+          marginTop: 14,
           display: "grid",
-          gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
-          gap: 14,
+          gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)",
+          columnGap: 16,
           position: "relative",
-          alignItems: "stretch",
         }}
       >
-        {/* Current test */}
+        {/* divider */}
         <div
           style={{
-            background: "#F5F9FF",
-            borderRadius: 16,
-            padding: 16,
-            display: "flex",
-            flexDirection: "column",
-            gap: 12,
-            minWidth: 0,
+            position: "absolute",
+            left: "50%",
+            top: 0,
+            bottom: 0,
+            width: 1,
+            background: "#E4E8EF",
+            transform: "translateX(-0.5px)",
           }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 8,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "#E6F1FB",
-                color: tokens.blue,
-              }}
-            >
-              <IconCalendar size={16} stroke={2} />
-            </div>
-            <span
-              style={{
-                color: tokens.blue,
-                fontSize: 13,
-                fontWeight: tokens.fontWeight.bold,
-                ...POPPINS,
-              }}
-            >
-              Current test
-            </span>
-          </div>
-          <div
-            style={{
-              color: tokens.navy,
-              fontSize: 15,
-              fontWeight: tokens.fontWeight.bold,
-              lineHeight: 1.35,
-              ...SORA,
-              wordBreak: "break-word",
-            }}
-          >
-            {formatDate(r.current_test_date)}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              color: tokens.textSecondary,
-              fontSize: 13,
-              ...POPPINS,
-            }}
-          >
-            <IconClock size={14} stroke={2} color={tokens.blue} />
-            {r.current_test_time ? String(r.current_test_time).slice(0, 5) : "No time"}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: 6,
-              marginTop: "auto",
-              paddingTop: 12,
-              borderTop: "1px solid rgba(24,119,214,0.12)",
-              color: tokens.textSecondary,
-              fontSize: 13,
-              ...POPPINS,
-            }}
-          >
-            <IconMapPin
-              size={14}
-              stroke={2}
-              color={tokens.blue}
-              style={{ flexShrink: 0, marginTop: 2 }}
-            />
-            <span style={{ lineHeight: 1.35 }}>{r.test_centre || "No test centre"}</span>
-          </div>
-        </div>
-
-        {/* Swap icon */}
+        />
+        {/* swap badge */}
         <div
           style={{
             position: "absolute",
             left: "50%",
             top: "50%",
-            transform: "translate(-50%, -50%)",
-            zIndex: 2,
-            width: 44,
-            height: 44,
+            transform: "translate(-50%,-50%)",
+            width: 34,
+            height: 34,
             borderRadius: "50%",
             background: "#fff",
-            boxShadow: "0 2px 10px rgba(11,31,58,0.14)",
+            border: "1px solid #E4E8EF",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             color: tokens.blue,
+            zIndex: 2,
           }}
         >
-          <IconArrowsLeftRight size={20} stroke={2} />
+          <IconArrowsLeftRight size={16} stroke={2} />
+        </div>
+
+        {/* Current test */}
+        <div style={{ minWidth: 0, paddingRight: 22, display: "flex", flexDirection: "column", gap: 8 }}>
+          <div
+            style={{
+              color: tokens.blue,
+              fontSize: 13,
+              fontWeight: tokens.fontWeight.bold,
+            }}
+          >
+            Current test
+          </div>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+            <IconCalendar size={15} stroke={2} color={tokens.blue} style={{ flexShrink: 0, marginTop: 2 }} />
+            <span
+              style={{
+                color: tokens.navy,
+                fontSize: 14,
+                fontWeight: tokens.fontWeight.bold,
+                lineHeight: 1.35,
+                ...SORA,
+              }}
+            >
+              {formatDate(r.current_test_date)}
+              {time ? ` · ${time}` : ""}
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+            <IconMapPin size={15} stroke={2} color={tokens.blue} style={{ flexShrink: 0, marginTop: 1 }} />
+            <span style={{ color: "#6B7686", fontSize: 13, lineHeight: 1.35 }}>
+              {r.test_centre || "No test centre"}
+            </span>
+          </div>
         </div>
 
         {/* Wants */}
-        <div
-          style={{
-            background: "#F7F5FF",
-            borderRadius: 16,
-            padding: 16,
-            display: "flex",
-            flexDirection: "column",
-            gap: 12,
-            minWidth: 0,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 8,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "#EDE9FE",
-                color: tokens.purple,
-              }}
-            >
-              <IconCalendar size={16} stroke={2} />
-            </div>
+        <div style={{ minWidth: 0, paddingLeft: 22, display: "flex", flexDirection: "column", gap: 8 }}>
+          <div
+            style={{
+              color: tokens.purple,
+              fontSize: 13,
+              fontWeight: tokens.fontWeight.bold,
+            }}
+          >
+            Wants
+          </div>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+            <IconCalendar size={15} stroke={2} color={tokens.purple} style={{ flexShrink: 0, marginTop: 2 }} />
             <span
               style={{
-                color: tokens.purple,
-                fontSize: 13,
+                color: tokens.navy,
+                fontSize: 14,
                 fontWeight: tokens.fontWeight.bold,
-                ...POPPINS,
+                lineHeight: 1.35,
+                ...SORA,
               }}
             >
-              Wants
+              Any day, any time
             </span>
           </div>
-          <div
-            style={{
-              color: tokens.navy,
-              fontSize: 15,
-              fontWeight: tokens.fontWeight.bold,
-              lineHeight: 1.35,
-              ...SORA,
-              wordBreak: "break-word",
-            }}
-          >
-            Any day, any time
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: 6,
-              marginTop: "auto",
-              paddingTop: 12,
-              borderTop: "1px solid rgba(124,58,237,0.12)",
-              color: tokens.textSecondary,
-              fontSize: 13,
-              ...POPPINS,
-            }}
-          >
-            <IconMapPin
-              size={14}
-              stroke={2}
-              color={tokens.purple}
-              style={{ flexShrink: 0, marginTop: 2 }}
-            />
-            <span style={{ lineHeight: 1.35 }}>Anywhere</span>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+            <IconMapPin size={15} stroke={2} color={tokens.purple} style={{ flexShrink: 0, marginTop: 1 }} />
+            <span style={{ color: "#6B7686", fontSize: 13, lineHeight: 1.35 }}>Anywhere</span>
           </div>
         </div>
       </div>
 
-      {/* Community posted-by row */}
-      {mode === "community" && r.instructor_name && (
+      {detailsOpen && (
         <div
           style={{
-            marginTop: 16,
-            paddingTop: 14,
-            borderTop: "1px solid #E4E8EF",
+            marginTop: 14,
+            paddingTop: 12,
+            borderTop: "1px solid #EEF1F6",
             display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 12,
-            flexWrap: "wrap",
-            ...POPPINS,
+            flexDirection: "column",
+            gap: 6,
+            color: "#6B7686",
+            fontSize: 13,
           }}
         >
-          <span style={{ color: tokens.textSecondary, fontSize: 13 }}>
-            Posted by: {r.instructor_name}
-          </span>
-          {r.instructor_phone && (
+          {r.transmission && <div>Transmission: {r.transmission}</div>}
+          {r.notes && <div>Notes: {r.notes}</div>}
+          {mode === "community" && r.instructor_name && (
+            <div>Posted by: {r.instructor_name}</div>
+          )}
+          {!r.transmission && !r.notes && !r.instructor_name && <div>No extra details</div>}
+        </div>
+      )}
+
+      {/* Footer */}
+      <div
+        style={{
+          marginTop: 14,
+          paddingTop: 12,
+          borderTop: "1px solid #EEF1F6",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 10,
+          flexWrap: "wrap",
+        }}
+      >
+        <span style={{ color: "#9CA3AF", fontSize: 13 }}>
+          Created {formatCreated(r.created_at)}
+        </span>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          {mode === "community" && r.instructor_phone && (
             <button
               type="button"
               onClick={() => {
@@ -464,70 +417,51 @@ function SwapCard({
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 4,
+                gap: 6,
                 background: "#E6F1FB",
                 color: tokens.blue,
                 border: "none",
                 borderRadius: 999,
-                padding: "6px 12px",
-                fontSize: 12,
+                padding: "8px 14px",
+                fontSize: 13,
                 fontWeight: tokens.fontWeight.bold,
                 cursor: "pointer",
                 ...POPPINS,
               }}
             >
-              <IconPhone size={13} stroke={2} />
+              <IconPhone size={14} stroke={2} />
               Contact
             </button>
           )}
-        </div>
-      )}
 
-      {/* Footer: created date + my request actions */}
-      <div
-        style={{
-          marginTop: 16,
-          paddingTop: 14,
-          borderTop: mode === "community" && r.instructor_name ? "none" : "1px solid #E4E8EF",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 12,
-          flexWrap: "wrap",
-          ...POPPINS,
-        }}
-      >
-        <span style={{ color: "#8A93A3", fontSize: 12 }}>
-          Created {formatCreated(r.created_at)}
-        </span>
-        {mode === "mine" && (
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-            {isPending && (
-              <button
-                type="button"
-                onClick={() => {
-                  tapLight();
-                  handleMarkMatched();
-                }}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 4,
-                  background: "#DCFCE7",
-                  color: tokens.green,
-                  border: "none",
-                  borderRadius: 999,
-                  padding: "6px 12px",
-                  fontSize: 12,
-                  fontWeight: tokens.fontWeight.bold,
-                  cursor: "pointer",
-                  ...POPPINS,
-                }}
-              >
-                <IconCheck size={13} stroke={2} />
-                Mark matched
-              </button>
-            )}
+          {mode === "mine" && isPending && (
+            <button
+              type="button"
+              onClick={() => {
+                tapLight();
+                handleMarkMatched();
+              }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                background: "#DCFCE7",
+                color: tokens.green,
+                border: "none",
+                borderRadius: 999,
+                padding: "8px 14px",
+                fontSize: 13,
+                fontWeight: tokens.fontWeight.bold,
+                cursor: "pointer",
+                ...POPPINS,
+              }}
+            >
+              <IconCheck size={14} stroke={2} />
+              Mark matched
+            </button>
+          )}
+
+          {mode === "mine" && (
             <button
               type="button"
               onClick={() => {
@@ -538,8 +472,8 @@ function SwapCard({
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                width: 32,
-                height: 32,
+                width: 34,
+                height: 34,
                 background: "#FEE2E2",
                 color: tokens.red,
                 border: "none",
@@ -550,12 +484,34 @@ function SwapCard({
             >
               <IconTrash size={16} stroke={2} />
             </button>
-          </div>
-        )}
+          )}
+
+          <button
+            type="button"
+            onClick={() => {
+              tapLight();
+              setDetailsOpen((v) => !v);
+            }}
+            style={{
+              background: "#fff",
+              color: tokens.blue,
+              border: `1px solid ${tokens.blue}`,
+              borderRadius: 12,
+              padding: "9px 16px",
+              fontSize: 13,
+              fontWeight: tokens.fontWeight.bold,
+              cursor: "pointer",
+              ...POPPINS,
+            }}
+          >
+            {detailsOpen ? "Hide details" : "More details"}
+          </button>
+        </div>
       </div>
     </div>
   );
 }
+
 
 function MyRequestCard({
   request: r,
@@ -1085,12 +1041,10 @@ function SwapRequestList({
       {/* Tabs */}
       <div
         style={{
-          background: "#fff",
-          borderRadius: 16,
-          boxShadow: "0 1px 4px rgba(11,31,58,0.06)",
           display: "grid",
           gridTemplateColumns: "1fr 1fr 1fr",
-          overflow: "hidden",
+          borderBottom: "1px solid #E4E8EF",
+          margin: "2px 0 4px",
         }}
       >
         {tabs.map((t) => {
@@ -1192,45 +1146,48 @@ function SwapRequestList({
         </div>
       )}
 
-      {/* Footer prompt */}
+      {/* Tip banner */}
       <div
         style={{
-          background: "#F5F7FA",
+          background: "#F2F6FC",
           borderRadius: 16,
-          padding: 16,
+          padding: 14,
           display: "flex",
           alignItems: "center",
-          gap: 14,
+          gap: 12,
         }}
       >
         <div
           style={{
-            width: 42,
-            height: 42,
+            width: 36,
+            height: 36,
             borderRadius: "50%",
-            background: "#E6F1FB",
-            color: tokens.blue,
+            background: tokens.blue,
+            color: "#fff",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
+            fontSize: 18,
+            fontWeight: 700,
+            ...SORA,
           }}
         >
-          <IconSearch size={20} stroke={2} />
+          i
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
-              color: tokens.navy,
-              fontSize: 14,
+              color: tokens.blue,
+              fontSize: 13,
               fontWeight: tokens.fontWeight.bold,
-              ...SORA,
+              ...POPPINS,
             }}
           >
-            Can’t find what you’re looking for?
+            Tip
           </div>
           <div style={{ color: "#6B7686", fontSize: 13, marginTop: 2, ...POPPINS }}>
-            Try adjusting your search filters or create a new request.
+            Set your test centre &amp; date filters to find swaps that match your availability.
           </div>
         </div>
         <button
@@ -1255,6 +1212,7 @@ function SwapRequestList({
           New request
         </button>
       </div>
+
     </div>
   );
 }
