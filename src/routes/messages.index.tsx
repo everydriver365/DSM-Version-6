@@ -1478,20 +1478,20 @@ function MessagesIndexPage() {
                       {sections.map(
                         (s) =>
                           s.items.length > 0 && (
-                            <div key={s.label}>
-                              <div
-                                style={{
-                                  fontSize: tokens.fontSize.xs,
-                                  fontWeight: tokens.fontWeight.semibold,
-                                  textTransform: "uppercase",
-                                  letterSpacing: "0.12em",
-                                  color: "#8A94A6",
-                                  margin: "16px 16px 8px",
-                                  fontFamily: "Poppins, sans-serif",
-                                }}
-                              >
-                                {s.label}
-                              </div>
+                              <div key={s.label}>
+                                <div
+                                  style={{
+                                    fontSize: 13,
+                                    fontWeight: tokens.fontWeight.bold,
+                                    textTransform: "uppercase",
+                                    letterSpacing: "0.6px",
+                                    color: "#8A94A6",
+                                    margin: "16px 16px 8px",
+                                    fontFamily: "Poppins, sans-serif",
+                                  }}
+                                >
+                                  {s.label}
+                                </div>
                               <div style={{ display: "flex", flexDirection: "column" }}>
                                 {s.items.map((item) => (
                                   <InboxRow
