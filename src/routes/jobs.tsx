@@ -240,19 +240,58 @@ function JobCard({
       })
     : null;
 
+  const isClaimed = variant === "claimed";
+
   return (
     <div
       onClick={() => setDetailJob(job)}
       style={{
-        background: "#F5F8FC",
+        position: "relative",
+        background: isClaimed ? "#FFFFFF" : "#F5F8FC",
         borderRadius: tokens.radiusCard,
         border: "1px solid #E7EDF5",
-        boxShadow: "0 1px 3px rgba(11,31,58,0.05)",
+        boxShadow: isClaimed ? "0 2px 10px rgba(11,31,58,0.07)" : "0 1px 3px rgba(11,31,58,0.05)",
         overflow: "hidden",
         cursor: "pointer",
         padding: 16,
       }}
     >
+      {/* CLAIMED corner ribbon */}
+      {isClaimed && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            width: 118,
+            height: 118,
+            overflow: "hidden",
+            pointerEvents: "none",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: 22,
+              right: -34,
+              width: 150,
+              transform: "rotate(45deg)",
+              background: "#0B5ED7",
+              color: "#FFFFFF",
+              textAlign: "center",
+              padding: "6px 0",
+              fontSize: 12,
+              fontWeight: tokens.fontWeight.extrabold,
+              letterSpacing: "0.5px",
+              boxShadow: "0 2px 6px rgba(11,31,58,0.2)",
+              ...POPPINS,
+            }}
+          >
+            CLAIMED
+          </div>
+        </div>
+      )}
+
       {/* Header row */}
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <div
@@ -286,9 +325,10 @@ function JobCard({
         {worth != null && (
           <div
             style={{
-              background: "#DCE8FA",
+              background: isClaimed ? (worth > 0 ? "#DCFCE7" : "#EEF1F5") : "#DCE8FA",
               borderRadius: 12,
               padding: "8px 14px",
+              marginRight: isClaimed ? 44 : 0,
               fontSize: tokens.fontSize.xl,
               fontWeight: tokens.fontWeight.extrabold,
               color: NAVY,
@@ -299,6 +339,7 @@ function JobCard({
           </div>
         )}
       </div>
+
 
       {/* Name */}
       <div
@@ -357,9 +398,32 @@ function JobCard({
           ))}
       </div>
 
+      {isClaimed && badge && (
+        <div style={{ marginTop: 12, display: "flex" }}>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: badge.bg,
+              color: badge.color,
+              borderRadius: 12,
+              padding: "8px 14px",
+              fontSize: tokens.fontSize.lg,
+              fontWeight: tokens.fontWeight.bold,
+              ...POPPINS,
+            }}
+          >
+            <span style={{ width: 8, height: 8, borderRadius: 999, background: badge.color }} />
+            {sentenceCase(badge.label)}
+          </span>
+        </div>
+      )}
+
       <div style={{ height: 1, background: "#E3E9F1", margin: "16px 0" }} />
 
       {/* Fit + start + duration */}
+      {!isClaimed && (
       <div style={{ display: "flex", alignItems: "stretch", gap: 12 }}>
         {badge && (
           <div
@@ -375,11 +439,7 @@ function JobCard({
               ...POPPINS,
             }}
           >
-            {variant === "claimed" ? (
-              <IconCircleCheck size={24} stroke={2} color={badge.color} />
-            ) : (
-              <IconCircleCheck size={24} stroke={2} color={badge.color} />
-            )}
+            <IconCircleCheck size={24} stroke={2} color={badge.color} />
             <div style={{ minWidth: 0 }}>
               <div
                 style={{
@@ -396,6 +456,7 @@ function JobCard({
             </div>
           </div>
         )}
+
 
         {startDate && (
           <div
@@ -471,6 +532,8 @@ function JobCard({
           </div>
         )}
       </div>
+      )}
+
 
       {/* Actions */}
       <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
