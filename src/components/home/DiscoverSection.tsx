@@ -999,7 +999,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             ...tileBase,
             gridColumn: 1,
             gridRow: "1 / 3",
-            height: 220,
+            height: 240,
             background: "linear-gradient(160deg, #EAF3FB 0%, #F5F9FF 55%, #fff 100%)",
             border: "1px solid #D6E3F0",
           }}
