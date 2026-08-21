@@ -4,7 +4,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
-import { IconBell, IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
+import { IconAlertTriangleFilled, IconBell, IconArrowsUpDown, IconCalendar, IconChevronRight, IconCirclePlus, IconDotsVertical, IconMessageCircle, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { tapLight, tapMedium, tapHeavy, hapticSuccess } from "@/lib/haptics";
@@ -649,7 +649,9 @@ function PupilsIndexPage() {
         ? "failed"
         : null;
     const nextLesson = nextLessonMap[p.id];
+    const lastLesson = lastLessonMap[p.id];
     const hasBalance = balanceOwed > 0;
+
 
     return (
       <div
@@ -679,14 +681,14 @@ function PupilsIndexPage() {
         className="block cursor-pointer select-none"
         style={{
           background: "transparent",
-          padding: "13px 16px",
+          padding: "14px 16px",
           WebkitTouchCallout: "none",
           transition: "transform 0.1s ease, opacity 0.1s ease",
         }}
       >
-        <div className="flex items-center" style={{ gap: 12 }}>
+        <div className="flex items-center" style={{ gap: 14 }}>
           <div style={{ position: "relative", flexShrink: 0 }}>
-            <PupilAvatar pupil={p} size={44} />
+            <PupilAvatar pupil={p} size={56} />
             {unread > 0 && (
               <span
                 aria-label={`${unread} unread messages`}
@@ -694,10 +696,25 @@ function PupilsIndexPage() {
                   position: "absolute",
                   top: 0,
                   right: 0,
-                  width: 11,
-                  height: 11,
+                  width: 13,
+                  height: 13,
                   borderRadius: "50%",
                   background: tokens.red,
+                  border: "2px solid #fff",
+                }}
+              />
+            )}
+            {!unread && nextLesson && (
+              <span
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  top: 1,
+                  right: 1,
+                  width: 13,
+                  height: 13,
+                  borderRadius: "50%",
+                  background: "#22C55E",
                   border: "2px solid #fff",
                 }}
               />
@@ -707,58 +724,88 @@ function PupilsIndexPage() {
           <div className="min-w-0 flex-1 flex flex-col">
             <div
               className="truncate"
-              style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, ...POPPINS }}
+              style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, color: tokens.navy, letterSpacing: "-0.2px", ...POPPINS }}
             >
               {displayName(p.name)}
             </div>
-            <div className="flex flex-wrap items-center" style={{ gap: 6, marginTop: 4 }}>
-              {hasBalance ? (
-                <span style={{ ...PILL_BASE, backgroundColor: "#FCEBEB", color: tokens.red }}>
-                  £{balanceOwed.toFixed(2)} owed
-                </span>
-              ) : (
-                <span style={{ ...PILL_BASE, backgroundColor: "#DDEFE1", color: "#15803D" }}>
-                  All paid
-                </span>
-              )}
-              {testResultState === "passed" ? (
-                <span style={{ ...PILL_BASE, backgroundColor: "#DDEFE1", color: "#15803D" }}>
-                  ✓ Passed
-                </span>
-              ) : testResultState === "failed" ? (
-                <span style={{ ...PILL_BASE, backgroundColor: "#FEF3C7", color: "#B45309" }}>
-                  Retest
-                </span>
-              ) : null}
-              {!testResultState && testSoon && testDate && (
-                <span style={{ ...PILL_BASE, backgroundColor: "#FEF3C7", color: "#B45309" }}>
-                  🎯 Test {formatShortDate(testDate)}
-                </span>
-              )}
-              <span style={{ ...PILL_BASE, backgroundColor: pricing.bg, color: pricing.fg }}>
-                {pricing.label}
+
+            <div className="flex flex-wrap items-center" style={{ gap: 6, marginTop: 2 }}>
+              <span
+                style={{
+                  fontSize: 13.5,
+                  fontWeight: tokens.fontWeight.semibold,
+                  color: hasBalance ? tokens.red : "#15803D",
+                  ...POPPINS,
+                }}
+              >
+                {hasBalance ? `£${balanceOwed.toFixed(2)} overdue` : "All paid"}
               </span>
+
+              {testResultState === "failed" ? (
+                <>
+                  <span style={{ color: "#C7CEDA", fontSize: 13 }}>·</span>
+                  <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: "#D97706", ...POPPINS }}>
+                    Retest
+                  </span>
+                </>
+              ) : testResultState === "passed" ? (
+                <>
+                  <span style={{ color: "#C7CEDA", fontSize: 13 }}>·</span>
+                  <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: "#15803D", ...POPPINS }}>
+                    ✓ Passed
+                  </span>
+                </>
+              ) : testSoon && testDate ? (
+                <>
+                  <span style={{ color: "#C7CEDA", fontSize: 13 }}>·</span>
+                  <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: "#D97706", ...POPPINS }}>
+                    🎯 Test {formatShortDate(testDate)}
+                  </span>
+                </>
+              ) : prepaid > 0 ? (
+                <>
+                  <span style={{ color: "#C7CEDA", fontSize: 13 }}>·</span>
+                  <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: tokens.blue, ...POPPINS }}>
+                    {prepaid} hrs remaining
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span style={{ color: "#C7CEDA", fontSize: 13 }}>·</span>
+                  <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: "#8A94A6", ...POPPINS }}>
+                    {pricing.label}
+                  </span>
+                </>
+              )}
             </div>
-            {(lp || nextLesson) && (
-              <div style={{ fontSize: tokens.fontSize.sm, color: "#B0BAC9", marginTop: 3, ...POPPINS }}>
-                {lp
-                  ? `Last seen: ${formatRelativeDate(lp.date)}`
-                  : `Next: ${formatShortDate(nextLesson)}`}
-              </div>
-            )}
+
+            <div style={{ fontSize: 13, color: "#8A94A6", marginTop: 3, ...POPPINS }}>
+              {lastLesson
+                ? `Last lesson: ${formatShortDate(lastLesson)} (${formatRelativeDate(lastLesson)})`
+                : nextLesson
+                  ? `Next: ${formatShortDate(nextLesson)}`
+                  : lp
+                    ? `Last seen: ${formatRelativeDate(lp.date)}`
+                    : "No lessons yet"}
+            </div>
           </div>
 
-          <div className="flex flex-col items-end shrink-0" style={{ gap: 4 }}>
-            <span
-              style={{
-                fontSize: tokens.fontSize.base,
-                fontWeight: tokens.fontWeight.medium,
-                color: lessons > 0 ? "#8A94A6" : "#B0BAC9",
-                ...POPPINS,
-              }}
-            >
-              {lessons} {lessons === 1 ? "lesson" : "lessons"}
-            </span>
+          <div className="flex items-center shrink-0" style={{ gap: 6 }}>
+            <div className="flex flex-col items-center" style={{ lineHeight: 1 }}>
+              <span
+                style={{
+                  fontSize: 26,
+                  fontWeight: tokens.fontWeight.bold,
+                  color: lessons > 0 ? tokens.navy : "#B0BAC9",
+                  ...POPPINS,
+                }}
+              >
+                {lessons}
+              </span>
+              <span style={{ fontSize: 12, color: "#8A94A6", marginTop: 3, ...POPPINS }}>
+                {lessons === 1 ? "lesson" : "lessons"}
+              </span>
+            </div>
             <QuickActionsMenu
               items={[
                 { label: "View pupil details", onClick: () => navigate({ to: "/pupils/$id", params: { id: p.id } }) },
@@ -787,8 +834,8 @@ function PupilsIndexPage() {
                     width: 28,
                     height: 28,
                     borderRadius: "50%",
-                    background: "#F8F9FB",
-                    border: "0.5px solid #E5E7EB",
+                    background: "transparent",
+                    border: "none",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -796,7 +843,7 @@ function PupilsIndexPage() {
                     padding: 0,
                   }}
                 >
-                  <IconDotsVertical stroke={1.5} size={14} color="#6B7280" />
+                  <IconChevronRight stroke={2} size={20} color="#9AA5B5" />
                 </button>
               )}
             />
@@ -805,6 +852,7 @@ function PupilsIndexPage() {
       </div>
     );
   };
+
 
   const swipeActionBtn = {
     width: 72,
@@ -867,7 +915,8 @@ function PupilsIndexPage() {
           }}
           style={{
             position: "relative",
-            background: "#fff",
+            background: (cardStyle.background as string) ?? "#fff",
+
             transform: swiped ? "translateX(-144px)" : "translateX(0)",
             transition: "transform 0.2s ease",
           }}
@@ -896,9 +945,10 @@ function PupilsIndexPage() {
     >
       <header
         style={{
-          height: "calc(max(env(safe-area-inset-top, 0px), 24px) + 86px)",
+          height: "calc(max(env(safe-area-inset-top, 0px), 24px) + 118px)",
           flexShrink: 0,
-          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 13px) 22px 28px",
+          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 14px) 22px 30px",
+
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "space-between",
@@ -906,18 +956,32 @@ function PupilsIndexPage() {
           boxSizing: "border-box",
         }}
       >
-        <h1
-          style={{
-            margin: 0,
-            color: tokens.white,
-            fontFamily: "Sora, sans-serif",
-            fontSize: tokens.fontSize.xxl,
-            lineHeight: "40px",
-            fontWeight: tokens.fontWeight.bold,
-          }}
-        >
-          Pupils
-        </h1>
+        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <h1
+            style={{
+              margin: 0,
+              color: tokens.white,
+              fontFamily: "Sora, sans-serif",
+              fontSize: 34,
+              lineHeight: "40px",
+              letterSpacing: "-0.6px",
+              fontWeight: tokens.fontWeight.extrabold,
+            }}
+          >
+            Pupils
+          </h1>
+          <span
+            style={{
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.medium,
+              color: "rgba(255,255,255,0.66)",
+              ...POPPINS,
+            }}
+          >
+            {statusCounts ? `${statusCounts.active} active pupil${statusCounts.active === 1 ? "" : "s"}` : ""}
+          </span>
+        </div>
+
         <button
           type="button"
           aria-label="Notifications"
@@ -960,12 +1024,13 @@ function PupilsIndexPage() {
           zIndex: 1,
           flex: 1,
           minHeight: 0,
-          marginTop: -18,
+          marginTop: -22,
           background: tokens.white,
-          borderRadius: "16px 16px 0 0",
+          borderRadius: "28px 28px 0 0",
           overflowY: "auto",
           overflowX: "hidden",
-          paddingTop: 12,
+          paddingTop: 8,
+
           paddingBottom: "calc(88px + env(safe-area-inset-bottom, 0px))",
         }}
       >
@@ -973,103 +1038,111 @@ function PupilsIndexPage() {
 
 
 
-      {/* Count + actions */}
+      {/* Actions */}
       <div
         style={{
-          margin: "16px 16px 12px",
+          margin: "18px 16px 14px",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          gap: 8,
         }}
       >
-        <span style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, ...POPPINS }}>
-          {filtered === null ? "" : `${filtered.length} ${filtered.length === 1 ? "pupil" : "pupils"}`}
-        </span>
-        <div className="flex items-center" style={{ gap: 8 }}>
-          <Link
-            to="/pupils/new"
-            aria-label="Add pupil"
-            onClick={() => tapMedium()}
-            className="flex items-center justify-center"
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: "50%",
-              backgroundColor: tokens.blue,
-              flexShrink: 0,
-            }}
-          >
-            <IconPlus size={18} color="#FFFFFF" stroke={2} />
-          </Link>
-          <Link
-            to="/broadcast"
-            aria-label="Message all pupils"
-            className="inline-flex items-center gap-1.5"
-            style={{
-              padding: "6px 16px",
-              borderRadius: tokens.radiusCard,
-              backgroundColor: "#F3F8FF",
-              border: "1px solid #EEF2F7",
-            }}
-          >
-            <IconSpeakerphone size={14} color="#1877D6" />
-            <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.blue, ...POPPINS }}>Message all</span>
-          </Link>
-          <button
-            type="button"
-            aria-label={searchOpen ? "Close search" : "Open search"}
-            onClick={() => {
-              setSearchOpen((v) => {
-                const next = !v;
-                if (!next) setQuery("");
-                return next;
-              });
-            }}
-            className="flex items-center justify-center"
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: "50%",
-              backgroundColor: "#F3F8FF",
-              border: "1px solid #EEF2F7",
-            }}
-          >
-            {searchOpen ? (
-              <IconX stroke={1.5} size={16} color="#1877D6" />
-            ) : (
-              <IconSearch stroke={1.5} size={16} color="#1877D6" />
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={() =>
-              setSortBy((s) => (s === "name" ? "balance" : s === "balance" ? "next_lesson" : "name"))
-            }
-            aria-label={`Sort by ${SORT_LABELS[sortBy]}. Tap to change.`}
-            title={`Sort by ${SORT_LABELS[sortBy]}`}
-            className="flex items-center justify-center"
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: "50%",
-              backgroundColor: "#F3F8FF",
-              border: "1px solid #EEF2F7",
-            }}
-          >
-            <IconArrowsUpDown size={16} color="#1877D6" />
-          </button>
-        </div>
+        <Link
+          to="/pupils/new"
+          aria-label="Add pupil"
+          onClick={() => tapMedium()}
+          className="inline-flex items-center justify-center"
+          style={{
+            flex: 1,
+            gap: 6,
+            height: 52,
+            borderRadius: 26,
+            backgroundColor: tokens.blue,
+            boxShadow: "0 6px 16px rgba(24,119,214,0.28)",
+          }}
+        >
+          <IconCirclePlus size={18} color="#FFFFFF" stroke={2} />
+          <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.bold, color: tokens.white, whiteSpace: "nowrap", ...POPPINS }}>
+            Add pupil
+          </span>
+        </Link>
+        <Link
+          to="/broadcast"
+          aria-label="Message all pupils"
+          className="inline-flex items-center justify-center"
+          style={{
+            flex: 1,
+            gap: 6,
+            height: 52,
+            borderRadius: 26,
+            backgroundColor: tokens.white,
+            border: "1px solid #E6EAF0",
+            boxShadow: "0 2px 8px rgba(11,31,58,0.06)",
+          }}
+        >
+          <IconMessageCircle size={18} color={tokens.navy} stroke={1.8} />
+          <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.bold, color: tokens.navy, whiteSpace: "nowrap", ...POPPINS }}>
+            Message all
+          </span>
+        </Link>
+        <button
+          type="button"
+          aria-label={searchOpen ? "Close search" : "Open search"}
+          onClick={() => {
+            setSearchOpen((v) => {
+              const next = !v;
+              if (!next) setQuery("");
+              return next;
+            });
+          }}
+          className="flex items-center justify-center"
+          style={{
+            width: 46,
+            height: 46,
+            flexShrink: 0,
+            borderRadius: "50%",
+            backgroundColor: tokens.white,
+            border: "1px solid #E6EAF0",
+            boxShadow: "0 2px 8px rgba(11,31,58,0.06)",
+          }}
+        >
+          {searchOpen ? (
+            <IconX stroke={1.8} size={20} color={tokens.navy} />
+          ) : (
+            <IconSearch stroke={1.8} size={20} color={tokens.navy} />
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={() =>
+            setSortBy((s) => (s === "name" ? "balance" : s === "balance" ? "next_lesson" : "name"))
+          }
+          aria-label={`Sort by ${SORT_LABELS[sortBy]}. Tap to change.`}
+          title={`Sort by ${SORT_LABELS[sortBy]}`}
+          className="flex items-center justify-center"
+          style={{
+            width: 46,
+            height: 46,
+            flexShrink: 0,
+            borderRadius: "50%",
+            backgroundColor: tokens.white,
+            border: "1px solid #E6EAF0",
+            boxShadow: "0 2px 8px rgba(11,31,58,0.06)",
+          }}
+        >
+          <IconArrowsUpDown size={20} stroke={1.8} color={tokens.navy} />
+        </button>
       </div>
+
 
       {/* Status filter tabs */}
       <div
         style={{
-          margin: "12px 16px",
+          margin: "4px 16px 12px",
           display: "flex",
-          background: tokens.canvas,
-          borderRadius: tokens.radiusCard,
-          boxShadow: "0 4px 0 #E4E4E8",
-          padding: 3,
+          background: "#F4F6FA",
+          borderRadius: 18,
+          padding: 5,
           overflowX: "auto",
           scrollbarWidth: "none",
         }}
@@ -1088,36 +1161,37 @@ function PupilsIndexPage() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 4,
+                gap: 6,
                 textAlign: "center",
-                padding: "8px 4px",
-                fontSize: 12,
+                padding: "12px 6px",
+                fontSize: 14,
                 fontFamily: "Poppins, sans-serif",
                 cursor: "pointer",
                 border: "none",
                 outline: "none",
-                background: active ? "#0B1F3A" : "transparent",
-                color: active ? "#FFFFFF" : "#8A94A6",
-                borderRadius: active ? 8 : 0,
-                fontWeight: active ? 600 : 500,
+                background: active ? tokens.navy : "transparent",
+                color: active ? "#FFFFFF" : "#7C8698",
+                borderRadius: 14,
+                fontWeight: active ? 700 : 600,
                 whiteSpace: "nowrap",
               }}
             >
               <span>{tab.label}</span>
               <span
                 style={{
-                  fontSize: tokens.fontSize.xs,
+                  fontSize: 12,
                   fontWeight: tokens.fontWeight.bold,
-                  padding: "2px 6px",
+                  padding: "2px 7px",
                   borderRadius: 999,
-                  background: active ? "rgba(255,255,255,0.2)" : "#F3F4F6",
+                  background: active ? tokens.blue : "transparent",
                   color: active ? "#FFFFFF" : "#6B7280",
-                  minWidth: 16,
-                  lineHeight: "14px",
+                  minWidth: 18,
+                  lineHeight: "16px",
                 }}
               >
                 {count}
               </span>
+
             </button>
           );
         })}
@@ -1242,24 +1316,51 @@ function PupilsIndexPage() {
               <>
                 <div
                   style={{
-                    fontSize: 12,
-                    fontWeight: tokens.fontWeight.bold,
-                    color: '#FF3B30',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
-                    padding: '16px 16px 6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '14px 16px 8px',
                     fontFamily: 'Poppins, sans-serif',
                   }}
                 >
-                  Needs Attention
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                    <IconAlertTriangleFilled size={20} color={tokens.red} />
+                    <span
+                      style={{
+                        fontSize: 13,
+                        fontWeight: tokens.fontWeight.bold,
+                        color: tokens.navy,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.6px',
+                      }}
+                    >
+                      Needs attention
+                    </span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => { tapLight(); setSortBy("balance"); }}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      padding: 0,
+                      fontSize: 14,
+                      fontWeight: tokens.fontWeight.semibold,
+                      color: tokens.blue,
+                      fontFamily: 'Poppins, sans-serif',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    View all
+                  </button>
                 </div>
-                <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {needsAttention.map((p) =>
                     renderSwipeRow(p, {
                       background: '#fff',
-                      borderRadius: tokens.radiusCard,
-                      boxShadow: '0 3px 0 #F7C9C6, 0 8px 18px rgba(255,59,48,0.1)',
-                      border: '1.5px solid #FDEDEC',
+                      borderRadius: 16,
+                      boxShadow: '0 2px 10px rgba(11,31,58,0.07)',
+                      borderLeft: `5px solid ${testDateMap[p.id] && !((balanceMap[p.id] || 0) > 0) ? '#F59E0B' : tokens.red}`,
                     })
                   )}
                 </div>
@@ -1268,28 +1369,29 @@ function PupilsIndexPage() {
             {statusFilter === "active" && (
               <div
                 style={{
-                  fontSize: 12,
+                  fontSize: 13,
                   fontWeight: tokens.fontWeight.bold,
-                  color: '#8A8A8E',
+                  color: '#8A94A6',
                   textTransform: 'uppercase',
-                  letterSpacing: '0.5px',
-                  padding: '16px 16px 6px',
+                  letterSpacing: '0.6px',
+                  padding: '18px 16px 8px',
                   fontFamily: 'Poppins, sans-serif',
                 }}
               >
-                Active · {activePupils.length}
+                Active pupils ({activePupils.length})
               </div>
             )}
-            <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
               {(statusFilter === "active" ? activePupils : filtered).map((p) =>
                 renderSwipeRow(p, {
-                  background: '#fff',
-                  borderRadius: tokens.radiusCard,
-                  boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+                  background: '#FAFBFC',
+                  borderRadius: 16,
+                  boxShadow: '0 1px 3px rgba(11,31,58,0.05)',
                   transition: 'transform 0.1s ease, opacity 0.1s ease',
                 })
               )}
             </div>
+
           </>
         )}
       </div>
