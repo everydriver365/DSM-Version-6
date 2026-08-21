@@ -1148,45 +1148,48 @@ function SwapRequestList({
         </div>
       )}
 
-      {/* Footer prompt */}
+      {/* Tip banner */}
       <div
         style={{
-          background: "#F5F7FA",
+          background: "#F2F6FC",
           borderRadius: 16,
-          padding: 16,
+          padding: 14,
           display: "flex",
           alignItems: "center",
-          gap: 14,
+          gap: 12,
         }}
       >
         <div
           style={{
-            width: 42,
-            height: 42,
+            width: 36,
+            height: 36,
             borderRadius: "50%",
-            background: "#E6F1FB",
-            color: tokens.blue,
+            background: tokens.blue,
+            color: "#fff",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
+            fontSize: 18,
+            fontWeight: 700,
+            ...SORA,
           }}
         >
-          <IconSearch size={20} stroke={2} />
+          i
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
-              color: tokens.navy,
-              fontSize: 14,
+              color: tokens.blue,
+              fontSize: 13,
               fontWeight: tokens.fontWeight.bold,
-              ...SORA,
+              ...POPPINS,
             }}
           >
-            Can’t find what you’re looking for?
+            Tip
           </div>
           <div style={{ color: "#6B7686", fontSize: 13, marginTop: 2, ...POPPINS }}>
-            Try adjusting your search filters or create a new request.
+            Set your test centre &amp; date filters to find swaps that match your availability.
           </div>
         </div>
         <button
@@ -1211,6 +1214,7 @@ function SwapRequestList({
           New request
         </button>
       </div>
+
     </div>
   );
 }
