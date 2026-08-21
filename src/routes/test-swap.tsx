@@ -51,7 +51,12 @@ type SwapRequest = {
   created_at: string | null;
 };
 
-type PupilRow = { id: string | number; name: string | null };
+type PupilRow = {
+  id: string | number;
+  name: string | null;
+  email?: string | null;
+  phone?: string | null;
+};
 type CentreRow = { id: string | number; name: string | null; town?: string | null };
 
 function statusVariant(status?: string | null): PillVariant {
