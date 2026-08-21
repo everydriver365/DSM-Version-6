@@ -40,7 +40,7 @@ const allTools: Tool[] = [
   { icon: IconBriefcase, colour: '#7C3AED', label: 'Jobs', sub: 'Job offers & requests', route: '/jobs', group: 'Teaching' },
   { icon: IconRefresh, colour: '#1A52A0', label: 'Recurring lessons', sub: 'Weekly series', route: '/lesson-series', group: 'Teaching' },
   { icon: IconAward, colour: '#7C3AED', label: 'Log test result', sub: 'Pass or fail', route: '/tests', group: 'Teaching' },
-  { icon: IconArrowsLeftRight, colour: '#7C3AED', label: 'Test swap', sub: 'Manage per pupil', route: '/pupils', group: 'Teaching' },
+  { icon: IconArrowsLeftRight, colour: '#7C3AED', label: 'Test swap', sub: 'Manage per pupil', route: '/test-swap', group: 'Teaching' },
   { icon: IconSchool, colour: '#16A34A', label: 'Syllabus', sub: 'Standards check', route: '/standards', group: 'Teaching' },
   { icon: IconClipboardCheck, colour: '#16A34A', label: 'Mock tests', sub: 'Practice tests', route: '/mock-tests', group: 'Teaching' },
   { icon: IconFileText, colour: '#9CA3AF', label: 'Lesson notes', sub: 'Templates', route: '/lesson-notes', group: 'Teaching' },
