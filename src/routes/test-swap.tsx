@@ -841,19 +841,20 @@ function SwapRequestList({
   ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       {/* Search swaps card */}
       <div
         style={{
           background: "#fff",
-          borderRadius: 18,
-          boxShadow: "0 1px 4px rgba(11,31,58,0.08)",
-          padding: 18,
+          borderRadius: "0 0 18px 18px",
+          margin: `-20px -${tokens.pagePadding}px 0`,
+          padding: `4px ${tokens.pagePadding}px 18px`,
           display: "flex",
           flexDirection: "column",
           gap: 14,
         }}
       >
+
         <div
           style={{
             color: tokens.navy,
@@ -1318,7 +1319,14 @@ function TestSwapPage() {
         </button>
       }
     >
-      <div style={{ padding: `20px ${tokens.pagePadding}px 40px` }}>
+      <div
+        style={{
+          padding: `20px ${tokens.pagePadding}px 40px`,
+          background: "#F5F7FA",
+          minHeight: "100%",
+          boxSizing: "border-box",
+        }}
+      >
         {loading ? (
           <div style={{ color: tokens.textSecondary, fontSize: 14, ...POPPINS }}>
             Loading swap requests…
