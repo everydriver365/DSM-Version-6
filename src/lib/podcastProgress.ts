@@ -68,3 +68,25 @@ export function remainingLabel(entry: EpisodeProgress | undefined): string | nul
   if (remaining <= 60) return "Less than a min left";
   return `${Math.round(remaining / 60)} min left`;
 }
+
+const LAST_PLAYED_KEY = "dsm.podcasts.lastPlayed.v1";
+
+/** Id of the most recently played episode on this device. */
+export function loadLastPlayedId(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return window.localStorage.getItem(LAST_PLAYED_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function saveLastPlayedId(id: string | null): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (id) window.localStorage.setItem(LAST_PLAYED_KEY, id);
+    else window.localStorage.removeItem(LAST_PLAYED_KEY);
+  } catch {
+    /* best-effort */
+  }
+}
