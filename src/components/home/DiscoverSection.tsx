@@ -1233,7 +1233,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             ) : (
               <>
                 <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 8 }}>
-                  Live, News & Podcasts
+                  DSM Radio
                 </div>
                 <div
                   style={{
@@ -1245,7 +1245,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                     textOverflow: "ellipsis",
                   }}
                 >
-                  {"News and Live Events"}
+                  {"Live, news and podcasts"}
+
                 </div>
               </>
             )}
