@@ -2550,6 +2550,31 @@ function EpisodeCard({
               />
             </div>
           </div>
+          {onOpenDetails && (
+            <button
+              type="button"
+              onClick={onOpenDetails}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+                alignSelf: "flex-start",
+                border: "1px solid #E4E8EF",
+                borderRadius: 10,
+                background: "#fff",
+                color: tokens.textSecondary,
+                padding: "6px 12px",
+                fontSize: 12,
+                fontWeight: tokens.fontWeight.semibold,
+                cursor: "pointer",
+                ...POPPINS,
+              }}
+            >
+              More details
+              <IconChevronRight size={14} color="#6B7686" stroke={2} />
+            </button>
+          )}
         </div>
       )}
     </div>
