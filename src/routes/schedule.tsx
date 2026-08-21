@@ -2998,13 +2998,14 @@ function SchedulePage() {
               backgroundColor: "#fff",
               borderTopLeftRadius: 24,
               borderTopRightRadius: 24,
-              padding: "20px 16px calc(32px + env(safe-area-inset-bottom, 0px))",
+              padding: "20px 16px calc(80px + env(safe-area-inset-bottom, 0px))",
               maxWidth: 480,
               width: "100%",
               margin: "0 auto",
               boxShadow: "0 -8px 30px rgba(0,0,0,0.2)",
               maxHeight: "85vh",
               overflowY: "auto",
+              zIndex: 10000,
             }}
           >
 
