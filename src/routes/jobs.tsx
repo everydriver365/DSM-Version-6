@@ -1237,7 +1237,8 @@ function JobDetailSheet({
         onClick={(e) => e.stopPropagation()}
         style={{
           background: tokens.white, borderTopLeftRadius: 16, borderTopRightRadius: 16,
-          maxHeight: "90vh", display: "flex", flexDirection: "column", ...POPPINS,
+          maxHeight: "90vh", overflowY: "auto", paddingBottom: "calc(32px + env(safe-area-inset-bottom, 0px))",
+          display: "flex", flexDirection: "column", ...POPPINS,
         }}
       >
         <div style={{
@@ -1257,7 +1258,7 @@ function JobDetailSheet({
           </button>
         </div>
 
-        <div style={{ flex: 1, overflowY: "auto", padding: "8px 16px 16px" }}>
+        <div style={{ flex: 1, padding: "8px 16px 80px" }}>
           <Row label="Area" value={job.postcode_area || "—"} />
           <Row label="Transmission" value={job.transmission || "—"} />
           <Row label="Course hours" value={job.course_hours != null ? `${job.course_hours} hrs` : "—"} />
@@ -1343,8 +1344,14 @@ function JobDetailSheet({
         </div>
 
         <div style={{
-          display: "flex", gap: 8, padding: 12, borderTop: "1px solid #E5E7EB",
+          position: "sticky",
+          bottom: 0,
+          background: "#EEF2F7",
+          padding: "12px 16px",
           paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
+          borderTop: "1px solid #E4E8EF",
+          display: "flex",
+          gap: 8,
         }}>
           <button
             onClick={onDecline}
