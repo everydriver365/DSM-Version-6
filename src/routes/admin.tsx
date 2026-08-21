@@ -2951,28 +2951,30 @@ export function BenefitPartnersSection() {
                     </div>
                   </div>
                 ))}
-                <div
-                  onClick={() => perkGalleryInputRef.current?.click()}
-                  style={{
-                    width: 72,
-                    height: 72,
-                    borderRadius: 8,
-                    border: "1px dashed #E2E8F0",
-                    background: "#F8FAFC",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    flexShrink: 0,
-                  }}
-                >
-                  <IconPhoto size={24} color="#9CA3AF" />
-                </div>
+                {((editingPerk.gallery_urls ?? []) as string[]).length < 6 && (
+                  <div
+                    onClick={() => perkGalleryInputRef.current?.click()}
+                    style={{
+                      width: 72,
+                      height: 72,
+                      borderRadius: 8,
+                      border: "1px dashed #E2E8F0",
+                      background: "#F8FAFC",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <IconPhoto size={24} color="#9CA3AF" />
+                  </div>
+                )}
               </div>
               <div style={uploadHintStyle}>
                 {uploadingPerkGallery
                   ? "Uploading photos..."
-                  : "Select multiple images at once. Use ‹ › to set display order."}
+                  : "Max 6 images. Select multiple at once. Use ‹ › to set display order."}
               </div>
 
 
