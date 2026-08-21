@@ -762,42 +762,16 @@ function RootComponent() {
 
   // Offline/online state banner.
   useEffect(() => {
-    // Check connectivity by fetching a small known resource
-    async function checkOnline() {
-      try {
-        const res = await fetch(
-          'https://bjpqxfrihwjcqprmoqfs.supabase.co/health',
-          { method: 'HEAD',
-            cache: 'no-store',
-            signal: AbortSignal.timeout(3000)
-          });
-        setIsOnline(res.ok);
-      } catch {
-        setIsOnline(false);
-      }
+    function update() {
+      setIsOnline(navigator.onLine);
     }
-    checkOnline();
-    const handleOnline = () => {
-      setIsOnline(true);
-    };
-    const handleOffline = () => {
-      setIsOnline(false);
-      // Verify with actual fetch
-      checkOnline();
-    };
-    window.addEventListener(
-      'online', handleOnline);
-    window.addEventListener(
-      'offline', handleOffline);
-    // Check every 30 seconds
-    const interval = setInterval(
-      checkOnline, 30000);
+    // Only show offline if browser explicitly says offline
+    setIsOnline(navigator.onLine);
+    window.addEventListener('online', update);
+    window.addEventListener('offline', update);
     return () => {
-      window.removeEventListener(
-        'online', handleOnline);
-      window.removeEventListener(
-        'offline', handleOffline);
-      clearInterval(interval);
+      window.removeEventListener('online', update);
+      window.removeEventListener('offline', update);
     };
   }, []);
 
