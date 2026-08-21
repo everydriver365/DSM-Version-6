@@ -782,7 +782,12 @@ function SwapRequestList({
       } else {
         const { data: created, error: convError } = await supabase
           .from("instructor_conversations")
-          .insert({ instructor_a_id: user.id, instructor_b_id: otherId } as never)
+          .insert({
+            instructor_a_id: user.id,
+            instructor_b_id: otherId,
+            subject: `Test swap: ${swap.test_centre} on ${swap.current_test_date}`,
+            swap_request_id: swap.id,
+          } as never)
           .select("id")
           .single();
         if (convError || !created) {
