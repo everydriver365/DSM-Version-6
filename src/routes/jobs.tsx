@@ -1237,7 +1237,8 @@ function JobDetailSheet({
         onClick={(e) => e.stopPropagation()}
         style={{
           background: tokens.white, borderTopLeftRadius: 16, borderTopRightRadius: 16,
-          maxHeight: "90vh", display: "flex", flexDirection: "column", ...POPPINS,
+          maxHeight: "90vh", overflowY: "auto", paddingBottom: "calc(32px + env(safe-area-inset-bottom, 0px))",
+          display: "flex", flexDirection: "column", ...POPPINS,
         }}
       >
         <div style={{
