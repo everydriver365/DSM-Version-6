@@ -265,21 +265,21 @@ function MorePage() {
                       width: '100%',
                       background: 'white',
                       border: 'none',
-                      borderRadius: tokens.radiusCard,
-                      padding: '12px 14px',
+                      borderRadius: 14,
+                      padding: '16px 16px',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 12,
+                      gap: 14,
                       cursor: 'pointer',
                       textAlign: 'left',
                       fontFamily: 'Poppins, sans-serif',
-                      boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
+                      boxShadow: '0 1px 3px rgba(15,32,68,0.06)',
                     }}
                   >
                     <div
                       style={{
-                        width: 34,
-                        height: 34,
+                        width: 44,
+                        height: 44,
                         borderRadius: 12,
                         background: '#0F2044',
                         display: 'flex',
@@ -288,19 +288,19 @@ function MorePage() {
                         flexShrink: 0,
                       }}
                     >
-                      <IconPlayerPlay size={18} color="white" />
+                      <IconPlayerPlay size={22} color="white" />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: '#0F2044' }}>Learn</div>
+                        <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.semibold, color: '#0F2044' }}>Learn</div>
                         {LEARN_IS_NEW && (
                           <span
                             style={{
-                              fontSize: 9.5,
+                              fontSize: 10.5,
                               fontWeight: tokens.fontWeight.bold,
                               color: 'white',
                               background: '#1877D6',
-                              padding: '2px 6px',
+                              padding: '3px 9px',
                               borderRadius: 999,
                               letterSpacing: '0.06em',
                               textTransform: 'uppercase',
@@ -310,11 +310,12 @@ function MorePage() {
                           </span>
                         )}
                       </div>
-                      <div style={{ fontSize: 12, color: '#6B7A90', marginTop: 1 }}>
+                      <div style={{ fontSize: 14, color: '#8592A6', marginTop: 2 }}>
                         Quick guides and how-to videos
                       </div>
                     </div>
-                    <IconChevronRight size={18} color="#8592A6" />
+                    <IconChevronRight size={22} color="#8592A6" stroke={2.2} />
+
                   </button>
                 </div>
               )}
