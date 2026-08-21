@@ -815,6 +815,13 @@ function SchedulePage() {
   const [allPupils, setAllPupils] = useState<Array<{ id: string; name: string | null; first_name: string | null; last_name?: string | null; calendar_colour: string | null }>>([]);
   const [allAvailability, setAllAvailability] = useState<any[]>([]);
   const [actionsLesson, setActionsLesson] = useState<any | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const closeActions = () => {
+    setActionsLesson(null);
+    setConfirmDelete(false);
+  };
+
+
   const [eolLesson, setEolLesson] = useState<any | null>(null);
   const [sendMessageOpen, setSendMessageOpen] = useState(false);
   const [sendMessagePupilId, setSendMessagePupilId] = useState<string | undefined>();
@@ -2974,7 +2981,7 @@ function SchedulePage() {
       {/* Lesson actions bottom sheet */}
       {actionsLesson && (
         <div
-          onClick={() => setActionsLesson(null)}
+          onClick={closeActions}
           style={{
             position: "fixed",
             inset: 0,
@@ -3014,7 +3021,7 @@ function SchedulePage() {
               </span>
               <button
                 type="button"
-                onClick={() => setActionsLesson(null)}
+                onClick={closeActions}
                 style={{
                   width: 30,
                   height: 30,
@@ -3036,7 +3043,7 @@ function SchedulePage() {
               <button
                 type="button"
                 onClick={() => {
-                  setActionsLesson(null);
+                  closeActions();
                   setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: actionsLesson.id } }), 0);
                 }}
                 style={{
@@ -3052,7 +3059,7 @@ function SchedulePage() {
               <button
                 type="button"
                 onClick={() => {
-                  setActionsLesson(null);
+                  closeActions();
                   setTimeout(() => navigate({ to: '/lessons/reschedule/$id', params: { id: actionsLesson.id } }), 0);
                 }}
                 style={{
@@ -3068,7 +3075,7 @@ function SchedulePage() {
               <button
                 type="button"
                 onClick={() => {
-                  setActionsLesson(null);
+                  closeActions();
                   setUnifiedPayPupilId(actionsLesson.pupil_id ?? undefined);
                   setUnifiedPayOpen(true);
                 }}
@@ -3085,7 +3092,7 @@ function SchedulePage() {
               <button
                 type="button"
                 onClick={() => {
-                  setActionsLesson(null);
+                  closeActions();
                   const pid = actionsLesson.pupil_id;
                   if (pid) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: pid } }), 0);
                 }}
@@ -3102,7 +3109,7 @@ function SchedulePage() {
               <button
                 type="button"
                 onClick={() => {
-                  setActionsLesson(null);
+                  closeActions();
                   setCancelSheetFor(actionsLesson);
                 }}
                 style={{
@@ -3115,26 +3122,88 @@ function SchedulePage() {
                   Cancel lesson
                 </span>
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setActionsLesson(null);
-                  setDeleteSheetFor(actionsLesson);
-                }}
-                style={{
-                  display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
-                  border: "none", background: "#F8F9FB", cursor: "pointer", textAlign: "left",
-                }}
-              >
-                <IconTrash size={20} color="#CC2229" stroke={1.5} />
-                <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#CC2229" }}>
-                  Delete lesson
-                </span>
-              </button>
+              {confirmDelete ? (
+                <div
+                  style={{
+                    padding: "12px 16px",
+                    background: "#FEE2E2",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 8,
+                    borderRadius: 14,
+                  }}
+                >
+                  <span style={{ fontSize: 13, color: "#CC2229", fontWeight: 600, fontFamily: "Poppins, sans-serif" }}>
+                    Delete this lesson?
+                  </span>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmDelete(false)}
+                      style={{
+                        background: "#fff",
+                        color: "#0B1F3A",
+                        borderRadius: 20,
+                        padding: "6px 14px",
+                        fontSize: 12,
+                        fontWeight: 700,
+                        border: "1px solid #E4E8EF",
+                        cursor: "pointer",
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        // Soft delete — set deleted_at
+                        await supabase
+                          .from("lessons")
+                          .update({ deleted_at: new Date().toISOString() })
+                          .eq("id", actionsLesson.id);
+                        closeActions();
+                        toast.success("Lesson deleted");
+                        // Refresh schedule
+                        setLessonsReloadKey((k) => k + 1);
+                      }}
+                      style={{
+                        background: "#CC2229",
+                        color: "#fff",
+                        borderRadius: 20,
+                        padding: "6px 14px",
+                        fontSize: 12,
+                        fontWeight: 700,
+                        border: "none",
+                        cursor: "pointer",
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setConfirmDelete(true)}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
+                    border: "none", background: "#FEE2E2", cursor: "pointer", textAlign: "left",
+                  }}
+                >
+                  <IconTrash size={20} color="#CC2229" stroke={1.5} />
+                  <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#CC2229" }}>
+                    Delete lesson
+                  </span>
+                </button>
+              )}
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }
