@@ -314,9 +314,13 @@ const testTimeOf = (lesson: any): string | null => {
 function TestLessonCard({
   lesson,
   onClick,
+  onCancel,
+  onDelete,
 }: {
   lesson: Lesson;
   onClick: () => void;
+  onCancel?: () => void;
+  onDelete?: () => void;
 }) {
   // Priority: the lesson's own result, then the pupil's recorded test status.
   const testResult = (() => {
