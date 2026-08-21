@@ -10,7 +10,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, useState, useRef, useCallback, type ReactNode } from "react";
-import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMenu2, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconSearch, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconWifiOff, IconX } from "@tabler/icons-react";
+import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMenu2, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconSearch, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconX } from "@tabler/icons-react";
 import { IconCalculator, IconCalendarPlus, IconHelpCircle, IconListCheck, IconReceipt, IconSettings, IconSignature, IconSparkles, IconSpeakerphone } from "@tabler/icons-react";
 
 import appCss from "../styles.css?url";
@@ -33,6 +33,8 @@ import { EventToastController, emitLiveEvent, type LiveEventKind } from "../comp
 import { MessageAlert } from "../components/dsm/MessageAlert";
 
 import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
+
 
 
 
@@ -524,8 +526,6 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [isOnline, setIsOnline] = useState(true);
-  const [bannerDismissed, setBannerDismissed] = useState(false);
   const active = getActiveNav(router.state.location.pathname);
   const pathname = router.state.location.pathname;
   const hideNavExact = new Set([
@@ -761,20 +761,28 @@ function RootComponent() {
 
 
 
-  // Offline/online state banner.
+  // Offline/online toast notifications.
   useEffect(() => {
-    function update() {
-      const online = navigator.onLine;
-      setIsOnline(online);
-      if (online) setBannerDismissed(false);
+    function handleOffline() {
+      toast.error('No internet connection', {
+        duration: Infinity,
+        id: 'offline-toast',
+        icon: '📡',
+      });
     }
-    // Only show offline if browser explicitly says offline
-    setIsOnline(navigator.onLine);
-    window.addEventListener('online', update);
-    window.addEventListener('offline', update);
+    function handleOnline() {
+      toast.dismiss('offline-toast');
+      toast.success('Back online', {
+        duration: 2000,
+        id: 'online-toast',
+        icon: '✅',
+      });
+    }
+    window.addEventListener('offline', handleOffline);
+    window.addEventListener('online', handleOnline);
     return () => {
-      window.removeEventListener('online', update);
-      window.removeEventListener('offline', update);
+      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('online', handleOnline);
     };
   }, []);
 
@@ -1076,49 +1084,6 @@ function RootComponent() {
       )}
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <div style={Object.keys(wrapperStyle).length ? wrapperStyle : undefined}>
-        {!isOnline && !bannerDismissed && (
-          <div
-            style={{
-              position: "fixed",
-              top: "env(safe-area-inset-top, 0px)",
-              left: 0,
-              right: 0,
-              zIndex: 9999,
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              paddingTop: 8,
-              paddingBottom: 8,
-              paddingLeft: 16,
-              paddingRight: 16,
-              background: "#FEF3C7",
-              color: "#B45309",
-              fontSize: tokens.fontSize.base,
-              fontWeight: tokens.fontWeight.medium,
-              fontFamily: "Poppins, sans-serif",
-              textAlign: "left",
-            }}
-          >
-            <IconWifiOff size={16} stroke={1.8} />
-            <span style={{ flex: 1 }}>No internet connection — some features may be unavailable</span>
-            <button
-              onClick={() => setBannerDismissed(true)}
-              aria-label="Dismiss offline banner"
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                padding: 4,
-                marginLeft: "auto",
-                display: "flex",
-                alignItems: "center",
-                flexShrink: 0,
-              }}
-            >
-              <IconX size={14} color="#fff" stroke={2} />
-            </button>
-          </div>
-        )}
         <Outlet />
       </div>
       {!hideNav && !sheetOpen && <BottomNav active={active} />}
