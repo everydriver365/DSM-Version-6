@@ -94,6 +94,11 @@ function formatCreated(value?: string | null): string {
   return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
+function normalizeTime(value?: string | null): string | null {
+  if (!value) return null;
+  return value.slice(0, 5);
+}
+
 function initials(name?: string | null): string {
   if (!name) return "?";
   return name
