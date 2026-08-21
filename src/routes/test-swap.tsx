@@ -15,7 +15,7 @@ import {
   IconCheck,
   IconSearch,
   IconMessage,
-  IconMessageCircle,
+  
   IconX,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -745,6 +745,101 @@ function SwapRequestList({
   const [moreOpen, setMoreOpen] = useState(false);
   const [tab, setTab] = useState<"all" | "mine" | "matches">("all");
   const [selectedSwap, setSelectedSwap] = useState<any | null>(null);
+  const [swapping, setSwapping] = useState(false);
+
+  /** Register interest in a community swap, open a DM, notify the poster. */
+  async function handleICanSwap() {
+    if (!selectedSwap || swapping) return;
+    const swap = selectedSwap;
+    const otherId = swap.instructor_id as string | undefined;
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user || !otherId || otherId === user.id) return;
+
+    setSwapping(true);
+    try {
+      // 1. Record the expression of interest (table is optional — ignore if absent).
+      await supabase
+        .from("swap_expressions")
+        .insert({
+          swap_request_id: swap.id,
+          instructor_id: user.id,
+          status: "interested",
+        } as never);
+
+      // 2. Reuse an existing instructor conversation or create one.
+      let conversationId: string | null = null;
+      const { data: existing } = await supabase
+        .from("instructor_conversations")
+        .select("id")
+        .or(
+          `and(instructor_a_id.eq.${user.id},instructor_b_id.eq.${otherId}),and(instructor_a_id.eq.${otherId},instructor_b_id.eq.${user.id})`,
+        )
+        .maybeSingle();
+      if (existing) {
+        conversationId = (existing as any).id;
+      } else {
+        const { data: created, error: convError } = await supabase
+          .from("instructor_conversations")
+          .insert({ instructor_a_id: user.id, instructor_b_id: otherId } as never)
+          .select("id")
+          .single();
+        if (convError || !created) {
+          toast.error("Could not register interest");
+          return;
+        }
+        conversationId = (created as any).id;
+      }
+
+      // 3. Send the opening message.
+      const body = `Hi! I saw your test swap request for ${swap.test_centre ?? "your test centre"} on ${formatDate(swap.current_test_date)}. I may be able to help — can we arrange a swap?`;
+      if (conversationId) {
+        await supabase.from("instructor_messages").insert({
+          conversation_id: conversationId,
+          from_instructor_id: user.id,
+          to_instructor_id: otherId,
+          body,
+        } as never);
+        await supabase
+          .from("instructor_conversations")
+          .update({
+            last_message: body,
+            last_message_at: new Date().toISOString(),
+          } as never)
+          .eq("id", conversationId);
+      }
+
+      // 4. Push notification to the poster (best effort).
+      try {
+        await supabase.functions.invoke("send-push", {
+          body: {
+            instructor_id: otherId,
+            title: "🔄 Test swap interest!",
+            body: `An instructor is interested in your ${swap.test_centre ?? "test"} swap — tap to message them`,
+            url: conversationId ? `/messages/instructor/${conversationId}` : "/messages",
+            type: "swap_interest",
+          },
+        });
+      } catch {
+        /* non-fatal */
+      }
+
+      toast.success("Interest registered! Opening messages…");
+      setSelectedSwap(null);
+      if (conversationId) {
+        navigate({
+          to: "/messages/instructor/$conversationId" as never,
+          params: { conversationId } as never,
+        });
+      } else {
+        navigate({ to: "/messages" });
+      }
+    } finally {
+      setSwapping(false);
+    }
+  }
+
 
   const myRequests = rows.filter((r) => r.instructor_id === userId);
 
@@ -1452,95 +1547,97 @@ function SwapRequestList({
                 gap: 8,
               }}
             >
-              {selectedSwap.instructor_phone && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    tapLight();
-                    window.open(`tel:${selectedSwap.instructor_phone}`, "_blank");
-                  }}
-                  style={{
-                    background: "#DCFCE7",
-                    color: "#15803D",
-                    borderRadius: 20,
-                    padding: 13,
-                    fontSize: 14,
-                    fontWeight: 700,
-                    width: "100%",
-                    border: "none",
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    ...POPPINS,
-                  }}
-                >
-                  <IconPhone size={16} stroke={2} />
-                  Call instructor
-                </button>
-              )}
-              {selectedSwap.instructor_phone && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    tapLight();
-                    window.open(
-                      `sms:${selectedSwap.instructor_phone}?body=${encodeURIComponent(
-                        "Hi, I saw your test swap request on DSM. I may be able to help — can we chat?"
-                      )}`,
-                      "_blank"
-                    );
-                  }}
-                  style={{
-                    background: "#EFF6FF",
-                    color: "#1877D6",
-                    borderRadius: 20,
-                    padding: 13,
-                    fontSize: 14,
-                    fontWeight: 700,
-                    width: "100%",
-                    border: "none",
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    ...POPPINS,
-                  }}
-                >
-                  <IconMessage size={16} stroke={2} />
-                  Send a text
-                </button>
-              )}
+              {/* Primary: express interest + open a DM */}
               <button
                 type="button"
+                disabled={swapping}
                 onClick={() => {
                   tapLight();
-                  navigate({ to: "/messages" });
-                  setSelectedSwap(null);
+                  void handleICanSwap();
                 }}
                 style={{
-                  background: "#fff",
-                  border: "1px solid #E4E8EF",
-                  color: "#0B1F3A",
+                  background: "linear-gradient(135deg, #14509E, #0B1F3A)",
+                  color: "#fff",
                   borderRadius: 20,
-                  padding: 13,
+                  padding: 14,
                   fontSize: 14,
-                  fontWeight: 700,
+                  fontWeight: 800,
                   width: "100%",
-                  cursor: "pointer",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
+                  border: "none",
+                  cursor: swapping ? "default" : "pointer",
+                  boxShadow: "0 4px 0 #091628",
+                  opacity: swapping ? 0.6 : 1,
                   ...POPPINS,
                 }}
               >
-                <IconMessageCircle size={16} stroke={2} />
-                Message on DSM
+                {swapping ? "Sending…" : "I can swap this 🔄"}
               </button>
+
+              <div style={{ display: "flex", gap: 8 }}>
+                {selectedSwap.instructor_phone && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      tapLight();
+                      window.open(`tel:${selectedSwap.instructor_phone}`, "_blank");
+                    }}
+                    style={{
+                      flex: 1,
+                      height: 44,
+                      background: "#fff",
+                      color: "#15803D",
+                      border: "1px solid #E4E8EF",
+                      borderRadius: 20,
+                      fontSize: 13,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 6,
+                      ...POPPINS,
+                    }}
+                  >
+                    <IconPhone size={15} stroke={2} />
+                    Call
+                  </button>
+                )}
+                {selectedSwap.instructor_phone && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      tapLight();
+                      window.open(
+                        `sms:${selectedSwap.instructor_phone}?body=${encodeURIComponent(
+                          "Hi, I saw your test swap request on DSM. I may be able to help — can we chat?"
+                        )}`,
+                        "_blank"
+                      );
+                    }}
+                    style={{
+                      flex: 1,
+                      height: 44,
+                      background: "#fff",
+                      color: "#1877D6",
+                      border: "1px solid #E4E8EF",
+                      borderRadius: 20,
+                      fontSize: 13,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 6,
+                      ...POPPINS,
+                    }}
+                  >
+                    <IconMessage size={15} stroke={2} />
+                    Text
+                  </button>
+                )}
+              </div>
             </div>
+
 
             {/* Dismiss button */}
             <button
