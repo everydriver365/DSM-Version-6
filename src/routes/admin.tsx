@@ -2627,7 +2627,7 @@ export function BenefitPartnersSection() {
                       updated[i] = e.target.value;
                       patchPerk({ bullet_points: updated });
                     }}
-                    placeholder={`Point ${i + 1}`}
+                    placeholder="Key benefit or feature"
                     style={{ ...partnerInputStyle, flex: 1 }}
                   />
                   <button
