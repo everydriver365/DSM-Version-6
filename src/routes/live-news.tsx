@@ -483,102 +483,226 @@ function LiveNewsPage() {
     key: "live" | "news" | "podcasts" | "saved",
     label: string,
     count: number,
+    Icon: typeof IconBroadcast,
+    withDivider: boolean,
   ) => {
     const isActive = activeTab === key;
     return (
-      <button
+      <div
         key={key}
-        type="button"
-        onClick={() => goToTab(key)}
         style={{
-          flexShrink: 0,
-          minWidth: 80,
-          padding: "12px 14px",
-          textAlign: "center",
-          cursor: "pointer",
-          border: "none",
-          background: "none",
-          fontFamily: "Poppins, sans-serif",
-          position: "relative",
-          color: isActive ? "#1877D6" : "#6B7686",
-          fontSize: tokens.fontSize.md,
-          fontWeight: isActive ? 700 : 500,
-          letterSpacing: isActive ? "0.01em" : undefined,
-          transition: "color 0.15s ease",
+          flex: 1,
+          minWidth: 0,
+          display: "flex",
+          alignItems: "stretch",
+          borderLeft: withDivider && !isActive ? "1px solid #EDF1F6" : "1px solid transparent",
         }}
       >
-        <span
+        <button
+          type="button"
+          onClick={() => goToTab(key)}
           style={{
-            display: "inline-flex",
+            flex: 1,
+            minWidth: 0,
+            padding: "12px 6px 10px",
+            display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            justifyContent: "center",
             gap: 6,
-            padding: isActive ? "4px 12px" : "4px 0",
+            cursor: "pointer",
+            border: "none",
+            borderRadius: 18,
             background: isActive ? "#EFF6FF" : "transparent",
-            borderRadius: 999,
+            fontFamily: "Poppins, sans-serif",
+            transition: "background 0.15s ease",
           }}
         >
-          {label}
+          <Icon size={26} stroke={1.9} color={isActive ? tokens.blue : "#6B7686"} />
+          {key === "live" && isActive && (
+            <span
+              style={{
+                background: tokens.blue,
+                color: "#fff",
+                fontSize: 10,
+                fontWeight: 800,
+                letterSpacing: "0.06em",
+                borderRadius: 999,
+                padding: "2px 10px",
+              }}
+            >
+              LIVE
+            </span>
+          )}
+          <span
+            style={{
+              fontSize: tokens.fontSize.sm,
+              fontWeight: isActive ? 700 : 600,
+              color: isActive ? tokens.navy : "#3F4A5A",
+            }}
+          >
+            {label}
+          </span>
           <span
             style={{
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              background: isActive ? "#1877D6" : "#E4E8EF",
+              background: isActive ? tokens.blue : "#EEF1F6",
               color: isActive ? "#fff" : "#9CA3AF",
               fontSize: tokens.fontSize.xs,
               fontWeight: tokens.fontWeight.bold,
               borderRadius: 999,
-              padding: "1px 10px",
-              minWidth: 18,
-              transition: "background 0.15s ease, color 0.15s ease",
+              padding: "2px 12px",
+              minWidth: 20,
             }}
           >
             {count}
           </span>
-        </span>
-        {isActive && (
-          <span
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: 32,
-              height: 3,
-              background: tokens.blue,
-              borderRadius: "16px 16px 0 0",
-            }}
-          />
-        )}
-      </button>
+        </button>
+      </div>
     );
   };
 
   return (
-    <DSMTopSheet title="DSM Radio">
-      <div
-        data-tabs="radio"
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+        background: tokens.canvas,
+        overflow: "hidden",
+      }}
+    >
+      <header
         style={{
-          background: "#fff",
-          borderBottom: "1px solid #E4E8EF",
+          flexShrink: 0,
+          position: "relative",
+          overflow: "hidden",
+          background: tokens.navy,
+          borderBottomLeftRadius: 28,
+          borderBottomRightRadius: 28,
+          paddingTop: "calc(max(env(safe-area-inset-top, 0px), 24px) + 14px)",
+          paddingBottom: 34,
+          paddingLeft: tokens.pagePadding,
+          paddingRight: tokens.pagePadding,
           display: "flex",
-          overflowX: "auto",
-          WebkitOverflowScrolling: "touch",
-          scrollbarWidth: "none",
-          padding: "0 8px",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          boxSizing: "border-box",
         }}
       >
-        <style>{`
-          [data-tabs="radio"]::-webkit-scrollbar {
-            display: none;
-          }
-        `}</style>
-        {tabButton("live", "Live", sessions?.length ?? 0)}
-        {tabButton("news", "News", articles?.length ?? 0)}
-        {tabButton("podcasts", "Podcasts", episodes?.length ?? 0)}
-        {tabButton("saved", "Saved", savedEpisodes.length)}
-      </div>
+        {/* decorative waveform */}
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            right: 74,
+            bottom: 18,
+            display: "flex",
+            alignItems: "flex-end",
+            gap: 3,
+            opacity: 0.55,
+            pointerEvents: "none",
+          }}
+        >
+          {[6, 12, 9, 20, 14, 28, 18, 36, 24, 44, 30, 22, 16, 26, 12, 18, 8, 12, 6].map((h, i) => (
+            <span
+              key={i}
+              style={{
+                width: 3,
+                height: h,
+                borderRadius: 2,
+                background: i % 2 === 0 ? "#1877D6" : "rgba(24,119,214,0.5)",
+              }}
+            />
+          ))}
+        </div>
+
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <h1
+            style={{
+              margin: 0,
+              color: tokens.white,
+              fontFamily: "Sora, sans-serif",
+              fontSize: tokens.fontSize.xxl,
+              lineHeight: "40px",
+              fontWeight: tokens.fontWeight.bold,
+            }}
+          >
+            DSM Radio
+          </h1>
+          <div
+            style={{
+              marginTop: 2,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              color: "rgba(255,255,255,0.72)",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: tokens.fontSize.sm,
+              fontWeight: 500,
+            }}
+          >
+            Your drive. Your radio.
+            <IconBroadcast size={16} stroke={2} color={tokens.blue} />
+          </div>
+        </div>
+
+        <button
+          type="button"
+          aria-label="Notifications"
+          onClick={() => {
+            if (typeof window !== "undefined") window.location.href = "/notifications";
+          }}
+          style={{
+            position: "relative",
+            zIndex: 1,
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            border: 0,
+            padding: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(255,255,255,0.1)",
+            cursor: "pointer",
+            flexShrink: 0,
+          }}
+        >
+          <IconBell size={20} color={tokens.white} stroke={1.8} />
+        </button>
+      </header>
+
+      <div
+        className="page-enter"
+        style={{
+          flex: 1,
+          minHeight: 0,
+          overflowY: "auto",
+          overflowX: "hidden",
+          background: tokens.canvas,
+        }}
+      >
+        <div
+          style={{
+            margin: "-22px 12px 0",
+            background: "#fff",
+            borderRadius: 24,
+            boxShadow: "0 12px 30px -14px rgba(11,31,58,0.28)",
+            padding: 8,
+            display: "flex",
+            alignItems: "stretch",
+            position: "relative",
+            zIndex: 2,
+          }}
+        >
+          {tabButton("live", "Live", sessions?.length ?? 0, IconBroadcast, false)}
+          {tabButton("news", "News", articles?.length ?? 0, IconNews, true)}
+          {tabButton("podcasts", "Podcasts", episodes?.length ?? 0, IconMicrophone, true)}
+          {tabButton("saved", "Saved", savedEpisodes.length, IconBookmark, true)}
+        </div>
 
       <div
         style={{
@@ -589,6 +713,7 @@ function LiveNewsPage() {
           gap: 24,
         }}
       >
+
         {activeTab === "live" && (
           <section>
             {sessions === null ? (
