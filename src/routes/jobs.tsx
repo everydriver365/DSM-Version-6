@@ -62,6 +62,7 @@ interface JobOffer {
   preferred_days: string[] | null;
   offered_rate: number | null;
   postcode_area: string | null;
+  enquiry_id?: string | null;
   centre_lat: number | null;
   centre_lng: number | null;
   status: string;
