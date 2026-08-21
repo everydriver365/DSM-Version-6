@@ -342,7 +342,7 @@ function TestLessonCard({
   })();
   const navigate = useNavigate({ from: Route.fullPath });
   const [panelOpen, setPanelOpen] = useState(false);
-  const [actionsOpen, setActionsOpen] = useState(false);
+  const [testActionsOpen, setTestActionsOpen] = useState(false);
   const goNavigate = () => {
     void navigate({
       to: "/lessons/$id",
