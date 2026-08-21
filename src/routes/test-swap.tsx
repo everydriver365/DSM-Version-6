@@ -804,11 +804,6 @@ function SwapRequestList({
     setFilterCentreResults([]);
   }
 
-  const transmissionOptions: { value: "any" | "manual" | "automatic"; label: string }[] = [
-    { value: "any", label: "Any" },
-    { value: "manual", label: "Manual" },
-    { value: "automatic", label: "Automatic" },
-  ];
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
