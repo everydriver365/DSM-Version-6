@@ -92,9 +92,30 @@ function TestSwapPage() {
 
   async function load() {
     setLoading(true);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      setRows([]);
+      setLoading(false);
+      return;
+    }
+    // The swap board is shared across instructors and has no owner column,
+    // so scope to this instructor's own pupils by name (same as the home tile).
+    const { data: myPupils } = await supabase
+      .from("pupils")
+      .select("name")
+      .eq("instructor_id", user.id);
+    const names = (myPupils ?? []).map((p: { name: string | null }) => p.name).filter(Boolean) as string[];
+    if (names.length === 0) {
+      setRows([]);
+      setLoading(false);
+      return;
+    }
     const { data, error } = await supabase
       .from("test_swap_requests")
       .select("*")
+      .in("name", names)
       .order("created_at", { ascending: false });
     if (error) {
       toast.error("Could not load swap requests");
@@ -104,6 +125,7 @@ function TestSwapPage() {
     }
     setLoading(false);
   }
+
 
   useEffect(() => {
     load();
