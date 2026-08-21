@@ -12,7 +12,8 @@ import {
 import { useNavigate } from "@tanstack/react-router";
 import dsmLogoWhite from "@/assets/dsm-logo-white.png.asset.json";
 
-export const TOP_BAR_SPACER = "calc(max(env(safe-area-inset-top, 0px), 24px) + 64px)";
+/* Real rendered bar height: top padding (safe area + 12) + 48px logo + 16px bottom padding. */
+export const TOP_BAR_SPACER = "calc(max(env(safe-area-inset-top, 0px), 24px) + 76px)";
 
 export type InstructorTopBarProps = {
   firstName: string;
