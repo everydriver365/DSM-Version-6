@@ -322,13 +322,12 @@ function JobCard({
             ? `Job accepted · ${job.claimed_at ? relTime(job.claimed_at) : "—"}`
             : `Job offer · Posted ${relTime(job.created_at)}`}
         </div>
-        {worth != null && (
+        {!isClaimed && worth != null && (
           <div
             style={{
-              background: isClaimed ? (worth > 0 ? "#DCFCE7" : "#EEF1F5") : "#DCE8FA",
+              background: "#DCE8FA",
               borderRadius: 12,
               padding: "8px 14px",
-              marginRight: isClaimed ? 44 : 0,
               fontSize: tokens.fontSize.xl,
               fontWeight: tokens.fontWeight.extrabold,
               color: NAVY,
