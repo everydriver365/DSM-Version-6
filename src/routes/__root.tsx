@@ -1076,11 +1076,19 @@ function RootComponent() {
         {!isOnline && (
           <div
             style={{
+              position: "fixed",
+              top: "env(safe-area-inset-top, 0px)",
+              left: 0,
+              right: 0,
+              zIndex: 9999,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
-              padding: "10px 16px",
+              paddingTop: 8,
+              paddingBottom: 8,
+              paddingLeft: 16,
+              paddingRight: 16,
               background: "#FEF3C7",
               color: "#B45309",
               fontSize: tokens.fontSize.base,
