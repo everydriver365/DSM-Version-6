@@ -1437,6 +1437,10 @@ function LiveNewsPage() {
                     progressEntry={progress[ep.id]}
                     isSaved
                     onToggleSave={() => toggleSave(ep)}
+                    currentTime={currentTime}
+                    duration={duration}
+                    onSeek={seekTo}
+                    onRestart={() => playEpisode(ep, { restart: true })}
                   />
                 ))}
               </div>
