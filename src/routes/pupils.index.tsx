@@ -1315,24 +1315,51 @@ function PupilsIndexPage() {
               <>
                 <div
                   style={{
-                    fontSize: 12,
-                    fontWeight: tokens.fontWeight.bold,
-                    color: '#FF3B30',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
-                    padding: '16px 16px 6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '14px 16px 8px',
                     fontFamily: 'Poppins, sans-serif',
                   }}
                 >
-                  Needs Attention
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                    <IconAlertTriangleFilled size={20} color={tokens.red} />
+                    <span
+                      style={{
+                        fontSize: 13,
+                        fontWeight: tokens.fontWeight.bold,
+                        color: tokens.navy,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.6px',
+                      }}
+                    >
+                      Needs attention
+                    </span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => { tapLight(); setSortBy("balance"); }}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      padding: 0,
+                      fontSize: 14,
+                      fontWeight: tokens.fontWeight.semibold,
+                      color: tokens.blue,
+                      fontFamily: 'Poppins, sans-serif',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    View all
+                  </button>
                 </div>
-                <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {needsAttention.map((p) =>
                     renderSwipeRow(p, {
                       background: '#fff',
-                      borderRadius: tokens.radiusCard,
-                      boxShadow: '0 3px 0 #F7C9C6, 0 8px 18px rgba(255,59,48,0.1)',
-                      border: '1.5px solid #FDEDEC',
+                      borderRadius: 16,
+                      boxShadow: '0 2px 10px rgba(11,31,58,0.07)',
+                      borderLeft: `5px solid ${testDateMap[p.id] && !((balanceMap[p.id] || 0) > 0) ? '#F59E0B' : tokens.red}`,
                     })
                   )}
                 </div>
@@ -1341,28 +1368,29 @@ function PupilsIndexPage() {
             {statusFilter === "active" && (
               <div
                 style={{
-                  fontSize: 12,
+                  fontSize: 13,
                   fontWeight: tokens.fontWeight.bold,
-                  color: '#8A8A8E',
+                  color: '#8A94A6',
                   textTransform: 'uppercase',
-                  letterSpacing: '0.5px',
-                  padding: '16px 16px 6px',
+                  letterSpacing: '0.6px',
+                  padding: '18px 16px 8px',
                   fontFamily: 'Poppins, sans-serif',
                 }}
               >
-                Active · {activePupils.length}
+                Active pupils ({activePupils.length})
               </div>
             )}
-            <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
               {(statusFilter === "active" ? activePupils : filtered).map((p) =>
                 renderSwipeRow(p, {
-                  background: '#fff',
-                  borderRadius: tokens.radiusCard,
-                  boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
+                  background: '#FAFBFC',
+                  borderRadius: 16,
+                  boxShadow: '0 1px 3px rgba(11,31,58,0.05)',
                   transition: 'transform 0.1s ease, opacity 0.1s ease',
                 })
               )}
             </div>
+
           </>
         )}
       </div>
