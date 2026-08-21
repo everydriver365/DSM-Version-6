@@ -3027,6 +3027,45 @@ function EntryRow({
   if (entry.kind === "block") {
     const c = getBlockColour(entry.title);
     const accent = resolveEventColour(entry.colour, c.border);
+    if (entry.allDay) {
+      return (
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: 16,
+            border: "2px solid #1877D6",
+            padding: "14px 16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 8,
+            ...POPPINS,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+            <span style={{ fontSize: 14 }} aria-hidden>{c.icon}</span>
+            <div style={{ fontSize: tokens.fontSize.base, color: "#0B1F3A", fontWeight: tokens.fontWeight.medium, flex: 1, minWidth: 0 }}>
+              {entry.title}
+            </div>
+          </div>
+          <span
+            style={{
+              background: "#EFF6FF",
+              color: "#1877D6",
+              fontSize: 9,
+              fontWeight: 800,
+              borderRadius: 20,
+              padding: "3px 8px",
+              letterSpacing: "0.08em",
+              fontFamily: "Poppins, sans-serif",
+              flexShrink: 0,
+            }}
+          >
+            ALL DAY
+          </span>
+        </div>
+      );
+    }
     return (
       <div
         style={{
