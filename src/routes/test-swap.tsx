@@ -767,7 +767,6 @@ function SwapRequestList({
   const [tab, setTab] = useState<"all" | "mine" | "matches">("all");
 
   const myRequests = rows.filter((r) => r.instructor_id === userId);
-  const communityRequests = rows.filter((r) => r.instructor_id !== userId);
 
   const filtered = rows.filter((r) => {
     if (filterCentre && !r.test_centre?.toLowerCase().includes(filterCentre.toLowerCase())) return false;
