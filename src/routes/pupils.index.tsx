@@ -4,7 +4,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
-import { IconBell, IconArrowsUpDown, IconChevronRight, IconDotsVertical, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
+import { IconAlertTriangleFilled, IconBell, IconArrowsUpDown, IconCalendar, IconChevronRight, IconCirclePlus, IconDotsVertical, IconMessageCircle, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { tapLight, tapMedium, tapHeavy, hapticSuccess } from "@/lib/haptics";
