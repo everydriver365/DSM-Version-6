@@ -759,7 +759,7 @@ function SwapRequestList({
   const [filterDate, setFilterDate] = useState("");
   const [filterTimeFrom, setFilterTimeFrom] = useState("");
   const [filterTimeTo, setFilterTimeTo] = useState("");
-  const [filterTransmission, setFilterTransmission] = useState<"any" | "manual" | "automatic">("any");
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
 
   const myRequests = rows.filter((r) => r.instructor_id === userId);
   const communityRequests = rows.filter((r) => r.instructor_id !== userId);
@@ -770,12 +770,11 @@ function SwapRequestList({
     const rTime = normalizeTime(r.current_test_time);
     if (filterTimeFrom && rTime && rTime < filterTimeFrom) return false;
     if (filterTimeTo && rTime && rTime > filterTimeTo) return false;
-    if (filterTransmission !== "any" && r.transmission && r.transmission !== filterTransmission) return false;
     return true;
   });
 
-  const hasActiveFilters =
-    filterCentre || filterDate || filterTimeFrom || filterTimeTo || filterTransmission !== "any";
+  const activeFilterCount = [filterCentre, filterDate, filterTimeFrom, filterTimeTo].filter(Boolean).length;
+  const hasActiveFilters = activeFilterCount > 0;
 
   function clearFilters() {
     setFilterCentre("");
@@ -783,7 +782,6 @@ function SwapRequestList({
     setFilterDate("");
     setFilterTimeFrom("");
     setFilterTimeTo("");
-    setFilterTransmission("any");
   }
 
   async function handleCentreSearch(e: React.ChangeEvent<HTMLInputElement>) {
