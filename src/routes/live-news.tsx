@@ -558,6 +558,7 @@ function LiveNewsPage() {
   return (
     <DSMTopSheet title="DSM Radio">
       <div
+        data-tabs="radio"
         style={{
           background: "#fff",
           borderBottom: "1px solid #E4E8EF",
@@ -569,7 +570,7 @@ function LiveNewsPage() {
         }}
       >
         <style>{`
-          div::-webkit-scrollbar {
+          [data-tabs="radio"]::-webkit-scrollbar {
             display: none;
           }
         `}</style>
