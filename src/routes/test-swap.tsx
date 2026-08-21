@@ -55,6 +55,9 @@ type SwapRequest = {
   status: string | null;
   notes?: string | null;
   created_at: string | null;
+  instructor_id?: string | null;
+  instructor_name?: string | null;
+  instructor_phone?: string | null;
 };
 
 type PupilRow = { id: string | number; name: string | null };
