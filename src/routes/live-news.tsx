@@ -486,7 +486,7 @@ function LiveNewsPage() {
     Icon: typeof IconBroadcast,
     withDivider: boolean,
   ) => {
-    const isActive = activeTab === key;
+    const isActive = (tab ?? "live") === key;
     return (
       <div
         key={key}
