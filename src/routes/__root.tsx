@@ -1115,7 +1115,7 @@ function RootComponent() {
                 flexShrink: 0,
               }}
             >
-              <IconX size={14} color="#B45309" stroke={2} />
+              <IconX size={14} color="#fff" stroke={2} />
             </button>
           </div>
         )}
