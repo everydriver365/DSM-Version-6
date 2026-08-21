@@ -1269,20 +1269,45 @@ function TestSwapPage() {
     setUserId(user?.id ?? null);
     const { data, error } = await supabase
       .from("test_swap_requests")
-      .select(
-        "*, instructor:instructors!instructor_id(name, phone)"
-      )
+      .select("*")
       .order("created_at", { ascending: false });
     if (error) {
       toast.error("Could not load swap requests");
       setRows([]);
     } else {
+      const swapRows = (data ?? []) as SwapRequest[];
+      const instructorIds = Array.from(
+        new Set(
+          swapRows
+            .map((row) => row.instructor_id)
+            .filter((id): id is string => Boolean(id))
+        )
+      );
+      const contactsById = new Map<string, { name: string | null; phone: string | null }>();
+
+      if (instructorIds.length > 0) {
+        const { data: instructors } = await supabase
+          .from("instructors")
+          .select("id, name, phone")
+          .in("id", instructorIds);
+
+        for (const instructor of instructors ?? []) {
+          contactsById.set(String(instructor.id), {
+            name: instructor.name ?? null,
+            phone: instructor.phone ?? null,
+          });
+        }
+      }
+
       setRows(
-        ((data ?? []) as unknown[]).map((r: any) => ({
-          ...r,
-          instructor_name: r.instructor?.name ?? null,
-          instructor_phone: r.instructor?.phone ?? null,
-        })) as SwapRequest[]
+        swapRows.map((row) => {
+          const contact = row.instructor_id ? contactsById.get(row.instructor_id) : undefined;
+          return {
+            ...row,
+            instructor_name: contact?.name ?? null,
+            instructor_phone: contact?.phone ?? null,
+          };
+        })
       );
     }
     setLoading(false);
