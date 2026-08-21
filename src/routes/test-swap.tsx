@@ -611,6 +611,8 @@ function TestSwapPage() {
   const [userId, setUserId] = useState<string | null>("me");
 
   async function load() {
+    // Temporary: keep mock data for visual verification
+    return;
     setLoading(true);
     const {
       data: { user },
