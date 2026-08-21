@@ -398,9 +398,32 @@ function JobCard({
           ))}
       </div>
 
+      {isClaimed && badge && (
+        <div style={{ marginTop: 12, display: "flex" }}>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: badge.bg,
+              color: badge.color,
+              borderRadius: 12,
+              padding: "8px 14px",
+              fontSize: tokens.fontSize.lg,
+              fontWeight: tokens.fontWeight.bold,
+              ...POPPINS,
+            }}
+          >
+            <span style={{ width: 8, height: 8, borderRadius: 999, background: badge.color }} />
+            {sentenceCase(badge.label)}
+          </span>
+        </div>
+      )}
+
       <div style={{ height: 1, background: "#E3E9F1", margin: "16px 0" }} />
 
       {/* Fit + start + duration */}
+      {!isClaimed && (
       <div style={{ display: "flex", alignItems: "stretch", gap: 12 }}>
         {badge && (
           <div
@@ -416,11 +439,7 @@ function JobCard({
               ...POPPINS,
             }}
           >
-            {variant === "claimed" ? (
-              <IconCircleCheck size={24} stroke={2} color={badge.color} />
-            ) : (
-              <IconCircleCheck size={24} stroke={2} color={badge.color} />
-            )}
+            <IconCircleCheck size={24} stroke={2} color={badge.color} />
             <div style={{ minWidth: 0 }}>
               <div
                 style={{
@@ -437,6 +456,7 @@ function JobCard({
             </div>
           </div>
         )}
+
 
         {startDate && (
           <div
