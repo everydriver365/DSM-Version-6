@@ -193,6 +193,41 @@ function LiveNewsPage() {
     [navigate],
   );
 
+  // ---- swipe between tabs (mobile) ----
+  const swipeRef = useRef<{ x: number; y: number; active: boolean } | null>(null);
+  const onSwipeStart = useCallback((e: React.TouchEvent) => {
+    const t = e.touches[0];
+    if (!t || e.touches.length > 1) {
+      swipeRef.current = null;
+      return;
+    }
+    swipeRef.current = { x: t.clientX, y: t.clientY, active: true };
+  }, []);
+  const onSwipeMove = useCallback((e: React.TouchEvent) => {
+    const s = swipeRef.current;
+    const t = e.touches[0];
+    if (!s || !t) return;
+    // Cancel once the gesture reads as a vertical scroll.
+    if (Math.abs(t.clientY - s.y) > Math.abs(t.clientX - s.x)) s.active = false;
+  }, []);
+  const onSwipeEnd = useCallback(
+    (e: React.TouchEvent) => {
+      const s = swipeRef.current;
+      swipeRef.current = null;
+      const t = e.changedTouches[0];
+      if (!s || !s.active || !t) return;
+      const dx = t.clientX - s.x;
+      const dy = t.clientY - s.y;
+      if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+      const order: Array<"live" | "news" | "podcasts" | "saved"> = ["live", "news", "podcasts", "saved"];
+      const idx = order.indexOf(activeTab);
+      const next = order[dx < 0 ? idx + 1 : idx - 1];
+      if (next) goToTab(next);
+    },
+    [activeTab, goToTab],
+  );
+
+
   useEffect(() => {
     if (tab && tab !== activeTab) {
       setActiveTab(tab);
