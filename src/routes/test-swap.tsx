@@ -103,6 +103,445 @@ function initials(name?: string | null): string {
     .join("");
 }
 
+function SectionHeader({ title, count }: { title: string; count: number }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        ...POPPINS,
+      }}
+    >
+      <h2
+        style={{
+          margin: 0,
+          color: tokens.navy,
+          fontSize: 16,
+          fontWeight: tokens.fontWeight.bold,
+          ...SORA,
+        }}
+      >
+        {title}
+      </h2>
+      <span
+        style={{
+          color: tokens.textSecondary,
+          fontSize: 13,
+          fontWeight: tokens.fontWeight.medium,
+        }}
+      >
+        {count}
+      </span>
+    </div>
+  );
+}
+
+function SwapCard({
+  request: r,
+  mode,
+  onRefresh,
+}: {
+  request: SwapRequest;
+  mode: "mine" | "community";
+  onRefresh: () => void;
+}) {
+  async function handleDelete() {
+    const { error } = await supabase.from("test_swap_requests").delete().eq("id", r.id);
+    if (error) {
+      toast.error(error.message || "Could not delete request");
+    } else {
+      toast.success("Request deleted");
+    }
+    onRefresh();
+  }
+
+  async function handleMarkMatched() {
+    const { error } = await supabase
+      .from("test_swap_requests")
+      .update({ status: "matched" })
+      .eq("id", r.id);
+    if (error) {
+      toast.error(error.message || "Could not mark matched");
+    } else {
+      toast.success("Marked as matched");
+    }
+    onRefresh();
+  }
+
+  function handleContact() {
+    if (r.instructor_phone) {
+      window.open(`tel:${r.instructor_phone}`, "_blank");
+    }
+  }
+
+  const isPending = (r.status ?? "pending").toLowerCase() === "pending";
+
+  return (
+    <div
+      style={{
+        background: "#fff",
+        borderRadius: tokens.radiusCard,
+        boxShadow: "0 1px 4px rgba(11,31,58,0.08)",
+        padding: 16,
+      }}
+    >
+      {/* Header row */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          marginBottom: 16,
+        }}
+      >
+        <div
+          style={{
+            width: 42,
+            height: 42,
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "#E6F1FB",
+            color: tokens.blue,
+            fontSize: 15,
+            fontWeight: tokens.fontWeight.bold,
+            ...SORA,
+            flexShrink: 0,
+          }}
+        >
+          {initials(r.name)}
+        </div>
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            color: tokens.navy,
+            fontSize: 16,
+            fontWeight: tokens.fontWeight.bold,
+            ...SORA,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {r.name || "Pupil"}
+        </div>
+        <DSMPill variant={statusVariant(r.status)}>
+          <IconHourglass size={12} stroke={2.5} />
+          {(r.status ?? "pending").toUpperCase()}
+        </DSMPill>
+        <IconChevronRight size={20} color={tokens.textMuted} stroke={1.8} />
+      </div>
+
+      {/* Two-column swap card */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 10,
+          position: "relative",
+          alignItems: "stretch",
+        }}
+      >
+        {/* Current test */}
+        <div
+          style={{
+            background: "#F5F9FF",
+            borderRadius: 14,
+            padding: 14,
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 8,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "#E6F1FB",
+                color: tokens.blue,
+              }}
+            >
+              <IconCalendar size={16} stroke={2} />
+            </div>
+            <span
+              style={{
+                color: tokens.blue,
+                fontSize: 13,
+                fontWeight: tokens.fontWeight.bold,
+                ...POPPINS,
+              }}
+            >
+              Current test
+            </span>
+          </div>
+          <div
+            style={{
+              color: tokens.navy,
+              fontSize: 18,
+              fontWeight: tokens.fontWeight.bold,
+              lineHeight: 1.25,
+              ...SORA,
+            }}
+          >
+            {formatDate(r.current_test_date)}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              color: tokens.textSecondary,
+              fontSize: 13,
+              ...POPPINS,
+            }}
+          >
+            <IconClock size={14} stroke={2} color={tokens.blue} />
+            {r.current_test_time ? String(r.current_test_time).slice(0, 5) : "No time"}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 6,
+              marginTop: "auto",
+              paddingTop: 10,
+              borderTop: "1px solid rgba(24,119,214,0.12)",
+              color: tokens.textSecondary,
+              fontSize: 13,
+              ...POPPINS,
+            }}
+          >
+            <IconMapPin
+              size={14}
+              stroke={2}
+              color={tokens.blue}
+              style={{ flexShrink: 0, marginTop: 2 }}
+            />
+            <span style={{ lineHeight: 1.35 }}>{r.test_centre || "No test centre"}</span>
+          </div>
+        </div>
+
+        {/* Swap icon */}
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 2,
+            width: 36,
+            height: 36,
+            borderRadius: "50%",
+            background: "#fff",
+            boxShadow: "0 2px 8px rgba(11,31,58,0.12)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: tokens.blue,
+          }}
+        >
+          <IconArrowsLeftRight size={18} stroke={2} />
+        </div>
+
+        {/* Wants */}
+        <div
+          style={{
+            background: "#F7F5FF",
+            borderRadius: 14,
+            padding: 14,
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 8,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "#EDE9FE",
+                color: tokens.purple,
+              }}
+            >
+              <IconCalendar size={16} stroke={2} />
+            </div>
+            <span
+              style={{
+                color: tokens.purple,
+                fontSize: 13,
+                fontWeight: tokens.fontWeight.bold,
+                ...POPPINS,
+              }}
+            >
+              Wants
+            </span>
+          </div>
+          <div
+            style={{
+              color: tokens.navy,
+              fontSize: 18,
+              fontWeight: tokens.fontWeight.bold,
+              lineHeight: 1.25,
+              ...SORA,
+            }}
+          >
+            Any day, any time
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 6,
+              marginTop: "auto",
+              paddingTop: 10,
+              borderTop: "1px solid rgba(124,58,237,0.12)",
+              color: tokens.textSecondary,
+              fontSize: 13,
+              ...POPPINS,
+            }}
+          >
+            <IconMapPin
+              size={14}
+              stroke={2}
+              color={tokens.purple}
+              style={{ flexShrink: 0, marginTop: 2 }}
+            />
+            <span style={{ lineHeight: 1.35 }}>Anywhere</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Community posted-by row */}
+      {mode === "community" && r.instructor_name && (
+        <div
+          style={{
+            marginTop: 14,
+            paddingTop: 12,
+            borderTop: "1px solid #E4E8EF",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 10,
+            ...POPPINS,
+          }}
+        >
+          <span style={{ color: tokens.textSecondary, fontSize: 13 }}>
+            Posted by: {r.instructor_name}
+          </span>
+          {r.instructor_phone && (
+            <button
+              type="button"
+              onClick={() => {
+                tapLight();
+                handleContact();
+              }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+                background: "#E6F1FB",
+                color: tokens.blue,
+                border: "none",
+                borderRadius: 999,
+                padding: "6px 12px",
+                fontSize: 12,
+                fontWeight: tokens.fontWeight.bold,
+                cursor: "pointer",
+                ...POPPINS,
+              }}
+            >
+              <IconPhone size={13} stroke={2} />
+              Contact
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Footer: created date + my request actions */}
+      <div
+        style={{
+          marginTop: 14,
+          paddingTop: 12,
+          borderTop: mode === "community" && r.instructor_name ? "none" : "1px solid #E4E8EF",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 10,
+          ...POPPINS,
+        }}
+      >
+        <span style={{ color: "#8A93A3", fontSize: 12 }}>
+          Created {formatCreated(r.created_at)}
+        </span>
+        {mode === "mine" && (
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {isPending && (
+              <button
+                type="button"
+                onClick={() => {
+                  tapLight();
+                  handleMarkMatched();
+                }}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  background: "#DCFCE7",
+                  color: tokens.green,
+                  border: "none",
+                  borderRadius: 999,
+                  padding: "6px 12px",
+                  fontSize: 12,
+                  fontWeight: tokens.fontWeight.bold,
+                  cursor: "pointer",
+                  ...POPPINS,
+                }}
+              >
+                <IconCheck size={13} stroke={2} />
+                Mark matched
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                tapLight();
+                handleDelete();
+              }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 32,
+                height: 32,
+                background: "#FEE2E2",
+                color: tokens.red,
+                border: "none",
+                borderRadius: "50%",
+                cursor: "pointer",
+              }}
+              aria-label="Delete request"
+            >
+              <IconTrash size={16} stroke={2} />
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function TestSwapPage() {
   const navigate = useNavigate();
   const [rows, setRows] = useState<SwapRequest[]>([]);
