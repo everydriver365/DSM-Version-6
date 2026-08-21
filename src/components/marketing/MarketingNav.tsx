@@ -133,6 +133,7 @@ export function MarketingNav() {
           </Link>
           <Link
             to="/login"
+            className="ed-nav-signin"
             style={{
               background: "#fff",
               color: ACCENT,
@@ -148,11 +149,31 @@ export function MarketingNav() {
           </Link>
         </div>
 
+        <Link
+          to="/login"
+          className="ed-nav-signin-mobile"
+          style={{
+            display: "none",
+            background: "#fff",
+            color: ACCENT,
+            textDecoration: "none",
+            fontSize: tokens.fontSize.md,
+            fontWeight: tokens.fontWeight.bold,
+            padding: "10px 16px",
+            borderRadius: 8,
+            border: `1.5px solid ${ACCENT}`,
+            lineHeight: 1,
+            marginRight: 8,
+          }}
+        >
+          Sign in
+        </Link>
+
         <button
           aria-label="Menu"
           onClick={() => setOpen((v) => !v)}
           className="ed-nav-burger"
-          style={{ display: "none", background: "transparent", border: 0, cursor: "pointer", color: NAVY }}
+          style={{ display: "none", background: "transparent", border: 0, cursor: "pointer", color: NAVY, marginLeft: 0 }}
         >
           {open ? <IconX size={24} /> : <IconMenu2 size={24} />}
         </button>
@@ -289,10 +310,15 @@ export function MarketingNav() {
         .ed-mega-item:hover .ed-mega-icon { background: ${ACCENT}; color: #fff !important; }
         .ed-mega-list-item:hover { color: ${ACCENT} !important; }
         @media (max-width: 1024px) {
-          .ed-nav-center, .ed-nav-actions { display: none !important; }
+          .ed-nav-center { display: none !important; }
+          .ed-nav-actions { display: none !important; }
           .ed-nav-burger { display: inline-flex !important; }
+          .ed-nav-signin-mobile { display: inline-flex !important; }
           .ed-nav-mobile { display: block !important; }
           .ed-nav-inner { padding: 0 20px !important; height: 64px !important; }
+        }
+        @media (max-width: 480px) {
+          .ed-nav-signin-mobile { padding: 8px 12px !important; font-size: 14px !important; }
         }
       `}</style>
     </header>
