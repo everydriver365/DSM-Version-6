@@ -915,7 +915,8 @@ function PupilsIndexPage() {
           }}
           style={{
             position: "relative",
-            background: "#fff",
+            background: (cardStyle.background as string) ?? "#fff",
+
             transform: swiped ? "translateX(-144px)" : "translateX(0)",
             transition: "transform 0.2s ease",
           }}
