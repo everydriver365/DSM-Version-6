@@ -1209,10 +1209,7 @@ function SchedulePage() {
       const key = b.start_datetime.substring(0, 10);
       const start = new Date(b.start_datetime);
       const end = new Date(b.end_datetime);
-      const isAllDay =
-        b.is_all_day === true ||
-        b.start_datetime.endsWith("T00:00:00") ||
-        (start.getHours() === 0 && start.getMinutes() === 0 && end.getHours() === 0 && end.getMinutes() === 0);
+      const isAllDay = b.is_all_day === true || spansWholeDay(start, end);
       const arr = map.get(key) ?? [];
       arr.push({
         kind: "block",
