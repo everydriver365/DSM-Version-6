@@ -445,7 +445,7 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
               Standards Check Risk
             </div>
             <div style={{ color: "#7C8BA3", fontSize: 12, marginTop: 3, ...POPPINS }}>
-              Last 12 months · completed tests only
+              Last 12 months ·
             </div>
           </div>
         </div>
