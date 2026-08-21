@@ -813,14 +813,46 @@ function SwapRequestList({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      {myRequests.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <SectionHeader title="My requests" count={myRequests.length} />
-          {myRequests.map((r) => (
-            <SwapCard key={String(r.id)} request={r} mode="mine" onRefresh={onRefresh} />
-          ))}
+      {/* My requests */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <span
+            style={{
+              color: "#9CA3AF",
+              fontSize: 11,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              ...POPPINS,
+            }}
+          >
+            MY SWAP REQUESTS
+          </span>
+          <span style={{ color: "#1877D6", fontSize: 11, ...POPPINS }}>
+            {myRequests.length} active
+          </span>
         </div>
-      )}
+
+        {myRequests.length === 0 ? (
+          <div style={{ padding: 16, textAlign: "center" }}>
+            <div style={{ color: "#9CA3AF", fontSize: 13, ...POPPINS }}>
+              No active swap requests
+            </div>
+            <div style={{ color: "#9CA3AF", fontSize: 13, marginTop: 4, ...POPPINS }}>
+              Post a request to find a swap
+            </div>
+          </div>
+        ) : (
+          myRequests.map((r) => (
+            <MyRequestCard key={String(r.id)} request={r} onRefresh={onRefresh} />
+          ))
+        )}
+      </div>
       {communityRequests.length > 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <SectionHeader title="Community requests" count={filtered.length} />
