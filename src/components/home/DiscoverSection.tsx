@@ -12,7 +12,6 @@ import {
   IconBroadcast,
   IconBook,
   IconShoppingBag,
-  IconNews,
   IconBrowser,
   IconCar,
   IconTool,
@@ -1006,7 +1005,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           }}
         >
           <div>
-            <span style={{ ...chipBase, background: "#fff", color: BLUE, boxShadow: "0 1px 2px rgba(11,31,58,0.06)" }}>
+            <span style={{ ...chipBase, width: 40, height: 40, borderRadius: 14, background: "#fff", color: BLUE, boxShadow: "0 2px 10px -2px rgba(11,31,58,0.14)" }}>
               <IconRosetteDiscount size={20} color={BLUE} stroke={1.6} />
             </span>
             <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 10 }}>Perks</div>
@@ -1105,35 +1104,104 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             gridColumn: 2,
             gridRow: 1,
             height: 116,
-            background: "linear-gradient(160deg, #FAFDFB 0%, #F0FDF4 100%)",
-            borderColor: "#E8F9ED",
+            justifyContent: "center",
+            background: "linear-gradient(135deg, #F4FBF6 0%, #FBFEFC 60%, #FFFFFF 100%)",
+            borderColor: "#E4F4E9",
           }}
         >
+          {/* decorative book stack */}
+          <div
+            aria-hidden
+            style={{
+              position: "absolute",
+              right: -10,
+              bottom: -6,
+              width: 96,
+              height: 96,
+              opacity: 0.5,
+              pointerEvents: "none",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                right: 14,
+                bottom: 18,
+                width: 74,
+                height: 20,
+                borderRadius: 6,
+                background: "#EDF3EF",
+                transform: "rotate(-6deg)",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                right: 20,
+                bottom: 32,
+                width: 68,
+                height: 20,
+                borderRadius: 6,
+                background: "#DCEFE3",
+                transform: "rotate(-6deg)",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                right: 26,
+                bottom: 46,
+                width: 62,
+                height: 22,
+                borderRadius: 6,
+                background: "#C9E8D5",
+                transform: "rotate(-6deg)",
+              }}
+            />
+          </div>
+
           {(showcaseCount ?? 0) > 0 && (
             <span
               aria-hidden
               style={{
                 position: "absolute",
-                top: 10,
-                right: 10,
+                top: 12,
+                right: 12,
                 width: 8,
                 height: 8,
                 borderRadius: "50%",
-                background: RED,
-                border: "2px solid #fff",
+                background: "#22C55E",
               }}
             />
           )}
-          <div>
-            <span style={{ ...chipBase, background: "#E8F9ED", color: "#16A34A" }}>
-              <IconBook size={17} color="#16A34A" stroke={1.6} />
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <span
+              style={{
+                ...chipBase,
+                width: 36,
+                height: 36,
+                borderRadius: 12,
+                background: "#fff",
+                boxShadow: "0 2px 8px -2px rgba(11,31,58,0.12)",
+              }}
+            >
+              <IconBook size={19} color="#16A34A" stroke={1.7} />
             </span>
-            <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 8 }}>DSM Learn</div>
+            <div
+              style={{
+                fontSize: 15,
+                fontWeight: tokens.fontWeight.bold,
+                color: NAVY,
+                marginTop: 8,
+              }}
+            >
+              DSM Learn
+            </div>
             <div
               style={{
                 fontSize: tokens.fontSize.xs,
                 color: MUTED,
-                marginTop: 1,
+                marginTop: 2,
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -1146,146 +1214,104 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
 
         {/* DSM RADIO */}
         <div
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate({ to: "/live-news" as never })}
           style={{
             ...tileBase,
             gridColumn: 2,
             gridRow: 2,
             height: 116,
-            background: "linear-gradient(160deg, #FFF9FA 0%, #FDF2F5 100%)",
-            borderColor: "#F9E4EB",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
+            justifyContent: "center",
+            background: "linear-gradient(135deg, #FFF6F8 0%, #FFFBFC 60%, #FFFFFF 100%)",
+            borderColor: "#FAE3EA",
           }}
         >
-          <div>
+          {/* decorative waveform */}
+          <div
+            aria-hidden
+            style={{
+              position: "absolute",
+              right: 8,
+              bottom: 10,
+              display: "flex",
+              alignItems: "flex-end",
+              gap: 2,
+              opacity: 0.4,
+              pointerEvents: "none",
+            }}
+          >
+            {[8, 16, 10, 26, 14, 34, 20, 44, 26, 52, 30, 22, 14, 24, 10, 16, 8].map((h, i) => (
+              <span
+                key={i}
+                style={{
+                  width: 2.5,
+                  height: h,
+                  borderRadius: 2,
+                  background: i % 2 === 0 ? "#F0768F" : "#F7B3C2",
+                }}
+              />
+            ))}
+          </div>
+
+          {isLiveOnAir && (
+            <span
+              aria-hidden
+              style={{
+                position: "absolute",
+                top: 12,
+                right: 12,
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: RED,
+                animation: "dsmLivePulse 1.5s infinite",
+              }}
+            />
+          )}
+
+          <div style={{ position: "relative", zIndex: 1 }}>
             <span
               style={{
                 ...chipBase,
-                background: isLiveOnAir ? "#FDECEC" : "#FCE8EF",
-                color: isLiveOnAir ? RED : "#E91E63",
-                position: "relative",
+                width: 36,
+                height: 36,
+                borderRadius: 12,
+                background: "#fff",
+                boxShadow: "0 2px 8px -2px rgba(11,31,58,0.12)",
               }}
             >
-              {isLiveOnAir ? (
-                <>
-                  <IconBroadcast size={17} color={RED} stroke={1.6} />
-                  <span
-                    aria-hidden
-                    style={{
-                      position: "absolute",
-                      top: 2,
-                      right: 2,
-                      width: 7,
-                      height: 7,
-                      borderRadius: "50%",
-                      background: RED,
-                      animation: "dsmLivePulse 1.5s infinite",
-                    }}
-                  />
-                </>
-              ) : (
-                <IconNews size={17} color="#E91E63" stroke={1.6} />
-              )}
+              <IconBroadcast size={19} color={isLiveOnAir ? RED : "#E5385F"} stroke={1.7} />
             </span>
-            {isLiveOnAir ? (
-              <>
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 4,
-                    background: "#FDECEC",
-                    color: RED,
-                    borderRadius: tokens.radiusCard,
-                    padding: "2px 16px",
-                    fontSize: 9,
-                    fontWeight: tokens.fontWeight.extrabold,
-                    marginTop: 8,
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: "50%",
-                      background: RED,
-                      animation: "dsmLivePulse 1.5s infinite",
-                    }}
-                  />
-                  On air
-                </span>
-                <div
-                  style={{
-                    fontSize: tokens.fontSize.base,
-                    fontWeight: tokens.fontWeight.bold,
-                    color: NAVY,
-                    marginTop: 4,
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {live.find((s) => isLiveNow(s))?.title ?? "DSM Live"}
-                </div>
-              </>
-            ) : (
-              <>
-                <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 8 }}>
-                  DSM Radio
-                </div>
-                <div
-                  style={{
-                    fontSize: tokens.fontSize.xs,
-                    color: MUTED,
-                    marginTop: 1,
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {"Live, news and podcasts"}
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* Deep-link tabs */}
-          <div style={{ display: "flex", gap: 4, marginTop: 6 }}>
-            {[
-              { key: "live", label: "Live" },
-              { key: "news", label: "News" },
-              { key: "podcasts", label: "Pods" },
-              { key: "saved", label: "Saved" },
-            ].map((t) => (
-              <button
-                key={t.key}
-                type="button"
-                onClick={() =>
-                  navigate({
-                    to: "/live-news" as never,
-                    search: { tab: t.key as never } as never,
-                  })
-                }
-                style={{
-                  flex: 1,
-                  padding: "4px 0",
-                  borderRadius: 8,
-                  border: "none",
-                  background: "#FCE8EF",
-                  color: "#E91E63",
-                  fontFamily: FONT,
-                  fontSize: 10,
-                  fontWeight: tokens.fontWeight.bold,
-                  cursor: "pointer",
-                  lineHeight: 1,
-                }}
-              >
-                {t.label}
-              </button>
-            ))}
+            <div
+              style={{
+                fontSize: 15,
+                fontWeight: tokens.fontWeight.bold,
+                color: NAVY,
+                marginTop: 8,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {isLiveOnAir ? (live.find((s) => isLiveNow(s))?.title ?? "DSM Radio") : "DSM Radio"}
+            </div>
+            <div
+              style={{
+                fontSize: tokens.fontSize.xs,
+                color: isLiveOnAir ? RED : MUTED,
+                fontWeight: isLiveOnAir ? tokens.fontWeight.bold : undefined,
+                marginTop: 2,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {isLiveOnAir ? "On air now" : "Live, news and podcasts"}
+            </div>
           </div>
         </div>
+
 
       </div>
 
