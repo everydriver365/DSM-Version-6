@@ -4,7 +4,6 @@ import { supabase } from "@/lib/supabaseClient";
 import { useNavigate } from "@tanstack/react-router";
 import { IconAward, IconBolt, IconCalendarOff, IconCheck, IconChevronRight, IconDownload, IconMovie, IconPlayerPlay, IconShoppingBag, IconStar, IconTrendingUp, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
-import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import LearnLibrarySection from "@/components/learn/LearnLibrarySection";
 import LearnVideosSection from "@/components/learn/LearnVideosSection";
@@ -443,7 +442,6 @@ export default function LearnPageBody() {
 
 
   return (
-    <DSMTopSheet title="Learn">
     <div className="pb-24" style={{ fontFamily: FONT, background: CANVAS, minHeight: "100%" }}>
 
       <div style={{ padding: "8px 16px 0" }}>
@@ -655,6 +653,5 @@ export default function LearnPageBody() {
         </div>
       )}
     </div>
-    </DSMTopSheet>
   );
 }

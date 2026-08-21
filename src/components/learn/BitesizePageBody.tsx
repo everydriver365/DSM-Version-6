@@ -3,7 +3,6 @@ import { tokens } from "@/lib/tokens";
 import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { PageHeader } from "@/components/dsm/PageHeader";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
 import { VideoPlayer } from "@/components/dsm/VideoPlayer";
@@ -293,33 +292,7 @@ export default function BitesizePageBody() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#DCE4F0", ...POPPINS }}>
-      <PageHeader
-        title="DSM Bitesize"
-        right={
-          isAdmin ? (
-            <button
-              type="button"
-              aria-label="Upload video"
-              onClick={() => setUploadOpen(true)}
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.15)",
-                border: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#fff",
-                cursor: "pointer",
-              }}
-            >
-              <IconPlus size={20} />
-            </button>
-          ) : null
-        }
-      />
+    <div style={{ background: "#DCE4F0", ...POPPINS }}>
 
       {/* CATEGORY CHIPS */}
       <div

@@ -3,7 +3,6 @@ import { tokens } from "@/lib/tokens";
 import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
-import { PageHeader } from "@/components/dsm/PageHeader";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import { ConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { supabase } from "@/lib/supabaseClient";
@@ -639,31 +638,7 @@ export default function ShowcasePageBody() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#DCE4F0", ...POPPINS }}>
-      <PageHeader
-        title="DSM Showcase"
-        right={
-          <button
-            type="button"
-            aria-label="Upload clip"
-            onClick={() => setUploadOpen(true)}
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.15)",
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#fff",
-              cursor: "pointer",
-            }}
-          >
-            <IconPlus size={20} />
-          </button>
-        }
-      />
+    <div style={{ background: "#DCE4F0", ...POPPINS }}>
 
       {/* CATEGORY CHIPS */}
       <div
