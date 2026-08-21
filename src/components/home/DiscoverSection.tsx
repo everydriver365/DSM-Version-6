@@ -1000,7 +1000,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             ...tileBase,
             gridColumn: 1,
             gridRow: "1 / 3",
-            height: 200,
+            height: 220,
             background: "linear-gradient(160deg, #EAF3FB 0%, #F5F9FF 55%, #fff 100%)",
             border: "1px solid #D6E3F0",
           }}
@@ -1104,7 +1104,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             ...tileBase,
             gridColumn: 2,
             gridRow: 1,
-            height: 96,
+            height: 116,
             background: "linear-gradient(160deg, #FAFDFB 0%, #F0FDF4 100%)",
             borderColor: "#E8F9ED",
           }}
@@ -1154,7 +1154,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             gridColumn: 2,
             gridRow: 2,
 
-            height: 96,
+            height: 116,
             background: "linear-gradient(160deg, #FFF9FA 0%, #FDF2F5 100%)",
             borderColor: "#F9E4EB",
           }}
