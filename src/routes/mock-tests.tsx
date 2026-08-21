@@ -1,7 +1,17 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
-import { IconClipboard, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
+import {
+  IconCalendar,
+  IconCheck,
+  IconChevronRight,
+  IconClipboard,
+  IconExternalLink,
+  IconInfoCircle,
+  IconPlus,
+  IconSearch,
+  IconX,
+} from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { EmptyState } from "@/components/dsm/EmptyState";
 
@@ -151,85 +161,110 @@ function MockTestsPage() {
   return (
     <DSMTopSheet title="Mock Tests">
       <div style={POPPINS}>
-      {/* Action bar */}
-      <div
-        className="flex items-center justify-end"
-        style={{ background: tokens.white, padding: "8px 16px", borderBottom: "1px solid #EEF2F7" }}
-      >
-        <button
-          type="button"
-          onClick={() => setAddOpen(true)}
-          className="inline-flex items-center gap-1 text-[13px] font-semibold text-white"
-          style={{ background: tokens.blue, borderRadius: 999, padding: "8px 14px", border: "none" }}
+        {/* Action bar */}
+        <div
+          className="flex items-center justify-end"
+          style={{ background: tokens.white, padding: "12px 16px", borderBottom: "1px solid #EEF2F7" }}
         >
-          <IconPlus stroke={1.5} size={16} color="#FFFFFF" /> New mock test
-        </button>
-      </div>
-
-
-      <div className="px-4 pt-4">
-        <SectionHeader>Mock test history</SectionHeader>
-        {results.length === 0 ? (
-          <EmptyState
-            icon={<IconClipboard size={32} color="#9CA3AF" stroke={1.5} />}
-            title="No mock tests yet"
-            subtitle="Log a mock test to track pupil progress"
-          />
-        ) : (
-          <div className="flex flex-col" style={{ gap: 8 }}>
-            {results.map((r) => {
-              const name = (Array.isArray(r.pupils) ? r.pupils[0]?.name : (r.pupils as any)?.name) ?? "Unknown pupil";
-              const total = (r.minor_faults ?? 0) + (r.serious_faults ?? 0) + (r.dangerous_faults ?? 0);
-              const result = r.result ?? "Result not set";
-              const resultColor =
-                r.result === "Passed" ? "#1E8E5A" : r.result === "Failed" ? "#CC2229" : "#6B7280";
-              return (
-                <Card key={r.id}>
-                  <div className="flex items-start" style={{ gap: 12 }}>
-                    <div
-                      className="flex items-center justify-center text-white text-[13px] font-semibold shrink-0"
-                      style={{ width: 40, height: 40, borderRadius: 999, backgroundColor: tokens.blue, ...POPPINS }}
-                    >
-                      {initials(name)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between" style={{ gap: 8 }}>
-                        <div className="text-[14px] font-semibold truncate" style={{ color: tokens.navy, ...POPPINS }}>
-                          {name}
-                        </div>
-                        <span
-                          className="text-[11px] font-semibold text-white shrink-0"
-                          style={{ backgroundColor: resultColor, padding: "3px 10px", borderRadius: 999, ...POPPINS }}
-                        >
-                          {result}
-                        </span>
-                      </div>
-                      <div className="text-[13px] font-bold mt-1" style={{ color: tokens.navy, ...POPPINS }}>
-                        {formatDateLong(r.test_date)}
-                      </div>
-                      {total > 0 && (
-                        <div className="text-[12px] mt-1" style={{ color: "#6B7280", ...POPPINS }}>
-                          {r.minor_faults ?? 0} minor · {r.serious_faults ?? 0} serious · {r.dangerous_faults ?? 0} dangerous
-                        </div>
-                      )}
-                      {hasFaultMarks(r.fault_marks) && (
-                        <button
-                          type="button"
-                          onClick={() => setViewingDl25(r)}
-                          className="text-[12px] font-semibold mt-2"
-                          style={{ color: tokens.blue, background: "none", border: "none", padding: 0, ...POPPINS }}
-                        >
-                          View DL25
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </Card>
-              );
-            })}
+          <div className="flex items-center" style={{ gap: 10 }}>
+            <button
+              type="button"
+              onClick={() => setAddOpen(true)}
+              className="inline-flex items-center justify-center"
+              style={{ width: 36, height: 36, borderRadius: 999, background: tokens.blue, border: "none" }}
+            >
+              <IconPlus stroke={2} size={18} color="#FFFFFF" />
+            </button>
+            <button
+              type="button"
+              className="inline-flex items-center justify-center"
+              style={{ width: 36, height: 36, borderRadius: 999, background: "#EEF2F7", border: "none" }}
+            >
+              <IconSearch stroke={1.5} size={18} color="#6B7280" />
+            </button>
           </div>
-        )}
-      </div>
+        </div>
+
+        <div className="px-4 pt-4">
+          <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+            <div className="flex items-center" style={{ gap: 8 }}>
+              <div style={{ width: 4, height: 18, borderRadius: 2, background: tokens.blue }} />
+              <span className="text-[15px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>
+                Mock test history
+              </span>
+              <IconInfoCircle stroke={1.5} size={16} color="#9CA3AF" />
+            </div>
+          </div>
+
+          {results.length === 0 ? (
+            <EmptyState
+              icon={<IconClipboard size={32} color="#9CA3AF" stroke={1.5} />}
+              title="No mock tests yet"
+              subtitle="Log a mock test to track pupil progress"
+            />
+          ) : (
+            <div className="flex flex-col" style={{ gap: 10 }}>
+              {results.map((r) => {
+                const name = (Array.isArray(r.pupils) ? r.pupils[0]?.name : (r.pupils as any)?.name) ?? "Unknown pupil";
+                const result = r.result ?? "Result not set";
+                const passed = result === "Passed";
+                const failed = result === "Failed";
+                const resultBg = passed ? "#DCFCE7" : failed ? "#FEE2E2" : "#F3F4F6";
+                const resultColor = passed ? "#166534" : failed ? "#991B1B" : "#6B7280";
+                const resultIcon = passed ? <IconCheck size={14} color={resultColor} stroke={2.5} /> : failed ? <IconX size={14} color={resultColor} stroke={2.5} /> : null;
+                return (
+                  <Card key={r.id} style={{ padding: 14, borderRadius: 16 }}>
+                    <div className="flex items-start" style={{ gap: 12 }}>
+                      <div
+                        className="flex items-center justify-center text-white text-[14px] font-bold shrink-0"
+                        style={{ width: 44, height: 44, borderRadius: 999, backgroundColor: tokens.blue, ...POPPINS }}
+                      >
+                        {initials(name)}
+                      </div>
+                      <div className="flex-1 min-w-0" style={{ paddingTop: 2 }}>
+                        <div className="flex items-start justify-between" style={{ gap: 8 }}>
+                          <div className="text-[15px] font-semibold" style={{ color: tokens.navy, ...POPPINS }}>
+                            {name}
+                          </div>
+                          <span
+                            className="inline-flex items-center gap-1 text-[11px] font-semibold shrink-0"
+                            style={{ backgroundColor: resultBg, color: resultColor, padding: "4px 10px", borderRadius: 999, ...POPPINS }}
+                          >
+                            {resultIcon}
+                            {result}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 mt-1" style={{ color: "#6B7280", ...POPPINS }}>
+                          <IconCalendar stroke={1.5} size={14} color="#9CA3AF" />
+                          <span className="text-[13px] font-medium">{formatDateLong(r.test_date)}</span>
+                        </div>
+                        {failed && (
+                          <div className="text-[12px] mt-1" style={{ color: "#6B7280", ...POPPINS }}>
+                            {r.minor_faults ?? 0} minor · {r.serious_faults ?? 0} serious · {r.dangerous_faults ?? 0} dangerous
+                          </div>
+                        )}
+                        {hasFaultMarks(r.fault_marks) && (
+                          <button
+                            type="button"
+                            onClick={() => setViewingDl25(r)}
+                            className="inline-flex items-center gap-1 text-[13px] font-semibold mt-2"
+                            style={{ color: tokens.blue, background: "none", border: "none", padding: 0, ...POPPINS }}
+                          >
+                            View DL25
+                            <IconExternalLink stroke={1.5} size={14} color={tokens.blue} />
+                          </button>
+                        )}
+                      </div>
+                      <div className="shrink-0 self-center" style={{ marginLeft: 4 }}>
+                        <IconChevronRight stroke={1.5} size={20} color="#9CA3AF" />
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </div>
 
       {addOpen && (
         <NewMockTestSheet
