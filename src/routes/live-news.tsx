@@ -3,6 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { Capacitor } from "@capacitor/core";
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import {
+  IconBell,
   IconBookmark,
   IconBookmarkFilled,
   IconBriefcase,
@@ -23,7 +24,6 @@ import {
   IconX,
 } from "@tabler/icons-react";
 
-import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
