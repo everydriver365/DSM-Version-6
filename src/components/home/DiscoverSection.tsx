@@ -12,7 +12,6 @@ import {
   IconBroadcast,
   IconBook,
   IconShoppingBag,
-  IconNews,
   IconBrowser,
   IconCar,
   IconTool,
@@ -1006,7 +1005,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           }}
         >
           <div>
-            <span style={{ ...chipBase, background: "#fff", color: BLUE, boxShadow: "0 1px 2px rgba(11,31,58,0.06)" }}>
+            <span style={{ ...chipBase, width: 40, height: 40, borderRadius: 14, background: "#fff", color: BLUE, boxShadow: "0 2px 10px -2px rgba(11,31,58,0.14)" }}>
               <IconRosetteDiscount size={20} color={BLUE} stroke={1.6} />
             </span>
             <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 10 }}>Perks</div>
