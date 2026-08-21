@@ -989,93 +989,102 @@ function PupilsIndexPage() {
 
 
 
-      {/* Count + actions */}
+      {/* Actions */}
       <div
         style={{
-          margin: "16px 16px 12px",
+          margin: "18px 16px 14px",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          gap: 10,
         }}
       >
-        <span style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, ...POPPINS }}>
-          {filtered === null ? "" : `${filtered.length} ${filtered.length === 1 ? "pupil" : "pupils"}`}
-        </span>
-        <div className="flex items-center" style={{ gap: 8 }}>
-          <Link
-            to="/pupils/new"
-            aria-label="Add pupil"
-            onClick={() => tapMedium()}
-            className="flex items-center justify-center"
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: "50%",
-              backgroundColor: tokens.blue,
-              flexShrink: 0,
-            }}
-          >
-            <IconPlus size={18} color="#FFFFFF" stroke={2} />
-          </Link>
-          <Link
-            to="/broadcast"
-            aria-label="Message all pupils"
-            className="inline-flex items-center gap-1.5"
-            style={{
-              padding: "6px 16px",
-              borderRadius: tokens.radiusCard,
-              backgroundColor: "#F3F8FF",
-              border: "1px solid #EEF2F7",
-            }}
-          >
-            <IconSpeakerphone size={14} color="#1877D6" />
-            <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.blue, ...POPPINS }}>Message all</span>
-          </Link>
-          <button
-            type="button"
-            aria-label={searchOpen ? "Close search" : "Open search"}
-            onClick={() => {
-              setSearchOpen((v) => {
-                const next = !v;
-                if (!next) setQuery("");
-                return next;
-              });
-            }}
-            className="flex items-center justify-center"
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: "50%",
-              backgroundColor: "#F3F8FF",
-              border: "1px solid #EEF2F7",
-            }}
-          >
-            {searchOpen ? (
-              <IconX stroke={1.5} size={16} color="#1877D6" />
-            ) : (
-              <IconSearch stroke={1.5} size={16} color="#1877D6" />
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={() =>
-              setSortBy((s) => (s === "name" ? "balance" : s === "balance" ? "next_lesson" : "name"))
-            }
-            aria-label={`Sort by ${SORT_LABELS[sortBy]}. Tap to change.`}
-            title={`Sort by ${SORT_LABELS[sortBy]}`}
-            className="flex items-center justify-center"
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: "50%",
-              backgroundColor: "#F3F8FF",
-              border: "1px solid #EEF2F7",
-            }}
-          >
-            <IconArrowsUpDown size={16} color="#1877D6" />
-          </button>
-        </div>
+        <Link
+          to="/pupils/new"
+          aria-label="Add pupil"
+          onClick={() => tapMedium()}
+          className="inline-flex items-center justify-center"
+          style={{
+            flex: 1,
+            gap: 8,
+            height: 52,
+            borderRadius: 26,
+            backgroundColor: tokens.blue,
+            boxShadow: "0 6px 16px rgba(24,119,214,0.28)",
+          }}
+        >
+          <IconCirclePlus size={20} color="#FFFFFF" stroke={2} />
+          <span style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: tokens.white, ...POPPINS }}>
+            Add pupil
+          </span>
+        </Link>
+        <Link
+          to="/broadcast"
+          aria-label="Message all pupils"
+          className="inline-flex items-center justify-center"
+          style={{
+            flex: 1,
+            gap: 8,
+            height: 52,
+            borderRadius: 26,
+            backgroundColor: tokens.white,
+            border: "1px solid #E6EAF0",
+            boxShadow: "0 2px 8px rgba(11,31,58,0.06)",
+          }}
+        >
+          <IconMessageCircle size={19} color={tokens.navy} stroke={1.8} />
+          <span style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: tokens.navy, ...POPPINS }}>
+            Message all
+          </span>
+        </Link>
+        <button
+          type="button"
+          aria-label={searchOpen ? "Close search" : "Open search"}
+          onClick={() => {
+            setSearchOpen((v) => {
+              const next = !v;
+              if (!next) setQuery("");
+              return next;
+            });
+          }}
+          className="flex items-center justify-center"
+          style={{
+            width: 52,
+            height: 52,
+            flexShrink: 0,
+            borderRadius: "50%",
+            backgroundColor: tokens.white,
+            border: "1px solid #E6EAF0",
+            boxShadow: "0 2px 8px rgba(11,31,58,0.06)",
+          }}
+        >
+          {searchOpen ? (
+            <IconX stroke={1.8} size={20} color={tokens.navy} />
+          ) : (
+            <IconSearch stroke={1.8} size={20} color={tokens.navy} />
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={() =>
+            setSortBy((s) => (s === "name" ? "balance" : s === "balance" ? "next_lesson" : "name"))
+          }
+          aria-label={`Sort by ${SORT_LABELS[sortBy]}. Tap to change.`}
+          title={`Sort by ${SORT_LABELS[sortBy]}`}
+          className="flex items-center justify-center"
+          style={{
+            width: 52,
+            height: 52,
+            flexShrink: 0,
+            borderRadius: "50%",
+            backgroundColor: tokens.white,
+            border: "1px solid #E6EAF0",
+            boxShadow: "0 2px 8px rgba(11,31,58,0.06)",
+          }}
+        >
+          <IconArrowsUpDown size={20} stroke={1.8} color={tokens.navy} />
+        </button>
       </div>
+
 
       {/* Status filter tabs */}
       <div
