@@ -825,7 +825,7 @@ function SchedulePage() {
       const startIso = ymdLocal(rangeStart);
       const endIso = ymdLocal(rangeEnd);
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${uid}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title,colour,location,description`,
+        `${SUPABASE_URL}/rest/v1/calendar_blocks?instructor_id=eq.${uid}&source=eq.external_calendar&start_datetime=gte.${startIso}&start_datetime=lte.${endIso}T23:59:59&select=id,start_datetime,end_datetime,title,colour,location,description,notes`,
         { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` } },
       );
       if (!res.ok) return;
@@ -846,7 +846,7 @@ function SchedulePage() {
     (async () => {
       const { data, error } = await supabase
         .from("calendar_blocks")
-        .select("id, start_datetime, end_datetime, title, colour, location, description")
+        .select("id, start_datetime, end_datetime, title, colour, location, description, notes")
         .eq("source", "personal")
         .gte("start_datetime", `${ymdLocal(rangeStart)}T00:00:00`)
         .lte("start_datetime", `${ymdLocal(rangeEnd)}T23:59:59`)

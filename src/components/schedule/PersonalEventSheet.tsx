@@ -198,6 +198,7 @@ export function PersonalEventSheet({
       endD.setDate(endD.getDate() + Math.max(0, Math.round(dayOffset)));
       const start = allDay ? `${d}T00:00:00` : `${d}T${startTime}:00`;
       const end = allDay ? `${ymd(endD)}T23:59:00` : `${ymd(endD)}T${endTime}:00`;
+      const descriptionText = notes.trim() || null;
       return {
         instructor_id: user.id,
         title: title.trim(),
@@ -206,7 +207,8 @@ export function PersonalEventSheet({
         source: "personal",
         is_all_day: allDay,
         location: location.trim() || null,
-        notes: notes.trim() || null,
+        notes: descriptionText,
+        description: descriptionText,
         colour,
         blocks_availability: busy,
       };
@@ -263,7 +265,7 @@ export function PersonalEventSheet({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ fontFamily: font }}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ position: "fixed", fontFamily: font }}>
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
       <div
         className="relative w-full max-w-md"
