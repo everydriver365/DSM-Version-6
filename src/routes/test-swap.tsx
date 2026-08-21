@@ -1096,14 +1096,18 @@ function SwapRequestList({
       {/* Lists */}
       {tab === "all" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {filtered.map((r) => (
-            <SwapCard
-              key={String(r.id)}
-              request={r}
-              mode={r.instructor_id === userId ? "mine" : "community"}
-              onRefresh={onRefresh}
-            />
-          ))}
+          {filtered.map((r) => {
+            const isMine = r.instructor_id === userId;
+            return (
+              <SwapCard
+                key={String(r.id)}
+                request={r}
+                mode={isMine ? "mine" : "community"}
+                onRefresh={onRefresh}
+                onSelect={isMine ? undefined : () => setSelectedSwap(r)}
+              />
+            );
+          })}
           {filtered.length === 0 && (
             <div
               style={{
