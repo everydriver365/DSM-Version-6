@@ -135,11 +135,6 @@ function daysUntil(dateString: string) {
   return Math.round((target.getTime() - today.getTime()) / 86400000);
 }
 
-const SORT_LABELS: Record<"name" | "balance" | "next_lesson", string> = {
-  name: "Name",
-  balance: "Balance",
-  next_lesson: "Next lesson",
-};
 
 function formatRelativeDate(dateString: string) {
   const date = new Date(dateString);
@@ -177,7 +172,6 @@ function PupilsIndexPage() {
   const [nextLessonMap, setNextLessonMap] = useState<Record<string, string>>({});
   const [testDateMap, setTestDateMap] = useState<Record<string, string>>({});
   const [lastLessonMap, setLastLessonMap] = useState<Record<string, string>>({});
-  const sortBy: "name" | "balance" | "next_lesson" = "name";
   const [statusFilter, setStatusFilter] = useState<StatusKey>("active");
   const { pullToRefreshProps } = usePullToRefresh({
     onRefresh: async () => {
@@ -593,7 +587,7 @@ function PupilsIndexPage() {
     });
 
     return withIndex.map((x) => x.p);
-  }, [pupils, query, statusFilter, lastLessonMap, unreadMap, sortBy, balanceMap, nextLessonMap]);
+  }, [pupils, query, statusFilter, lastLessonMap, unreadMap, balanceMap, nextLessonMap]);
 
   const statusCounts = useMemo(() => {
     if (!pupils) return null;
