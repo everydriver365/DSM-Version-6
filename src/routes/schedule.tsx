@@ -2112,35 +2112,60 @@ function SchedulePage() {
                                   tabIndex={0}
                                   style={{
                                     background: '#fff',
-                                    borderRadius: 16,
-                                    border: '2px solid #1877D6',
-                                    padding: '14px 16px',
-                                    marginBottom: 8,
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: 6,
+                                    borderRadius: tokens.radiusCard,
+                                    boxShadow: "0 2px 8px rgba(15,32,68,0.06)",
+                                    padding: "12px 16px",
+                                    display: "flex",
+                                    alignItems: "stretch",
+                                    gap: 12,
+                                    cursor: "pointer",
                                     opacity: isDimmed ? 0.4 : 1,
+                                    border: '0.5px solid #E4E8EF',
                                     ...POPPINS,
                                   }}
                                 >
-                                  <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', lineHeight: 1.3 }}>
-                                    {title}
+                                  <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingTop: 2 }}>
+                                    <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15 }}>
+                                      {e.allDay ? "All" : fmtTime(e.start)}
+                                    </div>
+                                    <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#6B7280', marginTop: 4, fontVariantNumeric: 'tabular-nums' }}>
+                                      {e.allDay ? "day" : (() => {
+                                        const durMin = Math.max(0, Math.round((e.end.getTime() - e.start.getTime()) / 60000));
+                                        const h = Math.floor(durMin / 60);
+                                        const m = durMin % 60;
+                                        return h > 0 && m > 0 ? `${h}h ${m}m` : h > 0 ? `${h}h` : `${m}m`;
+                                      })()}
+                                    </div>
                                   </div>
-                                  <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
-                                    {e.allDay ? (
-                                      <span style={{ background: '#EFF6FF', color: '#1877D6', fontSize: 9, fontWeight: 800, borderRadius: 20, padding: '3px 8px', letterSpacing: '0.08em', fontFamily: 'Poppins, sans-serif' }}>
-                                        ALL DAY
-                                      </span>
-                                    ) : (
-                                      <span style={{ fontSize: 12, color: '#6B7280', fontVariantNumeric: 'tabular-nums' }}>
-                                        {fmtTime(e.start)} – {fmtTime(e.end)}
-                                      </span>
-                                    )}
-                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: '#EDE9FE', color: '#7C3AED', fontSize: 9, fontWeight: 800, borderRadius: 20, padding: '3px 8px', letterSpacing: '0.08em', fontFamily: 'Poppins, sans-serif' }}>
-                                      <IconLock size={9} color="#7C3AED" stroke={2} />
-                                      PRIVATE
-                                    </span>
+                                  <div
+                                    aria-hidden
+                                    style={{
+                                      width: 3,
+                                      borderRadius: 12,
+                                      background: '#1877D6',
+                                      flexShrink: 0,
+                                      alignSelf: 'stretch',
+                                    }}
+                                  />
+                                  <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
+                                    <div
+                                      style={{
+                                        fontSize: tokens.fontSize.md,
+                                        fontWeight: tokens.fontWeight.semibold,
+                                        color: '#0B1F3A',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        lineHeight: 1.3,
+                                      }}
+                                      title={title}
+                                    >
+                                      {title}
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                                      <IconLock size={12} color="#6B7280" stroke={1.5} />
+                                      <span style={{ fontSize: 12, color: '#6B7280' }}>Private</span>
+                                    </div>
                                   </div>
                                 </div>
                               ) : (
