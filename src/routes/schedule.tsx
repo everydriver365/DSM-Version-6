@@ -264,6 +264,20 @@ function lessonEnd(l: Lesson) {
   return new Date(lessonStart(l).getTime() + (l.duration_minutes ?? 60) * 60000);
 }
 
+// True when an event effectively covers a whole day (starts at midnight and
+// runs to midnight / 23:59, or lasts 23h+).
+function spansWholeDay(start: Date, end: Date) {
+  if (!(start instanceof Date) || isNaN(start.getTime())) return false;
+  if (!(end instanceof Date) || isNaN(end.getTime())) return false;
+  const mins = (end.getTime() - start.getTime()) / 60000;
+  if (mins >= 23 * 60) return true;
+  const startsMidnight = start.getHours() === 0 && start.getMinutes() === 0;
+  const endsDayBoundary =
+    (end.getHours() === 0 && end.getMinutes() === 0) ||
+    (end.getHours() === 23 && end.getMinutes() >= 59);
+  return startsMidnight && endsDayBoundary && mins > 0;
+}
+
 const isTest = (lesson: any) => {
   if (!lesson) return false;
   const type = String(lesson.lesson_type ?? "").toLowerCase().trim();
@@ -1209,10 +1223,7 @@ function SchedulePage() {
       const key = b.start_datetime.substring(0, 10);
       const start = new Date(b.start_datetime);
       const end = new Date(b.end_datetime);
-      const isAllDay =
-        b.is_all_day === true ||
-        b.start_datetime.endsWith("T00:00:00") ||
-        (start.getHours() === 0 && start.getMinutes() === 0 && end.getHours() === 0 && end.getMinutes() === 0);
+      const isAllDay = b.is_all_day === true || spansWholeDay(start, end);
       const arr = map.get(key) ?? [];
       arr.push({
         kind: "block",
@@ -1237,7 +1248,7 @@ function SchedulePage() {
         id: `personal-${p.id}`,
         start,
         end,
-        allDay: !!p.is_all_day,
+        allDay: !!p.is_all_day || spansWholeDay(start, end),
         title: p.title || "Private event",
         colour: p.colour ?? null,
         event: p,
