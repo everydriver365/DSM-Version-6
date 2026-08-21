@@ -1881,30 +1881,31 @@ function InboxRow({
             minWidth: 0,
           }}
         >
-          <div
-            style={{
-              fontSize: tokens.fontSize.md,
-              fontWeight: unread ? 700 : 500,
-              color: NAVY,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              fontFamily: "Poppins, sans-serif",
-            }}
-          >
-            {item.name}
-          </div>
-          <div
-            style={{
-              fontSize: tokens.fontSize.sm,
-              fontWeight: unread ? 700 : 500,
-              color: unread ? BLUE : "#8A94A6",
-              flexShrink: 0,
-              fontFamily: "Poppins, sans-serif",
-            }}
-          >
-            {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
-          </div>
+            <div
+              style={{
+                fontSize: 17,
+                fontWeight: tokens.fontWeight.bold,
+                color: NAVY,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                letterSpacing: "-0.2px",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              {item.name}
+            </div>
+            <div
+              style={{
+                fontSize: 13.5,
+                fontWeight: tokens.fontWeight.semibold,
+                color: unread ? BLUE : "#8A94A6",
+                flexShrink: 0,
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
+            </div>
         </div>
         <div
           style={{
