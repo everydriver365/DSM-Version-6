@@ -438,6 +438,7 @@ function EditLessonPage() {
     }
     toast.success("Lesson updated");
     triggerCalendarSync();
+    void pushToGoogleCalendar(id, user?.id ?? "");
     navigate({ to: "/home" });
 
   }

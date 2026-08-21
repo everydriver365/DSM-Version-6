@@ -476,6 +476,7 @@ export function AddLessonSheet({
       }
       toast.success("Lesson updated");
       triggerCalendarSync();
+      void pushToGoogleCalendar(editingLesson.id, user.id);
       hapticSuccess();
 
       setSaving(false);
@@ -547,6 +548,7 @@ export function AddLessonSheet({
     const newLessonId = (insertedLesson as any)?.id as string | undefined;
     if (newLessonId) {
       pushLessonToGoogle({ action: "push", lesson_id: newLessonId, instructor_id: user.id });
+      void pushToGoogleCalendar(newLessonId, user.id);
     }
 
     if (isRecurring && seriesId) {
@@ -596,6 +598,7 @@ export function AddLessonSheet({
           for (const r of rows) {
             if (r?.id) {
               pushLessonToGoogle({ action: "push", lesson_id: r.id, instructor_id: user.id });
+              void pushToGoogleCalendar(r.id, user.id);
             }
           }
         }
