@@ -412,7 +412,9 @@ function EditLessonPage() {
       );
     }
     toast.success("Lesson updated");
+    triggerCalendarSync();
     navigate({ to: "/home" });
+
   }
 
   return (

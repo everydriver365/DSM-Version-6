@@ -450,7 +450,9 @@ export function AddLessonSheet({
         pushLessonToGoogle({ lesson_id: editingLesson.id, instructor_id: user.id, action: "update" });
       }
       toast.success("Lesson updated");
+      triggerCalendarSync();
       hapticSuccess();
+
       setSaving(false);
       onSaved(editingLesson.id);
       onClose();
@@ -577,7 +579,9 @@ export function AddLessonSheet({
       }
     }
 
+    triggerCalendarSync();
     toast.success("Lesson added");
+
     hapticSuccess();
     setSaving(false);
     onSaved((insertedLesson as any)?.id as string);
