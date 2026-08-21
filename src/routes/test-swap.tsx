@@ -212,11 +212,18 @@ function SwapCard({
 
   return (
     <div
+      onClick={() => {
+        if (mode === "community" && onSelect) {
+          tapLight();
+          onSelect();
+        }
+      }}
       style={{
         background: "#fff",
         borderRadius: 18,
         boxShadow: "0 1px 4px rgba(11,31,58,0.07)",
         padding: 16,
+        cursor: mode === "community" && onSelect ? "pointer" : "default",
         ...POPPINS,
       }}
     >
