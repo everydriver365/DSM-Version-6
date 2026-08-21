@@ -2627,7 +2627,7 @@ export function BenefitPartnersSection() {
                       updated[i] = e.target.value;
                       patchPerk({ bullet_points: updated });
                     }}
-                    placeholder={`Point ${i + 1}`}
+                    placeholder="Key benefit or feature"
                     style={{ ...partnerInputStyle, flex: 1 }}
                   />
                   <button
@@ -2820,9 +2820,16 @@ export function BenefitPartnersSection() {
                 onChange={async (e) => {
                   const files = e.target.files;
                   if (!files) return;
+                  const existing = (editingPerk?.gallery_urls ?? []) as string[];
+                  const remaining = 6 - existing.length;
+                  if (remaining <= 0) {
+                    toast.error("Maximum 6 gallery images");
+                    e.target.value = "";
+                    return;
+                  }
                   setUploadingPerkGallery(true);
                   const uploaded: string[] = [];
-                  for (const file of Array.from(files)) {
+                  for (const file of Array.from(files).slice(0, remaining)) {
                     const path = `perks/gallery/${Date.now()}-${Math.random().toString(36).slice(2)}`;
                     const { error } = await supabase.storage.from("marketplace-images").upload(path, file, { upsert: true });
                     if (!error) {
@@ -2944,28 +2951,30 @@ export function BenefitPartnersSection() {
                     </div>
                   </div>
                 ))}
-                <div
-                  onClick={() => perkGalleryInputRef.current?.click()}
-                  style={{
-                    width: 72,
-                    height: 72,
-                    borderRadius: 8,
-                    border: "1px dashed #E2E8F0",
-                    background: "#F8FAFC",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    flexShrink: 0,
-                  }}
-                >
-                  <IconPhoto size={24} color="#9CA3AF" />
-                </div>
+                {((editingPerk.gallery_urls ?? []) as string[]).length < 6 && (
+                  <div
+                    onClick={() => perkGalleryInputRef.current?.click()}
+                    style={{
+                      width: 72,
+                      height: 72,
+                      borderRadius: 8,
+                      border: "1px dashed #E2E8F0",
+                      background: "#F8FAFC",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <IconPhoto size={24} color="#9CA3AF" />
+                  </div>
+                )}
               </div>
               <div style={uploadHintStyle}>
                 {uploadingPerkGallery
                   ? "Uploading photos..."
-                  : "Select multiple images at once. Use ‹ › to set display order."}
+                  : "Max 6 images. Select multiple at once. Use ‹ › to set display order."}
               </div>
 
 
