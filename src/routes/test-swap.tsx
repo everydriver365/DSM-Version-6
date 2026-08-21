@@ -14,6 +14,9 @@ import {
   IconTrash,
   IconCheck,
   IconSearch,
+  IconMessage,
+  IconMessageCircle,
+  IconX,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -165,10 +168,12 @@ function SwapCard({
   request: r,
   mode,
   onRefresh,
+  onSelect,
 }: {
   request: SwapRequest;
   mode: "mine" | "community";
   onRefresh: () => void;
+  onSelect?: () => void;
 }) {
   async function handleDelete() {
     const { error } = await supabase.from("test_swap_requests").delete().eq("id", r.id);
@@ -207,11 +212,18 @@ function SwapCard({
 
   return (
     <div
+      onClick={() => {
+        if (mode === "community" && onSelect) {
+          tapLight();
+          onSelect();
+        }
+      }}
       style={{
         background: "#fff",
         borderRadius: 18,
         boxShadow: "0 1px 4px rgba(11,31,58,0.07)",
         padding: 16,
+        cursor: mode === "community" && onSelect ? "pointer" : "default",
         ...POPPINS,
       }}
     >
@@ -410,7 +422,8 @@ function SwapCard({
           {mode === "community" && r.instructor_phone && (
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 tapLight();
                 handleContact();
               }}
@@ -437,7 +450,8 @@ function SwapCard({
           {mode === "mine" && isPending && (
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 tapLight();
                 handleMarkMatched();
               }}
@@ -464,7 +478,8 @@ function SwapCard({
           {mode === "mine" && (
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 tapLight();
                 handleDelete();
               }}
@@ -488,7 +503,8 @@ function SwapCard({
 
           <button
             type="button"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               tapLight();
               setDetailsOpen((v) => !v);
             }}
@@ -719,6 +735,7 @@ function SwapRequestList({
   onRefresh: () => void;
   onNew: () => void;
 }) {
+  const navigate = useNavigate();
   const [filterCentre, setFilterCentre] = useState("");
   const [filterCentreResults, setFilterCentreResults] = useState<any[]>([]);
   const [filterFrom, setFilterFrom] = useState("");
@@ -727,6 +744,7 @@ function SwapRequestList({
   const [filterTimeTo, setFilterTimeTo] = useState("");
   const [moreOpen, setMoreOpen] = useState(false);
   const [tab, setTab] = useState<"all" | "mine" | "matches">("all");
+  const [selectedSwap, setSelectedSwap] = useState<any | null>(null);
 
   const myRequests = rows.filter((r) => r.instructor_id === userId);
 
@@ -1078,14 +1096,18 @@ function SwapRequestList({
       {/* Lists */}
       {tab === "all" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {filtered.map((r) => (
-            <SwapCard
-              key={String(r.id)}
-              request={r}
-              mode={r.instructor_id === userId ? "mine" : "community"}
-              onRefresh={onRefresh}
-            />
-          ))}
+          {filtered.map((r) => {
+            const isMine = r.instructor_id === userId;
+            return (
+              <SwapCard
+                key={String(r.id)}
+                request={r}
+                mode={isMine ? "mine" : "community"}
+                onRefresh={onRefresh}
+                onSelect={isMine ? undefined : () => setSelectedSwap(r)}
+              />
+            );
+          })}
           {filtered.length === 0 && (
             <div
               style={{
@@ -1134,14 +1156,18 @@ function SwapRequestList({
               No matched swaps yet
             </div>
           ) : (
-            matched.map((r) => (
-              <SwapCard
-                key={String(r.id)}
-                request={r}
-                mode={r.instructor_id === userId ? "mine" : "community"}
-                onRefresh={onRefresh}
-              />
-            ))
+            matched.map((r) => {
+              const isMine = r.instructor_id === userId;
+              return (
+                <SwapCard
+                  key={String(r.id)}
+                  request={r}
+                  mode={isMine ? "mine" : "community"}
+                  onRefresh={onRefresh}
+                  onSelect={isMine ? undefined : () => setSelectedSwap(r)}
+                />
+              );
+            })
           )}
         </div>
       )}
@@ -1212,6 +1238,329 @@ function SwapRequestList({
           New request
         </button>
       </div>
+
+      {/* More details bottom sheet for community swaps */}
+      {selectedSwap && (
+        <div
+          onClick={() => setSelectedSwap(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 300,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#EEF2F7",
+              borderRadius: "22px 22px 0 0",
+              padding: "0 0 32px",
+              width: "100%",
+              maxWidth: 520,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            {/* Handle + X button row */}
+            <div
+              style={{
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "12px 16px 0",
+              }}
+            >
+              <div
+                style={{
+                  width: 36,
+                  height: 5,
+                  borderRadius: 3,
+                  background: "#DADFE5",
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setSelectedSwap(null)}
+                aria-label="Close"
+                style={{
+                  position: "absolute",
+                  right: 16,
+                  top: 8,
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  background: "#fff",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconX size={16} color="#6B7686" stroke={2} />
+              </button>
+            </div>
+
+            {/* Header card */}
+            <div
+              style={{
+                margin: 16,
+                background: "linear-gradient(135deg, #14509E, #0B1F3A)",
+                borderRadius: 16,
+                padding: 16,
+                ...POPPINS,
+              }}
+            >
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  background: "rgba(255,255,255,0.2)",
+                  color: "#fff",
+                  fontSize: 10,
+                  fontWeight: 800,
+                  borderRadius: 20,
+                  padding: "3px 10px",
+                  textTransform: "uppercase",
+                }}
+              >
+                Test swap
+              </div>
+              <div
+                style={{
+                  fontSize: 20,
+                  fontWeight: 800,
+                  color: "#fff",
+                  marginTop: 8,
+                  ...SORA,
+                }}
+              >
+                {selectedSwap.name || "Pupil"}
+              </div>
+
+              {/* Details grid */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 8,
+                  marginTop: 14,
+                }}
+              >
+                <div
+                  style={{
+                    background: "rgba(255,255,255,0.12)",
+                    borderRadius: 10,
+                    padding: "10px 12px",
+                  }}
+                >
+                  <div style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", fontWeight: 700, textTransform: "uppercase" }}>
+                    Test centre
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginTop: 4 }}>
+                    {selectedSwap.test_centre || "—"}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    background: "rgba(255,255,255,0.12)",
+                    borderRadius: 10,
+                    padding: "10px 12px",
+                  }}
+                >
+                  <div style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", fontWeight: 700, textTransform: "uppercase" }}>
+                    Date
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginTop: 4 }}>
+                    {formatDate(selectedSwap.current_test_date)}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    background: "rgba(255,255,255,0.12)",
+                    borderRadius: 10,
+                    padding: "10px 12px",
+                  }}
+                >
+                  <div style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", fontWeight: 700, textTransform: "uppercase" }}>
+                    Time
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginTop: 4 }}>
+                    {selectedSwap.current_test_time
+                      ? String(selectedSwap.current_test_time).slice(0, 5)
+                      : "—"}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    background: "rgba(255,255,255,0.12)",
+                    borderRadius: 10,
+                    padding: "10px 12px",
+                  }}
+                >
+                  <div style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", fontWeight: 700, textTransform: "uppercase" }}>
+                    Transmission
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginTop: 4, textTransform: "capitalize" }}>
+                    {selectedSwap.transmission || "—"}
+                  </div>
+                </div>
+              </div>
+
+              {selectedSwap.notes && (
+                <div
+                  style={{
+                    background: "rgba(255,255,255,0.12)",
+                    borderRadius: 10,
+                    padding: "10px 12px",
+                    marginTop: 8,
+                  }}
+                >
+                  <div style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", fontWeight: 700, textTransform: "uppercase" }}>
+                    Notes
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: "#fff", marginTop: 4, lineHeight: 1.4 }}>
+                    {selectedSwap.notes}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Posted by */}
+            <div
+              style={{
+                margin: "0 16px 8px",
+                fontSize: 13,
+                color: "#6B7686",
+                ...POPPINS,
+              }}
+            >
+              Posted by {selectedSwap.instructor_name || "another instructor"}
+            </div>
+
+            {/* Action buttons */}
+            <div
+              style={{
+                margin: "0 16px",
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+              }}
+            >
+              {selectedSwap.instructor_phone && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    tapLight();
+                    window.open(`tel:${selectedSwap.instructor_phone}`, "_blank");
+                  }}
+                  style={{
+                    background: "#DCFCE7",
+                    color: "#15803D",
+                    borderRadius: 20,
+                    padding: 13,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    width: "100%",
+                    border: "none",
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    ...POPPINS,
+                  }}
+                >
+                  <IconPhone size={16} stroke={2} />
+                  Call instructor
+                </button>
+              )}
+              {selectedSwap.instructor_phone && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    tapLight();
+                    window.open(
+                      `sms:${selectedSwap.instructor_phone}?body=${encodeURIComponent(
+                        "Hi, I saw your test swap request on DSM. I may be able to help — can we chat?"
+                      )}`,
+                      "_blank"
+                    );
+                  }}
+                  style={{
+                    background: "#EFF6FF",
+                    color: "#1877D6",
+                    borderRadius: 20,
+                    padding: 13,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    width: "100%",
+                    border: "none",
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    ...POPPINS,
+                  }}
+                >
+                  <IconMessage size={16} stroke={2} />
+                  Send a text
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  tapLight();
+                  navigate({ to: "/messages" });
+                  setSelectedSwap(null);
+                }}
+                style={{
+                  background: "#fff",
+                  border: "1px solid #E4E8EF",
+                  color: "#0B1F3A",
+                  borderRadius: 20,
+                  padding: 13,
+                  fontSize: 14,
+                  fontWeight: 700,
+                  width: "100%",
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  ...POPPINS,
+                }}
+              >
+                <IconMessageCircle size={16} stroke={2} />
+                Message on DSM
+              </button>
+            </div>
+
+            {/* Dismiss button */}
+            <button
+              type="button"
+              onClick={() => setSelectedSwap(null)}
+              style={{
+                margin: "12px 16px 0",
+                background: "transparent",
+                color: "#9CA3AF",
+                fontSize: 13,
+                border: "none",
+                cursor: "pointer",
+                ...POPPINS,
+              }}
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );
