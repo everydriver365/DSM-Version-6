@@ -933,7 +933,7 @@ function TestSwapPage() {
   }
 
   useEffect(() => {
-    load();
+    // load();
   }, []);
 
   return (
