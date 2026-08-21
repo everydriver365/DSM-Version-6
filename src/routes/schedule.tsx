@@ -816,6 +816,11 @@ function SchedulePage() {
   const [allAvailability, setAllAvailability] = useState<any[]>([]);
   const [actionsLesson, setActionsLesson] = useState<any | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const closeActions = () => {
+    setActionsLesson(null);
+    setConfirmDelete(false);
+  };
+
 
   const [eolLesson, setEolLesson] = useState<any | null>(null);
   const [sendMessageOpen, setSendMessageOpen] = useState(false);
