@@ -503,7 +503,8 @@ function SwapCard({
 
           <button
             type="button"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               tapLight();
               setDetailsOpen((v) => !v);
             }}
