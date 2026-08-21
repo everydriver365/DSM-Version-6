@@ -397,25 +397,50 @@ function JobCard({
           ))}
       </div>
 
-      {isClaimed && badge && (
-        <div style={{ marginTop: 12, display: "flex" }}>
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              background: badge.bg,
-              color: badge.color,
-              borderRadius: 12,
-              padding: "8px 14px",
-              fontSize: tokens.fontSize.lg,
-              fontWeight: tokens.fontWeight.bold,
-              ...POPPINS,
-            }}
-          >
-            <span style={{ width: 8, height: 8, borderRadius: 999, background: badge.color }} />
-            {sentenceCase(badge.label)}
-          </span>
+      {isClaimed && (
+        <div
+          style={{
+            marginTop: 12,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+          }}
+        >
+          {badge && (
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: badge.bg,
+                color: badge.color,
+                borderRadius: 12,
+                padding: "8px 14px",
+                fontSize: tokens.fontSize.lg,
+                fontWeight: tokens.fontWeight.bold,
+                ...POPPINS,
+              }}
+            >
+              <span style={{ width: 8, height: 8, borderRadius: 999, background: badge.color }} />
+              {sentenceCase(badge.label)}
+            </span>
+          )}
+          {worth != null && (
+            <div
+              style={{
+                background: worth > 0 ? "#DCFCE7" : "#EEF1F5",
+                borderRadius: 12,
+                padding: "8px 14px",
+                fontSize: tokens.fontSize.xl,
+                fontWeight: tokens.fontWeight.extrabold,
+                color: NAVY,
+                ...POPPINS,
+              }}
+            >
+              £{worth.toFixed(2)}
+            </div>
+          )}
         </div>
       )}
 
