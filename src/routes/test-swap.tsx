@@ -108,18 +108,31 @@ function TestSwapPage() {
   const [rows, setRows] = useState<SwapRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    setUserId(user?.id ?? null);
     const { data, error } = await supabase
       .from("test_swap_requests")
-      .select("*")
+      .select(
+        "*, instructor:instructors!instructor_id(name, phone)"
+      )
       .order("created_at", { ascending: false });
     if (error) {
       toast.error("Could not load swap requests");
       setRows([]);
     } else {
-      setRows((data ?? []) as SwapRequest[]);
+      setRows(
+        ((data ?? []) as unknown[]).map((r: any) => ({
+          ...r,
+          instructor_name: r.instructor?.name ?? null,
+          instructor_phone: r.instructor?.phone ?? null,
+        })) as SwapRequest[]
+      );
     }
     setLoading(false);
   }
