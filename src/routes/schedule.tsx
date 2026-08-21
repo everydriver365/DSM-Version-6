@@ -2998,13 +2998,16 @@ function SchedulePage() {
               backgroundColor: "#fff",
               borderTopLeftRadius: 24,
               borderTopRightRadius: 24,
-              padding: "20px 16px 24px",
+              padding: "20px 16px calc(32px + env(safe-area-inset-bottom, 0px))",
               maxWidth: 480,
               width: "100%",
               margin: "0 auto",
               boxShadow: "0 -8px 30px rgba(0,0,0,0.2)",
+              maxHeight: "85vh",
+              overflowY: "auto",
             }}
           >
+
             {/* Drag handle */}
             <div
               style={{
@@ -3122,83 +3125,71 @@ function SchedulePage() {
                   Cancel lesson
                 </span>
               </button>
-              {confirmDelete ? (
-                <div
-                  style={{
-                    padding: "12px 16px",
-                    background: "#FEE2E2",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 8,
-                    borderRadius: 14,
-                  }}
-                >
-                  <span style={{ fontSize: 13, color: "#CC2229", fontWeight: 600, fontFamily: "Poppins, sans-serif" }}>
-                    Delete this lesson?
-                  </span>
-                  <div style={{ display: "flex", gap: 8 }}>
-                    <button
-                      type="button"
-                      onClick={() => setConfirmDelete(false)}
-                      style={{
-                        background: "#fff",
-                        color: "#0B1F3A",
-                        borderRadius: 20,
-                        padding: "6px 14px",
-                        fontSize: 12,
-                        fontWeight: 700,
-                        border: "1px solid #E4E8EF",
-                        cursor: "pointer",
-                        fontFamily: "Poppins, sans-serif",
-                      }}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        // Soft delete — set deleted_at
-                        await supabase
-                          .from("lessons")
-                          .update({ deleted_at: new Date().toISOString() })
-                          .eq("id", actionsLesson.id);
-                        closeActions();
+              {/* Delete */}
+              <div
+                style={{
+                  display: "flex", gap: 12,
+                  alignItems: "center",
+                  padding: "14px 16px",
+                  cursor: "pointer",
+                  background: confirmDelete
+                    ? "#FEE2E2" : "#fff",
+                  borderRadius: 14,
+                }}
+                onClick={() => {
+                  if (!confirmDelete) {
+                    setConfirmDelete(true);
+                  } else {
+                    // Soft delete
+                    supabase
+                      .from("lessons")
+                      .update({
+                        deleted_at: new Date()
+                          .toISOString(),
+                      })
+                      .eq("id", actionsLesson.id)
+                      .then(() => {
+                        setActionsLesson(null);
+                        setConfirmDelete(false);
                         toast.success("Lesson deleted");
                         // Refresh schedule
                         setLessonsReloadKey((k) => k + 1);
-                      }}
-                      style={{
-                        background: "#CC2229",
-                        color: "#fff",
-                        borderRadius: 20,
-                        padding: "6px 14px",
-                        fontSize: 12,
-                        fontWeight: 700,
-                        border: "none",
-                        cursor: "pointer",
-                        fontFamily: "Poppins, sans-serif",
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setConfirmDelete(true)}
+                      });
+                  }
+                }}
+              >
+                <IconTrash
+                  size={18}
+                  color="#CC2229"
+                  stroke={1.5}
+                />
+                <span
                   style={{
-                    display: "flex", alignItems: "center", gap: 12, padding: "14px 12px", borderRadius: 14,
-                    border: "none", background: "#FEE2E2", cursor: "pointer", textAlign: "left",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "#CC2229",
+                    flex: 1,
+                    fontFamily: "Poppins, sans-serif",
                   }}
                 >
-                  <IconTrash size={20} color="#CC2229" stroke={1.5} />
-                  <span style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: 500, color: "#CC2229" }}>
-                    Delete lesson
+                  {confirmDelete
+                    ? "Tap again to confirm delete"
+                    : "Delete lesson"}
+                </span>
+                {confirmDelete && (
+                  <span
+                    style={{
+                      fontSize: 11,
+                      color: "#CC2229",
+                      opacity: 0.7,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    Cannot be undone
                   </span>
-                </button>
-              )}
+                )}
+              </div>
+
             </div>
           </div>
         </div>
