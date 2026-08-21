@@ -1,6 +1,6 @@
 import { DSMToggle } from "@/components/dsm/DSMToggle";
 import { tokens } from "@/lib/tokens";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/dsm/PageHeader";
@@ -33,27 +33,6 @@ import {
 } from "@tabler/icons-react";
 
 
-export const Route = createFileRoute("/bitesize")({
-  head: () => ({
-    meta: [
-      { title: "DSM Bitesize — Short CPD videos for instructors" },
-      {
-        name: "description",
-        content:
-          "Bite-sized CPD videos for driving instructors: teaching techniques, DVSA updates, Standards Check prep and business tips.",
-      },
-      { property: "og:title", content: "DSM Bitesize — Short CPD videos" },
-      {
-        property: "og:description",
-        content:
-          "Bite-sized CPD videos for driving instructors: teaching techniques, DVSA updates and more.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: BitesizePage,
-});
 
 interface BitesizeVideo {
   id: string;
@@ -103,7 +82,7 @@ const inputStyle: React.CSSProperties = {
   ...POPPINS,
 };
 
-function BitesizePage() {
+export default function BitesizePageBody() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { tokens } from "@/lib/tokens";
 import { supabase } from "@/lib/supabaseClient";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { IconAward, IconBolt, IconCalendarOff, IconCheck, IconChevronRight, IconDownload, IconMovie, IconPlayerPlay, IconShoppingBag, IconStar, IconTrendingUp, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -9,17 +9,6 @@ import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import LearnLibrarySection from "@/components/learn/LearnLibrarySection";
 import LearnVideosSection from "@/components/learn/LearnVideosSection";
 
-export const Route = createFileRoute("/learn")({
-  head: () => ({
-    meta: [
-      { title: "Learn — DSM" },
-      { name: "description", content: "Quick guides and how-to videos to help you get more out of DSM." },
-      { property: "og:title", content: "Learn — DSM" },
-      { property: "og:description", content: "Quick guides and how-to videos to help you get more out of DSM." },
-    ],
-  }),
-  component: LearnPage,
-});
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
@@ -400,7 +389,7 @@ function GuideRow({ g, onGo, isLast }: { g: Guide; onGo: () => void; isLast: boo
   );
 }
 
-function LearnPage() {
+export default function LearnPageBody() {
   const navigate = useNavigate();
   const [playing, setPlaying] = useState<Video | null>(null);
   const [playbackSrc, setPlaybackSrc] = useState<string | null>(null);

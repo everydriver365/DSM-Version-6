@@ -1,6 +1,6 @@
 import { DSMToggle } from "@/components/dsm/DSMToggle";
 import { tokens } from "@/lib/tokens";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/dsm/PageHeader";
@@ -36,27 +36,6 @@ import {
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const db = supabase as any;
 
-export const Route = createFileRoute("/showcase")({
-  head: () => ({
-    meta: [
-      { title: "DSM Showcase — Community clips from driving instructors" },
-      {
-        name: "description",
-        content:
-          "Watch and share short community clips from driving instructors: lesson moments, test passes, tips and behind-the-scenes.",
-      },
-      { property: "og:title", content: "DSM Showcase — Community clips" },
-      {
-        property: "og:description",
-        content:
-          "Watch and share short community clips from driving instructors across the UK.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: ShowcasePage,
-});
 
 interface ShowcaseVideo {
   id: string;
@@ -151,7 +130,7 @@ const inputStyle: React.CSSProperties = {
   ...POPPINS,
 };
 
-function ShowcasePage() {
+export default function ShowcasePageBody() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
