@@ -13,6 +13,7 @@ import {
   IconPhone,
   IconTrash,
   IconCheck,
+  IconSearch,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -749,37 +750,47 @@ function SwapRequestList({
   rows,
   userId,
   onRefresh,
+  onNew,
 }: {
   rows: SwapRequest[];
   userId: string | null;
   onRefresh: () => void;
+  onNew: () => void;
 }) {
   const [filterCentre, setFilterCentre] = useState("");
   const [filterCentreResults, setFilterCentreResults] = useState<any[]>([]);
-  const [filterDate, setFilterDate] = useState("");
+  const [filterFrom, setFilterFrom] = useState("");
+  const [filterTo, setFilterTo] = useState("");
   const [filterTimeFrom, setFilterTimeFrom] = useState("");
   const [filterTimeTo, setFilterTimeTo] = useState("");
-  const [filtersExpanded, setFiltersExpanded] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [tab, setTab] = useState<"all" | "mine" | "matches">("all");
 
   const myRequests = rows.filter((r) => r.instructor_id === userId);
   const communityRequests = rows.filter((r) => r.instructor_id !== userId);
 
   const filtered = communityRequests.filter((r) => {
     if (filterCentre && !r.test_centre?.toLowerCase().includes(filterCentre.toLowerCase())) return false;
-    if (filterDate && r.current_test_date !== filterDate) return false;
+    if (filterFrom && r.current_test_date && r.current_test_date < filterFrom) return false;
+    if (filterTo && r.current_test_date && r.current_test_date > filterTo) return false;
     const rTime = normalizeTime(r.current_test_time);
     if (filterTimeFrom && rTime && rTime < filterTimeFrom) return false;
     if (filterTimeTo && rTime && rTime > filterTimeTo) return false;
     return true;
   });
 
-  const activeFilterCount = [filterCentre, filterDate, filterTimeFrom, filterTimeTo].filter(Boolean).length;
+  const matched = rows.filter((r) => (r.status ?? "").toLowerCase() === "matched");
+
+  const activeFilterCount = [filterCentre, filterFrom, filterTo, filterTimeFrom, filterTimeTo].filter(
+    Boolean
+  ).length;
   const hasActiveFilters = activeFilterCount > 0;
 
   function clearFilters() {
     setFilterCentre("");
     setFilterCentreResults([]);
-    setFilterDate("");
+    setFilterFrom("");
+    setFilterTo("");
     setFilterTimeFrom("");
     setFilterTimeTo("");
   }
@@ -804,298 +815,439 @@ function SwapRequestList({
     setFilterCentreResults([]);
   }
 
+  const searchFieldLabel: React.CSSProperties = {
+    color: "#6B7686",
+    fontSize: 13,
+    marginBottom: 6,
+    ...POPPINS,
+  };
+
+  const searchInput: React.CSSProperties = {
+    width: "100%",
+    background: "#fff",
+    border: "1px solid #E4E8EF",
+    borderRadius: 12,
+    padding: "11px 12px",
+    fontSize: 14,
+    color: tokens.navy,
+    boxSizing: "border-box",
+    ...POPPINS,
+  };
+
+  const tabs = [
+    { key: "all" as const, label: "All" },
+    { key: "mine" as const, label: "My requests" },
+    { key: "matches" as const, label: "Matches" },
+  ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      {/* My requests */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* Search swaps card */}
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 18,
+          boxShadow: "0 1px 4px rgba(11,31,58,0.08)",
+          padding: 18,
+          display: "flex",
+          flexDirection: "column",
+          gap: 14,
+        }}
+      >
+        <div
+          style={{
+            color: tokens.navy,
+            fontSize: 17,
+            fontWeight: tokens.fontWeight.bold,
+            ...SORA,
+          }}
+        >
+          Search swaps
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 12,
+          }}
+        >
+          <div style={{ gridColumn: "1 / -1", position: "relative" }}>
+            <div style={searchFieldLabel}>Test centre</div>
+            <div style={{ position: "relative" }}>
+              <IconMapPin
+                size={16}
+                stroke={2}
+                color="#9CA3AF"
+                style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}
+              />
+              <input
+                type="text"
+                placeholder="All test centres"
+                value={filterCentre}
+                onChange={handleCentreSearch}
+                style={{ ...searchInput, paddingLeft: 36 }}
+              />
+            </div>
+            {filterCentreResults.length > 0 && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: 0,
+                  right: 0,
+                  marginTop: 4,
+                  background: "#fff",
+                  borderRadius: 12,
+                  boxShadow: "0 4px 12px rgba(11,31,58,0.12)",
+                  zIndex: 10,
+                  overflow: "hidden",
+                }}
+              >
+                {filterCentreResults.map((c) => (
+                  <button
+                    key={String(c.id)}
+                    type="button"
+                    onClick={() => selectCentre(c)}
+                    style={{
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "10px 12px",
+                      border: "none",
+                      background: "transparent",
+                      borderBottom: "1px solid #E4E8EF",
+                      cursor: "pointer",
+                      fontSize: 14,
+                      color: tokens.navy,
+                      ...POPPINS,
+                    }}
+                  >
+                    {c.name}
+                    {c.town ? ` — ${c.town}` : ""}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <div style={searchFieldLabel}>From date</div>
+            <input
+              type="date"
+              value={filterFrom}
+              onChange={(e) => setFilterFrom(e.target.value)}
+              style={searchInput}
+            />
+          </div>
+
+          <div>
+            <div style={searchFieldLabel}>To date</div>
+            <input
+              type="date"
+              value={filterTo}
+              onChange={(e) => setFilterTo(e.target.value)}
+              style={searchInput}
+            />
+          </div>
+        </div>
+
+        {moreOpen && (
+          <div>
+            <div
+              style={{
+                color: "#9CA3AF",
+                fontSize: 11,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                marginBottom: 6,
+                ...POPPINS,
+              }}
+            >
+              TIME WINDOW
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <input
+                type="time"
+                value={filterTimeFrom}
+                onChange={(e) => setFilterTimeFrom(e.target.value)}
+                style={{ ...searchInput, flex: 1 }}
+              />
+              <span style={{ color: tokens.textSecondary, fontSize: 13, ...POPPINS }}>to</span>
+              <input
+                type="time"
+                value={filterTimeTo}
+                onChange={(e) => setFilterTimeTo(e.target.value)}
+                style={{ ...searchInput, flex: 1 }}
+              />
+            </div>
+          </div>
+        )}
+
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
+            gap: 12,
           }}
         >
-          <span
+          <button
+            type="button"
+            onClick={() => {
+              tapLight();
+              setMoreOpen((v) => !v);
+            }}
             style={{
-              color: "#9CA3AF",
-              fontSize: 11,
-              fontWeight: 700,
-              textTransform: "uppercase",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: "transparent",
+              border: "none",
+              padding: 0,
+              color: tokens.blue,
+              fontSize: 14,
+              fontWeight: tokens.fontWeight.bold,
+              cursor: "pointer",
               ...POPPINS,
             }}
           >
-            MY SWAP REQUESTS
-          </span>
-          <span style={{ color: "#1877D6", fontSize: 11, ...POPPINS }}>
-            {myRequests.length} active
-          </span>
-        </div>
+            <IconFilter size={16} stroke={2} />
+            More filters
+            {hasActiveFilters && (
+              <span
+                style={{
+                  background: tokens.blue,
+                  color: "#fff",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  borderRadius: 999,
+                  padding: "2px 6px",
+                }}
+              >
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
 
-        {myRequests.length === 0 ? (
-          <div style={{ padding: 16, textAlign: "center" }}>
-            <div style={{ color: "#9CA3AF", fontSize: 13, ...POPPINS }}>
-              No active swap requests
-            </div>
-            <div style={{ color: "#9CA3AF", fontSize: 13, marginTop: 4, ...POPPINS }}>
-              Post a request to find a swap
-            </div>
-          </div>
-        ) : (
-          myRequests.map((r) => (
-            <MyRequestCard key={String(r.id)} request={r} onRefresh={onRefresh} />
-          ))
-        )}
-      </div>
-      {communityRequests.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <SectionHeader title="Community requests" count={filtered.length} />
-
-          {/* Filter card */}
-          <div
-            style={{
-              background: "#EEF2F7",
-              borderRadius: 16,
-              padding: filtersExpanded ? "14px 16px" : "10px 14px",
-              display: "flex",
-              flexDirection: "column",
-              gap: filtersExpanded ? 14 : 0,
-            }}
-          >
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "#CC2229",
+                  fontSize: 12,
+                  fontWeight: tokens.fontWeight.bold,
+                  cursor: "pointer",
+                  padding: 0,
+                  ...POPPINS,
+                }}
+              >
+                Clear
+              </button>
+            )}
             <button
               type="button"
               onClick={() => {
                 tapLight();
-                setFiltersExpanded((v) => !v);
+                setTab("all");
               }}
               style={{
-                display: "flex",
+                display: "inline-flex",
                 alignItems: "center",
-                justifyContent: "space-between",
-                width: "100%",
-                background: "transparent",
+                gap: 8,
+                background: tokens.blue,
+                color: "#fff",
                 border: "none",
-                padding: 0,
+                borderRadius: 12,
+                padding: "12px 18px",
+                fontSize: 14,
+                fontWeight: tokens.fontWeight.bold,
                 cursor: "pointer",
                 ...POPPINS,
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <IconFilter size={15} color="#9CA3AF" stroke={2} />
-                <span
-                  style={{
-                    color: "#9CA3AF",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  FILTER SWAPS
-                </span>
-                {hasActiveFilters && (
-                  <span
-                    style={{
-                      background: tokens.blue,
-                      color: "#fff",
-                      fontSize: 10,
-                      fontWeight: 700,
-                      borderRadius: 999,
-                      padding: "2px 6px",
-                    }}
-                  >
-                    {activeFilterCount}
-                  </span>
-                )}
-              </div>
-              <IconChevronDown
-                size={18}
-                color="#9CA3AF"
-                stroke={2}
-                style={{
-                  transform: filtersExpanded ? "rotate(180deg)" : "rotate(0deg)",
-                  transition: "transform 200ms ease",
-                }}
-              />
+              <IconSearch size={16} stroke={2.2} />
+              Search swaps
             </button>
-
-            {filtersExpanded && (
-              <>
-                {/* Test centre search */}
-                <div style={{ position: "relative" }}>
-                  <input
-                    type="text"
-                    placeholder="Search test centre..."
-                    value={filterCentre}
-                    onChange={handleCentreSearch}
-                    style={{
-                      ...fieldStyle,
-                      borderRadius: 12,
-                      padding: "10px 12px",
-                      fontSize: 14,
-                    }}
-                  />
-                  {filterCentreResults.length > 0 && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "100%",
-                        left: 0,
-                        right: 0,
-                        marginTop: 4,
-                        background: "#fff",
-                        borderRadius: 12,
-                        boxShadow: "0 4px 12px rgba(11,31,58,0.12)",
-                        zIndex: 10,
-                        overflow: "hidden",
-                      }}
-                    >
-                      {filterCentreResults.map((c) => (
-                        <button
-                          key={String(c.id)}
-                          type="button"
-                          onClick={() => selectCentre(c)}
-                          style={{
-                            width: "100%",
-                            textAlign: "left",
-                            padding: "10px 12px",
-                            border: "none",
-                            background: "transparent",
-                            borderBottom: "1px solid #E4E8EF",
-                            cursor: "pointer",
-                            ...POPPINS,
-                            fontSize: 14,
-                            color: tokens.navy,
-                          }}
-                        >
-                          {c.name}
-                          {c.town ? ` — ${c.town}` : ""}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Test date */}
-                <div>
-                  <div
-                    style={{
-                      color: "#9CA3AF",
-                      fontSize: 11,
-                      fontWeight: 700,
-                      textTransform: "uppercase",
-                      marginBottom: 6,
-                      ...POPPINS,
-                    }}
-                  >
-                    TEST DATE
-                  </div>
-                  <input
-                    type="date"
-                    value={filterDate}
-                    onChange={(e) => setFilterDate(e.target.value)}
-                    placeholder="Any date"
-                    style={{
-                      ...fieldStyle,
-                      borderRadius: 12,
-                      padding: "10px 12px",
-                      fontSize: 14,
-                    }}
-                  />
-                </div>
-
-                {/* Time range */}
-                <div>
-                  <div
-                    style={{
-                      color: "#9CA3AF",
-                      fontSize: 11,
-                      fontWeight: 700,
-                      textTransform: "uppercase",
-                      marginBottom: 6,
-                      ...POPPINS,
-                    }}
-                  >
-                    TIME WINDOW
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <input
-                      type="time"
-                      value={filterTimeFrom}
-                      onChange={(e) => setFilterTimeFrom(e.target.value)}
-                      style={{
-                        ...fieldStyle,
-                        borderRadius: 12,
-                        padding: "10px 12px",
-                        fontSize: 14,
-                        flex: 1,
-                      }}
-                    />
-                    <span style={{ color: tokens.textSecondary, fontSize: 13, ...POPPINS }}>to</span>
-                    <input
-                      type="time"
-                      value={filterTimeTo}
-                      onChange={(e) => setFilterTimeTo(e.target.value)}
-                      style={{
-                        ...fieldStyle,
-                        borderRadius: 12,
-                        padding: "10px 12px",
-                        fontSize: 14,
-                        flex: 1,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                {/* Clear all */}
-                {hasActiveFilters && (
-                  <button
-                    type="button"
-                    onClick={clearFilters}
-                    style={{
-                      alignSelf: "flex-start",
-                      background: "transparent",
-                      border: "none",
-                      color: "#CC2229",
-                      fontSize: 12,
-                      fontWeight: tokens.fontWeight.bold,
-                      cursor: "pointer",
-                      padding: 0,
-                      ...POPPINS,
-                    }}
-                  >
-                    Clear all
-                  </button>
-                )}
-              </>
-            )}
           </div>
+        </div>
+      </div>
 
-          {/* Results count */}
-          <div style={{ color: "#9CA3AF", fontSize: 12, ...POPPINS }}>
-            {filtered.length} swap request{filtered.length !== 1 ? "s" : ""} found
-          </div>
+      {/* Tabs */}
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 16,
+          boxShadow: "0 1px 4px rgba(11,31,58,0.06)",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          overflow: "hidden",
+        }}
+      >
+        {tabs.map((t) => {
+          const active = tab === t.key;
+          return (
+            <button
+              key={t.key}
+              type="button"
+              onClick={() => {
+                tapLight();
+                setTab(t.key);
+              }}
+              style={{
+                background: "transparent",
+                border: "none",
+                borderBottom: active ? `3px solid ${tokens.blue}` : "3px solid transparent",
+                padding: "14px 6px",
+                fontSize: 14,
+                fontWeight: tokens.fontWeight.bold,
+                color: active ? tokens.blue : "#6B7686",
+                cursor: "pointer",
+                ...POPPINS,
+              }}
+            >
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
 
+      {/* Lists */}
+      {tab === "all" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {filtered.map((r) => (
             <SwapCard key={String(r.id)} request={r} mode="community" onRefresh={onRefresh} />
           ))}
-          {filtered.length === 0 && hasActiveFilters && (
+          {filtered.length === 0 && (
             <div
               style={{
                 color: tokens.textSecondary,
                 fontSize: 14,
-                ...POPPINS,
                 textAlign: "center",
                 padding: "20px 0",
+                ...POPPINS,
               }}
             >
-              No swap requests match your filters
+              No swap requests match your search
             </div>
           )}
         </div>
       )}
+
+      {tab === "mine" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {myRequests.length === 0 ? (
+            <div style={{ padding: 16, textAlign: "center" }}>
+              <div style={{ color: "#9CA3AF", fontSize: 13, ...POPPINS }}>No active swap requests</div>
+              <div style={{ color: "#9CA3AF", fontSize: 13, marginTop: 4, ...POPPINS }}>
+                Post a request to find a swap
+              </div>
+            </div>
+          ) : (
+            myRequests.map((r) => (
+              <MyRequestCard key={String(r.id)} request={r} onRefresh={onRefresh} />
+            ))
+          )}
+        </div>
+      )}
+
+      {tab === "matches" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {matched.length === 0 ? (
+            <div
+              style={{
+                color: "#9CA3AF",
+                fontSize: 13,
+                textAlign: "center",
+                padding: 16,
+                ...POPPINS,
+              }}
+            >
+              No matched swaps yet
+            </div>
+          ) : (
+            matched.map((r) => (
+              <SwapCard
+                key={String(r.id)}
+                request={r}
+                mode={r.instructor_id === userId ? "mine" : "community"}
+                onRefresh={onRefresh}
+              />
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Footer prompt */}
+      <div
+        style={{
+          background: "#F5F7FA",
+          borderRadius: 16,
+          padding: 16,
+          display: "flex",
+          alignItems: "center",
+          gap: 14,
+        }}
+      >
+        <div
+          style={{
+            width: 42,
+            height: 42,
+            borderRadius: "50%",
+            background: "#E6F1FB",
+            color: tokens.blue,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <IconSearch size={20} stroke={2} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div
+            style={{
+              color: tokens.navy,
+              fontSize: 14,
+              fontWeight: tokens.fontWeight.bold,
+              ...SORA,
+            }}
+          >
+            Can’t find what you’re looking for?
+          </div>
+          <div style={{ color: "#6B7686", fontSize: 13, marginTop: 2, ...POPPINS }}>
+            Try adjusting your search filters or create a new request.
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            tapLight();
+            onNew();
+          }}
+          style={{
+            background: "#fff",
+            color: tokens.blue,
+            border: `1px solid ${tokens.blue}`,
+            borderRadius: 12,
+            padding: "10px 14px",
+            fontSize: 13,
+            fontWeight: tokens.fontWeight.bold,
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+            ...POPPINS,
+          }}
+        >
+          New request
+        </button>
+      </div>
     </div>
   );
 }
+
 
 function TestSwapPage() {
   const navigate = useNavigate();
@@ -1179,7 +1331,7 @@ function TestSwapPage() {
             action={{ label: "New request", onClick: () => setSheetOpen(true) }}
           />
         ) : (
-          <SwapRequestList rows={rows} userId={userId} onRefresh={load} />
+          <SwapRequestList rows={rows} userId={userId} onRefresh={load} onNew={() => setSheetOpen(true)} />
         )}
       </div>
 
