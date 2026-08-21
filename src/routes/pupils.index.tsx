@@ -1102,7 +1102,7 @@ function PupilsIndexPage() {
           display: "flex",
           background: "#F4F6FA",
           borderRadius: 18,
-          padding: 5,
+          padding: 4,
           overflowX: "auto",
           scrollbarWidth: "none",
         }}
@@ -1114,17 +1114,17 @@ function PupilsIndexPage() {
             <button
               key={tab.key}
               type="button"
-              onClick={() => setStatusFilter(tab.key)}
+              onClick={() => { tapLight(); setStatusFilter(tab.key); }}
               style={{
                 flex: 1,
                 flexShrink: 0,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 6,
+                gap: 4,
                 textAlign: "center",
-                padding: "12px 6px",
-                fontSize: 14,
+                padding: "8px 4px",
+                fontSize: 13,
                 fontFamily: "Poppins, sans-serif",
                 cursor: "pointer",
                 border: "none",
@@ -1134,24 +1134,24 @@ function PupilsIndexPage() {
                 borderRadius: 14,
                 fontWeight: active ? 700 : 600,
                 whiteSpace: "nowrap",
+                minWidth: 64,
               }}
             >
               <span>{tab.label}</span>
               <span
                 style={{
-                  fontSize: 12,
+                  fontSize: 11,
                   fontWeight: tokens.fontWeight.bold,
-                  padding: "2px 7px",
+                  padding: "1px 5px",
                   borderRadius: 999,
                   background: active ? tokens.blue : "transparent",
                   color: active ? "#FFFFFF" : "#6B7280",
-                  minWidth: 18,
-                  lineHeight: "16px",
+                  minWidth: 16,
+                  lineHeight: "15px",
                 }}
               >
                 {count}
               </span>
-
             </button>
           );
         })}
