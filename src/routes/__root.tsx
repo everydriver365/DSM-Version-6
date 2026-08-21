@@ -33,7 +33,9 @@ import { EventToastController, emitLiveEvent, type LiveEventKind } from "../comp
 import { MessageAlert } from "../components/dsm/MessageAlert";
 
 import { Toaster } from "@/components/ui/sonner";
-import { toast } from "sonner";
+
+
+
 
 
 
@@ -760,31 +762,6 @@ function RootComponent() {
 
 
 
-
-  // Offline/online toast notifications.
-  useEffect(() => {
-    function handleOffline() {
-      toast.error('No internet connection', {
-        duration: Infinity,
-        id: 'offline-toast',
-        icon: '📡',
-      });
-    }
-    function handleOnline() {
-      toast.dismiss('offline-toast');
-      toast.success('Back online', {
-        duration: 2000,
-        id: 'online-toast',
-        icon: '✅',
-      });
-    }
-    window.addEventListener('offline', handleOffline);
-    window.addEventListener('online', handleOnline);
-    return () => {
-      window.removeEventListener('offline', handleOffline);
-      window.removeEventListener('online', handleOnline);
-    };
-  }, []);
 
   // Register the service worker only. Permission is requested by the
   useEffect(() => {
