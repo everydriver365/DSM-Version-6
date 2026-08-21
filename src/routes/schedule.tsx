@@ -1445,6 +1445,7 @@ function SchedulePage() {
         flexDirection: "column",
         background: tokens.navy,
         color: "#111827",
+        overflowY: addLessonOpen || personalSheetOpen || addChooserOpen ? "hidden" : undefined,
         ...POPPINS,
       }}
     >
