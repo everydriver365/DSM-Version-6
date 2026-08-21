@@ -13,6 +13,7 @@ import {
   IconPhone,
   IconTrash,
   IconCheck,
+  IconSearch,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -1330,7 +1331,7 @@ function TestSwapPage() {
             action={{ label: "New request", onClick: () => setSheetOpen(true) }}
           />
         ) : (
-          <SwapRequestList rows={rows} userId={userId} onRefresh={load} />
+          <SwapRequestList rows={rows} userId={userId} onRefresh={load} onNew={() => setSheetOpen(true)} />
         )}
       </div>
 
