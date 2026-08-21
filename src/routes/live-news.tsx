@@ -678,7 +678,7 @@ function LiveNewsPage() {
       <div
         style={{
           flexShrink: 0,
-          margin: "-22px 12px 0",
+          margin: "-14px 12px 0",
           background: "#fff",
           borderRadius: 24,
           boxShadow: "0 12px 30px -14px rgba(11,31,58,0.28)",
