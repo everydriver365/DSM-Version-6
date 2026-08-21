@@ -293,6 +293,32 @@ export default function BitesizePageBody() {
 
   return (
     <div style={{ background: "#DCE4F0", ...POPPINS }}>
+      {isAdmin && (
+  <div style={{ display: "flex", justifyContent: "flex-end", padding: "10px 16px 0" }}>
+          <button
+            type="button"
+            aria-label="Upload video"
+            onClick={() => setUploadOpen(true)}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              borderRadius: tokens.radiusCard,
+              border: "none",
+              background: "#0B1F3A",
+              color: "#fff",
+              padding: "8px 14px",
+              fontSize: 13,
+              fontWeight: tokens.fontWeight.semibold,
+              cursor: "pointer",
+              ...POPPINS,
+            }}
+          >
+            <IconPlus size={16} />
+            Upload video
+          </button>
+        </div>)}
+
 
       {/* CATEGORY CHIPS */}
       <div
