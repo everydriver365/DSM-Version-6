@@ -4,7 +4,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
-import { IconAlertTriangleFilled, IconBell, IconArrowsUpDown, IconCalendar, IconChevronRight, IconCirclePlus, IconDotsVertical, IconMessageCircle, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
+import { IconAlertTriangleFilled, IconBell, IconCalendar, IconChevronRight, IconCirclePlus, IconDotsVertical, IconMessageCircle, IconPlus, IconSearch, IconSpeakerphone, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { tapLight, tapMedium, tapHeavy, hapticSuccess } from "@/lib/haptics";
@@ -177,7 +177,7 @@ function PupilsIndexPage() {
   const [nextLessonMap, setNextLessonMap] = useState<Record<string, string>>({});
   const [testDateMap, setTestDateMap] = useState<Record<string, string>>({});
   const [lastLessonMap, setLastLessonMap] = useState<Record<string, string>>({});
-  const [sortBy, setSortBy] = useState<"name" | "balance" | "next_lesson">("name");
+  const sortBy: "name" | "balance" | "next_lesson" = "name";
   const [statusFilter, setStatusFilter] = useState<StatusKey>("active");
   const { pullToRefreshProps } = usePullToRefresh({
     onRefresh: async () => {
@@ -1054,14 +1054,14 @@ function PupilsIndexPage() {
           className="inline-flex items-center justify-center"
           style={{
             flex: 1,
-            gap: 6,
+            gap: 8,
             height: 52,
             borderRadius: 26,
             backgroundColor: tokens.blue,
             boxShadow: "0 6px 16px rgba(24,119,214,0.28)",
           }}
         >
-          <IconCirclePlus size={18} color="#FFFFFF" stroke={2} />
+          <IconCirclePlus size={20} color="#FFFFFF" stroke={2} />
           <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.bold, color: tokens.white, whiteSpace: "nowrap", ...POPPINS }}>
             Add pupil
           </span>
@@ -1072,7 +1072,7 @@ function PupilsIndexPage() {
           className="inline-flex items-center justify-center"
           style={{
             flex: 1,
-            gap: 6,
+            gap: 8,
             height: 52,
             borderRadius: 26,
             backgroundColor: tokens.white,
@@ -1080,7 +1080,7 @@ function PupilsIndexPage() {
             boxShadow: "0 2px 8px rgba(11,31,58,0.06)",
           }}
         >
-          <IconMessageCircle size={18} color={tokens.navy} stroke={1.8} />
+          <IconMessageCircle size={19} color={tokens.navy} stroke={1.8} />
           <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.bold, color: tokens.navy, whiteSpace: "nowrap", ...POPPINS }}>
             Message all
           </span>
@@ -1319,7 +1319,7 @@ function PupilsIndexPage() {
                   </span>
                   <button
                     type="button"
-                    onClick={() => { tapLight(); setSortBy("balance"); }}
+                    onClick={() => tapLight()}
                     style={{
                       background: 'transparent',
                       border: 'none',
