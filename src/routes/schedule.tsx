@@ -3102,14 +3102,68 @@ function EntryRow({
     );
   }
   if (entry.kind === "personal") {
+    const privatePill = (
+      <span
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 4,
+          background: "#EDE9FE",
+          color: "#7C3AED",
+          fontSize: 9,
+          fontWeight: 800,
+          borderRadius: 20,
+          padding: "2px 8px",
+          letterSpacing: "0.08em",
+          fontFamily: "Poppins, sans-serif",
+          flexShrink: 0,
+        }}
+      >
+        <IconLock size={9} color="#7C3AED" stroke={2} />
+        PRIVATE
+      </span>
+    );
+    const allDayPill = (
+      <span
+        style={{
+          background: "#EFF6FF",
+          color: "#1877D6",
+          fontSize: 9,
+          fontWeight: 800,
+          borderRadius: 20,
+          padding: "3px 8px",
+          letterSpacing: "0.08em",
+          fontFamily: "Poppins, sans-serif",
+          flexShrink: 0,
+        }}
+      >
+        ALL DAY
+      </span>
+    );
     return (
-      <div style={rowBase("#E8B84B", false)}>
-        <div style={rowTitle}>{entry.title}</div>
-        {!entry.allDay ? (
-          <div style={rowSub}>
-            {fmtTime(entry.start)} – {fmtTime(entry.end)}
-          </div>
-        ) : null}
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 16,
+          border: "2px solid #1877D6",
+          padding: "14px 16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 4,
+          ...POPPINS,
+        }}
+      >
+        <div style={{ fontSize: tokens.fontSize.md, color: "#0B1F3A", fontWeight: tokens.fontWeight.medium, lineHeight: 1.3 }}>
+          {entry.title}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
+          {entry.allDay ? allDayPill : (
+            <div style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, fontVariantNumeric: "tabular-nums" }}>
+              {fmtTime(entry.start)} – {fmtTime(entry.end)}
+            </div>
+          )}
+          {privatePill}
+        </div>
       </div>
     );
   }
