@@ -488,7 +488,7 @@ function LiveNewsPage() {
       <button
         key={key}
         type="button"
-        onClick={() => setActiveTab(key)}
+        onClick={() => goToTab(key)}
         style={{
           flex: 1,
           padding: "12px 0",
