@@ -213,7 +213,7 @@ function MockTestsPage() {
                 const resultColor = passed ? "#166534" : failed ? "#991B1B" : "#6B7280";
                 const resultIcon = passed ? <IconCheck size={14} color={resultColor} stroke={2.5} /> : failed ? <IconX size={14} color={resultColor} stroke={2.5} /> : null;
                 return (
-                  <Card key={r.id} style={{ padding: 14 }}>
+                  <Card key={r.id} style={{ padding: 14, borderRadius: 16 }}>
                     <div className="flex items-start" style={{ gap: 12 }}>
                       <div
                         className="flex items-center justify-center text-white text-[14px] font-bold shrink-0"
