@@ -580,6 +580,7 @@ function RootComponent() {
   const useWhiteBg = whiteBgPaths.has(pathname);
 
   const wrapperStyle: Record<string, string | number> = {};
+  wrapperStyle.paddingTop = 'env(safe-area-inset-top, 0px)';
   if (!hideNav) {
     wrapperStyle.paddingBottom =
       'calc(80px + env(safe-area-inset-bottom, 0px))';
