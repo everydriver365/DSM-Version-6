@@ -896,9 +896,10 @@ function PupilsIndexPage() {
     >
       <header
         style={{
-          height: "calc(max(env(safe-area-inset-top, 0px), 24px) + 86px)",
+          height: "calc(max(env(safe-area-inset-top, 0px), 24px) + 118px)",
           flexShrink: 0,
-          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 13px) 22px 28px",
+          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 14px) 22px 30px",
+
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "space-between",
