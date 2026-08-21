@@ -679,14 +679,14 @@ function PupilsIndexPage() {
         className="block cursor-pointer select-none"
         style={{
           background: "transparent",
-          padding: "13px 16px",
+          padding: "14px 16px",
           WebkitTouchCallout: "none",
           transition: "transform 0.1s ease, opacity 0.1s ease",
         }}
       >
-        <div className="flex items-center" style={{ gap: 12 }}>
+        <div className="flex items-center" style={{ gap: 14 }}>
           <div style={{ position: "relative", flexShrink: 0 }}>
-            <PupilAvatar pupil={p} size={44} />
+            <PupilAvatar pupil={p} size={56} />
             {unread > 0 && (
               <span
                 aria-label={`${unread} unread messages`}
@@ -694,10 +694,25 @@ function PupilsIndexPage() {
                   position: "absolute",
                   top: 0,
                   right: 0,
-                  width: 11,
-                  height: 11,
+                  width: 13,
+                  height: 13,
                   borderRadius: "50%",
                   background: tokens.red,
+                  border: "2px solid #fff",
+                }}
+              />
+            )}
+            {!unread && nextLesson && (
+              <span
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  top: 1,
+                  right: 1,
+                  width: 13,
+                  height: 13,
+                  borderRadius: "50%",
+                  background: "#22C55E",
                   border: "2px solid #fff",
                 }}
               />
@@ -707,58 +722,88 @@ function PupilsIndexPage() {
           <div className="min-w-0 flex-1 flex flex-col">
             <div
               className="truncate"
-              style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, ...POPPINS }}
+              style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, color: tokens.navy, letterSpacing: "-0.2px", ...POPPINS }}
             >
               {displayName(p.name)}
             </div>
-            <div className="flex flex-wrap items-center" style={{ gap: 6, marginTop: 4 }}>
-              {hasBalance ? (
-                <span style={{ ...PILL_BASE, backgroundColor: "#FCEBEB", color: tokens.red }}>
-                  £{balanceOwed.toFixed(2)} owed
-                </span>
-              ) : (
-                <span style={{ ...PILL_BASE, backgroundColor: "#DDEFE1", color: "#15803D" }}>
-                  All paid
-                </span>
-              )}
-              {testResultState === "passed" ? (
-                <span style={{ ...PILL_BASE, backgroundColor: "#DDEFE1", color: "#15803D" }}>
-                  ✓ Passed
-                </span>
-              ) : testResultState === "failed" ? (
-                <span style={{ ...PILL_BASE, backgroundColor: "#FEF3C7", color: "#B45309" }}>
-                  Retest
-                </span>
-              ) : null}
-              {!testResultState && testSoon && testDate && (
-                <span style={{ ...PILL_BASE, backgroundColor: "#FEF3C7", color: "#B45309" }}>
-                  🎯 Test {formatShortDate(testDate)}
-                </span>
-              )}
-              <span style={{ ...PILL_BASE, backgroundColor: pricing.bg, color: pricing.fg }}>
-                {pricing.label}
+
+            <div className="flex flex-wrap items-center" style={{ gap: 6, marginTop: 2 }}>
+              <span
+                style={{
+                  fontSize: 13.5,
+                  fontWeight: tokens.fontWeight.semibold,
+                  color: hasBalance ? tokens.red : "#15803D",
+                  ...POPPINS,
+                }}
+              >
+                {hasBalance ? `£${balanceOwed.toFixed(2)} overdue` : "All paid"}
               </span>
+
+              {testResultState === "failed" ? (
+                <>
+                  <span style={{ color: "#C7CEDA", fontSize: 13 }}>·</span>
+                  <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: "#D97706", ...POPPINS }}>
+                    Retest
+                  </span>
+                </>
+              ) : testResultState === "passed" ? (
+                <>
+                  <span style={{ color: "#C7CEDA", fontSize: 13 }}>·</span>
+                  <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: "#15803D", ...POPPINS }}>
+                    ✓ Passed
+                  </span>
+                </>
+              ) : testSoon && testDate ? (
+                <>
+                  <span style={{ color: "#C7CEDA", fontSize: 13 }}>·</span>
+                  <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: "#D97706", ...POPPINS }}>
+                    🎯 Test {formatShortDate(testDate)}
+                  </span>
+                </>
+              ) : prepaid > 0 ? (
+                <>
+                  <span style={{ color: "#C7CEDA", fontSize: 13 }}>·</span>
+                  <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: tokens.blue, ...POPPINS }}>
+                    {prepaid} hrs remaining
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span style={{ color: "#C7CEDA", fontSize: 13 }}>·</span>
+                  <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: "#8A94A6", ...POPPINS }}>
+                    {pricing.label}
+                  </span>
+                </>
+              )}
             </div>
-            {(lp || nextLesson) && (
-              <div style={{ fontSize: tokens.fontSize.sm, color: "#B0BAC9", marginTop: 3, ...POPPINS }}>
-                {lp
-                  ? `Last seen: ${formatRelativeDate(lp.date)}`
-                  : `Next: ${formatShortDate(nextLesson)}`}
-              </div>
-            )}
+
+            <div style={{ fontSize: 13, color: "#8A94A6", marginTop: 3, ...POPPINS }}>
+              {lastLesson
+                ? `Last lesson: ${formatShortDate(lastLesson)} (${formatRelativeDate(lastLesson)})`
+                : nextLesson
+                  ? `Next: ${formatShortDate(nextLesson)}`
+                  : lp
+                    ? `Last seen: ${formatRelativeDate(lp.date)}`
+                    : "No lessons yet"}
+            </div>
           </div>
 
-          <div className="flex flex-col items-end shrink-0" style={{ gap: 4 }}>
-            <span
-              style={{
-                fontSize: tokens.fontSize.base,
-                fontWeight: tokens.fontWeight.medium,
-                color: lessons > 0 ? "#8A94A6" : "#B0BAC9",
-                ...POPPINS,
-              }}
-            >
-              {lessons} {lessons === 1 ? "lesson" : "lessons"}
-            </span>
+          <div className="flex items-center shrink-0" style={{ gap: 6 }}>
+            <div className="flex flex-col items-center" style={{ lineHeight: 1 }}>
+              <span
+                style={{
+                  fontSize: 26,
+                  fontWeight: tokens.fontWeight.bold,
+                  color: lessons > 0 ? tokens.navy : "#B0BAC9",
+                  ...POPPINS,
+                }}
+              >
+                {lessons}
+              </span>
+              <span style={{ fontSize: 12, color: "#8A94A6", marginTop: 3, ...POPPINS }}>
+                {lessons === 1 ? "lesson" : "lessons"}
+              </span>
+            </div>
             <QuickActionsMenu
               items={[
                 { label: "View pupil details", onClick: () => navigate({ to: "/pupils/$id", params: { id: p.id } }) },
@@ -787,8 +832,8 @@ function PupilsIndexPage() {
                     width: 28,
                     height: 28,
                     borderRadius: "50%",
-                    background: "#F8F9FB",
-                    border: "0.5px solid #E5E7EB",
+                    background: "transparent",
+                    border: "none",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -796,7 +841,7 @@ function PupilsIndexPage() {
                     padding: 0,
                   }}
                 >
-                  <IconDotsVertical stroke={1.5} size={14} color="#6B7280" />
+                  <IconChevronRight stroke={2} size={20} color="#9AA5B5" />
                 </button>
               )}
             />
@@ -805,6 +850,7 @@ function PupilsIndexPage() {
       </div>
     );
   };
+
 
   const swipeActionBtn = {
     width: 72,
