@@ -20,6 +20,7 @@ import { Route as UpcomingTestsRouteImport } from './routes/upcoming-tests'
 import { Route as TodosRouteImport } from './routes/todos'
 import { Route as TestsRouteImport } from './routes/tests'
 import { Route as TestdayRouteImport } from './routes/testday'
+import { Route as TestSwapRouteImport } from './routes/test-swap'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TaxReportRouteImport } from './routes/tax-report'
 import { Route as TaxRouteImport } from './routes/tax'
@@ -237,6 +238,11 @@ const TestsRoute = TestsRouteImport.update({
 const TestdayRoute = TestdayRouteImport.update({
   id: '/testday',
   path: '/testday',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestSwapRoute = TestSwapRouteImport.update({
+  id: '/test-swap',
+  path: '/test-swap',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -1156,6 +1162,7 @@ export interface FileRoutesByFullPath {
   '/tax': typeof TaxRoute
   '/tax-report': typeof TaxReportRoute
   '/terms': typeof TermsRoute
+  '/test-swap': typeof TestSwapRoute
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
@@ -1328,6 +1335,7 @@ export interface FileRoutesByTo {
   '/tax': typeof TaxRoute
   '/tax-report': typeof TaxReportRoute
   '/terms': typeof TermsRoute
+  '/test-swap': typeof TestSwapRoute
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
@@ -1505,6 +1513,7 @@ export interface FileRoutesById {
   '/tax': typeof TaxRoute
   '/tax-report': typeof TaxReportRoute
   '/terms': typeof TermsRoute
+  '/test-swap': typeof TestSwapRoute
   '/testday': typeof TestdayRoute
   '/tests': typeof TestsRoute
   '/todos': typeof TodosRoute
@@ -1682,6 +1691,7 @@ export interface FileRouteTypes {
     | '/tax'
     | '/tax-report'
     | '/terms'
+    | '/test-swap'
     | '/testday'
     | '/tests'
     | '/todos'
@@ -1854,6 +1864,7 @@ export interface FileRouteTypes {
     | '/tax'
     | '/tax-report'
     | '/terms'
+    | '/test-swap'
     | '/testday'
     | '/tests'
     | '/todos'
@@ -2030,6 +2041,7 @@ export interface FileRouteTypes {
     | '/tax'
     | '/tax-report'
     | '/terms'
+    | '/test-swap'
     | '/testday'
     | '/tests'
     | '/todos'
@@ -2207,6 +2219,7 @@ export interface RootRouteChildren {
   TaxRoute: typeof TaxRoute
   TaxReportRoute: typeof TaxReportRoute
   TermsRoute: typeof TermsRoute
+  TestSwapRoute: typeof TestSwapRoute
   TestdayRoute: typeof TestdayRoute
   TestsRoute: typeof TestsRoute
   TodosRoute: typeof TodosRoute
@@ -2340,6 +2353,13 @@ declare module '@tanstack/react-router' {
       path: '/testday'
       fullPath: '/testday'
       preLoaderRoute: typeof TestdayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/test-swap': {
+      id: '/test-swap'
+      path: '/test-swap'
+      fullPath: '/test-swap'
+      preLoaderRoute: typeof TestSwapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -3679,6 +3699,7 @@ const rootRouteChildren: RootRouteChildren = {
   TaxRoute: TaxRoute,
   TaxReportRoute: TaxReportRoute,
   TermsRoute: TermsRoute,
+  TestSwapRoute: TestSwapRoute,
   TestdayRoute: TestdayRoute,
   TestsRoute: TestsRoute,
   TodosRoute: TodosRoute,
