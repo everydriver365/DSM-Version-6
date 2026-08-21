@@ -56,7 +56,7 @@ export const Route = createFileRoute("/live-news")({
   validateSearch: (search: Record<string, unknown>): { tab?: "live" | "news" | "podcasts" | "saved" } => {
     const t = search.tab;
     if (t === "live" || t === "news" || t === "podcasts" || t === "saved") return { tab: t };
-    return {};
+    return { tab: "live" };
   },
   component: LiveNewsPage,
 });
