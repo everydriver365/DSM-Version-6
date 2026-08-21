@@ -1,7 +1,21 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState } from "react";
-import { IconDotsVertical, IconPencil, IconPlus, IconX, IconX as IconClose } from "@tabler/icons-react";
+import {
+  IconAlertCircle,
+  IconAlertTriangle,
+  IconCalendar,
+  IconCheck,
+  IconClock,
+  IconDotsVertical,
+  IconInfoCircle,
+  IconPencil,
+  IconPlus,
+  IconShieldCheck,
+  IconTrendingUp,
+  IconX,
+  IconX as IconClose,
+} from "@tabler/icons-react";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
@@ -121,6 +135,25 @@ function initials(name: string) {
   return (first + second).toUpperCase() || "?";
 }
 
+const AVATAR_COLORS = [
+  { bg: "#1877D6", text: "#FFFFFF" },
+  { bg: "#15803D", text: "#FFFFFF" },
+  { bg: "#D68A1B", text: "#FFFFFF" },
+  { bg: "#7C3AED", text: "#FFFFFF" },
+  { bg: "#CC2229", text: "#FFFFFF" },
+  { bg: "#0B1F3A", text: "#FFFFFF" },
+];
+
+function avatarColorFor(name: string) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = (hash << 5) - hash + name.charCodeAt(i);
+    hash |= 0;
+  }
+  const index = Math.abs(hash) % AVATAR_COLORS.length;
+  return AVATAR_COLORS[index];
+}
+
 function formatDateLong(ymd: string) {
   const d = new Date(`${ymd}T00:00:00`);
   return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
@@ -208,8 +241,9 @@ function TestsPage() {
     showDaysBadge?: boolean;
     pastProminent?: boolean;
     emptyText: string;
+    icon?: React.ReactNode;
   }[] = [
-    { key: "upcoming", title: "UPCOMING TESTS", items: upcoming, showDaysBadge: true, emptyText: "No upcoming tests" },
+    { key: "upcoming", title: "UPCOMING TESTS", items: upcoming, showDaysBadge: true, emptyText: "No upcoming tests", icon: <IconCalendar stroke={1.5} size={18} color={tokens.blue} /> },
     { key: "needs", title: "NEEDS A RESULT", items: needsResult, showDaysBadge: true, emptyText: "No tests waiting for a result" },
     { key: "passed", title: "PASSED", items: passed, pastProminent: true, emptyText: "No passes yet" },
     { key: "failed", title: "FAILED", items: failed, pastProminent: true, emptyText: "No fails logged" },
@@ -226,17 +260,29 @@ function TestsPage() {
           type="button"
           onClick={() => setAddOpen(true)}
           className="inline-flex items-center gap-2"
-          style={{
-            background: "#fff", color: tokens.navy, fontSize: 13.5, fontWeight: tokens.fontWeight.extrabold,
-            padding: "12px 16px", borderRadius: tokens.radiusCard, border: "none",
-            boxShadow: "0 3px 0 #C7D0DC", ...POPPINS,
-          }}
+          style={{ border: "none", background: "transparent", padding: 0, ...POPPINS }}
         >
-          <IconPlus stroke={1.5} size={15} />
-          Add test
+          <span
+            className="inline-flex items-center justify-center"
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 999,
+              background: "#fff",
+              border: `1.5px solid ${tokens.blue}`,
+              color: tokens.blue,
+            }}
+          >
+            <IconPlus stroke={2} size={18} />
+          </span>
+          <span
+            className="text-[15px] font-semibold"
+            style={{ color: tokens.blue, ...POPPINS }}
+          >
+            Add test
+          </span>
         </button>
       </div>
-
 
       <div className="px-4">
         {dvsaMetrics && <DvsaRiskCard metrics={dvsaMetrics} />}
@@ -244,7 +290,11 @@ function TestsPage() {
         {sections.map((section) => (
           <div key={section.key}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "18px 0 10px" }}>
-              <span style={{ width: 3, height: 14, background: tokens.blue, borderRadius: 12, flexShrink: 0 }} />
+              {section.icon ? (
+                section.icon
+              ) : (
+                <span style={{ width: 3, height: 14, background: tokens.blue, borderRadius: 12, flexShrink: 0 }} />
+              )}
               <span style={{
                 color: tokens.blue, fontSize: 12, fontWeight: tokens.fontWeight.extrabold,
                 letterSpacing: "0.6px", textTransform: "uppercase", ...POPPINS,
@@ -379,6 +429,11 @@ function computeDvsaRiskMetrics(tests: DrivingTest[]) {
 }
 
 function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof computeDvsaRiskMetrics>> }) {
+  const riskLevel = metrics.triggerCount === 0 ? "LOW RISK" : metrics.triggerCount >= 3 ? "HIGH RISK" : "MEDIUM RISK";
+  const riskColor = metrics.triggerCount === 0 ? tokens.statusSuccessText : metrics.triggerCount >= 3 ? tokens.statusDangerText : tokens.statusWarningText;
+  const riskDot = metrics.triggerCount === 0 ? "#22C55E" : metrics.triggerCount >= 3 ? "#EF4444" : "#F59E0B";
+  const riskBg = metrics.triggerCount === 0 ? tokens.statusSuccessBg : metrics.triggerCount >= 3 ? tokens.statusDangerBg : tokens.statusWarningBg;
+
   return (
     <div
       className="mb-4"
@@ -387,13 +442,46 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
         boxShadow: "0 4px 0 #E4E4E8, 0 14px 30px rgba(0,0,0,0.08)",
       }}
     >
-      <div style={{ background: tokens.navy, padding: "16px 18px" }}>
-        <div style={{ color: "#fff", fontSize: 17, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.2px", ...POPPINS }}>
-          DVSA Standards Check risk
+      <div
+        className="flex items-center justify-between"
+        style={{ background: tokens.navy, padding: "16px 18px" }}
+      >
+        <div className="flex items-center" style={{ gap: 12 }}>
+          <span
+            className="inline-flex items-center justify-center"
+            style={{ width: 44, height: 44, borderRadius: 999, background: "rgba(24,119,214,0.25)" }}
+          >
+            <IconShieldCheck stroke={1.5} size={24} color={tokens.blue} />
+          </span>
+          <div>
+            <div style={{ color: "#fff", fontSize: 17, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.2px", ...POPPINS }}>
+              DVSA Standards Check risk
+            </div>
+            <div style={{ color: "#7C8BA3", fontSize: 12, marginTop: 3, ...POPPINS }}>
+              Last 12 months · completed tests only
+            </div>
+          </div>
         </div>
-        <div style={{ color: "#7C8BA3", fontSize: 12, marginTop: 3, ...POPPINS }}>
-          Last 12 months · completed tests only
-        </div>
+        <span
+          className="inline-flex items-center gap-1 text-[11px] font-extrabold shrink-0"
+          style={{
+            background: riskBg,
+            color: riskColor,
+            padding: "6px 12px",
+            borderRadius: 999,
+            ...POPPINS,
+          }}
+        >
+          <span
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: 999,
+              background: riskDot,
+            }}
+          />
+          {riskLevel}
+        </span>
       </div>
       <div style={{ background: "#fff" }}>
         <DvsaMetricRow
@@ -405,6 +493,8 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
           triggered={metrics.triggers.avgMinorFaults}
           approaching={metrics.avgMinorFaults >= 5}
           decimals={1}
+          icon={<IconAlertCircle stroke={1.5} size={18} color={tokens.statusInfoText} />}
+          iconBg={tokens.statusInfoBg}
         />
         <DvsaMetricRow
           label="Avg serious faults"
@@ -414,6 +504,8 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
           triggered={metrics.triggers.avgSeriousFaults}
           approaching={metrics.avgSeriousFaults >= 0.45}
           decimals={2}
+          icon={<IconAlertTriangle stroke={1.5} size={18} color={tokens.statusWarningText} />}
+          iconBg={tokens.statusWarningBg}
         />
         <DvsaMetricRow
           label="Intervention rate"
@@ -423,6 +515,8 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
           triggered={metrics.triggers.interventionRate}
           approaching={metrics.interventionRate >= 8}
           decimals={0}
+          icon={<IconTrendingUp stroke={1.5} size={18} color={tokens.purple} />}
+          iconBg={"#EDE9FE"}
         />
         <DvsaMetricRow
           label="Pass rate"
@@ -432,14 +526,20 @@ function DvsaRiskCard({ metrics }: { metrics: NonNullable<ReturnType<typeof comp
           triggered={metrics.triggers.passRate}
           approaching={metrics.passRate <= 62}
           decimals={0}
+          icon={<IconCheck stroke={1.5} size={18} color={tokens.statusSuccessText} />}
+          iconBg={tokens.statusSuccessBg}
         />
       </div>
-      <div style={{
-        background: "#F7F9FC", padding: "14px 18px", color: "#6B6B6F",
-        fontSize: 12.5, fontWeight: tokens.fontWeight.medium, lineHeight: 1.5, ...POPPINS,
-      }}>
-        <span style={{ color: tokens.navy, fontWeight: 800 }}>{metrics.triggerCount} of 4 triggers met</span>
-        {" "}— DVSA typically requests a check at 3 or more. Based on {metrics.totalTests} completed tests.
+      <div style={{ background: "#F7F9FC", padding: "14px 18px" }}>
+        <div className="flex items-start" style={{ gap: 10 }}>
+          <span className="shrink-0" style={{ marginTop: 1 }}>
+            <IconInfoCircle stroke={1.5} size={18} color={tokens.blue} />
+          </span>
+          <span style={{ color: "#6B6B6F", fontSize: 12.5, fontWeight: tokens.fontWeight.medium, lineHeight: 1.5, ...POPPINS }}>
+            <span style={{ color: tokens.navy, fontWeight: 800 }}>{metrics.triggerCount} of 4 triggers met</span>
+            {" — "}DVSA typically requests a check at 3 or more. Based on {metrics.totalTests} completed tests.
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -454,6 +554,8 @@ function DvsaMetricRow({
   approaching,
   decimals,
   first,
+  icon,
+  iconBg,
 }: {
   label: string;
   value: number;
@@ -463,6 +565,8 @@ function DvsaMetricRow({
   approaching?: boolean;
   decimals: number;
   first?: boolean;
+  icon?: React.ReactNode;
+  iconBg?: string;
 }) {
   const formatted = Number.isFinite(value) ? value.toFixed(decimals) : "0";
   const colour = triggered ? "#FF3B30" : approaching ? "#D68A1B" : "#1A9B5C";
@@ -471,7 +575,17 @@ function DvsaMetricRow({
       className="flex items-center justify-between"
       style={{ padding: "14px 18px", borderTop: first ? "none" : "1px solid #F0F0F2" }}
     >
-      <span style={{ color: "#6B6B6F", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, ...POPPINS }}>{label}</span>
+      <div className="flex items-center" style={{ gap: 12 }}>
+        {icon && iconBg && (
+          <span
+            className="inline-flex items-center justify-center"
+            style={{ width: 36, height: 36, borderRadius: 999, background: iconBg, flexShrink: 0 }}
+          >
+            {icon}
+          </span>
+        )}
+        <span style={{ color: "#6B6B6F", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, ...POPPINS }}>{label}</span>
+      </div>
       <span style={{ color: colour, fontSize: 14.5, fontWeight: tokens.fontWeight.extrabold, textAlign: "right", ...POPPINS }}>
         {formatted}{valueSuffix}
         <span style={{ fontWeight: tokens.fontWeight.medium, fontSize: 12.5, opacity: 0.7 }}> (trigger: {threshold})</span>
@@ -503,6 +617,7 @@ function TestCard({
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const showMenu = !!(onEdit || onCancel);
+  const avatar = avatarColorFor(name);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -516,25 +631,26 @@ function TestCard({
     }
   }, [menuOpen]);
 
-  const timeLocation = [formatTime(test.test_time), test.test_centre].filter(Boolean).join(" · ");
+  const time = formatTime(test.test_time);
+  const location = test.test_centre;
 
   return (
     <div
       style={{
-        position: "relative", background: "#fff", borderRadius: tokens.radiusCard, padding: 16,
+        position: "relative", background: "#fff", borderRadius: tokens.radiusCard, padding: 14,
         boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
       }}
     >
       <div className="flex items-start" style={{ gap: 12 }}>
         <div
           className="flex items-center justify-center text-white shrink-0"
-          style={{ width: 42, height: 42, borderRadius: 999, backgroundColor: tokens.blue, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.extrabold, ...POPPINS }}
+          style={{ width: 48, height: 48, borderRadius: 999, backgroundColor: avatar.bg, color: avatar.text, fontSize: 16, fontWeight: tokens.fontWeight.extrabold, ...POPPINS }}
         >
           {initials(name)}
         </div>
         <div className="flex-1 min-w-0" style={{ paddingRight: showMenu ? 28 : 0 }}>
           <div className="flex items-start justify-between" style={{ gap: 8 }}>
-            <div className="truncate" style={{ color: "#000", fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, ...POPPINS }}>
+            <div className="truncate text-[16px]" style={{ color: tokens.navy, fontWeight: tokens.fontWeight.bold, ...POPPINS }}>
               {name}
             </div>
             {showDaysBadge && (
@@ -545,8 +661,8 @@ function TestCard({
                   backgroundColor: "#E7F1FC",
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.extrabold,
-                  padding: "5px 16px",
-                  borderRadius: tokens.radiusCard,
+                  padding: "5px 12px",
+                  borderRadius: 999,
                   ...POPPINS,
                 }}
               >
@@ -568,12 +684,18 @@ function TestCard({
               </span>
             )}
           </div>
-          <div style={{ color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, marginTop: 4, ...POPPINS }}>
-            {formatDateLong(test.test_date)}
+          <div className="flex items-center gap-1 mt-1" style={{ color: "#6B7280", ...POPPINS }}>
+            <IconCalendar stroke={1.5} size={15} color="#9CA3AF" />
+            <span className="text-[13px] font-medium" style={{ color: tokens.navy, ...POPPINS }}>
+              {formatDateLong(test.test_date)}
+            </span>
           </div>
-          {timeLocation && (
-            <div style={{ color: "#8A8A8E", fontSize: 12.5, marginTop: 2, ...POPPINS }}>
-              {timeLocation}
+          {(time || location) && (
+            <div className="flex items-center gap-1 mt-0.5" style={{ color: "#6B7280", ...POPPINS }}>
+              <IconClock stroke={1.5} size={15} color="#9CA3AF" />
+              <span className="text-[13px] font-medium" style={{ color: "#6B7280", ...POPPINS }}>
+                {time && location ? `${time} · ${location}` : time || location}
+              </span>
             </div>
           )}
         </div>
@@ -604,7 +726,7 @@ function TestCard({
               style={{
                 width: "100%",
                 marginTop: 14,
-                padding: 16,
+                padding: 14,
                 borderRadius: tokens.radiusCard,
                 background: "#fff",
                 border: "1.5px solid #1877D6",
@@ -620,7 +742,6 @@ function TestCard({
         )
       )}
 
-
       {/* Dots menu */}
       {showMenu && (
         <div ref={menuRef} style={{ position: "absolute", top: 12, right: 12 }}>
@@ -630,15 +751,15 @@ function TestCard({
             style={{
               display: "grid",
               placeItems: "center",
-              width: 26,
-              height: 26,
-              borderRadius: 12,
+              width: 28,
+              height: 28,
+              borderRadius: 999,
               background: "transparent",
               border: "none",
               cursor: "pointer",
             }}
           >
-            <IconDotsVertical size={16} color="#B0B0B5" />
+            <IconDotsVertical size={18} color="#6B7280" />
           </button>
 
           {menuOpen && (
