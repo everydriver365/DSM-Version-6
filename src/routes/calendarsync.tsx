@@ -12,7 +12,7 @@ import {
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
-import { SaveButton, SaveFooter, SAVE_BUTTON_STYLE } from "@/components/dsm/SaveFooter";
+import { SAVE_BUTTON_STYLE } from "@/components/dsm/SaveFooter";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
