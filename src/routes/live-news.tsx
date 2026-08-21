@@ -683,6 +683,8 @@ function LiveNewsPage() {
           overflowY: "auto",
           overflowX: "hidden",
           background: tokens.canvas,
+          position: "relative",
+          zIndex: 2,
         }}
       >
         <div
