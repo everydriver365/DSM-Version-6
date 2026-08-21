@@ -735,6 +735,7 @@ function SwapRequestList({
   onRefresh: () => void;
   onNew: () => void;
 }) {
+  const navigate = useNavigate();
   const [filterCentre, setFilterCentre] = useState("");
   const [filterCentreResults, setFilterCentreResults] = useState<any[]>([]);
   const [filterFrom, setFilterFrom] = useState("");
@@ -743,6 +744,7 @@ function SwapRequestList({
   const [filterTimeTo, setFilterTimeTo] = useState("");
   const [moreOpen, setMoreOpen] = useState(false);
   const [tab, setTab] = useState<"all" | "mine" | "matches">("all");
+  const [selectedSwap, setSelectedSwap] = useState<any | null>(null);
 
   const myRequests = rows.filter((r) => r.instructor_id === userId);
 
