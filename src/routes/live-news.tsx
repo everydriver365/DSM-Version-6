@@ -42,6 +42,8 @@ import {
   isFinished,
   resumePosition,
   remainingLabel,
+  loadLastPlayedId,
+  saveLastPlayedId,
   type EpisodeProgress,
   type ProgressMap,
 } from "@/lib/podcastProgress";
@@ -218,6 +220,9 @@ function LiveNewsPage() {
   const lastSaveRef = useRef(0);
   const restartRef = useRef<string | null>(null);
   const resumeTargetRef = useRef<{ id: string; target: number; startedAt: number } | null>(null);
+  const autoplayRef = useRef(true);
+  const restoredRef = useRef(false);
+
 
   useEffect(() => {
     const stored = loadProgress();
@@ -473,8 +478,35 @@ function LiveNewsPage() {
     if (!el || !playing) return;
     resumeTargetRef.current = null;
     el.load();
+    if (!autoplayRef.current) {
+      autoplayRef.current = true; // restored session — stay paused at stored position
+      setIsPlaying(false);
+      return;
+    }
     void el.play().catch(() => setIsPlaying(false));
   }, [playing]);
+
+  // Remember the last played episode, and restore it (paused, at its stored
+  // timestamp) when the DSM Radio page is opened again.
+  useEffect(() => {
+    if (playing?.id) saveLastPlayedId(playing.id);
+  }, [playing?.id]);
+
+  useEffect(() => {
+    if (restoredRef.current) return;
+    if (!episodes || episodes.length === 0) return;
+    restoredRef.current = true;
+    const lastId = loadLastPlayedId();
+    if (!lastId) return;
+    const ep = episodes.find((e) => e.id === lastId && e.audioUrl);
+    if (!ep) return;
+    autoplayRef.current = false;
+    setCurrentTime(resumePosition(progressRef.current[ep.id]));
+    setDuration(progressRef.current[ep.id]?.duration ?? 0);
+    setExpandedEpisodeId(ep.id);
+    setPlaying(ep);
+  }, [episodes]);
+
 
   const upcomingSessions = sessions?.filter((s) => !s.is_live) ?? [];
   const allSessions = activeSession ? [activeSession, ...upcomingSessions] : upcomingSessions;
