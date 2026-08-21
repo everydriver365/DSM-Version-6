@@ -1005,33 +1005,6 @@ function SwapRequestList({
               </div>
             </div>
 
-            {/* Transmission pills */}
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              {transmissionOptions.map((option) => {
-                const active = filterTransmission === option.value;
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => setFilterTransmission(option.value)}
-                    style={{
-                      flex: 1,
-                      padding: "8px 12px",
-                      borderRadius: 999,
-                      border: "none",
-                      fontSize: 13,
-                      fontWeight: tokens.fontWeight.bold,
-                      cursor: "pointer",
-                      ...POPPINS,
-                      background: active ? tokens.navy : "#fff",
-                      color: active ? "#fff" : "#6B7686",
-                    }}
-                  >
-                    {option.label}
-                  </button>
-                );
-              })}
-            </div>
 
             {/* Clear all */}
             {hasActiveFilters && (
