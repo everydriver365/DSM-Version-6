@@ -730,6 +730,9 @@ function LiveNewsPage() {
 
       <div
         className="page-enter"
+        onTouchStart={onSwipeStart}
+        onTouchMove={onSwipeMove}
+        onTouchEnd={onSwipeEnd}
         style={{
           flex: 1,
           minHeight: 0,
