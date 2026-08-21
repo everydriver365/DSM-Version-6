@@ -1,7 +1,17 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
-import { IconClipboard, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
+import {
+  IconCalendar,
+  IconCheck,
+  IconChevronRight,
+  IconClipboard,
+  IconExternalLink,
+  IconInfoCircle,
+  IconPlus,
+  IconSearch,
+  IconX,
+} from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { EmptyState } from "@/components/dsm/EmptyState";
 
