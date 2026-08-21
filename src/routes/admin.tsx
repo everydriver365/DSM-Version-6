@@ -2820,9 +2820,16 @@ export function BenefitPartnersSection() {
                 onChange={async (e) => {
                   const files = e.target.files;
                   if (!files) return;
+                  const existing = (editingPerk?.gallery_urls ?? []) as string[];
+                  const remaining = 6 - existing.length;
+                  if (remaining <= 0) {
+                    toast.error("Maximum 6 gallery images");
+                    e.target.value = "";
+                    return;
+                  }
                   setUploadingPerkGallery(true);
                   const uploaded: string[] = [];
-                  for (const file of Array.from(files)) {
+                  for (const file of Array.from(files).slice(0, remaining)) {
                     const path = `perks/gallery/${Date.now()}-${Math.random().toString(36).slice(2)}`;
                     const { error } = await supabase.storage.from("marketplace-images").upload(path, file, { upsert: true });
                     if (!error) {
