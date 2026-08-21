@@ -764,7 +764,9 @@ function RootComponent() {
   // Offline/online state banner.
   useEffect(() => {
     function update() {
-      setIsOnline(navigator.onLine);
+      const online = navigator.onLine;
+      setIsOnline(online);
+      if (online) setBannerDismissed(false);
     }
     // Only show offline if browser explicitly says offline
     setIsOnline(navigator.onLine);
