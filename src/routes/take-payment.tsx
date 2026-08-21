@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
-import { IconBackspace, IconCashBanknote, IconChevronDown, IconChevronLeft, IconCircleCheck, IconCopy, IconCreditCard, IconQrcode, IconShare, IconX } from "@tabler/icons-react";
+import { IconBackspace, IconCashBanknote, IconChevronDown, IconChevronLeft, IconCircleCheck, IconCopy, IconCreditCard, IconQrcode, IconShare, IconShieldCheck, IconX } from "@tabler/icons-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
