@@ -104,8 +104,6 @@ function TestSwapPage() {
   const [sheetOpen, setSheetOpen] = useState(false);
 
   async function load() {
-    // Temporary: keep mock data for visual verification
-    return;
     setLoading(true);
     const { data, error } = await supabase
       .from("test_swap_requests")
