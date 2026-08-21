@@ -846,7 +846,7 @@ function SchedulePage() {
     (async () => {
       const { data, error } = await supabase
         .from("calendar_blocks")
-        .select("id, start_datetime, end_datetime, title, colour, location, description")
+        .select("id, start_datetime, end_datetime, title, colour, location, description, notes")
         .eq("source", "personal")
         .gte("start_datetime", `${ymdLocal(rangeStart)}T00:00:00`)
         .lte("start_datetime", `${ymdLocal(rangeEnd)}T23:59:59`)
