@@ -1431,8 +1431,9 @@ function LiveNewsPage() {
                   <EpisodeCard
                     key={ep.id}
                     ep={ep}
-                    isOpen={selectedEpisode?.id === ep.id}
-                    onOpen={() => setSelectedEpisode(ep)}
+                    isOpen={expandedEpisodeId === ep.id}
+                    onOpen={() => setExpandedEpisodeId((prev) => (prev === ep.id ? null : ep.id))}
+                    onOpenDetails={() => setSelectedEpisode(ep)}
                     isCurrent={playing?.id === ep.id}
                     isPlaying={isPlaying}
                     onPlay={() => playEpisode(ep)}
