@@ -1258,7 +1258,7 @@ function JobDetailSheet({
           </button>
         </div>
 
-        <div style={{ flex: 1, overflowY: "auto", padding: "8px 16px 16px" }}>
+        <div style={{ flex: 1, padding: "8px 16px 80px" }}>
           <Row label="Area" value={job.postcode_area || "—"} />
           <Row label="Transmission" value={job.transmission || "—"} />
           <Row label="Course hours" value={job.course_hours != null ? `${job.course_hours} hrs` : "—"} />
