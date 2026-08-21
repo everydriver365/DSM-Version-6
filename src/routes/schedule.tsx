@@ -264,6 +264,20 @@ function lessonEnd(l: Lesson) {
   return new Date(lessonStart(l).getTime() + (l.duration_minutes ?? 60) * 60000);
 }
 
+// True when an event effectively covers a whole day (starts at midnight and
+// runs to midnight / 23:59, or lasts 23h+).
+function spansWholeDay(start: Date, end: Date) {
+  if (!(start instanceof Date) || isNaN(start.getTime())) return false;
+  if (!(end instanceof Date) || isNaN(end.getTime())) return false;
+  const mins = (end.getTime() - start.getTime()) / 60000;
+  if (mins >= 23 * 60) return true;
+  const startsMidnight = start.getHours() === 0 && start.getMinutes() === 0;
+  const endsDayBoundary =
+    (end.getHours() === 0 && end.getMinutes() === 0) ||
+    (end.getHours() === 23 && end.getMinutes() >= 59);
+  return startsMidnight && endsDayBoundary && mins > 0;
+}
+
 const isTest = (lesson: any) => {
   if (!lesson) return false;
   const type = String(lesson.lesson_type ?? "").toLowerCase().trim();
