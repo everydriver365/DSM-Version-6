@@ -8,11 +8,9 @@ import vitalityLogoAsset from "@/assets/vitality-logo.png.asset.json";
 import hmacaLogoAsset from "@/assets/hmaca-logo.png.asset.json";
 
 import {
-  IconPlayerPlay,
   IconChevronRight,
   IconBroadcast,
   IconBook,
-  IconBolt,
   IconShoppingBag,
   IconNews,
   IconBrowser,
@@ -1097,11 +1095,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </span>
         </div>
 
-        {/* LEARN */}
+        {/* DSM LEARN — Learn, Bitesize & Showcase */}
         <div
           role="button"
           tabIndex={0}
-          onClick={() => navigate({ to: "/learn" as never })}
+          onClick={() => navigate({ to: "/dsm-learn" as never })}
           style={{
             ...tileBase,
             gridColumn: 2,
@@ -1109,52 +1107,6 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             height: 96,
             background: "linear-gradient(160deg, #FAFDFB 0%, #F0FDF4 100%)",
             borderColor: "#E8F9ED",
-          }}
-        >
-          <div>
-            <span style={{ ...chipBase, background: "#E8F9ED", color: "#16A34A" }}>
-              <IconBook size={17} color="#16A34A" stroke={1.6} />
-            </span>
-            <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 8 }}>Learn</div>
-            <div style={{ fontSize: tokens.fontSize.xs, color: MUTED, marginTop: 1 }}>Training video</div>
-          </div>
-        </div>
-
-        {/* BITESIZE */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => navigate({ to: "/bitesize" as never })}
-          style={{
-            ...tileBase,
-            gridColumn: 2,
-            gridRow: 2,
-            height: 96,
-            background: "linear-gradient(160deg, #FAF9FF 0%, #F3F1FE 100%)",
-            borderColor: "#EDE9FD",
-          }}
-        >
-          <div>
-            <span style={{ ...chipBase, background: "#EDE9FD", color: "#7C3AED" }}>
-              <IconBolt size={17} color="#7C3AED" stroke={1.6} />
-            </span>
-            <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 8 }}>Bitesize</div>
-            <div style={{ fontSize: tokens.fontSize.xs, color: MUTED, marginTop: 1 }}>Short information videos.</div>
-          </div>
-        </div>
-
-        {/* SHOWCASE */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => navigate({ to: "/showcase" as never })}
-          style={{
-            ...tileBase,
-            gridColumn: 1,
-            gridRow: 3,
-            height: 96,
-            background: "linear-gradient(160deg, #FAFBFF 0%, #F0F5FF 100%)",
-            borderColor: "#E3E9F7",
           }}
         >
           {(showcaseCount ?? 0) > 0 && (
@@ -1173,11 +1125,22 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             />
           )}
           <div>
-            <span style={{ ...chipBase, background: "#E3E9F7", color: BLUE }}>
-              <IconPlayerPlay size={17} color={BLUE} stroke={1.6} />
+            <span style={{ ...chipBase, background: "#E8F9ED", color: "#16A34A" }}>
+              <IconBook size={17} color="#16A34A" stroke={1.6} />
             </span>
-            <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 8 }}>Showcase</div>
-            <div style={{ fontSize: tokens.fontSize.xs, color: MUTED, marginTop: 1 }}>Short fun videos</div>
+            <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 8 }}>DSM Learn</div>
+            <div
+              style={{
+                fontSize: tokens.fontSize.xs,
+                color: MUTED,
+                marginTop: 1,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              Guides, bitesize &amp; showcase
+            </div>
           </div>
         </div>
 
@@ -1189,7 +1152,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           style={{
             ...tileBase,
             gridColumn: 2,
-            gridRow: 3,
+            gridRow: 2,
+
             height: 96,
             background: "linear-gradient(160deg, #FFF9FA 0%, #FDF2F5 100%)",
             borderColor: "#F9E4EB",
