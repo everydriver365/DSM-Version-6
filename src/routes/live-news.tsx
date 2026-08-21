@@ -1682,7 +1682,7 @@ function LiveNewsPage() {
           }}
         />
       )}
-    </DSMTopSheet>
+    </div>
   );
 }
 
