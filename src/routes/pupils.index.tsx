@@ -906,18 +906,32 @@ function PupilsIndexPage() {
           boxSizing: "border-box",
         }}
       >
-        <h1
-          style={{
-            margin: 0,
-            color: tokens.white,
-            fontFamily: "Sora, sans-serif",
-            fontSize: tokens.fontSize.xxl,
-            lineHeight: "40px",
-            fontWeight: tokens.fontWeight.bold,
-          }}
-        >
-          Pupils
-        </h1>
+        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <h1
+            style={{
+              margin: 0,
+              color: tokens.white,
+              fontFamily: "Sora, sans-serif",
+              fontSize: 34,
+              lineHeight: "40px",
+              letterSpacing: "-0.6px",
+              fontWeight: tokens.fontWeight.extrabold,
+            }}
+          >
+            Pupils
+          </h1>
+          <span
+            style={{
+              fontSize: tokens.fontSize.md,
+              fontWeight: tokens.fontWeight.medium,
+              color: "rgba(255,255,255,0.66)",
+              ...POPPINS,
+            }}
+          >
+            {statusCounts ? `${statusCounts.active} active pupil${statusCounts.active === 1 ? "" : "s"}` : ""}
+          </span>
+        </div>
+
         <button
           type="button"
           aria-label="Notifications"
