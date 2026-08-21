@@ -189,7 +189,8 @@ interface Lesson {
 // is a matter of pushing entries into the same list — no UI rewrite.
 type AgendaEntry =
   | { kind: "lesson"; id: string; start: Date; end: Date; allDay: false; lesson: Lesson }
-  | { kind: "block"; id: string; start: Date; end: Date; allDay: false; title: string; colour?: string | null }
+  // Calendar blocks (external imports) can be all-day or timed.
+  | { kind: "block"; id: string; start: Date; end: Date; allDay: boolean; title: string; colour?: string | null }
   // Reserved for future wiring:
   | { kind: "external"; id: string; start: Date; end: Date; allDay: boolean; title: string; colour?: string | null }
   | { kind: "personal"; id: string; start: Date; end: Date; allDay: boolean; title: string; colour?: string | null; event?: PersonalEvent }
