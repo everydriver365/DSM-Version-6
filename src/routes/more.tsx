@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
-import { IconActivity, IconArrowsLeftRight, IconAward, IconBell, IconBriefcase, IconCalculator, IconCalendar, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconFileText, IconGasStation, IconLogout, IconMapPin, IconMoon, IconPlayerPlay, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconShieldCheck, IconShoppingBag, IconTrendingUp, IconUsers, IconWorld, IconX } from "@tabler/icons-react";
+import { IconActivity, IconArrowsLeftRight, IconAward, IconBell, IconBriefcase, IconCalculator, IconCalendar, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconFileText, IconGasStation, IconLogout, IconMapPin, IconMoon, IconPlayerPlay, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconShieldCheck, IconShoppingBag, IconTrendingUp, IconUserCircle, IconUsers, IconWorld, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 
@@ -536,6 +536,47 @@ function MorePage() {
                 <IconChevronRight size={18} color="#8592A6" stroke={2} />
               </button>
             )}
+
+            <button
+              type="button"
+              onClick={() => go('/login')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                padding: '14px 16px',
+                background: '#F1F4F9',
+                border: 'none',
+                borderRadius: 12,
+                cursor: 'pointer',
+                textAlign: 'left',
+                width: '100%',
+                fontFamily: 'Poppins, sans-serif',
+              }}
+            >
+              <IconUserCircle size={20} color="#1877D6" stroke={1.5} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    fontSize: 15,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: '#0B1F3A',
+                  }}
+                >
+                  Sign in to different account
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    color: '#8592A6',
+                    marginTop: 2,
+                  }}
+                >
+                  Switch instructor account
+                </div>
+              </div>
+              <IconChevronRight size={18} color="#8592A6" stroke={2} />
+            </button>
 
             <button
               type="button"
