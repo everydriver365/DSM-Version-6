@@ -1333,7 +1333,7 @@ function MessagesIndexPage() {
                     border: 0,
                     outline: "none",
                     background: "transparent",
-                    fontSize: tokens.fontSize.md,
+                    fontSize: 15,
                     color: NAVY,
                     ...FONT,
                   }}
