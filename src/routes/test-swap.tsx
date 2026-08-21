@@ -5,6 +5,9 @@ import {
   IconPlus,
   IconCalendar,
   IconMapPin,
+  IconClock,
+  IconHourglass,
+  IconChevronRight,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -84,13 +87,46 @@ function formatCreated(value?: string | null): string {
   return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
+function initials(name?: string | null): string {
+  if (!name) return "?";
+  return name
+    .split(" ")
+    .map((w) => w[0]?.toUpperCase())
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("");
+}
+
 function TestSwapPage() {
   const navigate = useNavigate();
-  const [rows, setRows] = useState<SwapRequest[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [rows, setRows] = useState<SwapRequest[]>([
+    {
+      id: 1,
+      name: "dave bumsocket",
+      test_centre: "Winchester Test Centre",
+      current_test_date: "2026-09-01",
+      current_test_time: "11:11:00",
+      status: "pending",
+      notes: null,
+      created_at: "2026-08-21T06:00:00Z",
+    },
+    {
+      id: 2,
+      name: "dave farts",
+      test_centre: "Winchester Test Centre",
+      current_test_date: "2026-06-28",
+      current_test_time: "11:11:00",
+      status: "pending",
+      notes: null,
+      created_at: "2026-08-20T06:00:00Z",
+    },
+  ]);
+  const [loading, setLoading] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
 
   async function load() {
+    // Temporary: keep mock data for visual verification
+    return;
     setLoading(true);
     const { data, error } = await supabase
       .from("test_swap_requests")
@@ -124,18 +160,18 @@ function TestSwapPage() {
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
-            background: "rgba(255,255,255,0.14)",
+            background: tokens.blue,
             color: "#fff",
             border: "none",
             borderRadius: 999,
-            padding: "8px 14px",
-            fontSize: 13,
+            padding: "10px 16px",
+            fontSize: 14,
             fontWeight: tokens.fontWeight.bold,
             cursor: "pointer",
             ...POPPINS,
           }}
         >
-          <IconPlus size={16} stroke={2.2} />
+          <IconPlus size={18} stroke={2.2} />
           New request
         </button>
       }
@@ -153,75 +189,258 @@ function TestSwapPage() {
             action={{ label: "New request", onClick: () => setSheetOpen(true) }}
           />
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {rows.map((r) => (
               <div
                 key={String(r.id)}
                 style={{
                   background: "#fff",
                   borderRadius: tokens.radiusCard,
-                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                  boxShadow: "0 1px 4px rgba(11,31,58,0.08)",
                   padding: 16,
                 }}
               >
+                {/* Header row */}
                 <div
                   style={{
                     display: "flex",
-                    alignItems: "flex-start",
-                    justifyContent: "space-between",
+                    alignItems: "center",
                     gap: 12,
+                    marginBottom: 16,
                   }}
                 >
-                  <div style={{ minWidth: 0 }}>
+                  <div
+                    style={{
+                      width: 42,
+                      height: 42,
+                      borderRadius: "50%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: "#E6F1FB",
+                      color: tokens.blue,
+                      fontSize: 15,
+                      fontWeight: tokens.fontWeight.bold,
+                      ...SORA,
+                      flexShrink: 0,
+                    }}
+                  >
+                    {initials(r.name)}
+                  </div>
+                  <div
+                    style={{
+                      flex: 1,
+                      minWidth: 0,
+                      color: tokens.navy,
+                      fontSize: 16,
+                      fontWeight: tokens.fontWeight.bold,
+                      ...SORA,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {r.name || "Pupil"}
+                  </div>
+                  <DSMPill variant={statusVariant(r.status)}>
+                    <IconHourglass size={12} stroke={2.5} />
+                    {(r.status ?? "pending").toUpperCase()}
+                  </DSMPill>
+                  <IconChevronRight size={20} color={tokens.textMuted} stroke={1.8} />
+                </div>
+
+                {/* Two-column swap card */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: 10,
+                    position: "relative",
+                    alignItems: "stretch",
+                  }}
+                >
+                  {/* Current test */}
+                  <div
+                    style={{
+                      background: "#F5F9FF",
+                      borderRadius: 14,
+                      padding: 14,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 10,
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <div
+                        style={{
+                          width: 28,
+                          height: 28,
+                          borderRadius: 8,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "#E6F1FB",
+                          color: tokens.blue,
+                        }}
+                      >
+                        <IconCalendar size={16} stroke={2} />
+                      </div>
+                      <span
+                        style={{
+                          color: tokens.blue,
+                          fontSize: 13,
+                          fontWeight: tokens.fontWeight.bold,
+                          ...POPPINS,
+                        }}
+                      >
+                        Current test
+                      </span>
+                    </div>
                     <div
                       style={{
                         color: tokens.navy,
-                        fontSize: 16,
-                        fontWeight: tokens.fontWeight.extrabold,
-                        letterSpacing: "-0.2px",
+                        fontSize: 18,
+                        fontWeight: tokens.fontWeight.bold,
+                        lineHeight: 1.25,
                         ...SORA,
                       }}
                     >
-                      {r.name || "Pupil"}
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 6,
-                        marginTop: 8,
-                        color: tokens.textSecondary,
-                        fontSize: 13,
-                        ...POPPINS,
-                      }}
-                    >
-                      <IconCalendar size={15} stroke={1.8} />
                       {formatDate(r.current_test_date)}
-                      {r.current_test_time ? ` · ${String(r.current_test_time).slice(0, 5)}` : ""}
                     </div>
                     <div
                       style={{
                         display: "flex",
                         alignItems: "center",
                         gap: 6,
-                        marginTop: 4,
                         color: tokens.textSecondary,
                         fontSize: 13,
                         ...POPPINS,
                       }}
                     >
-                      <IconMapPin size={15} stroke={1.8} />
-                      {r.test_centre || "No test centre"}
+                      <IconClock size={14} stroke={2} color={tokens.blue} />
+                      {r.current_test_time ? String(r.current_test_time).slice(0, 5) : "No time"}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 6,
+                        marginTop: "auto",
+                        paddingTop: 10,
+                        borderTop: "1px solid rgba(24,119,214,0.12)",
+                        color: tokens.textSecondary,
+                        fontSize: 13,
+                        ...POPPINS,
+                      }}
+                    >
+                      <IconMapPin
+                        size={14}
+                        stroke={2}
+                        color={tokens.blue}
+                        style={{ flexShrink: 0, marginTop: 2 }}
+                      />
+                      <span style={{ lineHeight: 1.35 }}>{r.test_centre || "No test centre"}</span>
                     </div>
                   </div>
-                  <DSMPill variant={statusVariant(r.status)}>
-                    {(r.status ?? "pending").toUpperCase()}
-                  </DSMPill>
+
+                  {/* Swap icon */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "50%",
+                      transform: "translate(-50%, -50%)",
+                      zIndex: 2,
+                      width: 36,
+                      height: 36,
+                      borderRadius: "50%",
+                      background: "#fff",
+                      boxShadow: "0 2px 8px rgba(11,31,58,0.12)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: tokens.blue,
+                    }}
+                  >
+                    <IconArrowsLeftRight size={18} stroke={2} />
+                  </div>
+
+                  {/* Wants */}
+                  <div
+                    style={{
+                      background: "#F7F5FF",
+                      borderRadius: 14,
+                      padding: 14,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 10,
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <div
+                        style={{
+                          width: 28,
+                          height: 28,
+                          borderRadius: 8,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "#EDE9FE",
+                          color: tokens.purple,
+                        }}
+                      >
+                        <IconCalendar size={16} stroke={2} />
+                      </div>
+                      <span
+                        style={{
+                          color: tokens.purple,
+                          fontSize: 13,
+                          fontWeight: tokens.fontWeight.bold,
+                          ...POPPINS,
+                        }}
+                      >
+                        Wants
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        color: tokens.navy,
+                        fontSize: 18,
+                        fontWeight: tokens.fontWeight.bold,
+                        lineHeight: 1.25,
+                        ...SORA,
+                      }}
+                    >
+                      Any day, any time
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 6,
+                        marginTop: "auto",
+                        paddingTop: 10,
+                        borderTop: "1px solid rgba(124,58,237,0.12)",
+                        color: tokens.textSecondary,
+                        fontSize: 13,
+                        ...POPPINS,
+                      }}
+                    >
+                      <IconMapPin
+                        size={14}
+                        stroke={2}
+                        color={tokens.purple}
+                        style={{ flexShrink: 0, marginTop: 2 }}
+                      />
+                      <span style={{ lineHeight: 1.35 }}>Anywhere</span>
+                    </div>
+                  </div>
                 </div>
+
                 {r.created_at && (
                   <div
                     style={{
-                      marginTop: 12,
+                      marginTop: 14,
                       paddingTop: 12,
                       borderTop: "1px solid #E4E8EF",
                       color: "#8A93A3",
@@ -312,7 +531,7 @@ function NewSwapRequestSheet({
 
   const canSave = useMemo(
     () => pupilName.trim() !== "" && date !== "" && centre.trim() !== "",
-    [pupilName, date, centre],
+    [pupilName, date, centre]
   );
 
   async function save() {
