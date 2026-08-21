@@ -5,6 +5,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { IconCheck, IconCurrencyPound, IconMapPin } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { SaveButton, SaveFooter } from "@/components/dsm/SaveFooter";
 import { toast } from "sonner";
 import { Input } from "../components/dsm/Input";
 import { supabase } from "../lib/supabaseClient";
@@ -481,16 +482,7 @@ function EditLessonPage() {
         ) : (
           <span />
         )}
-        <button
-          type="button"
-          aria-label="Save"
-          onClick={handleSave}
-          disabled={saving || loading || showCancelConfirm}
-          className="text-[13px] font-semibold"
-          style={{ color: tokens.blue, background: "none", border: "none", opacity: saving || loading || showCancelConfirm ? 0.5 : 1 }}
-        >
-          {saving ? "Saving…" : "Save"}
-        </button>
+        <span />
       </div>
 
       {loading ? (
@@ -1357,6 +1349,15 @@ function EditLessonPage() {
               {error}
             </p>
           )}
+
+          <SaveFooter style={{ margin: "8px -16px 0" }}>
+            <SaveButton
+              type="submit"
+              disabled={saving || loading || showCancelConfirm}
+            >
+              {saving ? "Saving…" : "Save changes"}
+            </SaveButton>
+          </SaveFooter>
         </form>
       )}
     </DSMTopSheet>

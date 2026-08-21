@@ -1,4 +1,5 @@
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { SaveButton, SaveFooter } from "@/components/dsm/SaveFooter";
 import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type React from "react";
@@ -1191,28 +1192,11 @@ function MiniSitePage() {
         )}
 
         {(tab === "content" || tab === "appearance") && (
-          <button
-            type="button"
-            onClick={saveAll}
-            disabled={saving}
-            style={{
-              width: "100%",
-              background: tokens.blue,
-              color: "#fff",
-              fontSize: 15,
-              fontWeight: tokens.fontWeight.extrabold,
-              padding: 16,
-              borderRadius: tokens.radiusCard,
-              border: "none",
-              cursor: "pointer",
-              boxShadow: "0 4px 0 #0F52A8",
-              fontFamily: "Poppins, sans-serif",
-              marginTop: 8,
-              opacity: saving ? 0.6 : 1,
-            }}
-          >
-            {saving ? "Saving…" : "Save changes"}
-          </button>
+          <SaveFooter style={{ marginTop: 8 }}>
+            <SaveButton onClick={saveAll} disabled={saving}>
+              {saving ? "Saving…" : "Save changes"}
+            </SaveButton>
+          </SaveFooter>
         )}
 
 

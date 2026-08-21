@@ -17,6 +17,7 @@ import {
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { BottomSheet as BottomSheetV2, SheetGroup, SheetRow } from "../dsm/BottomSheetV2";
+import { SaveButton } from "../dsm/SaveFooter";
 import { supabase } from "../../lib/supabaseClient";
 import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
 import { computeLessonAmount, fetchPostcodeRates } from "../../lib/pricing/resolveRate";
@@ -628,22 +629,12 @@ export function AddLessonSheet({
       subtitle={selectedPupil ? selectedPupil.name : "Choose a pupil to get started"}
       onClose={onClose}
       footer={
-        <button
-          type="button"
+        <SaveButton
           onClick={handleSave}
           disabled={saving || !date || (!isEvent && !pupilId)}
-          className="w-full text-white active:opacity-90 disabled:opacity-40"
-          style={{
-            backgroundColor: tokens.blue,
-            borderRadius: 8,
-            height: 52,
-            fontSize: tokens.fontSize.lg,
-            fontWeight: tokens.fontWeight.bold,
-            fontFamily: "Poppins, sans-serif",
-          }}
         >
           {saving ? "Saving..." : editingLesson ? "Save changes" : "Add lesson"}
-        </button>
+        </SaveButton>
       }
     >
       <div style={{ fontFamily: "Poppins, sans-serif" }}>

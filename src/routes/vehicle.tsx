@@ -3,6 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { IconAlertTriangle, IconCalendar, IconCircle, IconFileText, IconGauge, IconPlus, IconReceipt, IconShield, IconTool, IconX } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { SaveButton, SaveFooter } from "@/components/dsm/SaveFooter";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 
@@ -531,29 +532,26 @@ function EditFieldModal({
             className="w-full px-3 bg-white"
             style={{ height: 44, borderRadius: 12, border: BORDER, color: NAVY, fontSize: tokens.fontSize.md, ...POPPINS }}
           />
-          <div className="grid grid-cols-2 mt-4" style={{ gap: 8 }}>
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-[13px] font-semibold"
-              style={{ height: 40, borderRadius: 12, backgroundColor: tokens.white, border: BORDER, color: NAVY }}
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
+          <SaveFooter style={{ margin: "16px -16px -16px" }}>
+            <SaveButton
               disabled={saving}
               onClick={async () => {
                 setSaving(true);
                 await onSave(v || null);
                 setSaving(false);
               }}
-              className="text-white text-[13px] font-semibold"
-              style={{ height: 40, borderRadius: 12, backgroundColor: NAVY, opacity: saving ? 0.7 : 1 }}
             >
               {saving ? "Saving…" : "Save"}
+            </SaveButton>
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full text-[13px] font-semibold"
+              style={{ height: 40, marginTop: 8, borderRadius: 12, background: "transparent", border: "none", color: NAVY, ...POPPINS }}
+            >
+              Cancel
             </button>
-          </div>
+          </SaveFooter>
         </div>
       </div>
     </div>
@@ -729,25 +727,19 @@ function AddJourneyModal({
               <option>Other</option>
             </select>
           </Field>
-          <div className="grid grid-cols-2 mt-2" style={{ gap: 8 }}>
+          <SaveFooter style={{ margin: "16px -16px -16px" }}>
+            <SaveButton disabled={saving} onClick={save}>
+              {saving ? "Saving…" : "Save journey"}
+            </SaveButton>
             <button
               type="button"
               onClick={onClose}
-              className="text-[13px] font-semibold"
-              style={{ height: 40, borderRadius: 12, backgroundColor: tokens.white, border: BORDER, color: NAVY }}
+              className="w-full text-[13px] font-semibold"
+              style={{ height: 40, marginTop: 8, borderRadius: 12, background: "transparent", border: "none", color: NAVY, ...POPPINS }}
             >
               Cancel
             </button>
-            <button
-              type="button"
-              disabled={saving}
-              onClick={save}
-              className="text-white text-[13px] font-semibold"
-              style={{ height: 40, borderRadius: 12, backgroundColor: NAVY, opacity: saving ? 0.7 : 1 }}
-            >
-              {saving ? "Saving…" : "Save journey"}
-            </button>
-          </div>
+          </SaveFooter>
         </div>
       </div>
     </div>
