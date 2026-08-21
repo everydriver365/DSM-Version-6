@@ -2161,20 +2161,44 @@ function SchedulePage() {
                                     }}
                                   />
                                   <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
-                                    <div
-                                      style={{
-                                        fontSize: tokens.fontSize.md,
-                                        fontWeight: tokens.fontWeight.semibold,
-                                        color: '#0B1F3A',
-                                        whiteSpace: 'nowrap',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        lineHeight: 1.3,
-                                      }}
-                                      title={title}
-                                    >
-                                      {title}
-                                    </div>
+                                    {(() => {
+                                      const pe = e.event as (PersonalEvent & { description?: string | null }) | undefined;
+                                      const descriptionText = pe?.description || pe?.notes;
+                                      return (
+                                        <>
+                                          <div
+                                            style={{
+                                              fontSize: tokens.fontSize.md,
+                                              fontWeight: tokens.fontWeight.semibold,
+                                              color: '#0B1F3A',
+                                              whiteSpace: 'nowrap',
+                                              overflow: 'hidden',
+                                              textOverflow: 'ellipsis',
+                                              lineHeight: 1.3,
+                                            }}
+                                            title={title}
+                                          >
+                                            {title}
+                                          </div>
+                                          {descriptionText && (
+                                            <div
+                                              style={{
+                                                fontSize: 12,
+                                                color: '#6B7280',
+                                                marginTop: 2,
+                                                lineHeight: 1.3,
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                              }}
+                                              title={descriptionText}
+                                            >
+                                              {descriptionText}
+                                            </div>
+                                          )}
+                                        </>
+                                      );
+                                    })()}
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
                                       <IconLock size={12} color="#6B7280" stroke={1.5} />
                                       <span style={{ fontSize: 12, color: '#6B7280' }}>Private</span>
