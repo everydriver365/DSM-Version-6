@@ -525,6 +525,7 @@ function RootComponent() {
   const router = useRouter();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
   const active = getActiveNav(router.state.location.pathname);
   const pathname = router.state.location.pathname;
   const hideNavExact = new Set([
@@ -763,7 +764,9 @@ function RootComponent() {
   // Offline/online state banner.
   useEffect(() => {
     function update() {
-      setIsOnline(navigator.onLine);
+      const online = navigator.onLine;
+      setIsOnline(online);
+      if (online) setBannerDismissed(false);
     }
     // Only show offline if browser explicitly says offline
     setIsOnline(navigator.onLine);
@@ -1073,7 +1076,7 @@ function RootComponent() {
       )}
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <div style={Object.keys(wrapperStyle).length ? wrapperStyle : undefined}>
-        {!isOnline && (
+        {!isOnline && !bannerDismissed && (
           <div
             style={{
               position: "fixed",
@@ -1083,7 +1086,6 @@ function RootComponent() {
               zIndex: 9999,
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
               gap: 8,
               paddingTop: 8,
               paddingBottom: 8,
@@ -1094,11 +1096,27 @@ function RootComponent() {
               fontSize: tokens.fontSize.base,
               fontWeight: tokens.fontWeight.medium,
               fontFamily: "Poppins, sans-serif",
-              textAlign: "center",
+              textAlign: "left",
             }}
           >
             <IconWifiOff size={16} stroke={1.8} />
-            <span>No internet connection — some features may be unavailable</span>
+            <span style={{ flex: 1 }}>No internet connection — some features may be unavailable</span>
+            <button
+              onClick={() => setBannerDismissed(true)}
+              aria-label="Dismiss offline banner"
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 4,
+                marginLeft: "auto",
+                display: "flex",
+                alignItems: "center",
+                flexShrink: 0,
+              }}
+            >
+              <IconX size={14} color="#B45309" stroke={2} />
+            </button>
           </div>
         )}
         <Outlet />
