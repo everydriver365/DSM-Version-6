@@ -548,6 +548,201 @@ function SwapCard({
   );
 }
 
+function MyRequestCard({
+  request: r,
+  onRefresh,
+}: {
+  request: SwapRequest;
+  onRefresh: () => void;
+}) {
+  const status = (r.status ?? "pending").toLowerCase();
+  const isPending = status === "pending";
+  const isMatched = status === "matched";
+
+  async function handleMarkMatched() {
+    const { error } = await supabase
+      .from("test_swap_requests")
+      .update({ status: "matched" })
+      .eq("id", r.id);
+    if (error) {
+      toast.error(error.message || "Could not mark matched");
+    } else {
+      toast.success("Marked as matched");
+    }
+    onRefresh();
+  }
+
+  async function handleDelete() {
+    const { error } = await supabase.from("test_swap_requests").delete().eq("id", r.id);
+    if (error) {
+      toast.error(error.message || "Could not delete request");
+    } else {
+      toast.success("Request removed");
+    }
+    onRefresh();
+  }
+
+  const statusPill = {
+    pending: { bg: "#FEF3C7", color: "#D68A1B", text: "PENDING" },
+    matched: { bg: "#DCFCE7", color: "#15803D", text: "MATCHED \u2713" },
+    closed: { bg: "#EEF2F7", color: "#9CA3AF", text: "CLOSED" },
+  }[status as "pending" | "matched" | "closed"] || {
+    bg: "#FEF3C7",
+    color: "#D68A1B",
+    text: "PENDING",
+  };
+
+  return (
+    <div style={{ marginBottom: 8 }}>
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 16,
+          border: "1px solid #E4E8EF",
+          padding: "14px 16px",
+        }}
+      >
+        {/* Top row */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <span
+            style={{
+              color: tokens.navy,
+              fontSize: 14,
+              fontWeight: tokens.fontWeight.bold,
+              ...SORA,
+            }}
+          >
+            {r.name || "Pupil"}
+          </span>
+          <span
+            style={{
+              background: statusPill.bg,
+              color: statusPill.color,
+              fontSize: 10,
+              fontWeight: 700,
+              borderRadius: 20,
+              padding: "2px 8px",
+              textTransform: "uppercase",
+              ...POPPINS,
+            }}
+          >
+            {statusPill.text}
+          </span>
+        </div>
+
+        {/* Middle row */}
+        <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 4 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <IconMapPin size={13} color="#9CA3AF" stroke={1.5} />
+            <span style={{ color: "#6B7686", fontSize: 13, ...POPPINS }}>
+              {r.test_centre || "No test centre"}
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <IconCalendar size={13} color="#9CA3AF" stroke={1.5} />
+            <span style={{ color: "#6B7686", fontSize: 13, ...POPPINS }}>
+              {formatDate(r.current_test_date)}
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <IconClock size={13} color="#9CA3AF" stroke={1.5} />
+            <span style={{ color: "#6B7686", fontSize: 13, ...POPPINS }}>
+              {r.current_test_time ? String(r.current_test_time).slice(0, 5) : "No time"}
+            </span>
+          </div>
+        </div>
+
+        {r.transmission && (
+          <span
+            style={{
+              display: "inline-flex",
+              marginTop: 8,
+              background: "#EEF2F7",
+              color: "#6B7686",
+              fontSize: 10,
+              fontWeight: 600,
+              borderRadius: 20,
+              padding: "2px 8px",
+              textTransform: "capitalize",
+              ...POPPINS,
+            }}
+          >
+            {r.transmission}
+          </span>
+        )}
+
+        {/* Bottom row */}
+        <div style={{ marginTop: 10, display: "flex", gap: 8 }}>
+          {isPending && (
+            <button
+              type="button"
+              onClick={() => {
+                tapLight();
+                handleMarkMatched();
+              }}
+              style={{
+                background: "#DCFCE7",
+                color: "#15803D",
+                fontSize: 12,
+                fontWeight: 700,
+                borderRadius: 20,
+                padding: "6px 14px",
+                border: "none",
+                cursor: "pointer",
+                ...POPPINS,
+              }}
+            >
+              Mark as matched
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              tapLight();
+              handleDelete();
+            }}
+            style={{
+              background: "#FEE2E2",
+              color: "#CC2229",
+              fontSize: 12,
+              fontWeight: 700,
+              borderRadius: 20,
+              padding: "6px 14px",
+              border: "none",
+              cursor: "pointer",
+              ...POPPINS,
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+
+      {/* Matched banner */}
+      {isMatched && (
+        <div
+          style={{
+            background: "#DCFCE7",
+            borderRadius: "0 0 16px 16px",
+            padding: "8px 16px",
+            fontSize: 12,
+            color: "#15803D",
+            ...POPPINS,
+          }}
+        >
+          🎉 Swap matched — contact the other instructor to confirm
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SwapRequestList({
   rows,
   userId,
@@ -617,14 +812,46 @@ function SwapRequestList({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      {myRequests.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <SectionHeader title="My requests" count={myRequests.length} />
-          {myRequests.map((r) => (
-            <SwapCard key={String(r.id)} request={r} mode="mine" onRefresh={onRefresh} />
-          ))}
+      {/* My requests */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <span
+            style={{
+              color: "#9CA3AF",
+              fontSize: 11,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              ...POPPINS,
+            }}
+          >
+            MY SWAP REQUESTS
+          </span>
+          <span style={{ color: "#1877D6", fontSize: 11, ...POPPINS }}>
+            {myRequests.length} active
+          </span>
         </div>
-      )}
+
+        {myRequests.length === 0 ? (
+          <div style={{ padding: 16, textAlign: "center" }}>
+            <div style={{ color: "#9CA3AF", fontSize: 13, ...POPPINS }}>
+              No active swap requests
+            </div>
+            <div style={{ color: "#9CA3AF", fontSize: 13, marginTop: 4, ...POPPINS }}>
+              Post a request to find a swap
+            </div>
+          </div>
+        ) : (
+          myRequests.map((r) => (
+            <MyRequestCard key={String(r.id)} request={r} onRefresh={onRefresh} />
+          ))
+        )}
+      </div>
       {communityRequests.length > 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <SectionHeader title="Community requests" count={filtered.length} />
