@@ -169,18 +169,17 @@ function MorePage() {
       {/* IconSearch */}
       <div
         style={{
-          background: '#EEF2F7',
+          background: '#F1F4F9',
           border: 'none',
-          borderRadius: tokens.radiusCard,
-          padding: '12px 16px',
-          margin: '16px 16px 4px',
+          borderRadius: 14,
+          padding: '14px 16px',
+          margin: '4px 16px 8px',
           display: 'flex',
           alignItems: 'center',
-          gap: 8,
-          boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
+          gap: 12,
         }}
       >
-        <IconSearch size={16} color="#9CA3AF" />
+        <IconSearch size={20} color="#9CA3AF" stroke={2} />
         <input
           type="text"
           ref={searchRef}
@@ -191,12 +190,13 @@ function MorePage() {
             flex: 1,
             border: 'none',
             outline: 'none',
-            fontSize: tokens.fontSize.base,
+            fontSize: 16,
             fontFamily: 'Poppins, sans-serif',
             color: '#0F2044',
             background: 'transparent',
           }}
         />
+
         {searchQuery && (
           <button
             onClick={() => setSearchQuery('')}
