@@ -491,45 +491,61 @@ function LiveNewsPage() {
         type="button"
         onClick={() => goToTab(key)}
         style={{
-          flex: 1,
-          padding: "12px 0",
+          flexShrink: 0,
+          minWidth: 80,
+          padding: "12px 14px",
           textAlign: "center",
           cursor: "pointer",
           border: "none",
           background: "none",
           fontFamily: "Poppins, sans-serif",
           position: "relative",
-          color: isActive ? "#0B1F3A" : "#9CA3AF",
+          color: isActive ? "#1877D6" : "#6B7686",
           fontSize: tokens.fontSize.md,
           fontWeight: isActive ? 700 : 500,
+          letterSpacing: isActive ? "0.01em" : undefined,
+          transition: "color 0.15s ease",
         }}
       >
-        {label}
         <span
           style={{
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            background: isActive ? "#1877D6" : "#E4E8EF",
-            color: isActive ? "#fff" : "#9CA3AF",
-            fontSize: tokens.fontSize.xs,
-            fontWeight: tokens.fontWeight.bold,
-            borderRadius: tokens.radiusCard,
-            padding: "1px 16px",
-            marginLeft: 6,
-            minWidth: 18,
+            gap: 6,
+            padding: isActive ? "4px 12px" : "4px 0",
+            background: isActive ? "#EFF6FF" : "transparent",
+            borderRadius: 999,
           }}
         >
-          {count}
+          {label}
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: isActive ? "#1877D6" : "#E4E8EF",
+              color: isActive ? "#fff" : "#9CA3AF",
+              fontSize: tokens.fontSize.xs,
+              fontWeight: tokens.fontWeight.bold,
+              borderRadius: 999,
+              padding: "1px 10px",
+              minWidth: 18,
+              transition: "background 0.15s ease, color 0.15s ease",
+            }}
+          >
+            {count}
+          </span>
         </span>
         {isActive && (
           <span
             style={{
               position: "absolute",
               bottom: 0,
-              left: 0,
-              right: 0,
-              height: 2,
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: 32,
+              height: 3,
               background: tokens.blue,
               borderRadius: "16px 16px 0 0",
             }}
