@@ -533,6 +533,9 @@ function NewSwapRequestSheet({
   async function save() {
     if (!canSave || saving) return;
     setSaving(true);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     const payload: Record<string, unknown> = {
       name: pupilName,
       current_test_date: date,
@@ -540,6 +543,7 @@ function NewSwapRequestSheet({
       test_centre: centre,
       notes: notes || null,
       status: "pending",
+      instructor_id: user?.id ?? null,
     };
     let { error } = await supabase.from("test_swap_requests").insert(payload);
     if (error && /notes/i.test(error.message)) {
