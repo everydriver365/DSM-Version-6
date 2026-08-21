@@ -3,9 +3,9 @@ import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { SaveButton, SaveFooter } from "@/components/dsm/SaveFooter";
 import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
-import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/availability")({
@@ -200,12 +200,13 @@ function AvailabilityPage() {
         {error && <div className="mt-3 text-[12px]" style={{ color: tokens.blue }}>{error}</div>}
         {savedMsg && <div className="mt-3 text-[12px]" style={{ color: tokens.blue }}>{savedMsg}</div>}
 
-        <div className="mt-6">
-          <Button onClick={save} disabled={saving || !userId}>
-            {saving ? "Saving…" : "Save availability"}
-          </Button>
-        </div>
       </div>
+
+      <SaveFooter style={{ marginTop: 24 }}>
+        <SaveButton onClick={save} disabled={saving || !userId}>
+          {saving ? "Saving…" : "Save availability"}
+        </SaveButton>
+      </SaveFooter>
     </div>
     </DSMTopSheet>
   );

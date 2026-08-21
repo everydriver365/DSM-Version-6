@@ -12,6 +12,7 @@ import {
 import { backfillGoogleColours } from "@/lib/calendarColourBackfill.functions";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { SAVE_BUTTON_STYLE } from "@/components/dsm/SaveFooter";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
@@ -124,10 +125,7 @@ const BTN_BASE: React.CSSProperties = {
 
 const BTN_PRIMARY: React.CSSProperties = {
   ...BTN_BASE,
-  background: tokens.blue,
-  color: "#fff",
-  border: "none",
-  boxShadow: "0 4px 0 #0F52A8",
+  ...SAVE_BUTTON_STYLE,
 };
 
 const BTN_OUTLINE: React.CSSProperties = {

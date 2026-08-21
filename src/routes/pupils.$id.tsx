@@ -18,6 +18,7 @@ import { Card } from "../components/dsm/Card";
 import { SectionHeader } from "../components/dsm/SectionHeader";
 import { Button } from "../components/dsm/Button";
 import { ConfirmDialog } from "../components/ConfirmDialog";
+import { SaveButton, SaveFooter, SAVE_BUTTON_STYLE } from "@/components/dsm/SaveFooter";
 import { supabase } from "../lib/supabaseClient";
 import { BottomSheet as BottomSheetV2, SheetGroup, SheetRow, SheetDivider } from "../components/dsm/BottomSheetV2";
 import { DSMToggle } from "../components/dsm/DSMToggle";
@@ -3104,15 +3105,13 @@ function PupilDetailPage() {
                       placeholder="Add notes for this mock test…"
                       style={{ width: "100%", padding: 16, borderRadius: tokens.radiusCard, border: "0.5px solid #E2E6ED", fontSize: tokens.fontSize.base, color: tokens.navy, resize: "vertical", ...POPPINS }}
                     />
-                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
-                      <button
-                        type="button"
+                    <div style={{ marginTop: 12 }}>
+                      <SaveButton
                         disabled={savingMockNotes || mockNotesDraft === (mt.notes ?? "")}
                         onClick={saveMockNotes}
-                        style={{ padding: "8px 16px", borderRadius: tokens.radiusCard, border: "none", background: tokens.blue, color: tokens.white, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, opacity: (savingMockNotes || mockNotesDraft === (mt.notes ?? "")) ? 0.6 : 1 }}
                       >
                         {savingMockNotes ? "Saving…" : "Save"}
-                      </button>
+                      </SaveButton>
                     </div>
 
                     <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
@@ -3625,15 +3624,15 @@ function PupilDetailPage() {
                 resize: "vertical",
               }}
             />
-            <div className="mt-2 flex items-center justify-end gap-3">
+            <div className="mt-3">
               {noteSaved && (
-                <span className="text-[12px]" style={{ color: tokens.blue, ...POPPINS }}>
+                <div className="text-[12px] mb-2 text-right" style={{ color: tokens.blue, ...POPPINS }}>
                   Saved
-                </span>
+                </div>
               )}
-              <Button onClick={saveNotes} disabled={savingNotes} inline className="h-8 px-3 text-[12px]">
+              <SaveButton onClick={saveNotes} disabled={savingNotes}>
                 {savingNotes ? "Saving…" : "Save"}
-              </Button>
+              </SaveButton>
             </div>
           </div>
         )}
@@ -4142,18 +4141,9 @@ function PupilDetailPage() {
             subtitle={pupil.name}
             onClose={() => (adjSaving ? null : setAdjSheetOpen(false))}
             footer={
-              <button
-                type="button"
-                disabled={adjSaving}
-                onClick={saveAdjustment}
-                className="w-full h-12 rounded-lg text-[15px] font-semibold text-white"
-                style={{
-                  background: adjSaving ? "#7BA6DA" : "#1877D6",
-                  ...POPPINS,
-                }}
-              >
+              <SaveButton disabled={adjSaving} onClick={saveAdjustment}>
                 {adjSaving ? "Saving…" : "Save"}
-              </button>
+              </SaveButton>
             }
           >
             <div className="pb-2" style={POPPINS}>
@@ -4263,8 +4253,8 @@ function PupilDetailPage() {
                 toast.success("Practical test saved");
                 setPracticalQuickOpen(false);
               }}
-              className="w-full py-4 rounded-full text-white font-semibold text-base active:opacity-90 disabled:opacity-40"
-              style={{ backgroundColor: tokens.blue }}
+              className="active:opacity-90"
+              style={{ ...SAVE_BUTTON_STYLE, opacity: practicalQuickSaving ? 0.5 : 1 }}
             >
               {practicalQuickSaving ? "Saving…" : "Save"}
             </button>
@@ -4749,25 +4739,20 @@ function PupilDetailPage() {
               </label>
             </div>
 
-            <div className="flex gap-2">
+            <SaveFooter style={{ margin: "8px -16px -16px" }}>
+              <SaveButton onClick={saveEditSheet} disabled={editSaving}>
+                {editSaving ? "Saving…" : "Save changes"}
+              </SaveButton>
               <button
                 type="button"
                 onClick={() => setEditSheetOpen(false)}
                 disabled={editSaving}
-                className="flex-1 h-11 rounded-lg text-[14px] font-medium text-[#0B1F3A] bg-white disabled:opacity-60"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas }}
+                className="w-full h-10 mt-2 text-[13px] font-semibold text-[#0B1F3A] disabled:opacity-60"
+                style={{ background: "transparent", border: "none", ...POPPINS }}
               >
                 Cancel
               </button>
-              <button
-                type="button"
-                onClick={saveEditSheet}
-                disabled={editSaving}
-                className="flex-1 h-11 rounded-lg text-[14px] font-semibold text-white bg-[#1877D6] disabled:opacity-60"
-              >
-                {editSaving ? "Saving…" : "Save"}
-              </button>
-            </div>
+            </SaveFooter>
           </div>
         </div>,
         document.body,

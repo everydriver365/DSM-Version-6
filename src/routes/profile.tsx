@@ -3,6 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { useEffect, useRef, useState } from "react";
 import { IconAlertTriangle, IconApple, IconBell, IconBriefcase, IconCalendar, IconCamera, IconCar, IconCheck, IconChevronDown, IconChevronRight, IconCreditCard, IconDeviceMobile, IconExternalLink, IconLoader2, IconMail, IconPhoto, IconPuzzle, IconShield, IconTrash, IconUser } from "@tabler/icons-react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { SaveButton, SaveFooter } from "@/components/dsm/SaveFooter";
 import { useGoBack } from "@/hooks/useGoBack";
 import { DSMToggle } from "@/components/dsm/DSMToggle";
 import { toast } from "sonner";
@@ -780,18 +781,6 @@ function ProfilePage() {
     <DSMTopSheet title="Profile" onBack={() => goBack("/more")}>
       <div style={POPPINS}>
 
-      {/* Actions row */}
-      <div className="flex justify-end px-4 pt-3">
-        <button
-          type="button"
-          onClick={saveAll}
-          disabled={saving || loading}
-          className="inline-flex items-center text-[13px] font-semibold disabled:opacity-50"
-          style={{ height: 34, padding: "0 14px", borderRadius: 12, border: "none", background: tokens.blue, color: tokens.white }}
-        >
-          {saving ? "Saving…" : "Save"}
-        </button>
-      </div>
 
 
       <div className="px-4 py-4 pb-24 max-w-3xl mx-auto">
@@ -1585,6 +1574,12 @@ function ProfilePage() {
           </div>
         </AccordionCard>
       </div>
+
+      <SaveFooter>
+        <SaveButton onClick={saveAll} disabled={saving || loading}>
+          {saving ? "Saving…" : "Save changes"}
+        </SaveButton>
+      </SaveFooter>
       </div>
     </DSMTopSheet>
   );

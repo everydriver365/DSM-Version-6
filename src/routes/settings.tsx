@@ -25,6 +25,7 @@ import { ConfirmDialog } from "../components/ConfirmDialog";
 import { supabase } from "../lib/supabaseClient";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import { SaveButton, SaveFooter } from "@/components/dsm/SaveFooter";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -1197,23 +1198,11 @@ function SettingsPage() {
               </div>
 
               {/* Save button */}
-              <button
-                type="button"
-                onClick={saveRates}
-                disabled={savingRates}
-                className="w-full text-[14px] font-semibold text-white mt-5"
-                style={{
-                  height: 48,
-                  borderRadius: 12,
-                  backgroundColor: tokens.navy,
-                  border: "none",
-                  opacity: savingRates ? 0.7 : 1,
-                  cursor: savingRates ? "not-allowed" : "pointer",
-                  ...POPPINS,
-                }}
-              >
-                {savingRates ? "Saving…" : "Save rates"}
-              </button>
+              <div style={{ marginTop: 20 }}>
+                <SaveButton onClick={saveRates} disabled={savingRates}>
+                  {savingRates ? "Saving…" : "Save rates"}
+                </SaveButton>
+              </div>
             </div>
           )}
         </SectionCard>
@@ -2663,24 +2652,8 @@ function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: b
 
 function SaveRow({ onClick }: { onClick: () => void }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="w-full"
-      style={{
-        marginTop: 4,
-        padding: "12px 16px",
-        borderRadius: tokens.radiusCard,
-        background: tokens.navy,
-        color: tokens.white,
-        border: "none",
-        fontSize: tokens.fontSize.md,
-        fontWeight: tokens.fontWeight.semibold,
-        cursor: "pointer",
-        ...POPPINS,
-      }}
-    >
-      Save
-    </button>
+    <SaveFooter style={{ position: "static", background: "transparent", border: "none", padding: "12px 0 0" }}>
+      <SaveButton onClick={onClick}>Save</SaveButton>
+    </SaveFooter>
   );
 }
