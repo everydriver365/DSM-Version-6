@@ -168,10 +168,12 @@ function SwapCard({
   request: r,
   mode,
   onRefresh,
+  onSelect,
 }: {
   request: SwapRequest;
   mode: "mine" | "community";
   onRefresh: () => void;
+  onSelect?: () => void;
 }) {
   async function handleDelete() {
     const { error } = await supabase.from("test_swap_requests").delete().eq("id", r.id);
