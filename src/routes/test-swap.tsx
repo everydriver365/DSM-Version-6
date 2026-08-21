@@ -1319,7 +1319,14 @@ function TestSwapPage() {
         </button>
       }
     >
-      <div style={{ padding: `20px ${tokens.pagePadding}px 40px` }}>
+      <div
+        style={{
+          padding: `20px ${tokens.pagePadding}px 40px`,
+          background: "#F5F7FA",
+          minHeight: "100%",
+          boxSizing: "border-box",
+        }}
+      >
         {loading ? (
           <div style={{ color: tokens.textSecondary, fontSize: 14, ...POPPINS }}>
             Loading swap requests…
