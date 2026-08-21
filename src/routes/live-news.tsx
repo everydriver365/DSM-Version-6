@@ -513,8 +513,9 @@ function LiveNewsPage() {
             border: "none",
             borderRadius: 18,
             background: isActive ? "#EFF6FF" : "transparent",
+            boxShadow: isActive ? `inset 0 0 0 2px ${tokens.blue}` : "none",
             fontFamily: "Poppins, sans-serif",
-            transition: "background 0.15s ease",
+            transition: "background 0.15s ease, box-shadow 0.15s ease",
           }}
         >
           <Icon size={26} stroke={1.9} color={isActive ? tokens.blue : "#6B7686"} />
