@@ -1248,7 +1248,7 @@ function SchedulePage() {
         id: `personal-${p.id}`,
         start,
         end,
-        allDay: !!p.is_all_day,
+        allDay: !!p.is_all_day || spansWholeDay(start, end),
         title: p.title || "Private event",
         colour: p.colour ?? null,
         event: p,
