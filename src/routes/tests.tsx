@@ -263,19 +263,6 @@ function TestsPage() {
           style={{ border: "none", background: "transparent", padding: 0, ...POPPINS }}
         >
           <span
-            className="inline-flex items-center justify-center"
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 999,
-              background: "#fff",
-              border: `1.5px solid ${tokens.blue}`,
-              color: tokens.blue,
-            }}
-          >
-            <IconPlus stroke={2} size={18} />
-          </span>
-          <span
             className="text-[15px] font-semibold"
             style={{ color: tokens.blue, ...POPPINS }}
           >
