@@ -2175,6 +2175,22 @@ function SchedulePage() {
                                     >
                                       {title}
                                     </div>
+                                    {(e.event?.description || e.event?.notes) && (
+                                      <div
+                                        style={{
+                                          fontSize: 12,
+                                          color: '#6B7280',
+                                          marginTop: 2,
+                                          lineHeight: 1.3,
+                                          overflow: 'hidden',
+                                          textOverflow: 'ellipsis',
+                                          whiteSpace: 'nowrap',
+                                        }}
+                                        title={(e.event?.description || e.event?.notes) ?? ''}
+                                      >
+                                        {(e.event?.description || e.event?.notes)}
+                                      </div>
+                                    )}
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
                                       <IconLock size={12} color="#6B7280" stroke={1.5} />
                                       <span style={{ fontSize: 12, color: '#6B7280' }}>Private</span>
