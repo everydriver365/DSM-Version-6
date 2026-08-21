@@ -337,7 +337,7 @@ function JobCard({
             ],
             [
               <IconMapPin key="i3" size={16} stroke={2} color={tokens.textSecondary} />,
-              job.postcode_area ? `Pick up ${job.postcode_area}` : null,
+              `Pick up ${job.postcode_area?.trim() || "TBC"}`,
             ],
             [null, variant === "claimed" && distanceKnown ? `${distanceMi!.toFixed(1)} mi` : null],
             [
