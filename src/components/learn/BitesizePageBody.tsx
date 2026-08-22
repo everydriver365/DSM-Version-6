@@ -16,6 +16,8 @@ import {
 } from "@/components/dsm/BottomSheetV2";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import BitesizeLearnVideos from "@/components/learn/BitesizeLearnVideos";
+import VideoCard from "@/components/learn/shared/VideoCard";
+
 
 import {
   IconChevronLeft,
@@ -531,156 +533,35 @@ export default function BitesizePageBody() {
           )}
 
           {filtered.map((video) => (
-            <div
-              key={video.id}
-              onClick={() => playVideo(video)}
-              style={{
-                background: "#fff",
-                border: "0.5px solid #E4E8EF",
-                borderRadius: 8,
-                overflow: "hidden",
-                cursor: "pointer",
-                position: "relative",
-              }}
-            >
-              {/* THUMBNAIL */}
-              <div style={{ height: 100, position: "relative" }}>
-                {video.thumbnail_url ? (
-                  <img
-                    src={video.thumbnail_url}
-                    alt={video.title}
-                    loading="lazy"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      display: "block",
-                    }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      background: "linear-gradient(135deg, #7C3AED, #4C1D95)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <IconBook size={32} color="#fff" />
-                  </div>
-                )}
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: "rgba(0,0,0,0.2)",
-                  }}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: 32,
-                    height: 32,
-                    borderRadius: "50%",
-                    background: "#fff",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <IconPlayerPlay size={14} color="#0B1F3A" />
-                </div>
-                {video.duration_mins != null && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      right: 6,
-                      bottom: 6,
-                      background: "rgba(0,0,0,0.7)",
-                      color: "#fff",
-                      fontSize: 9,
-                      fontWeight: tokens.fontWeight.semibold,
-                      borderRadius: tokens.radiusCard,
-                      padding: "2px 16px",
-                      ...POPPINS,
-                    }}
-                  >
-                    {video.duration_mins} min
-                  </div>
-                )}
-                {isAdmin && !video.is_published && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      left: 6,
-                      top: 6,
-                      background: "#FEF3C7",
-                      color: "#B45309",
-                      fontSize: 8,
-                      fontWeight: tokens.fontWeight.bold,
-                      borderRadius: tokens.radiusCard,
-                      padding: "2px 16px",
-                      ...POPPINS,
-                    }}
-                  >
-                    Draft
-                  </div>
-                )}
-              </div>
+            <div key={video.id} style={{ position: "relative" }}>
+              <VideoCard
+                thumbnail={video.thumbnail_url}
+                title={video.title}
+                duration={
+                  video.duration_mins != null ? `${video.duration_mins} min` : null
+                }
+                placeholderColor="#4C1D95"
+                onPlay={() => playVideo(video)}
+              />
 
-              {/* BODY */}
-              <div style={{ padding: "8px 10px 10px" }}>
+              {isAdmin && !video.is_published && (
                 <div
                   style={{
-                    fontSize: 12,
-                    fontWeight: tokens.fontWeight.bold,
-                    color: tokens.navy,
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
+                    position: "absolute",
+                    left: 6,
+                    top: 6,
+                    background: "#FEF3C7",
+                    color: "#B45309",
+                    fontSize: 9,
+                    fontWeight: tokens.fontWeight.semibold,
+                    borderRadius: 999,
+                    padding: "2px 8px",
                     ...POPPINS,
                   }}
                 >
-                  {video.title}
+                  Draft
                 </div>
-                {video.category && (
-                  <span
-                    style={{
-                      display: "inline-block",
-                      marginTop: 5,
-                      fontSize: 9,
-                      fontWeight: tokens.fontWeight.semibold,
-                      color: "#7C3AED",
-                      background: "#EFE7FB",
-                      borderRadius: tokens.radiusCard,
-                      padding: "2px 16px",
-                      ...POPPINS,
-                    }}
-                  >
-                    {video.category}
-                  </span>
-                )}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 4,
-                    marginTop: 4,
-                    fontSize: tokens.fontSize.xs,
-                    color: tokens.textMuted,
-                    ...POPPINS,
-                  }}
-                >
-                  <IconEye size={10} color="#9CA3AF" />
-                  {video.views ?? 0} views
-                </div>
-              </div>
+              )}
 
               {/* ADMIN ACTIONS */}
               {isAdmin && (
@@ -688,7 +569,7 @@ export default function BitesizePageBody() {
                   style={{
                     display: "flex",
                     gap: 6,
-                    padding: "0 10px 10px",
+                    marginTop: 6,
                   }}
                   onClick={(e) => e.stopPropagation()}
                 >
@@ -707,7 +588,7 @@ export default function BitesizePageBody() {
                       border: "none",
                       borderRadius: tokens.radiusCard,
                       fontSize: tokens.fontSize.xs,
-                      fontWeight: tokens.fontWeight.bold,
+                      fontWeight: tokens.fontWeight.semibold,
                       cursor: "pointer",
                       ...POPPINS,
                       display: "flex",
@@ -742,7 +623,7 @@ export default function BitesizePageBody() {
                       border: "none",
                       borderRadius: tokens.radiusCard,
                       fontSize: tokens.fontSize.xs,
-                      fontWeight: tokens.fontWeight.bold,
+                      fontWeight: tokens.fontWeight.semibold,
                       cursor: "pointer",
                       ...POPPINS,
                       display: "flex",
@@ -769,7 +650,7 @@ export default function BitesizePageBody() {
                       border: "none",
                       borderRadius: tokens.radiusCard,
                       fontSize: tokens.fontSize.xs,
-                      fontWeight: tokens.fontWeight.bold,
+                      fontWeight: tokens.fontWeight.semibold,
                       cursor: "pointer",
                       ...POPPINS,
                       display: "flex",
@@ -784,6 +665,7 @@ export default function BitesizePageBody() {
               )}
             </div>
           ))}
+
         </div>
       )}
 

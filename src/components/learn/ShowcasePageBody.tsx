@@ -7,6 +7,8 @@ import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import { ConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
+import VideoCard from "@/components/learn/shared/VideoCard";
+
 import {
   BottomSheet,
   SheetGroup,
@@ -1077,200 +1079,110 @@ export default function ShowcasePageBody() {
           {filtered.map((video) => {
             const upvoted = votes[video.id] === "up";
             return (
-              <div
-                key={video.id}
-                style={{
-                  background: "#fff",
-                  border: "none",
-                  borderRadius: tokens.radiusCard,
-                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-                  overflow: "hidden",
-                }}
-              >
-                {/* THUMBNAIL */}
+              <div key={video.id} style={{ position: "relative" }}>
+                <VideoCard
+                  thumbnail={video.thumbnail_url}
+                  title={video.title}
+                  placeholderColor={RED}
+                  onPlay={() => openPlayer(video)}
+                />
+
+                {isAdmin && !video.is_published && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: 6,
+                      top: 6,
+                      background: "#FEF3C7",
+                      color: "#B45309",
+                      fontSize: 9,
+                      fontWeight: tokens.fontWeight.semibold,
+                      borderRadius: 999,
+                      padding: "2px 8px",
+                      ...POPPINS,
+                    }}
+                  >
+                    Draft
+                  </div>
+                )}
+
                 <div
-                  onClick={() => openPlayer(video)}
-                  style={{ height: 160, position: "relative", cursor: "pointer" }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    marginTop: 6,
+                    paddingLeft: 2,
+                    fontSize: tokens.fontSize.sm,
+                    color: "#8A8A8E",
+                    ...POPPINS,
+                  }}
                 >
-                  {video.thumbnail_url ? (
-                    <img
-                      src={video.thumbnail_url}
-                      alt={video.title}
-                      loading="lazy"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        display: "block",
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        background: `linear-gradient(135deg, ${RED}, ${NAVY})`,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <IconPlayerPlay size={32} color="#fff" />
-                    </div>
-                  )}
-                  <div
+                  <button
+                    type="button"
+                    aria-label="Upvote"
+                    onClick={() => toggleVote(video.id, "up")}
                     style={{
-                      position: "absolute",
-                      inset: 0,
-                      background: "rgba(0,0,0,0.2)",
-                    }}
-                  />
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      width: 34,
-                      height: 34,
-                      borderRadius: "50%",
-                      background: "#fff",
-                      display: "flex",
+                      display: "inline-flex",
                       alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <IconPlayerPlay size={15} color={NAVY} />
-                  </div>
-                  {isAdmin && !video.is_published && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        left: 6,
-                        top: 6,
-                        background: "#FEF3C7",
-                        color: "#B45309",
-                        fontSize: 8,
-                        fontWeight: tokens.fontWeight.bold,
-                        borderRadius: tokens.radiusCard,
-                        padding: "2px 16px",
-                        ...POPPINS,
-                      }}
-                    >
-                      Draft
-                    </div>
-                  )}
-                </div>
-
-                {/* BODY */}
-                <div style={{ padding: "8px 10px 10px" }}>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      fontWeight: tokens.fontWeight.bold,
-                      color: NAVY,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                      ...POPPINS,
-                    }}
-                  >
-                    {video.title}
-                  </div>
-                  {video.category && (
-                    <span
-                      style={{
-                        display: "inline-block",
-                        marginTop: 5,
-                        fontSize: 9,
-                        fontWeight: tokens.fontWeight.semibold,
-                        color: RED,
-                        background: "#FCE9E9",
-                        borderRadius: tokens.radiusCard,
-                        padding: "2px 16px",
-                        ...POPPINS,
-                      }}
-                    >
-                      {video.category}
-                    </span>
-                  )}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      marginTop: 8,
+                      gap: 4,
+                      background: "none",
+                      border: "none",
+                      padding: 0,
+                      cursor: "pointer",
+                      color: upvoted ? BLUE : "#8A8A8E",
                       fontSize: tokens.fontSize.sm,
-                      color: "#8A8A8E",
+                      fontWeight: tokens.fontWeight.semibold,
                       ...POPPINS,
                     }}
                   >
-                    <button
-                      type="button"
-                      aria-label="Upvote"
-                      onClick={() => toggleVote(video.id, "up")}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 4,
-                        background: "none",
-                        border: "none",
-                        padding: 0,
-                        cursor: "pointer",
-                        color: upvoted ? BLUE : "#8A8A8E",
-                        fontSize: tokens.fontSize.sm,
-                        fontWeight: tokens.fontWeight.semibold,
-                        ...POPPINS,
-                      }}
-                    >
-                      <IconThumbUp size={11} color={upvoted ? BLUE : "#8A8A8E"} />
-                      {voteCounts[video.id]?.up ?? 0}
-                    </button>
+                    <IconThumbUp size={11} color={upvoted ? BLUE : "#8A8A8E"} />
+                    {voteCounts[video.id]?.up ?? 0}
+                  </button>
 
-                    <button
-                      type="button"
-                      aria-label="Comments"
-                      onClick={() => {
-                        openPlayer(video);
-                        setCommentsOpen(true);
-                      }}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 4,
-                        background: "none",
-                        border: "none",
-                        padding: 0,
-                        cursor: "pointer",
-                        color: "#8A8A8E",
-                        fontSize: tokens.fontSize.sm,
-                        fontWeight: tokens.fontWeight.semibold,
-                        ...POPPINS,
-                      }}
-                    >
-                      <IconMessageCircle size={11} color="#8A8A8E" />
-                      {commentCounts[video.id] ?? 0}
-                    </button>
+                  <button
+                    type="button"
+                    aria-label="Comments"
+                    onClick={() => {
+                      openPlayer(video);
+                      setCommentsOpen(true);
+                    }}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      background: "none",
+                      border: "none",
+                      padding: 0,
+                      cursor: "pointer",
+                      color: "#8A8A8E",
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.semibold,
+                      ...POPPINS,
+                    }}
+                  >
+                    <IconMessageCircle size={11} color="#8A8A8E" />
+                    {commentCounts[video.id] ?? 0}
+                  </button>
 
-                    <span
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 4,
-                        fontSize: tokens.fontSize.sm,
-                        fontWeight: tokens.fontWeight.semibold,
-                        color: "#8A8A8E",
-                      }}
-                    >
-                      <IconEye size={11} color="#8A8A8E" />
-                      {video.views ?? 0}
-                    </span>
-                  </div>
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      fontSize: tokens.fontSize.sm,
+                      fontWeight: tokens.fontWeight.semibold,
+                      color: "#8A8A8E",
+                    }}
+                  >
+                    <IconEye size={11} color="#8A8A8E" />
+                    {video.views ?? 0}
+                  </span>
                 </div>
               </div>
             );
           })}
+
         </div>
       )}
 
