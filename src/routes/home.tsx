@@ -331,7 +331,7 @@ interface LessonRow {
   eol_completed?: boolean | null;
   amount_due?: number | null;
   pickup_location?: string | null;
-  pupils?: { name: string; phone?: string | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null; pricing_type?: string | null; block_hours_total?: number | null; profile_image_url?: string | null; } | null;
+  pupils?: { name: string; phone?: string | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null; pricing_type?: string | null; block_hours_total?: number | null; profile_image_url?: string | null; photo_url?: string | null; calendar_colour?: string | null; } | null;
 }
 
 interface PrevLessonRow {
