@@ -1330,19 +1330,17 @@ function PupilThreadPage() {
       {/* Composer bar */}
       <div
         style={{
-          position: "fixed",
-          bottom: 64,
-          left: 0,
-          right: 0,
+          position: "sticky",
+          bottom: 0,
           zIndex: 50,
-          background: tokens.white,
-          borderTop: "0.5px solid #E4E8EF",
-          padding: "10px 12px",
+          background: "#fff",
+          borderTop: "1px solid #E4E8EF",
+          padding: "12px 16px",
+          paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))",
           display: "flex",
-          gap: 8,
+          gap: 10,
           alignItems: "flex-end",
-          maxWidth: 480,
-          margin: "0 auto",
+          flexShrink: 0,
         }}
       >
         <button
