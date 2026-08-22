@@ -896,7 +896,131 @@ function TakePaymentPage() {
             </div>
           )}
 
+          {tab === "paypal" && (
+            <div style={{ flex: 1, minHeight: 0, padding: "8px 16px 20px", display: "flex", flexDirection: "column", overflow: "auto", gap: 12 }}>
+              {!paypalUsername ? (
+                <div style={{ ...fieldCardStyle, color: tokens.textSecondary, fontSize: tokens.fontSize.md }}>
+                  Add your PayPal.me username in Settings → Payment methods to take PayPal payments.
+                </div>
+              ) : (
+                <>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
+                    {numpadKeys.map((k) => (
+                      <button key={k} type="button" onClick={() => press(k)} style={{ ...keyStyle, minHeight: 52, fontSize: 24 }}>
+                        {k === "back" ? <IconBackspace size={20} color="#6B6B6F" /> : k}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div style={{ ...fieldCardStyle, display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#003087", fontWeight: tokens.fontWeight.bold, fontSize: tokens.fontSize.md }}>
+                      <IconBrandPaypal size={20} /> PayPal
+                    </div>
+                    <div style={{ background: "#fff", padding: 10, borderRadius: 12 }}>
+                      <QRCodeSVG value={paypalLink} size={200} fgColor="#0B1F3A" bgColor="#FFFFFF" />
+                    </div>
+                    <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, wordBreak: "break-all", textAlign: "center" }}>
+                      {paypalLink}
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      sendToPupil(
+                        `Hi${pupilName ? ` ${pupilName}` : ""}, here's your payment link for £${amountNum.toFixed(2)}: ${paypalLink}`,
+                      )
+                    }
+                    style={{
+                      width: "100%", padding: 16, borderRadius: tokens.radiusCard, background: NAVY, color: "#fff",
+                      border: "none", fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer",
+                    }}
+                  >
+                    <IconShare size={20} /> Send to pupil
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => copyText(paypalLink, "Link")}
+                    style={{
+                      width: "100%", padding: 14, borderRadius: tokens.radiusCard, background: "#fff", color: NAVY,
+                      border: "1px solid #E8ECF2", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer",
+                    }}
+                  >
+                    <IconCopy size={18} /> Copy link
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+
+          {tab === "bank" && (
+            <div style={{ flex: 1, minHeight: 0, padding: "8px 16px 20px", display: "flex", flexDirection: "column", overflow: "auto", gap: 12 }}>
+              {!bank.number ? (
+                <div style={{ ...fieldCardStyle, color: tokens.textSecondary, fontSize: tokens.fontSize.md }}>
+                  Add your bank details in Settings → Payment methods to take bank transfers.
+                </div>
+              ) : (
+                <>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
+                    {numpadKeys.map((k) => (
+                      <button key={k} type="button" onClick={() => press(k)} style={{ ...keyStyle, minHeight: 52, fontSize: 24 }}>
+                        {k === "back" ? <IconBackspace size={20} color="#6B6B6F" /> : k}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div style={{ ...fieldCardStyle, display: "flex", flexDirection: "column", gap: 10 }}>
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: 6, color: NAVY, fontWeight: tokens.fontWeight.bold, fontSize: tokens.fontSize.md }}>
+                      <IconBuildingBank size={20} /> Bank transfer details
+                    </div>
+                    {([
+                      ["Account name", bank.name],
+                      ["Sort code", bank.sort],
+                      ["Account number", bank.number],
+                      ["Reference", bankReference],
+                    ] as const).map(([label, value]) => (
+                      <div key={label} style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                        <span style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary }}>{label}</span>
+                        <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: NAVY, textAlign: "right" }}>
+                          {value || "—"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      sendToPupil(`Hi${pupilName ? ` ${pupilName}` : ""}, please pay by bank transfer:\n${bankDetailsText}`)
+                    }
+                    style={{
+                      width: "100%", padding: 16, borderRadius: tokens.radiusCard, background: NAVY, color: "#fff",
+                      border: "none", fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer",
+                    }}
+                  >
+                    <IconShare size={20} /> Send to pupil
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => copyText(bankDetailsText, "Details")}
+                    style={{
+                      width: "100%", padding: 14, borderRadius: tokens.radiusCard, background: "#fff", color: NAVY,
+                      border: "1px solid #E8ECF2", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer",
+                    }}
+                  >
+                    <IconCopy size={18} /> Copy details
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+
           {tab === "cash" && (
+
             <>
               <div
                 style={{
