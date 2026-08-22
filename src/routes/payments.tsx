@@ -625,8 +625,8 @@ function PaymentsPage() {
                         >
                           <div
                             style={{
-                              fontSize: 15,
-                              fontWeight: tokens.fontWeight.extrabold,
+                              fontSize: 14,
+                              fontWeight: 500,
                               color: "#000",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
@@ -636,15 +636,15 @@ function PaymentsPage() {
                           >
                             {displayPupilName(row.pupils?.name) || "Unknown pupil"}
                           </div>
-                          <div style={{ fontSize: 12.5, fontWeight: tokens.fontWeight.medium, color: tokens.textMuted, marginTop: 2, ...POPPINS }}>
+                          <div style={{ fontSize: 12, color: "#6E6E73", marginTop: 2, ...POPPINS }}>
                             {methodLabel(isRefund ? "refund" : row.payment_method)} · {formatTime(row.created_at)}
                           </div>
                         </button>
                         <div
                           style={{
-                            fontSize: 15.5,
-                            fontWeight: tokens.fontWeight.extrabold,
-                            color: isNonRevenue ? "#B0B0B5" : isRefund ? "#FF3B30" : "#1A9B5C",
+                            fontSize: 13,
+                            fontWeight: 500,
+                            color: isNonRevenue ? "#6E6E73" : isRefund ? "#C8434F" : "#3B8B3B",
                             textAlign: "right",
                             flexShrink: 0,
                             ...POPPINS,
@@ -660,7 +660,7 @@ function PaymentsPage() {
                               onClick={onClick}
                               style={{ width: 28, height: 28, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: 0, cursor: "pointer", flexShrink: 0 }}
                             >
-                              <IconDotsVertical stroke={1.5} size={16} color="#B0B0B5" />
+                              <IconDotsVertical stroke={1.5} size={14} color="#C7C7CC" />
                             </button>
                           )}
 
