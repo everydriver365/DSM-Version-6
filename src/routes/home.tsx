@@ -3311,7 +3311,93 @@ function HomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [upcoming?.id, instructorHomePostcode]);
 
-  // Cache the resolved pair whenever both settle
+  // Live traffic data for the next-lesson card (shared with the expanded sheet).
+  // Fetch once on page load when the next lesson is today.
+  useEffect(() => {
+    if (!upcoming?.id) return;
+    const pickup = (upcoming.pickup_location ?? "").trim();
+    if (!pickup) return;
+    if (!ymd(todayStart) === ymd(new Date(`${upcoming.lesson_date}T00:00:00`))) return;
+    if (!("geolocation" in navigator)) return;
+
+    let cancelled = false;
+    const KEY = "sU3STzRmGy7LHNUyIuTP6noG7vqqoISH";
+
+    setTrafficLoading(true);
+    (async () => {
+      try {
+        const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: false,
+            timeout: 8000,
+            maximumAge: 60000,
+          }),
+        );
+        const currentLat = pos.coords.latitude;
+        const currentLng = pos.coords.longitude;
+
+        const geocodeRes = await fetch(
+          `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(pickup)}.json?key=${KEY}&countrySet=GB&limit=1`,
+        );
+        const geocodeData = await geocodeRes.json();
+        const dest = geocodeData?.results?.[0]?.position;
+        if (!dest || cancelled) throw new Error("no geocode");
+
+        const routeRes = await fetch(
+          `https://api.tomtom.com/routing/1/calculateRoute/${currentLat},${currentLng}:${dest.lat},${dest.lon}/json?key=${KEY}&traffic=true&travelMode=car`,
+        );
+        const routeData = await routeRes.json();
+        const summary = routeData?.routes?.[0]?.summary;
+        if (!summary || cancelled) throw new Error("no route");
+
+        const travelMins = Math.round((summary.travelTimeInSeconds ?? 0) / 60);
+        const delayMins = Math.round((summary.trafficDelayInSeconds ?? 0) / 60);
+
+        let incidents: { description: string }[] = [];
+        try {
+          const bbox = [
+            Math.min(currentLng, dest.lon),
+            Math.min(currentLat, dest.lat),
+            Math.max(currentLng, dest.lon),
+            Math.max(currentLat, dest.lat),
+          ].join(",");
+          const incidentRes = await fetch(
+            `https://api.tomtom.com/traffic/services/5/incidentDetails?key=${KEY}&bbox=${bbox}&fields={incidents{type,geometry,properties{iconCategory,magnitudeOfDelay,events{description,code},startTime,endTime,from,to,length,delay}}}`,
+          );
+          const incidentData = await incidentRes.json();
+          incidents = (incidentData?.incidents ?? [])
+            .map((inc: any) => ({
+              description:
+                inc?.properties?.events?.[0]?.description ??
+                [inc?.properties?.from, inc?.properties?.to].filter(Boolean).join(" → ") ??
+                "Traffic incident on route",
+            }))
+            .filter((i: { description: string }) => !!i.description);
+        } catch {
+          incidents = [];
+        }
+
+        const status: "clear" | "delay" | "incident" =
+          incidents.length > 0 || delayMins >= 10
+            ? "incident"
+            : delayMins >= 3
+              ? "delay"
+              : "clear";
+
+        if (!cancelled) setTrafficData({ travelMins, delayMins, incidents, status });
+      } catch {
+        if (!cancelled) setTrafficData(null);
+      } finally {
+        if (!cancelled) setTrafficLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [upcoming?.id, upcoming?.pickup_location, upcoming?.lesson_date]);
+
   useEffect(() => {
     if (!upcoming?.id) return;
     if (weatherLoading || driveLoading) return;
