@@ -509,38 +509,18 @@ function PaymentsPage() {
         )}
       </button>
 
-      {/* Period pills */}
-      <div
-        className="no-scrollbar"
-        style={{ display: "flex", gap: 8, padding: "0 16px", marginBottom: 14, overflowX: "auto", WebkitOverflowScrolling: "touch" }}
-      >
-        {([["today","Today"],["week","This week"],["month","This month"],["year","This year"]] as [DatePreset,string][]).map(([v,l]) => {
-          const active = datePreset === v;
-          return (
-            <button
-              key={v}
-              type="button"
-              onClick={() => setDatePreset(v)}
-              style={{
-                padding: "12px 16px",
-                fontSize: 13.5,
-                fontWeight: tokens.fontWeight.bold,
-                borderRadius: tokens.radiusCard, minHeight: 44,
-                border: 0,
-                background: active ? "#0B1F3A" : "#EEF2F7",
-                color: active ? "#fff" : "#0B1F3A",
-                boxShadow: active ? "0 4px 0 #050D1C" : "0 4px 0 #E4E4E8",
-                whiteSpace: "nowrap",
-                cursor: "pointer",
-                flexShrink: 0,
-                ...POPPINS,
-              }}
-            >
-
-              {l}
-            </button>
-          );
-        })}
+      {/* Period filter — shared segmented control */}
+      <div style={{ padding: "0 16px", marginBottom: 14 }}>
+        <SegmentedTabs<DatePreset>
+          tabs={[
+            { id: "today", label: "Today" },
+            { id: "week", label: "Week" },
+            { id: "month", label: "Month" },
+            { id: "year", label: "Year" },
+          ]}
+          active={datePreset}
+          onChange={(v) => setDatePreset(v)}
+        />
       </div>
 
 
@@ -555,14 +535,14 @@ function PaymentsPage() {
                   display: "flex",
                   alignItems: "center",
                   gap: 12,
-                  padding: "14px 16px",
-                  background: "#fff",
-                  borderRadius: tokens.radiusCard,
-                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                  padding: "12px 14px",
+                  background: "#FFFFFF",
+                  border: "0.5px solid #E5E5EA",
+                  borderRadius: 12,
                   marginBottom: 8,
                 }}
               >
-                <DSMSkeleton width={44} height={44} borderRadius={22} />
+                <DSMSkeleton width={40} height={40} borderRadius={20} />
                 <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 8 }}>
                   <DSMSkeleton width="55%" height={14} borderRadius={6} />
                   <DSMSkeleton width="35%" height={12} borderRadius={6} />
