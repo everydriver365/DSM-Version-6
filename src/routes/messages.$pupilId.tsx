@@ -192,6 +192,10 @@ function PupilThreadPage() {
   const [loadingOlder, setLoadingOlder] = useState(false);
   const loadingOlderRef = useRef(false);
   const prependingRef = useRef(false);
+  // Reader anchor for scroll-position preservation when the input area /
+  // keyboard resizes the viewport on iOS.
+  const atBottomRef = useRef(true);
+  const scrollAnchorTopRef = useRef(0);
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -474,11 +478,59 @@ function PupilThreadPage() {
     const el = scrollerRef.current;
     if (!el) return;
     const onScroll = () => {
+      // Track the reader's position so viewport/input height changes (iOS
+      // keyboard, composer growth) can restore it instead of jumping.
+      scrollAnchorTopRef.current = el.scrollTop;
+      atBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight <= 24;
       if (el.scrollTop < 120) void loadOlder();
     };
     el.addEventListener("scroll", onScroll, { passive: true });
     return () => el.removeEventListener("scroll", onScroll);
   }, [loadOlder]);
+
+  // ---- Preserve scroll position when the input area height changes (iOS) ----
+  // Opening/closing the keyboard or growing the composer resizes the message
+  // viewport, which otherwise makes older messages jump. Readers at the
+  // bottom stay pinned to the latest message; anyone scrolled up keeps the
+  // exact same scroll offset, so the messages on screen don't move.
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+
+    const restore = () => {
+      const node = scrollerRef.current;
+      if (!node) return;
+      if (atBottomRef.current) {
+        node.scrollTop = node.scrollHeight;
+        return;
+      }
+      const max = Math.max(0, node.scrollHeight - node.clientHeight);
+      node.scrollTop = Math.min(scrollAnchorTopRef.current, max);
+    };
+
+    let prevClientHeight = el.clientHeight;
+    const ro = new ResizeObserver(() => {
+      if (el.clientHeight === prevClientHeight) return;
+      prevClientHeight = el.clientHeight;
+      restore();
+      // Run again after the frame settles to override WebKit's own keyboard
+      // scroll-into-view adjustment.
+      requestAnimationFrame(() => requestAnimationFrame(restore));
+    });
+    ro.observe(el);
+
+    const vv = window.visualViewport;
+    const onViewportResize = () => {
+      restore();
+      requestAnimationFrame(() => requestAnimationFrame(restore));
+    };
+    vv?.addEventListener("resize", onViewportResize);
+
+    return () => {
+      ro.disconnect();
+      vv?.removeEventListener("resize", onViewportResize);
+    };
+  }, []);
 
 
   // ---- Typing indicator -------------------------------------------------
