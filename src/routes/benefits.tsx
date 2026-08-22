@@ -283,6 +283,23 @@ function BenefitsPage() {
   const [chosenTier, setChosenTier] = useState<PaidTierId | null>(null);
   const [showComparison, setShowComparison] = useState(false);
   const [benefits, setBenefits] = useState<typeof BENEFITS>(BENEFITS);
+  const [featuredPerks, setFeaturedPerks] = useState<any[]>([]);
+
+  // Featured perks are admin-managed rows in benefit_perks.
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase
+        .from('benefit_perks')
+        .select('*')
+        .eq('active', true)
+        .order('sort_order')
+        .limit(6);
+      if (error || !data) return;
+      setFeaturedPerks(data as any[]);
+    })();
+  }, [reloadKey]);
+
+
 
 
   useEffect(() => {
