@@ -5034,6 +5034,17 @@ function HomePage() {
           const railMon = d ? d.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase() : '';
           const isLessonToday = upcoming && d ? ymd(d) === ymd(todayStart) : false;
 
+          const testDayCountdown = (() => {
+            if (!d || !upcoming) return '—';
+            if (ymd(d) === ymd(todayStart)) return 'TODAY';
+            const diffMs = d.getTime() - Date.now();
+            if (diffMs <= 0) return 'TODAY';
+            const hours = Math.floor(diffMs / (1000 * 60 * 60));
+            if (hours < 24) return `IN ${hours} HOUR${hours === 1 ? '' : 'S'}`;
+            const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+            return `IN ${days} DAY${days === 1 ? '' : 'S'}`;
+          })();
+
           if (!upcoming) {
             return (
               <div style={{ padding: '14px 12px 20px', textAlign: 'center', color: '#9CA3AF', fontSize: 12, fontFamily: 'Poppins, sans-serif' }}>
