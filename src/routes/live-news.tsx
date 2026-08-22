@@ -17,6 +17,7 @@ import {
   IconPlayerPlayFilled,
   IconPlayerPauseFilled,
   IconPlayerTrackNextFilled,
+  IconRadio,
   IconSchool,
   IconSearch,
   IconShare,
