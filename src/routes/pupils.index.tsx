@@ -984,15 +984,14 @@ function PupilsIndexPage() {
           className="inline-flex items-center justify-center"
           style={{
             flex: 1,
-            gap: 8,
-            height: 52,
-            borderRadius: 26,
-            backgroundColor: tokens.blue,
-            boxShadow: "0 6px 16px rgba(24,119,214,0.28)",
+            gap: 6,
+            padding: 11,
+            borderRadius: 10,
+            backgroundColor: "#2B7BC8",
           }}
         >
-          <IconCirclePlus size={20} color="#FFFFFF" stroke={2} />
-          <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.bold, color: tokens.white, whiteSpace: "nowrap", ...POPPINS }}>
+          <IconCirclePlus size={16} color="#FFFFFF" stroke={1.8} />
+          <span style={{ fontSize: 13, fontWeight: 500, color: "#FFFFFF", whiteSpace: "nowrap", ...POPPINS }}>
             Add pupil
           </span>
         </Link>
@@ -1002,16 +1001,15 @@ function PupilsIndexPage() {
           className="inline-flex items-center justify-center"
           style={{
             flex: 1,
-            gap: 8,
-            height: 52,
-            borderRadius: 26,
-            backgroundColor: tokens.white,
-            border: "1px solid #E6EAF0",
-            boxShadow: "0 2px 8px rgba(11,31,58,0.06)",
+            gap: 6,
+            padding: 11,
+            borderRadius: 10,
+            backgroundColor: "#FFFFFF",
+            border: "0.5px solid #E5E5EA",
           }}
         >
-          <IconMessageCircle size={19} color={tokens.navy} stroke={1.8} />
-          <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.bold, color: tokens.navy, whiteSpace: "nowrap", ...POPPINS }}>
+          <IconMessageCircle size={16} color="#000000" stroke={1.8} />
+          <span style={{ fontSize: 13, fontWeight: 500, color: "#000000", whiteSpace: "nowrap", ...POPPINS }}>
             Message all
           </span>
         </Link>
@@ -1027,85 +1025,34 @@ function PupilsIndexPage() {
           }}
           className="flex items-center justify-center"
           style={{
-            width: 46,
-            height: 46,
+            width: 42,
+            alignSelf: "stretch",
             flexShrink: 0,
-            borderRadius: "50%",
-            backgroundColor: tokens.white,
-            border: "1px solid #E6EAF0",
-            boxShadow: "0 2px 8px rgba(11,31,58,0.06)",
+            borderRadius: 10,
+            backgroundColor: "#FFFFFF",
+            border: "0.5px solid #E5E5EA",
           }}
         >
           {searchOpen ? (
-            <IconX stroke={1.8} size={20} color={tokens.navy} />
+            <IconX stroke={1.8} size={17} color="#000000" />
           ) : (
-            <IconSearch stroke={1.8} size={20} color={tokens.navy} />
+            <IconSearch stroke={1.8} size={17} color="#000000" />
           )}
         </button>
       </div>
 
-
       {/* Status filter tabs */}
-      <div
-        style={{
-          margin: "4px 16px 12px",
-          display: "flex",
-          background: "#F4F6FA",
-          borderRadius: 18,
-          padding: 4,
-          overflowX: "auto",
-          scrollbarWidth: "none",
-        }}
-      >
-        {STATUS_TABS.map((tab) => {
-          const active = statusFilter === tab.key;
-          const count = statusCounts?.[tab.key] ?? 0;
-          return (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={() => { tapLight(); setStatusFilter(tab.key); }}
-              style={{
-                flex: 1,
-                flexShrink: 0,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 4,
-                textAlign: "center",
-                padding: "8px 4px",
-                fontSize: 13,
-                fontFamily: "Poppins, sans-serif",
-                cursor: "pointer",
-                border: "none",
-                outline: "none",
-                background: active ? tokens.navy : "transparent",
-                color: active ? "#FFFFFF" : "#7C8698",
-                borderRadius: 14,
-                fontWeight: active ? 700 : 600,
-                whiteSpace: "nowrap",
-                minWidth: 64,
-              }}
-            >
-              <span>{tab.label}</span>
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: tokens.fontWeight.bold,
-                  padding: "1px 5px",
-                  borderRadius: 999,
-                  background: active ? tokens.blue : "transparent",
-                  color: active ? "#FFFFFF" : "#6B7280",
-                  minWidth: 16,
-                  lineHeight: "15px",
-                }}
-              >
-                {count}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+      <SegmentedTabs
+        style={{ margin: "4px 16px 12px" }}
+        active={statusFilter}
+        onChange={(key) => { tapLight(); setStatusFilter(key); }}
+        tabs={STATUS_TABS.map((tab) => ({
+          id: tab.key,
+          label: tab.label,
+          count: statusCounts?.[tab.key] ?? 0,
+        }))}
+      />
+
 
       {/* IconSearch input */}
       {searchOpen && (
