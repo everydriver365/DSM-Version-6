@@ -21,7 +21,6 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconPlayerPlay,
-  IconPlus,
   IconEye,
   IconThumbUp,
   IconThumbDown,
@@ -130,7 +129,11 @@ const inputStyle: React.CSSProperties = {
   ...POPPINS,
 };
 
-export default function ShowcasePageBody() {
+export default function ShowcasePageBody({
+  uploadRequest = 0,
+}: {
+  uploadRequest?: number;
+}) {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -183,6 +186,15 @@ export default function ShowcasePageBody() {
   const [thumbPreview, setThumbPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
+
+  // Open the upload sheet when the header "+ Upload" link is tapped
+  const lastUploadRequest = useRef(uploadRequest);
+  useEffect(() => {
+    if (uploadRequest > lastUploadRequest.current) {
+      lastUploadRequest.current = uploadRequest;
+      setUploadOpen(true);
+    }
+  }, [uploadRequest]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
@@ -620,31 +632,6 @@ export default function ShowcasePageBody() {
 
   return (
     <div style={{ background: "#DCE4F0", ...POPPINS }}>
-      <div style={{ display: "flex", justifyContent: "flex-end", padding: "10px 16px 0" }}>
-        <button
-          type="button"
-          aria-label="Upload clip"
-          onClick={() => setUploadOpen(true)}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            borderRadius: tokens.radiusCard,
-            border: "none",
-            background: "#0B1F3A",
-            color: "#fff",
-            padding: "8px 14px",
-            fontSize: 13,
-            fontWeight: tokens.fontWeight.semibold,
-            cursor: "pointer",
-            ...POPPINS,
-          }}
-        >
-          <IconPlus size={16} />
-          Upload clip
-        </button>
-      </div>
-
       {/* CATEGORY CHIPS */}
       <div
         style={{
