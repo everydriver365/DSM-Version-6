@@ -564,8 +564,8 @@ function PaymentsPage() {
           groups.map((g) => (
             <div key={g.label + g.rows[0].id}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", marginBottom: 8 }}>
-                <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, ...POPPINS }}>{g.label}</div>
-                <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.extrabold, color: "#000", ...POPPINS }}>{formatGBP(g.total)}</div>
+                <div style={{ fontSize: 11, fontWeight: 500, color: '#6E6E73', textTransform: 'uppercase', letterSpacing: '0.3px', ...POPPINS }}>{g.label}</div>
+                <div style={{ fontSize: 13, fontWeight: 500, color: "#000", ...POPPINS }}>{formatGBP(g.total)}</div>
               </div>
 
               <div
@@ -584,24 +584,23 @@ function PaymentsPage() {
                     <div
                       key={row.id}
                       style={{
-                        background: "#fff",
-                        borderRadius: tokens.radiusCard,
+                        background: "#FFFFFF",
+                        border: "0.5px solid #E5E5EA",
+                        borderRadius: 12,
                         marginBottom: 8,
-                        opacity: isNonRevenue ? 0.65 : 1,
-                        boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
                         transition: "transform 0.1s ease, opacity 0.1s ease",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: 16 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px" }}>
                         <div
                           style={{
-                            width: 44,
-                            height: 44,
+                            width: 40,
+                            height: 40,
                             borderRadius: "50%",
                             background: avatarBg,
                             color: tokens.white,
-                            fontSize: 14.5,
-                            fontWeight: tokens.fontWeight.extrabold,
+                            fontSize: 13,
+                            fontWeight: 500,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
