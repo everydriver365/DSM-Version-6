@@ -249,7 +249,10 @@ function DeliveryIndicator({
   }
 
   return message.read_at ? (
-    <IconChecks size={13} stroke={1.5} color={BLUE} />
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
+      <IconChecks size={13} stroke={1.5} color={BLUE} />
+      <span>{timeLabel(message.read_at)}</span>
+    </span>
   ) : (
     <IconCheck size={13} stroke={1.5} color="#B0B8C4" />
   );
