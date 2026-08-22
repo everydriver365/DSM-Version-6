@@ -9,6 +9,7 @@ import {
   IconBriefcase,
   IconBroadcast,
   IconCar,
+  IconChevronLeft,
   IconChevronRight,
   IconHeart,
   IconLayoutGrid,
@@ -686,33 +687,55 @@ function LiveNewsPage() {
           ))}
         </div>
 
-        <div style={{ position: "relative", zIndex: 1 }}>
-          <h1
+        <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "flex-start", gap: 10 }}>
+          <button
+            type="button"
+            aria-label="Go back"
+            onClick={() => goBack("/home")}
             style={{
-              margin: 0,
-              color: tokens.white,
-              fontFamily: "Sora, sans-serif",
-              fontSize: tokens.fontSize.xxl,
-              lineHeight: "40px",
-              fontWeight: tokens.fontWeight.bold,
-            }}
-          >
-            DSM Radio
-          </h1>
-          <div
-            style={{
-              marginTop: 2,
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              border: 0,
+              padding: 0,
               display: "flex",
               alignItems: "center",
-              gap: 6,
-              color: "rgba(255,255,255,0.72)",
-              fontFamily: "Poppins, sans-serif",
-              fontSize: tokens.fontSize.sm,
-              fontWeight: 500,
+              justifyContent: "center",
+              background: "rgba(255,255,255,0.1)",
+              cursor: "pointer",
+              flexShrink: 0,
             }}
           >
-            Your drive. Your radio.
-            <IconBroadcast size={16} stroke={2} color={tokens.blue} />
+            <IconChevronLeft size={20} color={tokens.white} stroke={2} />
+          </button>
+          <div>
+            <h1
+              style={{
+                margin: 0,
+                color: tokens.white,
+                fontFamily: "Sora, sans-serif",
+                fontSize: tokens.fontSize.xxl,
+                lineHeight: "40px",
+                fontWeight: tokens.fontWeight.bold,
+              }}
+            >
+              DSM Radio
+            </h1>
+            <div
+              style={{
+                marginTop: 2,
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                color: "rgba(255,255,255,0.72)",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: tokens.fontSize.sm,
+                fontWeight: 500,
+              }}
+            >
+              Your drive. Your radio.
+              <IconBroadcast size={16} stroke={2} color={tokens.blue} />
+            </div>
           </div>
         </div>
 

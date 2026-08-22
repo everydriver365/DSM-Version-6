@@ -365,7 +365,7 @@ function PerksPage() {
   if (loading) return <PageLoader />;
 
   return (
-    <DSMTopSheet title="Perks">
+    <DSMTopSheet title="Perks" onBack={() => goBack('/home')}>
     <div
       style={{
         background: '#EEF2F7',

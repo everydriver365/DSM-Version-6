@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useGoBack } from "@/hooks/useGoBack";
 import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import LearnPageBody from "@/components/learn/LearnPageBody";
@@ -46,11 +47,12 @@ const TABS: { id: LearnTab; label: string }[] = [
 
 function DSMLearnPage() {
   const navigate = useNavigate();
+  const goBack = useGoBack();
   const { tab } = Route.useSearch();
   const active: LearnTab = tab ?? "learn";
 
   return (
-    <DSMTopSheet title="DSM Learn">
+    <DSMTopSheet title="DSM Learn" onBack={() => goBack("/home")}>
       <div style={{ fontFamily: FONT, minHeight: "100%", background: "#DCE4F0" }}>
         <div style={{ display: "flex", gap: 6, padding: "12px 16px 4px" }}>
           {TABS.map((t) => {
