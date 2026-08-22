@@ -1,12 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
-import { IconBackspace, IconCashBanknote, IconChevronDown, IconChevronLeft, IconCircleCheck, IconCopy, IconCreditCard, IconQrcode, IconShare, IconShieldCheck, IconX } from "@tabler/icons-react";
+import { IconBackspace, IconBrandPaypal, IconBuildingBank, IconCashBanknote, IconChevronDown, IconChevronLeft, IconCircleCheck, IconCopy, IconCreditCard, IconQrcode, IconShare, IconShieldCheck, IconX } from "@tabler/icons-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { recordPayment, recordPaymentWithPackage } from "@/lib/payments";
 import { createSquareIntent, watchSquareIntent } from "@/lib/squareIntents";
+import { openSms } from "@/lib/openUrl";
+
 
 
 export const Route = createFileRoute("/take-payment")({
@@ -18,20 +20,59 @@ export const Route = createFileRoute("/take-payment")({
   component: TakePaymentPage,
 });
 
-type Tab = "qr" | "card" | "cash";
+type Tab = "qr" | "card" | "cash" | "paypal" | "bank";
 type CashMethod = "cash" | "bank";
+type ActiveMethod = "square" | "paypal" | "bank";
 
 function TakePaymentPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
   const lessonId = search.lessonId ?? null;
   const [amount, setAmount] = useState<string>("0");
-  const [pupils, setPupils] = useState<{ id: string; name: string }[]>([]);
+  const [pupils, setPupils] = useState<{ id: string; name: string; phone?: string | null }[]>([]);
   const [pupilId, setPupilId] = useState<string>("");
   const [description, setDescription] = useState("");
   const [hoursBought, setHoursBought] = useState<string>("");
   const [tab, setTab] = useState<Tab>("qr");
-  const pupilName = pupils.find((p) => p.id === pupilId)?.name ?? "";
+  const selectedPupil = pupils.find((p) => p.id === pupilId);
+  const pupilName = selectedPupil?.name ?? "";
+
+  // Instructor's active payment method + PayPal / bank details
+  const [activeMethod, setActiveMethod] = useState<ActiveMethod>("square");
+  const [paypalUsername, setPaypalUsername] = useState<string>("");
+  const [bank, setBank] = useState<{ name: string; sort: string; number: string }>({ name: "", sort: "", number: "" });
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: u } = await supabase.auth.getUser();
+      const uid = u?.user?.id;
+      if (!uid) return;
+      const { data, error } = await supabase
+        .from("instructors")
+        .select("paypal_me_username, bank_account_name, bank_sort_code, bank_account_number, active_payment_method")
+        .eq("id", uid)
+        .maybeSingle();
+      if (cancelled || error || !data) return;
+      const r = data as Record<string, string | null>;
+      setPaypalUsername(r.paypal_me_username ?? "");
+      setBank({
+        name: r.bank_account_name ?? "",
+        sort: r.bank_sort_code ?? "",
+        number: r.bank_account_number ?? "",
+      });
+      const m = r.active_payment_method;
+      if (m === "paypal" || m === "bank") {
+        setActiveMethod(m);
+        setTab(m);
+      } else {
+        setActiveMethod("square");
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
 
 
   // Load instructor's current pupils
@@ -43,7 +84,7 @@ function TakePaymentPage() {
       if (!uid) return;
       const { data, error } = await supabase
         .from("pupils")
-        .select("id, name")
+        .select("id, name, phone")
         .eq("instructor_id", uid)
         .is("deleted_at", null)
         .not("status", "in", "(inactive,archived,cancelled)")
@@ -53,7 +94,7 @@ function TakePaymentPage() {
         console.warn("[take-payment] load pupils", error);
         return;
       }
-      setPupils((data ?? []) as { id: string; name: string }[]);
+      setPupils((data ?? []) as { id: string; name: string; phone?: string | null }[]);
     })();
     return () => {
       cancelled = true;
@@ -264,6 +305,40 @@ function TakePaymentPage() {
     await navigator.clipboard.writeText(qrUrl);
     toast.success("Link copied");
   };
+
+  // --- PayPal.me / bank transfer (direct-to-instructor, no DSM processing) ---
+  const paypalLink =
+    paypalUsername && amountNum > 0
+      ? `https://paypal.me/${paypalUsername}/${amountNum.toFixed(2)}`
+      : paypalUsername
+        ? `https://paypal.me/${paypalUsername}`
+        : "";
+
+  const bankReference = `${pupilName || "Lesson"} ${new Date().toLocaleDateString("en-GB")}`.trim();
+
+  const bankDetailsText = [
+    `Payment of £${amountNum.toFixed(2)}`,
+    `Account name: ${bank.name}`,
+    `Sort code: ${bank.sort}`,
+    `Account number: ${bank.number}`,
+    `Reference: ${bankReference}`,
+  ].join("\n");
+
+  const sendToPupil = (body: string) => {
+    const phone = selectedPupil?.phone ?? "";
+    openSms(phone, body);
+  };
+
+  const copyText = async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success(`${label} copied`);
+    } catch {
+      toast.error("Copy failed");
+    }
+  };
+
+
 
 
 
@@ -631,12 +706,23 @@ function TakePaymentPage() {
           }}
         >
           {(
-            [
-              { k: "qr" as const, label: "QR Code", icon: <IconQrcode size={15} /> },
-              { k: "card" as const, label: "Card", icon: <IconCreditCard size={15} /> },
-              { k: "cash" as const, label: "Cash/Transfer", icon: <IconCashBanknote size={15} /> },
-            ]
+            activeMethod === "paypal"
+              ? [
+                  { k: "paypal" as const, label: "PayPal", icon: <IconBrandPaypal size={15} /> },
+                  { k: "cash" as const, label: "Cash/Transfer", icon: <IconCashBanknote size={15} /> },
+                ]
+              : activeMethod === "bank"
+                ? [
+                    { k: "bank" as const, label: "Bank transfer", icon: <IconBuildingBank size={15} /> },
+                    { k: "cash" as const, label: "Cash/Transfer", icon: <IconCashBanknote size={15} /> },
+                  ]
+                : [
+                    { k: "qr" as const, label: "QR Code", icon: <IconQrcode size={15} /> },
+                    { k: "card" as const, label: "Card", icon: <IconCreditCard size={15} /> },
+                    { k: "cash" as const, label: "Cash/Transfer", icon: <IconCashBanknote size={15} /> },
+                  ]
           ).map((t) => {
+
             const active = tab === t.k;
             return (
               <button
@@ -810,7 +896,131 @@ function TakePaymentPage() {
             </div>
           )}
 
+          {tab === "paypal" && (
+            <div style={{ flex: 1, minHeight: 0, padding: "8px 16px 20px", display: "flex", flexDirection: "column", overflow: "auto", gap: 12 }}>
+              {!paypalUsername ? (
+                <div style={{ ...fieldCardStyle, color: tokens.textSecondary, fontSize: tokens.fontSize.md }}>
+                  Add your PayPal.me username in Settings → Payment methods to take PayPal payments.
+                </div>
+              ) : (
+                <>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
+                    {numpadKeys.map((k) => (
+                      <button key={k} type="button" onClick={() => press(k)} style={{ ...keyStyle, minHeight: 52, fontSize: 24 }}>
+                        {k === "back" ? <IconBackspace size={20} color="#6B6B6F" /> : k}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div style={{ ...fieldCardStyle, display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#003087", fontWeight: tokens.fontWeight.bold, fontSize: tokens.fontSize.md }}>
+                      <IconBrandPaypal size={20} /> PayPal
+                    </div>
+                    <div style={{ background: "#fff", padding: 10, borderRadius: 12 }}>
+                      <QRCodeSVG value={paypalLink} size={200} fgColor="#0B1F3A" bgColor="#FFFFFF" />
+                    </div>
+                    <div style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary, wordBreak: "break-all", textAlign: "center" }}>
+                      {paypalLink}
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      sendToPupil(
+                        `Hi${pupilName ? ` ${pupilName}` : ""}, here's your payment link for £${amountNum.toFixed(2)}: ${paypalLink}`,
+                      )
+                    }
+                    style={{
+                      width: "100%", padding: 16, borderRadius: tokens.radiusCard, background: NAVY, color: "#fff",
+                      border: "none", fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer",
+                    }}
+                  >
+                    <IconShare size={20} /> Send to pupil
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => copyText(paypalLink, "Link")}
+                    style={{
+                      width: "100%", padding: 14, borderRadius: tokens.radiusCard, background: "#fff", color: NAVY,
+                      border: "1px solid #E8ECF2", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer",
+                    }}
+                  >
+                    <IconCopy size={18} /> Copy link
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+
+          {tab === "bank" && (
+            <div style={{ flex: 1, minHeight: 0, padding: "8px 16px 20px", display: "flex", flexDirection: "column", overflow: "auto", gap: 12 }}>
+              {!bank.number ? (
+                <div style={{ ...fieldCardStyle, color: tokens.textSecondary, fontSize: tokens.fontSize.md }}>
+                  Add your bank details in Settings → Payment methods to take bank transfers.
+                </div>
+              ) : (
+                <>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
+                    {numpadKeys.map((k) => (
+                      <button key={k} type="button" onClick={() => press(k)} style={{ ...keyStyle, minHeight: 52, fontSize: 24 }}>
+                        {k === "back" ? <IconBackspace size={20} color="#6B6B6F" /> : k}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div style={{ ...fieldCardStyle, display: "flex", flexDirection: "column", gap: 10 }}>
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: 6, color: NAVY, fontWeight: tokens.fontWeight.bold, fontSize: tokens.fontSize.md }}>
+                      <IconBuildingBank size={20} /> Bank transfer details
+                    </div>
+                    {([
+                      ["Account name", bank.name],
+                      ["Sort code", bank.sort],
+                      ["Account number", bank.number],
+                      ["Reference", bankReference],
+                    ] as const).map(([label, value]) => (
+                      <div key={label} style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                        <span style={{ fontSize: tokens.fontSize.base, color: tokens.textSecondary }}>{label}</span>
+                        <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: NAVY, textAlign: "right" }}>
+                          {value || "—"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      sendToPupil(`Hi${pupilName ? ` ${pupilName}` : ""}, please pay by bank transfer:\n${bankDetailsText}`)
+                    }
+                    style={{
+                      width: "100%", padding: 16, borderRadius: tokens.radiusCard, background: NAVY, color: "#fff",
+                      border: "none", fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer",
+                    }}
+                  >
+                    <IconShare size={20} /> Send to pupil
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => copyText(bankDetailsText, "Details")}
+                    style={{
+                      width: "100%", padding: 14, borderRadius: tokens.radiusCard, background: "#fff", color: NAVY,
+                      border: "1px solid #E8ECF2", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer",
+                    }}
+                  >
+                    <IconCopy size={18} /> Copy details
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+
           {tab === "cash" && (
+
             <>
               <div
                 style={{

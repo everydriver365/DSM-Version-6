@@ -195,6 +195,32 @@ function SettingsPage() {
     });
   }, []);
 
+  // === Payment methods (Square / PayPal.me / Bank transfer) ===
+  const [paypalUsername, setPaypalUsername] = useState<string>("");
+  const [bankAccountName, setBankAccountName] = useState<string>("");
+  const [bankSortCode, setBankSortCode] = useState<string>("");
+  const [bankAccountNumber, setBankAccountNumber] = useState<string>("");
+  const [activePaymentMethod, setActivePaymentMethod] = useState<"square" | "paypal" | "bank">("square");
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return;
+      const { data: row, error } = await supabase
+        .from("instructors")
+        .select("paypal_me_username, bank_account_name, bank_sort_code, bank_account_number, active_payment_method")
+        .eq("id", data.user.id)
+        .maybeSingle();
+      if (error || !row) return;
+      const r = row as Record<string, string | null>;
+      setPaypalUsername(r.paypal_me_username ?? "");
+      setBankAccountName(r.bank_account_name ?? "");
+      setBankSortCode(r.bank_sort_code ?? "");
+      setBankAccountNumber(r.bank_account_number ?? "");
+      const m = r.active_payment_method;
+      if (m === "paypal" || m === "bank" || m === "square") setActivePaymentMethod(m);
+    });
+  }, []);
+
+
   // === Section: Deposit / Payment options / Tax & expenses / Referral (instructors table) ===
   const [depositEnabled, setDepositEnabled] = useState<boolean>(false);
   const [depositAmount, setDepositAmount] = useState<number>(50);
@@ -2034,6 +2060,151 @@ function SettingsPage() {
           />
         </SectionCard>
 
+        {/* Section 4c — Payment methods (Square / PayPal / Bank) */}
+        <SectionCard>
+          <MenuRow
+            icon={<IconCreditCard color="#0F52A8" />}
+            iconBg="#E6F0FB"
+            label="Payment methods"
+            subLabel={
+              activePaymentMethod === "paypal"
+                ? "PayPal.me is your active method"
+                : activePaymentMethod === "bank"
+                  ? "Bank transfer is your active method"
+                  : "Square is your active method"
+            }
+            expanded={expanded === "paymethodsetup"}
+            onClick={() => setExpanded(expanded === "paymethodsetup" ? null : "paymethodsetup")}
+            isFirst
+            isLast
+          />
+          {expanded === "paymethodsetup" && (
+            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
+              {/* Active method pills */}
+              <FieldLabel>Active payment method</FieldLabel>
+              <div className="grid grid-cols-3 gap-2">
+                {([
+                  { k: "square" as const, label: "Square" },
+                  { k: "paypal" as const, label: "PayPal" },
+                  { k: "bank" as const, label: "Bank" },
+                ]).map((opt) => {
+                  const active = activePaymentMethod === opt.k;
+                  return (
+                    <button
+                      key={opt.k}
+                      type="button"
+                      onClick={() => {
+                        setActivePaymentMethod(opt.k);
+                        void saveInstructorPatch({ active_payment_method: opt.k });
+                      }}
+                      className="rounded-full py-2 text-[13px] font-semibold border"
+                      style={{
+                        backgroundColor: active ? "#0B1F3A" : "#FFFFFF",
+                        color: active ? "#FFFFFF" : "#6B7280",
+                        borderColor: active ? "#0B1F3A" : "#E2E8F0",
+                        ...POPPINS,
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Square */}
+              <div style={{ borderTop: "1px solid #EFEFF2", paddingTop: 12 }}>
+                <FieldLabel>Square</FieldLabel>
+                <div className="flex items-center justify-between mt-1">
+                  <span className="text-[13px] text-[#6B7280]" style={POPPINS}>
+                    {squareConnected ? "Connected — taking card payments" : "Not connected"}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: "/square" as never })}
+                    className="rounded-full px-4 py-2 text-[13px] font-semibold"
+                    style={{ background: "#0B1F3A", color: "#fff", ...POPPINS }}
+                  >
+                    {squareConnected ? "Manage" : "Connect"}
+                  </button>
+                </div>
+              </div>
+
+              {/* PayPal */}
+              <div style={{ borderTop: "1px solid #EFEFF2", paddingTop: 12 }}>
+                <FieldLabel>PayPal.me username</FieldLabel>
+                <div
+                  className="flex items-center"
+                  style={{ border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, overflow: "hidden" }}
+                >
+                  <span className="text-[14px] text-[#6B7280] pl-3" style={POPPINS}>paypal.me/</span>
+                  <input
+                    type="text"
+                    value={paypalUsername}
+                    onChange={(e) => setPaypalUsername(e.target.value.replace(/^.*paypal\.me\//i, "").trim())}
+                    placeholder="yourname"
+                    className="flex-1 text-[14px] text-[#0B1F3A]"
+                    style={{ padding: "12px 12px 12px 2px", border: "none", outline: "none", background: "transparent", ...POPPINS }}
+                  />
+                </div>
+                <p className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
+                  Pupils pay you directly via PayPal — no fees from DSM
+                </p>
+                <SaveRow onClick={() => saveInstructorPatch({ paypal_me_username: paypalUsername.trim() || null })} />
+              </div>
+
+              {/* Bank transfer */}
+              <div style={{ borderTop: "1px solid #EFEFF2", paddingTop: 12 }}>
+                <FieldLabel>Account name</FieldLabel>
+                <input
+                  type="text"
+                  value={bankAccountName}
+                  onChange={(e) => setBankAccountName(e.target.value)}
+                  placeholder="Mr A Instructor"
+                  className="w-full text-[14px] text-[#0B1F3A]"
+                  style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }}
+                />
+                <div className="h-3" />
+                <FieldLabel>Sort code</FieldLabel>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={bankSortCode}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, "").slice(0, 6);
+                    const parts = digits.match(/.{1,2}/g) ?? [];
+                    setBankSortCode(parts.join("-"));
+                  }}
+                  placeholder="00-00-00"
+                  className="w-full text-[14px] text-[#0B1F3A]"
+                  style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }}
+                />
+                <div className="h-3" />
+                <FieldLabel>Account number</FieldLabel>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={bankAccountNumber}
+                  onChange={(e) => setBankAccountNumber(e.target.value.replace(/\D/g, "").slice(0, 8))}
+                  placeholder="12345678"
+                  className="w-full text-[14px] text-[#0B1F3A]"
+                  style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }}
+                />
+                <p className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
+                  Pupils pay via bank transfer — show your details on payment requests
+                </p>
+                <SaveRow
+                  onClick={() =>
+                    saveInstructorPatch({
+                      bank_account_name: bankAccountName.trim() || null,
+                      bank_sort_code: bankSortCode.trim() || null,
+                      bank_account_number: bankAccountNumber.trim() || null,
+                    })
+                  }
+                />
+              </div>
+            </div>
+          )}
+        </SectionCard>
 
 
         {/* Section 5 — Tax & expenses */}
