@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import JumpToLatestButton from "@/components/dsm/JumpToLatestButton";
+import { PupilAvatar } from "@/components/PupilAvatar";
 
 
 
