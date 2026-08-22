@@ -2721,10 +2721,7 @@ function HomePage() {
           isTest: (validNext as any).lesson_type
             === 'test',
         };
-        localStorage.setItem(
-          'dsm_next_lesson',
-          JSON.stringify(carplayLesson)
-        );
+        writeCarPlayValue('dsm_next_lesson', carplayLesson);
       }
       // Write today's lessons for CarPlay
       const carplayTodayLessons = (activeLessons ?? [])
