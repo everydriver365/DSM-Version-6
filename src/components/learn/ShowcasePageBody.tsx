@@ -7,6 +7,8 @@ import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import { ConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
+import VideoCard from "@/components/learn/shared/VideoCard";
+
 import {
   BottomSheet,
   SheetGroup,
