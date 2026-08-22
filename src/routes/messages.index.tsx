@@ -1330,10 +1330,11 @@ function MessagesIndexPage() {
             </div>
           )}
 
-          {/* Unified list */}
-          <div style={{ padding: "0 16px" }}>
+          {/* Unified list — rows and eyebrows carry their own horizontal
+              padding so hairline dividers can inset to after the avatar */}
+          <div>
             {loading && items.length === 0 ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: "0 0 12px" }}>
+              <div style={{ display: "flex", flexDirection: "column" }}>
                 {Array.from({ length: 5 }).map((_, i) => (
                   <div
                     key={i}
@@ -1341,20 +1342,16 @@ function MessagesIndexPage() {
                       display: "flex",
                       alignItems: "center",
                       gap: 12,
-                      padding: "14px 16px",
-                      background: tokens.white,
-                      borderRadius: tokens.radiusCard,
-                      boxShadow: "0 4px 0 #E4E4E8",
+                      padding: "10px 16px",
                     }}
                   >
-                    <DSMSkeleton width={44} height={44} borderRadius={22} />
+                    <DSMSkeleton width={46} height={46} borderRadius={23} />
                     <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 8 }}>
                       <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
                         <DSMSkeleton width="45%" height={14} borderRadius={6} />
                         <DSMSkeleton width={34} height={10} borderRadius={5} />
                       </div>
                       <DSMSkeleton width="80%" height={12} borderRadius={6} />
-                      <DSMSkeleton width={44} height={20} borderRadius={10} />
                     </div>
                   </div>
                 ))}
@@ -1422,29 +1419,31 @@ function MessagesIndexPage() {
                   return (
                     <>
                       {sections.map(
-                        (s) =>
+                        (s, sIdx) =>
                           s.items.length > 0 && (
                               <div key={s.label}>
                                 <div
                                   style={{
-                                    fontSize: 13,
-                                    fontWeight: tokens.fontWeight.bold,
+                                    fontSize: 11,
+                                    fontWeight: 500,
                                     textTransform: "uppercase",
-                                    letterSpacing: "0.6px",
-                                    color: "#8A94A6",
-                                    margin: "16px 16px 8px",
+                                    letterSpacing: "0.3px",
+                                    color: "#6E6E73",
+                                    padding: `${sIdx === 0 ? 4 : 12}px 16px 8px`,
                                     fontFamily: "Poppins, sans-serif",
                                   }}
                                 >
                                   {s.label}
                                 </div>
                               <div style={{ display: "flex", flexDirection: "column" }}>
-                                {s.items.map((item) => (
+                                {s.items.map((item, idx) => (
                                   <InboxRow
                                     key={item.key}
                                     item={item}
                                     muted={muted.has(item.key)}
+                                    isLast={idx === s.items.length - 1}
                                     onMenu={() => setMenuItem(item)}
+                                    onArchive={() => toggleArchive(item.key)}
                                   />
                                 ))}
                               </div>
