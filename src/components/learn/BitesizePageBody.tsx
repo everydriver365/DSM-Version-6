@@ -324,12 +324,12 @@ export default function BitesizePageBody() {
       {/* CATEGORY CHIPS */}
       <div
         style={{
-          background: "#fff",
-          padding: "10px 16px",
-          borderBottom: "0.5px solid #E4E8EF",
+          background: "transparent",
+          padding: "12px 16px 4px",
           display: "flex",
           gap: 8,
           overflowX: "auto",
+          scrollbarWidth: "none",
         }}
       >
         {CATEGORIES.map((cat) => {
@@ -341,14 +341,16 @@ export default function BitesizePageBody() {
               onClick={() => setActiveCategory(cat)}
               style={{
                 flexShrink: 0,
-                border: "none",
                 cursor: "pointer",
                 borderRadius: 999,
-                padding: "4px 10px",
+                padding: "6px 14px",
                 fontSize: 12,
-                fontWeight: tokens.fontWeight.semibold,
-                background: active ? "#1877D6" : "#F1F5F9",
-                color: active ? "#fff" : "#6B7686",
+                fontWeight: 500,
+                border: active ? "0.5px solid transparent" : "0.5px solid #E4E8EF",
+                background: active ? "#0B1F3A" : "#FFFFFF",
+                color: active ? "#FFFFFF" : "#6E6E73",
+                boxShadow: active ? "0 0.5px 1px rgba(0,0,0,0.06)" : "none",
+                transition: "background 0.15s, color 0.15s",
                 ...POPPINS,
               }}
             >
