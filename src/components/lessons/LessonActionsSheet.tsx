@@ -89,7 +89,15 @@ export interface LessonActionsSheetProps {
   onOpenLesson: () => void;
   onEol: () => void;
   userId: string | null;
+  trafficData?: {
+    travelMins: number;
+    delayMins: number;
+    incidents: { description: string }[];
+    status: "clear" | "delay" | "incident";
+  } | null;
+  trafficLoading?: boolean;
 }
+
 
 const NAVY = "#0B1F3A";
 
@@ -204,7 +212,10 @@ export function LessonActionsSheet({
   onOpenLesson,
   onEol,
   userId,
+  trafficData: trafficDataProp,
+  trafficLoading: trafficLoadingProp,
 }: LessonActionsSheetProps) {
+
   const navigate = useNavigate();
   const verifyAddressFn = useServerFn(verifyAddress);
   const phone = lesson.pupils?.phone ?? null;
@@ -235,18 +246,30 @@ export function LessonActionsSheet({
 
   // ===== Live traffic / road issues on the route to pickup (TomTom) =====
   type TrafficIncident = { description: string };
-  const [trafficData, setTrafficData] = useState<{
+  const [internalTrafficData, setInternalTrafficData] = useState<{
     travelMins: number;
     delayMins: number;
     incidents: TrafficIncident[];
     status: "clear" | "delay" | "incident";
   } | null>(null);
-  const [trafficLoading, setTrafficLoading] = useState(false);
+  const [internalTrafficLoading, setInternalTrafficLoading] = useState(false);
+  // Share external traffic state when provided (home page) to avoid duplicate fetches.
+  const trafficData = trafficDataProp !== undefined ? trafficDataProp : internalTrafficData;
+  const trafficLoading = trafficLoadingProp !== undefined ? trafficLoadingProp : internalTrafficLoading;
+
 
   useEffect(() => {
+    if (trafficDataProp !== undefined) {
+      // State is managed by the parent (home page); just reset internal state on close.
+      if (!open) {
+        setInternalTrafficData(null);
+        setInternalTrafficLoading(false);
+      }
+      return;
+    }
     if (!open) {
-      setTrafficData(null);
-      setTrafficLoading(false);
+      setInternalTrafficData(null);
+      setInternalTrafficLoading(false);
       return;
     }
     const pickup = (lesson.pickup_location ?? "").trim();
@@ -264,7 +287,7 @@ export function LessonActionsSheet({
     const KEY = "sU3STzRmGy7LHNUyIuTP6noG7vqqoISH";
 
     (async () => {
-      setTrafficLoading(true);
+      setInternalTrafficLoading(true);
       try {
         const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
           navigator.geolocation.getCurrentPosition(resolve, reject, {
@@ -324,13 +347,14 @@ export function LessonActionsSheet({
               ? "delay"
               : "clear";
 
-        if (!cancelled) setTrafficData({ travelMins, delayMins, incidents, status });
+        if (!cancelled) setInternalTrafficData({ travelMins, delayMins, incidents, status });
       } catch {
-        if (!cancelled) setTrafficData(null); // fail silently
+        if (!cancelled) setInternalTrafficData(null); // fail silently
       } finally {
-        if (!cancelled) setTrafficLoading(false);
+        if (!cancelled) setInternalTrafficLoading(false);
       }
     })();
+
 
     return () => {
       cancelled = true;
