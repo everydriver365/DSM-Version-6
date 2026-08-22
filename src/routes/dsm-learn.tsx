@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useGoBack } from "@/hooks/useGoBack";
 import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import LearnPageBody from "@/components/learn/LearnPageBody";

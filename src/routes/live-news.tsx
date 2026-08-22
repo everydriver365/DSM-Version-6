@@ -9,6 +9,7 @@ import {
   IconBriefcase,
   IconBroadcast,
   IconCar,
+  IconChevronLeft,
   IconChevronRight,
   IconHeart,
   IconLayoutGrid,
