@@ -446,6 +446,23 @@ function tierFromPoints(pts: number): keyof typeof TIER_THRESHOLDS {
   return "bronze";
 }
 
+/** Write CarPlay-sync data to the native iOS bridge (UserDefaults) and localStorage fallback. */
+function writeCarPlayValue(key: string, value: unknown) {
+  const json = JSON.stringify(value);
+  if (Capacitor.isNativePlatform()) {
+    try {
+      (window as any).webkit?.messageHandlers?.carplayBridge?.postMessage({
+        key,
+        value: json,
+      });
+    } catch (e) {
+      console.warn("[carplay] bridge:", e);
+    }
+  }
+  // Keep localStorage as fallback for web / Despia webview
+  localStorage.setItem(key, json);
+}
+
 function CircleIconBtn({
   children, onClick, ariaLabel,
 }: { children: React.ReactNode; onClick: () => void; ariaLabel: string }) {
