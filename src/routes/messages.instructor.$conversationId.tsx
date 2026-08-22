@@ -12,6 +12,7 @@ import {
 } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
 import JumpToLatestButton from "@/components/dsm/JumpToLatestButton";
+import { PupilAvatar } from "@/components/PupilAvatar";
 
 export const Route = createFileRoute("/messages/instructor/$conversationId")({
   head: () => ({
