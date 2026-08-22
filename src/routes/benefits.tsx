@@ -600,368 +600,211 @@ function BenefitsPage() {
       )}
 
 
+      {/* FEATURED PERKS */}
       <div
         style={{
-          fontSize: tokens.fontSize.sm,
-          fontWeight: tokens.fontWeight.semibold,
+          fontSize: 11,
+          fontWeight: 700,
           color: '#9CA3AF',
           textTransform: 'uppercase',
           letterSpacing: '0.08em',
-          padding: '8px 16px 6px',
+          padding: '4px 16px 8px',
           fontFamily: 'Poppins, sans-serif',
         }}
       >
-        Included benefits
+        Featured perks
       </div>
 
-      {benefits.length === 0 && (
+      {featuredPerks.length === 0 ? (
         <EmptyState
           icon={IconGift}
-          title="No benefits available"
-          subtitle="Benefits will appear here based on your plan."
+          title="No perks yet"
+          subtitle="Perks will appear here once they're published."
         />
-      )}
-
-      {benefits.map((benefit) => {
-        const Icon = iconFor(benefit.icon);
-        return (
-          <div
-            key={benefit.id}
-            style={{
-              margin: '0 16px 12px',
-              background: '#fff',
-              borderRadius: tokens.radiusCard,
-              border: '1px solid #E4E8EF',
-              boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
-              overflow: 'hidden',
-            }}
-          >
-            <div
-              style={{
-                padding: '14px 16px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-              }}
-            >
-              <div
+      ) : (
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: 8,
+            padding: '0 16px',
+          }}
+        >
+          {featuredPerks.map((perk) => {
+            const minTier = String(perk.min_tier ?? 'free');
+            const locked = !canAccessTier(minTier);
+            const badge = TIER_BADGE[minTier] ?? 'All tiers';
+            const colour = perk.banner_colour ?? BANNER_FALLBACK[minTier] ?? '#1877D6';
+            return (
+              <button
+                key={perk.id}
+                type="button"
+                onClick={() => {
+                  if (locked) {
+                    setUpgradeStep('choose-tier');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    return;
+                  }
+                  navigate({
+                    to: '/perks_/$perkId' as never,
+                    params: { perkId: perk.id } as never,
+                  });
+                }}
                 style={{
-                  width: 42,
-                  height: 42,
-                  borderRadius: 12,
-                  background: benefit.iconBg,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
+                  background: '#fff',
+                  border: '0.5px solid #E5E5EA',
+                  borderRadius: 14,
                   overflow: 'hidden',
+                  padding: 0,
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  fontFamily: 'Poppins, sans-serif',
+                  display: 'block',
+                  width: '100%',
                 }}
               >
-                {benefit.imageUrl ? (
-                  <img
-                    src={benefit.imageUrl}
-                    alt={benefit.name}
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                ) : (
-                  <Icon size={20} color={benefit.iconColor} stroke={1.5} />
-                )}
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>
-                  {benefit.name}
-                </div>
-                <div style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', marginTop: 2 }}>
-                  {benefit.tagline}
-                </div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span
+                <div
                   style={{
-                    background: MIN_TIER_COLOR[benefit.minTier].bg,
-                    color: MIN_TIER_COLOR[benefit.minTier].color,
-                    fontSize: 9,
-                    fontWeight: tokens.fontWeight.bold,
-                    borderRadius: tokens.radiusCard,
-                    padding: '3px 8px',
-                    whiteSpace: 'nowrap',
-                    flexShrink: 0,
-                    fontFamily: 'Poppins, sans-serif',
+                    position: 'relative',
+                    height: 76,
+                    background: `linear-gradient(135deg, ${colour}, ${colour}CC)`,
                   }}
                 >
-                  {benefit.minTier === 'free' ? 'All members' : `${MIN_TIER_LABEL[benefit.minTier]} and above`}
-                </span>
-                {!canAccessTier(benefit.minTier) && (
-                  <IconLock size={14} color="#9CA3AF" stroke={1.5} />
-                )}
-              </div>
-            </div>
-
-            <div style={{ height: 1, background: '#E4E8EF' }} />
-
-            <div
-              style={{
-                padding: '12px 16px',
-                fontSize: 12,
-                color: '#6B7686',
-                lineHeight: 1.6,
-                fontFamily: 'Poppins, sans-serif',
-              }}
-            >
-              {benefit.description}
-            </div>
-
-            <div
-              style={{
-                padding: '0 16px 12px',
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: 4,
-              }}
-            >
-              {benefit.perks.map((perk) => (
-                <div key={perk} style={{ display: 'flex', gap: 4, alignItems: 'flex-start' }}>
-                  <IconCheck size={12} color="#15803D" stroke={2} style={{ marginTop: 1, flexShrink: 0 }} />
-                  <span style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', lineHeight: 1.4 }}>{perk}</span>
-                </div>
-              ))}
-            </div>
-
-            <div
-              style={{
-                padding: '12px 16px',
-                borderTop: '1px solid #E4E8EF',
-              }}
-            >
-              {benefit.freeForAll ? (
-                benefit.comingSoon ? (
-                  <div>
+                  {perk.hero_image_url && (
+                    <img
+                      src={perk.hero_image_url}
+                      alt=""
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                    />
+                  )}
+                  {locked && (
                     <span
                       style={{
-                        background: '#FEF3C7',
-                        color: '#B45309',
-                        fontSize: tokens.fontSize.sm,
-                        fontWeight: tokens.fontWeight.bold,
-                        borderRadius: tokens.radiusCard,
-                        padding: '5px 12px',
-                        display: 'inline-block',
-                        fontFamily: 'Poppins, sans-serif',
+                        position: 'absolute',
+                        top: 6,
+                        right: 6,
+                        width: 20,
+                        height: 20,
+                        borderRadius: 999,
+                        background: 'rgba(0,0,0,0.35)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                       }}
                     >
-                      Coming soon
+                      <IconLock size={11} color="#fff" stroke={2} />
                     </span>
-                    <div style={{ fontSize: tokens.fontSize.xs, color: '#9CA3AF', display: 'block', marginTop: 4 }}>
-                      We'll notify you when this goes live
-                    </div>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => handleBenefitCta(benefit.ctaAction)}
-                    style={{
-                      width: '100%',
-                      background: '#1877D6',
-                      color: '#fff',
-                      borderRadius: tokens.radiusCard,
-                      padding: 11,
-                      fontSize: tokens.fontSize.md,
-                      fontWeight: tokens.fontWeight.bold,
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontFamily: 'Poppins, sans-serif',
-                      boxShadow: '0 3px 0 #0F52A8',
-                    }}
-                  >
-                    {benefit.ctaLabel}
-                  </button>
-                )
-              ) : !canAccessTier(benefit.minTier) ? (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <IconLock size={13} color="#9CA3AF" stroke={1.5} />
-                    <span style={{ fontSize: 12, color: '#9CA3AF' }}>
-                      Included with {MIN_TIER_LABEL[benefit.minTier]}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setUpgradeStep('choose-tier');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    style={{
-                      background: '#1877D6',
-                      color: '#fff',
-                      borderRadius: tokens.radiusCard,
-                      padding: '6px 14px',
-                      fontSize: tokens.fontSize.sm,
-                      fontWeight: tokens.fontWeight.bold,
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontFamily: 'Poppins, sans-serif',
-                    }}
-                  >
-                    Upgrade →
-                  </button>
-                </div>
-              ) : benefit.comingSoon ? (
-
-                <div>
+                  )}
                   <span
                     style={{
-                      background: '#FEF3C7',
-                      color: '#B45309',
-                      fontSize: tokens.fontSize.sm,
-                      fontWeight: tokens.fontWeight.bold,
-                      borderRadius: tokens.radiusCard,
-                      padding: '5px 12px',
-                      display: 'inline-block',
-                      fontFamily: 'Poppins, sans-serif',
-                    }}
-                  >
-                    Coming soon
-                  </span>
-                  <div style={{ fontSize: tokens.fontSize.xs, color: '#9CA3AF', display: 'block', marginTop: 4 }}>
-                    Available now.
-                  </div>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => handleBenefitCta(benefit.ctaAction)}
-                  style={{
-                    width: '100%',
-                    background: '#1877D6',
-                    color: '#fff',
-                    borderRadius: tokens.radiusCard,
-                    padding: 11,
-                    fontSize: tokens.fontSize.md,
-                    fontWeight: tokens.fontWeight.bold,
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontFamily: 'Poppins, sans-serif',
-                    boxShadow: '0 3px 0 #0F52A8',
-                  }}
-                >
-                  {benefit.ctaLabel}
-                </button>
-              )}
-            </div>
-          </div>
-        );
-      })}
-
-      <div
-        style={{
-          fontSize: tokens.fontSize.sm,
-          fontWeight: tokens.fontWeight.semibold,
-          color: '#9CA3AF',
-          textTransform: 'uppercase',
-          letterSpacing: '0.08em',
-          padding: '8px 16px 6px',
-          fontFamily: 'Poppins, sans-serif',
-        }}
-      >
-        Deals and discounts
-      </div>
-
-      <div
-        style={{
-          margin: '0 16px 12px',
-          background: '#fff',
-          borderRadius: tokens.radiusCard,
-          border: '1px solid #E4E8EF',
-          boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
-          overflow: 'hidden',
-        }}
-      >
-        {DEALS.map((deal, index) => {
-          const Icon = deal.icon;
-          const isLast = index === DEALS.length - 1;
-          const dealAccess = canAccessTier(deal.minTier);
-          return (
-            <div
-              key={deal.id}
-              onClick={() => {
-                if (deal.comingSoon) {
-                  toast.info('Coming soon — check back shortly');
-                } else {
-                  // navigate to deal page when available
-                }
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                padding: '14px 16px',
-                borderBottom: isLast ? 'none' : '1px solid #E4E8EF',
-                cursor: 'pointer',
-              }}
-            >
-              <div
-                style={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: 12,
-                  background: deal.iconBg,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                <Icon size={18} color={deal.iconColor} stroke={1.5} />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A' }}>
-                  {deal.name}
-                </div>
-                <div style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', marginTop: 2 }}>
-                  {deal.tagline}
-                </div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span
-                  style={{
-                    background: MIN_TIER_COLOR[deal.minTier].bg,
-                    color: MIN_TIER_COLOR[deal.minTier].color,
-                    fontSize: 9,
-                    fontWeight: tokens.fontWeight.bold,
-                    borderRadius: tokens.radiusCard,
-                    padding: '3px 8px',
-                    whiteSpace: 'nowrap',
-                    flexShrink: 0,
-                    fontFamily: 'Poppins, sans-serif',
-                  }}
-                >
-                  {deal.minTier === 'free' ? 'All members' : `${MIN_TIER_LABEL[deal.minTier]} and above`}
-                </span>
-                {!dealAccess ? (
-                  <IconLock size={14} color="#9CA3AF" stroke={1.5} />
-                ) : deal.comingSoon ? (
-                  <span
-                    style={{
-                      background: '#FEF3C7',
-                      color: '#B45309',
+                      position: 'absolute',
+                      left: 6,
+                      bottom: 6,
+                      background: 'rgba(255,255,255,0.9)',
+                      color: '#0B1F3A',
                       fontSize: 9,
-                      fontWeight: tokens.fontWeight.bold,
-                      borderRadius: tokens.radiusCard,
-                      padding: '2px 7px',
-                      flexShrink: 0,
-                      fontFamily: 'Poppins, sans-serif',
+                      fontWeight: 500,
+                      padding: '2px 6px',
+                      borderRadius: 999,
                     }}
                   >
-                    Soon
+                    {badge}
                   </span>
-                ) : (
-                  <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
-                )}
-              </div>
-            </div>
-          );
-        })}
+                </div>
+                <div style={{ padding: '10px 11px' }}>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 500,
+                      color: '#000',
+                      letterSpacing: '-0.1px',
+                    }}
+                  >
+                    {perk.name}
+                  </div>
+                  {perk.description && (
+                    <div
+                      style={{
+                        fontSize: 10,
+                        color: '#6E6E73',
+                        lineHeight: 1.3,
+                        marginTop: 3,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {perk.description}
+                    </div>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* PERKBOX */}
+      <div
+        style={{
+          margin: '16px 16px 0',
+          background: 'linear-gradient(135deg, #1FBF8F, #0FA876)',
+          borderRadius: 14,
+          padding: 16,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 14,
+        }}
+      >
+        <div
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 999,
+            background: 'rgba(255,255,255,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#fff',
+            fontSize: 14,
+            fontWeight: 700,
+            flexShrink: 0,
+            fontFamily: 'Poppins, sans-serif',
+          }}
+        >
+          px
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: '#fff', fontFamily: 'Poppins, sans-serif' }}>
+            Perkbox
+          </div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>
+            4,000+ retailers · everyday savings
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => handleBenefitCta('perkbox_sso')}
+          style={{
+            background: 'rgba(255,255,255,0.2)',
+            color: '#fff',
+            borderRadius: 20,
+            padding: '7px 14px',
+            fontSize: 12,
+            fontWeight: 600,
+            border: 'none',
+            cursor: 'pointer',
+            flexShrink: 0,
+            fontFamily: 'Poppins, sans-serif',
+          }}
+        >
+          Browse →
+        </button>
       </div>
+
+      <div style={{ height: 16 }} />
+
 
       {/* Compare plans */}
       <button
