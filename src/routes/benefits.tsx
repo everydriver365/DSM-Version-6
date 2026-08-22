@@ -262,6 +262,21 @@ const COLS = [
 
 const TIER_INDEX: Record<string, number> = { free: 0, website: 1, pro: 2, managed: 3 };
 
+const TIER_BADGE: Record<string, string> = {
+  free: 'All tiers',
+  website: 'Essential+',
+  pro: 'Pro+',
+  managed: 'Max only',
+};
+
+const BANNER_FALLBACK: Record<string, string> = {
+  free: '#15803D',
+  website: '#1877D6',
+  pro: '#7C3AED',
+  managed: '#0B1F3A',
+};
+
+
 export const Route = createFileRoute('/benefits')({
   head: () => ({
     meta: [
