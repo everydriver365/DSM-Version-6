@@ -220,7 +220,7 @@ function LiveNewsPage() {
       const dx = t.clientX - s.x;
       const dy = t.clientY - s.y;
       if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-      const order: Array<"live" | "news" | "podcasts" | "saved"> = ["live", "news", "podcasts", "saved"];
+      const order: Array<"live" | "news" | "podcasts" | "radio"> = ["live", "news", "podcasts", "radio"];
       const idx = order.indexOf(activeTab);
       const next = order[dx < 0 ? idx + 1 : idx - 1];
       if (next) goToTab(next);
