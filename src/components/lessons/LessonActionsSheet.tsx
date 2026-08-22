@@ -26,6 +26,8 @@ import {
   IconPencil,
   IconPhone,
   IconRoute,
+  IconRoad,
+
 } from "@tabler/icons-react";
 
 import { BottomSheet, SheetGroup, SheetRow } from "@/components/dsm/BottomSheetV2";
@@ -230,6 +232,113 @@ export function LessonActionsSheet({
   useEffect(() => {
     setChargeOption((prev) => coerceChargeOption(prev, lesson.payment_status));
   }, [lesson.payment_status, inlineView]);
+
+  // ===== Live traffic / road issues on the route to pickup (TomTom) =====
+  type TrafficIncident = { description: string };
+  const [trafficData, setTrafficData] = useState<{
+    travelMins: number;
+    delayMins: number;
+    incidents: TrafficIncident[];
+    status: "clear" | "delay" | "incident";
+  } | null>(null);
+  const [trafficLoading, setTrafficLoading] = useState(false);
+
+  useEffect(() => {
+    if (!open) {
+      setTrafficData(null);
+      setTrafficLoading(false);
+      return;
+    }
+    const pickup = (lesson.pickup_location ?? "").trim();
+    if (!pickup) return;
+
+    // Only for lessons today or tomorrow
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const lessonDay = new Date(`${lesson.lesson_date}T00:00:00`);
+    const dayDiff = Math.round((lessonDay.getTime() - today.getTime()) / 86400000);
+    if (dayDiff !== 0 && dayDiff !== 1) return;
+    if (!("geolocation" in navigator)) return;
+
+    let cancelled = false;
+    const KEY = "sU3STzRmGy7LHNUyIuTP6noG7vqqoISH";
+
+    (async () => {
+      setTrafficLoading(true);
+      try {
+        const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: false,
+            timeout: 8000,
+            maximumAge: 60000,
+          }),
+        );
+        const currentLat = pos.coords.latitude;
+        const currentLng = pos.coords.longitude;
+
+        const geocodeRes = await fetch(
+          `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(pickup)}.json?key=${KEY}&countrySet=GB&limit=1`,
+        );
+        const geocodeData = await geocodeRes.json();
+        const dest = geocodeData?.results?.[0]?.position;
+        if (!dest || cancelled) throw new Error("no geocode");
+
+        const routeRes = await fetch(
+          `https://api.tomtom.com/routing/1/calculateRoute/${currentLat},${currentLng}:${dest.lat},${dest.lon}/json?key=${KEY}&traffic=true&travelMode=car`,
+        );
+        const routeData = await routeRes.json();
+        const summary = routeData?.routes?.[0]?.summary;
+        if (!summary || cancelled) throw new Error("no route");
+
+        const travelMins = Math.round((summary.travelTimeInSeconds ?? 0) / 60);
+        const delayMins = Math.round((summary.trafficDelayInSeconds ?? 0) / 60);
+
+        let incidents: TrafficIncident[] = [];
+        try {
+          const bbox = [
+            Math.min(currentLng, dest.lon),
+            Math.min(currentLat, dest.lat),
+            Math.max(currentLng, dest.lon),
+            Math.max(currentLat, dest.lat),
+          ].join(",");
+          const incidentRes = await fetch(
+            `https://api.tomtom.com/traffic/services/5/incidentDetails?key=${KEY}&bbox=${bbox}&fields={incidents{type,geometry,properties{iconCategory,magnitudeOfDelay,events{description,code},startTime,endTime,from,to,length,delay}}}`,
+          );
+          const incidentData = await incidentRes.json();
+          incidents = (incidentData?.incidents ?? [])
+            .map((inc: any) => ({
+              description:
+                inc?.properties?.events?.[0]?.description ??
+                [inc?.properties?.from, inc?.properties?.to].filter(Boolean).join(" → ") ??
+                "Traffic incident on route",
+            }))
+            .filter((i: TrafficIncident) => !!i.description);
+        } catch {
+          incidents = [];
+        }
+
+        const status: "clear" | "delay" | "incident" =
+          incidents.length > 0 || delayMins >= 10
+            ? "incident"
+            : delayMins >= 3
+              ? "delay"
+              : "clear";
+
+        if (!cancelled) setTrafficData({ travelMins, delayMins, incidents, status });
+      } catch {
+        if (!cancelled) setTrafficData(null); // fail silently
+      } finally {
+        if (!cancelled) setTrafficLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, lesson.id, lesson.pickup_location, lesson.lesson_date]);
+
+
 
 
 
@@ -1163,6 +1272,84 @@ export function LessonActionsSheet({
                 )}
               </div>
             </div>
+
+            {/* Live traffic / road issues to pickup */}
+            {trafficLoading && !trafficData ? (
+              <div
+                style={{
+                  background: "#F5F7FA",
+                  borderRadius: 12,
+                  padding: "12px 14px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  marginBottom: 12,
+                }}
+              >
+                <div style={{ width: 32, height: 32, borderRadius: 999, background: "#E4E8EF", flexShrink: 0 }} />
+                <div style={{ fontFamily: "Poppins, sans-serif", fontSize: 13, fontWeight: 600, color: "#6B7686" }}>
+                  Checking route…
+                </div>
+              </div>
+            ) : trafficData ? (
+              (() => {
+                const s = trafficData.status;
+                const bg = s === "clear" ? "#F0FDF4" : s === "delay" ? "#FEF3C7" : "#FEE2E2";
+                const fg = s === "clear" ? "#15803D" : s === "delay" ? "#D68A1B" : "#CC2229";
+                const circleBg = s === "clear" ? "#DCFCE7" : s === "delay" ? "#FDE9BC" : "#FBD5D5";
+                const Icon = s === "clear" ? IconRoad : s === "delay" ? IconAlertTriangle : IconAlertCircle;
+                const normalMins = Math.max(trafficData.travelMins - trafficData.delayMins, 0);
+                const title =
+                  s === "clear"
+                    ? "Route clear"
+                    : s === "delay"
+                      ? `Traffic delay — add ${trafficData.delayMins} mins`
+                      : (trafficData.incidents[0]?.description ??
+                        `Heavy traffic — add ${trafficData.delayMins} mins`);
+                const sub =
+                  s === "delay"
+                    ? `${trafficData.travelMins} mins to pickup (normally ${normalMins} mins)`
+                    : `${trafficData.travelMins} mins to pickup`;
+                const extra = trafficData.incidents.length > 1
+                  ? `+${trafficData.incidents.length - 1} more incident${trafficData.incidents.length - 1 === 1 ? "" : "s"} on route`
+                  : null;
+                return (
+                  <div
+                    style={{
+                      background: bg,
+                      borderRadius: 12,
+                      padding: "12px 14px",
+                      display: "flex",
+                      gap: 10,
+                      marginBottom: 12,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 999,
+                        background: circleBg,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Icon size={16} color={fg} stroke={1.5} />
+                    </div>
+                    <div style={{ minWidth: 0, fontFamily: "Poppins, sans-serif" }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: fg }}>{title}</div>
+                      <div style={{ fontSize: 11, color: "#6B7686", marginTop: 2 }}>{sub}</div>
+                      {extra ? (
+                        <div style={{ fontSize: 11, color: "#CC2229", marginTop: 2 }}>{extra}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                );
+              })()
+            ) : null}
+
 
             {/* CHANGE 3 — Quick Actions */}
             <div style={SECTION_LABEL_STYLE}>Quick Actions</div>
