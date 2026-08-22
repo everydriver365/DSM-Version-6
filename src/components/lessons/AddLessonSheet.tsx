@@ -1,5 +1,5 @@
 import { tokens } from "@/lib/tokens";
-import { testStartTime, testTimeFromNotes, testTimeFromStart, withTestTimeNote, TEST_TOTAL_MINUTES } from "@/lib/testDay";
+import { testStartTime, testEndTime, minutesBetween, testTimeFromNotes, testTimeFromStart, withTestTimeNote, TEST_TOTAL_MINUTES } from "@/lib/testDay";
 import { useEffect, useRef, useState } from "react";
 import { IconSearch } from "@tabler/icons-react";
 import {
@@ -184,6 +184,9 @@ export function AddLessonSheet({
   const [testCentreResults, setTestCentreResults] = useState<any[]>([]);
   const [searchingCentres, setSearchingCentres] = useState(false);
   const [testTime, setTestTime] = useState("");
+  const [testPickupTime, setTestPickupTime] = useState("");
+  const [testDropoffTime, setTestDropoffTime] = useState("");
+  const [testTimesTouched, setTestTimesTouched] = useState(false);
   const [pickupTouched, setPickupTouched] = useState(false);
   const [notes, setNotes] = useState("");
 
@@ -209,6 +212,11 @@ export function AddLessonSheet({
     setDate(initialDate || todayISO());
     setIsEvent(false);
     setEventTitle("");
+    if (!editingLesson) {
+      setTestPickupTime("");
+      setTestDropoffTime("");
+      setTestTimesTouched(false);
+    }
   }, [open, initialPupilId, initialDate]);
 
   // Populate sheet state when editing an existing lesson.
@@ -246,6 +254,21 @@ export function AddLessonSheet({
             ? testTimeFromStart(editingLesson.lesson_time.slice(0, 5)) ?? ''
             : ''),
       );
+      {
+        const start = editingLesson.lesson_time ? editingLesson.lesson_time.slice(0, 5) : '';
+        const mins = editingLesson.duration_minutes ?? TEST_TOTAL_MINUTES;
+        setTestPickupTime(start);
+        setTestDropoffTime(
+          start
+            ? (() => {
+                const [h, m] = start.split(':').map(Number);
+                const total = ((h * 60 + m + mins) % 1440 + 1440) % 1440;
+                return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+              })()
+            : '',
+        );
+        setTestTimesTouched(true);
+      }
     } else {
       setIsEvent(false);
       setEventTitle('');
@@ -298,6 +321,15 @@ export function AddLessonSheet({
     setPickup(p?.address ?? "");
   }, [pupilId, pupils, pickupTouched]);
 
+  // Suggest pick-up / drop-off times from the test appointment time until the
+  // instructor sets their own custom times.
+  useEffect(() => {
+    if (!isTestDay || testTimesTouched || !testTime) return;
+    setTestPickupTime(testStartTime(testTime) ?? testTime);
+    setTestDropoffTime(testEndTime(testTime) ?? "");
+  }, [isTestDay, testTime, testTimesTouched]);
+
+
   const selectedPupil = pupils.find((p) => p.id === pupilId) ?? null;
   // Display only — the authoritative payment status is resolved in handleSave().
   const willBePrepaid = (() => {
@@ -338,10 +370,19 @@ export function AddLessonSheet({
       return;
     }
     const durationMinutes = isTestDay ? 0 : effectiveDuration > 0 ? effectiveDuration : 60;
-    // Test days block out 1 hour before the test time and 90 minutes after it.
-    const effTime =
-      isTestDay && testTime ? testStartTime(testTime) ?? testTime : time;
-    const savedDuration = isTestDay ? TEST_TOTAL_MINUTES : durationMinutes;
+    // Test days use the instructor's own pick-up / drop-off times, falling back
+    // to 1 hour before the test and 90 minutes after it.
+    const testPickup = isTestDay
+      ? testPickupTime || (testTime ? testStartTime(testTime) ?? testTime : time)
+      : "";
+    const testDropoff = isTestDay
+      ? testDropoffTime || (testTime ? testEndTime(testTime) ?? "" : "")
+      : "";
+    const effTime = isTestDay ? testPickup || time : time;
+    const savedDuration = isTestDay
+      ? (testPickup && testDropoff ? minutesBetween(testPickup, testDropoff) : null) ??
+        TEST_TOTAL_MINUTES
+      : durationMinutes;
 
     const selected = pupils.find((p) => p.id === pupilId);
     const pickupValue = pickup.trim() || selected?.address?.trim() || null;
@@ -1105,6 +1146,59 @@ export function AddLessonSheet({
                   >
                     Standard test: 38-40 mins. Extended test: 70 mins.
                   </p>
+
+                  <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
+                    {([
+                      { label: "PICK-UP TIME", value: testPickupTime, set: setTestPickupTime },
+                      { label: "DROP-OFF TIME", value: testDropoffTime, set: setTestDropoffTime },
+                    ] as const).map((f) => (
+                      <div key={f.label} style={{ flex: 1 }}>
+                        <div
+                          style={{
+                            marginBottom: 6,
+                            fontFamily: "Poppins, sans-serif",
+                            fontSize: tokens.fontSize.sm,
+                            fontWeight: tokens.fontWeight.semibold,
+                            color: tokens.textMuted,
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {f.label}
+                        </div>
+                        <input
+                          type="time"
+                          value={f.value}
+                          onChange={(e) => {
+                            setTestTimesTouched(true);
+                            f.set(e.target.value);
+                          }}
+                          style={{
+                            width: "100%",
+                            background: "#fff",
+                            border: "1px solid #E4E8EF",
+                            borderRadius: tokens.radiusCard,
+                            padding: "12px 14px",
+                            fontSize: tokens.fontSize.md,
+                            fontFamily: "Poppins, sans-serif",
+                            outline: "none",
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <p
+                    style={{
+                      fontSize: tokens.fontSize.xs,
+                      color: tokens.textMuted,
+                      marginTop: 4,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    {testPickupTime && testDropoffTime
+                      ? `Blocks out ${minutesBetween(testPickupTime, testDropoffTime) ?? TEST_TOTAL_MINUTES} mins in your diary`
+                      : "Set your own pick-up and drop-off times for this test."}
+                  </p>
+
                   {errors.testCentre && (
                     <p
                       style={{

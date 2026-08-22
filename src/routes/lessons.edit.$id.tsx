@@ -1,4 +1,4 @@
-import { testStartTime, testTimeFromNotes, testTimeFromStart, withTestTimeNote, TEST_TOTAL_MINUTES } from "@/lib/testDay";
+import { testStartTime, testEndTime, minutesBetween, testTimeFromNotes, testTimeFromStart, withTestTimeNote, TEST_TOTAL_MINUTES } from "@/lib/testDay";
 import { tokens } from "@/lib/tokens";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -167,6 +167,11 @@ function EditLessonPage() {
   const [testCentreResults, setTestCentreResults] = useState<any[]>([]);
   const [searchingCentres, setSearchingCentres] = useState(false);
   const [testTime, setTestTime] = useState("");
+  const [testPickupTime, setTestPickupTime] = useState("");
+  const [testDropoffTime, setTestDropoffTime] = useState("");
+  const [testTimesTouched, setTestTimesTouched] = useState(false);
+
+
   const [status, setStatus] = useState("confirmed");
   const [isEvent, setIsEvent] = useState(false);
   const [eventTitle, setEventTitle] = useState("");
@@ -193,6 +198,14 @@ function EditLessonPage() {
   const [cancelNote, setCancelNote] = useState("");
   const [chargeOption, setChargeOption] = useState<"none" | "fee" | "full">("none");
   const [cancelFee, setCancelFee] = useState("");
+
+  // Suggest pick-up / drop-off times from the test appointment time until the
+  // instructor sets their own custom times.
+  useEffect(() => {
+    if (!isTestDay || testTimesTouched || !testTime) return;
+    setTestPickupTime(testStartTime(testTime) ?? testTime);
+    setTestDropoffTime(testEndTime(testTime) ?? "");
+  }, [isTestDay, testTime, testTimesTouched]);
 
 
   useEffect(() => {
@@ -272,6 +285,21 @@ function EditLessonPage() {
             testTimeFromNotes(l.notes) ??
               (l.lesson_time ? testTimeFromStart(l.lesson_time.slice(0, 5)) ?? '' : ''),
           );
+          {
+            const start = l.lesson_time ? l.lesson_time.slice(0, 5) : '';
+            const mins = l.duration_minutes ?? TEST_TOTAL_MINUTES;
+            setTestPickupTime(start);
+            if (start) {
+              const [hh, mm] = start.split(':').map(Number);
+              const total = (((hh * 60 + mm + mins) % 1440) + 1440) % 1440;
+              setTestDropoffTime(
+                `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`,
+              );
+            } else {
+              setTestDropoffTime('');
+            }
+            setTestTimesTouched(true);
+          }
         } else {
           setDuration(l.duration_minutes ?? 60);
           setTestCentre('');
@@ -409,11 +437,17 @@ function EditLessonPage() {
               pupil_id: pupilId,
               event_title: null,
               lesson_type: isTestDay ? ('test' as const) : ('lesson' as const),
-              duration_minutes: isTestDay ? TEST_TOTAL_MINUTES : duration,
+              duration_minutes: isTestDay
+                ? (testPickupTime && testDropoffTime
+                    ? minutesBetween(testPickupTime, testDropoffTime)
+                    : null) ?? TEST_TOTAL_MINUTES
+                : duration,
             }),
         lesson_date: date,
         lesson_time: `${
-          isTestDay && testTime ? testStartTime(testTime) ?? testTime : time
+          isTestDay
+            ? testPickupTime || (testTime ? testStartTime(testTime) ?? testTime : time)
+            : time
         }:00`,
         status,
         pickup_location: isTestDay ? testCentre.trim() || null : pickupLocation.trim() || null,
@@ -806,6 +840,42 @@ function EditLessonPage() {
                     boxSizing: 'border-box',
                   }}
                 />
+                <div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
+                  {([
+                    { label: 'PICK-UP TIME', value: testPickupTime, set: setTestPickupTime },
+                    { label: 'DROP-OFF TIME', value: testDropoffTime, set: setTestDropoffTime },
+                  ] as const).map((f) => (
+                    <div key={f.label} style={{ flex: 1 }}>
+                      <div style={{
+                        fontSize: tokens.fontSize.sm,
+                        fontWeight: tokens.fontWeight.semibold,
+                        color: '#9CA3AF',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.08em',
+                        marginBottom: 6,
+                        fontFamily: 'Poppins, sans-serif',
+                      }}>
+                        {f.label}
+                      </div>
+                      <input
+                        type="time"
+                        value={f.value}
+                        onChange={(e) => { setTestTimesTouched(true); f.set(e.target.value); }}
+                        style={{
+                          width: '100%',
+                          background: '#fff',
+                          border: '1px solid #E4E8EF',
+                          borderRadius: tokens.radiusCard,
+                          padding: '10px 12px',
+                          fontSize: tokens.fontSize.md,
+                          fontFamily: 'Poppins, sans-serif',
+                          outline: 'none',
+                          boxSizing: 'border-box',
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
                 <p style={{ fontSize: tokens.fontSize.xs, color: '#9CA3AF', marginTop: 4, fontFamily: 'Poppins, sans-serif' }}>
                   Standard test: 38-40 mins. Extended test: 70 mins.
                 </p>

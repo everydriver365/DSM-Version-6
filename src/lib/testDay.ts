@@ -43,3 +43,19 @@ export function withTestTimeNote(notes: string | null, testTime: string): string
   if (!testTime) return base || null;
   return base ? `${base}\nTest at ${testTime}` : `Test at ${testTime}`;
 }
+
+/** Lesson end time (HH:MM) for a given test appointment time. */
+export function testEndTime(testTime: string): string | null {
+  const mins = toMinutes(testTime);
+  if (mins == null) return null;
+  return toHHMM(mins + TEST_POST_MINUTES);
+}
+
+/** Minutes between two HH:MM times (wraps past midnight). */
+export function minutesBetween(start: string, end: string): number | null {
+  const a = toMinutes(start);
+  const b = toMinutes(end);
+  if (a == null || b == null) return null;
+  const diff = b - a;
+  return diff > 0 ? diff : diff + 1440;
+}
