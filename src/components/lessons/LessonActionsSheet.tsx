@@ -1273,6 +1273,84 @@ export function LessonActionsSheet({
               </div>
             </div>
 
+            {/* Live traffic / road issues to pickup */}
+            {trafficLoading && !trafficData ? (
+              <div
+                style={{
+                  background: "#F5F7FA",
+                  borderRadius: 12,
+                  padding: "12px 14px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  marginBottom: 12,
+                }}
+              >
+                <div style={{ width: 32, height: 32, borderRadius: 999, background: "#E4E8EF", flexShrink: 0 }} />
+                <div style={{ fontFamily: "Poppins, sans-serif", fontSize: 13, fontWeight: 600, color: "#6B7686" }}>
+                  Checking route…
+                </div>
+              </div>
+            ) : trafficData ? (
+              (() => {
+                const s = trafficData.status;
+                const bg = s === "clear" ? "#F0FDF4" : s === "delay" ? "#FEF3C7" : "#FEE2E2";
+                const fg = s === "clear" ? "#15803D" : s === "delay" ? "#D68A1B" : "#CC2229";
+                const circleBg = s === "clear" ? "#DCFCE7" : s === "delay" ? "#FDE9BC" : "#FBD5D5";
+                const Icon = s === "clear" ? IconRoad : s === "delay" ? IconAlertTriangle : IconAlertCircle;
+                const normalMins = Math.max(trafficData.travelMins - trafficData.delayMins, 0);
+                const title =
+                  s === "clear"
+                    ? "Route clear"
+                    : s === "delay"
+                      ? `Traffic delay — add ${trafficData.delayMins} mins`
+                      : (trafficData.incidents[0]?.description ??
+                        `Heavy traffic — add ${trafficData.delayMins} mins`);
+                const sub =
+                  s === "delay"
+                    ? `${trafficData.travelMins} mins to pickup (normally ${normalMins} mins)`
+                    : `${trafficData.travelMins} mins to pickup`;
+                const extra = trafficData.incidents.length > 1
+                  ? `+${trafficData.incidents.length - 1} more incident${trafficData.incidents.length - 1 === 1 ? "" : "s"} on route`
+                  : null;
+                return (
+                  <div
+                    style={{
+                      background: bg,
+                      borderRadius: 12,
+                      padding: "12px 14px",
+                      display: "flex",
+                      gap: 10,
+                      marginBottom: 12,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 999,
+                        background: circleBg,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Icon size={16} color={fg} stroke={1.5} />
+                    </div>
+                    <div style={{ minWidth: 0, fontFamily: "Poppins, sans-serif" }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: fg }}>{title}</div>
+                      <div style={{ fontSize: 11, color: "#6B7686", marginTop: 2 }}>{sub}</div>
+                      {extra ? (
+                        <div style={{ fontSize: 11, color: "#CC2229", marginTop: 2 }}>{extra}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                );
+              })()
+            ) : null}
+
+
             {/* CHANGE 3 — Quick Actions */}
             <div style={SECTION_LABEL_STYLE}>Quick Actions</div>
             <div style={ACTION_CARD}>
