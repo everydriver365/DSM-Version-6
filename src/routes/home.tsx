@@ -2687,6 +2687,47 @@ function HomePage() {
       });
       setNextLesson((validNext ?? null) as unknown as LessonRow | null);
 
+      // Write next lesson for CarPlay
+      if (validNext) {
+        const carplayLesson = {
+          id: validNext.id,
+          pupilName: ((validNext as any)
+            .pupils?.name) ?? 'Pupil',
+          time: (validNext.lesson_time ?? '')
+            .slice(0, 5),
+          date: validNext.lesson_date ?? '',
+          address: validNext.pickup_location
+            ?? '',
+          phone: ((validNext as any)
+            .pupils?.phone) ?? null,
+          isTest: (validNext as any).lesson_type
+            === 'test',
+        };
+        localStorage.setItem(
+          'dsm_next_lesson',
+          JSON.stringify(carplayLesson)
+        );
+      }
+      // Write today's lessons for CarPlay
+      const carplayTodayLessons = (activeLessons ?? [])
+        .filter((l: any) =>
+          l.lesson_date === todayYmd)
+        .map((l: any) => ({
+          id: l.id,
+          pupilName: l.pupils?.name
+            ?? 'Pupil',
+          time: (l.lesson_time ?? '')
+            .slice(0, 5),
+          date: l.lesson_date ?? '',
+          address: l.pickup_location ?? '',
+          phone: l.pupils?.phone ?? null,
+          isTest: l.lesson_type === 'test',
+        }));
+      localStorage.setItem(
+        'dsm_today_lessons',
+        JSON.stringify(carplayTodayLessons)
+      );
+
       // ---- Unpaid lessons (all time, exclude cancelled) ----
       const { data: unpaidLessons } = await supabase
         .from("lessons")
