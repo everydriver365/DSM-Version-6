@@ -102,6 +102,13 @@ async function handleSyncGoogleClick() {
   await syncToGoogleCalendar(uid, sess.session?.access_token ?? "");
 }
 
+function hexToRgba(hex: string, alpha: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
 
 // -------------------- Next Lesson Google IconMap --------------------
 const GMAPS_SCRIPT_ID = "google-maps-js-script";
@@ -7247,6 +7254,19 @@ function HomePage() {
                         }}
                       >
                         <div
+                          style={{
+                            position: 'absolute',
+                            top: -30,
+                            right: -30,
+                            width: 90,
+                            height: 90,
+                            borderRadius: '50%',
+                            background: `radial-gradient(circle, ${hexToRgba(tile.bg as string, 0.06)} 0%, transparent 70%)`,
+                            pointerEvents: 'none',
+                            zIndex: 0,
+                          }}
+                        />
+                        <div
                           className="qa-icon"
                           style={{
                             width: 34,
@@ -7258,11 +7278,13 @@ function HomePage() {
                             justifyContent: 'center',
                             flexShrink: 0,
                             transition: 'transform 0.15s ease',
+                            position: 'relative',
+                            zIndex: 1,
                           }}
                         >
                           {tintedIcon}
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0, maxWidth: '100%' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0, maxWidth: '100%', position: 'relative', zIndex: 1 }}>
                           <span style={{
                             fontSize: 15,
                             fontWeight: tokens.fontWeight.bold,
