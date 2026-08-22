@@ -4885,9 +4885,7 @@ function HomePage() {
             margin: 0,
             background: '#FFFFFF',
             borderRadius: upcoming && heroExpanded ? '8px 8px 0 0' : 8,
-            ...(isTestLesson(upcoming)
-              ? { border: '1px solid #CC2229', boxShadow: '0 0 0 3px #FEE2E2' }
-              : { boxShadow: '0 8px 24px rgba(15,32,68,0.12)' }),
+            boxShadow: '0 8px 24px rgba(15,32,68,0.12)',
             overflow: 'hidden',
             fontFamily: 'Poppins, sans-serif',
             position: 'relative',
@@ -5034,16 +5032,6 @@ function HomePage() {
           const railMon = d ? d.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase() : '';
           const isLessonToday = upcoming && d ? ymd(d) === ymd(todayStart) : false;
 
-          const testDayCountdown = (() => {
-            if (!d || !upcoming) return '—';
-            if (ymd(d) === ymd(todayStart)) return 'TODAY';
-            const diffMs = d.getTime() - Date.now();
-            if (diffMs <= 0) return 'TODAY';
-            const hours = Math.floor(diffMs / (1000 * 60 * 60));
-            if (hours < 24) return `IN ${hours} HOUR${hours === 1 ? '' : 'S'}`;
-            const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-            return `IN ${days} DAY${days === 1 ? '' : 'S'}`;
-          })();
 
           if (!upcoming) {
             return (
@@ -5055,87 +5043,7 @@ function HomePage() {
 
           return (
             <>
-              {isTestLesson(upcoming) ? (
-                <>
-                  {/* Test day banner */}
-                  <div
-                    style={{
-                      background: '#CC2229',
-                      padding: '8px 14px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ fontSize: 11, fontWeight: 500, color: '#FFFFFF', textTransform: 'uppercase', letterSpacing: '0.3px', fontFamily: 'Poppins, sans-serif' }}>
-                        🎯 Driving test
-                      </span>
-                      <span style={{ fontSize: 11, fontWeight: 500, color: 'rgba(255,255,255,0.85)', fontFamily: 'Poppins, sans-serif' }}>
-                        {testDayCountdown}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => navigate({ to: '/schedule' })}
-                      style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#FFFFFF', fontFamily: 'Poppins, sans-serif' }}
-                    >
-                      Full schedule <IconChevronRight size={14} stroke={2.2} color="#FFFFFF" />
-                    </button>
-                  </div>
-
-                  {/* Test day content */}
-                  <div style={{ background: '#FEE2E2', padding: '14px 16px' }}>
-                    {/* Test detail card */}
-                    <div style={{ background: '#FFFFFF', borderRadius: 10, padding: '10px 12px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
-                        <IconCalendar stroke={1.5} size={16} color="#CC2229" />
-                        <span>{d ? d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) : '—'}</span>
-                        <span style={{ color: '#6B7686' }}>·</span>
-                        <span>{startText}{endText ? ` - ${endText}` : ''}</span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6, marginTop: 6, fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
-                        <IconMapPin stroke={1.5} size={16} color="#CC2229" style={{ marginTop: 2, flexShrink: 0 }} />
-                        <span>{testCentreOf(upcoming) ?? 'Test centre not set'}</span>
-                      </div>
-                    </div>
-
-                    {/* Navigate button */}
-                    <button
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); openMaps(); }}
-                      style={{
-                        width: '100%',
-                        marginTop: 12,
-                        background: '#CC2229',
-                        color: '#FFFFFF',
-                        border: 'none',
-                        borderRadius: tokens.radiusCard,
-                        padding: '10px 14px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 6,
-                        cursor: 'pointer',
-                        fontSize: 12,
-                        fontWeight: tokens.fontWeight.bold,
-                        fontFamily: 'Poppins, sans-serif',
-                      }}
-                    >
-                      <IconNavigation stroke={1.5} size={14} color="#FFFFFF" />
-                      <span>Navigate to test centre</span>
-                    </button>
-                  </div>
-
-                  {/* Pre-test reminder strip */}
-                  <div style={{ background: '#FFFFFF', padding: '10px 14px', borderTop: '0.5px solid #E4E8EF', display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <IconAlertTriangle stroke={1.5} size={14} color="#D68A1B" />
-                    <span style={{ fontSize: 11, fontWeight: 500, color: '#D68A1B', fontFamily: 'Poppins, sans-serif' }}>
-                      Arrive 15 mins early · bring provisional licence
-                    </span>
-                  </div>
-                </>
-              ) : (() => {
+              {(() => {
                 {/* Diagonal two-panel hero */}
                 const GMAPS_KEY = (import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined)
                   || "AIzaSyDWFw0oL9ZyhwdvdvYtDsdJrTFYzF0khFc";
@@ -5459,63 +5367,33 @@ function HomePage() {
                   <span>Call</span>
                 </button>
 
-                {isTestLesson(upcoming) ? (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate({ to: '/test-day/$pupilId', params: { pupilId: upcoming.pupil_id } });
-                    }}
-                    style={{
-                      flex: 1,
-                      height: 38,
-                      borderRadius: 12,
-                      border: 'none',
-                      background: '#F3E8FF',
-                      color: '#7C3AED',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: 6,
-                      cursor: 'pointer',
-                      fontSize: 12,
-                      fontWeight: tokens.fontWeight.semibold,
-                      fontFamily: 'Poppins, sans-serif',
-                      padding: 0,
-                    }}
-                  >
-                    <IconClipboardCheck stroke={1.5} size={14} color="#7C3AED" />
-                    <span>Checklist</span>
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setLateOpen(true);
-                    }}
-                    style={{
-                      flex: 1,
-                      height: 38,
-                      borderRadius: 12,
-                      border: 'none',
-                      background: '#FEE2E2',
-                      color: '#CC2229',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: 6,
-                      cursor: 'pointer',
-                      fontSize: 12,
-                      fontWeight: tokens.fontWeight.semibold,
-                      fontFamily: 'Poppins, sans-serif',
-                      padding: 0,
-                    }}
-                  >
-                    <IconClock stroke={1.5} size={14} color="#B3181F" />
-                    <span>Late</span>
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLateOpen(true);
+                  }}
+                  style={{
+                    flex: 1,
+                    height: 38,
+                    borderRadius: 12,
+                    border: 'none',
+                    background: '#FEE2E2',
+                    color: '#CC2229',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    cursor: 'pointer',
+                    fontSize: 12,
+                    fontWeight: tokens.fontWeight.semibold,
+                    fontFamily: 'Poppins, sans-serif',
+                    padding: 0,
+                  }}
+                >
+                  <IconClock stroke={1.5} size={14} color="#B3181F" />
+                  <span>Late</span>
+                </button>
 
               </div>
 
