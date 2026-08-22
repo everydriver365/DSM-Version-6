@@ -12,6 +12,17 @@ const PUPIL_PALETTE = [
   "#185F8A",
 ];
 
+const TINT_MAP: Record<string, { bg: string; text: string }> = {
+  "#1877D6": { bg: "#E6F1FA", text: "#1877D6" },
+  "#6B4FD6": { bg: "#F1ECFA", text: "#8A5BC9" },
+  "#3B6D11": { bg: "#E8F5E0", text: "#3B6D11" },
+  "#C4501E": { bg: "#FCEEE8", text: "#C4501E" },
+  "#0C8577": { bg: "#E3F4F2", text: "#0C8577" },
+  "#CC2229": { bg: "#FCE8E9", text: "#CC2229" },
+  "#854F0B": { bg: "#F5EFE6", text: "#854F0B" },
+  "#185F8A": { bg: "#E3EEF4", text: "#185F8A" },
+};
+
 const PUPIL_COLOUR_OVERRIDES: Record<string, string> = {
   "joseph thorne": "#3B6D11",
 };
@@ -48,6 +59,8 @@ export interface PupilAvatarProps {
   pupilId?: string | null;
   size?: number;
   className?: string;
+  /** Render a light tinted background with a dark accent initial instead of the solid colour. */
+  tinted?: boolean;
 }
 
 export function getInitials(pupil: PupilAvatarProps["pupil"]): string {
@@ -63,13 +76,14 @@ export function getInitials(pupil: PupilAvatarProps["pupil"]): string {
   return (first + last).toUpperCase() || (first_name?.slice(0, 2).toUpperCase() ?? "?");
 }
 
-export function PupilAvatar({ pupil, pupilId, size = 32, className }: PupilAvatarProps) {
+export function PupilAvatar({ pupil, pupilId, size = 32, className, tinted }: PupilAvatarProps) {
   const [imgError, setImgError] = useState(false);
   const name =
     pupil?.name ||
     `${pupil?.first_name ?? ""} ${pupil?.last_name ?? ""}`.trim() ||
     null;
   const colour = pupilColour(pupilId ?? pupil?.id ?? null, pupil?.calendar_colour ?? null, name);
+  const tint = tinted ? TINT_MAP[colour.toUpperCase()] ?? { bg: "#F2F2F4", text: colour } : null;
   const imageUrl = pupil?.profile_image_url || pupil?.photo_url || null;
   const initials = getInitials(pupil);
 
@@ -80,8 +94,8 @@ export function PupilAvatar({ pupil, pupilId, size = 32, className }: PupilAvata
         width: size,
         height: size,
         borderRadius: "50%",
-        background: colour,
-        color: tokens.white,
+        background: tint ? tint.bg : colour,
+        color: tint ? tint.text : tokens.white,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
