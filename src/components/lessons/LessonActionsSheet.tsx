@@ -212,7 +212,10 @@ export function LessonActionsSheet({
   onOpenLesson,
   onEol,
   userId,
+  trafficData: trafficDataProp,
+  trafficLoading: trafficLoadingProp,
 }: LessonActionsSheetProps) {
+
   const navigate = useNavigate();
   const verifyAddressFn = useServerFn(verifyAddress);
   const phone = lesson.pupils?.phone ?? null;
