@@ -2691,16 +2691,16 @@ function HomePage() {
       if (validNext) {
         const carplayLesson = {
           id: validNext.id,
-          pupilName: (validNext as any)
-            .pupils?.name ?? 'Pupil',
+          pupilName: ((validNext as any)
+            .pupils?.name) ?? 'Pupil',
           time: (validNext.lesson_time ?? '')
             .slice(0, 5),
           date: validNext.lesson_date ?? '',
           address: validNext.pickup_location
             ?? '',
-          phone: (validNext as any)
-            .pupils?.phone ?? null,
-          isTest: validNext.lesson_type
+          phone: ((validNext as any)
+            .pupils?.phone) ?? null,
+          isTest: (validNext as any).lesson_type
             === 'test',
         };
         localStorage.setItem(
@@ -2709,7 +2709,7 @@ function HomePage() {
         );
       }
       // Write today's lessons for CarPlay
-      const todayLessons = (activeLessons ?? [])
+      const carplayTodayLessons = (activeLessons ?? [])
         .filter((l: any) =>
           l.lesson_date === todayYmd)
         .map((l: any) => ({
@@ -2725,7 +2725,7 @@ function HomePage() {
         }));
       localStorage.setItem(
         'dsm_today_lessons',
-        JSON.stringify(todayLessons)
+        JSON.stringify(carplayTodayLessons)
       );
 
       // ---- Unpaid lessons (all time, exclude cancelled) ----
