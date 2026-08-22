@@ -169,7 +169,7 @@ function LiveNewsPage() {
       navigate({ to: fallback as never });
     }
   }
-  const [activeTab, setActiveTab] = useState<"live" | "news" | "podcasts" | "saved">(tab ?? "live");
+  const [activeTab, setActiveTab] = useState<"live" | "news" | "podcasts" | "radio">(tab ?? "live");
   const [sessions, setSessions] = useState<LiveSession[] | null>(null);
   const [articles, setArticles] = useState<any[] | null>(null);
   const [episodes, setEpisodes] = useState<PodcastEpisode[] | null>(null);
@@ -187,7 +187,7 @@ function LiveNewsPage() {
 
   // Sync active tab with URL search param.
   const goToTab = useCallback(
-    (next: "live" | "news" | "podcasts" | "saved") => {
+    (next: "live" | "news" | "podcasts" | "radio") => {
       setActiveTab(next);
       navigate({ to: "/live-news", search: (prev) => ({ ...prev, tab: next }), replace: true });
     },
