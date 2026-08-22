@@ -1021,7 +1021,7 @@ function PupilThreadPage() {
       <div
         ref={scrollerRef}
         className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3"
-        style={{ paddingBottom: 150, background: tokens.white }}
+        style={{ paddingBottom: 80, background: tokens.white }}
       >
         {loadingOlder && (
           <div className="flex items-center justify-center py-2 shrink-0">
