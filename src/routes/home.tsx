@@ -4992,12 +4992,18 @@ function HomePage() {
           const startText = d ? fmt(d) : '—';
           const dur = upcoming?.duration_minutes ?? 0;
           const durationDecimal = dur ? (dur / 60).toFixed(dur % 60 === 0 ? 0 : 1) : '0';
+          // On test days pickup_location holds the test centre, so the pickup
+          // row always falls back to the pupil's home address.
+          const upcomingIsTest = isTestLesson(upcoming);
           const pickupParts = getPickupParts(
-            upcoming?.pickup_location,
+            upcomingIsTest ? null : upcoming?.pickup_location,
             upcoming?.pupils?.address,
             upcoming?.pupils?.postcode,
           );
           const pickup = pickupParts.full;
+          const upcomingTestCentre = upcomingIsTest ? testCentreOf(upcoming) : null;
+          const upcomingTestTime = upcomingIsTest ? (testTimeOf(upcoming) ?? startText) : null;
+
 
 
           const upcomingSmsCount = upcoming?.pupil_id
@@ -5401,17 +5407,30 @@ function HomePage() {
               <div style={{
                 padding: '12px 16px',
                 borderTop: '1px solid #E4E8EF',
-                display: 'flex', alignItems: 'center', gap: 10, minWidth: 0,
+                display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0,
               }}>
-                <IconMapPin stroke={1.5} size={18} color="#6B7686" style={{ flexShrink: 0 }} />
-                <span style={{
-                  fontSize: tokens.fontSize.base, color: '#5A6270', fontFamily: 'Poppins, sans-serif',
-                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                }}>
-                  {pickup}
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+                  <IconMapPin stroke={1.5} size={18} color="#6B7686" style={{ flexShrink: 0 }} />
+                  <span style={{
+                    fontSize: tokens.fontSize.base, color: '#5A6270', fontFamily: 'Poppins, sans-serif',
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  }}>
+                    {pickup}
+                  </span>
+                </div>
+                {upcomingIsTest && (upcomingTestCentre || upcomingTestTime) && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+                    <IconCar stroke={1.5} size={18} color="#CC2229" style={{ flexShrink: 0 }} />
+                    <span style={{
+                      fontSize: tokens.fontSize.sm, color: '#CC2229', fontWeight: tokens.fontWeight.semibold,
+                      fontFamily: 'Poppins, sans-serif',
+                      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    }}>
+                      {[upcomingTestCentre, upcomingTestTime].filter(Boolean).join(' · ')}
+                    </span>
+                  </div>
+                )}
               </div>
-
 
               {/* Reasons row */}
               {anyReason && (
