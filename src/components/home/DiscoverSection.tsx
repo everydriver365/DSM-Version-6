@@ -9,7 +9,6 @@ import hmacaLogoAsset from "@/assets/hmaca-logo.png.asset.json";
 
 import {
   IconChevronRight,
-  IconBroadcast,
   IconBook,
   IconShoppingBag,
   IconBrowser,
@@ -22,6 +21,7 @@ import {
   IconKey,
   IconPhoto,
   IconRosetteDiscount,
+  IconMicrophone,
 } from "@tabler/icons-react";
 
 import { supabase } from "@/lib/supabaseClient";
@@ -1109,56 +1109,46 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             borderColor: "#E4F4E9",
           }}
         >
-          {/* decorative book stack */}
-          <div
+          {/* open book motif */}
+          <svg
             aria-hidden
+            width={68}
+            height={60}
+            viewBox="0 0 68 60"
             style={{
               position: "absolute",
-              right: -10,
-              bottom: -6,
-              width: 96,
-              height: 96,
-              opacity: 0.5,
+              bottom: 14,
+              right: 14,
               pointerEvents: "none",
             }}
           >
-            <div
-              style={{
-                position: "absolute",
-                right: 14,
-                bottom: 18,
-                width: 74,
-                height: 20,
-                borderRadius: 6,
-                background: "#EDF3EF",
-                transform: "rotate(-6deg)",
-              }}
+            <path
+              d="M34 12 C28 8 18 8 12 12 L12 48 C18 44 28 44 34 48 C40 44 50 44 56 48 L56 12 C50 8 40 8 34 12 Z"
+              stroke="#3B8B3B"
+              strokeWidth={1.8}
+              fill="none"
+              opacity={0.3}
             />
-            <div
-              style={{
-                position: "absolute",
-                right: 20,
-                bottom: 32,
-                width: 68,
-                height: 20,
-                borderRadius: 6,
-                background: "#DCEFE3",
-                transform: "rotate(-6deg)",
-              }}
+            <line
+              x1="34"
+              y1="12"
+              x2="34"
+              y2="48"
+              stroke="#3B8B3B"
+              strokeWidth={1.8}
+              opacity={0.3}
             />
-            <div
-              style={{
-                position: "absolute",
-                right: 26,
-                bottom: 46,
-                width: 62,
-                height: 22,
-                borderRadius: 6,
-                background: "#C9E8D5",
-                transform: "rotate(-6deg)",
-              }}
-            />
-          </div>
+            {/* left page text lines */}
+            <line x1="17" y1="20" x2="30" y2="20" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
+            <line x1="17" y1="26" x2="30" y2="26" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
+            <line x1="17" y1="32" x2="28" y2="32" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
+            <line x1="17" y1="38" x2="26" y2="38" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
+            {/* right page text lines */}
+            <line x1="38" y1="20" x2="51" y2="20" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
+            <line x1="38" y1="26" x2="51" y2="26" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
+            <line x1="40" y1="32" x2="51" y2="32" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
+            <line x1="42" y1="38" x2="51" y2="38" stroke="#3B8B3B" strokeWidth={1.4} opacity={0.25} />
+          </svg>
 
           {(showcaseCount ?? 0) > 0 && (
             <span
@@ -1174,7 +1164,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               }}
             />
           )}
-          <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ position: "relative", zIndex: 1, maxWidth: "62%" }}>
             <span
               style={{
                 ...chipBase,
@@ -1227,32 +1217,56 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             borderColor: "#FAE3EA",
           }}
         >
-          {/* decorative waveform */}
-          <div
+          {/* microphone motif */}
+          <svg
             aria-hidden
+            width={52}
+            height={70}
+            viewBox="0 0 52 70"
             style={{
               position: "absolute",
-              right: 8,
-              bottom: 10,
-              display: "flex",
-              alignItems: "flex-end",
-              gap: 2,
-              opacity: 0.4,
+              bottom: 12,
+              right: 20,
               pointerEvents: "none",
             }}
           >
-            {[8, 16, 10, 26, 14, 34, 20, 44, 26, 52, 30, 22, 14, 24, 10, 16, 8].map((h, i) => (
-              <span
-                key={i}
-                style={{
-                  width: 2.5,
-                  height: h,
-                  borderRadius: 2,
-                  background: i % 2 === 0 ? "#F0768F" : "#F7B3C2",
-                }}
-              />
-            ))}
-          </div>
+            <rect
+              x="18"
+              y="4"
+              width="16"
+              height="30"
+              rx="8"
+              stroke="#C8434F"
+              strokeWidth={2}
+              fill="none"
+              opacity={0.28}
+            />
+            <path
+              d="M10 28 C10 38 17 44 26 44 C35 44 42 38 42 28"
+              stroke="#C8434F"
+              strokeWidth={2}
+              fill="none"
+              opacity={0.28}
+            />
+            <line
+              x1="26"
+              y1="44"
+              x2="26"
+              y2="54"
+              stroke="#C8434F"
+              strokeWidth={2}
+              opacity={0.28}
+            />
+            <line
+              x1="16"
+              y1="54"
+              x2="36"
+              y2="54"
+              stroke="#C8434F"
+              strokeWidth={2}
+              opacity={0.28}
+            />
+          </svg>
 
           {isLiveOnAir && (
             <span
@@ -1270,7 +1284,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             />
           )}
 
-          <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ position: "relative", zIndex: 1, maxWidth: "62%" }}>
             <span
               style={{
                 ...chipBase,
@@ -1281,7 +1295,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 boxShadow: "0 2px 8px -2px rgba(11,31,58,0.12)",
               }}
             >
-              <IconBroadcast size={19} color={isLiveOnAir ? RED : "#E5385F"} stroke={1.7} />
+              <IconMicrophone size={19} color={isLiveOnAir ? RED : "#E5385F"} stroke={1.7} />
             </span>
             <div
               style={{
