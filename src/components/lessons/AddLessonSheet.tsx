@@ -184,6 +184,9 @@ export function AddLessonSheet({
   const [testCentreResults, setTestCentreResults] = useState<any[]>([]);
   const [searchingCentres, setSearchingCentres] = useState(false);
   const [testTime, setTestTime] = useState("");
+  const [testPickupTime, setTestPickupTime] = useState("");
+  const [testDropoffTime, setTestDropoffTime] = useState("");
+  const [testTimesTouched, setTestTimesTouched] = useState(false);
   const [pickupTouched, setPickupTouched] = useState(false);
   const [notes, setNotes] = useState("");
 
