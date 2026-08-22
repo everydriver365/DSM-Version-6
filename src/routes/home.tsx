@@ -4891,6 +4891,29 @@ function HomePage() {
             position: 'relative',
           }}
         >
+        {isTestLesson(upcoming) && (
+          <div style={{
+            position: 'absolute',
+            top: 32,
+            right: -36,
+            width: 150,
+            background: '#CC2229',
+            color: '#FFFFFF',
+            textAlign: 'center',
+            padding: '6px 0',
+            fontSize: 12,
+            fontWeight: tokens.fontWeight.bold,
+            fontFamily: 'Poppins, sans-serif',
+            transform: 'rotate(45deg)',
+            transformOrigin: 'top right',
+            zIndex: 20,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            letterSpacing: 0.5,
+            textTransform: 'uppercase',
+          }}>
+            Test Day
+          </div>
+        )}
         {(() => {
 
           // ETA calculation
