@@ -17,6 +17,7 @@ import {
   IconPlayerPlayFilled,
   IconPlayerPauseFilled,
   IconPlayerTrackNextFilled,
+  IconRadio,
   IconSchool,
   IconSearch,
   IconShare,
@@ -55,9 +56,9 @@ import {
 } from "@/lib/podcastSaved";
 
 export const Route = createFileRoute("/live-news")({
-  validateSearch: (search: Record<string, unknown>): { tab?: "live" | "news" | "podcasts" | "saved" } => {
+  validateSearch: (search: Record<string, unknown>): { tab?: "live" | "news" | "podcasts" | "radio" } => {
     const t = search.tab;
-    if (t === "live" || t === "news" || t === "podcasts" || t === "saved") return { tab: t };
+    if (t === "live" || t === "news" || t === "podcasts" || t === "radio") return { tab: t };
     return { tab: "live" };
   },
   component: LiveNewsPage,
@@ -168,7 +169,7 @@ function LiveNewsPage() {
       navigate({ to: fallback as never });
     }
   }
-  const [activeTab, setActiveTab] = useState<"live" | "news" | "podcasts" | "saved">(tab ?? "live");
+  const [activeTab, setActiveTab] = useState<"live" | "news" | "podcasts" | "radio">(tab ?? "live");
   const [sessions, setSessions] = useState<LiveSession[] | null>(null);
   const [articles, setArticles] = useState<any[] | null>(null);
   const [episodes, setEpisodes] = useState<PodcastEpisode[] | null>(null);
@@ -186,7 +187,7 @@ function LiveNewsPage() {
 
   // Sync active tab with URL search param.
   const goToTab = useCallback(
-    (next: "live" | "news" | "podcasts" | "saved") => {
+    (next: "live" | "news" | "podcasts" | "radio") => {
       setActiveTab(next);
       navigate({ to: "/live-news", search: (prev) => ({ ...prev, tab: next }), replace: true });
     },
@@ -219,7 +220,7 @@ function LiveNewsPage() {
       const dx = t.clientX - s.x;
       const dy = t.clientY - s.y;
       if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-      const order: Array<"live" | "news" | "podcasts" | "saved"> = ["live", "news", "podcasts", "saved"];
+      const order: Array<"live" | "news" | "podcasts" | "radio"> = ["live", "news", "podcasts", "radio"];
       const idx = order.indexOf(activeTab);
       const next = order[dx < 0 ? idx + 1 : idx - 1];
       if (next) goToTab(next);
@@ -246,7 +247,6 @@ function LiveNewsPage() {
       return next;
     });
   }, []);
-  const savedEpisodes = savedList(saved);
 
   // ---- listening progress (per device) ----
   const [progress, setProgress] = useState<ProgressMap>({});
@@ -496,8 +496,7 @@ function LiveNewsPage() {
 
   const playNext = useCallback(() => {
     if (!playing) return;
-    const source = activeTab === "saved" ? savedEpisodes : visibleEpisodes;
-    const list = source.filter((e) => e.audioUrl);
+    const list = visibleEpisodes.filter((e) => e.audioUrl);
     const idx = list.findIndex((e) => e.id === playing.id);
     const next = idx >= 0 ? list[idx + 1] : list[0];
     if (!next) return;
@@ -506,7 +505,7 @@ function LiveNewsPage() {
     setDuration(0);
     setPlaying(next);
     if (selectedEpisode) setSelectedEpisode(next);
-  }, [playing, visibleEpisodes, savedEpisodes, activeTab, selectedEpisode, flushProgress]);
+  }, [playing, visibleEpisodes, selectedEpisode, flushProgress]);
 
   useEffect(() => {
     const el = audioRef.current;
@@ -547,7 +546,7 @@ function LiveNewsPage() {
   const allSessions = activeSession ? [activeSession, ...upcomingSessions] : upcomingSessions;
 
   const tabButton = (
-    key: "live" | "news" | "podcasts" | "saved",
+    key: "live" | "news" | "podcasts" | "radio",
     label: string,
     count: number,
     Icon: typeof IconBroadcast,
@@ -760,7 +759,7 @@ function LiveNewsPage() {
         {tabButton("live", "Live", sessions?.length ?? 0, IconBroadcast, false)}
         {tabButton("news", "News", articles?.length ?? 0, IconNews, true)}
         {tabButton("podcasts", "Podcasts", episodes?.length ?? 0, IconMicrophone, true)}
-        {tabButton("saved", "Saved", savedEpisodes.length, IconBookmark, true)}
+        {tabButton("radio", "Radio", 0, IconRadio, true)}
       </div>
 
       <div
@@ -1630,49 +1629,75 @@ function LiveNewsPage() {
           </section>
         )}
 
-        {activeTab === "saved" && (
+        {activeTab === "radio" && (
           <section>
-            {savedEpisodes.length === 0 ? (
-              <EmptyState message="No saved episodes yet — tap the bookmark on any episode to save it here" />
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+                padding: "48px 24px",
+                background: "#fff",
+                borderRadius: tokens.radiusCard,
+                border: "0.5px solid #E4E8EF",
+                gap: 18,
+              }}
+            >
+              <div
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: "50%",
+                  background: "#EAF2FD",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconRadio size={40} stroke={1.6} color={tokens.blue} />
+              </div>
+              <div>
                 <div
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    marginBottom: 10,
-                    color: tokens.textSecondary,
-                    fontSize: 12,
+                    fontFamily: "Sora, sans-serif",
+                    fontSize: tokens.fontSize.xl,
+                    fontWeight: tokens.fontWeight.bold,
+                    color: tokens.navy,
+                    marginBottom: 6,
                   }}
                 >
-                  <IconBookmarkFilled size={14} color="#1877D6" />
-                  <span>
-                    <strong style={{ color: tokens.navy }}>{savedEpisodes.length}</strong> saved{" "}
-                    {savedEpisodes.length === 1 ? "episode" : "episodes"} on this device
-                  </span>
+                  DSM Radio Channel
                 </div>
-                {savedEpisodes.map((ep) => (
-                  <EpisodeCard
-                    key={ep.id}
-                    ep={ep}
-                    isOpen={expandedEpisodeId === ep.id}
-                    onOpen={() => setExpandedEpisodeId((prev) => (prev === ep.id ? null : ep.id))}
-                    onOpenDetails={() => setSelectedEpisode(ep)}
-                    isCurrent={playing?.id === ep.id}
-                    isPlaying={isPlaying}
-                    onPlay={() => playEpisode(ep)}
-                    progressEntry={progress[ep.id]}
-                    isSaved
-                    onToggleSave={() => toggleSave(ep)}
-                    currentTime={currentTime}
-                    duration={duration}
-                    onSeek={seekTo}
-                    onRestart={() => playEpisode(ep, { restart: true })}
-                  />
-                ))}
+                <div
+                  style={{
+                    fontFamily: "Poppins, sans-serif",
+                    fontSize: tokens.fontSize.md,
+                    color: tokens.textSecondary,
+                    lineHeight: 1.5,
+                    maxWidth: 280,
+                  }}
+                >
+                  Live shows, interviews, and driving-instructor banter — launching soon.
+                </div>
               </div>
-            )}
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "6px 14px",
+                  borderRadius: 999,
+                  background: "#FEF3C7",
+                  color: "#B45309",
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.bold,
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                <IconBroadcast size={14} /> Coming soon
+              </span>
+            </div>
           </section>
         )}
       </div>
