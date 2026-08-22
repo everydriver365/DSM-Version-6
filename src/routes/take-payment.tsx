@@ -304,6 +304,40 @@ function TakePaymentPage() {
     toast.success("Link copied");
   };
 
+  // --- PayPal.me / bank transfer (direct-to-instructor, no DSM processing) ---
+  const paypalLink =
+    paypalUsername && amountNum > 0
+      ? `https://paypal.me/${paypalUsername}/${amountNum.toFixed(2)}`
+      : paypalUsername
+        ? `https://paypal.me/${paypalUsername}`
+        : "";
+
+  const bankReference = `${pupilName || "Lesson"} ${new Date().toLocaleDateString("en-GB")}`.trim();
+
+  const bankDetailsText = [
+    `Payment of £${amountNum.toFixed(2)}`,
+    `Account name: ${bank.name}`,
+    `Sort code: ${bank.sort}`,
+    `Account number: ${bank.number}`,
+    `Reference: ${bankReference}`,
+  ].join("\n");
+
+  const sendToPupil = (body: string) => {
+    const phone = selectedPupil?.phone ?? "";
+    openSms(phone, body);
+  };
+
+  const copyText = async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success(`${label} copied`);
+    } catch {
+      toast.error("Copy failed");
+    }
+  };
+
+
+
 
 
   // --- Card (Square hosted checkout) ---
