@@ -253,6 +253,34 @@ function PupilThreadPage() {
   const atBottomRef = useRef(true);
   const scrollAnchorTopRef = useRef(0);
 
+  // Screen-reader announcement for messages that arrive while the reader is
+  // scrolled up in older history. Rendered into a visually-hidden live region
+  // (role="status"), which never moves focus away from the composer.
+  const [liveAnnouncement, setLiveAnnouncement] = useState("");
+  const liveClearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const senderNameRef = useRef("Pupil");
+
+  useEffect(() => {
+    senderNameRef.current = pupil?.name ?? pupil?.first_name ?? "Pupil";
+  }, [pupil]);
+
+  useEffect(
+    () => () => {
+      if (liveClearRef.current) clearTimeout(liveClearRef.current);
+    },
+    [],
+  );
+
+  const announceIncoming = (messageBody: string | null) => {
+    const preview = (messageBody ?? "").replace(/\s+/g, " ").trim();
+    const clipped = preview.length > 120 ? `${preview.slice(0, 120)}…` : preview;
+    const text = `New message from ${senderNameRef.current}${clipped ? `: ${clipped}` : ""}`;
+    // Clear first so two identical messages in a row still re-announce.
+    if (liveClearRef.current) clearTimeout(liveClearRef.current);
+    setLiveAnnouncement("");
+    liveClearRef.current = setTimeout(() => setLiveAnnouncement(text), 60);
+  };
+
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [matchIndex, setMatchIndex] = useState(0);
@@ -347,6 +375,11 @@ function PupilThreadPage() {
               }
               return [...prev, row];
             });
+            // Announce inbound arrivals for screen-reader users who are
+            // scrolled up in older history (at the bottom it's already visible).
+            if (row.sender_type === "pupil" && !atBottomRef.current) {
+              announceIncoming(row.body);
+            }
             // Thread is open — treat inbound arrivals as read right away.
             if (row.sender_type === "pupil" && !row.read_at) {
               const now = new Date().toISOString();
@@ -1202,6 +1235,28 @@ function PupilThreadPage() {
           </div>
         </div>
       )}
+
+      {/* Screen-reader announcement for off-screen incoming messages.
+          role="status" is an implicit polite live region and never steals
+          focus from the composer. */}
+      <div
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        style={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          padding: 0,
+          margin: -1,
+          overflow: "hidden",
+          clip: "rect(0 0 0 0)",
+          whiteSpace: "nowrap",
+          border: 0,
+        }}
+      >
+        {liveAnnouncement}
+      </div>
 
       {/* Messages */}
       <JumpToLatestButton scrollerRef={scrollerRef} bottomOffset={96} />
