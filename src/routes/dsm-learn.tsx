@@ -50,7 +50,7 @@ function DSMLearnPage() {
 
   return (
     <DSMTopSheet title="DSM Learn" onBack={() => goBack("/home")}>
-      <div style={{ fontFamily: FONT, minHeight: "100%", background: "#DCE4F0" }}>
+      <div style={{ fontFamily: FONT, minHeight: "100%", background: "#DCE4F0", marginTop: -20 }}>
         <div style={{ padding: "12px 16px 4px" }}>
           <SegmentedTabs
             tabs={TABS}
