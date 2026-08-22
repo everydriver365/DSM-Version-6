@@ -801,15 +801,15 @@ function LiveNewsPage() {
         }}
       >
       <div
-
         style={{
           padding: "16px 16px 24px",
-          paddingBottom: "calc(100px + env(safe-area-inset-bottom, 0px))",
+          paddingBottom: "calc(140px + env(safe-area-inset-bottom, 0px))",
           display: "flex",
           flexDirection: "column",
           gap: 24,
         }}
       >
+
 
         {activeTab === "live" && (
           <section>
