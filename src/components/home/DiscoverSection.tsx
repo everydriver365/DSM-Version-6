@@ -1218,32 +1218,56 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             borderColor: "#FAE3EA",
           }}
         >
-          {/* decorative waveform */}
-          <div
+          {/* microphone motif */}
+          <svg
             aria-hidden
+            width={52}
+            height={70}
+            viewBox="0 0 52 70"
             style={{
               position: "absolute",
-              right: 8,
-              bottom: 10,
-              display: "flex",
-              alignItems: "flex-end",
-              gap: 2,
-              opacity: 0.4,
+              bottom: 12,
+              right: 20,
               pointerEvents: "none",
             }}
           >
-            {[8, 16, 10, 26, 14, 34, 20, 44, 26, 52, 30, 22, 14, 24, 10, 16, 8].map((h, i) => (
-              <span
-                key={i}
-                style={{
-                  width: 2.5,
-                  height: h,
-                  borderRadius: 2,
-                  background: i % 2 === 0 ? "#F0768F" : "#F7B3C2",
-                }}
-              />
-            ))}
-          </div>
+            <rect
+              x="18"
+              y="4"
+              width="16"
+              height="30"
+              rx="8"
+              stroke="#C8434F"
+              strokeWidth={2}
+              fill="none"
+              opacity={0.28}
+            />
+            <path
+              d="M10 28 C10 38 17 44 26 44 C35 44 42 38 42 28"
+              stroke="#C8434F"
+              strokeWidth={2}
+              fill="none"
+              opacity={0.28}
+            />
+            <line
+              x1="26"
+              y1="44"
+              x2="26"
+              y2="54"
+              stroke="#C8434F"
+              strokeWidth={2}
+              opacity={0.28}
+            />
+            <line
+              x1="16"
+              y1="54"
+              x2="36"
+              y2="54"
+              stroke="#C8434F"
+              strokeWidth={2}
+              opacity={0.28}
+            />
+          </svg>
 
           {isLiveOnAir && (
             <span
@@ -1261,7 +1285,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             />
           )}
 
-          <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ position: "relative", zIndex: 1, maxWidth: "62%" }}>
             <span
               style={{
                 ...chipBase,
@@ -1272,7 +1296,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 boxShadow: "0 2px 8px -2px rgba(11,31,58,0.12)",
               }}
             >
-              <IconBroadcast size={19} color={isLiveOnAir ? RED : "#E5385F"} stroke={1.7} />
+              <IconMicrophone size={19} color={isLiveOnAir ? RED : "#E5385F"} stroke={1.7} />
             </span>
             <div
               style={{
