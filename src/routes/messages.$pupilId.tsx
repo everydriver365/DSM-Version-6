@@ -746,7 +746,17 @@ function PupilThreadPage() {
   }
 
   return (
-    <PageLayout className="flex flex-col" style={POPPINS}>
+    <PageLayout
+      className="flex flex-col"
+      style={{
+        ...POPPINS,
+        height: "calc(100vh - env(safe-area-inset-top, 0px))",
+        minHeight: "calc(100vh - env(safe-area-inset-top, 0px))",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
+    >
       {/* Header */}
       <div
         style={{
