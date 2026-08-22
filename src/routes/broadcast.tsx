@@ -547,6 +547,65 @@ function BroadcastPage() {
         </button>
       </div>
       </div>
+
+      {summaryOpen && (
+        <div
+          className="fixed inset-0 flex flex-col justify-end"
+          style={{
+            backgroundColor: "rgba(0,0,0,0.4)",
+            zIndex: 100,
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSummaryOpen(false);
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#FFFFFF",
+              borderRadius: "18px 18px 0 0",
+              padding: "20px 16px calc(16px + env(safe-area-inset-bottom, 0px))",
+              boxShadow: "0 -4px 20px rgba(0,0,0,0.1)",
+            }}
+          >
+            <h3 className="mb-3" style={{ fontSize: 18, fontWeight: 600, color: NAVY, ...POPPINS }}>
+              Message sent
+            </h3>
+            <p className="mb-4" style={{ fontSize: 14, color: "#6B7280", ...POPPINS }}>
+              Sent to {selCount} pupil{selCount === 1 ? "" : "s"}
+            </p>
+            <div
+              className="mb-4"
+              style={{
+                backgroundColor: "#F8F9FB",
+                borderRadius: 12,
+                padding: 12,
+                border: `0.5px solid ${BORDER}`,
+              }}
+            >
+              <p style={{ fontSize: 13, color: NAVY, whiteSpace: "pre-wrap", ...POPPINS }}>
+                {summaryPreview}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setSummaryOpen(false);
+                navigate({ to: "/home" });
+              }}
+              className="w-full rounded-lg text-[14px] font-semibold"
+              style={{
+                height: 52,
+                backgroundColor: NAVY,
+                color: tokens.white,
+                border: "none",
+                ...POPPINS,
+              }}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
     </DSMTopSheet>
   );
 }
