@@ -685,6 +685,13 @@ function NotificationsPage() {
         if (error) throw error;
       }
 
+      // Notify any mounted conversation threads so they refresh without a manual pull-to-refresh.
+      window.dispatchEvent(
+        new CustomEvent("dsm-message-sent", {
+          detail: { threadId, type: actionSheet.notifType ?? actionSheet.notif?.type ?? "" },
+        })
+      );
+
       toast.success("Reply sent ✓");
       setQuickReply("");
       setActionSheet(null);
