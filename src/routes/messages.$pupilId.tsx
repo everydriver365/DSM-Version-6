@@ -792,9 +792,20 @@ function PupilThreadPage() {
                 navigate({ to: "/messages" } as never);
               }
             }}
-            style={{ background: "none", border: "none", padding: 0, display: "flex", flexShrink: 0 }}
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.12)",
+              border: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              cursor: "pointer",
+            }}
           >
-            <IconChevronLeft stroke={1.5} size={20} color="#C7D0DE" />
+            <IconChevronLeft stroke={1.5} size={20} color="#FFFFFF" />
           </button>
 
           {searchOpen ? (
@@ -888,38 +899,14 @@ function PupilThreadPage() {
             </>
           ) : (
             <>
-              {pupil?.profile_image_url ? (
-                <img
-                  src={pupil.profile_image_url}
-                  alt=""
-                  style={{ width: 30, height: 30, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
-                />
-              ) : (
-                <div
-                  style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: "50%",
-                    background: "#D9E6F5",
-                    color: tokens.navy,
-                    fontSize: tokens.fontSize.sm,
-                    fontWeight: tokens.fontWeight.semibold,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    ...POPPINS,
-                  }}
-                >
-                  {initialsOf(pupilName)}
-                </div>
-              )}
+              <PupilAvatar pupil={pupil} size={38} tinted />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
                     color: tokens.white,
-                    fontSize: tokens.fontSize.md,
-                    fontWeight: tokens.fontWeight.semibold,
+                    fontSize: 15,
+                    fontWeight: 500,
+                    letterSpacing: -0.1,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
