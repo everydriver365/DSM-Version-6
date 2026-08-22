@@ -888,10 +888,10 @@ function PupilsIndexPage() {
               margin: 0,
               color: tokens.white,
               fontFamily: "Sora, sans-serif",
-              fontSize: 22,
-              lineHeight: "28px",
+              fontSize: tokens.fontSize.xxl,
+              lineHeight: "40px",
+              fontWeight: tokens.fontWeight.bold,
               letterSpacing: "-0.3px",
-              fontWeight: 500,
             }}
           >
             Pupils
