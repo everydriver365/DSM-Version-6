@@ -8862,6 +8862,89 @@ function HomePage() {
               <DiscoverGrid />
             </div>
 
+            {/* ===== DSM MEMBER REWARD ===== */}
+            <div style={SECTION_WRAPPER_STYLE}>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: "#9CA3AF",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  marginBottom: 8,
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                THIS WEEK
+              </div>
+              <div
+                style={{
+                  background: "#fff",
+                  borderRadius: 16,
+                  padding: 16,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 14,
+                  border: "0.5px solid #E4E8EF",
+                  boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
+                  marginBottom: 8,
+                }}
+              >
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 12,
+                    background: "#FFFBEB",
+                    border: "0.5px solid #FDE68A",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <IconGift size={22} color="#D68A1B" stroke={1.5} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 700,
+                      color: "#D68A1B",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.12em",
+                      marginBottom: 3,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    DSM MEMBER REWARD
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 15,
+                      fontWeight: 600,
+                      color: "#0B1F3A",
+                      lineHeight: 1.2,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    £100 Costa voucher
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "#9CA3AF",
+                      marginTop: 2,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    Draw Friday · You're entered ✓
+                  </div>
+                </div>
+                <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
+              </div>
+            </div>
+
 
 
           </div>
