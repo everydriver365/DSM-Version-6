@@ -1630,49 +1630,75 @@ function LiveNewsPage() {
           </section>
         )}
 
-        {activeTab === "saved" && (
+        {activeTab === "radio" && (
           <section>
-            {savedEpisodes.length === 0 ? (
-              <EmptyState message="No saved episodes yet — tap the bookmark on any episode to save it here" />
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+                padding: "48px 24px",
+                background: "#fff",
+                borderRadius: tokens.radiusCard,
+                border: "0.5px solid #E4E8EF",
+                gap: 18,
+              }}
+            >
+              <div
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: "50%",
+                  background: "#EAF2FD",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <IconRadio size={40} stroke={1.6} color={tokens.blue} />
+              </div>
+              <div>
                 <div
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    marginBottom: 10,
-                    color: tokens.textSecondary,
-                    fontSize: 12,
+                    fontFamily: "Sora, sans-serif",
+                    fontSize: tokens.fontSize.xl,
+                    fontWeight: tokens.fontWeight.bold,
+                    color: tokens.navy,
+                    marginBottom: 6,
                   }}
                 >
-                  <IconBookmarkFilled size={14} color="#1877D6" />
-                  <span>
-                    <strong style={{ color: tokens.navy }}>{savedEpisodes.length}</strong> saved{" "}
-                    {savedEpisodes.length === 1 ? "episode" : "episodes"} on this device
-                  </span>
+                  DSM Radio Channel
                 </div>
-                {savedEpisodes.map((ep) => (
-                  <EpisodeCard
-                    key={ep.id}
-                    ep={ep}
-                    isOpen={expandedEpisodeId === ep.id}
-                    onOpen={() => setExpandedEpisodeId((prev) => (prev === ep.id ? null : ep.id))}
-                    onOpenDetails={() => setSelectedEpisode(ep)}
-                    isCurrent={playing?.id === ep.id}
-                    isPlaying={isPlaying}
-                    onPlay={() => playEpisode(ep)}
-                    progressEntry={progress[ep.id]}
-                    isSaved
-                    onToggleSave={() => toggleSave(ep)}
-                    currentTime={currentTime}
-                    duration={duration}
-                    onSeek={seekTo}
-                    onRestart={() => playEpisode(ep, { restart: true })}
-                  />
-                ))}
+                <div
+                  style={{
+                    fontFamily: "Poppins, sans-serif",
+                    fontSize: tokens.fontSize.md,
+                    color: tokens.textSecondary,
+                    lineHeight: 1.5,
+                    maxWidth: 280,
+                  }}
+                >
+                  Live shows, interviews, and driving-instructor banter — launching soon.
+                </div>
               </div>
-            )}
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "6px 14px",
+                  borderRadius: 999,
+                  background: "#FEF3C7",
+                  color: "#B45309",
+                  fontSize: tokens.fontSize.sm,
+                  fontWeight: tokens.fontWeight.bold,
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                <IconBroadcast size={14} /> Coming soon
+              </span>
+            </div>
           </section>
         )}
       </div>
