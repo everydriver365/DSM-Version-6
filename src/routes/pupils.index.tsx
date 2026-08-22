@@ -790,12 +790,12 @@ function PupilsIndexPage() {
     ...POPPINS,
   } as const;
 
-  const renderSwipeRow = (p: any, cardStyle: React.CSSProperties) => {
+  const renderSwipeRow = (p: any, accentColour?: string) => {
     const swiped = swipedId === p.id;
     return (
       <div
         key={p.id}
-        style={{ position: "relative", overflow: "hidden", ...cardStyle }}
+        style={{ position: "relative", overflow: "hidden", borderRadius: 12 }}
       >
         <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, display: "flex" }}>
           <button
@@ -838,17 +838,17 @@ function PupilsIndexPage() {
           }}
           style={{
             position: "relative",
-            background: (cardStyle.background as string) ?? "#fff",
-
+            background: "#FFFFFF",
             transform: swiped ? "translateX(-144px)" : "translateX(0)",
             transition: "transform 0.2s ease",
           }}
         >
-          {renderRow(p, 0, 1)}
+          {renderRow(p, accentColour)}
         </div>
       </div>
     );
   };
+
 
 
 
