@@ -212,6 +212,11 @@ export function AddLessonSheet({
     setDate(initialDate || todayISO());
     setIsEvent(false);
     setEventTitle("");
+    if (!editingLesson) {
+      setTestPickupTime("");
+      setTestDropoffTime("");
+      setTestTimesTouched(false);
+    }
   }, [open, initialPupilId, initialDate]);
 
   // Populate sheet state when editing an existing lesson.
