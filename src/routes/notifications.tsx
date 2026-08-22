@@ -8,6 +8,7 @@ import { IconBell, IconCalendar, IconCalendarOff, IconCalendarPlus, IconChecks, 
 import { toast } from "sonner";
 import { tapLight, hapticWarning } from "@/lib/haptics";
 import { supabase } from "../lib/supabaseClient";
+import { PupilAvatar } from "@/components/PupilAvatar";
 
 import { EmptyState } from "@/components/dsm/EmptyState";
 
