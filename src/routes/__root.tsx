@@ -553,6 +553,10 @@ function RootComponent() {
     "/messages",
     "/more",
     "/community",
+    // Full-screen sheet with its own header/back nav — the FAB floated over
+    // the video grid mid-scroll.
+    "/dsm-learn",
+
   ]);
   const isMessageThread = pathname.startsWith("/messages/");
   const showFloatingMenu =
