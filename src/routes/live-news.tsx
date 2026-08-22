@@ -247,7 +247,6 @@ function LiveNewsPage() {
       return next;
     });
   }, []);
-  const savedEpisodes = savedList(saved);
 
   // ---- listening progress (per device) ----
   const [progress, setProgress] = useState<ProgressMap>({});
