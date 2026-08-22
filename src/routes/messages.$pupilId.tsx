@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import JumpToLatestButton from "@/components/dsm/JumpToLatestButton";
+import { PupilAvatar } from "@/components/PupilAvatar";
 
 
 
@@ -298,6 +299,45 @@ function PupilThreadPage() {
       if (channel) supabase.removeChannel(channel);
     };
   }, [pupilId]);
+
+  // Refresh when a quick reply is sent from the notification sheet so the
+  // thread shows the new message without a manual pull-to-refresh.
+  useEffect(() => {
+    const handleSent = async (event: Event) => {
+      const detail = (event as CustomEvent).detail as { threadId?: string; type?: string } | undefined;
+      if (detail?.threadId !== pupilId) return;
+      if (!userId) {
+        const { data: userRes } = await supabase.auth.getUser();
+        const uid = userRes.user?.id ?? null;
+        if (!uid) return;
+        setUserId(uid);
+      }
+      const uid = userId;
+      if (!uid) return;
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      const { data: sessionRes } = await supabase.auth.getSession();
+      const token = sessionRes.session?.access_token;
+      const url = `${SUPABASE_URL}/rest/v1/chat_messages?pupil_id=eq.${pupilId}&instructor_id=eq.${uid}&deleted_at=is.null&order=created_at.desc&limit=${PAGE_SIZE}&select=id,pupil_id,instructor_id,sender_type,sender_id,body,created_at,read_at,deleted_at`;
+      const res = await fetch(url, {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token ?? ""}`,
+        },
+      });
+      let m: ChatMessage[] = [];
+      try {
+        const data = await res.json();
+        if (res.ok && Array.isArray(data)) m = (data as ChatMessage[]).slice().reverse();
+      } catch (e) {
+        console.error("[pupil-thread] refresh parse error", e);
+      }
+      setMessages(m);
+    };
+    window.addEventListener("dsm-message-sent", handleSent);
+    return () => window.removeEventListener("dsm-message-sent", handleSent);
+  }, [pupilId, userId]);
 
   // Re-mark on focus/visibility: realtime INSERTs can be missed while the tab
   // or app is backgrounded, so anything that landed meanwhile is read on return.
@@ -791,9 +831,20 @@ function PupilThreadPage() {
                 navigate({ to: "/messages" } as never);
               }
             }}
-            style={{ background: "none", border: "none", padding: 0, display: "flex", flexShrink: 0 }}
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.12)",
+              border: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              cursor: "pointer",
+            }}
           >
-            <IconChevronLeft stroke={1.5} size={20} color="#C7D0DE" />
+            <IconChevronLeft stroke={1.5} size={20} color="#FFFFFF" />
           </button>
 
           {searchOpen ? (
@@ -887,38 +938,14 @@ function PupilThreadPage() {
             </>
           ) : (
             <>
-              {pupil?.profile_image_url ? (
-                <img
-                  src={pupil.profile_image_url}
-                  alt=""
-                  style={{ width: 30, height: 30, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
-                />
-              ) : (
-                <div
-                  style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: "50%",
-                    background: "#D9E6F5",
-                    color: tokens.navy,
-                    fontSize: tokens.fontSize.sm,
-                    fontWeight: tokens.fontWeight.semibold,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    ...POPPINS,
-                  }}
-                >
-                  {initialsOf(pupilName)}
-                </div>
-              )}
+              <PupilAvatar pupil={pupil} size={38} tinted />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
                     color: tokens.white,
-                    fontSize: tokens.fontSize.md,
-                    fontWeight: tokens.fontWeight.semibold,
+                    fontSize: 15,
+                    fontWeight: 500,
+                    letterSpacing: -0.1,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
