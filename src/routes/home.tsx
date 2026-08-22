@@ -4695,7 +4695,7 @@ function HomePage() {
             WebkitOverflowScrolling: 'touch',
             touchAction: 'pan-y',
             overscrollBehaviorX: 'none',
-            paddingBottom: 0,
+            paddingBottom: 'calc(96px + env(safe-area-inset-bottom, 0px))',
           }}
         >
       {/* ============ NAVY HEADER BLOCK ============ */}
