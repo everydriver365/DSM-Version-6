@@ -4885,7 +4885,9 @@ function HomePage() {
             margin: 0,
             background: '#FFFFFF',
             borderRadius: upcoming && heroExpanded ? '8px 8px 0 0' : 8,
-            boxShadow: '0 8px 24px rgba(15,32,68,0.12)',
+            ...(isTestLesson(upcoming)
+              ? { border: '1px solid #CC2229', boxShadow: '0 0 0 3px #FEE2E2' }
+              : { boxShadow: '0 8px 24px rgba(15,32,68,0.12)' }),
             overflow: 'hidden',
             fontFamily: 'Poppins, sans-serif',
             position: 'relative',
