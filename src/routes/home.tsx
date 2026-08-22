@@ -331,7 +331,7 @@ interface LessonRow {
   eol_completed?: boolean | null;
   amount_due?: number | null;
   pickup_location?: string | null;
-  pupils?: { name: string; phone?: string | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null; pricing_type?: string | null; block_hours_total?: number | null; profile_image_url?: string | null; } | null;
+  pupils?: { name: string; phone?: string | null; postcode?: string | null; address?: string | null; prepaid_hours?: number | null; pricing_type?: string | null; block_hours_total?: number | null; profile_image_url?: string | null; photo_url?: string | null; calendar_colour?: string | null; } | null;
 }
 
 interface PrevLessonRow {
@@ -2666,7 +2666,7 @@ function HomePage() {
       const { data: nextRows, error: nextErr } = await supabase
         .from("lessons")
         .select(
-          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, event_title, notes, payment_status, paid_amount, eol_completed, amount_due, pickup_location, pupils!inner(name, first_name, phone, postcode, address, prepaid_hours, pricing_type, block_hours_total, deleted_at)"
+          "id, lesson_date, lesson_time, duration_minutes, status, pupil_id, event_title, notes, payment_status, paid_amount, eol_completed, amount_due, pickup_location, pupils!inner(name, first_name, phone, postcode, address, prepaid_hours, pricing_type, block_hours_total, deleted_at, profile_image_url, photo_url, calendar_colour)"
         )
         .eq("instructor_id", userId)
         .is("deleted_at", null)
