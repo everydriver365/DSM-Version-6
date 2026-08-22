@@ -662,10 +662,12 @@ function InstructorDMThread() {
   return (
     <div
       style={{
-        height: "100dvh",
+        height: "calc(100vh - env(safe-area-inset-top, 0px))",
+        minHeight: "calc(100vh - env(safe-area-inset-top, 0px))",
         background: tokens.white,
         display: "flex",
         flexDirection: "column",
+        overflow: "hidden",
         ...POPPINS,
       }}
     >
@@ -725,7 +727,7 @@ function InstructorDMThread() {
 
       {/* MESSAGE LIST */}
       <JumpToLatestButton scrollerRef={scrollerRef} bottomOffset={92} />
-      <div ref={scrollerRef} style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "16px 16px 12px" }}>
+      <div ref={scrollerRef} style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "16px 16px 80px" }}>
         {loadingOlder && (
           <div style={{ display: "flex", justifyContent: "center", padding: "6px 0 10px", fontSize: 12, color: GREY }}>
             Loading earlier messages…
@@ -932,14 +934,16 @@ function InstructorDMThread() {
       {/* COMPOSER */}
       <div
         style={{
-          flexShrink: 0,
-          background: tokens.white,
-          borderTop: `0.5px solid ${BORDER}`,
-          padding: "10px 16px",
-          paddingBottom: "calc(10px + env(safe-area-inset-bottom, 0px))",
+          position: "sticky",
+          bottom: 0,
+          background: "#fff",
+          borderTop: "1px solid #E4E8EF",
+          padding: "12px 16px",
+          paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
           display: "flex",
           alignItems: "center",
           gap: 10,
+          flexShrink: 0,
         }}
       >
         <button

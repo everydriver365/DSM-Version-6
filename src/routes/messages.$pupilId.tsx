@@ -746,7 +746,17 @@ function PupilThreadPage() {
   }
 
   return (
-    <PageLayout className="flex flex-col" style={POPPINS}>
+    <PageLayout
+      className="flex flex-col"
+      style={{
+        ...POPPINS,
+        height: "calc(100vh - env(safe-area-inset-top, 0px))",
+        minHeight: "calc(100vh - env(safe-area-inset-top, 0px))",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
+    >
       {/* Header */}
       <div
         style={{
@@ -1011,7 +1021,7 @@ function PupilThreadPage() {
       <div
         ref={scrollerRef}
         className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3"
-        style={{ paddingBottom: 150, background: tokens.white }}
+        style={{ paddingBottom: 80, background: tokens.white }}
       >
         {loadingOlder && (
           <div className="flex items-center justify-center py-2 shrink-0">
@@ -1320,19 +1330,17 @@ function PupilThreadPage() {
       {/* Composer bar */}
       <div
         style={{
-          position: "fixed",
-          bottom: 64,
-          left: 0,
-          right: 0,
+          position: "sticky",
+          bottom: 0,
           zIndex: 50,
-          background: tokens.white,
-          borderTop: "0.5px solid #E4E8EF",
-          padding: "10px 12px",
+          background: "#fff",
+          borderTop: "1px solid #E4E8EF",
+          padding: "12px 16px",
+          paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))",
           display: "flex",
-          gap: 8,
+          gap: 10,
           alignItems: "flex-end",
-          maxWidth: 480,
-          margin: "0 auto",
+          flexShrink: 0,
         }}
       >
         <button
