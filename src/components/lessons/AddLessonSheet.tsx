@@ -316,6 +316,15 @@ export function AddLessonSheet({
     setPickup(p?.address ?? "");
   }, [pupilId, pupils, pickupTouched]);
 
+  // Suggest pick-up / drop-off times from the test appointment time until the
+  // instructor sets their own custom times.
+  useEffect(() => {
+    if (!isTestDay || testTimesTouched || !testTime) return;
+    setTestPickupTime(testStartTime(testTime) ?? testTime);
+    setTestDropoffTime(testEndTime(testTime) ?? "");
+  }, [isTestDay, testTime, testTimesTouched]);
+
+
   const selectedPupil = pupils.find((p) => p.id === pupilId) ?? null;
   // Display only — the authoritative payment status is resolved in handleSave().
   const willBePrepaid = (() => {
