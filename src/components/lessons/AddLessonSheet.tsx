@@ -1141,6 +1141,59 @@ export function AddLessonSheet({
                   >
                     Standard test: 38-40 mins. Extended test: 70 mins.
                   </p>
+
+                  <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
+                    {([
+                      { label: "PICK-UP TIME", value: testPickupTime, set: setTestPickupTime },
+                      { label: "DROP-OFF TIME", value: testDropoffTime, set: setTestDropoffTime },
+                    ] as const).map((f) => (
+                      <div key={f.label} style={{ flex: 1 }}>
+                        <div
+                          style={{
+                            marginBottom: 6,
+                            fontFamily: "Poppins, sans-serif",
+                            fontSize: tokens.fontSize.sm,
+                            fontWeight: tokens.fontWeight.semibold,
+                            color: tokens.textMuted,
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {f.label}
+                        </div>
+                        <input
+                          type="time"
+                          value={f.value}
+                          onChange={(e) => {
+                            setTestTimesTouched(true);
+                            f.set(e.target.value);
+                          }}
+                          style={{
+                            width: "100%",
+                            background: "#fff",
+                            border: "1px solid #E4E8EF",
+                            borderRadius: tokens.radiusCard,
+                            padding: "12px 14px",
+                            fontSize: tokens.fontSize.md,
+                            fontFamily: "Poppins, sans-serif",
+                            outline: "none",
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <p
+                    style={{
+                      fontSize: tokens.fontSize.xs,
+                      color: tokens.textMuted,
+                      marginTop: 4,
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    {testPickupTime && testDropoffTime
+                      ? `Blocks out ${minutesBetween(testPickupTime, testDropoffTime) ?? TEST_TOTAL_MINUTES} mins in your diary`
+                      : "Set your own pick-up and drop-off times for this test."}
+                  </p>
+
                   {errors.testCentre && (
                     <p
                       style={{
