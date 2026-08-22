@@ -1400,21 +1400,16 @@ function MessagesIndexPage() {
               <div style={{ display: "flex", flexDirection: "column" }}>
                 {(() => {
                   const today: InboxItem[] = [];
-                  const yesterday: InboxItem[] = [];
                   const earlier: InboxItem[] = [];
                   const now = new Date();
-                  const yest = new Date(now);
-                  yest.setDate(now.getDate() - 1);
                   for (const item of visibleItems) {
                     const d = new Date(item.ts);
                     if (d.toDateString() === now.toDateString()) today.push(item);
-                    else if (d.toDateString() === yest.toDateString()) yesterday.push(item);
                     else earlier.push(item);
                   }
                   const sections = [
-                    { label: "TODAY", items: today },
-                    { label: "YESTERDAY", items: yesterday },
-                    { label: "EARLIER", items: earlier },
+                    { label: "Today", items: today },
+                    { label: "Earlier", items: earlier },
                   ] as const;
                   return (
                     <>
