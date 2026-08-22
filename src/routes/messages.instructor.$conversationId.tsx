@@ -934,14 +934,16 @@ function InstructorDMThread() {
       {/* COMPOSER */}
       <div
         style={{
-          flexShrink: 0,
-          background: tokens.white,
-          borderTop: `0.5px solid ${BORDER}`,
-          padding: "10px 16px",
-          paddingBottom: "calc(10px + env(safe-area-inset-bottom, 0px))",
+          position: "sticky",
+          bottom: 0,
+          background: "#fff",
+          borderTop: "1px solid #E4E8EF",
+          padding: "12px 16px",
+          paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
           display: "flex",
           alignItems: "center",
           gap: 10,
+          flexShrink: 0,
         }}
       >
         <button
