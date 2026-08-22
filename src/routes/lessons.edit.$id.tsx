@@ -199,6 +199,14 @@ function EditLessonPage() {
   const [chargeOption, setChargeOption] = useState<"none" | "fee" | "full">("none");
   const [cancelFee, setCancelFee] = useState("");
 
+  // Suggest pick-up / drop-off times from the test appointment time until the
+  // instructor sets their own custom times.
+  useEffect(() => {
+    if (!isTestDay || testTimesTouched || !testTime) return;
+    setTestPickupTime(testStartTime(testTime) ?? testTime);
+    setTestDropoffTime(testEndTime(testTime) ?? "");
+  }, [isTestDay, testTime, testTimesTouched]);
+
 
   useEffect(() => {
     (async () => {
