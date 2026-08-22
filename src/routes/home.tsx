@@ -6977,6 +6977,27 @@ function HomePage() {
             ? nextDate.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()
             : '';
           const brandColors = ['#0B1F3A', '#0F6E56', '#185FA5'];
+          // Dynamic countdown: calendar-day diff from today to the test date.
+          const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+          const daysUntilTest = nextDate
+            ? Math.round((startOfDay(nextDate).getTime() - startOfDay(now).getTime()) / 86400000)
+            : 0;
+          const countdownLabel =
+            daysUntilTest <= 0
+              ? 'Next test today'
+              : daysUntilTest === 1
+                ? 'Next test tomorrow'
+                : `Next test in ${daysUntilTest} days`;
+          // Display fix: some pupil rows carry a trailing " ." in the stored
+          // name (empty surname/initial). Never render stray trailing punctuation.
+          const displayName = (next.name ?? '').replace(/\s+\.\s*$/, '').trim();
+          const centreRaw = (next.test_centre ?? '').trim();
+          const centreLabel = centreRaw
+            ? /test centre/i.test(centreRaw)
+              ? centreRaw
+              : `${centreRaw} Test Centre`
+            : 'Test centre TBC';
+          const stackTests = testsSorted.slice(0, 2);
           return (
             <div style={SECTION_WRAPPER_STYLE}>
               <div style={{ ...SECTION_HEADER_STYLE, padding: 0 }}>
@@ -6986,41 +7007,65 @@ function HomePage() {
                 </div>
               </div>
             <div
-              onClick={() => navigate({ to: '/tests' as never })}
               style={{
-                background: '#FFFFFF',
-                border: '1px solid #E3E8F0',
-                borderRadius: tokens.radiusCard,
-                padding: '14px 16px',
-                cursor: 'pointer',
+                background: 'linear-gradient(160deg, #FFFFFF 0%, #FDF1F2 55%, #FBEAEC 100%)',
+                border: '0.5px solid #F0DDE0',
+                borderRadius: 14,
+                overflow: 'hidden',
                 fontFamily: 'Poppins, sans-serif',
               }}
             >
-              {/* Row 1: next test */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                {/* Date block */}
+              {/* Urgency label */}
+              <div style={{ padding: '12px 14px 6px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <IconStar size={12} color="#C8434F" fill="#C8434F" stroke={0} />
+                <span
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 500,
+                    color: '#C8434F',
+                    letterSpacing: '0.3px',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {countdownLabel}
+                </span>
+              </div>
+              {/* Test detail row (tappable) */}
+              <div
+                onClick={() => navigate({ to: '/tests' as never })}
+                style={{
+                  padding: '4px 14px 16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 14,
+                  cursor: 'pointer',
+                }}
+              >
+                {/* Date badge */}
                 <div
                   style={{
-                    width: 40,
-                    height: 40,
+                    width: 50,
+                    height: 50,
                     borderRadius: 12,
                     background: '#0B1F3A',
-                    color: '#FFFFFF',
+                    boxShadow: '0 1px 4px rgba(11,31,58,0.15)',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
-                    lineHeight: 1.1,
+                    gap: 2,
                   }}
                 >
-                  <div style={{ fontSize: 15, fontWeight: 700 }}>{dayNum}</div>
+                  <div style={{ fontSize: 17, fontWeight: 500, color: '#FFFFFF', lineHeight: 1 }}>{dayNum}</div>
                   <div
                     style={{
-                      fontSize: 8,
-                      fontWeight: tokens.fontWeight.semibold,
+                      fontSize: 9,
+                      fontWeight: 500,
+                      color: 'rgba(255,255,255,0.65)',
+                      letterSpacing: '0.3px',
                       textTransform: 'uppercase',
-                      letterSpacing: '0.04em',
+                      lineHeight: 1,
                     }}
                   >
                     {monthAbbr}
@@ -7030,48 +7075,55 @@ function HomePage() {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div
                     style={{
-                      fontSize: tokens.fontSize.md,
-                      fontWeight: tokens.fontWeight.semibold,
-                      color: '#0B1F3A',
+                      fontSize: 15,
+                      fontWeight: 500,
+                      color: '#000000',
+                      letterSpacing: '-0.1px',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                     }}
                   >
-                    {next.name}
+                    {displayName}
                   </div>
                   <div
                     style={{
-                      fontSize: 12.5,
-                      color: '#4A5568',
-                      marginTop: 1,
+                      fontSize: 12,
+                      color: '#6E6E73',
+                      marginTop: 2,
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                     }}
                   >
-                    {next.test_centre || 'Test centre TBC'}
+                    {centreLabel}
                   </div>
-                  <div style={{ fontSize: 11.5, color: '#8792A2', marginTop: 3 }}>
+                  <div style={{ fontSize: 12, color: '#6E6E73', marginTop: 2 }}>
                     {fmtDateTime(next.test_date, next.test_time)}
                   </div>
                 </div>
                 {/* Chevron */}
-                <IconChevronRight size={18} stroke={2} color="#8792A2" style={{ flexShrink: 0 }} />
+                <IconChevronRight size={14} stroke={2} color="#C8434F" style={{ flexShrink: 0, opacity: 0.5 }} />
               </div>
-              {/* Divider */}
-              <div style={{ height: 1, background: '#EEF2F7', margin: '10px 0' }} />
-              {/* Row 2: summary */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              {/* Summary footer */}
+              <div
+                style={{
+                  background: '#FFFFFF',
+                  padding: '12px 14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                }}
+              >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  {testsSorted.slice(0, 3).map((t, i) => {
+                  {stackTests.map((t, i) => {
                     const initials = (t.name ?? '').trim().charAt(0).toUpperCase() || '?';
                     return (
                       <div
                         key={t.id}
                         style={{
-                          width: 22,
-                          height: 22,
+                          width: 26,
+                          height: 26,
                           borderRadius: '50%',
                           background: brandColors[i % brandColors.length],
                           border: '2px solid #FFFFFF',
@@ -7081,8 +7133,8 @@ function HomePage() {
                           fontSize: tokens.fontSize.xs,
                           fontWeight: tokens.fontWeight.semibold,
                           color: '#FFFFFF',
-                          marginLeft: i === 0 ? 0 : -7,
-                          zIndex: i,
+                          marginLeft: i === 0 ? 0 : -8,
+                          zIndex: stackTests.length - i,
                           position: 'relative',
                         }}
                       >
@@ -7090,11 +7142,11 @@ function HomePage() {
                       </div>
                     );
                   })}
-                  {testsSorted.length > 3 && (
+                  {testsSorted.length > 2 && (
                     <div
                       style={{
-                        width: 22,
-                        height: 22,
+                        width: 26,
+                        height: 26,
                         borderRadius: '50%',
                         background: '#D3D8E0',
                         border: '2px solid #FFFFFF',
@@ -7104,18 +7156,33 @@ function HomePage() {
                         fontSize: tokens.fontSize.xs,
                         fontWeight: tokens.fontWeight.semibold,
                         color: '#5B6472',
-                        marginLeft: -7,
-                        zIndex: 3,
+                        marginLeft: -8,
+                        zIndex: 0,
                         position: 'relative',
                       }}
                     >
-                      +{testsSorted.length - 3}
+                      +{testsSorted.length - 2}
                     </div>
                   )}
                 </div>
-                <span style={{ fontSize: 12, color: '#8792A2' }}>
+                <span style={{ fontSize: 12, color: '#6E6E73', flex: 1 }}>
                   {testsSorted.length} pupils with tests booked
                 </span>
+                <button
+                  onClick={() => navigate({ to: '/tests' as never })}
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 500,
+                    color: '#2B7BC8',
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    cursor: 'pointer',
+                    fontFamily: 'Poppins, sans-serif',
+                  }}
+                >
+                  View all
+                </button>
               </div>
             </div>
             </div>
