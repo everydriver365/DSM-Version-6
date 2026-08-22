@@ -760,7 +760,7 @@ function LiveNewsPage() {
         {tabButton("live", "Live", sessions?.length ?? 0, IconBroadcast, false)}
         {tabButton("news", "News", articles?.length ?? 0, IconNews, true)}
         {tabButton("podcasts", "Podcasts", episodes?.length ?? 0, IconMicrophone, true)}
-        {tabButton("saved", "Saved", savedEpisodes.length, IconBookmark, true)}
+        {tabButton("radio", "Radio", 0, IconRadio, true)}
       </div>
 
       <div
