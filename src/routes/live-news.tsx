@@ -497,8 +497,7 @@ function LiveNewsPage() {
 
   const playNext = useCallback(() => {
     if (!playing) return;
-    const source = activeTab === "saved" ? savedEpisodes : visibleEpisodes;
-    const list = source.filter((e) => e.audioUrl);
+    const list = visibleEpisodes.filter((e) => e.audioUrl);
     const idx = list.findIndex((e) => e.id === playing.id);
     const next = idx >= 0 ? list[idx + 1] : list[0];
     if (!next) return;
@@ -507,7 +506,7 @@ function LiveNewsPage() {
     setDuration(0);
     setPlaying(next);
     if (selectedEpisode) setSelectedEpisode(next);
-  }, [playing, visibleEpisodes, savedEpisodes, activeTab, selectedEpisode, flushProgress]);
+  }, [playing, visibleEpisodes, selectedEpisode, flushProgress]);
 
   useEffect(() => {
     const el = audioRef.current;
