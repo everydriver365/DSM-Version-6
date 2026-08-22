@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { recordPayment, recordPaymentWithPackage } from "@/lib/payments";
 import { createSquareIntent, watchSquareIntent } from "@/lib/squareIntents";
+import { openSms } from "@/lib/openUrl";
+
 
 
 export const Route = createFileRoute("/take-payment")({
