@@ -662,10 +662,12 @@ function InstructorDMThread() {
   return (
     <div
       style={{
-        height: "100dvh",
+        height: "calc(100vh - env(safe-area-inset-top, 0px))",
+        minHeight: "calc(100vh - env(safe-area-inset-top, 0px))",
         background: tokens.white,
         display: "flex",
         flexDirection: "column",
+        overflow: "hidden",
         ...POPPINS,
       }}
     >
