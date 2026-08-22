@@ -1973,8 +1973,9 @@ function MiniPlayer({
 
 
 
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <div
+      <div style={{ display: "flex", alignItems: "center", gap: 10, justifyContent: expanded ? "center" : undefined }}>
+        {!expanded && <div
+
           role="button"
           tabIndex={0}
           onClick={onOpen}
