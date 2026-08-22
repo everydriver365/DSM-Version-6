@@ -82,7 +82,7 @@ function TakePaymentPage() {
       if (!uid) return;
       const { data, error } = await supabase
         .from("pupils")
-        .select("id, name")
+        .select("id, name, phone")
         .eq("instructor_id", uid)
         .is("deleted_at", null)
         .not("status", "in", "(inactive,archived,cancelled)")
