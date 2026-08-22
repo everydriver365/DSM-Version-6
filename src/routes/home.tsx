@@ -102,6 +102,13 @@ async function handleSyncGoogleClick() {
   await syncToGoogleCalendar(uid, sess.session?.access_token ?? "");
 }
 
+function hexToRgba(hex: string, alpha: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
 
 // -------------------- Next Lesson Google IconMap --------------------
 const GMAPS_SCRIPT_ID = "google-maps-js-script";
