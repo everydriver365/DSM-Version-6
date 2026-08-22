@@ -6655,8 +6655,11 @@ function HomePage() {
                                     </div>
                                   </div>
                                 </div>
-                                <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: '#fff', marginTop: 4, letterSpacing: -0.2, fontFamily: PF, lineHeight: 1.2 }}>
-                                  {name}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+                                  <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={28} />
+                                  <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: '#fff', letterSpacing: -0.2, fontFamily: PF, lineHeight: 1.2 }}>
+                                    {name}
+                                  </div>
                                 </div>
                                 <div style={{ display: 'flex', gap: 4, alignItems: 'center', marginTop: 2 }}>
                                   <IconMapPin size={11} color="rgba(255,255,255,0.7)" stroke={1.5} />
