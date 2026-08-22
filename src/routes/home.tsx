@@ -5566,7 +5566,10 @@ function HomePage() {
           onOpenLesson={() => navigate({ to: "/pupils/$id", params: { id: upcoming.pupil_id } as any, search: { lessonId: upcoming.id } as any })}
           onEol={() => setEolLesson(upcoming)}
           userId={userId}
+          trafficData={trafficData}
+          trafficLoading={trafficLoading}
         />
+
       )}
 
 
