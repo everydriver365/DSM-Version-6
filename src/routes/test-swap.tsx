@@ -2,27 +2,26 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   IconArrowsLeftRight,
+  IconArrowsUpDown,
   IconPlus,
   IconCalendar,
   IconMapPin,
   IconClock,
   IconHourglass,
   IconChevronRight,
-  IconChevronDown,
   IconFilter,
   IconPhone,
   IconTrash,
   IconCheck,
   IconSearch,
   IconMessage,
-  
   IconX,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { EmptyState } from "@/components/dsm/EmptyState";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
-import { DSMPill, type PillVariant } from "@/components/dsm/DSMPill";
+import SegmentedTabs from "@/components/learn/shared/SegmentedTabs";
 import { tokens } from "@/lib/tokens";
 import { tapLight } from "@/lib/haptics";
 import { supabase } from "../lib/supabaseClient";
@@ -70,15 +69,48 @@ type SwapRequest = {
 type PupilRow = { id: string | number; name: string | null };
 type CentreRow = { id: string | number; name: string | null; town?: string | null };
 
-function statusVariant(status?: string | null): PillVariant {
-  switch ((status ?? "pending").toLowerCase()) {
-    case "matched":
-      return "success";
-    case "closed":
-      return "neutral";
-    default:
-      return "warning";
-  }
+/** Display-time title-casing — the stored name is never modified. */
+function displayName(name?: string | null): string {
+  if (!name) return "Pupil";
+  return name
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+/** Calm status pill for swap requests (pending / matched / closed). */
+function SwapStatusPill({ status }: { status?: string | null }) {
+  const s = (status ?? "pending").toLowerCase();
+  const conf =
+    s === "matched"
+      ? { bg: "#E7F4E7", color: "#3B8B3B", label: "Matched", icon: <IconCheck size={10} stroke={2.2} /> }
+      : s === "closed"
+        ? { bg: "#F2F2F4", color: "#6E6E73", label: "Closed", icon: <IconX size={10} stroke={2.2} /> }
+        : { bg: "#FBF1DE", color: "#B8801F", label: "Pending", icon: <IconHourglass size={10} stroke={2.2} /> };
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 4,
+        background: conf.bg,
+        color: conf.color,
+        fontSize: 10,
+        fontWeight: 500,
+        lineHeight: 1.2,
+        padding: "3px 9px",
+        borderRadius: 999,
+        whiteSpace: "nowrap",
+        flexShrink: 0,
+        ...POPPINS,
+      }}
+    >
+      {conf.icon}
+      {conf.label}
+    </span>
+  );
 }
 
 function formatDate(value?: string | null): string {
@@ -113,40 +145,6 @@ function initials(name?: string | null): string {
     .filter(Boolean)
     .slice(0, 2)
     .join("");
-}
-
-function SectionHeader({ title, count }: { title: string; count: number }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        ...POPPINS,
-      }}
-    >
-      <h2
-        style={{
-          margin: 0,
-          color: tokens.navy,
-          fontSize: 16,
-          fontWeight: tokens.fontWeight.bold,
-          ...SORA,
-        }}
-      >
-        {title}
-      </h2>
-      <span
-        style={{
-          color: tokens.textSecondary,
-          fontSize: 13,
-          fontWeight: tokens.fontWeight.medium,
-        }}
-      >
-        {count}
-      </span>
-    </div>
-  );
 }
 
 const AVATAR_COLORS = [
@@ -219,10 +217,10 @@ function SwapCard({
         }
       }}
       style={{
-        background: "#fff",
-        borderRadius: 18,
-        boxShadow: "0 1px 4px rgba(11,31,58,0.07)",
-        padding: 16,
+        background: "#FFFFFF",
+        border: "0.5px solid #E5E5EA",
+        borderRadius: 14,
+        padding: 14,
         cursor: mode === "community" && onSelect ? "pointer" : "default",
         ...POPPINS,
       }}
@@ -240,7 +238,7 @@ function SwapCard({
             background: av.bg,
             color: av.color,
             fontSize: 13,
-            fontWeight: tokens.fontWeight.bold,
+            fontWeight: 500,
             ...SORA,
             flexShrink: 0,
           }}
@@ -251,144 +249,119 @@ function SwapCard({
           style={{
             flex: 1,
             minWidth: 0,
-            color: tokens.navy,
-            fontSize: 16,
-            fontWeight: tokens.fontWeight.bold,
-            ...SORA,
+            color: "#000000",
+            fontSize: 14,
+            fontWeight: 500,
+            letterSpacing: -0.1,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
           }}
         >
-          {r.name || "Pupil"}
+          {displayName(r.name)}
         </div>
-        <DSMPill variant={statusVariant(r.status)}>
-          <IconHourglass size={11} stroke={2.5} />
-          {(r.status ?? "pending").toUpperCase()}
-        </DSMPill>
-        <IconChevronRight size={18} color="#C3CAD6" stroke={2} style={{ flexShrink: 0 }} />
+        <SwapStatusPill status={r.status} />
+        <IconChevronRight size={13} color="#C7C7CC" stroke={2} style={{ flexShrink: 0 }} />
       </div>
 
-      {/* Two columns with centre divider + swap icon */}
+      {/* Current test — stacked block */}
       <div
         style={{
-          marginTop: 14,
-          display: "grid",
-          gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)",
-          columnGap: 16,
-          position: "relative",
+          marginTop: 12,
+          background: "#F8FAFB",
+          border: "0.5px solid #E5E5EA",
+          borderRadius: 10,
+          padding: 12,
         }}
       >
-        {/* divider */}
         <div
           style={{
-            position: "absolute",
-            left: "50%",
-            top: 0,
-            bottom: 0,
-            width: 1,
-            background: "#E4E8EF",
-            transform: "translateX(-0.5px)",
+            fontSize: 11,
+            fontWeight: 500,
+            color: "#2B7BC8",
+            textTransform: "uppercase",
+            letterSpacing: 0.2,
+            marginBottom: 8,
           }}
-        />
-        {/* swap badge */}
+        >
+          Current test
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+          <IconCalendar size={14} stroke={2} color="#2B7BC8" style={{ flexShrink: 0 }} />
+          <span style={{ color: "#000000", fontSize: 13, fontWeight: 500, lineHeight: 1.35 }}>
+            {formatDate(r.current_test_date)}
+            {time ? ` · ${time}` : ""}
+          </span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <IconMapPin size={14} stroke={2} color="#2B7BC8" style={{ flexShrink: 0 }} />
+          <span style={{ color: "#6E6E73", fontSize: 13, lineHeight: 1.35 }}>
+            {r.test_centre || "No test centre"}
+          </span>
+        </div>
+      </div>
+
+      {/* Vertical swap divider */}
+      <div style={{ display: "flex", justifyContent: "center", margin: "4px 0" }}>
         <div
           style={{
-            position: "absolute",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%,-50%)",
-            width: 34,
-            height: 34,
+            width: 28,
+            height: 28,
             borderRadius: "50%",
-            background: "#fff",
-            border: "1px solid #E4E8EF",
+            background: "#FFFFFF",
+            border: "0.5px solid #E5E5EA",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: tokens.blue,
-            zIndex: 2,
           }}
         >
-          <IconArrowsLeftRight size={16} stroke={2} />
+          <IconArrowsUpDown size={14} stroke={2} color="#6E6E73" />
         </div>
+      </div>
 
-        {/* Current test */}
-        <div style={{ minWidth: 0, paddingRight: 22, display: "flex", flexDirection: "column", gap: 8 }}>
-          <div
-            style={{
-              color: tokens.blue,
-              fontSize: 13,
-              fontWeight: tokens.fontWeight.bold,
-            }}
-          >
-            Current test
-          </div>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-            <IconCalendar size={15} stroke={2} color={tokens.blue} style={{ flexShrink: 0, marginTop: 2 }} />
-            <span
-              style={{
-                color: tokens.navy,
-                fontSize: 14,
-                fontWeight: tokens.fontWeight.bold,
-                lineHeight: 1.35,
-                ...SORA,
-              }}
-            >
-              {formatDate(r.current_test_date)}
-              {time ? ` · ${time}` : ""}
-            </span>
-          </div>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-            <IconMapPin size={15} stroke={2} color={tokens.blue} style={{ flexShrink: 0, marginTop: 1 }} />
-            <span style={{ color: "#6B7686", fontSize: 13, lineHeight: 1.35 }}>
-              {r.test_centre || "No test centre"}
-            </span>
-          </div>
+      {/* Wants — stacked block */}
+      <div
+        style={{
+          background: "#F8FAFB",
+          border: "0.5px solid #E5E5EA",
+          borderRadius: 10,
+          padding: 12,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 500,
+            color: "#8A5BC9",
+            textTransform: "uppercase",
+            letterSpacing: 0.2,
+            marginBottom: 8,
+          }}
+        >
+          Wants
         </div>
-
-        {/* Wants */}
-        <div style={{ minWidth: 0, paddingLeft: 22, display: "flex", flexDirection: "column", gap: 8 }}>
-          <div
-            style={{
-              color: tokens.purple,
-              fontSize: 13,
-              fontWeight: tokens.fontWeight.bold,
-            }}
-          >
-            Wants
-          </div>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-            <IconCalendar size={15} stroke={2} color={tokens.purple} style={{ flexShrink: 0, marginTop: 2 }} />
-            <span
-              style={{
-                color: tokens.navy,
-                fontSize: 14,
-                fontWeight: tokens.fontWeight.bold,
-                lineHeight: 1.35,
-                ...SORA,
-              }}
-            >
-              Any day, any time
-            </span>
-          </div>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-            <IconMapPin size={15} stroke={2} color={tokens.purple} style={{ flexShrink: 0, marginTop: 1 }} />
-            <span style={{ color: "#6B7686", fontSize: 13, lineHeight: 1.35 }}>Anywhere</span>
-          </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+          <IconCalendar size={14} stroke={2} color="#8A5BC9" style={{ flexShrink: 0 }} />
+          <span style={{ color: "#000000", fontSize: 13, fontWeight: 500, lineHeight: 1.35 }}>
+            Any day, any time
+          </span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <IconMapPin size={14} stroke={2} color="#8A5BC9" style={{ flexShrink: 0 }} />
+          <span style={{ color: "#6E6E73", fontSize: 13, lineHeight: 1.35 }}>Anywhere</span>
         </div>
       </div>
 
       {detailsOpen && (
         <div
           style={{
-            marginTop: 14,
+            marginTop: 12,
             paddingTop: 12,
-            borderTop: "1px solid #EEF1F6",
+            borderTop: "0.5px solid #E5E5EA",
             display: "flex",
             flexDirection: "column",
             gap: 6,
-            color: "#6B7686",
+            color: "#6E6E73",
             fontSize: 13,
           }}
         >
@@ -401,12 +374,12 @@ function SwapCard({
         </div>
       )}
 
-      {/* Footer */}
+      {/* Footer — fully inside the card's 14px padding */}
       <div
         style={{
-          marginTop: 14,
+          marginTop: 12,
           paddingTop: 12,
-          borderTop: "1px solid #EEF1F6",
+          borderTop: "0.5px solid #E5E5EA",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -414,7 +387,7 @@ function SwapCard({
           flexWrap: "wrap",
         }}
       >
-        <span style={{ color: "#9CA3AF", fontSize: 13 }}>
+        <span style={{ color: "#C7C7CC", fontSize: 11 }}>
           Created {formatCreated(r.created_at)}
         </span>
 
@@ -432,17 +405,17 @@ function SwapCard({
                 alignItems: "center",
                 gap: 6,
                 background: "#E6F1FB",
-                color: tokens.blue,
+                color: "#2B7BC8",
                 border: "none",
-                borderRadius: 999,
-                padding: "8px 14px",
-                fontSize: 13,
-                fontWeight: tokens.fontWeight.bold,
+                borderRadius: 8,
+                padding: "7px 12px",
+                fontSize: 12,
+                fontWeight: 500,
                 cursor: "pointer",
                 ...POPPINS,
               }}
             >
-              <IconPhone size={14} stroke={2} />
+              <IconPhone size={13} stroke={2} />
               Contact
             </button>
           )}
@@ -459,18 +432,18 @@ function SwapCard({
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
-                background: "#DCFCE7",
-                color: tokens.green,
+                background: "#E7F4E7",
+                color: "#3B8B3B",
                 border: "none",
-                borderRadius: 999,
-                padding: "8px 14px",
-                fontSize: 13,
-                fontWeight: tokens.fontWeight.bold,
+                borderRadius: 8,
+                padding: "7px 12px",
+                fontSize: 12,
+                fontWeight: 500,
                 cursor: "pointer",
                 ...POPPINS,
               }}
             >
-              <IconCheck size={14} stroke={2} />
+              <IconCheck size={13} stroke={2} />
               Mark matched
             </button>
           )}
@@ -487,17 +460,17 @@ function SwapCard({
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                width: 34,
-                height: 34,
-                background: "#FEE2E2",
-                color: tokens.red,
+                width: 30,
+                height: 30,
+                background: "#FBEAEC",
+                color: "#C8434F",
                 border: "none",
-                borderRadius: "50%",
+                borderRadius: 8,
                 cursor: "pointer",
               }}
               aria-label="Delete request"
             >
-              <IconTrash size={16} stroke={2} />
+              <IconTrash size={14} stroke={2} />
             </button>
           )}
 
@@ -509,13 +482,13 @@ function SwapCard({
               setDetailsOpen((v) => !v);
             }}
             style={{
-              background: "#fff",
-              color: tokens.blue,
-              border: `1px solid ${tokens.blue}`,
-              borderRadius: 12,
-              padding: "9px 16px",
-              fontSize: 13,
-              fontWeight: tokens.fontWeight.bold,
+              background: "transparent",
+              color: "#2B7BC8",
+              border: "0.5px solid #E5E5EA",
+              borderRadius: 8,
+              padding: "7px 12px",
+              fontSize: 12,
+              fontWeight: 500,
               cursor: "pointer",
               ...POPPINS,
             }}
@@ -895,28 +868,43 @@ function SwapRequestList({
   }
 
   const searchFieldLabel: React.CSSProperties = {
-    color: "#6B7686",
-    fontSize: 13,
-    marginBottom: 6,
+    color: "#000000",
+    fontSize: 12,
+    fontWeight: 500,
+    marginBottom: 5,
     ...POPPINS,
   };
 
+  /** Bordered field shell: icon + input in a horizontal flex row. */
+  const fieldBox: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    background: "#FFFFFF",
+    border: "0.5px solid #E5E5EA",
+    borderRadius: 9,
+    padding: "10px 12px",
+    boxSizing: "border-box",
+  };
+
   const searchInput: React.CSSProperties = {
+    flex: 1,
+    minWidth: 0,
     width: "100%",
-    background: "#fff",
-    border: "1px solid #E4E8EF",
-    borderRadius: 12,
-    padding: "11px 12px",
-    fontSize: 14,
-    color: tokens.navy,
+    background: "transparent",
+    border: "none",
+    outline: "none",
+    padding: 0,
+    fontSize: 13,
+    color: "#000000",
     boxSizing: "border-box",
     ...POPPINS,
   };
 
-  const tabs = [
-    { key: "all" as const, label: "All" },
-    { key: "mine" as const, label: "My requests" },
-    { key: "matches" as const, label: "Matches" },
+  const tabs: { id: "all" | "mine" | "matches"; label: string; count?: number }[] = [
+    { id: "all", label: "All", count: filtered.length },
+    { id: "mine", label: "My requests", count: myRequests.length },
+    { id: "matches", label: "Matches", count: matched.length },
   ];
 
   return (
@@ -936,129 +924,129 @@ function SwapRequestList({
 
         <div
           style={{
-            color: tokens.navy,
-            fontSize: 17,
-            fontWeight: tokens.fontWeight.bold,
-            ...SORA,
+            color: "#000000",
+            fontSize: 15,
+            fontWeight: 500,
+            letterSpacing: -0.2,
+            ...POPPINS,
           }}
         >
           Search swaps
         </div>
 
+        {/* Test centre */}
+        <div style={{ position: "relative" }}>
+          <div style={searchFieldLabel}>Test centre</div>
+          <div style={fieldBox}>
+            <IconMapPin size={15} stroke={2} color="#6E6E73" style={{ flexShrink: 0 }} />
+            <input
+              type="text"
+              placeholder="All test centres"
+              value={filterCentre}
+              onChange={handleCentreSearch}
+              style={searchInput}
+            />
+          </div>
+          {filterCentreResults.length > 0 && (
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                marginTop: 4,
+                background: "#fff",
+                borderRadius: 10,
+                border: "0.5px solid #E5E5EA",
+                boxShadow: "0 4px 12px rgba(11,31,58,0.12)",
+                zIndex: 10,
+                overflow: "hidden",
+              }}
+            >
+              {filterCentreResults.map((c) => (
+                <button
+                  key={String(c.id)}
+                  type="button"
+                  onClick={() => selectCentre(c)}
+                  style={{
+                    width: "100%",
+                    textAlign: "left",
+                    padding: "10px 12px",
+                    border: "none",
+                    background: "transparent",
+                    borderBottom: "0.5px solid #E5E5EA",
+                    cursor: "pointer",
+                    fontSize: 13,
+                    color: "#000000",
+                    ...POPPINS,
+                  }}
+                >
+                  {c.name}
+                  {c.town ? ` — ${c.town}` : ""}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* From / To dates */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: 12,
+            gap: 10,
           }}
         >
-          <div style={{ gridColumn: "1 / -1", position: "relative" }}>
-            <div style={searchFieldLabel}>Test centre</div>
-            <div style={{ position: "relative" }}>
-              <IconMapPin
-                size={16}
-                stroke={2}
-                color="#9CA3AF"
-                style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}
-              />
-              <input
-                type="text"
-                placeholder="All test centres"
-                value={filterCentre}
-                onChange={handleCentreSearch}
-                style={{ ...searchInput, paddingLeft: 36 }}
-              />
-            </div>
-            {filterCentreResults.length > 0 && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: "100%",
-                  left: 0,
-                  right: 0,
-                  marginTop: 4,
-                  background: "#fff",
-                  borderRadius: 12,
-                  boxShadow: "0 4px 12px rgba(11,31,58,0.12)",
-                  zIndex: 10,
-                  overflow: "hidden",
-                }}
-              >
-                {filterCentreResults.map((c) => (
-                  <button
-                    key={String(c.id)}
-                    type="button"
-                    onClick={() => selectCentre(c)}
-                    style={{
-                      width: "100%",
-                      textAlign: "left",
-                      padding: "10px 12px",
-                      border: "none",
-                      background: "transparent",
-                      borderBottom: "1px solid #E4E8EF",
-                      cursor: "pointer",
-                      fontSize: 14,
-                      color: tokens.navy,
-                      ...POPPINS,
-                    }}
-                  >
-                    {c.name}
-                    {c.town ? ` — ${c.town}` : ""}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
           <div>
             <div style={searchFieldLabel}>From date</div>
-            <input
-              type="date"
-              value={filterFrom}
-              onChange={(e) => setFilterFrom(e.target.value)}
-              style={searchInput}
-            />
+            <div style={fieldBox}>
+              <IconCalendar size={14} stroke={2} color="#C7C7CC" style={{ flexShrink: 0 }} />
+              <input
+                type="date"
+                value={filterFrom}
+                onChange={(e) => setFilterFrom(e.target.value)}
+                style={{ ...searchInput, fontSize: 12, color: filterFrom ? "#000000" : "#C7C7CC" }}
+              />
+            </div>
           </div>
 
           <div>
             <div style={searchFieldLabel}>To date</div>
-            <input
-              type="date"
-              value={filterTo}
-              onChange={(e) => setFilterTo(e.target.value)}
-              style={searchInput}
-            />
+            <div style={fieldBox}>
+              <IconCalendar size={14} stroke={2} color="#C7C7CC" style={{ flexShrink: 0 }} />
+              <input
+                type="date"
+                value={filterTo}
+                onChange={(e) => setFilterTo(e.target.value)}
+                style={{ ...searchInput, fontSize: 12, color: filterTo ? "#000000" : "#C7C7CC" }}
+              />
+            </div>
           </div>
         </div>
 
         {moreOpen && (
           <div>
-            <div
-              style={{
-                color: "#9CA3AF",
-                fontSize: 11,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                marginBottom: 6,
-                ...POPPINS,
-              }}
-            >
-              TIME WINDOW
-            </div>
+            <div style={searchFieldLabel}>Time window</div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <input
-                type="time"
-                value={filterTimeFrom}
-                onChange={(e) => setFilterTimeFrom(e.target.value)}
-                style={{ ...searchInput, flex: 1 }}
-              />
-              <span style={{ color: tokens.textSecondary, fontSize: 13, ...POPPINS }}>to</span>
-              <input
-                type="time"
-                value={filterTimeTo}
-                onChange={(e) => setFilterTimeTo(e.target.value)}
-                style={{ ...searchInput, flex: 1 }}
-              />
+              <div style={{ ...fieldBox, flex: 1 }}>
+                <IconClock size={14} stroke={2} color="#C7C7CC" style={{ flexShrink: 0 }} />
+                <input
+                  type="time"
+                  value={filterTimeFrom}
+                  onChange={(e) => setFilterTimeFrom(e.target.value)}
+                  style={searchInput}
+                />
+              </div>
+              <span style={{ color: "#6E6E73", fontSize: 12, ...POPPINS }}>to</span>
+              <div style={{ ...fieldBox, flex: 1 }}>
+                <IconClock size={14} stroke={2} color="#C7C7CC" style={{ flexShrink: 0 }} />
+                <input
+                  type="time"
+                  value={filterTimeTo}
+                  onChange={(e) => setFilterTimeTo(e.target.value)}
+                  style={searchInput}
+                />
+              </div>
             </div>
           </div>
         )}
@@ -1080,26 +1068,26 @@ function SwapRequestList({
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: 8,
+              gap: 6,
               background: "transparent",
               border: "none",
               padding: 0,
-              color: tokens.blue,
-              fontSize: 14,
-              fontWeight: tokens.fontWeight.bold,
+              color: "#2B7BC8",
+              fontSize: 12,
+              fontWeight: 500,
               cursor: "pointer",
               ...POPPINS,
             }}
           >
-            <IconFilter size={16} stroke={2} />
+            <IconFilter size={13} stroke={2} />
             More filters
             {hasActiveFilters && (
               <span
                 style={{
-                  background: tokens.blue,
+                  background: "#2B7BC8",
                   color: "#fff",
                   fontSize: 10,
-                  fontWeight: 700,
+                  fontWeight: 500,
                   borderRadius: 999,
                   padding: "2px 6px",
                 }}
@@ -1119,7 +1107,7 @@ function SwapRequestList({
                   border: "none",
                   color: "#CC2229",
                   fontSize: 12,
-                  fontWeight: tokens.fontWeight.bold,
+                  fontWeight: 500,
                   cursor: "pointer",
                   padding: 0,
                   ...POPPINS,
@@ -1137,61 +1125,35 @@ function SwapRequestList({
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 8,
-                background: tokens.blue,
-                color: "#fff",
+                gap: 6,
+                background: "#2B7BC8",
+                color: "#FFFFFF",
                 border: "none",
-                borderRadius: 12,
-                padding: "12px 18px",
-                fontSize: 14,
-                fontWeight: tokens.fontWeight.bold,
+                borderRadius: 9,
+                padding: "9px 16px",
+                fontSize: 13,
+                fontWeight: 500,
                 cursor: "pointer",
                 ...POPPINS,
               }}
             >
-              <IconSearch size={16} stroke={2.2} />
+              <IconSearch size={14} stroke={2.2} />
               Search swaps
             </button>
           </div>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          borderBottom: "1px solid #E4E8EF",
-          margin: "2px 0 4px",
+      {/* Tabs — shared segmented control */}
+      <SegmentedTabs
+        tabs={tabs}
+        active={tab}
+        onChange={(id) => {
+          tapLight();
+          setTab(id);
         }}
-      >
-        {tabs.map((t) => {
-          const active = tab === t.key;
-          return (
-            <button
-              key={t.key}
-              type="button"
-              onClick={() => {
-                tapLight();
-                setTab(t.key);
-              }}
-              style={{
-                background: "transparent",
-                border: "none",
-                borderBottom: active ? `3px solid ${tokens.blue}` : "3px solid transparent",
-                padding: "14px 6px",
-                fontSize: 14,
-                fontWeight: tokens.fontWeight.bold,
-                color: active ? tokens.blue : "#6B7686",
-                cursor: "pointer",
-                ...POPPINS,
-              }}
-            >
-              {t.label}
-            </button>
-          );
-        })}
-      </div>
+        style={{ margin: "2px 0 4px" }}
+      />
 
       {/* Lists */}
       {tab === "all" && (
@@ -1746,19 +1708,19 @@ function TestSwapPage() {
           style={{
             display: "inline-flex",
             alignItems: "center",
-            gap: 6,
-            background: tokens.blue,
-            color: "#fff",
+            gap: 5,
+            background: "#2B7BC8",
+            color: "#FFFFFF",
             border: "none",
-            borderRadius: 999,
-            padding: "10px 16px",
-            fontSize: 14,
-            fontWeight: tokens.fontWeight.bold,
+            borderRadius: 9,
+            padding: "10px 14px",
+            fontSize: 13,
+            fontWeight: 500,
             cursor: "pointer",
             ...POPPINS,
           }}
         >
-          <IconPlus size={18} stroke={2.2} />
+          <IconPlus size={15} stroke={2.2} />
           New request
         </button>
       }
