@@ -2,10 +2,16 @@ import * as React from "react";
 import { tapLight } from "@/lib/haptics";
 import { IconChevronLeft, IconBell } from "@tabler/icons-react";
 import { tokens } from "@/lib/tokens";
+import { useGoBack } from "@/hooks/useGoBack";
 
 export interface DSMTopSheetProps {
   title: string;
+  /** Custom back handler. Defaults to browser/router back (fallback `/home`). */
   onBack?: () => void;
+  /** Set true to hide the back arrow entirely. */
+  hideBack?: boolean;
+  /** Fallback route used by the default back handler. */
+  backFallback?: string;
   right?: React.ReactNode;
   sticky?: React.ReactNode;
   children: React.ReactNode;
@@ -14,10 +20,16 @@ export interface DSMTopSheetProps {
 export default function DSMTopSheet({
   title,
   onBack,
+  hideBack,
+  backFallback = "/home",
   right,
   sticky,
   children,
 }: DSMTopSheetProps) {
+  const goBack = useGoBack();
+  const handleBack = onBack ?? (() => goBack(backFallback));
+  const showBack = !hideBack;
+
   return (
     <div
       style={{
