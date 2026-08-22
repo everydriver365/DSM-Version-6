@@ -17,6 +17,10 @@ import { AddLessonSheet } from "@/components/lessons/AddLessonSheet";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
+import StatusPill from "@/components/pupils/StatusPill";
+import PupilCard from "@/components/pupils/PupilCard";
+import SegmentedTabs from "@/components/learn/shared/SegmentedTabs";
+
 
 export const Route = createFileRoute("/pupils/")({
   head: () => ({
