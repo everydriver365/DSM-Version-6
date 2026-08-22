@@ -63,11 +63,12 @@ export default function DSMTopSheet({
             gap: 10,
           }}
         >
-          {onBack && (
+          {showBack && (
             <button
               type="button"
               aria-label="Go back"
-              onClick={() => { tapLight(); onBack(); }}
+              onClick={() => { tapLight(); handleBack(); }}
+
               style={{
                 width: 40,
                 height: 40,
