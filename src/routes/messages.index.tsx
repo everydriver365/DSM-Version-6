@@ -1210,155 +1210,99 @@ function MessagesIndexPage() {
             paddingBottom: "calc(88px + env(safe-area-inset-bottom, 0px))",
           }}
         >
-          {/* Segmented filter control + search */}
+          {/* Segmented filter control */}
+          <div style={{ padding: "12px 16px 4px" }}>
+            <SegmentedTabs
+              tabs={
+                [
+                  { id: "all", label: "All" },
+                  { id: "pupils", label: "Pupils" },
+                  { id: "local", label: "Local" },
+                  ...(isAdmin ? [{ id: "admin", label: "Admin" }] : []),
+                  { id: "instructors", label: "ADIs" },
+                ] as { id: Filter; label: string }[]
+              }
+              active={filter}
+              onChange={setFilter}
+            />
+          </div>
+
+          {/* Search field + compose */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: 8,
-              padding: "12px 16px",
-              background: "transparent",
+              padding: "8px 16px 10px",
             }}
           >
             <div
               style={{
-                display: "flex",
                 flex: 1,
-                background: CANVAS,
-                borderRadius: tokens.radiusCard,
-                boxShadow: "0 3px 0 #E4E4E8",
-                padding: 3,
-                overflowX: "auto",
-                scrollbarWidth: "none",
-              }}
-            >
-              {(
-                [
-                  { key: "all", label: "All" },
-                  { key: "pupils", label: "Pupils" },
-                  { key: "local", label: "Local" },
-                  { key: "admin", label: "Admin" },
-                  { key: "instructors", label: "ADIs" },
-                ] as const
-              )
-                .filter((f) => f.key !== "admin" || isAdmin)
-                .map((f) => {
-                  const active = filter === f.key;
-                  return (
-                    <button
-                      key={f.key}
-                      type="button"
-                      onClick={() => setFilter(f.key as Filter)}
-                      style={{
-                        flex: 1,
-                        flexShrink: 0,
-                        textAlign: "center",
-                        padding: "7px 12px",
-                        fontSize: 13,
-                        fontFamily: "Poppins, sans-serif",
-                        cursor: "pointer",
-                        border: "none",
-                        outline: "none",
-                        background: active ? "#0B1F3A" : "transparent",
-                        color: active ? "#FFFFFF" : "#8A94A6",
-                        borderRadius: active ? 8 : 0,
-                        fontWeight: active ? 700 : 600,
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {f.label}
-                    </button>
-                  );
-                })}
-            </div>
-            <button
-              type="button"
-              aria-label="Search messages"
-              onClick={() => setShowSearch((v) => !v)}
-              style={{
-                width: 32,
-                height: 32,
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                background: "none",
-                border: 0,
-                padding: 0,
-                cursor: "pointer",
+                gap: 8,
+                background: "#F2F2F4",
+                borderRadius: 10,
+                padding: "9px 12px",
               }}
             >
-              <IconSearch size={18} color="#6B7686" stroke={1.8} />
-            </button>
+              <IconSearch size={14} color="#6E6E73" stroke={1.8} style={{ flexShrink: 0 }} />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search messages"
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  border: 0,
+                  outline: "none",
+                  background: "transparent",
+                  fontSize: 13,
+                  color: "#000000",
+                  ...FONT,
+                }}
+              />
+              {query && (
+                <button
+                  type="button"
+                  aria-label="Clear search"
+                  onClick={() => setQuery("")}
+                  style={{
+                    background: "none",
+                    border: 0,
+                    padding: 0,
+                    cursor: "pointer",
+                    display: "flex",
+                    flexShrink: 0,
+                  }}
+                >
+                  <IconX stroke={1.5} size={14} color="#6E6E73" />
+                </button>
+              )}
+            </div>
             <button
               type="button"
               aria-label="New message"
               onClick={() => setSearchOpen(true)}
               style={{
-                width: 28,
-                height: 28,
-                borderRadius: "50%",
+                width: 36,
+                height: 36,
+                borderRadius: 10,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
-                background: "#F1F5F9",
+                background: "#E6F1FB",
                 border: 0,
                 padding: 0,
                 cursor: "pointer",
               }}
             >
-              <IconEdit size={16} color={NAVY} stroke={1.8} />
+              <IconEdit size={15} color="#2B7BC8" stroke={1.8} />
             </button>
           </div>
 
-          {showSearch && (
-            <div style={{ padding: "0 16px 8px" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  background: CANVAS,
-                  borderRadius: tokens.radiusCard,
-                  padding: "9px 16px",
-                }}
-              >
-                <IconSearch size={17} color={GREY} stroke={1.8} />
-                <input
-                  autoFocus
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search messages"
-                  style={{
-                    flex: 1,
-                    border: 0,
-                    outline: "none",
-                    background: "transparent",
-                    fontSize: 15,
-                    color: NAVY,
-                    ...FONT,
-                  }}
-                />
-                {query && (
-                  <button
-                    type="button"
-                    aria-label="Clear search"
-                    onClick={() => setQuery("")}
-                    style={{
-                      background: "none",
-                      border: 0,
-                      padding: 0,
-                      cursor: "pointer",
-                      display: "flex",
-                    }}
-                  >
-                    <IconX stroke={1.5} size={15} color={GREY} />
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
 
           {filter === "local" && (
             <div style={{ padding: "0 16px 12px" }}>
