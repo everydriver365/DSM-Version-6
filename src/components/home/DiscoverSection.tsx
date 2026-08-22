@@ -9,7 +9,6 @@ import hmacaLogoAsset from "@/assets/hmaca-logo.png.asset.json";
 
 import {
   IconChevronRight,
-  IconBroadcast,
   IconBook,
   IconShoppingBag,
   IconBrowser,
