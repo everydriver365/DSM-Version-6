@@ -73,6 +73,8 @@ function BroadcastPage() {
   const [owedIds, setOwedIds] = useState<Set<string>>(new Set());
   const [listening, setListening] = useState(false);
   const [instructorId, setInstructorId] = useState<string | null>(null);
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  const [summaryPreview, setSummaryPreview] = useState("");
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
@@ -220,11 +222,12 @@ function BroadcastPage() {
     if (!instructorId) { toast.error("Not signed in"); return; }
 
     const sendSms = method === "sms";
-    const smsRows: { instructor_id: string | null; pupil_phone: string; message: string }[] = [];
+    const fullMessage = `${message.trim()}\n\n— ${instructorName}`;
+    const smsRows: { instructor_id: string | null; pupil_phone: string; message: string; status: string }[] = [];
 
     for (let i = 0; i < recipients.length; i++) {
       const p = recipients[i];
-      const body = personalize(message, p.name);
+      const body = personalize(fullMessage, p.name);
 
       try {
         await supabase.from("chat_messages").insert({
@@ -239,7 +242,7 @@ function BroadcastPage() {
       }
 
       if (sendSms && p.phone) {
-        smsRows.push({ instructor_id: instructorId, pupil_phone: p.phone, message: body });
+        smsRows.push({ instructor_id: instructorId, pupil_phone: p.phone, message: body, status: "queued" });
       }
     }
 
@@ -252,8 +255,9 @@ function BroadcastPage() {
       }
     }
 
-    toast.success(`Messages queued for ${recipients.length} pupil${recipients.length === 1 ? "" : "s"} — sending shortly`);
-    setTimeout(() => navigate({ to: "/home" }), 600);
+    toast.success(`Message sent to ${recipients.length} pupil${recipients.length === 1 ? "" : "s"}`);
+    setSummaryPreview(recipients.length > 0 ? personalize(fullMessage, recipients[0].name) : fullMessage);
+    setSummaryOpen(true);
   };
 
   const cardStyle = {
@@ -278,7 +282,7 @@ function BroadcastPage() {
 
   return (
     <DSMTopSheet title="Broadcast" onBack={() => window.history.back()}>
-      <div style={{ fontFamily: "Poppins, sans-serif" }}>
+      <div style={{ fontFamily: "Poppins, sans-serif", paddingBottom: "calc(120px + env(safe-area-inset-bottom, 0px))" }}>
 
       {/* SECTION 1 — Audience */}
       <div style={{ ...cardStyle, marginLeft: 16, marginRight: 16, marginTop: 16 }}>
@@ -437,6 +441,10 @@ function BroadcastPage() {
         </select>
 
 
+        <p className="mb-2" style={{ fontSize: 11, color: "#9CA3AF", ...POPPINS }}>
+          Tip: Use {"{name}"} to personalise your message e.g. "Hi {"{name}"}, your lesson is tomorrow!"
+        </p>
+
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -452,7 +460,11 @@ function BroadcastPage() {
           }}
         />
 
-        <div className="flex items-center justify-between mt-2">
+        <p className="mt-2 mb-2" style={{ fontSize: 12, color: "#9CA3AF", fontStyle: "italic", ...POPPINS }}>
+          — {instructorName || "Your instructor"}
+        </p>
+
+        <div className="flex items-center justify-between">
           <button
             type="button"
             onClick={startDictation}
@@ -510,13 +522,13 @@ function BroadcastPage() {
 
       {/* Sticky send button */}
       <div
-        className="fixed left-0 right-0 px-4"
+        className="sticky px-4"
         style={{
           bottom: 0,
-          paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 12px)",
-          paddingTop: 12,
-          backgroundColor: tokens.white,
-          borderTop: `0.5px solid ${BORDER}`,
+          padding: "12px 16px",
+          paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
+          backgroundColor: "#EEF2F7",
+          borderTop: "1px solid #E4E8EF",
         }}
       >
         <button
