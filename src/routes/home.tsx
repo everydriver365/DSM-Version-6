@@ -5145,30 +5145,61 @@ function HomePage() {
                       </div>
 
 
-                      {/* ETA pill */}
+                      {/* ETA pill + traffic warning */}
 
                       {driveData && (
                         <div style={{
                           position: 'absolute', bottom: 10, right: 10, zIndex: 4,
-                          background: 'rgba(255,255,255,0.55)',
-                          backdropFilter: 'blur(10px)',
-                          WebkitBackdropFilter: 'blur(10px)',
-                          border: '1px solid rgba(255,255,255,0.6)',
-                          borderRadius: 999, padding: '4px 10px',
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                          display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4,
+                          display: 'flex', alignItems: 'center', gap: 6,
                         }}>
-                          <IconCar stroke={1.5} size={13} color="#1877D6" />
-                          <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
-                            {driveData.durationMinutes} min
-                          </span>
-                          {driveData.distanceText && (
-                            <span style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>
-                              · {driveData.distanceText}
+                          {/* ETA pill — styling unchanged */}
+                          <div style={{
+                            background: 'rgba(255,255,255,0.55)',
+                            backdropFilter: 'blur(10px)',
+                            WebkitBackdropFilter: 'blur(10px)',
+                            border: '1px solid rgba(255,255,255,0.6)',
+                            borderRadius: 999, padding: '4px 10px',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                            display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4,
+                          }}>
+                            <IconCar stroke={1.5} size={13} color="#1877D6" />
+                            <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+                              {driveData.durationMinutes} min
                             </span>
+                            {driveData.distanceText && (
+                              <span style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>
+                                · {driveData.distanceText}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Traffic warning indicator */}
+                          {trafficData && trafficData.status !== 'clear' && (
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 4,
+                              background: trafficData.status === 'incident' ? 'rgba(204,34,41,0.2)' : 'rgba(214,138,27,0.2)',
+                              borderRadius: 20,
+                              padding: '3px 8px',
+                            }}>
+                              <IconAlertTriangle
+                                size={11}
+                                color={trafficData.status === 'incident' ? '#FF6B6B' : '#FCD34D'}
+                                stroke={2}
+                              />
+                              <span style={{
+                                fontSize: 10,
+                                fontWeight: 700,
+                                color: trafficData.status === 'incident' ? '#FF6B6B' : '#FCD34D',
+                              }}>
+                                {trafficData.status === 'incident' ? 'Road issue' : `+${trafficData.delayMins}m`}
+                              </span>
+                            </div>
                           )}
                         </div>
                       )}
+
                     </div>
 
                     {/* LEFT PANEL */}
