@@ -253,7 +253,7 @@ function MorePage() {
                   background: '#fff',
                   border: 'none',
                   borderRadius: tokens.radiusCard,
-                  padding: '12px 16px',
+                  padding: '10px 14px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 12,
@@ -263,11 +263,11 @@ function MorePage() {
                   boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                 }}
               >
-                <div style={{ width: 36, height: 36, borderRadius: 12, background: tool.colour + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <tool.icon size={18} color={tool.colour} />
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: tool.colour + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <tool.icon size={20} color={tool.colour} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.base, color: '#0F2044' }}>{tool.label}</div>
+                  <div style={{ fontWeight: 500, fontSize: 13, color: '#0F2044' }}>{tool.label}</div>
                   <div style={{ fontSize: 12, color: '#9CA3AF' }}>{tool.sub}</div>
                 </div>
                 <span style={{ fontSize: tokens.fontSize.xs, color: '#9CA3AF', marginLeft: 'auto' }}>{tool.group}</span>
@@ -292,7 +292,7 @@ function MorePage() {
                       background: 'white',
                       border: 'none',
                       borderRadius: 14,
-                      padding: '16px 16px',
+                      padding: '12px 14px',
                       display: 'flex',
                       alignItems: 'center',
                       gap: 14,
@@ -304,9 +304,9 @@ function MorePage() {
                   >
                     <div
                       style={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 12,
+                        width: 40,
+                        height: 40,
+                        borderRadius: 10,
                         background: '#0F2044',
                         display: 'flex',
                         alignItems: 'center',
@@ -314,11 +314,11 @@ function MorePage() {
                         flexShrink: 0,
                       }}
                     >
-                      <IconPlayerPlay size={22} color="white" />
+                      <IconPlayerPlay size={20} color="white" />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <div style={{ fontSize: 17, fontWeight: tokens.fontWeight.semibold, color: '#0F2044' }}>Learn</div>
+                        <div style={{ fontSize: 13, fontWeight: 500, color: '#0F2044' }}>Learn</div>
                         {LEARN_IS_NEW && (
                           <span
                             style={{
@@ -340,7 +340,7 @@ function MorePage() {
                         Quick guides and how-to videos
                       </div>
                     </div>
-                    <IconChevronRight size={22} color="#8592A6" stroke={2.2} />
+                    <IconChevronRight size={13} color="#C7C7CC" stroke={1.5} />
 
                   </button>
                 </div>
@@ -379,7 +379,7 @@ function MorePage() {
                       display: 'flex',
                       alignItems: 'center',
                       gap: 14,
-                      padding: '16px 16px',
+                      padding: '10px 14px',
                       background: '#fff',
                       border: 'none',
                       borderRadius: 14,
@@ -392,9 +392,9 @@ function MorePage() {
                   >
                     <div
                       style={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 12,
+                        width: 40,
+                        height: 40,
+                        borderRadius: 10,
                         background: tool.gradient ?? tool.colour + '1A',
                         display: 'flex',
                         alignItems: 'center',
@@ -402,18 +402,18 @@ function MorePage() {
                         flexShrink: 0,
                       }}
                     >
-                      <tool.icon size={22} color={tool.gradient ? '#fff' : tool.colour} stroke={2} />
+                      <tool.icon size={20} color={tool.gradient ? '#fff' : tool.colour} stroke={1.5} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontWeight: tokens.fontWeight.semibold, fontSize: 17, color: '#0B1F3A' }}>{tool.label}</div>
-                      <div style={{ fontSize: 14, color: '#8592A6', marginTop: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <div style={{ fontWeight: 500, fontSize: 13, color: '#0B1F3A' }}>{tool.label}</div>
+                      <div style={{ fontSize: 12, color: '#8592A6', marginTop: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
                         {isSquare && squareConnected && (
                           <span style={{ width: 7, height: 7, borderRadius: 999, background: '#16A34A', flexShrink: 0 }} />
                         )}
                         {sub}
                       </div>
                     </div>
-                    <IconChevronRight size={22} color="#8592A6" stroke={2.2} style={{ marginLeft: 'auto', flexShrink: 0 }} />
+                    <IconChevronRight size={13} color="#C7C7CC" stroke={1.5} style={{ marginLeft: 'auto', flexShrink: 0 }} />
 
                   </button>
                   );
@@ -460,9 +460,9 @@ function MorePage() {
             >
               <div
                 style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 12,
+                  width: 40,
+                  height: 40,
+                  borderRadius: 10,
                   background: '#1877D615',
                   display: 'flex',
                   alignItems: 'center',
@@ -472,7 +472,7 @@ function MorePage() {
               >
                 <span
                   style={{
-                    fontSize: 17,
+                    fontSize: 15,
                     fontWeight: tokens.fontWeight.bold,
                     color: '#1877D6',
                     fontFamily: 'Sora, sans-serif',
@@ -484,8 +484,8 @@ function MorePage() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
-                    fontWeight: tokens.fontWeight.semibold,
-                    fontSize: 17,
+                    fontWeight: 500,
+                    fontSize: 13,
                     color: '#0B1F3A',
                     fontFamily: 'Poppins, sans-serif',
                   }}
@@ -494,7 +494,7 @@ function MorePage() {
                 </div>
                 <div
                   style={{
-                    fontSize: 14,
+                    fontSize: 12,
                     color: '#8592A6',
                     fontFamily: 'Poppins, sans-serif',
                   }}
@@ -505,14 +505,14 @@ function MorePage() {
             </div>
 
             {isAdmin && (
-              <button
+            <button
                 type="button"
                 onClick={() => go('/admin')}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: 12,
-                  padding: '12px 14px',
+                  padding: '10px 14px',
                   background: '#F1F4F9',
                   border: 'none',
                   borderRadius: 12,
@@ -526,14 +526,14 @@ function MorePage() {
                 <span
                   style={{
                     flex: 1,
-                    fontSize: 15,
-                    fontWeight: tokens.fontWeight.semibold,
+                    fontSize: 13,
+                    fontWeight: 500,
                     color: '#0B1F3A',
                   }}
                 >
                   Admin
                 </span>
-                <IconChevronRight size={18} color="#8592A6" stroke={2} />
+                <IconChevronRight size={13} color="#C7C7CC" stroke={1.5} />
               </button>
             )}
 
@@ -544,7 +544,7 @@ function MorePage() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 12,
-                padding: '14px 16px',
+                padding: '10px 14px',
                 background: '#F1F4F9',
                 border: 'none',
                 borderRadius: 12,
@@ -558,8 +558,8 @@ function MorePage() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
-                    fontSize: 15,
-                    fontWeight: tokens.fontWeight.semibold,
+                    fontSize: 13,
+                    fontWeight: 500,
                     color: '#0B1F3A',
                   }}
                 >
@@ -567,7 +567,7 @@ function MorePage() {
                 </div>
                 <div
                   style={{
-                    fontSize: 13,
+                    fontSize: 12,
                     color: '#8592A6',
                     marginTop: 2,
                   }}
@@ -575,7 +575,7 @@ function MorePage() {
                   Switch instructor account
                 </div>
               </div>
-              <IconChevronRight size={18} color="#8592A6" stroke={2} />
+              <IconChevronRight size={13} color="#C7C7CC" stroke={1.5} />
             </button>
 
             <button
