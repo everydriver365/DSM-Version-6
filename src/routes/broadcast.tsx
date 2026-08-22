@@ -524,7 +524,7 @@ function BroadcastPage() {
       <div
         className="sticky px-4"
         style={{
-          bottom: 0,
+          bottom: "calc(88px + env(safe-area-inset-bottom, 0px))",
           padding: "12px 16px",
           paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
           backgroundColor: "#EEF2F7",
