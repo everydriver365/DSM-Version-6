@@ -233,6 +233,113 @@ export function LessonActionsSheet({
     setChargeOption((prev) => coerceChargeOption(prev, lesson.payment_status));
   }, [lesson.payment_status, inlineView]);
 
+  // ===== Live traffic / road issues on the route to pickup (TomTom) =====
+  type TrafficIncident = { description: string };
+  const [trafficData, setTrafficData] = useState<{
+    travelMins: number;
+    delayMins: number;
+    incidents: TrafficIncident[];
+    status: "clear" | "delay" | "incident";
+  } | null>(null);
+  const [trafficLoading, setTrafficLoading] = useState(false);
+
+  useEffect(() => {
+    if (!open) {
+      setTrafficData(null);
+      setTrafficLoading(false);
+      return;
+    }
+    const pickup = (lesson.pickup_location ?? "").trim();
+    if (!pickup) return;
+
+    // Only for lessons today or tomorrow
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const lessonDay = new Date(`${lesson.lesson_date}T00:00:00`);
+    const dayDiff = Math.round((lessonDay.getTime() - today.getTime()) / 86400000);
+    if (dayDiff !== 0 && dayDiff !== 1) return;
+    if (!("geolocation" in navigator)) return;
+
+    let cancelled = false;
+    const KEY = "sU3STzRmGy7LHNUyIuTP6noG7vqqoISH";
+
+    (async () => {
+      setTrafficLoading(true);
+      try {
+        const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: false,
+            timeout: 8000,
+            maximumAge: 60000,
+          }),
+        );
+        const currentLat = pos.coords.latitude;
+        const currentLng = pos.coords.longitude;
+
+        const geocodeRes = await fetch(
+          `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(pickup)}.json?key=${KEY}&countrySet=GB&limit=1`,
+        );
+        const geocodeData = await geocodeRes.json();
+        const dest = geocodeData?.results?.[0]?.position;
+        if (!dest || cancelled) throw new Error("no geocode");
+
+        const routeRes = await fetch(
+          `https://api.tomtom.com/routing/1/calculateRoute/${currentLat},${currentLng}:${dest.lat},${dest.lon}/json?key=${KEY}&traffic=true&travelMode=car`,
+        );
+        const routeData = await routeRes.json();
+        const summary = routeData?.routes?.[0]?.summary;
+        if (!summary || cancelled) throw new Error("no route");
+
+        const travelMins = Math.round((summary.travelTimeInSeconds ?? 0) / 60);
+        const delayMins = Math.round((summary.trafficDelayInSeconds ?? 0) / 60);
+
+        let incidents: TrafficIncident[] = [];
+        try {
+          const bbox = [
+            Math.min(currentLng, dest.lon),
+            Math.min(currentLat, dest.lat),
+            Math.max(currentLng, dest.lon),
+            Math.max(currentLat, dest.lat),
+          ].join(",");
+          const incidentRes = await fetch(
+            `https://api.tomtom.com/traffic/services/5/incidentDetails?key=${KEY}&bbox=${bbox}&fields={incidents{type,geometry,properties{iconCategory,magnitudeOfDelay,events{description,code},startTime,endTime,from,to,length,delay}}}`,
+          );
+          const incidentData = await incidentRes.json();
+          incidents = (incidentData?.incidents ?? [])
+            .map((inc: any) => ({
+              description:
+                inc?.properties?.events?.[0]?.description ??
+                [inc?.properties?.from, inc?.properties?.to].filter(Boolean).join(" → ") ??
+                "Traffic incident on route",
+            }))
+            .filter((i: TrafficIncident) => !!i.description);
+        } catch {
+          incidents = [];
+        }
+
+        const status: "clear" | "delay" | "incident" =
+          incidents.length > 0 || delayMins >= 10
+            ? "incident"
+            : delayMins >= 3
+              ? "delay"
+              : "clear";
+
+        if (!cancelled) setTrafficData({ travelMins, delayMins, incidents, status });
+      } catch {
+        if (!cancelled) setTrafficData(null); // fail silently
+      } finally {
+        if (!cancelled) setTrafficLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, lesson.id, lesson.pickup_location, lesson.lesson_date]);
+
+
+
 
 
   const CANCEL_REASONS: string[] = [
