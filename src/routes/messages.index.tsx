@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type TouchEvent as ReactTouchEvent } from "react";
 import DSMSkeleton from "@/components/dsm/DSMSkeleton";
 import {
   IconAdjustmentsHorizontal,
@@ -27,6 +27,7 @@ import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { useAdminGate } from "./admin";
 import { pupilColour } from "@/components/PupilAvatar";
+import SegmentedTabs from "@/components/learn/shared/SegmentedTabs";
 
 export const Route = createFileRoute("/messages/")({
   validateSearch: (search: Record<string, unknown>): { jobOfferId?: string } => ({
@@ -194,7 +195,7 @@ function MessagesIndexPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [view, setView] = useState<"inbox" | "chat" | "rooms">("inbox");
-  const [showSearch, setShowSearch] = useState(false);
+  
   const adminStatus = useAdminGate();
   const isAdmin = adminStatus === "allowed";
   useEffect(() => {
@@ -1127,9 +1128,10 @@ function MessagesIndexPage() {
             margin: 0,
             color: tokens.white,
             fontFamily: "Sora, sans-serif",
-            fontSize: tokens.fontSize.xxl,
+            fontSize: 22,
             lineHeight: "40px",
-            fontWeight: tokens.fontWeight.bold,
+            fontWeight: 500,
+            letterSpacing: "-0.3px",
           }}
         >
           Messages
@@ -1139,19 +1141,19 @@ function MessagesIndexPage() {
           aria-label="Notifications"
           onClick={() => navigate({ to: "/notifications" as never })}
           style={{
-            width: 40,
-            height: 40,
+            width: 36,
+            height: 36,
             borderRadius: "50%",
             border: 0,
             padding: 0,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "rgba(255,255,255,0.1)",
+            background: "rgba(255,255,255,0.12)",
             cursor: "pointer",
           }}
         >
-          <IconBell size={20} color="#FFFFFF" stroke={1.8} />
+          <IconBell size={17} color="#FFFFFF" stroke={1.8} />
         </button>
       </header>
 
@@ -1208,155 +1210,99 @@ function MessagesIndexPage() {
             paddingBottom: "calc(88px + env(safe-area-inset-bottom, 0px))",
           }}
         >
-          {/* Segmented filter control + search */}
+          {/* Segmented filter control */}
+          <div style={{ padding: "12px 16px 4px" }}>
+            <SegmentedTabs
+              tabs={
+                [
+                  { id: "all", label: "All" },
+                  { id: "pupils", label: "Pupils" },
+                  { id: "local", label: "Local" },
+                  ...(isAdmin ? [{ id: "admin", label: "Admin" }] : []),
+                  { id: "instructors", label: "ADIs" },
+                ] as { id: Filter; label: string }[]
+              }
+              active={filter}
+              onChange={setFilter}
+            />
+          </div>
+
+          {/* Search field + compose */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: 8,
-              padding: "12px 16px",
-              background: "transparent",
+              padding: "8px 16px 10px",
             }}
           >
             <div
               style={{
-                display: "flex",
                 flex: 1,
-                background: CANVAS,
-                borderRadius: tokens.radiusCard,
-                boxShadow: "0 3px 0 #E4E4E8",
-                padding: 3,
-                overflowX: "auto",
-                scrollbarWidth: "none",
-              }}
-            >
-              {(
-                [
-                  { key: "all", label: "All" },
-                  { key: "pupils", label: "Pupils" },
-                  { key: "local", label: "Local" },
-                  { key: "admin", label: "Admin" },
-                  { key: "instructors", label: "ADIs" },
-                ] as const
-              )
-                .filter((f) => f.key !== "admin" || isAdmin)
-                .map((f) => {
-                  const active = filter === f.key;
-                  return (
-                    <button
-                      key={f.key}
-                      type="button"
-                      onClick={() => setFilter(f.key as Filter)}
-                      style={{
-                        flex: 1,
-                        flexShrink: 0,
-                        textAlign: "center",
-                        padding: "7px 12px",
-                        fontSize: 13,
-                        fontFamily: "Poppins, sans-serif",
-                        cursor: "pointer",
-                        border: "none",
-                        outline: "none",
-                        background: active ? "#0B1F3A" : "transparent",
-                        color: active ? "#FFFFFF" : "#8A94A6",
-                        borderRadius: active ? 8 : 0,
-                        fontWeight: active ? 700 : 600,
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {f.label}
-                    </button>
-                  );
-                })}
-            </div>
-            <button
-              type="button"
-              aria-label="Search messages"
-              onClick={() => setShowSearch((v) => !v)}
-              style={{
-                width: 32,
-                height: 32,
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                background: "none",
-                border: 0,
-                padding: 0,
-                cursor: "pointer",
+                gap: 8,
+                background: "#F2F2F4",
+                borderRadius: 10,
+                padding: "9px 12px",
               }}
             >
-              <IconSearch size={18} color="#6B7686" stroke={1.8} />
-            </button>
+              <IconSearch size={14} color="#6E6E73" stroke={1.8} style={{ flexShrink: 0 }} />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search messages"
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  border: 0,
+                  outline: "none",
+                  background: "transparent",
+                  fontSize: 13,
+                  color: "#000000",
+                  ...FONT,
+                }}
+              />
+              {query && (
+                <button
+                  type="button"
+                  aria-label="Clear search"
+                  onClick={() => setQuery("")}
+                  style={{
+                    background: "none",
+                    border: 0,
+                    padding: 0,
+                    cursor: "pointer",
+                    display: "flex",
+                    flexShrink: 0,
+                  }}
+                >
+                  <IconX stroke={1.5} size={14} color="#6E6E73" />
+                </button>
+              )}
+            </div>
             <button
               type="button"
               aria-label="New message"
               onClick={() => setSearchOpen(true)}
               style={{
-                width: 28,
-                height: 28,
-                borderRadius: "50%",
+                width: 36,
+                height: 36,
+                borderRadius: 10,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
-                background: "#F1F5F9",
+                background: "#E6F1FB",
                 border: 0,
                 padding: 0,
                 cursor: "pointer",
               }}
             >
-              <IconEdit size={16} color={NAVY} stroke={1.8} />
+              <IconEdit size={15} color="#2B7BC8" stroke={1.8} />
             </button>
           </div>
 
-          {showSearch && (
-            <div style={{ padding: "0 16px 8px" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  background: CANVAS,
-                  borderRadius: tokens.radiusCard,
-                  padding: "9px 16px",
-                }}
-              >
-                <IconSearch size={17} color={GREY} stroke={1.8} />
-                <input
-                  autoFocus
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search messages"
-                  style={{
-                    flex: 1,
-                    border: 0,
-                    outline: "none",
-                    background: "transparent",
-                    fontSize: 15,
-                    color: NAVY,
-                    ...FONT,
-                  }}
-                />
-                {query && (
-                  <button
-                    type="button"
-                    aria-label="Clear search"
-                    onClick={() => setQuery("")}
-                    style={{
-                      background: "none",
-                      border: 0,
-                      padding: 0,
-                      cursor: "pointer",
-                      display: "flex",
-                    }}
-                  >
-                    <IconX stroke={1.5} size={15} color={GREY} />
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
 
           {filter === "local" && (
             <div style={{ padding: "0 16px 12px" }}>
@@ -1384,10 +1330,11 @@ function MessagesIndexPage() {
             </div>
           )}
 
-          {/* Unified list */}
-          <div style={{ padding: "0 16px" }}>
+          {/* Unified list — rows and eyebrows carry their own horizontal
+              padding so hairline dividers can inset to after the avatar */}
+          <div>
             {loading && items.length === 0 ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: "0 0 12px" }}>
+              <div style={{ display: "flex", flexDirection: "column" }}>
                 {Array.from({ length: 5 }).map((_, i) => (
                   <div
                     key={i}
@@ -1395,20 +1342,16 @@ function MessagesIndexPage() {
                       display: "flex",
                       alignItems: "center",
                       gap: 12,
-                      padding: "14px 16px",
-                      background: tokens.white,
-                      borderRadius: tokens.radiusCard,
-                      boxShadow: "0 4px 0 #E4E4E8",
+                      padding: "10px 16px",
                     }}
                   >
-                    <DSMSkeleton width={44} height={44} borderRadius={22} />
+                    <DSMSkeleton width={46} height={46} borderRadius={23} />
                     <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 8 }}>
                       <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
                         <DSMSkeleton width="45%" height={14} borderRadius={6} />
                         <DSMSkeleton width={34} height={10} borderRadius={5} />
                       </div>
                       <DSMSkeleton width="80%" height={12} borderRadius={6} />
-                      <DSMSkeleton width={44} height={20} borderRadius={10} />
                     </div>
                   </div>
                 ))}
@@ -1476,29 +1419,31 @@ function MessagesIndexPage() {
                   return (
                     <>
                       {sections.map(
-                        (s) =>
+                        (s, sIdx) =>
                           s.items.length > 0 && (
                               <div key={s.label}>
                                 <div
                                   style={{
-                                    fontSize: 13,
-                                    fontWeight: tokens.fontWeight.bold,
+                                    fontSize: 11,
+                                    fontWeight: 500,
                                     textTransform: "uppercase",
-                                    letterSpacing: "0.6px",
-                                    color: "#8A94A6",
-                                    margin: "16px 16px 8px",
+                                    letterSpacing: "0.3px",
+                                    color: "#6E6E73",
+                                    padding: `${sIdx === 0 ? 4 : 12}px 16px 8px`,
                                     fontFamily: "Poppins, sans-serif",
                                   }}
                                 >
                                   {s.label}
                                 </div>
                               <div style={{ display: "flex", flexDirection: "column" }}>
-                                {s.items.map((item) => (
+                                {s.items.map((item, idx) => (
                                   <InboxRow
                                     key={item.key}
                                     item={item}
                                     muted={muted.has(item.key)}
+                                    isLast={idx === s.items.length - 1}
                                     onMenu={() => setMenuItem(item)}
+                                    onArchive={() => toggleArchive(item.key)}
                                   />
                                 ))}
                               </div>
@@ -1787,188 +1732,262 @@ interface InboxItem {
   markRead: () => void;
 }
 
+const SWIPE_ACTION_W = 76;
+const SWIPE_OPEN_DX = -(SWIPE_ACTION_W * 2);
+
 function InboxRow({
   item,
   muted,
+  isLast,
   onMenu,
+  onArchive,
 }: {
   item: InboxItem;
   muted: boolean;
+  isLast: boolean;
   onMenu: () => void;
+  onArchive: () => void;
 }) {
   const unread = item.unread > 0;
+  const rowRef = useRef<HTMLDivElement | null>(null);
+  const dxRef = useRef(0);
+  const gestureRef = useRef<{
+    startX: number;
+    startY: number;
+    baseDx: number;
+    axis: "?" | "h" | "v";
+  } | null>(null);
+
+  const applyDx = (dx: number, animate: boolean) => {
+    const node = rowRef.current;
+    if (!node) return;
+    node.style.transition = animate ? "transform 0.18s ease" : "none";
+    node.style.transform = `translateX(${dx}px)`;
+    dxRef.current = dx;
+  };
+  const closeActions = () => applyDx(0, true);
+
+  const onTouchStart = (e: ReactTouchEvent<HTMLDivElement>) => {
+    const t = e.touches[0];
+    gestureRef.current = { startX: t.clientX, startY: t.clientY, baseDx: dxRef.current, axis: "?" };
+  };
+  const onTouchMove = (e: ReactTouchEvent<HTMLDivElement>) => {
+    const g = gestureRef.current;
+    if (!g) return;
+    const t = e.touches[0];
+    const dx = t.clientX - g.startX;
+    const dy = t.clientY - g.startY;
+    if (g.axis === "?") {
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      g.axis = Math.abs(dx) > Math.abs(dy) ? "h" : "v";
+    }
+    if (g.axis !== "h") return;
+    applyDx(Math.max(SWIPE_OPEN_DX, Math.min(0, g.baseDx + dx)), false);
+  };
+  const onTouchEnd = () => {
+    const g = gestureRef.current;
+    gestureRef.current = null;
+    if (!g || g.axis !== "h") return;
+    applyDx(dxRef.current < SWIPE_OPEN_DX / 2 ? SWIPE_OPEN_DX : 0, true);
+  };
 
   const tag = (() => {
     switch (item.kind) {
       case "local":
-        return { label: "Local", bg: "#EAF7EE", color: "#1C9950" };
+        return { label: "Local", bg: "#E8F3E8", color: "#3B8B3B" };
       case "admin":
-        return { label: "Admin", bg: "#EDEBFB", color: "#5B3FD9" };
+        return { label: "Admin", bg: "#F1ECFA", color: "#8A5BC9" };
       case "instructor":
-        return { label: "DSM", bg: "#E7F0FD", color: tokens.blue };
+        return { label: "DSM", bg: "#E6F1FB", color: "#2B7BC8" };
       case "pupil":
       default:
-        return { label: "Pupil", bg: "#E7F0FD", color: tokens.blue };
+        return { label: "Pupil", bg: "#E6F1FB", color: "#2B7BC8" };
     }
   })();
 
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      onClick={() => { tapLight(); item.open(); }}
-      onTouchStart={(e) => {
-        e.currentTarget.style.transform = "scale(0.98)";
-        e.currentTarget.style.opacity = "0.9";
-      }}
-      onTouchEnd={(e) => {
-        e.currentTarget.style.transform = "scale(1)";
-        e.currentTarget.style.opacity = "1";
-      }}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        padding: "14px 16px",
-        background: "#fff",
-        borderRadius: tokens.radiusCard,
-        boxShadow: "0 1px 3px rgba(11,31,58,0.06)",
-        marginBottom: 8,
-        cursor: "pointer",
-        borderLeft: unread ? "3px solid #1877D6" : "3px solid transparent",
-        WebkitTapHighlightColor: "transparent",
-        transition: "transform 0.1s ease, opacity 0.1s ease",
-      }}
-    >
-      {/* Avatar */}
-      <div
-        style={{
-          width: 44,
-          height: 44,
-          borderRadius: "50%",
-          flexShrink: 0,
-          overflow: "hidden",
-          background: item.bg,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: tokens.white,
-          fontSize: tokens.fontSize.lg,
-          fontWeight: tokens.fontWeight.bold,
-        }}
-      >
-        {item.photo ? (
-          <img
-            src={item.photo}
-            alt={item.name}
-            style={{ width: 44, height: 44, objectFit: "cover" }}
-          />
-        ) : item.system ? (
-          <IconSpeakerphone size={22} color="#FFFFFF" stroke={1.8} />
-        ) : (
-          item.initials
-        )}
-      </div>
+  const swipeActionStyle = (bg: string): React.CSSProperties => ({
+    width: SWIPE_ACTION_W,
+    background: bg,
+    border: 0,
+    padding: 0,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+    color: "#FFFFFF",
+    fontSize: 10,
+    fontWeight: 500,
+    cursor: "pointer",
+    fontFamily: "Poppins, sans-serif",
+  });
 
-      {/* Centre */}
-      <div style={{ flex: 1, minWidth: 0 }}>
+  return (
+    <div>
+      <div style={{ position: "relative", overflow: "hidden" }}>
+        {/* Swipe actions revealed underneath the row */}
+        <div style={{ position: "absolute", top: 0, right: 0, bottom: 0, display: "flex" }}>
+          <button
+            type="button"
+            aria-label="Archive conversation"
+            onClick={(e) => {
+              e.stopPropagation();
+              closeActions();
+              onArchive();
+            }}
+            style={swipeActionStyle("#2B7BC8")}
+          >
+            <IconArchive size={18} color="#FFFFFF" stroke={1.8} />
+            Archive
+          </button>
+          <button
+            type="button"
+            aria-label="More actions"
+            onClick={(e) => {
+              e.stopPropagation();
+              closeActions();
+              onMenu();
+            }}
+            style={swipeActionStyle("#8E8E93")}
+          >
+            <IconDots size={18} color="#FFFFFF" stroke={1.8} />
+            More
+          </button>
+        </div>
+
+        {/* Foreground row */}
         <div
+          ref={rowRef}
+          role="button"
+          tabIndex={0}
+          onClick={() => {
+            if (dxRef.current !== 0) {
+              closeActions();
+              return;
+            }
+            tapLight();
+            item.open();
+          }}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
           style={{
+            position: "relative",
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
-            gap: 8,
-            minWidth: 0,
+            gap: 12,
+            padding: "10px 16px",
+            background: "#FFFFFF",
+            cursor: "pointer",
+            touchAction: "pan-y",
+            WebkitTapHighlightColor: "transparent",
+            fontFamily: "Poppins, sans-serif",
           }}
         >
-            <div
+          {/* Unread dot at the row's left edge */}
+          {unread && (
+            <span
               style={{
-                fontSize: 17,
-                fontWeight: tokens.fontWeight.bold,
-                color: NAVY,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                letterSpacing: "-0.2px",
-                fontFamily: "Poppins, sans-serif",
+                position: "absolute",
+                left: 4,
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: 7,
+                height: 7,
+                borderRadius: "50%",
+                background: "#2B7BC8",
               }}
-            >
-              {item.name}
-            </div>
-            <div
-              style={{
-                fontSize: 13.5,
-                fontWeight: tokens.fontWeight.semibold,
-                color: unread ? BLUE : "#8A94A6",
-                flexShrink: 0,
-                fontFamily: "Poppins, sans-serif",
-              }}
-            >
-              {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
-            </div>
-        </div>
+            />
+          )}
+
+          {/* Avatar */}
           <div
             style={{
-              fontSize: 13.5,
-              fontWeight: tokens.fontWeight.semibold,
-              color: "#5A6270",
+              width: 46,
+              height: 46,
+              borderRadius: "50%",
+              flexShrink: 0,
               overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              fontFamily: "Poppins, sans-serif",
+              background: item.bg,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#FFFFFF",
+              fontSize: 17,
+              fontWeight: 600,
             }}
           >
-            {item.preview}
+            {item.photo ? (
+              <img
+                src={item.photo}
+                alt={item.name}
+                style={{ width: 46, height: 46, objectFit: "cover" }}
+              />
+            ) : item.system ? (
+              <IconSpeakerphone size={22} color="#FFFFFF" stroke={1.8} />
+            ) : (
+              item.initials
+            )}
           </div>
-        <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
-          <span
-            style={{
-              borderRadius: tokens.radiusCard,
-              fontSize: tokens.fontSize.xs,
-              fontWeight: tokens.fontWeight.semibold,
-              padding: "2px 16px",
-              fontFamily: "Poppins, sans-serif",
-              background: tag.bg,
-              color: tag.color,
-            }}
-          >
-            {tag.label}
-          </span>
+
+          {/* Centre */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "baseline",
+                justifyContent: "space-between",
+                minWidth: 0,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+                <span
+                  style={{
+                    fontSize: 15,
+                    fontWeight: 500,
+                    color: "#000000",
+                    letterSpacing: "-0.1px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {item.name}
+                </span>
+                <span
+                  style={{
+                    flexShrink: 0,
+                    fontSize: 9,
+                    fontWeight: 500,
+                    padding: "1px 6px",
+                    borderRadius: 999,
+                    background: tag.bg,
+                    color: tag.color,
+                  }}
+                >
+                  {tag.label}
+                </span>
+              </div>
+              <span style={{ fontSize: 12, color: "#6E6E73", flexShrink: 0, marginLeft: 8 }}>
+                {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
+              </span>
+            </div>
+            <div
+              style={{
+                fontSize: 13,
+                color: "#6E6E73",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                marginTop: 2,
+              }}
+            >
+              {item.preview}
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Right */}
-      <div style={{ display: "flex", alignItems: "center", flexShrink: 0, gap: 8 }}>
-        {unread && (
-          <span
-            style={{
-              width: 7,
-              height: 7,
-              borderRadius: "50%",
-              background: tokens.blue,
-              flexShrink: 0,
-            }}
-          />
-        )}
-        <button
-          type="button"
-          aria-label="Message options"
-          onClick={(e) => {
-            e.stopPropagation();
-            onMenu();
-          }}
-          style={{
-            background: "none",
-            border: 0,
-            padding: 4,
-            cursor: "pointer",
-            display: "flex",
-            flexShrink: 0,
-          }}
-        >
-          <IconDots size={18} color="#8A94A6" stroke={1.8} />
-        </button>
-      </div>
+      {!isLast && <div style={{ height: "0.5px", background: "#E5E5EA", marginLeft: 74 }} />}
     </div>
   );
 }
