@@ -259,9 +259,17 @@ export function LessonActionsSheet({
 
 
   useEffect(() => {
+    if (trafficDataProp !== undefined) {
+      // State is managed by the parent (home page); just reset internal state on close.
+      if (!open) {
+        setInternalTrafficData(null);
+        setInternalTrafficLoading(false);
+      }
+      return;
+    }
     if (!open) {
-      setTrafficData(null);
-      setTrafficLoading(false);
+      setInternalTrafficData(null);
+      setInternalTrafficLoading(false);
       return;
     }
     const pickup = (lesson.pickup_location ?? "").trim();
@@ -279,7 +287,7 @@ export function LessonActionsSheet({
     const KEY = "sU3STzRmGy7LHNUyIuTP6noG7vqqoISH";
 
     (async () => {
-      setTrafficLoading(true);
+      setInternalTrafficLoading(true);
       try {
         const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
           navigator.geolocation.getCurrentPosition(resolve, reject, {
@@ -339,13 +347,14 @@ export function LessonActionsSheet({
               ? "delay"
               : "clear";
 
-        if (!cancelled) setTrafficData({ travelMins, delayMins, incidents, status });
+        if (!cancelled) setInternalTrafficData({ travelMins, delayMins, incidents, status });
       } catch {
-        if (!cancelled) setTrafficData(null); // fail silently
+        if (!cancelled) setInternalTrafficData(null); // fail silently
       } finally {
-        if (!cancelled) setTrafficLoading(false);
+        if (!cancelled) setInternalTrafficLoading(false);
       }
     })();
+
 
     return () => {
       cancelled = true;
