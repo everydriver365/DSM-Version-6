@@ -19,6 +19,7 @@ import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";
 import { pupilColour } from "@/components/PupilAvatar";
 import { BottomSheet, SheetGroup, SheetRow, SheetRadioRow, SheetSearchRow } from "@/components/dsm/BottomSheetV2";
+import SegmentedTabs from "@/components/learn/shared/SegmentedTabs";
 
 export const Route = createFileRoute("/payments")({
   head: () => ({
@@ -356,19 +357,18 @@ function PaymentsPage() {
         }}
       >
 
-      {/* Action bar */}
+      {/* Overview header row */}
       <div
         style={{
-          background: tokens.white,
-          padding: "8px 16px",
+          padding: "2px 16px 0",
+          marginBottom: 10,
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
           alignItems: "center",
-          borderBottom: "1px solid #EEF2F7",
-          gap: 10,
           ...POPPINS,
         }}
       >
+        <div style={{ fontSize: 11, fontWeight: 500, color: "#6E6E73", textTransform: "uppercase", letterSpacing: "0.3px", ...POPPINS }}>Overview</div>
         <button
           type="button"
           onClick={() => { setUnifiedPayPupilId(pupilFilter && pupilFilter !== "all" ? pupilFilter : undefined); setUnifiedPayOpen(true); }}
@@ -376,46 +376,38 @@ function PaymentsPage() {
             display: "flex",
             alignItems: "center",
             gap: 6,
-            background: "#1A9B5C",
+            background: "#3B8B3B",
             color: "#fff",
-            fontSize: tokens.fontSize.md,
-            fontWeight: tokens.fontWeight.extrabold,
-            padding: "12px 16px",
-            borderRadius: tokens.radiusCard, minHeight: 44,
+            fontSize: 13,
+            fontWeight: 500,
+            padding: "9px 14px",
+            borderRadius: 9,
             border: 0,
-            boxShadow: "0 4px 0 #0F6B3D",
             cursor: "pointer",
             ...POPPINS,
           }}
         >
-          <IconPlus stroke={1.5} size={16} color="#fff" /> Take payment
+          <IconPlus stroke={1.5} size={14} color="#fff" /> Take payment
         </button>
       </div>
 
-      {/* Summary stats */}
-      <div style={{ padding: "16px 16px 0", marginBottom: 14 }}>
-        <div
-          style={{
-            background: "#fff",
-            borderRadius: tokens.radiusCard,
-            boxShadow: "0 4px 0 #D9D2C2",
-            display: "flex",
-            overflow: "hidden",
-          }}
-        >
-          <StatTile label="THIS MONTH" value={formatGBP(stats.monthReceived)} color="#1A9B5C" />
-          <StatTile
-            first={false}
-            label="OUTSTANDING"
+      {/* Summary stats — plain content block inside the single sheet (no card) */}
+      <div style={{ padding: "0 16px", marginBottom: 14 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
+          <StatBlock label="This month" value={formatGBP(stats.monthReceived)} color="#3B8B3B" />
+          <StatBlock
+            label="Outstanding"
             value={formatGBP(stats.outstanding)}
-            color={stats.outstanding > 0 ? "#FF3B30" : "#C7C7CC"}
+            color={stats.outstanding > 0 ? "#C8434F" : "#C7C7CC"}
           />
-          <StatTile
-            first={false}
-            label="REFUNDED"
+          <StatBlock
+            label="Refunded"
             value={formatGBP(stats.monthRefunded)}
-            color={stats.monthRefunded > 0 ? "#FF3B30" : "#C7C7CC"}
+            color={stats.monthRefunded > 0 ? "#C8434F" : "#C7C7CC"}
           />
+        </div>
+        <div style={{ fontSize: 11, color: "#6E6E73", marginTop: 6, ...POPPINS }}>
+          All pupils · not affected by the filters below
         </div>
       </div>
 
@@ -425,15 +417,15 @@ function PaymentsPage() {
         <div style={{ padding: "0 16px", marginBottom: 14 }}>
           <div
             style={{
-              background: "#fff",
-              borderRadius: tokens.radiusCard,
-              padding: 16,
-              boxShadow: "0 4px 0 #E4E4E8",
+              background: "#F8FAFB",
+              border: "0.5px solid #E5E5EA",
+              borderRadius: 12,
+              padding: 14,
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-              <div style={{ fontSize: 15.5, fontWeight: tokens.fontWeight.extrabold, color: "#000", ...POPPINS }}>Paid vs outstanding</div>
-              <div style={{ fontSize: 12.5, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, textAlign: "right", ...POPPINS }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ fontSize: 13, fontWeight: 500, color: "#000", ...POPPINS }}>Paid vs outstanding</div>
+              <div style={{ fontSize: 11, color: "#6E6E73", textAlign: "right", ...POPPINS }}>
                 {paidBreakdown.paidPercent >= 1
                   ? "Fully collected"
                   : paidBreakdown.paidPercent > 0
@@ -441,38 +433,31 @@ function PaymentsPage() {
                     : "None collected"}
               </div>
             </div>
+            <div style={{ fontSize: 11, color: "#6E6E73", marginTop: 2, marginBottom: 10, ...POPPINS }}>
+              Unpaid &amp; part-paid lessons · all pupils
+            </div>
             <div
               style={{
-                height: 8,
-                borderRadius: 12,
-                background: tokens.canvas,
+                height: 6,
+                borderRadius: 999,
+                background: "#FBEAEC",
                 overflow: "hidden",
-                marginBottom: 14,
-                display: "flex",
+                marginBottom: 12,
               }}
             >
               <div
                 style={{
                   width: `${Math.min(100, Math.round(paidBreakdown.paidPercent * 100))}%`,
-                  background: "#1A9B5C",
+                  background: "#3B8B3B",
                   height: "100%",
+                  borderRadius: 999,
                 }}
               />
-              <div style={{ flex: 1, background: "#FF3B30", height: "100%" }} />
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
-              <div>
-                <div style={{ fontSize: 11.5, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, marginBottom: 3, ...POPPINS }}>Total due</div>
-                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: "#000", ...POPPINS }}>{formatGBP(paidBreakdown.totalDue)}</div>
-              </div>
-              <div>
-                <div style={{ fontSize: 11.5, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, marginBottom: 3, ...POPPINS }}>Paid</div>
-                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: "#15803D", ...POPPINS }}>{formatGBP(paidBreakdown.totalPaid)}</div>
-              </div>
-              <div>
-                <div style={{ fontSize: 11.5, fontWeight: tokens.fontWeight.semibold, color: tokens.textMuted, marginBottom: 3, ...POPPINS }}>Outstanding</div>
-                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: "#FF3B30", ...POPPINS }}>{formatGBP(paidBreakdown.outstanding)}</div>
-              </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
+              <StatBlock label="Total due" value={formatGBP(paidBreakdown.totalDue)} color="#000000" valueSize={13} />
+              <StatBlock label="Paid" value={formatGBP(paidBreakdown.totalPaid)} color="#3B8B3B" valueSize={13} />
+              <StatBlock label="Outstanding" value={formatGBP(paidBreakdown.outstanding)} color="#C8434F" valueSize={13} />
             </div>
           </div>
 
