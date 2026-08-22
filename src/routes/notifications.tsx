@@ -990,7 +990,7 @@ function NotificationsPage() {
             position: "fixed",
             inset: 0,
             zIndex: 300,
-            background: "rgba(0,0,0,0.5)",
+            background: "rgba(11,31,58,0.4)",
             display: "flex",
             alignItems: "flex-end",
           }}
@@ -1002,8 +1002,8 @@ function NotificationsPage() {
           <div
             style={{
               position: "relative",
-              background: tokens.canvas,
-              borderRadius: "16px 16px 0 0",
+              background: "#FFFFFF",
+              borderRadius: "18px 18px 0 0",
               width: "100%",
               maxHeight: "90vh",
               overflowY: "auto",
@@ -1013,7 +1013,7 @@ function NotificationsPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ position: "relative", padding: "12px 16px 0" }}>
-              <div style={{ width: 36, height: 5, borderRadius: 12, background: "#D1D1D6", margin: "0 auto" }} />
+              <div style={{ width: 36, height: 4, borderRadius: 2, background: "#C7C7CC", margin: "0 auto" }} />
               <button
                 type="button"
                 aria-label="Close"
@@ -1024,19 +1024,19 @@ function NotificationsPage() {
                 style={{
                   position: "absolute",
                   right: 16,
-                  top: 8,
-                  width: 30,
-                  height: 30,
+                  top: 16,
+                  width: 28,
+                  height: 28,
                   borderRadius: "50%",
-                  background: tokens.canvas,
-                  border: "1px solid #E4E8EF",
+                  background: "#F2F2F4",
+                  border: "none",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <IconX size={16} color="#6B7686" stroke={2} />
+                <IconX size={13} color="#6E6E73" stroke={2.5} />
               </button>
             </div>
             {actionSheet.isMessage ? (
