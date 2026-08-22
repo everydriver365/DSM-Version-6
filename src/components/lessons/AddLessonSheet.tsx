@@ -249,6 +249,21 @@ export function AddLessonSheet({
             ? testTimeFromStart(editingLesson.lesson_time.slice(0, 5)) ?? ''
             : ''),
       );
+      {
+        const start = editingLesson.lesson_time ? editingLesson.lesson_time.slice(0, 5) : '';
+        const mins = editingLesson.duration_minutes ?? TEST_TOTAL_MINUTES;
+        setTestPickupTime(start);
+        setTestDropoffTime(
+          start
+            ? (() => {
+                const [h, m] = start.split(':').map(Number);
+                const total = ((h * 60 + m + mins) % 1440 + 1440) % 1440;
+                return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+              })()
+            : '',
+        );
+        setTestTimesTouched(true);
+      }
     } else {
       setIsEvent(false);
       setEventTitle('');
