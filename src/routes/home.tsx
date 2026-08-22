@@ -5459,33 +5459,63 @@ function HomePage() {
                   <span>Call</span>
                 </button>
 
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setLateOpen(true);
-                  }}
-                  style={{
-                    flex: 1,
-                    height: 38,
-                    borderRadius: 12,
-                    border: 'none',
-                    background: '#FEE2E2',
-                    color: '#CC2229',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 6,
-                    cursor: 'pointer',
-                    fontSize: 12,
-                    fontWeight: tokens.fontWeight.semibold,
-                    fontFamily: 'Poppins, sans-serif',
-                    padding: 0,
-                  }}
-                >
-                  <IconClock stroke={1.5} size={14} color="#B3181F" />
-                  <span>Late</span>
-                </button>
+                {isTestLesson(upcoming) ? (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate({ to: `/test-day/${upcoming.id}` });
+                    }}
+                    style={{
+                      flex: 1,
+                      height: 38,
+                      borderRadius: 12,
+                      border: 'none',
+                      background: '#F3E8FF',
+                      color: '#7C3AED',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 6,
+                      cursor: 'pointer',
+                      fontSize: 12,
+                      fontWeight: tokens.fontWeight.semibold,
+                      fontFamily: 'Poppins, sans-serif',
+                      padding: 0,
+                    }}
+                  >
+                    <IconClipboardCheck stroke={1.5} size={14} color="#7C3AED" />
+                    <span>Checklist</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLateOpen(true);
+                    }}
+                    style={{
+                      flex: 1,
+                      height: 38,
+                      borderRadius: 12,
+                      border: 'none',
+                      background: '#FEE2E2',
+                      color: '#CC2229',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 6,
+                      cursor: 'pointer',
+                      fontSize: 12,
+                      fontWeight: tokens.fontWeight.semibold,
+                      fontFamily: 'Poppins, sans-serif',
+                      padding: 0,
+                    }}
+                  >
+                    <IconClock stroke={1.5} size={14} color="#B3181F" />
+                    <span>Late</span>
+                  </button>
+                )}
 
               </div>
 
