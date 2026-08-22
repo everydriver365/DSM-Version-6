@@ -66,6 +66,7 @@ import { filterEchoedBlocks } from "@/lib/calendarDedupe";
 import { resolveEventColour } from "@/lib/googleCalendarColours";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { Capacitor } from "@capacitor/core";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
@@ -443,6 +444,23 @@ function tierFromPoints(pts: number): keyof typeof TIER_THRESHOLDS {
   if (pts >= TIER_THRESHOLDS.gold) return "gold";
   if (pts >= TIER_THRESHOLDS.silver) return "silver";
   return "bronze";
+}
+
+/** Write CarPlay-sync data to the native iOS bridge (UserDefaults) and localStorage fallback. */
+function writeCarPlayValue(key: string, value: unknown) {
+  const json = JSON.stringify(value);
+  if (Capacitor.isNativePlatform()) {
+    try {
+      (window as any).webkit?.messageHandlers?.carplayBridge?.postMessage({
+        key,
+        value: json,
+      });
+    } catch (e) {
+      console.warn("[carplay] bridge:", e);
+    }
+  }
+  // Keep localStorage as fallback for web / Despia webview
+  localStorage.setItem(key, json);
 }
 
 function CircleIconBtn({
@@ -2703,10 +2721,7 @@ function HomePage() {
           isTest: (validNext as any).lesson_type
             === 'test',
         };
-        localStorage.setItem(
-          'dsm_next_lesson',
-          JSON.stringify(carplayLesson)
-        );
+        writeCarPlayValue('dsm_next_lesson', carplayLesson);
       }
       // Write today's lessons for CarPlay
       const carplayTodayLessons = (activeLessons ?? [])
@@ -2723,10 +2738,7 @@ function HomePage() {
           phone: l.pupils?.phone ?? null,
           isTest: l.lesson_type === 'test',
         }));
-      localStorage.setItem(
-        'dsm_today_lessons',
-        JSON.stringify(carplayTodayLessons)
-      );
+      writeCarPlayValue('dsm_today_lessons', carplayTodayLessons);
 
       // ---- Unpaid lessons (all time, exclude cancelled) ----
       const { data: unpaidLessons } = await supabase
