@@ -540,22 +540,22 @@ function BenefitsPage() {
         <div
           style={{
             margin: 16,
-            background: 'linear-gradient(135deg, #15803D, #15803D)',
-            borderRadius: tokens.radiusCard,
-            padding: '16px 20px',
-            boxShadow: '0 4px 0 #14532D',
+            background:
+              'radial-gradient(120% 100% at 100% 0%, rgba(43,123,200,0.15), transparent 60%), #0B1F3A',
+            borderRadius: 14,
+            padding: 20,
             display: 'flex',
             alignItems: 'center',
             gap: 12,
           }}
         >
-          <IconCircleCheck size={32} color="#fff" stroke={1.5} />
+          <IconCircleCheck size={28} color="#fff" stroke={1.5} />
           <div>
-            <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: '#fff' }}>
+            <div style={{ fontSize: 17, fontWeight: 500, color: '#fff', fontFamily: 'Poppins, sans-serif' }}>
               Your benefits are active
             </div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>
-              4 benefits included with DSM Pro
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', marginTop: 4 }}>
+              Included with your current plan
             </div>
           </div>
         </div>
@@ -563,33 +563,34 @@ function BenefitsPage() {
         <div
           style={{
             margin: 16,
-            background: 'linear-gradient(135deg, #14509E, #0B1F3A)',
-            borderRadius: tokens.radiusCard,
-            padding: 16,
-            boxShadow: '0 4px 0 #091628',
+            background:
+              'radial-gradient(120% 100% at 100% 0%, rgba(43,123,200,0.15), transparent 60%), #0B1F3A',
+            borderRadius: 14,
+            padding: 20,
           }}
         >
-          <IconRosetteDiscount size={28} color="#fff" stroke={1.5} />
+          <IconRosetteDiscount size={26} color="#fff" stroke={1.5} />
           <div
             style={{
-              fontSize: tokens.fontSize.lg,
-              fontWeight: tokens.fontWeight.extrabold,
+              fontSize: 17,
+              fontWeight: 500,
               color: '#fff',
-              marginTop: 8,
+              marginTop: 10,
               marginBottom: 6,
+              fontFamily: 'Poppins, sans-serif',
             }}
           >
             Unlock your member benefits
           </div>
           <div
             style={{
-              fontSize: tokens.fontSize.base,
+              fontSize: 12,
               color: 'rgba(255,255,255,0.7)',
               lineHeight: 1.5,
               marginBottom: 16,
             }}
           >
-            Upgrade to DSM Pro to access private GP, DIA membership, 4,000+ discounts and exclusive HMCA health insurance.
+            Upgrade to access private GP care, DIA membership, thousands of discounts and exclusive health cover.
           </div>
           <button
             type="button"
@@ -599,20 +600,21 @@ function BenefitsPage() {
             }}
             style={{
               background: '#fff',
-              color: '#14509E',
-              borderRadius: tokens.radiusCard,
-              padding: '12px 24px',
-              fontSize: tokens.fontSize.md,
-              fontWeight: tokens.fontWeight.extrabold,
+              color: '#0B1F3A',
+              borderRadius: 9,
+              padding: '11px 20px',
+              fontSize: 13,
+              fontWeight: 600,
               border: 'none',
               cursor: 'pointer',
               fontFamily: 'Poppins, sans-serif',
             }}
           >
-            Upgrade to Pro →
+            Upgrade →
           </button>
         </div>
       )}
+
 
 
       {/* FEATURED PERKS */}
