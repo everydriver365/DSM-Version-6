@@ -8865,19 +8865,12 @@ function HomePage() {
             </div>
 
             {/* ===== DSM MEMBER REWARD ===== */}
-            <div style={SECTION_WRAPPER_STYLE}>
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  color: "#9CA3AF",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
-                  marginBottom: 8,
-                  fontFamily: "Poppins, sans-serif",
-                }}
-              >
-                THIS WEEK
+            <div style={{ ...SECTION_WRAPPER_STYLE, marginTop: -12 }}>
+              <div style={SECTION_HEADER_STYLE}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span aria-hidden style={SECTION_TITLE_BAR_STYLE} />
+                  <span style={SECTION_TITLE_TEXT_STYLE}>This week</span>
+                </div>
               </div>
               <div
                 style={{
