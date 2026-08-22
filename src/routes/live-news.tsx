@@ -547,7 +547,7 @@ function LiveNewsPage() {
   const allSessions = activeSession ? [activeSession, ...upcomingSessions] : upcomingSessions;
 
   const tabButton = (
-    key: "live" | "news" | "podcasts" | "saved",
+    key: "live" | "news" | "podcasts" | "radio",
     label: string,
     count: number,
     Icon: typeof IconBroadcast,
