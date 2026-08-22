@@ -356,60 +356,6 @@ export default function BitesizePageBody() {
         })}
       </div>
 
-      {/* ADMIN STATS ROW */}
-      {isAdmin && (
-        <div
-          style={{
-            background: "#fff",
-            padding: "10px 16px",
-            borderBottom: "0.5px solid #E4E8EF",
-            display: "flex",
-            gap: 16,
-            overflowX: "auto",
-          }}
-        >
-          {[
-            { label: "Total videos", value: videos.length },
-            {
-              label: "Published",
-              value: videos.filter((v) => v.is_published).length,
-            },
-            {
-              label: "Drafts",
-              value: videos.filter((v) => !v.is_published).length,
-            },
-            {
-              label: "Total views",
-              value: videos.reduce((a, v) => a + (v.views ?? 0), 0),
-            },
-          ].map((s) => (
-            <div key={s.label} style={{ flexShrink: 0 }}>
-              <div
-                style={{
-                  fontSize: 9,
-                  fontWeight: tokens.fontWeight.semibold,
-                  color: tokens.textMuted,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  ...POPPINS,
-                }}
-              >
-                {s.label}
-              </div>
-              <div
-                style={{
-                  fontSize: tokens.fontSize.lg,
-                  fontWeight: tokens.fontWeight.bold,
-                  color: tokens.navy,
-                  ...POPPINS,
-                }}
-              >
-                {s.value}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
 
       <BitesizeLearnVideos />
 
