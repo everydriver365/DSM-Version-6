@@ -519,12 +519,17 @@ function InstructorDMThread() {
 
 
   // Open straight on the latest message (no visible scroll animation), then
-  // smooth-scroll for anything that arrives afterwards.
+  // smooth-scroll when a genuinely NEW message arrives. Read receipts and
+  // delivery-state flips also update `messages` — those must never move the
+  // reader, so we gate on the last message's id actually changing.
   const didInitialScrollRef = useRef(false);
+  const prevLastIdRef = useRef<string | null>(null);
   useEffect(() => {
     if (messages.length === 0) return;
+    const last = messages[messages.length - 1];
     if (!didInitialScrollRef.current) {
       didInitialScrollRef.current = true;
+      prevLastIdRef.current = last.id;
       // Two frames so bubbles/avatars have laid out before we measure.
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -536,8 +541,21 @@ function InstructorDMThread() {
     // Older messages were prepended — keep the reader where they are.
     if (prependingRef.current) {
       prependingRef.current = false;
+      prevLastIdRef.current = last.id;
       return;
     }
+    const isNewMessage = last.id !== prevLastIdRef.current;
+    prevLastIdRef.current = last.id;
+    if (!isNewMessage) {
+      // Typing bubble appearing is only worth following near the bottom.
+      if (otherTyping && atBottomRef.current) {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+      }
+      return;
+    }
+    // Always follow my own message; incoming ones only when near the bottom.
+    const mine = last.from_instructor_id === userId;
+    if (!mine && !atBottomRef.current) return;
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, otherTyping]);
 

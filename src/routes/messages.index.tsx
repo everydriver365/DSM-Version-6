@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type TouchEvent as ReactTouchEvent } from "react";
 import DSMSkeleton from "@/components/dsm/DSMSkeleton";
 import {
   IconAdjustmentsHorizontal,
@@ -27,6 +27,7 @@ import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
 import { useAdminGate } from "./admin";
 import { pupilColour } from "@/components/PupilAvatar";
+import SegmentedTabs from "@/components/learn/shared/SegmentedTabs";
 
 export const Route = createFileRoute("/messages/")({
   validateSearch: (search: Record<string, unknown>): { jobOfferId?: string } => ({
@@ -194,7 +195,7 @@ function MessagesIndexPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [view, setView] = useState<"inbox" | "chat" | "rooms">("inbox");
-  const [showSearch, setShowSearch] = useState(false);
+  
   const adminStatus = useAdminGate();
   const isAdmin = adminStatus === "allowed";
   useEffect(() => {
@@ -1127,9 +1128,10 @@ function MessagesIndexPage() {
             margin: 0,
             color: tokens.white,
             fontFamily: "Sora, sans-serif",
-            fontSize: tokens.fontSize.xxl,
+            fontSize: 22,
             lineHeight: "40px",
-            fontWeight: tokens.fontWeight.bold,
+            fontWeight: 500,
+            letterSpacing: "-0.3px",
           }}
         >
           Messages
@@ -1139,19 +1141,19 @@ function MessagesIndexPage() {
           aria-label="Notifications"
           onClick={() => navigate({ to: "/notifications" as never })}
           style={{
-            width: 40,
-            height: 40,
+            width: 36,
+            height: 36,
             borderRadius: "50%",
             border: 0,
             padding: 0,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "rgba(255,255,255,0.1)",
+            background: "rgba(255,255,255,0.12)",
             cursor: "pointer",
           }}
         >
-          <IconBell size={20} color="#FFFFFF" stroke={1.8} />
+          <IconBell size={17} color="#FFFFFF" stroke={1.8} />
         </button>
       </header>
 

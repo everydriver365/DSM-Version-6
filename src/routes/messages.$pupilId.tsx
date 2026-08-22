@@ -500,8 +500,13 @@ function PupilThreadPage() {
     prevCountRef.current = count;
     if (!grew) return;
 
+    // Always follow my own outgoing message; for incoming ones only
+    // auto-scroll when the reader is already near the bottom, so reading
+    // older messages is never interrupted.
+    const last = messages[count - 1];
+    const mine = last?.sender_type === "instructor";
     const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
-    if (distanceFromBottom > 160) return;
+    if (!mine && distanceFromBottom > 160) return;
 
     requestAnimationFrame(() => {
       el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
