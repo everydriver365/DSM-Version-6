@@ -300,6 +300,45 @@ function PupilThreadPage() {
     };
   }, [pupilId]);
 
+  // Refresh when a quick reply is sent from the notification sheet so the
+  // thread shows the new message without a manual pull-to-refresh.
+  useEffect(() => {
+    const handleSent = async (event: Event) => {
+      const detail = (event as CustomEvent).detail as { threadId?: string; type?: string } | undefined;
+      if (detail?.threadId !== pupilId) return;
+      if (!userId) {
+        const { data: userRes } = await supabase.auth.getUser();
+        const uid = userRes.user?.id ?? null;
+        if (!uid) return;
+        setUserId(uid);
+      }
+      const uid = userId;
+      if (!uid) return;
+      const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
+      const { data: sessionRes } = await supabase.auth.getSession();
+      const token = sessionRes.session?.access_token;
+      const url = `${SUPABASE_URL}/rest/v1/chat_messages?pupil_id=eq.${pupilId}&instructor_id=eq.${uid}&deleted_at=is.null&order=created_at.desc&limit=${PAGE_SIZE}&select=id,pupil_id,instructor_id,sender_type,sender_id,body,created_at,read_at,deleted_at`;
+      const res = await fetch(url, {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token ?? ""}`,
+        },
+      });
+      let m: ChatMessage[] = [];
+      try {
+        const data = await res.json();
+        if (res.ok && Array.isArray(data)) m = (data as ChatMessage[]).slice().reverse();
+      } catch (e) {
+        console.error("[pupil-thread] refresh parse error", e);
+      }
+      setMessages(m);
+    };
+    window.addEventListener("dsm-message-sent", handleSent);
+    return () => window.removeEventListener("dsm-message-sent", handleSent);
+  }, [pupilId, userId]);
+
   // Re-mark on focus/visibility: realtime INSERTs can be missed while the tab
   // or app is backgrounded, so anything that landed meanwhile is read on return.
   useEffect(() => {
