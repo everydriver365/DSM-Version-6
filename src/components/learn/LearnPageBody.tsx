@@ -384,6 +384,7 @@ export default function LearnPageBody() {
             fontWeight: 400,
             color: "#6E6E73",
             margin: "0 0 18px",
+            textAlign: "center",
           }}
         >
           Quick guides to get more out of DSM.
