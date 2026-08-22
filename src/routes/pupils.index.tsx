@@ -612,7 +612,7 @@ function PupilsIndexPage() {
   const activePupils = (filtered ?? []).filter((p: any) => !((balanceMap[p.id] || 0) > 0));
 
 
-  const renderRow = (p: any, idx: number, total: number) => {
+  const renderRow = (p: any, accentColour?: string) => {
     const balanceOwed = balanceMap[p.id] || 0;
     const lessons = lessonCountMap[p.id] || 0;
     const prepaid = Number(p.prepaid_hours) || 0;
@@ -631,14 +631,92 @@ function PupilsIndexPage() {
     const nextLesson = nextLessonMap[p.id];
     const lastLesson = lastLessonMap[p.id];
     const hasBalance = balanceOwed > 0;
+    const asPills = !!accentColour;
 
+    // Secondary status (same precedence and data as before).
+    const secondary: { label: string; tone: "amber" | "green" | "blue" | "grey"; colour: string } =
+      testResultState === "failed"
+        ? { label: "Retest", tone: "amber", colour: "#B8801F" }
+        : testResultState === "passed"
+          ? { label: "Passed", tone: "green", colour: "#3B8B3B" }
+          : testSoon && testDate
+            ? { label: `Test ${formatShortDate(testDate)}`, tone: "amber", colour: "#B8801F" }
+            : prepaid > 0
+              ? { label: `${prepaid} hrs remaining`, tone: "blue", colour: "#2B7BC8" }
+              : { label: pricing.label, tone: "grey", colour: "#6E6E73" };
+
+    const tags = asPills ? (
+      <>
+        <StatusPill
+          tone={hasBalance ? "red" : "green"}
+          label={hasBalance ? `£${balanceOwed.toFixed(2)} overdue` : "All paid"}
+        />
+        <StatusPill tone={secondary.tone} label={secondary.label} />
+      </>
+    ) : (
+      <>
+        <span style={{ color: hasBalance ? "#C8434F" : "#3B8B3B", fontWeight: 500, fontSize: 12 }}>
+          {hasBalance ? `£${balanceOwed.toFixed(2)} overdue` : "All paid"}
+        </span>
+        <span style={{ color: "#C7CEDA", fontSize: 12 }}>·</span>
+        <span style={{ color: secondary.colour, fontWeight: 500, fontSize: 12 }}>
+          {secondary.label}
+        </span>
+      </>
+    );
+
+    const lastLessonText = lastLesson
+      ? `Last lesson ${formatShortDate(lastLesson)} (${formatRelativeDate(lastLesson)})`
+      : nextLesson
+        ? `Next ${formatShortDate(nextLesson)}`
+        : lp
+          ? `Last seen ${formatRelativeDate(lp.date)}`
+          : "No lessons yet";
+
+    const avatar = (
+      <div style={{ position: "relative", flexShrink: 0 }}>
+        <PupilAvatar pupil={p} size={44} />
+        {unread > 0 ? (
+          <span
+            aria-label={`${unread} unread messages`}
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              width: 10,
+              height: 10,
+              borderRadius: "50%",
+              background: "#C8434F",
+              border: "1.5px solid #FFFFFF",
+            }}
+          />
+        ) : nextLesson ? (
+          <span
+            aria-label="Lesson booked"
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              width: 10,
+              height: 10,
+              borderRadius: "50%",
+              background: "#3B8B3B",
+              border: "1.5px solid #FFFFFF",
+            }}
+          />
+        ) : null}
+      </div>
+    );
 
     return (
-      <div
-        key={p.id}
-        role="button"
-        tabIndex={0}
-        onClick={() => {
+      <PupilCard
+        avatar={avatar}
+        name={displayName(p.name)}
+        tags={tags}
+        lastLesson={lastLessonText}
+        lessonCount={lessons}
+        accentColour={accentColour}
+        onPress={() => {
           if (swipedId === p.id) { setSwipedId(null); return; }
           tapLight();
           navigate({ to: "/pupils/$id", params: { id: p.id } });
@@ -649,189 +727,54 @@ function PupilsIndexPage() {
             navigate({ to: "/pupils/$id", params: { id: p.id } });
           }
         }}
-        onTouchStart={(e) => {
-          e.currentTarget.style.transform = "scale(0.98)";
-          e.currentTarget.style.opacity = "0.9";
-        }}
-        onTouchEnd={(e) => {
-          e.currentTarget.style.transform = "scale(1)";
-          e.currentTarget.style.opacity = "1";
-        }}
-        onContextMenu={(e) => e.preventDefault()}
-        className="block cursor-pointer select-none"
-        style={{
-          background: "transparent",
-          padding: "14px 16px",
-          WebkitTouchCallout: "none",
-          transition: "transform 0.1s ease, opacity 0.1s ease",
-        }}
-      >
-        <div className="flex items-center" style={{ gap: 14 }}>
-          <div style={{ position: "relative", flexShrink: 0 }}>
-            <PupilAvatar pupil={p} size={56} />
-            {unread > 0 && (
-              <span
-                aria-label={`${unread} unread messages`}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  right: 0,
-                  width: 13,
-                  height: 13,
-                  borderRadius: "50%",
-                  background: tokens.red,
-                  border: "2px solid #fff",
+        trailing={
+          <QuickActionsMenu
+            items={[
+              { label: "View pupil details", onClick: () => navigate({ to: "/pupils/$id", params: { id: p.id } }) },
+              { label: "Send message", onClick: () => navigate({ to: "/messages/$pupilId", params: { pupilId: p.id } }) },
+              ...(unread > 0
+                ? [{ label: `Mark ${unread} message${unread === 1 ? "" : "s"} as read`, onClick: () => markMessagesRead(p.id, displayName(p.name)) }]
+                : []),
+              ...(p.phone
+                ? [{ label: "Call pupil", onClick: () => { window.location.href = `tel:${p.phone}`; } }]
+                : []),
+              { label: "Take payment", onClick: () => { setUnifiedPayPupilId(p.id); setUnifiedPayOpen(true); } },
+              { label: "Book a lesson", onClick: () => { setAddLessonPupilId(p.id); setAddLessonOpen(true); } },
+              { label: "View profile", onClick: () => navigate({ to: "/pupils/$id", params: { id: p.id } }) },
+              { label: "Archive", destructive: true, onClick: () => setArchiveTarget({ id: p.id, name: displayName(p.name) }) },
+            ]}
+            trigger={({ onClick }) => (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClick();
                 }}
-              />
-            )}
-            {!unread && nextLesson && (
-              <span
-                aria-hidden
+                aria-label={`Quick actions for ${displayName(p.name)}`}
                 style={{
-                  position: "absolute",
-                  top: 1,
-                  right: 1,
-                  width: 13,
-                  height: 13,
+                  width: 24,
+                  height: 24,
+                  marginLeft: 2,
                   borderRadius: "50%",
-                  background: "#22C55E",
-                  border: "2px solid #fff",
-                }}
-              />
-            )}
-          </div>
-
-          <div className="min-w-0 flex-1 flex flex-col">
-            <div
-              className="truncate"
-              style={{ fontSize: 17, fontWeight: tokens.fontWeight.bold, color: tokens.navy, letterSpacing: "-0.2px", ...POPPINS }}
-            >
-              {displayName(p.name)}
-            </div>
-
-            <div className="flex flex-wrap items-center" style={{ gap: 6, marginTop: 2 }}>
-              <span
-                style={{
-                  fontSize: 13.5,
-                  fontWeight: tokens.fontWeight.semibold,
-                  color: hasBalance ? tokens.red : "#15803D",
-                  ...POPPINS,
+                  background: "transparent",
+                  border: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  padding: 0,
+                  flexShrink: 0,
                 }}
               >
-                {hasBalance ? `£${balanceOwed.toFixed(2)} overdue` : "All paid"}
-              </span>
-
-              {testResultState === "failed" ? (
-                <>
-                  <span style={{ color: "#C7CEDA", fontSize: 13 }}>·</span>
-                  <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: "#D97706", ...POPPINS }}>
-                    Retest
-                  </span>
-                </>
-              ) : testResultState === "passed" ? (
-                <>
-                  <span style={{ color: "#C7CEDA", fontSize: 13 }}>·</span>
-                  <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: "#15803D", ...POPPINS }}>
-                    ✓ Passed
-                  </span>
-                </>
-              ) : testSoon && testDate ? (
-                <>
-                  <span style={{ color: "#C7CEDA", fontSize: 13 }}>·</span>
-                  <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: "#D97706", ...POPPINS }}>
-                    🎯 Test {formatShortDate(testDate)}
-                  </span>
-                </>
-              ) : prepaid > 0 ? (
-                <>
-                  <span style={{ color: "#C7CEDA", fontSize: 13 }}>·</span>
-                  <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: tokens.blue, ...POPPINS }}>
-                    {prepaid} hrs remaining
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span style={{ color: "#C7CEDA", fontSize: 13 }}>·</span>
-                  <span style={{ fontSize: 13.5, fontWeight: tokens.fontWeight.semibold, color: "#8A94A6", ...POPPINS }}>
-                    {pricing.label}
-                  </span>
-                </>
-              )}
-            </div>
-
-            <div style={{ fontSize: 13, color: "#8A94A6", marginTop: 3, ...POPPINS }}>
-              {lastLesson
-                ? `Last lesson: ${formatShortDate(lastLesson)} (${formatRelativeDate(lastLesson)})`
-                : nextLesson
-                  ? `Next: ${formatShortDate(nextLesson)}`
-                  : lp
-                    ? `Last seen: ${formatRelativeDate(lp.date)}`
-                    : "No lessons yet"}
-            </div>
-          </div>
-
-          <div className="flex items-center shrink-0" style={{ gap: 6 }}>
-            <div className="flex flex-col items-center" style={{ lineHeight: 1 }}>
-              <span
-                style={{
-                  fontSize: 26,
-                  fontWeight: tokens.fontWeight.bold,
-                  color: lessons > 0 ? tokens.navy : "#B0BAC9",
-                  ...POPPINS,
-                }}
-              >
-                {lessons}
-              </span>
-              <span style={{ fontSize: 12, color: "#8A94A6", marginTop: 3, ...POPPINS }}>
-                {lessons === 1 ? "lesson" : "lessons"}
-              </span>
-            </div>
-            <QuickActionsMenu
-              items={[
-                { label: "View pupil details", onClick: () => navigate({ to: "/pupils/$id", params: { id: p.id } }) },
-                { label: "Send message", onClick: () => navigate({ to: "/messages/$pupilId", params: { pupilId: p.id } }) },
-                ...(unread > 0
-                  ? [{ label: `Mark ${unread} message${unread === 1 ? "" : "s"} as read`, onClick: () => markMessagesRead(p.id, displayName(p.name)) }]
-                  : []),
-                ...(p.phone
-                  ? [{ label: "Call pupil", onClick: () => { window.location.href = `tel:${p.phone}`; } }]
-                  : []),
-                { label: "Take payment", onClick: () => { setUnifiedPayPupilId(p.id); setUnifiedPayOpen(true); } },
-                { label: "Book a lesson", onClick: () => { setAddLessonPupilId(p.id); setAddLessonOpen(true); } },
-                { label: "View profile", onClick: () => navigate({ to: "/pupils/$id", params: { id: p.id } }) },
-                { label: "Archive", destructive: true, onClick: () => setArchiveTarget({ id: p.id, name: displayName(p.name) }) },
-              ]}
-
-              trigger={({ onClick }) => (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onClick();
-                  }}
-                  aria-label={`Quick actions for ${displayName(p.name)}`}
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: "50%",
-                    background: "transparent",
-                    border: "none",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    padding: 0,
-                  }}
-                >
-                  <IconChevronRight stroke={2} size={20} color="#9AA5B5" />
-                </button>
-              )}
-            />
-          </div>
-        </div>
-      </div>
+                <IconDotsVertical stroke={1.8} size={16} color="#C0C0C6" />
+              </button>
+            )}
+          />
+        }
+      />
     );
   };
+
 
 
   const swipeActionBtn = {
