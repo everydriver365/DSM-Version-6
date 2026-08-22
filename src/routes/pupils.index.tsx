@@ -872,10 +872,9 @@ function PupilsIndexPage() {
     >
       <header
         style={{
-          height: "calc(max(env(safe-area-inset-top, 0px), 24px) + 118px)",
+          height: "calc(max(env(safe-area-inset-top, 0px), 24px) + 104px)",
           flexShrink: 0,
           padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 14px) 22px 30px",
-
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "space-between",
@@ -883,25 +882,26 @@ function PupilsIndexPage() {
           boxSizing: "border-box",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <h1
             style={{
               margin: 0,
               color: tokens.white,
               fontFamily: "Sora, sans-serif",
-              fontSize: 34,
-              lineHeight: "40px",
-              letterSpacing: "-0.6px",
-              fontWeight: tokens.fontWeight.extrabold,
+              fontSize: 22,
+              lineHeight: "28px",
+              letterSpacing: "-0.3px",
+              fontWeight: 500,
             }}
           >
             Pupils
           </h1>
           <span
             style={{
-              fontSize: tokens.fontSize.md,
-              fontWeight: tokens.fontWeight.medium,
-              color: "rgba(255,255,255,0.66)",
+              fontSize: 13,
+              fontWeight: 400,
+              marginTop: 4,
+              color: "rgba(255,255,255,0.65)",
               ...POPPINS,
             }}
           >
@@ -915,34 +915,37 @@ function PupilsIndexPage() {
           onClick={() => navigate({ to: "/notifications" as never })}
           style={{
             position: "relative",
-            width: 40,
-            height: 40,
+            width: 36,
+            height: 36,
             borderRadius: "50%",
             border: 0,
             padding: 0,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "rgba(255,255,255,0.1)",
+            background: "rgba(255,255,255,0.12)",
             cursor: "pointer",
           }}
         >
-          <IconBell size={20} color="#FFFFFF" stroke={1.8} />
+          <IconBell size={17} color="#FFFFFF" stroke={1.8} />
           {unreadCount > 0 && (
             <span
               style={{
                 position: "absolute",
-                top: 4,
-                right: 4,
-                minWidth: 8,
-                height: 8,
+                top: 1,
+                right: 1,
+                width: 9,
+                height: 9,
                 borderRadius: 999,
-                background: tokens.red,
+                background: "#C8434F",
+                border: `1.5px solid ${tokens.navy}`,
+                boxSizing: "content-box",
               }}
             />
           )}
         </button>
       </header>
+
 
       <div
         {...pullToRefreshProps}
