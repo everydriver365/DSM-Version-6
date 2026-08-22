@@ -532,7 +532,7 @@ function BenefitsPage() {
       style={{
         background: '#EEF2F7',
         minHeight: '100%',
-        paddingBottom: 100,
+        paddingBottom: 'calc(140px + env(safe-area-inset-bottom, 0px))',
       }}
     >
 
