@@ -443,7 +443,27 @@ function InstructorDMThread() {
     };
   }, [conversationId, userId]);
 
-
+  // Refresh when a quick reply is sent from the notification sheet so the
+  // thread shows the new message without a manual pull-to-refresh.
+  useEffect(() => {
+    const handleSent = async (event: Event) => {
+      const detail = (event as CustomEvent).detail as { threadId?: string; type?: string } | undefined;
+      if (detail?.threadId !== conversationId) return;
+      if (!userId) return;
+      const { data: msgs } = await supabase
+        .from("instructor_messages")
+        .select("*")
+        .eq("conversation_id", conversationId)
+        .is("deleted_at", null)
+        .order("created_at", { ascending: false })
+        .limit(PAGE_SIZE);
+      const page = ((msgs ?? []) as unknown as DMMessage[]).slice().reverse();
+      setMessages(page);
+      setHasMoreOlder(page.length >= PAGE_SIZE);
+    };
+    window.addEventListener("dsm-message-sent", handleSent);
+    return () => window.removeEventListener("dsm-message-sent", handleSent);
+  }, [conversationId, userId]);
 
   /** Broadcast our typing state, throttled, with an auto "stopped" after 2.5s idle. */
   function signalTyping() {
