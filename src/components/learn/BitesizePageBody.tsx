@@ -1,7 +1,7 @@
 import { DSMToggle } from "@/components/dsm/DSMToggle";
 import { tokens } from "@/lib/tokens";
 import { useNavigate } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import { uploadVideo, uploadImage } from "@/lib/uploadFile";
@@ -22,7 +22,6 @@ import VideoCard from "@/components/learn/shared/VideoCard";
 import {
   IconChevronLeft,
   IconBook,
-  IconPlus,
   IconPlayerPlay,
   IconEye,
   IconEyeOff,
@@ -81,7 +80,11 @@ const inputStyle: React.CSSProperties = {
   ...POPPINS,
 };
 
-export default function BitesizePageBody() {
+export default function BitesizePageBody({
+  uploadRequest = 0,
+}: {
+  uploadRequest?: number;
+}) {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -112,6 +115,15 @@ export default function BitesizePageBody() {
   const [editDuration, setEditDuration] = useState("");
   const [editPublished, setEditPublished] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  // Open the upload sheet when the header "+ Upload" link is tapped
+  const lastUploadRequest = useRef(uploadRequest);
+  useEffect(() => {
+    if (uploadRequest > lastUploadRequest.current) {
+      lastUploadRequest.current = uploadRequest;
+      setUploadOpen(true);
+    }
+  }, [uploadRequest]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -294,33 +306,6 @@ export default function BitesizePageBody() {
 
   return (
     <div style={{ background: "#DCE4F0", ...POPPINS }}>
-      {isAdmin && (
-        <div style={{ display: "flex", justifyContent: "flex-end", padding: "10px 16px 0" }}>
-          <button
-            type="button"
-            aria-label="Upload video"
-            onClick={() => setUploadOpen(true)}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              borderRadius: tokens.radiusCard,
-              border: "none",
-              background: "#0B1F3A",
-              color: "#fff",
-              padding: "8px 14px",
-              fontSize: 13,
-              fontWeight: tokens.fontWeight.semibold,
-              cursor: "pointer",
-              ...POPPINS,
-            }}
-          >
-            <IconPlus size={16} />
-            Upload video
-          </button>
-        </div>
-      )}
-
       {/* CATEGORY CHIPS */}
       <div
         style={{
