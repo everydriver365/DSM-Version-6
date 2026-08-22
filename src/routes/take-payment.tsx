@@ -706,12 +706,23 @@ function TakePaymentPage() {
           }}
         >
           {(
-            [
-              { k: "qr" as const, label: "QR Code", icon: <IconQrcode size={15} /> },
-              { k: "card" as const, label: "Card", icon: <IconCreditCard size={15} /> },
-              { k: "cash" as const, label: "Cash/Transfer", icon: <IconCashBanknote size={15} /> },
-            ]
+            activeMethod === "paypal"
+              ? [
+                  { k: "paypal" as const, label: "PayPal", icon: <IconBrandPaypal size={15} /> },
+                  { k: "cash" as const, label: "Cash/Transfer", icon: <IconCashBanknote size={15} /> },
+                ]
+              : activeMethod === "bank"
+                ? [
+                    { k: "bank" as const, label: "Bank transfer", icon: <IconBuildingBank size={15} /> },
+                    { k: "cash" as const, label: "Cash/Transfer", icon: <IconCashBanknote size={15} /> },
+                  ]
+                : [
+                    { k: "qr" as const, label: "QR Code", icon: <IconQrcode size={15} /> },
+                    { k: "card" as const, label: "Card", icon: <IconCreditCard size={15} /> },
+                    { k: "cash" as const, label: "Cash/Transfer", icon: <IconCashBanknote size={15} /> },
+                  ]
           ).map((t) => {
+
             const active = tab === t.k;
             return (
               <button
