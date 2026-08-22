@@ -246,13 +246,17 @@ export function LessonActionsSheet({
 
   // ===== Live traffic / road issues on the route to pickup (TomTom) =====
   type TrafficIncident = { description: string };
-  const [trafficData, setTrafficData] = useState<{
+  const [internalTrafficData, setInternalTrafficData] = useState<{
     travelMins: number;
     delayMins: number;
     incidents: TrafficIncident[];
     status: "clear" | "delay" | "incident";
   } | null>(null);
-  const [trafficLoading, setTrafficLoading] = useState(false);
+  const [internalTrafficLoading, setInternalTrafficLoading] = useState(false);
+  // Share external traffic state when provided (home page) to avoid duplicate fetches.
+  const trafficData = trafficDataProp !== undefined ? trafficDataProp : internalTrafficData;
+  const trafficLoading = trafficLoadingProp !== undefined ? trafficLoadingProp : internalTrafficLoading;
+
 
   useEffect(() => {
     if (!open) {
