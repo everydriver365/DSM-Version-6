@@ -3189,6 +3189,15 @@ function HomePage() {
   const [instructorLocation, setInstructorLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [driveLoading, setDriveLoading] = useState(false);
+  // Live traffic data shared between the collapsed card and the expanded sheet.
+  const [trafficData, setTrafficData] = useState<{
+    travelMins: number;
+    delayMins: number;
+    incidents: { description: string }[];
+    status: "clear" | "delay" | "incident";
+  } | null | undefined>(undefined);
+  const [trafficLoading, setTrafficLoading] = useState(false);
+
   // client-side dedupe: keyed by lesson id, expires after 5 min
   const chipCacheRef = useRef<Record<string, { weather: LessonWeather; drive: LessonDriveTime; expires: number }>>({});
 
