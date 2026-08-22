@@ -89,7 +89,15 @@ export interface LessonActionsSheetProps {
   onOpenLesson: () => void;
   onEol: () => void;
   userId: string | null;
+  trafficData?: {
+    travelMins: number;
+    delayMins: number;
+    incidents: { description: string }[];
+    status: "clear" | "delay" | "incident";
+  } | null;
+  trafficLoading?: boolean;
 }
+
 
 const NAVY = "#0B1F3A";
 
