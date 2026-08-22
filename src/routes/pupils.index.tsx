@@ -1230,15 +1230,15 @@ function PupilsIndexPage() {
                     fontFamily: 'Poppins, sans-serif',
                   }}
                 >
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                    <IconAlertTriangleFilled size={20} color={tokens.red} />
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                    <IconAlertTriangle size={14} stroke={1.8} color="#C8434F" fill="none" />
                     <span
                       style={{
-                        fontSize: 13,
-                        fontWeight: tokens.fontWeight.bold,
-                        color: tokens.navy,
+                        fontSize: 11,
+                        fontWeight: 500,
+                        color: '#6E6E73',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.6px',
+                        letterSpacing: '0.3px',
                       }}
                     >
                       Needs attention
@@ -1251,9 +1251,9 @@ function PupilsIndexPage() {
                       background: 'transparent',
                       border: 'none',
                       padding: 0,
-                      fontSize: 14,
-                      fontWeight: tokens.fontWeight.semibold,
-                      color: tokens.blue,
+                      fontSize: 12,
+                      fontWeight: 500,
+                      color: '#2B7BC8',
                       fontFamily: 'Poppins, sans-serif',
                       cursor: 'pointer',
                     }}
@@ -1263,12 +1263,10 @@ function PupilsIndexPage() {
                 </div>
                 <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {needsAttention.map((p) =>
-                    renderSwipeRow(p, {
-                      background: '#fff',
-                      borderRadius: 16,
-                      boxShadow: '0 2px 10px rgba(11,31,58,0.07)',
-                      borderLeft: `5px solid ${testDateMap[p.id] && !((balanceMap[p.id] || 0) > 0) ? '#F59E0B' : tokens.red}`,
-                    })
+                    renderSwipeRow(
+                      p,
+                      testDateMap[p.id] && !((balanceMap[p.id] || 0) > 0) ? '#B8801F' : '#C8434F',
+                    )
                   )}
                 </div>
               </>
@@ -1276,28 +1274,24 @@ function PupilsIndexPage() {
             {statusFilter === "active" && (
               <div
                 style={{
-                  fontSize: 13,
-                  fontWeight: tokens.fontWeight.bold,
-                  color: '#8A94A6',
+                  fontSize: 11,
+                  fontWeight: 500,
+                  color: '#6E6E73',
                   textTransform: 'uppercase',
-                  letterSpacing: '0.6px',
+                  letterSpacing: '0.3px',
                   padding: '18px 16px 8px',
                   fontFamily: 'Poppins, sans-serif',
                 }}
               >
-                Active pupils ({activePupils.length})
+                Active pupils · {activePupils.length}
               </div>
             )}
             <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
               {(statusFilter === "active" ? activePupils : filtered).map((p) =>
-                renderSwipeRow(p, {
-                  background: '#FAFBFC',
-                  borderRadius: 16,
-                  boxShadow: '0 1px 3px rgba(11,31,58,0.05)',
-                  transition: 'transform 0.1s ease, opacity 0.1s ease',
-                })
+                renderSwipeRow(p)
               )}
             </div>
+
 
           </>
         )}
