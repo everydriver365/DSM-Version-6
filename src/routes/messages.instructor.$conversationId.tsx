@@ -396,6 +396,22 @@ function InstructorDMThread() {
           }
         },
       )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "instructor_messages",
+          filter: `conversation_id=eq.${conversationId}`,
+        },
+        (payload) => {
+          const row = payload.new as unknown as DMMessage;
+          // Live read receipts: the other instructor read our message.
+          setMessages((prev) =>
+            prev.map((m) => (m.id === row.id ? { ...m, read_at: row.read_at } : m)),
+          );
+        },
+      )
       .on("broadcast", { event: "typing" }, (payload) => {
         const p = payload.payload as { userId?: string; typing?: boolean };
         if (!p?.userId || p.userId === userId) return;

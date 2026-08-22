@@ -839,27 +839,14 @@ function PupilThreadPage() {
   }
 
 
-  async function handleSend() {
-    const body = messageText.trim();
-    if (!body || sending || !userId) return;
-    setSending(true);
+  /** Insert one message, keeping its optimistic row's delivery state in sync. */
+  async function deliver(localId: string, body: string) {
+    if (!userId) return;
+    setMessages((prev) =>
+      prev.map((m) => (m.id === localId ? { ...m, delivery: "sending" as const } : m)),
+    );
 
     console.log("[dsm-messages] sending:", { body, pupilId, instructorId: userId });
-
-    const now = new Date().toISOString();
-    const optimistic: ChatMessage = {
-      id: `tmp-${Date.now()}`,
-      pupil_id: pupilId,
-      instructor_id: userId,
-      sender_type: "instructor",
-      sender_id: userId,
-      body,
-      created_at: now,
-      read_at: null,
-      deleted_at: null,
-    };
-    setMessages((prev) => [...prev, optimistic]);
-    setMessageText("");
 
     const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
     const SUPABASE_ANON_KEY =
@@ -867,10 +854,8 @@ function PupilThreadPage() {
     const { data: sessionRes } = await supabase.auth.getSession();
     const token = sessionRes.session?.access_token;
 
-    let res: Response;
-    let inserted: ChatMessage | null = null;
     try {
-      res = await fetch(`${SUPABASE_URL}/rest/v1/chat_messages`, {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/chat_messages`, {
         method: "POST",
         headers: {
           apikey: SUPABASE_ANON_KEY,
@@ -889,23 +874,55 @@ function PupilThreadPage() {
       const data = await res.json().catch(() => null);
       console.log("[dsm-messages] send result:", res.status, data);
       if (res.ok && Array.isArray(data) && data.length > 0) {
-        inserted = data[0] as ChatMessage;
-      } else if (!res.ok) {
-        throw new Error(`send failed: ${res.status}`);
+        const finalRow = data[0] as ChatMessage;
+        setMessages((prev) => {
+          // If realtime already landed the real row, just settle the optimistic copy.
+          if (prev.some((m) => m.id === finalRow.id)) {
+            return prev.map((m) =>
+              m.id === localId ? { ...m, delivery: "sent" as const } : m,
+            );
+          }
+          return prev.map((m) =>
+            m.id === localId ? { ...finalRow, delivery: "sent" as const } : m,
+          );
+        });
+        return;
       }
+      throw new Error(`send failed: ${res.status}`);
     } catch (err) {
       console.error("[pupil-thread] send error", err);
-      setMessages((prev) => prev.filter((m) => m.id !== optimistic.id));
-      setMessageText(body);
-      setSending(false);
-      return;
+      setMessages((prev) =>
+        prev.map((m) => (m.id === localId ? { ...m, delivery: "failed" as const } : m)),
+      );
     }
+  }
 
-    if (inserted) {
-      const finalRow = inserted;
-      setMessages((prev) => prev.map((m) => (m.id === optimistic.id ? finalRow : m)));
-    }
+  async function handleSend() {
+    const body = messageText.trim();
+    if (!body || sending || !userId) return;
+    setSending(true);
+
+    const optimistic: ChatMessage = {
+      id: `tmp-${Date.now()}`,
+      pupil_id: pupilId,
+      instructor_id: userId,
+      sender_type: "instructor",
+      sender_id: userId,
+      body,
+      created_at: new Date().toISOString(),
+      read_at: null,
+      deleted_at: null,
+      delivery: "sending",
+    };
+    setMessages((prev) => [...prev, optimistic]);
+    setMessageText("");
+
+    await deliver(optimistic.id, body);
     setSending(false);
+  }
+
+  async function retryMessage(m: ChatMessage) {
+    await deliver(m.id, m.body ?? "");
   }
 
   const pupilName = pupil?.name ?? pupil?.first_name ?? "Pupil";
@@ -1371,42 +1388,23 @@ function PupilThreadPage() {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: 6,
+                        gap: 4,
                         marginTop: 3,
                         alignSelf: mine ? "flex-end" : "flex-start",
+                        fontSize: tokens.fontSize.xs,
+                        color: tokens.textMuted,
                         ...POPPINS,
                       }}
                     >
-                      <span style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted }}>
-                        {formatTime(m.created_at)}
-                      </span>
+                      <span>{formatTime(m.created_at)}</span>
+                      {mine &&
+                        (m.delivery === "sending" ||
+                          m.delivery === "failed" ||
+                          i === lastSentIndex ||
+                          i === lastReadSentIndex) && (
+                          <DeliveryIndicator message={m} onRetry={retryMessage} />
+                        )}
                     </div>
-                    {mine && i === lastReadSentIndex && m.read_at && (
-                      <div
-                        style={{
-                          fontSize: tokens.fontSize.xs,
-                          color: "rgba(255,255,255,0.5)",
-                          textAlign: "right",
-                          marginTop: 2,
-                          fontFamily: "Poppins, sans-serif",
-                        }}
-                      >
-                        Read
-                      </div>
-                    )}
-                    {mine && i === lastSentIndex && !m.read_at && (
-                      <div
-                        style={{
-                          fontSize: tokens.fontSize.xs,
-                          color: "rgba(255,255,255,0.35)",
-                          textAlign: "right",
-                          marginTop: 2,
-                          fontFamily: "Poppins, sans-serif",
-                        }}
-                      >
-                        Delivered
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
