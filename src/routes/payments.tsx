@@ -469,10 +469,10 @@ function PaymentsPage() {
         type="button"
         onClick={() => setPupilPickerOpen(true)}
         style={{
-          background: tokens.canvas,
-          fontWeight: tokens.fontWeight.bold, fontFamily: 'Poppins, sans-serif', borderRadius: tokens.radiusCard, minHeight: 44,
-          padding: "14px 16px",
-          boxShadow: "0 4px 0 #E4E4E8",
+          background: "#F2F2F4",
+          fontFamily: 'Poppins, sans-serif',
+          borderRadius: 10,
+          padding: "9px 12px",
 
           display: "flex",
           alignItems: "center",
@@ -484,11 +484,11 @@ function PaymentsPage() {
           textAlign: "left",
         }}
       >
-        <IconSearch stroke={1.5} size={15} color="#B0BAC9" />
+        <IconSearch stroke={1.5} size={14} color="#6E6E73" />
         <div
           style={{
-            fontSize: tokens.fontSize.base,
-            color: pupilFilter ? "#0B1F3A" : "#B0BAC9",
+            fontSize: 13,
+            color: pupilFilter ? "#000000" : "#6E6E73",
             flex: 1,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -753,22 +753,14 @@ function PaymentsPage() {
 }
 
 // ---------- small components ----------
-function StatTile({ label, value, color, first = true }: { label: string; value: string; color: string; first?: boolean }) {
+function StatBlock({ label, value, color, valueSize = 19 }: { label: string; value: string; color: string; valueSize?: number }) {
   return (
-    <div
-      style={{
-        flex: 1,
-        padding: "16px 10px",
-        textAlign: "left",
-        borderLeft: first ? undefined : "1.5px dashed #E4E4E8",
-        minWidth: 0,
-      }}
-    >
+    <div style={{ minWidth: 0 }}>
       <div
         style={{
-          fontSize: tokens.fontSize.xs,
-          fontWeight: tokens.fontWeight.bold,
-          color: tokens.textMuted,
+          fontSize: 10,
+          fontWeight: 500,
+          color: "#6E6E73",
           textTransform: "uppercase",
           letterSpacing: "0.3px",
           whiteSpace: "nowrap",
@@ -778,15 +770,8 @@ function StatTile({ label, value, color, first = true }: { label: string; value:
       >
         {label}
       </div>
-      <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.extrabold, letterSpacing: "-0.6px", marginTop: 6, color, ...POPPINS }}>{value}</div>
+      <div style={{ fontSize: valueSize, fontWeight: 500, letterSpacing: "-0.2px", marginTop: 4, color, ...POPPINS }}>{value}</div>
     </div>
-  );
-}
-
-function Pill({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-  return (
-    <button type="button" onClick={onClick} className="px-3 h-8 rounded-full text-[12px] font-medium whitespace-nowrap shrink-0"
-      style={{ backgroundColor: active ? NAVY : "#F3F4F6", color: active ? "#fff" : NAVY, border: `0.5px solid ${active ? NAVY : BORDER}` }}>{children}</button>
   );
 }
 
