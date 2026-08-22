@@ -92,7 +92,7 @@ function TakePaymentPage() {
         console.warn("[take-payment] load pupils", error);
         return;
       }
-      setPupils((data ?? []) as { id: string; name: string }[]);
+      setPupils((data ?? []) as { id: string; name: string; phone?: string | null }[]);
     })();
     return () => {
       cancelled = true;
