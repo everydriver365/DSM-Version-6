@@ -3317,7 +3317,7 @@ function HomePage() {
     if (!upcoming?.id) return;
     const pickup = (upcoming.pickup_location ?? "").trim();
     if (!pickup) return;
-    if (!ymd(todayStart) === ymd(new Date(`${upcoming.lesson_date}T00:00:00`))) return;
+    if (ymd(todayStart) !== ymd(new Date(`${upcoming.lesson_date}T00:00:00`))) return;
     if (!("geolocation" in navigator)) return;
 
     let cancelled = false;
