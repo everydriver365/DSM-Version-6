@@ -5432,6 +5432,8 @@ function HomePage() {
                 )}
               </div>
 
+              {/* Reasons row */}
+              {anyReason && (
                 <div style={{
                   marginTop: 0, padding: '10px 16px',
                   display: 'flex', flexDirection: 'column', gap: 4,
