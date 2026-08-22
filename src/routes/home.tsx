@@ -4992,12 +4992,18 @@ function HomePage() {
           const startText = d ? fmt(d) : '—';
           const dur = upcoming?.duration_minutes ?? 0;
           const durationDecimal = dur ? (dur / 60).toFixed(dur % 60 === 0 ? 0 : 1) : '0';
+          // On test days pickup_location holds the test centre, so the pickup
+          // row always falls back to the pupil's home address.
+          const upcomingIsTest = isTestLesson(upcoming);
           const pickupParts = getPickupParts(
-            upcoming?.pickup_location,
+            upcomingIsTest ? null : upcoming?.pickup_location,
             upcoming?.pupils?.address,
             upcoming?.pupils?.postcode,
           );
           const pickup = pickupParts.full;
+          const upcomingTestCentre = upcomingIsTest ? testCentreOf(upcoming) : null;
+          const upcomingTestTime = upcomingIsTest ? (testTimeOf(upcoming) ?? startText) : null;
+
 
 
           const upcomingSmsCount = upcoming?.pupil_id
