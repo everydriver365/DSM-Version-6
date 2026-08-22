@@ -195,6 +195,32 @@ function SettingsPage() {
     });
   }, []);
 
+  // === Payment methods (Square / PayPal.me / Bank transfer) ===
+  const [paypalUsername, setPaypalUsername] = useState<string>("");
+  const [bankAccountName, setBankAccountName] = useState<string>("");
+  const [bankSortCode, setBankSortCode] = useState<string>("");
+  const [bankAccountNumber, setBankAccountNumber] = useState<string>("");
+  const [activePaymentMethod, setActivePaymentMethod] = useState<"square" | "paypal" | "bank">("square");
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return;
+      const { data: row, error } = await supabase
+        .from("instructors")
+        .select("paypal_me_username, bank_account_name, bank_sort_code, bank_account_number, active_payment_method")
+        .eq("id", data.user.id)
+        .maybeSingle();
+      if (error || !row) return;
+      const r = row as Record<string, string | null>;
+      setPaypalUsername(r.paypal_me_username ?? "");
+      setBankAccountName(r.bank_account_name ?? "");
+      setBankSortCode(r.bank_sort_code ?? "");
+      setBankAccountNumber(r.bank_account_number ?? "");
+      const m = r.active_payment_method;
+      if (m === "paypal" || m === "bank" || m === "square") setActivePaymentMethod(m);
+    });
+  }, []);
+
+
   // === Section: Deposit / Payment options / Tax & expenses / Referral (instructors table) ===
   const [depositEnabled, setDepositEnabled] = useState<boolean>(false);
   const [depositAmount, setDepositAmount] = useState<number>(50);
