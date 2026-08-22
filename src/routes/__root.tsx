@@ -545,27 +545,7 @@ function RootComponent() {
     "/about",
     "/contact",
   ]);
-  const hasOwnMenu = new Set([
-    "/home",
-    "/schedule",
-    "/pupils",
-    "/payments",
-    "/messages",
-    "/more",
-    "/community",
-    // Full-screen sheet with its own header/back nav — the FAB floated over
-    // the video grid mid-scroll.
-    "/dsm-learn",
-
-  ]);
-  const isMessageThread = pathname.startsWith("/messages/");
-  const showFloatingMenu =
-    !hasOwnMenu.has(pathname) &&
-    !hideNavExact.has(pathname) &&
-    !isMessageThread &&
-    // Pupil detail has its own "More" action; the FAB would float over
-    // in-page controls (delete buttons, Cancel lesson row).
-    !pathname.startsWith("/pupils/");
+  const showFloatingMenu = !hideNavExact.has(pathname);
   const hideNav =
     hideNavExact.has(pathname) ||
     pathname.startsWith("/i/") ||
@@ -585,7 +565,9 @@ function RootComponent() {
 
   const wrapperStyle: Record<string, string | number> = {};
   wrapperStyle.paddingTop = 'env(safe-area-inset-top, 0px)';
-  if (!hideNav) {
+  if (showFloatingMenu) {
+    wrapperStyle.paddingBottom = 'calc(140px + env(safe-area-inset-bottom, 0px))';
+  } else if (!hideNav) {
     wrapperStyle.paddingBottom =
       'calc(80px + env(safe-area-inset-bottom, 0px))';
   }
