@@ -695,33 +695,54 @@ function InstructorDMThread() {
             aria-label="Back to messages"
             onClick={() => navigate({ to: "/messages" as never, replace: true })}
             style={{
-              background: "none",
-              border: 0,
-              padding: 0,
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.12)",
+              border: "none",
               display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               cursor: "pointer",
               flexShrink: 0,
             }}
           >
-            <IconChevronLeft size={20} color="#C7D0DE" />
+            <IconChevronLeft size={20} color="#FFFFFF" />
           </button>
-          <div style={{ flex: 1, minWidth: 0, textAlign: "center" }}>
+
+          <PupilAvatar
+            pupil={otherInstructor}
+            pupilId={otherInstructor?.id}
+            size={38}
+            tinted
+          />
+
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
                 fontSize: 15,
-                fontWeight: tokens.fontWeight.semibold,
+                fontWeight: 500,
                 color: tokens.white,
+                letterSpacing: -0.1,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
+                ...POPPINS,
               }}
             >
               {otherInstructor?.name ?? "Instructor"}
             </div>
-            <div style={{ fontSize: tokens.fontSize.sm, color: "rgba(255,255,255,0.6)" }}>
+            <div
+              style={{
+                fontSize: tokens.fontSize.sm,
+                color: "rgba(255,255,255,0.6)",
+                ...POPPINS,
+              }}
+            >
               DSM Instructor
             </div>
           </div>
+
           <div style={{ width: 20, flexShrink: 0 }} />
         </div>
       </div>
