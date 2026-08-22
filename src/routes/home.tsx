@@ -6714,6 +6714,7 @@ function HomePage() {
                             />
                             <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                                <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={28} />
                                 <span style={{ flex: 1, minWidth: 0, fontSize: 15, fontWeight: tokens.fontWeight.semibold, color: isCancelled ? '#6B7280' : '#0B1F3A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3, textDecoration: isCancelled ? 'line-through' : 'none', fontFamily: PF }}>
                                   {name}
                                 </span>
