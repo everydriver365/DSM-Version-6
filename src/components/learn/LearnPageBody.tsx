@@ -6,10 +6,7 @@ import {
   IconAward,
   IconBolt,
   IconCalendarOff,
-  IconCheck,
   IconChevronRight,
-  IconDownload,
-  IconMovie,
   IconPlayerPlay,
   IconShoppingBag,
   IconStar,
@@ -20,6 +17,8 @@ import { toast } from "sonner";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
 import LearnLibrarySection from "@/components/learn/LearnLibrarySection";
 import LearnVideosSection from "@/components/learn/LearnVideosSection";
+import SharedVideoCard from "@/components/learn/shared/VideoCard";
+import SectionHeader, { PlayTriangleIcon } from "@/components/learn/shared/SectionHeader";
 
 const NAVY = "#0B1F3A";
 const BLUE = "#1877D6";
@@ -171,142 +170,17 @@ function VideoCard({ v, color, onPlay }: { v: Video; color: string; onPlay: () =
   };
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      onClick={onPlay}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") onPlay();
-      }}
-      style={{
-        background: "transparent",
-        border: "none",
-        padding: 0,
-        cursor: "pointer",
-        textAlign: "left",
-        fontFamily: FONT,
-      }}
-    >
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          aspectRatio: "1 / 1",
-          borderRadius: 8,
-          overflow: "hidden",
-          background: color,
-          ...(thumb
-            ? {
-                backgroundImage: `url(${thumb})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }
-            : null),
-          boxShadow: "0 4px 12px rgba(11,31,58,0.12)",
-        }}
-      >
-        {!thumb && (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              opacity: 0.18,
-            }}
-          >
-            <IconMovie size={64} color="#fff" stroke={1} />
-          </div>
-        )}
-
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: "50%",
-              background: "#fff",
-              boxShadow: "0 3px 10px rgba(0,0,0,0.25)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <IconPlayerPlay
-              size={16}
-              color={NAVY}
-              stroke={2}
-              fill={NAVY}
-              style={{ marginLeft: 2 }}
-            />
-          </div>
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            bottom: 8,
-            right: 8,
-            padding: "3px 16px",
-            borderRadius: tokens.radiusCard,
-            background: "rgba(0,0,0,0.6)",
-            color: "#fff",
-            fontSize: 10.5,
-            fontWeight: tokens.fontWeight.bold,
-          }}
-        >
-          {formatDuration(v.duration)}
-        </div>
-        {downloadable && (
-          <button
-            type="button"
-            onClick={handleDownload}
-            aria-label={cached ? "Available offline" : "Download for offline"}
-            style={{
-              position: "absolute",
-              top: 8,
-              right: 8,
-              width: 30,
-              height: 30,
-              borderRadius: "50%",
-              border: "none",
-              background: cached ? "#1E8E3E" : "rgba(0,0,0,0.5)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: cached ? "default" : "pointer",
-              opacity: downloading ? 0.6 : 1,
-            }}
-          >
-            {cached ? (
-              <IconCheck stroke={1.5} size={13} color="#FFFFFF" strokeWidth={3} />
-            ) : (
-              <IconDownload stroke={1.5} size={13} color="#FFFFFF" />
-            )}
-          </button>
-        )}
-      </div>
-      <div
-        style={{
-          marginTop: 10,
-          fontSize: 14.5,
-          fontWeight: tokens.fontWeight.bold,
-          letterSpacing: "-0.1px",
-          color: "#000",
-          lineHeight: 1.3,
-        }}
-      >
-        {v.title}
-      </div>
-    </div>
+    <SharedVideoCard
+      thumbnail={thumb}
+      title={v.title}
+      duration={formatDuration(v.duration)}
+      downloadable={downloadable}
+      downloaded={cached}
+      downloading={downloading}
+      placeholderColor={color}
+      onPlay={onPlay}
+      onDownload={handleDownload}
+    />
   );
 }
 
@@ -506,10 +380,10 @@ export default function LearnPageBody() {
       <div style={{ padding: "8px 16px 0" }}>
         <p
           style={{
-            fontSize: tokens.fontSize.md,
-            fontWeight: tokens.fontWeight.medium,
-            color: "#8A8A8E",
-            margin: "0 0 22px",
+            fontSize: 13,
+            fontWeight: 400,
+            color: "#6E6E73",
+            margin: "0 0 18px",
           }}
         >
           Quick guides to get more out of DSM.
@@ -517,16 +391,16 @@ export default function LearnPageBody() {
       </div>
 
       <div>
-        <SectionLabel
-          strong
-          icon={<IconPlayerPlay stroke={1.5} size={13} color={BLUE} fill={BLUE} />}
-          label="How to"
+        <SectionHeader
+          icon={<PlayTriangleIcon />}
+          title="How to"
+          style={{ padding: "0 16px 12px" }}
         />
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 14,
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gap: 8,
             padding: "0 16px",
           }}
         >

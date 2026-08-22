@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useGoBack } from "@/hooks/useGoBack";
-import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
+import SegmentedTabs from "@/components/learn/shared/SegmentedTabs";
 import LearnPageBody from "@/components/learn/LearnPageBody";
 import BitesizePageBody from "@/components/learn/BitesizePageBody";
 import ShowcasePageBody from "@/components/learn/ShowcasePageBody";
@@ -34,10 +34,7 @@ export const Route = createFileRoute("/dsm-learn")({
   component: DSMLearnPage,
 });
 
-const NAVY = "#0B1F3A";
-const HAIRLINE = "#E2E8F0";
 const FONT = "Poppins, sans-serif";
-const SHADOW = "0 1px 3px rgba(0,0,0,0.06)";
 
 const TABS: { id: LearnTab; label: string }[] = [
   { id: "learn", label: "Learn" },
@@ -54,35 +51,14 @@ function DSMLearnPage() {
   return (
     <DSMTopSheet title="DSM Learn" onBack={() => goBack("/home")}>
       <div style={{ fontFamily: FONT, minHeight: "100%", background: "#DCE4F0" }}>
-        <div style={{ display: "flex", gap: 6, padding: "12px 16px 4px" }}>
-          {TABS.map((t) => {
-            const isActive = active === t.id;
-            return (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => navigate({ to: "/dsm-learn", search: { tab: t.id }, replace: true })}
-                style={{
-                  flex: 1,
-                  padding: "11px 12px",
-                  borderRadius: tokens.radiusCard,
-                  background: isActive ? NAVY : "#FFFFFF",
-                  color: isActive ? "#FFFFFF" : NAVY,
-                  fontFamily: FONT,
-                  fontSize: tokens.fontSize.base,
-                  fontWeight: tokens.fontWeight.semibold,
-                  cursor: "pointer",
-                  boxShadow: isActive ? "none" : SHADOW,
-                  borderWidth: isActive ? 0 : 1,
-                  borderStyle: "solid",
-                  borderColor: isActive ? "transparent" : HAIRLINE,
-                  transition: "background 0.15s, color 0.15s",
-                }}
-              >
-                {t.label}
-              </button>
-            );
-          })}
+        <div style={{ padding: "12px 16px 4px" }}>
+          <SegmentedTabs
+            tabs={TABS}
+            active={active}
+            onChange={(id) =>
+              navigate({ to: "/dsm-learn", search: { tab: id }, replace: true })
+            }
+          />
         </div>
 
         {active === "learn" && <LearnPageBody />}
