@@ -22,6 +22,7 @@ import {
   IconKey,
   IconPhoto,
   IconRosetteDiscount,
+  IconMicrophone,
 } from "@tabler/icons-react";
 
 import { supabase } from "@/lib/supabaseClient";
