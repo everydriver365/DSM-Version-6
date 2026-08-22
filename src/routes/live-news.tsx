@@ -801,15 +801,15 @@ function LiveNewsPage() {
         }}
       >
       <div
-
         style={{
           padding: "16px 16px 24px",
-          paddingBottom: "calc(100px + env(safe-area-inset-bottom, 0px))",
+          paddingBottom: "calc(140px + env(safe-area-inset-bottom, 0px))",
           display: "flex",
           flexDirection: "column",
           gap: 24,
         }}
       >
+
 
         {activeTab === "live" && (
           <section>
@@ -1867,8 +1867,8 @@ function MiniPlayer({
         position: "fixed",
         left: 0,
         right: 0,
-        bottom: 0,
-        zIndex: 190,
+        bottom: "calc(80px + env(safe-area-inset-bottom, 0px))",
+        zIndex: 500,
         background: "#fff",
         borderTop: "1px solid #E4E8EF",
         boxShadow: "0 -4px 16px rgba(11,31,58,0.10)",
@@ -1876,6 +1876,7 @@ function MiniPlayer({
         ...POPPINS,
       }}
     >
+
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <div
           role="button"
