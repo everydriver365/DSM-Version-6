@@ -4850,7 +4850,9 @@ function HomePage() {
             WebkitOverflowScrolling: 'touch',
             touchAction: 'pan-y',
             overscrollBehaviorX: 'none',
-            paddingBottom: 'calc(96px + env(safe-area-inset-bottom, 0px))',
+            // Outer fixed container already reserves 60px + safe-area for the
+            // bottom nav, so only a small breathing gap is needed here.
+            paddingBottom: 24,
           }}
         >
       {/* ============ NAVY HEADER BLOCK ============ */}
