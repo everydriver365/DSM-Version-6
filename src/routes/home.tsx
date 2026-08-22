@@ -5464,7 +5464,7 @@ function HomePage() {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigate({ to: `/test-day/${upcoming.id}` });
+                      navigate({ to: '/test-day/$pupilId', params: { pupilId: upcoming.pupil_id } });
                     }}
                     style={{
                       flex: 1,
