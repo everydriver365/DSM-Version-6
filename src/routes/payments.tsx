@@ -560,7 +560,7 @@ function PaymentsPage() {
 
 
       {/* History */}
-      <div>
+      <div style={{ paddingBottom: "calc(88px + env(safe-area-inset-bottom, 0px))" }}>
         {loading ? (
           <div style={{ padding: "0 16px", display: "flex", flexDirection: "column", gap: 10 }}>
             {Array.from({ length: 5 }).map((_, i) => (
