@@ -2738,10 +2738,7 @@ function HomePage() {
           phone: l.pupils?.phone ?? null,
           isTest: l.lesson_type === 'test',
         }));
-      localStorage.setItem(
-        'dsm_today_lessons',
-        JSON.stringify(carplayTodayLessons)
-      );
+      writeCarPlayValue('dsm_today_lessons', carplayTodayLessons);
 
       // ---- Unpaid lessons (all time, exclude cancelled) ----
       const { data: unpaidLessons } = await supabase
