@@ -16,6 +16,8 @@ import {
 } from "@/components/dsm/BottomSheetV2";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 import BitesizeLearnVideos from "@/components/learn/BitesizeLearnVideos";
+import VideoCard from "@/components/learn/shared/VideoCard";
+
 
 import {
   IconChevronLeft,
