@@ -7254,6 +7254,19 @@ function HomePage() {
                         }}
                       >
                         <div
+                          style={{
+                            position: 'absolute',
+                            top: -30,
+                            right: -30,
+                            width: 90,
+                            height: 90,
+                            borderRadius: '50%',
+                            background: `radial-gradient(circle, ${hexToRgba(tile.bg as string, 0.06)} 0%, transparent 70%)`,
+                            pointerEvents: 'none',
+                            zIndex: 0,
+                          }}
+                        />
+                        <div
                           className="qa-icon"
                           style={{
                             width: 34,
@@ -7265,11 +7278,13 @@ function HomePage() {
                             justifyContent: 'center',
                             flexShrink: 0,
                             transition: 'transform 0.15s ease',
+                            position: 'relative',
+                            zIndex: 1,
                           }}
                         >
                           {tintedIcon}
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0, maxWidth: '100%' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0, maxWidth: '100%', position: 'relative', zIndex: 1 }}>
                           <span style={{
                             fontSize: 15,
                             fontWeight: tokens.fontWeight.bold,
