@@ -2042,7 +2042,8 @@ function MiniPlayer({
               {episode.showName}
             </div>
           </div>
-        </div>
+        </div>}
+
 
         <button
           type="button"
