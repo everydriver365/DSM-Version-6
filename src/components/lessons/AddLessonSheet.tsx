@@ -365,10 +365,19 @@ export function AddLessonSheet({
       return;
     }
     const durationMinutes = isTestDay ? 0 : effectiveDuration > 0 ? effectiveDuration : 60;
-    // Test days block out 1 hour before the test time and 90 minutes after it.
-    const effTime =
-      isTestDay && testTime ? testStartTime(testTime) ?? testTime : time;
-    const savedDuration = isTestDay ? TEST_TOTAL_MINUTES : durationMinutes;
+    // Test days use the instructor's own pick-up / drop-off times, falling back
+    // to 1 hour before the test and 90 minutes after it.
+    const testPickup = isTestDay
+      ? testPickupTime || (testTime ? testStartTime(testTime) ?? testTime : time)
+      : "";
+    const testDropoff = isTestDay
+      ? testDropoffTime || (testTime ? testEndTime(testTime) ?? "" : "")
+      : "";
+    const effTime = isTestDay ? testPickup || time : time;
+    const savedDuration = isTestDay
+      ? (testPickup && testDropoff ? minutesBetween(testPickup, testDropoff) : null) ??
+        TEST_TOTAL_MINUTES
+      : durationMinutes;
 
     const selected = pupils.find((p) => p.id === pupilId);
     const pickupValue = pickup.trim() || selected?.address?.trim() || null;
