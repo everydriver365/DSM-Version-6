@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { IconAlertTriangle, IconChevronDown, IconChevronLeft, IconChevronUp, IconCircleCheck, IconPaperclip, IconPhone, IconSearch, IconSend, IconX } from "@tabler/icons-react";
+import { IconAlertCircle, IconAlertTriangle, IconCheck, IconChecks, IconChevronDown, IconChevronLeft, IconChevronUp, IconCircleCheck, IconClock, IconPaperclip, IconPhone, IconSearch, IconSend, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { PageLayout } from "@/components/PageLayout";
@@ -28,6 +28,8 @@ interface Pupil {
   auth_user_id: string | null;
 }
 
+type DeliveryStatus = "sending" | "sent" | "failed";
+
 interface ChatMessage {
   id: string;
   pupil_id: string;
@@ -38,6 +40,8 @@ interface ChatMessage {
   created_at: string;
   read_at: string | null;
   deleted_at: string | null;
+  /** Client-only delivery state for messages sent from this device. */
+  delivery?: DeliveryStatus;
 }
 
 interface PendingOffer {
@@ -154,6 +158,58 @@ function HighlightedBody({ body, query }: { body: string; query: string }) {
 }
 
 const SYSTEM_TYPES = ["call", "missed_call", "sms_event", "system", "event"];
+
+/**
+ * Delivery state for my messages: sending (clock), delivered (single tick),
+ * read (blue double tick), failed (tap to retry).
+ */
+function DeliveryIndicator({
+  message,
+  onRetry,
+}: {
+  message: ChatMessage;
+  onRetry: (m: ChatMessage) => void;
+}) {
+  if (message.delivery === "sending") {
+    return (
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
+        <IconClock size={12} stroke={1.5} color="#B0B8C4" />
+        <span>Sending</span>
+      </span>
+    );
+  }
+
+  if (message.delivery === "failed") {
+    return (
+      <button
+        type="button"
+        onClick={() => onRetry(message)}
+        style={{
+          ...POPPINS,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 4,
+          background: "transparent",
+          border: "none",
+          padding: 0,
+          fontSize: tokens.fontSize.xs,
+          fontWeight: tokens.fontWeight.semibold,
+          color: tokens.red,
+          cursor: "pointer",
+        }}
+      >
+        <IconAlertCircle size={12} stroke={1.5} color="#CC2229" />
+        Not sent · Tap to retry
+      </button>
+    );
+  }
+
+  return message.read_at ? (
+    <IconChecks size={13} stroke={1.5} color="#1877D6" aria-label="Read" />
+  ) : (
+    <IconCheck size={13} stroke={1.5} color="#B0B8C4" aria-label="Delivered" />
+  );
+}
 
 /** How many messages to fetch per page (initial load and each older page). */
 const PAGE_SIZE = 30;
@@ -275,9 +331,22 @@ function PupilThreadPage() {
           (payload) => {
             const row = payload.new as ChatMessage;
             if (row.instructor_id !== uid) return;
-            setMessages((prev) =>
-              prev.some((x) => x.id === row.id) ? prev : [...prev, row],
-            );
+            setMessages((prev) => {
+              if (prev.some((x) => x.id === row.id)) return prev;
+              // Replace the optimistic copy of our own message if it is still pending.
+              const pendingIdx = prev.findIndex(
+                (m) =>
+                  m.delivery !== undefined &&
+                  m.sender_type === "instructor" &&
+                  (m.body ?? "") === (row.body ?? ""),
+              );
+              if (pendingIdx !== -1) {
+                const next = [...prev];
+                next[pendingIdx] = { ...row, delivery: "sent" as const };
+                return next;
+              }
+              return [...prev, row];
+            });
             // Thread is open — treat inbound arrivals as read right away.
             if (row.sender_type === "pupil" && !row.read_at) {
               const now = new Date().toISOString();
@@ -293,6 +362,23 @@ function PupilThreadPage() {
                 });
             }
 
+          },
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "chat_messages",
+            filter: `pupil_id=eq.${pupilId}`,
+          },
+          (payload) => {
+            const row = payload.new as ChatMessage;
+            if (row.instructor_id !== uid) return;
+            // Live read receipts: the pupil read our message.
+            setMessages((prev) =>
+              prev.map((m) => (m.id === row.id ? { ...m, read_at: row.read_at } : m)),
+            );
           },
         )
         .subscribe();
@@ -753,27 +839,14 @@ function PupilThreadPage() {
   }
 
 
-  async function handleSend() {
-    const body = messageText.trim();
-    if (!body || sending || !userId) return;
-    setSending(true);
+  /** Insert one message, keeping its optimistic row's delivery state in sync. */
+  async function deliver(localId: string, body: string) {
+    if (!userId) return;
+    setMessages((prev) =>
+      prev.map((m) => (m.id === localId ? { ...m, delivery: "sending" as const } : m)),
+    );
 
     console.log("[dsm-messages] sending:", { body, pupilId, instructorId: userId });
-
-    const now = new Date().toISOString();
-    const optimistic: ChatMessage = {
-      id: `tmp-${Date.now()}`,
-      pupil_id: pupilId,
-      instructor_id: userId,
-      sender_type: "instructor",
-      sender_id: userId,
-      body,
-      created_at: now,
-      read_at: null,
-      deleted_at: null,
-    };
-    setMessages((prev) => [...prev, optimistic]);
-    setMessageText("");
 
     const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
     const SUPABASE_ANON_KEY =
@@ -781,10 +854,8 @@ function PupilThreadPage() {
     const { data: sessionRes } = await supabase.auth.getSession();
     const token = sessionRes.session?.access_token;
 
-    let res: Response;
-    let inserted: ChatMessage | null = null;
     try {
-      res = await fetch(`${SUPABASE_URL}/rest/v1/chat_messages`, {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/chat_messages`, {
         method: "POST",
         headers: {
           apikey: SUPABASE_ANON_KEY,
@@ -803,23 +874,55 @@ function PupilThreadPage() {
       const data = await res.json().catch(() => null);
       console.log("[dsm-messages] send result:", res.status, data);
       if (res.ok && Array.isArray(data) && data.length > 0) {
-        inserted = data[0] as ChatMessage;
-      } else if (!res.ok) {
-        throw new Error(`send failed: ${res.status}`);
+        const finalRow = data[0] as ChatMessage;
+        setMessages((prev) => {
+          // If realtime already landed the real row, just settle the optimistic copy.
+          if (prev.some((m) => m.id === finalRow.id)) {
+            return prev.map((m) =>
+              m.id === localId ? { ...m, delivery: "sent" as const } : m,
+            );
+          }
+          return prev.map((m) =>
+            m.id === localId ? { ...finalRow, delivery: "sent" as const } : m,
+          );
+        });
+        return;
       }
+      throw new Error(`send failed: ${res.status}`);
     } catch (err) {
       console.error("[pupil-thread] send error", err);
-      setMessages((prev) => prev.filter((m) => m.id !== optimistic.id));
-      setMessageText(body);
-      setSending(false);
-      return;
+      setMessages((prev) =>
+        prev.map((m) => (m.id === localId ? { ...m, delivery: "failed" as const } : m)),
+      );
     }
+  }
 
-    if (inserted) {
-      const finalRow = inserted;
-      setMessages((prev) => prev.map((m) => (m.id === optimistic.id ? finalRow : m)));
-    }
+  async function handleSend() {
+    const body = messageText.trim();
+    if (!body || sending || !userId) return;
+    setSending(true);
+
+    const optimistic: ChatMessage = {
+      id: `tmp-${Date.now()}`,
+      pupil_id: pupilId,
+      instructor_id: userId,
+      sender_type: "instructor",
+      sender_id: userId,
+      body,
+      created_at: new Date().toISOString(),
+      read_at: null,
+      deleted_at: null,
+      delivery: "sending",
+    };
+    setMessages((prev) => [...prev, optimistic]);
+    setMessageText("");
+
+    await deliver(optimistic.id, body);
     setSending(false);
+  }
+
+  async function retryMessage(m: ChatMessage) {
+    await deliver(m.id, m.body ?? "");
   }
 
   const pupilName = pupil?.name ?? pupil?.first_name ?? "Pupil";
@@ -1285,42 +1388,23 @@ function PupilThreadPage() {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: 6,
+                        gap: 4,
                         marginTop: 3,
                         alignSelf: mine ? "flex-end" : "flex-start",
+                        fontSize: tokens.fontSize.xs,
+                        color: tokens.textMuted,
                         ...POPPINS,
                       }}
                     >
-                      <span style={{ fontSize: tokens.fontSize.xs, color: tokens.textMuted }}>
-                        {formatTime(m.created_at)}
-                      </span>
+                      <span>{formatTime(m.created_at)}</span>
+                      {mine &&
+                        (m.delivery === "sending" ||
+                          m.delivery === "failed" ||
+                          i === lastSentIndex ||
+                          i === lastReadSentIndex) && (
+                          <DeliveryIndicator message={m} onRetry={retryMessage} />
+                        )}
                     </div>
-                    {mine && i === lastReadSentIndex && m.read_at && (
-                      <div
-                        style={{
-                          fontSize: tokens.fontSize.xs,
-                          color: "rgba(255,255,255,0.5)",
-                          textAlign: "right",
-                          marginTop: 2,
-                          fontFamily: "Poppins, sans-serif",
-                        }}
-                      >
-                        Read
-                      </div>
-                    )}
-                    {mine && i === lastSentIndex && !m.read_at && (
-                      <div
-                        style={{
-                          fontSize: tokens.fontSize.xs,
-                          color: "rgba(255,255,255,0.35)",
-                          textAlign: "right",
-                          marginTop: 2,
-                          fontFamily: "Poppins, sans-serif",
-                        }}
-                      >
-                        Delivered
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
