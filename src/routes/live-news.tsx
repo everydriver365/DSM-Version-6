@@ -1861,6 +1861,28 @@ function MiniPlayer({
   onOpen: () => void;
   onClose: () => void;
 }) {
+  const [expanded, setExpanded] = useState(false);
+  const [dragY, setDragY] = useState(0);
+  const dragStart = useRef<number | null>(null);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    dragStart.current = e.clientY;
+    setDragY(0);
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (dragStart.current === null) return;
+    const delta = e.clientY - dragStart.current;
+    // Only allow dragging up when collapsed, down when expanded
+    setDragY(expanded ? Math.max(0, delta) : Math.min(0, delta));
+  };
+  const endDrag = () => {
+    if (dragStart.current === null) return;
+    dragStart.current = null;
+    if (!expanded && dragY < -40) setExpanded(true);
+    else if (expanded && dragY > 40) setExpanded(false);
+    setDragY(0);
+  };
+
   return (
     <div
       style={{
@@ -1871,11 +1893,85 @@ function MiniPlayer({
         zIndex: 500,
         background: "#fff",
         borderTop: "1px solid #E4E8EF",
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
         boxShadow: "0 -4px 16px rgba(11,31,58,0.10)",
-        padding: "8px 12px calc(8px + env(safe-area-inset-bottom))",
+        padding: "4px 12px 10px",
+        transform: dragY ? `translateY(${dragY * 0.35}px)` : undefined,
+        transition: dragStart.current === null ? "transform 220ms ease" : undefined,
+        touchAction: "none",
         ...POPPINS,
       }}
     >
+      <div
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onClick={() => setExpanded((v) => !v)}
+        role="button"
+        tabIndex={0}
+        aria-label={expanded ? "Collapse player" : "Expand player"}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") setExpanded((v) => !v);
+        }}
+        style={{
+          padding: "6px 0 8px",
+          display: "flex",
+          justifyContent: "center",
+          cursor: "grab",
+        }}
+      >
+        <div style={{ width: 40, height: 4, borderRadius: 999, background: "#D3DAE6" }} />
+      </div>
+
+      {expanded && (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, padding: "4px 0 12px" }}>
+          <div
+            style={{
+              width: 132,
+              height: 132,
+              borderRadius: 18,
+              overflow: "hidden",
+              background: tokens.canvas,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {episode.imageUrl ? (
+              <img src={episode.imageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            ) : (
+              <IconMicrophone size={34} color="#6B7686" />
+            )}
+          </div>
+          <div style={{ textAlign: "center", maxWidth: "90%" }}>
+            <div style={{ fontSize: 14, fontWeight: tokens.fontWeight.bold, color: tokens.navy, lineHeight: 1.35 }}>
+              {episode.title}
+            </div>
+            <div style={{ fontSize: 11.5, color: tokens.textMuted, marginTop: 2 }}>{episode.showName}</div>
+          </div>
+          <button
+            type="button"
+            onClick={onOpen}
+            style={{
+              border: "1px solid #E4E8EF",
+              background: "#fff",
+              borderRadius: 999,
+              padding: "6px 14px",
+              fontSize: 12,
+              color: tokens.blue,
+              fontWeight: tokens.fontWeight.bold,
+              cursor: "pointer",
+              ...POPPINS,
+            }}
+          >
+            Episode details
+          </button>
+        </div>
+      )}
+
+
 
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <div
