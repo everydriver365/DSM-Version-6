@@ -545,7 +545,10 @@ function RootComponent() {
     "/about",
     "/contact",
   ]);
-  const showFloatingMenu = !hideNavExact.has(pathname);
+  // Pages where the floating quick-menu button overlaps page content.
+  const hideFloatingMenuExact = new Set(["/test-swap"]);
+  const showFloatingMenu =
+    !hideNavExact.has(pathname) && !hideFloatingMenuExact.has(pathname);
   const hideNav =
     hideNavExact.has(pathname) ||
     pathname.startsWith("/i/") ||
