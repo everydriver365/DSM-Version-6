@@ -18,20 +18,59 @@ export const Route = createFileRoute("/take-payment")({
   component: TakePaymentPage,
 });
 
-type Tab = "qr" | "card" | "cash";
+type Tab = "qr" | "card" | "cash" | "paypal" | "bank";
 type CashMethod = "cash" | "bank";
+type ActiveMethod = "square" | "paypal" | "bank";
 
 function TakePaymentPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
   const lessonId = search.lessonId ?? null;
   const [amount, setAmount] = useState<string>("0");
-  const [pupils, setPupils] = useState<{ id: string; name: string }[]>([]);
+  const [pupils, setPupils] = useState<{ id: string; name: string; phone?: string | null }[]>([]);
   const [pupilId, setPupilId] = useState<string>("");
   const [description, setDescription] = useState("");
   const [hoursBought, setHoursBought] = useState<string>("");
   const [tab, setTab] = useState<Tab>("qr");
-  const pupilName = pupils.find((p) => p.id === pupilId)?.name ?? "";
+  const selectedPupil = pupils.find((p) => p.id === pupilId);
+  const pupilName = selectedPupil?.name ?? "";
+
+  // Instructor's active payment method + PayPal / bank details
+  const [activeMethod, setActiveMethod] = useState<ActiveMethod>("square");
+  const [paypalUsername, setPaypalUsername] = useState<string>("");
+  const [bank, setBank] = useState<{ name: string; sort: string; number: string }>({ name: "", sort: "", number: "" });
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: u } = await supabase.auth.getUser();
+      const uid = u?.user?.id;
+      if (!uid) return;
+      const { data, error } = await supabase
+        .from("instructors")
+        .select("paypal_me_username, bank_account_name, bank_sort_code, bank_account_number, active_payment_method")
+        .eq("id", uid)
+        .maybeSingle();
+      if (cancelled || error || !data) return;
+      const r = data as Record<string, string | null>;
+      setPaypalUsername(r.paypal_me_username ?? "");
+      setBank({
+        name: r.bank_account_name ?? "",
+        sort: r.bank_sort_code ?? "",
+        number: r.bank_account_number ?? "",
+      });
+      const m = r.active_payment_method;
+      if (m === "paypal" || m === "bank") {
+        setActiveMethod(m);
+        setTab(m);
+      } else {
+        setActiveMethod("square");
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
 
 
   // Load instructor's current pupils
