@@ -1,4 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { IconBell } from "@tabler/icons-react";
+import { tapLight } from "@/lib/haptics";
+import { supabase } from "@/lib/supabaseClient";
 import { useGoBack } from "@/hooks/useGoBack";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import SegmentedTabs from "@/components/learn/shared/SegmentedTabs";
@@ -48,8 +52,83 @@ function DSMLearnPage() {
   const { tab } = Route.useSearch();
   const active: LearnTab = tab ?? "learn";
 
+  const [userId, setUserId] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [uploadRequest, setUploadRequest] = useState(0);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUserId(data.user?.id ?? null);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+    supabase
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", userId)
+      .maybeSingle()
+      .then(({ data }) => setIsAdmin(!!data));
+  }, [userId]);
+
+  // Showcase: always visible. Bitesize: admins only. Learn: never.
+  const showUpload = active === "showcase" || (active === "bitesize" && isAdmin);
+
+  const headerRight = (
+    <div style={{ display: "flex", alignItems: "center", gap: 14, height: 40 }}>
+      {showUpload && (
+        <button
+          type="button"
+          aria-label="Upload"
+          onClick={() => {
+            tapLight();
+            setUploadRequest((n) => n + 1);
+          }}
+          style={{
+            background: "none",
+            border: 0,
+            padding: 0,
+            color: "#fff",
+            fontSize: 14,
+            fontWeight: 500,
+            cursor: "pointer",
+            fontFamily: FONT,
+          }}
+        >
+          + Upload
+        </button>
+      )}
+      <button
+        type="button"
+        aria-label="Notifications"
+        onClick={() => {
+          tapLight();
+          if (typeof window !== "undefined") {
+            window.location.href = "/notifications";
+          }
+        }}
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: "50%",
+          border: 0,
+          padding: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "rgba(255,255,255,0.1)",
+          cursor: "pointer",
+          flexShrink: 0,
+        }}
+      >
+        <IconBell size={20} color="#FFFFFF" stroke={1.8} />
+      </button>
+    </div>
+  );
+
   return (
-    <DSMTopSheet title="DSM Learn" onBack={() => goBack("/home")}>
+    <DSMTopSheet title="DSM Learn" onBack={() => goBack("/home")} right={headerRight}>
       <div style={{ fontFamily: FONT, minHeight: "100%", background: "#DCE4F0", marginTop: -20 }}>
         <div style={{ padding: "12px 16px 4px" }}>
           <SegmentedTabs
@@ -62,8 +141,8 @@ function DSMLearnPage() {
         </div>
 
         {active === "learn" && <LearnPageBody />}
-        {active === "bitesize" && <BitesizePageBody />}
-        {active === "showcase" && <ShowcasePageBody />}
+        {active === "bitesize" && <BitesizePageBody uploadRequest={uploadRequest} />}
+        {active === "showcase" && <ShowcasePageBody uploadRequest={uploadRequest} />}
       </div>
     </DSMTopSheet>
   );
