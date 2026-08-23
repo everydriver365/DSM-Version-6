@@ -7215,17 +7215,6 @@ function HomePage() {
                   const pageCount = Math.max(pages.length, 1);
                   const currentPage = Math.min(qaPage, pageCount - 1);
 
-                  // Soft pastel chip tint derived from each tile's existing colour
-                  const TINTS: Record<string, { chip: string; icon: string }> = {
-                    '#1877D6': { chip: '#E3EEFB', icon: '#1877D6' },
-                    '#B91C1C': { chip: '#FCE4E4', icon: '#B91C1C' },
-                    '#0B1F3A': { chip: '#E6E9F2', icon: '#0B1F3A' },
-                    '#6B7280': { chip: '#EDEFF2', icon: '#6B7280' },
-                    '#7C3AED': { chip: '#EEE7FC', icon: '#7C3AED' },
-                    '#B5661E': { chip: '#FBEBDC', icon: '#B5661E' },
-                    '#16A34A': { chip: '#E2F5E9', icon: '#16A34A' },
-                  };
-
                   const SUBS: Record<string, string> = {
                     'Schedule': 'View diary',
                     'Pupils': `${activePupilsCount} active`,
@@ -7290,194 +7279,172 @@ function HomePage() {
                     'Learn': 'Training',
                   };
 
-                  const SPECIAL_TILE_KEYS = new Set(['/schedule', '/livesession', '/payments', '/live', '/messages', '/minisite']);
-
-                  const isSpecialTile = (tile: QuickTile) => SPECIAL_TILE_KEYS.has(tile.route);
-
                   const renderTileDecoration = (tile: QuickTile) => {
+                    const patternA = (
+                      <div
+                        aria-hidden="true"
+                        style={{
+                          position: 'absolute',
+                          right: -8,
+                          bottom: -8,
+                          opacity: 0.07,
+                          pointerEvents: 'none',
+                          zIndex: 0,
+                        }}
+                      >
+                        {tile.route === '/perks'
+                          ? <IconRosetteDiscount size={52} color={tile.bg as string} stroke={1} />
+                          : isValidElement(tile.icon)
+                            ? cloneElement(tile.icon as React.ReactElement<any>, { size: 52, color: tile.bg as string, stroke: 1 })
+                            : tile.icon}
+                      </div>
+                    );
+
+                    const patternB = (
+                      <div
+                        aria-hidden="true"
+                        style={{
+                          position: 'absolute',
+                          right: 8,
+                          bottom: 8,
+                          display: 'flex',
+                          alignItems: 'flex-end',
+                          gap: 2,
+                          opacity: 0.12,
+                          pointerEvents: 'none',
+                          zIndex: 0,
+                        }}
+                      >
+                        {[6, 12, 8, 20, 10, 28, 16, 36, 20, 28, 16, 12].map((h, i) => (
+                          <div
+                            key={i}
+                            style={{
+                              width: 2.5,
+                              height: h,
+                              borderRadius: 1.25,
+                              backgroundColor: tile.bg as string,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    );
+
+                    const patternC = (
+                      <div
+                        aria-hidden="true"
+                        style={{
+                          position: 'absolute',
+                          right: 8,
+                          bottom: 8,
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(4, 10px)',
+                          gap: '3px',
+                          opacity: 0.08,
+                          pointerEvents: 'none',
+                          zIndex: 0,
+                        }}
+                      >
+                        {Array.from({ length: 12 }).map((_, i) => (
+                          <div
+                            key={i}
+                            style={{
+                              width: 10,
+                              height: 10,
+                              borderRadius: 3,
+                              backgroundColor: tile.bg as string,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    );
+
+                    const patternD = (
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          position: 'absolute',
+                          right: 4,
+                          bottom: -4,
+                          fontSize: 48,
+                          fontWeight: 800,
+                          color: tile.bg as string,
+                          opacity: 0.06,
+                          lineHeight: 1,
+                          pointerEvents: 'none',
+                          zIndex: 0,
+                          fontFamily: 'Poppins, sans-serif',
+                        }}
+                      >
+                        £
+                      </span>
+                    );
+
+                    const patternE = (
+                      <svg
+                        aria-hidden="true"
+                        width={56}
+                        height={44}
+                        style={{
+                          position: 'absolute',
+                          right: 6,
+                          bottom: 6,
+                          opacity: 0.1,
+                          pointerEvents: 'none',
+                          zIndex: 0,
+                        }}
+                      >
+                        <path
+                          d="M4 38 Q14 20 28 24 Q42 28 52 8"
+                          stroke={tile.bg as string}
+                          strokeWidth={2}
+                          fill="none"
+                          strokeDasharray="4 2"
+                        />
+                        <circle cx={4} cy={38} r={3} fill={tile.bg as string} />
+                        <circle cx={52} cy={8} r={3} fill={tile.bg as string} />
+                      </svg>
+                    );
+
                     switch (tile.route) {
                       case '/schedule':
-                        return (
-                          <div
-                            aria-hidden="true"
-                            style={{
-                              position: 'absolute',
-                              bottom: 10,
-                              right: 10,
-                              display: 'grid',
-                              gridTemplateColumns: 'repeat(5, 12px)',
-                              gap: '3px',
-                              pointerEvents: 'none',
-                              zIndex: 0,
-                              opacity: 0.08,
-                            }}
-                          >
-                            {Array.from({ length: 15 }).map((_, i) =>
-                              i === 6 ? (
-                                <div key={i} style={{ width: 12, height: 12 }} />
-                              ) : (
-                                <div
-                                  key={i}
-                                  style={{
-                                    width: 12,
-                                    height: 12,
-                                    borderRadius: 3,
-                                    backgroundColor: '#1877D6',
-                                  }}
-                                />
-                              )
-                            )}
-                          </div>
-                        );
-                      case '/livesession':
-                        return (
-                          <div
-                            aria-hidden="true"
-                            style={{
-                              position: 'absolute',
-                              bottom: 10,
-                              right: 10,
-                              display: 'flex',
-                              alignItems: 'flex-end',
-                              gap: 2,
-                              pointerEvents: 'none',
-                              zIndex: 0,
-                              opacity: 0.15,
-                            }}
-                          >
-                            {[8, 16, 10, 26, 14, 34, 20, 44, 26, 34, 20, 16].map((h, i) => (
-                              <div
-                                key={i}
-                                style={{
-                                  width: 2.5,
-                                  height: h,
-                                  borderRadius: 1.25,
-                                  backgroundColor: i % 2 === 0 ? '#CC2229' : '#E05A5A',
-                                }}
-                              />
-                            ))}
-                          </div>
-                        );
-                      case '/payments':
-                        return (
-                          <span
-                            aria-hidden="true"
-                            style={{
-                              position: 'absolute',
-                              top: 6,
-                              right: 8,
-                              fontSize: 52,
-                              fontWeight: 800,
-                              color: '#1877D6',
-                              opacity: 0.05,
-                              lineHeight: 1,
-                              pointerEvents: 'none',
-                              zIndex: 0,
-                              fontFamily: 'Poppins, sans-serif',
-                            }}
-                          >
-                            £
-                          </span>
-                        );
+                      case '/todos':
+                      case '/manifest':
+                      case '/checklist':
+                      case '/availability':
+                      case '/diary':
+                      case '/calendarsync':
+                        return patternC;
                       case '/live':
-                        return (
-                          <svg
-                            aria-hidden="true"
-                            width={60}
-                            height={50}
-                            style={{
-                              position: 'absolute',
-                              bottom: 10,
-                              right: 6,
-                              pointerEvents: 'none',
-                              zIndex: 0,
-                              opacity: 0.1,
-                            }}
-                          >
-                            <path
-                              d="M10 40 Q20 20 30 25 Q40 30 50 10"
-                              stroke="#15803D"
-                              strokeWidth={2}
-                              fill="none"
-                              strokeDasharray="4 2"
-                            />
-                            <circle cx={10} cy={40} r={3} fill="#15803D" />
-                            <circle cx={50} cy={10} r={3} fill="#15803D" />
-                          </svg>
-                        );
-                      case '/messages':
-                        return (
-                          <div
-                            aria-hidden="true"
-                            style={{
-                              position: 'absolute',
-                              bottom: 10,
-                              right: 10,
-                              display: 'flex',
-                              flexDirection: 'column',
-                              alignItems: 'flex-end',
-                              pointerEvents: 'none',
-                              zIndex: 0,
-                              opacity: 0.08,
-                            }}
-                          >
-                            <div
-                              style={{
-                                width: 36,
-                                height: 20,
-                                borderRadius: '10px 10px 2px 10px',
-                                background: '#7C3AED',
-                                marginBottom: 4,
-                                marginLeft: 8,
-                              }}
-                            />
-                            <div
-                              style={{
-                                width: 28,
-                                height: 16,
-                                borderRadius: '10px 10px 10px 2px',
-                                background: '#7C3AED',
-                              }}
-                            />
-                          </div>
-                        );
-                      case '/minisite':
-                        return (
-                          <div
-                            aria-hidden="true"
-                            style={{
-                              position: 'absolute',
-                              bottom: 12,
-                              right: 10,
-                              width: 52,
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: 3,
-                              pointerEvents: 'none',
-                              zIndex: 0,
-                              opacity: 0.08,
-                            }}
-                          >
-                            <div style={{ height: 4, borderRadius: 2, background: '#0B1F3A', width: '100%' }} />
-                            <div style={{ height: 6, borderRadius: 3, background: '#0B1F3A', width: '70%' }} />
-                            <div style={{ height: 5, borderRadius: 2.5, background: '#0B1F3A', width: '85%' }} />
-                            <div style={{ height: 4, borderRadius: 2, background: '#0B1F3A', width: '60%' }} />
-                          </div>
-                        );
+                      case '/mileage':
+                      case '/satnav':
+                      case '/locations':
+                        return patternE;
+                      case '/monthend':
+                      case '/payments':
+                      case '/earnings':
+                      case '/expenses':
+                      case '/tax':
+                      case '/tax-report':
+                      case '/fuel':
+                      case '/mtd':
+                      case '/quotes':
+                      case '/outstanding':
+                        return patternD;
+                      case '/livesession':
+                      case '/reminder':
+                      case '/bulkmessage':
+                      case '/broadcast':
+                        return patternB;
                       default:
-                        return null;
+                        return patternA;
                     }
                   };
 
                   const renderHomeTile = (tile: QuickTile, key: string) => {
-                    const tint = TINTS[tile.bg as string] ?? { chip: '#E3EEFB', icon: '#1877D6' };
-                    const special = isSpecialTile(tile);
-                    const tintedIcon = isValidElement(tile.icon)
-                      ? cloneElement(tile.icon as React.ReactElement<any>, special
-                        ? { color: tile.bg as string, size: 17, stroke: 1.5 }
-                        : { color: tint.icon, size: 16 })
-                      : tile.icon;
                     const sub = SUBS[tile.label];
+                    const tintedIcon = isValidElement(tile.icon)
+                      ? cloneElement(tile.icon as React.ReactElement<any>, { color: tile.bg as string, size: 17, stroke: 1.5 })
+                      : tile.icon;
                     return (
                       <button
                         key={key}
@@ -7517,14 +7484,14 @@ function HomePage() {
                             zIndex: 0,
                           }}
                         />
-                        {special && renderTileDecoration(tile)}
+                        {renderTileDecoration(tile)}
                         <div
                           className="qa-icon"
                           style={{
-                            width: special ? 32 : 34,
-                            height: special ? 32 : 34,
-                            borderRadius: special ? 10 : 12,
-                            background: special ? `${tile.bg as string}20` : tint.chip,
+                            width: 32,
+                            height: 32,
+                            borderRadius: 10,
+                            background: `${tile.bg as string}33`,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -7532,6 +7499,7 @@ function HomePage() {
                             transition: 'transform 0.15s ease',
                             position: 'relative',
                             zIndex: 1,
+                            marginBottom: 8,
                           }}
                         >
                           {tintedIcon}
