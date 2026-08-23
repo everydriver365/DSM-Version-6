@@ -210,15 +210,17 @@ async function runReminders(request: Request): Promise<Response> {
     }
 
     if (byPupil.size) {
-      const since = new Date(now - DAY).toISOString();
-      const recent: any[] =
+      const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      const recentNotifs: any[] =
         (await rest(
-          `instructor_notifications?select=instructor_id,reference_id&type=eq.overdue_payment&created_at=gte.${since}`,
+          `instructor_notifications?select=instructor_id,reference_id&type=eq.overdue_payment&created_at=gte.${since24h}`,
         )) ?? [];
-      const seen = new Set(recent.map((n) => `${n.instructor_id}:${n.reference_id}`));
 
       for (const e of byPupil.values()) {
-        if (seen.has(`${e.instructor_id}:${e.pupil_id}`)) continue;
+        const alreadySent = recentNotifs.some(
+          (n) => n.reference_id === e.pupil_id && n.instructor_id === e.instructor_id,
+        );
+        if (alreadySent) continue;
         await notify({
           instructor_id: e.instructor_id,
           type: "overdue_payment",
@@ -298,17 +300,18 @@ async function runReminders(request: Request): Promise<Response> {
         if (!prev || d > prev) last.set(l.pupil_id, d);
       }
 
-      const since = new Date(now - 7 * DAY).toISOString();
-      const recent: any[] =
+      const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const recentChurnNotifs: any[] =
         (await rest(
-          `instructor_notifications?select=reference_id&type=eq.pupil_churn&created_at=gte.${since}`,
+          `instructor_notifications?select=reference_id&type=eq.pupil_churn&created_at=gte.${since7d}`,
         )) ?? [];
-      const seen = new Set(recent.map((n) => n.reference_id));
 
       for (const p of pupils) {
         const lastDate = last.get(p.id);
         if (!lastDate || lastDate >= cutoff) continue;
-        if (future.has(p.id) || seen.has(p.id)) continue;
+        if (future.has(p.id)) continue;
+        const alreadyNotified = recentChurnNotifs.some((n) => n.reference_id === p.id);
+        if (alreadyNotified) continue;
         const days = Math.floor((now - Date.parse(`${lastDate}T00:00:00Z`)) / DAY);
         await notify({
           instructor_id: p.instructor_id,
