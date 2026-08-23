@@ -897,18 +897,26 @@ function NotificationsPage() {
                             >
                               {typeTitle(n.type, n.title)}
                             </div>
-                            {n.body && (
-                              <div
-                                className="text-[13px] text-[#6B7280] mt-0.5"
-                                style={POPPINS}
-                              >
-                                {n.body}
-                              </div>
-                            )}
+                            <div
+                              style={{
+                                fontSize: 11,
+                                color: "#9CA3AF",
+                                marginTop: 2,
+                                lineHeight: 1.4,
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                maxWidth: "100%",
+                                ...POPPINS,
+                              }}
+                            >
+                              {notificationSubtitle(n)}
+                            </div>
                             <div
                               className="text-[11px] text-[#9CA3AF] mt-0.5"
                               style={POPPINS}
                             >
+
                               {formatTime(n.created_at)}
                             </div>
                             {n.type === "lesson_cancelled_by_pupil" && (
