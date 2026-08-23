@@ -7290,10 +7290,192 @@ function HomePage() {
                     'Learn': 'Training',
                   };
 
+                  const SPECIAL_TILE_KEYS = new Set(['/schedule', '/livesession', '/payments', '/live', '/messages', '/minisite']);
+
+                  const isSpecialTile = (tile: QuickTile) => SPECIAL_TILE_KEYS.has(tile.route);
+
+                  const renderTileDecoration = (tile: QuickTile) => {
+                    switch (tile.route) {
+                      case '/schedule':
+                        return (
+                          <div
+                            aria-hidden="true"
+                            style={{
+                              position: 'absolute',
+                              bottom: 10,
+                              right: 10,
+                              display: 'grid',
+                              gridTemplateColumns: 'repeat(5, 12px)',
+                              gap: '3px',
+                              pointerEvents: 'none',
+                              zIndex: 0,
+                              opacity: 0.08,
+                            }}
+                          >
+                            {Array.from({ length: 15 }).map((_, i) =>
+                              i === 6 ? (
+                                <div key={i} style={{ width: 12, height: 12 }} />
+                              ) : (
+                                <div
+                                  key={i}
+                                  style={{
+                                    width: 12,
+                                    height: 12,
+                                    borderRadius: 3,
+                                    backgroundColor: '#1877D6',
+                                  }}
+                                />
+                              )
+                            )}
+                          </div>
+                        );
+                      case '/livesession':
+                        return (
+                          <div
+                            aria-hidden="true"
+                            style={{
+                              position: 'absolute',
+                              bottom: 10,
+                              right: 10,
+                              display: 'flex',
+                              alignItems: 'flex-end',
+                              gap: 2,
+                              pointerEvents: 'none',
+                              zIndex: 0,
+                              opacity: 0.15,
+                            }}
+                          >
+                            {[8, 16, 10, 26, 14, 34, 20, 44, 26, 34, 20, 16].map((h, i) => (
+                              <div
+                                key={i}
+                                style={{
+                                  width: 2.5,
+                                  height: h,
+                                  borderRadius: 1.25,
+                                  backgroundColor: i % 2 === 0 ? '#CC2229' : '#E05A5A',
+                                }}
+                              />
+                            ))}
+                          </div>
+                        );
+                      case '/payments':
+                        return (
+                          <span
+                            aria-hidden="true"
+                            style={{
+                              position: 'absolute',
+                              top: 6,
+                              right: 8,
+                              fontSize: 52,
+                              fontWeight: 800,
+                              color: '#1877D6',
+                              opacity: 0.05,
+                              lineHeight: 1,
+                              pointerEvents: 'none',
+                              zIndex: 0,
+                              fontFamily: 'Poppins, sans-serif',
+                            }}
+                          >
+                            £
+                          </span>
+                        );
+                      case '/live':
+                        return (
+                          <svg
+                            aria-hidden="true"
+                            width={60}
+                            height={50}
+                            style={{
+                              position: 'absolute',
+                              bottom: 10,
+                              right: 6,
+                              pointerEvents: 'none',
+                              zIndex: 0,
+                              opacity: 0.1,
+                            }}
+                          >
+                            <path
+                              d="M10 40 Q20 20 30 25 Q40 30 50 10"
+                              stroke="#15803D"
+                              strokeWidth={2}
+                              fill="none"
+                              strokeDasharray="4 2"
+                            />
+                            <circle cx={10} cy={40} r={3} fill="#15803D" />
+                            <circle cx={50} cy={10} r={3} fill="#15803D" />
+                          </svg>
+                        );
+                      case '/messages':
+                        return (
+                          <div
+                            aria-hidden="true"
+                            style={{
+                              position: 'absolute',
+                              bottom: 10,
+                              right: 10,
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'flex-end',
+                              pointerEvents: 'none',
+                              zIndex: 0,
+                              opacity: 0.08,
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: 36,
+                                height: 20,
+                                borderRadius: '10px 10px 2px 10px',
+                                background: '#7C3AED',
+                                marginBottom: 4,
+                                marginLeft: 8,
+                              }}
+                            />
+                            <div
+                              style={{
+                                width: 28,
+                                height: 16,
+                                borderRadius: '10px 10px 10px 2px',
+                                background: '#7C3AED',
+                              }}
+                            />
+                          </div>
+                        );
+                      case '/minisite':
+                        return (
+                          <div
+                            aria-hidden="true"
+                            style={{
+                              position: 'absolute',
+                              bottom: 12,
+                              right: 10,
+                              width: 52,
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: 3,
+                              pointerEvents: 'none',
+                              zIndex: 0,
+                              opacity: 0.08,
+                            }}
+                          >
+                            <div style={{ height: 4, borderRadius: 2, background: '#0B1F3A', width: '100%' }} />
+                            <div style={{ height: 6, borderRadius: 3, background: '#0B1F3A', width: '70%' }} />
+                            <div style={{ height: 5, borderRadius: 2.5, background: '#0B1F3A', width: '85%' }} />
+                            <div style={{ height: 4, borderRadius: 2, background: '#0B1F3A', width: '60%' }} />
+                          </div>
+                        );
+                      default:
+                        return null;
+                    }
+                  };
+
                   const renderHomeTile = (tile: QuickTile, key: string) => {
                     const tint = TINTS[tile.bg as string] ?? { chip: '#E3EEFB', icon: '#1877D6' };
+                    const special = isSpecialTile(tile);
                     const tintedIcon = isValidElement(tile.icon)
-                      ? cloneElement(tile.icon as React.ReactElement<any>, { color: tint.icon, size: 16 })
+                      ? cloneElement(tile.icon as React.ReactElement<any>, special
+                        ? { color: tile.bg as string, size: 17, stroke: 1.5 }
+                        : { color: tint.icon, size: 16 })
                       : tile.icon;
                     const sub = SUBS[tile.label];
                     return (
@@ -7335,13 +7517,14 @@ function HomePage() {
                             zIndex: 0,
                           }}
                         />
+                        {special && renderTileDecoration(tile)}
                         <div
                           className="qa-icon"
                           style={{
-                            width: 34,
-                            height: 34,
-                            borderRadius: 12,
-                            background: tint.chip,
+                            width: special ? 32 : 34,
+                            height: special ? 32 : 34,
+                            borderRadius: special ? 10 : 12,
+                            background: special ? `${tile.bg as string}20` : tint.chip,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
