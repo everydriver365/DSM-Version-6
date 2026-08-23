@@ -37,7 +37,7 @@ export default function DSMTopSheet({
         inset: 0,
         display: "flex",
         flexDirection: "column",
-        background: tokens.canvas,
+        background: tokens.navy,
         overflow: "hidden",
       }}
     >
