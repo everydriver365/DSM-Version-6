@@ -107,6 +107,32 @@ function typeTitle(type: string | null, fallback: string) {
   return fallback;
 }
 
+function notificationSubtitle(notif: Notification): string | null {
+  switch (notif.type) {
+    case "tracking":
+      return "Lesson starting soon";
+    case "overdue_payment":
+      return "Outstanding payment due";
+    case "instructor_dm":
+      return "New message received";
+    case "lesson_cancelled":
+      return "Lesson has been cancelled";
+    case "live_starting_soon":
+      return "DSM Live session starting";
+    case "test_tomorrow":
+      return "Driving test tomorrow";
+    case "pupil_churn":
+      return "Pupil hasn't booked recently";
+    case "new_enquiry":
+      return "New enquiry received";
+    case "swap_interest":
+      return "Someone interested in your swap";
+    default:
+      return notif.body ? notif.body : null;
+  }
+}
+
+
 function extractNameFromTitle(title?: string | null): string | null {
   if (!title) return null;
   const m = title.match(/(?:new\s+)?message\s+from\s+(.+)/i);
@@ -871,18 +897,26 @@ function NotificationsPage() {
                             >
                               {typeTitle(n.type, n.title)}
                             </div>
-                            {n.body && (
-                              <div
-                                className="text-[13px] text-[#6B7280] mt-0.5"
-                                style={POPPINS}
-                              >
-                                {n.body}
-                              </div>
-                            )}
+                            <div
+                              style={{
+                                fontSize: 11,
+                                color: "#9CA3AF",
+                                marginTop: 2,
+                                lineHeight: 1.4,
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                maxWidth: "100%",
+                                ...POPPINS,
+                              }}
+                            >
+                              {notificationSubtitle(n)}
+                            </div>
                             <div
                               className="text-[11px] text-[#9CA3AF] mt-0.5"
                               style={POPPINS}
                             >
+
                               {formatTime(n.created_at)}
                             </div>
                             {n.type === "lesson_cancelled_by_pupil" && (
