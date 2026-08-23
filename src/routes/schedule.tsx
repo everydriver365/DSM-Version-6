@@ -394,10 +394,10 @@ function TestLessonCard({
       tabIndex={0}
       style={{
         position: "relative",
-        background: "linear-gradient(135deg, #1877D6, #0B1F3A)",
+        background: "#EAF3FB",
         borderRadius: tokens.radiusCard,
         border: "none",
-        boxShadow: "0 2px 0 #0B1F3A",
+        boxShadow: "0 2px 0 #D4E4F3",
         marginBottom: 8,
         overflow: "visible",
         padding: "12px 16px",
@@ -419,7 +419,7 @@ function TestLessonCard({
           <div
             style={{
               fontSize: tokens.fontSize.lg,
-              color: tokens.white,
+              color: "#0B1F3A",
               fontWeight: tokens.fontWeight.bold,
               fontFamily: "Poppins, sans-serif",
               fontVariantNumeric: "tabular-nums",
@@ -431,7 +431,7 @@ function TestLessonCard({
           <div
             style={{
               fontSize: tokens.fontSize.sm,
-              color: "rgba(255,255,255,0.75)",
+              color: "#6B7686",
               fontWeight: tokens.fontWeight.semibold,
               marginTop: 3,
               fontFamily: "Poppins, sans-serif",
@@ -447,7 +447,7 @@ function TestLessonCard({
           style={{
             width: 3,
             borderRadius: 12,
-            background: "rgba(255,255,255,0.3)",
+            background: "#1877D6",
             flexShrink: 0,
             alignSelf: "stretch",
           }}
@@ -457,7 +457,7 @@ function TestLessonCard({
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
             <span
               style={{
-                background: "rgba(255,255,255,0.2)",
+                background: "#1877D6",
                 color: "#fff",
                 fontSize: 9,
                 fontWeight: tokens.fontWeight.extrabold,
@@ -475,7 +475,7 @@ function TestLessonCard({
                   style={{
                     fontSize: tokens.fontSize.xs,
                     fontWeight: tokens.fontWeight.semibold,
-                    color: "rgba(255,255,255,0.85)",
+                    color: "#1877D6",
                     fontFamily: "Poppins, sans-serif",
                     fontVariantNumeric: "tabular-nums",
                   }}
@@ -495,8 +495,8 @@ function TestLessonCard({
                     width: 28,
                     height: 28,
                     borderRadius: "50%",
-                    background: "rgba(255,255,255,0.15)",
-                    border: "0.5px solid rgba(255,255,255,0.28)",
+                    background: "#FFFFFF",
+                    border: "0.5px solid #D4E4F3",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -504,7 +504,7 @@ function TestLessonCard({
                     padding: 0,
                   }}
                 >
-                  <IconDots stroke={1.5} size={14} color="#ffffff" />
+                  <IconDots stroke={1.5} size={14} color="#0B1F3A" />
                 </button>
               </div>
             </div>
@@ -513,7 +513,7 @@ function TestLessonCard({
             style={{
               fontSize: tokens.fontSize.lg,
               fontWeight: tokens.fontWeight.extrabold,
-              color: "#fff",
+              color: "#0B1F3A",
               marginTop: 4,
               letterSpacing: -0.3,
               fontFamily: "Poppins, sans-serif",
@@ -523,11 +523,11 @@ function TestLessonCard({
             {pupilDisplayName(lesson.pupil)}
           </div>
           <div style={{ display: "flex", gap: 6, alignItems: "center", marginTop: 2 }}>
-            <IconMapPin size={12} color="rgba(255,255,255,0.7)" stroke={1.5} />
+            <IconMapPin size={12} color="#6B7686" stroke={1.5} />
             <span
               style={{
                 fontSize: tokens.fontSize.sm,
-                color: testCentre ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.5)",
+                color: testCentre ? "#0B1F3A" : "#9CA3AF",
                 fontStyle: testCentre ? "normal" : "italic",
                 fontFamily: "Poppins, sans-serif",
               }}
