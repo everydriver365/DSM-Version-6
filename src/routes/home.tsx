@@ -4152,7 +4152,7 @@ function HomePage() {
     { icon: <IconCalendar size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Schedule", route: "/schedule" },
     { icon: <IconUsers stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
     { icon: <IconWorld stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "My website", route: "/minisite" },
-    { icon: <IconRosetteDiscount stroke={1.5} size={20} color="#FFFFFF" />, bg: '#7C3AED', label: 'My Perks', sub: 'Perks and rewards', route: '/perks' },
+    { icon: <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><IconRosetteDiscount stroke={1.5} size={20} color="#FFFFFF" /><span style={{ position: 'absolute', right: -4, bottom: -4, width: 16, height: 16, borderRadius: '50%', background: '#7C3AED', border: '1.5px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IconSearch size={9} color="#FFFFFF" stroke={2.5} /></span></span>, bg: '#7C3AED', label: 'My Perks', sub: 'Perks and rewards', route: '/perks' },
     { icon: <IconMap stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Start tracking", route: "/live" },
     { icon: <IconCalendarCheck stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Month end", route: "/monthend" },
     { icon: <IconSchool stroke={1.5} size={20} color="#FFFFFF" />, bg: "#B91C1C", label: "Courses", route: "/courses" },
@@ -7216,6 +7216,15 @@ function HomePage() {
                   const currentPage = Math.min(qaPage, pageCount - 1);
 
                   // Soft pastel chip tint derived from each tile's existing colour
+                  const TINTS: Record<string, { chip: string; icon: string }> = {
+                    '#1877D6': { chip: '#E3EEFB', icon: '#1877D6' },
+                    '#B91C1C': { chip: '#FCE4E4', icon: '#B91C1C' },
+                    '#0B1F3A': { chip: '#E6E9F2', icon: '#0B1F3A' },
+                    '#6B7280': { chip: '#EDEFF2', icon: '#6B7280' },
+                    '#7C3AED': { chip: '#EEE7FC', icon: '#7C3AED' },
+                    '#B5661E': { chip: '#FBEBDC', icon: '#B5661E' },
+                    '#16A34A': { chip: '#E2F5E9', icon: '#16A34A' },
+                  };
 
                   const SUBS: Record<string, string> = {
                     'Schedule': 'View diary',
@@ -7282,10 +7291,11 @@ function HomePage() {
                   };
 
                   const renderHomeTile = (tile: QuickTile, key: string) => {
-                    const sub = SUBS[tile.label];
+                    const tint = TINTS[tile.bg as string] ?? { chip: '#E3EEFB', icon: '#1877D6' };
                     const tintedIcon = isValidElement(tile.icon)
-                      ? cloneElement(tile.icon as React.ReactElement<any>, { color: tile.bg, size: 18, stroke: 1.5 })
+                      ? cloneElement(tile.icon as React.ReactElement<any>, { color: tint.icon, size: 16 })
                       : tile.icon;
+                    const sub = SUBS[tile.label];
                     return (
                       <button
                         key={key}
@@ -7328,15 +7338,14 @@ function HomePage() {
                         <div
                           className="qa-icon"
                           style={{
-                            width: 36,
-                            height: 36,
-                            borderRadius: 10,
-                            background: `${tile.bg}33`,
+                            width: 34,
+                            height: 34,
+                            borderRadius: 12,
+                            background: tint.chip,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             flexShrink: 0,
-                            marginBottom: 8,
                             transition: 'transform 0.15s ease',
                             position: 'relative',
                             zIndex: 1,
