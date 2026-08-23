@@ -107,6 +107,32 @@ function typeTitle(type: string | null, fallback: string) {
   return fallback;
 }
 
+function notificationSubtitle(notif: Notification): string | null {
+  switch (notif.type) {
+    case "tracking":
+      return "Lesson starting soon";
+    case "overdue_payment":
+      return "Outstanding payment due";
+    case "instructor_dm":
+      return "New message received";
+    case "lesson_cancelled":
+      return "Lesson has been cancelled";
+    case "live_starting_soon":
+      return "DSM Live session starting";
+    case "test_tomorrow":
+      return "Driving test tomorrow";
+    case "pupil_churn":
+      return "Pupil hasn't booked recently";
+    case "new_enquiry":
+      return "New enquiry received";
+    case "swap_interest":
+      return "Someone interested in your swap";
+    default:
+      return notif.body ? notif.body : null;
+  }
+}
+
+
 function extractNameFromTitle(title?: string | null): string | null {
   if (!title) return null;
   const m = title.match(/(?:new\s+)?message\s+from\s+(.+)/i);
