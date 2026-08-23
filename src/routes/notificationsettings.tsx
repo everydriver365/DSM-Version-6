@@ -43,10 +43,14 @@ type SettingsState = {
   lesson_reminder_1h: boolean;
   lesson_cancelled: boolean;
   lesson_rescheduled: boolean;
+  lesson_starting_soon: boolean;
+  test_tomorrow: boolean;
   payment_received: boolean;
   outstanding_reminder: boolean;
+  overdue_payment: boolean;
   new_enquiry: boolean;
   new_review: boolean;
+  pupil_churn: boolean;
   quiet_from: string;
   quiet_to: string;
 };
@@ -59,10 +63,14 @@ const DEFAULTS: SettingsState = {
   lesson_reminder_1h: true,
   lesson_cancelled: true,
   lesson_rescheduled: true,
+  lesson_starting_soon: true,
+  test_tomorrow: true,
   payment_received: true,
   outstanding_reminder: true,
+  overdue_payment: true,
   new_enquiry: true,
   new_review: true,
+  pupil_churn: true,
   quiet_from: "22:00",
   quiet_to: "07:00",
 };
@@ -123,10 +131,14 @@ function NotificationSettingsPage() {
           lesson_reminder_1h: row.lesson_reminder_1h ?? true,
           lesson_cancelled: row.lesson_cancelled ?? true,
           lesson_rescheduled: row.lesson_rescheduled ?? true,
+          lesson_starting_soon: row.lesson_starting_soon ?? true,
+          test_tomorrow: row.test_tomorrow ?? true,
           payment_received: row.payment_received ?? true,
           outstanding_reminder: row.outstanding_reminder ?? true,
+          overdue_payment: row.overdue_payment ?? true,
           new_enquiry: row.new_enquiry ?? true,
           new_review: row.new_review ?? true,
+          pupil_churn: row.pupil_churn ?? true,
           quiet_from: (row.quiet_from ?? "22:00").slice(0, 5),
           quiet_to: (row.quiet_to ?? "07:00").slice(0, 5),
         });
@@ -296,6 +308,8 @@ function NotificationSettingsPage() {
           <ToggleRow label="New lesson booked" value={state.lesson_booked} onChange={(v) => setKey("lesson_booked", v)} isFirst />
           <ToggleRow label="Lesson reminder — 24 hours before" value={state.lesson_reminder_24h} onChange={(v) => setKey("lesson_reminder_24h", v)} />
           <ToggleRow label="Lesson reminder — 1 hour before" value={state.lesson_reminder_1h} onChange={(v) => setKey("lesson_reminder_1h", v)} />
+          <ToggleRow label="Lesson starting soon" sublabel="30 min reminder before each lesson" value={state.lesson_starting_soon} onChange={(v) => setKey("lesson_starting_soon", v)} />
+          <ToggleRow label="Test day reminder" sublabel="Day before a pupil's driving test" value={state.test_tomorrow} onChange={(v) => setKey("test_tomorrow", v)} />
           <ToggleRow label="Lesson cancelled by pupil" value={state.lesson_cancelled} onChange={(v) => setKey("lesson_cancelled", v)} />
           <ToggleRow label="Lesson rescheduled" value={state.lesson_rescheduled} onChange={(v) => setKey("lesson_rescheduled", v)} />
         </Card>
@@ -304,11 +318,13 @@ function NotificationSettingsPage() {
         <Card className="!p-0">
           <ToggleRow label="Payment received" value={state.payment_received} onChange={(v) => setKey("payment_received", v)} isFirst />
           <ToggleRow label="Outstanding balance reminder" value={state.outstanding_reminder} onChange={(v) => setKey("outstanding_reminder", v)} />
+          <ToggleRow label="Overdue payment reminder" sublabel="When a pupil has an outstanding balance" value={state.overdue_payment} onChange={(v) => setKey("overdue_payment", v)} />
         </Card>
 
         <SectionHeader>PUPIL NOTIFICATIONS</SectionHeader>
         <Card className="!p-0">
-          <ToggleRow label="New enquiry received" value={state.new_enquiry} onChange={(v) => setKey("new_enquiry", v)} isFirst />
+          <ToggleRow label="Pupil gone quiet" sublabel="When a pupil hasn't booked in 30 days" value={state.pupil_churn} onChange={(v) => setKey("pupil_churn", v)} isFirst />
+          <ToggleRow label="New enquiry" sublabel="When someone submits a new enquiry" value={state.new_enquiry} onChange={(v) => setKey("new_enquiry", v)} />
           <ToggleRow label="New review received" value={state.new_review} onChange={(v) => setKey("new_review", v)} />
         </Card>
 
