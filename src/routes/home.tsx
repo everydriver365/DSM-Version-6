@@ -6628,12 +6628,12 @@ function HomePage() {
                             role="button"
                             tabIndex={0}
                             style={{
-                              background: 'linear-gradient(135deg, #1877D6, #0B1F3A)',
+                              background: '#EAF3FB',
                               borderRadius: tokens.radiusCard,
                               marginBottom: 8,
                               padding: '10px 12px',
                               cursor: 'pointer',
-                              boxShadow: '0 4px 0 #E4E4E8',
+                              boxShadow: '0 2px 0 #D4E4F3',
                               position: 'relative',
                               overflow: 'visible',
                             }}
@@ -6649,10 +6649,10 @@ function HomePage() {
                                   paddingTop: 2,
                                 }}
                               >
-                                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#FFFFFF', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, fontFamily: PF }}>
+                                <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontVariantNumeric: 'tabular-nums', lineHeight: 1.15, fontFamily: PF }}>
                                   {timeLabel}
                                 </div>
-                                <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: 'rgba(255,255,255,0.75)', marginTop: 3, fontVariantNumeric: 'tabular-nums', fontFamily: PF }}>
+                                <div style={{ fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.semibold, color: '#6B7686', marginTop: 3, fontVariantNumeric: 'tabular-nums', fontFamily: PF }}>
                                   {durLabel}
                                 </div>
                               </div>
@@ -6661,7 +6661,7 @@ function HomePage() {
                                 style={{
                                   width: 3,
                                   borderRadius: 12,
-                                  background: 'rgba(255,255,255,0.3)',
+                                  background: '#1877D6',
                                   flexShrink: 0,
                                   alignSelf: 'stretch',
                                 }}
@@ -6671,7 +6671,7 @@ function HomePage() {
                                   <span style={{
                                     display: 'inline-flex',
                                     alignItems: 'center',
-                                    background: 'rgba(255,255,255,0.2)',
+                                    background: '#1877D6',
                                     color: '#fff',
                                     fontSize: tokens.fontSize.xs,
                                     fontWeight: tokens.fontWeight.extrabold,
@@ -6684,7 +6684,7 @@ function HomePage() {
                                   </span>
                                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
                                     {testTimeOf(l) ? (
-                                      <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, color: 'rgba(255,255,255,0.85)', fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
+                                      <span style={{ fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, color: '#1877D6', fontFamily: PF, fontVariantNumeric: 'tabular-nums' }}>
                                         Test at {testTimeOf(l)}
                                       </span>
                                     ) : null}
@@ -6711,7 +6711,7 @@ function HomePage() {
                                           }}
                                           style={{ flexShrink: 0, display: 'flex', alignItems: 'center', paddingLeft: 2, cursor: 'pointer' }}
                                         >
-                                          <IconDots size={14} stroke={1.5} color="#ffffff" />
+                                          <IconDots size={14} stroke={1.5} color="#0B1F3A" />
                                         </span>
                                       </LessonActionsMenu>
                                     </div>
@@ -6719,15 +6719,15 @@ function HomePage() {
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
                                   <PupilAvatar pupil={l.pupils as any} pupilId={l.pupil_id} size={28} />
-                                  <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: '#fff', letterSpacing: -0.2, fontFamily: PF, lineHeight: 1.2 }}>
+                                  <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: '#0B1F3A', letterSpacing: -0.2, fontFamily: PF, lineHeight: 1.2 }}>
                                     {name}
                                   </div>
                                 </div>
                                 <div style={{ display: 'flex', gap: 4, alignItems: 'center', marginTop: 2 }}>
-                                  <IconMapPin size={11} color="rgba(255,255,255,0.7)" stroke={1.5} />
+                                  <IconMapPin size={11} color="#6B7686" stroke={1.5} />
                                   <span style={{
                                     fontSize: tokens.fontSize.sm,
-                                    color: pickupLabel ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.5)',
+                                    color: pickupLabel ? '#0B1F3A' : '#9CA3AF',
                                     fontStyle: pickupLabel ? 'normal' : 'italic',
                                     fontFamily: PF,
                                     overflow: 'hidden',
