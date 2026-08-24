@@ -106,7 +106,7 @@ const sections: { title: string; content: React.ReactNode }[] = [
   },
   {
     title: "8. COOKIES",
-    content: <p>Every Driver Pro uses essential cookies only for authentication.</p>,
+    content: <p>Every Driver Pro™ uses essential cookies only for authentication.</p>,
   },
   {
     title: "9. CHANGES",
