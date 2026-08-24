@@ -221,6 +221,12 @@ function LoginPage() {
         >
           EveryDriver Pro
         </span>
+        <span
+          className="text-white/40 text-[12px] font-normal tracking-wide mt-0.5"
+          style={{ letterSpacing: "0.03em" }}
+        >
+          Driving School Management
+        </span>
       </div>
 
       {/* Face ID sign-in */}
