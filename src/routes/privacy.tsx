@@ -24,7 +24,7 @@ const sections: { title: string; content: React.ReactNode }[] = [
     content: (
       <>
         <p>
-          EveryDriver Ltd operates Every Driver Pro, a management application for UK driving instructors.
+          EveryDriver™ Ltd operates Every Driver Pro™, a management application for UK driving instructors.
         </p>
         <p style={{ marginTop: 8 }}>
           Contact: <a href="mailto:support@drivingschoolmanager.co.uk" style={{ color: tokens.blue }}>support@drivingschoolmanager.co.uk</a>
@@ -50,7 +50,7 @@ const sections: { title: string; content: React.ReactNode }[] = [
     title: "3. HOW WE USE YOUR DATA",
     content: (
       <ul>
-        <li>To provide Every Driver Pro services</li>
+        <li>To provide Every Driver Pro™ services</li>
         <li>To send lesson reminders and notifications</li>
         <li>To generate reports and analytics for your business</li>
         <li>To improve the app</li>
@@ -82,7 +82,7 @@ const sections: { title: string; content: React.ReactNode }[] = [
         <p>If you connect Google Calendar, we store access tokens to sync your lessons.</p>
         <p style={{ marginTop: 8 }}>You can disconnect at any time in Settings.</p>
         <p style={{ marginTop: 8 }}>
-          Every Driver Pro's use of Google Calendar data is limited to the purposes described in this privacy policy and complies with Google's Limited Use requirements.
+          Every Driver Pro™'s use of Google Calendar data is limited to the purposes described in this privacy policy and complies with Google's Limited Use requirements.
         </p>
       </>
     ),
@@ -116,7 +116,7 @@ const sections: { title: string; content: React.ReactNode }[] = [
     title: "10. CONTACT",
     content: (
       <>
-        <p>EveryDriver Ltd</p>
+        <p>EveryDriver™ Ltd</p>
         <p style={{ marginTop: 4 }}>
           <a href="mailto:support@drivingschoolmanager.co.uk" style={{ color: tokens.blue }}>support@drivingschoolmanager.co.uk</a>
         </p>
@@ -159,7 +159,7 @@ function PrivacyPage() {
               letterSpacing: "0.5px",
             }}
           >
-            Every Driver Pro
+            Every Driver Pro™
           </p>
           <h1
             style={{
@@ -224,7 +224,7 @@ function PrivacyPage() {
             textAlign: "center",
           }}
         >
-          © 2026 EveryDriver Ltd. All rights reserved.
+          © 2026 EveryDriver Ltd. Every Driver Pro™ is a trademark of EveryDriver Ltd. All rights reserved.
         </p>
       </div>
     </DSMTopSheet>
