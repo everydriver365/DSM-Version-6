@@ -104,7 +104,7 @@ function RegisterPage() {
         <img
           src={edpLogoAsset.url}
           alt="EDP logo"
-          className="h-[60px] w-auto mb-2"
+          className="h-[80px] w-auto mb-2"
         />
         <span className="text-[#9CA3AF] text-[14px]" style={{ fontFamily: "Poppins, sans-serif" }}>
           by EveryDriver
