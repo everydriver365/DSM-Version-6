@@ -10,7 +10,7 @@ import {
 } from "@tabler/icons-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
-import edpLogoAsset from "../assets/ed-pro-logo-white-2.png.asset.json";
+import edpLogoAsset from "../assets/ed-pro-logo-app.png.asset.json";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -215,8 +215,7 @@ function LoginPage() {
       className="min-h-screen w-full flex flex-col relative overflow-hidden"
       style={{
         fontFamily: "Poppins, sans-serif",
-        background:
-          "linear-gradient(180deg, #0B1F3A 0%, #16386B 52%, #2A5C9E 100%)",
+        background: "#F7FAFC",
       }}
     >
       {/* Decorative glows */}
@@ -225,7 +224,7 @@ function LoginPage() {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 90% 55% at 85% -5%, rgba(24,119,214,0.14) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 10% 105%, rgba(62,143,224,0.10) 0%, transparent 60%)",
+            "radial-gradient(ellipse 90% 55% at 85% -5%, rgba(24,119,214,0.08) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 10% 105%, rgba(62,143,224,0.06) 0%, transparent 60%)",
         }}
       />
       {/* Content */}
@@ -244,14 +243,14 @@ function LoginPage() {
             className="h-[72px] w-auto mb-4"
           />
           <span
-            className="text-white text-[22px] font-semibold"
-            style={{ fontFamily: "Sora, sans-serif", letterSpacing: "-0.01em" }}
+            className="text-[22px] font-semibold"
+            style={{ fontFamily: "Sora, sans-serif", letterSpacing: "-0.01em", color: "#0B1F3A" }}
           >
             EveryDriver Pro
           </span>
           <span
-            className="text-white/45 text-[12.5px] font-normal mt-1"
-            style={{ letterSpacing: "0.04em" }}
+            className="text-[12.5px] font-normal mt-1"
+            style={{ letterSpacing: "0.04em", color: "#64748B" }}
           >
             Driving School Management
           </span>
