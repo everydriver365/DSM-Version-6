@@ -505,12 +505,12 @@ html.dsm-native body::before {
   width: 100%;
   font-family: "Poppins", sans-serif;
   font-size: 15px;
-  color: #ffffff;
-  caret-color: #3e8fe0;
-  background-color: rgba(255, 255, 255, 0.06);
+  color: #0b1f3a;
+  caret-color: #1877d6;
+  background-color: #ffffff;
   border-width: 1px;
   border-style: solid;
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: #e2e8f0;
   border-radius: 14px;
   padding: 0 16px;
   outline: none;
@@ -520,7 +520,7 @@ html.dsm-native body::before {
 }
 
 .edp-input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: #94a3b8;
 }
 
 .edp-input:focus {
