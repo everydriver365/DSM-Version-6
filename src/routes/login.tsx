@@ -463,7 +463,7 @@ function LoginPage() {
         className="text-[#6B7280] text-[11px] text-center mt-8"
         style={{ fontFamily: "Poppins, sans-serif" }}
       >
-        DSM by EveryDriver &copy; 2026
+        EveryDriver Pro &copy; 2026
       </p>
     </div>
   );
