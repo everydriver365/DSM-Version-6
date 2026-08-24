@@ -305,8 +305,13 @@ export function MarketingNav() {
           .ed-nav-mobile { display: block !important; }
           .ed-nav-inner { padding: 0 20px !important; height: 64px !important; }
         }
+        @media (max-width: 768px) {
+          .ed-logo-desktop { display: none !important; }
+          .ed-logo-mobile { display: block !important; }
+        }
         @media (max-width: 480px) {
           .ed-nav-signin-mobile { padding: 8px 12px !important; font-size: 14px !important; }
+          .ed-logo-mobile { height: 36px !important; }
         }
       `}</style>
     </header>
