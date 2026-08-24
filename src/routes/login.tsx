@@ -4,13 +4,13 @@ import { useState, useEffect, useRef, type FormEvent } from "react";
 import { IconCheck, IconEye, IconEyeOff, IconScan } from "@tabler/icons-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
-import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
+import edpLogoAsset from "../assets/ed-pro-logo-white-2.png.asset.json";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign in — DSM by EveryDriver" },
-      { name: "description", content: "Sign in to your DSM by EveryDriver account." },
+      { title: "Sign in — EDP" },
+      { name: "description", content: "Sign in to your EDP account." },
     ],
   }),
   component: LoginPage,
@@ -211,13 +211,10 @@ function LoginPage() {
       {/* Logo */}
       <div className="flex flex-col items-center mb-4">
         <img
-          src={dsmLogoAsset.url}
-          alt="DSM logo"
+          src={edpLogoAsset.url}
+          alt="EDP"
           className="h-[60px] w-auto mb-2"
         />
-        <span className="text-[#9CA3AF] text-[14px]" style={{ fontFamily: "Poppins, sans-serif" }}>
-          by EveryDriver
-        </span>
       </div>
 
       {/* Face ID sign-in */}
