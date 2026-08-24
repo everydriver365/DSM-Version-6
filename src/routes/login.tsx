@@ -9,8 +9,8 @@ import edpLogoAsset from "../assets/ed-pro-logo-white-2.png.asset.json";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign in — DSM by EveryDriver" },
-      { name: "description", content: "Sign in to your DSM by EveryDriver account." },
+      { title: "Sign in — EDP" },
+      { name: "description", content: "Sign in to your EDP account." },
     ],
   }),
   component: LoginPage,
