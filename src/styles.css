@@ -496,3 +496,34 @@ html.dsm-native body::before {
 .card-enter {
   animation: fadeSlideUp 0.15s ease-out forwards;
 }
+
+/* ============================================================
+ * Auth (login/register) premium inputs
+ * ============================================================ */
+.edp-input {
+  height: 50px;
+  width: 100%;
+  font-family: "Poppins", sans-serif;
+  font-size: 15px;
+  color: #ffffff;
+  caret-color: #3e8fe0;
+  background-color: rgba(255, 255, 255, 0.06);
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 0 16px;
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.edp-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.edp-input:focus {
+  border-color: rgba(62, 143, 224, 0.85);
+  box-shadow: 0 0 0 3px rgba(24, 119, 214, 0.28);
+}
