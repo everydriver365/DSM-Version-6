@@ -312,10 +312,12 @@ export function MarketingNav() {
         @media (max-width: 768px) {
           .ed-logo-desktop { display: none !important; }
           .ed-logo-mobile { display: block !important; }
+          .ed-logo-text-mobile { display: flex !important; }
         }
         @media (max-width: 480px) {
           .ed-nav-signin-mobile { padding: 8px 12px !important; font-size: 14px !important; }
           .ed-logo-mobile { height: 36px !important; }
+          .ed-logo-text-mobile span { font-size: 14px !important; }
         }
       `}</style>
     </header>
