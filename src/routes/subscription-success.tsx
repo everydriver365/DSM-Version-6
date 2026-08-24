@@ -22,10 +22,10 @@ export const Route = createFileRoute("/subscription-success")({
   }),
   head: () => ({
     meta: [
-      { title: "Subscription activated — DSM by EveryDriver" },
-      { name: "description", content: "Your DSM subscription has been activated." },
-      { property: "og:title", content: "Subscription activated — DSM by EveryDriver" },
-      { property: "og:description", content: "Your DSM subscription has been activated." },
+      { title: "Subscription activated — EDP by EveryDriver" },
+      { name: "description", content: "Your EDP subscription has been activated." },
+      { property: "og:title", content: "Subscription activated — EDP by EveryDriver" },
+      { property: "og:description", content: "Your EDP subscription has been activated." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -33,9 +33,9 @@ export const Route = createFileRoute("/subscription-success")({
 });
 
 const TIER_NAMES: Record<string, string> = {
-  website: "DSM Essential",
-  pro: "DSM Pro",
-  managed: "DSM Max",
+  website: "EDP Essential",
+  pro: "EDP Pro",
+  managed: "EDP Max",
 };
 
 const TIER_FEATURES: Record<string, string[]> = {
@@ -51,11 +51,11 @@ const TIER_FEATURES: Record<string, string[]> = {
     "Everything in Essential",
     "AI call answering",
     "Live chat on your website",
-    "Your own DSM phone number",
+    "Your own EDP phone number",
     "pirkx GP and wellbeing access",
     "Perkbox 4,000+ discounts",
     "Bennenden health cover",
-    "Siri and Ask DSM voice",
+    "Siri and Ask EDP voice",
   ],
   managed: [
     "Everything in Pro",
@@ -288,7 +288,7 @@ function SubscriptionSuccessPage() {
               Set up AI call answering
             </div>
             <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 2 }}>
-              Record your voice and activate your DSM number
+              Record your voice and activate your EDP number
             </div>
           </div>
           <IconChevronRight size={16} color="#C7D0DC" stroke={2} />
@@ -352,7 +352,7 @@ function SubscriptionSuccessPage() {
       }}
       onClick={() => navigate({ to: "/home" as never })}
     >
-      Go to DSM →
+      Go to EDP →
     </button>
   );
 

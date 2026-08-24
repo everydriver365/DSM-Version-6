@@ -1689,7 +1689,7 @@ export default function ShowcasePageBody({
       <ConfirmSheet
         open={reportCommentId !== null}
         title="Report this comment?"
-        message="This comment will be sent to a DSM admin for review. The comment stays visible in the thread until an admin acts on it."
+        message="This comment will be sent to a EDP admin for review. The comment stays visible in the thread until an admin acts on it."
         confirmLabel="Report comment"
         cancelLabel="Cancel"
         onConfirm={confirmReportComment}
@@ -1699,7 +1699,7 @@ export default function ShowcasePageBody({
       {reportOpen && (
         <BottomSheet
           title="Report video"
-          subtitle="Help us keep DSM Showcase safe"
+          subtitle="Help us keep EDP Showcase safe"
           onClose={() => setReportOpen(false)}
           footer={
             <>

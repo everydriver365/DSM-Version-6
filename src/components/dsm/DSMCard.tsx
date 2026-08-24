@@ -1,20 +1,20 @@
 import type { HTMLAttributes } from "react";
 import { tokens } from "@/lib/tokens";
 
-interface DSMCardProps extends HTMLAttributes<HTMLDivElement> {
+interface EDPCardProps extends HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   style?: React.CSSProperties;
   onClick?: () => void;
   padding?: number;
 }
 
-export default function DSMCard({
+export default function EDPCard({
   children,
   style,
   onClick,
   padding = tokens.cardPadding,
   ...rest
-}: DSMCardProps) {
+}: EDPCardProps) {
   return (
     <div
       {...rest}

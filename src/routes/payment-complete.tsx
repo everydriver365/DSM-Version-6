@@ -6,13 +6,13 @@ import { IconCircleCheck, IconHome } from "@tabler/icons-react";
 export const Route = createFileRoute("/payment-complete")({
   head: () => ({
     meta: [
-      { title: "Payment Complete — DSM" },
+      { title: "Payment Complete — EDP" },
       {
         name: "description",
         content:
           "Your card payment has been received. Your driving instructor will be notified automatically.",
       },
-      { property: "og:title", content: "Payment Complete — DSM" },
+      { property: "og:title", content: "Payment Complete — EDP" },
       {
         property: "og:description",
         content:
@@ -100,7 +100,7 @@ function PaymentCompletePage() {
       </p>
 
       <div style={{ fontSize: 12, color: tokens.textMuted, margin: "20px 0 16px" }}>
-        Returning to DSM in {countdown}s…
+        Returning to EDP in {countdown}s…
       </div>
 
       <button
@@ -122,7 +122,7 @@ function PaymentCompletePage() {
         }}
       >
         <IconHome size={18} stroke={1.8} />
-        Go to DSM
+        Go to EDP
       </button>
     </div>
   );

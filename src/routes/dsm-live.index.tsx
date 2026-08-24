@@ -188,7 +188,7 @@ function DsmLivePage() {
                 fontFamily: poppins,
               }}
             >
-              DSM Live
+              EDP Live
             </div>
             <p
               style={{
@@ -316,7 +316,7 @@ function DsmLivePage() {
       {/* Podcasts */}
       <div id="podcasts" style={{ padding: 16 }}>
         <h2 style={{ margin: 0, fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: "#0F2044", fontFamily: poppins }}>
-          🎙️ DSM Podcast
+          🎙️ EDP Podcast
         </h2>
         <div style={{ fontSize: 12, color: tokens.textMuted, marginTop: 2, marginBottom: 16 }}>
           Latest episodes
@@ -340,7 +340,7 @@ function CommunitySection() {
   const [email, setEmail] = useState("");
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast("You're on the list! We'll notify you when DSM Community launches.");
+    toast("You're on the list! We'll notify you when EDP Community launches.");
     setEmail("");
   };
   return (
@@ -354,7 +354,7 @@ function CommunitySection() {
       }}
     >
       <IconUsers color="#fff" size={28} style={{ marginBottom: 12 }} />
-      <div style={{ color: "#fff", fontWeight: 900, fontSize: 18 }}>DSM Community</div>
+      <div style={{ color: "#fff", fontWeight: 900, fontSize: 18 }}>EDP Community</div>
       <div
         style={{
           color: "rgba(255,255,255,0.7)",

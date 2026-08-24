@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/pupils/syllabus/$id")({
-  head: () => ({ meta: [{ title: "Syllabus — DSM by EveryDriver" }] }),
+  head: () => ({ meta: [{ title: "Syllabus — EDP by EveryDriver" }] }),
   component: PupilSyllabusPage,
 });
 

@@ -47,7 +47,7 @@ export const Route = createFileRoute("/community")({
   },
   head: () => ({
     meta: [
-      { title: "Community — DSM" },
+      { title: "Community — EDP" },
       { name: "description", content: "Local alerts and chat for ADIs in your area." },
     ],
   }),
@@ -524,7 +524,7 @@ function CommunityPage() {
           { id: "local", label: "Local" },
           { id: "rooms", label: "Rooms" },
           { id: "uk", label: "UK Chat" },
-          { id: "dsm", label: "DSM" },
+          { id: "dsm", label: "EDP" },
         ] as const).map((t) => {
           const active = activeTab === t.id;
           const badge = t.id === "local" ? unread.local : t.id === "uk" ? unread.uk : t.id === "dsm" ? unreadDMs : 0;
@@ -633,7 +633,7 @@ function CommunityPage() {
               padding: "40px 24px", textAlign: "center", fontSize: tokens.fontSize.md,
               color: tokens.textSecondary, fontFamily: "Poppins, sans-serif",
             }}>
-              No messages yet — start a conversation with another DSM instructor
+              No messages yet — start a conversation with another EDP instructor
             </div>
           ) : (
             <div style={{
@@ -668,7 +668,7 @@ function CommunityPage() {
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, marginBottom: 2 }}>
-                          {other?.name ?? "DSM Instructor"}
+                          {other?.name ?? "EDP Instructor"}
                         </div>
                         <div style={{
                           fontSize: 12, color: tokens.textSecondary, whiteSpace: "nowrap",
@@ -2092,7 +2092,7 @@ function ReportSheet({
                 <li>Be professional and respectful to other ADIs</li>
                 <li>No advertising or self-promotion</li>
                 <li>Examiner tips: keep anonymous, no full names</li>
-                <li>DSM moderates all content</li>
+                <li>EDP moderates all content</li>
               </ul>
             </SheetRow>
           </SheetGroup>
@@ -2386,7 +2386,7 @@ function ChatTab({
         setNoRoom(true);
         setRoom(null);
         setNoRoomMessage(
-          "No chat room exists for your area yet. DSM will create one shortly — check back soon."
+          "No chat room exists for your area yet. EDP will create one shortly — check back soon."
         );
         return;
       }

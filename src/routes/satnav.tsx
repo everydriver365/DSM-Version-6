@@ -6,7 +6,7 @@ import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/satnav")({
   head: () => ({
-    meta: [{ title: "Sat Nav — DSM by EveryDriver" }],
+    meta: [{ title: "Sat Nav — EDP by EveryDriver" }],
   }),
   component: SatNavPage,
 });

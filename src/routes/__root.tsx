@@ -694,7 +694,7 @@ function RootComponent() {
   const lastActiveRef = useRef<number>(Date.now());
 
   const unlock = useCallback(async () => {
-    const success = await authenticate("Unlock DSM");
+    const success = await authenticate("Unlock EDP");
     if (success) {
       setLocked(false);
       lastActiveRef.current = Date.now();
@@ -1012,10 +1012,10 @@ function RootComponent() {
               marginBottom: 8,
             }}
           >
-            <span style={{ fontSize: 24, fontWeight: tokens.fontWeight.extrabold, color: "#fff" }}>DSM</span>
+            <span style={{ fontSize: 24, fontWeight: tokens.fontWeight.extrabold, color: "#fff" }}>EDP</span>
           </div>
           <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.bold, color: "#fff" }}>
-            DSM by EveryDriver
+            EDP by EveryDriver
           </div>
           <div
             style={{

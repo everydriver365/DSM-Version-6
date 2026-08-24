@@ -216,7 +216,7 @@ export function recommendForFaults(
       const score = scoreBitesize(video, topic);
       if (score > 0) {
         scored.push({
-          score: score + 1, // nudge DSM's own video content up
+          score: score + 1, // nudge EDP's own video content up
           item: {
             id: video.id,
             title: video.title,

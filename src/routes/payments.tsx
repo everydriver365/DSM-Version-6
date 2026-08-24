@@ -24,7 +24,7 @@ import SegmentedTabs from "@/components/learn/shared/SegmentedTabs";
 export const Route = createFileRoute("/payments")({
   head: () => ({
     meta: [
-      { title: "Payments — DSM by EveryDriver" },
+      { title: "Payments — EDP by EveryDriver" },
       { name: "description", content: "Take payments (cash, QR, link, BNPL), track history, edits and refunds." },
     ],
   }),

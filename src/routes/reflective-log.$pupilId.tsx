@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/reflective-log/$pupilId")({
-  head: () => ({ meta: [{ title: "Reflective log — DSM by EveryDriver" }] }),
+  head: () => ({ meta: [{ title: "Reflective log — EDP by EveryDriver" }] }),
   component: ReflectiveLogPage,
 });
 

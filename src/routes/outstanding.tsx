@@ -11,7 +11,7 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/outstanding")({
   head: () => ({
     meta: [
-      { title: "Outstanding tasks — DSM by EveryDriver" },
+      { title: "Outstanding tasks — EDP by EveryDriver" },
       { name: "description", content: "Everything that needs your attention, in one place." },
     ],
   }),

@@ -121,7 +121,7 @@ function LoginPage() {
       const cred = await navigator.credentials.create({
         publicKey: {
           challenge,
-          rp: { name: "DSM by EveryDriver", id: window.location.hostname },
+          rp: { name: "EDP by EveryDriver", id: window.location.hostname },
           user: {
             id: new TextEncoder().encode(email),
             name: email,

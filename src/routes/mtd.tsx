@@ -14,7 +14,7 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/mtd")({
   head: () => ({
     meta: [
-      { title: "Making Tax Digital — DSM by EveryDriver" },
+      { title: "Making Tax Digital — EDP by EveryDriver" },
       { name: "description", content: "Track your MTD enrolment and quarterly HMRC submissions." },
     ],
   }),

@@ -32,7 +32,7 @@ import {
 } from "@/lib/pupilBrief";
 
 export const Route = createFileRoute("/pupils/brief/$id")({
-  head: () => ({ meta: [{ title: "Pupil brief — DSM by EveryDriver" }] }),
+  head: () => ({ meta: [{ title: "Pupil brief — EDP by EveryDriver" }] }),
   component: PupilBriefPage,
 });
 

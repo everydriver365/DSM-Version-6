@@ -1576,7 +1576,7 @@ function SwapRequestList({
                       tapLight();
                       window.open(
                         `sms:${selectedSwap.instructor_phone}?body=${encodeURIComponent(
-                          "Hi, I saw your test swap request on DSM. I may be able to help — can we chat?"
+                          "Hi, I saw your test swap request on EDP. I may be able to help — can we chat?"
                         )}`,
                         "_blank"
                       );

@@ -719,7 +719,7 @@ function LiveNewsPage() {
                 fontWeight: tokens.fontWeight.bold,
               }}
             >
-              DSM Radio
+              EDP Radio
             </h1>
             <div
               style={{
@@ -1690,7 +1690,7 @@ function LiveNewsPage() {
                     marginBottom: 6,
                   }}
                 >
-                  DSM Radio Channel
+                  EDP Radio Channel
                 </div>
                 <div
                   style={{
@@ -1738,8 +1738,8 @@ function LiveNewsPage() {
             setIsPlaying(true);
             updateNowPlaying(
               playing.title,
-              playing.showName || "DSM by EveryDriver",
-              playing.showName || "DSM Learn",
+              playing.showName || "EDP by EveryDriver",
+              playing.showName || "EDP Learn",
               playing.imageUrl,
             );
           }}

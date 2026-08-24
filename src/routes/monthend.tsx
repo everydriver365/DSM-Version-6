@@ -12,7 +12,7 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/monthend")({
   head: () => ({
     meta: [
-      { title: "Month end review — DSM by EveryDriver" },
+      { title: "Month end review — EDP by EveryDriver" },
       { name: "description", content: "Summary of lessons, earnings, expenses and mileage for the month." },
     ],
   }),

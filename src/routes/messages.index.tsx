@@ -35,7 +35,7 @@ export const Route = createFileRoute("/messages/")({
   }),
   head: () => ({
     meta: [
-      { title: "Messages — DSM by EveryDriver" },
+      { title: "Messages — EDP by EveryDriver" },
       { name: "description", content: "All your pupil conversations in one place." },
     ],
   }),
@@ -984,7 +984,7 @@ function MessagesIndexPage() {
         photo: other.profile_image_url ?? null,
         initials: nameInitials(other.name ?? "Instructor"),
         bg: BLUE,
-        badge: "DSM",
+        badge: "EDP",
         open: () =>
           navigate({
             to: "/messages/instructor/$conversationId" as never,
@@ -1793,7 +1793,7 @@ function InboxRow({
       case "admin":
         return { label: "Admin", bg: "#F1ECFA", color: "#8A5BC9" };
       case "instructor":
-        return { label: "DSM", bg: "#E6F1FB", color: "#2B7BC8" };
+        return { label: "EDP", bg: "#E6F1FB", color: "#2B7BC8" };
       case "pupil":
       default:
         return { label: "Pupil", bg: "#E6F1FB", color: "#2B7BC8" };

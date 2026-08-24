@@ -33,7 +33,7 @@ import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 export const Route = createFileRoute("/discount-codes")({
   head: () => ({
     meta: [
-      { title: "Discount codes — DSM by EveryDriver" },
+      { title: "Discount codes — EDP by EveryDriver" },
       { name: "description", content: "Create and share discount codes with your pupils." },
     ],
   }),

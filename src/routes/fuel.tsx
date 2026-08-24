@@ -22,13 +22,13 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/fuel")({
   head: () => ({
     meta: [
-      { title: "Fuel — cheap fuel finder & costs | DSM by EveryDriver" },
+      { title: "Fuel — cheap fuel finder & costs | EDP by EveryDriver" },
       {
         name: "description",
         content:
           "Find the cheapest fuel near you and track your driving school fuel costs, mileage and HMRC allowance.",
       },
-      { property: "og:title", content: "Fuel — cheap fuel finder & costs | DSM" },
+      { property: "og:title", content: "Fuel — cheap fuel finder & costs | EDP" },
       {
         property: "og:description",
         content:

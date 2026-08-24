@@ -157,7 +157,7 @@ function emptyForm(): Partial<Session> {
   return {
     title: "",
     category: CATEGORIES[0],
-    host_name: "DSM by EveryDriver",
+    host_name: "EDP by EveryDriver",
     description: "",
     session_date: "",
     session_time: "",
@@ -330,7 +330,7 @@ function AdminDsmLive() {
       const payload = {
         title: form.title,
         category: form.category,
-        host_name: form.host_name || "DSM by EveryDriver",
+        host_name: form.host_name || "EDP by EveryDriver",
         description: form.description || null,
         session_date: form.session_date,
         session_time:

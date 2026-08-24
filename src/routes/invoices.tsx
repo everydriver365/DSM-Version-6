@@ -10,7 +10,7 @@ import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 export const Route = createFileRoute("/invoices")({
   head: () => ({
     meta: [
-      { title: "Invoices — DSM by EveryDriver" },
+      { title: "Invoices — EDP by EveryDriver" },
       { name: "description", content: "View and search your invoiced lesson history." },
     ],
   }),

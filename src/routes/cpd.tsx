@@ -49,7 +49,7 @@ async function awardPoints(instructorId: string, event: string, token: string, m
 export const Route = createFileRoute("/cpd")({
   head: () => ({
     meta: [
-      { title: "CPD log — DSM by EveryDriver" },
+      { title: "CPD log — EDP by EveryDriver" },
       { name: "description", content: "Log continuing professional development activities." },
     ],
   }),

@@ -16,7 +16,7 @@ const UK_POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
 
 export const Route = createFileRoute("/pupils/new")({
   head: () => ({
-    meta: [{ title: "Add pupil — DSM by EveryDriver" }],
+    meta: [{ title: "Add pupil — EDP by EveryDriver" }],
   }),
   validateSearch: (search: Record<string, unknown>): NewPupilSearch => ({
     name: typeof search.name === "string" ? search.name : undefined,
@@ -77,7 +77,7 @@ function NewPupilPage() {
 
       if (permission.contacts !== "granted") {
         toast.error(
-          "Please allow contacts access in Settings → DSM → Contacts"
+          "Please allow contacts access in Settings → EDP → Contacts"
         );
         return;
       }
@@ -97,7 +97,7 @@ function NewPupilPage() {
     } catch (e: any) {
       console.error("[contacts]", e);
       toast.error(
-        "Could not access contacts — please check permissions in Settings → DSM → Contacts"
+        "Could not access contacts — please check permissions in Settings → EDP → Contacts"
       );
     } finally {
       setImportingContact(false);

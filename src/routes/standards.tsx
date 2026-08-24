@@ -13,7 +13,7 @@ import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/standards")({
   head: () => ({
-    meta: [{ title: "Standards check — DSM by EveryDriver" }],
+    meta: [{ title: "Standards check — EDP by EveryDriver" }],
   }),
   component: StandardsPage,
 });

@@ -13,7 +13,7 @@ import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/pupils/history/$id")({
   head: () => ({
-    meta: [{ title: "Lesson history — DSM by EveryDriver" }],
+    meta: [{ title: "Lesson history — EDP by EveryDriver" }],
   }),
   component: PupilHistoryPage,
 });

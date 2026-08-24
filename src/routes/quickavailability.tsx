@@ -12,7 +12,7 @@ import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/quickavailability")({
   head: () => ({
-    meta: [{ title: "Quick availability — DSM" }],
+    meta: [{ title: "Quick availability — EDP" }],
   }),
   component: QuickAvailabilityPage,
 });

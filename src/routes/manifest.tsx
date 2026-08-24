@@ -12,7 +12,7 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/manifest")({
   head: () => ({
     meta: [
-      { title: "Today's manifest — DSM by EveryDriver" },
+      { title: "Today's manifest — EDP by EveryDriver" },
       { name: "description", content: "Your daily lesson plan and end-of-day summary." },
     ],
   }),

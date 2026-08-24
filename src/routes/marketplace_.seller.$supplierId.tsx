@@ -12,13 +12,13 @@ const SUPABASE_ANON_KEY =
 export const Route = createFileRoute("/marketplace_/seller/$supplierId")({
   head: () => ({
     meta: [
-      { title: "Seller profile — DSM Marketplace" },
+      { title: "Seller profile — EDP Marketplace" },
       {
         name: "description",
         content:
           "View a marketplace seller's profile and browse all of their active listings on Driving School Manager.",
       },
-      { property: "og:title", content: "Seller profile — DSM Marketplace" },
+      { property: "og:title", content: "Seller profile — EDP Marketplace" },
       {
         property: "og:description",
         content:

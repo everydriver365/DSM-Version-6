@@ -15,7 +15,7 @@ import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
 export const Route = createFileRoute("/documents")({
   head: () => ({
-    meta: [{ title: "Documents — DSM by EveryDriver" }],
+    meta: [{ title: "Documents — EDP by EveryDriver" }],
   }),
   component: DocumentsPage,
 });

@@ -306,7 +306,7 @@ function NextLessonMap({
 export const Route = createFileRoute("/home")({
   head: () => ({
     meta: [
-      { title: "Home — DSM by EveryDriver" },
+      { title: "Home — EDP by EveryDriver" },
       { name: "description", content: "Your daily overview of lessons, pupils and earnings." },
     ],
   }),
@@ -1911,7 +1911,7 @@ function HomePage() {
               return {
                 ...c,
                 other_id: otherId,
-                other_name: other?.name ?? 'DSM Instructor',
+                other_name: other?.name ?? 'EDP Instructor',
                 other_image: other?.profile_image_url ?? null,
               };
             })
@@ -8298,7 +8298,7 @@ function HomePage() {
                     })),
                     ...dmPreviews.slice(0, 1).map((dm) => ({
                       type: 'instructor' as const,
-                      name: dm.other_name || 'DSM Instructor',
+                      name: dm.other_name || 'EDP Instructor',
                       image: dm.other_image || null,
                       colour: '#0F766E',
                     })),
@@ -8410,8 +8410,8 @@ function HomePage() {
                     } : null,
                     topDM?.last_message_at ? {
                       at: new Date(topDM.last_message_at).getTime(),
-                      title: 'New DSM message',
-                      source: clean(topDM.other_name) || 'DSM Instructor',
+                      title: 'New EDP message',
+                      source: clean(topDM.other_name) || 'EDP Instructor',
                       detail: clean(topDM.last_message),
                       colour: '#0F766E',
                       onClick: () => navigate({
@@ -8583,7 +8583,7 @@ function HomePage() {
                         />
                         <Sep />
                         <Label
-                          text="DSM" colour="#0F766E" count={unreadDMs}
+                          text="EDP" colour="#0F766E" count={unreadDMs}
                           onClick={() => navigate({
                             to: '/messages' as never,
                             search: { filter: 'instructors' } as never,
@@ -8753,7 +8753,7 @@ function HomePage() {
                     </div>
                   ))}
 
-                  {/* ROW 5 — DSM messages */}
+                  {/* ROW 5 — EDP messages */}
                   {dmPreviews.length > 0 && (
                     <div style={{ marginTop: 12 }}>
                       {/* Section header */}
@@ -8767,7 +8767,7 @@ function HomePage() {
                         borderTop: '0.5px solid #E4E8EF',
                         fontFamily: 'Poppins, sans-serif',
                       }}>
-                        DSM messages
+                        EDP messages
                       </div>
                       {/* DM rows */}
                       {dmPreviews.map((dm, i) => {
@@ -8850,7 +8850,7 @@ function HomePage() {
                                   color: '#0B1F3A',
                                   fontFamily: 'Poppins, sans-serif',
                                 }}>
-                                  {other?.name ?? 'DSM Instructor'}
+                                  {other?.name ?? 'EDP Instructor'}
                                 </span>
                                 <span style={{
                                   background: '#EFF6FF',
@@ -8862,7 +8862,7 @@ function HomePage() {
                                   letterSpacing: '0.04em',
                                   fontFamily: 'Poppins, sans-serif',
                                 }}>
-                                  DSM
+                                  EDP
                                 </span>
                               </div>
                               <div style={{
@@ -8983,7 +8983,7 @@ function HomePage() {
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
-                DSM National Chat
+                EDP National Chat
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 1 }}>
                 <div style={{
@@ -11506,7 +11506,7 @@ function DiscoverSection() {
                   background: "#C23B3B",
                 }}
               />
-              <div style={headerTitle}>DSM Live</div>
+              <div style={headerTitle}>EDP Live</div>
             </div>
             <button
               type="button"

@@ -31,13 +31,13 @@ import {
 export const Route = createFileRoute("/enquiries")({
   head: () => ({
     meta: [
-      { title: "Enquiries — DSM by EveryDriver" },
+      { title: "Enquiries — EDP by EveryDriver" },
       {
         name: "description",
         content:
           "Review, contact, accept or pass on new pupil enquiries and turn them into pupil records.",
       },
-      { property: "og:title", content: "Enquiries — DSM by EveryDriver" },
+      { property: "og:title", content: "Enquiries — EDP by EveryDriver" },
       {
         property: "og:description",
         content: "Review, contact, accept or pass on new pupil enquiries.",

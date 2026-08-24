@@ -78,7 +78,7 @@ async function pushToGoogleCalendar(
 
 export const Route = createFileRoute("/lessons/edit/$id")({
   head: () => ({
-    meta: [{ title: "Edit lesson — DSM by EveryDriver" }],
+    meta: [{ title: "Edit lesson — EDP by EveryDriver" }],
   }),
   component: EditLessonPage,
 });

@@ -1,6 +1,6 @@
 import { tokens } from "@/lib/tokens";
 
-interface DSMSectionHeaderProps {
+interface EDPSectionHeaderProps {
   title: string;
   action?: {
     label: string;
@@ -8,10 +8,10 @@ interface DSMSectionHeaderProps {
   };
 }
 
-export default function DSMSectionHeader({
+export default function EDPSectionHeader({
   title,
   action,
-}: DSMSectionHeaderProps) {
+}: EDPSectionHeaderProps) {
   return (
     <div
       style={{

@@ -142,7 +142,7 @@ async function runIngest(request: Request): Promise<Response> {
       if (!feed) return;
       try {
         const res = await fetch(feed, {
-          headers: { "User-Agent": "DSM-News/1.0", Accept: "application/rss+xml, application/atom+xml, text/xml" },
+          headers: { "User-Agent": "EDP-News/1.0", Accept: "application/rss+xml, application/atom+xml, text/xml" },
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const xml = await res.text();

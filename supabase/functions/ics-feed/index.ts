@@ -103,11 +103,11 @@ Deno.serve(async (req: Request) => {
   const lines: string[] = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//DSM by EveryDriver//EN",
+    "PRODID:-//EDP by EveryDriver//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
-    "X-WR-CALNAME:DSM Lessons",
-    "NAME:DSM Lessons",
+    "X-WR-CALNAME:EDP Lessons",
+    "NAME:EDP Lessons",
   ];
 
   for (const l of (lessons ?? []) as Array<{

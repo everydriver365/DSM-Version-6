@@ -11,7 +11,7 @@ import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/waivers")({
-  head: () => ({ meta: [{ title: "Waivers — DSM by EveryDriver" }] }),
+  head: () => ({ meta: [{ title: "Waivers — EDP by EveryDriver" }] }),
   component: WaiversPage,
 });
 

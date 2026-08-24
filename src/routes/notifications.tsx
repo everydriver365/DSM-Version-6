@@ -14,7 +14,7 @@ import { EmptyState } from "@/components/dsm/EmptyState";
 
 export const Route = createFileRoute("/notifications")({
   head: () => ({
-    meta: [{ title: "Notifications — DSM by EveryDriver" }],
+    meta: [{ title: "Notifications — EDP by EveryDriver" }],
   }),
   component: NotificationsPage,
 });
@@ -118,7 +118,7 @@ function notificationSubtitle(notif: Notification): string | null {
     case "lesson_cancelled":
       return "Lesson has been cancelled";
     case "live_starting_soon":
-      return "DSM Live session starting";
+      return "EDP Live session starting";
     case "test_tomorrow":
       return "Driving test tomorrow";
     case "pupil_churn":
@@ -266,7 +266,7 @@ function getNotificationAction(
     return {
       isDSMLive: true,
       sessionId: refType === "dsm_live_session" ? refId : null,
-      sessionTitle: body.split(" starts")[0]?.trim() || "DSM Live",
+      sessionTitle: body.split(" starts")[0]?.trim() || "EDP Live",
       sessionUrl: null,
       isLiveNow: false,
       startTime: null,
@@ -1661,7 +1661,7 @@ function NotificationsPage() {
                             ...POPPINS,
                           }}
                         >
-                          DSM LIVE
+                          EDP LIVE
                         </span>
                       </div>
                     )}
@@ -1801,7 +1801,7 @@ function NotificationsPage() {
                           ...POPPINS,
                         }}
                       >
-                        View all DSM Live
+                        View all EDP Live
                       </div>
                       <div
                         style={{
@@ -1827,7 +1827,7 @@ function NotificationsPage() {
                     onClick={() => {
                       if (actionSheet.sessionUrl) {
                         const calUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-                          actionSheet.sessionTitle ?? "DSM Live"
+                          actionSheet.sessionTitle ?? "EDP Live"
                         )}&details=${encodeURIComponent(
                           "Join at: " + (actionSheet.sessionUrl ?? "")
                         )}`;

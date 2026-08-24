@@ -30,7 +30,7 @@ import { SaveButton, SaveFooter } from "@/components/dsm/SaveFooter";
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — DSM by EveryDriver" },
+      { title: "Settings — EDP by EveryDriver" },
       { name: "description", content: "Manage your account and preferences." },
     ],
   }),
@@ -225,7 +225,7 @@ function SettingsPage() {
   const [depositEnabled, setDepositEnabled] = useState<boolean>(false);
   const [depositAmount, setDepositAmount] = useState<number>(50);
   const [depositDeadlineDays, setDepositDeadlineDays] = useState<number>(7);
-  const PAYMENT_METHODS = ["Cash", "Bank transfer (BACS)", "PayPal", "Card (via DSM)", "Klarna", "Clearpay", "Cheque"] as const;
+  const PAYMENT_METHODS = ["Cash", "Bank transfer (BACS)", "PayPal", "Card (via EDP)", "Klarna", "Clearpay", "Cheque"] as const;
   const [acceptedPaymentMethods, setAcceptedPaymentMethods] = useState<string[]>([]);
   const [paymentTerms, setPaymentTerms] = useState<string>("Before lesson");
   const [taxCode, setTaxCode] = useState<string>("1257L");
@@ -893,7 +893,7 @@ function SettingsPage() {
             icon={<IconCrown color="#1877D6" size={20} />}
             iconBg="#E6F1FB"
             label="My plan"
-            value="DSM Free"
+            value="EDP Free"
             onClick={() => navigate({ to: "/subscription" })}
           />
         </SectionCard>
@@ -1792,7 +1792,7 @@ function SettingsPage() {
                     Face ID / Touch ID
                   </div>
                   <div className="text-[11px] text-[#9CA3AF]" style={{ marginTop: 2, ...POPPINS }}>
-                    Lock DSM after 5 minutes in background
+                    Lock EDP after 5 minutes in background
                   </div>
                 </div>
                 <ToggleSwitch
@@ -2147,7 +2147,7 @@ function SettingsPage() {
                   />
                 </div>
                 <p className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
-                  Pupils pay you directly via PayPal — no fees from DSM
+                  Pupils pay you directly via PayPal — no fees from EDP
                 </p>
                 <SaveRow onClick={() => saveInstructorPatch({ paypal_me_username: paypalUsername.trim() || null })} />
               </div>

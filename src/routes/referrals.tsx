@@ -10,7 +10,7 @@ import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/referrals")({
   head: () => ({
-    meta: [{ title: "Referrals — DSM by EveryDriver" }],
+    meta: [{ title: "Referrals — EDP by EveryDriver" }],
   }),
   component: ReferralsPage,
 });

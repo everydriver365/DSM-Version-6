@@ -262,7 +262,7 @@ function MarketplaceListPage() {
           <div
             style={{ fontSize: 12, color: "#B45309", marginTop: 4 }}
           >
-            DSM listings are moderated before going live.
+            EDP listings are moderated before going live.
           </div>
         </div>
       </div>

@@ -10,7 +10,7 @@ import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/checklist")({
   head: () => ({
-    meta: [{ title: "Pre-lesson checklist — DSM by EveryDriver" }],
+    meta: [{ title: "Pre-lesson checklist — EDP by EveryDriver" }],
   }),
   component: ChecklistPage,
 });
