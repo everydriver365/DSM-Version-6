@@ -547,7 +547,7 @@ function RootComponent() {
   const hideFloatingMenu =
     hideFloatingMenuExact.has(pathname) ||
     pathname.startsWith("/messages/") ||
-    (pathname.startsWith("/pupils/") && pathname !== "/pupils/new");
+    pathname.startsWith("/pupils/");
   const showFloatingMenu = !hideNavExact.has(pathname) && !hideFloatingMenu;
   const hideNav =
     hideNavExact.has(pathname) ||
