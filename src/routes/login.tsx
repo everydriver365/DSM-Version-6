@@ -339,27 +339,27 @@ function LoginPage() {
           onSubmit={onSubmit}
           className="w-full flex flex-col"
           style={{
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.09)",
+            background: "#FFFFFF",
+            border: "1px solid #E2E8F0",
             borderRadius: 22,
             padding: "24px 22px",
-            boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
-            backdropFilter: "blur(20px)",
+            boxShadow: "0 16px 40px rgba(11,31,58,0.08)",
           }}
         >
           <h2
-            className="text-[20px] font-semibold text-white"
-            style={{ fontFamily: "Sora, sans-serif", letterSpacing: "-0.01em" }}
+            className="text-[20px] font-semibold"
+            style={{ fontFamily: "Sora, sans-serif", letterSpacing: "-0.01em", color: "#0B1F3A" }}
           >
             Welcome back
           </h2>
-          <p className="text-[13px] text-white/45 mt-1 mb-6">Sign in to your account</p>
+          <p className="text-[13px] mt-1 mb-6" style={{ color: "#64748B" }}>Sign in to your account</p>
 
           <div className="flex flex-col gap-4">
             <div className="w-full">
               <label
                 htmlFor="login-email"
-                className="block mb-1.5 text-[12px] font-medium text-white/55"
+                className="block mb-1.5 text-[12px] font-medium"
+                style={{ color: "#475569" }}
               >
                 Email
               </label>
@@ -378,7 +378,8 @@ function LoginPage() {
             <div className="w-full relative">
               <label
                 htmlFor="login-password"
-                className="block mb-1.5 text-[12px] font-medium text-white/55"
+                className="block mb-1.5 text-[12px] font-medium"
+                style={{ color: "#475569" }}
               >
                 Password
               </label>
