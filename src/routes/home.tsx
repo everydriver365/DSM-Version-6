@@ -11,7 +11,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { buildPickup, getPickupParts } from "@/lib/pickup";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import edpLogoWhite from "@/assets/edp-2-no-white-border.png.asset.json";
+import { IconHeadset, IconDownload, IconAdjustmentsHorizontal } from "@tabler/icons-react";
 import { QuickActionsMenu, type QuickAction } from "@/components/dsm/QuickActionsMenu";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard.tsx";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
@@ -4337,6 +4338,167 @@ function HomePage() {
     return `${Math.floor(h / 24)}d ago`;
   };
 
+  const HOME_TOP_BAR_SPACER = "calc(max(env(safe-area-inset-top, 0px), 24px) + 46px)";
+
+  function HomeHeader() {
+    const iconBtn: React.CSSProperties = {
+      width: 32,
+      height: 32,
+      borderRadius: "50%",
+      background: "rgba(255,255,255,0.08)",
+      border: "1px solid rgba(255,255,255,0.1)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer",
+      position: "relative",
+      padding: 0,
+      boxSizing: "border-box",
+      flexShrink: 0,
+    };
+
+    return (
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 40,
+          background: tokens.navy,
+          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 6px) 8px 8px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <img
+            src={edpLogoWhite.url}
+            alt="EDP"
+            style={{ height: 32, width: "auto", objectFit: "contain", display: "block" }}
+          />
+          <div
+            style={{
+              width: 1,
+              height: 20,
+              background: "rgba(255,255,255,0.15)",
+              margin: "0 10px",
+            }}
+          />
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <button
+            type="button"
+            aria-label="Voice commands"
+            onClick={() => toast.info("Voice commands coming soon!")}
+            style={iconBtn}
+          >
+            <IconMicrophone size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Calls answering"
+            onClick={() => navigate({ to: "/enquiries" })}
+            style={iconBtn}
+          >
+            <IconHeadset size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Messages"
+            onClick={() => navigate({ to: "/messages" })}
+            style={iconBtn}
+          >
+            <IconDownload size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Live track"
+            onClick={() => navigate({ to: "/live" })}
+            style={iconBtn}
+          >
+            <IconCar size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Take payment"
+            onClick={() => navigate({ to: "/take-payment" })}
+            style={iconBtn}
+          >
+            <IconCurrencyPound size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Notifications"
+            onClick={() => navigate({ to: "/notifications" })}
+            style={iconBtn}
+          >
+            <IconBell size={16} strokeWidth={1.5} color="#ffffff" />
+            {notifCount > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: -2,
+                  right: -2,
+                  background: tokens.red,
+                  color: "#ffffff",
+                  fontSize: 9,
+                  fontWeight: tokens.fontWeight.semibold,
+                  minWidth: 16,
+                  height: 16,
+                  borderRadius: 8,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "1.5px solid #0B1F3A",
+                  padding: "0 3px",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                {notifCount > 99 ? "99+" : notifCount}
+              </span>
+            )}
+          </button>
+          <button
+            type="button"
+            aria-label="Menu"
+            onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
+            style={iconBtn}
+          >
+            <IconAdjustmentsHorizontal size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Open profile"
+            onClick={() => navigate({ to: "/profile" })}
+            style={{ ...iconBtn, overflow: "hidden", padding: 0 }}
+          >
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt=""
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              <span
+                style={{
+                  color: "#ffffff",
+                  fontSize: 12,
+                  fontWeight: tokens.fontWeight.semibold,
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                {(firstName?.[0] ?? "?").toUpperCase()}
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (isDesktop) {
     const now = new Date();
     const in7 = new Date(now.getTime() + 7 * 86400000);
@@ -4376,20 +4538,11 @@ function HomePage() {
       cursor: "pointer", fontFamily: "Poppins, sans-serif",
       fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.navy,
     };
+
     return (
-      <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: TOP_BAR_SPACER }}>
+      <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: HOME_TOP_BAR_SPACER }}>
         {notifBanner}
-        <InstructorTopBar
-          firstName={firstName}
-          avatarUrl={avatarUrl}
-          unreadCount={notifCount}
-          onProfile={() => navigate({ to: "/profile" })}
-          onPhone={() => navigate({ to: "/enquiries" })}
-          onLiveTrack={() => navigate({ to: "/live" })}
-          onBell={() => navigate({ to: "/notifications" })}
-          onMenu={() => window.dispatchEvent(new Event('dsm-open-menu'))}
-          onMicPress={() => toast.info("Voice commands coming soon!")}
-        />
+        <HomeHeader />
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
           {/* HEADER */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
@@ -4812,7 +4965,7 @@ function HomePage() {
   }
 
   return (
-    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: TOP_BAR_SPACER, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
+    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: HOME_TOP_BAR_SPACER, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
       {showWelcome && userId && (
         <WelcomeOverlay
           userId={userId}
@@ -4824,17 +4977,7 @@ function HomePage() {
       <SheetQueueController userId={userId} />
       <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.carousel-hide-scrollbar::-webkit-scrollbar{display:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}@keyframes chipShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
       {/* TOP BAR */}
-      <InstructorTopBar
-        firstName={firstName}
-        avatarUrl={avatarUrl}
-        unreadCount={notifCount}
-        onProfile={() => navigate({ to: "/profile" })}
-        onPhone={() => navigate({ to: "/enquiries" })}
-        onLiveTrack={() => navigate({ to: "/live" })}
-        onBell={() => navigate({ to: "/notifications" })}
-        onMenu={() => window.dispatchEvent(new Event('dsm-open-menu'))}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
+      <HomeHeader />
 
       <PushPermissionCard />
 
@@ -4867,8 +5010,8 @@ function HomePage() {
       <div
         style={{
           backgroundColor: '#0B1F3A',
-          marginTop: `calc(-1 * ${TOP_BAR_SPACER})`,
-          padding: `calc(${TOP_BAR_SPACER} + 16px) 16px 34px`,
+          marginTop: `calc(-1 * ${HOME_TOP_BAR_SPACER})`,
+          padding: `calc(${HOME_TOP_BAR_SPACER} + 16px) 16px 34px`,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
