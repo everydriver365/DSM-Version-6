@@ -409,7 +409,7 @@ function LoginPage() {
               {loading ? "Signing in…" : "Sign in"}
             </Button>
 
-            <p className="text-[13px] text-white/45 text-center mt-1">
+            <p className="text-[12.5px] text-white/45 text-center mt-1 whitespace-nowrap">
               Don&apos;t have an account?{" "}
               <Link to="/register" className="text-[#6FB2F0] hover:underline font-medium">
                 Create account

@@ -527,3 +527,9 @@ html.dsm-native body::before {
   border-color: rgba(62, 143, 224, 0.85);
   box-shadow: 0 0 0 3px rgba(24, 119, 214, 0.28);
 }
+
+/* Override the global square focus ring for the premium auth inputs */
+.edp-input:focus-visible {
+  outline: none;
+  border-radius: 14px;
+}
