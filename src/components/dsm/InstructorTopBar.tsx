@@ -10,7 +10,7 @@ import {
   IconAdjustmentsHorizontal,
 } from "@tabler/icons-react";
 import { useNavigate } from "@tanstack/react-router";
-import dsmLogoWhite from "@/assets/dsm-logo-white.png.asset.json";
+import edProLogoWhite from "@/assets/ed-pro-logo-white.png.asset.json";
 
 /* Real rendered bar height: top padding (safe area + 12) + 48px logo + 16px bottom padding. */
 export const TOP_BAR_SPACER = "calc(max(env(safe-area-inset-top, 0px), 24px) + 76px)";
@@ -137,8 +137,8 @@ export default function InstructorTopBar({
             }}
           >
             <img
-              src={dsmLogoWhite.url}
-              alt="DSM"
+              src={edProLogoWhite.url}
+              alt="EDP"
               style={{ height: 48, width: "auto", objectFit: "contain", display: "block" }}
             />
           </button>
