@@ -396,8 +396,8 @@ function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3.5 top-[38px] hover:text-white/70 transition-colors"
-                style={{ color: "rgba(255,255,255,0.40)" }}
+                className="absolute right-3.5 top-[38px] hover:text-[#64748B] transition-colors"
+                style={{ color: "#94A3B8" }}
                 aria-label={showPassword ? "Hide password" : "Show password"}
                 tabIndex={-1}
               >
@@ -406,7 +406,7 @@ function LoginPage() {
             </div>
 
             <div className="flex justify-end -mt-1">
-              <Link to="/forgotpassword" className="text-[13px] text-[#6FB2F0] hover:underline">
+              <Link to="/forgotpassword" className="text-[13px] text-[#1877D6] hover:underline">
                 Forgot password?
               </Link>
             </div>
@@ -424,9 +424,9 @@ function LoginPage() {
               {loading ? "Signing in…" : "Sign in"}
             </Button>
 
-            <p className="text-[12.5px] text-white/45 text-center mt-1 whitespace-nowrap">
+            <p className="text-[12.5px] text-center mt-1 whitespace-nowrap" style={{ color: "#64748B" }}>
               Don&apos;t have an account?{" "}
-              <Link to="/register" className="text-[#6FB2F0] hover:underline font-medium">
+              <Link to="/register" className="text-[#1877D6] hover:underline font-medium">
                 Create account
               </Link>
             </p>
