@@ -216,10 +216,10 @@ function LoginPage() {
           className="h-[60px] w-auto mb-2"
         />
         <span
-          className="text-white/60 text-[13px] font-medium tracking-wide uppercase"
-          style={{ letterSpacing: "0.08em" }}
+          className="text-white/60 text-[13px] font-medium tracking-wide"
+          style={{ letterSpacing: "0.04em" }}
         >
-          Every Driver Pro, Sch
+          by EveryDriver
         </span>
       </div>
 
