@@ -4873,7 +4873,7 @@ function HomePage() {
           justifyContent: 'space-between',
           alignItems: 'center',
           fontFamily: 'Poppins, sans-serif',
-          borderRadius: 0,
+          borderRadius: '0 0 16px 16px',
         }}
       >
         <div style={{ minWidth: 0 }}>
