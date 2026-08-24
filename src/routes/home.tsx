@@ -4469,31 +4469,6 @@ function HomePage() {
           >
             <IconAdjustmentsHorizontal size={16} strokeWidth={1.5} color="#ffffff" />
           </button>
-          <button
-            type="button"
-            aria-label="Open profile"
-            onClick={() => navigate({ to: "/profile" })}
-            style={{ ...iconBtn, overflow: "hidden", padding: 0 }}
-          >
-            {avatarUrl ? (
-              <img
-                src={avatarUrl}
-                alt=""
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            ) : (
-              <span
-                style={{
-                  color: "#ffffff",
-                  fontSize: 12,
-                  fontWeight: tokens.fontWeight.semibold,
-                  fontFamily: "Poppins, sans-serif",
-                }}
-              >
-                {(firstName?.[0] ?? "?").toUpperCase()}
-              </span>
-            )}
-          </button>
         </div>
       </div>
     );
