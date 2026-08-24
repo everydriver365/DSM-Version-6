@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, type FormEvent } from "react";
 import { IconCheck, IconEye, IconEyeOff, IconScan } from "@tabler/icons-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
-import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
+import edpLogoAsset from "../assets/ed-pro-logo-white-2.png.asset.json";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
