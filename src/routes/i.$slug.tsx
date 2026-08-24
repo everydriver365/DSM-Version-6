@@ -373,8 +373,13 @@ function InstructorMiniSite() {
         <a href={bookHref} style={btnPrimary}>Book your first lesson</a>
         <div style={{ marginTop: 40, fontSize: tokens.fontSize.base, color: theme.muted }}>
           Powered by{" "}
-          <a href="/" style={{ color: accent, textDecoration: "underline" }}>
-            EveryDriver
+          <a
+            href="https://everydriver.pro"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: accent, textDecoration: "underline" }}
+          >
+            Every Driver Pro
           </a>
         </div>
       </section>
