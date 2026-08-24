@@ -12,8 +12,8 @@ import {
 import { useNavigate } from "@tanstack/react-router";
 import edProLogoWhite from "@/assets/edp-2-no-white-border.png.asset.json";
 
-/* Real rendered bar height: top padding (safe area + 6) + 84px logo + 4px bottom padding. */
-export const TOP_BAR_SPACER = "calc(max(env(safe-area-inset-top, 0px), 24px) + 94px)";
+/* Real rendered bar height: top padding (safe area + 6) + 67px logo + 4px bottom padding. */
+export const TOP_BAR_SPACER = "calc(max(env(safe-area-inset-top, 0px), 24px) + 77px)";
 
 export type InstructorTopBarProps = {
   firstName: string;
@@ -139,7 +139,7 @@ export default function InstructorTopBar({
             <img
               src={edProLogoWhite.url}
               alt="EDP"
-              style={{ height: 84, width: "auto", objectFit: "contain", display: "block" }}
+              style={{ height: 67, width: "auto", objectFit: "contain", display: "block" }}
             />
           </button>
           <IconBtn
