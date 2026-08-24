@@ -436,7 +436,7 @@ function VideoForm({
       <label style={labelStyle}>Section</label>
       <div style={{ display: "flex", gap: 8 }}>
         {([
-          { v: "howto", l: "DSM How-to" },
+          { v: "howto", l: "EDP How-to" },
           { v: "library", l: "Learn → Videos" },
         ] as const).map((k) => (
           <button

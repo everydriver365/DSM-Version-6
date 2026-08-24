@@ -9,7 +9,7 @@ import { Card } from "../components/dsm/Card";
 
 export const Route = createFileRoute("/help")({
   head: () => ({
-    meta: [{ title: "Help & Support — DSM by EveryDriver" }],
+    meta: [{ title: "Help & Support — EDP by EveryDriver" }],
   }),
   component: HelpPage,
 });
@@ -171,7 +171,7 @@ function HelpPage() {
       <div className="px-4">
         <SectionHeader>ABOUT</SectionHeader>
         <Card className="flex flex-col items-center text-center" style={{ gap: 4 }}>
-          <div className="text-[16px] font-bold text-[#0B1F3A]">DSM by EveryDriver</div>
+          <div className="text-[16px] font-bold text-[#0B1F3A]">EDP by EveryDriver</div>
           <div className="text-[13px] text-[#6B7280]">Version 1.0.0</div>
           <div className="text-[13px] text-[#6B7280] mt-1">© 2026 EveryDriver Ltd</div>
         </Card>

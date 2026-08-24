@@ -15,13 +15,13 @@ export const Route = createFileRoute("/discover")({
   },
   head: () => ({
     meta: [
-      { title: "Discover — DSM" },
+      { title: "Discover — EDP" },
       {
         name: "description",
         content:
           "Live sessions, learning videos and marketplace listings for driving instructors, all in one place.",
       },
-      { property: "og:title", content: "Discover — DSM" },
+      { property: "og:title", content: "Discover — EDP" },
       {
         property: "og:description",
         content:
@@ -492,7 +492,7 @@ function DiscoverPage() {
       {activeTab === "live" && (
         <div ref={liveRef} id="discover-live">
           <SectionBlock
-            title="DSM Live"
+            title="EDP Live"
             subtitle="Upcoming live sessions and podcasts"
             actionLabel="See all"
             onAction={() => navigate({ to: "/dsm-live" as never })}
@@ -551,7 +551,7 @@ function DiscoverPage() {
       {activeTab === "learn" && (
         <div ref={learnRef} id="discover-learn">
           <SectionBlock
-            title="DSM Learn"
+            title="EDP Learn"
             subtitle="Short guides and how-to videos"
             actionLabel="See all"
             onAction={() => navigate({ to: "/learn" as never })}
@@ -573,7 +573,7 @@ function DiscoverPage() {
                   }}
                   badge={!thumb ? <IconPlayerPlay size={16} color="#FFFFFF" stroke={2} /> : null}
                   title={v.title}
-                  meta={v.duration ? `${v.duration} · DSM Learn` : "DSM Learn"}
+                  meta={v.duration ? `${v.duration} · EDP Learn` : "EDP Learn"}
                   cta="Watch"
                 />
               );
@@ -585,7 +585,7 @@ function DiscoverPage() {
       {activeTab === "market" && (
         <div ref={marketRef} id="discover-market">
           <SectionBlock
-            title="DSM Marketplace"
+            title="EDP Marketplace"
             subtitle="Cars, kit and services for instructors"
             actionLabel="See all"
             onAction={() => navigate({ to: "/marketplace" as never })}

@@ -578,7 +578,7 @@ function AdminNews() {
               onChange={(e) => setEditArticle({ ...editArticle, why_matters: e.target.value })}
             />
 
-            <label style={{ ...labelStyle, marginTop: 10 }}>Related DSM Learn item</label>
+            <label style={{ ...labelStyle, marginTop: 10 }}>Related EDP Learn item</label>
             <select
               style={inputStyle}
               value={editArticle.related_learn_id ?? ""}

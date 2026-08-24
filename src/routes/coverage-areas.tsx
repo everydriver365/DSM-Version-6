@@ -12,7 +12,7 @@ import { reverseGeocodeToOutcode } from "@/lib/geocode.functions";
 export const Route = createFileRoute("/coverage-areas")({
   head: () => ({
     meta: [
-      { title: "Coverage Areas — DSM by EveryDriver" },
+      { title: "Coverage Areas — EDP by EveryDriver" },
       { name: "description", content: "Manage the areas you cover as an instructor." },
     ],
   }),

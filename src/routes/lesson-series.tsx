@@ -36,7 +36,7 @@ const SUPABASE_ANON_KEY =
 
 export const Route = createFileRoute("/lesson-series")({
   head: () => ({
-    meta: [{ title: "Recurring lessons — DSM by EveryDriver" }],
+    meta: [{ title: "Recurring lessons — EDP by EveryDriver" }],
   }),
   component: LessonSeriesPage,
 });

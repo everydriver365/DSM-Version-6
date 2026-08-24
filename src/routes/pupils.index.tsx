@@ -25,7 +25,7 @@ import SegmentedTabs from "@/components/learn/shared/SegmentedTabs";
 export const Route = createFileRoute("/pupils/")({
   head: () => ({
     meta: [
-      { title: "Pupils — DSM by EveryDriver" },
+      { title: "Pupils — EDP by EveryDriver" },
       { name: "description", content: "Manage your pupils and their lesson history." },
     ],
   }),

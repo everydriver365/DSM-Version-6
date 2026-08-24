@@ -34,7 +34,7 @@ type DiscountCode = {
 export const Route = createFileRoute("/gaps")({
   head: () => ({
     meta: [
-      { title: "Fill My Slots — DSM" },
+      { title: "Fill My Slots — EDP" },
       {
         name: "description",
         content: "Find the right pupil for a free lesson slot in seconds.",
@@ -2269,7 +2269,7 @@ function GapsPage() {
                 No active pupils found
               </div>
               <div style={{ color: MUTED, fontSize: tokens.fontSize.base, marginTop: 4 }}>
-                Add pupils to DSM to use gap filler
+                Add pupils to EDP to use gap filler
               </div>
             </div>
           )}

@@ -11,7 +11,7 @@ import { supabase } from "../lib/supabaseClient";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 
 export const Route = createFileRoute("/profile")({
-  head: () => ({ meta: [{ title: "My profile — DSM by EveryDriver" }] }),
+  head: () => ({ meta: [{ title: "My profile — EDP by EveryDriver" }] }),
   component: ProfilePage,
 });
 
@@ -1361,7 +1361,7 @@ function ProfilePage() {
               <div className="flex-1">
                 <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Google Calendar</div>
                 <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
-                  Two-way sync your DSM schedule with Google Calendar
+                  Two-way sync your EDP schedule with Google Calendar
                 </div>
               </div>
             </Link>
@@ -1380,7 +1380,7 @@ function ProfilePage() {
               <div className="flex-1">
                 <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Apple Calendar</div>
                 <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
-                  Subscribe to your DSM schedule on iPhone
+                  Subscribe to your EDP schedule on iPhone
                 </div>
               </div>
             </Link>

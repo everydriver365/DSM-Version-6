@@ -17,7 +17,7 @@ export const Route = createFileRoute("/live")({
     pupilId: typeof search.pupilId === "string" ? search.pupilId : undefined,
   }),
   head: () => ({
-    meta: [{ title: "Live tracking — DSM by EveryDriver" }],
+    meta: [{ title: "Live tracking — EDP by EveryDriver" }],
   }),
   component: LivePage,
 });
@@ -744,7 +744,7 @@ function LivePage() {
       try {
         const permission = await Geolocation.requestPermissions();
         if (permission.location === 'denied') {
-          toast.error('Location access denied — please enable in Settings → DSM');
+          toast.error('Location access denied — please enable in Settings → EDP');
           setGeoError('Location permission is off — tap to open settings, then try again');
           setActivePupilId(null);
           setTrackingPupilName(null);
@@ -1515,7 +1515,7 @@ function LivePage() {
       `}</style>
 
 
-      {/* TOP BAR — standard DSM header */}
+      {/* TOP BAR — standard EDP header */}
       <div
         className="absolute top-0 left-0 right-0 z-[1000] flex items-center justify-between"
         style={{

@@ -354,7 +354,7 @@ function AdminListingsPage() {
       await restPatch(l.id, { is_active: true });
       await notify(
         l.instructor_id,
-        `✓ Your listing '${l.title}' is now live on the DSM Marketplace!`,
+        `✓ Your listing '${l.title}' is now live on the EDP Marketplace!`,
       );
       setListings((prev) =>
         prev.map((x) => (x.id === l.id ? { ...x, is_active: true } : x)),

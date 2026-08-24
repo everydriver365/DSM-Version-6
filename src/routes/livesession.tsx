@@ -8,7 +8,7 @@ import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/livesession")({
   head: () => ({
-    meta: [{ title: "Live session — DSM" }],
+    meta: [{ title: "Live session — EDP" }],
   }),
   component: LiveSessionPage,
 });

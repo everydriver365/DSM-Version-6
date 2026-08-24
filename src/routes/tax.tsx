@@ -12,7 +12,7 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/tax")({
   head: () => ({
     meta: [
-      { title: "Tax estimate — DSM by EveryDriver" },
+      { title: "Tax estimate — EDP by EveryDriver" },
       { name: "description", content: "Estimate your self-assessment tax bill." },
     ],
   }),

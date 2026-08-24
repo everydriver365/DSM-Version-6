@@ -18,13 +18,13 @@ import { PageLoader } from "@/components/dsm/LoadingSpinner";
 export const Route = createFileRoute("/square")({
   head: () => ({
     meta: [
-      { title: "Square Payments — DSM" },
+      { title: "Square Payments — EDP" },
       {
         name: "description",
         content:
           "Connect your Square account to take instant card payments from pupils.",
       },
-      { property: "og:title", content: "Square Payments — DSM" },
+      { property: "og:title", content: "Square Payments — EDP" },
       {
         property: "og:description",
         content:

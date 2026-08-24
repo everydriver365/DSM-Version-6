@@ -8,7 +8,7 @@ import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/pupils/progress/$id")({
-  head: () => ({ meta: [{ title: "Progress — DSM by EveryDriver" }] }),
+  head: () => ({ meta: [{ title: "Progress — EDP by EveryDriver" }] }),
   component: PupilProgressPage,
 });
 

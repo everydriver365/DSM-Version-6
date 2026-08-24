@@ -9,7 +9,7 @@ import { supabase } from "../lib/supabaseClient";
 import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 
 export const Route = createFileRoute("/mock-tests_/$pupilId")({
-  head: () => ({ meta: [{ title: "Mock tests — DSM by EveryDriver" }] }),
+  head: () => ({ meta: [{ title: "Mock tests — EDP by EveryDriver" }] }),
   component: MockTestsPage,
 });
 

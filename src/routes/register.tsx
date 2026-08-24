@@ -9,8 +9,8 @@ import edpLogoAsset from "../assets/ed-pro-logo-white-3.png.asset.json";
 export const Route = createFileRoute("/register")({
   head: () => ({
     meta: [
-      { title: "Create account — DSM by EveryDriver" },
-      { name: "description", content: "Create your DSM by EveryDriver account." },
+      { title: "Create account — EDP by EveryDriver" },
+      { name: "description", content: "Create your EDP by EveryDriver account." },
     ],
   }),
   component: RegisterPage,
@@ -131,7 +131,7 @@ function RegisterPage() {
           className="text-[13px] text-[#6B7280] text-center mb-6"
           style={{ fontFamily: "Poppins, sans-serif" }}
         >
-          Join DSM by EveryDriver
+          Join EDP by EveryDriver
         </p>
 
         <div className="flex flex-col gap-4">

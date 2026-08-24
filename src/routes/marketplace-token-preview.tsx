@@ -9,17 +9,17 @@ export const Route = createFileRoute("/marketplace-token-preview")({
   component: MarketplaceTokenPreview,
   head: () => ({
     meta: [
-      { title: "Marketplace Promo Token Preview | DSM" },
+      { title: "Marketplace Promo Token Preview | EDP" },
       {
         name: "description",
         content:
-          "Preview of the DSM marketplace promotional banner token before it goes live in the Discover feed.",
+          "Preview of the EDP marketplace promotional banner token before it goes live in the Discover feed.",
       },
-      { property: "og:title", content: "Marketplace Promo Token Preview | DSM" },
+      { property: "og:title", content: "Marketplace Promo Token Preview | EDP" },
       {
         property: "og:description",
         content:
-          "Preview of the DSM marketplace promotional banner token before it goes live in the Discover feed.",
+          "Preview of the EDP marketplace promotional banner token before it goes live in the Discover feed.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

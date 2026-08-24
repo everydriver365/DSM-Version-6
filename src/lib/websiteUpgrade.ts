@@ -34,7 +34,7 @@ export type Tier = {
 export const TIERS: Tier[] = [
   {
     id: "website",
-    name: "DSM Essential",
+    name: "EDP Essential",
     price: "£9.99/mo",
     pillBg: "#EFF6FF",
     pillColor: "#1877D6",
@@ -48,18 +48,18 @@ export const TIERS: Tier[] = [
       "Priority listing on EveryDriver",
       "Analytics dashboard",
     ],
-    cta: "Upgrade to DSM Website →",
+    cta: "Upgrade to EDP Website →",
     btnBg: "#1877D6",
     btnShadow: "0 3px 0 #0F52A8",
   },
   {
     id: "pro",
-    name: "DSM Website Pro",
+    name: "EDP Website Pro",
     price: "£19.99/mo",
     pillBg: "#EDE9FE",
     pillColor: "#7C3AED",
     features: [
-      "Everything in DSM Website",
+      "Everything in EDP Website",
       "Multiple area pages",
       "Blog & content pages",
       "Advanced SEO tools",
@@ -73,7 +73,7 @@ export const TIERS: Tier[] = [
   },
   {
     id: "managed",
-    name: "DSM Max",
+    name: "EDP Max",
     price: "£29.99/mo",
     pillBg: "#F1F5F9",
     pillColor: "#0B1F3A",
@@ -121,7 +121,7 @@ export const COMPARISON_ROWS: ComparisonGroup[] = [
   {
     title: "Done-for-you",
     rows: [
-      { label: "Managed by DSM", from: 3 },
+      { label: "Managed by EDP", from: 3 },
       { label: "Dedicated manager", from: 3 },
     ],
   },

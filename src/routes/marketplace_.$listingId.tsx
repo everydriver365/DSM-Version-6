@@ -773,7 +773,7 @@ function ListingDetailPage() {
             {(() => {
               const isWebsite = listingId === WEBSITE_LISTING_ID;
               const body = isWebsite
-                ? "Give pupils a professional, bookable website in minutes — built on your DSM profile, no design work needed.\n\nYour own multi-page site with your branding, lesson prices, availability and online booking. Add your own domain, keep everything in sync with DSM automatically, and upgrade any time."
+                ? "Give pupils a professional, bookable website in minutes — built on your EDP profile, no design work needed.\n\nYour own multi-page site with your branding, lesson prices, availability and online booking. Add your own domain, keep everything in sync with EDP automatically, and upgrade any time."
                 : listing.description;
               if (!body) return null;
               return (
@@ -1092,7 +1092,7 @@ function ListingDetailPage() {
               </div>
             )}
 
-            {/* Enhanced upgrade sections — only for the DSM website listing */}
+            {/* Enhanced upgrade sections — only for the EDP website listing */}
             {listingId === WEBSITE_LISTING_ID && <WebsiteUpgradeSections />}
 
 
@@ -1410,7 +1410,7 @@ function EnquirySheet({
           listing.marketplace_suppliers?.email || "info@everydriver.co.uk";
         tasks.push(
           callNotify({
-            name: "DSM Marketplace",
+            name: "EDP Marketplace",
             email: supplierEmail,
             subject: `New enquiry: ${listing.title}`,
             message: `New enquiry from ${contactEmail}:\n\n${msgBody}\n\nContact: ${contactEmail} ${contactPhone}`,
@@ -1421,7 +1421,7 @@ function EnquirySheet({
       // 3. Admin notification (always)
       tasks.push(
         callNotify({
-          name: "DSM Marketplace",
+          name: "EDP Marketplace",
           email: "info@everydriver.co.uk",
           subject: `New marketplace enquiry — ${listing.title}`,
           message: `Listing: ${listing.title} (${listing.id})\nType: ${
@@ -1976,10 +1976,10 @@ function WebsiteUpgradeSections() {
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
-          name: "DSM Marketplace",
+          name: "EDP Marketplace",
           email: "info@everydriver.co.uk",
           subject: `New managed website enquiry from ${who}`,
-          message: `${who} is interested in DSM Managed Website (£29.99/month).\n\nInstructor ID: ${userId ?? "unknown"}\n\nPlease contact them within 24 hours.`,
+          message: `${who} is interested in EDP Managed Website (£29.99/month).\n\nInstructor ID: ${userId ?? "unknown"}\n\nPlease contact them within 24 hours.`,
         }),
       });
       toast.success("Request sent! We'll be in touch within 24 hours.");
@@ -2189,7 +2189,7 @@ function WebsiteUpgradeSections() {
       {/* SECTION 3 — Find your domain */}
       <div style={{ ...SECTION_TITLE, marginTop: 22 }}>Find your domain</div>
       <div style={{ fontSize: 12, color: tokens.textSecondary, marginBottom: 12 }}>
-        Search for your school name — included free with DSM Website
+        Search for your school name — included free with EDP Website
       </div>
       <div style={{ display: "flex", gap: 8 }}>
         <input
@@ -2252,7 +2252,7 @@ function WebsiteUpgradeSections() {
           </div>
           <div style={{ fontSize: 12, color: tokens.textSecondary, marginTop: 3 }}>
             {domainResult.available
-              ? "Available — included free with DSM Website"
+              ? "Available — included free with EDP Website"
               : "Not available — try another name"}
           </div>
           {domainResult.available && (

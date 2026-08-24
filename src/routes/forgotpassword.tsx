@@ -9,8 +9,8 @@ import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
 export const Route = createFileRoute("/forgotpassword")({
   head: () => ({
     meta: [
-      { title: "Reset password — DSM by EveryDriver" },
-      { name: "description", content: "Reset your DSM by EveryDriver password." },
+      { title: "Reset password — EDP by EveryDriver" },
+      { name: "description", content: "Reset your EDP by EveryDriver password." },
     ],
   }),
   component: ForgotPasswordPage,
@@ -43,7 +43,7 @@ function ForgotPasswordPage() {
       style={{ fontFamily: "Poppins, sans-serif" }}
     >
       <div className="flex flex-col items-center mb-8">
-        <img src={dsmLogoAsset.url} alt="DSM logo" className="h-[60px] w-auto mb-2" />
+        <img src={dsmLogoAsset.url} alt="EDP logo" className="h-[60px] w-auto mb-2" />
         <span className="text-[#9CA3AF] text-[14px]">by EveryDriver</span>
       </div>
 
@@ -107,7 +107,7 @@ function ForgotPasswordPage() {
         )}
       </div>
 
-      <p className="text-[#6B7280] text-[11px] text-center mt-8">DSM by EveryDriver &copy; 2026</p>
+      <p className="text-[#6B7280] text-[11px] text-center mt-8">EDP by EveryDriver &copy; 2026</p>
     </div>
   );
 }

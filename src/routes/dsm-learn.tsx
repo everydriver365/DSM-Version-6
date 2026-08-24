@@ -19,13 +19,13 @@ export const Route = createFileRoute("/dsm-learn")({
   },
   head: () => ({
     meta: [
-      { title: "DSM Learn — Guides, Bitesize and Showcase" },
+      { title: "EDP Learn — Guides, Bitesize and Showcase" },
       {
         name: "description",
         content:
           "Training guides, bitesize CPD videos and community showcase clips for driving instructors, all in one place.",
       },
-      { property: "og:title", content: "DSM Learn — Guides, Bitesize and Showcase" },
+      { property: "og:title", content: "EDP Learn — Guides, Bitesize and Showcase" },
       {
         property: "og:description",
         content:

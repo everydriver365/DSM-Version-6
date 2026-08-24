@@ -15,13 +15,13 @@ import {
 export const Route = createFileRoute("/news/")({
   head: () => ({
     meta: [
-      { title: "Instructor news & information — DSM by EveryDriver" },
+      { title: "Instructor news & information — EDP by EveryDriver" },
       {
         name: "description",
         content:
           "Curated DVSA, industry, road safety and business news for UK driving instructors, with why-it-matters context.",
       },
-      { property: "og:title", content: "Instructor news & information — DSM" },
+      { property: "og:title", content: "Instructor news & information — EDP" },
       {
         property: "og:description",
         content: "Curated DVSA, industry and road safety news for UK driving instructors.",
@@ -443,7 +443,7 @@ function NewsIndexPage() {
             {/* For you */}
             {filter === "all" && forYou.length > 0 ? (
               <section>
-                <SectionHeading title="⭐ For you" subtitle="Picked from your DSM activity" />
+                <SectionHeading title="⭐ For you" subtitle="Picked from your EDP activity" />
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {forYou.map((a) => (
                     <div key={a.id}>

@@ -10,7 +10,7 @@ import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/performance")({
   head: () => ({
-    meta: [{ title: "Performance — DSM by EveryDriver" }],
+    meta: [{ title: "Performance — EDP by EveryDriver" }],
   }),
   component: PerformancePage,
 });

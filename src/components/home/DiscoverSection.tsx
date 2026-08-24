@@ -485,7 +485,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     imageUrl: listing.imageUrl,
     badge: "FOR SALE",
     badgeColor: "#1A9B5C",
-    footer: "DSM Marketplace",
+    footer: "EDP Marketplace",
     Icon: categoryIcon(listing.category),
     onOpen: () =>
       navigate({
@@ -504,7 +504,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     imageUrl: null,
     badge: "FOR SALE",
     badgeColor: "#1A9B5C",
-    footer: "DSM Marketplace",
+    footer: "EDP Marketplace",
     Icon: categoryIcon(null),
     onOpen: () => navigate({ to: "/marketplace" as never }),
   };
@@ -512,7 +512,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const benefitsCard: BenefitsSlide = {
     id: "benefits",
     variant: "benefits",
-    title: "DSM member exclusive benefits",
+    title: "EDP member exclusive benefits",
     subtitle: "Including free DIA membership and 40+ perks",
     stat: "40+",
     statLabel: "PERKS",
@@ -1094,7 +1094,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </span>
         </div>
 
-        {/* DSM LEARN — Learn, Bitesize & Showcase */}
+        {/* EDP LEARN — Learn, Bitesize & Showcase */}
         <div
           role="button"
           tabIndex={0}
@@ -1185,7 +1185,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 marginTop: 8,
               }}
             >
-              DSM Learn
+              EDP Learn
             </div>
             <div
               style={{
@@ -1202,7 +1202,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </div>
         </div>
 
-        {/* DSM RADIO */}
+        {/* EDP RADIO */}
         <div
           role="button"
           tabIndex={0}
@@ -1308,7 +1308,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 textOverflow: "ellipsis",
               }}
             >
-              {isLiveOnAir ? (live.find((s) => isLiveNow(s))?.title ?? "DSM Radio") : "DSM Radio"}
+              {isLiveOnAir ? (live.find((s) => isLiveNow(s))?.title ?? "EDP Radio") : "EDP Radio"}
             </div>
             <div
               style={{

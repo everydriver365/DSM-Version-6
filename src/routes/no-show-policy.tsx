@@ -10,7 +10,7 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/no-show-policy")({
   head: () => ({
     meta: [
-      { title: "No-show policy — DSM by EveryDriver" },
+      { title: "No-show policy — EDP by EveryDriver" },
       { name: "description", content: "Set your late cancellation and no-show policy." },
     ],
   }),
@@ -142,7 +142,7 @@ function NoShowPolicyPage() {
       >
         <IconAlertTriangle size={20} color="#B45309" className="shrink-0 mt-0.5" />
         <div className="text-[13px] text-[#78350F] leading-snug" style={FONT}>
-          Set your policy for late cancellations and no-shows. This appears on your DSM mini website and booking
+          Set your policy for late cancellations and no-shows. This appears on your EDP mini website and booking
           confirmation emails.
         </div>
       </div>

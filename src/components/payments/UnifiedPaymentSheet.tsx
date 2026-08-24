@@ -2501,7 +2501,7 @@ export function UnifiedPaymentSheet({
                   {payUrl}
                 </div>
                 <div style={{ marginTop: 6, fontSize: tokens.fontSize.xs, color: PURPLE }}>
-                  ✦ Email sent via DSM — branded
+                  ✦ Email sent via EDP — branded
                 </div>
               </div>
             )}

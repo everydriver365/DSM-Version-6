@@ -11,7 +11,7 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/briefing")({
   head: () => ({
     meta: [
-      { title: "Day briefing — DSM by EveryDriver" },
+      { title: "Day briefing — EDP by EveryDriver" },
       { name: "description", content: "Your morning summary: weather, lessons, and what needs attention today." },
     ],
   }),

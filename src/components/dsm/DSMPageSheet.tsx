@@ -1,14 +1,14 @@
 import React from 'react';
 
-interface DSMPageSheetProps {
+interface EDPPageSheetProps {
   children: React.ReactNode;
   style?: React.CSSProperties;
 }
 
-export default function DSMPageSheet({
+export default function EDPPageSheet({
   children,
   style,
-}: DSMPageSheetProps) {
+}: EDPPageSheetProps) {
   return (
     <div style={{
       background: '#fff',

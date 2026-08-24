@@ -31,7 +31,7 @@ const BENEFITS = [
     iconBg: '#E6F1FB',
     iconColor: '#185FA5',
     minTier: 'pro',
-    description: 'Access private GP appointments 24/7, mental health support, prescription delivery and physiotherapy — all included with your DSM Pro subscription.',
+    description: 'Access private GP appointments 24/7, mental health support, prescription delivery and physiotherapy — all included with your EDP Pro subscription.',
     perks: [
       '24/7 private GP access',
       'Mental health counselling',
@@ -71,7 +71,7 @@ const BENEFITS = [
   {
     id: 'dia',
     name: 'DIA Membership',
-    tagline: 'Free with DSM Pro - Save £125 a year!',
+    tagline: 'Free with EDP Pro - Save £125 a year!',
     icon: 'school',
     imageUrl: diaLogoAsset.url,
     iconBg: '#E6F1FB',
@@ -94,13 +94,13 @@ const BENEFITS = [
   {
     id: 'hmca',
     name: 'HMCA Health Insurance',
-    tagline: 'Exclusively with DSM',
+    tagline: 'Exclusively with EDP',
     icon: 'shield-check',
     imageUrl: hmcaLogoAsset.url,
     iconBg: '#EAF3DE',
     iconColor: '#3B6D11',
     minTier: 'pro',
-    description: 'Fast access to medical investigations and treatment with HMCA Insurance. Three plan levels available — exclusively for DSM subscribers.',
+    description: 'Fast access to medical investigations and treatment with HMCA Insurance. Three plan levels available — exclusively for EDP subscribers.',
     perks: [
       'Fast medical investigations',
       'Private treatment access',
@@ -117,20 +117,20 @@ const BENEFITS = [
   {
     id: 'bennenden',
     name: 'Bennenden Health',
-    tagline: 'Free to all DSM members',
+    tagline: 'Free to all EDP members',
     icon: IconHeartHandshake,
     imageUrl: bennendenLogoAsset.url,
     iconBg: '#FEE2E2',
     iconColor: '#B91C1C',
     minTier: 'pro',
-    description: 'Bennenden Health provides affordable healthcare for everyone. As a DSM member you get free access — including 24/7 GP helpline, mental health support and medical treatment.',
+    description: 'Bennenden Health provides affordable healthcare for everyone. As a EDP member you get free access — including 24/7 GP helpline, mental health support and medical treatment.',
     perks: [
       '24/7 GP helpline',
       'Mental health support',
       'Medical treatment',
       'Affordable healthcare',
       'No waiting lists',
-      'Free to DSM members',
+      'Free to EDP members',
     ],
     ctaLabel: 'Access Bennenden →',
     ctaAction: 'bennenden',
@@ -144,7 +144,7 @@ const DEALS = [
   {
     id: 'dashcam',
     name: 'Dashcams',
-    tagline: 'Up to 20% off for DSM members',
+    tagline: 'Up to 20% off for EDP members',
     icon: IconCamera,
     iconBg: '#EEF2F7',
     iconColor: '#0B1F3A',
@@ -161,7 +161,7 @@ const DEALS = [
     iconBg: '#FEF3C7',
     iconColor: '#B45309',
     minTier: 'website',
-    description: 'Save on every fill-up with a DSM partner fuel card. Works at thousands of forecourts across the UK.',
+    description: 'Save on every fill-up with a EDP partner fuel card. Works at thousands of forecourts across the UK.',
     dealLabel: 'Apply free →',
     comingSoon: true,
   },
@@ -229,7 +229,7 @@ const BENEFIT_COMPARISON = [
       { label: 'Analytics', from: 1 },
       { label: 'Area pages', from: 2 },
       { label: 'Blog', from: 2 },
-      { label: 'Managed by DSM', from: 3 },
+      { label: 'Managed by EDP', from: 3 },
     ],
   },
   {
@@ -280,8 +280,8 @@ const BANNER_FALLBACK: Record<string, string> = {
 export const Route = createFileRoute('/benefits')({
   head: () => ({
     meta: [
-      { title: 'Member Benefits — DSM' },
-      { name: 'description', content: 'Your DSM member benefits: pirkx Wellbeing, Perkbox Rewards, DIA membership and HMCA health insurance.' },
+      { title: 'Member Benefits — EDP' },
+      { name: 'description', content: 'Your EDP member benefits: pirkx Wellbeing, Perkbox Rewards, DIA membership and HMCA health insurance.' },
     ],
   }),
   component: BenefitsPage,
@@ -496,7 +496,7 @@ function BenefitsPage() {
             if (t.id === 'managed') {
               window.open(
                 'https://wa.me/447767693279?text=' +
-                  encodeURIComponent('Hi, I\'m interested in DSM Managed Website'),
+                  encodeURIComponent('Hi, I\'m interested in EDP Managed Website'),
                 '_blank',
               );
               return;
@@ -1010,7 +1010,7 @@ function BenefitsPage() {
                   onClick={() =>
                     window.open(
                       'https://wa.me/447767693279?text=' +
-                        encodeURIComponent("Hi, I'm interested in DSM Managed Website"),
+                        encodeURIComponent("Hi, I'm interested in EDP Managed Website"),
                       '_blank',
                     )
                   }

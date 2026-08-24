@@ -11,7 +11,7 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/reminder")({
   head: () => ({
     meta: [
-      { title: "Send reminder — DSM by EveryDriver" },
+      { title: "Send reminder — EDP by EveryDriver" },
       { name: "description", content: "Send SMS reminders to your pupils." },
     ],
   }),

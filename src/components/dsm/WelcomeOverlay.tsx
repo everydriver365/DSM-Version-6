@@ -106,7 +106,7 @@ export function WelcomeOverlay({ userId, instructorName, onDismiss }: WelcomeOve
     >
       {/* HEADER */}
       <div style={{ padding: "32px 24px 0" }}>
-        <div style={{ color: "#fff", fontSize: tokens.fontSize.hero, fontWeight: tokens.fontWeight.extrabold, letterSpacing: -0.5 }}>DSM</div>
+        <div style={{ color: "#fff", fontSize: tokens.fontSize.hero, fontWeight: tokens.fontWeight.extrabold, letterSpacing: -0.5 }}>EDP</div>
         <div style={{ fontSize: tokens.fontSize.base, color: "rgba(255,255,255,0.5)", marginTop: 2 }}>by EveryDriver</div>
       </div>
 

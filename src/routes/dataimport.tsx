@@ -26,7 +26,7 @@ import ImportResults, {
 export const Route = createFileRoute("/dataimport")({
   head: () => ({
     meta: [
-      { title: "Import data — DSM by EveryDriver" },
+      { title: "Import data — EDP by EveryDriver" },
       { name: "description", content: "Bulk import pupils from a CSV file." },
     ],
   }),

@@ -10,7 +10,7 @@ import { EndLessonWizard } from "../components/dsm/EndLessonWizard.tsx";
 export const Route = createFileRoute("/weekly-report")({
   head: () => ({
     meta: [
-      { title: "Weekly report — DSM by EveryDriver" },
+      { title: "Weekly report — EDP by EveryDriver" },
       { name: "description", content: "Your week at a glance." },
     ],
   }),

@@ -54,7 +54,7 @@ async function toastWithSync(message: string) {
 
 export const Route = createFileRoute("/lessons/$id")({
   head: () => ({
-    meta: [{ title: "Lesson — DSM by EveryDriver" }],
+    meta: [{ title: "Lesson — EDP by EveryDriver" }],
   }),
   validateSearch: (search: Record<string, unknown>): { action?: "cancel"; testCentre?: string } => ({
     action: search.action === "cancel" ? ("cancel" as const) : undefined,

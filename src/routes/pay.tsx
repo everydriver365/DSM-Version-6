@@ -43,7 +43,7 @@ function PayPage() {
             letterSpacing: 0.3,
           }}
         >
-          DSM by EveryDriver
+          EDP by EveryDriver
         </header>
 
         <main style={{ padding: 24 }}>
@@ -76,7 +76,7 @@ function PayPage() {
               Payment processing via Square
             </h1>
             <p style={{ color: tokens.textSecondary, marginTop: 10, fontSize: tokens.fontSize.md, lineHeight: 1.6 }}>
-              Payments for DSM by EveryDriver are now processed securely by Square. Please use the
+              Payments for EDP by EveryDriver are now processed securely by Square. Please use the
               Square payment link or QR code your instructor sent you.
             </p>
             <p style={{ color: tokens.textSecondary, marginTop: 10, fontSize: 13 }}>

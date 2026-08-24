@@ -39,7 +39,7 @@ export const Route = createFileRoute("/pupils/$id")({
     lessonId: typeof search.lessonId === "string" ? search.lessonId : undefined,
   }),
   head: () => ({
-    meta: [{ title: "Pupil — DSM by EveryDriver" }],
+    meta: [{ title: "Pupil — EDP by EveryDriver" }],
   }),
   component: PupilDetailPage,
 });

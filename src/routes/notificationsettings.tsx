@@ -26,7 +26,7 @@ import {
 export const Route = createFileRoute("/notificationsettings")({
   head: () => ({
     meta: [
-      { title: "Notification settings — DSM" },
+      { title: "Notification settings — EDP" },
       { name: "description", content: "Manage your notification preferences." },
     ],
   }),

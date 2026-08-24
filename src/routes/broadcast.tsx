@@ -9,7 +9,7 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/broadcast")({
   head: () => ({
     meta: [
-      { title: "Broadcast — DSM by EveryDriver" },
+      { title: "Broadcast — EDP by EveryDriver" },
       { name: "description", content: "Send a message to multiple pupils at once." },
     ],
   }),

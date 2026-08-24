@@ -375,7 +375,7 @@ export function PaymentReceipt({
               marginTop: 2,
             }}
           >
-            DSM by EveryDriver
+            EDP by EveryDriver
           </div>
         </div>
       </div>

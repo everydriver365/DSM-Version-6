@@ -196,7 +196,7 @@ export default function RecommendedLearning({ faults }: { faults: FaultMap | nul
           cursor: "pointer",
         }}
       >
-        Open DSM Learn
+        Open EDP Learn
       </button>
 
       {playing && <VideoPlayerSheet video={playing} onClose={() => setPlaying(null)} />}

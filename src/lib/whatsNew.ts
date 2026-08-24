@@ -27,7 +27,7 @@ export const WHATS_NEW_BY_VERSION: Record<string, WhatsNewItem[]> = {
     },
     {
       title: "Jobs & offers",
-      description: "Post and claim driving instructor job offers directly in DSM.",
+      description: "Post and claim driving instructor job offers directly in EDP.",
     },
     {
       title: "Terms & signatures",
@@ -38,8 +38,8 @@ export const WHATS_NEW_BY_VERSION: Record<string, WhatsNewItem[]> = {
       description: "Record real and mock test results with full DVSA fault categories.",
     },
     {
-      title: "DSM Learn",
-      description: "Short video guides to help you get more from DSM — now in the app.",
+      title: "EDP Learn",
+      description: "Short video guides to help you get more from EDP — now in the app.",
     },
   ],
 };

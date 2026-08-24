@@ -9,7 +9,7 @@ import { ConfirmDialog } from "../components/ConfirmDialog";
 
 export const Route = createFileRoute("/notes/$id")({
   head: () => ({
-    meta: [{ title: "Note — DSM by EveryDriver" }],
+    meta: [{ title: "Note — EDP by EveryDriver" }],
   }),
   component: NoteEditPage,
 });

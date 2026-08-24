@@ -43,7 +43,7 @@ import { TestDetailPanel } from "@/components/lessons/TestDetailPanel";
 export const Route = createFileRoute("/schedule")({
   head: () => ({
     meta: [
-      { title: "Schedule — DSM by EveryDriver" },
+      { title: "Schedule — EDP by EveryDriver" },
       { name: "description", content: "Scrollable agenda view of your lessons." },
     ],
   }),
@@ -1755,7 +1755,7 @@ function SchedulePage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 16px 4px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <div style={{ width: 8, height: 8, borderRadius: 12, background: '#1877D6' }} />
-          <span style={{ fontSize: tokens.fontSize.xs, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>DSM lesson</span>
+          <span style={{ fontSize: tokens.fontSize.xs, color: '#6B7280', fontFamily: 'Poppins, sans-serif' }}>EDP lesson</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <div style={{ width: 8, height: 8, borderRadius: 12, background: '#9CA3AF' }} />
@@ -2188,7 +2188,7 @@ function SchedulePage() {
                                   const blockTime = `${pad(startD.getHours())}:${pad(startD.getMinutes())}`;
                                   const blockDurationMins = Math.max(1, Math.round((endD.getTime() - startD.getTime()) / 60000));
                                   toast.info(
-                                    'This is a Google Calendar event. To manage it, open Google Calendar. To add this as a DSM lesson with payment tracking, tap "Add as lesson".',
+                                    'This is a Google Calendar event. To manage it, open Google Calendar. To add this as a EDP lesson with payment tracking, tap "Add as lesson".',
                                     {
                                       duration: 5000,
                                       action: {

@@ -8,8 +8,8 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/rewards")({
   head: () => ({
     meta: [
-      { title: "DSM Rewards" },
-      { name: "description", content: "Earn points, climb tiers and see the DSM instructor leaderboard." },
+      { title: "EDP Rewards" },
+      { name: "description", content: "Earn points, climb tiers and see the EDP instructor leaderboard." },
     ],
   }),
   component: RewardsPage,
@@ -177,7 +177,7 @@ function RewardsPage() {
         >
           <IconArrowLeft size={22} />
         </button>
-        <div style={{ fontWeight: tokens.fontWeight.extrabold, fontSize: 17 }}>DSM Rewards</div>
+        <div style={{ fontWeight: tokens.fontWeight.extrabold, fontSize: 17 }}>EDP Rewards</div>
       </div>
 
       {/* Hero */}
@@ -295,7 +295,7 @@ function RewardsPage() {
           </div>
         </div>
         <div style={{ fontSize: tokens.fontSize.base, color: "#6B7280", marginBottom: 12 }}>
-          Top 20 DSM instructors
+          Top 20 EDP instructors
         </div>
 
         {loading ? (

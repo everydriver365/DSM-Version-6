@@ -11,7 +11,7 @@ import { BottomSheet } from "../components/dsm/BottomSheet";
 export const Route = createFileRoute("/intake-questions")({
   head: () => ({
     meta: [
-      { title: "Intake questions — DSM by EveryDriver" },
+      { title: "Intake questions — EDP by EveryDriver" },
       {
         name: "description",
         content: "Manage the questions new pupils answer at registration.",

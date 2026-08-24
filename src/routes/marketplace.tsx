@@ -19,7 +19,7 @@ const POPPINS = "Poppins, sans-serif";
 export const Route = createFileRoute("/marketplace")({
   head: () => ({
     meta: [
-      { title: "DSM Marketplace" },
+      { title: "EDP Marketplace" },
       {
         name: "description",
         content:

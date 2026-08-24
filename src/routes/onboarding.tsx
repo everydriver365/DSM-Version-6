@@ -7,7 +7,7 @@ import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
-    meta: [{ title: "Get started — DSM by EveryDriver" }],
+    meta: [{ title: "Get started — EDP by EveryDriver" }],
   }),
   component: OnboardingPage,
 });
@@ -226,10 +226,10 @@ function OnboardingPage() {
       <div style={{ width: "100%", maxWidth: 420, marginTop: 24 }}>
         {step === 1 && (
           <div className="flex flex-col items-center">
-            <img src={dsmLogoAsset.url} alt="DSM" className="h-[60px] w-auto mb-5" />
+            <img src={dsmLogoAsset.url} alt="EDP" className="h-[60px] w-auto mb-5" />
             <div style={{ marginBottom: 16, textAlign: "center" }}>
               <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.extrabold, color: "#fff", ...POPPINS, letterSpacing: "-0.4px", marginBottom: 4 }}>
-                Welcome to DSM
+                Welcome to EDP
               </div>
               <div style={{ fontSize: tokens.fontSize.base, color: "rgba(255,255,255,0.5)", ...POPPINS }}>
                 Let&apos;s get you set up in 3 minutes
@@ -465,7 +465,7 @@ function OnboardingPage() {
                 <IconWorld stroke={1.5} size={30} color="#1877D6" />
               </div>
               <p className="text-[14px] text-[#6B7686]" style={POPPINS}>
-                DSM automatically gives you a simple, personal website. Customise it and publish whenever you&apos;re ready.
+                EDP automatically gives you a simple, personal website. Customise it and publish whenever you&apos;re ready.
               </p>
             </div>
             <Cta onClick={() => navigate({ to: "/minisite", replace: true })}>Set it up now</Cta>
@@ -570,7 +570,7 @@ function OnboardingPage() {
               <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.extrabold, color: "#fff", ...POPPINS, letterSpacing: "-0.4px", marginBottom: 4 }}>
                 You&apos;re all set!
               </div>
-              <div style={{ fontSize: tokens.fontSize.base, color: "rgba(255,255,255,0.5)", ...POPPINS }}>Welcome to DSM</div>
+              <div style={{ fontSize: tokens.fontSize.base, color: "rgba(255,255,255,0.5)", ...POPPINS }}>Welcome to EDP</div>
             </div>
             {error && (
               <p className="text-[13px] text-[#CC2229] text-center mb-2" style={POPPINS} role="alert">{error}</p>

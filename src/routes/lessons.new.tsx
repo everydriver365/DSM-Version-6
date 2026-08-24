@@ -23,7 +23,7 @@ function extractPostcode(addr: string | null | undefined): string | undefined {
 
 export const Route = createFileRoute("/lessons/new")({
   head: () => ({
-    meta: [{ title: "Add lesson — DSM by EveryDriver" }],
+    meta: [{ title: "Add lesson — EDP by EveryDriver" }],
   }),
   validateSearch: (search: Record<string, unknown>): { date?: string; pupilId?: string } => ({
     date: typeof search.date === "string" ? search.date : "",

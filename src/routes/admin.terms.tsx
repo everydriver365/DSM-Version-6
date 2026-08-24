@@ -216,7 +216,7 @@ function AdminTermsPage() {
               id="platform-terms-content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Enter the platform terms and conditions here. These apply to all users of DSM."
+              placeholder="Enter the platform terms and conditions here. These apply to all users of EDP."
               style={{
                 width: "100%",
                 minHeight: 360,

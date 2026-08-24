@@ -30,7 +30,7 @@ import { AddressLookup } from "@/components/dsm/AddressLookup";
 
 export const Route = createFileRoute("/tests")({
   head: () => ({
-    meta: [{ title: "Driving tests — DSM by EveryDriver" }],
+    meta: [{ title: "Driving tests — EDP by EveryDriver" }],
   }),
   component: TestsPage,
 });

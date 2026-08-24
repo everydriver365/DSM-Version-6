@@ -26,7 +26,7 @@ import {
 export const Route = createFileRoute("/minisite")({
   head: () => ({
     meta: [
-      { title: "My website — DSM by EveryDriver" },
+      { title: "My website — EDP by EveryDriver" },
       { name: "description", content: "Edit your public mini website." },
     ],
   }),
@@ -46,7 +46,7 @@ const TIER_NAMES = SHARED_TIER_NAMES;
 
 const MANAGED_WA =
   "https://wa.me/447767693279?text=" +
-  encodeURIComponent("Hi, I'm interested in DSM Managed Website");
+  encodeURIComponent("Hi, I'm interested in EDP Managed Website");
 
 const PRICES = {
   website: { monthly: 9.99, annual: 89.90 },
@@ -1293,7 +1293,7 @@ function MiniSitePage() {
                   )}
                 </div>
                 <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, marginTop: 8 }}>
-                  DSM Mini Website (Free)
+                  EDP Mini Website (Free)
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 4, marginTop: 12 }}>
                   {[
@@ -1312,7 +1312,7 @@ function MiniSitePage() {
               </div>
             )}
 
-            {/* TIER 2 — DSM WEBSITE */}
+            {/* TIER 2 — EDP WEBSITE */}
             {currentIdx <= 1 && (
               <div
                 style={{
@@ -1352,7 +1352,7 @@ function MiniSitePage() {
                   )}
                 </div>
                 <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, marginTop: 8 }}>
-                  DSM Website
+                  EDP Website
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 4, marginTop: 12 }}>
                   {[
@@ -1390,7 +1390,7 @@ function MiniSitePage() {
                       fontFamily: "Poppins, sans-serif",
                     }}
                   >
-                    Upgrade to DSM Website →
+                    Upgrade to EDP Website →
                   </button>
                 )}
               </div>
@@ -1471,11 +1471,11 @@ function MiniSitePage() {
                     <span style={{ fontSize: tokens.fontSize.md, color: "rgba(255,255,255,0.6)" }}>/month</span>
                   </div>
                   <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: "#fff", marginTop: 2 }}>
-                    DSM Website Pro
+                    EDP Website Pro
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 12 }}>
                     {[
-                      "Everything in DSM Website",
+                      "Everything in EDP Website",
                       "Multiple area pages",
                       "Blog & content pages",
                       "Advanced SEO tools",
@@ -1587,7 +1587,7 @@ function MiniSitePage() {
                   <span style={{ fontSize: tokens.fontSize.md, color: "rgba(255,255,255,0.6)" }}>/month</span>
                 </div>
                 <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.extrabold, color: "#fff", marginTop: 2 }}>
-                  DSM Managed Website
+                  EDP Managed Website
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 12 }}>
                   {[

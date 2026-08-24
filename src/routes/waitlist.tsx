@@ -9,7 +9,7 @@ import { useConfirmSheet } from "@/components/dsm/ConfirmSheet";
 export const Route = createFileRoute("/waitlist")({
   head: () => ({
     meta: [
-      { title: "Waiting List — DSM by EveryDriver" },
+      { title: "Waiting List — EDP by EveryDriver" },
       { name: "description", content: "Manage your lesson waiting list and slot offers." },
     ],
   }),

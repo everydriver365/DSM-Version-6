@@ -13,7 +13,7 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/automations")({
   head: () => ({
     meta: [
-      { title: "Automations — DSM by EveryDriver" },
+      { title: "Automations — EDP by EveryDriver" },
       { name: "description", content: "Automated messages to pupils based on triggers." },
     ],
   }),

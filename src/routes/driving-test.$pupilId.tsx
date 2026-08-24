@@ -8,7 +8,7 @@ import { supabase } from "../lib/supabaseClient";
 import RecommendedLearning from "@/components/learn/RecommendedLearning";
 
 export const Route = createFileRoute("/driving-test/$pupilId")({
-  head: () => ({ meta: [{ title: "Test report — DSM by EveryDriver" }] }),
+  head: () => ({ meta: [{ title: "Test report — EDP by EveryDriver" }] }),
   component: DrivingTestPage,
 });
 

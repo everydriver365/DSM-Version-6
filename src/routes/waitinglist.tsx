@@ -15,7 +15,7 @@ import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/waitinglist")({
   head: () => ({
-    meta: [{ title: "Waiting list — DSM by EveryDriver" }],
+    meta: [{ title: "Waiting list — EDP by EveryDriver" }],
   }),
   component: WaitingListPage,
 });

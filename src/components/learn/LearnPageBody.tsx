@@ -387,7 +387,7 @@ export default function LearnPageBody() {
             textAlign: "center",
           }}
         >
-          Quick guides to get more out of DSM.
+          Quick guides to get more out of EDP.
         </p>
       </div>
 

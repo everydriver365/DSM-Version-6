@@ -11,7 +11,7 @@ import { recordPayment, recordPaymentWithPackage } from "../lib/payments";
 
 export const Route = createFileRoute("/pupils/payments/$id")({
   head: () => ({
-    meta: [{ title: "Payment history — DSM by EveryDriver" }],
+    meta: [{ title: "Payment history — EDP by EveryDriver" }],
   }),
   component: PupilPaymentsPage,
 });
