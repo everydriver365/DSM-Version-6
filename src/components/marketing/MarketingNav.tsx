@@ -2,7 +2,7 @@ import { tokens } from "@/lib/tokens";
 import { useState, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { IconMenu2, IconX, IconChevronDown, IconCalendar, IconCreditCard, IconUsers, IconSchool, IconWorld, IconGauge, IconCamera, IconNews, IconHelpCircle, IconStar, IconPlayerPlay, IconArrowUpRight } from "@tabler/icons-react";
-import logoAsset from "../../assets/dsm-logo.png.asset.json";
+import logoAsset from "../../assets/edp-website-logo.png.asset.json";
 
 const NAVY = "#0B1F3A";
 const ACCENT = "#1877D6";
