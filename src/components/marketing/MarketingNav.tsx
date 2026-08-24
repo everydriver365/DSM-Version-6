@@ -89,7 +89,7 @@ export function MarketingNav() {
       >
         <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
           <img className="ed-logo-desktop" src={logoAsset.url} alt="Every Driver Pro" style={{ height: 36, width: "auto" }} />
-          <img className="ed-logo-mobile" src={mobileLogoAsset.url} alt="Every Driver Pro" style={{ height: 40, width: "auto", display: "none" }} />
+          <img className="ed-logo-mobile" src={mobileLogoAsset.url} alt="Every Driver Pro" style={{ height: 52, width: "auto", display: "none" }} />
           <div className="ed-logo-text-mobile" style={{ display: "none", flexDirection: "column", lineHeight: 1.05 }}>
             <span style={{ color: NAVY, fontFamily: "Sora, Poppins, sans-serif", fontWeight: 700, fontSize: 15, letterSpacing: "-0.02em" }}>Every Driver</span>
             <span style={{ color: ACCENT, fontFamily: "Sora, Poppins, sans-serif", fontWeight: 700, fontSize: 15, letterSpacing: "-0.02em" }}>Pro</span>
