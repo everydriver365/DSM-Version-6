@@ -4366,7 +4366,7 @@ function HomePage() {
           right: 0,
           zIndex: 40,
           background: tokens.navy,
-          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 6px) 8px 8px",
+          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 6px) 32px 8px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
