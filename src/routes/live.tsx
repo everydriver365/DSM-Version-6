@@ -1524,7 +1524,7 @@ function LivePage() {
           paddingBottom: 10,
           paddingLeft: 16,
           paddingRight: 16,
-          background: tokens.white,
+          background: tokens.navy,
         }}
       >
         <button
