@@ -211,13 +211,10 @@ function LoginPage() {
       {/* Logo */}
       <div className="flex flex-col items-center mb-4">
         <img
-          src={dsmLogoAsset.url}
-          alt="DSM logo"
+          src={edpLogoAsset.url}
+          alt="EDP"
           className="h-[60px] w-auto mb-2"
         />
-        <span className="text-[#9CA3AF] text-[14px]" style={{ fontFamily: "Poppins, sans-serif" }}>
-          by EveryDriver
-        </span>
       </div>
 
       {/* Face ID sign-in */}
