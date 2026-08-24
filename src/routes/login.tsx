@@ -265,12 +265,13 @@ function LoginPage() {
                 ? onBiometric
                 : () => setError("Sign in with your password first to enable Face ID")
             }
-            className="w-full flex items-center gap-3.5 text-left mb-5 transition-colors active:bg-white/[0.09]"
+            className="w-full flex items-center gap-3.5 text-left mb-5 transition-colors active:bg-[#F1F5F9]"
             style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.09)",
+              background: "#FFFFFF",
+              border: "1px solid #E2E8F0",
               borderRadius: 16,
               padding: "13px 16px",
+              boxShadow: "0 1px 3px rgba(11,31,58,0.05)",
             }}
           >
             <span
@@ -279,20 +280,20 @@ function LoginPage() {
                 width: 36,
                 height: 36,
                 borderRadius: 11,
-                background: "rgba(24,119,214,0.22)",
+                background: "rgba(24,119,214,0.12)",
               }}
             >
-              <IconScan size={19} color="#5EA9EC" />
+              <IconScan size={19} color="#1877D6" />
             </span>
             <span className="flex-1 min-w-0">
-              <span className="block text-white text-[15px] font-semibold leading-tight">
+              <span className="block text-[15px] font-semibold leading-tight" style={{ color: "#0B1F3A" }}>
                 Face ID
               </span>
-              <span className="block text-white/45 text-[12px] leading-tight mt-0.5">
+              <span className="block text-[12px] leading-tight mt-0.5" style={{ color: "#64748B" }}>
                 {enrolled ? "Sign in with Face ID" : "Sign in faster next time"}
               </span>
             </span>
-            <IconChevronRight size={17} color="rgba(255,255,255,0.35)" className="flex-shrink-0" />
+            <IconChevronRight size={17} color="#94A3B8" className="flex-shrink-0" />
           </button>
         )}
 
@@ -301,14 +302,15 @@ function LoginPage() {
           <div
             className="w-full mb-5"
             style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.09)",
+              background: "#FFFFFF",
+              border: "1px solid #E2E8F0",
               borderRadius: 18,
               padding: 18,
+              boxShadow: "0 1px 3px rgba(11,31,58,0.05)",
             }}
           >
-            <p className="text-[15px] font-semibold text-white">Enable Face ID for next time?</p>
-            <p className="text-[13px] text-white/50 mt-1">
+            <p className="text-[15px] font-semibold" style={{ color: "#0B1F3A" }}>Enable Face ID for next time?</p>
+            <p className="text-[13px] mt-1" style={{ color: "#64748B" }}>
               Sign in faster without typing your password.
             </p>
             <div className="flex gap-2.5 mt-4">
@@ -323,8 +325,8 @@ function LoginPage() {
               <button
                 type="button"
                 onClick={skipEnroll}
-                className="flex-1 h-11 text-[14px] font-medium text-white/80"
-                style={{ border: "1px solid rgba(255,255,255,0.16)", borderRadius: 12 }}
+                className="flex-1 h-11 text-[14px] font-medium"
+                style={{ border: "1px solid #E2E8F0", borderRadius: 12, color: "#475569" }}
               >
                 Not now
               </button>
