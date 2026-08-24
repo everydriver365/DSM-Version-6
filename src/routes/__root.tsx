@@ -131,7 +131,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             Try again
           </button>
           <a
-            href="/"
+            href="/home"
             className="inline-flex items-center justify-center rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
             Go home
@@ -284,7 +284,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
     setOpen(false);
     if (m.signOut) {
       await supabase.auth.signOut();
-      navigate({ to: "/" as never, replace: true });
+      navigate({ to: "/login" as never, replace: true });
       return;
     }
     if (m.event) {
@@ -414,7 +414,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
                 onClick={async () => {
                   setOpen(false);
                   await supabase.auth.signOut();
-                  navigate({ to: "/" as never, replace: true });
+                  navigate({ to: "/login" as never, replace: true });
                 }}
                 style={{
                   fontSize: tokens.fontSize.xs,
@@ -498,7 +498,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
               onClick={async () => {
                 setOpen(false);
                 await supabase.auth.signOut();
-                navigate({ to: "/" as never, replace: true });
+                navigate({ to: "/login" as never, replace: true });
               }}
               style={{
                 width: "100%",
@@ -538,11 +538,6 @@ function RootComponent() {
     "/livesession",
     "/live",
     "/satnav",
-    "/features",
-    "/pricing",
-    "/how-it-works",
-    "/about",
-    "/contact",
   ]);
   // Pages where the floating quick-menu button overlaps page content.
   const hideFloatingMenuExact = new Set(["/test-swap"]);
