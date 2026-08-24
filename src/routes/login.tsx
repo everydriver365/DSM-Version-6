@@ -219,7 +219,7 @@ function LoginPage() {
           className="text-white/60 text-[13px] font-medium tracking-wide"
           style={{ letterSpacing: "0.04em" }}
         >
-          by EveryDriver
+          EveryDriver Pro
         </span>
       </div>
 
