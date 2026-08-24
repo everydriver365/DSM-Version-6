@@ -11,6 +11,7 @@ import {
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
 import edpLogoAsset from "../assets/ed-pro-logo-transparent.png.asset.json";
+import edpWordmarkAsset from "../assets/edp-wordmark.png.asset.json";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -238,16 +239,10 @@ function LoginPage() {
         {/* Branding */}
         <div className="flex flex-col items-center mb-8">
           <img
-            src={edpLogoAsset.url}
-            alt="EveryDriver Pro"
-            className="h-[72px] w-auto mb-4"
+            src={edpWordmarkAsset.url}
+            alt="Every Driver Pro"
+            className="w-full max-w-[320px] h-auto mb-3"
           />
-          <span
-            className="text-[22px] font-semibold"
-            style={{ fontFamily: "Sora, sans-serif", letterSpacing: "-0.01em", color: "#0B1F3A" }}
-          >
-            EveryDriver Pro
-          </span>
           <span
             className="text-[12.5px] font-normal mt-1"
             style={{ letterSpacing: "0.04em", color: "#64748B" }}
