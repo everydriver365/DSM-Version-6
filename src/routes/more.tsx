@@ -154,6 +154,7 @@ function MorePage() {
   return (
     <DSMTopSheet
       title="More"
+      hideBack
       right={
         <button
           type="button"
