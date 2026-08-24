@@ -131,6 +131,7 @@ export default function InstructorTopBar({
               background: "none",
               border: "none",
               padding: 0,
+              marginLeft: 30,
               cursor: onProfile ? "pointer" : "default",
               display: "flex",
               alignItems: "center",
