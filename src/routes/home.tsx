@@ -3537,6 +3537,14 @@ function HomePage() {
     };
   }, [userId, todayISO, tomorrowISO]);
 
+  // Time-of-day greeting for the header
+  const hour = new Date().getHours();
+  const greeting = hour < 12
+    ? 'Good morning'
+    : hour < 17
+    ? 'Good afternoon'
+    : 'Good evening';
+
   // Today timeline shows every lesson for today regardless of status
   // (completed, confirmed, in_progress, cancelled, no_show, pending).
   const todayLessons = allLessons?.filter((l: any) => l.lesson_date === todayISO) || [];
@@ -4869,9 +4877,22 @@ function HomePage() {
         }}
       >
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: '#FFFFFF', lineHeight: 1.2 }}>Dashboard</div>
-          <div style={{ fontSize: tokens.fontSize.base, color: '#9CA3AF', marginTop: 4 }}>
-            Welcome back, {firstName || 'there'} 👋
+          <div style={{
+            fontSize: tokens.fontSize.xl,
+            fontWeight: tokens.fontWeight.semibold,
+            color: '#FFFFFF',
+            lineHeight: 1.2,
+          }}>
+            {greeting}, {firstName || 'there'} 👋
+          </div>
+          <div style={{
+            fontSize: tokens.fontSize.base,
+            color: '#9CA3AF',
+            marginTop: 4,
+          }}>
+            {todayLessons.length > 0
+              ? `${todayLessons.length} lesson${todayLessons.length === 1 ? '' : 's'} today`
+              : 'No lessons today'}
           </div>
         </div>
         <button
