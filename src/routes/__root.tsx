@@ -541,8 +541,14 @@ function RootComponent() {
   ]);
   // Pages where the floating quick-menu button overlaps page content.
   const hideFloatingMenuExact = new Set(["/test-swap"]);
-  const showFloatingMenu =
-    !hideNavExact.has(pathname) && !hideFloatingMenuExact.has(pathname);
+  // Message threads have a sticky composer whose Send button sits where
+  // the FAB floats, and pupil detail pages have their own in-page actions
+  // (delete, Cancel lesson) — the FAB would float over both.
+  const hideFloatingMenu =
+    hideFloatingMenuExact.has(pathname) ||
+    pathname.startsWith("/messages/") ||
+    (pathname.startsWith("/pupils/") && pathname !== "/pupils/new");
+  const showFloatingMenu = !hideNavExact.has(pathname) && !hideFloatingMenu;
   const hideNav =
     hideNavExact.has(pathname) ||
     pathname.startsWith("/i/") ||
