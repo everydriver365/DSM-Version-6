@@ -524,7 +524,7 @@ function CommunityPage() {
           { id: "local", label: "Local" },
           { id: "rooms", label: "Rooms" },
           { id: "uk", label: "UK Chat" },
-          { id: "dsm", label: "DSM" },
+          { id: "dsm", label: "EDP" },
         ] as const).map((t) => {
           const active = activeTab === t.id;
           const badge = t.id === "local" ? unread.local : t.id === "uk" ? unread.uk : t.id === "dsm" ? unreadDMs : 0;
