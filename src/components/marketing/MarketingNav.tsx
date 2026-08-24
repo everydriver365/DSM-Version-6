@@ -316,7 +316,7 @@ export function MarketingNav() {
         }
         @media (max-width: 480px) {
           .ed-nav-signin-mobile { padding: 8px 12px !important; font-size: 14px !important; }
-          .ed-logo-mobile { height: 36px !important; }
+          .ed-logo-mobile { height: 46px !important; }
           .ed-logo-text-mobile span { font-size: 14px !important; }
         }
       `}</style>
