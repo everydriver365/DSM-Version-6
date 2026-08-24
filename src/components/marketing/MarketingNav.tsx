@@ -87,21 +87,7 @@ export function MarketingNav() {
         className="ed-nav-inner"
       >
         <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <img src={logoAsset.url} alt="Driving School Manager" style={{ height: 36, width: "auto" }} />
-          <span
-            className="ed-nav-brand"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              lineHeight: 1,
-              color: NAVY,
-              fontWeight: tokens.fontWeight.extrabold,
-              fontFamily: "'Poppins', sans-serif",
-              whiteSpace: "nowrap"}}
-          >
-            <span style={{ fontSize: 14 }}>Driving School</span>
-            <span style={{ fontSize: 14 }}>Manager</span>
-          </span>
+          <img src={logoAsset.url} alt="Every Driver Pro" style={{ height: 36, width: "auto" }} />
         </Link>
 
         <nav className="ed-nav-center" style={{ display: "flex", gap: 4, alignItems: "center", height: "100%" }}>
