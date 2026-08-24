@@ -4885,15 +4885,6 @@ function HomePage() {
           }}>
             {greeting}, {firstName || 'there'} 👋
           </div>
-          <div style={{
-            fontSize: tokens.fontSize.base,
-            color: '#9CA3AF',
-            marginTop: 4,
-          }}>
-            {todayLessons.length > 0
-              ? `${todayLessons.length} lesson${todayLessons.length === 1 ? '' : 's'} today`
-              : 'No lessons today'}
-          </div>
         </div>
         <button
           type="button"
