@@ -431,6 +431,25 @@ function LoginPage() {
               </Link>
             </p>
 
+            <div
+              style={{
+                textAlign: "center",
+                fontSize: 11,
+                color: "#94A3B8",
+                marginTop: 16,
+                padding: "0 16px",
+              }}
+            >
+              By signing in you agree to our{" "}
+              <Link to="/terms" style={{ color: "#64748B", textDecoration: "underline" }}>
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" style={{ color: "#64748B", textDecoration: "underline" }}>
+                Privacy Policy
+              </Link>
+            </div>
+
             {notice && (
               <p className="text-[13px] text-[#4ADE80] text-center" role="status">
                 {notice}
