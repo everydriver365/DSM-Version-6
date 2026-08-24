@@ -1,89 +1,53 @@
-# Split marketing site from the app
+# Every Driver Pro — Split Marketing Website From App
 
-## Goal
-Two projects, one backend: this project becomes the app, a new project becomes the marketing site. Both keep using the existing Supabase backend (`bjpqxfrihwjcqprmoqfs.supabase.co`) — no data migration, no second database.
+Master instruction accepted. This is a **separation, not a migration or rewrite**: the existing Supabase backend (`bjpqxfrihwjcqprmoqfs.supabase.co`) stays the single source of truth, untouched. No second Supabase project, no data copying, no schema changes, no edge function changes.
 
-## Key facts (confirmed)
-- Supabase URL + anon key are hardcoded in `src/lib/supabaseClient.ts` (publishable key, safe in code). Any copy of this project connects to the same backend automatically.
-- Edge functions (push notifications, reminders, calendar sync) live in the Supabase project — shared by both sites with no changes.
-- Marketing surface is small: `/_marketing/*`, `/`, `/login`, `/register`, `/forgotpassword`, `/resetpassword`, `/privacy`, `/terms` + `src/components/marketing/*` + marketing assets.
-- App surface is everything else (~100 routes) + `src/components/dsm/*` + Capacitor/OneSignal.
-- I cannot create a new Lovable project for you — that one step is yours (details below).
-
-## Domain strategy
+## Final architecture
 
 ```text
-Marketing site (new project)
-  Primary:   everydriver.pro
-  Redirect:  www.everydriver.pro → everydriver.pro
-
-App (this project)
-  New:       app.everydriver.pro  (add as custom domain)
-  Fallback:  everydriver-dash.lovable.app
+everydriver.co.uk          everydriver.pro              app.everydriver.pro
+(learners, separate)       MARKETING SITE               INSTRUCTOR APP
+                           (new Lovable project)        (THIS project)
+                                  │                            │
+                                  └────── SAME EXISTING SUPABASE ──────┘
 ```
 
-- Root domain sells the product (fast, SEO-friendly).
-- App gets a clean subdomain for deep links and Capacitor.
-- Same Supabase project behind both; no user/data duplication.
+- `everydriver.pro` primary, `www.everydriver.pro` redirects to it
+- Existing Lovable URL remains the app's fallback/dev URL
 
-## Step-by-step
+## Pre-split audit (done)
 
-### Step 1 — You: remix this project (5 min, in the Lovable UI)
-1. Open this project's Settings → "Remix this project" (or three-dot menu → Remix).
-2. Name the copy something like "Every Driver Pro — Marketing".
-3. Open the new project and come back to me there (or @mention it).
+- **App-side links to marketing pages:** none found outside marketing components — navigation separation is clean. Only the new marketing project's CTAs need wiring to `app.everydriver.pro`.
+- **App-only tech that must NOT go to marketing:** OneSignal (`__root.tsx`, `lib/push.ts`, `api/public/carplay/v1/devices.ts`), Capacitor (`lib/openUrl.ts`, `lib/haptics.ts`, `lib/storage.ts`, `hooks/useUnreadCount.ts`, several routes), biometric auth, offline logic.
+- **Edge functions in use (all stay untouched):** `square-create-payment-link`, `square-oauth-start`, `send-sms`, `send-payment-email`, `send-welcome-email`, `send-push`, `google-calendar-sync`, `find-cheap-fuel`.
+- **Server routes (stay in app project):** `api/square-create-subscription`, `api/public/square-webhook`, `api/public/send-lesson-reminders`, `api/public/news-ingest`, `api/public/carplay/*`.
+- **Supabase client** is hardcoded in `src/lib/supabaseClient.ts`, so a remix connects to the same backend automatically — zero config.
 
-A remix copies all code, assets, and the hardcoded Supabase client — so the new project is connected to your existing backend from the first second. The only env var (a Google Maps browser key) may need re-adding in the new project's settings if the marketing pages use maps (currently they don't).
+## Phases (strict order — your spec)
 
-### Step 2 — Me (in the remix): strip it down to marketing only
-Delete all app routes and keep only:
-- `index.tsx`, `_marketing.tsx`, `_marketing.about.tsx`, `_marketing.contact.tsx`, `_marketing.features.tsx`, `_marketing.how-it-works.tsx`, `_marketing.pricing.tsx`, `login.tsx`, `register.tsx`, `forgotpassword.tsx`, `resetpassword.tsx`, `privacy.tsx`, `terms.tsx`
-- `src/components/marketing/*`, `src/lib/tokens.ts`, `src/lib/supabaseClient.ts`, styles
-- Marketing image assets
+### Phase 1 — You: create the marketing project
+Remix this project (Settings → "Remix this project" or ⋯ → Remix), name it **Every Driver Pro — Marketing**. The remix inherits code, assets, and the working Supabase connection.
 
-Remove from the remix:
-- All other routes, `src/components/dsm/*`, Capacitor config + native deps, OneSignal, push/biometric code
-- App-specific logic from `__root.tsx` (bottom nav, command palette, push sheets, offline banner)
+### Phase 2 — Me (in the new project): strip to marketing only
+Keep: homepage, About, Features, How it works, Pricing, Contact, FAQ-style/SEO content, Healthcare, Perks, Payments, Test Swap marketing pages, testimonials, Privacy, Terms, marketing components/images/brand assets.
+Remove: all ~100 app routes, `src/components/dsm/*`, OneSignal, push infra, Capacitor + native deps, biometric, offline logic, app business logic, server routes and edge-function callers it doesn't need.
 
-### Step 3 — Me (in the remix): adjust auth flow
-- Keep `/login` and `/register` working against the shared Supabase backend.
-- After successful login/register, redirect to `https://app.everydriver.pro/home` instead of `/home`.
-- Marketing nav "Sign in" CTA can link to `https://app.everydriver.pro/login` (app-side login) or keep the marketing-side login page — your call.
+### Phase 3 — Me + you: wire and test the marketing site
+- CTAs: **Sign In** → `https://app.everydriver.pro/login`, **Get Started** → `https://app.everydriver.pro/register` (app owns auth; no cross-domain session tricks).
+- SEO: metadata, OG tags, structured data, canonicals, sitemap, robots.txt. Brand is **Every Driver Pro / EDP** — no "DSM" anywhere in marketing.
+- Test thoroughly on the marketing project's preview URL.
 
-### Step 4 — You: publish the marketing project and move domains
-1. Publish the marketing project.
-2. In this (app) project: remove `everydriver.pro` and `www.everydriver.pro` from Settings → Domains.
-3. In the marketing project: connect `everydriver.pro` (primary) and `www.everydriver.pro` (redirect).
-4. In this (app) project: connect `app.everydriver.pro` as a new custom domain.
+### Phase 4 — You: publish the marketing project
 
-### Step 5 — Me (in this project): strip it down to the app
-Only after the marketing site is verified live:
-- Delete marketing routes: `index.tsx` → replaced with a redirect to `/home` (or to marketing for logged-out users), `_marketing.*`, `privacy.tsx`, `terms.tsx` (keep or link out), plus marketing components/assets.
-- Update any app code that links to marketing pages to use absolute `https://everydriver.pro/...` URLs.
+### Phase 5 — You: move domains
+Remove `everydriver.pro` + `www.everydriver.pro` from this project; connect them to the marketing project (root primary, www redirect).
 
-### Step 6 — Verify end-to-end
-- Register on `everydriver.pro` → lands in app on `app.everydriver.pro/home`.
-- Log out in app → can get back to marketing.
-- Capacitor build points at `app.everydriver.pro`.
-- SEO: marketing pages indexed, app pages set to noindex.
+### Phase 6 — You: connect `app.everydriver.pro` to this project
 
-## What you do vs what I do
+### Phase 7 — Me (in this project): strip to app only
+**Only after the marketing site is confirmed live.** Remove marketing routes/components/assets from this project, make `/` redirect to `/home` (logged-in) or to the marketing site (logged-out), point any app references to marketing pages at absolute `https://everydriver.pro/...` URLs, add `noindex` to the app, and verify the build plus every core flow (auth, lessons, payments, calendar sync, push, Capacitor).
 
-| Step | Owner |
-|---|---|
-| Remix the project | You (Lovable UI, one click) |
-| Strip remix to marketing | Me |
-| Publish marketing project | You (Publish button) |
-| Move/connect domains | You (Settings → Domains, both projects) |
-| Strip this project to app-only | Me |
-| DNS changes | Usually automatic via Lovable domain flow |
-
-## What not to do
-- Don't try domain-based routing inside one project — TanStack file routing isn't built for it and it gets fragile.
-- Don't move the app to the new project — the app is the big surface; moving marketing is the small lift.
-- Don't create a second Supabase project — both sites share the existing one.
-
-## Outcome
-- `everydriver.pro` → lean marketing site you can iterate on without touching the app.
-- `app.everydriver.pro` → the full DSM app.
-- One backend, one user base, zero data migration.
+## Success criteria
+- `everydriver.pro` → full marketing site, indexable, fast.
+- `app.everydriver.pro` → full instructor app: register → `/home`, login → `/home`.
+- One Supabase backend, zero data movement, all existing records untouched.
