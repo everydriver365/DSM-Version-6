@@ -538,11 +538,6 @@ function RootComponent() {
     "/livesession",
     "/live",
     "/satnav",
-    "/features",
-    "/pricing",
-    "/how-it-works",
-    "/about",
-    "/contact",
   ]);
   // Pages where the floating quick-menu button overlaps page content.
   const hideFloatingMenuExact = new Set(["/test-swap"]);

@@ -114,7 +114,6 @@ import { Route as AvailabilitySettingsRouteImport } from './routes/availability-
 import { Route as AvailabilityRouteImport } from './routes/availability'
 import { Route as AutomationsRouteImport } from './routes/automations'
 import { Route as AdminRouteImport } from './routes/admin'
-import { Route as MarketingRouteImport } from './routes/_marketing'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as QuotesIndexRouteImport } from './routes/quotes.index'
 import { Route as PupilsIndexRouteImport } from './routes/pupils.index'
@@ -160,11 +159,6 @@ import { Route as AdminChatRoomsRouteImport } from './routes/admin.chat-rooms'
 import { Route as AdminBitesizeRouteImport } from './routes/admin.bitesize'
 import { Route as AdminBenefitsRouteImport } from './routes/admin.benefits'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
-import { Route as MarketingPricingRouteImport } from './routes/_marketing.pricing'
-import { Route as MarketingHowItWorksRouteImport } from './routes/_marketing.how-it-works'
-import { Route as MarketingFeaturesRouteImport } from './routes/_marketing.features'
-import { Route as MarketingContactRouteImport } from './routes/_marketing.contact'
-import { Route as MarketingAboutRouteImport } from './routes/_marketing.about'
 import { Route as TermsSignPupilIdRouteImport } from './routes/terms_.sign.$pupilId'
 import { Route as PupilsSyllabusIdRouteImport } from './routes/pupils.syllabus.$id'
 import { Route as PupilsProgressIdRouteImport } from './routes/pupils.progress.$id'
@@ -711,10 +705,6 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MarketingRoute = MarketingRouteImport.update({
-  id: '/_marketing',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -941,31 +931,6 @@ const AdminApplicationsRoute = AdminApplicationsRouteImport.update({
   path: '/applications',
   getParentRoute: () => AdminRoute,
 } as any)
-const MarketingPricingRoute = MarketingPricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => MarketingRoute,
-} as any)
-const MarketingHowItWorksRoute = MarketingHowItWorksRouteImport.update({
-  id: '/how-it-works',
-  path: '/how-it-works',
-  getParentRoute: () => MarketingRoute,
-} as any)
-const MarketingFeaturesRoute = MarketingFeaturesRouteImport.update({
-  id: '/features',
-  path: '/features',
-  getParentRoute: () => MarketingRoute,
-} as any)
-const MarketingContactRoute = MarketingContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => MarketingRoute,
-} as any)
-const MarketingAboutRoute = MarketingAboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => MarketingRoute,
-} as any)
 const TermsSignPupilIdRoute = TermsSignPupilIdRouteImport.update({
   id: '/terms_/sign/$pupilId',
   path: '/terms/sign/$pupilId',
@@ -1181,11 +1146,6 @@ export interface FileRoutesByFullPath {
   '/weekly-report': typeof WeeklyReportRoute
   '/weeklyreport': typeof WeeklyreportRoute
   '/whats-changed': typeof WhatsChangedRoute
-  '/about': typeof MarketingAboutRoute
-  '/contact': typeof MarketingContactRoute
-  '/features': typeof MarketingFeaturesRoute
-  '/how-it-works': typeof MarketingHowItWorksRoute
-  '/pricing': typeof MarketingPricingRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/benefits': typeof AdminBenefitsRoute
   '/admin/bitesize': typeof AdminBitesizeRoute
@@ -1355,11 +1315,6 @@ export interface FileRoutesByTo {
   '/weekly-report': typeof WeeklyReportRoute
   '/weeklyreport': typeof WeeklyreportRoute
   '/whats-changed': typeof WhatsChangedRoute
-  '/about': typeof MarketingAboutRoute
-  '/contact': typeof MarketingContactRoute
-  '/features': typeof MarketingFeaturesRoute
-  '/how-it-works': typeof MarketingHowItWorksRoute
-  '/pricing': typeof MarketingPricingRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/benefits': typeof AdminBenefitsRoute
   '/admin/bitesize': typeof AdminBitesizeRoute
@@ -1428,7 +1383,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_marketing': typeof MarketingRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
   '/automations': typeof AutomationsRoute
   '/availability': typeof AvailabilityRoute
@@ -1534,11 +1488,6 @@ export interface FileRoutesById {
   '/weekly-report': typeof WeeklyReportRoute
   '/weeklyreport': typeof WeeklyreportRoute
   '/whats-changed': typeof WhatsChangedRoute
-  '/_marketing/about': typeof MarketingAboutRoute
-  '/_marketing/contact': typeof MarketingContactRoute
-  '/_marketing/features': typeof MarketingFeaturesRoute
-  '/_marketing/how-it-works': typeof MarketingHowItWorksRoute
-  '/_marketing/pricing': typeof MarketingPricingRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/benefits': typeof AdminBenefitsRoute
   '/admin/bitesize': typeof AdminBitesizeRoute
@@ -1713,11 +1662,6 @@ export interface FileRouteTypes {
     | '/weekly-report'
     | '/weeklyreport'
     | '/whats-changed'
-    | '/about'
-    | '/contact'
-    | '/features'
-    | '/how-it-works'
-    | '/pricing'
     | '/admin/applications'
     | '/admin/benefits'
     | '/admin/bitesize'
@@ -1887,11 +1831,6 @@ export interface FileRouteTypes {
     | '/weekly-report'
     | '/weeklyreport'
     | '/whats-changed'
-    | '/about'
-    | '/contact'
-    | '/features'
-    | '/how-it-works'
-    | '/pricing'
     | '/admin/applications'
     | '/admin/benefits'
     | '/admin/bitesize'
@@ -1959,7 +1898,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/_marketing'
     | '/admin'
     | '/automations'
     | '/availability'
@@ -2065,11 +2003,6 @@ export interface FileRouteTypes {
     | '/weekly-report'
     | '/weeklyreport'
     | '/whats-changed'
-    | '/_marketing/about'
-    | '/_marketing/contact'
-    | '/_marketing/features'
-    | '/_marketing/how-it-works'
-    | '/_marketing/pricing'
     | '/admin/applications'
     | '/admin/benefits'
     | '/admin/bitesize'
@@ -2138,7 +2071,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  MarketingRoute: typeof MarketingRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
   AutomationsRoute: typeof AutomationsRoute
   AvailabilityRoute: typeof AvailabilityRoute
@@ -3026,13 +2958,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_marketing': {
-      id: '/_marketing'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof MarketingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -3348,41 +3273,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminApplicationsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/_marketing/pricing': {
-      id: '/_marketing/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof MarketingPricingRouteImport
-      parentRoute: typeof MarketingRoute
-    }
-    '/_marketing/how-it-works': {
-      id: '/_marketing/how-it-works'
-      path: '/how-it-works'
-      fullPath: '/how-it-works'
-      preLoaderRoute: typeof MarketingHowItWorksRouteImport
-      parentRoute: typeof MarketingRoute
-    }
-    '/_marketing/features': {
-      id: '/_marketing/features'
-      path: '/features'
-      fullPath: '/features'
-      preLoaderRoute: typeof MarketingFeaturesRouteImport
-      parentRoute: typeof MarketingRoute
-    }
-    '/_marketing/contact': {
-      id: '/_marketing/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof MarketingContactRouteImport
-      parentRoute: typeof MarketingRoute
-    }
-    '/_marketing/about': {
-      id: '/_marketing/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof MarketingAboutRouteImport
-      parentRoute: typeof MarketingRoute
-    }
     '/terms_/sign/$pupilId': {
       id: '/terms_/sign/$pupilId'
       path: '/terms/sign/$pupilId'
@@ -3526,26 +3416,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface MarketingRouteChildren {
-  MarketingAboutRoute: typeof MarketingAboutRoute
-  MarketingContactRoute: typeof MarketingContactRoute
-  MarketingFeaturesRoute: typeof MarketingFeaturesRoute
-  MarketingHowItWorksRoute: typeof MarketingHowItWorksRoute
-  MarketingPricingRoute: typeof MarketingPricingRoute
-}
-
-const MarketingRouteChildren: MarketingRouteChildren = {
-  MarketingAboutRoute: MarketingAboutRoute,
-  MarketingContactRoute: MarketingContactRoute,
-  MarketingFeaturesRoute: MarketingFeaturesRoute,
-  MarketingHowItWorksRoute: MarketingHowItWorksRoute,
-  MarketingPricingRoute: MarketingPricingRoute,
-}
-
-const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
-  MarketingRouteChildren,
-)
-
 interface AdminRouteChildren {
   AdminApplicationsRoute: typeof AdminApplicationsRoute
   AdminBenefitsRoute: typeof AdminBenefitsRoute
@@ -3626,7 +3496,6 @@ const QuotesRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  MarketingRoute: MarketingRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
   AutomationsRoute: AutomationsRoute,
   AvailabilityRoute: AvailabilityRoute,
