@@ -10,7 +10,7 @@ import {
 } from "@tabler/icons-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
-import edpLogoAsset from "../assets/ed-pro-logo-white-2.png.asset.json";
+import edpLogoAsset from "../assets/ed-pro-logo-app.png.asset.json";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -215,8 +215,7 @@ function LoginPage() {
       className="min-h-screen w-full flex flex-col relative overflow-hidden"
       style={{
         fontFamily: "Poppins, sans-serif",
-        background:
-          "linear-gradient(180deg, #0B1F3A 0%, #16386B 52%, #2A5C9E 100%)",
+        background: "#F7FAFC",
       }}
     >
       {/* Decorative glows */}
@@ -225,7 +224,7 @@ function LoginPage() {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 90% 55% at 85% -5%, rgba(24,119,214,0.14) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 10% 105%, rgba(62,143,224,0.10) 0%, transparent 60%)",
+            "radial-gradient(ellipse 90% 55% at 85% -5%, rgba(24,119,214,0.08) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 10% 105%, rgba(62,143,224,0.06) 0%, transparent 60%)",
         }}
       />
       {/* Content */}
@@ -244,14 +243,14 @@ function LoginPage() {
             className="h-[72px] w-auto mb-4"
           />
           <span
-            className="text-white text-[22px] font-semibold"
-            style={{ fontFamily: "Sora, sans-serif", letterSpacing: "-0.01em" }}
+            className="text-[22px] font-semibold"
+            style={{ fontFamily: "Sora, sans-serif", letterSpacing: "-0.01em", color: "#0B1F3A" }}
           >
             EveryDriver Pro
           </span>
           <span
-            className="text-white/45 text-[12.5px] font-normal mt-1"
-            style={{ letterSpacing: "0.04em" }}
+            className="text-[12.5px] font-normal mt-1"
+            style={{ letterSpacing: "0.04em", color: "#64748B" }}
           >
             Driving School Management
           </span>
@@ -266,12 +265,13 @@ function LoginPage() {
                 ? onBiometric
                 : () => setError("Sign in with your password first to enable Face ID")
             }
-            className="w-full flex items-center gap-3.5 text-left mb-5 transition-colors active:bg-white/[0.09]"
+            className="w-full flex items-center gap-3.5 text-left mb-5 transition-colors active:bg-[#F1F5F9]"
             style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.09)",
+              background: "#FFFFFF",
+              border: "1px solid #E2E8F0",
               borderRadius: 16,
               padding: "13px 16px",
+              boxShadow: "0 1px 3px rgba(11,31,58,0.05)",
             }}
           >
             <span
@@ -280,20 +280,20 @@ function LoginPage() {
                 width: 36,
                 height: 36,
                 borderRadius: 11,
-                background: "rgba(24,119,214,0.22)",
+                background: "rgba(24,119,214,0.12)",
               }}
             >
-              <IconScan size={19} color="#5EA9EC" />
+              <IconScan size={19} color="#1877D6" />
             </span>
             <span className="flex-1 min-w-0">
-              <span className="block text-white text-[15px] font-semibold leading-tight">
+              <span className="block text-[15px] font-semibold leading-tight" style={{ color: "#0B1F3A" }}>
                 Face ID
               </span>
-              <span className="block text-white/45 text-[12px] leading-tight mt-0.5">
+              <span className="block text-[12px] leading-tight mt-0.5" style={{ color: "#64748B" }}>
                 {enrolled ? "Sign in with Face ID" : "Sign in faster next time"}
               </span>
             </span>
-            <IconChevronRight size={17} color="rgba(255,255,255,0.35)" className="flex-shrink-0" />
+            <IconChevronRight size={17} color="#94A3B8" className="flex-shrink-0" />
           </button>
         )}
 
@@ -302,14 +302,15 @@ function LoginPage() {
           <div
             className="w-full mb-5"
             style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.09)",
+              background: "#FFFFFF",
+              border: "1px solid #E2E8F0",
               borderRadius: 18,
               padding: 18,
+              boxShadow: "0 1px 3px rgba(11,31,58,0.05)",
             }}
           >
-            <p className="text-[15px] font-semibold text-white">Enable Face ID for next time?</p>
-            <p className="text-[13px] text-white/50 mt-1">
+            <p className="text-[15px] font-semibold" style={{ color: "#0B1F3A" }}>Enable Face ID for next time?</p>
+            <p className="text-[13px] mt-1" style={{ color: "#64748B" }}>
               Sign in faster without typing your password.
             </p>
             <div className="flex gap-2.5 mt-4">
@@ -324,8 +325,8 @@ function LoginPage() {
               <button
                 type="button"
                 onClick={skipEnroll}
-                className="flex-1 h-11 text-[14px] font-medium text-white/80"
-                style={{ border: "1px solid rgba(255,255,255,0.16)", borderRadius: 12 }}
+                className="flex-1 h-11 text-[14px] font-medium"
+                style={{ border: "1px solid #E2E8F0", borderRadius: 12, color: "#475569" }}
               >
                 Not now
               </button>
@@ -338,27 +339,27 @@ function LoginPage() {
           onSubmit={onSubmit}
           className="w-full flex flex-col"
           style={{
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.09)",
+            background: "#FFFFFF",
+            border: "1px solid #E2E8F0",
             borderRadius: 22,
             padding: "24px 22px",
-            boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
-            backdropFilter: "blur(20px)",
+            boxShadow: "0 16px 40px rgba(11,31,58,0.08)",
           }}
         >
           <h2
-            className="text-[20px] font-semibold text-white"
-            style={{ fontFamily: "Sora, sans-serif", letterSpacing: "-0.01em" }}
+            className="text-[20px] font-semibold"
+            style={{ fontFamily: "Sora, sans-serif", letterSpacing: "-0.01em", color: "#0B1F3A" }}
           >
             Welcome back
           </h2>
-          <p className="text-[13px] text-white/45 mt-1 mb-6">Sign in to your account</p>
+          <p className="text-[13px] mt-1 mb-6" style={{ color: "#64748B" }}>Sign in to your account</p>
 
           <div className="flex flex-col gap-4">
             <div className="w-full">
               <label
                 htmlFor="login-email"
-                className="block mb-1.5 text-[12px] font-medium text-white/55"
+                className="block mb-1.5 text-[12px] font-medium"
+                style={{ color: "#475569" }}
               >
                 Email
               </label>
@@ -377,7 +378,8 @@ function LoginPage() {
             <div className="w-full relative">
               <label
                 htmlFor="login-password"
-                className="block mb-1.5 text-[12px] font-medium text-white/55"
+                className="block mb-1.5 text-[12px] font-medium"
+                style={{ color: "#475569" }}
               >
                 Password
               </label>
@@ -394,8 +396,8 @@ function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3.5 top-[38px] hover:text-white/70 transition-colors"
-                style={{ color: "rgba(255,255,255,0.40)" }}
+                className="absolute right-3.5 top-[38px] hover:text-[#64748B] transition-colors"
+                style={{ color: "#94A3B8" }}
                 aria-label={showPassword ? "Hide password" : "Show password"}
                 tabIndex={-1}
               >
@@ -404,7 +406,7 @@ function LoginPage() {
             </div>
 
             <div className="flex justify-end -mt-1">
-              <Link to="/forgotpassword" className="text-[13px] text-[#6FB2F0] hover:underline">
+              <Link to="/forgotpassword" className="text-[13px] text-[#1877D6] hover:underline">
                 Forgot password?
               </Link>
             </div>
@@ -422,9 +424,9 @@ function LoginPage() {
               {loading ? "Signing in…" : "Sign in"}
             </Button>
 
-            <p className="text-[12.5px] text-white/45 text-center mt-1 whitespace-nowrap">
+            <p className="text-[12.5px] text-center mt-1 whitespace-nowrap" style={{ color: "#64748B" }}>
               Don&apos;t have an account?{" "}
-              <Link to="/register" className="text-[#6FB2F0] hover:underline font-medium">
+              <Link to="/register" className="text-[#1877D6] hover:underline font-medium">
                 Create account
               </Link>
             </p>
@@ -441,12 +443,12 @@ function LoginPage() {
                 role="alert"
                 aria-live="assertive"
                 style={{
-                  background: "rgba(204,34,41,0.14)",
-                  border: "1px solid rgba(204,34,41,0.38)",
+                  background: "rgba(204,34,41,0.06)",
+                  border: "1px solid rgba(204,34,41,0.25)",
                   borderRadius: 12,
                 }}
               >
-                <p className="text-[13px] font-medium text-[#FF9B9E] text-center">{error}</p>
+                <p className="text-[13px] font-medium text-[#CC2229] text-center">{error}</p>
               </div>
             )}
           </div>
@@ -458,11 +460,11 @@ function LoginPage() {
         className="flex flex-col items-center gap-1.5"
         style={{ paddingBottom: "max(20px, env(safe-area-inset-bottom))" }}
       >
-        <p className="flex items-center gap-1.5 text-white/35 text-[11.5px]">
+        <p className="flex items-center gap-1.5 text-[11.5px]" style={{ color: "#94A3B8" }}>
           <IconShieldCheck size={13} />
           Your data is secure and encrypted
         </p>
-        <p className="text-white/20 text-[10.5px]">EveryDriver Pro &copy; 2026</p>
+        <p className="text-[10.5px]" style={{ color: "#CBD5E1" }}>EveryDriver Pro &copy; 2026</p>
       </div>
     </div>
   );
