@@ -1221,21 +1221,6 @@ function PupilsIndexPage() {
                 </div>
               </>
             )}
-            {statusFilter === "active" && (
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 500,
-                  color: '#6E6E73',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.3px',
-                  padding: '18px 16px 8px',
-                  fontFamily: 'Poppins, sans-serif',
-                }}
-              >
-                Active pupils · {activePupils.length}
-              </div>
-            )}
             <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
               {(statusFilter === "active" ? activePupils : filtered).map((p) =>
                 renderSwipeRow(p)
