@@ -1,13 +1,13 @@
 # Every Driver Pro — Split Marketing Website From App
 
-Master instruction accepted. This is a **separation, not a migration or rewrite**: the existing Supabase backend (`bjpqxfrihwjcqprmoqfs.supabase.co`) stays the single source of truth, untouched. No second Supabase project, no data copying, no schema changes, no edge function changes.
+Separation only. The existing Supabase backend (`bjpqxfrihwjcqprmoqfs.supabase.co`) stays the single source of truth, untouched. No second backend, no schema changes, no data migration, no edge function changes. The Supabase client is hardcoded in `src/lib/supabaseClient.ts`, so the remixed project connects to the same backend automatically — zero config.
 
 ## Final architecture
 
 ```text
 everydriver.co.uk          everydriver.pro              app.everydriver.pro
 (learners, separate)       MARKETING SITE               INSTRUCTOR APP
-                           (new Lovable project)        (THIS project)
+                           (new remixed project)        (THIS project)
                                   │                            │
                                   └────── SAME EXISTING SUPABASE ──────┘
 ```
@@ -15,39 +15,55 @@ everydriver.co.uk          everydriver.pro              app.everydriver.pro
 - `everydriver.pro` primary, `www.everydriver.pro` redirects to it
 - Existing Lovable URL remains the app's fallback/dev URL
 
-## Pre-split audit (done)
+## Pre-split audit (verified against the codebase)
 
-- **App-side links to marketing pages:** none found outside marketing components — navigation separation is clean. Only the new marketing project's CTAs need wiring to `app.everydriver.pro`.
-- **App-only tech that must NOT go to marketing:** OneSignal (`__root.tsx`, `lib/push.ts`, `api/public/carplay/v1/devices.ts`), Capacitor (`lib/openUrl.ts`, `lib/haptics.ts`, `lib/storage.ts`, `hooks/useUnreadCount.ts`, several routes), biometric auth, offline logic.
-- **Edge functions in use (all stay untouched):** `square-create-payment-link`, `square-oauth-start`, `send-sms`, `send-payment-email`, `send-welcome-email`, `send-push`, `google-calendar-sync`, `find-cheap-fuel`.
+- **Homepage is `src/routes/index.tsx`** (it renders MarketingNav/MarketingFooter itself). There is no `_marketing.index.tsx` — the KEEP list is adjusted accordingly.
+- **`_marketing.how-it-works.tsx` exists and is linked from the marketing footer.** It is not in your KEEP list, but removing it would leave a dead footer link and lose SEO content — plan keeps it. Say the word if you want it dropped.
+- `health.tsx`, `perks.tsx`, `test-swap.tsx`, `payments.tsx` are **app pages** (not marketing) — they stay in this project.
+- **App-side links to marketing pages:** none outside marketing components — navigation separation is already clean.
+- **App-only tech that must NOT go to marketing:** OneSignal, push infra (`lib/push*.ts`, `public/sw.js`), Capacitor (`capacitor.config.ts`, `lib/openUrl.ts`, `lib/haptics.ts`, `lib/storage.ts`, `lib/platform.ts`), biometric auth, offline logic, CarPlay routes.
+- **Edge functions (all stay untouched):** `square-*`, `send-sms`, `send-push`, `send-payment-email`, `send-welcome-email`, `google-calendar-sync`, `find-cheap-fuel`, `ics-feed`, `receive-sms`.
 - **Server routes (stay in app project):** `api/square-create-subscription`, `api/public/square-webhook`, `api/public/send-lesson-reminders`, `api/public/news-ingest`, `api/public/carplay/*`.
-- **Supabase client** is hardcoded in `src/lib/supabaseClient.ts`, so a remix connects to the same backend automatically — zero config.
+- `app.everydriver.pro` is already added to this project, status **awaiting_dns** (Phase 6 completes it).
 
 ## Phases (strict order — your spec)
 
 ### Phase 1 — You: create the marketing project
-Remix this project (Settings → "Remix this project" or ⋯ → Remix), name it **Every Driver Pro — Marketing**. The remix inherits code, assets, and the working Supabase connection.
+Remix this project, name it **Every Driver Pro — Marketing**. Do not proceed until the remix exists.
 
 ### Phase 2 — Me (in the new project): strip to marketing only
-Keep: homepage, About, Features, How it works, Pricing, Contact, FAQ-style/SEO content, Healthcare, Perks, Payments, Test Swap marketing pages, testimonials, Privacy, Terms, marketing components/images/brand assets.
-Remove: all ~100 app routes, `src/components/dsm/*`, OneSignal, push infra, Capacitor + native deps, biometric, offline logic, app business logic, server routes and edge-function callers it doesn't need.
+Keep only:
+- `src/routes/index.tsx` (marketing homepage), `_marketing.tsx`, `_marketing.about.tsx`, `_marketing.contact.tsx`, `_marketing.features.tsx`, `_marketing.how-it-works.tsx`, `_marketing.pricing.tsx`, `privacy.tsx`, `terms.tsx`
+- `src/components/marketing/` (entire folder)
+- `src/assets/` (brand/marketing images only)
+- `src/lib/supabaseClient.ts` (same backend)
 
-### Phase 3 — Me + you: wire and test the marketing site
-- CTAs: **Sign In** → `https://app.everydriver.pro/login`, **Get Started** → `https://app.everydriver.pro/register` (app owns auth; no cross-domain session tricks).
-- SEO: metadata, OG tags, structured data, canonicals, sitemap, robots.txt. Brand is **Every Driver Pro / EDP** — no "DSM" anywhere in marketing.
-- Test thoroughly on the marketing project's preview URL.
+Remove everything else: all ~100 app routes (`home.tsx`, `login.tsx`, `register.tsx`, `forgotpassword.tsx`, `schedule.tsx`, pupils, payments, messages, admin.*, etc.), `src/components/dsm/`, OneSignal, push infrastructure, Capacitor + native deps, biometric auth, offline logic, CarPlay, all server routes (`src/routes/api/`), all edge-function callers.
 
-### Phase 4 — You: publish the marketing project
+### Phase 3 — Me (in the new project): wire CTAs, branding, SEO
+- CTAs: **Sign In** → `https://app.everydriver.pro/login`; **Get started** / **Start free trial** → `https://app.everydriver.pro/register`
+- Branding: replace every "DSM" and "Driving School Manager" with **Every Driver Pro** throughout the marketing pages
+- SEO on every marketing page: unique title tags, meta descriptions, OG tags, canonical URLs
+- `public/robots.txt` (allow indexing) and `public/sitemap.xml` (static file listing the marketing pages — no server routes in the marketing project)
+
+### Phase 4 — You: test and publish the marketing project
+Test on the marketing project's Lovable preview URL: all pages load, CTAs point to `app.everydriver.pro`, no DSM branding remains. Then publish.
 
 ### Phase 5 — You: move domains
-Remove `everydriver.pro` + `www.everydriver.pro` from this project; connect them to the marketing project (root primary, www redirect).
+Point `everydriver.pro` to the marketing project; `www.everydriver.pro` redirects to root. Add both custom domains in the marketing project settings (root primary).
 
 ### Phase 6 — You: connect `app.everydriver.pro` to this project
+Finish DNS for `app.everydriver.pro` (currently awaiting_dns). On your Mac, update `capacitor.config.ts` (note: `.ts`, not `.json`) `server.url` to `https://app.everydriver.pro` — it currently points to `drivingschoolmanager.co.uk`. Rebuild Xcode and test on iPhone.
 
 ### Phase 7 — Me (in this project): strip to app only
-**Only after the marketing site is confirmed live.** Remove marketing routes/components/assets from this project, make `/` redirect to `/home` (logged-in) or to the marketing site (logged-out), point any app references to marketing pages at absolute `https://everydriver.pro/...` URLs, add `noindex` to the app, and verify the build plus every core flow (auth, lessons, payments, calendar sync, push, Capacitor).
+**Only after the marketing site is confirmed live.**
+- Remove: `index.tsx` marketing homepage content, `_marketing.tsx`, `_marketing.about/contact/features/how-it-works/pricing.tsx`, `privacy.tsx`, `terms.tsx` (or keep privacy/terms if app store compliance needs them in-app — flag for your call), `src/components/marketing/`, marketing-only assets
+- New root route `/`: logged in → redirect `/home`; logged out → redirect `https://everydriver.pro`
+- `noindex` robots meta on the app (via `__root.tsx` head)
+- Any remaining references to marketing pages become absolute `https://everydriver.pro/...` URLs
+- Verify: register → `/home`, login → `/home`, forgot password, all app routes, push notifications, Google Calendar sync, payments, Capacitor build
 
 ## Success criteria
-- `everydriver.pro` → full marketing site, indexable, fast.
-- `app.everydriver.pro` → full instructor app: register → `/home`, login → `/home`.
-- One Supabase backend, zero data movement, all existing records untouched.
+- `everydriver.pro` → full marketing site, indexable, fast, no app code, CTAs → `app.everydriver.pro`
+- `app.everydriver.pro` → full instructor app, not indexed, all existing features working
+- One Supabase backend, zero data movement, zero downtime
