@@ -215,7 +215,7 @@ function LoginPage() {
       className="min-h-screen w-full flex flex-col relative overflow-hidden"
       style={{
         fontFamily: "Poppins, sans-serif",
-        background: "#F7FAFC",
+        background: "#e7f1f8",
       }}
     >
       {/* Decorative glows */}
