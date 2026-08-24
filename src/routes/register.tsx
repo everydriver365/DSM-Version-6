@@ -102,8 +102,8 @@ function RegisterPage() {
       {/* Logo */}
       <div className="flex flex-col items-center mb-8">
         <img
-          src={dsmLogoAsset.url}
-          alt="DSM logo"
+          src={edpLogoAsset.url}
+          alt="EDP logo"
           className="h-[60px] w-auto mb-2"
         />
         <span className="text-[#9CA3AF] text-[14px]" style={{ fontFamily: "Poppins, sans-serif" }}>
