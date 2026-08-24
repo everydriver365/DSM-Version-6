@@ -3,6 +3,7 @@ import { useState, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { IconMenu2, IconX, IconChevronDown, IconCalendar, IconCreditCard, IconUsers, IconSchool, IconWorld, IconGauge, IconCamera, IconNews, IconHelpCircle, IconStar, IconPlayerPlay, IconArrowUpRight } from "@tabler/icons-react";
 import logoAsset from "../../assets/edp-website-logo-v2.png.asset.json";
+import mobileLogoAsset from "../../assets/edp-logo-mobile.png.asset.json";
 
 const NAVY = "#0B1F3A";
 const ACCENT = "#1877D6";
