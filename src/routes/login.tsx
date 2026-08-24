@@ -212,12 +212,25 @@ function LoginPage() {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col bg-[#0B1F3A]"
-      style={{ fontFamily: "Poppins, sans-serif" }}
+      className="min-h-screen w-full flex flex-col relative overflow-hidden"
+      style={{
+        fontFamily: "Poppins, sans-serif",
+        background:
+          "linear-gradient(180deg, #0B1F3A 0%, #16386B 52%, #2A5C9E 100%)",
+      }}
     >
+      {/* Decorative glows */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 90% 55% at 85% -5%, rgba(24,119,214,0.14) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 10% 105%, rgba(62,143,224,0.10) 0%, transparent 60%)",
+        }}
+      />
       {/* Content */}
       <div
-        className="flex-1 w-full max-w-[380px] mx-auto flex flex-col justify-center px-6"
+        className="relative z-10 flex-1 w-full max-w-[380px] mx-auto flex flex-col justify-center px-6"
         style={{
           paddingTop: "max(48px, env(safe-area-inset-top))",
           paddingBottom: 24,
