@@ -4338,166 +4338,166 @@ function HomePage() {
     return `${Math.floor(h / 24)}d ago`;
   };
 
-    const HOME_TOP_BAR_SPACER = "calc(max(env(safe-area-inset-top, 0px), 24px) + 46px)";
+  const HOME_TOP_BAR_SPACER = "calc(max(env(safe-area-inset-top, 0px), 24px) + 46px)";
 
-    function HomeHeader() {
-      const iconBtn: React.CSSProperties = {
-        width: 32,
-        height: 32,
-        borderRadius: "50%",
-        background: "rgba(255,255,255,0.08)",
-        border: "1px solid rgba(255,255,255,0.1)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        cursor: "pointer",
-        position: "relative",
-        padding: 0,
-        boxSizing: "border-box",
-        flexShrink: 0,
-      };
+  function HomeHeader() {
+    const iconBtn: React.CSSProperties = {
+      width: 32,
+      height: 32,
+      borderRadius: "50%",
+      background: "rgba(255,255,255,0.08)",
+      border: "1px solid rgba(255,255,255,0.1)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer",
+      position: "relative",
+      padding: 0,
+      boxSizing: "border-box",
+      flexShrink: 0,
+    };
 
-      return (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 40,
-            background: tokens.navy,
-            padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 6px) 8px 8px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <img
-              src={edpLogoWhite.url}
-              alt="EDP"
-              style={{ height: 32, width: "auto", objectFit: "contain", display: "block" }}
-            />
-            <div
-              style={{
-                width: 1,
-                height: 20,
-                background: "rgba(255,255,255,0.15)",
-                margin: "0 10px",
-              }}
-            />
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <button
-              type="button"
-              aria-label="Voice commands"
-              onClick={() => toast.info("Voice commands coming soon!")}
-              style={iconBtn}
-            >
-              <IconMicrophone size={16} strokeWidth={1.5} color="#ffffff" />
-            </button>
-            <button
-              type="button"
-              aria-label="Calls answering"
-              onClick={() => navigate({ to: "/enquiries" })}
-              style={iconBtn}
-            >
-              <IconHeadset size={16} strokeWidth={1.5} color="#ffffff" />
-            </button>
-            <button
-              type="button"
-              aria-label="Messages"
-              onClick={() => navigate({ to: "/messages" })}
-              style={iconBtn}
-            >
-              <IconDownload size={16} strokeWidth={1.5} color="#ffffff" />
-            </button>
-            <button
-              type="button"
-              aria-label="Live track"
-              onClick={() => navigate({ to: "/live" })}
-              style={iconBtn}
-            >
-              <IconCar size={16} strokeWidth={1.5} color="#ffffff" />
-            </button>
-            <button
-              type="button"
-              aria-label="Take payment"
-              onClick={() => navigate({ to: "/take-payment" })}
-              style={iconBtn}
-            >
-              <IconCurrencyPound size={16} strokeWidth={1.5} color="#ffffff" />
-            </button>
-            <button
-              type="button"
-              aria-label="Notifications"
-              onClick={() => navigate({ to: "/notifications" })}
-              style={iconBtn}
-            >
-              <IconBell size={16} strokeWidth={1.5} color="#ffffff" />
-              {notifCount > 0 && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: -2,
-                    right: -2,
-                    background: tokens.red,
-                    color: "#ffffff",
-                    fontSize: 9,
-                    fontWeight: tokens.fontWeight.semibold,
-                    minWidth: 16,
-                    height: 16,
-                    borderRadius: 8,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    border: "1.5px solid #0B1F3A",
-                    padding: "0 3px",
-                    fontFamily: "Poppins, sans-serif",
-                  }}
-                >
-                  {notifCount > 99 ? "99+" : notifCount}
-                </span>
-              )}
-            </button>
-            <button
-              type="button"
-              aria-label="Menu"
-              onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
-              style={iconBtn}
-            >
-              <IconAdjustmentsHorizontal size={16} strokeWidth={1.5} color="#ffffff" />
-            </button>
-            <button
-              type="button"
-              aria-label="Open profile"
-              onClick={() => navigate({ to: "/profile" })}
-              style={{ ...iconBtn, overflow: "hidden", padding: 0 }}
-            >
-              {avatarUrl ? (
-                <img
-                  src={avatarUrl}
-                  alt=""
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              ) : (
-                <span
-                  style={{
-                    color: "#ffffff",
-                    fontSize: 12,
-                    fontWeight: tokens.fontWeight.semibold,
-                    fontFamily: "Poppins, sans-serif",
-                  }}
-                >
-                  {(firstName?.[0] ?? "?").toUpperCase()}
-                </span>
-              )}
-            </button>
-          </div>
+    return (
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 40,
+          background: tokens.navy,
+          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 6px) 8px 8px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <img
+            src={edpLogoWhite.url}
+            alt="EDP"
+            style={{ height: 32, width: "auto", objectFit: "contain", display: "block" }}
+          />
+          <div
+            style={{
+              width: 1,
+              height: 20,
+              background: "rgba(255,255,255,0.15)",
+              margin: "0 10px",
+            }}
+          />
         </div>
-      );
-    }
+
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <button
+            type="button"
+            aria-label="Voice commands"
+            onClick={() => toast.info("Voice commands coming soon!")}
+            style={iconBtn}
+          >
+            <IconMicrophone size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Calls answering"
+            onClick={() => navigate({ to: "/enquiries" })}
+            style={iconBtn}
+          >
+            <IconHeadset size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Messages"
+            onClick={() => navigate({ to: "/messages" })}
+            style={iconBtn}
+          >
+            <IconDownload size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Live track"
+            onClick={() => navigate({ to: "/live" })}
+            style={iconBtn}
+          >
+            <IconCar size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Take payment"
+            onClick={() => navigate({ to: "/take-payment" })}
+            style={iconBtn}
+          >
+            <IconCurrencyPound size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Notifications"
+            onClick={() => navigate({ to: "/notifications" })}
+            style={iconBtn}
+          >
+            <IconBell size={16} strokeWidth={1.5} color="#ffffff" />
+            {notifCount > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: -2,
+                  right: -2,
+                  background: tokens.red,
+                  color: "#ffffff",
+                  fontSize: 9,
+                  fontWeight: tokens.fontWeight.semibold,
+                  minWidth: 16,
+                  height: 16,
+                  borderRadius: 8,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "1.5px solid #0B1F3A",
+                  padding: "0 3px",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                {notifCount > 99 ? "99+" : notifCount}
+              </span>
+            )}
+          </button>
+          <button
+            type="button"
+            aria-label="Menu"
+            onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
+            style={iconBtn}
+          >
+            <IconAdjustmentsHorizontal size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Open profile"
+            onClick={() => navigate({ to: "/profile" })}
+            style={{ ...iconBtn, overflow: "hidden", padding: 0 }}
+          >
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt=""
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              <span
+                style={{
+                  color: "#ffffff",
+                  fontSize: 12,
+                  fontWeight: tokens.fontWeight.semibold,
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                {(firstName?.[0] ?? "?").toUpperCase()}
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (isDesktop) {
     const now = new Date();
