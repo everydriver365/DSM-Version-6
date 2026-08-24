@@ -215,6 +215,12 @@ function LoginPage() {
           alt="EDP"
           className="h-[60px] w-auto mb-2"
         />
+        <span
+          className="text-white/60 text-[13px] font-medium tracking-wide uppercase"
+          style={{ letterSpacing: "0.08em" }}
+        >
+          Every Driver Pro, Sch
+        </span>
       </div>
 
       {/* Face ID sign-in */}

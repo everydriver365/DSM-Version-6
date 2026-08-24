@@ -51,13 +51,13 @@ const SHADOW_LIFT =
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Driving School Manager — Free forever for UK driving instructors" },
+      { title: "Every Driver Pro - Driving School Management" },
       {
         name: "description",
         content:
           "Manage lessons, take payments, track pupils and grow your driving school — all from one free app. Built for UK ADIs & PDIs.",
       },
-      { property: "og:title", content: "Driving School Manager — Free forever for UK driving instructors" },
+      { property: "og:title", content: "Every Driver Pro - Driving School Management" },
       {
         property: "og:description",
         content:
