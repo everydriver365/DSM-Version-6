@@ -88,7 +88,8 @@ export function MarketingNav() {
         className="ed-nav-inner"
       >
         <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <img src={logoAsset.url} alt="Every Driver Pro" style={{ height: 36, width: "auto" }} />
+          <img className="ed-logo-desktop" src={logoAsset.url} alt="Every Driver Pro" style={{ height: 36, width: "auto" }} />
+          <img className="ed-logo-mobile" src={mobileLogoAsset.url} alt="Every Driver Pro" style={{ height: 40, width: "auto", display: "none" }} />
         </Link>
 
         <nav className="ed-nav-center" style={{ display: "flex", gap: 4, alignItems: "center", height: "100%" }}>
