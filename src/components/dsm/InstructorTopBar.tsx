@@ -139,7 +139,7 @@ export default function InstructorTopBar({
             <img
               src={edProLogoWhite.url}
               alt="EDP"
-              style={{ height: 48, width: "auto", objectFit: "contain", display: "block" }}
+              style={{ height: 56, width: "auto", objectFit: "contain", display: "block" }}
             />
           </button>
           <IconBtn
