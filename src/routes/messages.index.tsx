@@ -1126,12 +1126,11 @@ function MessagesIndexPage() {
         <h1
           style={{
             margin: 0,
-            color: tokens.white,
+            color: "#FFFFFF",
             fontFamily: "Sora, sans-serif",
             fontSize: 22,
             lineHeight: "40px",
-            fontWeight: 500,
-            letterSpacing: "-0.3px",
+            fontWeight: 700,
           }}
         >
           Messages

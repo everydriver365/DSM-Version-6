@@ -1548,10 +1548,11 @@ function LivePage() {
         <div
           className="absolute left-1/2 -translate-x-1/2"
           style={{
-            color: "#000000",
-            fontSize: 17,
-            fontWeight: tokens.fontWeight.bold,
-            fontFamily: "Poppins, sans-serif",
+            color: "#FFFFFF",
+            fontSize: 22,
+            fontWeight: 700,
+            fontFamily: "Sora, sans-serif",
+            lineHeight: "40px",
           }}
         >
           Live Tracking
