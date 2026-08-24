@@ -307,7 +307,7 @@ export function MarketingNav() {
           .ed-nav-burger { display: inline-flex !important; }
           .ed-nav-signin-mobile { display: inline-flex !important; }
           .ed-nav-mobile { display: block !important; }
-          .ed-nav-inner { padding: 0 20px !important; height: 64px !important; }
+          .ed-nav-inner { padding: 0 20px !important; height: 72px !important; }
         }
         @media (max-width: 768px) {
           .ed-logo-desktop { display: none !important; }
