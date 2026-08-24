@@ -350,7 +350,7 @@ function SubscriptionSuccessPage() {
         fontFamily: "Poppins, sans-serif",
         boxShadow: "0 4px 0 #050D1C",
       }}
-      onClick={() => navigate({ to: "/" as never })}
+      onClick={() => navigate({ to: "/home" as never })}
     >
       Go to DSM →
     </button>

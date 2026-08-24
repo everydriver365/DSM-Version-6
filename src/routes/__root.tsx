@@ -284,7 +284,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
     setOpen(false);
     if (m.signOut) {
       await supabase.auth.signOut();
-      navigate({ to: "/" as never, replace: true });
+      navigate({ to: "/login" as never, replace: true });
       return;
     }
     if (m.event) {
@@ -414,7 +414,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
                 onClick={async () => {
                   setOpen(false);
                   await supabase.auth.signOut();
-                  navigate({ to: "/" as never, replace: true });
+                  navigate({ to: "/login" as never, replace: true });
                 }}
                 style={{
                   fontSize: tokens.fontSize.xs,
@@ -498,7 +498,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
               onClick={async () => {
                 setOpen(false);
                 await supabase.auth.signOut();
-                navigate({ to: "/" as never, replace: true });
+                navigate({ to: "/login" as never, replace: true });
               }}
               style={{
                 width: "100%",
