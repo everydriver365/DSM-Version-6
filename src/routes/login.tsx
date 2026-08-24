@@ -443,12 +443,12 @@ function LoginPage() {
                 role="alert"
                 aria-live="assertive"
                 style={{
-                  background: "rgba(204,34,41,0.14)",
-                  border: "1px solid rgba(204,34,41,0.38)",
+                  background: "rgba(204,34,41,0.06)",
+                  border: "1px solid rgba(204,34,41,0.25)",
                   borderRadius: 12,
                 }}
               >
-                <p className="text-[13px] font-medium text-[#FF9B9E] text-center">{error}</p>
+                <p className="text-[13px] font-medium text-[#CC2229] text-center">{error}</p>
               </div>
             )}
           </div>
@@ -460,11 +460,11 @@ function LoginPage() {
         className="flex flex-col items-center gap-1.5"
         style={{ paddingBottom: "max(20px, env(safe-area-inset-bottom))" }}
       >
-        <p className="flex items-center gap-1.5 text-white/35 text-[11.5px]">
+        <p className="flex items-center gap-1.5 text-[11.5px]" style={{ color: "#94A3B8" }}>
           <IconShieldCheck size={13} />
           Your data is secure and encrypted
         </p>
-        <p className="text-white/20 text-[10.5px]">EveryDriver Pro &copy; 2026</p>
+        <p className="text-[10.5px]" style={{ color: "#CBD5E1" }}>EveryDriver Pro &copy; 2026</p>
       </div>
     </div>
   );
