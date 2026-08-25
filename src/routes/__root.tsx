@@ -769,8 +769,13 @@ function RootComponent() {
   const [userId, setUserId] = useState<string | null>(null);
   useEffect(() => {
     let mounted = true;
-    supabase.auth.getUser().then(({ data }: any) => {
+    supabase.auth.getUser().then(async ({ data }: any) => {
       if (mounted) setUserId(data.user?.id ?? null);
+      try {
+        await SplashScreen.hide();
+      } catch (e) {
+        // ignore
+      }
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
       const uid = session?.user?.id ?? null;
