@@ -244,8 +244,8 @@ function LoginPage() {
               className="h-[72px] w-auto"
             />
             <span
-              className="absolute -top-0.5 -right-3 text-[10px] font-semibold"
-              style={{ color: "#64748B" }}
+              className="absolute -top-1 -right-3.5 text-[11px] font-bold"
+              style={{ color: "#0B1F3A", whiteSpace: "nowrap" }}
             >
               TM
             </span>
