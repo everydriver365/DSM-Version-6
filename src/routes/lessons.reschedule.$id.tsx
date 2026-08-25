@@ -9,7 +9,7 @@ import { supabase } from "../lib/supabaseClient";
 
 
 export const Route = createFileRoute("/lessons/reschedule/$id")({
-  head: () => ({ meta: [{ title: "Reschedule lesson — DSM by EveryDriver" }] }),
+  head: () => ({ meta: [{ title: "Reschedule lesson — EDP by EveryDriver" }] }),
   component: RescheduleLessonPage,
 });
 

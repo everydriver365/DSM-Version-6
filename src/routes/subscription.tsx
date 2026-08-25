@@ -12,8 +12,8 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/subscription")({
   head: () => ({
     meta: [
-      { title: "My plan — DSM by EveryDriver" },
-      { name: "description", content: "View your DSM plan and upgrade options." },
+      { title: "My plan — EDP by EveryDriver" },
+      { name: "description", content: "View your EDP plan and upgrade options." },
     ],
   }),
   component: SubscriptionPage,
@@ -22,10 +22,10 @@ export const Route = createFileRoute("/subscription")({
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 const DISPLAY_TIER_NAMES: Record<string, string> = {
-  free: "DSM Free",
-  website: "DSM Essential",
-  pro: "DSM Pro",
-  managed: "DSM Max",
+  free: "EDP Free",
+  website: "EDP Essential",
+  pro: "EDP Pro",
+  managed: "EDP Max",
 };
 
 function SubscriptionPage() {
@@ -94,7 +94,7 @@ function SubscriptionPage() {
         { icon: "🎁", text: "Perkbox 4,000+ discounts" },
         { icon: "❤️", text: "Bennenden health cover" },
         { icon: "🎓", text: "Free DIA membership" },
-        { icon: "🗣️", text: "Ask DSM voice assistant" },
+        { icon: "🗣️", text: "Ask EDP voice assistant" },
       ],
       managed: [
         { icon: "👤", text: "Your dedicated account manager" },
@@ -167,7 +167,7 @@ function SubscriptionPage() {
           CURRENT PLAN
         </div>
         <div style={{ fontSize: 24, fontWeight: tokens.fontWeight.bold, color: "#ffffff", marginBottom: 4 }}>
-          {DISPLAY_TIER_NAMES[websiteTier] ?? "DSM Free"}
+          {DISPLAY_TIER_NAMES[websiteTier] ?? "EDP Free"}
         </div>
         <div style={{ fontSize: tokens.fontSize.base, color: tokens.textMuted, marginBottom: 12 }}>
           {isPaid ? "All paid features included" : "All core features included"}
@@ -225,7 +225,7 @@ function SubscriptionPage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>DSM Pro</div>
+          <div style={{ fontSize: 20, fontWeight: tokens.fontWeight.bold, color: tokens.navy }}>EDP Pro</div>
           <div style={{ fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: tokens.blue }}>£19.99/month</div>
         </div>
 
@@ -407,7 +407,7 @@ function SubscriptionPage() {
                   }}
                 >
                   DIA membership costs {diaMembershipPrice} (plus {diaJoiningFee} joining fee) independently.
-                  This is included completely free with your DSM subscription.
+                  This is included completely free with your EDP subscription.
                 </div>
               </div>
             </div>

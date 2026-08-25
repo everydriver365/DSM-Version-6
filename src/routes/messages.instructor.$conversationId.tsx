@@ -17,17 +17,17 @@ import { PupilAvatar } from "@/components/PupilAvatar";
 export const Route = createFileRoute("/messages/instructor/$conversationId")({
   head: () => ({
     meta: [
-      { title: "Instructor chat — DSM by EveryDriver" },
+      { title: "Instructor chat — EDP by EveryDriver" },
       {
         name: "description",
         content:
-          "Private one-to-one messaging between driving instructors on DSM by EveryDriver.",
+          "Private one-to-one messaging between driving instructors on EDP by EveryDriver.",
       },
-      { property: "og:title", content: "Instructor chat — DSM by EveryDriver" },
+      { property: "og:title", content: "Instructor chat — EDP by EveryDriver" },
       {
         property: "og:description",
         content:
-          "Private one-to-one messaging between driving instructors on DSM by EveryDriver.",
+          "Private one-to-one messaging between driving instructors on EDP by EveryDriver.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -881,7 +881,7 @@ function InstructorDMThread() {
                 ...POPPINS,
               }}
             >
-              DSM Instructor
+              EDP Instructor
             </div>
           </div>
 

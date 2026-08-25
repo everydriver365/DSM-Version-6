@@ -11,7 +11,7 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/bulkmessage")({
   head: () => ({
     meta: [
-      { title: "Bulk message — DSM" },
+      { title: "Bulk message — EDP" },
       { name: "description", content: "Send SMS messages to multiple pupils." },
     ],
   }),

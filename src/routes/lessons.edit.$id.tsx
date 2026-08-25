@@ -78,7 +78,7 @@ async function pushToGoogleCalendar(
 
 export const Route = createFileRoute("/lessons/edit/$id")({
   head: () => ({
-    meta: [{ title: "Edit lesson — DSM by EveryDriver" }],
+    meta: [{ title: "Edit lesson — EDP by EveryDriver" }],
   }),
   component: EditLessonPage,
 });
@@ -657,53 +657,43 @@ function EditLessonPage() {
 
           <div>
             <FieldLabel htmlFor="duration">Duration</FieldLabel>
-            <div style={{
-              display: 'flex',
-              gap: 8,
-              flexWrap: 'wrap',
-              marginBottom: 12,
-            }}>
-              {DURATION_OPTIONS.map((opt) => {
-                if (isEvent && opt.value === -1) return null;
-                return (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => {
-                      setDuration(opt.value);
-                      setIsTestDay(opt.value === -1);
-                      setIsEvent(false);
-                      if (opt.value !== -1) {
-                        setTestCentre('');
-                      }
-                    }}
-                    style={{
-                      height: 34,
-                      borderRadius: 12,
-                      padding: '0 16px',
-                      fontSize: tokens.fontSize.base,
-                      fontWeight: tokens.fontWeight.semibold,
-                      cursor: 'pointer',
-                      border: duration === opt.value
-                        ? 'none'
-                        : '1px solid #E4E8EF',
-                      background: duration === opt.value
-                        ? opt.value === -1
-                          ? '#CC2229'
-                          : '#0B1F3A'
-                        : '#fff',
-                      color: duration === opt.value
-                        ? '#fff' : '#6B7686',
-                      fontFamily: 'Poppins, sans-serif',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {opt.label}
-                  </button>
-                );
-              })}
-
-            </div>
+            <select
+              value={duration}
+              onChange={(e) => {
+                setDuration(Number(e.target.value));
+                setIsTestDay(false);
+                setIsEvent(false);
+                setTestCentre('');
+              }}
+              style={{
+                width: '100%',
+                height: 48,
+                borderRadius: 12,
+                border: '1px solid #E4E8EF',
+                background: '#F7FAFC',
+                padding: '0 12px',
+                fontSize: 14,
+                fontWeight: 500,
+                color: '#0B1F3A',
+                fontFamily: 'Poppins, sans-serif',
+                appearance: 'none',
+                WebkitAppearance: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              <option value={30}>30 minutes</option>
+              <option value={45}>45 minutes</option>
+              <option value={60}>1 hour</option>
+              <option value={75}>1 hour 15 mins</option>
+              <option value={90}>1 hour 30 mins</option>
+              <option value={105}>1 hour 45 mins</option>
+              <option value={120}>2 hours</option>
+              <option value={150}>2 hours 30 mins</option>
+              <option value={180}>3 hours</option>
+              <option value={240}>4 hours</option>
+              <option value={300}>5 hours</option>
+              <option value={360}>6 hours</option>
+            </select>
             {isTestDay && (
               <div style={{ marginBottom: 16 }}>
                 <div style={{

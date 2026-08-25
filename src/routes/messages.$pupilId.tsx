@@ -12,7 +12,7 @@ import { PupilAvatar } from "@/components/PupilAvatar";
 
 export const Route = createFileRoute("/messages/$pupilId")({
   head: () => ({
-    meta: [{ title: "Message pupil — DSM by EveryDriver" }],
+    meta: [{ title: "Message pupil — EDP by EveryDriver" }],
   }),
   component: PupilThreadPage,
 });

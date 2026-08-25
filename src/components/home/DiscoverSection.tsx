@@ -6,6 +6,7 @@ import spotifyLogoAsset from "@/assets/spotify-logo.png.asset.json";
 import balloonLogoAsset from "@/assets/balloon-logo.png.asset.json";
 import vitalityLogoAsset from "@/assets/vitality-logo.png.asset.json";
 import hmacaLogoAsset from "@/assets/hmaca-logo.png.asset.json";
+import proLogoAsset from "@/assets/pro-logo.png.asset.json";
 
 import {
   IconChevronRight,
@@ -485,7 +486,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     imageUrl: listing.imageUrl,
     badge: "FOR SALE",
     badgeColor: "#1A9B5C",
-    footer: "DSM Marketplace",
+    footer: "EDP Marketplace",
     Icon: categoryIcon(listing.category),
     onOpen: () =>
       navigate({
@@ -504,7 +505,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
     imageUrl: null,
     badge: "FOR SALE",
     badgeColor: "#1A9B5C",
-    footer: "DSM Marketplace",
+    footer: "EDP Marketplace",
     Icon: categoryIcon(null),
     onOpen: () => navigate({ to: "/marketplace" as never }),
   };
@@ -512,7 +513,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
   const benefitsCard: BenefitsSlide = {
     id: "benefits",
     variant: "benefits",
-    title: "DSM member exclusive benefits",
+    title: "EDP member exclusive benefits",
     subtitle: "Including free DIA membership and 40+ perks",
     stat: "40+",
     statLabel: "PERKS",
@@ -1008,7 +1009,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             <span style={{ ...chipBase, width: 40, height: 40, borderRadius: 14, background: "#fff", color: BLUE, boxShadow: "0 2px 10px -2px rgba(11,31,58,0.14)" }}>
               <IconRosetteDiscount size={20} color={BLUE} stroke={1.6} />
             </span>
-            <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 10 }}>Perks</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 10 }}>
+              <img src={proLogoAsset.url} alt="PRO" style={{ height: 22, width: "auto", objectFit: "contain" }} />
+              <span style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY }}>Perks</span>
+            </div>
             <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, lineHeight: 1.4, marginTop: 4 }}>
               {isFreeTier
                 ? "Free DIA membership & exclusive member benefits"
@@ -1094,7 +1098,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </span>
         </div>
 
-        {/* DSM LEARN — Learn, Bitesize & Showcase */}
+        {/* EDP LEARN — Learn, Bitesize & Showcase */}
         <div
           role="button"
           tabIndex={0}
@@ -1112,8 +1116,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           {/* open book motif */}
           <svg
             aria-hidden
-            width={68}
-            height={60}
+            width={54}
+            height={48}
             viewBox="0 0 68 60"
             style={{
               position: "absolute",
@@ -1179,13 +1183,21 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             </span>
             <div
               style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 3,
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.bold,
                 color: NAVY,
                 marginTop: 8,
               }}
             >
-              DSM Learn
+              <img
+                src={proLogoAsset.url}
+                alt="Pro"
+                style={{ height: 18, width: "auto", display: "block" }}
+              />
+              Learn
             </div>
             <div
               style={{
@@ -1202,7 +1214,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </div>
         </div>
 
-        {/* DSM RADIO */}
+        {/* EDP RADIO */}
         <div
           role="button"
           tabIndex={0}
@@ -1220,13 +1232,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           {/* microphone motif */}
           <svg
             aria-hidden
-            width={52}
-            height={70}
+            width={40}
+            height={54}
             viewBox="0 0 52 70"
             style={{
               position: "absolute",
-              bottom: 12,
-              right: 20,
+              bottom: 16,
+              right: 24,
               pointerEvents: "none",
             }}
           >
@@ -1299,16 +1311,25 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             </span>
             <div
               style={{
-                fontSize: 15,
-                fontWeight: tokens.fontWeight.bold,
-                color: NAVY,
+                display: "flex",
+                alignItems: "center",
+                gap: 3,
                 marginTop: 8,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
               }}
             >
-              {isLiveOnAir ? (live.find((s) => isLiveNow(s))?.title ?? "DSM Radio") : "DSM Radio"}
+              <img src={proLogoAsset.url} alt="PRO" style={{ height: 22, width: "auto", objectFit: "contain" }} />
+              <span
+                style={{
+                  fontSize: 15,
+                  fontWeight: tokens.fontWeight.bold,
+                  color: NAVY,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {isLiveOnAir ? (live.find((s) => isLiveNow(s))?.title ?? "Radio") : "Radio"}
+              </span>
             </div>
             <div
               style={{

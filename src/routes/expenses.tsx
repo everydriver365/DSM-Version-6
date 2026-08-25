@@ -13,7 +13,7 @@ import { EmptyState } from "../components/dsm/EmptyState";
 import AddExpenseSheet from "@/components/expenses/AddExpenseSheet";
 
 export const Route = createFileRoute("/expenses")({
-  head: () => ({ meta: [{ title: "Expenses — DSM by EveryDriver" }] }),
+  head: () => ({ meta: [{ title: "Expenses — EDP by EveryDriver" }] }),
   component: ExpensesPage,
 });
 

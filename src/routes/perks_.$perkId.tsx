@@ -23,12 +23,12 @@ export const Route = createFileRoute("/perks_/$perkId")({
       { title: "Perk details — Driving School Manager" },
       {
         name: "description",
-        content: "Member perk details, savings and how to access it with your DSM plan.",
+        content: "Member perk details, savings and how to access it with your EDP plan.",
       },
       { property: "og:title", content: "Perk details — Driving School Manager" },
       {
         property: "og:description",
-        content: "Member perk details, savings and how to access it with your DSM plan.",
+        content: "Member perk details, savings and how to access it with your EDP plan.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -179,7 +179,7 @@ function PerkDetailPage() {
   const links = perk.links ?? [];
   const bullets = perk.bullet_points ?? [];
   const body = perk.detail_text || perk.description || "";
-  const partnerName = perk.partner?.name ?? "DSM partner";
+  const partnerName = perk.partner?.name ?? "EDP partner";
 
   return (
     <DSMTopSheet title="Perk Details" onBack={() => goBack("/perks")}>
@@ -256,7 +256,7 @@ function PerkDetailPage() {
                 Included in your plan
               </div>
               <div style={{ fontSize: 12, color: "#15803D", opacity: 0.8 }}>
-                Available with your DSM {TIER_DISPLAY[websiteTier] ?? websiteTier}
+                Available with your EDP {TIER_DISPLAY[websiteTier] ?? websiteTier}
               </div>
             </>
           ) : (

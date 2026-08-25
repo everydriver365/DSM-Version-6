@@ -1154,7 +1154,7 @@ function AdminHub() {
             <AdminSectionTile
               first
               icon={<IconVideo size={18} color="#000" />}
-              label="DSM Live"
+              label="EDP Live"
               onClick={() => navigate({ to: "/admin/dsm-live" as never })}
             />
             <AdminSectionTile

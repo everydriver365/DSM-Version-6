@@ -49,7 +49,7 @@ interface GoogleConnection {
 export const Route = createFileRoute("/calendarsync")({
   head: () => ({
     meta: [
-      { title: "Calendar sync — DSM by EveryDriver" },
+      { title: "Calendar sync — EDP by EveryDriver" },
       { name: "description", content: "Sync your lessons to any calendar app using an ICS feed." },
     ],
   }),
@@ -285,21 +285,41 @@ function CalendarSyncPage() {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const isConnected =
-      params.get("calendar") === "connected" || params.get("connected") === "google";
+      params.get("connected") === "true" ||
+      params.get("connected") === "google" ||
+      params.get("calendar") === "connected";
     const isError = params.get("calendar") === "error" || params.get("error") !== null;
 
-    if (isConnected) {
-      toast.success("Google Calendar connected! 🎉");
-      setGoogleConnected(true);
+    if (!isConnected && !isError) return;
+
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        if (isConnected) {
+          try {
+            localStorage.setItem("pending_calendar_connected", "true");
+          } catch {
+            // ignore
+          }
+          navigate({ to: "/login", replace: true });
+        }
+        return;
+      }
+
+      if (isConnected) {
+        toast.success("Google Calendar connected! 🎉");
+        setGoogleConnected(true);
+      } else if (isError) {
+        toast.error("Could not connect Google Calendar — please try again");
+      }
       window.history.replaceState({}, "", window.location.pathname);
-      // Auto-sync after a short delay to let state settle
-      setTimeout(() => {
-        void sync();
-      }, 1500);
-    } else if (isError) {
-      toast.error("Could not connect Google Calendar — please try again");
-      window.history.replaceState({}, "", window.location.pathname);
-    }
+      if (isConnected) {
+        // Auto-sync after a short delay to let state settle
+        setTimeout(() => {
+          void sync();
+        }, 1500);
+      }
+    })();
   }, []);
 
   async function connectGoogleCalendar() {
@@ -569,7 +589,7 @@ function CalendarSyncPage() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "My DSM Calendar Feed",
+          title: "My EDP Calendar Feed",
           text: "Sync your lessons to any calendar app using this ICS feed.",
           url: icsUrl,
         });
@@ -688,7 +708,7 @@ function CalendarSyncPage() {
               >
                 <div style={{ flex: 1 }}>
                   <div style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: 500 }}>
-                    Import Google events into DSM
+                    Import Google events into EDP
                   </div>
                   <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm, marginTop: 2 }}>
                     Google events appear on your schedule
@@ -709,7 +729,7 @@ function CalendarSyncPage() {
               >
                 <div style={{ flex: 1 }}>
                   <div style={{ ...POPPINS, color: tokens.navy, fontSize: tokens.fontSize.md, fontWeight: 500 }}>
-                    Push DSM lessons to Google
+                    Push EDP lessons to Google
                   </div>
                   <div style={{ ...POPPINS, color: tokens.textMuted, fontSize: tokens.fontSize.sm, marginTop: 2 }}>
                     Lessons appear in your Google Calendar
@@ -995,10 +1015,10 @@ function CalendarSyncPage() {
                 className="text-xs"
                 style={{ ...POPPINS, color: "#6B7280", lineHeight: 1.6 }}
               >
-                <li>✓ Your Google Calendar events sync into DSM every 2 hours</li>
-                <li>✓ DSM lessons appear in Google Calendar within 24 hours</li>
-                <li>✓ DSM is always up to date — use it as your primary schedule</li>
-                <li>○ Google Calendar is a read-only view — manage lessons in DSM</li>
+                <li>✓ Your Google Calendar events sync into EDP every 2 hours</li>
+                <li>✓ EDP lessons appear in Google Calendar within 24 hours</li>
+                <li>✓ EDP is always up to date — use it as your primary schedule</li>
+                <li>○ Google Calendar is a read-only view — manage lessons in EDP</li>
               </ul>
             </div>
           </div>
@@ -1018,7 +1038,7 @@ function CalendarSyncPage() {
         >
           <IconAlertTriangle size={20} color="#1877D6" className="shrink-0 mt-0.5" />
           <p className="text-[13px] text-[#0B1F3A] leading-[1.5]" style={POPPINS}>
-            This is a one-way read feed. Your DSM lessons appear in your calendar app, but changes made in your calendar app will not sync back to DSM. Always manage your lessons in DSM.
+            This is a one-way read feed. Your EDP lessons appear in your calendar app, but changes made in your calendar app will not sync back to EDP. Always manage your lessons in EDP.
           </p>
         </div>
 

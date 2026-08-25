@@ -17,7 +17,7 @@ export const Route = createFileRoute("/live")({
     pupilId: typeof search.pupilId === "string" ? search.pupilId : undefined,
   }),
   head: () => ({
-    meta: [{ title: "Live tracking — DSM by EveryDriver" }],
+    meta: [{ title: "Live tracking — EDP by EveryDriver" }],
   }),
   component: LivePage,
 });
@@ -744,7 +744,7 @@ function LivePage() {
       try {
         const permission = await Geolocation.requestPermissions();
         if (permission.location === 'denied') {
-          toast.error('Location access denied — please enable in Settings → DSM');
+          toast.error('Location access denied — please enable in Settings → EDP');
           setGeoError('Location permission is off — tap to open settings, then try again');
           setActivePupilId(null);
           setTrackingPupilName(null);
@@ -1515,7 +1515,7 @@ function LivePage() {
       `}</style>
 
 
-      {/* TOP BAR — standard DSM header */}
+      {/* TOP BAR — standard EDP header */}
       <div
         className="absolute top-0 left-0 right-0 z-[1000] flex items-center justify-between"
         style={{
@@ -1524,7 +1524,7 @@ function LivePage() {
           paddingBottom: 10,
           paddingLeft: 16,
           paddingRight: 16,
-          background: tokens.white,
+          background: tokens.navy,
         }}
       >
         <button
@@ -1548,10 +1548,11 @@ function LivePage() {
         <div
           className="absolute left-1/2 -translate-x-1/2"
           style={{
-            color: "#000000",
-            fontSize: 17,
-            fontWeight: tokens.fontWeight.bold,
-            fontFamily: "Poppins, sans-serif",
+            color: "#FFFFFF",
+            fontSize: 22,
+            fontWeight: 700,
+            fontFamily: "Sora, sans-serif",
+            lineHeight: "40px",
           }}
         >
           Live Tracking

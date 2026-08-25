@@ -10,12 +10,12 @@ import { supabase } from "@/lib/supabaseClient";
 export const Route = createFileRoute("/whats-changed")({
   head: () => ({
     meta: [
-      { title: "What's changed — DSM by EveryDriver" },
+      { title: "What's changed — EDP by EveryDriver" },
       {
         name: "description",
         content: "Everything that happened in your driving school since your last login.",
       },
-      { property: "og:title", content: "What's changed — DSM by EveryDriver" },
+      { property: "og:title", content: "What's changed — EDP by EveryDriver" },
       {
         property: "og:description",
         content: "Everything that happened in your driving school since your last login.",
@@ -365,7 +365,7 @@ function WhatsChangedPage() {
         },
         {
           key: "live",
-          label: "DSM Live",
+          label: "EDP Live",
           icon: <IconVideo size={16} color={BLUE} />,
           items: rowsOf(live).map((r) => ({
             id: String(r.id),
@@ -383,7 +383,7 @@ function WhatsChangedPage() {
             id: String(r.id),
             kind: "learn" as const,
             title: r.title || "Tutorial",
-            subtitle: r.duration ? String(r.duration) : "DSM Learn",
+            subtitle: r.duration ? String(r.duration) : "EDP Learn",
             raw: r,
           })),
         },
@@ -666,7 +666,7 @@ function DetailSheet({
       cta = { label: "View jobs →", to: "/jobs" };
       break;
     case "live":
-      title = "DSM Live session";
+      title = "EDP Live session";
       body = (
         <>
           <Field label="Session" value={r.title || "Live session"} />

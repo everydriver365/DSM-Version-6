@@ -11,7 +11,7 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/search")({
   head: () => ({
     meta: [
-      { title: "Search — DSM" },
+      { title: "Search — EDP" },
       { name: "description", content: "Search pupils, lessons, payments, notes and enquiries." },
     ],
   }),

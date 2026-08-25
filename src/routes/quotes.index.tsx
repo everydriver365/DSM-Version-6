@@ -22,7 +22,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 export const Route = createFileRoute("/quotes/")({
   head: () => ({
     meta: [
-      { title: "Quotes — DSM by EveryDriver" },
+      { title: "Quotes — EDP by EveryDriver" },
       { name: "description", content: "Send and track course quotes to prospective pupils." },
     ],
   }),

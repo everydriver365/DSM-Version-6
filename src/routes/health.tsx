@@ -13,7 +13,7 @@ import healthCoverAsset from "../assets/health-cover.png.asset.json";
 
 export const Route = createFileRoute("/health")({
   head: () => ({
-    meta: [{ title: "Health & wellbeing — DSM by EveryDriver" }],
+    meta: [{ title: "Health & wellbeing — EDP by EveryDriver" }],
   }),
   component: HealthPage,
 });

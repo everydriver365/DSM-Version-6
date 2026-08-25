@@ -117,7 +117,7 @@ export function WhatsNewSheet({
           Just added
         </div>
         <h2 style={{ fontSize: 19, fontWeight: tokens.fontWeight.bold, color: NAVY, margin: 0, marginBottom: 16 }}>
-          {items.length === 1 ? "1 new thing in DSM" : `${items.length} new things in DSM`}
+          {items.length === 1 ? "1 new thing in EDP" : `${items.length} new things in EDP`}
         </h2>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 20 }}>

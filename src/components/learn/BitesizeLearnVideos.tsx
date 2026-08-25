@@ -76,7 +76,7 @@ export default function BitesizeLearnVideos({ limitPerSection = 12 }: { limitPer
       <div style={{ padding: "0 16px 2px", display: "flex", alignItems: "center", gap: 7 }}>
         <span style={{ fontSize: 14 }}>⚡</span>
         <span style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.bold, color: NAVY, ...POPPINS }}>
-          Bitesize from DSM Learn
+          Bitesize from EDP Learn
         </span>
       </div>
       <div style={{ padding: "0 16px", fontSize: 12, color: GRAY_BODY, ...POPPINS }}>
@@ -186,7 +186,7 @@ export default function BitesizeLearnVideos({ limitPerSection = 12 }: { limitPer
                         {v.title}
                       </div>
                       <div style={{ fontSize: 11.5, color: GRAY_BODY, marginTop: 3 }}>
-                        {v.source ?? "DSM Learn"}
+                        {v.source ?? "EDP Learn"}
                         {formatVideoDuration(v) ? ` · ${formatVideoDuration(v)}` : ""}
                       </div>
                       <div

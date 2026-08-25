@@ -25,7 +25,7 @@ import SegmentedTabs from "@/components/learn/shared/SegmentedTabs";
 export const Route = createFileRoute("/pupils/")({
   head: () => ({
     meta: [
-      { title: "Pupils — DSM by EveryDriver" },
+      { title: "Pupils — EDP by EveryDriver" },
       { name: "description", content: "Manage your pupils and their lesson history." },
     ],
   }),
@@ -882,32 +882,19 @@ function PupilsIndexPage() {
           boxSizing: "border-box",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <h1
-            style={{
-              margin: 0,
-              color: tokens.white,
-              fontFamily: "Sora, sans-serif",
-              fontSize: tokens.fontSize.xxl,
-              lineHeight: "40px",
-              fontWeight: tokens.fontWeight.bold,
-              letterSpacing: "-0.3px",
-            }}
-          >
-            Pupils
-          </h1>
-          <span
-            style={{
-              fontSize: 13,
-              fontWeight: 400,
-              marginTop: 4,
-              color: "rgba(255,255,255,0.65)",
-              ...POPPINS,
-            }}
-          >
-            {statusCounts ? `${statusCounts.active} active pupil${statusCounts.active === 1 ? "" : "s"}` : ""}
-          </span>
-        </div>
+        <h1
+          style={{
+            margin: 0,
+            color: tokens.white,
+            fontFamily: "Sora, sans-serif",
+            fontSize: tokens.fontSize.xxl,
+            lineHeight: "40px",
+            fontWeight: tokens.fontWeight.bold,
+            letterSpacing: "-0.3px",
+          }}
+        >
+          Pupils
+        </h1>
 
         <button
           type="button"
@@ -954,13 +941,12 @@ function PupilsIndexPage() {
           zIndex: 1,
           flex: 1,
           minHeight: 0,
-          marginTop: -22,
+          marginTop: -18,
           background: tokens.white,
-          borderRadius: "28px 28px 0 0",
+          borderRadius: "16px 16px 0 0",
           overflowY: "auto",
           overflowX: "hidden",
-          paddingTop: 8,
-
+          paddingTop: 12,
           paddingBottom: "calc(88px + env(safe-area-inset-bottom, 0px))",
         }}
       >
@@ -1220,21 +1206,6 @@ function PupilsIndexPage() {
                   )}
                 </div>
               </>
-            )}
-            {statusFilter === "active" && (
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 500,
-                  color: '#6E6E73',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.3px',
-                  padding: '18px 16px 8px',
-                  fontFamily: 'Poppins, sans-serif',
-                }}
-              >
-                Active pupils · {activePupils.length}
-              </div>
             )}
             <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
               {(statusFilter === "active" ? activePupils : filtered).map((p) =>

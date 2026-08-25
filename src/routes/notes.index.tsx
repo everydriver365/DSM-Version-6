@@ -12,7 +12,7 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/notes/")({
   head: () => ({
     meta: [
-      { title: "Notes — DSM by EveryDriver" },
+      { title: "Notes — EDP by EveryDriver" },
       { name: "description", content: "Capture and review your notes." },
     ],
   }),

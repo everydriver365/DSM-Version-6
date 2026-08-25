@@ -7,7 +7,7 @@ import { SectionHeader } from "../components/dsm/SectionHeader";
 
 export const Route = createFileRoute("/resources")({
   head: () => ({
-    meta: [{ title: "Resources — DSM by EveryDriver" }],
+    meta: [{ title: "Resources — EDP by EveryDriver" }],
   }),
   component: ResourcesPage,
 });

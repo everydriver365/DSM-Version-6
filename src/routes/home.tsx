@@ -11,7 +11,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { buildPickup, getPickupParts } from "@/lib/pickup";
-import InstructorTopBar, { TOP_BAR_SPACER } from "@/components/dsm/InstructorTopBar";
+import edpLogoWhite from "@/assets/edp-home-logo.png.asset.json";
+import { IconHeadset, IconDownload, IconAdjustmentsHorizontal } from "@tabler/icons-react";
 import { QuickActionsMenu, type QuickAction } from "@/components/dsm/QuickActionsMenu";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard.tsx";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
@@ -306,7 +307,7 @@ function NextLessonMap({
 export const Route = createFileRoute("/home")({
   head: () => ({
     meta: [
-      { title: "Home — DSM by EveryDriver" },
+      { title: "Home — EDP by EveryDriver" },
       { name: "description", content: "Your daily overview of lessons, pupils and earnings." },
     ],
   }),
@@ -1911,7 +1912,7 @@ function HomePage() {
               return {
                 ...c,
                 other_id: otherId,
-                other_name: other?.name ?? 'DSM Instructor',
+                other_name: other?.name ?? 'EDP Instructor',
                 other_image: other?.profile_image_url ?? null,
               };
             })
@@ -3537,6 +3538,14 @@ function HomePage() {
     };
   }, [userId, todayISO, tomorrowISO]);
 
+  // Time-of-day greeting for the header
+  const hour = new Date().getHours();
+  const greeting = hour < 12
+    ? 'Good morning'
+    : hour < 17
+    ? 'Good afternoon'
+    : 'Good evening';
+
   // Today timeline shows every lesson for today regardless of status
   // (completed, confirmed, in_progress, cancelled, no_show, pending).
   const todayLessons = allLessons?.filter((l: any) => l.lesson_date === todayISO) || [];
@@ -4329,6 +4338,142 @@ function HomePage() {
     return `${Math.floor(h / 24)}d ago`;
   };
 
+  const HOME_TOP_BAR_SPACER = "calc(max(env(safe-area-inset-top, 0px), 24px) + 46px)";
+
+  function HomeHeader() {
+    const iconBtn: React.CSSProperties = {
+      width: 32,
+      height: 32,
+      borderRadius: "50%",
+      background: "rgba(255,255,255,0.08)",
+      border: "1px solid rgba(255,255,255,0.1)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer",
+      position: "relative",
+      padding: 0,
+      boxSizing: "border-box",
+      flexShrink: 0,
+    };
+
+    return (
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 40,
+          background: tokens.navy,
+          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 6px) 8px 8px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <img
+            src={edpLogoWhite.url}
+            alt="EDP"
+            style={{ height: 32, width: "auto", objectFit: "contain", display: "block", paddingLeft: 10 }}
+          />
+          <div
+            style={{
+              width: 1,
+              height: 20,
+              background: "rgba(255,255,255,0.15)",
+              margin: "0 10px",
+            }}
+          />
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <button
+            type="button"
+            aria-label="Voice commands"
+            onClick={() => toast.info("Voice commands coming soon!")}
+            style={iconBtn}
+          >
+            <IconMicrophone size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Calls answering"
+            onClick={() => navigate({ to: "/enquiries" })}
+            style={iconBtn}
+          >
+            <IconHeadset size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Messages"
+            onClick={() => navigate({ to: "/messages" })}
+            style={iconBtn}
+          >
+            <IconDownload size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Live track"
+            onClick={() => navigate({ to: "/live" })}
+            style={iconBtn}
+          >
+            <IconCar size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Take payment"
+            onClick={() => navigate({ to: "/take-payment" })}
+            style={iconBtn}
+          >
+            <IconCurrencyPound size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+          <button
+            type="button"
+            aria-label="Notifications"
+            onClick={() => navigate({ to: "/notifications" })}
+            style={iconBtn}
+          >
+            <IconBell size={16} strokeWidth={1.5} color="#ffffff" />
+            {notifCount > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: -2,
+                  right: -2,
+                  background: tokens.red,
+                  color: "#ffffff",
+                  fontSize: 9,
+                  fontWeight: tokens.fontWeight.semibold,
+                  minWidth: 16,
+                  height: 16,
+                  borderRadius: 8,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "1.5px solid #0B1F3A",
+                  padding: "0 3px",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                {notifCount > 99 ? "99+" : notifCount}
+              </span>
+            )}
+          </button>
+          <button
+            type="button"
+            aria-label="Menu"
+            onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
+            style={iconBtn}
+          >
+            <IconAdjustmentsHorizontal size={16} strokeWidth={1.5} color="#ffffff" />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (isDesktop) {
     const now = new Date();
     const in7 = new Date(now.getTime() + 7 * 86400000);
@@ -4368,20 +4513,11 @@ function HomePage() {
       cursor: "pointer", fontFamily: "Poppins, sans-serif",
       fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: tokens.navy,
     };
+
     return (
-      <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: TOP_BAR_SPACER }}>
+      <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: HOME_TOP_BAR_SPACER }}>
         {notifBanner}
-        <InstructorTopBar
-          firstName={firstName}
-          avatarUrl={avatarUrl}
-          unreadCount={notifCount}
-          onProfile={() => navigate({ to: "/profile" })}
-          onPhone={() => navigate({ to: "/enquiries" })}
-          onLiveTrack={() => navigate({ to: "/live" })}
-          onBell={() => navigate({ to: "/notifications" })}
-          onMenu={() => window.dispatchEvent(new Event('dsm-open-menu'))}
-          onMicPress={() => toast.info("Voice commands coming soon!")}
-        />
+        <HomeHeader />
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
           {/* HEADER */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
@@ -4804,7 +4940,7 @@ function HomePage() {
   }
 
   return (
-    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: TOP_BAR_SPACER, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
+    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: HOME_TOP_BAR_SPACER, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
       {showWelcome && userId && (
         <WelcomeOverlay
           userId={userId}
@@ -4816,17 +4952,7 @@ function HomePage() {
       <SheetQueueController userId={userId} />
       <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.carousel-hide-scrollbar::-webkit-scrollbar{display:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}@keyframes chipShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
       {/* TOP BAR */}
-      <InstructorTopBar
-        firstName={firstName}
-        avatarUrl={avatarUrl}
-        unreadCount={notifCount}
-        onProfile={() => navigate({ to: "/profile" })}
-        onPhone={() => navigate({ to: "/enquiries" })}
-        onLiveTrack={() => navigate({ to: "/live" })}
-        onBell={() => navigate({ to: "/notifications" })}
-        onMenu={() => window.dispatchEvent(new Event('dsm-open-menu'))}
-        onMicPress={() => toast.info("Voice commands coming soon!")}
-      />
+      <HomeHeader />
 
       <PushPermissionCard />
 
@@ -4859,19 +4985,23 @@ function HomePage() {
       <div
         style={{
           backgroundColor: '#0B1F3A',
-          marginTop: `calc(-1 * ${TOP_BAR_SPACER})`,
-          padding: `calc(${TOP_BAR_SPACER} + 16px) 16px 34px`,
+          marginTop: `calc(-1 * ${HOME_TOP_BAR_SPACER})`,
+          padding: `calc(${HOME_TOP_BAR_SPACER} + 16px) 16px 34px`,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           fontFamily: 'Poppins, sans-serif',
-          borderRadius: 0,
+          borderRadius: '0 0 16px 16px',
         }}
       >
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: '#FFFFFF', lineHeight: 1.2 }}>Dashboard</div>
-          <div style={{ fontSize: tokens.fontSize.base, color: '#9CA3AF', marginTop: 4 }}>
-            Welcome back, {firstName || 'there'} 👋
+          <div style={{
+            fontSize: tokens.fontSize.xl,
+            fontWeight: tokens.fontWeight.semibold,
+            color: '#FFFFFF',
+            lineHeight: 1.2,
+          }}>
+            {greeting}, {firstName || 'there'} 👋
           </div>
         </div>
         <button
@@ -4898,7 +5028,7 @@ function HomePage() {
       <div style={SECTION_WRAPPER_STYLE}>
         <div style={{ padding: '0 16px', marginTop: -22, marginBottom: 20, display: 'flex', gap: 8, fontFamily: 'Poppins, sans-serif' }}>
         {[
-          { label: 'Calls', value: String(naCalls), sub: 'Need callback', color: '#CC2229', route: '/messages' },
+          { label: 'Calls', value: String(naCalls), sub: 'Callbacks', color: '#CC2229', route: '/messages' },
           { label: "Jobs", value: String(naJobs), sub: 'Open', color: '#D68A1B', route: '/jobs' },
           { label: "Enq's", value: String(naEnquiries), sub: 'New', color: '#1877D6', route: '/enquiries' },
         ].map((s) => (
@@ -8286,7 +8416,7 @@ function HomePage() {
                     })),
                     ...dmPreviews.slice(0, 1).map((dm) => ({
                       type: 'instructor' as const,
-                      name: dm.other_name || 'DSM Instructor',
+                      name: dm.other_name || 'EDP Instructor',
                       image: dm.other_image || null,
                       colour: '#0F766E',
                     })),
@@ -8398,8 +8528,8 @@ function HomePage() {
                     } : null,
                     topDM?.last_message_at ? {
                       at: new Date(topDM.last_message_at).getTime(),
-                      title: 'New DSM message',
-                      source: clean(topDM.other_name) || 'DSM Instructor',
+                      title: 'New EDP message',
+                      source: clean(topDM.other_name) || 'EDP Instructor',
                       detail: clean(topDM.last_message),
                       colour: '#0F766E',
                       onClick: () => navigate({
@@ -8571,7 +8701,7 @@ function HomePage() {
                         />
                         <Sep />
                         <Label
-                          text="DSM" colour="#0F766E" count={unreadDMs}
+                          text="EDP" colour="#0F766E" count={unreadDMs}
                           onClick={() => navigate({
                             to: '/messages' as never,
                             search: { filter: 'instructors' } as never,
@@ -8741,7 +8871,7 @@ function HomePage() {
                     </div>
                   ))}
 
-                  {/* ROW 5 — DSM messages */}
+                  {/* ROW 5 — EDP messages */}
                   {dmPreviews.length > 0 && (
                     <div style={{ marginTop: 12 }}>
                       {/* Section header */}
@@ -8755,7 +8885,7 @@ function HomePage() {
                         borderTop: '0.5px solid #E4E8EF',
                         fontFamily: 'Poppins, sans-serif',
                       }}>
-                        DSM messages
+                        EDP messages
                       </div>
                       {/* DM rows */}
                       {dmPreviews.map((dm, i) => {
@@ -8838,7 +8968,7 @@ function HomePage() {
                                   color: '#0B1F3A',
                                   fontFamily: 'Poppins, sans-serif',
                                 }}>
-                                  {other?.name ?? 'DSM Instructor'}
+                                  {other?.name ?? 'EDP Instructor'}
                                 </span>
                                 <span style={{
                                   background: '#EFF6FF',
@@ -8850,7 +8980,7 @@ function HomePage() {
                                   letterSpacing: '0.04em',
                                   fontFamily: 'Poppins, sans-serif',
                                 }}>
-                                  DSM
+                                  EDP
                                 </span>
                               </div>
                               <div style={{
@@ -8971,7 +9101,7 @@ function HomePage() {
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
-                DSM National Chat
+                EDP National Chat
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 1 }}>
                 <div style={{
@@ -11494,7 +11624,7 @@ function DiscoverSection() {
                   background: "#C23B3B",
                 }}
               />
-              <div style={headerTitle}>DSM Live</div>
+              <div style={headerTitle}>EDP Live</div>
             </div>
             <button
               type="button"

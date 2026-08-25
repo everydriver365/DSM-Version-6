@@ -25,7 +25,7 @@ import { DL25Sheet } from "./tests";
 
 export const Route = createFileRoute("/mock-tests")({
   head: () => ({
-    meta: [{ title: "Mock tests — DSM by EveryDriver" }],
+    meta: [{ title: "Mock tests — EDP by EveryDriver" }],
   }),
   validateSearch: (search: Record<string, unknown>): { pupilId?: string } => ({
     pupilId: typeof search.pupilId === "string" ? search.pupilId : "",

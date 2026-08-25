@@ -12,7 +12,7 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/courses/new")({
   head: () => ({
     meta: [
-      { title: "New course — DSM by EveryDriver" },
+      { title: "New course — EDP by EveryDriver" },
       { name: "description", content: "Build a new driving course package." },
     ],
   }),
@@ -1553,7 +1553,7 @@ function Step2(props: {
                 lineHeight: 1.5,
               }}
             >
-              Set an end date or number of occurrences so DSM knows how many
+              Set an end date or number of occurrences so EDP knows how many
               course dates to create.
             </div>
           </div>

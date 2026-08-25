@@ -9,7 +9,7 @@ import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/lessons/feedback/$id")({
   head: () => ({
-    meta: [{ title: "Lesson feedback — DSM by EveryDriver" }],
+    meta: [{ title: "Lesson feedback — EDP by EveryDriver" }],
   }),
   component: LessonFeedbackPage,
 });

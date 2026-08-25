@@ -10,7 +10,7 @@ self.addEventListener('push', function(event) {
     data: data.data || {}
   };
   event.waitUntil(
-    self.registration.showNotification(data.title || 'DSM by EveryDriver', options)
+    self.registration.showNotification(data.title || 'Every Driver Pro', options)
   );
 });
 

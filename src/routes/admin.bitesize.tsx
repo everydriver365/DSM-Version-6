@@ -22,16 +22,16 @@ import {
 export const Route = createFileRoute("/admin/bitesize")({
   head: () => ({
     meta: [
-      { title: "Manage Bitesize videos — DSM Admin" },
+      { title: "Manage Bitesize videos — EDP Admin" },
       {
         name: "description",
         content:
-          "Admin tools to upload, edit, publish and delete DSM Bitesize CPD videos.",
+          "Admin tools to upload, edit, publish and delete EDP Bitesize CPD videos.",
       },
-      { property: "og:title", content: "Manage Bitesize videos — DSM Admin" },
+      { property: "og:title", content: "Manage Bitesize videos — EDP Admin" },
       {
         property: "og:description",
-        content: "Upload, edit and publish DSM Bitesize CPD videos.",
+        content: "Upload, edit and publish EDP Bitesize CPD videos.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

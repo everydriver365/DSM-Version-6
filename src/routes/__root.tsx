@@ -25,6 +25,7 @@ import { isBiometricAvailable, authenticate } from "@/lib/biometric";
 import { IconFingerprint } from "@tabler/icons-react";
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
+import { SplashScreen } from "@capacitor/splash-screen";
 import OneSignal from "@onesignal/capacitor-plugin";
 
 import { Button } from "@/components/ui/button";
@@ -131,7 +132,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             Try again
           </button>
           <a
-            href="/"
+            href="/home"
             className="inline-flex items-center justify-center rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
             Go home
@@ -147,30 +148,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { name: "viewport", content: "width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" },
       { charSet: "utf-8" },
-      { title: "Driving School Manager — Free forever for UK driving instructors" },
+      { title: "Every Driver Pro — Free forever for UK driving instructors" },
       { name: "description", content: "Manage lessons, take payments, track pupils and grow your driving school — all from one free app. Built for UK ADIs & PDIs." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Driving School Manager — Free forever for UK driving instructors" },
+      { name: "application-name", content: "Every Driver Pro" },
+      { property: "og:site_name", content: "Every Driver Pro" },
+      { property: "og:title", content: "Every Driver Pro — Free forever for UK driving instructors" },
       { property: "og:description", content: "Manage lessons, take payments, track pupils and grow your driving school — all from one free app. Built for UK ADIs & PDIs." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Driving School Manager — Free forever for UK driving instructors" },
+      { name: "twitter:title", content: "Every Driver Pro — Free forever for UK driving instructors" },
       { name: "twitter:description", content: "Manage lessons, take payments, track pupils and grow your driving school — all from one free app. Built for UK ADIs & PDIs." },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/62b8f50b-7e25-459c-b287-3277155d3f31" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/62b8f50b-7e25-459c-b287-3277155d3f31" },
       { name: "theme-color", content: "#0B1F3A" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
-      { name: "apple-mobile-web-app-title", content: "DSM" },
+      { name: "apple-mobile-web-app-title", content: "Every Driver Pro" },
       { name: "mobile-web-app-capable", content: "yes" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/manifest.json" },
       { rel: "apple-touch-icon", href: icon192.url },
-      { rel: "icon", type: "image/png", sizes: "192x192", href: "/__l5e/assets-v1/822269be-f3a7-47f7-9696-0d4e26d6be94/icon-192.png" },
-      { rel: "icon", type: "image/png", sizes: "512x512", href: "/__l5e/assets-v1/822269be-f3a7-47f7-9696-0d4e26d6be94/icon-192.png" },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -285,7 +287,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
     setOpen(false);
     if (m.signOut) {
       await supabase.auth.signOut();
-      navigate({ to: "/" as never, replace: true });
+      navigate({ to: "/login" as never, replace: true });
       return;
     }
     if (m.event) {
@@ -415,7 +417,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
                 onClick={async () => {
                   setOpen(false);
                   await supabase.auth.signOut();
-                  navigate({ to: "/" as never, replace: true });
+                  navigate({ to: "/login" as never, replace: true });
                 }}
                 style={{
                   fontSize: tokens.fontSize.xs,
@@ -499,7 +501,7 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
               onClick={async () => {
                 setOpen(false);
                 await supabase.auth.signOut();
-                navigate({ to: "/" as never, replace: true });
+                navigate({ to: "/login" as never, replace: true });
               }}
               style={{
                 width: "100%",
@@ -525,6 +527,14 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
 
 
 function RootComponent() {
+  // Desktop redirect: native app stays, mobile browser stays, desktop goes to web app
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!Capacitor.isNativePlatform() && window.innerWidth > 768) {
+      window.location.href = "https://desktop.everydriver.pro";
+    }
+  }, []);
+
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -539,16 +549,17 @@ function RootComponent() {
     "/livesession",
     "/live",
     "/satnav",
-    "/features",
-    "/pricing",
-    "/how-it-works",
-    "/about",
-    "/contact",
   ]);
   // Pages where the floating quick-menu button overlaps page content.
   const hideFloatingMenuExact = new Set(["/test-swap"]);
-  const showFloatingMenu =
-    !hideNavExact.has(pathname) && !hideFloatingMenuExact.has(pathname);
+  // Message threads have a sticky composer whose Send button sits where
+  // the FAB floats, and pupil detail pages have their own in-page actions
+  // (delete, Cancel lesson) — the FAB would float over both.
+  const hideFloatingMenu =
+    hideFloatingMenuExact.has(pathname) ||
+    pathname.startsWith("/messages/") ||
+    pathname.startsWith("/pupils/");
+  const showFloatingMenu = !hideNavExact.has(pathname) && !hideFloatingMenu;
   const hideNav =
     hideNavExact.has(pathname) ||
     pathname.startsWith("/i/") ||
@@ -692,7 +703,7 @@ function RootComponent() {
   const lastActiveRef = useRef<number>(Date.now());
 
   const unlock = useCallback(async () => {
-    const success = await authenticate("Unlock DSM");
+    const success = await authenticate("Unlock EDP");
     if (success) {
       setLocked(false);
       lastActiveRef.current = Date.now();
@@ -766,8 +777,13 @@ function RootComponent() {
   const [userId, setUserId] = useState<string | null>(null);
   useEffect(() => {
     let mounted = true;
-    supabase.auth.getUser().then(({ data }: any) => {
+    supabase.auth.getUser().then(async ({ data }: any) => {
       if (mounted) setUserId(data.user?.id ?? null);
+      try {
+        await SplashScreen.hide();
+      } catch (e) {
+        // ignore
+      }
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
       const uid = session?.user?.id ?? null;
@@ -1010,10 +1026,10 @@ function RootComponent() {
               marginBottom: 8,
             }}
           >
-            <span style={{ fontSize: 24, fontWeight: tokens.fontWeight.extrabold, color: "#fff" }}>DSM</span>
+            <span style={{ fontSize: 24, fontWeight: tokens.fontWeight.extrabold, color: "#fff" }}>EDP</span>
           </div>
           <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.bold, color: "#fff" }}>
-            DSM by EveryDriver
+            EDP by EveryDriver
           </div>
           <div
             style={{

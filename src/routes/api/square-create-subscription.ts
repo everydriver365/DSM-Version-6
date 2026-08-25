@@ -2,9 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 
 const TIER_LABELS: Record<string, string> = {
-  website: "DSM Essential",
-  pro: "DSM Website Pro",
-  managed: "DSM Max",
+  website: "EDP Essential",
+  pro: "EDP Website Pro",
+  managed: "EDP Max",
 };
 
 const TIER_PRICES: Record<string, { monthly: number; annual: number }> = {

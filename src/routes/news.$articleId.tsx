@@ -14,7 +14,7 @@ import { PODCAST_SHOWS } from "@/lib/podcasts";
 
 export const Route = createFileRoute("/news/$articleId")({
   head: () => ({
-    meta: [{ title: "Industry news — DSM by EveryDriver" }],
+    meta: [{ title: "Industry news — EDP by EveryDriver" }],
   }),
   component: NewsArticlePage,
 });
@@ -237,7 +237,7 @@ function ArticleBody({ article }: { article: any }) {
           {cleanContent(article.content)}
         </div>
 
-        {/* Related DSM Learn */}
+        {/* Related EDP Learn */}
         {relatedLearn ? (
           <button
             type="button"
@@ -260,7 +260,7 @@ function ArticleBody({ article }: { article: any }) {
             <span style={{ fontSize: 18 }}>🎓</span>
             <span style={{ minWidth: 0 }}>
               <span style={{ display: "block", fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.extrabold, color: "#5B21B6" }}>
-                DSM Learn
+                EDP Learn
               </span>
               <span style={{ display: "block", fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy }}>
                 {relatedLearn.title}

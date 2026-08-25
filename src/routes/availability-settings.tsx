@@ -9,7 +9,7 @@ import { SaveButton } from "@/components/SaveButton";
 export const Route = createFileRoute("/availability-settings")({
   head: () => ({
     meta: [
-      { title: "My Availability — DSM" },
+      { title: "My Availability — EDP" },
       { name: "description", content: "Set your working hours, buffers, recurring blocks and time off." },
     ],
   }),

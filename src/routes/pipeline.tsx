@@ -10,7 +10,7 @@ import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/pipeline")({
   head: () => ({
-    meta: [{ title: "Pipeline — DSM by EveryDriver" }],
+    meta: [{ title: "Pipeline — EDP by EveryDriver" }],
   }),
   component: PipelinePage,
 });

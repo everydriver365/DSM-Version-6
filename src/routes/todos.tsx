@@ -16,7 +16,7 @@ import { supabase } from "../lib/supabaseClient";
 export const Route = createFileRoute("/todos")({
   head: () => ({
     meta: [
-      { title: "To-do — DSM by EveryDriver" },
+      { title: "To-do — EDP by EveryDriver" },
       { name: "description", content: "Track your to-do items." },
     ],
   }),

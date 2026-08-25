@@ -1,6 +1,6 @@
 import { tokens } from "@/lib/tokens";
 
-interface DSMButtonProps {
+interface EDPButtonProps {
   label: string;
   onClick: () => void;
   variant?: "primary" | "secondary" | "danger" | "ghost";
@@ -10,7 +10,7 @@ interface DSMButtonProps {
   size?: "sm" | "md" | "lg";
 }
 
-export default function DSMButton({
+export default function EDPButton({
   label,
   onClick,
   variant = "primary",
@@ -18,7 +18,7 @@ export default function DSMButton({
   disabled,
   fullWidth,
   size = "md",
-}: DSMButtonProps) {
+}: EDPButtonProps) {
   const heights = { sm: 36, md: 44, lg: 52 };
   const fontSizes = { sm: 12, md: 14, lg: 15 };
 

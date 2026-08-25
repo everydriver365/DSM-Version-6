@@ -19,12 +19,12 @@ import {
 export const Route = createFileRoute("/bookings")({
   head: () => ({
     meta: [
-      { title: "Bookings — DSM by EveryDriver" },
+      { title: "Bookings — EDP by EveryDriver" },
       {
         name: "description",
         content: "Course bookings taken through your driving school mini-site.",
       },
-      { property: "og:title", content: "Bookings — DSM by EveryDriver" },
+      { property: "og:title", content: "Bookings — EDP by EveryDriver" },
       {
         property: "og:description",
         content: "Course bookings taken through your driving school mini-site.",
@@ -337,7 +337,7 @@ function BookingsPage() {
               <ActionRow
                 icon={<IconUserPlus size={20} color="#1877D6" />}
                 label="Create pupil record"
-                description="Add to your pupils list in DSM"
+                description="Add to your pupils list in EDP"
                 onClick={() => convertToPupil(selectedBooking)}
               />
               {selectedBooking.pupil_phone && (

@@ -8,7 +8,7 @@ import { supabase } from "../lib/supabaseClient";
 
 
 export const Route = createFileRoute("/postcode-rates")({
-  head: () => ({ meta: [{ title: "Postcode rates — DSM by EveryDriver" }] }),
+  head: () => ({ meta: [{ title: "Postcode rates — EDP by EveryDriver" }] }),
   component: PostcodeRatesPage,
 });
 

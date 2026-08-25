@@ -9,9 +9,9 @@ export const Route = createFileRoute("/terms_/sign/$pupilId")({
   component: SignTermsPage,
   head: () => ({
     meta: [
-      { title: "Sign terms & conditions | DSM" },
+      { title: "Sign terms & conditions | EDP" },
       { name: "description", content: "Review and sign your instructor's terms and conditions." },
-      { property: "og:title", content: "Sign terms & conditions | DSM" },
+      { property: "og:title", content: "Sign terms & conditions | EDP" },
       { property: "og:description", content: "Review and sign your instructor's terms and conditions." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

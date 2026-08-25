@@ -5,10 +5,10 @@ import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms of Service — DSM by EveryDriver" },
-      { name: "description", content: "Terms of Service for DSM by EveryDriver." },
-      { property: "og:title", content: "Terms of Service — DSM by EveryDriver" },
-      { property: "og:description", content: "Terms of Service for DSM by EveryDriver." },
+      { title: "Terms of Service — Every Driver Pro" },
+      { name: "description", content: "Terms of Service for Every Driver Pro." },
+      { property: "og:title", content: "Terms of Service — Every Driver Pro" },
+      { property: "og:description", content: "Terms of Service for Every Driver Pro." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -23,8 +23,8 @@ const sections: { title: string; content: React.ReactNode }[] = [
     title: "1. ACCEPTANCE",
     content: (
       <>
-        <p>By using DSM you agree to these terms.</p>
-        <p style={{ marginTop: 8 }}>If you do not agree, do not use DSM.</p>
+        <p>By using Every Driver Pro™ you agree to these terms.</p>
+        <p style={{ marginTop: 8 }}>If you do not agree, do not use Every Driver Pro™.</p>
       </>
     ),
   },
@@ -32,7 +32,7 @@ const sections: { title: string; content: React.ReactNode }[] = [
     title: "2. THE SERVICE",
     content: (
       <p>
-        DSM (Driving School Manager) is a business management application for UK driving instructors provided by EveryDriver Ltd.
+        Every Driver Pro™ is a business management application for UK driving instructors provided by EveryDriver™ Ltd.
       </p>
     ),
   },
@@ -40,7 +40,7 @@ const sections: { title: string; content: React.ReactNode }[] = [
     title: "3. YOUR ACCOUNT",
     content: (
       <ul>
-        <li>You must be a UK driving instructor (ADI or PDI) to use DSM</li>
+        <li>You must be a UK driving instructor (ADI or PDI) to use Every Driver Pro™</li>
         <li>You are responsible for keeping your account secure</li>
         <li>You must provide accurate information</li>
         <li>One account per instructor</li>
@@ -53,7 +53,7 @@ const sections: { title: string; content: React.ReactNode }[] = [
       <>
         <p>You must not:</p>
         <ul>
-          <li>Use DSM for any unlawful purpose</li>
+          <li>Use Every Driver Pro™ for any unlawful purpose</li>
           <li>Share your account with others</li>
           <li>Attempt to access other instructors' data</li>
           <li>Reverse engineer or copy the app</li>
@@ -67,7 +67,7 @@ const sections: { title: string; content: React.ReactNode }[] = [
       <ul>
         <li>You are the data controller for your pupils' information</li>
         <li>You are responsible for obtaining consent from pupils to store their data</li>
-        <li>DSM processes this data on your behalf as a data processor</li>
+        <li>Every Driver Pro™ processes this data on your behalf as a data processor</li>
       </ul>
     ),
   },
@@ -86,7 +86,7 @@ const sections: { title: string; content: React.ReactNode }[] = [
     title: "7. PAYMENTS",
     content: (
       <ul>
-        <li>DSM does not process payments on your behalf</li>
+        <li>Every Driver Pro™ does not process payments on your behalf</li>
         <li>Payment links connect to your own Square/Stripe/PayPal accounts</li>
         <li>You are responsible for your own payment processing</li>
       </ul>
@@ -96,7 +96,7 @@ const sections: { title: string; content: React.ReactNode }[] = [
     title: "8. INTELLECTUAL PROPERTY",
     content: (
       <p>
-        DSM and all content is owned by EveryDriver Ltd. You may not copy, modify or distribute the app.
+        Every Driver Pro™ and all content is owned by EveryDriver™ Ltd. You may not copy, modify or distribute the app.
       </p>
     ),
   },
@@ -104,7 +104,7 @@ const sections: { title: string; content: React.ReactNode }[] = [
     title: "9. LIABILITY",
     content: (
       <p>
-        DSM is provided "as is". EveryDriver Ltd is not liable for any loss of business, data or income arising from use of DSM.
+        Every Driver Pro™ is provided "as is". EveryDriver™ Ltd is not liable for any loss of business, data or income arising from use of Every Driver Pro™.
       </p>
     ),
   },
@@ -127,13 +127,13 @@ const sections: { title: string; content: React.ReactNode }[] = [
     title: "12. CONTACT",
     content: (
       <>
-        <p>EveryDriver Ltd</p>
+        <p>EveryDriver™ Ltd</p>
         <p style={{ marginTop: 4 }}>
-          <a href="mailto:hello@everydriver.co.uk" style={{ color: tokens.blue }}>hello@everydriver.co.uk</a>
+          <a href="mailto:support@drivingschoolmanager.co.uk" style={{ color: tokens.blue }}>support@drivingschoolmanager.co.uk</a>
         </p>
         <p style={{ marginTop: 4 }}>
-          <a href="https://drivingschoolmanager.co.uk" target="_blank" rel="noopener noreferrer" style={{ color: tokens.blue }}>
-            drivingschoolmanager.co.uk
+          <a href="https://everydriver.pro" target="_blank" rel="noopener noreferrer" style={{ color: tokens.blue }}>
+            everydriver.pro
           </a>
         </p>
       </>
@@ -170,7 +170,7 @@ function TermsPage() {
               letterSpacing: "0.5px",
             }}
           >
-            DSM by EveryDriver
+            Every Driver Pro™
           </p>
           <h1
             style={{
@@ -235,7 +235,7 @@ function TermsPage() {
             textAlign: "center",
           }}
         >
-          © 2026 EveryDriver Ltd. All rights reserved.
+          © 2026 EveryDriver Ltd. Every Driver Pro™ is a trademark of EveryDriver Ltd. All rights reserved.
         </p>
       </div>
     </DSMTopSheet>

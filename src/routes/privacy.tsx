@@ -5,10 +5,10 @@ import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy Policy — DSM by EveryDriver" },
-      { name: "description", content: "How DSM by EveryDriver collects, uses and stores your data." },
-      { property: "og:title", content: "Privacy Policy — DSM by EveryDriver" },
-      { property: "og:description", content: "How DSM by EveryDriver collects, uses and stores your data." },
+      { title: "Privacy Policy — Every Driver Pro" },
+      { name: "description", content: "How Every Driver Pro collects, uses and stores your data." },
+      { property: "og:title", content: "Privacy Policy — Every Driver Pro" },
+      { property: "og:description", content: "How Every Driver Pro collects, uses and stores your data." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -24,10 +24,10 @@ const sections: { title: string; content: React.ReactNode }[] = [
     content: (
       <>
         <p>
-          EveryDriver Ltd operates DSM (Driving School Manager), a management application for UK driving instructors.
+          EveryDriver™ Ltd operates Every Driver Pro™, a management application for UK driving instructors.
         </p>
         <p style={{ marginTop: 8 }}>
-          Contact: <a href="mailto:hello@everydriver.co.uk" style={{ color: tokens.blue }}>hello@everydriver.co.uk</a>
+          Contact: <a href="mailto:support@drivingschoolmanager.co.uk" style={{ color: tokens.blue }}>support@drivingschoolmanager.co.uk</a>
         </p>
       </>
     ),
@@ -50,7 +50,7 @@ const sections: { title: string; content: React.ReactNode }[] = [
     title: "3. HOW WE USE YOUR DATA",
     content: (
       <ul>
-        <li>To provide DSM services</li>
+        <li>To provide Every Driver Pro™ services</li>
         <li>To send lesson reminders and notifications</li>
         <li>To generate reports and analytics for your business</li>
         <li>To improve the app</li>
@@ -81,6 +81,9 @@ const sections: { title: string; content: React.ReactNode }[] = [
       <>
         <p>If you connect Google Calendar, we store access tokens to sync your lessons.</p>
         <p style={{ marginTop: 8 }}>You can disconnect at any time in Settings.</p>
+        <p style={{ marginTop: 8 }}>
+          Every Driver Pro™'s use of Google Calendar data is limited to the purposes described in this privacy policy and complies with Google's Limited Use requirements.
+        </p>
       </>
     ),
   },
@@ -96,14 +99,14 @@ const sections: { title: string; content: React.ReactNode }[] = [
           <li>Export your data</li>
         </ul>
         <p style={{ marginTop: 8 }}>
-          To exercise these rights contact: <a href="mailto:hello@everydriver.co.uk" style={{ color: tokens.blue }}>hello@everydriver.co.uk</a>
+          To exercise these rights contact: <a href="mailto:support@drivingschoolmanager.co.uk" style={{ color: tokens.blue }}>support@drivingschoolmanager.co.uk</a>
         </p>
       </>
     ),
   },
   {
     title: "8. COOKIES",
-    content: <p>DSM uses essential cookies only for authentication.</p>,
+    content: <p>Every Driver Pro™ uses essential cookies only for authentication.</p>,
   },
   {
     title: "9. CHANGES",
@@ -113,13 +116,13 @@ const sections: { title: string; content: React.ReactNode }[] = [
     title: "10. CONTACT",
     content: (
       <>
-        <p>EveryDriver Ltd</p>
+        <p>EveryDriver™ Ltd</p>
         <p style={{ marginTop: 4 }}>
-          <a href="mailto:hello@everydriver.co.uk" style={{ color: tokens.blue }}>hello@everydriver.co.uk</a>
+          <a href="mailto:support@drivingschoolmanager.co.uk" style={{ color: tokens.blue }}>support@drivingschoolmanager.co.uk</a>
         </p>
         <p style={{ marginTop: 4 }}>
-          <a href="https://drivingschoolmanager.co.uk" target="_blank" rel="noopener noreferrer" style={{ color: tokens.blue }}>
-            drivingschoolmanager.co.uk
+          <a href="https://everydriver.pro" target="_blank" rel="noopener noreferrer" style={{ color: tokens.blue }}>
+            everydriver.pro
           </a>
         </p>
       </>
@@ -156,7 +159,7 @@ function PrivacyPage() {
               letterSpacing: "0.5px",
             }}
           >
-            DSM by EveryDriver
+            Every Driver Pro™
           </p>
           <h1
             style={{
@@ -221,7 +224,7 @@ function PrivacyPage() {
             textAlign: "center",
           }}
         >
-          © 2026 EveryDriver Ltd. All rights reserved.
+          © 2026 EveryDriver Ltd. Every Driver Pro™ is a trademark of EveryDriver Ltd. All rights reserved.
         </p>
       </div>
     </DSMTopSheet>

@@ -1,22 +1,30 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useState, useEffect, useRef, type FormEvent } from "react";
-import { IconCheck, IconEye, IconEyeOff, IconScan } from "@tabler/icons-react";
+import {
+  IconChevronRight,
+  IconEye,
+  IconEyeOff,
+  IconScan,
+  IconShieldCheck,
+} from "@tabler/icons-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
-import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
+import edpLogoAsset from "../assets/ed-pro-logo-transparent.png.asset.json";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign in — DSM by EveryDriver" },
-      { name: "description", content: "Sign in to your DSM by EveryDriver account." },
+      { title: "Sign in — EveryDriver Pro" },
+      { name: "description", content: "Sign in to your EveryDriver Pro account." },
     ],
   }),
   component: LoginPage,
 });
 
 const REMEMBER_KEY = "dsm:rememberedEmail";
+
+const inputClass = "edp-input";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -26,7 +34,6 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [remember, setRemember] = useState(false);
   const [webauthnSupported, setWebauthnSupported] = useState(false);
   const [enrolled, setEnrolled] = useState(false);
   const [askEnroll, setAskEnroll] = useState(false);
@@ -42,7 +49,6 @@ function LoginPage() {
     }
     if (saved) {
       setEmail(saved);
-      setRemember(true);
     }
     if (typeof window !== "undefined" && window.PublicKeyCredential && navigator.credentials) {
       setWebauthnSupported(true);
@@ -91,12 +97,29 @@ function LoginPage() {
     }
     const userId = data.session?.user?.id ?? null;
     instructorId.current = userId;
-    persistRemember(email, remember);
+    // The remembered email powers the Face ID row and prefill on the next
+    // visit, so it is always persisted on a successful sign-in.
+    persistRemember(email, true);
     if (userId) {
       await supabase
         .from("instructors")
-        .update({ remembered_email: remember ? email : null })
+        .update({ remembered_email: email })
         .eq("id", userId);
+    }
+    let pending: string | null = null;
+    try {
+      pending = localStorage.getItem("pending_calendar_connected");
+    } catch {
+      /* ignore */
+    }
+    if (pending === "true") {
+      try {
+        localStorage.removeItem("pending_calendar_connected");
+      } catch {
+        /* ignore */
+      }
+      navigate({ to: "/calendarsync", search: { connected: "true" }, replace: true });
+      return;
     }
     if (webauthnSupported && !enrolled) {
       setAskEnroll(true);
@@ -113,7 +136,7 @@ function LoginPage() {
       const cred = await navigator.credentials.create({
         publicKey: {
           challenge,
-          rp: { name: "DSM by EveryDriver", id: window.location.hostname },
+          rp: { name: "EDP by EveryDriver", id: window.location.hostname },
           user: {
             id: new TextEncoder().encode(email),
             name: email,
@@ -202,260 +225,289 @@ function LoginPage() {
     navigate({ to: "/home", replace: true });
   }
 
-
   return (
     <div
-      className="min-h-screen w-full flex flex-col items-center justify-center bg-[#0B1F3A] px-4"
-      style={{ fontFamily: "Poppins, sans-serif" }}
+      className="min-h-screen w-full flex flex-col relative overflow-hidden"
+      style={{
+        fontFamily: "Poppins, sans-serif",
+        background: "#e7f1f8",
+      }}
     >
-      {/* Logo */}
-      <div className="flex flex-col items-center mb-4">
-        <img
-          src={dsmLogoAsset.url}
-          alt="DSM logo"
-          className="h-[60px] w-auto mb-2"
-        />
-        <span className="text-[#9CA3AF] text-[14px]" style={{ fontFamily: "Poppins, sans-serif" }}>
-          by EveryDriver
-        </span>
-      </div>
-
-      {/* Face ID sign-in */}
-      {webauthnSupported && (
-        <button
-          type="button"
-          onClick={
-            enrolled
-              ? onBiometric
-              : () => setError("Sign in with your password first to enable Face ID")
-          }
-          className="w-full max-w-[360px] flex items-center justify-center gap-2 mt-8"
-          style={{
-            fontFamily: "Poppins, sans-serif",
-            background: "rgba(255,255,255,0.1)",
-            border: "1px solid rgba(255,255,255,0.15)",
-            borderRadius: tokens.radiusCard,
-            padding: 16,
-            color: "#fff",
-            fontSize: 15.5,
-            fontWeight: tokens.fontWeight.semibold,
-          }}
-        >
-          <IconScan size={20} />
-          {enrolled ? "Sign in with Face ID" : "Set up Face ID"}
-        </button>
-      )}
-
-      {/* One-time enrolment prompt */}
-      {askEnroll && (
-        <div
-          className="w-full max-w-[360px] bg-white mt-4"
-          style={{ borderRadius: tokens.radiusCard, padding: 16, border: "1px solid #E2E8F0" }}
-        >
-          <p className="text-[14px] font-semibold text-[#0B1F3A]" style={{ fontFamily: "Poppins, sans-serif" }}>
-            Enable Face ID for next time?
-          </p>
-          <p className="text-[13px] text-[#6B7280] mt-1" style={{ fontFamily: "Poppins, sans-serif" }}>
-            Sign in faster without typing your password.
-          </p>
-          <div className="flex gap-2 mt-3">
-            <button
-              type="button"
-              onClick={enableFaceId}
-              className="flex-1 h-10 rounded-lg text-[14px] font-medium text-white"
-              style={{ background: tokens.blue, fontFamily: "Poppins, sans-serif" }}
-            >
-              Enable
-            </button>
-            <button
-              type="button"
-              onClick={skipEnroll}
-              className="flex-1 h-10 rounded-lg text-[14px] font-medium text-[#0B1F3A]"
-              style={{ border: "1.5px solid #E2E8F0", fontFamily: "Poppins, sans-serif" }}
-            >
-              Not now
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Card */}
-      <form
-
-        onSubmit={onSubmit}
-        className="w-full max-w-[360px] bg-white flex flex-col mt-12"
+      {/* Decorative glows */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
         style={{
-          borderRadius: tokens.radiusCard,
-          padding: "32px",
-          boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
+          background:
+            "radial-gradient(ellipse 90% 55% at 85% -5%, rgba(24,119,214,0.08) 0%, transparent 60%), radial-gradient(ellipse 80% 50% at 10% 105%, rgba(62,143,224,0.06) 0%, transparent 60%)",
+        }}
+      />
+      {/* Content */}
+      <div
+        className="relative z-10 flex-1 w-full max-w-[380px] mx-auto flex flex-col justify-center px-6"
+        style={{
+          paddingTop: "max(48px, env(safe-area-inset-top))",
+          paddingBottom: 24,
         }}
       >
-        <h2
-          className="text-[20px] font-semibold text-[#0B1F3A] text-center"
-          style={{ fontFamily: "Poppins, sans-serif" }}
-        >
-          Welcome back
-        </h2>
-        <p
-          className="text-[13px] text-[#6B7280] text-center"
-          style={{ fontFamily: "Poppins, sans-serif" }}
-        >
-          Sign in to your account
-        </p>
-
-        <div className="flex flex-col gap-4">
-          <div className="w-full">
-            <label
-              htmlFor="login-email"
-              className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-              style={{ fontFamily: "Poppins, sans-serif" }}
-            >
-              Email
-            </label>
-            <input
-              id="login-email"
-              type="email"
-              autoComplete="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-              required
-              className="h-auto w-full text-[15px] text-[#0B1F3A] placeholder:text-[#9CA3AF] focus:outline-none"
-              style={{
-                fontFamily: "Poppins, sans-serif",
-                background: "#F2F2F7",
-                border: "none",
-                borderRadius: tokens.radiusCard,
-                padding: "14px 16px",
-              }}
+        {/* Branding */}
+        <div className="flex flex-col items-center mb-8">
+          <div className="relative mb-4">
+            <img
+              src={edpLogoAsset.url}
+              alt="EveryDriver Pro"
+              className="h-[72px] w-auto"
             />
-          </div>
-
-          <div className="w-full relative">
-            <label
-              htmlFor="login-password"
-              className="block mb-1 text-[12px] font-medium text-[#6B7280]"
-              style={{ fontFamily: "Poppins, sans-serif" }}
+            <span
+              className="absolute -top-1 -right-3.5 text-[11px] font-bold"
+              style={{ color: "#0B1F3A", whiteSpace: "nowrap" }}
             >
-              Password
-            </label>
-            <input
-              id="login-password"
-              type={showPassword ? "text" : "password"}
-              autoComplete="current-password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-              required
-              className="h-auto w-full pr-10 text-[15px] text-[#0B1F3A] placeholder:text-[#9CA3AF] focus:outline-none"
+              TM
+            </span>
+          </div>
+          <span
+            className="text-[22px] font-semibold"
+            style={{ fontFamily: "Sora, sans-serif", letterSpacing: "-0.01em", color: "#0B1F3A" }}
+          >
+            EveryDriver Pro
+          </span>
+          <span
+            className="text-[12.5px] font-normal mt-1"
+            style={{ letterSpacing: "0.04em", color: "#64748B" }}
+          >
+            Driving School Management
+          </span>
+        </div>
+
+        {/* Face ID row */}
+        {webauthnSupported && (
+          <button
+            type="button"
+            onClick={
+              enrolled
+                ? onBiometric
+                : () => setError("Sign in with your password first to enable Face ID")
+            }
+            className="w-full flex items-center gap-3.5 text-left mb-5 transition-colors active:bg-[#F1F5F9]"
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid #E2E8F0",
+              borderRadius: 16,
+              padding: "13px 16px",
+              boxShadow: "0 1px 3px rgba(11,31,58,0.05)",
+            }}
+          >
+            <span
+              className="flex items-center justify-center flex-shrink-0"
               style={{
-                fontFamily: "Poppins, sans-serif",
-                background: "#F2F2F7",
-                border: "none",
-                borderRadius: tokens.radiusCard,
-                padding: "14px 16px",
+                width: 36,
+                height: 36,
+                borderRadius: 11,
+                background: "rgba(24,119,214,0.12)",
               }}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-3 top-9 hover:text-[#0B1F3A]"
-              style={{ color: "#8A8A8E" }}
-              aria-label={showPassword ? "Hide password" : "Show password"}
-              tabIndex={-1}
             >
-              {showPassword ? <IconEyeOff size={18} /> : <IconEye size={18} />}
-            </button>
-          </div>
+              <IconScan size={19} color="#1877D6" />
+            </span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-[15px] font-semibold leading-tight" style={{ color: "#0B1F3A" }}>
+                Face ID
+              </span>
+              <span className="block text-[12px] leading-tight mt-0.5" style={{ color: "#64748B" }}>
+                {enrolled ? "Sign in with Face ID" : "Sign in faster next time"}
+              </span>
+            </span>
+            <IconChevronRight size={17} color="#94A3B8" className="flex-shrink-0" />
+          </button>
+        )}
 
-          {/* Remember me + Forgot */}
-          <div className="flex items-center justify-between">
-            <button
-              type="button"
-              onClick={() => {
-                const on = !remember;
-                setRemember(on);
-                persistRemember(email, on);
-              }}
-              className="flex items-center gap-2 cursor-pointer select-none"
-              style={{ fontFamily: "Poppins, sans-serif", fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: "#000" }}
-            >
-              <div
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 12,
-                  background: remember ? "#1877D6" : "#F2F2F7",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
+        {/* One-time enrolment prompt */}
+        {askEnroll && (
+          <div
+            className="w-full mb-5"
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid #E2E8F0",
+              borderRadius: 18,
+              padding: 18,
+              boxShadow: "0 1px 3px rgba(11,31,58,0.05)",
+            }}
+          >
+            <p className="text-[15px] font-semibold" style={{ color: "#0B1F3A" }}>Enable Face ID for next time?</p>
+            <p className="text-[13px] mt-1" style={{ color: "#64748B" }}>
+              Sign in faster without typing your password.
+            </p>
+            <div className="flex gap-2.5 mt-4">
+              <button
+                type="button"
+                onClick={enableFaceId}
+                className="flex-1 h-11 text-[14px] font-semibold text-white"
+                style={{ background: tokens.blue, borderRadius: 12 }}
               >
-                {remember && <IconCheck size={12} stroke={3} color="#fff" />}
-              </div>
-              Remember me
-            </button>
-            <Link
-              to="/forgotpassword"
-              className="text-[13px] text-[#1877D6] hover:underline"
-            >
-              Forgot password?
-            </Link>
+                Enable
+              </button>
+              <button
+                type="button"
+                onClick={skipEnroll}
+                className="flex-1 h-11 text-[14px] font-medium"
+                style={{ border: "1px solid #E2E8F0", borderRadius: 12, color: "#475569" }}
+              >
+                Not now
+              </button>
+            </div>
           </div>
+        )}
 
-          <div>
+        {/* Login card */}
+        <form
+          onSubmit={onSubmit}
+          className="w-full flex flex-col"
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #E2E8F0",
+            borderRadius: 22,
+            padding: "24px 22px",
+            boxShadow: "0 16px 40px rgba(11,31,58,0.08)",
+          }}
+        >
+          <h2
+            className="text-[20px] font-semibold"
+            style={{ fontFamily: "Sora, sans-serif", letterSpacing: "-0.01em", color: "#0B1F3A" }}
+          >
+            Welcome back
+          </h2>
+          <p className="text-[13px] mt-1 mb-6" style={{ color: "#64748B" }}>Sign in to your account</p>
+
+          <div className="flex flex-col gap-4">
+            <div className="w-full">
+              <label
+                htmlFor="login-email"
+                className="block mb-1.5 text-[12px] font-medium"
+                style={{ color: "#475569" }}
+              >
+                Email
+              </label>
+              <input
+                id="login-email"
+                type="email"
+                autoComplete="email"
+                placeholder="Email address"
+                value={email}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                required
+                className={inputClass}
+              />
+            </div>
+
+            <div className="w-full relative">
+              <label
+                htmlFor="login-password"
+                className="block mb-1.5 text-[12px] font-medium"
+                style={{ color: "#475569" }}
+              >
+                Password
+              </label>
+              <input
+                id="login-password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                placeholder="Password"
+                value={password}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                required
+                className={`${inputClass} pr-11`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute right-3.5 top-[38px] hover:text-[#64748B] transition-colors"
+                style={{ color: "#94A3B8" }}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                tabIndex={-1}
+              >
+                {showPassword ? <IconEyeOff size={18} /> : <IconEye size={18} />}
+              </button>
+            </div>
+
+            <div className="flex justify-end -mt-1">
+              <Link to="/forgotpassword" className="text-[13px] text-[#1877D6] hover:underline">
+                Forgot password?
+              </Link>
+            </div>
+
             <Button
               type="submit"
               disabled={loading}
-              className="h-12 text-[14px]"
+              className="text-[15px]"
+              style={{
+                height: 50,
+                borderRadius: 14,
+                boxShadow: "0 8px 20px rgba(24,119,214,0.35)",
+              }}
             >
               {loading ? "Signing in…" : "Sign in"}
             </Button>
-          </div>
 
-          <p className="text-[13px] text-[#6B7280] text-center" style={{ fontFamily: "Poppins, sans-serif" }}>
-            Don&apos;t have an account?{" "}
-            <Link to="/register" className="text-[#1877D6] hover:underline font-medium">
-              Create account
-            </Link>
-          </p>
-
-          {notice && (
-            <p
-              className="text-[13px] text-[#15803D] text-center"
-              role="status"
-              style={{ fontFamily: "Poppins, sans-serif" }}
-            >
-              {notice}
+            <p className="text-[12.5px] text-center mt-1 whitespace-nowrap" style={{ color: "#64748B" }}>
+              Don&apos;t have an account?{" "}
+              <Link to="/register" className="text-[#1877D6] hover:underline font-medium">
+                Create account
+              </Link>
             </p>
-          )}
 
-
-          {error && (
             <div
-              className="rounded-lg bg-[#FDECEC] border border-[#F5C2C4] px-3 py-2.5"
-              role="alert"
-              aria-live="assertive"
+              style={{
+                textAlign: "center",
+                fontSize: 11,
+                color: "#94A3B8",
+                marginTop: 16,
+                padding: "0 16px",
+              }}
             >
-              <p
-                className="text-[13px] font-medium text-[#CC2229] text-center"
-                style={{ fontFamily: "Poppins, sans-serif" }}
-              >
-                {error}
-              </p>
+              By signing in you agree to our{" "}
+              <Link to="/terms" style={{ color: "#64748B", textDecoration: "underline" }}>
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" style={{ color: "#64748B", textDecoration: "underline" }}>
+                Privacy Policy
+              </Link>
             </div>
-          )}
-        </div>
-      </form>
+
+            {notice && (
+              <p className="text-[13px] text-[#4ADE80] text-center" role="status">
+                {notice}
+              </p>
+            )}
+
+            {error && (
+              <div
+                className="px-3.5 py-3"
+                role="alert"
+                aria-live="assertive"
+                style={{
+                  background: "rgba(204,34,41,0.06)",
+                  border: "1px solid rgba(204,34,41,0.25)",
+                  borderRadius: 12,
+                }}
+              >
+                <p className="text-[13px] font-medium text-[#CC2229] text-center">{error}</p>
+              </div>
+            )}
+          </div>
+        </form>
+      </div>
 
       {/* Footer */}
-      <p
-        className="text-[#6B7280] text-[11px] text-center mt-8"
-        style={{ fontFamily: "Poppins, sans-serif" }}
+      <div
+        className="flex flex-col items-center gap-1.5"
+        style={{ paddingBottom: "max(20px, env(safe-area-inset-bottom))" }}
       >
-        DSM by EveryDriver &copy; 2026
-      </p>
+        <p className="flex items-center gap-1.5 text-[11.5px]" style={{ color: "#94A3B8" }}>
+          <IconShieldCheck size={13} />
+          Your data is secure and encrypted
+        </p>
+        <p className="text-[10.5px]" style={{ color: "#CBD5E1" }}>EveryDriver Pro &copy; 2026</p>
+      </div>
     </div>
   );
 }

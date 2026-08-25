@@ -16,9 +16,9 @@ const LEARN_IS_NEW = true;
 export const Route = createFileRoute("/more")({
   head: () => ({
     meta: [
-      { title: "More — DSM" },
+      { title: "More — EDP" },
       { name: "description", content: "All tools and features for driving instructors: teaching, business, admin, reports and community." },
-      { property: "og:title", content: "More — DSM" },
+      { property: "og:title", content: "More — EDP" },
       { property: "og:description", content: "All tools and features for driving instructors." },
     ],
   }),
@@ -71,7 +71,7 @@ const allTools: Tool[] = [
   { icon: IconTrendingUp, colour: '#16A34A', label: 'Earnings forecast', sub: 'Predict income', route: '/earnings-forecast', group: 'Reports' },
   { icon: IconActivity, colour: '#CC2229', label: 'Business health', sub: 'Key metrics', route: '/business-health', group: 'Reports' },
   // Community
-  { icon: IconRadio, colour: '#CC2229', label: 'DSM Live', sub: 'Sessions & podcasts', route: '/dsm-live', group: 'Community' },
+  { icon: IconRadio, colour: '#CC2229', label: 'EDP Live', sub: 'Sessions & podcasts', route: '/dsm-live', group: 'Community' },
   { icon: IconShoppingBag, colour: '#1A52A0', label: 'Marketplace', sub: 'Products & services', route: '/marketplace', group: 'Community' },
   { icon: IconUsers, colour: '#00B5A5', label: 'Community', sub: 'Connect with ADIs', route: '/community', group: 'Community' },
   { icon: IconRosetteDiscount, colour: '#1877D6', label: 'Member Benefits', sub: 'Perks and rewards', route: '/benefits', group: 'Community' },
@@ -154,6 +154,7 @@ function MorePage() {
   return (
     <DSMTopSheet
       title="More"
+      hideBack
       right={
         <button
           type="button"

@@ -1,7 +1,7 @@
 {
-  "name": "Driving School Manager",
-  "short_name": "DSM",
-  "description": "Driving School Manager — schedule, pupils, payments, and lessons",
+  "name": "Every Driver Pro",
+  "short_name": "Every Driver Pro",
+  "description": "Every Driver Pro — schedule, pupils, payments, and lessons",
   "start_url": "/home",
   "scope": "/",
   "display": "standalone",

@@ -11,9 +11,9 @@ export const Route = createFileRoute("/admin/benefits")({
       {
         name: "description",
         content:
-          "Manage DSM benefit partners and the perks listed under each partner.",
+          "Manage EDP benefit partners and the perks listed under each partner.",
       },
-      { property: "og:title", content: "Benefits & perks admin | DSM" },
+      { property: "og:title", content: "Benefits & perks admin | EDP" },
       {
         property: "og:description",
         content: "Add, edit and order benefit partners and their perks.",
