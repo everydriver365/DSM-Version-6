@@ -1009,7 +1009,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             <span style={{ ...chipBase, width: 40, height: 40, borderRadius: 14, background: "#fff", color: BLUE, boxShadow: "0 2px 10px -2px rgba(11,31,58,0.14)" }}>
               <IconRosetteDiscount size={20} color={BLUE} stroke={1.6} />
             </span>
-            <div style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY, marginTop: 10 }}>Perks</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
+              <img src={proLogoAsset.url} alt="PRO" style={{ height: 22, width: "auto", objectFit: "contain" }} />
+              <span style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY }}>Perks</span>
+            </div>
             <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, lineHeight: 1.4, marginTop: 4 }}>
               {isFreeTier
                 ? "Free DIA membership & exclusive member benefits"
