@@ -237,11 +237,19 @@ function LoginPage() {
       >
         {/* Branding */}
         <div className="flex flex-col items-center mb-8">
-          <img
-            src={edpLogoAsset.url}
-            alt="EveryDriver Pro"
-            className="h-[72px] w-auto mb-4"
-          />
+          <div className="relative mb-4">
+            <img
+              src={edpLogoAsset.url}
+              alt="EveryDriver Pro"
+              className="h-[72px] w-auto"
+            />
+            <span
+              className="absolute -top-0.5 -right-3 text-[10px] font-semibold"
+              style={{ color: "#64748B" }}
+            >
+              TM
+            </span>
+          </div>
           <span
             className="text-[22px] font-semibold"
             style={{ fontFamily: "Sora, sans-serif", letterSpacing: "-0.01em", color: "#0B1F3A" }}
