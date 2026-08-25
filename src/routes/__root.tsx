@@ -527,6 +527,14 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
 
 
 function RootComponent() {
+  // Desktop redirect: native app stays, mobile browser stays, desktop goes to web app
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!Capacitor.isNativePlatform() && window.innerWidth > 768) {
+      window.location.href = "https://desktop.everydriver.pro";
+    }
+  }, []);
+
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const [sheetOpen, setSheetOpen] = useState(false);
