@@ -1,67 +1,42 @@
-# Why Google sync doesn't work — findings and fix plan
+# Why push notifications and app icon counters don't work
 
 ## What I checked
 
-- Every function the app calls exists on the Supabase project (probed live):
-  `google-calendar-auth` (401 without a token — correct), `google-calendar-callback` (302),
-  `sync-google-calendar` (401 without a token — correct), `sync-external-calendar` (401),
-  `push-lesson-to-google` (400/200), `google-calendar-sync` (200).
-- Only 3 of those have source in this repo: `google-calendar-auth`, `google-calendar-callback`,
-  `push-lesson-to-google`. **`sync-google-calendar` and `google-calendar-sync` are deployed but their
-  code is not in the project**, so nothing about their behaviour can be read or changed from here.
-- Client call sites: `src/routes/calendarsync.tsx` (`sync()` line 377), `src/routes/schedule.tsx`
-  (`handleSync` line ~1120), and pushes via `src/lib/calendarSyncPrefs.ts`.
+- `src/routes/__root.tsx` (OneSignal init, permission, player-ID save, badge clearing)
+- `src/hooks/useUnreadCount.ts` (badge setting)
+- `supabase/functions/send-push/index.ts` (the OneSignal REST call)
+- `ios/App/App/App.entitlements`, `Info.plist`, and the Xcode project file
 
-## Confirmed problems
+## Findings
 
-1. **Two competing push functions.** Lesson saves in `AddLessonSheet.tsx` and `lessons.edit.$id.tsx`
-   call `push-lesson-to-google`, while `calendarSyncPrefs.pushLessonToGoogle` (used by
-   `lessons.new.tsx`, `cancelLesson.ts`, and the same sheets) calls a different function,
-   `google-calendar-sync`. Probed with a dummy payload, `google-calendar-sync` returns
-   `{"ok":true,"skipped":true}` — it silently skips rather than pushing. Every push is fire-and-forget
-   and never surfaced, so a permanent no-op looks identical to success.
+### 1. The device is probably never registered (no notifications arrive)
 
-2. **Two competing connection stores.** `google-calendar-callback` writes tokens onto the
-   `instructors` row only. The UI treats `google_calendar_connections` as the source of truth
-   (`calendarsync.tsx` line 270) and `disconnect()` deletes from it. Nothing ever writes that table,
-   so state depends entirely on the `instructors` mirror.
+Right after `OneSignal.initialize(...)` the code immediately reads the push subscription ID and writes it to `instructors.onesignal_player_id`. At that moment iOS has usually not returned an APNs token yet, so the ID is `null`, nothing is saved, and `send-push` later exits early with `"No OneSignal player ID"` — no notification is ever sent. There is no listener to catch the ID once it does arrive, and it is only attempted once per app launch.
 
-3. **OAuth always returns to production.** `google-calendar-callback` hard-codes
-   `APP_URL = https://app.everydriver.pro`. Connecting from the preview or from the iOS shell lands on
-   the production web app, so the "connected" toast and auto-sync never run in the context the user
-   started in.
+The permission call is also duplicated (`requestPermission()` plus `Notifications.requestPermission(true)`), which is harmless but makes the flow harder to reason about.
 
-4. **Narrow scope.** The consent request asks for `calendar.events` only. That covers reading and
-   writing events on `primary`, but not listing calendars or per-calendar metadata — if the deployed
-   sync function calls `calendarList` or a non-primary calendar, Google returns 403.
+Unconfirmed until we see the device: whether the OneSignal dashboard has the APNs key uploaded and whether the bundle ID matches. The entitlement is `aps-environment: development`, which is correct for an Xcode-installed build but will not work for TestFlight/App Store builds unless it is switched to `production` for release.
 
-Unverified (needs the deployed source or the function logs): whether `sync-google-calendar` refreshes
-an expired access token. `push-lesson-to-google` does; if the sync function doesn't, Google sync stops
-working roughly an hour after connecting and silently returns zero events.
+### 2. Nothing ever sets an app icon counter
 
-## Plan
+- `useUnreadCount.ts` and `__root.tsx` call `App.setBadge()` / `App.clearBadge()` on `@capacitor/app`. Those methods do not exist in that plugin — the optional-call syntax silently swallows it, so the badge is never set.
+- The push payload in `send-push` contains no `ios_badgeType` / `ios_badgeCount`, so pushes arriving while the app is closed can't set a badge either.
+- There is no OneSignal Notification Service Extension target in the Xcode project, which is also needed for reliable badge/rich-notification behaviour.
 
-1. **Pull the two missing functions into the repo.** Run `supabase functions download
-   sync-google-calendar` and `google-calendar-sync` (or paste them in) under `supabase/functions/`.
-   Without this, the actual sync logic can't be diagnosed or fixed — everything else is guesswork.
-2. **Read their logs for the real error.** Supabase Dashboard → Edge Functions → Logs for
-   `sync-google-calendar`, immediately after pressing Sync now. That will show whether it's a 401 from
-   Google (expired token), a 403 (scope), or an empty result.
-3. **Consolidate the push path.** Point `calendarSyncPrefs.pushLessonToGoogle` at
-   `push-lesson-to-google` (the one whose code we have and which does token refresh and handles
-   create vs update), remove the duplicate direct `fetch` calls in `AddLessonSheet.tsx` and
-   `lessons.edit.$id.tsx`, and add `delete` handling to that function so cancellations remove the
-   Google event.
-4. **Make the callback return where the user came from.** Pass an origin/return URL through the OAuth
-   `state` (alongside the instructor id) and redirect to it, falling back to
-   `https://app.everydriver.pro`.
-5. **Single connection store.** Have `google-calendar-callback` also upsert
-   `google_calendar_connections`, or drop that table from the UI and read the `instructors` mirror only.
-6. **Surface failures.** Stop swallowing push errors: log the status and body, and show a toast when a
-   push fails, so the next regression isn't invisible.
-7. **Widen scope only if step 2 shows a 403** — adding `calendar.readonly` requires users to reconnect.
+## Proposed fixes
 
-## Note
+1. **Registration**: replace the one-shot ID read with an observer on the OneSignal push subscription so the player ID is saved whenever it becomes available (and re-saved on login and on app resume). Remove the duplicate permission request and log the actual permission + subscription state so we can see it in Xcode console.
+2. **In-app / icon badge**: add a real badge plugin (`@capawesome/capacitor-badge`) and use it in `useUnreadCount.ts` and on app resume instead of the non-existent `App.setBadge`.
+3. **Push-driven badge**: add `ios_badgeType: "SetTo"` and `ios_badgeCount` (the recipient's current unread count) to the `send-push` OneSignal payload so the counter updates when the app is closed.
+4. **Diagnostics screen (small)**: a hidden section in More showing permission state, subscription ID, and whether it matches the DB row, so we can confirm on the real phone rather than guessing.
 
-Steps 3–6 are safe to do now. Step 1 gates the actual root cause: until `sync-google-calendar` lives in
-this project, its import behaviour can't be corrected from here.
+## Things you need to do outside the code
+
+- Confirm in the OneSignal dashboard that the iOS APNs key is uploaded and the bundle ID matches the Xcode target.
+- Add the OneSignal Notification Service Extension target in Xcode (I can't edit the Xcode project safely from here) and add `@capawesome/capacitor-badge` pods via `npx cap sync`.
+- Switch `aps-environment` to `production` before shipping to TestFlight.
+
+## Technical notes
+
+- Files to change: `src/routes/__root.tsx`, `src/hooks/useUnreadCount.ts`, `supabase/functions/send-push/index.ts`, plus one new package.
+- `capacitor.config.ts` will not be touched.
