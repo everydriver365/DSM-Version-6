@@ -173,7 +173,7 @@ export function AddLessonSheet({
   const [pupilListOpen, setPupilListOpen] = useState(false);
   const [date, setDate] = useState(initialDate || todayISO());
   const [time, setTime] = useState("");
-  const [duration, setDuration] = useState<number | "test">(1);
+  const [duration, setDuration] = useState<number | "test">(60);
   const [isTestDay, setIsTestDay] = useState(false);
   const [isEvent, setIsEvent] = useState(false);
   const [eventTitle, setEventTitle] = useState("");
