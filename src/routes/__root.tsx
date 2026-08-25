@@ -693,8 +693,8 @@ function RootComponent() {
           } catch (e) {
             console.warn('[OneSignal] player ID save failed:', e);
           }
-        } catch (e) {
-          console.warn('[OneSignal] failed:', e);
+        } catch (e: any) {
+          console.error('[OneSignal] FULL ERROR:', e?.message, e?.stack, JSON.stringify(e));
         }
       } catch (e) {
         console.error('[native init] error:', e);
