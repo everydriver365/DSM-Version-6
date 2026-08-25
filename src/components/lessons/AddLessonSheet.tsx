@@ -342,7 +342,7 @@ export function AddLessonSheet({
     ? pupils.filter((p) => p.name.toLowerCase().includes(pupilQuery.trim().toLowerCase()))
     : pupils;
 
-  const effectiveDuration = duration === "test" ? 0 : duration * 60;
+  const effectiveDuration = duration === "test" ? 0 : duration;
 
   async function handleSave() {
     const next: typeof errors = {};
