@@ -1116,8 +1116,8 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           {/* open book motif */}
           <svg
             aria-hidden
-            width={68}
-            height={60}
+            width={54}
+            height={48}
             viewBox="0 0 68 60"
             style={{
               position: "absolute",
