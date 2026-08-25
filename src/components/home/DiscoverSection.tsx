@@ -1185,7 +1185,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 6,
+                gap: 3,
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.bold,
                 color: NAVY,
