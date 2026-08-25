@@ -717,7 +717,7 @@ export function AddLessonSheet({
               setIsEvent(true);
               setIsTestDay(false);
               setIsRecurring(false);
-              if (duration === "test") setDuration(1);
+              if (duration === "test") setDuration(60);
             }}
             style={{
               flex: 1,
