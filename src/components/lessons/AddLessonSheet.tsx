@@ -226,7 +226,7 @@ export function AddLessonSheet({
     if (editingLesson.lesson_date) setDate(editingLesson.lesson_date);
     if (editingLesson.lesson_time) setTime((editingLesson.lesson_time).slice(0, 5));
     if (editingLesson.duration_minutes != null) {
-      setDuration((editingLesson.duration_minutes / 60) || 1);
+      setDuration(editingLesson.duration_minutes || 60);
     }
     setNotes(editingLesson.notes ?? "");
     setPickup(editingLesson.pickup_location ?? "");
