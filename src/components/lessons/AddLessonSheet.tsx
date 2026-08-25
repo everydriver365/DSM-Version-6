@@ -909,53 +909,41 @@ export function AddLessonSheet({
                 <IconHourglass size={20} stroke={1.8} color={BLUE} />
                 <span style={labelStyle}>Duration</span>
               </div>
-              <div
-                id="al-duration"
-                role="radiogroup"
+              <select
+                value={duration}
+                onChange={(e) => {
+                  setDuration(Number(e.target.value));
+                  setIsTestDay(false);
+                }}
                 style={{
-                  display: "flex",
-                  gap: 8,
-                  overflowX: "auto",
-                  paddingBottom: 4,
-                  scrollbarWidth: "none",
+                  width: "100%",
+                  height: 48,
+                  borderRadius: 12,
+                  border: "1px solid #E4E8EF",
+                  background: "#F7FAFC",
+                  padding: "0 12px",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: "#0B1F3A",
+                  fontFamily: "Poppins, sans-serif",
+                  appearance: "none",
+                  WebkitAppearance: "none",
+                  cursor: "pointer",
                 }}
               >
-                {DURATION_OPTIONS.map((opt) => {
-                  const active = duration === opt.value;
-                  const isTest = opt.value === "test";
-                  if (isEvent && isTest) return null;
-                  return (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      role="radio"
-                      aria-checked={active}
-                  onClick={() => {
-                    if (opt.value === "test") tapMedium();
-                    else tapLight();
-                    setDuration(opt.value);
-                    setIsTestDay(opt.value === "test");
-                  }}
-                      style={{
-                        height: 34,
-                        borderRadius: 12,
-                        padding: "0 16px",
-                        fontSize: tokens.fontSize.base,
-                        fontWeight: tokens.fontWeight.semibold,
-                        cursor: "pointer",
-                        border: active ? "none" : "1px solid #E4E8EF",
-                        whiteSpace: "nowrap",
-                        fontFamily: "Poppins, sans-serif",
-                        background: active ? (isTest ? "#CC2229" : "#0B1F3A") : "#fff",
-                        color: active ? "#fff" : "#6B7686",
-                        flexShrink: 0,
-                      }}
-                    >
-                      {opt.label}
-                    </button>
-                  );
-                })}
-              </div>
+                <option value={30}>30 minutes</option>
+                <option value={45}>45 minutes</option>
+                <option value={60}>1 hour</option>
+                <option value={75}>1 hour 15 mins</option>
+                <option value={90}>1 hour 30 mins</option>
+                <option value={105}>1 hour 45 mins</option>
+                <option value={120}>2 hours</option>
+                <option value={150}>2 hours 30 mins</option>
+                <option value={180}>3 hours</option>
+                <option value={240}>4 hours</option>
+                <option value={300}>5 hours</option>
+                <option value={360}>6 hours</option>
+              </select>
               {isTestDay && (
                 <p
                   style={{
