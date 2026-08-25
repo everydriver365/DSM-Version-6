@@ -2,21 +2,18 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'co.uk.drivingschoolmanager.dsm',
-  appName: 'Every Driver Pro',
+  appName: 'DSM',
   webDir: '.output/public',
   server: {
-    url: 'https://app.everydriver.pro',
+    url: 'https://drivingschoolmanager.co.uk',
     cleartext: false,
   },
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
       launchAutoHide: true,
-      launchFadeOutDuration: 0,
-      backgroundColor: '#F7FAFC',
+      backgroundColor: '#FFFFFF',
       showSpinner: false,
-      splashFullScreen: true,
-      splashImmersive: false,
     },
   },
 };
