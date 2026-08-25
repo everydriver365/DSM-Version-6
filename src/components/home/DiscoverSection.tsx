@@ -1313,7 +1313,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 8,
+                gap: 3,
                 marginTop: 8,
               }}
             >
