@@ -1311,16 +1311,25 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             </span>
             <div
               style={{
-                fontSize: 15,
-                fontWeight: tokens.fontWeight.bold,
-                color: NAVY,
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
                 marginTop: 8,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
               }}
             >
-              {isLiveOnAir ? (live.find((s) => isLiveNow(s))?.title ?? "Radio") : "Radio"}
+              <img src={proLogoAsset.url} alt="PRO" style={{ height: 22, width: "auto", objectFit: "contain" }} />
+              <span
+                style={{
+                  fontSize: 15,
+                  fontWeight: tokens.fontWeight.bold,
+                  color: NAVY,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {isLiveOnAir ? (live.find((s) => isLiveNow(s))?.title ?? "Radio") : "Radio"}
+              </span>
             </div>
             <div
               style={{
