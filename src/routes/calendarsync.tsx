@@ -285,21 +285,41 @@ function CalendarSyncPage() {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const isConnected =
-      params.get("calendar") === "connected" || params.get("connected") === "google";
+      params.get("connected") === "true" ||
+      params.get("connected") === "google" ||
+      params.get("calendar") === "connected";
     const isError = params.get("calendar") === "error" || params.get("error") !== null;
 
-    if (isConnected) {
-      toast.success("Google Calendar connected! 🎉");
-      setGoogleConnected(true);
+    if (!isConnected && !isError) return;
+
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        if (isConnected) {
+          try {
+            localStorage.setItem("pending_calendar_connected", "true");
+          } catch {
+            // ignore
+          }
+          navigate({ to: "/login", replace: true });
+        }
+        return;
+      }
+
+      if (isConnected) {
+        toast.success("Google Calendar connected! 🎉");
+        setGoogleConnected(true);
+      } else if (isError) {
+        toast.error("Could not connect Google Calendar — please try again");
+      }
       window.history.replaceState({}, "", window.location.pathname);
-      // Auto-sync after a short delay to let state settle
-      setTimeout(() => {
-        void sync();
-      }, 1500);
-    } else if (isError) {
-      toast.error("Could not connect Google Calendar — please try again");
-      window.history.replaceState({}, "", window.location.pathname);
-    }
+      if (isConnected) {
+        // Auto-sync after a short delay to let state settle
+        setTimeout(() => {
+          void sync();
+        }, 1500);
+      }
+    })();
   }, []);
 
   async function connectGoogleCalendar() {
