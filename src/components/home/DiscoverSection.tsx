@@ -6,6 +6,7 @@ import spotifyLogoAsset from "@/assets/spotify-logo.png.asset.json";
 import balloonLogoAsset from "@/assets/balloon-logo.png.asset.json";
 import vitalityLogoAsset from "@/assets/vitality-logo.png.asset.json";
 import hmacaLogoAsset from "@/assets/hmaca-logo.png.asset.json";
+import proLogoAsset from "@/assets/pro-logo.png.asset.json";
 
 import {
   IconChevronRight,
@@ -1179,12 +1180,20 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             </span>
             <div
               style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.bold,
                 color: NAVY,
                 marginTop: 8,
               }}
             >
+              <img
+                src={proLogoAsset.url}
+                alt="Pro"
+                style={{ height: 18, width: "auto", display: "block" }}
+              />
               Learn
             </div>
             <div
