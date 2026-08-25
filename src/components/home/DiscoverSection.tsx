@@ -1232,13 +1232,13 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           {/* microphone motif */}
           <svg
             aria-hidden
-            width={52}
-            height={70}
+            width={40}
+            height={54}
             viewBox="0 0 52 70"
             style={{
               position: "absolute",
-              bottom: 12,
-              right: 20,
+              bottom: 16,
+              right: 24,
               pointerEvents: "none",
             }}
           >
