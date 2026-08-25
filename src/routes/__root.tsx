@@ -641,11 +641,11 @@ function RootComponent() {
 
           // iOS system prompt: "Every Driver Pro would like to send you notifications"
           if (Capacitor.isNativePlatform()) {
-            OneSignal.requestPermission()
+            (OneSignal as any).requestPermission()
               .then(() => {
                 console.log('[OneSignal] permission granted');
               })
-              .catch((e) => {
+              .catch((e: any) => {
                 console.warn('[OneSignal] permission denied', e);
               });
           }
