@@ -638,6 +638,18 @@ function RootComponent() {
         // OneSignal push notifications
         try {
           await OneSignal.initialize('99bff6e4-df88-4349-afd6-54112ea83907');
+
+          // iOS system prompt: "Every Driver Pro would like to send you notifications"
+          if (Capacitor.isNativePlatform()) {
+            (OneSignal as any).requestPermission()
+              .then(() => {
+                console.log('[OneSignal] permission granted');
+              })
+              .catch((e: any) => {
+                console.warn('[OneSignal] permission denied', e);
+              });
+          }
+
           await OneSignal.Notifications.requestPermission(true);
           OneSignal.Notifications.addEventListener('click', (event) => {
             const data = event.notification.additionalData as any;
