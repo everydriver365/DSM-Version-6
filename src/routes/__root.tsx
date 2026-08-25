@@ -637,7 +637,7 @@ function RootComponent() {
 
         // OneSignal push notifications
         try {
-          await OneSignal.initialize('99bff6e4-df88-4349-afd6-54112ea83907');
+          await OneSignal.initialize('70d001f6-c98e-434d-8251-354c62447cb5');
 
           // iOS system prompt: "Every Driver Pro would like to send you notifications"
           if (Capacitor.isNativePlatform()) {

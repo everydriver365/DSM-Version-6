@@ -89,7 +89,7 @@ Deno.serve(async (req) => {
           "Authorization": `Basic ${Deno.env.get("ONESIGNAL_REST_API_KEY")}`,
         },
         body: JSON.stringify({
-          app_id: "99bff6e4-df88-4349-afd6-54112ea83907",
+          app_id: "70d001f6-c98e-434d-8251-354c62447cb5",
           include_player_ids: [instructor.onesignal_player_id],
           headings: { en: title },
           contents: { en: body },
