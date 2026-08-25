@@ -1185,7 +1185,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 marginTop: 8,
               }}
             >
-              EDP Learn
+              Learn
             </div>
             <div
               style={{
