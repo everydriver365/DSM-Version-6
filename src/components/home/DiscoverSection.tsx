@@ -1317,7 +1317,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
                 textOverflow: "ellipsis",
               }}
             >
-              {isLiveOnAir ? (live.find((s) => isLiveNow(s))?.title ?? "EDP Radio") : "EDP Radio"}
+              {isLiveOnAir ? (live.find((s) => isLiveNow(s))?.title ?? "Radio") : "Radio"}
             </div>
             <div
               style={{
