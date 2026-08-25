@@ -106,6 +106,21 @@ function LoginPage() {
         .update({ remembered_email: email })
         .eq("id", userId);
     }
+    let pending: string | null = null;
+    try {
+      pending = localStorage.getItem("pending_calendar_connected");
+    } catch {
+      /* ignore */
+    }
+    if (pending === "true") {
+      try {
+        localStorage.removeItem("pending_calendar_connected");
+      } catch {
+        /* ignore */
+      }
+      navigate({ to: "/calendarsync", search: { connected: "true" }, replace: true });
+      return;
+    }
     if (webauthnSupported && !enrolled) {
       setAskEnroll(true);
       return;
