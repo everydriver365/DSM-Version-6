@@ -941,13 +941,12 @@ function PupilsIndexPage() {
           zIndex: 1,
           flex: 1,
           minHeight: 0,
-          marginTop: -22,
+          marginTop: -18,
           background: tokens.white,
-          borderRadius: "28px 28px 0 0",
+          borderRadius: "16px 16px 0 0",
           overflowY: "auto",
           overflowX: "hidden",
-          paddingTop: 8,
-
+          paddingTop: 12,
           paddingBottom: "calc(88px + env(safe-area-inset-bottom, 0px))",
         }}
       >
