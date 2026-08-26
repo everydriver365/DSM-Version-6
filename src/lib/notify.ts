@@ -2,9 +2,10 @@ import { supabase } from "./supabaseClient";
 
 export type InstructorNotification = {
   instructor_id: string;
-  title: string;
-  body: string;
-  type: string;
+  title?: string;
+  body?: string;
+  message?: string;
+  type?: string;
   read?: boolean;
   url?: string | null;
   reference_id?: string | null;
@@ -30,13 +31,16 @@ export async function notifyInstructors(
 
   await Promise.all(
     list.map(async (row) => {
+      const title = row.title ?? "Every Driver Pro";
+      const body = row.body ?? row.message ?? "";
+      if (!body) return;
       try {
         await supabase.functions.invoke("send-push", {
           body: {
             instructor_id: row.instructor_id,
-            title: row.title,
-            body: row.body,
-            type: row.type,
+            title,
+            body,
+            type: row.type ?? "general",
             url: row.url ?? undefined,
             data: {
               reference_id: row.reference_id ?? null,
