@@ -602,7 +602,7 @@ function RootComponent() {
 
     (async () => {
       try {
-        // App state changes: refresh unread count and clear badge on resume
+        // App state changes: on resume, refresh unread count and sync badge to it
         try {
           appStateSub = App.addListener("appStateChange", async ({ isActive }) => {
             if (isActive) {
@@ -626,11 +626,11 @@ function RootComponent() {
               } catch (e) {
                 console.warn('[OneSignal] foreground player ID save failed:', e);
               }
-              try {
-                await (App as any).clearBadge?.();
-              } catch (e) {
-                console.warn('App.clearBadge', e);
-              }
+              // Badge sync intentionally omitted here: the
+              // "dsm-notifications-updated" event dispatched above causes
+              // useUnreadCount() to refetch the real unread count and set
+              // (not clear) the native badge to match it. Resuming the app
+              // must reflect the true unread count, not wipe it to zero.
             }
           });
         } catch (e) {

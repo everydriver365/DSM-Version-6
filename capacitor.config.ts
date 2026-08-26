@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'co.uk.drivingschoolmanager.dsm',
+  appId: 'co.uk.everydriver.app',
   appName: 'Every Driver Pro',
   webDir: '.output/public',
   server: {

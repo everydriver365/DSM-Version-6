@@ -1,35 +1,3 @@
-// Supabase Edge Function: send-push
-// Sends push notifications via the OneSignal REST API to an instructor's device.
-//
-// ─────────────────────────────────────────────────────────────
-// SUPPORTED NOTIFICATION TYPES
-// ─────────────────────────────────────────────────────────────
-// The function is type-agnostic: any caller that supplies
-// instructor_id + title + body gets a push delivered to the
-// instructor's registered OneSignal player. `type` and `data` are
-// optional passthrough fields for the client to route/deep-link.
-//
-// 1. Pupil messages
-//    { instructor_id, title: "New message from Sam",
-//      body: "...", url: "/messages/<pupilId>", type: "pupil_message" }
-//
-// 2. Payments
-//    { instructor_id, title: "Payment received",
-//      body: "£45.00 from Sam", url: "/payments", type: "payment" }
-//
-// 3. Instructor-to-instructor DMs
-//    { instructor_id: "<recipient instructor id>",
-//      title: "New message from <name>",
-//      body: "<message preview>",
-//      url: "/messages",
-//      type: "instructor_dm",
-//      data: { conversation_id, from_instructor_id } }
-//
-// The DM notification row is produced by the `notify_on_instructor_dm()`
-// trigger on `instructor_messages` INSERT, which writes to
-// `instructor_notifications`; that row is then dispatched here.
-// ─────────────────────────────────────────────────────────────
-
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
@@ -49,14 +17,8 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    const {
-      instructor_id,
-      title,
-      body,
-      url,
-      type,
-      data,
-    } = await req.json();
+    const { instructor_id, title, body, subtitle, url, type, data } =
+      await req.json();
 
     if (!instructor_id || !title || !body) {
       return new Response(
@@ -65,7 +27,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Get instructor's OneSignal player ID
     const { data: instructor } = await supabase
       .from("instructors")
       .select("onesignal_player_id")
@@ -73,53 +34,71 @@ Deno.serve(async (req) => {
       .single();
 
     if (!instructor?.onesignal_player_id) {
+      console.error("[send-push] No OneSignal player ID for", instructor_id);
       return new Response(
         JSON.stringify({ error: "No OneSignal player ID" }),
         { status: 404, headers: corsHeaders },
       );
     }
 
-    // Send via OneSignal REST API
+    const { count: unreadCount } = await supabase
+      .from("instructor_notifications")
+      .select("*", { count: "exact", head: true })
+      .eq("instructor_id", instructor_id)
+      .eq("read", false);
+
+    const badgeCount = (unreadCount ?? 0) + 1;
+
+    const apiKey = Deno.env.get("ONESIGNAL_REST_API_KEY") ?? "";
+    const appId = "70d001f6-c98e-434d-8251-354c62447cb5";
+    const subscriptionId = instructor.onesignal_player_id;
+
+    console.log("[send-push] sending to subscription:", subscriptionId, "badge:", badgeCount);
+
+    const payload: any = {
+      app_id: appId,
+      include_subscription_ids: [subscriptionId],
+      headings: { en: title },
+      contents: { en: body },
+      ios_badgeType: "SetTo",
+      ios_badgeCount: badgeCount,
+      target_channel: "push",
+    };
+
+    if (subtitle) payload.subtitle = { en: subtitle };
+    if (url) payload.url = url;
+    if (data || type) payload.data = { type: type ?? "general", url: url ?? "/notifications", ...data };
+
     const oneSignalRes = await fetch(
-      "https://onesignal.com/api/v1/notifications",
+      "https://api.onesignal.com/notifications",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Basic ${Deno.env.get("ONESIGNAL_REST_API_KEY")}`,
+          "Authorization": `Key ${apiKey}`,
         },
-        body: JSON.stringify({
-          app_id: "70d001f6-c98e-434d-8251-354c62447cb5",
-          include_player_ids: [instructor.onesignal_player_id],
-          headings: { en: title },
-          contents: { en: body },
-          url: url ?? undefined,
-          data: {
-            type: type ?? "general",
-            ...data,
-          },
-        }),
+        body: JSON.stringify(payload),
       },
     );
 
     const result = await oneSignalRes.json();
 
     if (!oneSignalRes.ok) {
-      console.error("[send-push] OneSignal error:", result);
+      console.error("[send-push] OneSignal error:", JSON.stringify(result));
       return new Response(
         JSON.stringify({ error: result }),
         { status: 500, headers: corsHeaders },
       );
     }
 
-    console.log("[send-push] sent:", result.id);
+    console.log("[send-push] sent:", result.id, "badge:", badgeCount);
 
     return new Response(
-      JSON.stringify({ ok: true, id: result.id }),
+      JSON.stringify({ ok: true, id: result.id, badgeCount }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e: any) {
-    console.error("[send-push] error:", e);
+    console.error("[send-push] error:", e.message);
     return new Response(
       JSON.stringify({ error: e.message }),
       { status: 500, headers: corsHeaders },

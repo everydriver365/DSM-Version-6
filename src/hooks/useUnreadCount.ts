@@ -1,19 +1,27 @@
 import { useEffect, useState } from "react";
-import { App } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
+import { Badge } from "@capawesome/capacitor-badge";
 import { supabase } from "../lib/supabaseClient";
 
 export function useUnreadCount() {
   const [unreadCount, setUnreadCount] = useState(0);
 
+  // Keep the native app-icon badge in sync with the actual unread count.
+  // The database unread count remains the single source of truth here —
+  // we only ever set the badge to it, never increment/clear independently.
   useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+
     (async () => {
       try {
-        if (unreadCount > 0) {
-          await (App as any).setBadge?.({ count: unreadCount });
-        } else {
-          await (App as any).clearBadge?.();
-        }
-      } catch {}
+        const perm = await Badge.checkPermissions().catch(() => null);
+        console.log("[badge] permission state:", perm?.display ?? "unknown");
+        console.log("[badge] unread count:", unreadCount, "-> setting badge to:", unreadCount);
+        await Badge.set({ count: unreadCount });
+      } catch (e) {
+        // A badge failure must never break notifications or unread-count.
+        console.warn("[badge] failed to set badge:", e);
+      }
     })();
   }, [unreadCount]);
 
