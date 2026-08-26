@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -1383,7 +1384,7 @@ function GapsPage() {
       }
     }
 
-    await supabase.from("instructor_notifications").insert({
+    await notifyInstructors({
       instructor_id: userId,
       type: "gap_message_sent",
       title: "Gap filler messages sent",

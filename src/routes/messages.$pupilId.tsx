@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IconAlertCircle, IconAlertTriangle, IconCheck, IconChecks, IconChevronDown, IconChevronLeft, IconChevronUp, IconCircleCheck, IconClock, IconPaperclip, IconPhone, IconSearch, IconSend, IconX } from "@tabler/icons-react";
@@ -842,7 +843,7 @@ function PupilThreadPage() {
       const displayName = pupil?.name ?? pupil?.first_name ?? "Pupil";
 
       // d) Instructor notification
-      const { error: notifErr } = await supabase.from("instructor_notifications").insert({
+      const { error: notifErr } = await notifyInstructors({
         instructor_id: userId,
         title: "Lesson booked!",
         body: `${displayName} confirmed ${when}`,

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -136,7 +137,7 @@ function RescheduleLessonPage() {
     }
 
     if (instructorId && newDateObj) {
-      const { error: notifErr } = await supabase.from("instructor_notifications").insert({
+      const { error: notifErr } = await notifyInstructors({
         instructor_id: instructorId,
         title: "Lesson rescheduled",
         body: `${pupilName} moved to ${formatDateLong(newDateObj)} ${time}`,

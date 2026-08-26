@@ -1,4 +1,5 @@
 import { pupilColour } from "@/components/PupilAvatar";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { DSMPill, pillStyle } from "@/components/dsm/DSMPill";
 import { lessonStatusVariant, statusLabel } from "@/lib/statusVariants";
@@ -872,7 +873,7 @@ function SchedulePage() {
 
       const firstName = movingLesson.pupil?.first_name || movingLesson.pupils?.first_name || 'Your pupil';
       if (userId) {
-        await supabase.from('instructor_notifications').insert({
+        await notifyInstructors({
           instructor_id: userId,
           type: 'lesson_rescheduled',
           title: 'Lesson rescheduled',

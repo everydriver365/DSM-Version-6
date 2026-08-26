@@ -21,6 +21,8 @@ import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
 import { PushPermissionSheet } from "../components/dsm/PushPermissionSheet";
 import { supabase } from "../lib/supabaseClient";
+import { useUnreadCount } from "@/hooks/useUnreadCount";
+
 import { isBiometricAvailable, authenticate } from "@/lib/biometric";
 import { IconFingerprint } from "@tabler/icons-react";
 import { App } from "@capacitor/app";
@@ -527,6 +529,10 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
 
 
 function RootComponent() {
+  // Keep the native app-icon badge in sync with the real unread count on every
+  // screen, not just the handful of pages that mount this hook themselves.
+  useUnreadCount();
+
   // Desktop redirect: native app stays, mobile browser stays, desktop goes to web app
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -534,6 +540,7 @@ function RootComponent() {
       window.location.href = "https://desktop.everydriver.pro";
     }
   }, []);
+
 
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
@@ -487,7 +488,7 @@ function LeadDetailSheet({
     }
     if (newPupilId && userId) {
       const pupilName = `${first} ${last}`.trim();
-      void supabase.from("instructor_notifications").insert({
+      void notifyInstructors({
         instructor_id: userId,
         title: "New pupil added",
         body: `${pupilName} added to your pupils`,

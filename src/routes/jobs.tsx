@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import DSMSkeleton from "@/components/dsm/DSMSkeleton";
@@ -1047,7 +1048,7 @@ function JobThread({ job, uid, onClose }: { job: JobOffer; uid: string | null; o
         reference_id: job.id,
         reference_type: "job_offer",
       }));
-      await supabase.from("instructor_notifications").insert(notifications);
+      await notifyInstructors(notifications);
     }
 
     setSending(false);

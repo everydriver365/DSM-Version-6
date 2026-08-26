@@ -1,4 +1,5 @@
 import { useGoBack } from "@/hooks/useGoBack";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { SwipeableDetailShell } from "@/components/dsm/SwipeableDetailShell";
@@ -1381,7 +1382,7 @@ function EnquirySheet({
       // 1. Instructor notification (in-app)
       if (listing.instructor_id) {
         tasks.push(
-          Promise.resolve(supabase.from("instructor_notifications").insert({
+          Promise.resolve(notifyInstructors({
             instructor_id: listing.instructor_id,
             title: "New marketplace enquiry 📬",
             body: `Someone enquired about your listing: '${listing.title}'`,

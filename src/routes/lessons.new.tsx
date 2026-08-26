@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconArrowLeft, IconRefresh } from "@tabler/icons-react";
@@ -295,7 +296,7 @@ function NewLessonPage() {
       pushLessonToGoogle({ action: "push", lesson_id: newLessonId, instructor_id: user.id });
 
       const pupilName = selected?.name ?? "Pupil";
-      void supabase.from("instructor_notifications").insert({
+      void notifyInstructors({
         instructor_id: user.id,
         title: "Lesson booked",
         body: `${pupilName} booked for ${date} at ${time}`,

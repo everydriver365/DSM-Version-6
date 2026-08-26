@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconChevronDown, IconChevronLeft, IconChevronUp, IconClipboardList } from "@tabler/icons-react";
@@ -129,7 +130,7 @@ function AdminApplicationsPage() {
         .eq("instructor_id", app.instructor_id)
         .eq("status", "published");
       if (e3) console.warn("[approve] courses update:", e3);
-      await supabase.from("instructor_notifications").insert({
+      await notifyInstructors({
         instructor_id: app.instructor_id,
         title: "🎉 Featured listing approved",
         body: "Your featured listing has been approved! You're now featured on EveryDriver.",
@@ -160,7 +161,7 @@ function AdminApplicationsPage() {
         .update({ status: "rejected", admin_notes: reason, reviewed_at: now, reviewed_by: adminUserId })
         .eq("id", app.id);
       if (error) throw error;
-      await supabase.from("instructor_notifications").insert({
+      await notifyInstructors({
         instructor_id: app.instructor_id,
         title: "Featured application not approved",
         body: `Your featured application was not approved. ${reason}`,
@@ -191,7 +192,7 @@ function AdminApplicationsPage() {
         .update({ status: "pending", admin_notes: message })
         .eq("id", app.id);
       if (error) throw error;
-      await supabase.from("instructor_notifications").insert({
+      await notifyInstructors({
         instructor_id: app.instructor_id,
         title: "More info needed on your application",
         body: message,

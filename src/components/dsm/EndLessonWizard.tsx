@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { BottomSheet } from "@/components/dsm/BottomSheetV2";
 import { IconCircleCheck, IconGift, IconLoader2, IconPrinter } from "@tabler/icons-react";
@@ -607,7 +608,7 @@ export function EndLessonWizard(props: EndLessonWizardProps) {
     toast.success("End of lesson completed");
     clearDraft();
 
-    void supabase.from("instructor_notifications").insert({
+    void notifyInstructors({
       instructor_id: instructorId,
       title: "Lesson completed",
       body: `${pupilName} — ${durationMinutes} min lesson completed`,

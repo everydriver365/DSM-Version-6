@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IconChevronLeft, IconLoader2, IconPlus, IconStar, IconX } from "@tabler/icons-react";
@@ -342,7 +343,7 @@ function AdminListingsPage() {
 
   async function notify(instructorId: string | null, message: string) {
     if (!instructorId) return;
-    const { error } = await supabase.from("instructor_notifications").insert({
+    const { error } = await notifyInstructors({
       instructor_id: instructorId,
       message,
     });

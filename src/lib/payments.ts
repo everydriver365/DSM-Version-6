@@ -1,4 +1,5 @@
 import { supabase } from "./supabaseClient";
+import { notifyInstructors } from "@/lib/notify";
 
 /**
  * Canonical payment reconciliation.
@@ -248,7 +249,7 @@ async function recordPaymentCore(
       .eq("id", pupilId)
       .maybeSingle();
     const pupilName = (pupilRow as { name?: string | null } | null)?.name?.trim() || "Pupil";
-    const { error: notifErr } = await supabase.from("instructor_notifications").insert({
+    const { error: notifErr } = await notifyInstructors({
       instructor_id: instructorId,
       title: "Payment received",
       body: `£${amount.toFixed(2)} ${method} from ${pupilName}${hoursBought > 0 ? ` — ${hoursBought}h package` : ""}`,
@@ -556,7 +557,7 @@ export async function recordRefund(
       const last = (pupil as { last_name?: string | null } | null)?.last_name ?? "";
       const pupilName = `${first} ${last}`.trim() || "Pupil";
       const formattedAmount = amount.toFixed(2);
-      void supabase.from("instructor_notifications").insert({
+      void notifyInstructors({
         instructor_id: instructorId,
         title: "Refund issued",
         body: `£${formattedAmount} ${method ?? "refund"} refund to ${pupilName}`,
