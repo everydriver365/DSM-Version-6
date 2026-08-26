@@ -671,6 +671,7 @@ function RootComponent() {
             const isGranted = await OneSignal.Notifications.hasPermission();
             console.log(`[OneSignal] permission ${isGranted ? 'granted' : 'not granted'}`);
           }
+          try { localStorage.removeItem('dsm.push.initError'); } catch { /* ignore */ }
           OneSignal.Notifications.addEventListener('click', (event) => {
             const data = event.notification.additionalData as any;
             const type = data?.type ?? '';
@@ -717,6 +718,10 @@ function RootComponent() {
           }
         } catch (e: any) {
           console.error('[OneSignal] FULL ERROR:', e?.message, e?.stack, JSON.stringify(e));
+          // Surface the failure in Notification settings instead of failing silently.
+          try {
+            localStorage.setItem('dsm.push.initError', String(e?.message ?? 'init failed'));
+          } catch { /* ignore */ }
         }
       } catch (e) {
         console.error('[native init] error:', e);

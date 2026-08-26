@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { IconBell } from "@tabler/icons-react";
 import { toast } from "sonner";
 import OneSignal from "@onesignal/capacitor-plugin";
+import { Capacitor } from "@capacitor/core";
+import { App as CapApp } from "@capacitor/app";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 import { Card } from "../components/dsm/Card";
@@ -92,6 +94,9 @@ function NotificationSettingsPage() {
   const [pushBusy, setPushBusy] = useState(false);
   const [pushError, setPushError] = useState<string | null>(null);
   const [notifEnabled, setNotifEnabled] = useState(false);
+  // "granted" | "not-asked" | "blocked" | "unavailable" | "web"
+  const [nativePermState, setNativePermState] = useState<string>("not-asked");
+  const [pushInitError, setPushInitError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -101,14 +106,42 @@ function NotificationSettingsPage() {
 
   useEffect(() => {
     (async () => {
+      if (typeof window !== "undefined") {
+        setPushInitError(localStorage.getItem("dsm.push.initError"));
+      }
+      if (!Capacitor.isNativePlatform()) {
+        setNativePermState("web");
+        return;
+      }
       try {
         const isGranted = await OneSignal.Notifications.hasPermission();
         setNotifEnabled(isGranted);
+        if (isGranted) {
+          setNativePermState("granted");
+          return;
+        }
+        // iOS: 0 = not determined, 1 = denied, 2+ = authorised/provisional.
+        let native: number | null = null;
+        try {
+          native = (await (OneSignal.Notifications as any).permissionNative()) as number;
+        } catch {
+          native = null;
+        }
+        setNativePermState(native === 0 || native === null ? "not-asked" : "blocked");
       } catch (e) {
         console.warn("[OneSignal] permission check failed", e);
+        setNativePermState("unavailable");
       }
     })();
   }, []);
+
+  async function openIosSettings() {
+    try {
+      await (CapApp as any).openUrl({ url: "app-settings:" });
+    } catch {
+      toast.error("Open iOS Settings > Every Driver Pro > Notifications");
+    }
+  }
 
   async function togglePush(next: boolean) {
     if (pushBusy) return;
@@ -193,39 +226,97 @@ function NotificationSettingsPage() {
 
 
       <div className="px-4">
-        {!notifEnabled && (
-          <button
-            type="button"
-            onClick={async () => {
-              try {
-                await OneSignal.Notifications.requestPermission(true);
-                const isGranted = await OneSignal.Notifications.hasPermission();
-                setNotifEnabled(isGranted);
-                if (isGranted) {
-                  toast.success("Notifications enabled!");
-                } else {
+        <div
+          style={{
+            background: "#FFFFFF",
+            border: "0.5px solid #EEF2F7",
+            borderRadius: 12,
+            padding: 14,
+            marginBottom: 16,
+          }}
+        >
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div style={{ fontSize: 14, fontWeight: 600, color: tokens.navy }}>
+                Device notifications
+              </div>
+              <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
+                {nativePermState === "granted"
+                  ? "Enabled on this device"
+                  : nativePermState === "blocked"
+                  ? "Blocked in iOS Settings — iOS won’t ask again"
+                  : nativePermState === "unavailable"
+                  ? "Push service unavailable in this build"
+                  : nativePermState === "web"
+                  ? "Open the installed app to enable device alerts"
+                  : "Not enabled yet"}
+              </div>
+              {pushInitError && (
+                <div style={{ fontSize: 11, color: "#CC2229", marginTop: 4 }}>
+                  Push service unavailable in this build ({pushInitError})
+                </div>
+              )}
+            </div>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                borderRadius: 999,
+                padding: "4px 10px",
+                whiteSpace: "nowrap",
+                color: nativePermState === "granted" ? "#0F7B3F" : "#CC2229",
+                background: nativePermState === "granted" ? "#E8F6EE" : "#FDECEC",
+              }}
+            >
+              {nativePermState === "granted" ? "Enabled" : "Not enabled"}
+            </span>
+          </div>
+
+          {nativePermState !== "granted" && nativePermState !== "web" && (
+            <button
+              type="button"
+              onClick={async () => {
+                if (nativePermState === "blocked" || nativePermState === "unavailable") {
+                  await openIosSettings();
+                  return;
+                }
+                try {
+                  await OneSignal.Notifications.requestPermission(true);
+                  const isGranted = await OneSignal.Notifications.hasPermission();
+                  setNotifEnabled(isGranted);
+                  if (isGranted) {
+                    setNativePermState("granted");
+                    toast.success("Notifications enabled!");
+                  } else {
+                    setNativePermState("blocked");
+                    toast.error("iOS won’t re-ask — enable it in Settings");
+                    await openIosSettings();
+                  }
+                } catch (e) {
+                  console.warn("[OneSignal] request permission failed", e);
+                  setNativePermState("unavailable");
                   toast.error("Could not enable notifications");
                 }
-              } catch (e) {
-                toast.error("Could not enable notifications");
-              }
-            }}
-            style={{
-              background: "#1877D6",
-              color: "#fff",
-              borderRadius: 12,
-              padding: "14px 16px",
-              fontSize: 14,
-              fontWeight: 600,
-              textAlign: "center",
-              cursor: "pointer",
-              marginBottom: 16,
-              width: "100%",
-            }}
-          >
-            Enable push notifications
-          </button>
-        )}
+              }}
+              style={{
+                background: "#1877D6",
+                color: "#fff",
+                borderRadius: 12,
+                padding: "12px 16px",
+                fontSize: 14,
+                fontWeight: 600,
+                textAlign: "center",
+                cursor: "pointer",
+                marginTop: 12,
+                width: "100%",
+              }}
+            >
+              {nativePermState === "blocked" || nativePermState === "unavailable"
+                ? "Open iOS Settings"
+                : "Enable push notifications"}
+            </button>
+          )}
+        </div>
         <SectionHeader>DELIVERY CHANNELS</SectionHeader>
         <Card className="!p-0">
           <ToggleRow
