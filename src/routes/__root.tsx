@@ -667,10 +667,25 @@ function RootComponent() {
 
           // iOS system prompt: "Every Driver Pro would like to send you notifications"
           if (Capacitor.isNativePlatform()) {
-            await OneSignal.Notifications.requestPermission(true);
-            const isGranted = await OneSignal.Notifications.hasPermission();
-            console.log(`[OneSignal] permission ${isGranted ? 'granted' : 'not granted'}`);
+            const alreadyGranted = await OneSignal.Notifications.hasPermission();
+            if (alreadyGranted) {
+              console.log('[OneSignal] permission already granted');
+            } else {
+              let asked = false;
+              try { asked = localStorage.getItem('dsm.push.asked') === 'true'; } catch { /* ignore */ }
+              if (!asked) {
+                try { localStorage.setItem('dsm.push.asked', 'true'); } catch { /* ignore */ }
+                // fallbackToSettings = false: only the real iOS system prompt, never
+                // OneSignal's "Open Settings" dialog.
+                await OneSignal.Notifications.requestPermission(false);
+                const isGranted = await OneSignal.Notifications.hasPermission();
+                console.log(`[OneSignal] permission ${isGranted ? 'granted' : 'not granted'}`);
+              } else {
+                console.log('[OneSignal] permission not granted; already asked once, skipping prompt');
+              }
+            }
           }
+
           try { localStorage.removeItem('dsm.push.initError'); } catch { /* ignore */ }
           OneSignal.Notifications.addEventListener('click', (event) => {
             const data = event.notification.additionalData as any;
