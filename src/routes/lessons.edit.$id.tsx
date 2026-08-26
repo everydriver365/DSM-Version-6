@@ -660,10 +660,15 @@ function EditLessonPage() {
             <select
               value={duration}
               onChange={(e) => {
-                setDuration(Number(e.target.value));
-                setIsTestDay(false);
+                const v = Number(e.target.value);
+                setDuration(v);
                 setIsEvent(false);
-                setTestCentre('');
+                if (v === -1) {
+                  setIsTestDay(true);
+                } else {
+                  setIsTestDay(false);
+                  setTestCentre('');
+                }
               }}
               style={{
                 width: '100%',
