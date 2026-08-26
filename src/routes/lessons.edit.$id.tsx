@@ -698,6 +698,7 @@ function EditLessonPage() {
               <option value={240}>4 hours</option>
               <option value={300}>5 hours</option>
               <option value={360}>6 hours</option>
+              <option value={-1}>Driving test 🚗</option>
             </select>
             {isTestDay && (
               <div style={{ marginBottom: 16 }}>
