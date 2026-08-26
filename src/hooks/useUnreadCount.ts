@@ -79,12 +79,22 @@ export function useUnreadCount(options?: { skipBadge?: boolean }) {
     window.addEventListener("focus", onRefresh);
     document.addEventListener("visibilitychange", onRefresh);
 
+    let resumeListener: Promise<{ remove: () => void }> | null = null;
+    if (Capacitor.isNativePlatform()) {
+      try {
+        resumeListener = App.addListener("resume", onRefresh);
+      } catch (e) {
+        console.warn("[unread-count] resume listener failed:", e);
+      }
+    }
+
     return () => {
       mounted = false;
       if (channel) supabase.removeChannel(channel);
       window.removeEventListener("dsm-notifications-updated", onRefresh);
       window.removeEventListener("focus", onRefresh);
       document.removeEventListener("visibilitychange", onRefresh);
+      if (resumeListener) void resumeListener.then((s) => s.remove());
     };
   }, []);
 
