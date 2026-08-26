@@ -862,6 +862,40 @@ function RootComponent() {
     };
   }, []);
 
+  // After login, if push notifications are blocked or not enabled on the device,
+  // send the instructor to the notification settings page once per app session.
+  useEffect(() => {
+    if (!userId) return;
+    if (!Capacitor.isNativePlatform()) return;
+    let cancelled = false;
+
+    (async () => {
+      try {
+        if (sessionStorage.getItem('dsm.push.settingsPrompted') === 'true') return;
+      } catch { /* ignore */ }
+
+      let granted = false;
+      try {
+        granted = await OneSignal.Notifications.hasPermission();
+      } catch (e) {
+        console.warn('[OneSignal] permission check failed:', e);
+        return;
+      }
+      if (cancelled || granted) return;
+
+      const path = window.location.pathname;
+      if (path.startsWith('/notificationsettings')) return;
+
+      try { sessionStorage.setItem('dsm.push.settingsPrompted', 'true'); } catch { /* ignore */ }
+      console.log('[OneSignal] notifications not enabled — opening notification settings');
+      router.navigate({ to: '/notificationsettings' as never });
+    })();
+
+    return () => { cancelled = true; };
+  }, [userId, router]);
+
+
+
   // Hide bottom nav while any sheet (e.g. community report sheet) is open.
   useEffect(() => {
     const onOpen = () => setSheetOpen(true);
