@@ -671,6 +671,7 @@ function RootComponent() {
             const isGranted = await OneSignal.Notifications.hasPermission();
             console.log(`[OneSignal] permission ${isGranted ? 'granted' : 'not granted'}`);
           }
+          try { localStorage.removeItem('dsm.push.initError'); } catch { /* ignore */ }
           OneSignal.Notifications.addEventListener('click', (event) => {
             const data = event.notification.additionalData as any;
             const type = data?.type ?? '';
