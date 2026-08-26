@@ -62,7 +62,7 @@ Deno.serve(async (req) => {
     const payload: any = {
       app_id: appId,
       include_subscription_ids: [subscriptionId],
-      headings: { en: title },
+      headings: { en: bannerTitle },
       contents: { en: body },
       ios_badgeType: "SetTo",
       ios_badgeCount: badgeCount,
