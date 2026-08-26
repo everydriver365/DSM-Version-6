@@ -39,6 +39,9 @@ export function useUnreadCount(options?: { skipBadge?: boolean }) {
 
   useEffect(() => {
     let mounted = true;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let retryTimer: ReturnType<typeof setTimeout> | null = null;
+    let retries = 0;
 
     async function fetch() {
       const { data: { user } } = await supabase.auth.getUser();
@@ -53,31 +56,76 @@ export function useUnreadCount(options?: { skipBadge?: boolean }) {
       if (mounted) setUnreadCount(count ?? 0);
     }
 
-    fetch();
-
-
     // Realtime subscription. Each hook instance gets its own channel name —
     // reusing one name returns the same (already subscribed) channel and
     // adding a postgres_changes listener to it throws, crashing the page.
-    let channel: ReturnType<typeof supabase.channel> | null = null;
-    try {
-      channel = supabase
-        .channel(`unread-count-${Math.random().toString(36).slice(2)}`)
-        .on("postgres_changes", {
-          event: "*",
-          schema: "public",
-          table: "instructor_notifications",
-        }, fetch)
-        .subscribe();
-    } catch (e) {
-      console.warn("[unread-count] realtime subscribe failed:", e);
+    // The channel is filtered to this instructor's rows and re-subscribes with
+    // backoff if the socket drops, so badge counts update live without waiting
+    // for a resume/foreground event.
+    async function subscribe() {
+      if (!mounted) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      const userId = session?.user?.id;
+      if (!userId || !mounted) return;
+
+      // Realtime needs the current access token to pass RLS on the stream.
+      try { supabase.realtime.setAuth(session!.access_token); } catch { /* ignore */ }
+
+      try {
+        channel = supabase
+          .channel(`unread-count-${userId}-${Math.random().toString(36).slice(2)}`)
+          .on("postgres_changes", {
+            event: "*",
+            schema: "public",
+            table: "instructor_notifications",
+            filter: `instructor_id=eq.${userId}`,
+          }, () => { void fetch(); })
+          .subscribe((status) => {
+            console.log("[unread-count] realtime status:", status);
+            if (status === "SUBSCRIBED") {
+              retries = 0;
+              void fetch();
+              return;
+            }
+            if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+              if (!mounted) return;
+              const delay = Math.min(30000, 1000 * 2 ** retries);
+              retries += 1;
+              if (retryTimer) clearTimeout(retryTimer);
+              retryTimer = setTimeout(() => {
+                if (!mounted) return;
+                if (channel) { supabase.removeChannel(channel); channel = null; }
+                void subscribe();
+              }, delay);
+            }
+          });
+      } catch (e) {
+        console.warn("[unread-count] realtime subscribe failed:", e);
+      }
     }
 
+    void fetch();
+    void subscribe();
 
     const onRefresh = () => { void fetch(); };
     window.addEventListener("dsm-notifications-updated", onRefresh);
     window.addEventListener("focus", onRefresh);
     document.addEventListener("visibilitychange", onRefresh);
+
+    // Re-key the realtime socket when the session changes (token refresh,
+    // sign-in/out) so the stream keeps passing RLS.
+    const { data: authSub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "TOKEN_REFRESHED" && session?.access_token) {
+        try { supabase.realtime.setAuth(session.access_token); } catch { /* ignore */ }
+        return;
+      }
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
+        if (channel) { supabase.removeChannel(channel); channel = null; }
+        setUnreadCount(0);
+        void fetch();
+        void subscribe();
+      }
+    });
 
     let resumeListener: Promise<{ remove: () => void }> | null = null;
     if (Capacitor.isNativePlatform()) {
@@ -90,13 +138,16 @@ export function useUnreadCount(options?: { skipBadge?: boolean }) {
 
     return () => {
       mounted = false;
+      if (retryTimer) clearTimeout(retryTimer);
       if (channel) supabase.removeChannel(channel);
+      authSub?.subscription?.unsubscribe();
       window.removeEventListener("dsm-notifications-updated", onRefresh);
       window.removeEventListener("focus", onRefresh);
       document.removeEventListener("visibilitychange", onRefresh);
       if (resumeListener) void resumeListener.then((s) => s.remove());
     };
   }, []);
+
 
   return unreadCount;
 }
