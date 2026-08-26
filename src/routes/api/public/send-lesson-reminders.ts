@@ -66,6 +66,44 @@ async function runReminders(request: Request): Promise<Response> {
     return text ? JSON.parse(text) : null;
   };
 
+  // How long the same (instructor, type, reference_id) event stays deduped.
+  const DEDUPE_WINDOW_MS: Record<string, number> = {
+    tracking: 6 * 60 * 60 * 1000, // lesson starting soon
+    lesson_tomorrow: 20 * 60 * 60 * 1000,
+    test_tomorrow: 20 * 60 * 60 * 1000,
+    overdue_payment: 24 * 60 * 60 * 1000,
+    pupil_churn: 7 * DAY,
+  };
+  const DEFAULT_DEDUPE_MS = 6 * 60 * 60 * 1000;
+
+  // Guards against duplicates inside a single run (belt and braces alongside
+  // the database lookup, which cannot see rows written moments ago in-flight).
+  const sentThisRun = new Set<string>();
+
+  const alreadyNotified = async (
+    instructor_id: string,
+    type: string,
+    reference_id: string | null | undefined,
+  ): Promise<boolean> => {
+    if (!reference_id) return false;
+    const key = `${instructor_id}:${type}:${reference_id}`;
+    if (sentThisRun.has(key)) return true;
+    const since = new Date(Date.now() - (DEDUPE_WINDOW_MS[type] ?? DEFAULT_DEDUPE_MS)).toISOString();
+    try {
+      const rows: any[] =
+        (await rest(
+          `instructor_notifications?select=id&instructor_id=eq.${instructor_id}` +
+            `&type=eq.${encodeURIComponent(type)}&reference_id=eq.${reference_id}` +
+            `&created_at=gte.${since}&limit=1`,
+          { headers: { Prefer: "return=representation" } },
+        )) ?? [];
+      return rows.length > 0;
+    } catch (e) {
+      console.error("[reminders] dedupe lookup failed", type, e);
+      return false; // fail open: better a rare duplicate than a missed reminder
+    }
+  };
+
   const notify = async (args: {
     instructor_id: string;
     title: string;
@@ -76,6 +114,15 @@ async function runReminders(request: Request): Promise<Response> {
     reference_id?: string | null;
     reference_type?: "lesson" | "pupil" | null;
   }) => {
+    // 0. Skip anything already notified for this exact event.
+    if (await alreadyNotified(args.instructor_id, args.type, args.reference_id)) {
+      console.log("[reminders] skipped duplicate", args.type, args.reference_id);
+      return;
+    }
+    if (args.reference_id) {
+      sentThisRun.add(`${args.instructor_id}:${args.type}:${args.reference_id}`);
+    }
+
     // 1. Record the in-app notification FIRST so the badge count that
     //    send-push reads is already the correct absolute value.
     try {
@@ -95,6 +142,7 @@ async function runReminders(request: Request): Promise<Response> {
     } catch (e) {
       console.error("[reminders] notification insert failed", e);
     }
+
 
     // 2. Push via the existing send-push edge function
     try {
