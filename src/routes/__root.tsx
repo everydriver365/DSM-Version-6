@@ -619,6 +619,8 @@ function RootComponent() {
                         onesignal_player_id: playerId
                       }, { onConflict: 'id' });
                     console.log('[OneSignal] player ID saved on foreground:', playerId);
+                    OneSignal.login(user.id);
+                    console.log('[OneSignal] external ID set on foreground:', user.id);
                   }
                 }
               } catch (e) {
@@ -702,6 +704,8 @@ function RootComponent() {
                     onesignal_player_id: playerId
                   }, { onConflict: 'id' });
                 console.log('[OneSignal] player ID saved:', playerId);
+                OneSignal.login(user.id);
+                console.log('[OneSignal] external ID set:', user.id);
               }
             }
           } catch (e) {
