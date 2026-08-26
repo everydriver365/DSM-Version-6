@@ -16,9 +16,14 @@ export function useUnreadCount(options?: { skipBadge?: boolean }) {
 
     (async () => {
       try {
-        const perm = await Badge.checkPermissions().catch(() => null);
+        let perm = await Badge.checkPermissions().catch(() => null);
         console.log("[badge] permission state:", perm?.display ?? "unknown");
+        if (perm?.display !== "granted") {
+          perm = await Badge.requestPermissions().catch(() => null);
+          console.log("[badge] after request:", perm?.display ?? "unknown");
+        }
         console.log("[badge] unread count:", unreadCount, "-> setting badge to:", unreadCount);
+
         await Badge.set({ count: unreadCount });
       } catch (e) {
         // A badge failure must never break notifications or unread-count.
