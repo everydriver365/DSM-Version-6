@@ -82,7 +82,7 @@ const GROUP_ORDER = ['Teaching', 'Business', 'Payments', 'Admin', 'Reports', 'Co
 function MorePage() {
   const [reloadKey, setReloadKey] = useState(0);
   const navigate = useNavigate();
-  const unreadCount = useUnreadCount();
+  const unreadCount = useUnreadCount({ skipBadge: true });
   const [searchQuery, setSearchQuery] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
   const [squareConnected, setSquareConnected] = useState(false);
