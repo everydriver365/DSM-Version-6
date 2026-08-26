@@ -308,7 +308,7 @@ function MorePage() {
                         width: 40,
                         height: 40,
                         borderRadius: 10,
-                        background: '#0F2044',
+                        background: tokens.navy,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
