@@ -659,7 +659,7 @@ function RootComponent() {
           // iOS system prompt: "Every Driver Pro would like to send you notifications"
           if (Capacitor.isNativePlatform()) {
             await OneSignal.Notifications.requestPermission(true);
-            const permission = await OneSignal.Notifications.permissionNative();
+            const permission = await OneSignal.Notifications.permissionNative() as unknown as string;
             const isGranted = permission === 'authorized'
               || permission === 'ephemeral'
               || permission === 'provisional';

@@ -102,7 +102,7 @@ function NotificationSettingsPage() {
   useEffect(() => {
     (async () => {
       try {
-        const permission = await OneSignal.Notifications.permissionNative();
+        const permission = await OneSignal.Notifications.permissionNative() as unknown as string;
         const isGranted = permission === 'authorized'
           || permission === 'ephemeral'
           || permission === 'provisional';
@@ -202,7 +202,7 @@ function NotificationSettingsPage() {
             onClick={async () => {
               try {
                 await OneSignal.Notifications.requestPermission(true);
-                const permission = await OneSignal.Notifications.permissionNative();
+                const permission = await OneSignal.Notifications.permissionNative() as unknown as string;
                 const isGranted = permission === 'authorized'
                   || permission === 'ephemeral'
                   || permission === 'provisional';
