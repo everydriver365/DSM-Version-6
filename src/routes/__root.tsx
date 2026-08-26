@@ -715,14 +715,37 @@ function RootComponent() {
             }
             console.log('[OneSignal] navigating for type:', type, 'url:', url);
           });
+          const requestRecount = (reason: string) => {
+            const fire = () => {
+              try {
+                window.dispatchEvent(new Event('dsm-notifications-updated'));
+              } catch { /* ignore */ }
+            };
+            console.log('[OneSignal] recount requested:', reason);
+            fire();
+            // The notification row may land a moment after the push arrives.
+            setTimeout(fire, 1500);
+            setTimeout(fire, 5000);
+          };
           OneSignal.Notifications.addEventListener('foregroundWillDisplay', (event) => {
             const data = event.getNotification().additionalData as any;
             console.log('[OneSignal] foreground will display', data);
-            try {
-              window.dispatchEvent(new Event('dsm-notifications-updated'));
-            } catch { /* ignore */ }
+            requestRecount('foregroundWillDisplay');
           });
+          try {
+            OneSignal.Notifications.addEventListener('permissionChange', (granted: boolean) => {
+              console.log('[OneSignal] permission change:', granted);
+              if (granted) requestRecount('permissionChange');
+            });
+          } catch (e) { console.warn('[OneSignal] permissionChange listener failed', e); }
+          try {
+            OneSignal.User.pushSubscription.addEventListener('change', (event: any) => {
+              console.log('[OneSignal] push subscription change:', event?.current?.optedIn);
+              requestRecount('pushSubscriptionChange');
+            });
+          } catch (e) { console.warn('[OneSignal] subscription change listener failed', e); }
           console.log('[OneSignal] initialized');
+
 
           // Save OneSignal Player ID to DB
           try {
