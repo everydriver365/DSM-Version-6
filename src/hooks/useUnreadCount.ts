@@ -76,7 +76,7 @@ export function useUnreadCount(options?: { skipBadge?: boolean }) {
 
     return () => {
       mounted = false;
-      supabase.removeChannel(channel);
+      if (channel) supabase.removeChannel(channel);
       window.removeEventListener("dsm-notifications-updated", onRefresh);
       window.removeEventListener("focus", onRefresh);
       document.removeEventListener("visibilitychange", onRefresh);
