@@ -76,7 +76,27 @@ async function runReminders(request: Request): Promise<Response> {
     reference_id?: string | null;
     reference_type?: "lesson" | "pupil" | null;
   }) => {
-    // 1. Push via the existing send-push edge function
+    // 1. Record the in-app notification FIRST so the badge count that
+    //    send-push reads is already the correct absolute value.
+    try {
+      await rest("instructor_notifications", {
+        method: "POST",
+        body: JSON.stringify({
+          instructor_id: args.instructor_id,
+          title: args.title,
+          body: args.body,
+          type: args.type,
+          reference_id: args.reference_id ?? null,
+          reference_type: args.reference_type ?? null,
+          read: false,
+          created_at: new Date().toISOString(),
+        }),
+      });
+    } catch (e) {
+      console.error("[reminders] notification insert failed", e);
+    }
+
+    // 2. Push via the existing send-push edge function
     try {
       const res = await fetch(`${SUPABASE_URL}/functions/v1/send-push`, {
         method: "POST",
@@ -96,25 +116,6 @@ async function runReminders(request: Request): Promise<Response> {
       if (!res.ok) console.error("[reminders] push failed", args.type, await res.text());
     } catch (e) {
       console.error("[reminders] push error", args.type, e);
-    }
-
-    // 2. Always record the in-app notification
-    try {
-      await rest("instructor_notifications", {
-        method: "POST",
-        body: JSON.stringify({
-          instructor_id: args.instructor_id,
-          title: args.title,
-          body: args.body,
-          type: args.type,
-          reference_id: args.reference_id ?? null,
-          reference_type: args.reference_type ?? null,
-          read: false,
-          created_at: new Date().toISOString(),
-        }),
-      });
-    } catch (e) {
-      console.error("[reminders] notification insert failed", e);
     }
   };
 

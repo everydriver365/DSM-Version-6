@@ -6,6 +6,44 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+/** Human labels so the banner always says what it is about. */
+const TYPE_LABELS: Record<string, string> = {
+  enquiry: "New enquiry",
+  new_enquiry: "New enquiry",
+  message: "New message",
+  chat: "New message",
+  lesson_reminder: "Lesson reminder",
+  starting_soon: "Lesson starting soon",
+  lesson_tomorrow: "Lesson tomorrow",
+  lesson_cancelled: "Lesson cancelled",
+  lesson_booked: "New booking",
+  reschedule_request: "Reschedule request",
+  test_reminder: "Test day tomorrow",
+  tests_tomorrow: "Test day tomorrow",
+  test_swap: "Test swap",
+  payment: "Payment received",
+  payment_received: "Payment received",
+  overdue_payments: "Payment overdue",
+  quote: "Quote update",
+  quote_declined: "Quote declined",
+  quote_counter: "Counter offer",
+  job: "Job offer",
+  job_offer: "Job offer",
+  course_booking: "Course booking",
+  pupil_churn: "Pupil inactive",
+  review: "New review",
+  general: "Update",
+};
+
+function buildTitle(title: unknown, type: unknown): string {
+  const raw = typeof title === "string" ? title.trim() : "";
+  const generic = !raw || /^(every driver pro|edp|notification)$/i.test(raw);
+  const label = generic
+    ? (TYPE_LABELS[String(type ?? "general")] ?? "Update")
+    : raw;
+  return /^edp\s*·/i.test(label) ? label : `EDP · ${label}`;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -20,7 +58,7 @@ Deno.serve(async (req) => {
     const { instructor_id, title, body, subtitle, url, type, data } =
       await req.json();
 
-    if (!instructor_id || !title || !body) {
+    if (!instructor_id || !body) {
       return new Response(
         JSON.stringify({ error: "Missing fields" }),
         { status: 400, headers: corsHeaders },
@@ -47,7 +85,11 @@ Deno.serve(async (req) => {
       .eq("instructor_id", instructor_id)
       .eq("read", false);
 
-    const badgeCount = (unreadCount ?? 0) + 1;
+    // Rows are always inserted before the push is sent, so the unread count
+    // is already the correct absolute badge value.
+    const badgeCount = Math.max(unreadCount ?? 0, 1);
+
+    const bannerTitle = buildTitle(title, type);
 
     const apiKey = Deno.env.get("ONESIGNAL_REST_API_KEY") ?? "";
     const appId = "70d001f6-c98e-434d-8251-354c62447cb5";
@@ -58,7 +100,7 @@ Deno.serve(async (req) => {
     const payload: any = {
       app_id: appId,
       include_subscription_ids: [subscriptionId],
-      headings: { en: title },
+      headings: { en: bannerTitle },
       contents: { en: body },
       ios_badgeType: "SetTo",
       ios_badgeCount: badgeCount,
