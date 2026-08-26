@@ -949,6 +949,7 @@ export function AddLessonSheet({
                 <option value={240}>4 hours</option>
                 <option value={300}>5 hours</option>
                 <option value={360}>6 hours</option>
+                <option value="test">Driving test 🚗</option>
               </select>
               {isTestDay && (
                 <p
