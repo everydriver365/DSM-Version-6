@@ -137,7 +137,7 @@ function NotificationSettingsPage() {
 
   async function openIosSettings() {
     try {
-      await CapApp.openUrl({ url: "app-settings:" });
+      await (CapApp as any).openUrl({ url: "app-settings:" });
     } catch {
       toast.error("Open iOS Settings > Every Driver Pro > Notifications");
     }
