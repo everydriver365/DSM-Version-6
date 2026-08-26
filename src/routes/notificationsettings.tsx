@@ -100,7 +100,7 @@ function NotificationSettingsPage() {
   }, []);
 
   useEffect(() => {
-    OneSignal.Notifications.getPermissionAsync().then(setNotifEnabled);
+    (OneSignal.Notifications as any).getPermissionAsync().then(setNotifEnabled);
   }, []);
 
   async function togglePush(next: boolean) {
