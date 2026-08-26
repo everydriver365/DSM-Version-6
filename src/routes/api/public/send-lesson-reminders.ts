@@ -132,7 +132,7 @@ async function runReminders(request: Request): Promise<Response> {
 
   const now = Date.now();
   const today = isoDate(now);
-  const summary = { starting_soon: 0, overdue_payments: 0, tests_tomorrow: 0, pupil_churn: 0 };
+  const summary = { starting_soon: 0, lesson_tomorrow: 0, overdue_payments: 0, tests_tomorrow: 0, pupil_churn: 0 };
   const errors: string[] = [];
 
   // ── 1. Lessons starting soon (25-35 mins) ────────────────
@@ -277,7 +277,35 @@ async function runReminders(request: Request): Promise<Response> {
     errors.push(`tests_tomorrow: ${e.message}`);
   }
 
-  // ── 4. Pupils gone quiet (once per week per pupil) ───────
+  // ── 4. Lessons tomorrow ──────────────────────────────────
+  try {
+    const tomorrow = isoDate(now + DAY);
+    const rows: any[] =
+      (await rest(
+        `lessons?select=id,lesson_date,lesson_time,pickup_location,instructor_id,pupil_id,pupils(name)` +
+          `&lesson_type=neq.event&lesson_type=neq.test&lesson_date=eq.${tomorrow}` +
+          `&deleted_at=is.null&reminder_sent_at=is.null&status=eq.confirmed`,
+      )) ?? [];
+
+    for (const l of rows) {
+      const name = l.pupils?.name ?? "Your pupil";
+      await notify({
+        instructor_id: l.instructor_id,
+        type: "lesson_tomorrow",
+        title: "📅 Lesson tomorrow",
+        body: `${name} · ${fmtTime(l.lesson_time)}`,
+        url: "/schedule",
+        reference_id: l.id,
+        reference_type: "lesson",
+      });
+      await markSent([l.id]);
+      summary.lesson_tomorrow++;
+    }
+  } catch (e: any) {
+    errors.push(`lesson_tomorrow: ${e.message}`);
+  }
+
+  // ── 5. Pupils gone quiet (once per week per pupil) ───────
   try {
     const cutoff = isoDate(now - 30 * DAY);
     const pupils: any[] =
