@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { IconBell } from "@tabler/icons-react";
 import { toast } from "sonner";
 import OneSignal from "@onesignal/capacitor-plugin";
+import { Capacitor } from "@capacitor/core";
+import { App as CapApp } from "@capacitor/app";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 import { Card } from "../components/dsm/Card";
