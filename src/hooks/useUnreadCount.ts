@@ -3,13 +3,15 @@ import { Capacitor } from "@capacitor/core";
 import { Badge } from "@capawesome/capacitor-badge";
 import { supabase } from "../lib/supabaseClient";
 
-export function useUnreadCount() {
+export function useUnreadCount(options?: { skipBadge?: boolean }) {
+  const skipBadge = options?.skipBadge ?? false;
   const [unreadCount, setUnreadCount] = useState(0);
 
   // Keep the native app-icon badge in sync with the actual unread count.
   // The database unread count remains the single source of truth here —
   // we only ever set the badge to it, never increment/clear independently.
   useEffect(() => {
+    if (skipBadge) return;
     if (!Capacitor.isNativePlatform()) return;
 
     (async () => {
@@ -23,7 +25,7 @@ export function useUnreadCount() {
         console.warn("[badge] failed to set badge:", e);
       }
     })();
-  }, [unreadCount]);
+  }, [unreadCount, skipBadge]);
 
   useEffect(() => {
     let mounted = true;
@@ -70,3 +72,4 @@ export function useUnreadCount() {
 
   return unreadCount;
 }
+
