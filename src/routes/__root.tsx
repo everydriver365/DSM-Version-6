@@ -718,6 +718,10 @@ function RootComponent() {
           }
         } catch (e: any) {
           console.error('[OneSignal] FULL ERROR:', e?.message, e?.stack, JSON.stringify(e));
+          // Surface the failure in Notification settings instead of failing silently.
+          try {
+            localStorage.setItem('dsm.push.initError', String(e?.message ?? 'init failed'));
+          } catch { /* ignore */ }
         }
       } catch (e) {
         console.error('[native init] error:', e);
