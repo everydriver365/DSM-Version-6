@@ -6,6 +6,44 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+/** Human labels so the banner always says what it is about. */
+const TYPE_LABELS: Record<string, string> = {
+  enquiry: "New enquiry",
+  new_enquiry: "New enquiry",
+  message: "New message",
+  chat: "New message",
+  lesson_reminder: "Lesson reminder",
+  starting_soon: "Lesson starting soon",
+  lesson_tomorrow: "Lesson tomorrow",
+  lesson_cancelled: "Lesson cancelled",
+  lesson_booked: "New booking",
+  reschedule_request: "Reschedule request",
+  test_reminder: "Test day tomorrow",
+  tests_tomorrow: "Test day tomorrow",
+  test_swap: "Test swap",
+  payment: "Payment received",
+  payment_received: "Payment received",
+  overdue_payments: "Payment overdue",
+  quote: "Quote update",
+  quote_declined: "Quote declined",
+  quote_counter: "Counter offer",
+  job: "Job offer",
+  job_offer: "Job offer",
+  course_booking: "Course booking",
+  pupil_churn: "Pupil inactive",
+  review: "New review",
+  general: "Update",
+};
+
+function buildTitle(title: unknown, type: unknown): string {
+  const raw = typeof title === "string" ? title.trim() : "";
+  const generic = !raw || /^(every driver pro|edp|notification)$/i.test(raw);
+  const label = generic
+    ? (TYPE_LABELS[String(type ?? "general")] ?? "Update")
+    : raw;
+  return /^edp\s*·/i.test(label) ? label : `EDP · ${label}`;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
