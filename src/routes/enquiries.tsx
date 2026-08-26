@@ -151,7 +151,6 @@ function EnquiriesPage() {
   const [reloadKey, setReloadKey] = useState(0);
   const navigate = useNavigate();
   const goBack = useGoBack();
-  const unreadCount = useUnreadCount();
   const [userId, setUserId] = useState<string | null>(null);
   const [enquiries, setEnquiries] = useState<EnquiryRow[]>([]);
   const [loading, setLoading] = useState(true);

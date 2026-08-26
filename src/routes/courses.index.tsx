@@ -105,7 +105,6 @@ function formatDate(d: string | null) {
 
 function CoursesPage() {
   const navigate = useNavigate();
-  const unreadCount = useUnreadCount();
   const [courses, setCourses] = useState<CourseRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState<Record<string, BookingRow[]>>({});
