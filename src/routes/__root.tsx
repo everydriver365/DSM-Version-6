@@ -527,6 +527,10 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
 
 
 function RootComponent() {
+  // Keep the native app-icon badge in sync with the real unread count on every
+  // screen, not just the handful of pages that mount this hook themselves.
+  useUnreadCount();
+
   // Desktop redirect: native app stays, mobile browser stays, desktop goes to web app
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -534,6 +538,7 @@ function RootComponent() {
       window.location.href = "https://desktop.everydriver.pro";
     }
   }, []);
+
 
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
