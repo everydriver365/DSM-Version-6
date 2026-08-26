@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -176,7 +177,7 @@ function MarketplaceListPage() {
         .insert(payload);
       if (insertErr) throw insertErr;
 
-      await supabase.from("instructor_notifications").insert({
+      await notifyInstructors({
         instructor_id: userId,
         message:
           "Your listing has been submitted for review. We'll notify you when it goes live.",

@@ -1,4 +1,5 @@
 import { tokens } from "@/lib/tokens";
+import { notifyInstructors } from "@/lib/notify";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { IconAlertTriangle } from "@tabler/icons-react";
@@ -194,7 +195,7 @@ export function CancelLessonSheet({
         } as never);
         if (histErr) console.error("[cancel] history insert error", histErr);
 
-        const { error: notifErr } = await supabase.from("instructor_notifications").insert({
+        const { error: notifErr } = await notifyInstructors({
           instructor_id: instructorId,
           title: isPupilCancel ? "Lesson cancelled by pupil" : feeAmount > 0 ? "Cancellation fee added" : "Lesson cancelled",
           body: isPupilCancel

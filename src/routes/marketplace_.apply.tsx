@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -175,7 +176,7 @@ function ApplyPage() {
       setSubmitting(false);
       return;
     }
-    await supabase.from("instructor_notifications").insert({
+    await notifyInstructors({
       instructor_id: userId,
       title: "Application submitted ✓",
       body: "We'll review it within 2 business days.",

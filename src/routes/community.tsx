@@ -1,4 +1,5 @@
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -2503,7 +2504,7 @@ function ChatTab({
           const mutedNow = !!subscription?.muted_until && new Date(subscription.muted_until) > new Date();
           if (inserted.instructor_id !== userId && userId && subscription && !mutedNow && notViewing) {
             const body = inserted.message.length > 60 ? inserted.message.slice(0, 60) + "..." : inserted.message;
-            await supabase.from("instructor_notifications").insert({
+            await notifyInstructors({
               instructor_id: userId,
               type: "chat_message",
               title: `New message in ${room.area_name} chat`,

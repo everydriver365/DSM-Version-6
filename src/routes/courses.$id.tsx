@@ -1,4 +1,5 @@
 import { useGoBack } from "@/hooks/useGoBack";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -2046,7 +2047,7 @@ function AddBookingSheet({
     }
 
     // Notification
-    await supabase.from("instructor_notifications").insert({
+    await notifyInstructors({
       instructor_id: uid,
       title: "New course booking",
       body: `${name.trim()} booked ${course.name}`,
