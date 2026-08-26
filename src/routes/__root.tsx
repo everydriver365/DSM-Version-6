@@ -690,7 +690,13 @@ function RootComponent() {
           OneSignal.Notifications.addEventListener('click', (event) => {
             const data = event.notification.additionalData as any;
             const type = data?.type ?? '';
-            if (type === 'message' || type === 'instructor_dm') {
+            const url = data?.url;
+            try {
+              window.dispatchEvent(new Event('dsm-notifications-updated'));
+            } catch { /* ignore */ }
+            if (typeof url === 'string' && url) {
+              router.navigate({ to: url as never });
+            } else if (type === 'message' || type === 'instructor_dm') {
               router.navigate({ to: '/messages' as never });
             } else if (type === 'overdue_payment' || type === 'payment') {
               router.navigate({ to: '/payments' as never });
@@ -707,7 +713,14 @@ function RootComponent() {
             } else {
               router.navigate({ to: '/notifications' as never });
             }
-            console.log('[OneSignal] navigating for type:', type);
+            console.log('[OneSignal] navigating for type:', type, 'url:', url);
+          });
+          OneSignal.Notifications.addEventListener('foregroundWillDisplay', (event) => {
+            const data = event.getNotification().additionalData as any;
+            console.log('[OneSignal] foreground will display', data);
+            try {
+              window.dispatchEvent(new Event('dsm-notifications-updated'));
+            } catch { /* ignore */ }
           });
           console.log('[OneSignal] initialized');
 
