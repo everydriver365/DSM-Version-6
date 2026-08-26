@@ -766,7 +766,7 @@ const FUTURE_DAYS = 180;
 
 function SchedulePage() {
   const navigate = useNavigate();
-  const unreadCount = useUnreadCount();
+  const unreadCount = useUnreadCount({ skipBadge: true });
   const today = useMemo(() => startOfDay(new Date()), []);
   const rangeStart = useMemo(() => addDays(today, -PAST_DAYS), [today]);
   const rangeEnd = useMemo(() => addDays(today, FUTURE_DAYS), [today, rangeStart]);

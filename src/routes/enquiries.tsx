@@ -1,6 +1,5 @@
 import { useGoBack } from "@/hooks/useGoBack";
 import { tokens } from "@/lib/tokens";
-import { useUnreadCount } from "@/hooks/useUnreadCount";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import DSMSkeleton from "@/components/dsm/DSMSkeleton";
@@ -152,7 +151,6 @@ function EnquiriesPage() {
   const [reloadKey, setReloadKey] = useState(0);
   const navigate = useNavigate();
   const goBack = useGoBack();
-  const unreadCount = useUnreadCount();
   const [userId, setUserId] = useState<string | null>(null);
   const [enquiries, setEnquiries] = useState<EnquiryRow[]>([]);
   const [loading, setLoading] = useState(true);

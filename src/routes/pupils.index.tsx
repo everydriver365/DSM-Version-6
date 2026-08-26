@@ -155,7 +155,7 @@ function formatRelativeDate(dateString: string) {
 
 function PupilsIndexPage() {
   const navigate = useNavigate();
-  const unreadCount = useUnreadCount();
+  const unreadCount = useUnreadCount({ skipBadge: true });
   const [pupils, setPupils] = useState<Pupil[] | null>(null);
   const [lessonCountMap, setLessonCountMap] = useState<Record<string, number>>({});
   const [balanceMap, setBalanceMap] = useState<Record<string, number>>({});
