@@ -608,6 +608,23 @@ function RootComponent() {
             if (isActive) {
               window.dispatchEvent(new Event("dsm-notifications-updated"));
               try {
+                const playerId = await OneSignal.User.pushSubscription.getIdAsync();
+                if (playerId) {
+                  const { data: { user } } = await supabase.auth.getUser();
+                  if (user) {
+                    await supabase
+                      .from('instructors')
+                      .upsert({
+                        id: user.id,
+                        onesignal_player_id: playerId
+                      }, { onConflict: 'id' });
+                    console.log('[OneSignal] player ID saved on foreground:', playerId);
+                  }
+                }
+              } catch (e) {
+                console.warn('[OneSignal] foreground player ID save failed:', e);
+              }
+              try {
                 await (App as any).clearBadge?.();
               } catch (e) {
                 console.warn('App.clearBadge', e);
@@ -683,10 +700,10 @@ function RootComponent() {
               if (user) {
                 await supabase
                   .from('instructors')
-                  .update({
+                  .upsert({
+                    id: user.id,
                     onesignal_player_id: playerId
-                  })
-                  .eq('id', user.id);
+                  }, { onConflict: 'id' });
                 console.log('[OneSignal] player ID saved:', playerId);
               }
             }
