@@ -912,8 +912,14 @@ export function AddLessonSheet({
               <select
                 value={duration}
                 onChange={(e) => {
-                  setDuration(Number(e.target.value));
-                  setIsTestDay(false);
+                  const v = e.target.value;
+                  if (v === "test") {
+                    setDuration("test");
+                    setIsTestDay(true);
+                  } else {
+                    setDuration(Number(v));
+                    setIsTestDay(false);
+                  }
                 }}
                 style={{
                   width: "100%",
@@ -943,6 +949,7 @@ export function AddLessonSheet({
                 <option value={240}>4 hours</option>
                 <option value={300}>5 hours</option>
                 <option value={360}>6 hours</option>
+                <option value="test">Driving test 🚗</option>
               </select>
               {isTestDay && (
                 <p

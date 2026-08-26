@@ -660,10 +660,15 @@ function EditLessonPage() {
             <select
               value={duration}
               onChange={(e) => {
-                setDuration(Number(e.target.value));
-                setIsTestDay(false);
+                const v = Number(e.target.value);
+                setDuration(v);
                 setIsEvent(false);
-                setTestCentre('');
+                if (v === -1) {
+                  setIsTestDay(true);
+                } else {
+                  setIsTestDay(false);
+                  setTestCentre('');
+                }
               }}
               style={{
                 width: '100%',
@@ -693,6 +698,7 @@ function EditLessonPage() {
               <option value={240}>4 hours</option>
               <option value={300}>5 hours</option>
               <option value={360}>6 hours</option>
+              <option value={-1}>Driving test 🚗</option>
             </select>
             {isTestDay && (
               <div style={{ marginBottom: 16 }}>
