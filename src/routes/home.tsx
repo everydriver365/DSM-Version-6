@@ -1,4 +1,5 @@
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
+import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import { lessonStatusColors } from "@/lib/statusVariants";
 import { TestDetailTrigger } from '@/components/lessons/TestDetailPanel';
@@ -1527,7 +1528,7 @@ function HomePage() {
 
       const firstName = (movingLessonHome.pupils as any)?.name?.split(' ')[0] || 'Your pupil';
       if (userId) {
-        await supabase.from('instructor_notifications').insert({
+        await notifyInstructors({
           instructor_id: userId,
           type: 'lesson_rescheduled',
           title: 'Lesson rescheduled',
