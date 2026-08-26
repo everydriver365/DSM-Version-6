@@ -3,6 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconBell } from "@tabler/icons-react";
 import { toast } from "sonner";
+import OneSignal from "@onesignal/capacitor-plugin";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 import { Card } from "../components/dsm/Card";
@@ -90,11 +91,16 @@ function NotificationSettingsPage() {
   );
   const [pushBusy, setPushBusy] = useState(false);
   const [pushError, setPushError] = useState<string | null>(null);
+  const [notifEnabled, setNotifEnabled] = useState(false);
 
   useEffect(() => {
     (async () => {
       setPushStatus(await getCurrentPushStatus());
     })();
+  }, []);
+
+  useEffect(() => {
+    OneSignal.Notifications.getPermissionAsync().then(setNotifEnabled);
   }, []);
 
   async function togglePush(next: boolean) {
