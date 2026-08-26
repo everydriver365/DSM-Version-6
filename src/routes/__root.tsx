@@ -716,7 +716,8 @@ function RootComponent() {
             console.log('[OneSignal] navigating for type:', type, 'url:', url);
           });
           OneSignal.Notifications.addEventListener('foregroundWillDisplay', (event) => {
-            console.log('[OneSignal] foreground will display', event.notification.additionalData);
+            const data = event.getNotification().additionalData as any;
+            console.log('[OneSignal] foreground will display', data);
             try {
               window.dispatchEvent(new Event('dsm-notifications-updated'));
             } catch { /* ignore */ }
