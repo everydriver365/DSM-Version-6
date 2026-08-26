@@ -20,7 +20,7 @@ Deno.serve(async (req) => {
     const { instructor_id, title, body, subtitle, url, type, data } =
       await req.json();
 
-    if (!instructor_id || !title || !body) {
+    if (!instructor_id || !body) {
       return new Response(
         JSON.stringify({ error: "Missing fields" }),
         { status: 400, headers: corsHeaders },
