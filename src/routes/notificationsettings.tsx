@@ -102,10 +102,7 @@ function NotificationSettingsPage() {
   useEffect(() => {
     (async () => {
       try {
-        const permission = await OneSignal.Notifications.permissionNative() as unknown as string;
-        const isGranted = permission === 'authorized'
-          || permission === 'ephemeral'
-          || permission === 'provisional';
+        const isGranted = await OneSignal.Notifications.hasPermission();
         setNotifEnabled(isGranted);
       } catch (e) {
         console.warn("[OneSignal] permission check failed", e);
@@ -202,10 +199,7 @@ function NotificationSettingsPage() {
             onClick={async () => {
               try {
                 await OneSignal.Notifications.requestPermission(true);
-                const permission = await OneSignal.Notifications.permissionNative() as unknown as string;
-                const isGranted = permission === 'authorized'
-                  || permission === 'ephemeral'
-                  || permission === 'provisional';
+                const isGranted = await OneSignal.Notifications.hasPermission();
                 setNotifEnabled(isGranted);
                 if (isGranted) {
                   toast.success("Notifications enabled!");
