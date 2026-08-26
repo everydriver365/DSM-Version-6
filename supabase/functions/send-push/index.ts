@@ -47,7 +47,11 @@ Deno.serve(async (req) => {
       .eq("instructor_id", instructor_id)
       .eq("read", false);
 
-    const badgeCount = (unreadCount ?? 0) + 1;
+    // Rows are always inserted before the push is sent, so the unread count
+    // is already the correct absolute badge value.
+    const badgeCount = Math.max(unreadCount ?? 0, 1);
+
+    const bannerTitle = buildTitle(title, type);
 
     const apiKey = Deno.env.get("ONESIGNAL_REST_API_KEY") ?? "";
     const appId = "70d001f6-c98e-434d-8251-354c62447cb5";
