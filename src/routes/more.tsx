@@ -264,8 +264,8 @@ function MorePage() {
                   boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                 }}
               >
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: tool.colour + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <tool.icon size={20} color={tool.colour} />
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: tokens.canvas, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <tool.icon size={20} color={tokens.blue} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontWeight: 500, fontSize: 13, color: '#0F2044' }}>{tool.label}</div>
@@ -330,7 +330,6 @@ function MorePage() {
                               padding: '3px 9px',
                               borderRadius: 999,
                               letterSpacing: '0.06em',
-                              textTransform: 'uppercase',
                             }}
                           >
                             New
@@ -351,7 +350,6 @@ function MorePage() {
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.bold,
                   color: '#8592A6',
-                  textTransform: 'uppercase',
                   letterSpacing: '0.1em',
                   padding: '22px 16px 8px',
                   fontFamily: 'Poppins, sans-serif',
@@ -396,14 +394,14 @@ function MorePage() {
                         width: 40,
                         height: 40,
                         borderRadius: 10,
-                        background: tool.gradient ?? tool.colour + '1A',
+                        background: tokens.canvas,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
                       }}
                     >
-                      <tool.icon size={20} color={tool.gradient ? '#fff' : tool.colour} stroke={1.5} />
+                      <tool.icon size={20} color={tokens.blue} stroke={1.5} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontWeight: 500, fontSize: 13, color: '#0B1F3A' }}>{tool.label}</div>
