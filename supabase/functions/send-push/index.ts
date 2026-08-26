@@ -85,6 +85,8 @@ Deno.serve(async (req) => {
       .eq("instructor_id", instructor_id)
       .eq("read", false);
 
+    console.log("[send-push] unread count read:", unreadCount);
+
     // Rows are always inserted before the push is sent, so the unread count
     // is already the correct absolute badge value.
     const badgeCount = Math.max(unreadCount ?? 0, 1);

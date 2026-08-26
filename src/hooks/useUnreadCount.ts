@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Capacitor } from "@capacitor/core";
+import { App } from "@capacitor/app";
 import { Badge } from "@capawesome/capacitor-badge";
 import { supabase } from "../lib/supabaseClient";
 
