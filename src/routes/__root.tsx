@@ -658,16 +658,13 @@ function RootComponent() {
 
           // iOS system prompt: "Every Driver Pro would like to send you notifications"
           if (Capacitor.isNativePlatform()) {
-            (OneSignal as any).requestPermission()
-              .then(() => {
-                console.log('[OneSignal] permission granted');
-              })
-              .catch((e: any) => {
-                console.warn('[OneSignal] permission denied', e);
-              });
+            await OneSignal.Notifications.requestPermission(true);
+            const permission = await OneSignal.Notifications.permissionNative() as unknown as string;
+            const isGranted = permission === 'authorized'
+              || permission === 'ephemeral'
+              || permission === 'provisional';
+            console.log(`[OneSignal] permission ${isGranted ? 'granted' : 'not granted'}`);
           }
-
-          await OneSignal.Notifications.requestPermission(true);
           OneSignal.Notifications.addEventListener('click', (event) => {
             const data = event.notification.additionalData as any;
             const type = data?.type ?? '';

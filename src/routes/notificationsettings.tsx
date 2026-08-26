@@ -100,7 +100,17 @@ function NotificationSettingsPage() {
   }, []);
 
   useEffect(() => {
-    (OneSignal.Notifications as any).getPermissionAsync().then(setNotifEnabled);
+    (async () => {
+      try {
+        const permission = await OneSignal.Notifications.permissionNative() as unknown as string;
+        const isGranted = permission === 'authorized'
+          || permission === 'ephemeral'
+          || permission === 'provisional';
+        setNotifEnabled(isGranted);
+      } catch (e) {
+        console.warn("[OneSignal] permission check failed", e);
+      }
+    })();
   }, []);
 
   async function togglePush(next: boolean) {
@@ -191,9 +201,17 @@ function NotificationSettingsPage() {
             type="button"
             onClick={async () => {
               try {
-                await (OneSignal.Notifications as any).requestPermission(true);
-                setNotifEnabled(true);
-                toast.success("Notifications enabled!");
+                await OneSignal.Notifications.requestPermission(true);
+                const permission = await OneSignal.Notifications.permissionNative() as unknown as string;
+                const isGranted = permission === 'authorized'
+                  || permission === 'ephemeral'
+                  || permission === 'provisional';
+                setNotifEnabled(isGranted);
+                if (isGranted) {
+                  toast.success("Notifications enabled!");
+                } else {
+                  toast.error("Could not enable notifications");
+                }
               } catch (e) {
                 toast.error("Could not enable notifications");
               }
