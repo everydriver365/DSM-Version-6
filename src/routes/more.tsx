@@ -264,11 +264,11 @@ function MorePage() {
                   boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
                 }}
               >
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: tool.colour + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <tool.icon size={20} color={tool.colour} />
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: tokens.canvas, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <tool.icon size={20} color={tokens.blue} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 500, fontSize: 13, color: '#0F2044' }}>{tool.label}</div>
+                  <div style={{ fontSize: 13, color: '#0F2044' }}>{tool.label}</div>
                   <div style={{ fontSize: 12, color: '#9CA3AF' }}>{tool.sub}</div>
                 </div>
                 <span style={{ fontSize: tokens.fontSize.xs, color: '#9CA3AF', marginLeft: 'auto' }}>{tool.group}</span>
@@ -308,7 +308,7 @@ function MorePage() {
                         width: 40,
                         height: 40,
                         borderRadius: 10,
-                        background: '#0F2044',
+                        background: tokens.navy,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -319,7 +319,7 @@ function MorePage() {
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <div style={{ fontSize: 13, fontWeight: 500, color: '#0F2044' }}>Learn</div>
+                        <div style={{ fontSize: 13, color: '#0F2044' }}>Learn</div>
                         {LEARN_IS_NEW && (
                           <span
                             style={{
@@ -330,7 +330,6 @@ function MorePage() {
                               padding: '3px 9px',
                               borderRadius: 999,
                               letterSpacing: '0.06em',
-                              textTransform: 'uppercase',
                             }}
                           >
                             New
@@ -351,7 +350,6 @@ function MorePage() {
                   fontSize: 12,
                   fontWeight: tokens.fontWeight.bold,
                   color: '#8592A6',
-                  textTransform: 'uppercase',
                   letterSpacing: '0.1em',
                   padding: '22px 16px 8px',
                   fontFamily: 'Poppins, sans-serif',
@@ -396,17 +394,17 @@ function MorePage() {
                         width: 40,
                         height: 40,
                         borderRadius: 10,
-                        background: tool.gradient ?? tool.colour + '1A',
+                        background: tokens.canvas,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
                       }}
                     >
-                      <tool.icon size={20} color={tool.gradient ? '#fff' : tool.colour} stroke={1.5} />
+                      <tool.icon size={20} color={tokens.blue} stroke={1.5} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontWeight: 500, fontSize: 13, color: '#0B1F3A' }}>{tool.label}</div>
+                      <div style={{ fontSize: 13, color: '#0B1F3A' }}>{tool.label}</div>
                       <div style={{ fontSize: 12, color: '#8592A6', marginTop: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
                         {isSquare && squareConnected && (
                           <span style={{ width: 7, height: 7, borderRadius: 999, background: '#16A34A', flexShrink: 0 }} />
