@@ -94,6 +94,9 @@ function NotificationSettingsPage() {
   const [pushBusy, setPushBusy] = useState(false);
   const [pushError, setPushError] = useState<string | null>(null);
   const [notifEnabled, setNotifEnabled] = useState(false);
+  // "granted" | "not-asked" | "blocked" | "unavailable" | "web"
+  const [nativePermState, setNativePermState] = useState<string>("not-asked");
+  const [pushInitError, setPushInitError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -103,14 +106,42 @@ function NotificationSettingsPage() {
 
   useEffect(() => {
     (async () => {
+      if (typeof window !== "undefined") {
+        setPushInitError(localStorage.getItem("dsm.push.initError"));
+      }
+      if (!Capacitor.isNativePlatform()) {
+        setNativePermState("web");
+        return;
+      }
       try {
         const isGranted = await OneSignal.Notifications.hasPermission();
         setNotifEnabled(isGranted);
+        if (isGranted) {
+          setNativePermState("granted");
+          return;
+        }
+        // iOS: 0 = not determined, 1 = denied, 2+ = authorised/provisional.
+        let native: number | null = null;
+        try {
+          native = (await (OneSignal.Notifications as any).permissionNative()) as number;
+        } catch {
+          native = null;
+        }
+        setNativePermState(native === 0 || native === null ? "not-asked" : "blocked");
       } catch (e) {
         console.warn("[OneSignal] permission check failed", e);
+        setNativePermState("unavailable");
       }
     })();
   }, []);
+
+  async function openIosSettings() {
+    try {
+      await CapApp.openUrl({ url: "app-settings:" });
+    } catch {
+      toast.error("Open iOS Settings > Every Driver Pro > Notifications");
+    }
+  }
 
   async function togglePush(next: boolean) {
     if (pushBusy) return;
