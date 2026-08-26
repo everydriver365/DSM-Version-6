@@ -186,6 +186,34 @@ function NotificationSettingsPage() {
 
 
       <div className="px-4">
+        {!notifEnabled && (
+          <button
+            type="button"
+            onClick={async () => {
+              try {
+                await (OneSignal.Notifications as any).requestPermission(true);
+                setNotifEnabled(true);
+                toast.success("Notifications enabled!");
+              } catch (e) {
+                toast.error("Could not enable notifications");
+              }
+            }}
+            style={{
+              background: "#1877D6",
+              color: "#fff",
+              borderRadius: 12,
+              padding: "14px 16px",
+              fontSize: 14,
+              fontWeight: 600,
+              textAlign: "center",
+              cursor: "pointer",
+              marginBottom: 16,
+              width: "100%",
+            }}
+          >
+            Enable push notifications
+          </button>
+        )}
         <SectionHeader>DELIVERY CHANNELS</SectionHeader>
         <Card className="!p-0">
           <ToggleRow
