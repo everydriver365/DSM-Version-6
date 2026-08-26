@@ -24,7 +24,11 @@ export function useUnreadCount(options?: { skipBadge?: boolean }) {
         }
         console.log("[badge] unread count:", unreadCount, "-> setting badge to:", unreadCount);
 
-        await Badge.set({ count: unreadCount });
+        if (unreadCount > 0) {
+          await Badge.set({ count: unreadCount });
+        } else {
+          await Badge.clear();
+        }
       } catch (e) {
         // A badge failure must never break notifications or unread-count.
         console.warn("[badge] failed to set badge:", e);
