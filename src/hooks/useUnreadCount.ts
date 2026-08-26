@@ -51,15 +51,23 @@ export function useUnreadCount(options?: { skipBadge?: boolean }) {
     fetch();
 
 
-    // Realtime subscription
-    const channel = supabase
-      .channel("unread-count")
-      .on("postgres_changes", {
-        event: "*",
-        schema: "public",
-        table: "instructor_notifications",
-      }, fetch)
-      .subscribe();
+    // Realtime subscription. Each hook instance gets its own channel name —
+    // reusing one name returns the same (already subscribed) channel and
+    // adding a postgres_changes listener to it throws, crashing the page.
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    try {
+      channel = supabase
+        .channel(`unread-count-${Math.random().toString(36).slice(2)}`)
+        .on("postgres_changes", {
+          event: "*",
+          schema: "public",
+          table: "instructor_notifications",
+        }, fetch)
+        .subscribe();
+    } catch (e) {
+      console.warn("[unread-count] realtime subscribe failed:", e);
+    }
+
 
     const onRefresh = () => { void fetch(); };
     window.addEventListener("dsm-notifications-updated", onRefresh);
