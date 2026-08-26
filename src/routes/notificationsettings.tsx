@@ -3,6 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
 import { IconBell } from "@tabler/icons-react";
 import { toast } from "sonner";
+import OneSignal from "@onesignal/capacitor-plugin";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 import { Card } from "../components/dsm/Card";
@@ -90,11 +91,16 @@ function NotificationSettingsPage() {
   );
   const [pushBusy, setPushBusy] = useState(false);
   const [pushError, setPushError] = useState<string | null>(null);
+  const [notifEnabled, setNotifEnabled] = useState(false);
 
   useEffect(() => {
     (async () => {
       setPushStatus(await getCurrentPushStatus());
     })();
+  }, []);
+
+  useEffect(() => {
+    (OneSignal.Notifications as any).getPermissionAsync().then(setNotifEnabled);
   }, []);
 
   async function togglePush(next: boolean) {
@@ -180,6 +186,34 @@ function NotificationSettingsPage() {
 
 
       <div className="px-4">
+        {!notifEnabled && (
+          <button
+            type="button"
+            onClick={async () => {
+              try {
+                await (OneSignal.Notifications as any).requestPermission(true);
+                setNotifEnabled(true);
+                toast.success("Notifications enabled!");
+              } catch (e) {
+                toast.error("Could not enable notifications");
+              }
+            }}
+            style={{
+              background: "#1877D6",
+              color: "#fff",
+              borderRadius: 12,
+              padding: "14px 16px",
+              fontSize: 14,
+              fontWeight: 600,
+              textAlign: "center",
+              cursor: "pointer",
+              marginBottom: 16,
+              width: "100%",
+            }}
+          >
+            Enable push notifications
+          </button>
+        )}
         <SectionHeader>DELIVERY CHANNELS</SectionHeader>
         <Card className="!p-0">
           <ToggleRow
