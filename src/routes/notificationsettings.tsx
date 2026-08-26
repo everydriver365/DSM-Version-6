@@ -251,6 +251,11 @@ function NotificationSettingsPage() {
                   ? "Open the installed app to enable device alerts"
                   : "Not enabled yet"}
               </div>
+              <div style={{ fontSize: 12, color: "#6B7280", marginTop: 8, lineHeight: 1.45 }}>
+                {nativePermState === "granted"
+                  ? "You’ll receive lesson reminders, test day alerts, payment updates, and new enquiry notifications on this device."
+                  : "You won’t receive device alerts. Turn on notifications to get lesson reminders, test day alerts, payment updates, and new enquiry notifications."}
+              </div>
               {pushInitError && (
                 <div style={{ fontSize: 11, color: "#CC2229", marginTop: 4 }}>
                   Push service unavailable in this build ({pushInitError})
