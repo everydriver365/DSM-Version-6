@@ -268,7 +268,7 @@ function MorePage() {
                   <tool.icon size={20} color={tokens.blue} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 500, fontSize: 13, color: '#0F2044' }}>{tool.label}</div>
+                  <div style={{ fontSize: 13, color: '#0F2044' }}>{tool.label}</div>
                   <div style={{ fontSize: 12, color: '#9CA3AF' }}>{tool.sub}</div>
                 </div>
                 <span style={{ fontSize: tokens.fontSize.xs, color: '#9CA3AF', marginLeft: 'auto' }}>{tool.group}</span>
@@ -319,7 +319,7 @@ function MorePage() {
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <div style={{ fontSize: 13, fontWeight: 500, color: '#0F2044' }}>Learn</div>
+                        <div style={{ fontSize: 13, color: '#0F2044' }}>Learn</div>
                         {LEARN_IS_NEW && (
                           <span
                             style={{
@@ -404,7 +404,7 @@ function MorePage() {
                       <tool.icon size={20} color={tokens.blue} stroke={1.5} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontWeight: 500, fontSize: 13, color: '#0B1F3A' }}>{tool.label}</div>
+                      <div style={{ fontSize: 13, color: '#0B1F3A' }}>{tool.label}</div>
                       <div style={{ fontSize: 12, color: '#8592A6', marginTop: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
                         {isSquare && squareConnected && (
                           <span style={{ width: 7, height: 7, borderRadius: 999, background: '#16A34A', flexShrink: 0 }} />
