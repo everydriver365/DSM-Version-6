@@ -912,8 +912,14 @@ export function AddLessonSheet({
               <select
                 value={duration}
                 onChange={(e) => {
-                  setDuration(Number(e.target.value));
-                  setIsTestDay(false);
+                  const v = e.target.value;
+                  if (v === "test") {
+                    setDuration("test");
+                    setIsTestDay(true);
+                  } else {
+                    setDuration(Number(v));
+                    setIsTestDay(false);
+                  }
                 }}
                 style={{
                   width: "100%",
