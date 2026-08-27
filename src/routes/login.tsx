@@ -10,7 +10,7 @@ import {
 } from "@tabler/icons-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
-import edpLogoAsset from "../assets/ed-pro-logo-transparent.png.asset.json";
+import edpLogoAsset from "../assets/edp-signin-logo.png.asset.json";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
