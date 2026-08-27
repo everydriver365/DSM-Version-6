@@ -226,7 +226,7 @@ function OnboardingPage() {
       <div style={{ width: "100%", maxWidth: 420, marginTop: 24 }}>
         {step === 1 && (
           <div className="flex flex-col items-center">
-            <img src={dsmLogoAsset.url} alt="EDP" className="h-[60px] w-auto mb-5" />
+            <img src={edpLogoAsset.url} alt="EDP" className="h-[60px] w-auto mb-5" />
             <div style={{ marginBottom: 16, textAlign: "center" }}>
               <div style={{ fontSize: tokens.fontSize.xxl, fontWeight: tokens.fontWeight.extrabold, color: "#fff", ...POPPINS, letterSpacing: "-0.4px", marginBottom: 4 }}>
                 Welcome to EDP
