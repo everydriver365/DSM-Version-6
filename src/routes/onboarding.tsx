@@ -3,7 +3,7 @@ import { tokens } from "@/lib/tokens";
 import { useEffect, useState, type ReactNode } from "react";
 import { IconAlertTriangle, IconCalendar, IconCheck, IconChevronRight, IconCircleCheck, IconClock, IconCreditCard, IconExternalLink, IconUserPlus, IconWorld } from "@tabler/icons-react";
 import { supabase } from "../lib/supabaseClient";
-import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
+import edpLogoAsset from "../assets/edp-signin-logo.png.asset.json";
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
