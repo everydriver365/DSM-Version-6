@@ -4993,9 +4993,32 @@ function HomePage() {
           alignItems: 'center',
           fontFamily: 'Poppins, sans-serif',
           borderRadius: '0 0 16px 16px',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        <div style={{ minWidth: 0 }}>
+        {/* Single soft wave arc — option A */}
+        <svg
+          viewBox="0 0 375 70"
+          preserveAspectRatio="none"
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 70,
+            width: '100%',
+            zIndex: 0,
+            pointerEvents: 'none',
+          }}
+        >
+          <path
+            d="M0,45 Q187.5,10 375,45 L375,70 L0,70 Z"
+            fill="#122C4F"
+          />
+        </svg>
+
+        <div style={{ minWidth: 0, position: 'relative', zIndex: 1 }}>
           <div style={{
             fontSize: tokens.fontSize.xl,
             fontWeight: tokens.fontWeight.semibold,
@@ -5016,6 +5039,7 @@ function HomePage() {
             border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', overflow: 'hidden', padding: 0, flexShrink: 0,
             fontFamily: 'Poppins, sans-serif',
+            position: 'relative', zIndex: 1,
           }}
         >
           {avatarUrl
