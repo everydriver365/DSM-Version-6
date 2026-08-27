@@ -488,8 +488,23 @@ function CourseCard({
           padding: "12px 4px 4px",
         }}
       >
-        <div style={{ color: tokens.navy, fontSize: 19, fontWeight: 900 }}>
-          £{Number(c.price).toFixed(0)}
+        <div>
+          <div style={{ color: tokens.navy, fontSize: 19, fontWeight: 900 }}>
+            £{Number(c.price).toFixed(0)}
+          </div>
+          <div
+            style={{
+              marginTop: 2,
+              fontSize: 10,
+              fontWeight: tokens.fontWeight.medium,
+              color: "#8A8A8E",
+              fontFamily: "Poppins, sans-serif",
+              letterSpacing: "0.2px",
+            }}
+            title={`Course ID: ${c.id}`}
+          >
+            ID: {c.id}
+          </div>
         </div>
         <div style={{ textAlign: "right" }}>
           <span
@@ -517,6 +532,7 @@ function CourseCard({
           </div>
         </div>
       </div>
+
 
       {/* Booked by */}
       {booker && (

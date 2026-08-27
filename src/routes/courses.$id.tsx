@@ -1120,9 +1120,11 @@ function CourseDetailPage() {
                 </div>
               ) : (
                 <>
-                  <DetailRow label="Start date" value={formatDate(course.start_date)} first />
+                  <DetailRow label="Course ID" value={course.id} first />
+                  <DetailRow label="Start date" value={formatDate(course.start_date)} />
                   <DetailRow label="End date" value={formatDate(course.end_date)} />
                   <DetailRow label="Daily hours" value={course.daily_hours ? `${course.daily_hours}h` : "—"} />
+
                   <DetailRow
                     label="Pickup postcode"
                     value={course.pickup_area || "—"}
