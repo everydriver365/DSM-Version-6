@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { IconCircleCheck } from "@tabler/icons-react";
 import { Button } from "../components/dsm/Button";
 import { supabase } from "../lib/supabaseClient";
-import dsmLogoAsset from "../assets/dsm-logo.png.asset.json";
+import edpLogoAsset from "../assets/edp-signin-logo.png.asset.json";
 
 export const Route = createFileRoute("/forgotpassword")({
   head: () => ({
@@ -43,7 +43,7 @@ function ForgotPasswordPage() {
       style={{ fontFamily: "Poppins, sans-serif" }}
     >
       <div className="flex flex-col items-center mb-8">
-        <img src={dsmLogoAsset.url} alt="EDP logo" className="h-[60px] w-auto mb-2" />
+        <img src={edpLogoAsset.url} alt="EDP logo" className="h-[60px] w-auto mb-2" />
         <span className="text-[#9CA3AF] text-[14px]">by EveryDriver</span>
       </div>
 
