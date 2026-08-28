@@ -1962,7 +1962,7 @@ function SchedulePage() {
                                     left: 12,
                                     zIndex: 1,
                                     background: "#DCFCE7",
-                                    color: "#15803D",
+                                    color: "#000000",
                                     fontSize: tokens.fontSize.xs,
                                     fontWeight: tokens.fontWeight.extrabold,
                                     textTransform: "uppercase",
