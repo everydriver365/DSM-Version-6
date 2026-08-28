@@ -63,18 +63,21 @@ export async function searchNearbyPlaces(args: {
   lat: number;
   lng: number;
   category: string;
+  query?: string;
   radius?: number;
   lovableKey?: string;
   googleMapsKey?: string;
+  googleApiKey?: string;
 }): Promise<NearbyResult> {
-  const { lat, lng, category, lovableKey, googleMapsKey } = args;
+  const { lat, lng, category, lovableKey, googleMapsKey, googleApiKey } = args;
   const radius = args.radius ?? 2000;
+  const freeText = args.query?.trim();
 
-  if (!lovableKey || !googleMapsKey) {
+  if (!googleApiKey && (!lovableKey || !googleMapsKey)) {
     return { places: [], error: "Nearby search is not configured." };
   }
 
-  const config = NEAREST_CATEGORIES[category];
+  const config = freeText ? { textQuery: freeText } : NEAREST_CATEGORIES[category];
   if (!config) return { places: [], error: "Unknown category." };
 
   const isText = Boolean(config.textQuery);
@@ -92,16 +95,21 @@ export async function searchNearbyPlaces(args: {
         locationRestriction: { circle: { center: { latitude: lat, longitude: lng }, radius } },
       };
 
-  const res = await fetch(`${GATEWAY_URL}${path}`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${lovableKey}`,
-      "X-Connection-Api-Key": googleMapsKey,
-      "Content-Type": "application/json",
-      "X-Goog-FieldMask": FIELD_MASK,
-    },
-    body: JSON.stringify(body),
-  });
+  const url = googleApiKey ? `https://places.googleapis.com${path}` : `${GATEWAY_URL}${path}`;
+  const headers: Record<string, string> = googleApiKey
+    ? {
+        "X-Goog-Api-Key": googleApiKey,
+        "Content-Type": "application/json",
+        "X-Goog-FieldMask": FIELD_MASK,
+      }
+    : {
+        Authorization: `Bearer ${lovableKey}`,
+        "X-Connection-Api-Key": googleMapsKey!,
+        "Content-Type": "application/json",
+        "X-Goog-FieldMask": FIELD_MASK,
+      };
+
+  const res = await fetch(url, { method: "POST", headers, body: JSON.stringify(body) });
 
   if (res.status === 403) {
     const json = (await res.json().catch(() => null)) as
