@@ -45,7 +45,7 @@ export default function PupilCard({
         border: "0.5px solid #E5E5EA",
         ...(accentColour ? { borderLeft: `3px solid ${accentColour}` } : null),
         borderRadius: 12,
-        padding: "32px 14px 12px",
+        padding: "12px 14px",
         boxSizing: "border-box",
         WebkitTouchCallout: "none",
         ...POPPINS,
