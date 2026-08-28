@@ -172,6 +172,7 @@ function NewCoursePage() {
   const navigate = useNavigate();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -220,6 +221,7 @@ function NewCoursePage() {
   const [payDeposit, setPayDeposit] = useState(true);
   const [publishMarketplace, setPublishMarketplace] = useState(true);
   const [publishWebsite, setPublishWebsite] = useState(true);
+  const [skimFeeEnabled, setSkimFeeEnabled] = useState(true);
 
   // Hero image
   const [heroImage, setHeroImage] = useState<string | null>(null);
