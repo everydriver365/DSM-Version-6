@@ -280,6 +280,8 @@ function EditLessonPage() {
         setTime((l.lesson_time ?? "").slice(0, 5));
         const isTest = l.lesson_type === 'test';
         setIsTestDay(isTest);
+        setWasTestDay(isTest);
+
         if (isTest) {
           setDuration(-1);
           setTestCentre(l.pickup_location ?? '');
