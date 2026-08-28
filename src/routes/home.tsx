@@ -8733,10 +8733,11 @@ function HomePage() {
                               {visibleAvatars.map((s, i) => {
                                 const key = `${s.type}-${s.name ?? ''}-${i}`;
                                 const stackStyle = {
-                                  width: 28, height: 28, borderRadius: '50%',
-                                  border: '2px solid #fff', marginLeft: i === 0 ? 0 : -10,
+                                  width: 32, height: 32, borderRadius: '50%',
+                                  border: '2px solid #fff', marginLeft: i === 0 ? 0 : -12,
                                   flexShrink: 0, zIndex: visibleAvatars.length - i,
                                   position: 'relative' as const,
+                                  boxShadow: '0 2px 4px rgba(11,31,58,0.08)',
                                 };
                                 if (s.image) {
                                   return (
@@ -8758,7 +8759,7 @@ function HomePage() {
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       }}
                                     >
-                                      <IconAlertTriangle stroke={1.5} size={14} color="#CC2229" />
+                                      <IconAlertTriangle stroke={1.5} size={15} color="#CC2229" />
                                     </div>
                                   );
                                 }
@@ -8772,7 +8773,7 @@ function HomePage() {
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       }}
                                     >
-                                      <IconSpeakerphone size={14} color="#B45309" />
+                                      <IconSpeakerphone size={15} color="#B45309" />
                                     </div>
                                   );
                                 }
@@ -8782,7 +8783,7 @@ function HomePage() {
                                     style={{
                                       ...stackStyle,
                                       background: s.colour,
-                                      fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, color: '#fff',
+                                      fontSize: 10, fontWeight: tokens.fontWeight.bold, color: '#fff',
                                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       overflow: 'hidden',
                                     }}
@@ -8793,11 +8794,12 @@ function HomePage() {
                               })}
                               {extraAvatarCount > 0 && (
                                 <div style={{
-                                  width: 28, height: 28, borderRadius: '50%', background: '#E4E8EF',
-                                  border: '2px solid #fff', marginLeft: -10, zIndex: visibleAvatars.length + 1,
+                                  width: 32, height: 32, borderRadius: '50%', background: '#E4E8EF',
+                                  border: '2px solid #fff', marginLeft: -12, zIndex: visibleAvatars.length + 1,
                                   position: 'relative', flexShrink: 0,
-                                  fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, color: '#6B7686',
+                                  fontSize: 10, fontWeight: tokens.fontWeight.semibold, color: '#6B7686',
                                   display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                  boxShadow: '0 2px 4px rgba(11,31,58,0.08)',
                                 }}>
                                   +{extraAvatarCount}
                                 </div>
