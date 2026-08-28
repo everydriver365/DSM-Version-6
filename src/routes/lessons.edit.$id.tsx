@@ -161,6 +161,8 @@ function EditLessonPage() {
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState<number>(60);
   const [isTestDay, setIsTestDay] = useState(false);
+  const [wasTestDay, setWasTestDay] = useState(false);
+
   const [testCentre, setTestCentre] = useState('');
   const testCentreInputRef = useRef<HTMLInputElement>(null);
   const [testCentreError, setTestCentreError] = useState<string | null>(null);
@@ -278,6 +280,8 @@ function EditLessonPage() {
         setTime((l.lesson_time ?? "").slice(0, 5));
         const isTest = l.lesson_type === 'test';
         setIsTestDay(isTest);
+        setWasTestDay(isTest);
+
         if (isTest) {
           setDuration(-1);
           setTestCentre(l.pickup_location ?? '');
@@ -467,7 +471,7 @@ function EditLessonPage() {
       return;
     }
     if (!isEvent) {
-      await syncPupilTestFields({ pupilId, isTestDay, date, testTime, testCentre });
+      await syncPupilTestFields({ pupilId, isTestDay, date, testTime, testCentre, wasTestDay });
     }
     // Sync to Google Calendar after save
     const { data: lessonRow } = await supabase
