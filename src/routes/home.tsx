@@ -8685,32 +8685,35 @@ function HomePage() {
                         <div
                           onClick={(e) => { e.stopPropagation(); latestItem.onClick(); }}
                           style={{
-                            display: 'flex', alignItems: 'center', gap: 8,
-                            paddingBottom: 10, marginBottom: 10,
-                            borderBottom: '0.5px solid #E4E8EF', cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', gap: 10,
+                            paddingBottom: 14, marginBottom: 14,
+                            borderBottom: `0.5px solid ${BORDER_C}`, cursor: 'pointer',
                           }}
                         >
                           <span style={{
-                            width: 8, height: 8, borderRadius: '50%',
+                            width: 9, height: 9, borderRadius: '50%',
                             background: latestItem.colour, flexShrink: 0,
+                            boxShadow: `0 0 0 2px ${latestItem.colour}22`,
                           }} />
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{
                               fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY_C, fontFamily: PF_C,
                               whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                              lineHeight: 1.3,
                             }}>
                               {latestItem.title}
                             </div>
                             <div style={{
                               fontSize: 12, color: '#6B7686', fontFamily: PF_C,
                               whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                              lineHeight: 1.35, marginTop: 1,
                             }}>
                               {latestItem.detail
                                 ? `${latestItem.source} · ${latestItem.detail}`
                                 : latestItem.source}
                             </div>
                           </div>
-                          <IconChevronRight stroke={1.5} size={14} color="#C7CEDA" style={{ flexShrink: 0 }} />
+                          <IconChevronRight stroke={1.5} size={16} color="#C7CEDA" style={{ flexShrink: 0 }} />
                         </div>
                       )}
 
