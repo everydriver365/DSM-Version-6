@@ -1,26 +1,43 @@
-# Fix: Upcoming tests tile misses tests added as test-day lessons
+# Tests: correct data source, clear "missing details" badges, and an edit screen
 
-## What's wrong
+Three connected pieces of work on driving tests.
 
-The home "Upcoming tests" tile reads test data only from the **pupil record** (`pupils.test_date / test_time / test_centre`, home.tsx:2204-2221), and picks the earliest future one for the "next test" card.
+## 1. Fix the source of truth (approved earlier, not yet built)
 
-But when a test is added through Add Lesson with "Test day" switched on, the app only writes a **lesson row** with `lesson_type: 'test'` (AddLessonSheet.tsx:499/574/623, and the same in lesson edit). It never sets the pupil's `test_date`, `test_time` or `test_centre`.
+The home "Upcoming tests" tile and the Upcoming Tests page both read tests from the pupil record (`pupils.test_date / test_time / test_centre`). Adding a test through Add Lesson with "Test day" on only writes a `lessons` row with `lesson_type: 'test'` — it never touches those pupil fields, so those tests never appear.
 
-So any test created that way is invisible to the tile — and to the Upcoming Tests page, which reads the same pupil columns. Only tests entered via the pupil's test fields show up.
+- When a test-day lesson is created or edited, also write the pupil's `test_date`, `test_time`, `test_centre` and `test_status = 'upcoming'`.
+- When a test-day lesson is switched back to a normal lesson on edit, clear those pupil fields.
+- Exclude `passed` / `failed` / `cancelled` statuses from the home tile's "next test" selection.
+- One-off backfill SQL: for future `lessons` rows with `lesson_type = 'test'`, copy date, time and pickup location onto the pupil's test fields where no test date is set. This surfaces Luke Shaw's test and any others already added.
 
-A second, smaller issue: the tile does not filter on `test_status`, so a pupil left with a future date but a `passed` / `failed` / `cancelled` status would still be counted as the next test.
+## 2. "Details missing" badge
 
-## The fix
+Right now blank centre/time just render as "Test centre TBC" text with no explanation, so it looks like a bug.
 
-1. **Write the pupil test fields when a test-day lesson is saved.** In Add Lesson and in lesson edit, when "Test day" is on and a pupil is selected, also update that pupil's `test_date`, `test_time`, `test_centre`, and set `test_status = 'upcoming'`. Applies to both create and update paths.
-2. **Clear them when a test-day lesson is turned back into a normal lesson** on edit (blank the three fields), so stale tests don't linger.
-3. **Filter the tile by status**: exclude pupils whose `test_status` is `passed`, `failed` or `cancelled` when choosing the next test and the stacked list.
-4. **Backfill existing test lessons** (one-off SQL in `db/`): for every future `lessons` row with `lesson_type = 'test'`, copy date, time and pickup location onto the pupil's test fields where the pupil has no test date set. This makes Luke Shaw's and any other already-added test appear immediately.
+- On the home Upcoming tests tile and on each row of the Upcoming Tests page, show an amber "Details needed" pill whenever the test centre or test time is missing.
+- Under it, a short line naming what's missing: "Test centre not set", "Test time not set", or both.
+- The pill is tappable and opens the test edit screen straight to the missing field.
+- When everything is present, no pill — the card looks exactly as it does today.
+
+## 3. Test edit screen
+
+Replace the current partial edit sheet (date/time/centre only, and only on the Upcoming Tests page) with one shared edit sheet used from both the tile and the list.
+
+Fields:
+- **Pupil** — picker of the instructor's active pupils; changing it moves the test to the new pupil and clears it from the old one.
+- **Date** and **Time**.
+- **Test centre** — existing address lookup.
+- Optional status control (upcoming / passed / failed) kept as it is today.
+
+Behaviour:
+- Saving writes the pupil test fields and, when the test came from a test-day lesson, updates that lesson's `lesson_date`, `lesson_time` and `pickup_location` too, so the schedule and the tile stay in step.
+- The banner/badge style updates immediately after save (badge disappears once the centre and time are filled in).
 
 ## Technical notes
 
-- Files: `src/components/lessons/AddLessonSheet.tsx`, `src/routes/lessons.edit.$id.tsx`, `src/routes/home.tsx` (tile filter at ~7102), plus a new `db/062_backfill_pupil_test_fields.sql`.
-- Test time on a test-day lesson is stored separately (`testTime`) from the pickup time — the pupil's `test_time` gets the test time, not the pickup time.
-- The test centre comes from the test-day `testCentre` field (also stored as `pickup_location`).
-- No schema change needed; `pupils.test_*` columns already exist.
-- The Upcoming Tests page and the home tile share the same source, so both are fixed by the same change.
+- Files: `src/components/lessons/AddLessonSheet.tsx`, `src/routes/lessons.edit.$id.tsx`, `src/routes/home.tsx` (tile around line 7102), `src/routes/upcoming-tests.tsx`, a new shared `src/components/tests/TestEditSheet.tsx`, and a new `db/062_backfill_pupil_test_fields.sql`.
+- The test time on a test-day lesson is stored separately from the pickup time; the pupil's `test_time` gets the test time.
+- Matching a pupil test back to its lesson row: instructor + pupil + `lesson_type = 'test'` + same date.
+- No schema change; `pupils.test_*` columns already exist.
+- Colours follow the existing tokens (amber `#FEF3C7` / `#B45309` for the warning pill, navy and brand blue elsewhere).
