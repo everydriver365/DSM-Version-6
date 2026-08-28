@@ -1374,7 +1374,7 @@ function PinnedQuickActions({ navigate }: { navigate: ReturnType<typeof useNavig
   ];
 
   return (
-    <div style={{ background: '#FFFFFF', borderBottom: '1px solid #E4E8EF', padding: '12px 16px' }}>
+    <div style={{ background: PAGE_BACKGROUND, borderBottom: '1px solid #E4E8EF', padding: '12px 16px' }}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
         {pinned.map((tile) => (
           <button
