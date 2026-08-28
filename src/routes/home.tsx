@@ -7141,7 +7141,7 @@ function HomePage() {
               </div>
             <div
               style={{
-                background: 'linear-gradient(160deg, #FFFFFF 0%, #FDF1F2 55%, #FBEAEC 100%)',
+                background: 'linear-gradient(160deg, #CCCCCC 0%, #CAC1C2 55%, #C9BBBD 100%)',
                 border: '0.5px solid #F0DDE0',
                 borderRadius: 14,
                 overflow: 'hidden',
