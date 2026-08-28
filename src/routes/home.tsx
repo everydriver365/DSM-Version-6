@@ -8427,9 +8427,10 @@ function HomePage() {
           const Badge = ({ colour, value }: { colour: string; value: number }) => (
             <span style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              minWidth: 16, height: 16, borderRadius: 12, background: colour,
-              color: '#FFFFFF', fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, fontFamily: PF_C,
-              padding: '0 3px', marginLeft: 2,
+              minWidth: 18, height: 18, borderRadius: 999, background: colour,
+              color: '#FFFFFF', fontSize: 10, fontWeight: tokens.fontWeight.bold, fontFamily: PF_C,
+              padding: '0 5px', marginLeft: 5, letterSpacing: '-0.01em',
+              boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
             }}>
               {value}
             </span>
