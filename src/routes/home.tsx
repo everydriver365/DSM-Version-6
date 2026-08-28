@@ -8476,7 +8476,7 @@ function HomePage() {
 
           const rowBase: React.CSSProperties = {
             display: 'flex', alignItems: 'center', gap: 12,
-            padding: '11px 14px', cursor: 'pointer',
+            padding: '14px 16px', cursor: 'pointer',
             borderTop: `0.5px solid ${BORDER_C}`,
           };
           const labelStyle: React.CSSProperties = { fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: NAVY_C, fontFamily: PF_C };
