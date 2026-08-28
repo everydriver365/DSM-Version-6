@@ -7206,12 +7206,13 @@ function HomePage() {
           // Display fix: some pupil rows carry a trailing " ." in the stored
           // name (empty surname/initial). Never render stray trailing punctuation.
           const displayName = (next.name ?? '').replace(/\s+\.\s*$/, '').trim();
-          const centreRaw = (next.test_centre ?? '').trim();
-          const centreLabel = centreRaw
-            ? /test centre/i.test(centreRaw)
-              ? centreRaw
-              : `${centreRaw} Test Centre`
+          const centreName = testCentreName(next.test_centre);
+          const centreLabel = centreName
+            ? /test centre/i.test(centreName)
+              ? centreName
+              : `${centreName} Test Centre`
             : 'Test centre TBC';
+
           const stackTests = testsSorted.slice(0, 2);
           const nextMissing = missingTestDetails(next);
           const nextMissingLabel = missingTestDetailsLabel(nextMissing);
