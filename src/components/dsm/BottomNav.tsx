@@ -308,7 +308,7 @@ function CenterMicButton() {
       aria-label="Open voice assistant"
       onClick={() => {
         tapLight();
-        window.dispatchEvent(new CustomEvent("dsm-open-command-palette"));
+        window.dispatchEvent(new CustomEvent("dsm-open-voice-assistant"));
       }}
       className="flex items-center justify-center"
       style={{
