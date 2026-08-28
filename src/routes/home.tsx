@@ -8816,7 +8816,7 @@ function HomePage() {
                       </div>
 
                       {/* Row 3 — labels */}
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, flexWrap: 'wrap' }}>
                         <Label
                           text="Issues" colour={RED_C} count={alerts.length}
                           onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })}
