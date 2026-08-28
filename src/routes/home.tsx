@@ -564,6 +564,14 @@ function testTimeOf(lesson: any): string | null {
   return m?.[1] ?? null;
 }
 
+// Show only the test centre name, never the full postal address
+// ("Southampton Maybush, Green Lane, ... SO16 9QT" -> "Southampton Maybush").
+function testCentreName(raw: string | null | undefined): string | null {
+  const first = String(raw ?? '').split(',')[0]?.trim() ?? '';
+  return first ? first.replace(/\s+test\s+centre$/i, '').trim() || first : null;
+}
+
+
 function startOfDay(d: Date) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
