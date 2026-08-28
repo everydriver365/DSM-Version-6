@@ -1978,7 +1978,7 @@ function SchedulePage() {
                                 <div
                                   className="focus-within:ring-2 focus-within:ring-[#0B1F3A] focus-within:ring-offset-2"
                                   style={{
-                                    background: "#FDFBF6",
+                                    background: "#EAF5FC",
                                     borderRadius: tokens.radiusCard,
                                     border: "2px dashed #D4A853",
                                     padding: "12px 16px",
