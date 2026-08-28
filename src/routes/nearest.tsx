@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import * as React from "react";
-import PageHeader from "@/components/dsm/PageHeader";
 import { LoadingSpinner } from "@/components/dsm/LoadingSpinner";
 import { findNearbyPlaces } from "@/lib/nearest.functions";
 import { reverseGeocode } from "@/lib/geocode.functions";
@@ -9,9 +8,16 @@ export const Route = createFileRoute("/nearest")({
   head: () => ({
     meta: [
       { title: "Nearest — Every Driver Pro" },
-      { name: "description", content: "Find toilets, fuel, parking, food, EV chargers and ATMs near your current location while instructing." },
+      {
+        name: "description",
+        content:
+          "Find toilets, fuel, parking, food, EV chargers and ATMs near your current location while instructing.",
+      },
       { property: "og:title", content: "Nearest — Every Driver Pro" },
-      { property: "og:description", content: "Find toilets, fuel, parking, food, EV chargers and ATMs near your current location." },
+      {
+        property: "og:description",
+        content: "Find toilets, fuel, parking, food, EV chargers and ATMs near your current location.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -19,52 +25,73 @@ export const Route = createFileRoute("/nearest")({
   component: NearestPage,
 });
 
-const KEY = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined;
+/* ---------------------------------------------------------------- constants */
+
+const NAVY = "#0B2341";
+const BLUE = "#2C97DE";
+const BORDER = "#E4E8EF";
+const MUTED = "#536579";
+const PAGE_BG = "#F4F6F8";
+
+const BROWSER_KEY = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined;
 const SCRIPT_ID = "gmaps-js-sdk";
 
 type GWin = Window & { google?: any };
 
 function loadMaps(): Promise<void> {
   const w = window as GWin;
-  if (w.google?.maps?.places) return Promise.resolve();
+  if (w.google?.maps) return Promise.resolve();
   if (document.getElementById(SCRIPT_ID)) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      let waited = 0;
       const iv = setInterval(() => {
-        if ((window as GWin).google?.maps?.places) {
+        waited += 150;
+        if ((window as GWin).google?.maps) {
           clearInterval(iv);
           resolve();
+        } else if (waited > 10000) {
+          clearInterval(iv);
+          reject(new Error("Maps timeout"));
         }
       }, 150);
     });
   }
   return new Promise((resolve, reject) => {
-    if (!KEY) { reject(new Error("Missing Google Maps browser key")); return; }
+    if (!BROWSER_KEY) {
+      reject(new Error("Missing Google Maps browser key"));
+      return;
+    }
     const s = document.createElement("script");
     s.id = SCRIPT_ID;
     s.async = true;
     s.defer = true;
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${KEY}&libraries=geometry,places&loading=async`;
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${BROWSER_KEY}&loading=async`;
     s.onload = () => resolve();
     s.onerror = () => reject(new Error("Failed to load Google Maps JS"));
     document.head.appendChild(s);
   });
 }
 
-type Cat = {
-  id: string;
-  emoji: string;
-  label: string;
-  request: Record<string, unknown>;
-};
+const CATEGORIES = [
+  { id: "toilets", emoji: "🚻", label: "Toilets" },
+  { id: "food", emoji: "☕", label: "Food & drink" },
+  { id: "fuel", emoji: "⛽", label: "Fuel" },
+  { id: "ev", emoji: "⚡", label: "EV charging" },
+  { id: "parking", emoji: "🅿️", label: "Parking" },
+  { id: "atm", emoji: "🏧", label: "ATM" },
+] as const;
 
-const CATEGORIES: Cat[] = [
-  { id: "toilets", emoji: "🚻", label: "Toilets", request: { keyword: "public toilet" } },
-  { id: "food", emoji: "☕", label: "Food & drink", request: { type: "cafe" } },
-  { id: "fuel", emoji: "⛽", label: "Fuel", request: { type: "gas_station" } },
-  { id: "parking", emoji: "🅿️", label: "Parking", request: { type: "parking" } },
-  { id: "ev", emoji: "⚡", label: "EV charger", request: { keyword: "EV charging" } },
-  { id: "atm", emoji: "🏧", label: "ATM", request: { type: "atm" } },
-];
+const BRANDS = [
+  { emoji: "🍟", label: "McDonald's" },
+  { emoji: "🥖", label: "Greggs" },
+  { emoji: "🛒", label: "Tesco" },
+  { emoji: "☕", label: "Costa" },
+  { emoji: "☕", label: "Starbucks" },
+  { emoji: "⛽", label: "BP" },
+  { emoji: "🍕", label: "Subway" },
+] as const;
+
+/* ------------------------------------------------------------------ helpers */
 
 function haversine(lat1: number, lng1: number, lat2: number, lng2: number) {
   const R = 6371000;
@@ -72,33 +99,81 @@ function haversine(lat1: number, lng1: number, lat2: number, lng2: number) {
   const dLat = toRad(lat2 - lat1);
   const dLng = toRad(lng2 - lng1);
   const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+    Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(a));
 }
 
 function fmtDistance(m: number) {
-  if (m < 1000) return `${Math.round(m)} m`;
-  return `${(m / 1000).toFixed(1)} km`;
+  return m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(1)} km`;
 }
 
-type Place = {
+type Result = {
   id: string;
   name: string;
-  vicinity: string;
-  rating?: number;
-  openNow?: boolean;
+  address: string;
+  distance: number;
   lat: number;
   lng: number;
-  distance: number;
+  rating?: number;
+  openNow?: boolean;
+  /** EV extras */
+  chargers?: number;
+  powerKw?: number;
+  operational?: boolean | null;
 };
+
+type OcmPoi = {
+  ID?: number;
+  NumberOfPoints?: number | null;
+  StatusType?: { IsOperational?: boolean | null } | null;
+  AddressInfo?: {
+    Title?: string;
+    AddressLine1?: string;
+    Latitude?: number;
+    Longitude?: number;
+  } | null;
+  Connections?: Array<{ PowerKW?: number | null }> | null;
+};
+
+async function fetchEvChargers(lat: number, lng: number): Promise<Result[]> {
+  const url =
+    `https://api.openchargemap.io/v3/poi/?output=json&latitude=${lat}&longitude=${lng}` +
+    `&distance=2&distanceunit=KM&maxresults=20&compact=true&verbose=false`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`OpenChargeMap ${res.status}`);
+  const rows = (await res.json()) as OcmPoi[];
+  return rows
+    .filter((r) => typeof r.AddressInfo?.Latitude === "number" && typeof r.AddressInfo?.Longitude === "number")
+    .map((r, i) => {
+      const plat = r.AddressInfo!.Latitude!;
+      const plng = r.AddressInfo!.Longitude!;
+      return {
+        id: String(r.ID ?? `ocm-${i}`),
+        name: r.AddressInfo?.Title ?? "Charging point",
+        address: r.AddressInfo?.AddressLine1 ?? "",
+        distance: haversine(lat, lng, plat, plng),
+        lat: plat,
+        lng: plng,
+        chargers: r.NumberOfPoints ?? undefined,
+        powerKw: r.Connections?.[0]?.PowerKW ?? undefined,
+        operational: r.StatusType?.IsOperational ?? null,
+      } satisfies Result;
+    })
+    .sort((a, b) => a.distance - b.distance);
+}
+
+/* --------------------------------------------------------------------- page */
 
 function NearestPage() {
   const [pos, setPos] = React.useState<{ lat: number; lng: number } | null>(null);
-  const [area, setArea] = React.useState<string>("Locating…");
+  const [area, setArea] = React.useState("Locating…");
   const [cat, setCat] = React.useState<string>(CATEGORIES[0].id);
-  const [places, setPlaces] = React.useState<Place[]>([]);
-  const [loading, setLoading] = React.useState(true);
+  const [query, setQuery] = React.useState("");
+  const [activeQuery, setActiveQuery] = React.useState<string | null>(null);
+  const [activeBrand, setActiveBrand] = React.useState<string | null>(null);
+  const [results, setResults] = React.useState<Result[]>([]);
+  const [locating, setLocating] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
   const mapEl = React.useRef<HTMLDivElement | null>(null);
@@ -106,64 +181,132 @@ function NearestPage() {
   const markersRef = React.useRef<any[]>([]);
   const [mapsReady, setMapsReady] = React.useState(false);
 
-  // 1. GPS first — never gated on the Maps JS SDK
+  /* 1. Geolocation on mount */
   React.useEffect(() => {
     let cancelled = false;
     if (!navigator.geolocation) {
       setError("Location is not available on this device");
-      setLoading(false);
+      setLocating(false);
       return;
     }
     navigator.geolocation.getCurrentPosition(
       (p) => {
         if (cancelled) return;
         setPos({ lat: p.coords.latitude, lng: p.coords.longitude });
+        setLocating(false);
       },
       (err) => {
         if (cancelled) return;
         setError(
           err.code === err.PERMISSION_DENIED
-            ? "Enable location access to find nearby places"
+            ? "Enable location to find nearby places"
             : "Could not get your location. Try again outdoors.",
         );
-        setLoading(false);
+        setLocating(false);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
     );
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  // 1b. Map SDK is best-effort (browser key is domain restricted); list works without it
+  /* 2. Maps SDK — best effort, never blocks the list */
   React.useEffect(() => {
     let cancelled = false;
     loadMaps()
-      .then(() => { if (!cancelled) setMapsReady(true); })
+      .then(() => {
+        if (!cancelled) setMapsReady(true);
+      })
       .catch(() => {});
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  // 2. Area name via the server geocode (browser key is not authorised for Geocoding)
+  /* 3. Area name via server-side reverse geocode */
   React.useEffect(() => {
     if (!pos) return;
     let cancelled = false;
     reverseGeocode({ data: { lat: pos.lat, lng: pos.lng } })
       .then((r) => {
-        if (cancelled) return;
-        setArea(r.town || r.road || "Nearby places");
+        if (!cancelled) setArea(r.town || r.road || "Nearby places");
       })
-      .catch(() => { if (!cancelled) setArea("Nearby places"); });
-    return () => { cancelled = true; };
+      .catch(() => {
+        if (!cancelled) setArea("Nearby places");
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [pos]);
 
-  // 3. Init map
+  /* 4. Results — refetch on location, tab or search change */
   React.useEffect(() => {
-    if (!pos || !mapsReady || !mapEl.current) return;
+    if (!pos) return;
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+
+    const run = async () => {
+      try {
+        if (!activeQuery && cat === "ev") {
+          const rows = await fetchEvChargers(pos.lat, pos.lng);
+          if (!cancelled) setResults(rows);
+          return;
+        }
+        const r = await findNearbyPlaces({
+          data: {
+            lat: pos.lat,
+            lng: pos.lng,
+            category: activeQuery ? "search" : cat,
+            ...(activeQuery ? { query: activeQuery } : {}),
+            radius: 2000,
+          },
+        });
+        if (cancelled) return;
+        if (r.error) {
+          setResults([]);
+          setError(r.error);
+          return;
+        }
+        setResults(
+          r.places
+            .map((p) => ({
+              id: p.id,
+              name: p.name,
+              address: p.address,
+              rating: p.rating,
+              openNow: p.openNow,
+              lat: p.lat,
+              lng: p.lng,
+              distance: haversine(pos.lat, pos.lng, p.lat, p.lng),
+            }))
+            .sort((a, b) => a.distance - b.distance),
+        );
+      } catch {
+        if (!cancelled) {
+          setResults([]);
+          setError("Could not load nearby places right now.");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    void run();
+    return () => {
+      cancelled = true;
+    };
+  }, [pos, cat, activeQuery]);
+
+  /* 5. Map init + markers */
+  React.useEffect(() => {
+    if (!mapsReady || !pos || !mapEl.current) return;
     const g = (window as GWin).google;
     if (!g?.maps) return;
     if (!mapRef.current) {
       mapRef.current = new g.maps.Map(mapEl.current, {
         center: pos,
-        zoom: 14,
+        zoom: 15,
         disableDefaultUI: true,
         zoomControl: true,
       });
@@ -173,230 +316,277 @@ function NearestPage() {
         icon: {
           path: g.maps.SymbolPath.CIRCLE,
           scale: 7,
-          fillColor: "#2C97DE",
+          fillColor: BLUE,
           fillOpacity: 1,
           strokeColor: "#FFFFFF",
-          strokeWeight: 2,
+          strokeWeight: 3,
         },
         title: "You are here",
       });
-    } else {
-      mapRef.current.setCenter(pos);
     }
-  }, [pos, mapsReady]);
-
-  // 4. Nearby search via Places API (New) through the connector gateway
-  React.useEffect(() => {
-    if (!pos) return;
-    let cancelled = false;
-    setLoading(true);
-    setError(null);
-    findNearbyPlaces({ data: { lat: pos.lat, lng: pos.lng, category: cat, radius: 2000 } })
-      .then((res) => {
-        if (cancelled) return;
-        if (res.error) {
-          setError(res.error);
-          setPlaces([]);
-          setLoading(false);
-          return;
-        }
-        setPlaces(
-          res.places
-            .map((p) => ({
-              id: p.id,
-              name: p.name,
-              vicinity: p.address,
-              rating: p.rating,
-              openNow: p.openNow,
-              lat: p.lat,
-              lng: p.lng,
-              distance: haversine(pos.lat, pos.lng, p.lat, p.lng),
-            }))
-            .sort((a, b) => a.distance - b.distance),
-        );
-        setLoading(false);
-      })
-      .catch((e) => {
-        if (cancelled) return;
-        console.error("[nearest] search failed", e);
-        setError("Could not search nearby places right now.");
-        setPlaces([]);
-        setLoading(false);
-      });
-    return () => { cancelled = true; };
-  }, [pos, cat]);
-
-
-  // 5. Draw result markers
-  React.useEffect(() => {
-    const g = (window as GWin).google;
-    if (!g?.maps || !mapRef.current) return;
     markersRef.current.forEach((m) => m.setMap(null));
-    markersRef.current = places.map(
-      (p) =>
+    markersRef.current = results.map(
+      (r) =>
         new g.maps.Marker({
-          position: { lat: p.lat, lng: p.lng },
+          position: { lat: r.lat, lng: r.lng },
           map: mapRef.current,
-          title: p.name,
+          title: r.name,
         }),
     );
-  }, [places]);
+  }, [mapsReady, pos, results]);
 
-  function focusPlace(p: Place) {
-    if (!mapRef.current) return;
-    mapRef.current.panTo({ lat: p.lat, lng: p.lng });
-    mapRef.current.setZoom(16);
-    mapEl.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
+  const centreOn = (r: Result) => {
+    const g = (window as GWin).google;
+    if (mapRef.current && g?.maps) {
+      mapRef.current.panTo({ lat: r.lat, lng: r.lng });
+      mapRef.current.setZoom(17);
+      mapEl.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
 
-  const activeLabel = CATEGORIES.find((c) => c.id === cat)?.label ?? "";
+  const submitSearch = (text: string) => {
+    const t = text.trim();
+    if (!t) return;
+    setActiveQuery(t);
+  };
+
+  const clearSearch = () => {
+    setQuery("");
+    setActiveQuery(null);
+    setActiveBrand(null);
+  };
+
+  const isEv = !activeQuery && cat === "ev";
 
   return (
-    <div style={{ minHeight: "100dvh", background: "#F4F7FA", fontFamily: "Poppins, sans-serif", paddingBottom: 100 }}>
-      <PageHeader title="Nearest" subtitle={area} backTo="/home" />
-
-      {/* Category tabs */}
-      <div
+    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 96, fontFamily: "Poppins, sans-serif" }}>
+      {/* 1. HEADER */}
+      <header
         style={{
-          display: "flex",
-          gap: 8,
-          overflowX: "auto",
-          padding: "12px 16px",
-          WebkitOverflowScrolling: "touch",
+          background: NAVY,
+          color: "#FFFFFF",
+          padding: "calc(env(safe-area-inset-top, 0px) + 20px) 16px 20px",
         }}
       >
-        {CATEGORIES.map((c) => {
-          const active = c.id === cat;
+        <h1 style={{ margin: 0, fontSize: 26, fontWeight: 700, fontFamily: "Sora, sans-serif", color: "#FFFFFF" }}>
+          Nearest
+        </h1>
+        <p style={{ margin: "4px 0 0", fontSize: 13, color: "rgba(255,255,255,0.75)" }}>{area}</p>
+      </header>
+
+      {/* 2. SEARCH BAR */}
+      <div style={{ margin: 12, position: "relative" }}>
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              setActiveBrand(null);
+              submitSearch(query);
+            }
+          }}
+          placeholder="Search nearby..."
+          aria-label="Search nearby"
+          style={{
+            width: "100%",
+            background: "#FFFFFF",
+            border: `1px solid ${BORDER}`,
+            borderRadius: 12,
+            padding: "12px 40px 12px 14px",
+            fontSize: 14,
+            color: NAVY,
+            outline: "none",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        />
+        {(query || activeQuery) && (
+          <button
+            type="button"
+            onClick={clearSearch}
+            aria-label="Clear search"
+            style={{
+              position: "absolute",
+              right: 8,
+              top: "50%",
+              transform: "translateY(-50%)",
+              width: 28,
+              height: 28,
+              borderRadius: 14,
+              border: "none",
+              background: "#EEF2F6",
+              color: MUTED,
+              fontSize: 15,
+              lineHeight: "28px",
+              cursor: "pointer",
+            }}
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
+      {/* 3. BRAND PILLS */}
+      <div style={{ padding: "0 16px 8px", overflowX: "auto", scrollbarWidth: "none", whiteSpace: "nowrap" }}>
+        {BRANDS.map((b) => {
+          const active = activeBrand === b.label;
           return (
             <button
-              key={c.id}
+              key={b.label}
               type="button"
-              onClick={() => setCat(c.id)}
+              onClick={() => {
+                setActiveBrand(b.label);
+                setQuery(b.label);
+                setActiveQuery(b.label);
+              }}
               style={{
-                flexShrink: 0,
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                padding: "8px 14px",
-                borderRadius: 999,
-                border: active ? "1px solid #2C97DE" : "1px solid #E4E8EF",
-                background: active ? "#2C97DE" : "#FFFFFF",
-                color: active ? "#FFFFFF" : "#536579",
+                display: "inline-block",
+                marginRight: 8,
+                background: active ? BLUE : "#FFFFFF",
+                color: active ? "#FFFFFF" : NAVY,
+                border: `1px solid ${active ? BLUE : BORDER}`,
+                borderRadius: 8,
+                padding: "10px 14px",
                 fontSize: 13,
                 fontWeight: 600,
                 cursor: "pointer",
-                whiteSpace: "nowrap",
+                fontFamily: "Poppins, sans-serif",
               }}
             >
-              <span>{c.emoji}</span>
-              <span>{c.label}</span>
+              {b.emoji} {b.label}
             </button>
           );
         })}
       </div>
 
-      {/* Map */}
-      <div style={{ padding: "0 16px" }}>
-        <div
-          ref={mapEl}
-          style={{
-            height: 220,
-            width: "100%",
-            borderRadius: 12,
-            overflow: "hidden",
-            border: "1px solid #E4E8EF",
-            background: "#E9EEF4",
-          }}
-        />
-      </div>
-
-      {/* Results */}
-      <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: 10 }}>
-        {error ? (
-          <div
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid #E4E8EF",
-              borderRadius: 12,
-              padding: 24,
-              textAlign: "center",
-              color: "#536579",
-              fontSize: 14,
-            }}
-          >
-            {error}
-          </div>
-        ) : loading ? (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, padding: 32 }}>
-            <LoadingSpinner />
-            <div style={{ color: "#536579", fontSize: 13 }}>Finding {activeLabel.toLowerCase()} nearby…</div>
-          </div>
-        ) : places.length === 0 ? (
-          <div
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid #E4E8EF",
-              borderRadius: 12,
-              padding: 24,
-              textAlign: "center",
-              color: "#536579",
-              fontSize: 14,
-            }}
-          >
-            No {activeLabel.toLowerCase()} found nearby
-          </div>
-        ) : (
-          places.map((p) => (
+      {/* 4. CATEGORY TABS */}
+      <div style={{ padding: "0 16px 8px", overflowX: "auto", scrollbarWidth: "none", whiteSpace: "nowrap" }}>
+        {CATEGORIES.map((c) => {
+          const active = !activeQuery && cat === c.id;
+          return (
             <button
-              key={p.id}
+              key={c.id}
               type="button"
-              onClick={() => focusPlace(p)}
+              onClick={() => {
+                clearSearch();
+                setCat(c.id);
+              }}
               style={{
-                textAlign: "left",
-                background: "#FFFFFF",
-                border: "1px solid #E4E8EF",
-                borderRadius: 12,
-                padding: 14,
+                display: "inline-block",
+                marginRight: 8,
+                background: active ? BLUE : "#FFFFFF",
+                color: active ? "#FFFFFF" : MUTED,
+                border: `1px solid ${active ? BLUE : BORDER}`,
+                borderRadius: 999,
+                padding: "10px 14px",
+                fontSize: 13,
+                fontWeight: 600,
                 cursor: "pointer",
-                display: "flex",
-                flexDirection: "column",
-                gap: 4,
+                fontFamily: "Poppins, sans-serif",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                <span style={{ fontSize: 15, fontWeight: 700, color: "#0B2341", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {p.name}
-                </span>
-                <span style={{ fontSize: 13, fontWeight: 600, color: "#2C97DE", flexShrink: 0 }}>
-                  {fmtDistance(p.distance)}
-                </span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                {typeof p.rating === "number" && (
-                  <span style={{ fontSize: 12, color: "#536579" }}>★ {p.rating.toFixed(1)}</span>
-                )}
-                {p.openNow === true && (
-                  <span
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 700,
-                      color: "#FFFFFF",
-                      background: "#16A34A",
-                      borderRadius: 999,
-                      padding: "2px 8px",
-                    }}
-                  >
-                    Open now
-                  </span>
-                )}
-              </div>
-              {p.vicinity && (
-                <div style={{ fontSize: 12, color: "#6B7686" }}>{p.vicinity}</div>
-              )}
+              {c.emoji} {c.label}
             </button>
-          ))
-        )}
+          );
+        })}
       </div>
+
+      {/* 5. INLINE MAP */}
+      <div
+        ref={mapEl}
+        style={{
+          height: 200,
+          margin: "4px 12px 12px",
+          borderRadius: 12,
+          overflow: "hidden",
+          background: "#E8EDF2",
+          border: `1px solid ${BORDER}`,
+        }}
+      />
+
+      {/* 6. RESULTS */}
+      {locating || (loading && results.length === 0) ? (
+        <div style={{ padding: 32, display: "flex", justifyContent: "center" }}>
+          <LoadingSpinner />
+        </div>
+      ) : error ? (
+        <p style={{ padding: "16px 20px", color: MUTED, fontSize: 14, textAlign: "center" }}>{error}</p>
+      ) : results.length === 0 ? (
+        <p style={{ padding: "16px 20px", color: MUTED, fontSize: 14, textAlign: "center" }}>Nothing found nearby</p>
+      ) : (
+        results.map((r) => (
+          <button
+            key={r.id}
+            type="button"
+            onClick={() => centreOn(r)}
+            style={{
+              display: "block",
+              width: "calc(100% - 24px)",
+              textAlign: "left",
+              margin: 12,
+              background: "#FFFFFF",
+              border: `1px solid ${BORDER}`,
+              borderRadius: 12,
+              padding: 14,
+              boxShadow: "0 1px 2px rgba(11,35,65,0.05)",
+              cursor: "pointer",
+              fontFamily: "Poppins, sans-serif",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+              <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>{r.name}</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: BLUE, whiteSpace: "nowrap" }}>
+                {fmtDistance(r.distance)}
+              </span>
+            </div>
+
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", marginTop: 6 }}>
+              {isEv ? (
+                <>
+                  {typeof r.chargers === "number" && (
+                    <span style={{ fontSize: 12, color: MUTED }}>{r.chargers} chargers</span>
+                  )}
+                  {typeof r.powerKw === "number" && (
+                    <span style={{ fontSize: 12, color: MUTED }}>{r.powerKw} kW</span>
+                  )}
+                  <Badge
+                    text={r.operational ? "Operational" : "Unknown"}
+                    color={r.operational ? "#16A34A" : "#8A93A0"}
+                  />
+                </>
+              ) : (
+                <>
+                  {typeof r.rating === "number" && (
+                    <span style={{ fontSize: 12, color: MUTED }}>⭐ {r.rating.toFixed(1)}</span>
+                  )}
+                  {typeof r.openNow === "boolean" && (
+                    <Badge text={r.openNow ? "Open now" : "Closed"} color={r.openNow ? "#16A34A" : "#E53935"} />
+                  )}
+                </>
+              )}
+            </div>
+
+            {r.address && <p style={{ margin: "6px 0 0", fontSize: 12, color: MUTED }}>{r.address}</p>}
+          </button>
+        ))
+      )}
     </div>
+  );
+}
+
+function Badge({ text, color }: { text: string; color: string }) {
+  return (
+    <span
+      style={{
+        fontSize: 11,
+        fontWeight: 700,
+        color,
+        background: `${color}1A`,
+        border: `1px solid ${color}33`,
+        borderRadius: 999,
+        padding: "2px 8px",
+      }}
+    >
+      {text}
+    </span>
   );
 }
