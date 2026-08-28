@@ -2639,7 +2639,7 @@ function HomePage() {
       const first = fullName.trim().split(/\s+/)[0] || "there";
       setFirstName(capitalize(first));
       setInstructorFullName(fullName);
-      setAvatarUrl((instructor?.profile_image_url as string | undefined) ?? null);
+      
       const wlGoal = Number((instructor as any)?.weekly_lesson_goal);
       const weGoal = Number((instructor as any)?.weekly_earnings_goal);
       if (Number.isFinite(wlGoal) && wlGoal > 0) setWeeklyLessonGoal(wlGoal);
