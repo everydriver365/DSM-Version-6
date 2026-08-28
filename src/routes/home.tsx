@@ -8495,9 +8495,9 @@ function HomePage() {
                 </button>
               </div>
               <div style={{
-                margin: 0, background: '#FFFFFF', borderRadius: 8,
-                 boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
-                border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
+                margin: 0, background: '#FFFFFF', borderRadius: 12,
+                boxShadow: '0 1px 2px rgba(11,31,58,0.04), 0 4px 12px rgba(11,31,58,0.06)',
+                border: `0.5px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
               }}>
 
               {/* ---- HEADER ---- */}
