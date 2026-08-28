@@ -330,7 +330,7 @@ function GlobalMenu() {
     navigate({ to: "/login" as never, replace: true });
   };
 
-  const initial = profile?.name?.charAt(0).toUpperCase() ?? "E";
+  
 
   return (
     <div
