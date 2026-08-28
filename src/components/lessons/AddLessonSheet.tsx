@@ -23,6 +23,7 @@ import { applyPricingRules, type PricingRule } from "../../lib/pricingRules";
 import { computeLessonAmount, fetchPostcodeRates } from "../../lib/pricing/resolveRate";
 import { pushLessonToGoogle } from "@/lib/calendarSyncPrefs";
 import { tapLight, tapMedium, hapticSuccess, hapticError } from "@/lib/haptics";
+import { syncPupilTestFields } from "@/lib/pupilTestSync";
 
 const BLUE = "#1877D6";
 
@@ -512,6 +513,15 @@ export function AddLessonSheet({
         setSaving(false);
         return;
       }
+      if (!isEvent) {
+        await syncPupilTestFields({
+          pupilId,
+          isTestDay,
+          date,
+          testTime,
+          testCentre,
+        });
+      }
       const { data: lessonRow } = await supabase
         .from("lessons")
         .select("google_event_id")
@@ -589,6 +599,10 @@ export function AddLessonSheet({
       hapticError();
       setSaving(false);
       return;
+    }
+
+    if (!isEvent && isTestDay) {
+      await syncPupilTestFields({ pupilId, isTestDay, date, testTime, testCentre });
     }
 
     const newLessonId = (insertedLesson as any)?.id as string | undefined;

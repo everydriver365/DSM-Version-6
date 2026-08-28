@@ -7,7 +7,8 @@ import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { formatCountdown } from "@/lib/dateHelpers";
 import { BottomSheet as BottomSheetV2, SheetGroup, PrimaryButton, GhostButton } from "@/components/dsm/BottomSheetV2";
-import { AddressLookup } from "@/components/dsm/AddressLookup";
+import TestEditSheet from "@/components/tests/TestEditSheet";
+import { missingTestDetails, missingTestDetailsLabel } from "@/lib/pupilTestSync";
 
 export const Route = createFileRoute("/upcoming-tests")({
   head: () => ({
@@ -83,9 +84,7 @@ function UpcomingTestsPage() {
   const [userId, setUserId] = useState<string | null>(null);
 
   const [editTest, setEditTest] = useState<PupilTestRow | null>(null);
-  const [editDate, setEditDate] = useState("");
-  const [editTime, setEditTime] = useState("");
-  const [editCentre, setEditCentre] = useState("");
+  const [editFocus, setEditFocus] = useState<"centre" | "time" | null>(null);
   const [cancelTest, setCancelTest] = useState<PupilTestRow | null>(null);
   const [cancelReason, setCancelReason] = useState("");
   const [saving, setSaving] = useState(false);
@@ -222,10 +221,8 @@ function UpcomingTestsPage() {
                 key={t.id}
                 test={t}
                 activeTab={activeTab}
-                onEdit={() => {
-                  setEditDate(t.test_date);
-                  setEditTime(t.test_time ?? "");
-                  setEditCentre(t.test_centre ?? "");
+                onEdit={(focus) => {
+                  setEditFocus(focus ?? null);
                   setEditTest(t);
                 }}
                 onCancel={() => setCancelTest(t)}
@@ -237,99 +234,40 @@ function UpcomingTestsPage() {
 
       {/* Edit sheet */}
       {editTest && (
-        <BottomSheetV2
-          onClose={() => setEditTest(null)}
-          title="Edit test"
-          subtitle={editTest?.name ?? undefined}
-          footer={
-            <PrimaryButton
-              disabled={saving}
-              onClick={async () => {
-                if (!editTest) return;
-                setSaving(true);
-                await supabase.from("pupils").update({
-                  test_date: editDate || null,
-                  test_time: editTime || null,
-                  test_centre: editCentre || null,
-                }).eq("id", editTest.id);
-                setTests((prev) =>
-                  prev.map((t) =>
-                    t.id === editTest.id
-                      ? { ...t, test_date: editDate, test_time: editTime, test_centre: editCentre }
-                      : t,
-                  ),
-                );
-                toast.success("Test updated");
-                setSaving(false);
-                setEditTest(null);
-              }}
-            >
-              {saving ? "Saving..." : "Save changes"}
-            </PrimaryButton>
-          }
-        >
-        <SheetGroup>
-          {/* Date */}
-          <div style={{ padding: "13px 16px" }}>
-            <label className="block" style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: tokens.textSecondary, marginBottom: 6, ...POPPINS }}>
-              Test date
-            </label>
-            <input
-              type="date"
-              value={editDate}
-              onChange={(e) => setEditDate(e.target.value)}
-              style={{
-                width: "100%",
-                fontSize: tokens.fontSize.lg,
-                fontWeight: tokens.fontWeight.semibold,
-                fontFamily: "Poppins, sans-serif",
-                color: tokens.navy,
-                border: "none",
-                outline: "none",
-                background: "transparent",
-              }}
-            />
-          </div>
-
-          <div style={{ height: 1, backgroundColor: tokens.border }} />
-
-          {/* Time */}
-          <div style={{ padding: "13px 16px" }}>
-            <label className="block" style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: tokens.textSecondary, marginBottom: 6, ...POPPINS }}>
-              Test time
-            </label>
-            <input
-              type="time"
-              value={editTime}
-              onChange={(e) => setEditTime(e.target.value)}
-              style={{
-                width: "100%",
-                fontSize: tokens.fontSize.lg,
-                fontWeight: tokens.fontWeight.semibold,
-                fontFamily: "Poppins, sans-serif",
-                color: tokens.navy,
-                border: "none",
-                outline: "none",
-                background: "transparent",
-              }}
-            />
-          </div>
-
-          <div style={{ height: 1, backgroundColor: tokens.border }} />
-
-          {/* Test centre — searchable */}
-          <div style={{ padding: "13px 16px" }}>
-            <label className="block" style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.medium, color: tokens.textSecondary, marginBottom: 6, ...POPPINS }}>
-              Test centre
-            </label>
-            <AddressLookup
-              initialAddress={editCentre}
-              onAddressFound={(r) => setEditCentre(r.address)}
-              showSearchButton
-            />
-          </div>
-        </SheetGroup>
-      </BottomSheetV2>
+        <TestEditSheet
+          test={{
+            pupilId: editTest.id,
+            name: editTest.name,
+            test_date: editTest.test_date,
+            test_time: editTest.test_time,
+            test_centre: editTest.test_centre,
+            test_status: editTest.test_status,
+          }}
+          focusField={editFocus}
+          onClose={() => {
+            setEditTest(null);
+            setEditFocus(null);
+          }}
+          onSaved={(saved) => {
+            setTests((prev) =>
+              prev
+                .map((t) =>
+                  t.id === saved.previousPupilId
+                    ? {
+                        ...t,
+                        id: saved.pupilId,
+                        name: saved.name,
+                        test_date: saved.test_date ?? t.test_date,
+                        test_time: saved.test_time,
+                        test_centre: saved.test_centre,
+                        test_status: saved.test_status,
+                      }
+                    : t,
+                )
+                .sort((a, b) => a.test_date.localeCompare(b.test_date)),
+            );
+          }}
+        />
       )}
 
       {/* Cancel sheet */}
@@ -447,7 +385,7 @@ function TestRow({
 }: {
   test: PupilTestRow;
   activeTab: TestTabKey;
-  onEdit: () => void;
+  onEdit: (focus?: "centre" | "time") => void;
   onCancel: () => void;
 }) {
   const days = daysUntil(test.test_date);
@@ -456,6 +394,8 @@ function TestRow({
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const isCompleted = activeTab === "passed" || activeTab === "failed";
+  const missing = missingTestDetails(test);
+  const missingLabel = missingTestDetailsLabel(missing);
   const statusLabel = activeTab === "passed" ? "Passed" : activeTab === "failed" ? "Failed" : daysLabel;
   const statusColor = activeTab === "passed" ? "#1E8E5A" : activeTab === "failed" ? "#CC2229" : days === 0 ? "#CC2229" : "#1877D6";
   const statusBg = activeTab === "passed" ? "#DDEFE1" : activeTab === "failed" ? "#FCE9E9" : days === 0 ? "#FCE9E9" : "#E6F1FB";
@@ -524,6 +464,30 @@ function TestRow({
               {test.test_centre || "Centre TBC"}
             </span>
           </div>
+
+          {!isCompleted && missingLabel && (
+            <button
+              type="button"
+              onClick={() => onEdit(missing.centre ? "centre" : "time")}
+              style={{
+                marginTop: 8,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                background: "#FEF3C7",
+                color: "#B45309",
+                border: "none",
+                borderRadius: 999,
+                padding: "5px 10px",
+                fontSize: 11,
+                fontWeight: 600,
+                cursor: "pointer",
+                ...POPPINS,
+              }}
+            >
+              Details needed · {missingLabel}
+            </button>
+          )}
 
           <div className="text-[11px] font-medium mt-2" style={{ color: isCompleted ? "#6B7280" : "#1877D6", ...POPPINS }}>
             <IconCalendar stroke={1.5} size={12} strokeWidth={2} className="inline mr-1" color={isCompleted ? "#6B7280" : "#1877D6"} />
