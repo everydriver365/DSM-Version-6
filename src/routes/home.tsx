@@ -4923,23 +4923,6 @@ function HomePage() {
             {greeting}, {firstName || 'there'} 👋
           </div>
         </div>
-        <button
-          type="button"
-          onClick={() => navigate({ to: '/profile' })}
-          aria-label="Profile"
-          style={{
-            width: 34, height: 34, borderRadius: '50%',
-            background: '#1877D6', color: '#FFFFFF',
-            fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold,
-            border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', overflow: 'hidden', padding: 0, flexShrink: 0,
-            fontFamily: 'Poppins, sans-serif',
-          }}
-        >
-          {avatarUrl
-            ? <img src={avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            : (firstName?.[0] ?? 'I').toUpperCase()}
-        </button>
       </div>
 
       {/* ============ OVERLAPPING STAT TILES ============ */}
