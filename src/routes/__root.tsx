@@ -666,7 +666,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
           left: "50%",
           top: "50%",
           transform: "translate(-50%, -50%)",
-          marginTop: 4,
+          marginTop: -4,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
