@@ -231,7 +231,16 @@ function NewCoursePage() {
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
-      setUserId(data.user?.id ?? null);
+      const uid = data.user?.id ?? null;
+      setUserId(uid);
+      if (uid) {
+        const { data: adminCheck } = await supabase
+          .from("admin_users")
+          .select("id")
+          .eq("id", uid)
+          .single();
+        setIsAdmin(!!adminCheck);
+      }
     })();
   }, []);
 
@@ -648,6 +657,9 @@ function NewCoursePage() {
             setPublishMarketplace={setPublishMarketplace}
             publishWebsite={publishWebsite}
             setPublishWebsite={setPublishWebsite}
+            isAdmin={isAdmin}
+            skimFeeEnabled={skimFeeEnabled}
+            setSkimFeeEnabled={setSkimFeeEnabled}
           />
         )}
 
