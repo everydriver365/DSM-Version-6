@@ -41,7 +41,7 @@ export default function PupilCard({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        background: "#FFFFFF",
+        background: "#F7F9FB",
         border: "0.5px solid #E5E5EA",
         ...(accentColour ? { borderLeft: `3px solid ${accentColour}` } : null),
         borderRadius: 12,
