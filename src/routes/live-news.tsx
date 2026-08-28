@@ -3,7 +3,6 @@ import { tokens } from "@/lib/tokens";
 import { Capacitor } from "@capacitor/core";
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import {
-  IconBell,
   IconBookmark,
   IconBookmarkFilled,
   IconBriefcase,
