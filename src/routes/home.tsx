@@ -3591,14 +3591,6 @@ function HomePage() {
     };
   }, [userId, todayISO, tomorrowISO]);
 
-  // Time-of-day greeting for the header
-  const hour = new Date().getHours();
-  const greeting = hour < 12
-    ? 'Good morning'
-    : hour < 17
-    ? 'Good afternoon'
-    : 'Good evening';
-
   // Today timeline shows every lesson for today regardless of status
   // (completed, confirmed, in_progress, cancelled, no_show, pending).
   const todayLessons = allLessons?.filter((l: any) => l.lesson_date === todayISO) || [];
@@ -4440,10 +4432,7 @@ function HomePage() {
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
           {/* HEADER */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-            <h1 style={{ fontSize: 24, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, margin: 0, fontFamily: "Sora, sans-serif" }}>
-              Good morning, {firstName} 👋
-            </h1>
-            <div style={{ fontSize: tokens.fontSize.md, color: tokens.textSecondary, fontFamily: "Poppins, sans-serif" }}>
+            <div style={{ fontSize: tokens.fontSize.md, color: tokens.textSecondary, fontFamily: "Poppins, sans-serif", marginLeft: "auto" }}>
               {dateHeader}
             </div>
           </div>
@@ -4913,16 +4902,6 @@ function HomePage() {
           borderRadius: '0 0 16px 16px',
         }}
       >
-        <div style={{ minWidth: 0 }}>
-          <div style={{
-            fontSize: tokens.fontSize.xl,
-            fontWeight: tokens.fontWeight.semibold,
-            color: '#FFFFFF',
-            lineHeight: 1.2,
-          }}>
-            {greeting}, {firstName || 'there'} 👋
-          </div>
-        </div>
       </div>
 
       {/* ============ OVERLAPPING STAT TILES ============ */}

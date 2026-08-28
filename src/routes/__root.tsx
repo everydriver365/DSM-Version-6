@@ -10,7 +10,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, useState, useRef, useCallback, type ReactNode } from "react";
-import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMenu2, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconSearch, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconX } from "@tabler/icons-react";
+import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMenu2, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconX } from "@tabler/icons-react";
 import { IconCalculator, IconCalendarPlus, IconHelpCircle, IconListCheck, IconReceipt, IconSettings, IconSignature, IconSparkles, IconSpeakerphone, IconBell, IconBriefcase, IconHelp, IconMail } from "@tabler/icons-react";
 
 import appCss from "../styles.css?url";
@@ -649,13 +649,6 @@ function Header({ unreadCount }: { unreadCount: number }) {
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-        <IconSearch
-          stroke={1.5}
-          size={20}
-          color="#fff"
-          style={{ cursor: "pointer" }}
-          onClick={() => navigate({ to: "/search" as never })}
-        />
         <div
           style={{ position: "relative", cursor: "pointer" }}
           onClick={() => navigate({ to: "/notifications" as never })}
