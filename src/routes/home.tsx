@@ -1640,6 +1640,15 @@ function HomePage() {
     test_centre: string | null;
     test_status?: string | null;
   }>>([]);
+  const [editTest, setEditTest] = useState<{
+    id: string;
+    name: string;
+    test_date: string;
+    test_time: string | null;
+    test_centre: string | null;
+    test_status?: string | null;
+  } | null>(null);
+  const [editTestFocus, setEditTestFocus] = useState<"centre" | "time" | null>(null);
   const [pendingSwapCount, setPendingSwapCount] = useState(0);
   const [openJobsCount, setOpenJobsCount] = useState(0);
   const [claimedAwaitingPaymentCount, setClaimedAwaitingPaymentCount] = useState(0);
@@ -7100,6 +7109,10 @@ function HomePage() {
           const now = new Date();
           const nowMs = now.getTime();
           const testsSorted = [...(upcomingTests ?? [])]
+            .filter((p) => {
+              const st = String(p.test_status ?? '').toLowerCase();
+              return st === '' || st === 'upcoming';
+            })
             .filter((p) => p.test_date && new Date(p.test_date).getTime() >= nowMs - 86400000)
             .sort((a, b) => a.test_date.localeCompare(b.test_date));
           if (testsSorted.length === 0) return null;
@@ -7131,6 +7144,8 @@ function HomePage() {
               : `${centreRaw} Test Centre`
             : 'Test centre TBC';
           const stackTests = testsSorted.slice(0, 2);
+          const nextMissing = missingTestDetails(next);
+          const nextMissingLabel = missingTestDetailsLabel(nextMissing);
           return (
             <div style={SECTION_WRAPPER_STYLE}>
               <div style={{ ...SECTION_HEADER_STYLE, padding: 0 }}>
@@ -7244,6 +7259,33 @@ function HomePage() {
                     >
                       {fmtDateTime(next.test_date, next.test_time)}
                     </div>
+                    {nextMissingLabel && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditTestFocus(nextMissing.centre ? 'centre' : 'time');
+                          setEditTest(next);
+                        }}
+                        style={{
+                          marginTop: 8,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 6,
+                          background: '#FEF3C7',
+                          color: '#B45309',
+                          border: 'none',
+                          borderRadius: 999,
+                          padding: '5px 10px',
+                          fontSize: 11,
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          fontFamily: 'Poppins, sans-serif',
+                        }}
+                      >
+                        Details needed · {nextMissingLabel}
+                      </button>
+                    )}
                   </div>
 
                   {/* Chevron */}
