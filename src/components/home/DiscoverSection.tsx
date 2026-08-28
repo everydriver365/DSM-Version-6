@@ -959,18 +959,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           aria-hidden
           style={{
             width: 3,
-            height: 12,
-            background: BLUE,
+            height: 13,
+            background: "#2C97DE",
             borderRadius: 12,
             display: "inline-block",
           }}
         />
         <span
           style={{
-            color: BLUE,
-            fontSize: tokens.fontSize.sm,
+            color: "#2C97DE",
+            fontSize: 11,
             fontWeight: tokens.fontWeight.extrabold,
-            letterSpacing: "0.6px",
+            letterSpacing: "0.8px",
             textTransform: "uppercase",
             fontFamily: FONT,
           }}
@@ -985,10 +985,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: 8,
+          gap: 12,
           marginBottom: 12,
         }}
       >
+
         {/* PERKS — tall hero */}
         <div
           role="button"
