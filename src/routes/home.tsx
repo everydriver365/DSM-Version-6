@@ -20,7 +20,7 @@ import availabilityIcon from "@/assets/availability-icon.png.asset.json";
 import fuelIcon from "@/assets/fuel-icon.png.asset.json";
 import paymentsIcon from "@/assets/payments-icon.png.asset.json";
 import trackingIcon from "@/assets/tracking-icon.png.asset.json";
-import { IconHeadset, IconDownload, IconAdjustmentsHorizontal } from "@tabler/icons-react";
+
 import { QuickActionsMenu, type QuickAction } from "@/components/dsm/QuickActionsMenu";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard.tsx";
 import { formatSessionDate, formatSessionTime, type LiveSession } from "./dsm-live";
@@ -1673,7 +1673,6 @@ function HomePage() {
   const [pupilAvailMap, setPupilAvailMap] = useState<Record<string, { available_days: string[] | null; available_from: string | null; available_until: string | null; min_notice_hours: number | null; short_notice_opt_in: boolean | null }>>({});
   const [pupilInfoMap, setPupilInfoMap] = useState<Record<string, { first_name: string | null; name: string | null; profile_image_url: string | null; calendar_colour: string | null; last_lesson_date: string | null }>>({});
   const [todayEndTime, setTodayEndTime] = useState<string | null>(null);
-  const [notifCount, setNotifCount] = useState(0);
   const [toastNotif, setToastNotif] = useState<{ title: string; body: string; type: string; id: string } | null>(null);
   const [toastVisible, setToastVisible] = useState(false);
   const [testsOpen, setTestsOpen] = useState(false);
@@ -2207,13 +2206,6 @@ function HomePage() {
     async function loadCount() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const { count } = await supabase
-        .from("instructor_notifications")
-        .select("id", { count: "exact", head: true })
-        .eq("instructor_id", user.id)
-        .eq("read", false);
-      setNotifCount(count || 0);
-
       // EverySwap requests for ALL this instructor's pupils
       const { data: allPupils } = await supabase
         .from("pupils")
@@ -2334,56 +2326,6 @@ function HomePage() {
     loadCount();
   }, []);
 
-  // Poll every 30s for new notifications and show a toast popup for new arrivals.
-  const lastSeenNotifIdRef = useRef<string | null>(null);
-  const notifPollerInitRef = useRef(false);
-  useEffect(() => {
-    let cancelled = false;
-    async function poll() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user || cancelled) return;
-      const { data: rows } = await supabase
-        .from("instructor_notifications")
-        .select("id, title, body, read, created_at")
-        .eq("instructor_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(10);
-      if (cancelled || !rows) return;
-      const latest = rows[0];
-      if (!notifPollerInitRef.current) {
-        notifPollerInitRef.current = true;
-        lastSeenNotifIdRef.current = latest?.id ?? null;
-      } else if (latest && latest.id !== lastSeenNotifIdRef.current) {
-        lastSeenNotifIdRef.current = latest.id;
-      }
-      // Alerts themselves are shown once, globally, by the toast controller in
-      // __root.tsx. Here we always re-read the unread count so the bell goes
-      // grey as soon as notifications are read or cleared elsewhere.
-      const { count } = await supabase
-        .from("instructor_notifications")
-        .select("id", { count: "exact", head: true })
-        .eq("instructor_id", user.id)
-        .eq("read", false);
-      if (!cancelled) setNotifCount(count || 0);
-    }
-    poll();
-    const id = setInterval(poll, 30000);
-    const onRefresh = () => { void poll().then(hapticSuccess); };
-    window.addEventListener("dsm-notifications-updated", onRefresh);
-    window.addEventListener("focus", onRefresh);
-    document.addEventListener("visibilitychange", onRefresh);
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-      window.removeEventListener("dsm-notifications-updated", onRefresh);
-      window.removeEventListener("focus", onRefresh);
-      document.removeEventListener("visibilitychange", onRefresh);
-    };
-  }, [navigate]);
-
-  // NOTE: there is deliberately no realtime instructor_notifications
-  // subscription here. The single alert path for new notifications is the
-  // global toast controller in __root.tsx; a second banner here caused
   // duplicate alerts. The 30s poll above keeps the bell count in sync.
 
 
@@ -4450,141 +4392,7 @@ function HomePage() {
     return `${Math.floor(h / 24)}d ago`;
   };
 
-  const HOME_TOP_BAR_SPACER = "calc(max(env(safe-area-inset-top, 0px), 24px) + 46px)";
-
-  function HomeHeader() {
-    const iconBtn: React.CSSProperties = {
-      width: 32,
-      height: 32,
-      borderRadius: "50%",
-      background: "rgba(255,255,255,0.08)",
-      border: "1px solid rgba(255,255,255,0.1)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      cursor: "pointer",
-      position: "relative",
-      padding: 0,
-      boxSizing: "border-box",
-      flexShrink: 0,
-    };
-
-    return (
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 40,
-          background: tokens.navy,
-          padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 6px) 8px 8px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <img
-            src={edpLogoWhite.url}
-            alt="EDP"
-            style={{ height: 52, width: "auto", objectFit: "contain", display: "block", paddingLeft: 15 }}
-          />
-          <div
-            style={{
-              width: 1,
-              height: 20,
-              background: "rgba(255,255,255,0.15)",
-              margin: "0 10px",
-            }}
-          />
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <button
-            type="button"
-            aria-label="Voice commands"
-            onClick={() => toast.info("Voice commands coming soon!")}
-            style={iconBtn}
-          >
-            <IconMicrophone size={16} strokeWidth={1.5} color="#ffffff" />
-          </button>
-          <button
-            type="button"
-            aria-label="Calls answering"
-            onClick={() => navigate({ to: "/enquiries" })}
-            style={iconBtn}
-          >
-            <IconHeadset size={16} strokeWidth={1.5} color="#ffffff" />
-          </button>
-          <button
-            type="button"
-            aria-label="Messages"
-            onClick={() => navigate({ to: "/messages" })}
-            style={iconBtn}
-          >
-            <IconDownload size={16} strokeWidth={1.5} color="#ffffff" />
-          </button>
-          <button
-            type="button"
-            aria-label="Live track"
-            onClick={() => navigate({ to: "/live" })}
-            style={iconBtn}
-          >
-            <IconCar size={16} strokeWidth={1.5} color="#ffffff" />
-          </button>
-          <button
-            type="button"
-            aria-label="Take payment"
-            onClick={() => navigate({ to: "/take-payment" })}
-            style={iconBtn}
-          >
-            <IconCurrencyPound size={16} strokeWidth={1.5} color="#ffffff" />
-          </button>
-          <button
-            type="button"
-            aria-label="Notifications"
-            onClick={() => navigate({ to: "/notifications" })}
-            style={iconBtn}
-          >
-            <IconBell size={16} strokeWidth={1.5} color="#ffffff" />
-            {notifCount > 0 && (
-              <span
-                style={{
-                  position: "absolute",
-                  top: -2,
-                  right: -2,
-                  background: tokens.red,
-                  color: "#ffffff",
-                  fontSize: 9,
-                  fontWeight: tokens.fontWeight.semibold,
-                  minWidth: 16,
-                  height: 16,
-                  borderRadius: 8,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  border: "1.5px solid #0B1F3A",
-                  padding: "0 3px",
-                  fontFamily: "Poppins, sans-serif",
-                }}
-              >
-                {notifCount > 99 ? "99+" : notifCount}
-              </span>
-            )}
-          </button>
-          <button
-            type="button"
-            aria-label="Menu"
-            onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
-            style={iconBtn}
-          >
-            <IconAdjustmentsHorizontal size={16} strokeWidth={1.5} color="#ffffff" />
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const GLOBAL_HEADER_SPACER = "calc(env(safe-area-inset-top, 0px) + 46px)";
 
   if (isDesktop) {
     const now = new Date();
@@ -4627,9 +4435,8 @@ function HomePage() {
     };
 
     return (
-      <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: HOME_TOP_BAR_SPACER }}>
+      <div className="min-h-screen" style={{ ...POPPINS, backgroundColor: PAGE_BACKGROUND, paddingTop: GLOBAL_HEADER_SPACER }}>
         {notifBanner}
-        <HomeHeader />
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
           {/* HEADER */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
@@ -5053,7 +4860,7 @@ function HomePage() {
   }
 
   return (
-    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: HOME_TOP_BAR_SPACER, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
+    <PageLayout className="pb-safe" style={{ ...POPPINS, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100%', maxWidth: '100vw', height: '100dvh', maxHeight: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden', overflowX: 'hidden', paddingTop: GLOBAL_HEADER_SPACER, paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
       {showWelcome && userId && (
         <WelcomeOverlay
           userId={userId}
@@ -5065,7 +4872,6 @@ function HomePage() {
       <SheetQueueController userId={userId} />
       <style>{`.hide-scrollbar::-webkit-scrollbar{display:none}.hide-scrollbar{scrollbar-width:none;-ms-overflow-style:none}.carousel-hide-scrollbar::-webkit-scrollbar{display:none}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}@keyframes chipShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
       {/* TOP BAR */}
-      <HomeHeader />
 
       <PushPermissionCard />
 
@@ -5098,8 +4904,8 @@ function HomePage() {
       <div
         style={{
           backgroundColor: '#0B1F3A',
-          marginTop: `calc(-1 * ${HOME_TOP_BAR_SPACER})`,
-          padding: `calc(${HOME_TOP_BAR_SPACER} + 16px) 16px 34px`,
+          marginTop: `calc(-1 * ${GLOBAL_HEADER_SPACER})`,
+          padding: `calc(${GLOBAL_HEADER_SPACER} + 16px) 16px 34px`,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',

@@ -11,11 +11,12 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, useState, useRef, useCallback, type ReactNode } from "react";
 import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMenu2, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconSearch, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconX } from "@tabler/icons-react";
-import { IconCalculator, IconCalendarPlus, IconHelpCircle, IconListCheck, IconReceipt, IconSettings, IconSignature, IconSparkles, IconSpeakerphone } from "@tabler/icons-react";
+import { IconCalculator, IconCalendarPlus, IconHelpCircle, IconListCheck, IconReceipt, IconSettings, IconSignature, IconSparkles, IconSpeakerphone, IconBell, IconBriefcase, IconHelp, IconMail } from "@tabler/icons-react";
 
 import appCss from "../styles.css?url";
 import icon192 from "../assets/icon-192.png.asset.json";
 import icon512 from "../assets/icon-512.png.asset.json";
+import headerLogoAsset from "../assets/EDP_transparent_mobile_header.png.asset.json";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
@@ -272,9 +273,27 @@ const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
   },
 ];
 
-function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
+type MenuTile = {
+  label: string;
+  icon: any;
+  to: string;
+  bg: string;
+};
+
+const ACTION_TILES: MenuTile[] = [
+  { label: "Schedule", icon: IconCalendar, to: "/schedule", bg: "#0B2341" },
+  { label: "Calls", icon: IconPhone, to: "/calls", bg: "#16A34A" },
+  { label: "Payment", icon: IconCreditCard, to: "/take-payment", bg: "#2C97DE" },
+  { label: "Tracking", icon: IconMapPin, to: "/live", bg: "#E53935" },
+  { label: "Courses", icon: IconSchool, to: "/courses", bg: "#0B2341" },
+  { label: "Availability", icon: IconCalendarCheck, to: "/availability", bg: "#18A999" },
+  { label: "Jobs", icon: IconBriefcase, to: "/jobs", bg: "#F59E0B" },
+  { label: "Enquiries", icon: IconMail, to: "/enquiries", bg: "#7B61FF" },
+];
+
+function GlobalMenu() {
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
+  const [profile, setProfile] = useState<{ name: string; email: string } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -283,84 +302,35 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
     return () => window.removeEventListener("dsm-open-menu", handler);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    let mounted = true;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || !mounted) return;
+      const email = user.email ?? "";
+      const { data } = await supabase.from("instructors").select("name").eq("id", user.id).limit(1).single();
+      if (mounted) {
+        setProfile({ name: data?.name ?? "Instructor", email });
+      }
+    })();
+    return () => { mounted = false; };
+  }, [open]);
+
   if (!open) return null;
 
-  const go = async (m: MenuItem) => {
+  const go = (to: string) => {
     setOpen(false);
-    if (m.signOut) {
-      await supabase.auth.signOut();
-      navigate({ to: "/login" as never, replace: true });
-      return;
-    }
-    if (m.event) {
-      // Cancelable: a page that handles the event calls preventDefault(),
-      // otherwise we fall back to a route.
-      const handled = !window.dispatchEvent(new CustomEvent(m.event, { cancelable: true }));
-      if (!handled && m.fallback) navigate({ to: m.fallback as never });
-      return;
-    }
-    if (m.to) navigate({ to: m.to as never });
+    navigate({ to: to as never });
   };
 
-  const Row = ({ m, first }: { m: MenuItem; first?: boolean }) => {
-    const Icon = m.icon;
-    return (
-      <button
-        type="button"
-        onClick={() => go(m)}
-        style={{
-          width: "100%",
-          textAlign: "left",
-          padding: "14px 16px",
-          background: "none",
-          border: "none",
-          borderTop: first ? "none" : "1px solid #EFEFF2",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          fontFamily: "Poppins, sans-serif",
-        }}
-      >
-        <span
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: 12,
-            background: "#F2F2F7",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
-          <Icon size={17} stroke={1.8} color="#000" />
-        </span>
-        <span style={{ flex: 1, fontSize: 15, fontWeight: tokens.fontWeight.medium, color: "#000" }}>{m.label}</span>
-        <IconChevronRight size={14} color="#C7C7CC" />
-      </button>
-    );
+  const signOut = async () => {
+    setOpen(false);
+    await supabase.auth.signOut();
+    navigate({ to: "/login" as never, replace: true });
   };
 
-  const matches = (label: string) =>
-    !query.trim() || label.toLowerCase().includes(query.trim().toLowerCase());
-
-  const sections: { title: string; items: MenuItem[] }[] = [
-    { title: "Quick actions", items: QUICK_ACTIONS },
-    ...MENU_GROUPS.map((g) => ({
-      title: g.title,
-      items: g.items.filter((m) => !m.signOut),
-    })),
-  ]
-    .map((s) => ({ title: s.title, items: s.items.filter((m) => matches(m.label)) }))
-    .filter((s) => s.items.length > 0);
-
-  const cardStyle: React.CSSProperties = {
-    background: "#fff",
-    borderRadius: tokens.radiusCard,
-    overflow: "hidden",
-    boxShadow: "0 1px 2px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.05)",
-  };
+  const initial = profile?.name?.charAt(0).toUpperCase() ?? "E";
 
   return (
     <div
@@ -371,167 +341,365 @@ function GlobalMenu({ isAdmin }: { isAdmin: boolean }) {
         background: "rgba(0,0,0,0.5)",
         zIndex: 60,
         display: "flex",
-        justifyContent: "flex-end",
+        justifyContent: "flex-start",
       }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: "min(82vw, 320px)",
+          width: "85%",
+          maxWidth: 360,
           height: "100vh",
-          background: "#F2F2F7",
-          boxShadow: "-4px 0 24px rgba(0,0,0,0.2)",
+          background: "#F4F6F8",
+          boxShadow: "4px 0 24px rgba(0,0,0,0.2)",
           display: "flex",
           flexDirection: "column",
           fontFamily: "Poppins, sans-serif",
         }}
       >
-        <div
-          style={{
-            background: tokens.navy,
-            color: "#fff",
-            padding: "16px 18px 14px",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ fontWeight: tokens.fontWeight.bold, fontSize: 16 }}>Menu</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              {isAdmin && (
-                <button
-                  onClick={() => {
-                    navigate({ to: "/admin" as never });
-                    setOpen(false);
-                  }}
-                  style={{
-                    fontSize: tokens.fontSize.xs,
-                    fontWeight: tokens.fontWeight.medium,
-                    color: "rgba(255,255,255,0.5)",
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: 0,
-                  }}
-                >
-                  Admin
-                </button>
-              )}
-              <button
-                onClick={async () => {
-                  setOpen(false);
-                  await supabase.auth.signOut();
-                  navigate({ to: "/login" as never, replace: true });
-                }}
-                style={{
-                  fontSize: tokens.fontSize.xs,
-                  fontWeight: tokens.fontWeight.medium,
-                  color: "rgba(255,255,255,0.5)",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  padding: 0,
-                }}
-              >
-                Sign out
-              </button>
-              <button
-                onClick={() => setOpen(false)}
-                aria-label="Close menu"
-                style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", display: "flex" }}
-              >
-                <IconX stroke={1.5} size={22} />
-              </button>
-            </div>
-          </div>
-
-          <div
+        {/* Profile section */}
+        <div style={{ position: "relative", background: "#0B2341", padding: "20px 16px" }}>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            aria-label="Close menu"
             style={{
-              marginTop: 12,
-              background: "rgba(255,255,255,0.08)",
-              borderRadius: tokens.radiusCard,
-              padding: "12px 16px",
-              display: "flex",
-              flexDirection: "row",
+              position: "absolute",
+              top: 16,
+              right: 16,
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              background: "rgba(255,255,255,0.15)",
+              border: "none",
+              display: "inline-flex",
               alignItems: "center",
-              gap: 8,
+              justifyContent: "center",
+              cursor: "pointer",
+              padding: 0,
             }}
           >
-            <IconSearch size={16} color="rgba(255,255,255,0.5)" />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search menu"
-              aria-label="Search menu"
+            <IconX stroke={1.5} size={20} color="#fff" />
+          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 14, paddingRight: 40 }}>
+            <div
               style={{
-                flex: 1,
-                background: "transparent",
-                border: "none",
-                outline: "none",
-                color: "#fff",
-                fontSize: tokens.fontSize.md,
-                fontFamily: "Poppins, sans-serif",
-              }}
-            />
-          </div>
-        </div>
-
-        <div style={{ overflowY: "auto", flex: 1, padding: "16px 14px 28px" }}>
-          {sections.map((g, gi) => (
-            <div key={g.title} style={{ marginTop: gi === 0 ? 0 : 22 }}>
-              <div
-                style={{
-                  color: "#8A8A8E",
-                  fontSize: 12,
-                  fontWeight: tokens.fontWeight.bold,
-                  letterSpacing: "0.5px",
-                  textTransform: "uppercase",
-                  margin: "4px 4px 10px",
-                }}
-              >
-                {g.title}
-              </div>
-              <div style={cardStyle}>
-                {g.items.map((m, i) => (
-                  <Row key={m.label} m={m} first={i === 0} />
-                ))}
-              </div>
-            </div>
-          ))}
-
-          <div style={{ marginTop: 28, ...cardStyle, padding: 15 }}>
-            <button
-              type="button"
-              onClick={async () => {
-                setOpen(false);
-                await supabase.auth.signOut();
-                navigate({ to: "/login" as never, replace: true });
-              }}
-              style={{
-                width: "100%",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
+                width: 52,
+                height: 52,
+                borderRadius: "50%",
+                background: "#2C97DE",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 10,
-                fontFamily: "Poppins, sans-serif",
+                color: "#fff",
+                fontSize: 20,
+                fontWeight: tokens.fontWeight.bold,
+                flexShrink: 0,
               }}
             >
-              <IconLogout size={16} color="#FF3B30" />
-              <span style={{ color: "#FF3B30", fontSize: 15, fontWeight: 700 }}>Sign out</span>
-            </button>
+              {initial}
+            </div>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div
+                style={{
+                  color: "#fff",
+                  fontSize: 16,
+                  fontWeight: tokens.fontWeight.bold,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {profile?.name ?? "Every Driver Pro"}
+              </div>
+              <div
+                style={{
+                  color: "rgba(255,255,255,0.6)",
+                  fontSize: 12,
+                  marginTop: 2,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {profile?.email ?? ""}
+              </div>
+              <div
+                style={{
+                  display: "inline-flex",
+                  marginTop: 6,
+                  background: "#2C97DE",
+                  color: "#fff",
+                  fontSize: 10,
+                  fontWeight: tokens.fontWeight.bold,
+                  padding: "3px 10px",
+                  borderRadius: 999,
+                }}
+              >
+                Pro plan
+              </div>
+            </div>
           </div>
+        </div>
+
+        {/* 2-column action grid */}
+        <div
+          style={{
+            background: "#F4F6F8",
+            padding: 10,
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 6,
+            borderBottom: "1px solid #E4E8EF",
+          }}
+        >
+          {ACTION_TILES.map((tile) => {
+            const Icon = tile.icon;
+            return (
+              <button
+                key={tile.label}
+                type="button"
+                onClick={() => go(tile.to)}
+                style={{
+                  background: "#fff",
+                  border: "1px solid #E4E8EF",
+                  borderRadius: 12,
+                  padding: "10px 10px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  gap: 8,
+                  cursor: "pointer",
+                }}
+              >
+                <span
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: 8,
+                    background: tile.bg,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <Icon size={14} stroke={1.8} color="#fff" />
+                </span>
+                <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: "#0B2341" }}>
+                  {tile.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Bottom actions */}
+        <div style={{ flex: 1, background: "#fff", display: "flex", flexDirection: "column" }}>
+          <button
+            type="button"
+            onClick={() => go("/settings")}
+            style={{
+              width: "100%",
+              textAlign: "left",
+              padding: "14px 16px",
+              background: "none",
+              border: "none",
+              borderBottom: "1px solid #E4E8EF",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              cursor: "pointer",
+            }}
+          >
+            <span
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: 8,
+                background: "#EAF5FC",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <IconSettings size={18} stroke={1.8} color="#2C97DE" />
+            </span>
+            <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.semibold, color: "#0B2341" }}>Settings</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => go("/help")}
+            style={{
+              width: "100%",
+              textAlign: "left",
+              padding: "14px 16px",
+              background: "none",
+              border: "none",
+              borderBottom: "1px solid #E4E8EF",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              cursor: "pointer",
+            }}
+          >
+            <span
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: 8,
+                background: "#EAF5FC",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <IconHelp size={18} stroke={1.8} color="#2C97DE" />
+            </span>
+            <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.semibold, color: "#0B2341" }}>Help & support</span>
+          </button>
+          <button
+            type="button"
+            onClick={signOut}
+            style={{
+              width: "100%",
+              textAlign: "left",
+              padding: "14px 16px",
+              background: "none",
+              border: "none",
+              borderTop: "1px solid #E4E8EF",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              cursor: "pointer",
+            }}
+          >
+            <span
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: 8,
+                background: "#FEE2E2",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <IconLogout size={18} stroke={1.8} color="#E53935" />
+            </span>
+            <span style={{ fontSize: 14, fontWeight: tokens.fontWeight.semibold, color: "#E53935" }}>Sign out</span>
+          </button>
         </div>
       </div>
     </div>
   );
 }
 
+function Header({ unreadCount }: { unreadCount: number }) {
+  const navigate = useNavigate();
+  const hasUnread = unreadCount > 0;
+  const openMenu = () => window.dispatchEvent(new Event("dsm-open-menu"));
+
+  return (
+    <header
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 40,
+        background: "#0B2341",
+        paddingTop: "env(safe-area-inset-top, 0px)",
+        paddingLeft: 16,
+        paddingRight: 16,
+        paddingBottom: 10,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 12,
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", flex: 1, minWidth: 0 }}>
+        <IconMenu2
+          stroke={1.5}
+          size={24}
+          color="#fff"
+          style={{ cursor: "pointer" }}
+          onClick={openMenu}
+        />
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flex: 1,
+          minWidth: 0,
+        }}
+      >
+        <img
+          src={headerLogoAsset.url}
+          alt="Every Driver Pro"
+          style={{ height: 32, width: "auto", objectFit: "contain" }}
+        />
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+        <button
+          type="button"
+          aria-label="Search"
+          onClick={() => navigate({ to: "/search" as never })}
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 8,
+            background: "rgba(255,255,255,0.12)",
+            border: "1px solid rgba(255,255,255,0.18)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            flexShrink: 0,
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+          }}
+        >
+          <IconSearch size={20} color="#fff" />
+        </button>
+        <div
+          style={{ position: "relative", cursor: "pointer" }}
+          onClick={() => navigate({ to: "/notifications" as never })}
+        >
+          <IconBell stroke={1.5} size={24} color="#fff" />
+          {hasUnread && (
+            <div
+              style={{
+                position: "absolute",
+                top: -2,
+                right: -2,
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: "#E53935",
+                border: "1.5px solid #0B2341",
+              }}
+            />
+          )}
+        </div>
+      </div>
+    </header>
+  );
+}
 
 function RootComponent() {
   // Keep the native app-icon badge in sync with the real unread count on every
   // screen, not just the handful of pages that mount this hook themselves.
-  useUnreadCount();
+  const unreadCount = useUnreadCount();
 
   // Desktop redirect: native app stays, mobile browser stays, desktop goes to web app
   useEffect(() => {
@@ -557,16 +725,6 @@ function RootComponent() {
     "/live",
     "/satnav",
   ]);
-  // Pages where the floating quick-menu button overlaps page content.
-  const hideFloatingMenuExact = new Set(["/test-swap", "/schedule"]);
-  // Message threads have a sticky composer whose Send button sits where
-  // the FAB floats, and pupil detail pages have their own in-page actions
-  // (delete, Cancel lesson) — the FAB would float over both.
-  const hideFloatingMenu =
-    hideFloatingMenuExact.has(pathname) ||
-    pathname.startsWith("/messages/") ||
-    pathname.startsWith("/pupils/");
-  const showFloatingMenu = !hideNavExact.has(pathname) && !hideFloatingMenu;
   const hideNav =
     hideNavExact.has(pathname) ||
     pathname.startsWith("/i/") ||
@@ -584,11 +742,15 @@ function RootComponent() {
   ]);
   const useWhiteBg = whiteBgPaths.has(pathname);
 
+  const showHeader = !hideNav;
+
   const wrapperStyle: Record<string, string | number> = {};
-  wrapperStyle.paddingTop = 'env(safe-area-inset-top, 0px)';
-  if (showFloatingMenu) {
-    wrapperStyle.paddingBottom = 'calc(140px + env(safe-area-inset-bottom, 0px))';
-  } else if (!hideNav) {
+  if (showHeader) {
+    wrapperStyle.paddingTop = 'calc(env(safe-area-inset-top, 0px) + 46px)';
+  } else {
+    wrapperStyle.paddingTop = 'env(safe-area-inset-top, 0px)';
+  }
+  if (!hideNav) {
     wrapperStyle.paddingBottom =
       'calc(80px + env(safe-area-inset-bottom, 0px))';
   }
@@ -1189,43 +1351,19 @@ function RootComponent() {
           </button>
         </div>
       )}
+      {showHeader && <Header unreadCount={unreadCount} />}
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <div style={Object.keys(wrapperStyle).length ? wrapperStyle : undefined}>
         <Outlet />
       </div>
       {!hideNav && !sheetOpen && <BottomNav active={active} />}
       <CommandPalette />
-      <GlobalMenu isAdmin={isAdmin} />
+      <GlobalMenu />
       <EventToastController />
       <MessageAlert userId={userId} />
 
       <PushPermissionSheet userId={userId} />
       <Toaster />
-      {showFloatingMenu && (
-        <button
-          type="button"
-          aria-label="Open menu"
-          onClick={() => window.dispatchEvent(new Event("dsm-open-menu"))}
-          style={{
-            position: "fixed",
-            bottom: "calc(env(safe-area-inset-bottom, 0px) + 88px)",
-            right: 16,
-            width: 44,
-            height: 44,
-            borderRadius: "50%",
-            background: tokens.navy,
-            boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
-            border: "none",
-            cursor: "pointer",
-            zIndex: 900,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <IconMenu2 size={20} color="#fff" />
-        </button>
-      )}
     </QueryClientProvider>
   );
 }
