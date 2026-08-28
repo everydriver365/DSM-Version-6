@@ -1978,7 +1978,7 @@ function SchedulePage() {
                                 <div
                                   className="focus-within:ring-2 focus-within:ring-[#0B1F3A] focus-within:ring-offset-2"
                                   style={{
-                                    background: "#FDFBF6",
+                                    background: "#EAF5FC",
                                     borderRadius: tokens.radiusCard,
                                     border: "2px dashed #D4A853",
                                     padding: "12px 16px",
@@ -2019,24 +2019,24 @@ function SchedulePage() {
                                                 .slice(0, 2)
                                                 .toUpperCase();
                                               return (
-                                                <div
-                                                  key={idx}
-                                                  style={{
-                                                    width: 34,
-                                                    height: 34,
-                                                    borderRadius: "50%",
-                                                    background: tokens.navy,
-                                                    border: "2px solid #FDFBF6",
-                                                    marginLeft: idx === 0 ? 0 : -10,
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    justifyContent: "center",
-                                                    color: tokens.white,
-                                                    fontSize: tokens.fontSize.sm,
-                                                    fontWeight: tokens.fontWeight.bold,
-                                                    fontFamily: "Poppins, sans-serif",
-                                                  }}
-                                                >
+                                                  <div
+                                                    key={idx}
+                                                    style={{
+                                                      width: 34,
+                                                      height: 34,
+                                                      borderRadius: "50%",
+                                                      background: tokens.navy,
+                                                      border: "2px solid #EAF5FC",
+                                                      marginLeft: idx === 0 ? 0 : -10,
+                                                      display: "flex",
+                                                      alignItems: "center",
+                                                      justifyContent: "center",
+                                                      color: tokens.white,
+                                                      fontSize: tokens.fontSize.sm,
+                                                      fontWeight: tokens.fontWeight.bold,
+                                                      fontFamily: "Poppins, sans-serif",
+                                                    }}
+                                                  >
                                                   {initials}
                                                 </div>
                                               );
