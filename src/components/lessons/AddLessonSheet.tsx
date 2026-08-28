@@ -808,9 +808,9 @@ export function AddLessonSheet({
           )}
 
           {pupilListOpen && (
-            <div style={{ maxHeight: 220, overflowY: "auto" }}>
+            <div style={{ maxHeight: 320, overflowY: "auto" }}>
               {filteredPupils.length === 0 && (
-                <div style={{ ...labelStyle, padding: "15px 16px" }}>No pupils found</div>
+                <div style={{ ...labelStyle, padding: "16px 16px" }}>No pupils found</div>
               )}
               {filteredPupils.map((p, i) => (
                 <button
@@ -823,7 +823,8 @@ export function AddLessonSheet({
                   }}
                   className="w-full flex items-center gap-3 text-left active:bg-black/[0.03]"
                   style={{
-                    padding: "15px 16px",
+                    padding: "16px 16px",
+                    minHeight: 52,
                     borderTop: i === 0 ? "none" : "1px solid #E4E8EF",
                     background: p.id === pupilId ? "#F0F7FF" : "transparent",
                   }}
@@ -834,15 +835,23 @@ export function AddLessonSheet({
                       width: 32,
                       height: 32,
                       borderRadius: 999,
-                      background: tokens.canvas,
-                      color: tokens.textSecondary,
+                      background: "#E6F1FB",
+                      color: tokens.blue,
                       fontSize: tokens.fontSize.base,
                       fontWeight: tokens.fontWeight.bold,
                     }}
                   >
                     {p.name.trim().charAt(0).toUpperCase()}
                   </span>
-                  <span style={valueStyle}>{p.name}</span>
+                  <span
+                    style={{
+                      ...valueStyle,
+                      fontSize: 15,
+                      fontWeight: 600,
+                    }}
+                  >
+                    {p.name}
+                  </span>
                 </button>
               ))}
             </div>
