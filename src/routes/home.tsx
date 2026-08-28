@@ -5640,8 +5640,8 @@ function HomePage() {
                     height: 38,
                     borderRadius: 12,
                     border: 'none',
-                    background: '#EAF5FC',
-                    color: '#0B1F3A',
+                    background: '#2C97DE',
+                    color: '#FFFFFF',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -5653,7 +5653,7 @@ function HomePage() {
                     padding: 0,
                   }}
                 >
-                  <IconMessage stroke={1.5} size={14} color="#0B1F3A" />
+                  <IconMessage stroke={1.5} size={14} color="#FFFFFF" />
                   <span>Message</span>
                   {(upcomingSmsCount > 0 || upcomingAppCount > 0) && (
                     <div style={{
