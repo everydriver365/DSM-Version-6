@@ -1113,11 +1113,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             ...tileBase,
             gridColumn: 2,
             gridRow: 1,
-            height: 116,
+            height: 120,
+            padding: 16,
+            borderRadius: 20,
             justifyContent: "center",
-            background: "linear-gradient(135deg, #F4FBF6 0%, #FBFEFC 60%, #FFFFFF 100%)",
-            borderColor: "#E4F4E9",
+            background: "#FFFFFF",
+            border: "1px solid #E8EEF4",
+            boxShadow: "0 1px 2px rgba(7,43,71,0.04), 0 12px 28px -18px rgba(7,43,71,0.22)",
           }}
+
         >
           {/* open book motif */}
           <svg
