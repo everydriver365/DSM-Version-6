@@ -1453,7 +1453,7 @@ function HomePage() {
 
   const [pupilQuery, setPupilQuery] = useState("");
   const [firstName, setFirstName] = useState("there");
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  
   const [userId, setUserId] = useState<string | null>(null);
   const [showWelcome, setShowWelcome] = useState(false);
   const [badgePrefs, setBadgePrefs] = useState(DEFAULT_BADGE_PREFS);
