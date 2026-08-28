@@ -16,7 +16,7 @@ import { IconCalculator, IconCalendarPlus, IconHelpCircle, IconListCheck, IconRe
 import appCss from "../styles.css?url";
 import icon192 from "../assets/icon-192.png.asset.json";
 import icon512 from "../assets/icon-512.png.asset.json";
-import headerLogoAsset from "../assets/EDP_transparent_mobile_header.png.asset.json";
+import headerLogoAsset from "../assets/edp_transparent_logo_big_letters.png.asset.json";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav, type NavKey } from "../components/dsm/BottomNav";
 import { CommandPalette } from "../components/dsm/CommandPalette";
@@ -672,7 +672,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
         <img
           src={headerLogoAsset.url}
           alt="Every Driver Pro"
-          style={{ height: 32, width: "auto", objectFit: "contain" }}
+          style={{ height: 36, width: "auto", objectFit: "contain" }}
         />
       </div>
 
