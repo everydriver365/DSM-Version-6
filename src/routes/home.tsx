@@ -2223,16 +2223,64 @@ function HomePage() {
         .not("test_date", "is", null)
         .gte("test_date", todayStr)
         .order("test_date", { ascending: true });
-      setUpcomingTests(
-        (testRows ?? []).map((p: any) => ({
+
+      // Also derive tests directly from lessons so a test shows immediately even
+      // when the pupil row was never synced (legacy rows / other write paths).
+      const { data: testLessonRows } = await supabase
+        .from("lessons")
+        .select("id, pupil_id, lesson_date, lesson_time, lesson_type, notes, pickup_location, pupils(name, first_name, test_status, deleted_at)")
+        .eq("instructor_id", user.id)
+        .gte("lesson_date", todayStr)
+        .neq("status", "cancelled")
+        .order("lesson_date", { ascending: true });
+
+      const merged = new Map<string, {
+        id: string;
+        name: string;
+        test_date: string;
+        test_time: string | null;
+        test_centre: string | null;
+        test_status: string | null;
+      }>();
+
+      for (const p of (testRows ?? []) as any[]) {
+        merged.set(p.id, {
           id: p.id,
           name: p.name || p.first_name || "Pupil",
           test_date: p.test_date,
           test_time: p.test_time ?? null,
           test_centre: p.test_centre ?? null,
           test_status: p.test_status ?? null,
-        })),
+        });
+      }
+
+      for (const l of (testLessonRows ?? []) as any[]) {
+        if (!isTestLesson(l)) continue;
+        if (!l.pupil_id || !l.lesson_date) continue;
+        if (l.pupils?.deleted_at) continue;
+        const existing = merged.get(l.pupil_id);
+        const centre = testCentreOf(l);
+        const time = l.lesson_time ? String(l.lesson_time).slice(0, 5) : null;
+        if (existing) {
+          // Fill in any blanks from the lesson row.
+          existing.test_time = existing.test_time ?? time;
+          existing.test_centre = existing.test_centre ?? centre;
+          continue;
+        }
+        merged.set(l.pupil_id, {
+          id: l.pupil_id,
+          name: l.pupils?.name || l.pupils?.first_name || "Pupil",
+          test_date: l.lesson_date,
+          test_time: time,
+          test_centre: centre,
+          test_status: l.pupils?.test_status ?? null,
+        });
+      }
+
+      setUpcomingTests(
+        Array.from(merged.values()).sort((a, b) => a.test_date.localeCompare(b.test_date)),
       );
+
     }
     loadCount();
   }, []);
