@@ -1910,16 +1910,23 @@ function CourseSectionBar({ children }: { children: React.ReactNode }) {
 
 function ToggleRow({
   label,
+  sublabel,
   value,
   onChange,
 }: {
   label: string;
+  sublabel?: string;
   value: boolean;
   onChange: (v: boolean) => void;
 }) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-      <div style={{ fontSize: tokens.fontSize.base, color: VALUE, fontWeight: 500 }}>{label}</div>
+      <div>
+        <div style={{ fontSize: tokens.fontSize.base, color: VALUE, fontWeight: 500 }}>{label}</div>
+        {sublabel && (
+          <div style={{ fontSize: 12, color: LABEL, marginTop: 2 }}>{sublabel}</div>
+        )}
+      </div>
       <button
         onClick={() => onChange(!value)}
         style={{
@@ -1930,6 +1937,8 @@ function ToggleRow({
           background: value ? "#1877D6" : "#cbd2dc",
           position: "relative",
           cursor: "pointer",
+          flexShrink: 0,
+          marginLeft: 12,
         }}
         aria-label={label}
       >
