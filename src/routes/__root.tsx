@@ -358,7 +358,7 @@ function GlobalMenu() {
         }}
       >
         {/* Profile section */}
-        <div style={{ position: "relative", background: "#0B2341", padding: "20px 16px" }}>
+        <div style={{ position: "relative", background: "#0B2341", paddingTop: "calc(env(safe-area-inset-top) + 20px)", paddingLeft: 16, paddingRight: 16, paddingBottom: 20 }}>
           <button
             type="button"
             onClick={() => setOpen(false)}
