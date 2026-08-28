@@ -161,6 +161,8 @@ function EditLessonPage() {
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState<number>(60);
   const [isTestDay, setIsTestDay] = useState(false);
+  const [wasTestDay, setWasTestDay] = useState(false);
+
   const [testCentre, setTestCentre] = useState('');
   const testCentreInputRef = useRef<HTMLInputElement>(null);
   const [testCentreError, setTestCentreError] = useState<string | null>(null);
