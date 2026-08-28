@@ -1374,7 +1374,7 @@ function PinnedQuickActions({ navigate }: { navigate: ReturnType<typeof useNavig
     { icon: <img src={paymentsIcon.url} alt="Payments" style={{ width: 24, height: 24, objectFit: 'contain' }} />, bg: "#1877D6", label: "Payments", route: "/payments" },
     { icon: <img src={trackingIcon.url} alt="Tracking" style={{ width: 24, height: 24, objectFit: 'contain' }} />, bg: "#1877D6", label: "Tracking", route: "/live" },
     { icon: <IconRosetteDiscount stroke={1.5} size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Perks", route: "/perks" },
-    { icon: <img src={fuelIcon.url} alt="Nearest" style={{ width: 24, height: 24, objectFit: 'contain' }} />, bg: "#18A999", label: "Nearest", route: "/nearest" },
+    { icon: <img src={fuelIcon.url} alt="Nearest" style={{ width: 32, height: 32, objectFit: 'contain' }} />, bg: "#18A999", label: "Nearest", route: "/nearest" },
   ];
 
   return (
