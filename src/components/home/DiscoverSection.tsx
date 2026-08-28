@@ -1178,15 +1178,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               }}
             />
           )}
-          <div style={{ position: "relative", zIndex: 1, maxWidth: "62%" }}>
+          <div style={{ position: "relative", zIndex: 1, maxWidth: "66%" }}>
             <span
               style={{
                 ...chipBase,
                 width: 36,
                 height: 36,
                 borderRadius: 12,
-                background: "#fff",
-                boxShadow: "0 2px 8px -2px rgba(11,31,58,0.12)",
+                background: "#F7F9FB",
+                border: "1px solid #E8EEF4",
               }}
             >
               <IconBook size={19} color="#16A34A" stroke={1.7} />
@@ -1195,25 +1195,26 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 3,
+                gap: 5,
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.bold,
-                color: NAVY,
-                marginTop: 8,
+                color: "#072B47",
+                letterSpacing: "-0.2px",
+                marginTop: 10,
               }}
             >
               <img
                 src={proLogoAsset.url}
                 alt="Pro"
-                style={{ height: 22, width: "auto", display: "block" }}
+                style={{ height: 24, width: "auto", objectFit: "contain", display: "block" }}
               />
               Learn
             </div>
             <div
               style={{
-                fontSize: tokens.fontSize.xs,
+                fontSize: 11,
                 color: MUTED,
-                marginTop: 2,
+                marginTop: 3,
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -1221,6 +1222,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             >
               Guides, bitesize &amp; showcase
             </div>
+
           </div>
         </div>
 
