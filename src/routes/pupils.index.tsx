@@ -1078,7 +1078,7 @@ function PupilsIndexPage() {
       {/* List */}
       <div>
         {filtered === null ? (
-          <div style={{ padding: "0 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ padding: "0 16px", display: "flex", flexDirection: "column", gap: 20 }}>
             {Array.from({ length: 5 }).map((_, i) => (
               <div
                 key={i}
@@ -1197,7 +1197,7 @@ function PupilsIndexPage() {
                     View all
                   </button>
                 </div>
-                <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 20 }}>
                   {needsAttention.map((p) =>
                     renderSwipeRow(
                       p,
@@ -1207,7 +1207,7 @@ function PupilsIndexPage() {
                 </div>
               </>
             )}
-            <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 20 }}>
               {(statusFilter === "active" ? activePupils : filtered).map((p) =>
                 renderSwipeRow(p)
               )}
