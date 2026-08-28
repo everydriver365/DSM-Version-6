@@ -2260,10 +2260,15 @@ function HomePage() {
         if (l.pupils?.deleted_at) continue;
         const existing = merged.get(l.pupil_id);
         const centre = testCentreOf(l);
-        const time = l.lesson_time ? String(l.lesson_time).slice(0, 5) : null;
+        // The actual test time lives in the notes marker ("Test at HH:MM").
+        // lesson_time is the pickup/lesson start and is only a fallback.
+        const notesTestTime = testTimeOf(l);
+        const startTime = l.lesson_time ? String(l.lesson_time).slice(0, 5) : null;
+        const time = notesTestTime ?? startTime;
         if (existing) {
-          // Fill in any blanks from the lesson row.
-          existing.test_time = existing.test_time ?? time;
+          // Prefer an explicit test time from the lesson notes over the pupil row.
+          if (notesTestTime) existing.test_time = notesTestTime;
+          else existing.test_time = existing.test_time ?? startTime;
           existing.test_centre = existing.test_centre ?? centre;
           continue;
         }
@@ -2275,6 +2280,7 @@ function HomePage() {
           test_centre: centre,
           test_status: l.pupils?.test_status ?? null,
         });
+
       }
 
       setUpcomingTests(
