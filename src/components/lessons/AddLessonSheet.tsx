@@ -520,8 +520,11 @@ export function AddLessonSheet({
           date,
           testTime,
           testCentre,
+          wasTestDay:
+            editingLesson.lesson_type === "test" || editingLesson.is_test_day === true,
         });
       }
+
       const { data: lessonRow } = await supabase
         .from("lessons")
         .select("google_event_id")

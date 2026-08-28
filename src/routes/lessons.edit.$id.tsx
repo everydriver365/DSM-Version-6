@@ -471,7 +471,7 @@ function EditLessonPage() {
       return;
     }
     if (!isEvent) {
-      await syncPupilTestFields({ pupilId, isTestDay, date, testTime, testCentre });
+      await syncPupilTestFields({ pupilId, isTestDay, date, testTime, testCentre, wasTestDay });
     }
     // Sync to Google Calendar after save
     const { data: lessonRow } = await supabase
