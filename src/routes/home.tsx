@@ -4970,8 +4970,9 @@ function HomePage() {
                           <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.name}</div>
                           <div style={{ fontSize: 12, color: tokens.textSecondary }}>
                             {new Date(t.test_date + "T00:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })}
-                            {t.test_time ? ` · ${t.test_time.slice(0, 5)}` : ""}
-                            {t.test_centre ? ` · ${t.test_centre}` : ""}
+                            {t.test_time ? ` · Test at ${t.test_time.slice(0, 5)}` : " · Test time TBC"}
+                            {testCentreName(t.test_centre) ? ` · ${testCentreName(t.test_centre)}` : ""}
+
                           </div>
                         </div>
                         <button
