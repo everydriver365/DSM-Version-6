@@ -1001,25 +1001,29 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             ...tileBase,
             gridColumn: 1,
             gridRow: "1 / 3",
-            height: 240,
-            background: "linear-gradient(160deg, #EAF3FB 0%, #F5F9FF 55%, #fff 100%)",
-            border: "1px solid #D6E3F0",
+            height: 252,
+            padding: 18,
+            borderRadius: 20,
+            background: "#FFFFFF",
+            border: "1px solid #E8EEF4",
+            boxShadow: "0 1px 2px rgba(7,43,71,0.04), 0 12px 28px -18px rgba(7,43,71,0.22)",
           }}
         >
           <div>
-            <span style={{ ...chipBase, width: 40, height: 40, borderRadius: 14, background: "#fff", color: BLUE, boxShadow: "0 2px 10px -2px rgba(11,31,58,0.14)" }}>
-              <IconRosetteDiscount size={20} color={BLUE} stroke={1.6} />
+            <span style={{ ...chipBase, width: 42, height: 42, borderRadius: 14, background: "#F7F9FB", color: "#2C97DE", border: "1px solid #E8EEF4", boxShadow: "none" }}>
+              <IconRosetteDiscount size={21} color="#2C97DE" stroke={1.6} />
             </span>
-            <div style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 10 }}>
-              <img src={proLogoAsset.url} alt="PRO" style={{ height: 22, width: "auto", objectFit: "contain" }} />
-              <span style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY }}>Perks</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 14 }}>
+              <img src={proLogoAsset.url} alt="PRO" style={{ height: 24, width: "auto", objectFit: "contain", display: "block" }} />
+              <span style={{ fontSize: 16, fontWeight: tokens.fontWeight.bold, color: "#072B47", letterSpacing: "-0.2px" }}>Perks</span>
             </div>
-            <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, lineHeight: 1.4, marginTop: 4 }}>
+            <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.45, marginTop: 6 }}>
               {isFreeTier
                 ? "Free DIA membership & exclusive member benefits"
                 : "4 benefits active"}
             </div>
-            <div style={{ display: "flex", alignItems: "center", marginTop: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", marginTop: 14 }}>
+
               <div style={{ display: "flex", alignItems: "center" }}>
                 {[
                   { initial: "D", bg: "#1877D6" },
