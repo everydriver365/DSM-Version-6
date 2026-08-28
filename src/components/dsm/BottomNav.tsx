@@ -6,9 +6,9 @@ import {
   IconHomeFilled,
   IconCalendar,
   IconCalendarFilled,
-  IconUsers,
   IconMessageCircle,
   IconDots,
+  IconMicrophone,
 } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { tapLight } from "@/lib/haptics";
@@ -263,7 +263,6 @@ const defaultItems: {
 }[] = [
   { key: "home", to: "/home", label: "Home", Icon: IconHome },
   { key: "schedule", to: "/schedule", label: "Schedule", Icon: IconCalendar },
-  { key: "pupils", to: "/pupils", label: "Pupils", Icon: IconUsers },
   { key: "messages", to: "/messages", label: "Messages", Icon: IconMessageCircle },
   { key: "more", to: "/more", label: "More", Icon: IconDots },
 ];
@@ -302,6 +301,35 @@ function ActiveIcon({
   return null;
 }
 
+function CenterMicButton() {
+  return (
+    <button
+      type="button"
+      aria-label="Open voice assistant"
+      onClick={() => {
+        tapLight();
+        window.dispatchEvent(new CustomEvent("dsm-open-command-palette"));
+      }}
+      className="flex items-center justify-center"
+      style={{
+        width: 54,
+        height: 54,
+        borderRadius: "50%",
+        background: tokens.blue,
+        border: "3px solid #FFFFFF",
+        boxShadow: "0 4px 14px rgba(24,119,214,0.35), 0 6px 20px rgba(11,31,58,0.12)",
+        cursor: "pointer",
+        padding: 0,
+        marginTop: -20,
+        position: "relative",
+        zIndex: 2,
+      }}
+    >
+      <IconMicrophone size={24} color="#FFFFFF" stroke={1.8} />
+    </button>
+  );
+}
+
 export function BottomNav({
   active,
   items,
@@ -338,143 +366,128 @@ export function BottomNav({
     return <TabIcon Icon={icon} size={22} color={color} stroke={1.8} />;
   };
 
-  const renderCustomItems = (list: BottomNavItem[], offset: number) =>
-    list.map((it, i) => {
-      const realIndex = offset + i;
-      const wsMatch = typeof it.ws === 'number' && it.ws === currentWs;
-      const isActive = wsMatch || (typeof it.ws !== 'number' && realIndex === activeIndex);
-      const color = isActive ? activeColor : inactiveColor;
-      const handleClick = () => {
-        tapLight();
-        if (typeof it.ws === 'number' && onSelectWs) onSelectWs(it.ws);
-        it.onClick?.();
-      };
-      const showBadge = it.key === "messages" || it.to === "/messages";
-      const inner: ReactNode = (
-        <div
+  const renderTab = (
+    key: string,
+    to: string | undefined,
+    label: string,
+    Icon: ComponentType<{ size?: number; color?: string; stroke?: number }>,
+    isActive: boolean,
+    onClick?: () => void,
+    showBadge?: boolean
+  ) => {
+    const color = isActive ? activeColor : inactiveColor;
+    const inner: ReactNode = (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 2,
+          padding: "4px 10px",
+          borderRadius: 999,
+          background: isActive ? "#E6F1FB" : "transparent",
+        }}
+      >
+        <div style={{ position: "relative", display: "inline-flex" }}>
+          {renderIcon(Icon, key, isActive, color)}
+          {showBadge && <UnreadBadge count={unreadMessages} />}
+        </div>
+        <span
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 2,
-            padding: "4px 10px",
-            borderRadius: 999,
-            background: isActive ? "#E6F1FB" : "transparent",
+            ...POPPINS,
+            fontSize: tokens.fontSize.sm,
+            fontWeight: isActive ? 600 : 400,
+            color,
+            lineHeight: 1,
+            whiteSpace: "nowrap",
           }}
         >
-          <div style={{ position: "relative", display: "inline-flex" }}>
-            {renderIcon(it.Icon, it.key, isActive, color)}
-            {showBadge && <UnreadBadge count={unreadMessages} />}
-          </div>
-          <span
-            style={{
-              ...POPPINS,
-              fontSize: tokens.fontSize.sm,
-              fontWeight: isActive ? 600 : 400,
-              color,
-              lineHeight: 1,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {it.label}
-          </span>
-        </div>
-      );
-      const cls = "flex flex-col items-center justify-center select-none relative";
-      if (it.to && !it.onClick && typeof it.ws !== 'number') {
-        return (
-          <Link key={it.key} to={it.to} className={cls} style={{ color }} onClick={() => tapLight()}>
-            {inner}
-          </Link>
-        );
-      }
+          {label}
+        </span>
+      </div>
+    );
+    const cls = "flex flex-col items-center justify-center select-none relative flex-1";
+    if (to && !onClick) {
       return (
-        <button
-          key={it.key}
-          type="button"
-          onClick={handleClick}
-          className={cls}
-          style={{ color, background: "none", border: "none", padding: 0, cursor: "pointer" }}
-        >
+        <Link key={key} to={to} className={cls} style={{ color }} onClick={() => tapLight()}>
           {inner}
-        </button>
+        </Link>
       );
-    });
+    }
+    return (
+      <button
+        key={key}
+        type="button"
+        onClick={() => { tapLight(); onClick?.(); }}
+        className={cls}
+        style={{ color, background: "none", border: "none", padding: 0, cursor: "pointer" }}
+      >
+        {inner}
+      </button>
+    );
+  };
 
-  const renderDefaultItems = (list: typeof defaultItems, offset: number) =>
-    list.map(({ key, to, label, Icon, onClick }, i) => {
-      let isActive = false;
-      if (key === "home") isActive = active === "home" && (currentWs ?? 0) === 0;
-      else if (key === "schedule") isActive = active === "schedule";
-      else if (key === "pupils") isActive = active === "pupils";
-      else if (key === "messages") isActive = active === "messages";
-      else if (key === "more") isActive = active === "more";
-      const color = isActive ? activeColor : inactiveColor;
-      const inner: ReactNode = (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 2,
-            padding: "4px 10px",
-            borderRadius: 999,
-            background: isActive ? "#E6F1FB" : "transparent",
-          }}
-        >
-          <div style={{ position: "relative", display: "inline-flex" }}>
-            {renderIcon(Icon, key, isActive, color)}
-            {key === "messages" && <UnreadBadge count={unreadMessages} />}
-          </div>
-          <span
-            style={{
-              ...POPPINS,
-              fontSize: tokens.fontSize.sm,
-              fontWeight: isActive ? 600 : 400,
-              color,
-              lineHeight: 1,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {label}
-          </span>
+  const renderCustomItems = (list: BottomNavItem[]) => {
+    // Split custom items around the center microphone slot.
+    const left = list.slice(0, 2);
+    const right = list.slice(2);
+    return (
+      <>
+        {left.map((it, i) => {
+          const wsMatch = typeof it.ws === 'number' && it.ws === currentWs;
+          const isActive = wsMatch || (typeof it.ws !== 'number' && i === activeIndex);
+          return renderTab(it.key, it.to, it.label, it.Icon, isActive, () => {
+            if (typeof it.ws === 'number' && onSelectWs) onSelectWs(it.ws);
+            it.onClick?.();
+          }, it.key === "messages" || it.to === "/messages");
+        })}
+        <div key="mic" className="flex flex-1 flex-col items-center justify-end select-none relative" style={{ minWidth: 54 }}>
+          <CenterMicButton />
         </div>
-      );
-      const cls = "flex flex-col items-center justify-center select-none relative";
-      if (to) {
-        return (
-          <Link key={key} to={to} className={cls} style={{ color }} onClick={() => tapLight()}>
-            {inner}
-          </Link>
-        );
-      }
-      return (
-        <button
-          key={key}
-          type="button"
-          onClick={() => { tapLight(); onClick?.(); }}
-          className={cls}
-          style={{ color, background: "none", border: "none", padding: 0, cursor: "pointer" }}
-        >
-          {inner}
-        </button>
-      );
-    });
+        {right.map((it, i) => {
+          const wsMatch = typeof it.ws === 'number' && it.ws === currentWs;
+          const isActive = wsMatch || (typeof it.ws !== 'number' && i + 3 === activeIndex);
+          return renderTab(it.key, it.to, it.label, it.Icon, isActive, () => {
+            if (typeof it.ws === 'number' && onSelectWs) onSelectWs(it.ws);
+            it.onClick?.();
+          }, it.key === "messages" || it.to === "/messages");
+        })}
+      </>
+    );
+  };
+
+  const renderDefaultItems = () => {
+    const isActive = (key: NavKey) => {
+      if (key === "home") return active === "home" && (currentWs ?? 0) === 0;
+      return active === key;
+    };
+    return (
+      <>
+        {renderTab("home", "/home", "Home", IconHome, isActive("home"))}
+        {renderTab("schedule", "/schedule", "Schedule", IconCalendar, isActive("schedule"))}
+        <div key="mic" className="flex flex-1 flex-col items-center justify-end select-none relative" style={{ minWidth: 54 }}>
+          <CenterMicButton />
+        </div>
+        {renderTab("messages", "/messages", "Messages", IconMessageCircle, isActive("messages"), undefined, true)}
+        {renderTab("more", "/more", "More", IconDots, isActive("more"))}
+      </>
+    );
+  };
 
   return (
     <nav
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white flex items-center justify-around"
+      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white flex items-end justify-around"
       style={{
         fontFamily: "Poppins, sans-serif",
         borderRadius: "16px 16px 0 0",
         boxShadow: "0 -4px 24px rgba(15,32,68,0.08)",
         paddingTop: 8,
         paddingBottom: "max(env(safe-area-inset-bottom), 8px)",
+        height: "calc(56px + max(env(safe-area-inset-bottom), 8px) + 8px)",
       }}
     >
-      {useCustom ? renderCustomItems(items!, 0) : renderDefaultItems(defaultItems, 0)}
+      {useCustom ? renderCustomItems(items!) : renderDefaultItems()}
     </nav>
   );
 }
