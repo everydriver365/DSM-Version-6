@@ -5696,8 +5696,8 @@ function HomePage() {
                     height: 38,
                     borderRadius: 12,
                     border: 'none',
-                    background: '#EEF2F7',
-                    color: '#0B1F3A',
+                    background: '#00A6A6',
+                    color: '#FFFFFF',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -5709,7 +5709,7 @@ function HomePage() {
                     padding: 0,
                   }}
                 >
-                  <IconPhone stroke={1.5} size={14} color="#0B1F3A" />
+                  <IconPhone stroke={1.5} size={14} color="#FFFFFF" />
                   <span>Call</span>
                 </button>
 
