@@ -1195,7 +1195,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               <img
                 src={proLogoAsset.url}
                 alt="Pro"
-                style={{ height: 18, width: "auto", display: "block" }}
+                style={{ height: 22, width: "auto", display: "block" }}
               />
               Learn
             </div>
