@@ -6375,7 +6375,7 @@ function HomePage() {
               const emptyLabel = tab === 'today' ? 'No lessons today' : tab === 'tomorrow' ? 'No lessons tomorrow' : 'No upcoming lessons';
 
               const tabs = (
-                <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 3, background: '#EEF2F7', borderRadius: 999, margin: '16px 0' }}>
+                <div role="tablist" aria-label="Lesson period" style={{ display: 'flex', padding: 3, background: '#EEF2F7', borderRadius: 8, margin: '16px 0' }}>
                   {(['today', 'tomorrow', 'next'] as const).map((t) => {
                     const active = tab === t;
                     const label = t === 'today' ? 'Today' : t === 'tomorrow' ? 'Tomorrow' : 'Next';
@@ -6394,7 +6394,7 @@ function HomePage() {
                         style={{
                           flex: 1,
                           padding: '8px 0',
-                          borderRadius: 999,
+                          borderRadius: 8,
                           border: 'none',
                           background: active ? '#FFFFFF' : 'transparent',
                           color: active ? '#0B1F3A' : '#6B7A90',
