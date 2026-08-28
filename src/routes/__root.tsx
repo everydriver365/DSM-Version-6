@@ -664,9 +664,9 @@ function Header({ unreadCount }: { unreadCount: number }) {
         style={{
           position: "absolute",
           left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
-          marginTop: -4,
+          top: "calc(env(safe-area-inset-top) + 12px)",
+          bottom: 10,
+          transform: "translateX(-50%)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
