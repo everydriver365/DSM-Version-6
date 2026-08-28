@@ -648,18 +648,39 @@ function Header({ unreadCount }: { unreadCount: number }) {
         />
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
         <div
-          style={{ position: "relative", cursor: "pointer" }}
+          onClick={() => navigate({ to: "/search" as never })}
+          style={{
+            width: 32,
+            height: 32,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          <IconSearch stroke={1.5} size={20} color="#fff" />
+        </div>
+        <div
           onClick={() => navigate({ to: "/notifications" as never })}
+          style={{
+            position: "relative",
+            width: 32,
+            height: 32,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
         >
           <IconBell stroke={1.5} size={20} color="#fff" />
           {unreadCount > 0 && (
             <div
               style={{
                 position: "absolute",
-                top: -6,
-                right: -6,
+                top: 2,
+                right: 2,
                 minWidth: 18,
                 height: 18,
                 borderRadius: 9,
