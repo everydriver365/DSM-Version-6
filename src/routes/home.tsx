@@ -4392,7 +4392,7 @@ function HomePage() {
     return `${Math.floor(h / 24)}d ago`;
   };
 
-  const GLOBAL_HEADER_SPACER = "calc(env(safe-area-inset-top, 0px) + 42px)";
+  const GLOBAL_HEADER_SPACER = "calc(env(safe-area-inset-top, 0px) + 34px)";
 
   if (isDesktop) {
     const now = new Date();
