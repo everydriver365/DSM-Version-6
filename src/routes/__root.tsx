@@ -633,15 +633,15 @@ function Header({ unreadCount }: { unreadCount: number }) {
   return (
     <header
       style={{
-        position: "fixed",
+        position: "sticky",
         top: 0,
         left: 0,
         right: 0,
-        zIndex: 40,
+        zIndex: 50,
         background: "#0B2341",
-        paddingTop: "env(safe-area-inset-top, 0px)",
-        paddingLeft: 16,
-        paddingRight: 16,
+        paddingTop: "calc(env(safe-area-inset-top) + 12px)",
+        paddingLeft: "calc(env(safe-area-inset-left) + 16px)",
+        paddingRight: "calc(env(safe-area-inset-right) + 16px)",
         paddingBottom: 10,
         display: "flex",
         alignItems: "center",
