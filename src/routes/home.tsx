@@ -8453,14 +8453,15 @@ function HomePage() {
                   : {})}
                 style={{
                   display: 'inline-flex', alignItems: 'center',
-                  fontSize: tokens.fontSize.sm, fontFamily: PF_C,
+                  fontSize: 12, fontFamily: PF_C,
                   color: count > 0 ? colour : '#9CA3AF',
-                  fontWeight: count > 0 ? 600 : 400,
-                  padding: active ? '2px 4px' : 0,
-                  margin: active ? '-2px -4px' : 0,
+                  fontWeight: count > 0 ? tokens.fontWeight.semibold : tokens.fontWeight.regular,
+                  padding: active ? '4px 6px' : 0,
+                  margin: active ? '-4px -6px' : 0,
                   borderRadius: 8,
                   cursor: active ? 'pointer' : 'inherit',
                   WebkitTapHighlightColor: 'transparent',
+                  letterSpacing: '-0.01em',
                 }}
               >
                 {text}
