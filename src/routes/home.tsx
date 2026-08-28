@@ -5638,9 +5638,9 @@ function HomePage() {
                     position: 'relative',
                     flex: 1,
                     height: 38,
-                    borderRadius: 12,
+                    borderRadius: 16,
                     border: 'none',
-                    background: '#2C97DE',
+                    background: '#0077F9',
                     color: '#FFFFFF',
                     display: 'flex',
                     alignItems: 'center',
@@ -5651,6 +5651,7 @@ function HomePage() {
                     fontWeight: tokens.fontWeight.semibold,
                     fontFamily: 'Poppins, sans-serif',
                     padding: 0,
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
                   }}
                 >
                   <IconMessage stroke={1.5} size={14} color="#FFFFFF" />
