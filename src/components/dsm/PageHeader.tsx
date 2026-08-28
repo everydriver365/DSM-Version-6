@@ -75,7 +75,7 @@ export function PageHeader({
       <div style={{ flex: 1, minWidth: 0 }}>
         <h1
           style={{
-            fontSize: tokens.fontSize.lg,
+            fontSize: tokens.fontSize.xl,
             fontWeight: tokens.fontWeight.bold,
             color: "#fff",
             margin: 0,
