@@ -59,6 +59,7 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as NotificationsettingsRouteImport } from './routes/notificationsettings'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NoShowPolicyRouteImport } from './routes/no-show-policy'
+import { Route as NearestRouteImport } from './routes/nearest'
 import { Route as MtdRouteImport } from './routes/mtd'
 import { Route as MoreRouteImport } from './routes/more'
 import { Route as MonthendRouteImport } from './routes/monthend'
@@ -428,6 +429,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
 const NoShowPolicyRoute = NoShowPolicyRouteImport.update({
   id: '/no-show-policy',
   path: '/no-show-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NearestRoute = NearestRouteImport.update({
+  id: '/nearest',
+  path: '/nearest',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MtdRoute = MtdRouteImport.update({
@@ -1096,6 +1102,7 @@ export interface FileRoutesByFullPath {
   '/monthend': typeof MonthendRoute
   '/more': typeof MoreRoute
   '/mtd': typeof MtdRoute
+  '/nearest': typeof NearestRoute
   '/no-show-policy': typeof NoShowPolicyRoute
   '/notifications': typeof NotificationsRoute
   '/notificationsettings': typeof NotificationsettingsRoute
@@ -1266,6 +1273,7 @@ export interface FileRoutesByTo {
   '/monthend': typeof MonthendRoute
   '/more': typeof MoreRoute
   '/mtd': typeof MtdRoute
+  '/nearest': typeof NearestRoute
   '/no-show-policy': typeof NoShowPolicyRoute
   '/notifications': typeof NotificationsRoute
   '/notificationsettings': typeof NotificationsettingsRoute
@@ -1438,6 +1446,7 @@ export interface FileRoutesById {
   '/monthend': typeof MonthendRoute
   '/more': typeof MoreRoute
   '/mtd': typeof MtdRoute
+  '/nearest': typeof NearestRoute
   '/no-show-policy': typeof NoShowPolicyRoute
   '/notifications': typeof NotificationsRoute
   '/notificationsettings': typeof NotificationsettingsRoute
@@ -1612,6 +1621,7 @@ export interface FileRouteTypes {
     | '/monthend'
     | '/more'
     | '/mtd'
+    | '/nearest'
     | '/no-show-policy'
     | '/notifications'
     | '/notificationsettings'
@@ -1782,6 +1792,7 @@ export interface FileRouteTypes {
     | '/monthend'
     | '/more'
     | '/mtd'
+    | '/nearest'
     | '/no-show-policy'
     | '/notifications'
     | '/notificationsettings'
@@ -1953,6 +1964,7 @@ export interface FileRouteTypes {
     | '/monthend'
     | '/more'
     | '/mtd'
+    | '/nearest'
     | '/no-show-policy'
     | '/notifications'
     | '/notificationsettings'
@@ -2126,6 +2138,7 @@ export interface RootRouteChildren {
   MonthendRoute: typeof MonthendRoute
   MoreRoute: typeof MoreRoute
   MtdRoute: typeof MtdRoute
+  NearestRoute: typeof NearestRoute
   NoShowPolicyRoute: typeof NoShowPolicyRoute
   NotificationsRoute: typeof NotificationsRoute
   NotificationsettingsRoute: typeof NotificationsettingsRoute
@@ -2571,6 +2584,13 @@ declare module '@tanstack/react-router' {
       path: '/no-show-policy'
       fullPath: '/no-show-policy'
       preLoaderRoute: typeof NoShowPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nearest': {
+      id: '/nearest'
+      path: '/nearest'
+      fullPath: '/nearest'
+      preLoaderRoute: typeof NearestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mtd': {
@@ -3551,6 +3571,7 @@ const rootRouteChildren: RootRouteChildren = {
   MonthendRoute: MonthendRoute,
   MoreRoute: MoreRoute,
   MtdRoute: MtdRoute,
+  NearestRoute: NearestRoute,
   NoShowPolicyRoute: NoShowPolicyRoute,
   NotificationsRoute: NotificationsRoute,
   NotificationsettingsRoute: NotificationsettingsRoute,
