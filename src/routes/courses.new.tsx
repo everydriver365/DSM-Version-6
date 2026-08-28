@@ -1727,6 +1727,8 @@ function Step3(props: {
   payDeposit: boolean; setPayDeposit: (v: boolean) => void;
   publishMarketplace: boolean; setPublishMarketplace: (v: boolean) => void;
   publishWebsite: boolean; setPublishWebsite: (v: boolean) => void;
+  isAdmin: boolean;
+  skimFeeEnabled: boolean; setSkimFeeEnabled: (v: boolean) => void;
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>

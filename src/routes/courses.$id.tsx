@@ -80,6 +80,7 @@ interface Course {
   early_bird_expiry: string | null;
   publish_marketplace: boolean;
   publish_mini_website: boolean;
+  skim_fee_enabled: boolean;
   status: string;
 }
 
