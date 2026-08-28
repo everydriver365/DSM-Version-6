@@ -959,18 +959,18 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           aria-hidden
           style={{
             width: 3,
-            height: 12,
-            background: BLUE,
+            height: 13,
+            background: "#2C97DE",
             borderRadius: 12,
             display: "inline-block",
           }}
         />
         <span
           style={{
-            color: BLUE,
-            fontSize: tokens.fontSize.sm,
+            color: "#2C97DE",
+            fontSize: 11,
             fontWeight: tokens.fontWeight.extrabold,
-            letterSpacing: "0.6px",
+            letterSpacing: "0.8px",
             textTransform: "uppercase",
             fontFamily: FONT,
           }}
@@ -985,10 +985,11 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: 8,
+          gap: 12,
           marginBottom: 12,
         }}
       >
+
         {/* PERKS — tall hero */}
         <div
           role="button"
@@ -1000,25 +1001,29 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             ...tileBase,
             gridColumn: 1,
             gridRow: "1 / 3",
-            height: 240,
-            background: "linear-gradient(160deg, #EAF3FB 0%, #F5F9FF 55%, #fff 100%)",
-            border: "1px solid #D6E3F0",
+            height: 252,
+            padding: 18,
+            borderRadius: 20,
+            background: "#FFFFFF",
+            border: "1px solid #E8EEF4",
+            boxShadow: "0 1px 2px rgba(7,43,71,0.04), 0 12px 28px -18px rgba(7,43,71,0.22)",
           }}
         >
           <div>
-            <span style={{ ...chipBase, width: 40, height: 40, borderRadius: 14, background: "#fff", color: BLUE, boxShadow: "0 2px 10px -2px rgba(11,31,58,0.14)" }}>
-              <IconRosetteDiscount size={20} color={BLUE} stroke={1.6} />
+            <span style={{ ...chipBase, width: 42, height: 42, borderRadius: 14, background: "#F7F9FB", color: "#2C97DE", border: "1px solid #E8EEF4", boxShadow: "none" }}>
+              <IconRosetteDiscount size={21} color="#2C97DE" stroke={1.6} />
             </span>
-            <div style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 10 }}>
-              <img src={proLogoAsset.url} alt="PRO" style={{ height: 22, width: "auto", objectFit: "contain" }} />
-              <span style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY }}>Perks</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 14 }}>
+              <img src={proLogoAsset.url} alt="PRO" style={{ height: 24, width: "auto", objectFit: "contain", display: "block" }} />
+              <span style={{ fontSize: 16, fontWeight: tokens.fontWeight.bold, color: "#072B47", letterSpacing: "-0.2px" }}>Perks</span>
             </div>
-            <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, lineHeight: 1.4, marginTop: 4 }}>
+            <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.45, marginTop: 6 }}>
               {isFreeTier
                 ? "Free DIA membership & exclusive member benefits"
                 : "4 benefits active"}
             </div>
-            <div style={{ display: "flex", alignItems: "center", marginTop: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", marginTop: 14 }}>
+
               <div style={{ display: "flex", alignItems: "center" }}>
                 {[
                   { initial: "D", bg: "#1877D6" },
@@ -1086,16 +1091,17 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </div>
           <span
             style={{
-              color: BLUE,
+              color: "#2C97DE",
               fontSize: 12,
               fontWeight: tokens.fontWeight.bold,
-              textDecoration: "underline",
+              letterSpacing: "-0.1px",
               display: "inline-block",
               alignSelf: "flex-start",
             }}
           >
             {isFreeTier ? "Upgrade →" : "Access benefits →"}
           </span>
+
         </div>
 
         {/* EDP LEARN — Learn, Bitesize & Showcase */}
@@ -1107,11 +1113,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             ...tileBase,
             gridColumn: 2,
             gridRow: 1,
-            height: 116,
+            height: 120,
+            padding: 16,
+            borderRadius: 20,
             justifyContent: "center",
-            background: "linear-gradient(135deg, #F4FBF6 0%, #FBFEFC 60%, #FFFFFF 100%)",
-            borderColor: "#E4F4E9",
+            background: "#FFFFFF",
+            border: "1px solid #E8EEF4",
+            boxShadow: "0 1px 2px rgba(7,43,71,0.04), 0 12px 28px -18px rgba(7,43,71,0.22)",
           }}
+
         >
           {/* open book motif */}
           <svg
@@ -1168,15 +1178,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               }}
             />
           )}
-          <div style={{ position: "relative", zIndex: 1, maxWidth: "62%" }}>
+          <div style={{ position: "relative", zIndex: 1, maxWidth: "66%" }}>
             <span
               style={{
                 ...chipBase,
                 width: 36,
                 height: 36,
                 borderRadius: 12,
-                background: "#fff",
-                boxShadow: "0 2px 8px -2px rgba(11,31,58,0.12)",
+                background: "#F7F9FB",
+                border: "1px solid #E8EEF4",
               }}
             >
               <IconBook size={19} color="#16A34A" stroke={1.7} />
@@ -1185,25 +1195,26 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 3,
+                gap: 5,
                 fontSize: 15,
                 fontWeight: tokens.fontWeight.bold,
-                color: NAVY,
-                marginTop: 8,
+                color: "#072B47",
+                letterSpacing: "-0.2px",
+                marginTop: 10,
               }}
             >
               <img
                 src={proLogoAsset.url}
                 alt="Pro"
-                style={{ height: 22, width: "auto", display: "block" }}
+                style={{ height: 24, width: "auto", objectFit: "contain", display: "block" }}
               />
               Learn
             </div>
             <div
               style={{
-                fontSize: tokens.fontSize.xs,
+                fontSize: 11,
                 color: MUTED,
-                marginTop: 2,
+                marginTop: 3,
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -1211,6 +1222,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             >
               Guides, bitesize &amp; showcase
             </div>
+
           </div>
         </div>
 
@@ -1223,11 +1235,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             ...tileBase,
             gridColumn: 2,
             gridRow: 2,
-            height: 116,
+            height: 120,
+            padding: 16,
+            borderRadius: 20,
             justifyContent: "center",
-            background: "linear-gradient(135deg, #FFF6F8 0%, #FFFBFC 60%, #FFFFFF 100%)",
-            borderColor: "#FAE3EA",
+            background: "#FFFFFF",
+            border: "1px solid #E8EEF4",
+            boxShadow: "0 1px 2px rgba(7,43,71,0.04), 0 12px 28px -18px rgba(7,43,71,0.22)",
           }}
+
         >
           {/* microphone motif */}
           <svg
@@ -1296,15 +1312,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             />
           )}
 
-          <div style={{ position: "relative", zIndex: 1, maxWidth: "62%" }}>
+          <div style={{ position: "relative", zIndex: 1, maxWidth: "66%" }}>
             <span
               style={{
                 ...chipBase,
                 width: 36,
                 height: 36,
                 borderRadius: 12,
-                background: "#fff",
-                boxShadow: "0 2px 8px -2px rgba(11,31,58,0.12)",
+                background: "#F7F9FB",
+                border: "1px solid #E8EEF4",
               }}
             >
               <IconMicrophone size={19} color={isLiveOnAir ? RED : "#E5385F"} stroke={1.7} />
@@ -1313,16 +1329,17 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 3,
-                marginTop: 8,
+                gap: 5,
+                marginTop: 10,
               }}
             >
-              <img src={proLogoAsset.url} alt="PRO" style={{ height: 22, width: "auto", objectFit: "contain" }} />
+              <img src={proLogoAsset.url} alt="PRO" style={{ height: 24, width: "auto", objectFit: "contain", display: "block" }} />
               <span
                 style={{
                   fontSize: 15,
                   fontWeight: tokens.fontWeight.bold,
-                  color: NAVY,
+                  color: "#072B47",
+                  letterSpacing: "-0.2px",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -1333,10 +1350,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             </div>
             <div
               style={{
-                fontSize: tokens.fontSize.xs,
+                fontSize: 11,
                 color: isLiveOnAir ? RED : MUTED,
                 fontWeight: isLiveOnAir ? tokens.fontWeight.bold : undefined,
-                marginTop: 2,
+                marginTop: 3,
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -1344,6 +1361,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             >
               {isLiveOnAir ? "On air now" : "Live, news and podcasts"}
             </div>
+
           </div>
         </div>
 
