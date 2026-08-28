@@ -5695,9 +5695,9 @@ function HomePage() {
                   style={{
                     flex: 1,
                     height: 38,
-                    borderRadius: 12,
+                    borderRadius: 16,
                     border: 'none',
-                    background: '#00A6A6',
+                    background: '#0399AA',
                     color: '#FFFFFF',
                     display: 'flex',
                     alignItems: 'center',
@@ -5708,6 +5708,7 @@ function HomePage() {
                     fontWeight: tokens.fontWeight.semibold,
                     fontFamily: 'Poppins, sans-serif',
                     padding: 0,
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
                   }}
                 >
                   <IconPhone stroke={1.5} size={14} color="#FFFFFF" />
