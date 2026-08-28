@@ -564,6 +564,14 @@ function testTimeOf(lesson: any): string | null {
   return m?.[1] ?? null;
 }
 
+// Show only the test centre name, never the full postal address
+// ("Southampton Maybush, Green Lane, ... SO16 9QT" -> "Southampton Maybush").
+function testCentreName(raw: string | null | undefined): string | null {
+  const first = String(raw ?? '').split(',')[0]?.trim() ?? '';
+  return first ? first.replace(/\s+test\s+centre$/i, '').trim() || first : null;
+}
+
+
 function startOfDay(d: Date) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
@@ -4444,7 +4452,7 @@ function HomePage() {
           <img
             src={edpLogoWhite.url}
             alt="EDP"
-            style={{ height: 42, width: "auto", objectFit: "contain", display: "block", paddingLeft: 5 }}
+            style={{ height: 52, width: "auto", objectFit: "contain", display: "block", paddingLeft: 5 }}
           />
           <div
             style={{
@@ -4962,8 +4970,9 @@ function HomePage() {
                           <div style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.name}</div>
                           <div style={{ fontSize: 12, color: tokens.textSecondary }}>
                             {new Date(t.test_date + "T00:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })}
-                            {t.test_time ? ` · ${t.test_time.slice(0, 5)}` : ""}
-                            {t.test_centre ? ` · ${t.test_centre}` : ""}
+                            {t.test_time ? ` · Test at ${t.test_time.slice(0, 5)}` : " · Test time TBC"}
+                            {testCentreName(t.test_centre) ? ` · ${testCentreName(t.test_centre)}` : ""}
+
                           </div>
                         </div>
                         <button
@@ -5293,8 +5302,11 @@ function HomePage() {
             upcoming?.pupils?.postcode,
           );
           const pickup = pickupParts.full;
-          const upcomingTestCentre = upcomingIsTest ? testCentreOf(upcoming) : null;
+          // Centre name only (no full address); the time shown next to it is the
+          // test start time — the tile's own start time stays the pickup time.
+          const upcomingTestCentre = upcomingIsTest ? testCentreName(testCentreOf(upcoming)) : null;
           const upcomingTestTime = upcomingIsTest ? (testTimeOf(upcoming) ?? startText) : null;
+
 
 
 
@@ -5718,7 +5730,7 @@ function HomePage() {
                       fontFamily: 'Poppins, sans-serif',
                       overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                     }}>
-                      Driving Test : {[upcomingTestCentre, upcomingTestTime].filter(Boolean).join(' · ')}
+                      Driving Test : {[upcomingTestCentre, upcomingTestTime ? `Test at ${upcomingTestTime}` : null].filter(Boolean).join(' · ')}
                     </span>
                   </div>
                 )}
@@ -7161,8 +7173,10 @@ function HomePage() {
             const d = parseDate(iso);
             if (!d) return iso;
             const datePart = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
-            const timePart = time ? ` · ${String(time).slice(0, 5)}` : '';
+            // The test start time is always shown on test tiles.
+            const timePart = time ? ` · Test at ${String(time).slice(0, 5)}` : ' · Test time TBC';
             return `${datePart}${timePart}`;
+
           };
           const now = new Date(nowTick);
           const nowMs = now.getTime();
@@ -7195,12 +7209,13 @@ function HomePage() {
           // Display fix: some pupil rows carry a trailing " ." in the stored
           // name (empty surname/initial). Never render stray trailing punctuation.
           const displayName = (next.name ?? '').replace(/\s+\.\s*$/, '').trim();
-          const centreRaw = (next.test_centre ?? '').trim();
-          const centreLabel = centreRaw
-            ? /test centre/i.test(centreRaw)
-              ? centreRaw
-              : `${centreRaw} Test Centre`
+          const centreName = testCentreName(next.test_centre);
+          const centreLabel = centreName
+            ? /test centre/i.test(centreName)
+              ? centreName
+              : `${centreName} Test Centre`
             : 'Test centre TBC';
+
           const stackTests = testsSorted.slice(0, 2);
           const nextMissing = missingTestDetails(next);
           const nextMissingLabel = missingTestDetailsLabel(nextMissing);
@@ -11460,8 +11475,9 @@ function TestsBreakdownModal({
                     </div>
                     <div style={{ fontSize: 12, color: "#4B5563", marginTop: 2 }}>
                       {fmtDate(t.test_date)}
-                      {t.test_time ? ` · ${String(t.test_time).slice(0, 5)}` : ""}
-                      {t.test_centre ? ` · ${t.test_centre}` : ""}
+                      {t.test_time ? ` · Test at ${String(t.test_time).slice(0, 5)}` : " · Test time TBC"}
+                      {testCentreName(t.test_centre) ? ` · ${testCentreName(t.test_centre)}` : ""}
+
                     </div>
                   </div>
                   {resultState === "passed" ? (
