@@ -1091,16 +1091,17 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
           </div>
           <span
             style={{
-              color: BLUE,
+              color: "#2C97DE",
               fontSize: 12,
               fontWeight: tokens.fontWeight.bold,
-              textDecoration: "underline",
+              letterSpacing: "-0.1px",
               display: "inline-block",
               alignSelf: "flex-start",
             }}
           >
             {isFreeTier ? "Upgrade →" : "Access benefits →"}
           </span>
+
         </div>
 
         {/* EDP LEARN — Learn, Bitesize & Showcase */}
