@@ -1,4 +1,5 @@
 import { testStartTime, testEndTime, minutesBetween, testTimeFromNotes, testTimeFromStart, withTestTimeNote, TEST_TOTAL_MINUTES } from "@/lib/testDay";
+import { syncPupilTestFields } from "@/lib/pupilTestSync";
 import { tokens } from "@/lib/tokens";
 import { PageLoader } from "@/components/dsm/LoadingSpinner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -464,6 +465,9 @@ function EditLessonPage() {
       setError(updErr.message);
       setSaving(false);
       return;
+    }
+    if (!isEvent) {
+      await syncPupilTestFields({ pupilId, isTestDay, date, testTime, testCentre });
     }
     // Sync to Google Calendar after save
     const { data: lessonRow } = await supabase
