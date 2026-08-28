@@ -7141,172 +7141,155 @@ function HomePage() {
               </div>
             <div
               style={{
-                background: 'linear-gradient(160deg, #CCCCCC 0%, #CAC1C2 55%, #C9BBBD 100%)',
-                border: '0.5px solid #F0DDE0',
-                borderRadius: 14,
+                background: '#F7FAFC',
+                borderRadius: 22,
                 overflow: 'hidden',
+                boxShadow: '0 4px 16px rgba(7,43,71,0.10)',
                 fontFamily: 'Poppins, sans-serif',
               }}
             >
-              {/* Urgency label */}
-              <div style={{ padding: '12px 14px 6px', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <IconStar size={12} color="#C8434F" fill="#C8434F" stroke={0} />
-                <span
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 500,
-                    color: '#C8434F',
-                    letterSpacing: '0.3px',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  {countdownLabel}
-                </span>
-              </div>
-              {/* Test detail row (tappable) */}
+              {/* Main gradient section */}
               <div
                 onClick={() => navigate({ to: '/tests' as never })}
                 style={{
-                  padding: '4px 14px 16px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 14,
+                  background: 'linear-gradient(135deg, #072B47 0%, #0A6CFF 100%)',
+                  padding: '16px 18px',
                   cursor: 'pointer',
                 }}
               >
-                {/* Date badge */}
-                <div
-                  style={{
-                    width: 50,
-                    height: 50,
-                    borderRadius: 12,
-                    background: '#0B1F3A',
-                    boxShadow: '0 1px 4px rgba(11,31,58,0.15)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    gap: 2,
-                  }}
-                >
-                  <div style={{ fontSize: 17, fontWeight: 500, color: '#FFFFFF', lineHeight: 1 }}>{dayNum}</div>
-                  <div
+                {/* Countdown label */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+                  <IconStar size={12} color="#FFFFFF" fill="#FFFFFF" stroke={0} />
+                  <span
                     style={{
-                      fontSize: 9,
-                      fontWeight: 500,
-                      color: 'rgba(255,255,255,0.65)',
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: '#FFFFFF',
                       letterSpacing: '0.3px',
                       textTransform: 'uppercase',
-                      lineHeight: 1,
                     }}
                   >
-                    {monthAbbr}
-                  </div>
+                    {countdownLabel}
+                  </span>
                 </div>
-                {/* Meta */}
-                <div style={{ flex: 1, minWidth: 0 }}>
+
+                {/* Test detail row */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                  {/* Date tile */}
                   <div
                     style={{
-                      fontSize: 15,
-                      fontWeight: 500,
-                      color: '#000000',
-                      letterSpacing: '-0.1px',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
+                      width: 54,
+                      height: 54,
+                      borderRadius: 16,
+                      background: '#FFFFFF',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      gap: 2,
                     }}
                   >
-                    {displayName}
+                    <div style={{ fontSize: 22, fontWeight: 700, color: '#072B47', lineHeight: 1 }}>{dayNum}</div>
+                    <div
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 600,
+                        color: '#072B47',
+                        letterSpacing: '0.4px',
+                        textTransform: 'uppercase',
+                        lineHeight: 1,
+                      }}
+                    >
+                      {monthAbbr}
+                    </div>
                   </div>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      color: '#6E6E73',
-                      marginTop: 2,
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}
-                  >
-                    {centreLabel}
+
+                  {/* Meta */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 600,
+                        color: '#FFFFFF',
+                        letterSpacing: '-0.1px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {displayName}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 13,
+                        color: 'rgba(255,255,255,0.75)',
+                        marginTop: 3,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {centreLabel}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 13,
+                        color: 'rgba(255,255,255,0.75)',
+                        marginTop: 3,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {fmtDateTime(next.test_date, next.test_time)}
+                    </div>
                   </div>
-                  <div style={{ fontSize: 12, color: '#6E6E73', marginTop: 2 }}>
-                    {fmtDateTime(next.test_date, next.test_time)}
-                  </div>
+
+                  {/* Chevron */}
+                  <IconChevronRight size={18} stroke={2} color="#FFFFFF" style={{ flexShrink: 0, opacity: 0.9 }} />
                 </div>
-                {/* Chevron */}
-                <IconChevronRight size={14} stroke={2} color="#C8434F" style={{ flexShrink: 0, opacity: 0.5 }} />
               </div>
+
               {/* Summary footer */}
               <div
                 style={{
                   background: '#FFFFFF',
-                  padding: '12px 14px',
+                  padding: '12px 16px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 10,
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  {stackTests.map((t, i) => {
-                    const initials = (t.name ?? '').trim().charAt(0).toUpperCase() || '?';
-                    return (
-                      <div
-                        key={t.id}
-                        style={{
-                          width: 26,
-                          height: 26,
-                          borderRadius: '50%',
-                          background: brandColors[i % brandColors.length],
-                          border: '2px solid #FFFFFF',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: tokens.fontSize.xs,
-                          fontWeight: tokens.fontWeight.semibold,
-                          color: '#FFFFFF',
-                          marginLeft: i === 0 ? 0 : -8,
-                          zIndex: stackTests.length - i,
-                          position: 'relative',
-                        }}
-                      >
-                        {initials}
-                      </div>
-                    );
-                  })}
-                  {testsSorted.length > 2 && (
-                    <div
-                      style={{
-                        width: 26,
-                        height: 26,
-                        borderRadius: '50%',
-                        background: '#D3D8E0',
-                        border: '2px solid #FFFFFF',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: tokens.fontSize.xs,
-                        fontWeight: tokens.fontWeight.semibold,
-                        color: '#5B6472',
-                        marginLeft: -8,
-                        zIndex: 0,
-                        position: 'relative',
-                      }}
-                    >
-                      +{testsSorted.length - 2}
-                    </div>
-                  )}
+                <div
+                  style={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: '50%',
+                    background: '#072B47',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: '#FFFFFF',
+                    flexShrink: 0,
+                  }}
+                >
+                  {displayName.charAt(0).toUpperCase() || '?'}
                 </div>
-                <span style={{ fontSize: 12, color: '#6E6E73', flex: 1 }}>
-                  {testsSorted.length} pupils with tests booked
+                <span style={{ fontSize: 13, color: '#6E6E73', flex: 1 }}>
+                  {testsSorted.length} pupil{testsSorted.length === 1 ? '' : 's'} with tests booked
                 </span>
                 <button
                   onClick={() => navigate({ to: '/tests' as never })}
                   style={{
-                    fontSize: 11,
-                    fontWeight: 500,
-                    color: '#2B7BC8',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: '#0066FF',
                     background: 'none',
                     border: 'none',
                     padding: 0,
@@ -7315,6 +7298,7 @@ function HomePage() {
                   }}
                 >
                   View all
+                  <IconChevronRight size={14} stroke={2} color="#0066FF" />
                 </button>
               </div>
             </div>
