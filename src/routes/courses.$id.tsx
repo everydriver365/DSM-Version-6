@@ -169,6 +169,7 @@ function CourseDetailPage() {
   const [heroImage, setHeroImage] = useState<string | null>(null);
   const [uploadingHero, setUploadingHero] = useState(false);
   const heroInputRef = useRef<HTMLInputElement>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Edit scope for repeating series
   const [scopeSheetOpen, setScopeSheetOpen] = useState(false);
@@ -183,6 +184,17 @@ function CourseDetailPage() {
 
   async function load() {
     setLoading(true);
+    const { data: userData } = await supabase.auth.getUser();
+    const user = userData.user;
+    if (user) {
+      const { data: adminCheck } = await supabase
+        .from("admin_users")
+        .select("id")
+        .eq("id", user.id)
+        .single();
+      setIsAdmin(!!adminCheck);
+    }
+
     const { data: c, error: cErr } = await supabase
       .from("instructor_courses")
       .select("*")
