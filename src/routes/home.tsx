@@ -4432,10 +4432,7 @@ function HomePage() {
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 32px" }}>
           {/* HEADER */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-            <h1 style={{ fontSize: 24, fontWeight: tokens.fontWeight.extrabold, color: tokens.navy, margin: 0, fontFamily: "Sora, sans-serif" }}>
-              Good morning, {firstName} 👋
-            </h1>
-            <div style={{ fontSize: tokens.fontSize.md, color: tokens.textSecondary, fontFamily: "Poppins, sans-serif" }}>
+            <div style={{ fontSize: tokens.fontSize.md, color: tokens.textSecondary, fontFamily: "Poppins, sans-serif", marginLeft: "auto" }}>
               {dateHeader}
             </div>
           </div>
