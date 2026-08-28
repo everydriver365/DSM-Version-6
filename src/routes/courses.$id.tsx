@@ -330,6 +330,7 @@ function CourseDetailPage() {
       pickup_lat: form.pickup_lat,
       pickup_lng: form.pickup_lng,
       image_url: heroImage,
+      skim_fee_enabled: isAdmin ? patch.skim_fee_enabled : false,
     };
     const { error: upErr } = await supabase
       .from("instructor_courses")
@@ -1130,6 +1131,14 @@ function CourseDetailPage() {
                     value={form.publish_mini_website}
                     onChange={(v) => setForm({ ...form, publish_mini_website: v })}
                   />
+                  {isAdmin && (
+                    <ToggleRow
+                      label="EveryDriver booking fee"
+                      sublabel="Charge £200 admin fee when pupils book this course"
+                      value={form.skim_fee_enabled}
+                      onChange={(v) => setForm({ ...form, skim_fee_enabled: v })}
+                    />
+                  )}
                 </div>
               ) : (
                 <>
