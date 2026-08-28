@@ -5638,7 +5638,7 @@ function HomePage() {
                     position: 'relative',
                     flex: 1,
                     height: 38,
-                    borderRadius: 16,
+                    borderRadius: 8,
                     border: '1px solid #0077F9',
                     background: '#FFFFFF',
                     color: '#0077F9',
@@ -5695,7 +5695,7 @@ function HomePage() {
                   style={{
                     flex: 1,
                     height: 38,
-                    borderRadius: 16,
+                    borderRadius: 8,
                     border: '1px solid #0399AA',
                     background: '#FFFFFF',
                     color: '#0399AA',
@@ -5724,7 +5724,7 @@ function HomePage() {
                   style={{
                     flex: 1,
                     height: 38,
-                    borderRadius: 16,
+                    borderRadius: 8,
                     border: '1px solid #D92D3A',
                     background: '#FFF6F6',
                     color: '#D92D3A',
