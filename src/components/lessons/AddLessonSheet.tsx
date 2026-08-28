@@ -808,7 +808,7 @@ export function AddLessonSheet({
           )}
 
           {pupilListOpen && (
-            <div style={{ maxHeight: 320, overflowY: "auto" }}>
+            <div>
               {filteredPupils.length === 0 && (
                 <div style={{ ...labelStyle, padding: "16px 16px" }}>No pupils found</div>
               )}
