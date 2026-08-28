@@ -5639,9 +5639,9 @@ function HomePage() {
                     flex: 1,
                     height: 38,
                     borderRadius: 16,
-                    border: 'none',
-                    background: '#0077F9',
-                    color: '#FFFFFF',
+                    border: '1.5px solid #0077F9',
+                    background: '#FFFFFF',
+                    color: '#0077F9',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -5654,7 +5654,7 @@ function HomePage() {
                     boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
                   }}
                 >
-                  <IconMessage stroke={1.5} size={14} color="#FFFFFF" />
+                  <IconMessage stroke={1.5} size={14} color="#0077F9" />
                   <span>Message</span>
                   {(upcomingSmsCount > 0 || upcomingAppCount > 0) && (
                     <div style={{
@@ -5696,9 +5696,9 @@ function HomePage() {
                     flex: 1,
                     height: 38,
                     borderRadius: 16,
-                    border: 'none',
-                    background: '#0399AA',
-                    color: '#FFFFFF',
+                    border: '1.5px solid #0399AA',
+                    background: '#FFFFFF',
+                    color: '#0399AA',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -5711,7 +5711,7 @@ function HomePage() {
                     boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
                   }}
                 >
-                  <IconPhone stroke={1.5} size={14} color="#FFFFFF" />
+                  <IconPhone stroke={1.5} size={14} color="#0399AA" />
                   <span>Call</span>
                 </button>
 
@@ -5725,8 +5725,8 @@ function HomePage() {
                     flex: 1,
                     height: 38,
                     borderRadius: 16,
-                    border: 'none',
-                    background: '#FDE7E7',
+                    border: '1.5px solid #D92D3A',
+                    background: '#FFF6F6',
                     color: '#D92D3A',
                     display: 'flex',
                     alignItems: 'center',
