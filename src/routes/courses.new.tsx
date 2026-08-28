@@ -172,6 +172,7 @@ function NewCoursePage() {
   const navigate = useNavigate();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -220,6 +221,7 @@ function NewCoursePage() {
   const [payDeposit, setPayDeposit] = useState(true);
   const [publishMarketplace, setPublishMarketplace] = useState(true);
   const [publishWebsite, setPublishWebsite] = useState(true);
+  const [skimFeeEnabled, setSkimFeeEnabled] = useState(true);
 
   // Hero image
   const [heroImage, setHeroImage] = useState<string | null>(null);
@@ -229,7 +231,16 @@ function NewCoursePage() {
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
-      setUserId(data.user?.id ?? null);
+      const uid = data.user?.id ?? null;
+      setUserId(uid);
+      if (uid) {
+        const { data: adminCheck } = await supabase
+          .from("admin_users")
+          .select("id")
+          .eq("id", uid)
+          .single();
+        setIsAdmin(!!adminCheck);
+      }
     })();
   }, []);
 
@@ -369,6 +380,7 @@ function NewCoursePage() {
       early_bird_expiry: earlyBird && earlyBirdExpiry ? earlyBirdExpiry : null,
       publish_marketplace: publishMarketplace,
       publish_mini_website: publishWebsite,
+      skim_fee_enabled: isAdmin ? skimFeeEnabled : false,
       image_url: heroImage,
       transmission: transmission,
       status,
@@ -646,6 +658,9 @@ function NewCoursePage() {
             setPublishMarketplace={setPublishMarketplace}
             publishWebsite={publishWebsite}
             setPublishWebsite={setPublishWebsite}
+            isAdmin={isAdmin}
+            skimFeeEnabled={skimFeeEnabled}
+            setSkimFeeEnabled={setSkimFeeEnabled}
           />
         )}
 
@@ -1727,6 +1742,8 @@ function Step3(props: {
   payDeposit: boolean; setPayDeposit: (v: boolean) => void;
   publishMarketplace: boolean; setPublishMarketplace: (v: boolean) => void;
   publishWebsite: boolean; setPublishWebsite: (v: boolean) => void;
+  isAdmin: boolean;
+  skimFeeEnabled: boolean; setSkimFeeEnabled: (v: boolean) => void;
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -1852,6 +1869,20 @@ function Step3(props: {
         value={props.publishWebsite}
         onChange={props.setPublishWebsite}
       />
+
+      {props.isAdmin && (
+        <>
+          <div style={{ marginTop: 8 }}>
+            <FieldLabel>Admin settings</FieldLabel>
+          </div>
+          <ToggleRow
+            label="EveryDriver booking fee"
+            sublabel="Charge £200 admin fee when pupils book this course"
+            value={props.skimFeeEnabled}
+            onChange={props.setSkimFeeEnabled}
+          />
+        </>
+      )}
     </div>
   );
 }

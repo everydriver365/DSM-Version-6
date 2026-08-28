@@ -80,6 +80,7 @@ interface Course {
   early_bird_expiry: string | null;
   publish_marketplace: boolean;
   publish_mini_website: boolean;
+  skim_fee_enabled: boolean;
   status: string;
 }
 
@@ -168,6 +169,7 @@ function CourseDetailPage() {
   const [heroImage, setHeroImage] = useState<string | null>(null);
   const [uploadingHero, setUploadingHero] = useState(false);
   const heroInputRef = useRef<HTMLInputElement>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Edit scope for repeating series
   const [scopeSheetOpen, setScopeSheetOpen] = useState(false);
@@ -182,6 +184,17 @@ function CourseDetailPage() {
 
   async function load() {
     setLoading(true);
+    const { data: userData } = await supabase.auth.getUser();
+    const user = userData.user;
+    if (user) {
+      const { data: adminCheck } = await supabase
+        .from("admin_users")
+        .select("id")
+        .eq("id", user.id)
+        .single();
+      setIsAdmin(!!adminCheck);
+    }
+
     const { data: c, error: cErr } = await supabase
       .from("instructor_courses")
       .select("*")
@@ -317,6 +330,7 @@ function CourseDetailPage() {
       pickup_lat: form.pickup_lat,
       pickup_lng: form.pickup_lng,
       image_url: heroImage,
+      skim_fee_enabled: isAdmin ? patch.skim_fee_enabled : false,
     };
     const { error: upErr } = await supabase
       .from("instructor_courses")
@@ -1117,6 +1131,14 @@ function CourseDetailPage() {
                     value={form.publish_mini_website}
                     onChange={(v) => setForm({ ...form, publish_mini_website: v })}
                   />
+                  {isAdmin && (
+                    <ToggleRow
+                      label="EveryDriver booking fee"
+                      sublabel="Charge £200 admin fee when pupils book this course"
+                      value={form.skim_fee_enabled}
+                      onChange={(v) => setForm({ ...form, skim_fee_enabled: v })}
+                    />
+                  )}
                 </div>
               ) : (
                 <>
@@ -1888,16 +1910,23 @@ function CourseSectionBar({ children }: { children: React.ReactNode }) {
 
 function ToggleRow({
   label,
+  sublabel,
   value,
   onChange,
 }: {
   label: string;
+  sublabel?: string;
   value: boolean;
   onChange: (v: boolean) => void;
 }) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-      <div style={{ fontSize: tokens.fontSize.base, color: VALUE, fontWeight: 500 }}>{label}</div>
+      <div>
+        <div style={{ fontSize: tokens.fontSize.base, color: VALUE, fontWeight: 500 }}>{label}</div>
+        {sublabel && (
+          <div style={{ fontSize: 12, color: LABEL, marginTop: 2 }}>{sublabel}</div>
+        )}
+      </div>
       <button
         onClick={() => onChange(!value)}
         style={{
@@ -1908,6 +1937,8 @@ function ToggleRow({
           background: value ? "#1877D6" : "#cbd2dc",
           position: "relative",
           cursor: "pointer",
+          flexShrink: 0,
+          marginLeft: 12,
         }}
         aria-label={label}
       >
