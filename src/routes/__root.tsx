@@ -293,7 +293,7 @@ const ACTION_TILES: MenuTile[] = [
 
 function GlobalMenu() {
   const [open, setOpen] = useState(false);
-  const [profile, setProfile] = useState<{ name: string; email: string } | null>(null);
+  const [profile, setProfile] = useState<{ name: string; email: string; profile_image_url: string | null } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -309,9 +309,9 @@ function GlobalMenu() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || !mounted) return;
       const email = user.email ?? "";
-      const { data } = await supabase.from("instructors").select("name").eq("id", user.id).limit(1).single();
+      const { data } = await supabase.from("instructors").select("name, profile_image_url").eq("id", user.id).limit(1).single();
       if (mounted) {
-        setProfile({ name: data?.name ?? "Instructor", email });
+        setProfile({ name: data?.name ?? "Instructor", email, profile_image_url: data?.profile_image_url ?? null });
       }
     })();
     return () => { mounted = false; };
