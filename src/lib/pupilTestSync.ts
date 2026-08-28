@@ -42,10 +42,7 @@ export async function syncPupilTestFields(opts: {
   }
 }
 
-  } catch (e) {
-    console.warn("[pupilTestSync] failed", e);
-  }
-}
+
 
 export type MissingTestDetails = { centre: boolean; time: boolean };
 
