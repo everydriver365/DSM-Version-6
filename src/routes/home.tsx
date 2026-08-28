@@ -1,6 +1,8 @@
 import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
+import TestEditSheet from "@/components/tests/TestEditSheet";
+import { missingTestDetails, missingTestDetailsLabel } from "@/lib/pupilTestSync";
 import { lessonStatusColors } from "@/lib/statusVariants";
 import { TestDetailTrigger } from '@/components/lessons/TestDetailPanel';
 import { LessonPaymentBadge } from "@/components/schedule/LessonPaymentBadge";
@@ -7344,6 +7346,40 @@ function HomePage() {
                 </button>
               </div>
             </div>
+            {editTest && (
+              <TestEditSheet
+                test={{
+                  pupilId: editTest.id,
+                  name: editTest.name,
+                  test_date: editTest.test_date,
+                  test_time: editTest.test_time,
+                  test_centre: editTest.test_centre,
+                  test_status: editTest.test_status ?? null,
+                }}
+                focusField={editTestFocus}
+                onClose={() => {
+                  setEditTest(null);
+                  setEditTestFocus(null);
+                }}
+                onSaved={(saved) => {
+                  setUpcomingTests((prev) =>
+                    prev.map((t) =>
+                      t.id === saved.previousPupilId
+                        ? {
+                            ...t,
+                            id: saved.pupilId,
+                            name: saved.name,
+                            test_date: saved.test_date ?? t.test_date,
+                            test_time: saved.test_time,
+                            test_centre: saved.test_centre,
+                            test_status: saved.test_status,
+                          }
+                        : t,
+                    ),
+                  );
+                }}
+              />
+            )}
             </div>
           );
         })()}
