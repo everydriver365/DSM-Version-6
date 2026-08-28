@@ -1453,7 +1453,7 @@ function HomePage() {
 
   const [pupilQuery, setPupilQuery] = useState("");
   const [firstName, setFirstName] = useState("there");
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  
   const [userId, setUserId] = useState<string | null>(null);
   const [showWelcome, setShowWelcome] = useState(false);
   const [badgePrefs, setBadgePrefs] = useState(DEFAULT_BADGE_PREFS);
@@ -2639,7 +2639,7 @@ function HomePage() {
       const first = fullName.trim().split(/\s+/)[0] || "there";
       setFirstName(capitalize(first));
       setInstructorFullName(fullName);
-      setAvatarUrl((instructor?.profile_image_url as string | undefined) ?? null);
+      
       const wlGoal = Number((instructor as any)?.weekly_lesson_goal);
       const weGoal = Number((instructor as any)?.weekly_earnings_goal);
       if (Number.isFinite(wlGoal) && wlGoal > 0) setWeeklyLessonGoal(wlGoal);
@@ -4923,23 +4923,6 @@ function HomePage() {
             {greeting}, {firstName || 'there'} 👋
           </div>
         </div>
-        <button
-          type="button"
-          onClick={() => navigate({ to: '/profile' })}
-          aria-label="Profile"
-          style={{
-            width: 34, height: 34, borderRadius: '50%',
-            background: '#1877D6', color: '#FFFFFF',
-            fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold,
-            border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', overflow: 'hidden', padding: 0, flexShrink: 0,
-            fontFamily: 'Poppins, sans-serif',
-          }}
-        >
-          {avatarUrl
-            ? <img src={avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            : (firstName?.[0] ?? 'I').toUpperCase()}
-        </button>
       </div>
 
       {/* ============ OVERLAPPING STAT TILES ============ */}
