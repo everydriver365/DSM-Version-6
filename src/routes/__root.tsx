@@ -650,7 +650,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
         fontFamily: "Poppins, sans-serif",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", flex: 1, minWidth: 0 }}>
+      <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
         <IconMenu2
           stroke={1.5}
           size={24}
@@ -662,11 +662,15 @@ function Header({ unreadCount }: { unreadCount: number }) {
 
       <div
         style={{
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+          marginTop: 4,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          flex: 1,
-          minWidth: 0,
+          pointerEvents: "none",
         }}
       >
         <img
