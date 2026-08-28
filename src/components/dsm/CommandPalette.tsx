@@ -76,8 +76,16 @@ export function CommandPalette() {
         setOpen((o) => !o);
       }
     }
+    function onOpen() {
+      haptic("selection");
+      setOpen(true);
+    }
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("dsm-open-command-palette", onOpen);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("dsm-open-command-palette", onOpen);
+    };
   }, []);
 
   useEffect(() => {
