@@ -692,7 +692,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
           style={{ position: "relative", cursor: "pointer" }}
           onClick={() => navigate({ to: "/notifications" as never })}
         >
-          <IconBell stroke={1.5} size={24} color="#fff" />
+          <IconBell stroke={1.5} size={20} color="#fff" />
           {hasUnread && (
             <div
               style={{
