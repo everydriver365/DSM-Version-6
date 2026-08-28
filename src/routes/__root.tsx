@@ -650,27 +650,13 @@ function Header({ unreadCount }: { unreadCount: number }) {
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-        <button
-          type="button"
-          aria-label="Search"
+        <IconSearch
+          stroke={1.5}
+          size={24}
+          color="#fff"
+          style={{ cursor: "pointer" }}
           onClick={() => navigate({ to: "/search" as never })}
-          style={{
-            width: 36,
-            height: 36,
-            borderRadius: 8,
-            background: "rgba(255,255,255,0.12)",
-            border: "1px solid rgba(255,255,255,0.18)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            flexShrink: 0,
-            backdropFilter: "blur(8px)",
-            WebkitBackdropFilter: "blur(8px)",
-          }}
-        >
-          <IconSearch size={20} color="#fff" />
-        </button>
+        />
         <div
           style={{ position: "relative", cursor: "pointer" }}
           onClick={() => navigate({ to: "/notifications" as never })}
