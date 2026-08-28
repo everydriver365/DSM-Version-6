@@ -8427,9 +8427,10 @@ function HomePage() {
           const Badge = ({ colour, value }: { colour: string; value: number }) => (
             <span style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              minWidth: 16, height: 16, borderRadius: 12, background: colour,
-              color: '#FFFFFF', fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, fontFamily: PF_C,
-              padding: '0 3px', marginLeft: 2,
+              minWidth: 18, height: 18, borderRadius: 999, background: colour,
+              color: '#FFFFFF', fontSize: 10, fontWeight: tokens.fontWeight.bold, fontFamily: PF_C,
+              padding: '0 5px', marginLeft: 5, letterSpacing: '-0.01em',
+              boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
             }}>
               {value}
             </span>
@@ -8452,14 +8453,15 @@ function HomePage() {
                   : {})}
                 style={{
                   display: 'inline-flex', alignItems: 'center',
-                  fontSize: tokens.fontSize.sm, fontFamily: PF_C,
+                  fontSize: 12, fontFamily: PF_C,
                   color: count > 0 ? colour : '#9CA3AF',
-                  fontWeight: count > 0 ? 600 : 400,
-                  padding: active ? '2px 4px' : 0,
-                  margin: active ? '-2px -4px' : 0,
+                  fontWeight: count > 0 ? tokens.fontWeight.semibold : tokens.fontWeight.regular,
+                  padding: active ? '4px 6px' : 0,
+                  margin: active ? '-4px -6px' : 0,
                   borderRadius: 8,
                   cursor: active ? 'pointer' : 'inherit',
                   WebkitTapHighlightColor: 'transparent',
+                  letterSpacing: '-0.01em',
                 }}
               >
                 {text}
@@ -8468,13 +8470,13 @@ function HomePage() {
             );
           };
 
-          const Sep = () => <span style={{ color: BORDER_C, fontSize: 11 }}>·</span>;
+          const Sep = () => <span style={{ color: BORDER_C, fontSize: 13, opacity: 0.7, margin: '0 2px' }}>·</span>;
 
           
 
           const rowBase: React.CSSProperties = {
             display: 'flex', alignItems: 'center', gap: 12,
-            padding: '11px 14px', cursor: 'pointer',
+            padding: '14px 16px', cursor: 'pointer',
             borderTop: `0.5px solid ${BORDER_C}`,
           };
           const labelStyle: React.CSSProperties = { fontSize: 12, fontWeight: tokens.fontWeight.semibold, color: NAVY_C, fontFamily: PF_C };
@@ -8495,15 +8497,15 @@ function HomePage() {
                 </button>
               </div>
               <div style={{
-                margin: 0, background: '#FFFFFF', borderRadius: 8,
-                 boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
-                border: `1px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
+                margin: 0, background: '#FFFFFF', borderRadius: 12,
+                boxShadow: '0 1px 2px rgba(11,31,58,0.04), 0 4px 12px rgba(11,31,58,0.06)',
+                border: `0.5px solid ${BORDER_C}`, overflow: 'hidden', fontFamily: PF_C,
               }}>
 
               {/* ---- HEADER ---- */}
               <div
                 onClick={() => setCommunityExpanded((v) => !v)}
-                style={{ padding: '12px 14px', cursor: 'pointer' }}
+                style={{ padding: '16px 16px 12px', cursor: 'pointer' }}
               >
                 {(() => {
                   type AvatarSource = {
@@ -8683,38 +8685,41 @@ function HomePage() {
                         <div
                           onClick={(e) => { e.stopPropagation(); latestItem.onClick(); }}
                           style={{
-                            display: 'flex', alignItems: 'center', gap: 8,
-                            paddingBottom: 10, marginBottom: 10,
-                            borderBottom: '0.5px solid #E4E8EF', cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', gap: 10,
+                            paddingBottom: 14, marginBottom: 14,
+                            borderBottom: `0.5px solid ${BORDER_C}`, cursor: 'pointer',
                           }}
                         >
                           <span style={{
-                            width: 8, height: 8, borderRadius: '50%',
+                            width: 9, height: 9, borderRadius: '50%',
                             background: latestItem.colour, flexShrink: 0,
+                            boxShadow: `0 0 0 2px ${latestItem.colour}22`,
                           }} />
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{
                               fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY_C, fontFamily: PF_C,
                               whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                              lineHeight: 1.3,
                             }}>
                               {latestItem.title}
                             </div>
                             <div style={{
                               fontSize: 12, color: '#6B7686', fontFamily: PF_C,
                               whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                              lineHeight: 1.35, marginTop: 1,
                             }}>
                               {latestItem.detail
                                 ? `${latestItem.source} · ${latestItem.detail}`
                                 : latestItem.source}
                             </div>
                           </div>
-                          <IconChevronRight stroke={1.5} size={14} color="#C7CEDA" style={{ flexShrink: 0 }} />
+                          <IconChevronRight stroke={1.5} size={16} color="#C7CEDA" style={{ flexShrink: 0 }} />
                         </div>
                       )}
 
 
                       {/* Row 2 — avatar stack + active count + updated time */}
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           {visibleAvatars.length === 0 ? (
                             <div style={{
@@ -8728,10 +8733,11 @@ function HomePage() {
                               {visibleAvatars.map((s, i) => {
                                 const key = `${s.type}-${s.name ?? ''}-${i}`;
                                 const stackStyle = {
-                                  width: 28, height: 28, borderRadius: '50%',
-                                  border: '2px solid #fff', marginLeft: i === 0 ? 0 : -10,
+                                  width: 32, height: 32, borderRadius: '50%',
+                                  border: '2px solid #fff', marginLeft: i === 0 ? 0 : -12,
                                   flexShrink: 0, zIndex: visibleAvatars.length - i,
                                   position: 'relative' as const,
+                                  boxShadow: '0 2px 4px rgba(11,31,58,0.08)',
                                 };
                                 if (s.image) {
                                   return (
@@ -8753,7 +8759,7 @@ function HomePage() {
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       }}
                                     >
-                                      <IconAlertTriangle stroke={1.5} size={14} color="#CC2229" />
+                                      <IconAlertTriangle stroke={1.5} size={15} color="#CC2229" />
                                     </div>
                                   );
                                 }
@@ -8767,7 +8773,7 @@ function HomePage() {
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       }}
                                     >
-                                      <IconSpeakerphone size={14} color="#B45309" />
+                                      <IconSpeakerphone size={15} color="#B45309" />
                                     </div>
                                   );
                                 }
@@ -8777,7 +8783,7 @@ function HomePage() {
                                     style={{
                                       ...stackStyle,
                                       background: s.colour,
-                                      fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.bold, color: '#fff',
+                                      fontSize: 10, fontWeight: tokens.fontWeight.bold, color: '#fff',
                                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                                       overflow: 'hidden',
                                     }}
@@ -8788,28 +8794,29 @@ function HomePage() {
                               })}
                               {extraAvatarCount > 0 && (
                                 <div style={{
-                                  width: 28, height: 28, borderRadius: '50%', background: '#E4E8EF',
-                                  border: '2px solid #fff', marginLeft: -10, zIndex: visibleAvatars.length + 1,
+                                  width: 32, height: 32, borderRadius: '50%', background: '#E4E8EF',
+                                  border: '2px solid #fff', marginLeft: -12, zIndex: visibleAvatars.length + 1,
                                   position: 'relative', flexShrink: 0,
-                                  fontSize: tokens.fontSize.xs, fontWeight: tokens.fontWeight.semibold, color: '#6B7686',
+                                  fontSize: 10, fontWeight: tokens.fontWeight.semibold, color: '#6B7686',
                                   display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                  boxShadow: '0 2px 4px rgba(11,31,58,0.08)',
                                 }}>
                                   +{extraAvatarCount}
                                 </div>
                               )}
                             </>
                           )}
-                          <span style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', fontFamily: PF_C, marginLeft: 8 }}>{totalActive} active</span>
+                          <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.medium, color: '#6B7686', fontFamily: PF_C, marginLeft: 10 }}>{totalActive} active</span>
                         </div>
                         {timeAgo && (
-                          <span style={{ fontSize: tokens.fontSize.sm, color: '#9CA3AF', fontFamily: PF_C }}>
+                          <span style={{ fontSize: 11, fontWeight: tokens.fontWeight.medium, color: '#9CA3AF', fontFamily: PF_C }}>
                             Updated {timeAgo}
                           </span>
                         )}
                       </div>
 
                       {/* Row 3 — labels */}
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, flexWrap: 'wrap' }}>
                         <Label
                           text="Issues" colour={RED_C} count={alerts.length}
                           onClick={() => navigate({ to: '/community', search: { tab: 'alerts' } })}
