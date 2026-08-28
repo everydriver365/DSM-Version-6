@@ -6,6 +6,7 @@ import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 import { toast } from "sonner";
 import { supabase } from "../lib/supabaseClient";
 import { formatCountdown } from "@/lib/dateHelpers";
+import { useNowTick } from "@/hooks/useNowTick";
 import { BottomSheet as BottomSheetV2, SheetGroup, PrimaryButton, GhostButton } from "@/components/dsm/BottomSheetV2";
 import TestEditSheet from "@/components/tests/TestEditSheet";
 import { missingTestDetails, missingTestDetailsLabel } from "@/lib/pupilTestSync";
@@ -388,6 +389,7 @@ function TestRow({
   onEdit: (focus?: "centre" | "time") => void;
   onCancel: () => void;
 }) {
+  useNowTick(60000);
   const days = daysUntil(test.test_date);
   const daysLabel = days === 0 ? "Today" : days === 1 ? "Tomorrow" : `${days} days away`;
   const [menuOpen, setMenuOpen] = useState(false);
