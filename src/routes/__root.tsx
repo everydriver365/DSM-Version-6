@@ -293,7 +293,7 @@ const ACTION_TILES: MenuTile[] = [
 
 function GlobalMenu() {
   const [open, setOpen] = useState(false);
-  const [profile, setProfile] = useState<{ name: string; email: string } | null>(null);
+  const [profile, setProfile] = useState<{ name: string; email: string; profile_image_url: string | null } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -309,9 +309,9 @@ function GlobalMenu() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || !mounted) return;
       const email = user.email ?? "";
-      const { data } = await supabase.from("instructors").select("name").eq("id", user.id).limit(1).single();
+      const { data } = await supabase.from("instructors").select("name, profile_image_url").eq("id", user.id).limit(1).single();
       if (mounted) {
-        setProfile({ name: data?.name ?? "Instructor", email });
+        setProfile({ name: data?.name ?? "Instructor", email, profile_image_url: data?.profile_image_url ?? null });
       }
     })();
     return () => { mounted = false; };
@@ -382,23 +382,38 @@ function GlobalMenu() {
             <IconX stroke={1.5} size={20} color="#fff" />
           </button>
           <div style={{ display: "flex", alignItems: "center", gap: 14, paddingRight: 40 }}>
-            <div
-              style={{
-                width: 52,
-                height: 52,
-                borderRadius: "50%",
-                background: "#2C97DE",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#fff",
-                fontSize: 20,
-                fontWeight: tokens.fontWeight.bold,
-                flexShrink: 0,
-              }}
-            >
-              {initial}
-            </div>
+            {profile?.profile_image_url ? (
+              <img
+                src={profile.profile_image_url}
+                alt=""
+                style={{
+                  width: 52,
+                  height: 52,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  flexShrink: 0,
+                  border: "2px solid rgba(255,255,255,0.2)",
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  width: 52,
+                  height: 52,
+                  borderRadius: "50%",
+                  background: "#2C97DE",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#fff",
+                  fontSize: 20,
+                  fontWeight: tokens.fontWeight.bold,
+                  flexShrink: 0,
+                }}
+              >
+                {initial}
+              </div>
+            )}
             <div style={{ minWidth: 0, flex: 1 }}>
               <div
                 style={{
@@ -414,29 +429,41 @@ function GlobalMenu() {
               </div>
               <div
                 style={{
-                  color: "rgba(255,255,255,0.6)",
-                  fontSize: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
                   marginTop: 2,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
+                  minWidth: 0,
                 }}
               >
-                {profile?.email ?? ""}
-              </div>
-              <div
-                style={{
-                  display: "inline-flex",
-                  marginTop: 6,
-                  background: "#2C97DE",
-                  color: "#fff",
-                  fontSize: 10,
-                  fontWeight: tokens.fontWeight.bold,
-                  padding: "3px 10px",
-                  borderRadius: 999,
-                }}
-              >
-                Pro plan
+                <span
+                  style={{
+                    color: "rgba(255,255,255,0.6)",
+                    fontSize: 12,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    flex: 1,
+                    minWidth: 0,
+                  }}
+                >
+                  {profile?.email ?? ""}
+                </span>
+                <span
+                  style={{
+                    flexShrink: 0,
+                    background: "#2C97DE",
+                    color: "#fff",
+                    fontSize: 9,
+                    fontWeight: tokens.fontWeight.bold,
+                    padding: "2px 8px",
+                    borderRadius: 999,
+                    textTransform: "uppercase",
+                    letterSpacing: 0.3,
+                  }}
+                >
+                  Pro plan
+                </span>
               </div>
             </div>
           </div>
@@ -650,27 +677,13 @@ function Header({ unreadCount }: { unreadCount: number }) {
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-        <button
-          type="button"
-          aria-label="Search"
+        <IconSearch
+          stroke={1.5}
+          size={24}
+          color="#fff"
+          style={{ cursor: "pointer" }}
           onClick={() => navigate({ to: "/search" as never })}
-          style={{
-            width: 36,
-            height: 36,
-            borderRadius: 8,
-            background: "rgba(255,255,255,0.12)",
-            border: "1px solid rgba(255,255,255,0.18)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            flexShrink: 0,
-            backdropFilter: "blur(8px)",
-            WebkitBackdropFilter: "blur(8px)",
-          }}
-        >
-          <IconSearch size={20} color="#fff" />
-        </button>
+        />
         <div
           style={{ position: "relative", cursor: "pointer" }}
           onClick={() => navigate({ to: "/notifications" as never })}

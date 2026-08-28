@@ -3,7 +3,6 @@ import { tokens } from "@/lib/tokens";
 import { Capacitor } from "@capacitor/core";
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import {
-  IconBell,
   IconBookmark,
   IconBookmarkFilled,
   IconBriefcase,
@@ -739,30 +738,6 @@ function LiveNewsPage() {
           </div>
         </div>
 
-        <button
-          type="button"
-          aria-label="Notifications"
-          onClick={() => {
-            if (typeof window !== "undefined") window.location.href = "/notifications";
-          }}
-          style={{
-            position: "relative",
-            zIndex: 1,
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            border: 0,
-            padding: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "rgba(255,255,255,0.1)",
-            cursor: "pointer",
-            flexShrink: 0,
-          }}
-        >
-          <IconBell size={20} color={tokens.white} stroke={1.8} />
-        </button>
       </header>
 
       <div
