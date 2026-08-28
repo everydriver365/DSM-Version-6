@@ -382,38 +382,6 @@ function GlobalMenu() {
             <IconX stroke={1.5} size={20} color="#fff" />
           </button>
           <div style={{ display: "flex", alignItems: "center", gap: 14, paddingRight: 40 }}>
-            {profile?.profile_image_url ? (
-              <img
-                src={profile.profile_image_url}
-                alt=""
-                style={{
-                  width: 52,
-                  height: 52,
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  flexShrink: 0,
-                  border: "2px solid rgba(255,255,255,0.2)",
-                }}
-              />
-            ) : (
-              <div
-                style={{
-                  width: 52,
-                  height: 52,
-                  borderRadius: "50%",
-                  background: "#2C97DE",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#fff",
-                  fontSize: 20,
-                  fontWeight: tokens.fontWeight.bold,
-                  flexShrink: 0,
-                }}
-              >
-                {initial}
-              </div>
-            )}
             <div style={{ minWidth: 0, flex: 1 }}>
               <div
                 style={{
