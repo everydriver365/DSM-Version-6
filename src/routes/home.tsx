@@ -5301,8 +5301,11 @@ function HomePage() {
             upcoming?.pupils?.postcode,
           );
           const pickup = pickupParts.full;
-          const upcomingTestCentre = upcomingIsTest ? testCentreOf(upcoming) : null;
+          // Centre name only (no full address); the time shown next to it is the
+          // test start time — the tile's own start time stays the pickup time.
+          const upcomingTestCentre = upcomingIsTest ? testCentreName(testCentreOf(upcoming)) : null;
           const upcomingTestTime = upcomingIsTest ? (testTimeOf(upcoming) ?? startText) : null;
+
 
 
 
