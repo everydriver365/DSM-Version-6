@@ -1369,16 +1369,16 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
 
 function PinnedQuickActions({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
   const pinned = [
-    { icon: <img src={availabilityIcon.url} alt="Schedule" style={{ width: 24, height: 24, objectFit: 'contain' }} />, bg: "#1877D6", label: "Schedule", route: "/schedule" },
-    { icon: <IconUsers stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Pupils", route: "/pupils" },
-    { icon: <img src={paymentsIcon.url} alt="Payments" style={{ width: 24, height: 24, objectFit: 'contain' }} />, bg: "#1877D6", label: "Payments", route: "/payments" },
-    { icon: <img src={trackingIcon.url} alt="Tracking" style={{ width: 24, height: 24, objectFit: 'contain' }} />, bg: "#1877D6", label: "Tracking", route: "/live" },
+    { icon: <IconMapPin stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Tracking", route: "/live" },
     { icon: <IconRosetteDiscount stroke={1.5} size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Perks", route: "/perks" },
-    { icon: <img src={fuelIcon.url} alt="Nearest" style={{ width: 32, height: 32, objectFit: 'contain' }} />, bg: "#18A999", label: "Nearest", route: "/nearest" },
+    { icon: <IconMapSearch stroke={1.5} size={20} color="#FFFFFF" />, bg: "#18A999", label: "Nearest", route: "/nearest" },
+    { icon: <IconMessageCircle stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Messages", route: "/messages" },
+    { icon: <IconSchool stroke={1.5} size={20} color="#FFFFFF" />, bg: "#E53935", label: "Courses", route: "/courses" },
+    { icon: <IconUserCircle stroke={1.5} size={20} color="#FFFFFF" />, bg: "#536579", label: "Profile", route: "/settings" },
   ];
 
   return (
-    <div style={{ background: PAGE_BACKGROUND, borderBottom: '1px solid #E4E8EF', padding: '12px 16px' }}>
+    <div style={{ background: '#FFFFFF', borderBottom: '1px solid #E4E8EF', padding: '12px 16px' }}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
         {pinned.map((tile) => (
           <button
