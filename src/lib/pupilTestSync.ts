@@ -14,8 +14,10 @@ export async function syncPupilTestFields(opts: {
   date: string | null;
   testTime: string | null;
   testCentre: string | null;
+  /** True only when the lesson being saved was previously a test day. */
+  wasTestDay?: boolean;
 }) {
-  const { pupilId, isTestDay, date, testTime, testCentre } = opts;
+  const { pupilId, isTestDay, date, testTime, testCentre, wasTestDay = false } = opts;
   if (!pupilId) return;
   try {
     if (isTestDay) {
@@ -28,13 +30,18 @@ export async function syncPupilTestFields(opts: {
           test_status: "upcoming",
         })
         .eq("id", pupilId);
-    } else {
+    } else if (wasTestDay) {
       // Lesson was switched back from a test day — clear the stale test.
       await supabase
         .from("pupils")
         .update({ test_date: null, test_time: null, test_centre: null, test_status: null })
         .eq("id", pupilId);
     }
+  } catch (e) {
+    console.warn("[pupilTestSync] failed", e);
+  }
+}
+
   } catch (e) {
     console.warn("[pupilTestSync] failed", e);
   }
