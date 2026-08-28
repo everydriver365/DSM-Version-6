@@ -5711,7 +5711,7 @@ function HomePage() {
                     boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
                   }}
                 >
-                  <IconPhone stroke={1.5} size={14} color="#FFFFFF" />
+                  <IconPhone stroke={1.5} size={14} color="#0399AA" />
                   <span>Call</span>
                 </button>
 
