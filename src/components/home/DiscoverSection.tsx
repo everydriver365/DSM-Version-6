@@ -1010,7 +1010,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               <IconRosetteDiscount size={20} color={BLUE} stroke={1.6} />
             </span>
             <div style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 10 }}>
-              <img src={proLogoAsset.url} alt="PRO" style={{ height: 32, width: "auto", objectFit: "contain" }} />
+              <img src={proLogoAsset.url} alt="PRO" style={{ height: 22, width: "auto", objectFit: "contain" }} />
               <span style={{ fontSize: 15, fontWeight: tokens.fontWeight.bold, color: NAVY }}>Perks</span>
             </div>
             <div style={{ fontSize: tokens.fontSize.sm, color: MUTED, lineHeight: 1.4, marginTop: 4 }}>
