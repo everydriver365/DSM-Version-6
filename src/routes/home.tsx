@@ -11474,8 +11474,9 @@ function TestsBreakdownModal({
                     </div>
                     <div style={{ fontSize: 12, color: "#4B5563", marginTop: 2 }}>
                       {fmtDate(t.test_date)}
-                      {t.test_time ? ` · ${String(t.test_time).slice(0, 5)}` : ""}
-                      {t.test_centre ? ` · ${t.test_centre}` : ""}
+                      {t.test_time ? ` · Test at ${String(t.test_time).slice(0, 5)}` : " · Test time TBC"}
+                      {testCentreName(t.test_centre) ? ` · ${testCentreName(t.test_centre)}` : ""}
+
                     </div>
                   </div>
                   {resultState === "passed" ? (
