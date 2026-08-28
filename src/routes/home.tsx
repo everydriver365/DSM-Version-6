@@ -7172,8 +7172,10 @@ function HomePage() {
             const d = parseDate(iso);
             if (!d) return iso;
             const datePart = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
-            const timePart = time ? ` · ${String(time).slice(0, 5)}` : '';
+            // The test start time is always shown on test tiles.
+            const timePart = time ? ` · Test at ${String(time).slice(0, 5)}` : ' · Test time TBC';
             return `${datePart}${timePart}`;
+
           };
           const now = new Date(nowTick);
           const nowMs = now.getTime();
