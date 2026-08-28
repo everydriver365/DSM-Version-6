@@ -11,7 +11,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, useState, useRef, useCallback, type ReactNode } from "react";
 import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMenu2, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconX } from "@tabler/icons-react";
-import { IconCalculator, IconCalendarPlus, IconHelpCircle, IconListCheck, IconReceipt, IconSettings, IconSignature, IconSparkles, IconSpeakerphone, IconBell, IconBriefcase, IconHelp, IconMail } from "@tabler/icons-react";
+import { IconCalculator, IconCalendarPlus, IconHelpCircle, IconListCheck, IconReceipt, IconSettings, IconSignature, IconSparkles, IconSpeakerphone, IconBell, IconBriefcase, IconHelp, IconMail, IconSearch } from "@tabler/icons-react";
 
 import appCss from "../styles.css?url";
 import icon192 from "../assets/icon-192.png.asset.json";
