@@ -683,7 +683,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
         <IconSearch
           stroke={1.5}
-          size={24}
+          size={20}
           color="#fff"
           style={{ cursor: "pointer" }}
           onClick={() => navigate({ to: "/search" as never })}
