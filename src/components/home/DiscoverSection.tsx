@@ -1312,15 +1312,15 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             />
           )}
 
-          <div style={{ position: "relative", zIndex: 1, maxWidth: "62%" }}>
+          <div style={{ position: "relative", zIndex: 1, maxWidth: "66%" }}>
             <span
               style={{
                 ...chipBase,
                 width: 36,
                 height: 36,
                 borderRadius: 12,
-                background: "#fff",
-                boxShadow: "0 2px 8px -2px rgba(11,31,58,0.12)",
+                background: "#F7F9FB",
+                border: "1px solid #E8EEF4",
               }}
             >
               <IconMicrophone size={19} color={isLiveOnAir ? RED : "#E5385F"} stroke={1.7} />
@@ -1329,16 +1329,17 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 3,
-                marginTop: 8,
+                gap: 5,
+                marginTop: 10,
               }}
             >
-              <img src={proLogoAsset.url} alt="PRO" style={{ height: 22, width: "auto", objectFit: "contain" }} />
+              <img src={proLogoAsset.url} alt="PRO" style={{ height: 24, width: "auto", objectFit: "contain", display: "block" }} />
               <span
                 style={{
                   fontSize: 15,
                   fontWeight: tokens.fontWeight.bold,
-                  color: NAVY,
+                  color: "#072B47",
+                  letterSpacing: "-0.2px",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -1349,10 +1350,10 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             </div>
             <div
               style={{
-                fontSize: tokens.fontSize.xs,
+                fontSize: 11,
                 color: isLiveOnAir ? RED : MUTED,
                 fontWeight: isLiveOnAir ? tokens.fontWeight.bold : undefined,
-                marginTop: 2,
+                marginTop: 3,
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -1360,6 +1361,7 @@ export function DiscoverSection({ unreadIds = [] }: { unreadIds?: string[] } = {
             >
               {isLiveOnAir ? "On air now" : "Live, news and podcasts"}
             </div>
+
           </div>
         </div>
 
