@@ -8503,7 +8503,7 @@ function HomePage() {
               {/* ---- HEADER ---- */}
               <div
                 onClick={() => setCommunityExpanded((v) => !v)}
-                style={{ padding: '12px 14px', cursor: 'pointer' }}
+                style={{ padding: '16px 16px 12px', cursor: 'pointer' }}
               >
                 {(() => {
                   type AvatarSource = {
