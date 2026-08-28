@@ -644,7 +644,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
         <img
           src={headerLogoAsset.url}
           alt="Every Driver Pro"
-          style={{ height: 36, width: "auto", objectFit: "contain" }}
+          style={{ height: 44, width: "auto", objectFit: "contain" }}
         />
       </div>
 
