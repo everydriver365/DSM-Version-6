@@ -12,7 +12,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { recordPayment, recordRefund, correctPaymentRecord } from "@/lib/payments";
 import { buildPickup, getPickupParts } from "@/lib/pickup";
-import edpLogoWhite from "@/assets/edp-signin-logo.png.asset.json";
+import edpLogoWhite from "@/assets/edp-logon-new-transparent.png.asset.json";
 import { IconHeadset, IconDownload, IconAdjustmentsHorizontal } from "@tabler/icons-react";
 import { QuickActionsMenu, type QuickAction } from "@/components/dsm/QuickActionsMenu";
 import { EndLessonWizard } from "@/components/dsm/EndLessonWizard.tsx";
