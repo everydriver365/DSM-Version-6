@@ -5654,7 +5654,7 @@ function HomePage() {
                     boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
                   }}
                 >
-                  <IconMessage stroke={1.5} size={14} color="#FFFFFF" />
+                  <IconMessage stroke={1.5} size={14} color="#0077F9" />
                   <span>Message</span>
                   {(upcomingSmsCount > 0 || upcomingAppCount > 0) && (
                     <div style={{
