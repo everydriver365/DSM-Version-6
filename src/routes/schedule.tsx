@@ -2019,24 +2019,24 @@ function SchedulePage() {
                                                 .slice(0, 2)
                                                 .toUpperCase();
                                               return (
-                                                <div
-                                                  key={idx}
-                                                  style={{
-                                                    width: 34,
-                                                    height: 34,
-                                                    borderRadius: "50%",
-                                                    background: tokens.navy,
-                                                    border: "2px solid #FDFBF6",
-                                                    marginLeft: idx === 0 ? 0 : -10,
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    justifyContent: "center",
-                                                    color: tokens.white,
-                                                    fontSize: tokens.fontSize.sm,
-                                                    fontWeight: tokens.fontWeight.bold,
-                                                    fontFamily: "Poppins, sans-serif",
-                                                  }}
-                                                >
+                                                  <div
+                                                    key={idx}
+                                                    style={{
+                                                      width: 34,
+                                                      height: 34,
+                                                      borderRadius: "50%",
+                                                      background: tokens.navy,
+                                                      border: "2px solid #EAF5FC",
+                                                      marginLeft: idx === 0 ? 0 : -10,
+                                                      display: "flex",
+                                                      alignItems: "center",
+                                                      justifyContent: "center",
+                                                      color: tokens.white,
+                                                      fontSize: tokens.fontSize.sm,
+                                                      fontWeight: tokens.fontWeight.bold,
+                                                      fontFamily: "Poppins, sans-serif",
+                                                    }}
+                                                  >
                                                   {initials}
                                                 </div>
                                               );
