@@ -5729,7 +5729,7 @@ function HomePage() {
                       fontFamily: 'Poppins, sans-serif',
                       overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                     }}>
-                      Driving Test : {[upcomingTestCentre, upcomingTestTime].filter(Boolean).join(' · ')}
+                      Driving Test : {[upcomingTestCentre, upcomingTestTime ? `Test at ${upcomingTestTime}` : null].filter(Boolean).join(' · ')}
                     </span>
                   </div>
                 )}
