@@ -6538,7 +6538,7 @@ function HomePage() {
                               top: -12,
                               left: 12,
                               zIndex: 1,
-                              background: tokens.navy,
+                              background: "#00A6A6",
                               color: tokens.white,
                               fontSize: tokens.fontSize.xs,
                               fontWeight: tokens.fontWeight.extrabold,
