@@ -2,6 +2,7 @@ import { ScheduleDateDivider } from "@/components/schedule/ScheduleDateDivider";
 import { notifyInstructors } from "@/lib/notify";
 import { tokens } from "@/lib/tokens";
 import TestEditSheet from "@/components/tests/TestEditSheet";
+import { useNowTick } from "@/hooks/useNowTick";
 import { missingTestDetails, missingTestDetailsLabel } from "@/lib/pupilTestSync";
 import { lessonStatusColors } from "@/lib/statusVariants";
 import { TestDetailTrigger } from '@/components/lessons/TestDetailPanel';
@@ -1651,6 +1652,7 @@ function HomePage() {
     test_status?: string | null;
   } | null>(null);
   const [editTestFocus, setEditTestFocus] = useState<"centre" | "time" | null>(null);
+  const nowTick = useNowTick(60000);
   const [pendingSwapCount, setPendingSwapCount] = useState(0);
   const [openJobsCount, setOpenJobsCount] = useState(0);
   const [claimedAwaitingPaymentCount, setClaimedAwaitingPaymentCount] = useState(0);
@@ -7108,7 +7110,7 @@ function HomePage() {
             const timePart = time ? ` · ${String(time).slice(0, 5)}` : '';
             return `${datePart}${timePart}`;
           };
-          const now = new Date();
+          const now = new Date(nowTick);
           const nowMs = now.getTime();
           const testsSorted = [...(upcomingTests ?? [])]
             .filter((p) => {
