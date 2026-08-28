@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import * as React from "react";
 import PageHeader from "@/components/dsm/PageHeader";
 import { LoadingSpinner } from "@/components/dsm/LoadingSpinner";
+import { findNearbyPlaces } from "@/lib/nearest.functions";
+import { reverseGeocode } from "@/lib/geocode.functions";
 
 export const Route = createFileRoute("/nearest")({
   head: () => ({
