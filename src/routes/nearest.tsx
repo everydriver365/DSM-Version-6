@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import * as React from "react";
 import PageHeader from "@/components/dsm/PageHeader";
 import { LoadingSpinner } from "@/components/dsm/LoadingSpinner";
+import { findNearbyPlaces } from "@/lib/nearest.functions";
+import { reverseGeocode } from "@/lib/geocode.functions";
 
 export const Route = createFileRoute("/nearest")({
   head: () => ({
@@ -102,54 +104,60 @@ function NearestPage() {
   const mapEl = React.useRef<HTMLDivElement | null>(null);
   const mapRef = React.useRef<any>(null);
   const markersRef = React.useRef<any[]>([]);
+  const [mapsReady, setMapsReady] = React.useState(false);
 
-  // 1. GPS + Maps SDK
+  // 1. GPS first — never gated on the Maps JS SDK
   React.useEffect(() => {
     let cancelled = false;
-    (async () => {
-      try {
-        await loadMaps();
-      } catch {
-        if (!cancelled) { setError("Maps unavailable right now"); setLoading(false); }
-        return;
-      }
-      if (!navigator.geolocation) {
-        if (!cancelled) { setError("Enable location access to find nearby places"); setLoading(false); }
-        return;
-      }
-      navigator.geolocation.getCurrentPosition(
-        (p) => {
-          if (cancelled) return;
-          setPos({ lat: p.coords.latitude, lng: p.coords.longitude });
-        },
-        () => {
-          if (cancelled) return;
-          setError("Enable location access to find nearby places");
-          setLoading(false);
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
-      );
-    })();
+    if (!navigator.geolocation) {
+      setError("Location is not available on this device");
+      setLoading(false);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (p) => {
+        if (cancelled) return;
+        setPos({ lat: p.coords.latitude, lng: p.coords.longitude });
+      },
+      (err) => {
+        if (cancelled) return;
+        setError(
+          err.code === err.PERMISSION_DENIED
+            ? "Enable location access to find nearby places"
+            : "Could not get your location. Try again outdoors.",
+        );
+        setLoading(false);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
+    );
     return () => { cancelled = true; };
   }, []);
 
-  // 2. Reverse geocode for the area name
+  // 1b. Map SDK is best-effort (browser key is domain restricted); list works without it
+  React.useEffect(() => {
+    let cancelled = false;
+    loadMaps()
+      .then(() => { if (!cancelled) setMapsReady(true); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
+
+  // 2. Area name via the server geocode (browser key is not authorised for Geocoding)
   React.useEffect(() => {
     if (!pos) return;
-    const g = (window as GWin).google;
-    if (!g?.maps?.Geocoder) return;
-    const geocoder = new g.maps.Geocoder();
-    geocoder.geocode({ location: pos }, (res: any[], status: string) => {
-      if (status !== "OK" || !res?.length) { setArea("Nearby places"); return; }
-      const comps: any[] = res[0].address_components ?? [];
-      const pick = (t: string) => comps.find((c) => c.types.includes(t))?.long_name;
-      setArea(pick("postal_town") || pick("locality") || pick("neighborhood") || pick("administrative_area_level_2") || "Nearby places");
-    });
+    let cancelled = false;
+    reverseGeocode({ data: { lat: pos.lat, lng: pos.lng } })
+      .then((r) => {
+        if (cancelled) return;
+        setArea(r.town || r.road || "Nearby places");
+      })
+      .catch(() => { if (!cancelled) setArea("Nearby places"); });
+    return () => { cancelled = true; };
   }, [pos]);
 
   // 3. Init map
   React.useEffect(() => {
-    if (!pos || !mapEl.current) return;
+    if (!pos || !mapsReady || !mapEl.current) return;
     const g = (window as GWin).google;
     if (!g?.maps) return;
     if (!mapRef.current) {
@@ -175,47 +183,49 @@ function NearestPage() {
     } else {
       mapRef.current.setCenter(pos);
     }
-  }, [pos]);
+  }, [pos, mapsReady]);
 
-  // 4. Nearby search when category or position changes
+  // 4. Nearby search via Places API (New) through the connector gateway
   React.useEffect(() => {
     if (!pos) return;
-    const g = (window as GWin).google;
-    if (!g?.maps?.places) return;
-    const config = CATEGORIES.find((c) => c.id === cat)!;
+    let cancelled = false;
     setLoading(true);
     setError(null);
-    const svc = new g.maps.places.PlacesService(mapRef.current ?? document.createElement("div"));
-    svc.nearbySearch(
-      { location: pos, radius: 1500, ...config.request },
-      (results: any[], status: string) => {
-        if (status !== "OK" || !results) {
+    findNearbyPlaces({ data: { lat: pos.lat, lng: pos.lng, category: cat, radius: 2000 } })
+      .then((res) => {
+        if (cancelled) return;
+        if (res.error) {
+          setError(res.error);
           setPlaces([]);
           setLoading(false);
           return;
         }
-        const mapped: Place[] = results
-          .filter((r) => r.geometry?.location)
-          .map((r, i) => {
-            const lat = r.geometry.location.lat();
-            const lng = r.geometry.location.lng();
-            return {
-              id: r.place_id ?? `${i}`,
-              name: r.name ?? "Unnamed",
-              vicinity: r.vicinity ?? r.formatted_address ?? "",
-              rating: r.rating,
-              openNow: r.opening_hours?.open_now ?? r.opening_hours?.isOpen?.(),
-              lat,
-              lng,
-              distance: haversine(pos.lat, pos.lng, lat, lng),
-            };
-          })
-          .sort((a, b) => a.distance - b.distance);
-        setPlaces(mapped);
+        setPlaces(
+          res.places
+            .map((p) => ({
+              id: p.id,
+              name: p.name,
+              vicinity: p.address,
+              rating: p.rating,
+              openNow: p.openNow,
+              lat: p.lat,
+              lng: p.lng,
+              distance: haversine(pos.lat, pos.lng, p.lat, p.lng),
+            }))
+            .sort((a, b) => a.distance - b.distance),
+        );
         setLoading(false);
-      },
-    );
+      })
+      .catch((e) => {
+        if (cancelled) return;
+        console.error("[nearest] search failed", e);
+        setError("Could not search nearby places right now.");
+        setPlaces([]);
+        setLoading(false);
+      });
+    return () => { cancelled = true; };
   }, [pos, cat]);
+
 
   // 5. Draw result markers
   React.useEffect(() => {
