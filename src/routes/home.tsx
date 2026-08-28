@@ -4484,7 +4484,7 @@ function HomePage() {
           <img
             src={edpLogoWhite.url}
             alt="EDP"
-            style={{ height: 52, width: "auto", objectFit: "contain", display: "block", paddingLeft: 5 }}
+            style={{ height: 52, width: "auto", objectFit: "contain", display: "block", paddingLeft: 15 }}
           />
           <div
             style={{
