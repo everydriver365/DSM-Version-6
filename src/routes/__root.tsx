@@ -693,19 +693,29 @@ function Header({ unreadCount }: { unreadCount: number }) {
           onClick={() => navigate({ to: "/notifications" as never })}
         >
           <IconBell stroke={1.5} size={20} color="#fff" />
-          {hasUnread && (
+          {unreadCount > 0 && (
             <div
               style={{
                 position: "absolute",
-                top: -2,
-                right: -2,
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
+                top: -6,
+                right: -6,
+                minWidth: 18,
+                height: 18,
+                borderRadius: 9,
                 background: "#E53935",
-                border: "1.5px solid #0B2341",
+                border: "2px solid #0B2341",
+                color: "#fff",
+                fontSize: 10,
+                fontWeight: 700,
+                fontFamily: "Poppins, sans-serif",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "0 4px",
               }}
-            />
+            >
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </div>
           )}
         </div>
       </div>
