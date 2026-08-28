@@ -6,7 +6,7 @@ import spotifyLogoAsset from "@/assets/spotify-logo.png.asset.json";
 import balloonLogoAsset from "@/assets/balloon-logo.png.asset.json";
 import vitalityLogoAsset from "@/assets/vitality-logo.png.asset.json";
 import hmacaLogoAsset from "@/assets/hmaca-logo.png.asset.json";
-import proLogoAsset from "@/assets/pro-logo.png.asset.json";
+import proLogoAsset from "@/assets/pro-image.png.asset.json";
 
 import {
   IconChevronRight,
