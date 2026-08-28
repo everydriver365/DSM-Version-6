@@ -10,7 +10,7 @@ import {
   IconAdjustmentsHorizontal,
 } from "@tabler/icons-react";
 import { useNavigate } from "@tanstack/react-router";
-import edProLogoWhite from "@/assets/edp-logo-for-mobile.png.asset.json";
+import edProLogoWhite from "@/assets/edp-mob-transparent.png.asset.json";
 
 /* Real rendered bar height: top padding (safe area + 6) + 44px logo + 4px bottom padding. */
 export const TOP_BAR_SPACER = "calc(max(env(safe-area-inset-top, 0px), 24px) + 54px)";
