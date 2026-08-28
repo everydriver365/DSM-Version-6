@@ -9106,6 +9106,33 @@ function HomePage() {
         <div style={{ height: 10 }} />
         </section>
 
+        <button
+          type="button"
+          aria-label="Open command menu"
+          onClick={() => {
+            window.dispatchEvent(new CustomEvent("dsm-open-command-palette"));
+          }}
+          style={{
+            position: "absolute",
+            right: 16,
+            bottom: "calc(70px + env(safe-area-inset-bottom, 0px))",
+            width: 54,
+            height: 54,
+            borderRadius: "50%",
+            background: tokens.blue,
+            border: "3px solid #FFFFFF",
+            boxShadow: "0 4px 14px rgba(24,119,214,0.35), 0 6px 20px rgba(11,31,58,0.12)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            zIndex: 40,
+            padding: 0,
+          }}
+        >
+          <IconLayoutGrid size={24} color="#FFFFFF" stroke={1.8} />
+        </button>
+
 
 
 
