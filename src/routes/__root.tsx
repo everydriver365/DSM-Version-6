@@ -619,13 +619,19 @@ function Header({ unreadCount }: { unreadCount: number }) {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-        <IconMenu2
-          stroke={1.5}
-          size={24}
-          color="#fff"
-          style={{ cursor: "pointer" }}
+        <div
           onClick={openMenu}
-        />
+          style={{
+            width: 32,
+            height: 32,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          <IconMenu2 stroke={1.5} size={22} color="#fff" />
+        </div>
       </div>
 
       <div
@@ -660,7 +666,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
             cursor: "pointer",
           }}
         >
-          <IconSearch stroke={1.5} size={20} color="#fff" />
+          <IconSearch stroke={1.5} size={22} color="#fff" />
         </div>
         <div
           onClick={() => navigate({ to: "/notifications" as never })}
@@ -674,26 +680,26 @@ function Header({ unreadCount }: { unreadCount: number }) {
             cursor: "pointer",
           }}
         >
-          <IconBell stroke={1.5} size={20} color="#fff" />
+          <IconBell stroke={1.5} size={22} color="#fff" />
           {unreadCount > 0 && (
             <div
               style={{
                 position: "absolute",
-                top: 2,
-                right: 2,
-                minWidth: 18,
-                height: 18,
-                borderRadius: 9,
+                top: 1,
+                right: 1,
+                minWidth: 16,
+                height: 16,
+                borderRadius: 8,
                 background: "#E53935",
                 border: "2px solid #0B2341",
                 color: "#fff",
-                fontSize: 10,
+                fontSize: 9,
                 fontWeight: 700,
                 fontFamily: "Poppins, sans-serif",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: "0 4px",
+                padding: "0 3px",
               }}
             >
               {unreadCount > 9 ? "9+" : unreadCount}
