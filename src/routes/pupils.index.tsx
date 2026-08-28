@@ -1207,7 +1207,7 @@ function PupilsIndexPage() {
                 </div>
               </>
             )}
-            <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div style={{ margin: '12px 16px 0', display: 'flex', flexDirection: 'column', gap: 20 }}>
               {(statusFilter === "active" ? activePupils : filtered).map((p) =>
                 renderSwipeRow(p)
               )}
