@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { IconBell } from "@tabler/icons-react";
+
 import { tapLight } from "@/lib/haptics";
 import { supabase } from "@/lib/supabaseClient";
 import { useGoBack } from "@/hooks/useGoBack";
@@ -75,57 +75,30 @@ function DSMLearnPage() {
   // Showcase: always visible. Bitesize: admins only. Learn: never.
   const showUpload = active === "showcase" || (active === "bitesize" && isAdmin);
 
-  const headerRight = (
+  const headerRight = showUpload ? (
     <div style={{ display: "flex", alignItems: "center", gap: 14, height: 40 }}>
-      {showUpload && (
-        <button
-          type="button"
-          aria-label="Upload"
-          onClick={() => {
-            tapLight();
-            setUploadRequest((n) => n + 1);
-          }}
-          style={{
-            background: "none",
-            border: 0,
-            padding: 0,
-            color: "#fff",
-            fontSize: 14,
-            fontWeight: 500,
-            cursor: "pointer",
-            fontFamily: FONT,
-          }}
-        >
-          + Upload
-        </button>
-      )}
       <button
         type="button"
-        aria-label="Notifications"
+        aria-label="Upload"
         onClick={() => {
           tapLight();
-          if (typeof window !== "undefined") {
-            window.location.href = "/notifications";
-          }
+          setUploadRequest((n) => n + 1);
         }}
         style={{
-          width: 40,
-          height: 40,
-          borderRadius: "50%",
+          background: "none",
           border: 0,
           padding: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "rgba(255,255,255,0.1)",
+          color: "#fff",
+          fontSize: 14,
+          fontWeight: 500,
           cursor: "pointer",
-          flexShrink: 0,
+          fontFamily: FONT,
         }}
       >
-        <IconBell size={20} color="#FFFFFF" stroke={1.8} />
+        + Upload
       </button>
     </div>
-  );
+  ) : null;
 
   return (
     <DSMTopSheet title="DSM Learn" onBack={() => goBack("/home")} right={headerRight}>

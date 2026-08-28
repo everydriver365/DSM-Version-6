@@ -1,6 +1,6 @@
 import * as React from "react";
 import { tapLight } from "@/lib/haptics";
-import { IconChevronLeft, IconBell } from "@tabler/icons-react";
+import { IconChevronLeft } from "@tabler/icons-react";
 import { tokens } from "@/lib/tokens";
 import { useGoBack } from "@/hooks/useGoBack";
 
@@ -100,33 +100,7 @@ export default function DSMTopSheet({
           </h1>
         </div>
 
-        {right ?? (
-          <button
-            type="button"
-            aria-label="Notifications"
-            onClick={() => {
-              tapLight();
-              if (typeof window !== "undefined") {
-                window.location.href = "/notifications";
-              }
-            }}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              border: 0,
-              padding: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "rgba(255,255,255,0.1)",
-              cursor: "pointer",
-              flexShrink: 0,
-            }}
-          >
-            <IconBell size={20} color={tokens.white} stroke={1.8} />
-          </button>
-        )}
+        {right}
       </header>
 
       <div
