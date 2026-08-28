@@ -5724,10 +5724,10 @@ function HomePage() {
                   style={{
                     flex: 1,
                     height: 38,
-                    borderRadius: 12,
+                    borderRadius: 16,
                     border: 'none',
-                    background: '#FEE2E2',
-                    color: '#CC2229',
+                    background: '#FDE7E7',
+                    color: '#D92D3A',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -5737,9 +5737,10 @@ function HomePage() {
                     fontWeight: tokens.fontWeight.semibold,
                     fontFamily: 'Poppins, sans-serif',
                     padding: 0,
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
                   }}
                 >
-                  <IconClock stroke={1.5} size={14} color="#B3181F" />
+                  <IconClock stroke={1.5} size={14} color="#D92D3A" />
                   <span>Late</span>
                 </button>
 
