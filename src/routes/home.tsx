@@ -8719,7 +8719,7 @@ function HomePage() {
 
 
                       {/* Row 2 — avatar stack + active count + updated time */}
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           {visibleAvatars.length === 0 ? (
                             <div style={{
