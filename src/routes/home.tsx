@@ -8470,7 +8470,7 @@ function HomePage() {
             );
           };
 
-          const Sep = () => <span style={{ color: BORDER_C, fontSize: 11 }}>·</span>;
+          const Sep = () => <span style={{ color: BORDER_C, fontSize: 13, opacity: 0.7, margin: '0 2px' }}>·</span>;
 
           
 
