@@ -8806,10 +8806,10 @@ function HomePage() {
                               )}
                             </>
                           )}
-                          <span style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', fontFamily: PF_C, marginLeft: 8 }}>{totalActive} active</span>
+                          <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.medium, color: '#6B7686', fontFamily: PF_C, marginLeft: 10 }}>{totalActive} active</span>
                         </div>
                         {timeAgo && (
-                          <span style={{ fontSize: tokens.fontSize.sm, color: '#9CA3AF', fontFamily: PF_C }}>
+                          <span style={{ fontSize: 11, fontWeight: tokens.fontWeight.medium, color: '#9CA3AF', fontFamily: PF_C }}>
                             Updated {timeAgo}
                           </span>
                         )}
