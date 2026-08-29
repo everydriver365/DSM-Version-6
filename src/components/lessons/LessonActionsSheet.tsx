@@ -117,14 +117,6 @@ function Chevron() {
   );
 }
 
-const ACTION_ROW_LABEL: React.CSSProperties = {
-  fontFamily: "Poppins, sans-serif",
-  fontSize: 15,
-  fontWeight: tokens.fontWeight.bold,
-  color: NAVY,
-  minWidth: 0,
-};
-
 const ACTION_CARD: React.CSSProperties = {
   background: "#fff",
   borderRadius: 12,
