@@ -52,6 +52,8 @@ export function useVoiceAssistant({
   const handleCommandRef = useRef<(text: string) => void>(() => {});
   const activateRef = useRef<() => void>(() => {});
   const autoListenRef = useRef(false);
+  const lastBriefTime = useRef<number>(0);
+  const BRIEF_COOLDOWN = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 
   const SpeechRecognitionCtor =
@@ -101,7 +103,11 @@ export function useVoiceAssistant({
           try { wake.stop(); } catch { /* noop */ }
           wakeActiveRef.current = false;
           setWakeActive(false);
-          activateRef.current();
+          // Wake word always just says "Yes?" and listens — never reads the full brief
+          speak("Yes?");
+          setTimeout(() => {
+            startListening();
+          }, 800);
           return;
         }
       }
@@ -248,6 +254,18 @@ export function useVoiceAssistant({
 
   // Build and speak the lesson brief
   const activate = useCallback(() => {
+    const now = Date.now();
+    const timeSinceBrief = now - lastBriefTime.current;
+
+    if (timeSinceBrief < BRIEF_COOLDOWN) {
+      // Skip the brief — just start listening immediately
+      speak("Yes?", true);
+      return;
+    }
+
+    // Read full brief
+    lastBriefTime.current = now;
+
     // Pause wake-word listening while ED speaks / listens
     wakeActiveRef.current = false;
     setWakeActive(false);
