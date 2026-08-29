@@ -438,6 +438,57 @@ function NearestPage() {
         )}
       </div>
 
+      {/* 2b. USE MY LOCATION + RADIUS */}
+      <div style={{ padding: "0 16px 10px" }}>
+        <button
+          type="button"
+          onClick={locate}
+          disabled={locating}
+          style={{
+            width: "100%",
+            background: locating ? "#7FAFD8" : NAVY,
+            color: "#FFFFFF",
+            border: "none",
+            borderRadius: 12,
+            padding: "13px 14px",
+            fontSize: 14,
+            fontWeight: 700,
+            cursor: locating ? "default" : "pointer",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          {locating ? "Locating…" : "Use my location"}
+        </button>
+
+        <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+          {RADIUS_OPTIONS.map((mi) => {
+            const active = radiusMi === mi;
+            return (
+              <button
+                key={mi}
+                type="button"
+                onClick={() => setRadiusMi(mi)}
+                aria-pressed={active}
+                style={{
+                  flex: 1,
+                  background: active ? BLUE : "#FFFFFF",
+                  color: active ? "#FFFFFF" : NAVY,
+                  border: `1px solid ${active ? BLUE : BORDER}`,
+                  borderRadius: 8,
+                  padding: "9px 0",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                {mi} mi
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* 3. BRAND PILLS */}
       <div style={{ padding: "0 16px 8px", overflowX: "auto", scrollbarWidth: "none", whiteSpace: "nowrap" }}>
         {BRANDS.map((b) => {
