@@ -954,11 +954,11 @@ function RootComponent() {
   const showHeader = !hideNav;
 
   const wrapperStyle: Record<string, string | number> = {};
-  if (showHeader) {
-    wrapperStyle.paddingTop = 'calc(env(safe-area-inset-top, 0px) + 46px)';
-  } else {
+  if (!showHeader) {
+    // Sticky header already occupies its own space; only pad when it's absent.
     wrapperStyle.paddingTop = 'env(safe-area-inset-top, 0px)';
   }
+
   if (!hideNav) {
     wrapperStyle.paddingBottom =
       'calc(80px + env(safe-area-inset-bottom, 0px))';
