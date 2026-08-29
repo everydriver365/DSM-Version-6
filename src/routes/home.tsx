@@ -6700,7 +6700,7 @@ function HomePage() {
                   )}
 
                   {/* Timeline container */}
-                  <div style={{ position: 'relative', padding: '12px 0 4px' }}>
+                  <div style={{ position: 'relative', padding: '4px 0 4px' }}>
                     {rows.map((r, idx) => {
                     const rowStart = r.kind === 'lesson' ? lessonDateTime(r.l) : r.start;
                     const rowDay = ymd(rowStart);
@@ -6708,7 +6708,7 @@ function HomePage() {
                     const isFirstDivider = lastDividerDate === '';
                     if (showDayDivider) lastDividerDate = rowDay;
                     const dividerNode = showDayDivider ? (
-                      <div style={{ marginTop: isFirstDivider ? 0 : 18 }}>
+                      <div style={{ marginTop: isFirstDivider ? 0 : 8 }}>
                         <ScheduleDateDivider date={rowStart} />
                       </div>
                     ) : null;
