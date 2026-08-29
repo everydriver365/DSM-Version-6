@@ -805,6 +805,50 @@ function StatBlock({ label, value, color, valueSize = 19 }: { label: string; val
   );
 }
 
+function SummaryCol({ value, label, color }: { value: string; label: string; color: string }) {
+  return (
+    <div style={{ minWidth: 0, textAlign: "center" }}>
+      <div style={{ fontSize: 16, fontWeight: 700, color, ...POPPINS, lineHeight: 1.2 }}>{value}</div>
+      <div
+        style={{
+          fontSize: 10,
+          fontWeight: 500,
+          color: "#6E6E73",
+          textTransform: "uppercase",
+          letterSpacing: "0.3px",
+          marginTop: 4,
+          ...POPPINS,
+        }}
+      >
+        {label}
+      </div>
+    </div>
+  );
+}
+
+function FilterPill({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        flexShrink: 0,
+        background: active ? "#0B2341" : "#fff",
+        color: active ? "#fff" : "#536579",
+        border: active ? "1px solid #0B2341" : "1px solid #E4E8EF",
+        borderRadius: 20,
+        padding: "6px 14px",
+        fontSize: 13,
+        fontWeight: 600,
+        cursor: "pointer",
+        ...POPPINS,
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
 function PupilPicker({ pupils, selectedId, onClose, onSelect, allowAll }: { pupils: PupilLite[]; selectedId: string; onClose: () => void; onSelect: (id: string) => void; allowAll?: boolean }) {
   const [q, setQ] = useState("");
   const list = useMemo(() => {
