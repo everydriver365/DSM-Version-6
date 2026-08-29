@@ -615,6 +615,7 @@ export function useVoiceAssistant({
       text.includes('stop music') ||
       text.includes('pause music')) {
       speak('Stopping radio');
+      (window as any).__edRadio?.pause();
       window.dispatchEvent(new CustomEvent('ed:radio:stop'));
       return;
     }
@@ -632,6 +633,12 @@ export function useVoiceAssistant({
       text.includes("what's playing") ||
       text.includes('what song') ||
       text.includes('what show')) {
+      const info = (window as any).__edRadio?.nowPlaying;
+      if (info) {
+        window.dispatchEvent(new CustomEvent('ed:radio:whats:response', {
+          detail: { name: info?.title ?? 'PRO Radio' },
+        }));
+      }
       window.dispatchEvent(new CustomEvent('ed:radio:whats'));
       return;
     }
@@ -641,6 +648,7 @@ export function useVoiceAssistant({
       text.includes('pro radio') ||
       text.includes('music')) {
       speak('Starting Pro Radio');
+      (window as any).__edRadio?.play();
       window.dispatchEvent(new CustomEvent('ed:radio:play'));
       return;
     }

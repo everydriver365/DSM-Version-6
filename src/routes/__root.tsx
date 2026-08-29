@@ -37,6 +37,8 @@ import { EventToastController, emitLiveEvent, type LiveEventKind } from "../comp
 import { MessageAlert } from "../components/dsm/MessageAlert";
 
 import { Toaster } from "@/components/ui/sonner";
+import { useProRadio, ProRadioContext } from "@/hooks/useProRadio";
+import { ProRadioPlayer } from "@/components/radio/ProRadioPlayer";
 
 
 
@@ -1486,9 +1488,17 @@ function RootComponent() {
     return () => clearTimeout(timer);
   }, [userId]);
 
+  // Global PRO Radio: one audio element for the whole app, exposed on window
+  // so the voice assistant can control playback from anywhere.
+  const radio = useProRadio();
+  useEffect(() => {
+    (window as any).__edRadio = radio;
+  }, [radio]);
+
 
 
   return (
+    <ProRadioContext.Provider value={radio}>
     <QueryClientProvider client={queryClient}>
       {locked && biometricEnabled && (
         <div
@@ -1569,8 +1579,10 @@ function RootComponent() {
       <MessageAlert userId={userId} />
 
       <PushPermissionSheet userId={userId} />
+      <ProRadioPlayer />
       <Toaster />
     </QueryClientProvider>
+    </ProRadioContext.Provider>
   );
 }
 
