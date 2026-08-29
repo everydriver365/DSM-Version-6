@@ -10,10 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WhatsChangedRouteImport } from './routes/whats-changed'
-import { Route as WeeklyreportRouteImport } from './routes/weeklyreport'
 import { Route as WeeklyReportRouteImport } from './routes/weekly-report'
 import { Route as WaiversRouteImport } from './routes/waivers'
-import { Route as WaitlistRouteImport } from './routes/waitlist'
 import { Route as WaitinglistRouteImport } from './routes/waitinglist'
 import { Route as VehicleRouteImport } from './routes/vehicle'
 import { Route as UpcomingTestsRouteImport } from './routes/upcoming-tests'
@@ -60,7 +58,6 @@ import { Route as NotificationsettingsRouteImport } from './routes/notifications
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NoShowPolicyRouteImport } from './routes/no-show-policy'
 import { Route as NearestRouteImport } from './routes/nearest'
-import { Route as MtdRouteImport } from './routes/mtd'
 import { Route as MoreRouteImport } from './routes/more'
 import { Route as MonthendRouteImport } from './routes/monthend'
 import { Route as MonthToDateRouteImport } from './routes/month-to-date'
@@ -74,7 +71,6 @@ import { Route as ManifestRouteImport } from './routes/manifest'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LocationsRouteImport } from './routes/locations'
 import { Route as LivesessionRouteImport } from './routes/livesession'
-import { Route as LiveNewsRouteImport } from './routes/live-news'
 import { Route as LiveRouteImport } from './routes/live'
 import { Route as LessonSeriesRouteImport } from './routes/lesson-series'
 import { Route as LearnRouteImport } from './routes/learn'
@@ -88,7 +84,6 @@ import { Route as GapsRouteImport } from './routes/gaps'
 import { Route as FuelRouteImport } from './routes/fuel'
 import { Route as ForgotpasswordRouteImport } from './routes/forgotpassword'
 import { Route as ExpensesRouteImport } from './routes/expenses'
-import { Route as EodRouteImport } from './routes/eod'
 import { Route as EnquiriesRouteImport } from './routes/enquiries'
 import { Route as EndOfDayRouteImport } from './routes/end-of-day'
 import { Route as EdSettingsRouteImport } from './routes/ed-settings'
@@ -188,11 +183,6 @@ const WhatsChangedRoute = WhatsChangedRouteImport.update({
   path: '/whats-changed',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WeeklyreportRoute = WeeklyreportRouteImport.update({
-  id: '/weeklyreport',
-  path: '/weeklyreport',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const WeeklyReportRoute = WeeklyReportRouteImport.update({
   id: '/weekly-report',
   path: '/weekly-report',
@@ -201,11 +191,6 @@ const WeeklyReportRoute = WeeklyReportRouteImport.update({
 const WaiversRoute = WaiversRouteImport.update({
   id: '/waivers',
   path: '/waivers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WaitlistRoute = WaitlistRouteImport.update({
-  id: '/waitlist',
-  path: '/waitlist',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WaitinglistRoute = WaitinglistRouteImport.update({
@@ -438,11 +423,6 @@ const NearestRoute = NearestRouteImport.update({
   path: '/nearest',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MtdRoute = MtdRouteImport.update({
-  id: '/mtd',
-  path: '/mtd',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const MoreRoute = MoreRouteImport.update({
   id: '/more',
   path: '/more',
@@ -508,11 +488,6 @@ const LivesessionRoute = LivesessionRouteImport.update({
   path: '/livesession',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LiveNewsRoute = LiveNewsRouteImport.update({
-  id: '/live-news',
-  path: '/live-news',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LiveRoute = LiveRouteImport.update({
   id: '/live',
   path: '/live',
@@ -576,11 +551,6 @@ const ForgotpasswordRoute = ForgotpasswordRouteImport.update({
 const ExpensesRoute = ExpensesRouteImport.update({
   id: '/expenses',
   path: '/expenses',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EodRoute = EodRouteImport.update({
-  id: '/eod',
-  path: '/eod',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EnquiriesRoute = EnquiriesRouteImport.update({
@@ -1086,7 +1056,6 @@ export interface FileRoutesByFullPath {
   '/ed-settings': typeof EdSettingsRoute
   '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
-  '/eod': typeof EodRoute
   '/expenses': typeof ExpensesRoute
   '/forgotpassword': typeof ForgotpasswordRoute
   '/fuel': typeof FuelRoute
@@ -1100,7 +1069,6 @@ export interface FileRoutesByFullPath {
   '/learn': typeof LearnRoute
   '/lesson-series': typeof LessonSeriesRoute
   '/live': typeof LiveRoute
-  '/live-news': typeof LiveNewsRoute
   '/livesession': typeof LivesessionRoute
   '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
@@ -1114,7 +1082,6 @@ export interface FileRoutesByFullPath {
   '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
   '/more': typeof MoreRoute
-  '/mtd': typeof MtdRoute
   '/nearest': typeof NearestRoute
   '/no-show-policy': typeof NoShowPolicyRoute
   '/notifications': typeof NotificationsRoute
@@ -1161,10 +1128,8 @@ export interface FileRoutesByFullPath {
   '/upcoming-tests': typeof UpcomingTestsRoute
   '/vehicle': typeof VehicleRoute
   '/waitinglist': typeof WaitinglistRoute
-  '/waitlist': typeof WaitlistRoute
   '/waivers': typeof WaiversRoute
   '/weekly-report': typeof WeeklyReportRoute
-  '/weeklyreport': typeof WeeklyreportRoute
   '/whats-changed': typeof WhatsChangedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/benefits': typeof AdminBenefitsRoute
@@ -1260,7 +1225,6 @@ export interface FileRoutesByTo {
   '/ed-settings': typeof EdSettingsRoute
   '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
-  '/eod': typeof EodRoute
   '/expenses': typeof ExpensesRoute
   '/forgotpassword': typeof ForgotpasswordRoute
   '/fuel': typeof FuelRoute
@@ -1274,7 +1238,6 @@ export interface FileRoutesByTo {
   '/learn': typeof LearnRoute
   '/lesson-series': typeof LessonSeriesRoute
   '/live': typeof LiveRoute
-  '/live-news': typeof LiveNewsRoute
   '/livesession': typeof LivesessionRoute
   '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
@@ -1287,7 +1250,6 @@ export interface FileRoutesByTo {
   '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
   '/more': typeof MoreRoute
-  '/mtd': typeof MtdRoute
   '/nearest': typeof NearestRoute
   '/no-show-policy': typeof NoShowPolicyRoute
   '/notifications': typeof NotificationsRoute
@@ -1333,10 +1295,8 @@ export interface FileRoutesByTo {
   '/upcoming-tests': typeof UpcomingTestsRoute
   '/vehicle': typeof VehicleRoute
   '/waitinglist': typeof WaitinglistRoute
-  '/waitlist': typeof WaitlistRoute
   '/waivers': typeof WaiversRoute
   '/weekly-report': typeof WeeklyReportRoute
-  '/weeklyreport': typeof WeeklyreportRoute
   '/whats-changed': typeof WhatsChangedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/benefits': typeof AdminBenefitsRoute
@@ -1434,7 +1394,6 @@ export interface FileRoutesById {
   '/ed-settings': typeof EdSettingsRoute
   '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
-  '/eod': typeof EodRoute
   '/expenses': typeof ExpensesRoute
   '/forgotpassword': typeof ForgotpasswordRoute
   '/fuel': typeof FuelRoute
@@ -1448,7 +1407,6 @@ export interface FileRoutesById {
   '/learn': typeof LearnRoute
   '/lesson-series': typeof LessonSeriesRoute
   '/live': typeof LiveRoute
-  '/live-news': typeof LiveNewsRoute
   '/livesession': typeof LivesessionRoute
   '/locations': typeof LocationsRoute
   '/login': typeof LoginRoute
@@ -1462,7 +1420,6 @@ export interface FileRoutesById {
   '/month-to-date': typeof MonthToDateRoute
   '/monthend': typeof MonthendRoute
   '/more': typeof MoreRoute
-  '/mtd': typeof MtdRoute
   '/nearest': typeof NearestRoute
   '/no-show-policy': typeof NoShowPolicyRoute
   '/notifications': typeof NotificationsRoute
@@ -1509,10 +1466,8 @@ export interface FileRoutesById {
   '/upcoming-tests': typeof UpcomingTestsRoute
   '/vehicle': typeof VehicleRoute
   '/waitinglist': typeof WaitinglistRoute
-  '/waitlist': typeof WaitlistRoute
   '/waivers': typeof WaiversRoute
   '/weekly-report': typeof WeeklyReportRoute
-  '/weeklyreport': typeof WeeklyreportRoute
   '/whats-changed': typeof WhatsChangedRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/benefits': typeof AdminBenefitsRoute
@@ -1611,7 +1566,6 @@ export interface FileRouteTypes {
     | '/ed-settings'
     | '/end-of-day'
     | '/enquiries'
-    | '/eod'
     | '/expenses'
     | '/forgotpassword'
     | '/fuel'
@@ -1625,7 +1579,6 @@ export interface FileRouteTypes {
     | '/learn'
     | '/lesson-series'
     | '/live'
-    | '/live-news'
     | '/livesession'
     | '/locations'
     | '/login'
@@ -1639,7 +1592,6 @@ export interface FileRouteTypes {
     | '/month-to-date'
     | '/monthend'
     | '/more'
-    | '/mtd'
     | '/nearest'
     | '/no-show-policy'
     | '/notifications'
@@ -1686,10 +1638,8 @@ export interface FileRouteTypes {
     | '/upcoming-tests'
     | '/vehicle'
     | '/waitinglist'
-    | '/waitlist'
     | '/waivers'
     | '/weekly-report'
-    | '/weeklyreport'
     | '/whats-changed'
     | '/admin/applications'
     | '/admin/benefits'
@@ -1785,7 +1735,6 @@ export interface FileRouteTypes {
     | '/ed-settings'
     | '/end-of-day'
     | '/enquiries'
-    | '/eod'
     | '/expenses'
     | '/forgotpassword'
     | '/fuel'
@@ -1799,7 +1748,6 @@ export interface FileRouteTypes {
     | '/learn'
     | '/lesson-series'
     | '/live'
-    | '/live-news'
     | '/livesession'
     | '/locations'
     | '/login'
@@ -1812,7 +1760,6 @@ export interface FileRouteTypes {
     | '/month-to-date'
     | '/monthend'
     | '/more'
-    | '/mtd'
     | '/nearest'
     | '/no-show-policy'
     | '/notifications'
@@ -1858,10 +1805,8 @@ export interface FileRouteTypes {
     | '/upcoming-tests'
     | '/vehicle'
     | '/waitinglist'
-    | '/waitlist'
     | '/waivers'
     | '/weekly-report'
-    | '/weeklyreport'
     | '/whats-changed'
     | '/admin/applications'
     | '/admin/benefits'
@@ -1958,7 +1903,6 @@ export interface FileRouteTypes {
     | '/ed-settings'
     | '/end-of-day'
     | '/enquiries'
-    | '/eod'
     | '/expenses'
     | '/forgotpassword'
     | '/fuel'
@@ -1972,7 +1916,6 @@ export interface FileRouteTypes {
     | '/learn'
     | '/lesson-series'
     | '/live'
-    | '/live-news'
     | '/livesession'
     | '/locations'
     | '/login'
@@ -1986,7 +1929,6 @@ export interface FileRouteTypes {
     | '/month-to-date'
     | '/monthend'
     | '/more'
-    | '/mtd'
     | '/nearest'
     | '/no-show-policy'
     | '/notifications'
@@ -2033,10 +1975,8 @@ export interface FileRouteTypes {
     | '/upcoming-tests'
     | '/vehicle'
     | '/waitinglist'
-    | '/waitlist'
     | '/waivers'
     | '/weekly-report'
-    | '/weeklyreport'
     | '/whats-changed'
     | '/admin/applications'
     | '/admin/benefits'
@@ -2134,7 +2074,6 @@ export interface RootRouteChildren {
   EdSettingsRoute: typeof EdSettingsRoute
   EndOfDayRoute: typeof EndOfDayRoute
   EnquiriesRoute: typeof EnquiriesRoute
-  EodRoute: typeof EodRoute
   ExpensesRoute: typeof ExpensesRoute
   ForgotpasswordRoute: typeof ForgotpasswordRoute
   FuelRoute: typeof FuelRoute
@@ -2148,7 +2087,6 @@ export interface RootRouteChildren {
   LearnRoute: typeof LearnRoute
   LessonSeriesRoute: typeof LessonSeriesRoute
   LiveRoute: typeof LiveRoute
-  LiveNewsRoute: typeof LiveNewsRoute
   LivesessionRoute: typeof LivesessionRoute
   LocationsRoute: typeof LocationsRoute
   LoginRoute: typeof LoginRoute
@@ -2162,7 +2100,6 @@ export interface RootRouteChildren {
   MonthToDateRoute: typeof MonthToDateRoute
   MonthendRoute: typeof MonthendRoute
   MoreRoute: typeof MoreRoute
-  MtdRoute: typeof MtdRoute
   NearestRoute: typeof NearestRoute
   NoShowPolicyRoute: typeof NoShowPolicyRoute
   NotificationsRoute: typeof NotificationsRoute
@@ -2209,10 +2146,8 @@ export interface RootRouteChildren {
   UpcomingTestsRoute: typeof UpcomingTestsRoute
   VehicleRoute: typeof VehicleRoute
   WaitinglistRoute: typeof WaitinglistRoute
-  WaitlistRoute: typeof WaitlistRoute
   WaiversRoute: typeof WaiversRoute
   WeeklyReportRoute: typeof WeeklyReportRoute
-  WeeklyreportRoute: typeof WeeklyreportRoute
   WhatsChangedRoute: typeof WhatsChangedRoute
   ApiEdAiRoute: typeof ApiEdAiRoute
   ApiSquareCreateSubscriptionRoute: typeof ApiSquareCreateSubscriptionRoute
@@ -2269,13 +2204,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WhatsChangedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/weeklyreport': {
-      id: '/weeklyreport'
-      path: '/weeklyreport'
-      fullPath: '/weeklyreport'
-      preLoaderRoute: typeof WeeklyreportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/weekly-report': {
       id: '/weekly-report'
       path: '/weekly-report'
@@ -2288,13 +2216,6 @@ declare module '@tanstack/react-router' {
       path: '/waivers'
       fullPath: '/waivers'
       preLoaderRoute: typeof WaiversRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/waitlist': {
-      id: '/waitlist'
-      path: '/waitlist'
-      fullPath: '/waitlist'
-      preLoaderRoute: typeof WaitlistRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/waitinglist': {
@@ -2619,13 +2540,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NearestRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/mtd': {
-      id: '/mtd'
-      path: '/mtd'
-      fullPath: '/mtd'
-      preLoaderRoute: typeof MtdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/more': {
       id: '/more'
       path: '/more'
@@ -2717,13 +2631,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LivesessionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/live-news': {
-      id: '/live-news'
-      path: '/live-news'
-      fullPath: '/live-news'
-      preLoaderRoute: typeof LiveNewsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/live': {
       id: '/live'
       path: '/live'
@@ -2813,13 +2720,6 @@ declare module '@tanstack/react-router' {
       path: '/expenses'
       fullPath: '/expenses'
       preLoaderRoute: typeof ExpensesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/eod': {
-      id: '/eod'
-      path: '/eod'
-      fullPath: '/eod'
-      preLoaderRoute: typeof EodRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/enquiries': {
@@ -3583,7 +3483,6 @@ const rootRouteChildren: RootRouteChildren = {
   EdSettingsRoute: EdSettingsRoute,
   EndOfDayRoute: EndOfDayRoute,
   EnquiriesRoute: EnquiriesRoute,
-  EodRoute: EodRoute,
   ExpensesRoute: ExpensesRoute,
   ForgotpasswordRoute: ForgotpasswordRoute,
   FuelRoute: FuelRoute,
@@ -3597,7 +3496,6 @@ const rootRouteChildren: RootRouteChildren = {
   LearnRoute: LearnRoute,
   LessonSeriesRoute: LessonSeriesRoute,
   LiveRoute: LiveRoute,
-  LiveNewsRoute: LiveNewsRoute,
   LivesessionRoute: LivesessionRoute,
   LocationsRoute: LocationsRoute,
   LoginRoute: LoginRoute,
@@ -3611,7 +3509,6 @@ const rootRouteChildren: RootRouteChildren = {
   MonthToDateRoute: MonthToDateRoute,
   MonthendRoute: MonthendRoute,
   MoreRoute: MoreRoute,
-  MtdRoute: MtdRoute,
   NearestRoute: NearestRoute,
   NoShowPolicyRoute: NoShowPolicyRoute,
   NotificationsRoute: NotificationsRoute,
@@ -3658,10 +3555,8 @@ const rootRouteChildren: RootRouteChildren = {
   UpcomingTestsRoute: UpcomingTestsRoute,
   VehicleRoute: VehicleRoute,
   WaitinglistRoute: WaitinglistRoute,
-  WaitlistRoute: WaitlistRoute,
   WaiversRoute: WaiversRoute,
   WeeklyReportRoute: WeeklyReportRoute,
-  WeeklyreportRoute: WeeklyreportRoute,
   WhatsChangedRoute: WhatsChangedRoute,
   ApiEdAiRoute: ApiEdAiRoute,
   ApiSquareCreateSubscriptionRoute: ApiSquareCreateSubscriptionRoute,

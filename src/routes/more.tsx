@@ -64,7 +64,7 @@ const allTools: Tool[] = [
 
 
   // Reports
-  { icon: IconChartBar, colour: '#1A52A0', label: 'MTD', sub: 'Month to date', route: '/mtd', group: 'Reports' },
+  { icon: IconChartBar, colour: '#1A52A0', label: 'MTD', sub: 'Month to date', route: '/month-to-date', group: 'Reports' },
   { icon: IconCalculator, colour: '#B45309', label: 'Tax report', sub: 'Self assessment', route: '/tax-report', group: 'Reports' },
   { icon: IconCalendar, colour: '#16A34A', label: 'Weekly report', sub: 'Week summary', route: '/weekly-report', group: 'Reports' },
   { icon: IconMoon, colour: '#7C3AED', label: 'End of day', sub: 'Daily wrap up', route: '/end-of-day', group: 'Reports' },

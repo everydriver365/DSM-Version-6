@@ -239,7 +239,7 @@ const MENU_GROUPS: { title: string; items: MenuItem[] }[] = [
       { label: "Earnings", icon: IconTrendingUp, to: "/earnings" },
       { label: "Expenses", icon: IconReceipt, to: "/expenses" },
       { label: "Mileage", icon: IconCar, to: "/mileage" },
-      { label: "Tax & MTD", icon: IconCalculator, to: "/mtd" },
+      { label: "Tax & MTD", icon: IconCalculator, to: "/month-to-date" },
       { label: "Invoices", icon: IconFileText, to: "/invoices" },
     ],
   },

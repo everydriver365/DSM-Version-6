@@ -273,7 +273,7 @@ function ArticleBody({ article }: { article: any }) {
         {relatedShow ? (
           <button
             type="button"
-            onClick={() => navigate({ to: "/live-news" })}
+            onClick={() => navigate({ to: "/dsm-live" })}
             style={{
               marginTop: 10,
               width: "100%",
