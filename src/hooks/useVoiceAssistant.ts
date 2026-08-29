@@ -1043,6 +1043,7 @@ export function useVoiceAssistant({
     availableVoices,
     selectedVoiceName,
     setVoice,
+    speak,
   };
 
 }
