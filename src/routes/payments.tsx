@@ -636,13 +636,13 @@ function PaymentsPage() {
                       key={row.id}
                       style={{
                         background: "#FFFFFF",
-                        border: "0.5px solid #E5E5EA",
+                        border: "1px solid #E4E8EF",
                         borderRadius: 12,
                         marginBottom: 8,
                         transition: "transform 0.1s ease, opacity 0.1s ease",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px" }}>
                         <div
                           style={{
                             width: 40,
