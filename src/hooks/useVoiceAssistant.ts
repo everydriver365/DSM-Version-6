@@ -4,6 +4,7 @@ interface VoiceAssistantProps {
   instructorFirstName?: string;
   nextLesson?: {
     id?: string;
+    pupil_id?: string;
     pupils?: { name?: string; phone?: string };
     lesson_time?: string;
     lesson_date?: string;
@@ -285,6 +286,228 @@ export function useVoiceAssistant({
       }
       return;
     }
+
+    // ================= PHASE 5 =================
+
+    // WHO OWES ME MONEY
+    if (text.includes('who owes') ||
+      text.includes('outstanding payments') ||
+      text.includes('overdue') ||
+      text.includes('owe me')) {
+      window.dispatchEvent(new CustomEvent('ed:owes'));
+      return;
+    }
+
+    // EARNINGS THIS WEEK
+    if (text.includes('this week') &&
+      (text.includes('earn') ||
+        text.includes('made') ||
+        text.includes('income'))) {
+      window.dispatchEvent(new CustomEvent('ed:earnings:week'));
+      return;
+    }
+
+    // EARNINGS THIS MONTH
+    if (text.includes('this month') &&
+      (text.includes('earn') ||
+        text.includes('made') ||
+        text.includes('income'))) {
+      window.dispatchEvent(new CustomEvent('ed:earnings:month'));
+      return;
+    }
+
+    // HOW MANY LESSONS TOMORROW
+    if (text.includes('tomorrow') &&
+      text.includes('lesson') &&
+      !text.includes('remind') &&
+      !text.includes('send')) {
+      window.dispatchEvent(new CustomEvent('ed:tomorrow'));
+      return;
+    }
+
+    // LAST LESSON TODAY
+    if ((text.includes('last lesson') && text.includes('today')) ||
+      text.includes('finish today') ||
+      text.includes('what time do i finish')) {
+      window.dispatchEvent(new CustomEvent('ed:lastlesson'));
+      return;
+    }
+
+    // HOW MANY PUPILS
+    if (text.includes('how many pupils') ||
+      text.includes('number of pupils') ||
+      text.includes('pupil count')) {
+      window.dispatchEvent(new CustomEvent('ed:pupilcount'));
+      return;
+    }
+
+    // WHEN IS PUPIL'S TEST
+    if (text.includes('test') &&
+      (text.includes('when') || text.includes('date'))) {
+      window.dispatchEvent(new CustomEvent('ed:testdate', {
+        detail: { pupilId: nextLesson?.pupil_id },
+      }));
+      return;
+    }
+
+    // HOW MANY HOURS HAS PUPIL DONE
+    if (text.includes('how many hours') ||
+      text.includes('hours done') ||
+      text.includes('lesson hours')) {
+      window.dispatchEvent(new CustomEvent('ed:hours', {
+        detail: { pupilId: nextLesson?.pupil_id },
+      }));
+      return;
+    }
+
+    // SEND REMINDER TO PUPIL
+    if (text.includes('reminder') ||
+      text.includes('remind') ||
+      (text.includes('send') && text.includes('tomorrow'))) {
+      window.dispatchEvent(new CustomEvent('ed:reminder', {
+        detail: {
+          pupilId: nextLesson?.pupil_id,
+          phone: nextLesson?.pupils?.phone,
+          name: nextLesson?.pupils?.name?.split(' ')[0],
+          date: nextLesson?.lesson_date,
+          time: nextLesson?.lesson_time?.slice(0, 5),
+        },
+      }));
+      return;
+    }
+
+    // SEND PAYMENT REQUEST
+    if (text.includes('payment request') ||
+      text.includes('send payment') ||
+      text.includes('request payment') ||
+      text.includes('payment link')) {
+      speak(`Opening a payment request for ${pupilName}`);
+      window.dispatchEvent(new CustomEvent('ed:paymentrequest', {
+        detail: {
+          pupilId: nextLesson?.pupil_id,
+          phone: nextLesson?.pupils?.phone,
+          name: nextLesson?.pupils?.name?.split(' ')[0],
+          amount: nextLesson?.amount_due,
+        },
+      }));
+      return;
+    }
+
+    // CONFIRM CANCEL (must precede the cancel branch)
+    if (text.includes('yes') && lastCommand.includes('cancel')) {
+      window.dispatchEvent(new CustomEvent('ed:cancellesson', {
+        detail: { lessonId: nextLesson?.id },
+      }));
+      speak('Lesson cancelled');
+      return;
+    }
+
+    // CANCEL LESSON
+    if (text.includes('cancel lesson') ||
+      text.includes('cancel the lesson') ||
+      (text.includes('cancel') && text.includes('lesson'))) {
+      speak(`Are you sure you want to cancel ${pupilName}'s lesson? Say yes to confirm or no to cancel.`);
+      window.dispatchEvent(new CustomEvent('ed:cancelconfirm'));
+      setTimeout(() => startListening(), 3500);
+      return;
+    }
+
+    // HOW FAR TO NEXT PICKUP
+    if (text.includes('how far') ||
+      text.includes('distance') ||
+      text.includes('how long to get there')) {
+      if (trafficData?.travelMins) {
+        speak(`It is ${trafficData.travelMins} minutes to ${pupilName}'s pickup location.`);
+      } else {
+        speak('Route information is not available right now.');
+      }
+      return;
+    }
+
+    // FIND MCDONALD'S
+    if (text.includes('mcdonald') ||
+      text.includes('maccy') ||
+      text.includes('big mac')) {
+      speak("Finding nearest McDonald's");
+      window.dispatchEvent(new CustomEvent('ed:nearest', {
+        detail: { type: 'mcdonalds' },
+      }));
+      return;
+    }
+
+    // FIND GREGGS
+    if (text.includes('greggs') ||
+      text.includes('sausage roll')) {
+      speak('Finding nearest Greggs');
+      window.dispatchEvent(new CustomEvent('ed:nearest', {
+        detail: { type: 'greggs' },
+      }));
+      return;
+    }
+
+    // FIND COSTA
+    if (text.includes('costa') ||
+      text.includes('coffee')) {
+      speak('Finding nearest Costa');
+      window.dispatchEvent(new CustomEvent('ed:nearest', {
+        detail: { type: 'costa' },
+      }));
+      return;
+    }
+
+    // FIND TESCO
+    if (text.includes('tesco') ||
+      text.includes('supermarket') ||
+      text.includes('shops')) {
+      speak('Finding nearest Tesco');
+      window.dispatchEvent(new CustomEvent('ed:nearest', {
+        detail: { type: 'tesco' },
+      }));
+      return;
+    }
+
+    // DRIVING INSTRUCTOR JOKE
+    if (text.includes('joke') ||
+      text.includes('funny') ||
+      text.includes('make me laugh')) {
+      const jokes = [
+        'Why did the driving instructor cross the road? To get to the other side safely, with full observations.',
+        'What did the driving instructor say to the nervous pupil? Just take it one junction at a time.',
+        'How many driving instructors does it take to change a lightbulb? Just one, but they have to check their mirrors first.',
+        'Why are driving instructors always calm? Because they have dual controls.',
+        'What do you call a driving instructor who falls asleep? A passenger.',
+      ];
+      speak(jokes[Math.floor(Math.random() * jokes.length)]!);
+      return;
+    }
+
+    // WHAT IS THE NEWS
+    if (text.includes('news') ||
+      text.includes("what's happening") ||
+      text.includes('whats happening')) {
+      speak('Opening Pro Live for the latest news');
+      window.dispatchEvent(new CustomEvent('ed:live:open'));
+      return;
+    }
+
+    // BUSIEST DAY THIS WEEK
+    if (text.includes('busiest') ||
+      text.includes('busy day') ||
+      text.includes('most lessons')) {
+      window.dispatchEvent(new CustomEvent('ed:busiestday'));
+      return;
+    }
+
+    // ANY CANCELLATIONS
+    if (text.includes('cancellation') ||
+      text.includes('cancelled today')) {
+      window.dispatchEvent(new CustomEvent('ed:cancellations'));
+      return;
+    }
+
+    // =============== END PHASE 5 ===============
+
+
 
     // READ MESSAGES
     if (text.includes('message') ||
@@ -614,6 +837,7 @@ export function useVoiceAssistant({
     unreadCount,
     weatherData,
     trafficData,
+    lastCommand,
     speak,
     activate,
     deactivate,
@@ -651,15 +875,89 @@ export function useVoiceAssistant({
       speak(`Now playing: ${name}`);
     };
 
+    // ---- Phase 5 responses ----
+    const d = (e: Event) => (e as CustomEvent).detail ?? {};
+    const money = (v: unknown) => Number(v ?? 0).toFixed(2);
+
+    const onOwes = (e: Event) => {
+      const list: Array<{ name?: string; amount?: number }> = d(e).pupils ?? [];
+      if (!list.length) { speak('Everyone is up to date.'); return; }
+      const parts = list.map((p) => `${p.name ?? 'a pupil'}, £${money(p.amount)}`);
+      speak(`The following pupils have outstanding payments: ${parts.join('. ')}.`);
+    };
+    const onEarningsWeek = (e: Event) =>
+      speak(`You have earned £${money(d(e).amount)} this week.`);
+    const onEarningsMonth = (e: Event) =>
+      speak(`You have earned £${money(d(e).amount)} this month.`);
+    const onTomorrow = (e: Event) => {
+      const { count = 0, firstName, firstTime } = d(e) as { count?: number; firstName?: string; firstTime?: string };
+      if (!count) { speak('You have no lessons tomorrow.'); return; }
+      speak(`You have ${count} lesson${count !== 1 ? 's' : ''} tomorrow.${firstName ? ` First is ${firstName}${firstTime ? ` at ${firstTime}` : ''}.` : ''}`);
+    };
+    const onLastLesson = (e: Event) => {
+      const { name, time } = d(e) as { name?: string; time?: string };
+      if (!name) { speak('You have no more lessons today.'); return; }
+      speak(`Your last lesson today is ${name} at ${time ?? 'an unknown time'}.`);
+    };
+    const onPupilCount = (e: Event) => {
+      const count = Number(d(e).count ?? 0);
+      speak(`You have ${count} active pupil${count !== 1 ? 's' : ''}.`);
+    };
+    const onTestDate = (e: Event) => {
+      const { name, date } = d(e) as { name?: string; date?: string };
+      if (!date) { speak(`No test is booked for ${name ?? pupilName}.`); return; }
+      speak(`${name ?? pupilName}'s test is on ${date}.`);
+    };
+    const onHours = (e: Event) => {
+      const { name, hours = 0 } = d(e) as { name?: string; hours?: number };
+      speak(`${name ?? pupilName} has done ${hours} hour${hours !== 1 ? 's' : ''} with you.`);
+    };
+    const onReminder = (e: Event) => {
+      const { name, ok = true } = d(e) as { name?: string; ok?: boolean };
+      speak(ok ? `Reminder sent to ${name ?? pupilName}.` : `Sorry, I could not send the reminder.`);
+    };
+    const onBusiestDay = (e: Event) => {
+      const { day, count = 0 } = d(e) as { day?: string; count?: number };
+      if (!day) { speak('You have no lessons booked this week.'); return; }
+      speak(`Your busiest day this week is ${day} with ${count} lesson${count !== 1 ? 's' : ''}.`);
+    };
+    const onCancellations = (e: Event) => {
+      const names: string[] = d(e).names ?? [];
+      if (!names.length) { speak('No cancellations today.'); return; }
+      speak(`You have ${names.length} cancellation${names.length !== 1 ? 's' : ''} today: ${names.join(', ')}.`);
+    };
+
     window.addEventListener('ed:earnings:response', onEarnings);
     window.addEventListener('ed:lessoncount:response', onLessonCount);
     window.addEventListener('ed:enquiries:response', onEnquiries);
     window.addEventListener('ed:radio:whats:response', onRadioWhats);
+    window.addEventListener('ed:owes:response', onOwes);
+    window.addEventListener('ed:earnings:week:response', onEarningsWeek);
+    window.addEventListener('ed:earnings:month:response', onEarningsMonth);
+    window.addEventListener('ed:tomorrow:response', onTomorrow);
+    window.addEventListener('ed:lastlesson:response', onLastLesson);
+    window.addEventListener('ed:pupilcount:response', onPupilCount);
+    window.addEventListener('ed:testdate:response', onTestDate);
+    window.addEventListener('ed:hours:response', onHours);
+    window.addEventListener('ed:reminder:response', onReminder);
+    window.addEventListener('ed:busiestday:response', onBusiestDay);
+    window.addEventListener('ed:cancellations:response', onCancellations);
     return () => {
       window.removeEventListener('ed:earnings:response', onEarnings);
       window.removeEventListener('ed:lessoncount:response', onLessonCount);
       window.removeEventListener('ed:enquiries:response', onEnquiries);
       window.removeEventListener('ed:radio:whats:response', onRadioWhats);
+      window.removeEventListener('ed:owes:response', onOwes);
+      window.removeEventListener('ed:earnings:week:response', onEarningsWeek);
+      window.removeEventListener('ed:earnings:month:response', onEarningsMonth);
+      window.removeEventListener('ed:tomorrow:response', onTomorrow);
+      window.removeEventListener('ed:lastlesson:response', onLastLesson);
+      window.removeEventListener('ed:pupilcount:response', onPupilCount);
+      window.removeEventListener('ed:testdate:response', onTestDate);
+      window.removeEventListener('ed:hours:response', onHours);
+      window.removeEventListener('ed:reminder:response', onReminder);
+      window.removeEventListener('ed:busiestday:response', onBusiestDay);
+      window.removeEventListener('ed:cancellations:response', onCancellations);
     };
   }, [nextLesson, speak]);
 
