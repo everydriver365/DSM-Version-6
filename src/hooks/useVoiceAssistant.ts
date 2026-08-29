@@ -253,7 +253,18 @@ export function useVoiceAssistant({
     try { recognitionRef.current?.stop(); } catch { /* noop */ }
     setIsSpeaking(false);
     setIsListening(false);
+    // Resume background wake-word listening shortly after
+    try { wakeRef.current?.stop(); } catch { /* noop */ }
+    setTimeout(() => {
+      if (!wakeRef.current) return;
+      try {
+        wakeRef.current.start();
+        wakeActiveRef.current = true;
+        setWakeActive(true);
+      } catch { /* noop */ }
+    }, 500);
   }, []);
+
 
   const handleCommand = useCallback((text: string) => {
     setLastCommand(text);
