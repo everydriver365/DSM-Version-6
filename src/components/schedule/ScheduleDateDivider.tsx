@@ -30,9 +30,10 @@ const MONTH_NAMES = [
 export interface ScheduleDateDividerProps {
   date?: Date;
   label?: string;
+  showLabel?: boolean;
 }
 
-export function ScheduleDateDivider({ date, label }: ScheduleDateDividerProps) {
+export function ScheduleDateDivider({ date, label, showLabel = true }: ScheduleDateDividerProps) {
   const dateLabel = useMemo(() => {
     if (label) return label;
     if (!date) return "";
@@ -42,6 +43,20 @@ export function ScheduleDateDivider({ date, label }: ScheduleDateDividerProps) {
 
   return (
     <div className={`flex items-center gap-2.5 ${date ? "mb-5" : "mb-1.5"}`}>
+      {showLabel && (
+        <span
+          style={{
+            fontSize: typography.sizes.sectionLabel,
+            fontWeight: typography.weights.bold,
+            color: typography.colors.accent,
+            letterSpacing: "0.3px",
+            textTransform: "uppercase",
+            fontFamily: typography.family,
+          }}
+        >
+          {dateLabel}
+        </span>
+      )}
       <Separator className="flex-1 bg-border" />
     </div>
   );
