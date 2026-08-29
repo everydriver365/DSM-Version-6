@@ -7,18 +7,28 @@ import {
   IconPlayerPlay,
   IconPlayerPause,
   IconRadio,
-  IconArrowsShuffle,
   IconShare,
+  IconMusic,
+  IconVinyl,
+  IconWaveSine,
+  IconCar,
+  IconMicrophone,
 } from "@tabler/icons-react";
+import { toast } from "sonner";
 import { useProRadioContext } from "@/hooks/useProRadio";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const ART_GRADIENT = "linear-gradient(135deg, #2C97DE 0%, #18A999 100%)";
 
-const COMING_UP = [
-  { time: "11:00", name: "PRO Driving News" },
-  { time: "12:00", name: "The Motoring Podcast" },
-  { time: "13:00", name: "PRO Lunch" },
+const COMING_SOON_STATIONS = [
+  { name: "PRO 80s", Icon: IconMusic, bg: "#18A999" },
+  { name: "PRO 90s", Icon: IconMusic, bg: "#7B61FF" },
+  { name: "PRO 00s", Icon: IconMusic, bg: "#2C97DE" },
+  { name: "PRO 70s", Icon: IconVinyl, bg: "#F59E0B" },
+  { name: "PRO 60s", Icon: IconVinyl, bg: "#536579" },
+  { name: "PRO Chill", Icon: IconWaveSine, bg: "#18A999" },
+  { name: "PRO Drive", Icon: IconCar, bg: "#2C97DE" },
+  { name: "PRO Talk", Icon: IconMicrophone, bg: "#7B61FF" },
 ];
 
 function LiveDot({ size = 6 }: { size?: number }) {
