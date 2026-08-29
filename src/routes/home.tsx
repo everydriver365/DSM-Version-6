@@ -77,6 +77,27 @@ import { resolveEventColour } from "@/lib/googleCalendarColours";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Capacitor } from "@capacitor/core";
 import UniversalSearch from "@/components/dsm/UniversalSearch";
+import { IconFlagCheck, IconNote } from "@tabler/icons-react";
+
+type QuickAddKey =
+  | "lesson" | "test" | "pupil" | "payment" | "unavailability" | "event"
+  | "course" | "note" | "eol" | "enquiry" | "call";
+
+const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus; bg: string }[] = [
+  { key: "lesson", label: "Add lesson", icon: IconCalendarPlus, bg: "#1877D6" },
+  { key: "test", label: "Add test", icon: IconCalendarEvent, bg: "#F59E0B" },
+  { key: "pupil", label: "Add pupil", icon: IconUserPlus, bg: "#18A999" },
+  { key: "payment", label: "Take payment", icon: IconCreditCard, bg: "#16A34A" },
+  { key: "unavailability", label: "Add unavailability", icon: IconCalendarOff, bg: "#E53935" },
+  { key: "event", label: "Add event", icon: IconCalendarEvent, bg: "#7B61FF" },
+  { key: "course", label: "Add course", icon: IconSchool, bg: "#0B2341" },
+  { key: "note", label: "Add note", icon: IconNote, bg: "#536579" },
+  { key: "eol", label: "End of lesson", icon: IconFlagCheck, bg: "#2C97DE" },
+  { key: "enquiry", label: "Log enquiry", icon: IconMail, bg: "#7B61FF" },
+  { key: "call", label: "Log call", icon: IconPhone, bg: "#16A34A" },
+];
+
+
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
@@ -1468,6 +1489,8 @@ function HomePage() {
   }, []);
 
   const [addLessonOpen, setAddLessonOpen] = useState(false);
+  const [quickAddOpen, setQuickAddOpen] = useState(false);
+
   const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
   const [addExpenseOpen, setAddExpenseOpen] = useState(false);
   const [logMileageOpen, setLogMileageOpen] = useState(false);
@@ -1682,6 +1705,49 @@ function HomePage() {
   const [claimedAwaitingPaymentCount, setClaimedAwaitingPaymentCount] = useState(0);
   const [swapRequests, setSwapRequests] = useState<Array<{ id: string; name: string; test_centre: string | null; current_test_date: string | null; current_test_time: string | null; status: string; created_at: string }>>([]);
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
+
+  const runQuickAdd = (key: QuickAddKey) => {
+    switch (key) {
+      case "lesson":
+        setAddLessonPupilId(undefined);
+        setAddLessonOpen(true);
+        break;
+      case "test":
+        navigate({ to: "/tests" as never });
+        break;
+      case "pupil":
+        navigate({ to: "/pupils/new" as never });
+        break;
+      case "payment":
+        navigate({ to: "/take-payment" as never });
+        break;
+      case "unavailability":
+        navigate({ to: "/quickavailability" as never });
+        break;
+      case "event":
+        setEditingPersonal(null);
+        setPersonalSheetOpen(true);
+        break;
+      case "course":
+        navigate({ to: "/courses/new" as never });
+        break;
+      case "note":
+        navigate({ to: "/notes" as never });
+        break;
+      case "eol": {
+        const candidate =
+          lessons.find((l) => !l.eol_completed && l.status !== "cancelled") ?? null;
+        if (candidate) setEolLesson(candidate);
+        else toast.info("No lesson available to complete");
+        break;
+      }
+      case "enquiry":
+      case "call":
+        navigate({ to: "/enquiries" as never });
+        break;
+    }
+  };
+
   const [recentCancellations, setRecentCancellations] = useState<Array<{ id: string; pupil_first_name: string | null }>>([]);
   const [rescheduleRequestsCount, setRescheduleRequestsCount] = useState<number>(0);
   const [expiredCerts, setExpiredCerts] = useState<Array<{ id: string; title: string; expiry_date: string }>>([]);
@@ -9093,32 +9159,117 @@ function HomePage() {
         <div style={{ height: 10 }} />
         </section>
 
+        {quickAddOpen && (
+          <div
+            onClick={() => setQuickAddOpen(false)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.3)",
+              zIndex: 99,
+            }}
+          />
+        )}
+
+        {quickAddOpen && (
+          <div
+            style={{
+              position: "fixed",
+              right: 20,
+              bottom: "calc(80px + 56px + 12px + env(safe-area-inset-bottom, 0px))",
+              width: 244,
+              maxHeight: "60vh",
+              overflowY: "auto",
+              background: "#FFFFFF",
+              borderRadius: 16,
+              boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+              padding: "8px 0",
+              zIndex: 100,
+              fontFamily: "Poppins, sans-serif",
+              animation: "dsmQuickAddIn 160ms ease-out",
+            }}
+          >
+            <style>{`@keyframes dsmQuickAddIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}`}</style>
+            {QUICK_ADD_ITEMS.map((item, i) => {
+              const ItemIcon = item.icon;
+              return (
+                <button
+                  key={item.label}
+                  type="button"
+                  onClick={() => {
+                    setQuickAddOpen(false);
+                    runQuickAdd(item.key);
+                  }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    width: "100%",
+                    background: "transparent",
+                    border: "none",
+                    borderBottom: i < QUICK_ADD_ITEMS.length - 1 ? "1px solid #F4F6F8" : "none",
+                    padding: "14px 20px",
+                    fontSize: 15,
+                    fontWeight: 500,
+                    color: "#0B2341",
+                    fontFamily: "Poppins, sans-serif",
+                    textAlign: "left",
+                    cursor: "pointer",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: 8,
+                      background: item.bg,
+                      display: "grid",
+                      placeItems: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <ItemIcon size={20} stroke={1.8} color="#FFFFFF" />
+                  </span>
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         <button
           type="button"
-          aria-label="Open command menu"
-          onClick={() => {
-            window.dispatchEvent(new CustomEvent("dsm-open-command-palette"));
-          }}
+          aria-label={quickAddOpen ? "Close quick add menu" : "Open quick add menu"}
+          onClick={() => setQuickAddOpen((v) => !v)}
           style={{
-            position: "absolute",
-            right: 16,
-            bottom: "calc(70px + env(safe-area-inset-bottom, 0px))",
-            width: 54,
-            height: 54,
+            position: "fixed",
+            right: 20,
+            bottom: "calc(80px + env(safe-area-inset-bottom, 0px))",
+            width: 56,
+            height: 56,
             borderRadius: "50%",
-            background: tokens.blue,
-            border: "3px solid #FFFFFF",
-            boxShadow: "0 4px 14px rgba(24,119,214,0.35), 0 6px 20px rgba(11,31,58,0.12)",
+            background: "#16A34A",
+            border: "none",
+            boxShadow: "0 4px 12px rgba(22,163,74,0.4)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            zIndex: 40,
+            zIndex: 100,
             padding: 0,
           }}
         >
-          <IconLayoutGrid size={24} color="#FFFFFF" stroke={1.8} />
+          <IconPlus
+            size={28}
+            color="#fff"
+            stroke={2}
+            style={{
+              transform: quickAddOpen ? "rotate(45deg)" : "rotate(0deg)",
+              transition: "transform 180ms ease",
+            }}
+          />
         </button>
+
 
 
 

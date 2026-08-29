@@ -718,17 +718,47 @@ function Header({ unreadCount }: { unreadCount: number }) {
   const hasUnread = unreadCount > 0;
   const openMenu = () => window.dispatchEvent(new Event("dsm-open-menu"));
 
-  // Reuse the instructor name already loaded elsewhere in this file (no extra query).
+  // Reuse the instructor name already loaded elsewhere in this file when cached,
+  // otherwise fetch it once on mount so the badge shows before the drawer is opened.
   const [instructorName, setInstructorName] = useState<string>("");
+  const [instructorAvatar, setInstructorAvatar] = useState<string | null>(null);
   useEffect(() => {
+    let mounted = true;
+    let cached = "";
     try {
-      setInstructorName(localStorage.getItem("dsm-instructor-name") ?? "");
+      cached = localStorage.getItem("dsm-instructor-name") ?? "";
+      setInstructorName(cached);
+      setInstructorAvatar(localStorage.getItem("dsm-instructor-avatar") || null);
     } catch { /* ignore */ }
     const onName = (e: Event) => setInstructorName(String((e as CustomEvent).detail ?? ""));
     window.addEventListener("dsm-instructor-name", onName as EventListener);
-    return () => window.removeEventListener("dsm-instructor-name", onName as EventListener);
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!mounted) return;
+      if (!user) {
+        setInstructorName("");
+        setInstructorAvatar(null);
+        return;
+      }
+      const { data } = await supabase.from("instructors").select("name, profile_image_url").eq("id", user.id).limit(1).single();
+      if (!mounted) return;
+      const resolvedName = data?.name ?? "Instructor";
+      const avatar = data?.profile_image_url ?? null;
+      setInstructorName(resolvedName);
+      setInstructorAvatar(avatar);
+      try {
+        localStorage.setItem("dsm-instructor-name", resolvedName);
+        if (avatar) localStorage.setItem("dsm-instructor-avatar", avatar);
+        else localStorage.removeItem("dsm-instructor-avatar");
+      } catch { /* ignore */ }
+    })();
+    return () => {
+      mounted = false;
+      window.removeEventListener("dsm-instructor-name", onName as EventListener);
+    };
   }, []);
   const firstInitial = (instructorName.trim().split(/\s+/)[0]?.[0] ?? "").toUpperCase();
+
 
   return (
     <header
@@ -781,15 +811,20 @@ function Header({ unreadCount }: { unreadCount: number }) {
                 color: "#fff",
                 fontSize: 8,
                 fontWeight: 700,
+                overflow: "hidden",
               }}
             >
-              {firstInitial}
+              {instructorAvatar
+                ? <img src={instructorAvatar} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                : firstInitial}
             </span>
           )}
+
         </div>
       </div>
 
       <div
+        onClick={() => navigate({ to: "/home" as never })}
         style={{
           position: "absolute",
           left: "50%",
@@ -799,7 +834,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          pointerEvents: "none",
+          cursor: "pointer",
         }}
       >
         <img
@@ -808,6 +843,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
           style={{ height: 44, width: "auto", objectFit: "contain" }}
         />
       </div>
+
 
       <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
         <div
