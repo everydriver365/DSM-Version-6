@@ -4,6 +4,7 @@ import { LoadingSpinner } from "@/components/dsm/LoadingSpinner";
 import { findNearbyPlaces } from "@/lib/nearest.functions";
 import { reverseGeocode } from "@/lib/geocode.functions";
 import { openUrl } from "@/lib/openUrl";
+import { supabase } from "@/lib/supabaseClient";
 
 export const Route = createFileRoute("/nearest")({
   head: () => ({
@@ -182,6 +183,81 @@ function NearestPage() {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
+  /* Favourites */
+  type Saved = {
+    id: string;
+    name: string;
+    address: string | null;
+    lat: number | null;
+    lng: number | null;
+    category: string | null;
+    place_id: string | null;
+  };
+  const [saved, setSaved] = React.useState<Saved[]>([]);
+  const [showSaved, setShowSaved] = React.useState(false);
+  const [savingId, setSavingId] = React.useState<string | null>(null);
+
+  const loadSaved = React.useCallback(async () => {
+    const { data: auth } = await supabase.auth.getUser();
+    if (!auth.user) return;
+    const { data, error: e } = await supabase
+      .from("saved_locations")
+      .select("id,name,address,lat,lng,category,place_id")
+      .eq("instructor_id", auth.user.id)
+      .order("created_at", { ascending: false });
+    if (!e && data) setSaved(data as Saved[]);
+  }, []);
+
+  React.useEffect(() => {
+    void loadSaved();
+  }, [loadSaved]);
+
+  const savedFor = React.useCallback(
+    (r: Result) => saved.find((s) => s.place_id === r.id || (s.name === r.name && s.address === (r.address || null))),
+    [saved],
+  );
+
+  const toggleSave = React.useCallback(
+    async (r: Result) => {
+      const existing = savedFor(r);
+      setSavingId(r.id);
+      try {
+        if (existing) {
+          await supabase.from("saved_locations").delete().eq("id", existing.id);
+          setSaved((prev) => prev.filter((s) => s.id !== existing.id));
+        } else {
+          const { data: auth } = await supabase.auth.getUser();
+          if (!auth.user) {
+            setError("Sign in to save favourites.");
+            return;
+          }
+          const { data, error: e } = await supabase
+            .from("saved_locations")
+            .insert({
+              instructor_id: auth.user.id,
+              name: r.name,
+              address: r.address || null,
+              lat: r.lat,
+              lng: r.lng,
+              category: activeQuery ? "search" : cat,
+              place_id: r.id,
+            })
+            .select("id,name,address,lat,lng,category,place_id")
+            .single();
+          if (e) throw e;
+          if (data) setSaved((prev) => [data as Saved, ...prev]);
+        }
+      } catch (err) {
+        console.error("[nearest] favourite failed", err);
+        setError("Could not update favourites.");
+      } finally {
+        setSavingId(null);
+      }
+    },
+    [savedFor, cat, activeQuery],
+  );
+
+
   const mapEl = React.useRef<HTMLDivElement | null>(null);
   const mapRef = React.useRef<any>(null);
   const markersRef = React.useRef<any[]>([]);
@@ -358,13 +434,15 @@ function NearestPage() {
     }
   };
 
-  const navigateTo = (r: Result) => {
+  const navigateCoords = (lat: number, lng: number, name: string) => {
     const isApple = /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent);
     const url = isApple
-      ? `https://maps.apple.com/?daddr=${r.lat},${r.lng}&q=${encodeURIComponent(r.name)}&dirflg=d`
-      : `https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lng}&travelmode=driving`;
+      ? `https://maps.apple.com/?daddr=${lat},${lng}&q=${encodeURIComponent(name)}&dirflg=d`
+      : `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
     openUrl(url, "_system");
   };
+
+  const navigateTo = (r: Result) => navigateCoords(r.lat, r.lng, r.name);
 
   const submitSearch = (text: string) => {
     const t = text.trim();
@@ -576,6 +654,105 @@ function NearestPage() {
         }}
       />
 
+      {/* 5b. SAVED FAVOURITES */}
+      <div style={{ padding: "0 12px 8px" }}>
+        <button
+          type="button"
+          onClick={() => setShowSaved((v) => !v)}
+          aria-expanded={showSaved}
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            background: "#FFFFFF",
+            border: `1px solid ${BORDER}`,
+            borderRadius: 12,
+            padding: "12px 14px",
+            fontSize: 14,
+            fontWeight: 700,
+            color: NAVY,
+            cursor: "pointer",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          <span>★ Saved places {saved.length ? `(${saved.length})` : ""}</span>
+          <span style={{ color: MUTED, fontSize: 13 }}>{showSaved ? "Hide" : "Show"}</span>
+        </button>
+
+        {showSaved &&
+          (saved.length === 0 ? (
+            <p style={{ padding: "12px 4px", color: MUTED, fontSize: 13 }}>
+              No saved places yet — tap the star on any result to save it.
+            </p>
+          ) : (
+            saved.map((s) => (
+              <div
+                key={s.id}
+                style={{
+                  marginTop: 8,
+                  background: "#FFFFFF",
+                  border: `1px solid ${BORDER}`,
+                  borderRadius: 12,
+                  padding: 14,
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>{s.name}</span>
+                  {pos && typeof s.lat === "number" && typeof s.lng === "number" && (
+                    <span style={{ fontSize: 13, fontWeight: 700, color: BLUE, whiteSpace: "nowrap" }}>
+                      {fmtDistance(haversine(pos.lat, pos.lng, s.lat, s.lng))}
+                    </span>
+                  )}
+                </div>
+                {s.address && <p style={{ margin: "6px 0 0", fontSize: 12, color: MUTED }}>{s.address}</p>}
+                <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                  {typeof s.lat === "number" && typeof s.lng === "number" && (
+                    <button
+                      type="button"
+                      onClick={() => navigateCoords(s.lat!, s.lng!, s.name)}
+                      style={{
+                        background: NAVY,
+                        color: "#FFFFFF",
+                        border: "none",
+                        borderRadius: 8,
+                        padding: "9px 14px",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      ➤ Navigate
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await supabase.from("saved_locations").delete().eq("id", s.id);
+                      setSaved((prev) => prev.filter((x) => x.id !== s.id));
+                    }}
+                    style={{
+                      background: "#FFFFFF",
+                      color: MUTED,
+                      border: `1px solid ${BORDER}`,
+                      borderRadius: 8,
+                      padding: "9px 14px",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))
+          ))}
+      </div>
+
       {/* 6. RESULTS */}
       {locating || (loading && results.length === 0) ? (
         <div style={{ padding: 32, display: "flex", justifyContent: "center" }}>
@@ -609,10 +786,32 @@ function NearestPage() {
               fontFamily: "Poppins, sans-serif",
             }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "flex-start" }}>
               <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>{r.name}</span>
-              <span style={{ fontSize: 13, fontWeight: 700, color: BLUE, whiteSpace: "nowrap" }}>
-                {fmtDistance(r.distance)}
+              <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: BLUE, whiteSpace: "nowrap" }}>
+                  {fmtDistance(r.distance)}
+                </span>
+                <button
+                  type="button"
+                  aria-label={savedFor(r) ? `Remove ${r.name} from favourites` : `Save ${r.name} to favourites`}
+                  disabled={savingId === r.id}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    void toggleSave(r);
+                  }}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    fontSize: 18,
+                    lineHeight: 1,
+                    cursor: "pointer",
+                    color: savedFor(r) ? "#F5B301" : "#C6CEDA",
+                  }}
+                >
+                  {savedFor(r) ? "★" : "☆"}
+                </button>
               </span>
             </div>
 
