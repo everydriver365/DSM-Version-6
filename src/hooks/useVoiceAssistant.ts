@@ -52,6 +52,8 @@ export function useVoiceAssistant({
   const handleCommandRef = useRef<(text: string) => void>(() => {});
   const activateRef = useRef<() => void>(() => {});
   const autoListenRef = useRef(false);
+  const lastBriefTime = useRef<number>(0);
+  const BRIEF_COOLDOWN = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 
   const SpeechRecognitionCtor =
