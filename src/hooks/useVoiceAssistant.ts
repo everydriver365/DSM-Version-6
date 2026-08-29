@@ -36,11 +36,16 @@ export function useVoiceAssistant({
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [lastCommand, setLastCommand] = useState('');
+  const [wakeActive, setWakeActive] = useState(false);
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const recognitionRef = useRef<any>(null);
+  const wakeRef = useRef<any>(null);
+  const wakeActiveRef = useRef(false);
   // Handlers are stored in refs so callbacks stay stable
   const handleCommandRef = useRef<(text: string) => void>(() => {});
+  const activateRef = useRef<() => void>(() => {});
   const autoListenRef = useRef(false);
+
 
   const SpeechRecognitionCtor =
     typeof window !== 'undefined'
