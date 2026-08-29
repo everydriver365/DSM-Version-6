@@ -193,20 +193,21 @@ function MorePage() {
     >
       <div {...pullToRefreshProps} style={{ minHeight: '100%', paddingBottom: 'calc(96px + env(safe-area-inset-bottom, 0px))' }}>
 
-      {/* IconSearch */}
+      {/* Search features */}
       <div
         style={{
-          background: '#F1F4F9',
-          border: 'none',
-          borderRadius: 14,
-          padding: '14px 16px',
+          background: '#fff',
+          border: '0.5px solid #E5E5EA',
+          borderRadius: 12,
+          padding: '12px 14px',
           margin: '4px 16px 8px',
           display: 'flex',
           alignItems: 'center',
-          gap: 12,
+          gap: 10,
+          boxShadow: '0 4px 0 #E4E4E8',
         }}
       >
-        <IconSearch size={20} color="#9CA3AF" stroke={2} />
+        <IconSearch size={20} color="#8A93A3" stroke={1.8} />
         <input
           type="text"
           ref={searchRef}
@@ -217,9 +218,9 @@ function MorePage() {
             flex: 1,
             border: 'none',
             outline: 'none',
-            fontSize: 16,
+            fontSize: 15,
             fontFamily: 'Poppins, sans-serif',
-            color: '#0F2044',
+            color: '#0B1F3A',
             background: 'transparent',
           }}
         />
@@ -230,7 +231,7 @@ function MorePage() {
             style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex' }}
             aria-label="Clear search"
           >
-            <IconX size={16} color="#9CA3AF" />
+            <IconX size={18} color="#8A93A3" />
           </button>
         )}
       </div>

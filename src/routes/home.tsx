@@ -35,13 +35,14 @@ import { DiscoverSection as DiscoverGrid } from "@/components/home/DiscoverSecti
 import { SectionHeader } from "@/components/dsm/SectionHeader";
 import { PageLayout } from "@/components/PageLayout";
 import { SheetQueueController } from "@/components/dsm/SheetQueue";
+import { useProRadioContext } from "@/hooks/useProRadio";
 import { LessonActionsSheet } from "@/components/lessons/LessonActionsSheet";
 import { LessonActionsMenu } from "@/components/lessons/LessonActionsMenu";
 import { LessonDetailsSheet } from "@/components/lessons/LessonDetailsSheet";
 import { WelcomeOverlay } from "@/components/dsm/WelcomeOverlay";
 
 
-import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconArrowsLeftRight, IconArrowsMove, IconAward, IconBell, IconBolt, IconBook, IconBuilding, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarOff, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconChartBar, IconCheckbox, IconChecks, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDots, IconFileCheck, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHeadphones, IconHeart, IconHelpCircle, IconInbox, IconInfinity, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMapSearch, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPlay, IconPlus, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconSend, IconSettings, IconShield, IconShieldExclamation, IconSignature, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconToggleLeft, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserCircle, IconUserPlus, IconUsers, IconVideo, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
+import { IconActivity, IconAlertCircle, IconAlertTriangle, IconArrowRight, IconArrowsLeftRight, IconArrowsMove, IconAward, IconBell, IconBolt, IconBook, IconBuilding, IconCalculator, IconCalendar, IconCalendarCheck, IconCalendarEvent, IconCalendarOff, IconCalendarPlus, IconCalendarStats, IconCamera, IconCar, IconChartBar, IconCheckbox, IconChecks, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircleCheck, IconClipboardCheck, IconClipboardList, IconClock, IconClockExclamation, IconClockHour4, IconCopy, IconCreditCard, IconCrown, IconCurrencyPound, IconCurrentLocation, IconDeviceLaptop, IconDeviceMobile, IconDots, IconFileCheck, IconFileSpreadsheet, IconFileText, IconFolderOpen, IconGasStation, IconGift, IconHeadphones, IconHeart, IconHelpCircle, IconInbox, IconInfinity, IconInfoCircle, IconLayoutGrid, IconLogin, IconLogout, IconMail, IconMap, IconMapPin, IconMapSearch, IconMenu2, IconMessage, IconMessageCircle, IconMicrophone, IconMoon, IconNavigation, IconPackage, IconPencil, IconPhone, IconPlayerPause, IconPlayerPlay, IconPlus, IconRadio, IconReceipt, IconRefresh, IconRosetteDiscount, IconSchool, IconSearch, IconSend, IconSettings, IconShield, IconShieldExclamation, IconSignature, IconSparkles, IconSpeakerphone, IconStar, IconSun, IconTag, IconToggleLeft, IconTrash, IconTrendingUp, IconTrophy, IconUpload, IconUser, IconUserCircle, IconUserPlus, IconUsers, IconVideo, IconWallet, IconWorld, IconX } from "@tabler/icons-react";
 
 
 
@@ -1490,6 +1491,7 @@ function HomePage() {
 
   const [addLessonOpen, setAddLessonOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
+  const radio = useProRadioContext();
 
   const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
   const [addExpenseOpen, setAddExpenseOpen] = useState(false);
@@ -1713,7 +1715,8 @@ function HomePage() {
         setAddLessonOpen(true);
         break;
       case "test":
-        navigate({ to: "/tests" as never });
+        setAddLessonPupilId(undefined);
+        setAddLessonOpen(true);
         break;
       case "pupil":
         navigate({ to: "/pupils/new" as never });
@@ -1742,6 +1745,8 @@ function HomePage() {
         break;
       }
       case "enquiry":
+        navigate({ to: "/enquiries" as never });
+        break;
       case "call":
         navigate({ to: "/enquiries" as never });
         break;
@@ -7338,8 +7343,88 @@ function HomePage() {
             })()}
             </div>
 
-
-
+            {/* 4. PINNED QUICK ACCESS (horizontal scroll) */}
+            {(() => {
+              const pinnedTiles = [
+                { key: 'radio', label: 'PRO Radio', bg: '#072B47', icon: radio.isPlaying ? IconPlayerPause : IconRadio, onClick: () => { tapLight(); radio.toggle(); } },
+                { key: 'schedule', label: 'Schedule', bg: '#1877D6', icon: IconCalendar, onClick: () => { tapLight(); navigate({ to: '/schedule' as never }); } },
+                { key: 'pupils', label: 'Pupils', bg: '#1877D6', icon: IconUsers, onClick: () => { tapLight(); navigate({ to: '/pupils' as never }); } },
+                { key: 'payments', label: 'Payments', bg: '#1877D6', icon: IconCurrencyPound, onClick: () => { tapLight(); navigate({ to: '/payments' as never }); } },
+                { key: 'messages', label: 'Messages', bg: '#1877D6', icon: IconMessage, onClick: () => { tapLight(); navigate({ to: '/messages' as never }); } },
+                { key: 'perks', label: 'My Perks', bg: '#7C3AED', icon: IconRosetteDiscount, onClick: () => { tapLight(); navigate({ to: '/perks' as never }); } },
+              ] as const;
+              return (
+                <div style={SECTION_WRAPPER_STYLE}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: 10,
+                      overflowX: 'auto',
+                      overflowY: 'hidden',
+                      WebkitOverflowScrolling: 'touch',
+                      scrollbarWidth: 'none',
+                      msOverflowStyle: 'none',
+                      padding: '4px 4px 8px',
+                      margin: '0 -4px',
+                    }}
+                    className="hide-scrollbar"
+                  >
+                    {pinnedTiles.map((tile) => {
+                      const TileIcon = tile.icon;
+                      return (
+                        <button
+                          key={tile.key}
+                          type="button"
+                          onClick={tile.onClick}
+                          style={{
+                            flex: '0 0 auto',
+                            width: 96,
+                            background: '#fff',
+                            borderRadius: tokens.radiusCard,
+                            padding: '12px 10px',
+                            boxShadow: '0 4px 0 #E4E4E8',
+                            border: 'none',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'flex-start',
+                            gap: 10,
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            fontFamily: 'Poppins, sans-serif',
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: 38,
+                              height: 38,
+                              borderRadius: 10,
+                              background: tile.bg,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              flexShrink: 0,
+                            }}
+                          >
+                            <TileIcon size={20} color="#fff" stroke={tile.key === 'radio' ? 1.5 : 1.8} />
+                          </div>
+                          <span
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 600,
+                              color: '#0B2341',
+                              lineHeight: 1.2,
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {tile.label}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* 5. QUICK ACCESS (swipeable 3x2) */}
             {(() => {
