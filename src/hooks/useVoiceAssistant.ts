@@ -129,6 +129,23 @@ export function useVoiceAssistant({
     };
   }, [supported]);
 
+  // Load available synthesis voices (iOS loads async)
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+
+    const loadVoices = () => {
+      const voices = window.speechSynthesis.getVoices().filter((v) => v.lang.startsWith('en'));
+      setAvailableVoices(voices);
+    };
+
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+
+    return () => {
+      window.speechSynthesis.onvoiceschanged = null;
+    };
+  }, []);
+
 
   const startListening = useCallback(() => {
     if (!recognitionRef.current) return;
