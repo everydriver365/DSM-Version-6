@@ -246,35 +246,39 @@ function MorePage() {
           />
         ) : (
           <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {filtered.map((tool) => (
-              <button
-                key={tool.label}
-                onClick={() => go(tool.route)}
-                style={{
-                  width: '100%',
-                  background: '#fff',
-                  border: 'none',
-                  borderRadius: tokens.radiusCard,
-                  padding: '10px 14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  fontFamily: 'Poppins, sans-serif',
-                  boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
-                }}
-              >
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: tokens.canvas, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <tool.icon size={20} color={tokens.blue} />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, color: '#0F2044' }}>{tool.label}</div>
-                  <div style={{ fontSize: 12, color: '#9CA3AF' }}>{tool.sub}</div>
-                </div>
-                <span style={{ fontSize: tokens.fontSize.xs, color: '#9CA3AF', marginLeft: 'auto' }}>{tool.group}</span>
-              </button>
-            ))}
+            {filtered.map((tool) => {
+              const isTeaching = tool.group === 'Teaching';
+              return (
+                <button
+                  key={tool.label}
+                  onClick={() => go(tool.route)}
+                  style={{
+                    width: '100%',
+                    background: '#fff',
+                    border: isTeaching ? '0.5px solid #E5E5EA' : 'none',
+                    borderRadius: isTeaching ? 12 : tokens.radiusCard,
+                    padding: isTeaching ? '12px 14px' : '10px 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: isTeaching ? 12 : 12,
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    fontFamily: 'Poppins, sans-serif',
+                    boxShadow: isTeaching ? '0 4px 0 #E4E4E8' : '0 2px 8px rgba(15,32,68,0.06)',
+                    minHeight: isTeaching ? 62 : undefined,
+                  }}
+                >
+                  <div style={{ width: isTeaching ? 38 : 40, height: isTeaching ? 38 : 40, borderRadius: 10, background: isTeaching ? '#E6F0FB' : tokens.canvas, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <tool.icon size={isTeaching ? 18 : 20} color={isTeaching ? '#1877D6' : tokens.blue} stroke={1.8} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: isTeaching ? 15 : 13, fontWeight: isTeaching ? 500 : undefined, color: '#0B1F3A' }}>{tool.label}</div>
+                    <div style={{ fontSize: isTeaching ? 13 : 12, color: isTeaching ? '#8A93A3' : '#9CA3AF' }}>{tool.sub}</div>
+                  </div>
+                  <span style={{ fontSize: tokens.fontSize.xs, color: '#8A93A3', marginLeft: 'auto' }}>{tool.group}</span>
+                </button>
+              );
+            })}
           </div>
         )
       ) : (
