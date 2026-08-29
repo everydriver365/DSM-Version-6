@@ -95,6 +95,16 @@ export function useVoiceAssistant({
     recognitionRef.current = recognition;
 
     // ---- "Hey ED" wake word: continuous background recognition ----
+    // Opt-in only: without it the mic stays closed until the user taps it.
+    if (!wakeWordEnabled) {
+      wakeActiveRef.current = false;
+      setWakeActive(false);
+      return () => {
+        try { recognition.stop(); } catch { /* noop */ }
+        recognitionRef.current = null;
+      };
+    }
+
     let stopped = false;
     const wake = new SpeechRecognitionCtor();
     wake.continuous = true;
