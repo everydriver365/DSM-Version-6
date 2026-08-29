@@ -6698,6 +6698,7 @@ function HomePage() {
                                           { label: 'View test details', onClick: () => openPanel() },
                                           { label: 'View details', onClick: () => setDetailsSheetForLesson(l) },
                                           { label: 'Edit lesson', onClick: () => { setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }), 0); } },
+                                          { label: (<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#E53935' }}><IconTrash stroke={1.5} size={16} color="#E53935" />Delete lesson</span>) as any, onClick: () => setConfirmDeleteLesson(l) },
                                           { label: 'Full profile', onClick: () => { const pid = l.pupil_id; if (pid) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: pid } }), 0); } },
                                         ]}
                                       >
