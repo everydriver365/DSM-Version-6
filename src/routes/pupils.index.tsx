@@ -95,28 +95,14 @@ function statusBadgeColor(status: StatusKey) {
   return "#6B7280";
 }
 
-function pupilMatchesStatus(
+function pupilMatchesFilter(
   p: Pupil,
-  filter: StatusKey,
-  lastLessonMap: Record<string, string>,
+  filter: FilterKey,
+  nextLessonMap: Record<string, string>,
+  testDateMap: Record<string, string>,
 ): boolean {
-  const s = (p.status ?? "active").toLowerCase();
-  if (filter === "active") return s === "active";
-  if (filter === "passed") return s === "passed";
-  if (filter === "waiting") return ["waitlist", "waiting", "enquiry"].includes(s);
-  if (filter === "lapsed") {
-    if (["lapsed", "paused", "archived"].includes(s)) return true;
-    if (s === "active") {
-      const last = lastLessonMap[p.id];
-      if (!last) return true;
-      const days = Math.floor(
-        (new Date().getTime() - new Date(last).getTime()) / 86400000,
-      );
-      return days > 60;
-    }
-    return false;
-  }
-  return false;
+  if (filter === "all") return true;
+  return getPupilGroup(p, nextLessonMap, testDateMap) === filter;
 }
 
 const PILL_BASE = {
