@@ -566,11 +566,10 @@ function PupilsIndexPage() {
     const q = query.trim().toLowerCase();
     const base = pupils.filter((p) => {
       if (q && !p.name.toLowerCase().includes(q)) return false;
-      return pupilMatchesStatus(p, statusFilter, lastLessonMap);
+      return pupilMatchesFilter(p, statusFilter, nextLessonMap, testDateMap);
     });
 
     const withIndex = base.map((p, i) => ({ p, i }));
-
 
     withIndex.sort((a, b) => {
       // Unread messages always float to the top.
@@ -579,8 +578,6 @@ function PupilsIndexPage() {
       if (ua !== ub) return ub - ua;
 
       // Always alphabetical by name.
-
-      // name
       const cmp = displayName(a.p.name).localeCompare(displayName(b.p.name), "en-GB", {
         sensitivity: "base",
       });
@@ -588,29 +585,48 @@ function PupilsIndexPage() {
     });
 
     return withIndex.map((x) => x.p);
-  }, [pupils, query, statusFilter, lastLessonMap, unreadMap, balanceMap, nextLessonMap]);
+  }, [pupils, query, statusFilter, nextLessonMap, testDateMap, unreadMap]);
 
   const statusCounts = useMemo(() => {
     if (!pupils) return null;
-    const counts: Record<StatusKey, number> = {
+    const counts: Record<GroupKey, number> = {
       active: 0,
+      testBooked: 0,
       passed: 0,
-      waiting: 0,
-      lapsed: 0,
+      inactive: 0,
     };
     for (const p of pupils) {
-      for (const tab of STATUS_TABS) {
-        if (pupilMatchesStatus(p, tab.key, lastLessonMap)) {
-          counts[tab.key]++;
-        }
-      }
+      const group = getPupilGroup(p, nextLessonMap, testDateMap);
+      counts[group]++;
     }
     return counts;
-  }, [pupils, lastLessonMap]);
+  }, [pupils, nextLessonMap, testDateMap]);
 
-  // Visual grouping only — derived from the same data already fetched.
-  const needsAttention = (filtered ?? []).filter((p: any) => (balanceMap[p.id] || 0) > 0);
-  const activePupils = (filtered ?? []).filter((p: any) => !((balanceMap[p.id] || 0) > 0));
+  // Group filtered pupils by status for section rendering.
+  const grouped = useMemo(() => {
+    if (!filtered) return null;
+    const groups: Record<GroupKey, Pupil[]> = {
+      active: [],
+      testBooked: [],
+      passed: [],
+      inactive: [],
+    };
+    for (const p of filtered) {
+      const group = getPupilGroup(p, nextLessonMap, testDateMap);
+      groups[group].push(p);
+    }
+    return groups;
+  }, [filtered, nextLessonMap, testDateMap]);
+
+  const sectionCounts = useMemo(() => {
+    if (!grouped) return null;
+    return {
+      active: grouped.active.length,
+      testBooked: grouped.testBooked.length,
+      passed: grouped.passed.length,
+      inactive: grouped.inactive.length,
+    };
+  }, [grouped]);
 
 
   const renderRow = (p: any, accentColour?: string) => {
