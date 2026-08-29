@@ -599,6 +599,18 @@ function Header({ unreadCount }: { unreadCount: number }) {
   const hasUnread = unreadCount > 0;
   const openMenu = () => window.dispatchEvent(new Event("dsm-open-menu"));
 
+  // Reuse the instructor name already loaded elsewhere in this file (no extra query).
+  const [instructorName, setInstructorName] = useState<string>("");
+  useEffect(() => {
+    try {
+      setInstructorName(localStorage.getItem("dsm-instructor-name") ?? "");
+    } catch { /* ignore */ }
+    const onName = (e: Event) => setInstructorName(String((e as CustomEvent).detail ?? ""));
+    window.addEventListener("dsm-instructor-name", onName as EventListener);
+    return () => window.removeEventListener("dsm-instructor-name", onName as EventListener);
+  }, []);
+  const firstInitial = (instructorName.trim().split(/\s+/)[0]?.[0] ?? "").toUpperCase();
+
   return (
     <header
       style={{
@@ -623,6 +635,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
         <div
           onClick={openMenu}
           style={{
+            position: "relative",
             width: 32,
             height: 32,
             display: "flex",
@@ -632,6 +645,28 @@ function Header({ unreadCount }: { unreadCount: number }) {
           }}
         >
           <IconMenu2 stroke={1.5} size={22} color="#fff" />
+          {firstInitial && (
+            <span
+              style={{
+                position: "absolute",
+                bottom: -2,
+                right: -2,
+                width: 16,
+                height: 16,
+                borderRadius: "50%",
+                background: "#2C97DE",
+                border: "1.5px solid #0B2341",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#fff",
+                fontSize: 8,
+                fontWeight: 700,
+              }}
+            >
+              {firstInitial}
+            </span>
+          )}
         </div>
       </div>
 
