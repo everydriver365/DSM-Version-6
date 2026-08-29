@@ -7,18 +7,28 @@ import {
   IconPlayerPlay,
   IconPlayerPause,
   IconRadio,
-  IconArrowsShuffle,
   IconShare,
+  IconMusic,
+  IconVinyl,
+  IconWaveSine,
+  IconCar,
+  IconMicrophone,
 } from "@tabler/icons-react";
+import { toast } from "sonner";
 import { useProRadioContext } from "@/hooks/useProRadio";
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 const ART_GRADIENT = "linear-gradient(135deg, #2C97DE 0%, #18A999 100%)";
 
-const COMING_UP = [
-  { time: "11:00", name: "PRO Driving News" },
-  { time: "12:00", name: "The Motoring Podcast" },
-  { time: "13:00", name: "PRO Lunch" },
+const COMING_SOON_STATIONS = [
+  { name: "PRO 80s", Icon: IconMusic, bg: "#18A999" },
+  { name: "PRO 90s", Icon: IconMusic, bg: "#7B61FF" },
+  { name: "PRO 00s", Icon: IconMusic, bg: "#2C97DE" },
+  { name: "PRO 70s", Icon: IconVinyl, bg: "#F59E0B" },
+  { name: "PRO 60s", Icon: IconVinyl, bg: "#536579" },
+  { name: "PRO Chill", Icon: IconWaveSine, bg: "#18A999" },
+  { name: "PRO Drive", Icon: IconCar, bg: "#2C97DE" },
+  { name: "PRO Talk", Icon: IconMicrophone, bg: "#7B61FF" },
 ];
 
 function LiveDot({ size = 6 }: { size?: number }) {
@@ -161,21 +171,22 @@ export function ProRadioPlayer() {
             top: 0,
             bottom: 0,
             zIndex: 100001,
-            background: "#072B47",
+            background: "#F4F6F8",
             display: "flex",
             flexDirection: "column",
             overflowY: "auto",
-            paddingTop: "max(env(safe-area-inset-top), 12px)",
             paddingBottom: "max(env(safe-area-inset-bottom), 12px)",
           }}
         >
           {/* Header */}
           <div
             style={{
+              background: "#0B2341",
+              padding: "20px 16px 16px",
+              paddingTop: "calc(20px + max(env(safe-area-inset-top), 0px))",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              padding: "12px 16px",
             }}
           >
             <button
@@ -186,164 +197,221 @@ export function ProRadioPlayer() {
             >
               <IconChevronDown size={22} color="rgba(255,255,255,0.5)" stroke={2} />
             </button>
-            <span style={{ color: "#FFFFFF", fontSize: 13, fontWeight: 700 }}>
+            <span style={{ color: "#FFFFFF", fontSize: 15, fontWeight: 700 }}>
               PRO Radio
             </span>
             <IconDots size={22} color="rgba(255,255,255,0.5)" stroke={2} />
           </div>
 
-          {/* Artwork */}
-          <div
-            style={{
-              margin: "0 32px",
-              aspectRatio: "1 / 1",
-              borderRadius: 16,
-              background: artwork ? "#0B2341" : ART_GRADIENT,
-              boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
-              overflow: "hidden",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {artwork ? (
-              <img
-                src={artwork}
-                alt={radio.showName}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            ) : (
-              <IconRadio size={64} color="#FFFFFF" stroke={1.5} />
-            )}
-          </div>
-
-          {/* Track info */}
-          <div
-            style={{
-              padding: "24px 24px 8px",
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
-              gap: 12,
-            }}
-          >
-            <div style={{ minWidth: 0 }}>
-              <div style={{ color: "#FFFFFF", fontSize: 20, fontWeight: 700 }}>
-                {radio.showName}
-              </div>
-              {radio.nowPlaying.artist && (
-                <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 15 }}>
-                  {radio.nowPlaying.artist}
-                </div>
-              )}
-              {radio.isLive && (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    marginTop: 6,
-                    color: "#E53935",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    textTransform: "uppercase",
-                    letterSpacing: 0.4,
-                  }}
-                >
-                  <LiveDot size={7} />
-                  Live now
-                </div>
-              )}
-            </div>
-            <IconHeart size={22} color="rgba(255,255,255,0.4)" stroke={2} />
-          </div>
-
           {/* Now playing card */}
           <div
             style={{
-              margin: "0 24px",
-              background: "rgba(255,255,255,0.08)",
-              borderRadius: 10,
-              padding: "10px 14px",
+              margin: 16,
+              background: "#FFFFFF",
+              borderRadius: 16,
+              border: "1px solid #E4E8EF",
+              boxShadow: "0 4px 20px rgba(11,35,65,0.08)",
+              overflow: "hidden",
             }}
           >
+            {/* Artwork */}
             <div
               style={{
-                color: "rgba(255,255,255,0.5)",
-                fontSize: 10,
-                textTransform: "uppercase",
-                letterSpacing: 0.6,
-              }}
-            >
-              Now playing
-            </div>
-            <div style={{ color: "#FFFFFF", fontSize: 13, fontWeight: 500 }}>
-              {radio.nowPlaying.title}
-            </div>
-          </div>
-
-          {/* Controls */}
-          <div
-            style={{
-              padding: 24,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <IconArrowsShuffle size={22} color="rgba(255,255,255,0.4)" stroke={2} />
-            <button
-              type="button"
-              aria-label={radio.isPlaying ? "Pause PRO Radio" : "Play PRO Radio"}
-              onClick={() => radio.toggle()}
-              style={{
-                width: 64,
-                height: 64,
-                borderRadius: "50%",
-                background: "#FFFFFF",
-                border: "none",
+                position: "relative",
+                height: 160,
+                background: artwork
+                  ? `url(${artwork}) center/cover no-repeat`
+                  : "linear-gradient(135deg, #0B2341 0%, #2C97DE 100%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+              }}
+            >
+              {!artwork && (
+                <IconRadio size={80} color="rgba(255,255,255,0.3)" stroke={1.5} />
+              )}
+              <div
+                style={{
+                  position: "absolute",
+                  top: 12,
+                  left: 12,
+                  background: "rgba(229,57,53,0.9)",
+                  borderRadius: 20,
+                  padding: "4px 10px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                }}
+              >
+                <LiveDot />
+                <span style={{ color: "#FFFFFF", fontSize: 10, fontWeight: 700 }}>
+                  LIVE
+                </span>
+              </div>
+            </div>
+
+            {/* Track info */}
+            <div style={{ padding: "14px 16px", borderBottom: "1px solid #F4F6F8" }}>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: "#536579",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.6px",
+                  marginBottom: 3,
+                }}
+              >
+                Now playing
+              </div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#0B2341" }}>
+                {radio.showName}
+              </div>
+              <div style={{ fontSize: 13, color: "#536579", marginTop: 2 }}>
+                {radio.nowPlaying.artist
+                  ? `${radio.nowPlaying.title} · ${radio.nowPlaying.artist}`
+                  : radio.nowPlaying.title}
+              </div>
+            </div>
+
+            {/* Controls */}
+            <div
+              style={{
+                padding: "14px 16px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <IconHeart size={20} color="#D1D5DB" stroke={2} />
+              <button
+                type="button"
+                aria-label={radio.isPlaying ? "Pause PRO Radio" : "Play PRO Radio"}
+                onClick={() => radio.toggle()}
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: "50%",
+                  background: "#2C97DE",
+                  border: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 4px 16px rgba(44,151,222,0.4)",
+                  cursor: "pointer",
+                }}
+              >
+                <PlayIcon size={24} color="#FFFFFF" stroke={2} />
+              </button>
+              <IconShare size={20} color="#D1D5DB" stroke={2} />
+            </div>
+          </div>
+
+          {/* Stations */}
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: "#536579",
+              textTransform: "uppercase",
+              letterSpacing: "0.6px",
+              padding: "4px 16px 10px",
+            }}
+          >
+            All stations
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 10,
+              padding: "0 16px 16px",
+            }}
+          >
+            {/* PRO Live — active */}
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => radio.toggle()}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") radio.toggle();
+              }}
+              style={{
+                background: "#0B2341",
+                borderRadius: 14,
+                padding: "14px 8px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 8,
+                boxShadow: "0 4px 12px rgba(11,35,65,0.3)",
                 cursor: "pointer",
               }}
             >
-              <PlayIcon size={28} color="#072B47" stroke={2} />
-            </button>
-            <IconShare size={22} color="rgba(255,255,255,0.4)" stroke={2} />
-          </div>
-
-          {/* Coming up */}
-          <div style={{ padding: "0 24px 24px" }}>
-            <div
-              style={{
-                color: "rgba(255,255,255,0.4)",
-                fontSize: 11,
-                textTransform: "uppercase",
-                letterSpacing: 0.6,
-                marginBottom: 8,
-              }}
-            >
-              Coming up
-            </div>
-            {COMING_UP.map((slot) => (
               <div
-                key={slot.time}
-                style={{ display: "flex", gap: 12, padding: "6px 0" }}
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 12,
+                  background: "#2C97DE",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
-                <span
+                <IconRadio size={22} color="#FFFFFF" stroke={1.8} />
+              </div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#FFFFFF" }}>
+                PRO Live
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <LiveDot size={5} />
+                <span style={{ fontSize: 9, color: "rgba(255,255,255,0.7)" }}>
+                  LIVE
+                </span>
+              </div>
+            </div>
+
+            {COMING_SOON_STATIONS.map(({ name, Icon, bg }) => (
+              <div
+                key={name}
+                role="button"
+                tabIndex={0}
+                onClick={() => toast(`${name} coming soon!`)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ")
+                    toast(`${name} coming soon!`);
+                }}
+                style={{
+                  background: "#FFFFFF",
+                  borderRadius: 14,
+                  padding: "14px 8px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 8,
+                  border: "1px solid #E4E8EF",
+                  boxShadow: "0 2px 0 #E4E4E8",
+                  cursor: "pointer",
+                }}
+              >
+                <div
                   style={{
-                    color: "rgba(255,255,255,0.4)",
-                    fontSize: 12,
-                    minWidth: 40,
+                    width: 48,
+                    height: 48,
+                    borderRadius: 12,
+                    background: bg,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  {slot.time}
-                </span>
-                <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 13 }}>
-                  {slot.name}
-                </span>
+                  <Icon size={22} color="#FFFFFF" stroke={1.8} />
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "#0B2341" }}>
+                  {name}
+                </div>
+                <div style={{ fontSize: 9, color: "#536579" }}>COMING SOON</div>
               </div>
             ))}
           </div>
