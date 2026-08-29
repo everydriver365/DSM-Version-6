@@ -385,7 +385,65 @@ export function useVoiceAssistant({
       return;
     }
 
+    // ---- PRO RADIO ----
+    if (text.includes('stop radio') ||
+      text.includes('pause radio') ||
+      text.includes('turn off radio') ||
+      text.includes('stop music') ||
+      text.includes('pause music')) {
+      speak('Stopping radio');
+      window.dispatchEvent(new CustomEvent('ed:radio:stop'));
+      return;
+    }
+
+    if (text.includes('next station') ||
+      text.includes('change station') ||
+      text.includes('next channel') ||
+      text.includes('skip')) {
+      speak('Changing station');
+      window.dispatchEvent(new CustomEvent('ed:radio:next'));
+      return;
+    }
+
+    if (text.includes('what is playing') ||
+      text.includes("what's playing") ||
+      text.includes('what song') ||
+      text.includes('what show')) {
+      window.dispatchEvent(new CustomEvent('ed:radio:whats'));
+      return;
+    }
+
+    if (text.includes('radio') ||
+      text.includes('play radio') ||
+      text.includes('pro radio') ||
+      text.includes('music')) {
+      speak('Starting Pro Radio');
+      window.dispatchEvent(new CustomEvent('ed:radio:play'));
+      return;
+    }
+
+    // ---- PRO LIVE ----
+    if (text.includes('join') ||
+      text.includes('join live') ||
+      text.includes('join session')) {
+      speak('Joining live session');
+      window.dispatchEvent(new CustomEvent('ed:live:join'));
+      return;
+    }
+
+    if (text.includes('live') ||
+      text.includes('pro live') ||
+      text.includes("what's live") ||
+      text.includes('whats live') ||
+      text.includes('live session') ||
+      text.includes('live now')) {
+      speak('Opening Pro Live');
+      window.dispatchEvent(new CustomEvent('ed:live:open'));
+      return;
+    }
+
     // STOP
+
     if (text.includes('stop') ||
       text.includes('cancel') ||
       text.includes('goodbye') ||
