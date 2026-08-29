@@ -1031,8 +1031,7 @@ export function AddLessonSheet({
                         borderRadius: tokens.radiusCard,
                         border: "1px solid #E4E8EF",
                         boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                        maxHeight: 200,
-                        overflowY: "auto",
+                        marginTop: 4,
                         marginTop: 4,
                       }}
                     >
