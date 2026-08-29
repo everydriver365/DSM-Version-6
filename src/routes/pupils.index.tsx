@@ -173,7 +173,7 @@ function PupilsIndexPage() {
   const [nextLessonMap, setNextLessonMap] = useState<Record<string, string>>({});
   const [testDateMap, setTestDateMap] = useState<Record<string, string>>({});
   const [lastLessonMap, setLastLessonMap] = useState<Record<string, string>>({});
-  const [statusFilter, setStatusFilter] = useState<StatusKey>("active");
+  const [statusFilter, setStatusFilter] = useState<FilterKey>("all");
   const { pullToRefreshProps } = usePullToRefresh({
     onRefresh: async () => {
       setReloadKey((k) => k + 1);
