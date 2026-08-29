@@ -10,6 +10,7 @@ interface VoiceAssistantProps {
     pickup_location?: string;
     duration_minutes?: number;
     payment_status?: string;
+    amount_due?: number | null;
     notes?: string;
   } | null;
   unreadCount?: number;
