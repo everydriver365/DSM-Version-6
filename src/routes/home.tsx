@@ -3630,6 +3630,20 @@ function HomePage() {
       window.removeEventListener("ed:eol", onEol);
       window.removeEventListener("ed:schedule", onSchedule);
       window.removeEventListener("ed:markpaid", onMarkPaid as EventListener);
+      window.removeEventListener("ed:owes", onOwes);
+      window.removeEventListener("ed:earnings:week", onEarningsWeek);
+      window.removeEventListener("ed:earnings:month", onEarningsMonth);
+      window.removeEventListener("ed:tomorrow", onTomorrow);
+      window.removeEventListener("ed:lastlesson", onLastLesson);
+      window.removeEventListener("ed:pupilcount", onPupilCount);
+      window.removeEventListener("ed:testdate", onTestDate as EventListener);
+      window.removeEventListener("ed:hours", onHours as EventListener);
+      window.removeEventListener("ed:reminder", onReminder as EventListener);
+      window.removeEventListener("ed:paymentrequest", onPaymentRequest as EventListener);
+      window.removeEventListener("ed:cancellesson", onCancelLesson as EventListener);
+      window.removeEventListener("ed:cancelconfirm", onCancelConfirm);
+      window.removeEventListener("ed:busiestday", onBusiestDay);
+      window.removeEventListener("ed:cancellations", onCancellations);
     };
   }, [upcoming, navigate, lessons, userId]);
 
