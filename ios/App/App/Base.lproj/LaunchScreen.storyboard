@@ -17,13 +17,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView contentMode="scaleAspectFit" image="Splash" translatesAutoresizingMaskIntoConstraints="NO" id="snD-IY-ifK">
-                                <rect key="frame" x="106.66666666666669" y="336" width="280" height="280"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="180" id="h1"/>
-                                    <constraint firstAttribute="width" constant="180" id="w1"/>
-                                </constraints>
-                            </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1d0-Md-Pno">
                                 <rect key="frame" x="97" y="545" width="206" height="22"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -39,9 +32,16 @@
                                 <color key="textColor" systemColor="tintColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView contentMode="scaleAspectFit" misplaced="YES" image="Splash" translatesAutoresizingMaskIntoConstraints="NO" id="snD-IY-ifK">
+                                <rect key="frame" x="-23" y="204" width="446" height="403"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="180" id="h1"/>
+                                    <constraint firstAttribute="width" constant="180" id="w1"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="FgT-Q6-cui"/>
-                        <color key="backgroundColor" red="0.969" green="0.980" blue="0.988" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.96899999999999997" green="0.97999999999999998" blue="0.98799999999999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="snD-IY-ifK" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="cx"/>
                             <constraint firstItem="snD-IY-ifK" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="cy"/>
@@ -50,11 +50,11 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="52.671755725190835" y="374.64788732394368"/>
         </scene>
     </scenes>
     <resources>
-        <image name="Splash" width="418" height="418"/>
+        <image name="Splash" width="1024" height="1024"/>
         <systemColor name="tintColor">
             <color red="0.0" green="0.53333333329999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
