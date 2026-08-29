@@ -7,14 +7,12 @@ import {
   useContext,
 } from "react";
 
-const STREAM_URL = "https://streams.radio.co/s056b6f87a/listen";
-const RADIO_CO_STATUS_URL =
-  "https://public.radio.co/stations/s056b6f87a/status";
+const STREAM_URL = "https://ice1.somafm.com/groovesalad-256-mp3";
 
 export interface NowPlaying {
   title: string;
   artist?: string;
-  artwork?: string;
+  artwork?: string | null;
 }
 
 export interface RadioState {
@@ -111,26 +109,17 @@ export function useProRadio() {
         setState((s) => ({ ...s, isLoading: false, isPlaying: false }));
     }
 
-    const fetchStatus = async () => {
-      try {
-        const res = await fetch(RADIO_CO_STATUS_URL);
-        const data = await res.json();
-        const nextNowPlaying = {
-          title: data.current_track?.title ?? "PRO Radio",
-          artist: data.current_track?.artist,
-          artwork: data.current_track?.artwork_url,
-        };
-        const nextShowName = data.current_show?.name ?? "PRO Radio";
-        setState((s) => ({
-          ...s,
-          nowPlaying: nextNowPlaying,
-          showName: nextShowName,
-          isLive: data.status === "online",
-        }));
-        updateMediaSession(nextNowPlaying, nextShowName);
-      } catch {
-        // fail silently
-      }
+    const fetchStatus = () => {
+      setState((s) => ({
+        ...s,
+        nowPlaying: {
+          title: "Groove Salad",
+          artist: "SomaFM",
+          artwork: null,
+        },
+        showName: "PRO Chill",
+        isLive: true,
+      }));
     };
 
     fetchStatus();
