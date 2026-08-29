@@ -560,7 +560,7 @@ export function BottomNav({
         {renderTab("home", "/home", "Home", IconHome, isActive("home"))}
         {renderTab("schedule", "/schedule", "Schedule", IconCalendar, isActive("schedule"))}
         <div key="mic" className="flex flex-1 flex-col items-center justify-end select-none relative" style={{ minWidth: 54 }}>
-          <CenterMicButton />
+          <CenterMicButton onClick={activate} isSpeaking={isSpeaking} />
         </div>
         {renderTab("messages", "/messages", "Messages", IconMessageCircle, isActive("messages"), undefined, true)}
         {renderTab("more", "/more", "More", IconDots, isActive("more"))}
