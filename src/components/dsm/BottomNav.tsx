@@ -12,6 +12,17 @@ import {
 } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { tapLight } from "@/lib/haptics";
+import { useVoiceAssistant } from "@/hooks/useVoiceAssistant";
+
+type VoiceNextLesson = {
+  pupils?: { name?: string; phone?: string };
+  lesson_time?: string;
+  lesson_date?: string;
+  pickup_location?: string;
+  duration_minutes?: number;
+  payment_status?: string;
+  notes?: string;
+} | null;
 
 /**
  * Unread pupil replies count. Kept inside BottomNav so every screen gets the
@@ -301,14 +312,34 @@ function ActiveIcon({
   return null;
 }
 
-function CenterMicButton() {
+function MicPulseStyle() {
+  return (
+    <style>{`
+      @keyframes edp-mic-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+      }
+      .edp-mic-pulsing {
+        animation: edp-mic-pulse 1s infinite;
+      }
+    `}</style>
+  );
+}
+
+function CenterMicButton({
+  onClick,
+  isSpeaking,
+}: {
+  onClick: () => void;
+  isSpeaking: boolean;
+}) {
   return (
     <button
       type="button"
-      aria-label="Open voice assistant"
+      aria-label={isSpeaking ? "ED is speaking" : "Open voice assistant"}
       onClick={() => {
         tapLight();
-        window.dispatchEvent(new CustomEvent("dsm-open-voice-assistant"));
+        onClick();
       }}
       className="flex items-center justify-center"
       style={{
@@ -325,7 +356,12 @@ function CenterMicButton() {
         zIndex: 2,
       }}
     >
-      <IconMicrophone size={24} color="#FFFFFF" stroke={1.8} />
+      <IconMicrophone
+        size={24}
+        color="#FFFFFF"
+        stroke={1.8}
+        className={isSpeaking ? "edp-mic-pulsing" : undefined}
+      />
     </button>
   );
 }
@@ -354,6 +390,63 @@ export function BottomNav({
   }, []);
   const currentWs = listenerWs;
   const unreadMessages = useUnreadMessages();
+
+  // Voice assistant context is written to localStorage by the home screen
+  // (dsm_next_lesson, dsm-instructor-name) so the bottom nav can use it
+  // without prop drilling or touching other route files.
+  const [voiceContext, setVoiceContext] = useState<{
+    instructorFirstName?: string;
+    nextLesson?: VoiceNextLesson;
+  }>({});
+
+  useEffect(() => {
+    const update = () => {
+      let instructorFirstName: string | undefined;
+      try {
+        const storedName = window.localStorage.getItem("dsm-instructor-name");
+        instructorFirstName = storedName ? storedName.trim().split(/\s+/)[0] : undefined;
+      } catch {
+        // ignore
+      }
+
+      let nextLesson: VoiceNextLesson = null;
+      try {
+        const raw = window.localStorage.getItem("dsm_next_lesson");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          nextLesson = {
+            pupils: { name: parsed.pupilName, phone: parsed.phone },
+            lesson_time: parsed.time ? `${parsed.time}:00` : undefined,
+            lesson_date: parsed.date,
+            pickup_location: parsed.address,
+            duration_minutes: undefined,
+            payment_status: undefined,
+            notes: undefined,
+          };
+        }
+      } catch {
+        // ignore
+      }
+
+      setVoiceContext({ instructorFirstName, nextLesson });
+    };
+
+    update();
+    window.addEventListener("storage", update);
+    window.addEventListener("dsm-instructor-name", update as EventListener);
+    return () => {
+      window.removeEventListener("storage", update);
+      window.removeEventListener("dsm-instructor-name", update as EventListener);
+    };
+  }, []);
+
+  const { isSpeaking, activate } = useVoiceAssistant({
+    instructorFirstName: voiceContext.instructorFirstName ?? "there",
+    nextLesson: voiceContext.nextLesson ?? null,
+    unreadCount: unreadMessages,
+    trafficData: null,
+    weatherData: null,
+  });
 
   const renderIcon = (
     icon: ComponentType<{ size?: number; color?: string; stroke?: number }>,
@@ -443,7 +536,7 @@ export function BottomNav({
           }, it.key === "messages" || it.to === "/messages");
         })}
         <div key="mic" className="flex flex-1 flex-col items-center justify-end select-none relative" style={{ minWidth: 54 }}>
-          <CenterMicButton />
+          <CenterMicButton onClick={activate} isSpeaking={isSpeaking} />
         </div>
         {right.map((it, i) => {
           const wsMatch = typeof it.ws === 'number' && it.ws === currentWs;
@@ -467,7 +560,7 @@ export function BottomNav({
         {renderTab("home", "/home", "Home", IconHome, isActive("home"))}
         {renderTab("schedule", "/schedule", "Schedule", IconCalendar, isActive("schedule"))}
         <div key="mic" className="flex flex-1 flex-col items-center justify-end select-none relative" style={{ minWidth: 54 }}>
-          <CenterMicButton />
+          <CenterMicButton onClick={activate} isSpeaking={isSpeaking} />
         </div>
         {renderTab("messages", "/messages", "Messages", IconMessageCircle, isActive("messages"), undefined, true)}
         {renderTab("more", "/more", "More", IconDots, isActive("more"))}
@@ -476,19 +569,42 @@ export function BottomNav({
   };
 
   return (
-    <nav
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white flex items-end justify-around"
-      style={{
-        fontFamily: "Poppins, sans-serif",
-        borderRadius: "16px 16px 0 0",
-        boxShadow: "0 -4px 24px rgba(15,32,68,0.08)",
-        paddingTop: 8,
-        paddingBottom: "max(env(safe-area-inset-bottom), 8px)",
-        height: "calc(56px + max(env(safe-area-inset-bottom), 8px) + 8px)",
-      }}
-    >
-      {useCustom ? renderCustomItems(items!) : renderDefaultItems()}
-    </nav>
+    <>
+      <MicPulseStyle />
+      <nav
+        className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white flex items-end justify-around"
+        style={{
+          fontFamily: "Poppins, sans-serif",
+          borderRadius: "16px 16px 0 0",
+          boxShadow: "0 -4px 24px rgba(15,32,68,0.08)",
+          paddingTop: 8,
+          paddingBottom: "max(env(safe-area-inset-bottom), 8px)",
+          height: "calc(56px + max(env(safe-area-inset-bottom), 8px) + 8px)",
+        }}
+      >
+        {useCustom ? renderCustomItems(items!) : renderDefaultItems()}
+      </nav>
+      {isSpeaking && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 70,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 100,
+            background: "#0B2341",
+            color: "#fff",
+            fontSize: 12,
+            borderRadius: 20,
+            padding: "4px 12px",
+            fontFamily: "Poppins, sans-serif",
+            pointerEvents: "none",
+          }}
+        >
+          ED is speaking…
+        </div>
+      )}
+    </>
   );
 }
 
