@@ -676,9 +676,9 @@ function PaymentsPage() {
                         >
                           <div
                             style={{
-                              fontSize: 14,
-                              fontWeight: 500,
-                              color: "#000",
+                              fontSize: 15,
+                              fontWeight: 700,
+                              color: "#0B2341",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
@@ -687,15 +687,30 @@ function PaymentsPage() {
                           >
                             {displayPupilName(row.pupils?.name) || "Unknown pupil"}
                           </div>
-                          <div style={{ fontSize: 12, color: "#6E6E73", marginTop: 2, ...POPPINS }}>
-                            {methodLabel(isRefund ? "refund" : row.payment_method)} · {formatTime(row.created_at)}
+                          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4, ...POPPINS }}>
+                            <span style={{ fontSize: 12, color: "#536579" }}>
+                              {formatTime(row.created_at)} · {methodLabel(isRefund ? "refund" : row.payment_method)}
+                            </span>
+                            <span
+                              style={{
+                                background: methodBg(row.payment_method, isRefund),
+                                color: "#fff",
+                                fontSize: 10,
+                                fontWeight: 600,
+                                padding: "2px 8px",
+                                borderRadius: 999,
+                                ...POPPINS,
+                              }}
+                            >
+                              {methodLabel(isRefund ? "refund" : row.payment_method)}
+                            </span>
                           </div>
                         </button>
                         <div
                           style={{
-                            fontSize: 13,
-                            fontWeight: 500,
-                            color: isNonRevenue ? "#6E6E73" : isRefund ? "#C8434F" : "#3B8B3B",
+                            fontSize: 15,
+                            fontWeight: 700,
+                            color: isNonRevenue ? "#6E6E73" : isRefund ? "#E53935" : "#16A34A",
                             textAlign: "right",
                             flexShrink: 0,
                             ...POPPINS,
