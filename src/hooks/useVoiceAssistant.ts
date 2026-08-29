@@ -44,6 +44,22 @@ export function useVoiceAssistant({
     return localStorage.getItem('ed_voice_name') ?? null;
   });
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
+  // "Hey ED" background listening is opt-in — the microphone must never open
+  // on its own when the app loads.
+  const [wakeWordEnabled, setWakeWordEnabled] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('ed_wake_word') === '1';
+  });
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const sync = () => setWakeWordEnabled(localStorage.getItem('ed_wake_word') === '1');
+    window.addEventListener('ed-wake-word-changed', sync);
+    window.addEventListener('storage', sync);
+    return () => {
+      window.removeEventListener('ed-wake-word-changed', sync);
+      window.removeEventListener('storage', sync);
+    };
+  }, []);
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const recognitionRef = useRef<any>(null);
   const wakeRef = useRef<any>(null);
@@ -79,6 +95,16 @@ export function useVoiceAssistant({
     recognitionRef.current = recognition;
 
     // ---- "Hey ED" wake word: continuous background recognition ----
+    // Opt-in only: without it the mic stays closed until the user taps it.
+    if (!wakeWordEnabled) {
+      wakeActiveRef.current = false;
+      setWakeActive(false);
+      return () => {
+        try { recognition.stop(); } catch { /* noop */ }
+        recognitionRef.current = null;
+      };
+    }
+
     let stopped = false;
     const wake = new SpeechRecognitionCtor();
     wake.continuous = true;
@@ -139,7 +165,7 @@ export function useVoiceAssistant({
       wakeActiveRef.current = false;
       setWakeActive(false);
     };
-  }, [supported]);
+  }, [supported, wakeWordEnabled]);
 
   // Load available synthesis voices (iOS loads async)
   useEffect(() => {

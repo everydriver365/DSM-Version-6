@@ -125,23 +125,37 @@ async function runReminders(request: Request): Promise<Response> {
 
     // 1. Record the in-app notification FIRST so the badge count that
     //    send-push reads is already the correct absolute value.
+    //    The table has a unique index on (instructor_id, type, reference_id),
+    //    so a repeat event must be an explicit no-op rather than a 409 — and
+    //    when no row is created we must NOT push either, or the phone alert
+    //    and the in-app list drift apart.
     try {
-      await rest("instructor_notifications", {
-        method: "POST",
-        body: JSON.stringify({
-          instructor_id: args.instructor_id,
-          title: args.title,
-          body: args.body,
-          type: args.type,
-          reference_id: args.reference_id ?? null,
-          reference_type: args.reference_type ?? null,
-          read: false,
-          created_at: new Date().toISOString(),
-        }),
-      });
+      const inserted: any[] =
+        (await rest("instructor_notifications", {
+          method: "POST",
+          headers: {
+            Prefer: "resolution=ignore-duplicates,return=representation",
+          },
+          body: JSON.stringify({
+            instructor_id: args.instructor_id,
+            title: args.title,
+            body: args.body,
+            type: args.type,
+            reference_id: args.reference_id ?? null,
+            reference_type: args.reference_type ?? null,
+            read: false,
+            created_at: new Date().toISOString(),
+          }),
+        })) ?? [];
+      if (args.reference_id && inserted.length === 0) {
+        console.log("[reminders] existing notification, no push", args.type, args.reference_id);
+        return;
+      }
     } catch (e) {
       console.error("[reminders] notification insert failed", e);
+      return; // don't push when the in-app row could not be written
     }
+
 
 
     // 2. Push via the existing send-push edge function
