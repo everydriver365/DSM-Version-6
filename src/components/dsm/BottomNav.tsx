@@ -12,6 +12,17 @@ import {
 } from "@tabler/icons-react";
 import { supabase } from "@/lib/supabaseClient";
 import { tapLight } from "@/lib/haptics";
+import { useVoiceAssistant } from "@/hooks/useVoiceAssistant";
+
+type VoiceNextLesson = {
+  pupils?: { name?: string; phone?: string };
+  lesson_time?: string;
+  lesson_date?: string;
+  pickup_location?: string;
+  duration_minutes?: number;
+  payment_status?: string;
+  notes?: string;
+} | null;
 
 /**
  * Unread pupil replies count. Kept inside BottomNav so every screen gets the
