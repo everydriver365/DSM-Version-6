@@ -287,6 +287,228 @@ export function useVoiceAssistant({
       return;
     }
 
+    // ================= PHASE 5 =================
+
+    // WHO OWES ME MONEY
+    if (text.includes('who owes') ||
+      text.includes('outstanding payments') ||
+      text.includes('overdue') ||
+      text.includes('owe me')) {
+      window.dispatchEvent(new CustomEvent('ed:owes'));
+      return;
+    }
+
+    // EARNINGS THIS WEEK
+    if (text.includes('this week') &&
+      (text.includes('earn') ||
+        text.includes('made') ||
+        text.includes('income'))) {
+      window.dispatchEvent(new CustomEvent('ed:earnings:week'));
+      return;
+    }
+
+    // EARNINGS THIS MONTH
+    if (text.includes('this month') &&
+      (text.includes('earn') ||
+        text.includes('made') ||
+        text.includes('income'))) {
+      window.dispatchEvent(new CustomEvent('ed:earnings:month'));
+      return;
+    }
+
+    // HOW MANY LESSONS TOMORROW
+    if (text.includes('tomorrow') &&
+      text.includes('lesson') &&
+      !text.includes('remind') &&
+      !text.includes('send')) {
+      window.dispatchEvent(new CustomEvent('ed:tomorrow'));
+      return;
+    }
+
+    // LAST LESSON TODAY
+    if ((text.includes('last lesson') && text.includes('today')) ||
+      text.includes('finish today') ||
+      text.includes('what time do i finish')) {
+      window.dispatchEvent(new CustomEvent('ed:lastlesson'));
+      return;
+    }
+
+    // HOW MANY PUPILS
+    if (text.includes('how many pupils') ||
+      text.includes('number of pupils') ||
+      text.includes('pupil count')) {
+      window.dispatchEvent(new CustomEvent('ed:pupilcount'));
+      return;
+    }
+
+    // WHEN IS PUPIL'S TEST
+    if (text.includes('test') &&
+      (text.includes('when') || text.includes('date'))) {
+      window.dispatchEvent(new CustomEvent('ed:testdate', {
+        detail: { pupilId: nextLesson?.pupil_id },
+      }));
+      return;
+    }
+
+    // HOW MANY HOURS HAS PUPIL DONE
+    if (text.includes('how many hours') ||
+      text.includes('hours done') ||
+      text.includes('lesson hours')) {
+      window.dispatchEvent(new CustomEvent('ed:hours', {
+        detail: { pupilId: nextLesson?.pupil_id },
+      }));
+      return;
+    }
+
+    // SEND REMINDER TO PUPIL
+    if (text.includes('reminder') ||
+      text.includes('remind') ||
+      (text.includes('send') && text.includes('tomorrow'))) {
+      window.dispatchEvent(new CustomEvent('ed:reminder', {
+        detail: {
+          pupilId: nextLesson?.pupil_id,
+          phone: nextLesson?.pupils?.phone,
+          name: nextLesson?.pupils?.name?.split(' ')[0],
+          date: nextLesson?.lesson_date,
+          time: nextLesson?.lesson_time?.slice(0, 5),
+        },
+      }));
+      return;
+    }
+
+    // SEND PAYMENT REQUEST
+    if (text.includes('payment request') ||
+      text.includes('send payment') ||
+      text.includes('request payment') ||
+      text.includes('payment link')) {
+      speak(`Opening a payment request for ${pupilName}`);
+      window.dispatchEvent(new CustomEvent('ed:paymentrequest', {
+        detail: {
+          pupilId: nextLesson?.pupil_id,
+          phone: nextLesson?.pupils?.phone,
+          name: nextLesson?.pupils?.name?.split(' ')[0],
+          amount: nextLesson?.amount_due,
+        },
+      }));
+      return;
+    }
+
+    // CONFIRM CANCEL (must precede the cancel branch)
+    if (text.includes('yes') && lastCommand.includes('cancel')) {
+      window.dispatchEvent(new CustomEvent('ed:cancellesson', {
+        detail: { lessonId: nextLesson?.id },
+      }));
+      speak('Lesson cancelled');
+      return;
+    }
+
+    // CANCEL LESSON
+    if (text.includes('cancel lesson') ||
+      text.includes('cancel the lesson') ||
+      (text.includes('cancel') && text.includes('lesson'))) {
+      speak(`Are you sure you want to cancel ${pupilName}'s lesson? Say yes to confirm or no to cancel.`);
+      window.dispatchEvent(new CustomEvent('ed:cancelconfirm'));
+      setTimeout(() => startListening(), 3500);
+      return;
+    }
+
+    // HOW FAR TO NEXT PICKUP
+    if (text.includes('how far') ||
+      text.includes('distance') ||
+      text.includes('how long to get there')) {
+      if (trafficData?.travelMins) {
+        speak(`It is ${trafficData.travelMins} minutes to ${pupilName}'s pickup location.`);
+      } else {
+        speak('Route information is not available right now.');
+      }
+      return;
+    }
+
+    // FIND MCDONALD'S
+    if (text.includes('mcdonald') ||
+      text.includes('maccy') ||
+      text.includes('big mac')) {
+      speak("Finding nearest McDonald's");
+      window.dispatchEvent(new CustomEvent('ed:nearest', {
+        detail: { type: 'mcdonalds' },
+      }));
+      return;
+    }
+
+    // FIND GREGGS
+    if (text.includes('greggs') ||
+      text.includes('sausage roll')) {
+      speak('Finding nearest Greggs');
+      window.dispatchEvent(new CustomEvent('ed:nearest', {
+        detail: { type: 'greggs' },
+      }));
+      return;
+    }
+
+    // FIND COSTA
+    if (text.includes('costa') ||
+      text.includes('coffee')) {
+      speak('Finding nearest Costa');
+      window.dispatchEvent(new CustomEvent('ed:nearest', {
+        detail: { type: 'costa' },
+      }));
+      return;
+    }
+
+    // FIND TESCO
+    if (text.includes('tesco') ||
+      text.includes('supermarket') ||
+      text.includes('shops')) {
+      speak('Finding nearest Tesco');
+      window.dispatchEvent(new CustomEvent('ed:nearest', {
+        detail: { type: 'tesco' },
+      }));
+      return;
+    }
+
+    // DRIVING INSTRUCTOR JOKE
+    if (text.includes('joke') ||
+      text.includes('funny') ||
+      text.includes('make me laugh')) {
+      const jokes = [
+        'Why did the driving instructor cross the road? To get to the other side safely, with full observations.',
+        'What did the driving instructor say to the nervous pupil? Just take it one junction at a time.',
+        'How many driving instructors does it take to change a lightbulb? Just one, but they have to check their mirrors first.',
+        'Why are driving instructors always calm? Because they have dual controls.',
+        'What do you call a driving instructor who falls asleep? A passenger.',
+      ];
+      speak(jokes[Math.floor(Math.random() * jokes.length)]!);
+      return;
+    }
+
+    // WHAT IS THE NEWS
+    if (text.includes('news') ||
+      text.includes("what's happening") ||
+      text.includes('whats happening')) {
+      speak('Opening Pro Live for the latest news');
+      window.dispatchEvent(new CustomEvent('ed:live:open'));
+      return;
+    }
+
+    // BUSIEST DAY THIS WEEK
+    if (text.includes('busiest') ||
+      text.includes('busy day') ||
+      text.includes('most lessons')) {
+      window.dispatchEvent(new CustomEvent('ed:busiestday'));
+      return;
+    }
+
+    // ANY CANCELLATIONS
+    if (text.includes('cancellation') ||
+      text.includes('cancelled today')) {
+      window.dispatchEvent(new CustomEvent('ed:cancellations'));
+      return;
+    }
+
+    // =============== END PHASE 5 ===============
+
+
+
     // READ MESSAGES
     if (text.includes('message') ||
       text.includes('messages') ||
