@@ -818,6 +818,68 @@ function SettingsPage() {
         </div>
       </div>
 
+      {/* ED Settings tile */}
+      <div className="mx-4" style={{ marginBottom: 20 }}>
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/ed-settings" })}
+          style={{
+            width: "100%",
+            background: tokens.white,
+            borderRadius: 12,
+            border: "1px solid #E4E8EF",
+            boxShadow: "0 4px 0 #E4E4E8",
+            padding: 16,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+            textAlign: "left",
+          }}
+        >
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              minWidth: 40,
+              minHeight: 40,
+              borderRadius: 10,
+              background: "#0B2341",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              ...POPPINS,
+            }}
+          >
+            <span style={{ color: "#fff", fontSize: 14, fontWeight: tokens.fontWeight.bold }}>ED</span>
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: tokens.fontWeight.bold,
+                color: "#0B2341",
+                ...POPPINS,
+              }}
+            >
+              ED Settings
+            </div>
+            <div
+              style={{
+                fontSize: 12,
+                color: "#536579",
+                marginTop: 2,
+                ...POPPINS,
+              }}
+            >
+              Voice, wake word &amp; AI
+            </div>
+          </div>
+          <IconChevronRight size={15} color="#C7C7CC" />
+        </button>
+      </div>
+
       <div className="px-4">
         <SectionCard>
           <AccountRow
