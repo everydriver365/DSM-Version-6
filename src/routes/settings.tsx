@@ -22,6 +22,7 @@ import {
   DEFAULT_BADGE_PREFS,
 } from "../lib/badgePrefs";
 import { ConfirmDialog } from "../components/ConfirmDialog";
+import { useVoiceAssistant } from "../hooks/useVoiceAssistant";
 import { supabase } from "../lib/supabaseClient";
 import { AddressLookup } from "@/components/dsm/AddressLookup";
 import DSMTopSheet from "@/components/dsm/DSMTopSheet";
