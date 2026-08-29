@@ -4,6 +4,7 @@ interface VoiceAssistantProps {
   instructorFirstName?: string;
   nextLesson?: {
     id?: string;
+    pupil_id?: string;
     pupils?: { name?: string; phone?: string };
     lesson_time?: string;
     lesson_date?: string;
