@@ -186,31 +186,36 @@ function NearestPage() {
   const markersRef = React.useRef<any[]>([]);
   const [mapsReady, setMapsReady] = React.useState(false);
 
-  /* 1. Geolocation on mount */
-  React.useEffect(() => {
-    let cancelled = false;
+  /* Shared locator — used on mount and by the "Use my location" button. */
+  const locate = React.useCallback(() => {
     if (!navigator.geolocation) {
       setError("Location is not available on this device");
       setLocating(false);
       return;
     }
+    setLocating(true);
+    setError(null);
     navigator.geolocation.getCurrentPosition(
       (p) => {
-        if (cancelled) return;
         setPos({ lat: p.coords.latitude, lng: p.coords.longitude });
         setLocating(false);
       },
       (err) => {
-        if (cancelled) return;
         setError(
           err.code === err.PERMISSION_DENIED
-            ? "Enable location to find nearby places"
+            ? "Location permission is off. Enable location for Every Driver Pro in your device settings, then tap Use my location."
             : "Could not get your location. Try again outdoors.",
         );
         setLocating(false);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
     );
+  }, []);
+
+  /* 1. Geolocation on mount */
+  React.useEffect(() => {
+    let cancelled = false;
+    locate();
     return () => {
       cancelled = true;
     };
