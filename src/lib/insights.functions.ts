@@ -71,7 +71,7 @@ function buildPrompt(data: InsightInput): string {
     "You are a concise business assistant for a UK driving instructor using the EDP app.",
     "Look at the dashboard numbers below and generate 3-4 short, actionable, specific suggestions.",
     "Each suggestion should have a friendly title, a one-sentence body, an optional CTA label, and an optional app route.",
-    "Only suggest routes that exist: /bookings, /schedule, /pupils, /payments, /messages, /waitlist, /gaps, /tools.",
+    "Only suggest routes that exist: /bookings, /schedule, /pupils, /payments, /messages, /waitinglist, /gaps, /tools.",
     "If nothing notable needs attention, return a single encouraging suggestion instead.",
     "",
     "Dashboard data:",
