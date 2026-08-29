@@ -27,6 +27,18 @@ function EDSettingsPage() {
   const { selectedVoiceName, setVoice } = useVoiceAssistant({});
   const [aiLimit, setAiLimit] = useState<{ date: string; count: number } | null>(null);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [wakeWord, setWakeWord] = useState(false);
+
+  useEffect(() => {
+    setWakeWord(localStorage.getItem("ed_wake_word") === "1");
+  }, []);
+
+  const toggleWakeWord = () => {
+    const next = !wakeWord;
+    setWakeWord(next);
+    localStorage.setItem("ed_wake_word", next ? "1" : "0");
+    window.dispatchEvent(new Event("ed-wake-word-changed"));
+  };
 
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10);
