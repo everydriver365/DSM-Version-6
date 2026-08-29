@@ -900,6 +900,173 @@ function SettingsPage() {
           />
         </SectionCard>
 
+        <Label>ED Voice</Label>
+        <SectionCard>
+          <div className="px-4 py-3">
+            <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
+              Choose the voice ED uses to speak to you
+            </div>
+          </div>
+          {availableVoices.length === 0 && (
+            <div className="px-4 pb-4 text-[12px] text-[#6B7280]" style={POPPINS}>
+              No voices detected. On iOS, make sure you have downloaded an English voice in Settings → Accessibility → Spoken Content → Voices.
+            </div>
+          )}
+          {availableVoices.map((voice, idx) => {
+            const isSelected = selectedVoiceName === voice.name;
+            const isUK = voice.lang === 'en-GB' || voice.lang.toLowerCase().includes('gb');
+            const isPremium = ['Samantha', 'Daniel', 'Kate', 'Serena', 'Martha', 'Arthur'].includes(voice.name);
+            return (
+              <button
+                key={`${voice.name}-${idx}`}
+                onClick={() => setVoice(voice.name)}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  padding: '12px 16px',
+                  background: 'transparent',
+                  border: 'none',
+                  borderBottom: idx < availableVoices.length - 1 ? '1px solid #F2F2F7' : 'none',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                }}
+              >
+                <div
+                  style={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 8,
+                    background: isUK ? '#EAF5FC' : '#FEF3C7',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  {isUK ? (
+                    <IconFlag size={18} color="#2C97DE" />
+                  ) : (
+                    <IconFlag size={18} color="#F59E0B" />
+                  )}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontWeight: tokens.fontWeight.semibold,
+                      color: '#0B1F3A',
+                      ...POPPINS,
+                    }}
+                  >
+                    {voice.name}
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                    <span
+                      style={{
+                        fontSize: 11,
+                        color: '#6B7280',
+                        ...POPPINS,
+                      }}
+                    >
+                      {voice.lang}
+                    </span>
+                    {isPremium && (
+                      <span
+                        style={{
+                          fontSize: 10,
+                          fontWeight: tokens.fontWeight.bold,
+                          color: '#1877D6',
+                          background: '#E7F1FC',
+                          borderRadius: 4,
+                          padding: '2px 6px',
+                          ...POPPINS,
+                        }}
+                      >
+                        PREMIUM
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    speak(`Hi, I'm ED. This is my ${voice.name} voice.`, false);
+                  }}
+                  style={{
+                    fontSize: 12,
+                    fontWeight: tokens.fontWeight.semibold,
+                    color: '#1877D6',
+                    background: '#E7F1FC',
+                    border: 'none',
+                    borderRadius: 8,
+                    padding: '6px 12px',
+                    cursor: 'pointer',
+                    ...POPPINS,
+                  }}
+                >
+                  Preview
+                </button>
+                {isSelected && (
+                  <div
+                    style={{
+                      width: 22,
+                      height: 22,
+                      borderRadius: '50%',
+                      background: '#1877D6',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <IconCheck size={12} color="#fff" stroke={2.5} />
+                  </div>
+                )}
+              </button>
+            );
+          })}
+          <button
+            onClick={() => setVoice(null)}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              padding: '12px 16px',
+              background: 'transparent',
+              border: 'none',
+              borderTop: availableVoices.length > 0 ? '1px solid #F2F2F7' : 'none',
+              cursor: 'pointer',
+            }}
+          >
+            <IconMicrophone size={16} color="#6B7280" />
+            <span
+              style={{
+                fontSize: 13,
+                fontWeight: tokens.fontWeight.semibold,
+                color: '#6B7280',
+                ...POPPINS,
+              }}
+            >
+              Reset to default
+            </span>
+          </button>
+          <div
+            className="px-4 py-3"
+            style={{
+              background: '#F9FAFB',
+              borderTop: '1px solid #F2F2F7',
+            }}
+          >
+            <div className="text-[11px] text-[#6B7280] leading-relaxed" style={POPPINS}>
+              iOS downloads premium voices automatically. If a voice sounds robotic, go to Settings → Accessibility → Spoken Content → Voices and download a higher quality version.
+            </div>
+          </div>
+        </SectionCard>
+
         <Label>REALTIME BADGES</Label>
         <SectionCard>
           <div className="px-4 py-4 flex flex-col gap-4">
