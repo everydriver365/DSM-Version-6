@@ -183,6 +183,81 @@ function NearestPage() {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
+  /* Favourites */
+  type Saved = {
+    id: string;
+    name: string;
+    address: string | null;
+    lat: number | null;
+    lng: number | null;
+    category: string | null;
+    place_id: string | null;
+  };
+  const [saved, setSaved] = React.useState<Saved[]>([]);
+  const [showSaved, setShowSaved] = React.useState(false);
+  const [savingId, setSavingId] = React.useState<string | null>(null);
+
+  const loadSaved = React.useCallback(async () => {
+    const { data: auth } = await supabase.auth.getUser();
+    if (!auth.user) return;
+    const { data, error: e } = await supabase
+      .from("saved_locations")
+      .select("id,name,address,lat,lng,category,place_id")
+      .eq("instructor_id", auth.user.id)
+      .order("created_at", { ascending: false });
+    if (!e && data) setSaved(data as Saved[]);
+  }, []);
+
+  React.useEffect(() => {
+    void loadSaved();
+  }, [loadSaved]);
+
+  const savedFor = React.useCallback(
+    (r: Result) => saved.find((s) => s.place_id === r.id || (s.name === r.name && s.address === (r.address || null))),
+    [saved],
+  );
+
+  const toggleSave = React.useCallback(
+    async (r: Result) => {
+      const existing = savedFor(r);
+      setSavingId(r.id);
+      try {
+        if (existing) {
+          await supabase.from("saved_locations").delete().eq("id", existing.id);
+          setSaved((prev) => prev.filter((s) => s.id !== existing.id));
+        } else {
+          const { data: auth } = await supabase.auth.getUser();
+          if (!auth.user) {
+            setError("Sign in to save favourites.");
+            return;
+          }
+          const { data, error: e } = await supabase
+            .from("saved_locations")
+            .insert({
+              instructor_id: auth.user.id,
+              name: r.name,
+              address: r.address || null,
+              lat: r.lat,
+              lng: r.lng,
+              category: activeQuery ? "search" : cat,
+              place_id: r.id,
+            })
+            .select("id,name,address,lat,lng,category,place_id")
+            .single();
+          if (e) throw e;
+          if (data) setSaved((prev) => [data as Saved, ...prev]);
+        }
+      } catch (err) {
+        console.error("[nearest] favourite failed", err);
+        setError("Could not update favourites.");
+      } finally {
+        setSavingId(null);
+      }
+    },
+    [savedFor, cat, activeQuery],
+  );
+
+
   const mapEl = React.useRef<HTMLDivElement | null>(null);
   const mapRef = React.useRef<any>(null);
   const markersRef = React.useRef<any[]>([]);
