@@ -536,7 +536,7 @@ export function BottomNav({
           }, it.key === "messages" || it.to === "/messages");
         })}
         <div key="mic" className="flex flex-1 flex-col items-center justify-end select-none relative" style={{ minWidth: 54 }}>
-          <CenterMicButton />
+          <CenterMicButton onClick={activate} isSpeaking={isSpeaking} />
         </div>
         {right.map((it, i) => {
           const wsMatch = typeof it.ws === 'number' && it.ws === currentWs;
