@@ -506,63 +506,72 @@ function PaymentsPage() {
         </div>
       )}
 
-      {/* IconSearch bar (opens existing pupil picker) */}
-      <button
-        type="button"
-        onClick={() => setPupilPickerOpen(true)}
-        style={{
-          background: "#F2F2F4",
-          fontFamily: 'Poppins, sans-serif',
-          borderRadius: 10,
-          padding: "9px 12px",
-
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          margin: "0 16px 14px",
-          cursor: "pointer",
-          border: 0,
-          width: "calc(100% - 32px)",
-          textAlign: "left",
-        }}
-      >
-        <IconSearch stroke={1.5} size={14} color="#6E6E73" />
+      {/* Filtered summary */}
+      <div style={{ padding: "0 16px", marginBottom: 12 }}>
         <div
           style={{
-            fontSize: 13,
-            color: pupilFilter ? "#000000" : "#6E6E73",
-            flex: 1,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            ...POPPINS,
+            background: "#fff",
+            borderRadius: 12,
+            border: "1px solid #E4E8EF",
+            padding: "14px 16px",
+            display: "grid",
+            gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+            gap: 8,
           }}
         >
-          {pupilFilter ? pupilName : "All pupils"}
+          <SummaryCol value={formatGBP(summary.totalReceived)} label="Total received" color="#16A34A" />
+          <SummaryCol value={String(summary.transactions)} label="Transactions" color="#0B2341" />
+          <SummaryCol value={formatGBP(summary.outstanding)} label="Outstanding" color="#E53935" />
         </div>
-        {pupilFilter && (
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); setPupilFilter(""); }}
-            style={{ background: "none", border: 0, color: "#8A94A6", fontSize: 12, cursor: "pointer" }}
-          >
-            Clear
-          </button>
-        )}
-      </button>
+      </div>
 
-      {/* Period filter — shared segmented control */}
-      <div style={{ padding: "0 16px", marginBottom: 14 }}>
-        <SegmentedTabs<DatePreset>
-          tabs={[
-            { id: "today", label: "Today" },
-            { id: "week", label: "Week" },
-            { id: "month", label: "Month" },
-            { id: "year", label: "Year" },
-          ]}
-          active={datePreset}
-          onChange={(v) => setDatePreset(v)}
-        />
+      {/* Filter bar */}
+      <div style={{ padding: "0 16px", marginBottom: 14, display: "flex", flexDirection: "column", gap: 10 }}>
+        {/* Row 1 — Date preset pills */}
+        <div className="no-scrollbar" style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }}>
+          {DATE_PRESETS.map((p) => (
+            <FilterPill key={p.id} label={p.label} active={datePreset === p.id} onClick={() => setDatePreset(p.id)} />
+          ))}
+        </div>
+
+        {/* Row 2 — Method filter pills */}
+        <div className="no-scrollbar" style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }}>
+          {METHOD_PILLS.map((p) => (
+            <FilterPill key={p.id} label={p.label} active={methodFilter === p.id} onClick={() => setMethodFilter(p.id)} />
+          ))}
+        </div>
+
+        {/* Row 3 — Pupil search */}
+        <div style={{ position: "relative" }}>
+          <IconSearch stroke={1.5} size={16} color="#536579" style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
+          <input
+            type="text"
+            readOnly
+            value={pupilFilter ? pupilName : ""}
+            placeholder="All pupils"
+            onClick={() => setPupilPickerOpen(true)}
+            style={{
+              width: "100%",
+              background: "#fff",
+              borderRadius: 12,
+              border: "1px solid #E4E8EF",
+              padding: "10px 14px 10px 40px",
+              fontSize: 14,
+              color: pupilFilter ? "#000" : "#536579",
+              cursor: "pointer",
+              ...POPPINS,
+            }}
+          />
+          {pupilFilter && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); setPupilFilter(""); }}
+              style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: 0, color: "#8A94A6", cursor: "pointer", display: "flex", alignItems: "center" }}
+            >
+              <IconX size={16} />
+            </button>
+          )}
+        </div>
       </div>
 
 
