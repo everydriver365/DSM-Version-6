@@ -252,26 +252,8 @@ export function useVoiceAssistant({
     }
   }, [getVoice, startListening, supported]);
 
-  // Build and speak the lesson brief
-  const activate = useCallback(() => {
-    const now = Date.now();
-    const timeSinceBrief = now - lastBriefTime.current;
-
-    if (timeSinceBrief < BRIEF_COOLDOWN) {
-      // Skip the brief — just start listening immediately
-      speak("Yes?", true);
-      return;
-    }
-
-    // Read full brief
-    lastBriefTime.current = now;
-
-    // Pause wake-word listening while ED speaks / listens
-    wakeActiveRef.current = false;
-    setWakeActive(false);
-    try { wakeRef.current?.stop(); } catch { /* noop */ }
-    const name = instructorFirstName;
-
+  // Build the lesson brief string (used by the explicit "daily brief" command)
+  const buildBrief = useCallback(() => {
     const pupilName = nextLesson?.pupils?.name
       ?.split(' ')[0] ?? null;
     const time = nextLesson?.lesson_time
@@ -284,13 +266,12 @@ export function useVoiceAssistant({
     const paid = nextLesson?.payment_status
       === 'paid';
 
-    let brief = `Hi ${name}. `;
+    let brief = '';
     if (pupilName && time) {
       brief += `Your next lesson is with
         ${pupilName} at ${time}. `;
       if (dur) brief += `Duration ${dur}. `;
-      if (pickup)
-        brief += `Pickup at ${pickup}. `;
+      if (pickup) brief += `Pickup at ${pickup}. `;
       brief += paid
         ? `${pupilName} has paid. `
         : `Payment is outstanding. `;
@@ -300,18 +281,19 @@ export function useVoiceAssistant({
 
     if (trafficData?.status === 'delay' ||
       trafficData?.status === 'incident') {
-      brief += `Heads up — there is traffic
+      brief += `Heads up, there is traffic
         on your route. `;
       if (trafficData.travelMins)
         brief += `Journey time is
-          ${trafficData.travelMins} minutes. `;
+          ${trafficData.travelMins}
+          minutes. `;
     }
 
     if (weatherData?.condition) {
       brief += `Weather: ${weatherData.condition}`;
       if (weatherData.tempC !== undefined)
         brief += `, ${Math.round(
-          weatherData.tempC)}  degrees`;
+          weatherData.tempC)} degrees`;
       brief += `. `;
     }
 
@@ -323,16 +305,21 @@ export function useVoiceAssistant({
       brief += `No new messages. `;
     }
 
-    autoListenRef.current = true;
-    speak(brief, true);
+    return brief;
   }, [
-    instructorFirstName,
     nextLesson,
     trafficData,
     weatherData,
     unreadCount,
-    speak,
   ]);
+
+  // Activate ED: just say "Yes?" and listen — no automatic brief
+  const activate = useCallback(() => {
+    speak("Yes?", false);
+    setTimeout(() => {
+      startListening();
+    }, 600);
+  }, [speak, startListening]);
 
   const deactivate = useCallback(() => {
     autoListenRef.current = false;
@@ -630,6 +617,21 @@ export function useVoiceAssistant({
       text.includes('running late')) {
       window.dispatchEvent(new CustomEvent('ed:late'));
       speak(`Opening late notification for ${pupilName}`);
+      return;
+    }
+
+    // DAILY BRIEF
+    if (text.includes('daily brief') ||
+      text.includes('briefing') ||
+      text.includes('my brief') ||
+      text.includes('brief me') ||
+      text.includes('whats my brief') ||
+      text.includes("what's my brief") ||
+      text.includes('morning brief') ||
+      text.includes('tell me my brief') ||
+      text.includes('read my brief')) {
+      const brief = buildBrief();
+      speak(brief, true);
       return;
     }
 
@@ -993,6 +995,7 @@ export function useVoiceAssistant({
     trafficData,
     lastCommand,
     speak,
+    buildBrief,
     activate,
     deactivate,
     startListening,
@@ -1004,6 +1007,11 @@ export function useVoiceAssistant({
 
   useEffect(() => {
     activateRef.current = activate;
+  }, [activate]);
+
+  // Expose activate so external pages (e.g. ED Settings) can trigger ED
+  useEffect(() => {
+    (window as any).__edVoice = { activate };
   }, [activate]);
 
 

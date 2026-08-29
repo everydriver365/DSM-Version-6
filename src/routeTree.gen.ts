@@ -91,6 +91,7 @@ import { Route as ExpensesRouteImport } from './routes/expenses'
 import { Route as EodRouteImport } from './routes/eod'
 import { Route as EnquiriesRouteImport } from './routes/enquiries'
 import { Route as EndOfDayRouteImport } from './routes/end-of-day'
+import { Route as EdSettingsRouteImport } from './routes/ed-settings'
 import { Route as EarningsRouteImport } from './routes/earnings'
 import { Route as DsmLiveRouteImport } from './routes/dsm-live'
 import { Route as DsmLearnRouteImport } from './routes/dsm-learn'
@@ -592,6 +593,11 @@ const EndOfDayRoute = EndOfDayRouteImport.update({
   path: '/end-of-day',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EdSettingsRoute = EdSettingsRouteImport.update({
+  id: '/ed-settings',
+  path: '/ed-settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EarningsRoute = EarningsRouteImport.update({
   id: '/earnings',
   path: '/earnings',
@@ -1077,6 +1083,7 @@ export interface FileRoutesByFullPath {
   '/dsm-learn': typeof DsmLearnRoute
   '/dsm-live': typeof DsmLiveRouteWithChildren
   '/earnings': typeof EarningsRoute
+  '/ed-settings': typeof EdSettingsRoute
   '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
   '/eod': typeof EodRoute
@@ -1250,6 +1257,7 @@ export interface FileRoutesByTo {
   '/documents': typeof DocumentsRoute
   '/dsm-learn': typeof DsmLearnRoute
   '/earnings': typeof EarningsRoute
+  '/ed-settings': typeof EdSettingsRoute
   '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
   '/eod': typeof EodRoute
@@ -1423,6 +1431,7 @@ export interface FileRoutesById {
   '/dsm-learn': typeof DsmLearnRoute
   '/dsm-live': typeof DsmLiveRouteWithChildren
   '/earnings': typeof EarningsRoute
+  '/ed-settings': typeof EdSettingsRoute
   '/end-of-day': typeof EndOfDayRoute
   '/enquiries': typeof EnquiriesRoute
   '/eod': typeof EodRoute
@@ -1599,6 +1608,7 @@ export interface FileRouteTypes {
     | '/dsm-learn'
     | '/dsm-live'
     | '/earnings'
+    | '/ed-settings'
     | '/end-of-day'
     | '/enquiries'
     | '/eod'
@@ -1772,6 +1782,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/dsm-learn'
     | '/earnings'
+    | '/ed-settings'
     | '/end-of-day'
     | '/enquiries'
     | '/eod'
@@ -1944,6 +1955,7 @@ export interface FileRouteTypes {
     | '/dsm-learn'
     | '/dsm-live'
     | '/earnings'
+    | '/ed-settings'
     | '/end-of-day'
     | '/enquiries'
     | '/eod'
@@ -2119,6 +2131,7 @@ export interface RootRouteChildren {
   DsmLearnRoute: typeof DsmLearnRoute
   DsmLiveRoute: typeof DsmLiveRouteWithChildren
   EarningsRoute: typeof EarningsRoute
+  EdSettingsRoute: typeof EdSettingsRoute
   EndOfDayRoute: typeof EndOfDayRoute
   EnquiriesRoute: typeof EnquiriesRoute
   EodRoute: typeof EodRoute
@@ -2821,6 +2834,13 @@ declare module '@tanstack/react-router' {
       path: '/end-of-day'
       fullPath: '/end-of-day'
       preLoaderRoute: typeof EndOfDayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ed-settings': {
+      id: '/ed-settings'
+      path: '/ed-settings'
+      fullPath: '/ed-settings'
+      preLoaderRoute: typeof EdSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/earnings': {
@@ -3560,6 +3580,7 @@ const rootRouteChildren: RootRouteChildren = {
   DsmLearnRoute: DsmLearnRoute,
   DsmLiveRoute: DsmLiveRouteWithChildren,
   EarningsRoute: EarningsRoute,
+  EdSettingsRoute: EdSettingsRoute,
   EndOfDayRoute: EndOfDayRoute,
   EnquiriesRoute: EnquiriesRoute,
   EodRoute: EodRoute,
