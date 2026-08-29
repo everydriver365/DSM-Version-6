@@ -76,6 +76,7 @@ import { resolveEventColour } from "@/lib/googleCalendarColours";
 
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Capacitor } from "@capacitor/core";
+import UniversalSearch from "@/components/dsm/UniversalSearch";
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
@@ -1402,6 +1403,18 @@ function isLessonNow(
 
 function HomePage() {
   const navigate = useNavigate();
+
+  // Universal search bottom sheet
+  const [universalSearchOpen, setUniversalSearchOpen] = useState(false);
+  useEffect(() => {
+    const open = () => setUniversalSearchOpen(true);
+    window.addEventListener("dsm-open-universal-search", open as EventListener);
+    return () => window.removeEventListener("dsm-open-universal-search", open as EventListener);
+  }, []);
+
+  // Quick "Delete lesson" from a lesson tile's ellipsis menu (soft delete)
+  const [confirmDeleteLesson, setConfirmDeleteLesson] = useState<any | null>(null);
+
 
   
   
@@ -5653,6 +5666,7 @@ function HomePage() {
       </div>
 
 
+      <UniversalSearch isOpen={universalSearchOpen} onClose={() => setUniversalSearchOpen(false)} />
 
       {upcoming && heroExpanded && (
         <LessonActionsSheet
@@ -6684,6 +6698,7 @@ function HomePage() {
                                           { label: 'View test details', onClick: () => openPanel() },
                                           { label: 'View details', onClick: () => setDetailsSheetForLesson(l) },
                                           { label: 'Edit lesson', onClick: () => { setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }), 0); } },
+                                          { label: (<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#E53935' }}><IconTrash stroke={1.5} size={16} color="#E53935" />Delete lesson</span>) as any, onClick: () => setConfirmDeleteLesson(l) },
                                           { label: 'Full profile', onClick: () => { const pid = l.pupil_id; if (pid) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: pid } }), 0); } },
                                         ]}
                                       >
@@ -6836,6 +6851,7 @@ function HomePage() {
                               items={[
                                 { label: 'View details', onClick: () => setDetailsSheetForLesson(l) },
                                 { label: 'Edit lesson', onClick: () => { setTimeout(() => navigate({ to: '/lessons/edit/$id', params: { id: l.id } }), 0); } },
+                                { label: (<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#E53935' }}><IconTrash stroke={1.5} size={16} color="#E53935" />Delete lesson</span>) as any, onClick: () => setConfirmDeleteLesson(l) },
                                 { label: 'Take payment', onClick: () => { setUnifiedPayPupilId(l.pupil_id); setUnifiedPayOpen(true); } },
                                 { label: 'Full profile', onClick: () => { const pid = l.pupil_id; if (pid) setTimeout(() => navigate({ to: '/pupils/$id', params: { id: pid } }), 0); } },
                               ]}
@@ -6929,6 +6945,10 @@ function HomePage() {
 
               const goTile = (tile: QuickTile) => {
                 tapLight();
+                if (tile.route === "/search") {
+                  setUniversalSearchOpen(true);
+                  return;
+                }
                 navigate({ to: tile.route as never });
               };
 
@@ -9465,6 +9485,34 @@ function HomePage() {
 
 
 
+
+      <ConfirmDialog
+        open={!!confirmDeleteLesson}
+        title="Delete lesson"
+        message="Are you sure you want to delete this lesson? This cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        destructive
+        onCancel={() => setConfirmDeleteLesson(null)}
+        onConfirm={async () => {
+          const lesson = confirmDeleteLesson;
+          setConfirmDeleteLesson(null);
+          if (!lesson) return;
+          try {
+            const { error } = await supabase
+              .from("lessons")
+              .update({ deleted_at: new Date().toISOString() })
+              .eq("id", lesson.id);
+            if (error) throw error;
+            // Remove locally so counts, earnings, hours and payment totals recalculate immediately
+            setLessons((prev) => (prev ?? []).filter((l) => l.id !== lesson.id));
+            setReloadKey((k) => k + 1);
+            toast.success("Lesson deleted");
+          } catch (err: any) {
+            toast.error(err?.message || "Failed to delete lesson");
+          }
+        }}
+      />
 
       <ConfirmDialog
         open={!!confirmMoveHome}

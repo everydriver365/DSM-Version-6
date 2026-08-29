@@ -311,7 +311,11 @@ function GlobalMenu() {
       const email = user.email ?? "";
       const { data } = await supabase.from("instructors").select("name, profile_image_url").eq("id", user.id).limit(1).single();
       if (mounted) {
-        setProfile({ name: data?.name ?? "Instructor", email, profile_image_url: data?.profile_image_url ?? null });
+        const resolvedName = data?.name ?? "Instructor";
+        setProfile({ name: resolvedName, email, profile_image_url: data?.profile_image_url ?? null });
+        // Share the already-fetched name so the header avatar badge needs no extra query.
+        try { localStorage.setItem("dsm-instructor-name", resolvedName); } catch { /* ignore */ }
+        window.dispatchEvent(new CustomEvent("dsm-instructor-name", { detail: resolvedName }));
       }
     })();
     return () => { mounted = false; };
@@ -365,21 +369,18 @@ function GlobalMenu() {
             aria-label="Close menu"
             style={{
               position: "absolute",
-              top: 16,
-              right: 16,
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              background: "rgba(255,255,255,0.15)",
+              top: "calc(env(safe-area-inset-top) + 8px)",
+              right: 4,
+              background: "none",
               border: "none",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              padding: 0,
+              padding: 12,
             }}
           >
-            <IconX stroke={1.5} size={20} color="#fff" />
+            <IconX stroke={1.5} size={20} color="rgba(255,255,255,0.7)" />
           </button>
           <div style={{ display: "flex", alignItems: "center", gap: 14, paddingRight: 40 }}>
             <div style={{ minWidth: 0, flex: 1 }}>
@@ -598,6 +599,18 @@ function Header({ unreadCount }: { unreadCount: number }) {
   const hasUnread = unreadCount > 0;
   const openMenu = () => window.dispatchEvent(new Event("dsm-open-menu"));
 
+  // Reuse the instructor name already loaded elsewhere in this file (no extra query).
+  const [instructorName, setInstructorName] = useState<string>("");
+  useEffect(() => {
+    try {
+      setInstructorName(localStorage.getItem("dsm-instructor-name") ?? "");
+    } catch { /* ignore */ }
+    const onName = (e: Event) => setInstructorName(String((e as CustomEvent).detail ?? ""));
+    window.addEventListener("dsm-instructor-name", onName as EventListener);
+    return () => window.removeEventListener("dsm-instructor-name", onName as EventListener);
+  }, []);
+  const firstInitial = (instructorName.trim().split(/\s+/)[0]?.[0] ?? "").toUpperCase();
+
   return (
     <header
       style={{
@@ -622,6 +635,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
         <div
           onClick={openMenu}
           style={{
+            position: "relative",
             width: 32,
             height: 32,
             display: "flex",
@@ -631,6 +645,28 @@ function Header({ unreadCount }: { unreadCount: number }) {
           }}
         >
           <IconMenu2 stroke={1.5} size={22} color="#fff" />
+          {firstInitial && (
+            <span
+              style={{
+                position: "absolute",
+                bottom: -2,
+                right: -2,
+                width: 16,
+                height: 16,
+                borderRadius: "50%",
+                background: "#2C97DE",
+                border: "1.5px solid #0B2341",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#fff",
+                fontSize: 8,
+                fontWeight: 700,
+              }}
+            >
+              {firstInitial}
+            </span>
+          )}
         </div>
       </div>
 
