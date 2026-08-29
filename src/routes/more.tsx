@@ -371,6 +371,7 @@ function MorePage() {
                   const sub = isSquare
                     ? (squareConnected ? 'Connected' : 'Set up card payments')
                     : tool.sub;
+                  const isTeaching = group === 'Teaching';
                   return (
                   <button
                     key={tool.label}
@@ -378,42 +379,43 @@ function MorePage() {
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 14,
-                      padding: '10px 14px',
+                      gap: isTeaching ? 12 : 14,
+                      padding: isTeaching ? '12px 14px' : '10px 14px',
                       background: '#fff',
-                      border: 'none',
-                      borderRadius: 14,
+                      border: isTeaching ? '0.5px solid #E5E5EA' : 'none',
+                      borderRadius: isTeaching ? 12 : 14,
                       cursor: 'pointer',
                       textAlign: 'left',
                       width: '100%',
                       fontFamily: 'Poppins, sans-serif',
-                      boxShadow: '0 1px 3px rgba(15,32,68,0.06)',
+                      boxShadow: isTeaching ? '0 4px 0 #E4E4E8' : '0 1px 3px rgba(15,32,68,0.06)',
+                      minHeight: isTeaching ? 62 : undefined,
                     }}
                   >
                     <div
                       style={{
-                        width: 40,
-                        height: 40,
+                        width: isTeaching ? 38 : 40,
+                        height: isTeaching ? 38 : 40,
                         borderRadius: 10,
-                        background: tokens.canvas,
+                        background: isTeaching ? '#E6F0FB' : tokens.canvas,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
                       }}
                     >
-                      <tool.icon size={20} color={tokens.blue} stroke={1.5} />
+                      <tool.icon size={isTeaching ? 18 : 20} color={isTeaching ? '#1877D6' : tokens.blue} stroke={1.8} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, color: '#0B1F3A' }}>{tool.label}</div>
-                      <div style={{ fontSize: 12, color: '#8592A6', marginTop: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <div style={{ fontSize: isTeaching ? 15 : 13, fontWeight: isTeaching ? 500 : undefined, color: '#0B1F3A' }}>{tool.label}</div>
+                      <div style={{ fontSize: isTeaching ? 13 : 12, color: isTeaching ? '#8A93A3' : '#8592A6', marginTop: isTeaching ? 0 : 2, display: 'flex', alignItems: 'center', gap: 5 }}>
                         {isSquare && squareConnected && (
                           <span style={{ width: 7, height: 7, borderRadius: 999, background: '#16A34A', flexShrink: 0 }} />
                         )}
                         {sub}
                       </div>
                     </div>
-                    <IconChevronRight size={13} color="#C7C7CC" stroke={1.5} style={{ marginLeft: 'auto', flexShrink: 0 }} />
+                    <IconChevronRight size={isTeaching ? 18 : 13} color={isTeaching ? '#C4C9D2' : '#C7C7CC'} stroke={1.5} style={{ marginLeft: 'auto', flexShrink: 0 }} />
 
                   </button>
                   );
