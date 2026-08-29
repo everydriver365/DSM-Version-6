@@ -139,10 +139,10 @@ type OcmPoi = {
   Connections?: Array<{ PowerKW?: number | null }> | null;
 };
 
-async function fetchEvChargers(lat: number, lng: number): Promise<Result[]> {
+async function fetchEvChargers(lat: number, lng: number, radiusMiles: number): Promise<Result[]> {
   const url =
     `https://api.openchargemap.io/v3/poi/?output=json&latitude=${lat}&longitude=${lng}` +
-    `&distance=2&distanceunit=KM&maxresults=20&compact=true&verbose=false`;
+    `&distance=${radiusMiles}&distanceunit=Miles&maxresults=20&compact=true&verbose=false`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`OpenChargeMap ${res.status}`);
   const rows = (await res.json()) as OcmPoi[];
