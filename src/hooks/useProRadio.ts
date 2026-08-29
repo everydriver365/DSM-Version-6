@@ -34,7 +34,7 @@ export interface RadioState {
  */
 export function useProRadio() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [state, setState] = useState<RadioState>({
+  const stateRef = useRef<RadioState>({
     isPlaying: false,
     isLoading: false,
     nowPlaying: { title: "PRO Radio" },
@@ -42,10 +42,48 @@ export function useProRadio() {
     isLive: true,
     hasStarted: false,
   });
+  const [state, setState] = useState<RadioState>(stateRef.current);
+
+  // Keep event handlers in sync with the latest state values
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
 
   // Initialise audio element once + poll Radio.co status every 30s
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    const updateMediaSession = (
+      nowPlaying: NowPlaying,
+      showName: string
+    ) => {
+      if (!("mediaSession" in navigator)) return;
+
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: nowPlaying.title ?? "PRO Radio",
+        artist: showName ?? "PRO Radio",
+        album: "PRO Radio",
+        artwork: nowPlaying.artwork
+          ? [
+              {
+                src: nowPlaying.artwork,
+                sizes: "512x512",
+                type: "image/jpeg",
+              },
+            ]
+          : [
+              {
+                src: "/icons/pro-radio-512.png",
+                sizes: "512x512",
+                type: "image/png",
+              },
+            ],
+      });
+
+      navigator.mediaSession.setActionHandler("play", () => play());
+      navigator.mediaSession.setActionHandler("pause", () => pause());
+      navigator.mediaSession.setActionHandler("stop", () => pause());
+    };
 
     if (!audioRef.current) {
       const audio = new Audio(STREAM_URL);
@@ -53,9 +91,22 @@ export function useProRadio() {
       audioRef.current = audio;
 
       audio.onwaiting = () => setState((s) => ({ ...s, isLoading: true }));
-      audio.onplaying = () =>
+      audio.onplaying = () => {
         setState((s) => ({ ...s, isLoading: false, isPlaying: true }));
-      audio.onpause = () => setState((s) => ({ ...s, isPlaying: false }));
+        updateMediaSession(
+          stateRef.current.nowPlaying,
+          stateRef.current.showName
+        );
+        if ("mediaSession" in navigator) {
+          navigator.mediaSession.playbackState = "playing";
+        }
+      };
+      audio.onpause = () => {
+        setState((s) => ({ ...s, isPlaying: false }));
+        if ("mediaSession" in navigator) {
+          navigator.mediaSession.playbackState = "paused";
+        }
+      };
       audio.onerror = () =>
         setState((s) => ({ ...s, isLoading: false, isPlaying: false }));
     }
@@ -64,16 +115,19 @@ export function useProRadio() {
       try {
         const res = await fetch(RADIO_CO_STATUS_URL);
         const data = await res.json();
+        const nextNowPlaying = {
+          title: data.current_track?.title ?? "PRO Radio",
+          artist: data.current_track?.artist,
+          artwork: data.current_track?.artwork_url,
+        };
+        const nextShowName = data.current_show?.name ?? "PRO Radio";
         setState((s) => ({
           ...s,
-          nowPlaying: {
-            title: data.current_track?.title ?? "PRO Radio",
-            artist: data.current_track?.artist,
-            artwork: data.current_track?.artwork_url,
-          },
-          showName: data.current_show?.name ?? "PRO Radio",
+          nowPlaying: nextNowPlaying,
+          showName: nextShowName,
           isLive: data.status === "online",
         }));
+        updateMediaSession(nextNowPlaying, nextShowName);
       } catch {
         // fail silently
       }
