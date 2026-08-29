@@ -478,7 +478,7 @@ export default function UniversalSearch({
             onClick={onClose}
             style={{ border: "none", background: "transparent", padding: 4, display: "flex", cursor: "pointer" }}
           >
-            <IconX size={22} color={C.navy} />
+            <IconX stroke={1.5} size={20} color="#536579" />
           </button>
         </div>
 
