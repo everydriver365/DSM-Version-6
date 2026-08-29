@@ -791,6 +791,35 @@ export function LessonActionsSheet({
         title={pupilName}
         subtitle={`${dateLabel} · ${timeLabel}${durationLabel}`}
         onClose={onClose}
+        headerStyle={{ backgroundColor: "#0B2341" }}
+        titleStyle={{
+          color: "#FFFFFF",
+          fontSize: 18,
+          fontWeight: 700,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+        subtitleStyle={{ color: "rgba(255,255,255,0.6)", fontSize: 12 }}
+        headerRight={
+          payPill ? (
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                padding: "3px 10px",
+                borderRadius: 999,
+                background: payPill.bg,
+                color: payPill.fg,
+                fontSize: 11,
+                fontWeight: 600,
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              {payPill.label}
+            </div>
+          ) : null
+        }
       >
 
 

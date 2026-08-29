@@ -38,9 +38,13 @@ export interface BottomSheetProps {
   onClose: () => void;
   children: React.ReactNode;
   footer?: React.ReactNode;
+  headerStyle?: React.CSSProperties;
+  titleStyle?: React.CSSProperties;
+  subtitleStyle?: React.CSSProperties;
+  headerRight?: React.ReactNode;
 }
 
-export function BottomSheet({ title, subtitle, onClose, children, footer }: BottomSheetProps) {
+export function BottomSheet({ title, subtitle, onClose, children, footer, headerStyle, titleStyle, subtitleStyle, headerRight }: BottomSheetProps) {
   useEffect(() => {
     tapLight();
     if (typeof window !== "undefined") {
@@ -103,7 +107,7 @@ export function BottomSheet({ title, subtitle, onClose, children, footer }: Bott
           </button>
         </div>
 
-        <div className="px-5 pt-2 pb-4 shrink-0">
+        <div className="px-5 pt-2 pb-4 shrink-0" style={{ position: "relative", ...headerStyle }}>
           <div className="min-w-0">
             <h2
               style={{
@@ -112,6 +116,7 @@ export function BottomSheet({ title, subtitle, onClose, children, footer }: Bott
                 fontWeight: tokens.fontWeight.extrabold,
                 letterSpacing: "-0.5px",
                 lineHeight: 1.15,
+                ...titleStyle,
               }}
             >
               {title}
@@ -119,12 +124,17 @@ export function BottomSheet({ title, subtitle, onClose, children, footer }: Bott
             {subtitle && (
               <div
                 className="mt-1"
-                style={{ color: "#8A8A8E", fontSize: 13.5, fontWeight: 500 }}
+                style={{ color: "#8A8A8E", fontSize: 13.5, fontWeight: 500, ...subtitleStyle }}
               >
                 {subtitle}
               </div>
             )}
           </div>
+          {headerRight && (
+            <div style={{ position: "absolute", top: 16, right: 16, zIndex: 1 }}>
+              {headerRight}
+            </div>
+          )}
         </div>
 
         <div className="overflow-y-auto px-4 pb-2 flex-1">{children}</div>
