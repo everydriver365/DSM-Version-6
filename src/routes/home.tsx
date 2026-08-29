@@ -3569,25 +3569,25 @@ function HomePage() {
 
 
     // ---- Pro Radio / Pro Live (Phase 4) ----
-    // The player lives on /live-news; when it isn't mounted we navigate there
+    // The player lives on /dsm-live; when it isn't mounted we navigate there
     // and leave a flag it picks up on mount.
     const radioMounted = () => !!(window as any).__edRadioMounted;
     const onRadioPlay = () => {
-      if (radioMounted()) return; // live-news handles it directly
+      if (radioMounted()) return; // dsm-live handles it directly
       try { localStorage.setItem("ed_radio_autoplay", "1"); } catch { /* noop */ }
-      navigate({ to: "/live-news", search: { tab: "podcasts" } } as never);
+      navigate({ to: "/dsm-live", search: { tab: "podcasts" } } as never);
     };
     const onRadioNav = () => {
       if (radioMounted()) return;
-      navigate({ to: "/live-news", search: { tab: "podcasts" } } as never);
+      navigate({ to: "/dsm-live", search: { tab: "podcasts" } } as never);
     };
     const onLiveOpen = () => {
-      navigate({ to: "/live-news", search: { tab: "live" } } as never);
+      navigate({ to: "/dsm-live", search: { tab: "live" } } as never);
     };
     const onLiveJoin = () => {
       if (radioMounted()) return;
       try { localStorage.setItem("ed_live_join", "1"); } catch { /* noop */ }
-      navigate({ to: "/live-news", search: { tab: "live" } } as never);
+      navigate({ to: "/dsm-live", search: { tab: "live" } } as never);
     };
 
     window.addEventListener("ed:radio:play", onRadioPlay);
@@ -4633,7 +4633,7 @@ function HomePage() {
     { icon: <IconTrophy stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Rewards", route: "/rewards" },
     { icon: <IconStar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Reviews", route: "/reviews" },
     { icon: <IconInbox stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Enquiries", route: "/enquiries" },
-    { icon: <IconClock stroke={1.5} size={20} color="#FFFFFF" />, bg: "#B91C1C", label: "Waiting list", route: "/waitlist" },
+    { icon: <IconClock stroke={1.5} size={20} color="#FFFFFF" />, bg: "#B91C1C", label: "Waiting list", route: "/waitinglist" },
     { icon: <IconGift stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Referrals", route: "/referrals" },
     { icon: <IconCar stroke={1.5} size={20} color="#FFFFFF" />, bg: "#6B7280", label: "Vehicle", route: "/vehicle" },
     { icon: <IconBook size={20} color="#FFFFFF" />, bg: "#1877D6", label: "CPD", route: "/cpd" },
@@ -4672,7 +4672,7 @@ function HomePage() {
     
     { icon: <IconRefresh stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Calendar sync", route: "/calendarsync" },
     { icon: <IconUserCircle size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Profile", route: "/profile" },
-    { icon: <IconFileSpreadsheet size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "MTD", route: "/mtd" },
+    { icon: <IconFileSpreadsheet size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "MTD", route: "/month-to-date" },
     { icon: <IconFileText stroke={1.5} size={20} color="#FFFFFF" />, bg: "#0B1F3A", label: "Quotes", route: "/quotes" },
     { icon: <IconSun stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Briefing", route: "/briefing" },
     { icon: <IconAlertCircle stroke={1.5} size={20} color="#FFFFFF" />, bg: "#B91C1C", label: "Outstanding", route: "/outstanding" },
@@ -7975,7 +7975,7 @@ function HomePage() {
                       case '/tax':
                       case '/tax-report':
                       case '/fuel':
-                      case '/mtd':
+                      case '/month-to-date':
                       case '/quotes':
                       case '/outstanding':
                         return patternD;
