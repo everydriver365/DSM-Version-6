@@ -875,15 +875,89 @@ export function useVoiceAssistant({
       speak(`Now playing: ${name}`);
     };
 
+    // ---- Phase 5 responses ----
+    const d = (e: Event) => (e as CustomEvent).detail ?? {};
+    const money = (v: unknown) => Number(v ?? 0).toFixed(2);
+
+    const onOwes = (e: Event) => {
+      const list: Array<{ name?: string; amount?: number }> = d(e).pupils ?? [];
+      if (!list.length) { speak('Everyone is up to date.'); return; }
+      const parts = list.map((p) => `${p.name ?? 'a pupil'}, £${money(p.amount)}`);
+      speak(`The following pupils have outstanding payments: ${parts.join('. ')}.`);
+    };
+    const onEarningsWeek = (e: Event) =>
+      speak(`You have earned £${money(d(e).amount)} this week.`);
+    const onEarningsMonth = (e: Event) =>
+      speak(`You have earned £${money(d(e).amount)} this month.`);
+    const onTomorrow = (e: Event) => {
+      const { count = 0, firstName, firstTime } = d(e) as { count?: number; firstName?: string; firstTime?: string };
+      if (!count) { speak('You have no lessons tomorrow.'); return; }
+      speak(`You have ${count} lesson${count !== 1 ? 's' : ''} tomorrow.${firstName ? ` First is ${firstName}${firstTime ? ` at ${firstTime}` : ''}.` : ''}`);
+    };
+    const onLastLesson = (e: Event) => {
+      const { name, time } = d(e) as { name?: string; time?: string };
+      if (!name) { speak('You have no more lessons today.'); return; }
+      speak(`Your last lesson today is ${name} at ${time ?? 'an unknown time'}.`);
+    };
+    const onPupilCount = (e: Event) => {
+      const count = Number(d(e).count ?? 0);
+      speak(`You have ${count} active pupil${count !== 1 ? 's' : ''}.`);
+    };
+    const onTestDate = (e: Event) => {
+      const { name, date } = d(e) as { name?: string; date?: string };
+      if (!date) { speak(`No test is booked for ${name ?? pupilName}.`); return; }
+      speak(`${name ?? pupilName}'s test is on ${date}.`);
+    };
+    const onHours = (e: Event) => {
+      const { name, hours = 0 } = d(e) as { name?: string; hours?: number };
+      speak(`${name ?? pupilName} has done ${hours} hour${hours !== 1 ? 's' : ''} with you.`);
+    };
+    const onReminder = (e: Event) => {
+      const { name, ok = true } = d(e) as { name?: string; ok?: boolean };
+      speak(ok ? `Reminder sent to ${name ?? pupilName}.` : `Sorry, I could not send the reminder.`);
+    };
+    const onBusiestDay = (e: Event) => {
+      const { day, count = 0 } = d(e) as { day?: string; count?: number };
+      if (!day) { speak('You have no lessons booked this week.'); return; }
+      speak(`Your busiest day this week is ${day} with ${count} lesson${count !== 1 ? 's' : ''}.`);
+    };
+    const onCancellations = (e: Event) => {
+      const names: string[] = d(e).names ?? [];
+      if (!names.length) { speak('No cancellations today.'); return; }
+      speak(`You have ${names.length} cancellation${names.length !== 1 ? 's' : ''} today: ${names.join(', ')}.`);
+    };
+
     window.addEventListener('ed:earnings:response', onEarnings);
     window.addEventListener('ed:lessoncount:response', onLessonCount);
     window.addEventListener('ed:enquiries:response', onEnquiries);
     window.addEventListener('ed:radio:whats:response', onRadioWhats);
+    window.addEventListener('ed:owes:response', onOwes);
+    window.addEventListener('ed:earnings:week:response', onEarningsWeek);
+    window.addEventListener('ed:earnings:month:response', onEarningsMonth);
+    window.addEventListener('ed:tomorrow:response', onTomorrow);
+    window.addEventListener('ed:lastlesson:response', onLastLesson);
+    window.addEventListener('ed:pupilcount:response', onPupilCount);
+    window.addEventListener('ed:testdate:response', onTestDate);
+    window.addEventListener('ed:hours:response', onHours);
+    window.addEventListener('ed:reminder:response', onReminder);
+    window.addEventListener('ed:busiestday:response', onBusiestDay);
+    window.addEventListener('ed:cancellations:response', onCancellations);
     return () => {
       window.removeEventListener('ed:earnings:response', onEarnings);
       window.removeEventListener('ed:lessoncount:response', onLessonCount);
       window.removeEventListener('ed:enquiries:response', onEnquiries);
       window.removeEventListener('ed:radio:whats:response', onRadioWhats);
+      window.removeEventListener('ed:owes:response', onOwes);
+      window.removeEventListener('ed:earnings:week:response', onEarningsWeek);
+      window.removeEventListener('ed:earnings:month:response', onEarningsMonth);
+      window.removeEventListener('ed:tomorrow:response', onTomorrow);
+      window.removeEventListener('ed:lastlesson:response', onLastLesson);
+      window.removeEventListener('ed:pupilcount:response', onPupilCount);
+      window.removeEventListener('ed:testdate:response', onTestDate);
+      window.removeEventListener('ed:hours:response', onHours);
+      window.removeEventListener('ed:reminder:response', onReminder);
+      window.removeEventListener('ed:busiestday:response', onBusiestDay);
+      window.removeEventListener('ed:cancellations:response', onCancellations);
     };
   }, [nextLesson, speak]);
 
