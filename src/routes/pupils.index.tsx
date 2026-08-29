@@ -19,7 +19,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { PupilAvatar, pupilColour } from "@/components/PupilAvatar";
 import StatusPill from "@/components/pupils/StatusPill";
 import PupilCard from "@/components/pupils/PupilCard";
-import SegmentedTabs from "@/components/learn/shared/SegmentedTabs";
+
 
 
 export const Route = createFileRoute("/pupils/")({
@@ -54,14 +54,50 @@ interface Pupil {
 }
 
 
-type StatusKey = "active" | "passed" | "waiting" | "lapsed";
+type GroupKey = "active" | "testBooked" | "passed" | "inactive";
+type FilterKey = "all" | GroupKey;
 
-const STATUS_TABS: { key: StatusKey; label: string }[] = [
+const FILTER_PILLS: { key: FilterKey; label: string }[] = [
+  { key: "all", label: "All" },
   { key: "active", label: "Active" },
+  { key: "testBooked", label: "Test booked" },
   { key: "passed", label: "Passed" },
-  { key: "waiting", label: "Waiting" },
-  { key: "lapsed", label: "Lapsed" },
+  { key: "inactive", label: "Inactive" },
 ];
+
+function getPupilGroup(
+  p: Pupil,
+  nextLessonMap: Record<string, string>,
+  testDateMap: Record<string, string>,
+): GroupKey {
+  const status = (p.status ?? "").toLowerCase();
+  const testStatus = String(p.test_status ?? "").toLowerCase();
+  if (status === "passed" || testStatus.startsWith("pass")) return "passed";
+  const testDate = testDateMap[p.id] ?? p.test_date;
+  const hasFutureTest = testDate && daysUntil(testDate) >= 0;
+  const hasFutureLesson = !!nextLessonMap[p.id];
+  if (hasFutureTest) return "testBooked";
+  if (hasFutureLesson) return "active";
+  return "inactive";
+}
+
+function SectionLabel({ label }: { label: string }) {
+  return (
+    <div
+      style={{
+        padding: "16px 16px 6px",
+        fontSize: 11,
+        fontWeight: 700,
+        color: "#536579",
+        textTransform: "uppercase",
+        letterSpacing: "0.6px",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
+      {label}
+    </div>
+  );
+}
 
 function displayName(n: string | null | undefined) {
   return (n ?? "").replace(/\s*\.\s*$/, "").trim();
@@ -69,36 +105,15 @@ function displayName(n: string | null | undefined) {
 // NOTE: DB cleanup SQL (run manually — Lovable Cloud DB tools not available in this session):
 //   update pupils set name = trim(trailing '.' from trim(name)) where name like '%.';
 
-function statusBadgeColor(status: StatusKey) {
-  if (status === "active") return "#1877D6";
-  if (status === "passed") return "#1877D6";
-  if (status === "waiting") return "#F59E0B";
-  if (status === "lapsed") return "#9CA3AF";
-  return "#6B7280";
-}
 
-function pupilMatchesStatus(
+function pupilMatchesFilter(
   p: Pupil,
-  filter: StatusKey,
-  lastLessonMap: Record<string, string>,
+  filter: FilterKey,
+  nextLessonMap: Record<string, string>,
+  testDateMap: Record<string, string>,
 ): boolean {
-  const s = (p.status ?? "active").toLowerCase();
-  if (filter === "active") return s === "active";
-  if (filter === "passed") return s === "passed";
-  if (filter === "waiting") return ["waitlist", "waiting", "enquiry"].includes(s);
-  if (filter === "lapsed") {
-    if (["lapsed", "paused", "archived"].includes(s)) return true;
-    if (s === "active") {
-      const last = lastLessonMap[p.id];
-      if (!last) return true;
-      const days = Math.floor(
-        (new Date().getTime() - new Date(last).getTime()) / 86400000,
-      );
-      return days > 60;
-    }
-    return false;
-  }
-  return false;
+  if (filter === "all") return true;
+  return getPupilGroup(p, nextLessonMap, testDateMap) === filter;
 }
 
 const PILL_BASE = {
@@ -176,7 +191,7 @@ function PupilsIndexPage() {
   const [nextLessonMap, setNextLessonMap] = useState<Record<string, string>>({});
   const [testDateMap, setTestDateMap] = useState<Record<string, string>>({});
   const [lastLessonMap, setLastLessonMap] = useState<Record<string, string>>({});
-  const [statusFilter, setStatusFilter] = useState<StatusKey>("active");
+  const [statusFilter, setStatusFilter] = useState<FilterKey>("all");
   const { pullToRefreshProps } = usePullToRefresh({
     onRefresh: async () => {
       setReloadKey((k) => k + 1);
@@ -569,11 +584,10 @@ function PupilsIndexPage() {
     const q = query.trim().toLowerCase();
     const base = pupils.filter((p) => {
       if (q && !p.name.toLowerCase().includes(q)) return false;
-      return pupilMatchesStatus(p, statusFilter, lastLessonMap);
+      return pupilMatchesFilter(p, statusFilter, nextLessonMap, testDateMap);
     });
 
     const withIndex = base.map((p, i) => ({ p, i }));
-
 
     withIndex.sort((a, b) => {
       // Unread messages always float to the top.
@@ -582,8 +596,6 @@ function PupilsIndexPage() {
       if (ua !== ub) return ub - ua;
 
       // Always alphabetical by name.
-
-      // name
       const cmp = displayName(a.p.name).localeCompare(displayName(b.p.name), "en-GB", {
         sensitivity: "base",
       });
@@ -591,29 +603,48 @@ function PupilsIndexPage() {
     });
 
     return withIndex.map((x) => x.p);
-  }, [pupils, query, statusFilter, lastLessonMap, unreadMap, balanceMap, nextLessonMap]);
+  }, [pupils, query, statusFilter, nextLessonMap, testDateMap, unreadMap]);
 
   const statusCounts = useMemo(() => {
     if (!pupils) return null;
-    const counts: Record<StatusKey, number> = {
+    const counts: Record<GroupKey, number> = {
       active: 0,
+      testBooked: 0,
       passed: 0,
-      waiting: 0,
-      lapsed: 0,
+      inactive: 0,
     };
     for (const p of pupils) {
-      for (const tab of STATUS_TABS) {
-        if (pupilMatchesStatus(p, tab.key, lastLessonMap)) {
-          counts[tab.key]++;
-        }
-      }
+      const group = getPupilGroup(p, nextLessonMap, testDateMap);
+      counts[group]++;
     }
     return counts;
-  }, [pupils, lastLessonMap]);
+  }, [pupils, nextLessonMap, testDateMap]);
 
-  // Visual grouping only — derived from the same data already fetched.
-  const needsAttention = (filtered ?? []).filter((p: any) => (balanceMap[p.id] || 0) > 0);
-  const activePupils = (filtered ?? []).filter((p: any) => !((balanceMap[p.id] || 0) > 0));
+  // Group filtered pupils by status for section rendering.
+  const grouped = useMemo(() => {
+    if (!filtered) return null;
+    const groups: Record<GroupKey, Pupil[]> = {
+      active: [],
+      testBooked: [],
+      passed: [],
+      inactive: [],
+    };
+    for (const p of filtered) {
+      const group = getPupilGroup(p, nextLessonMap, testDateMap);
+      groups[group].push(p);
+    }
+    return groups;
+  }, [filtered, nextLessonMap, testDateMap]);
+
+  const sectionCounts = useMemo(() => {
+    if (!grouped) return null;
+    return {
+      active: grouped.active.length,
+      testBooked: grouped.testBooked.length,
+      passed: grouped.passed.length,
+      inactive: grouped.inactive.length,
+    };
+  }, [grouped]);
 
 
   const renderRow = (p: any, accentColour?: string) => {
@@ -669,13 +700,16 @@ function PupilsIndexPage() {
       </>
     );
 
-    const lastLessonText = lastLesson
-      ? `Last lesson ${formatShortDate(lastLesson)} (${formatRelativeDate(lastLesson)})`
-      : nextLesson
-        ? `Next ${formatShortDate(nextLesson)}`
-        : lp
-          ? `Last seen ${formatRelativeDate(lp.date)}`
-          : "No lessons yet";
+    const isTestBooked = testDate && daysUntil(testDate) >= 0 && testResultState !== "passed" && p.status?.toLowerCase() !== "passed";
+    const lastLessonText = isTestBooked
+      ? `Test ${formatShortDate(testDate)}`
+      : lastLesson
+        ? `Last lesson ${formatShortDate(lastLesson)} (${formatRelativeDate(lastLesson)})`
+        : nextLesson
+          ? `Next ${formatShortDate(nextLesson)}`
+          : lp
+            ? `Last seen ${formatRelativeDate(lp.date)}`
+            : "No lessons yet";
 
     const avatar = (
       <div style={{ position: "relative", flexShrink: 0 }}>
@@ -1027,17 +1061,44 @@ function PupilsIndexPage() {
         </button>
       </div>
 
-      {/* Status filter tabs */}
-      <SegmentedTabs
-        style={{ margin: "4px 16px 12px" }}
-        active={statusFilter}
-        onChange={(key) => { tapLight(); setStatusFilter(key); }}
-        tabs={STATUS_TABS.map((tab) => ({
-          id: tab.key,
-          label: tab.label,
-          count: statusCounts?.[tab.key] ?? 0,
-        }))}
-      />
+      {/* Status filter pills */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          margin: "4px 16px 12px",
+          overflowX: "auto",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
+      >
+        {FILTER_PILLS.map((pill) => {
+          const active = statusFilter === pill.key;
+          return (
+            <button
+              key={pill.key}
+              type="button"
+              onClick={() => { tapLight(); setStatusFilter(pill.key); }}
+              style={{
+                flexShrink: 0,
+                borderRadius: 20,
+                padding: "6px 14px",
+                fontSize: 13,
+                fontWeight: 600,
+                color: active ? "#fff" : "#536579",
+                background: active ? "#0B2341" : "#fff",
+                border: active ? "none" : "1px solid #E4E8EF",
+                fontFamily: "Poppins, sans-serif",
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {pill.label}
+            </button>
+          );
+        })}
+      </div>
 
 
       {/* IconSearch input */}
@@ -1104,9 +1165,9 @@ function PupilsIndexPage() {
           </div>
         ) : filtered.length === 0 ? (
           (() => {
-            const emptyConfig: Record<StatusKey, { title: string; description: string; action?: ReactNode }> = {
-              active: {
-                title: "No active pupils",
+            const emptyConfig: Record<FilterKey, { title: string; description: string; action?: ReactNode }> = {
+              all: {
+                title: "No pupils found",
                 description: "Add your first pupil to start tracking lessons.",
                 action: (
                   <Link
@@ -1118,13 +1179,9 @@ function PupilsIndexPage() {
                   </Link>
                 ),
               },
-              passed: {
-                title: "No pupils have passed yet",
-                description: "Passed pupils will appear here once they pass their test.",
-              },
-              waiting: {
-                title: "No pupils on the waiting list",
-                description: "Add pupils on the waiting list or from enquiries to see them here.",
+              active: {
+                title: "No active pupils",
+                description: "Active pupils have future lessons and no upcoming test.",
                 action: (
                   <Link
                     to="/pupils/new"
@@ -1135,9 +1192,17 @@ function PupilsIndexPage() {
                   </Link>
                 ),
               },
-              lapsed: {
-                title: "No lapsed pupils",
-                description: "Lapsed pupils appear after 60 days without a lesson.",
+              testBooked: {
+                title: "No test bookings",
+                description: "Pupils with a future test date will appear here.",
+              },
+              passed: {
+                title: "No pupils have passed yet",
+                description: "Passed pupils will appear here once they pass their test.",
+              },
+              inactive: {
+                title: "No inactive pupils",
+                description: "Inactive pupils have no future lessons and no upcoming test.",
               },
             };
             const config = emptyConfig[statusFilter];
@@ -1154,67 +1219,44 @@ function PupilsIndexPage() {
             );
           })()
         ) : (
-          <>
-            {statusFilter === "active" && needsAttention.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingBottom: 16 }}>
+            {grouped && (
               <>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '14px 16px 8px',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}
-                >
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                    <IconAlertTriangle size={14} stroke={1.8} color="#C8434F" fill="none" />
-                    <span
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 500,
-                        color: '#6E6E73',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.3px',
-                      }}
-                    >
-                      Needs attention
-                    </span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => tapLight()}
-                    style={{
-                      background: 'transparent',
-                      border: 'none',
-                      padding: 0,
-                      fontSize: 12,
-                      fontWeight: 500,
-                      color: '#2B7BC8',
-                      fontFamily: 'Poppins, sans-serif',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    View all
-                  </button>
-                </div>
-                <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 20 }}>
-                  {needsAttention.map((p) =>
-                    renderSwipeRow(
-                      p,
-                      testDateMap[p.id] && !((balanceMap[p.id] || 0) > 0) ? '#B8801F' : '#C8434F',
-                    )
-                  )}
-                </div>
+                {(statusFilter === "all" || statusFilter === "active") && grouped.active.length > 0 && (
+                  <>
+                    <SectionLabel label={`Active (${sectionCounts?.active ?? grouped.active.length})`} />
+                    <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                      {grouped.active.map((p) => renderSwipeRow(p))}
+                    </div>
+                  </>
+                )}
+                {(statusFilter === "all" || statusFilter === "testBooked") && grouped.testBooked.length > 0 && (
+                  <>
+                    <SectionLabel label={`Test booked (${sectionCounts?.testBooked ?? grouped.testBooked.length})`} />
+                    <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                      {grouped.testBooked.map((p) => renderSwipeRow(p))}
+                    </div>
+                  </>
+                )}
+                {(statusFilter === "all" || statusFilter === "passed") && grouped.passed.length > 0 && (
+                  <>
+                    <SectionLabel label={`Passed (${sectionCounts?.passed ?? grouped.passed.length})`} />
+                    <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                      {grouped.passed.map((p) => renderSwipeRow(p))}
+                    </div>
+                  </>
+                )}
+                {(statusFilter === "all" || statusFilter === "inactive") && grouped.inactive.length > 0 && (
+                  <>
+                    <SectionLabel label={`Inactive (${sectionCounts?.inactive ?? grouped.inactive.length})`} />
+                    <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                      {grouped.inactive.map((p) => renderSwipeRow(p))}
+                    </div>
+                  </>
+                )}
               </>
             )}
-            <div style={{ margin: '12px 16px 0', display: 'flex', flexDirection: 'column', gap: 20 }}>
-              {(statusFilter === "active" ? activePupils : filtered).map((p) =>
-                renderSwipeRow(p)
-              )}
-            </div>
-
-
-          </>
+          </div>
         )}
       </div>
       </div>
