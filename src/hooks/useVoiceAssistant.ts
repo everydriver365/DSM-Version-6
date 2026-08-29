@@ -483,6 +483,8 @@ export function useVoiceAssistant({
   }, [
     nextLesson,
     unreadCount,
+    weatherData,
+    trafficData,
     speak,
     activate,
     deactivate,
@@ -492,6 +494,33 @@ export function useVoiceAssistant({
   useEffect(() => {
     handleCommandRef.current = handleCommand;
   }, [handleCommand]);
+
+  // Responses to async lookups performed by the host screen
+  useEffect(() => {
+    const pupilName = nextLesson?.pupils?.name?.split(' ')[0] ?? 'your pupil';
+
+    const onEarnings = (e: Event) => {
+      const amount = Number((e as CustomEvent).detail?.amount ?? 0);
+      speak(`You have earned £${amount.toFixed(2)} today.`);
+    };
+    const onLessonCount = (e: Event) => {
+      const count = Number((e as CustomEvent).detail?.count ?? 0);
+      speak(`${pupilName} has had ${count} lesson${count !== 1 ? 's' : ''} with you.`);
+    };
+    const onEnquiries = (e: Event) => {
+      const count = Number((e as CustomEvent).detail?.count ?? 0);
+      speak(`You have ${count} unanswered enquir${count !== 1 ? 'ies' : 'y'}.`);
+    };
+
+    window.addEventListener('ed:earnings:response', onEarnings);
+    window.addEventListener('ed:lessoncount:response', onLessonCount);
+    window.addEventListener('ed:enquiries:response', onEnquiries);
+    return () => {
+      window.removeEventListener('ed:earnings:response', onEarnings);
+      window.removeEventListener('ed:lessoncount:response', onLessonCount);
+      window.removeEventListener('ed:enquiries:response', onEnquiries);
+    };
+  }, [nextLesson, speak]);
 
   return {
     isSpeaking,
