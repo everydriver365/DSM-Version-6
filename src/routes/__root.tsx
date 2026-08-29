@@ -11,7 +11,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, useState, useRef, useCallback, type ReactNode } from "react";
 import { IconAward, IconBolt, IconCalendar, IconCalendarCheck, IconCar, IconChartBar, IconChevronRight, IconClipboardCheck, IconCreditCard, IconCurrencyPound, IconFileText, IconGift, IconLogout, IconMapPin, IconMenu2, IconMessageCircle, IconMoon, IconNavigation, IconPhone, IconRefresh, IconSchool, IconShieldCheck, IconStar, IconSun, IconTrendingUp, IconUsers, IconX } from "@tabler/icons-react";
-import { IconCalculator, IconCalendarPlus, IconHelpCircle, IconListCheck, IconReceipt, IconSettings, IconSignature, IconSparkles, IconSpeakerphone, IconBell, IconBriefcase, IconHelp, IconMail, IconSearch } from "@tabler/icons-react";
+import { IconCalculator, IconCalendarPlus, IconHelpCircle, IconListCheck, IconReceipt, IconSettings, IconSignature, IconSparkles, IconSpeakerphone, IconBell, IconBriefcase, IconHelp, IconMail, IconSearch, IconMapSearch, IconQrcode, IconHeadset, IconCrown } from "@tabler/icons-react";
 
 import appCss from "../styles.css?url";
 import icon192 from "../assets/icon-192.png.asset.json";
@@ -289,11 +289,16 @@ const ACTION_TILES: MenuTile[] = [
   { label: "Availability", icon: IconCalendarCheck, to: "/availability", bg: "#18A999" },
   { label: "Jobs", icon: IconBriefcase, to: "/jobs", bg: "#F59E0B" },
   { label: "Enquiries", icon: IconMail, to: "/enquiries", bg: "#7B61FF" },
+  { label: "Messages", icon: IconMessageCircle, to: "/messages", bg: "#2C97DE" },
+  { label: "Nearest", icon: IconMapSearch, to: "/nearest", bg: "#18A999" },
+  { label: "Take Payment", icon: IconQrcode, to: "/take-payment", bg: "#16A34A" },
+  { label: "Support", icon: IconHeadset, to: "/help", bg: "#536579" },
 ];
 
 function GlobalMenu() {
   const [open, setOpen] = useState(false);
-  const [profile, setProfile] = useState<{ name: string; email: string; profile_image_url: string | null } | null>(null);
+  const [profile, setProfile] = useState<{ name: string; email: string; profile_image_url: string | null; website_tier: string | null } | null>(null);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -307,12 +312,14 @@ function GlobalMenu() {
     let mounted = true;
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user || !mounted) return;
+      if (!mounted) return;
+      setIsSignedIn(!!user);
+      if (!user) return;
       const email = user.email ?? "";
-      const { data } = await supabase.from("instructors").select("name, profile_image_url").eq("id", user.id).limit(1).single();
+      const { data } = await supabase.from("instructors").select("name, profile_image_url, website_tier").eq("id", user.id).limit(1).single();
       if (mounted) {
         const resolvedName = data?.name ?? "Instructor";
-        setProfile({ name: resolvedName, email, profile_image_url: data?.profile_image_url ?? null });
+        setProfile({ name: resolvedName, email, profile_image_url: data?.profile_image_url ?? null, website_tier: data?.website_tier ?? null });
         // Share the already-fetched name so the header avatar badge needs no extra query.
         try { localStorage.setItem("dsm-instructor-name", resolvedName); } catch { /* ignore */ }
         window.dispatchEvent(new CustomEvent("dsm-instructor-name", { detail: resolvedName }));
@@ -438,6 +445,71 @@ function GlobalMenu() {
           </div>
         </div>
 
+        {/* Sign-in status row */}
+        <div
+          style={{
+            background: "#F4F6F8",
+            padding: "8px 16px",
+            borderBottom: "1px solid #E4E8EF",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          {isSignedIn ? (
+            <>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0, flex: 1 }}>
+                <span
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "#16A34A",
+                    flexShrink: 0,
+                  }}
+                />
+                <span style={{ fontSize: 12, color: "#536579", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  Signed in as {profile?.email ?? ""}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={signOut}
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  marginLeft: 8,
+                  fontSize: 12,
+                  fontWeight: tokens.fontWeight.semibold,
+                  color: "#E53935",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                }}
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => go("/login")}
+              style={{
+                background: "#2C97DE",
+                color: "#fff",
+                borderRadius: 20,
+                padding: "8px 20px",
+                fontSize: 13,
+                fontWeight: tokens.fontWeight.semibold,
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Sign in
+            </button>
+          )}
+        </div>
+
         {/* 2-column action grid */}
         <div
           style={{
@@ -492,6 +564,53 @@ function GlobalMenu() {
 
         {/* Bottom actions */}
         <div style={{ flex: 1, background: "#fff", display: "flex", flexDirection: "column" }}>
+          <button
+            type="button"
+            onClick={() => go("/subscription")}
+            style={{
+              width: "100%",
+              textAlign: "left",
+              padding: "14px 16px",
+              background: "none",
+              border: "none",
+              borderTop: "1px solid #E4E8EF",
+              borderBottom: "1px solid #E4E8EF",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              cursor: "pointer",
+            }}
+          >
+            <span
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: 8,
+                background: "#EAF5FC",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <IconCrown size={18} stroke={1.8} color="#2C97DE" />
+            </span>
+            <span style={{ flex: 1, fontSize: 14, fontWeight: tokens.fontWeight.semibold, color: "#0B2341" }}>My Plan</span>
+            <span
+              style={{
+                background: "#2C97DE",
+                color: "#fff",
+                fontSize: 10,
+                fontWeight: tokens.fontWeight.bold,
+                padding: "2px 8px",
+                borderRadius: 999,
+                textTransform: "capitalize",
+              }}
+            >
+              {({ free: "Free", website: "Essential", pro: "Pro", managed: "Max" } as Record<string, string>)[profile?.website_tier ?? "free"] ?? "Free"}
+            </span>
+            <IconChevronRight size={18} stroke={1.5} color="#D1D5DB" />
+          </button>
           <button
             type="button"
             onClick={() => go("/settings")}
