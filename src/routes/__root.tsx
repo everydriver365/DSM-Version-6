@@ -311,7 +311,11 @@ function GlobalMenu() {
       const email = user.email ?? "";
       const { data } = await supabase.from("instructors").select("name, profile_image_url").eq("id", user.id).limit(1).single();
       if (mounted) {
-        setProfile({ name: data?.name ?? "Instructor", email, profile_image_url: data?.profile_image_url ?? null });
+        const resolvedName = data?.name ?? "Instructor";
+        setProfile({ name: resolvedName, email, profile_image_url: data?.profile_image_url ?? null });
+        // Share the already-fetched name so the header avatar badge needs no extra query.
+        try { localStorage.setItem("dsm-instructor-name", resolvedName); } catch { /* ignore */ }
+        window.dispatchEvent(new CustomEvent("dsm-instructor-name", { detail: resolvedName }));
       }
     })();
     return () => { mounted = false; };
