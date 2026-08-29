@@ -36,11 +36,16 @@ export function useVoiceAssistant({
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [lastCommand, setLastCommand] = useState('');
+  const [wakeActive, setWakeActive] = useState(false);
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const recognitionRef = useRef<any>(null);
+  const wakeRef = useRef<any>(null);
+  const wakeActiveRef = useRef(false);
   // Handlers are stored in refs so callbacks stay stable
   const handleCommandRef = useRef<(text: string) => void>(() => {});
+  const activateRef = useRef<() => void>(() => {});
   const autoListenRef = useRef(false);
+
 
   const SpeechRecognitionCtor =
     typeof window !== 'undefined'
@@ -63,11 +68,61 @@ export function useVoiceAssistant({
     recognition.interimResults = false;
     recognition.lang = 'en-GB';
     recognitionRef.current = recognition;
+
+    // ---- "Hey ED" wake word: continuous background recognition ----
+    let stopped = false;
+    const wake = new SpeechRecognitionCtor();
+    wake.continuous = true;
+    wake.interimResults = true;
+    wake.lang = 'en-GB';
+    wakeRef.current = wake;
+
+    wake.onresult = (event: any) => {
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const t = String(event.results[i][0].transcript).toLowerCase();
+        if (
+          t.includes('hey ed') ||
+          t.includes('hey e d') ||
+          t.includes('hey eddie') ||
+          t.includes('hey edie')
+        ) {
+          try { wake.stop(); } catch { /* noop */ }
+          wakeActiveRef.current = false;
+          setWakeActive(false);
+          activateRef.current();
+          return;
+        }
+      }
+    };
+    wake.onend = () => {
+      // Restart continuous listening unless ED is currently active
+      if (!stopped && wakeActiveRef.current) {
+        try { wake.start(); } catch { /* noop */ }
+      }
+    };
+    wake.onerror = (e: any) => {
+      if (e?.error === 'no-speech' || e?.error === 'aborted') return;
+      setTimeout(() => {
+        if (stopped || !wakeActiveRef.current) return;
+        try { wake.start(); } catch { /* noop */ }
+      }, 1000);
+    };
+
+    try { wake.start(); } catch { /* noop */ }
+    wakeActiveRef.current = true;
+    setWakeActive(true);
+
     return () => {
+      stopped = true;
       try { recognition.stop(); } catch { /* noop */ }
+      try { wake.stop(); } catch { /* noop */ }
       recognitionRef.current = null;
+      wakeRef.current = null;
+      wakeActiveRef.current = false;
+      setWakeActive(false);
     };
   }, [supported]);
+
 
   const startListening = useCallback(() => {
     if (!recognitionRef.current) return;
@@ -124,7 +179,12 @@ export function useVoiceAssistant({
 
   // Build and speak the lesson brief
   const activate = useCallback(() => {
+    // Pause wake-word listening while ED speaks / listens
+    wakeActiveRef.current = false;
+    setWakeActive(false);
+    try { wakeRef.current?.stop(); } catch { /* noop */ }
     const name = instructorFirstName;
+
     const pupilName = nextLesson?.pupils?.name
       ?.split(' ')[0] ?? null;
     const time = nextLesson?.lesson_time
@@ -193,7 +253,18 @@ export function useVoiceAssistant({
     try { recognitionRef.current?.stop(); } catch { /* noop */ }
     setIsSpeaking(false);
     setIsListening(false);
+    // Resume background wake-word listening shortly after
+    try { wakeRef.current?.stop(); } catch { /* noop */ }
+    setTimeout(() => {
+      if (!wakeRef.current) return;
+      try {
+        wakeRef.current.start();
+        wakeActiveRef.current = true;
+        setWakeActive(true);
+      } catch { /* noop */ }
+    }, 500);
   }, []);
+
 
   const handleCommand = useCallback((text: string) => {
     setLastCommand(text);
@@ -314,7 +385,65 @@ export function useVoiceAssistant({
       return;
     }
 
+    // ---- PRO RADIO ----
+    if (text.includes('stop radio') ||
+      text.includes('pause radio') ||
+      text.includes('turn off radio') ||
+      text.includes('stop music') ||
+      text.includes('pause music')) {
+      speak('Stopping radio');
+      window.dispatchEvent(new CustomEvent('ed:radio:stop'));
+      return;
+    }
+
+    if (text.includes('next station') ||
+      text.includes('change station') ||
+      text.includes('next channel') ||
+      text.includes('skip')) {
+      speak('Changing station');
+      window.dispatchEvent(new CustomEvent('ed:radio:next'));
+      return;
+    }
+
+    if (text.includes('what is playing') ||
+      text.includes("what's playing") ||
+      text.includes('what song') ||
+      text.includes('what show')) {
+      window.dispatchEvent(new CustomEvent('ed:radio:whats'));
+      return;
+    }
+
+    if (text.includes('radio') ||
+      text.includes('play radio') ||
+      text.includes('pro radio') ||
+      text.includes('music')) {
+      speak('Starting Pro Radio');
+      window.dispatchEvent(new CustomEvent('ed:radio:play'));
+      return;
+    }
+
+    // ---- PRO LIVE ----
+    if (text.includes('join') ||
+      text.includes('join live') ||
+      text.includes('join session')) {
+      speak('Joining live session');
+      window.dispatchEvent(new CustomEvent('ed:live:join'));
+      return;
+    }
+
+    if (text.includes('live') ||
+      text.includes('pro live') ||
+      text.includes("what's live") ||
+      text.includes('whats live') ||
+      text.includes('live session') ||
+      text.includes('live now')) {
+      speak('Opening Pro Live');
+      window.dispatchEvent(new CustomEvent('ed:live:open'));
+      return;
+    }
+
     // STOP
+
     if (text.includes('stop') ||
       text.includes('cancel') ||
       text.includes('goodbye') ||
@@ -495,6 +624,11 @@ export function useVoiceAssistant({
     handleCommandRef.current = handleCommand;
   }, [handleCommand]);
 
+  useEffect(() => {
+    activateRef.current = activate;
+  }, [activate]);
+
+
   // Responses to async lookups performed by the host screen
   useEffect(() => {
     const pupilName = nextLesson?.pupils?.name?.split(' ')[0] ?? 'your pupil';
@@ -512,23 +646,32 @@ export function useVoiceAssistant({
       speak(`You have ${count} unanswered enquir${count !== 1 ? 'ies' : 'y'}.`);
     };
 
+    const onRadioWhats = (e: Event) => {
+      const name = (e as CustomEvent).detail?.name ?? 'Pro Radio';
+      speak(`Now playing: ${name}`);
+    };
+
     window.addEventListener('ed:earnings:response', onEarnings);
     window.addEventListener('ed:lessoncount:response', onLessonCount);
     window.addEventListener('ed:enquiries:response', onEnquiries);
+    window.addEventListener('ed:radio:whats:response', onRadioWhats);
     return () => {
       window.removeEventListener('ed:earnings:response', onEarnings);
       window.removeEventListener('ed:lessoncount:response', onLessonCount);
       window.removeEventListener('ed:enquiries:response', onEnquiries);
+      window.removeEventListener('ed:radio:whats:response', onRadioWhats);
     };
   }, [nextLesson, speak]);
 
   return {
     isSpeaking,
     isListening,
+    wakeActive,
     activate,
     deactivate,
     transcript,
     lastCommand,
     supported,
   };
+
 }

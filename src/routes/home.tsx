@@ -3350,6 +3350,33 @@ function HomePage() {
       window.dispatchEvent(new CustomEvent("ed:enquiries:response", { detail: { count: count ?? 0 } }));
     };
 
+    // ---- Pro Radio / Pro Live (Phase 4) ----
+    // The player lives on /live-news; when it isn't mounted we navigate there
+    // and leave a flag it picks up on mount.
+    const radioMounted = () => !!(window as any).__edRadioMounted;
+    const onRadioPlay = () => {
+      if (radioMounted()) return; // live-news handles it directly
+      try { localStorage.setItem("ed_radio_autoplay", "1"); } catch { /* noop */ }
+      navigate({ to: "/live-news", search: { tab: "podcasts" } } as never);
+    };
+    const onRadioNav = () => {
+      if (radioMounted()) return;
+      navigate({ to: "/live-news", search: { tab: "podcasts" } } as never);
+    };
+    const onLiveOpen = () => {
+      navigate({ to: "/live-news", search: { tab: "live" } } as never);
+    };
+    const onLiveJoin = () => {
+      if (radioMounted()) return;
+      try { localStorage.setItem("ed_live_join", "1"); } catch { /* noop */ }
+      navigate({ to: "/live-news", search: { tab: "live" } } as never);
+    };
+
+    window.addEventListener("ed:radio:play", onRadioPlay);
+    window.addEventListener("ed:radio:next", onRadioNav);
+    window.addEventListener("ed:radio:whats", onRadioNav);
+    window.addEventListener("ed:live:open", onLiveOpen);
+    window.addEventListener("ed:live:join", onLiveJoin);
     window.addEventListener("ed:nearest", onNearest as EventListener);
     window.addEventListener("ed:earnings", onEarnings);
     window.addEventListener("ed:lessoncount", onLessonCount);
@@ -3361,6 +3388,11 @@ function HomePage() {
     window.addEventListener("ed:schedule", onSchedule);
     window.addEventListener("ed:markpaid", onMarkPaid as EventListener);
     return () => {
+      window.removeEventListener("ed:radio:play", onRadioPlay);
+      window.removeEventListener("ed:radio:next", onRadioNav);
+      window.removeEventListener("ed:radio:whats", onRadioNav);
+      window.removeEventListener("ed:live:open", onLiveOpen);
+      window.removeEventListener("ed:live:join", onLiveJoin);
       window.removeEventListener("ed:nearest", onNearest as EventListener);
       window.removeEventListener("ed:earnings", onEarnings);
       window.removeEventListener("ed:lessoncount", onLessonCount);
