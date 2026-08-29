@@ -306,17 +306,17 @@ function MorePage() {
                   >
                     <div
                       style={{
-                        width: 40,
-                        height: 40,
+                        width: 38,
+                        height: 38,
                         borderRadius: 10,
-                        background: tokens.navy,
+                        background: '#E6F0FB',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
                       }}
                     >
-                      <IconPlayerPlay size={20} color="white" />
+                      <IconPlayerPlay size={18} color="#1877D6" stroke={1.8} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
