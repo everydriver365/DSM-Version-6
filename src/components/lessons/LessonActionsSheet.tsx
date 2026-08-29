@@ -954,7 +954,6 @@ export function LessonActionsSheet({
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  marginTop: 34,
                   padding: "3px 10px",
                   borderRadius: 999,
                   background: payPill.bg,
