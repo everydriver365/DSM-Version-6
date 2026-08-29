@@ -1412,6 +1412,10 @@ function HomePage() {
     return () => window.removeEventListener("dsm-open-universal-search", open as EventListener);
   }, []);
 
+  // Quick "Delete lesson" from a lesson tile's ellipsis menu (soft delete)
+  const [confirmDeleteLesson, setConfirmDeleteLesson] = useState<any | null>(null);
+
+
   
   
   const [runningLateOpen, setRunningLateOpen] = useState(false);
