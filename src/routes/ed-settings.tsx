@@ -264,7 +264,7 @@ function EDSettingsPage() {
               padding: "12px 16px",
               background: "transparent",
               border: "none",
-              borderBottom: availableVoices.length > 0 ? "1px solid #F4F6F8" : "none",
+              borderBottom: voices.length > 0 ? "1px solid #F4F6F8" : "none",
               cursor: "pointer",
               textAlign: "left",
             }}
