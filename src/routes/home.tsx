@@ -3294,6 +3294,49 @@ function HomePage() {
 
   const upcoming = nextLesson ?? lessons.find((l) => lessonDateTime(l) >= now && l.status !== "cancelled") ?? null;
 
+  // Voice assistant (ED) command events
+  useEffect(() => {
+    const sms = (body: string) => {
+      const phone = upcoming?.pupils?.phone;
+      if (!phone) { toast("No phone number"); return; }
+      window.location.href = `sms:${phone}?&body=${encodeURIComponent(body)}`;
+    };
+    const firstName = () => (upcoming?.pupils?.name ?? "there").split(/\s+/)[0];
+
+    const onMyWay = () => { setGoingActive(true); sms(`Hi ${firstName()}, on the way!`); };
+    const imHere = () => sms(`Hi ${firstName()}, I'm outside whenever you're ready 👋`);
+    const onLate = () => setLateOpen(true);
+    const onEol = () => { if (upcoming) setEolLesson(upcoming); };
+    const onSchedule = () => navigate({ to: "/schedule" });
+    const onMarkPaid = async (e: Event) => {
+      const lessonId = (e as CustomEvent).detail?.lessonId ?? upcoming?.id;
+      if (!lessonId) return;
+      const { error } = await supabase
+        .from("lessons")
+        .update({ payment_status: "paid" })
+        .eq("id", lessonId);
+      if (error) { toast("Couldn't mark as paid"); return; }
+      toast("Lesson marked as paid");
+    };
+
+    window.addEventListener("ed:onmyway", onMyWay);
+    window.addEventListener("ed:imhere", imHere);
+    window.addEventListener("ed:late", onLate);
+    window.addEventListener("ed:eol", onEol);
+    window.addEventListener("ed:schedule", onSchedule);
+    window.addEventListener("ed:markpaid", onMarkPaid as EventListener);
+    return () => {
+      window.removeEventListener("ed:onmyway", onMyWay);
+      window.removeEventListener("ed:imhere", imHere);
+      window.removeEventListener("ed:late", onLate);
+      window.removeEventListener("ed:eol", onEol);
+      window.removeEventListener("ed:schedule", onSchedule);
+      window.removeEventListener("ed:markpaid", onMarkPaid as EventListener);
+    };
+  }, [upcoming, navigate]);
+
+
+
   // Fetch instructor auto-track preference
   useEffect(() => {
     if (!userId) return;

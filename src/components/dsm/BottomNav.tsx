@@ -329,14 +329,22 @@ function MicPulseStyle() {
 function CenterMicButton({
   onClick,
   isSpeaking,
+  isListening,
 }: {
   onClick: () => void;
   isSpeaking: boolean;
+  isListening: boolean;
 }) {
   return (
     <button
       type="button"
-      aria-label={isSpeaking ? "ED is speaking" : "Open voice assistant"}
+      aria-label={
+        isListening
+          ? "ED is listening"
+          : isSpeaking
+            ? "ED is speaking"
+            : "Open voice assistant"
+      }
       onClick={() => {
         tapLight();
         onClick();
@@ -346,7 +354,7 @@ function CenterMicButton({
         width: 54,
         height: 54,
         borderRadius: "50%",
-        background: tokens.blue,
+        background: isListening ? "#2C97DE" : tokens.blue,
         border: "3px solid #FFFFFF",
         boxShadow: "0 4px 14px rgba(24,119,214,0.35), 0 6px 20px rgba(11,31,58,0.12)",
         cursor: "pointer",
@@ -360,11 +368,12 @@ function CenterMicButton({
         size={24}
         color="#FFFFFF"
         stroke={1.8}
-        className={isSpeaking ? "edp-mic-pulsing" : undefined}
+        className={isSpeaking || isListening ? "edp-mic-pulsing" : undefined}
       />
     </button>
   );
 }
+
 
 export function BottomNav({
   active,
@@ -440,7 +449,7 @@ export function BottomNav({
     };
   }, []);
 
-  const { isSpeaking, activate } = useVoiceAssistant({
+  const { isSpeaking, isListening, activate } = useVoiceAssistant({
     instructorFirstName: voiceContext.instructorFirstName ?? "there",
     nextLesson: voiceContext.nextLesson ?? null,
     unreadCount: unreadMessages,
@@ -536,7 +545,7 @@ export function BottomNav({
           }, it.key === "messages" || it.to === "/messages");
         })}
         <div key="mic" className="flex flex-1 flex-col items-center justify-end select-none relative" style={{ minWidth: 54 }}>
-          <CenterMicButton onClick={activate} isSpeaking={isSpeaking} />
+          <CenterMicButton onClick={activate} isSpeaking={isSpeaking} isListening={isListening} />
         </div>
         {right.map((it, i) => {
           const wsMatch = typeof it.ws === 'number' && it.ws === currentWs;
@@ -560,7 +569,7 @@ export function BottomNav({
         {renderTab("home", "/home", "Home", IconHome, isActive("home"))}
         {renderTab("schedule", "/schedule", "Schedule", IconCalendar, isActive("schedule"))}
         <div key="mic" className="flex flex-1 flex-col items-center justify-end select-none relative" style={{ minWidth: 54 }}>
-          <CenterMicButton onClick={activate} isSpeaking={isSpeaking} />
+          <CenterMicButton onClick={activate} isSpeaking={isSpeaking} isListening={isListening} />
         </div>
         {renderTab("messages", "/messages", "Messages", IconMessageCircle, isActive("messages"), undefined, true)}
         {renderTab("more", "/more", "More", IconDots, isActive("more"))}
@@ -584,7 +593,7 @@ export function BottomNav({
       >
         {useCustom ? renderCustomItems(items!) : renderDefaultItems()}
       </nav>
-      {isSpeaking && (
+      {(isSpeaking || isListening) && (
         <div
           style={{
             position: "fixed",
@@ -592,7 +601,7 @@ export function BottomNav({
             left: "50%",
             transform: "translateX(-50%)",
             zIndex: 100,
-            background: "#0B2341",
+            background: isListening ? "#2C97DE" : "#0B2341",
             color: "#fff",
             fontSize: 12,
             borderRadius: 20,
@@ -601,9 +610,10 @@ export function BottomNav({
             pointerEvents: "none",
           }}
         >
-          ED is speaking…
+          {isListening ? "ED is listening…" : "ED is speaking…"}
         </div>
       )}
+
     </>
   );
 }
