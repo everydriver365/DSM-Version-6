@@ -1,7 +1,22 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { tokens } from "@/lib/tokens";
 import { useEffect, useState } from "react";
-import { IconBell } from "@tabler/icons-react";
+import {
+  IconBell,
+  IconCalendar,
+  IconClock,
+  IconX,
+  IconCurrencyPound,
+  IconAlertCircle,
+  IconUserOff,
+  IconMail,
+  IconMessage,
+  IconSchool,
+  IconCalendarCheck,
+  IconArrowsLeftRight,
+  IconCheck,
+  IconChevronRight,
+} from "@tabler/icons-react";
 import { toast } from "sonner";
 import OneSignal from "@onesignal/capacitor-plugin";
 import { Capacitor } from "@capacitor/core";
@@ -10,7 +25,6 @@ import DSMTopSheet from "@/components/dsm/DSMTopSheet";
 
 import { Card } from "../components/dsm/Card";
 import { Button } from "../components/dsm/Button";
-import { SectionHeader } from "../components/dsm/SectionHeader";
 import { supabase } from "../lib/supabaseClient";
 import {
   getPermission,
@@ -37,6 +51,24 @@ export const Route = createFileRoute("/notificationsettings")({
 });
 
 const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
+
+const CARD_STYLE = {
+  background: "#FFFFFF",
+  borderRadius: 12,
+  border: "1px solid #E4E8EF",
+  overflow: "hidden",
+  padding: 0,
+} as const;
+
+const SECTION_LABEL_STYLE = {
+  fontSize: 11,
+  fontWeight: 700,
+  color: "#536579",
+  textTransform: "uppercase" as const,
+  letterSpacing: "0.6px",
+  padding: "16px 16px 6px",
+  ...POPPINS,
+} as const;
 
 type SettingsState = {
   sms_enabled: boolean;
@@ -220,320 +252,301 @@ function NotificationSettingsPage() {
     navigate({ to: "/settings" });
   }
 
+  const pushGranted = nativePermState === "granted";
+
   return (
     <DSMTopSheet title="Notification Settings" onBack={() => navigate({ to: "/settings" as never })}>
       <div className="pb-24" style={{ ...POPPINS, background: "#F4F6F8", flex: 1 }}>
+        <div className="px-4">
+          {/* SECTION 1 — Lessons */}
+          <div style={SECTION_LABEL_STYLE}>Lessons</div>
+          <Card style={CARD_STYLE}>
+            <ToggleItem
+              icon={<IconCalendar size={18} color="#2C97DE" />}
+              iconBg="#EAF5FC"
+              label="Lesson tomorrow"
+              subtitle="Reminder the day before"
+              value={state.lesson_reminder_24h}
+              onChange={(v) => setKey("lesson_reminder_24h", v)}
+              isFirst
+            />
+            <ToggleItem
+              icon={<IconClock size={18} color="#2C97DE" />}
+              iconBg="#EAF5FC"
+              label="Lesson starting soon"
+              subtitle="30 minutes before start"
+              value={state.lesson_starting_soon}
+              onChange={(v) => setKey("lesson_starting_soon", v)}
+            />
+            <ToggleItem
+              icon={<IconX size={18} color="#E53935" />}
+              iconBg="#FEE2E2"
+              label="Lesson cancelled"
+              subtitle="When a lesson is cancelled"
+              value={state.lesson_cancelled}
+              onChange={(v) => setKey("lesson_cancelled", v)}
+              isLast
+            />
+          </Card>
 
+          {/* SECTION 2 — Pupils & payments */}
+          <div style={SECTION_LABEL_STYLE}>Pupils & payments</div>
+          <Card style={CARD_STYLE}>
+            <ToggleItem
+              icon={<IconCurrencyPound size={18} color="#16A34A" />}
+              iconBg="#DCFCE7"
+              label="Payment received"
+              subtitle="When a pupil pays"
+              value={state.payment_received}
+              onChange={(v) => setKey("payment_received", v)}
+              isFirst
+            />
+            <ToggleItem
+              icon={<IconAlertCircle size={18} color="#F59E0B" />}
+              iconBg="#FEF3C7"
+              label="Overdue payment"
+              subtitle="When payment is overdue"
+              value={state.overdue_payment}
+              onChange={(v) => setKey("overdue_payment", v)}
+            />
+            <ToggleItem
+              icon={<IconUserOff size={18} color="#F59E0B" />}
+              iconBg="#FEF3C7"
+              label="Pupil gone quiet"
+              subtitle="No lesson in 30 days"
+              value={state.pupil_churn}
+              onChange={(v) => setKey("pupil_churn", v)}
+              isLast
+            />
+          </Card>
 
-      <div className="px-4">
-        <div
-          style={{
-            background: "#FFFFFF",
-            border: "0.5px solid #EEF2F7",
-            borderRadius: 12,
-            padding: 14,
-            marginBottom: 16,
-          }}
-        >
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <div style={{ fontSize: 14, fontWeight: 600, color: tokens.navy }}>
-                Device notifications
-              </div>
-              <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
-                {nativePermState === "granted"
-                  ? "Enabled on this device"
-                  : nativePermState === "blocked"
-                  ? "Blocked in iOS Settings — iOS won’t ask again"
-                  : nativePermState === "unavailable"
-                  ? "Push service unavailable in this build"
-                  : nativePermState === "web"
-                  ? "Open the installed app to enable device alerts"
-                  : "Not enabled yet"}
-              </div>
-              <div style={{ fontSize: 12, color: "#6B7280", marginTop: 8, lineHeight: 1.45 }}>
-                {nativePermState === "granted"
-                  ? "You’ll receive lesson reminders, test day alerts, payment updates, and new enquiry notifications on this device."
-                  : "You won’t receive device alerts. Turn on notifications to get lesson reminders, test day alerts, payment updates, and new enquiry notifications."}
-              </div>
-              {pushInitError && (
-                <div style={{ fontSize: 11, color: "#CC2229", marginTop: 4 }}>
-                  Push service unavailable in this build ({pushInitError})
+          {/* SECTION 3 — Enquiries & messages */}
+          <div style={SECTION_LABEL_STYLE}>Enquiries & messages</div>
+          <Card style={CARD_STYLE}>
+            <ToggleItem
+              icon={<IconMail size={18} color="#7B61FF" />}
+              iconBg="#EDE9FE"
+              label="New enquiry"
+              subtitle="New booking enquiry"
+              value={state.new_enquiry}
+              onChange={(v) => setKey("new_enquiry", v)}
+              isFirst
+              isLast
+            />
+          </Card>
+
+          {/* SECTION 4 — Tests */}
+          <div style={SECTION_LABEL_STYLE}>Tests</div>
+          <Card style={CARD_STYLE}>
+            <ToggleItem
+              icon={<IconCalendarCheck size={18} color="#F59E0B" />}
+              iconBg="#FEF3C7"
+              label="Test tomorrow"
+              subtitle="Reminder the day before"
+              value={state.test_tomorrow}
+              onChange={(v) => setKey("test_tomorrow", v)}
+              isFirst
+              isLast
+            />
+          </Card>
+
+          {/* SECTION 5 — ED Voice assistant */}
+          <div style={SECTION_LABEL_STYLE}>ED Voice assistant</div>
+          <Card
+            style={{
+              ...CARD_STYLE,
+              padding: "14px 16px",
+              cursor: "pointer",
+            }}
+            onClick={() => navigate({ to: "/ed-settings" })}
+          >
+            <div className="flex items-center" style={{ gap: 12 }}>
+              <span
+                className="flex items-center justify-center"
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 8,
+                  backgroundColor: "#0B2341",
+                  flexShrink: 0,
+                }}
+              >
+                <span style={{ color: "#fff", fontSize: 12, fontWeight: 700, ...POPPINS }}>
+                  ED
+                </span>
+              </span>
+              <div className="flex-1">
+                <div style={{ fontSize: 15, fontWeight: 500, color: "#0B2341", ...POPPINS }}>
+                  ED Settings
                 </div>
-              )}
-            </div>
-            <span
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                borderRadius: 999,
-                padding: "4px 10px",
-                whiteSpace: "nowrap",
-                color: nativePermState === "granted" ? "#0F7B3F" : "#CC2229",
-                background: nativePermState === "granted" ? "#E8F6EE" : "#FDECEC",
-              }}
-            >
-              {nativePermState === "granted" ? "Enabled" : "Not enabled"}
-            </span>
-          </div>
-
-          {nativePermState !== "granted" && nativePermState !== "web" && (
-            <button
-              type="button"
-              onClick={async () => {
-                if (nativePermState === "blocked" || nativePermState === "unavailable") {
-                  await openIosSettings();
-                  return;
-                }
-                try {
-                  await OneSignal.Notifications.requestPermission(true);
-                  const isGranted = await OneSignal.Notifications.hasPermission();
-                  setNotifEnabled(isGranted);
-                  if (isGranted) {
-                    setNativePermState("granted");
-                    toast.success("Notifications enabled!");
-                  } else {
-                    setNativePermState("blocked");
-                    toast.error("iOS won’t re-ask — enable it in Settings");
-                    await openIosSettings();
-                  }
-                } catch (e) {
-                  console.warn("[OneSignal] request permission failed", e);
-                  setNativePermState("unavailable");
-                  toast.error("Could not enable notifications");
-                }
-              }}
-              style={{
-                background: "#1877D6",
-                color: "#fff",
-                borderRadius: 12,
-                padding: "12px 16px",
-                fontSize: 14,
-                fontWeight: 600,
-                textAlign: "center",
-                cursor: "pointer",
-                marginTop: 12,
-                width: "100%",
-              }}
-            >
-              {nativePermState === "blocked" || nativePermState === "unavailable"
-                ? "Open iOS Settings"
-                : "Enable push notifications"}
-            </button>
-          )}
-        </div>
-        <SectionHeader>DELIVERY CHANNELS</SectionHeader>
-        <Card className="!p-0">
-          <ToggleRow
-            label="Push notifications"
-            sublabel="App alerts on your phone and desktop"
-            value={state.push_enabled}
-            onChange={(v) => setKey("push_enabled", v)}
-            isFirst
-          />
-          <ToggleRow
-            label="SMS notifications"
-            sublabel="Text message alerts to your mobile"
-            value={state.sms_enabled}
-            onChange={(v) => setKey("sms_enabled", v)}
-          />
-        </Card>
-
-        <SectionHeader>PUSH NOTIFICATIONS</SectionHeader>
-        <Card>
-          <div className="flex items-center gap-3">
-            <span
-              className="flex items-center justify-center rounded-full"
-              style={{ width: 32, height: 32, backgroundColor: "#DBEAFE", flexShrink: 0 }}
-            >
-              <IconBell size={16} color="#1877D6" />
-            </span>
-            <div className="flex-1">
-              <div className="text-[14px] font-semibold text-[#0B1F3A]" style={POPPINS}>
-                Push notifications
+                <div style={{ fontSize: 12, color: "#536579", marginTop: 2, ...POPPINS }}>
+                  Voice, wake word & AI
+                </div>
               </div>
-              <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
-                {pushStatus === "unsupported"
-                  ? "Not supported on this device"
-                  : pushStatus === "enabled"
-                    ? "Enabled on this device"
-                    : "Not enabled"}
-              </div>
+              <IconChevronRight size={20} color="#D1D5DB" />
             </div>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={pushStatus === "enabled"}
-              disabled={pushStatus === "unsupported" || pushBusy}
-              onClick={() => togglePush(pushStatus !== "enabled")}
-              className="relative shrink-0 rounded-full transition-colors"
+          </Card>
+
+          {/* SECTION 6 — Push notifications */}
+          <div style={SECTION_LABEL_STYLE}>Push notifications</div>
+          <Card style={CARD_STYLE}>
+            <div
+              className="flex items-center"
               style={{
-                width: 44,
-                height: 26,
-                backgroundColor: pushStatus === "enabled" ? "#1877D6" : "#EEF2F7",
-                opacity: pushStatus === "unsupported" || pushBusy ? 0.5 : 1,
+                gap: 12,
+                padding: "14px 16px",
+                borderBottom: "1px solid #F4F6F8",
               }}
             >
               <span
-                className="absolute top-[3px] rounded-full bg-white transition-all"
+                className="flex items-center justify-center"
                 style={{
-                  width: 20,
-                  height: 20,
-                  left: pushStatus === "enabled" ? 21 : 3,
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                  width: 34,
+                  height: 34,
+                  borderRadius: 8,
+                  backgroundColor: pushGranted ? "#DCFCE7" : "#FEE2E2",
+                  flexShrink: 0,
                 }}
-              />
-            </button>
-          </div>
-          {pushError && (
-            <div className="text-[11px] text-[#B91C1C] mt-2" style={POPPINS}>
-              {pushError}
-            </div>
-          )}
-        </Card>
-
-        <SectionHeader>BROWSER PERMISSION</SectionHeader>
-        <Card>
-          {(() => {
-            const supported = notificationsSupported();
-            const status = !supported
-              ? { label: "Notifications: Not supported", color: "#6B7280", bg: "#F3F4F6" }
-              : browserPerm === "granted"
-                ? { label: "Notifications: Enabled ✓", color: tokens.navy, bg: "#EEF2F7" }
-                : browserPerm === "denied"
-                  ? { label: "Notifications: Blocked ✗", color: "#B91C1C", bg: "#FEE2E2" }
-                  : { label: "Notifications: Not set up", color: tokens.navy, bg: "#EEF2F7" };
-            return (
-              <div className="flex items-center gap-3">
-                <span
-                  className="flex items-center justify-center rounded-full"
-                  style={{ width: 32, height: 32, backgroundColor: status.bg, flexShrink: 0 }}
-                >
-                  <IconBell size={16} color={status.color} />
-                </span>
-                <div
-                  className="flex-1 text-[13px] font-semibold"
-                  style={{ color: status.color, ...POPPINS }}
-                >
-                  {status.label}
-                </div>
-                {supported && browserPerm !== "granted" && browserPerm !== "denied" && (
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      const r = await requestPermission();
-                      setBrowserPerm(r);
-                    }}
-                    className="text-white text-[12px] font-semibold rounded-lg"
-                    style={{
-                      backgroundColor: tokens.blue,
-                      padding: "8px 12px",
-                      ...POPPINS,
-                    }}
-                  >
-                    Request permission
-                  </button>
+              >
+                {pushGranted ? (
+                  <IconCheck size={18} color="#16A34A" />
+                ) : (
+                  <IconAlertCircle size={18} color="#E53935" />
                 )}
+              </span>
+              <div className="flex-1">
+                <div
+                  style={{
+                    fontSize: 15,
+                    fontWeight: 500,
+                    color: pushGranted ? "#16A34A" : "#E53935",
+                    ...POPPINS,
+                  }}
+                >
+                  {pushGranted ? "Notifications enabled" : "Notifications disabled"}
+                </div>
+                <div style={{ fontSize: 12, color: "#536579", marginTop: 2, ...POPPINS }}>
+                  {pushGranted
+                    ? "Push notifications are active"
+                    : "Tap below to enable"}
+                </div>
               </div>
-            );
-          })()}
-          {browserPerm === "denied" && (
-            <div className="text-[11px] text-[#6B7280] mt-2" style={POPPINS}>
-              Notifications are blocked. Enable them in your browser settings to receive reminders.
             </div>
-          )}
-        </Card>
 
+            {!pushGranted && nativePermState !== "web" && (
+              <button
+                type="button"
+                onClick={async () => {
+                  if (nativePermState === "blocked" || nativePermState === "unavailable") {
+                    await openIosSettings();
+                    return;
+                  }
+                  try {
+                    await OneSignal.Notifications.requestPermission(true);
+                    const isGranted = await OneSignal.Notifications.hasPermission();
+                    setNotifEnabled(isGranted);
+                    if (isGranted) {
+                      setNativePermState("granted");
+                      toast.success("Notifications enabled!");
+                    } else {
+                      setNativePermState("blocked");
+                      toast.error("iOS won’t re-ask — enable it in Settings");
+                      await openIosSettings();
+                    }
+                  } catch (e) {
+                    console.warn("[OneSignal] request permission failed", e);
+                    setNativePermState("unavailable");
+                    toast.error("Could not enable notifications");
+                  }
+                }}
+                style={{
+                  display: "block",
+                  width: "calc(100% - 32px)",
+                  height: 44,
+                  margin: "12px 16px",
+                  borderRadius: 10,
+                  background: "#2C97DE",
+                  color: "#fff",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  textAlign: "center",
+                  border: "none",
+                  cursor: "pointer",
+                  ...POPPINS,
+                }}
+              >
+                {nativePermState === "blocked" || nativePermState === "unavailable"
+                  ? "Open iOS Settings"
+                  : "Enable push notifications"}
+              </button>
+            )}
+          </Card>
 
-        <SectionHeader>LESSON NOTIFICATIONS</SectionHeader>
-        <Card className="!p-0">
-          <ToggleRow label="New lesson booked" value={state.lesson_booked} onChange={(v) => setKey("lesson_booked", v)} isFirst />
-          <ToggleRow label="Lesson reminder — 24 hours before" value={state.lesson_reminder_24h} onChange={(v) => setKey("lesson_reminder_24h", v)} />
-          <ToggleRow label="Lesson reminder — 1 hour before" value={state.lesson_reminder_1h} onChange={(v) => setKey("lesson_reminder_1h", v)} />
-          <ToggleRow label="Lesson starting soon" sublabel="30 min reminder before each lesson" value={state.lesson_starting_soon} onChange={(v) => setKey("lesson_starting_soon", v)} />
-          <ToggleRow label="Test day reminder" sublabel="Day before a pupil's driving test" value={state.test_tomorrow} onChange={(v) => setKey("test_tomorrow", v)} />
-          <ToggleRow label="Lesson cancelled by pupil" value={state.lesson_cancelled} onChange={(v) => setKey("lesson_cancelled", v)} />
-          <ToggleRow label="Lesson rescheduled" value={state.lesson_rescheduled} onChange={(v) => setKey("lesson_rescheduled", v)} />
-        </Card>
-
-        <SectionHeader>PAYMENT NOTIFICATIONS</SectionHeader>
-        <Card className="!p-0">
-          <ToggleRow label="Payment received" value={state.payment_received} onChange={(v) => setKey("payment_received", v)} isFirst />
-          <ToggleRow label="Outstanding balance reminder" value={state.outstanding_reminder} onChange={(v) => setKey("outstanding_reminder", v)} />
-          <ToggleRow label="Overdue payment reminder" sublabel="When a pupil has an outstanding balance" value={state.overdue_payment} onChange={(v) => setKey("overdue_payment", v)} />
-        </Card>
-
-        <SectionHeader>PUPIL NOTIFICATIONS</SectionHeader>
-        <Card className="!p-0">
-          <ToggleRow label="Pupil gone quiet" sublabel="When a pupil hasn't booked in 30 days" value={state.pupil_churn} onChange={(v) => setKey("pupil_churn", v)} isFirst />
-          <ToggleRow label="New enquiry" sublabel="When someone submits a new enquiry" value={state.new_enquiry} onChange={(v) => setKey("new_enquiry", v)} />
-          <ToggleRow label="New review received" value={state.new_review} onChange={(v) => setKey("new_review", v)} />
-        </Card>
-
-        <SectionHeader>QUIET HOURS</SectionHeader>
-        <Card>
-          <div className="text-[12px] text-[#6B7280] mb-3" style={POPPINS}>
-            No notifications sent during this window.
+          <div className="mt-6">
+            <Button variant="primary" onClick={save} disabled={saving}>
+              {saving ? "Saving…" : "Save"}
+            </Button>
           </div>
-          <div className="flex gap-3">
-            <label className="flex-1">
-              <div className="text-[12px] text-[#6B7280] mb-1" style={POPPINS}>From</div>
-              <input
-                type="time"
-                value={state.quiet_from}
-                onChange={(e) => setKey("quiet_from", e.target.value)}
-                className="w-full h-11 rounded-lg px-3 bg-white text-[14px] text-[#0B1F3A]"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas, ...POPPINS }}
-              />
-            </label>
-            <label className="flex-1">
-              <div className="text-[12px] text-[#6B7280] mb-1" style={POPPINS}>To</div>
-              <input
-                type="time"
-                value={state.quiet_to}
-                onChange={(e) => setKey("quiet_to", e.target.value)}
-                className="w-full h-11 rounded-lg px-3 bg-white text-[14px] text-[#0B1F3A]"
-                style={{ borderWidth: "0.5px", borderStyle: "solid", borderColor: tokens.canvas, ...POPPINS }}
-              />
-            </label>
-          </div>
-        </Card>
-
-        <div className="mt-6">
-          <Button variant="primary" onClick={save} disabled={saving}>
-            {saving ? "Saving…" : "Save"}
-          </Button>
         </div>
       </div>
-    </div>
     </DSMTopSheet>
   );
 }
 
-function ToggleRow({
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return <div style={SECTION_LABEL_STYLE}>{children}</div>;
+}
+
+function ToggleItem({
+  icon,
+  iconBg,
   label,
-  sublabel,
+  subtitle,
   value,
   onChange,
   isFirst,
+  isLast,
 }: {
+  icon: React.ReactNode;
+  iconBg: string;
   label: string;
-  sublabel?: string;
+  subtitle?: string;
   value: boolean;
   onChange: (v: boolean) => void;
   isFirst?: boolean;
+  isLast?: boolean;
 }) {
   return (
     <div
-      className="flex items-center justify-between px-4 py-3"
-      style={isFirst ? undefined : { borderTopWidth: "0.5px", borderTopStyle: "solid", borderTopColor: tokens.canvas }}
+      className="flex items-center"
+      style={{
+        gap: 12,
+        padding: "14px 16px",
+        borderBottom: isLast ? undefined : "1px solid #F4F6F8",
+      }}
     >
-      <span className="flex-1 pr-3">
-        <span className="block text-[14px] text-[#0B1F3A]" style={POPPINS}>{label}</span>
-        {sublabel && (
-          <span className="block text-[12px] text-[#6B7280] mt-0.5" style={POPPINS}>{sublabel}</span>
-        )}
+      <span
+        className="flex items-center justify-center"
+        style={{
+          width: 34,
+          height: 34,
+          borderRadius: 8,
+          backgroundColor: iconBg,
+          flexShrink: 0,
+        }}
+      >
+        {icon}
       </span>
+      <div className="flex-1" style={{ minWidth: 0 }}>
+        <div style={{ fontSize: 15, fontWeight: 500, color: "#0B2341", ...POPPINS }}>
+          {label}
+        </div>
+        {subtitle && (
+          <div style={{ fontSize: 12, color: "#536579", marginTop: 2, ...POPPINS }}>
+            {subtitle}
+          </div>
+        )}
+      </div>
       <button
         type="button"
         role="switch"
