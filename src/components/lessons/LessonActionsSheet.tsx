@@ -936,6 +936,9 @@ export function LessonActionsSheet({
               type="button"
               onClick={onClose}
               style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
                 width: 32,
                 height: 32,
                 borderRadius: "50%",
@@ -954,6 +957,7 @@ export function LessonActionsSheet({
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
+                  marginTop: 40,
                   padding: "3px 10px",
                   borderRadius: 999,
                   background: payPill.bg,
