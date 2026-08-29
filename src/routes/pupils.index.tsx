@@ -81,6 +81,24 @@ function getPupilGroup(
   return "inactive";
 }
 
+function SectionLabel({ label }: { label: string }) {
+  return (
+    <div
+      style={{
+        padding: "16px 16px 6px",
+        fontSize: 11,
+        fontWeight: 700,
+        color: "#536579",
+        textTransform: "uppercase",
+        letterSpacing: "0.6px",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
+      {label}
+    </div>
+  );
+}
+
 function displayName(n: string | null | undefined) {
   return (n ?? "").replace(/\s*\.\s*$/, "").trim();
 }
