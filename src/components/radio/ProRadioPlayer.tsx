@@ -171,7 +171,7 @@ export function ProRadioPlayer() {
             top: 0,
             bottom: 0,
             zIndex: 100001,
-            background: "#F4F6F8",
+            background: "#DCE4F0",
             display: "flex",
             flexDirection: "column",
             overflowY: "auto",

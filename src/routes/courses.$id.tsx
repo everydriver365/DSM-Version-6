@@ -611,7 +611,7 @@ function CourseDetailPage() {
 
   return (
     <DSMTopSheet title="Course Details" onBack={() => goBack('/courses')}>
-    <div style={{ minHeight: "100%", backgroundColor: "#F4F6F8", ...POPPINS, paddingBottom: 32, flex: 1 }}>
+    <div style={{ minHeight: "100%", backgroundColor: "#DCE4F0", ...POPPINS, paddingBottom: 32, flex: 1 }}>
 
       {/* Hero image */}
       <div style={{ position: "relative", width: "100%", height: 180, overflow: "hidden" }}>

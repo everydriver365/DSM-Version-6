@@ -145,7 +145,7 @@ function SubscriptionPage() {
 
   return (
     <DSMTopSheet title="Subscription" onBack={() => goBack('/settings')}>
-      <div style={{ background: "#F4F6F8", flex: 1, minHeight: "100%" }}>
+      <div style={{ background: "#DCE4F0", flex: 1, minHeight: "100%" }}>
       {/* CURRENT PLAN CARD */}
       <div
         className="mx-4 mt-3"

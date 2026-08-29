@@ -1654,7 +1654,7 @@ function EnquiriesPage() {
 
   return (
     <DSMTopSheet title="Enquiries">
-    <div {...pullToRefreshProps} style={{ minHeight: "100%", background: "#F4F6F8", paddingBottom: 90, flex: 1 }}>
+    <div {...pullToRefreshProps} style={{ minHeight: "100%", background: "#DCE4F0", paddingBottom: 90, flex: 1 }}>
 
       <div style={{ padding: "4px 16px 24px" }}>
         {loading ? (

@@ -256,7 +256,7 @@ function NotificationSettingsPage() {
 
   return (
     <DSMTopSheet title="Notification Settings" onBack={() => navigate({ to: "/settings" as never })}>
-      <div className="pb-24" style={{ ...POPPINS, background: "#F4F6F8", flex: 1 }}>
+      <div className="pb-24" style={{ ...POPPINS, background: "#DCE4F0", flex: 1 }}>
         <div className="px-4">
           {/* SECTION 1 — Lessons */}
           <div style={SECTION_LABEL_STYLE}>Lessons</div>

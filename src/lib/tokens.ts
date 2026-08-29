@@ -24,7 +24,7 @@ export const tokens = {
   white: '#FFFFFF',
   cardBg: '#FFFFFF',
   sheetBg: '#EEF2F7',
-  pageBackground: '#F4F6F8',
+  pageBackground: '#DCE4F0',
 
   // Text
   textPrimary: '#0B1F3A',

@@ -486,7 +486,7 @@ function TakePaymentPage() {
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
-        background: "#F4F6F8",
+        background: "#DCE4F0",
       }}
     >
       {/* Header */}
@@ -545,7 +545,7 @@ function TakePaymentPage() {
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
-          background: "#F4F6F8",
+          background: "#DCE4F0",
           borderTopLeftRadius: tokens.radiusSheet,
           borderTopRightRadius: tokens.radiusSheet,
           maxWidth: 480,

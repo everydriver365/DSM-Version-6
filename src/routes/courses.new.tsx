@@ -515,7 +515,7 @@ function NewCoursePage() {
 
   return (
     <DSMTopSheet title="New Course" onBack={() => navigate({ to: "/courses" as never })}>
-    <div style={{ minHeight: "100%", backgroundColor: "#F4F6F8", ...POPPINS, paddingBottom: 24, flex: 1 }}>
+    <div style={{ minHeight: "100%", backgroundColor: "#DCE4F0", ...POPPINS, paddingBottom: 24, flex: 1 }}>
 
       {/* Action bar */}
       <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 16px" }}>

@@ -66,7 +66,7 @@ function RadioPage() {
       style={{
         ...POPPINS,
         minHeight: "100vh",
-        background: "#F4F6F8",
+        background: "#DCE4F0",
         display: "flex",
         flexDirection: "column",
         paddingBottom: "max(env(safe-area-inset-bottom), 12px)",
