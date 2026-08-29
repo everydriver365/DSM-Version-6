@@ -1397,185 +1397,41 @@ export function LessonActionsSheet({
         {inlineView === "main" && (
           <>
             <div style={{ background: "#F4F6F8", margin: "0 -16px", padding: "0 16px" }}>
-              {/* GROUP 1 — Get there */}
-              <div style={SECTION_LABEL_STYLE}>Get there</div>
-              <div style={ACTION_CARD}>
-                {/* Pickup location (preserved editing) */}
-                <div style={{ ...ACTION_ROW_BASE, borderTop: "none", cursor: "default" }}>
-                  <TintedIcon icon={IconMapPin} bg="#F3EEFB" color="#7B4FC9" />
-                  <span style={{ ...ACTION_ROW_LABEL, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
-                    {pickupValue || "No address set"}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setIsEditingPickup((v) => !v)}
-                    aria-label="Edit pickup address"
-                    style={{ marginLeft: "auto", background: "none", border: "none", padding: 0, cursor: "pointer", color: "#B0B0B5", display: "flex" }}
-                  >
-                    <IconPencil stroke={1.5} size={15} />
-                  </button>
-                </div>
-                {isEditingPickup ? (
-                  <div style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}>
-                    <input
-                      value={pickupValue}
-                      onChange={(e) => {
-                        setPickupValue(e.target.value);
-                        setPickupState("idle");
-                        verifiedForRef.current = null;
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          verifyAndSavePickup();
-                        }
-                      }}
-                      placeholder="Enter pickup address"
-                      style={fieldInput}
-                      autoFocus
-                    />
-                    <button
-                      type="button"
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={verifyAndSavePickup}
-                      disabled={pickupState === "checking"}
-                      aria-label="Verify and save pickup address"
-                      style={{
-                        width: 34,
-                        height: 34,
-                        borderRadius: 12,
-                        border: "1px solid #B7E4C7",
-                        background: pickupState === "checking" ? "#F5F7FA" : "#E8F5E9",
-                        color: "#1F6B2E",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <IconCircleCheck size={18} stroke={1.8} />
-                    </button>
-                  </div>
-                ) : null}
-
-                {/* View route */}
-                <button type="button" onClick={openMaps} style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}>
-                  <TintedIcon icon={IconMap} bg="#F3EEFB" color="#7B4FC9" />
-                  <span style={ACTION_ROW_LABEL}>View route</span>
-                  <ChevronRight />
-                </button>
-
-                {/* Traffic info */}
-                {trafficLoading && !trafficData ? (
-                  <div style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8", cursor: "default" }}>
-                    <TintedIcon icon={IconRoad} bg="#E4E8EF" color="#6B7686" />
-                    <span style={ACTION_ROW_LABEL}>Checking route…</span>
-                  </div>
-                ) : trafficData ? (
-                  (() => {
-                    const s = trafficData.status;
-                    const circleBg = s === "clear" ? "#DCFCE7" : s === "delay" ? "#FDE9BC" : "#FBD5D5";
-                    const fg = s === "clear" ? "#15803D" : s === "delay" ? "#D68A1B" : "#CC2229";
-                    const Icon = s === "clear" ? IconRoad : s === "delay" ? IconAlertTriangle : IconAlertCircle;
-                    const normalMins = Math.max(trafficData.travelMins - trafficData.delayMins, 0);
-                    const title =
-                      s === "clear"
-                        ? "Route clear"
-                        : s === "delay"
-                          ? `Traffic delay — add ${trafficData.delayMins} mins`
-                          : (trafficData.incidents[0]?.description ??
-                            `Heavy traffic — add ${trafficData.delayMins} mins`);
-                    const sub =
-                      s === "delay"
-                        ? `${trafficData.travelMins} mins to pickup (normally ${normalMins} mins)`
-                        : `${trafficData.travelMins} mins to pickup`;
-                    return (
-                      <div style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8", cursor: "default" }}>
-                        <TintedIcon icon={Icon} bg={circleBg} color={fg} />
-                        <div style={{ minWidth: 0, flex: 1 }}>
-                          <div style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: tokens.fontWeight.medium, color: NAVY }}>
-                            {title}
-                          </div>
-                          <div style={{ fontFamily: "Poppins, sans-serif", fontSize: 11, color: "#6B7686", marginTop: 2 }}>
-                            {sub}
-                          </div>
-                        </div>
-                        <ChevronRight />
-                      </div>
-                    );
-                  })()
-                ) : null}
-
-                {/* On the road rows (preserved) */}
+              {/* Prominent buttons */}
+              <div style={PROMINENT_BUTTON_ROW}>
                 <button
                   type="button"
-                  onClick={() => {
-                    setGoingActive(true);
-                    sendSms(`Hi ${firstName}, on the way!`);
-                  }}
-                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
+                  style={{ ...PROMINENT_BUTTON_BASE, background: "#0B2341" }}
+                  onClick={() => setGoingActive(!goingActive)}
                 >
-                  <TintedIcon icon={IconNavigation} bg="#E7F1FC" color="#1877D6" />
-                  <span style={ACTION_ROW_LABEL}>Tell pupil I'm on the way</span>
-                  <ChevronRight />
+                  <IconPlayerPlay size={18} stroke={2} />
+                  {goingActive ? "Going active" : "Start lesson"}
                 </button>
                 <button
                   type="button"
-                  onClick={() =>
-                    navigate({
-                      to: "/live",
-                      search: { autostart: "1", lessonId: lesson.id, pupilId: lesson.pupil_id },
-                    } as never)
-                  }
-                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
+                  style={{ ...PROMINENT_BUTTON_BASE, background: "#16A34A" }}
+                  onClick={onEol}
                 >
-                  <TintedIcon icon={IconRoute} bg="#F3EEFB" color="#7B4FC9" />
-                  <span style={ACTION_ROW_LABEL}>Track lesson live</span>
-                  <ChevronRight />
-                </button>
-                <button
-                  type="button"
-                  onClick={onOpenLate}
-                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
-                >
-                  <TintedIcon icon={IconClockExclamation} bg="#FFF6DC" color="#D68A1B" />
-                  <span style={ACTION_ROW_LABEL}>Running late</span>
-                  <ChevronRight />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
-                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
-                >
-                  <TintedIcon icon={IconCurrentLocation} bg="#E7F1FC" color="#1877D6" />
-                  <span style={ACTION_ROW_LABEL}>I'm here</span>
-                  <ChevronRight />
-                </button>
-                <button
-                  type="button"
-                  onClick={onOpenLesson}
-                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
-                >
-                  <TintedIcon icon={IconClipboardList} bg="#F2F2F7" color="#6B6B6F" />
-                  <span style={ACTION_ROW_LABEL}>Lesson prep</span>
-                  <ChevronRight />
+                  <IconFlagCheck size={18} stroke={2} />
+                  End of lesson
                 </button>
               </div>
 
-              {/* GROUP 2 — Pupil */}
-              <div style={SECTION_LABEL_STYLE}>Pupil</div>
-              <div style={ACTION_CARD}>
-                <button
-                  type="button"
+              {/* Quick actions */}
+              <div style={TILE_SECTION_LABEL}>Quick actions</div>
+              <div style={{ ...TILE_GRID, marginBottom: 12 }}>
+                <ActionTile
+                  icon={IconMessage}
+                  iconBg="#EAF5FC"
+                  iconColor="#2C97DE"
+                  label="Message"
                   onClick={() => setMessageOpen(true)}
-                  style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
-                >
-                  <TintedIcon icon={IconMessage} bg="#E7F1FC" color="#1877D6" />
-                  <span style={ACTION_ROW_LABEL}>Message pupil</span>
-                  <ChevronRight />
-                </button>
-                <button
-                  type="button"
+                />
+                <ActionTile
+                  icon={IconPhone}
+                  iconBg="#DCFCE7"
+                  iconColor="#16A34A"
+                  label="Call"
                   onClick={() => {
                     if (!phone) {
                       toast("No phone number");
@@ -1583,136 +1439,122 @@ export function LessonActionsSheet({
                     }
                     window.location.href = `tel:${phone}`;
                   }}
-                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
-                >
-                  <TintedIcon icon={IconPhone} bg="#E6F7EC" color="#248A3D" />
-                  <span style={ACTION_ROW_LABEL}>Call pupil</span>
-                  <ChevronRight />
-                </button>
-                <button
-                  type="button"
+                />
+                <ActionTile
+                  icon={IconNavigation}
+                  iconBg="#EDE9FE"
+                  iconColor="#7B61FF"
+                  label="Navigate"
+                  onClick={openMaps}
+                />
+                <ActionTile
+                  icon={IconCurrencyPound}
+                  iconBg="#DCFCE7"
+                  iconColor="#16A34A"
+                  label="Payment"
+                  onClick={() => setUnifiedPayOpen(true)}
+                />
+              </div>
+
+              {/* On the road */}
+              <div style={TILE_SECTION_LABEL}>On the road</div>
+              <div style={{ ...TILE_GRID, marginBottom: 12 }}>
+                <ActionTile
+                  icon={IconCar}
+                  iconBg="#EAF5FC"
+                  iconColor="#2C97DE"
+                  label="On my way"
+                  onClick={() => {
+                    setGoingActive(true);
+                    sendSms(`Hi ${firstName}, on the way!`);
+                  }}
+                />
+                <ActionTile
+                  icon={IconMapPin}
+                  iconBg="#EAF5FC"
+                  iconColor="#2C97DE"
+                  label="I'm here"
+                  onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
+                />
+                <ActionTile
+                  icon={IconClockExclamation}
+                  iconBg="#FEF3C7"
+                  iconColor="#F59E0B"
+                  label="Running late"
+                  onClick={onOpenLate}
+                />
+                <ActionTile
+                  icon={IconRoute}
+                  iconBg="#EDE9FE"
+                  iconColor="#7B61FF"
+                  label="Track live"
+                  onClick={() =>
+                    navigate({
+                      to: "/live",
+                      search: { autostart: "1", lessonId: lesson.id, pupilId: lesson.pupil_id },
+                    } as never)
+                  }
+                />
+              </div>
+
+              {/* Manage */}
+              <div style={TILE_SECTION_LABEL}>Manage</div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 12 }}>
+                <ActionTile
+                  icon={IconPencil}
+                  iconBg="#FEF3C7"
+                  iconColor="#F59E0B"
+                  label="Edit"
+                  onClick={() => navigate({ to: "/lessons/edit/$id", params: { id: lesson.id } })}
+                />
+                <ActionTile
+                  icon={IconCalendar}
+                  iconBg="#EAF5FC"
+                  iconColor="#2C97DE"
+                  label="Reschedule"
+                  onClick={() => setInlineView("reschedule")}
+                />
+                <ActionTile
+                  icon={IconClock}
+                  iconBg="#EAF5FC"
+                  iconColor="#2C97DE"
+                  label="Duration"
+                  onClick={() => setInlineView("duration")}
+                />
+                <ActionTile
+                  icon={IconNotes}
+                  iconBg="#EAF5FC"
+                  iconColor="#2C97DE"
+                  label="Note"
+                  onClick={() => setInlineView("note")}
+                />
+                <ActionTile
+                  icon={IconClipboardList}
+                  iconBg="#EAF5FC"
+                  iconColor="#2C97DE"
+                  label="Profile"
                   onClick={() =>
                     navigate({ to: "/pupils/$id", params: { id: lesson.pupil_id }, search: { lessonId: lesson.id } } as never)
                   }
-                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
-                >
-                  <TintedIcon icon={IconClipboardList} bg="#F2F2F7" color="#6B6B6F" />
-                  <span style={ACTION_ROW_LABEL}>View pupil profile</span>
-                  <ChevronRight />
-                </button>
+                />
+                <ActionTile
+                  icon={IconClipboardList}
+                  iconBg="#EAF5FC"
+                  iconColor="#2C97DE"
+                  label="Lesson prep"
+                  onClick={onOpenLesson}
+                />
               </div>
 
-              {/* GROUP 3 — Lesson */}
-              <div style={SECTION_LABEL_STYLE}>Lesson</div>
-              <div style={ACTION_CARD}>
-                <button
-                  type="button"
-                  style={PROMINENT_BUTTON}
-                  onClick={() => setGoingActive(!goingActive)}
-                >
-                  {goingActive ? "Going active" : "Start lesson"}
+              {/* Danger zone */}
+              <div style={DANGER_BUTTON_ROW}>
+                <button type="button" style={DANGER_BUTTON} onClick={() => setInlineView("cancel")}>
+                  <IconX size={18} stroke={2} />
+                  Cancel lesson
                 </button>
-                <div style={{ borderBottom: "1px solid #F4F6F8" }} />
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: "/lessons/edit/$id", params: { id: lesson.id } })}
-                  style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
-                >
-                  <TintedIcon icon={IconPencil} bg="#FFF6DC" color="#D68A1B" />
-                  <span style={ACTION_ROW_LABEL}>Edit lesson</span>
-                  <ChevronRight />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setInlineView("reschedule")}
-                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
-                >
-                  <TintedIcon icon={IconRepeat} bg="#E7F1FC" color="#1877D6" />
-                  <span style={ACTION_ROW_LABEL}>Reschedule</span>
-                  <ChevronRight />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setInlineView("duration")}
-                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
-                >
-                  <TintedIcon icon={IconClock} bg="#F3EEFB" color="#7B4FC9" />
-                  <span style={ACTION_ROW_LABEL}>Change duration</span>
-                  <ChevronRight />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setInlineView("note")}
-                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
-                >
-                  <TintedIcon icon={IconNotes} bg="#F2F2F7" color="#6B6B6F" />
-                  <span style={ACTION_ROW_LABEL}>Add/edit note</span>
-                  <ChevronRight />
-                </button>
-              </div>
-
-              {/* GROUP 4 — Payment */}
-              <div style={SECTION_LABEL_STYLE}>Payment</div>
-              <div style={ACTION_CARD}>
-                <button
-                  type="button"
-                  onClick={() => setUnifiedPayOpen(true)}
-                  style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
-                >
-                  <TintedIcon icon={IconCurrencyPound} bg="#E0F7F5" color="#0E9488" />
-                  <span style={ACTION_ROW_LABEL}>Take payment</span>
-                  <ChevronRight />
-                </button>
-                {payPill && (
-                  <div style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8", cursor: "default" }}>
-                    <TintedIcon icon={IconCurrencyPound} bg="#E6F7EC" color="#248A3D" />
-                    <span style={ACTION_ROW_LABEL}>Payment status</span>
-                    <span
-                      style={{
-                        marginLeft: "auto",
-                        fontFamily: "Poppins, sans-serif",
-                        fontSize: 11,
-                        fontWeight: tokens.fontWeight.extrabold,
-                        color: payPill.fg,
-                        background: payPill.bg,
-                        borderRadius: 999,
-                        padding: "5px 12px",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {payPill.label}
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* GROUP 5 — End of lesson */}
-              <div style={ACTION_CARD}>
-                <button type="button" style={EOL_BUTTON} onClick={onEol}>
-                  End of lesson (EOL)
-                </button>
-              </div>
-
-              {/* GROUP 6 — Danger zone */}
-              <div style={DANGER_SECTION_LABEL_STYLE}>Danger zone</div>
-              <div style={DANGER_CARD}>
-                <button
-                  type="button"
-                  onClick={() => setInlineView("cancel")}
-                  style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
-                >
-                  <TintedIcon icon={IconX} bg="#FDEDEC" color="#FF3B30" />
-                  <span style={{ ...ACTION_ROW_LABEL, color: "#E53935" }}>Cancel lesson</span>
-                  <ChevronRight />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setInlineView("delete")}
-                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
-                >
-                  <TintedIcon icon={IconTrash} bg="#FDEDEC" color="#FF3B30" />
-                  <span style={{ ...ACTION_ROW_LABEL, color: "#E53935" }}>Delete lesson</span>
-                  <ChevronRight />
+                <button type="button" style={DANGER_BUTTON} onClick={() => setInlineView("delete")}>
+                  <IconTrash size={18} stroke={2} />
+                  Delete lesson
                 </button>
               </div>
 
