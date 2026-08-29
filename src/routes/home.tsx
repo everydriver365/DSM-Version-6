@@ -9516,18 +9516,33 @@ function HomePage() {
               right: 20,
               bottom: "calc(80px + 56px + 12px + env(safe-area-inset-bottom, 0px))",
               width: 244,
-              maxHeight: "60vh",
+              maxHeight: "calc(100vh - 180px)",
               overflowY: "auto",
+              WebkitOverflowScrolling: "touch",
               background: "#FFFFFF",
               borderRadius: 16,
               boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
-              padding: "8px 0",
               zIndex: 100,
               fontFamily: "Poppins, sans-serif",
               animation: "dsmQuickAddIn 160ms ease-out",
             }}
           >
             <style>{`@keyframes dsmQuickAddIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}`}</style>
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 700,
+                color: "#536579",
+                padding: "12px 16px 8px",
+                borderBottom: "1px solid #F4F6F8",
+                background: "#fff",
+                position: "sticky",
+                top: 0,
+                zIndex: 1,
+              }}
+            >
+              Quick add
+            </div>
             {QUICK_ADD_ITEMS.map((item, i) => {
               const ItemIcon = item.icon;
               return (
@@ -9572,6 +9587,26 @@ function HomePage() {
                 </button>
               );
             })}
+            <button
+              type="button"
+              onClick={() => setQuickAddOpen(false)}
+              style={{
+                width: "100%",
+                height: 44,
+                background: "#fff",
+                border: "none",
+                color: "#536579",
+                fontSize: 14,
+                fontWeight: 600,
+                borderTop: "1px solid #F4F6F8",
+                position: "sticky",
+                bottom: 0,
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              Cancel
+            </button>
           </div>
         )}
 
