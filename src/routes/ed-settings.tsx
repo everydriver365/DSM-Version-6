@@ -88,7 +88,8 @@ function EDSettingsPage() {
         style={{
           background: "#0B2341",
           padding: "16px",
-          paddingTop: "env(safe-area-inset-top, 16px)",
+          paddingTop: "calc(env(safe-area-inset-top) + 16px)",
+          marginTop: "calc(env(safe-area-inset-top) * -1)",
           display: "flex",
           alignItems: "center",
           gap: 12,
