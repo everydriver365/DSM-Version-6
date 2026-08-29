@@ -165,7 +165,7 @@ export function useVoiceAssistant({
       wakeActiveRef.current = false;
       setWakeActive(false);
     };
-  }, [supported]);
+  }, [supported, wakeWordEnabled]);
 
   // Load available synthesis voices (iOS loads async)
   useEffect(() => {
