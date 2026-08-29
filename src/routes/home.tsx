@@ -3372,7 +3372,7 @@ function HomePage() {
       window.removeEventListener("ed:schedule", onSchedule);
       window.removeEventListener("ed:markpaid", onMarkPaid as EventListener);
     };
-  }, [upcoming, navigate]);
+  }, [upcoming, navigate, lessons, userId]);
 
 
 
