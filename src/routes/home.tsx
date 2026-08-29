@@ -6929,6 +6929,10 @@ function HomePage() {
 
               const goTile = (tile: QuickTile) => {
                 tapLight();
+                if (tile.route === "/search") {
+                  setUniversalSearchOpen(true);
+                  return;
+                }
                 navigate({ to: tile.route as never });
               };
 
