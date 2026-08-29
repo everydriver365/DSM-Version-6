@@ -289,6 +289,10 @@ const ACTION_TILES: MenuTile[] = [
   { label: "Availability", icon: IconCalendarCheck, to: "/availability", bg: "#18A999" },
   { label: "Jobs", icon: IconBriefcase, to: "/jobs", bg: "#F59E0B" },
   { label: "Enquiries", icon: IconMail, to: "/enquiries", bg: "#7B61FF" },
+  { label: "Messages", icon: IconMessageCircle, to: "/messages", bg: "#2C97DE" },
+  { label: "Nearest", icon: IconMapSearch, to: "/nearest", bg: "#18A999" },
+  { label: "Take Payment", icon: IconQrcode, to: "/take-payment", bg: "#16A34A" },
+  { label: "Support", icon: IconHeadset, to: "/help", bg: "#536579" },
 ];
 
 function GlobalMenu() {
