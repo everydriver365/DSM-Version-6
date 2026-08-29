@@ -9487,6 +9487,34 @@ function HomePage() {
 
 
       <ConfirmDialog
+        open={!!confirmDeleteLesson}
+        title="Delete lesson"
+        message="Are you sure you want to delete this lesson? This cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        destructive
+        onCancel={() => setConfirmDeleteLesson(null)}
+        onConfirm={async () => {
+          const lesson = confirmDeleteLesson;
+          setConfirmDeleteLesson(null);
+          if (!lesson) return;
+          try {
+            const { error } = await supabase
+              .from("lessons")
+              .update({ deleted_at: new Date().toISOString() })
+              .eq("id", lesson.id);
+            if (error) throw error;
+            // Remove locally so counts, earnings, hours and payment totals recalculate immediately
+            setLessons((prev) => (prev ?? []).filter((l) => l.id !== lesson.id));
+            setReloadKey((k) => k + 1);
+            toast.success("Lesson deleted");
+          } catch (err: any) {
+            toast.error(err?.message || "Failed to delete lesson");
+          }
+        }}
+      />
+
+      <ConfirmDialog
         open={!!confirmMoveHome}
         title="Move lesson?"
         message={
