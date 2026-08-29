@@ -101,7 +101,7 @@ Deno.serve(async (req) => {
 
     const payload: any = {
       app_id: appId,
-      include_subscription_ids: [subscriptionId],
+      include_aliases: { external_id: [instructor_id] },
       headings: { en: bannerTitle },
       contents: { en: body },
       ios_badgeType: "SetTo",
