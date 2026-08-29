@@ -63,7 +63,7 @@ const quickAccessTiles = [
   { icon: <IconCalendarMonth size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Availability", route: "/quickavailability" },
   { icon: <IconRefresh size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Calendar sync", route: "/calendarsync" },
   { icon: <IconUserCircle size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Profile", route: "/profile" },
-  { icon: <IconFileSpreadsheet size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "MTD", route: "/mtd" },
+  { icon: <IconFileSpreadsheet size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "MTD", route: "/month-to-date" },
   { icon: <IconFileText size={22} color="#FFFFFF" />, bg: "#0B1F3A", label: "Quotes", route: "/quotes" },
   { icon: <IconSun size={22} color="#FFFFFF" />, bg: "#1877D6", label: "Briefing", route: "/briefing" },
   { icon: <IconAlertCircle size={22} color="#FFFFFF" />, bg: "#B91C1C", label: "Outstanding", route: "/outstanding" },
