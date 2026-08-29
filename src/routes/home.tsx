@@ -3600,6 +3600,20 @@ function HomePage() {
     window.addEventListener("ed:eol", onEol);
     window.addEventListener("ed:schedule", onSchedule);
     window.addEventListener("ed:markpaid", onMarkPaid as EventListener);
+    window.addEventListener("ed:owes", onOwes);
+    window.addEventListener("ed:earnings:week", onEarningsWeek);
+    window.addEventListener("ed:earnings:month", onEarningsMonth);
+    window.addEventListener("ed:tomorrow", onTomorrow);
+    window.addEventListener("ed:lastlesson", onLastLesson);
+    window.addEventListener("ed:pupilcount", onPupilCount);
+    window.addEventListener("ed:testdate", onTestDate as EventListener);
+    window.addEventListener("ed:hours", onHours as EventListener);
+    window.addEventListener("ed:reminder", onReminder as EventListener);
+    window.addEventListener("ed:paymentrequest", onPaymentRequest as EventListener);
+    window.addEventListener("ed:cancellesson", onCancelLesson as EventListener);
+    window.addEventListener("ed:cancelconfirm", onCancelConfirm);
+    window.addEventListener("ed:busiestday", onBusiestDay);
+    window.addEventListener("ed:cancellations", onCancellations);
     return () => {
       window.removeEventListener("ed:radio:play", onRadioPlay);
       window.removeEventListener("ed:radio:next", onRadioNav);
