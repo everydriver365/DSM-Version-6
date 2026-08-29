@@ -771,7 +771,9 @@ function Header({ unreadCount }: { unreadCount: number }) {
         right: 0,
         zIndex: 50,
         background: "#0B2341",
-        marginTop: "calc(-1 * env(safe-area-inset-top, 0px))",
+        // No negative margin: the webview paints from y=0, so the safe-area
+        // padding alone puts the navy behind the status bar while the header
+        // still occupies its full height in flow (nothing hides underneath).
         paddingTop: "calc(env(safe-area-inset-top, 0px) + 12px)",
         paddingLeft: "calc(env(safe-area-inset-left) + 16px)",
         paddingRight: "calc(env(safe-area-inset-right) + 16px)",

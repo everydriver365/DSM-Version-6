@@ -103,8 +103,12 @@ function haversine(lat1: number, lng1: number, lat2: number, lng2: number) {
   return 2 * R * Math.asin(Math.sqrt(a));
 }
 
+const METRES_PER_MILE = 1609.344;
+const RADIUS_OPTIONS = [1, 5, 10, 20] as const;
+
 function fmtDistance(m: number) {
-  return m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(1)} km`;
+  const mi = m / METRES_PER_MILE;
+  return mi < 0.1 ? `${Math.round(m)} m` : `${mi.toFixed(1)} mi`;
 }
 
 type Result = {
@@ -135,10 +139,10 @@ type OcmPoi = {
   Connections?: Array<{ PowerKW?: number | null }> | null;
 };
 
-async function fetchEvChargers(lat: number, lng: number): Promise<Result[]> {
+async function fetchEvChargers(lat: number, lng: number, radiusMiles: number): Promise<Result[]> {
   const url =
     `https://api.openchargemap.io/v3/poi/?output=json&latitude=${lat}&longitude=${lng}` +
-    `&distance=2&distanceunit=KM&maxresults=20&compact=true&verbose=false`;
+    `&distance=${radiusMiles}&distanceunit=Miles&maxresults=20&compact=true&verbose=false`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`OpenChargeMap ${res.status}`);
   const rows = (await res.json()) as OcmPoi[];
@@ -173,6 +177,7 @@ function NearestPage() {
   const [activeBrand, setActiveBrand] = React.useState<string | null>(null);
   const [results, setResults] = React.useState<Result[]>([]);
   const [locating, setLocating] = React.useState(true);
+  const [radiusMi, setRadiusMi] = React.useState<number>(5);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -181,31 +186,36 @@ function NearestPage() {
   const markersRef = React.useRef<any[]>([]);
   const [mapsReady, setMapsReady] = React.useState(false);
 
-  /* 1. Geolocation on mount */
-  React.useEffect(() => {
-    let cancelled = false;
+  /* Shared locator — used on mount and by the "Use my location" button. */
+  const locate = React.useCallback(() => {
     if (!navigator.geolocation) {
       setError("Location is not available on this device");
       setLocating(false);
       return;
     }
+    setLocating(true);
+    setError(null);
     navigator.geolocation.getCurrentPosition(
       (p) => {
-        if (cancelled) return;
         setPos({ lat: p.coords.latitude, lng: p.coords.longitude });
         setLocating(false);
       },
       (err) => {
-        if (cancelled) return;
         setError(
           err.code === err.PERMISSION_DENIED
-            ? "Enable location to find nearby places"
+            ? "Location permission is off. Enable location for Every Driver Pro in your device settings, then tap Use my location."
             : "Could not get your location. Try again outdoors.",
         );
         setLocating(false);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
     );
+  }, []);
+
+  /* 1. Geolocation on mount */
+  React.useEffect(() => {
+    let cancelled = false;
+    locate();
     return () => {
       cancelled = true;
     };
@@ -247,11 +257,13 @@ function NearestPage() {
     setLoading(true);
     setError(null);
 
+    const radiusM = Math.round(radiusMi * METRES_PER_MILE);
+
     const run = async () => {
       try {
         if (!activeQuery && cat === "ev") {
-          const rows = await fetchEvChargers(pos.lat, pos.lng);
-          if (!cancelled) setResults(rows);
+          const rows = await fetchEvChargers(pos.lat, pos.lng, radiusMi);
+          if (!cancelled) setResults(rows.filter((r) => r.distance <= radiusM));
           return;
         }
         const r = await findNearbyPlaces({
@@ -260,7 +272,7 @@ function NearestPage() {
             lng: pos.lng,
             category: activeQuery ? "search" : cat,
             ...(activeQuery ? { query: activeQuery } : {}),
-            radius: 2000,
+            radius: radiusM,
           },
         });
         if (cancelled) return;
@@ -281,6 +293,7 @@ function NearestPage() {
               lng: p.lng,
               distance: haversine(pos.lat, pos.lng, p.lat, p.lng),
             }))
+            .filter((p) => p.distance <= radiusM)
             .sort((a, b) => a.distance - b.distance),
         );
       } catch {
@@ -296,7 +309,7 @@ function NearestPage() {
     return () => {
       cancelled = true;
     };
-  }, [pos, cat, activeQuery]);
+  }, [pos, cat, activeQuery, radiusMi]);
 
   /* 5. Map init + markers */
   React.useEffect(() => {
@@ -423,6 +436,57 @@ function NearestPage() {
             ✕
           </button>
         )}
+      </div>
+
+      {/* 2b. USE MY LOCATION + RADIUS */}
+      <div style={{ padding: "0 16px 10px" }}>
+        <button
+          type="button"
+          onClick={locate}
+          disabled={locating}
+          style={{
+            width: "100%",
+            background: locating ? "#7FAFD8" : NAVY,
+            color: "#FFFFFF",
+            border: "none",
+            borderRadius: 12,
+            padding: "13px 14px",
+            fontSize: 14,
+            fontWeight: 700,
+            cursor: locating ? "default" : "pointer",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          {locating ? "Locating…" : "Use my location"}
+        </button>
+
+        <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+          {RADIUS_OPTIONS.map((mi) => {
+            const active = radiusMi === mi;
+            return (
+              <button
+                key={mi}
+                type="button"
+                onClick={() => setRadiusMi(mi)}
+                aria-pressed={active}
+                style={{
+                  flex: 1,
+                  background: active ? BLUE : "#FFFFFF",
+                  color: active ? "#FFFFFF" : NAVY,
+                  border: `1px solid ${active ? BLUE : BORDER}`,
+                  borderRadius: 8,
+                  padding: "9px 0",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                {mi} mi
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* 3. BRAND PILLS */}
