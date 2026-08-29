@@ -6709,7 +6709,7 @@ function HomePage() {
                     if (showDayDivider) lastDividerDate = rowDay;
                     const dividerNode = showDayDivider ? (
                       <div style={{ marginTop: isFirstDivider ? 0 : 8 }}>
-                        <ScheduleDateDivider date={rowStart} />
+                        <ScheduleDateDivider date={rowStart} showLabel={tab === 'next'} />
                       </div>
                     ) : null;
                     const rowContent = (() => {
