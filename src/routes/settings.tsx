@@ -567,6 +567,7 @@ function SettingsPage() {
 
 
 
+
   async function toggleSendLessonReminders() {
     const next = !sendLessonReminders;
     setSendLessonReminders(next);
@@ -833,1855 +834,201 @@ function SettingsPage() {
         </div>
       </div>
 
-      {/* ED Settings tile */}
-      <div className="mx-4" style={{ marginBottom: 20 }}>
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/ed-settings" })}
-          style={{
-            width: "100%",
-            background: tokens.white,
-            borderRadius: 12,
-            border: "1px solid #E4E8EF",
-            boxShadow: "0 4px 0 #E4E4E8",
-            padding: 16,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 14,
-            textAlign: "left",
-          }}
-        >
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              minWidth: 40,
-              minHeight: 40,
-              borderRadius: 10,
-              background: "#0B2341",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              ...POPPINS,
-            }}
-          >
-            <span style={{ color: "#fff", fontSize: 14, fontWeight: tokens.fontWeight.bold }}>ED</span>
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontSize: 14,
-                fontWeight: tokens.fontWeight.bold,
-                color: "#0B2341",
-                ...POPPINS,
-              }}
-            >
-              "Hey ED" Settings
-            </div>
-            <div
-              style={{
-                fontSize: 12,
-                color: "#536579",
-                marginTop: 2,
-                ...POPPINS,
-              }}
-            >
-              Voice, wake word &amp; AI
-            </div>
-          </div>
-          <IconChevronRight size={15} color="#C7C7CC" />
-        </button>
-      </div>
-
-      <div className="px-4">
+      <div className="px-4" style={{ paddingBottom: 32 }}>
+        {/* My profile */}
+        <Label>My profile</Label>
         <SectionCard>
-          <AccountRow
-            icon={<IconClock color="#1877D6" size={20} />}
-            iconBg="#E7F1FC"
+          <MenuRow
+            icon={<IconUser size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
+            label="Personal details"
+            subLabel="Name, email, photo and instructor profile"
+            onClick={() => navigate({ to: "/profile" })}
+            isFirst
+            isLast
+          />
+        </SectionCard>
+
+        {/* Teaching */}
+        <Label>Teaching</Label>
+        <SectionCard>
+          <MenuRow
+            icon={<IconCalendarCheck size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
             label="Availability & working hours"
             subLabel="Working days, hours, buffers, lunch break, time off, travel time"
             onClick={() => navigate({ to: "/availability-settings" as never })}
             isFirst
           />
+          <MenuRow
+            icon={<IconMapPin size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
+            label="Coverage areas"
+            subLabel="Where you teach and how far you travel"
+            onClick={() => navigate({ to: "/coverage-areas" as never })}
+          />
+          <MenuRow
+            icon={<IconCurrencyPound size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
+            label="Postcode rates"
+            subLabel="Automatic pricing by location"
+            onClick={() => navigate({ to: "/postcode-rates" as never })}
+          />
+          <MenuRow
+            icon={<IconClipboardList size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
+            label="Intake questions"
+            subLabel="Questions asked when pupils enquire"
+            onClick={() => navigate({ to: "/intake-questions" as never })}
+          />
+          <MenuRow
+            icon={<IconAlertCircle size={18} color="#F59E0B" />}
+            iconBg="#FEF3C7"
+            label="No show & cancellation"
+            subLabel="Set fees for late cancellations and no-shows"
+            onClick={() => navigate({ to: "/no-show-policy" as never })}
+            isLast
+          />
         </SectionCard>
-      </div>
 
+        {/* Business */}
+        <Label>Business</Label>
+        <SectionCard>
+          <MenuRow
+            icon={<IconTag size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
+            label="Discount codes"
+            subLabel="Create promo codes for your courses"
+            onClick={() => navigate({ to: "/discount-codes" as never })}
+            isFirst
+          />
+          <MenuRow
+            icon={<IconRobot size={18} color="#7B61FF" />}
+            iconBg="#EDE9FE"
+            label="Automations"
+            subLabel="Reminders, chasers and follow-ups"
+            onClick={() => navigate({ to: "/automations" as never })}
+          />
+          <MenuRow
+            icon={<IconCrown size={18} color="#F59E0B" />}
+            iconBg="#FEF3C7"
+            label="Subscription & plan"
+            subLabel="Your Every Driver Pro plan and billing"
+            onClick={() => navigate({ to: "/subscription" as never })}
+            isLast
+          />
+        </SectionCard>
 
+        {/* Online presence */}
+        <Label>Online presence</Label>
+        <SectionCard>
+          <MenuRow
+            icon={<IconWorld size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
+            label="Mini site"
+            subLabel="Your public instructor page"
+            onClick={() => navigate({ to: "/minisite" as never })}
+            isFirst
+          />
+          <MenuRow
+            icon={<IconShoppingBag size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
+            label="Marketplace listing"
+            subLabel="How you appear in EveryDriver search"
+            onClick={() => navigate({ to: "/marketplace/edit" as never })}
+          />
+          <MenuRow
+            icon={<IconSchool size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
+            label="Courses"
+            subLabel="Your driving courses and packages"
+            onClick={() => navigate({ to: "/courses" as never })}
+            isLast
+          />
+        </SectionCard>
 
-      <div className="px-4">
+        {/* Notifications & sync */}
+        <Label>Notifications & sync</Label>
+        <SectionCard>
+          <MenuRow
+            icon={<IconBell size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
+            label="Notification settings"
+            subLabel="Push, email and badge preferences"
+            onClick={() => navigate({ to: "/notificationsettings" as never })}
+            isFirst
+          />
+          <MenuRow
+            icon={<IconCalendar size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
+            label="Calendar sync"
+            subLabel="Google Calendar and iCloud connections"
+            onClick={() => navigate({ to: "/calendarsync" as never })}
+          />
+          <MenuRow
+            icon={<IconMicrophone size={18} color="#FFFFFF" />}
+            iconBg="#0B2341"
+            label="ED Settings"
+            subLabel="Voice, wake word & AI"
+            onClick={() => navigate({ to: "/ed-settings" as never })}
+            isLast
+          />
+        </SectionCard>
+
+        {/* Legal & support */}
+        <Label>Legal & support</Label>
+        <SectionCard>
+          <MenuRow
+            icon={<IconHelp size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
+            label="Help & support"
+            subLabel="Guides, FAQs and contact"
+            onClick={() => navigate({ to: "/help" as never })}
+            isFirst
+          />
+          <MenuRow
+            icon={<IconShield size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
+            label="Privacy policy"
+            subLabel="How we handle your data"
+            onClick={() => navigate({ to: "/privacy" as never })}
+          />
+          <MenuRow
+            icon={<IconFileText size={18} color="#2C97DE" />}
+            iconBg="#EAF5FC"
+            label="Terms of service"
+            subLabel="The rules of using Every Driver Pro"
+            onClick={() => navigate({ to: "/terms" as never })}
+            isLast
+          />
+        </SectionCard>
+
+        {/* Account */}
         <Label>Account</Label>
         <SectionCard>
-          <AccountRow
-            icon={<IconUser color="#1877D6" size={20} />}
-            iconBg="#E7F1FC"
-            label="Profile"
-            onClick={() => navigate({ to: "/profile" })}
-            isFirst
-          />
-          <AccountRow
-            icon={<IconCurrencyPound color="#FF3B30" size={20} />}
-            iconBg="#FDEDEC"
-            label="Payments"
-            onClick={() => navigate({ to: "/payments" })}
-          />
-          <AccountRow
-            icon={<IconBell color="#D68A1B" size={20} />}
-            iconBg="#FFF6DC"
-            label="Notifications"
-            onClick={() => navigate({ to: "/notificationsettings" })}
-          />
-          <AccountRow
-            icon={<IconCalendar color="#7B4FC9" size={20} />}
-            iconBg="#F3EEFB"
-            label="Calendar sync"
-            onClick={() => navigate({ to: "/calendarsync" })}
-            warning={
-              calendarLastSynced &&
-              Date.now() - new Date(calendarLastSynced).getTime() > 6 * 60 * 60 * 1000
-                ? "Sync overdue"
-                : undefined
-            }
-          />
-          <AccountRow
-            icon={<IconGift size={20} color="#00B5A5" />}
-            iconBg="#CCFBF1"
-            label="Referrals"
-            onClick={() => navigate({ to: "/referrals" })}
-          />
-          <AccountRow
-            icon={<IconBolt size={20} color="#B45309" />}
-            iconBg="#FEF3C7"
-            label="Automations"
-            onClick={() => navigate({ to: "/automations" })}
-          />
-          <AccountRow
-            icon={<IconWorld size={20} color="#1877D6" />}
-            iconBg="#E6F1FB"
-            label="My mini website"
-            onClick={() => navigate({ to: "/minisite" })}
-          />
-          <AccountRow
-            icon={<IconBuildingBank color="#1877D6" size={20} />}
-            iconBg="#E6F1FB"
-            label="Accounting integrations"
-            onClick={() => navigate({ to: "/mtd" })}
-          />
-          <AccountRow
-            icon={<IconCrown color="#1877D6" size={20} />}
-            iconBg="#E6F1FB"
-            label="My plan"
-            value="EDP Free"
-            onClick={() => navigate({ to: "/subscription" })}
-          />
-        </SectionCard>
-
-        <Label>ED Voice</Label>
-        <SectionCard>
-          <div className="px-4 py-3">
-            <div className="text-[12px] text-[#6B7280]" style={POPPINS}>
-              Choose the voice ED uses to speak to you
-            </div>
-          </div>
-          {availableVoices.length === 0 && (
-            <div className="px-4 pb-4 text-[12px] text-[#6B7280]" style={POPPINS}>
-              No voices detected. On iOS, make sure you have downloaded an English voice in Settings → Accessibility → Spoken Content → Voices.
-            </div>
+          {isAdmin && (
+            <MenuRow
+              icon={<IconSettings size={18} color="#FFFFFF" />}
+              iconBg="#0B2341"
+              label="Admin panel"
+              subLabel="Admin tools and moderation"
+              onClick={() => navigate({ to: "/admin" as never })}
+              isFirst
+              isLast={false}
+            />
           )}
-          {availableVoices.map((voice, idx) => {
-            const isSelected = selectedVoiceName === voice.name;
-            const isUK = voice.lang === 'en-GB' || voice.lang.toLowerCase().includes('gb');
-            const isPremium = ['Samantha', 'Daniel', 'Kate', 'Serena', 'Martha', 'Arthur'].includes(voice.name);
-            return (
-              <button
-                key={`${voice.name}-${idx}`}
-                onClick={() => setVoice(voice.name)}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  padding: '12px 16px',
-                  background: 'transparent',
-                  border: 'none',
-                  borderBottom: idx < availableVoices.length - 1 ? '1px solid #F2F2F7' : 'none',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                }}
-              >
-                <div
-                  style={{
-                    width: 34,
-                    height: 34,
-                    borderRadius: 8,
-                    background: isUK ? '#EAF5FC' : '#FEF3C7',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  {isUK ? (
-                    <IconFlag size={18} color="#2C97DE" />
-                  ) : (
-                    <IconFlag size={18} color="#F59E0B" />
-                  )}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div
-                    style={{
-                      fontSize: 14,
-                      fontWeight: tokens.fontWeight.semibold,
-                      color: '#0B1F3A',
-                      ...POPPINS,
-                    }}
-                  >
-                    {voice.name}
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                    <span
-                      style={{
-                        fontSize: 11,
-                        color: '#6B7280',
-                        ...POPPINS,
-                      }}
-                    >
-                      {voice.lang}
-                    </span>
-                    {isPremium && (
-                      <span
-                        style={{
-                          fontSize: 10,
-                          fontWeight: tokens.fontWeight.bold,
-                          color: '#1877D6',
-                          background: '#E7F1FC',
-                          borderRadius: 4,
-                          padding: '2px 6px',
-                          ...POPPINS,
-                        }}
-                      >
-                        PREMIUM
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    speak(`Hi, I'm ED. This is my ${voice.name} voice.`, false);
-                  }}
-                  style={{
-                    fontSize: 12,
-                    fontWeight: tokens.fontWeight.semibold,
-                    color: '#1877D6',
-                    background: '#E7F1FC',
-                    border: 'none',
-                    borderRadius: 8,
-                    padding: '6px 12px',
-                    cursor: 'pointer',
-                    ...POPPINS,
-                  }}
-                >
-                  Preview
-                </button>
-                {isSelected && (
-                  <div
-                    style={{
-                      width: 22,
-                      height: 22,
-                      borderRadius: '50%',
-                      background: '#1877D6',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                    }}
-                  >
-                    <IconCheck size={12} color="#fff" stroke={2.5} />
-                  </div>
-                )}
-              </button>
-            );
-          })}
-          <button
-            onClick={() => setVoice(null)}
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-              padding: '12px 16px',
-              background: 'transparent',
-              border: 'none',
-              borderTop: availableVoices.length > 0 ? '1px solid #F2F2F7' : 'none',
-              cursor: 'pointer',
-            }}
-          >
-            <IconMicrophone size={16} color="#6B7280" />
-            <span
-              style={{
-                fontSize: 13,
-                fontWeight: tokens.fontWeight.semibold,
-                color: '#6B7280',
-                ...POPPINS,
-              }}
-            >
-              Reset to default
-            </span>
-          </button>
-          <div
-            className="px-4 py-3"
-            style={{
-              background: '#F9FAFB',
-              borderTop: '1px solid #F2F2F7',
-            }}
-          >
-            <div className="text-[11px] text-[#6B7280] leading-relaxed" style={POPPINS}>
-              iOS downloads premium voices automatically. If a voice sounds robotic, go to Settings → Accessibility → Spoken Content → Voices and download a higher quality version.
-            </div>
-          </div>
-        </SectionCard>
-
-        <Label>REALTIME BADGES</Label>
-        <SectionCard>
-          <div className="px-4 py-4 flex flex-col gap-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-1 min-w-0">
-                <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Issues</div>
-                <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>Show red badge on the home screen for new local issues</div>
-              </div>
-              <ToggleSwitch
-                checked={badgePrefs.issues}
-                onChange={(val) => {
-                  if (!userId) return;
-                  const next = { ...badgePrefs, issues: val };
-                  setBadgePrefs(next);
-                  writeBadgePrefs(userId, next);
-                }}
-              />
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="flex-1 min-w-0">
-                <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Chat</div>
-                <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>Show badge on the home screen for local chat messages</div>
-              </div>
-              <ToggleSwitch
-                checked={badgePrefs.chat}
-                onChange={(val) => {
-                  if (!userId) return;
-                  const next = { ...badgePrefs, chat: val };
-                  setBadgePrefs(next);
-                  writeBadgePrefs(userId, next);
-                }}
-              />
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="flex-1 min-w-0">
-                <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Admin</div>
-                <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>Show badge on the home screen for admin notifications</div>
-              </div>
-              <ToggleSwitch
-                checked={badgePrefs.admin}
-                onChange={(val) => {
-                  if (!userId) return;
-                  const next = { ...badgePrefs, admin: val };
-                  setBadgePrefs(next);
-                  writeBadgePrefs(userId, next);
-                }}
-              />
-            </div>
-          </div>
-        </SectionCard>
-
-
-        <Label>LESSON REMINDERS</Label>
-        <SectionCard>
           <MenuRow
-            icon={<IconClock color="#B5661E" />}
-            iconBg="#FBEFE1"
-
-            label="Lesson reminders"
-            expanded={expanded === "lessons"}
-            onClick={() => setExpanded(expanded === "lessons" ? null : "lessons")}
-            isFirst
-            isLast
-          />
-          {expanded === "lessons" && (
-            <div className="px-4 pb-4" style={{ borderTop: "1px solid #EFEFF2" }}>
-              <div className="flex items-start gap-3 pt-3">
-                <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                    Send pupils lesson reminders
-                  </div>
-                  <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
-                    Automatically email pupils the evening before their lesson
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={sendLessonReminders}
-                  aria-label="Send pupils lesson reminders"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleSendLessonReminders();
-                  }}
-                  style={{
-                    width: 44,
-                    height: 26,
-                    borderRadius: 12,
-                    background: sendLessonReminders ? "#1877D6" : "#D1D5DB",
-                    border: "none",
-                    position: "relative",
-                    cursor: "pointer",
-                    flexShrink: 0,
-                    transition: "background 0.2s",
-                  }}
-                >
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: 3,
-                      left: sendLessonReminders ? 21 : 3,
-                      width: 20,
-                      height: 20,
-                      borderRadius: "50%",
-                      background: "#fff",
-                      transition: "left 0.2s",
-                      boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
-                    }}
-                  />
-                </button>
-              </div>
-
-              {sendLessonReminders && (
-                <div className="mt-4 pt-4" style={{ borderTop: "1px solid #EFEFF2" }}>
-                  <div className="text-[14px] font-medium text-[#0B1F3A] mb-2" style={POPPINS}>
-                    Reminder timing
-                  </div>
-                  <select
-                    value={reminderTiming}
-                    onChange={(e) => updateReminderTiming(e.target.value as "evening" | "morning" | "both")}
-                    className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{
-                      ...POPPINS,
-                      padding: "12px 16px",
-                      border: "1px solid #E2E6ED",
-                      borderRadius: tokens.radiusCard,
-                      background: tokens.white,
-                    }}
-                  >
-                    <option value="evening">Evening before (6pm)</option>
-                    <option value="morning">Morning of lesson (8am)</option>
-                    <option value="both">Both</option>
-                  </select>
-                </div>
-              )}
-            </div>
-          )}
-        </SectionCard>
-
-        <Label>RATES & SCHEDULING</Label>
-        <SectionCard>
-          <MenuRow
-            icon={<IconCurrencyPound size={18} color="#1877D6" />}
-            iconBg="#DBEAFE"
-            label="Rates & scheduling"
-            expanded={expanded === "rates"}
-            onClick={() => setExpanded(expanded === "rates" ? null : "rates")}
-            isFirst
-          />
-          {expanded === "rates" && (
-            <div className="px-4 pb-4" style={{ borderTop: "1px solid #EFEFF2" }}>
-              {/* Hourly rate */}
-              <div className="flex items-start gap-3 pt-4">
-                <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                    Hourly rate
-                  </div>
-                  <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
-                    Used to calculate lesson costs in the EOL wizard
-                  </div>
-                </div>
-                <div className="flex items-center gap-1 shrink-0">
-                  <span className="text-[14px] text-[#6B7280]" style={POPPINS}>£</span>
-                  <input
-                    type="number"
-                    min={0}
-                    step={0.5}
-                    value={hourlyRate}
-                    onChange={(e) => {
-                      const val = parseFloat(e.target.value);
-                      if (!isNaN(val) && val >= 0) {
-                        setHourlyRate(val);
-                      }
-                    }}
-                    className="text-[14px] font-medium text-[#0B1F3A] text-right"
-                    style={{
-                      width: 72,
-                      height: 36,
-                      borderRadius: tokens.radiusCard,
-                      border: "1px solid #E2E6ED",
-                      padding: "0 8px",
-                      ...POPPINS,
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Default lesson duration */}
-              <div
-                className="flex items-center gap-3 pt-4 mt-4"
-                style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2" }}
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                    Default lesson duration
-                  </div>
-                </div>
-                <select
-                  value={defaultDuration}
-                  onChange={(e) => setDefaultDuration(parseInt(e.target.value, 10))}
-                  className="text-[13px] text-[#0B1F3A]"
-                  style={{
-                    height: 36,
-                    borderRadius: 12,
-                    border: "1px solid #E2E6ED",
-                    padding: "0 8px",
-                    backgroundColor: "#fff",
-                    ...POPPINS,
-                  }}
-                >
-                  <option value={60}>1 hour</option>
-                  <option value={120}>2 hours</option>
-                  <option value={180}>3 hours</option>
-                  <option value={240}>4 hours</option>
-                  <option value={300}>5 hours</option>
-                  <option value={360}>6 hours</option>
-                  <option value={420}>7 hours</option>
-                  <option value={480}>8 hours</option>
-                </select>
-              </div>
-
-              {/* Buffer between lessons */}
-              <div
-                className="flex items-center gap-3 pt-4 mt-4"
-                style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2" }}
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                    Buffer between lessons
-                  </div>
-                  <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
-                    Travel time added between lessons
-                  </div>
-                </div>
-                <select
-                  value={bufferMinutes}
-                  onChange={(e) => setBufferMinutes(parseInt(e.target.value, 10))}
-                  className="text-[13px] text-[#0B1F3A]"
-                  style={{
-                    height: 36,
-                    borderRadius: 12,
-                    border: "1px solid #E2E6ED",
-                    padding: "0 8px",
-                    backgroundColor: "#fff",
-                    ...POPPINS,
-                  }}
-                >
-                  <option value={0}>None</option>
-                  <option value={15}>15 mins</option>
-                  <option value={30}>30 mins</option>
-                  <option value={45}>45 mins</option>
-                  <option value={60}>1 hour</option>
-                  <option value={90}>1.5 hours</option>
-                  <option value={120}>2 hours</option>
-                </select>
-              </div>
-
-              {/* Lesson buffers (before/after) */}
-              <div
-                className="pt-4 mt-4"
-                style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2" }}
-              >
-                <div className="flex items-center gap-2 mb-1">
-                  <IconClock size={14} color="#0B1F3A" />
-                  <div className="text-[14px] font-bold" style={{ color: tokens.navy, ...POPPINS }}>
-                    Lesson buffer
-                  </div>
-                </div>
-                <div className="text-[12px] mb-4" style={{ color: tokens.textMuted, ...POPPINS }}>
-                  Time between lessons for notes, travel and preparation.
-                </div>
-                <div
-                  className="flex items-center justify-between"
-                  style={{ paddingTop: 10, paddingBottom: 10 }}
-                >
-                  <div className="text-[14px]" style={{ color: tokens.navy, ...POPPINS }}>Gap after each lesson</div>
-                  <select
-                    value={bufferAfter}
-                    onChange={(e) => {
-                      const v = parseInt(e.target.value, 10);
-                      setBufferAfter(v);
-                      void saveBuffers(v);
-                    }}
-                    className="text-[13px]"
-                    style={{ height: 36, borderRadius: 12, border: "1px solid #E2E6ED", padding: "0 8px", backgroundColor: "#fff", color: tokens.navy, ...POPPINS }}
-                  >
-                    {[0, 5, 10, 15, 20, 30, 45, 60].map((m) => (
-                      <option key={m} value={m}>{m} min</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Minimum gap shown on schedule */}
-              <div
-                className="flex items-center gap-3 pt-4 mt-4"
-                style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2" }}
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                    Minimum gap to show
-                  </div>
-                  <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
-                    Free gaps shorter than this are hidden on the schedule
-                  </div>
-                </div>
-                <select
-                  value={minGapMinutes}
-                  onChange={(e) => setMinGapMinutes(parseInt(e.target.value, 10))}
-                  className="text-[13px] text-[#0B1F3A]"
-                  style={{
-                    height: 36,
-                    borderRadius: 12,
-                    border: "1px solid #E2E6ED",
-                    padding: "0 8px",
-                    backgroundColor: "#fff",
-                    ...POPPINS,
-                  }}
-                >
-                  <option value={60}>1 hour</option>
-                  <option value={90}>1.5 hours</option>
-                  <option value={120}>2 hours</option>
-                </select>
-              </div>
-
-              {/* Save button */}
-              <div style={{ marginTop: 20 }}>
-                <SaveButton onClick={saveRates} disabled={savingRates}>
-                  {savingRates ? "Saving…" : "Save rates"}
-                </SaveButton>
-              </div>
-            </div>
-          )}
-        </SectionCard>
-
-        <Label>LESSON TRACKING</Label>
-        <SectionCard>
-          <div className="px-4 py-4 flex flex-col gap-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-1 min-w-0">
-                <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Auto-track lessons</div>
-                <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>Show a one-tap prompt to start GPS tracking when a lesson begins</div>
-              </div>
-              <ToggleSwitch
-                checked={autoTrackLessons}
-                onChange={async (val) => {
-                  setAutoTrackLessons(val);
-                  await saveReminderPrefs({
-                    reminder_enabled: reminderEnabled,
-                    reminder_hours_before: reminderHoursBefore,
-                    payment_reminder_enabled: paymentReminderEnabled,
-                    payment_chase_max_reminders: paymentChaseMax,
-                    morning_briefing: morningBriefing,
-                    auto_track_lessons: val,
-                  });
-                }}
-              />
-            </div>
-          </div>
-        </SectionCard>
-
-        <Label>COVERAGE AREA</Label>
-        <SectionCard>
-          <AccountRow
-            icon={<IconMapPin size={20} color="#1877D6" />}
-            iconBg="#E0F4FF"
-            label="Coverage areas"
-            subLabel={
-              coverageAreaCount > 0
-                ? `${coverageAreaCount} ${coverageAreaCount === 1 ? "area" : "areas"} defined`
-                : "No areas set"
-            }
-            onClick={() => navigate({ to: "/coverage-areas" as never })}
-            isFirst
-          />
-        </SectionCard>
-
-
-        <Label>PRICING RULES</Label>
-        <SectionCard>
-          <MenuRow
-            icon={<IconCurrencyPound size={18} color="#1877D6" />}
-            iconBg="#DBEAFE"
-            label="Pricing rules"
-            expanded={expanded === "pricing"}
-            onClick={() => setExpanded(expanded === "pricing" ? null : "pricing")}
-            isFirst
-          />
-          {expanded === "pricing" && (
-            <div className="px-4 pb-4" style={{ borderTop: "1px solid #EFEFF2" }}>
-              <MenuRow
-                icon={<IconMapPin size={18} color="#0369A1" />}
-                iconBg="#E0F2FE"
-                label="Postcode rates"
-                onClick={() => navigate({ to: "/postcode-rates" })}
-                isFirst
-              />
-
-              <div className="pt-4" style={{ borderTop: "1px solid #EFEFF2" }}>
-                <p style={{ fontSize: 12, color: "#6B7280", marginBottom: 14, ...POPPINS }}>
-                  Automatically adjust lesson prices based on time, day, location, or booking notice.
-                </p>
-
-                {pricingRules.length === 0 && (
-                  <p style={{ fontSize: tokens.fontSize.base, color: "#6B7280", marginBottom: 14, ...POPPINS }}>
-                    No pricing rules yet. Add one below.
-                  </p>
-                )}
-
-                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
-                  {pricingRules.map((r) => (
-                    <div
-                      key={r.id}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 8,
-                        border: "1px solid #E2E6ED",
-                        borderRadius: tokens.radiusCard,
-                        padding: 16,
-                        background: "#fff",
-                      }}
-                    >
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                          <span style={{ fontWeight: tokens.fontWeight.semibold, fontSize: tokens.fontSize.md, color: tokens.navy, ...POPPINS }}>
-                            {r.rule_name}
-                          </span>
-                          <span
-                            style={{
-                              fontSize: tokens.fontSize.sm,
-                              padding: "2px 8px",
-                              borderRadius: 999,
-                              background: "#EEF2FF",
-                              color: tokens.blue,
-                              ...POPPINS,
-                            }}
-                          >
-                            {RULE_TYPE_LABEL[r.rule_type]}
-                          </span>
-                          <span
-                            style={{
-                              fontSize: 12,
-                              fontWeight: tokens.fontWeight.semibold,
-                              color: tokens.blue,
-                              ...POPPINS,
-                            }}
-                          >
-                            {r.adjustment_type === "flat"
-                              ? `+£${Number(r.adjustment_value).toFixed(2)}`
-                              : `+${r.adjustment_value}%`}
-                          </span>
-                        </div>
-                        <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2, ...POPPINS }}>
-                          {describeRule(r)}
-                        </div>
-                      </div>
-                      <label style={{ display: "inline-flex", alignItems: "center", cursor: "pointer" }}>
-                        <input
-                          type="checkbox"
-                          checked={r.is_active}
-                          onChange={(e) => toggleRule(r.id, e.target.checked)}
-                          style={{ width: 18, height: 18, accentColor: tokens.blue }}
-                        />
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => deleteRule(r.id)}
-                        aria-label="Delete rule"
-                        style={{
-                          background: "transparent",
-                          border: "none",
-                          cursor: "pointer",
-                          padding: 4,
-                          color: tokens.blue,
-                        }}
-                      >
-                        <IconTrash size={18} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-
-                <div style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
-                  <div style={{ fontSize: tokens.fontSize.base, fontWeight: tokens.fontWeight.semibold, color: tokens.navy, marginBottom: 10, ...POPPINS }}>
-                    Add new rule
-                  </div>
-
-                  <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Rule name</label>
-                  <input
-                    type="text"
-                    value={ruleName}
-                    onChange={(e) => setRuleName(e.target.value)}
-                    placeholder="e.g. Evening Surcharge"
-                    style={{
-                      width: "100%", height: 44, padding: "0 12px",
-                      border: "1px solid #E2E6ED", borderRadius: 12, fontSize: tokens.fontSize.md,
-                      marginTop: 6, marginBottom: 12, background: "#fff", color: tokens.navy, ...POPPINS,
-                    }}
-                  />
-
-                  <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Rule type</label>
-                  <select
-                    value={ruleType}
-                    onChange={(e) => setRuleType(e.target.value as RuleType)}
-                    style={{
-                      width: "100%", height: 44, padding: "0 12px",
-                      border: "1px solid #E2E6ED", borderRadius: 12, fontSize: tokens.fontSize.md,
-                      marginTop: 6, marginBottom: 12, background: "#fff", color: tokens.navy, ...POPPINS,
-                    }}
-                  >
-                    <option value="time_of_day">Time of Day</option>
-                    <option value="day_of_week">Day of Week</option>
-                    <option value="postcode_zone">Postcode Zone</option>
-                    <option value="advance_notice">Advance Notice</option>
-                  </select>
-
-                  {ruleType === "time_of_day" && (
-                    <>
-                      <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>After time</label>
-                      <input
-                        type="time"
-                        value={ruleTime}
-                        onChange={(e) => setRuleTime(e.target.value)}
-                        style={{
-                          width: "100%", height: 44, padding: "0 12px",
-                          border: "1px solid #E2E6ED", borderRadius: 12, fontSize: tokens.fontSize.md,
-                          marginTop: 6, marginBottom: 12, background: "#fff", color: tokens.navy, ...POPPINS,
-                        }}
-                      />
-                    </>
-                  )}
-
-                  {ruleType === "day_of_week" && (
-                    <div style={{ marginTop: 6, marginBottom: 12 }}>
-                      <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Days</label>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
-                        {DAYS.map((d) => (
-                          <label
-                            key={d.key}
-                            style={{
-                              display: "inline-flex", alignItems: "center", gap: 6,
-                              padding: "6px 16px", border: "1px solid #E2E6ED",
-                              borderRadius: tokens.radiusCard, fontSize: tokens.fontSize.base, cursor: "pointer", ...POPPINS,
-                            }}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={ruleDays[d.key]}
-                              onChange={(e) => setRuleDays((p) => ({ ...p, [d.key]: e.target.checked }))}
-                              style={{ accentColor: tokens.blue }}
-                            />
-                            {d.label.slice(0, 3)}
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {ruleType === "postcode_zone" && (() => {
-                    const POSTCODE_RE = /^[A-Z]{1,2}[0-9][A-Z0-9]?( ?[0-9][A-Z]{2})?$/i;
-                    const entries = rulePostcodes.split(",").map((s) => s.trim()).filter(Boolean);
-                    const invalid = entries.filter((e) => !POSTCODE_RE.test(e));
-                    return (
-                      <>
-                        <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>
-                          Postcodes (comma separated)
-                        </label>
-                        <input
-                          type="text"
-                          value={rulePostcodes}
-                          onChange={(e) => setRulePostcodes(e.target.value.toUpperCase())}
-                          placeholder="SO22, SO23 9AX"
-                          style={{
-                            width: "100%", height: 44, padding: "0 12px",
-                            border: `1px solid ${invalid.length ? "#1877D6" : "#E2E6ED"}`,
-                            borderRadius: 8, fontSize: tokens.fontSize.md,
-                            marginTop: 6, marginBottom: invalid.length || entries.length ? 4 : 12,
-                            background: "#fff", color: tokens.navy,
-                            textTransform: "uppercase", ...POPPINS,
-                          }}
-                        />
-                        {invalid.length > 0 && (
-                          <div style={{ color: tokens.blue, fontSize: 12, marginBottom: 8, ...POPPINS }}>
-                            {invalid.map((v) => `Invalid postcode: ${v}`).join(" · ")}
-                          </div>
-                        )}
-                        {entries.length > 0 && invalid.length === 0 && (
-                          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
-                            {entries.map((v) => (
-                              <span key={v} style={{
-                                display: "inline-flex", alignItems: "center", gap: 4,
-                                fontSize: 12, color: "#0F7B3F", background: "#E8F5EC",
-                                padding: "2px 8px", borderRadius: 999, ...POPPINS,
-                              }}>
-                                <IconCheck size={12} /> {v}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </>
-                    );
-                  })()}
-
-                  {ruleType === "advance_notice" && (
-                    <>
-                      <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Within X hours</label>
-                      <input
-                        type="number"
-                        min={1}
-                        value={ruleHours}
-                        onChange={(e) => setRuleHours(Number(e.target.value))}
-                        style={{
-                          width: "100%", height: 44, padding: "0 12px",
-                          border: "1px solid #E2E6ED", borderRadius: 12, fontSize: tokens.fontSize.md,
-                          marginTop: 6, marginBottom: 12, background: "#fff", color: tokens.navy, ...POPPINS,
-                        }}
-                      />
-                    </>
-                  )}
-
-                  <div style={{ display: "flex", gap: 8 }}>
-                    <div style={{ flex: 1 }}>
-                      <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Adjustment type</label>
-                      <select
-                        value={ruleAdjType}
-                        onChange={(e) => setRuleAdjType(e.target.value as AdjType)}
-                        style={{
-                          width: "100%", height: 44, padding: "0 12px",
-                          border: "1px solid #E2E6ED", borderRadius: 12, fontSize: tokens.fontSize.md,
-                          marginTop: 6, background: "#fff", color: tokens.navy, ...POPPINS,
-                        }}
-                      >
-                        <option value="flat">Flat amount (£)</option>
-                        <option value="percent">Percentage (%)</option>
-                      </select>
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <label style={{ fontSize: 12, color: "#6B7280", ...POPPINS }}>Adjustment value</label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={ruleAdjValue}
-                        onChange={(e) => setRuleAdjValue(Number(e.target.value))}
-                        style={{
-                          width: "100%", height: 44, padding: "0 12px",
-                          border: "1px solid #E2E6ED", borderRadius: 12, fontSize: tokens.fontSize.md,
-                          marginTop: 6, background: "#fff", color: tokens.navy, ...POPPINS,
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={addPricingRule}
-                    disabled={savingRule || hasInvalidPostcodes}
-                    className="w-full text-[14px] font-semibold text-white mt-4"
-                    style={{
-                      height: 48, borderRadius: 12, backgroundColor: tokens.navy, border: "none",
-                      opacity: savingRule || hasInvalidPostcodes ? 0.6 : 1,
-                      cursor: savingRule || hasInvalidPostcodes ? "not-allowed" : "pointer",
-                      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
-                      ...POPPINS,
-                    }}
-                  >
-                    <IconPlus size={16} /> {savingRule ? "Adding…" : "Add rule"}
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </SectionCard>
-
-        <Label>PUPILS</Label>
-        <SectionCard>
-          <MenuRow
-            icon={<IconClipboardList size={18} color="#1877D6" />}
-            iconBg="#E0F2FE"
-            label="Intake questions"
-            onClick={() => navigate({ to: "/intake-questions" })}
-            isFirst
-          />
-          <MenuRow
-            icon={<IconAlertTriangle size={18} color="#B45309" />}
-            iconBg="#FEF3C7"
-            label="No-show policy"
-            onClick={() => navigate({ to: "/no-show-policy" })}
-          />
-        </SectionCard>
-
-        <Label>MARKETING</Label>
-        <SectionCard>
-          <MenuRow
-            icon={<IconTag size={18} />}
-            iconBg="#EEF2F7"
-            label="Discount codes"
-            onClick={() => navigate({ to: "/discount-codes" })}
-            isFirst
-          />
-          <MenuRow
-            icon={<IconBuildingStore size={18} color="#52525B" />}
-            iconBg="#F4F4F5"
-            label="Edit marketplace tiles"
-            onClick={() => navigate({ to: "/marketplace/edit" })}
-          />
-        </SectionCard>
-
-        <Label>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            <IconWorld size={14} color="#6B7280" /> EVERYDRIVER
-          </span>
-        </Label>
-        <SectionCard>
-          {/* Row 1: List on marketplace toggle */}
-          <div
-            className="px-4 py-3 flex items-start gap-3"
-          >
-            <div
-              className="flex items-center justify-center"
-              style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 12, backgroundColor: "#DBEAFE", flexShrink: 0 }}
-            >
-              <IconWorld size={18} color="#1877D6" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                List me on EveryDriver
-              </div>
-              <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
-                Your courses appear in EveryDriver search results and your mini website is publicly visible
-              </div>
-            </div>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={publishToMarketplace}
-              aria-label="List me on EveryDriver"
-              onClick={togglePublishToMarketplace}
-              style={{
-                width: 44,
-                height: 26,
-                borderRadius: 12,
-                background: publishToMarketplace ? "#1877D6" : "#D1D5DB",
-                border: "none",
-                position: "relative",
-                cursor: "pointer",
-                flexShrink: 0,
-                transition: "background 0.2s",
-                marginTop: 4,
-              }}
-            >
-              <span
-                style={{
-                  position: "absolute",
-                  top: 3,
-                  left: publishToMarketplace ? 21 : 3,
-                  width: 20,
-                  height: 20,
-                  borderRadius: "50%",
-                  background: "#fff",
-                  transition: "left 0.2s",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
-                }}
-              />
-            </button>
-          </div>
-
-          {/* Row 2: Featured status */}
-          <div
-            className="px-4 py-3 flex items-center gap-3"
-            style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2" }}
-          >
-            <div
-              className="flex items-center justify-center"
-              style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 12, backgroundColor: "#FEF3C7", flexShrink: 0 }}
-            >
-              <IconCrown size={18} color="#B45309" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>
-                Featured status
-              </div>
-              {featuredListing && featuredUntil && new Date(featuredUntil) > new Date() ? (
-                <span
-                  className="inline-flex items-center gap-1 mt-1"
-                  style={{
-                    fontSize: 12,
-                    color: "#0F7B3F",
-                    background: "#E8F5EC",
-                    padding: "2px 8px",
-                    borderRadius: 999,
-                    ...POPPINS,
-                  }}
-                >
-                  Featured until{" "}
-                  {new Date(featuredUntil).toLocaleDateString("en-GB", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </span>
-              ) : (
-                <div className="mt-1 flex items-center gap-2 flex-wrap">
-                  <span
-                    style={{
-                      fontSize: 12,
-                      color: "#6B7280",
-                      background: "#F4F4F5",
-                      padding: "2px 8px",
-                      borderRadius: 999,
-                      ...POPPINS,
-                    }}
-                  >
-                    Not featured
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => navigate({ to: "/marketplace/apply" })}
-                    style={{
-                      background: "transparent",
-                      border: "none",
-                      padding: 0,
-                      color: tokens.blue,
-                      fontSize: 12,
-                      fontWeight: tokens.fontWeight.semibold,
-                      cursor: "pointer",
-                      ...POPPINS,
-                    }}
-                  >
-                    Apply to get featured →
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Row 3: View profile link */}
-          <button
-            type="button"
-            onClick={() => {
-              if (!appSlug) {
-                toast.error("Your EveryDriver profile is not set up yet");
-                return;
-              }
-              window.open(`https://everydriver.co.uk/i/${appSlug}`, "_blank", "noopener,noreferrer");
-            }}
-            className="w-full flex items-center gap-3 px-4 py-3 text-left"
-            style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2" }}
-          >
-            <div
-              className="flex items-center justify-center"
-              style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 12, backgroundColor: "#DBEAFE", flexShrink: 0 }}
-            >
-              <IconWorld size={18} color="#1877D6" />
-            </div>
-            <span className="flex-1 text-[14px] text-[#0B1F3A]" style={POPPINS}>
-              View my EveryDriver profile
-            </span>
-            <IconChevronRight size={18} color="#6B7280" />
-          </button>
-        </SectionCard>
-
-        {biometricAvailable && (
-          <>
-            <Label>SECURITY</Label>
-            <div
-              style={{
-                background: "#fff",
-                borderRadius: 16,
-                border: "1px solid #E4E8EF",
-                overflow: "hidden",
-                marginBottom: 16,
-              }}
-            >
-              <div className="flex items-center gap-3" style={{ padding: "14px 16px" }}>
-                <div
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 999,
-                    background: "#EFF6FF",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                  }}
-                >
-                  <IconFingerprint size={20} color="#1877D6" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-semibold text-[#0B1F3A]" style={POPPINS}>
-                    Face ID / Touch ID
-                  </div>
-                  <div className="text-[11px] text-[#9CA3AF]" style={{ marginTop: 2, ...POPPINS }}>
-                    Lock EDP after 5 minutes in background
-                  </div>
-                </div>
-                <ToggleSwitch
-                  checked={biometricLockEnabled}
-                  onChange={(v) => { void toggleBiometricLock(v); }}
-                />
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* ============ NEW SECTIONS ============ */}
-        <Label>POLICY & AUTOMATION</Label>
-
-        {/* Section 1 — No-show & cancellation policy */}
-        <SectionCard>
-          <MenuRow
-            icon={<IconAlertTriangle color="#CC2229" />}
-            iconBg="#FCEBEB"
-            label="No-show & cancellation policy"
-            subLabel="Set fees for late cancellations and no-shows"
-            expanded={expanded === "noshow"}
-            onClick={() => setExpanded(expanded === "noshow" ? null : "noshow")}
-            isFirst
-            isLast
-          />
-          {expanded === "noshow" && (
-            <div className="px-4 pb-4 flex flex-col" style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
-              {/* No-show charge */}
-              <div className="text-[14px] text-[#0B1F3A]" style={POPPINS}>No-show charge</div>
-              <div className="mt-2">
-                <SelectBox
-                  value={String(noShowPercent)}
-                  onChange={(v) => setNoShowPercent(Number(v))}
-                  options={[0, 25, 50, 75, 100].map((p) => ({ value: String(p), label: `${p}% of lesson value` }))}
-                />
-              </div>
-              <div className="text-[12px] text-[#9CA3AF] mt-1" style={POPPINS}>Charged when pupil does not attend without notice</div>
-
-              {/* Cancellation tiers */}
-              <div className="text-[13px] font-semibold text-[#0B1F3A]" style={{ ...POPPINS, marginTop: 16, marginBottom: 8 }}>Cancellation policy</div>
-              <div className="text-[12px] text-[#9CA3AF]" style={{ ...POPPINS, marginBottom: 12 }}>Set different charges based on how much notice the pupil gives:</div>
-
-              {cancellationTiers.map((tier, i) => (
-                <div key={i} className="flex items-center" style={{ gap: 8, padding: "12px 16px", background: "#F7FAFC", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, marginBottom: 6 }}>
-                  <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>Less than</span>
-                  <input
-                    type="number"
-                    min={1}
-                    value={tier.hours}
-                    onChange={(e) => {
-                      const v = Math.max(1, Number(e.target.value) || 1);
-                      setCancellationTiers((prev) => prev.map((t, idx) => idx === i ? { ...t, hours: v } : t));
-                    }}
-                    className="bg-white"
-                    style={{ width: 60, textAlign: "center", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, padding: "6px 16px", fontSize: tokens.fontSize.base, color: tokens.navy, ...POPPINS }}
-                  />
-                  <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>hours notice</span>
-                  <span className="text-[12px]" style={{ color: tokens.textMuted, ...POPPINS }}>→</span>
-                  <select
-                    value={String(tier.charge_percent)}
-                    onChange={(e) => {
-                      const v = Number(e.target.value);
-                      setCancellationTiers((prev) => prev.map((t, idx) => idx === i ? { ...t, charge_percent: v } : t));
-                    }}
-                    className="bg-white"
-                    style={{ border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, padding: "6px 16px", fontSize: tokens.fontSize.base, color: tokens.navy, ...POPPINS }}
-                  >
-                    {[0, 25, 50, 75, 100].map((p) => <option key={p} value={p}>{p}</option>)}
-                  </select>
-                  <span className="text-[12px]" style={{ color: "#6B7280", ...POPPINS }}>% charge</span>
-                  <div style={{ flex: 1 }} />
-                  <button
-                    type="button"
-                    aria-label="Remove tier"
-                    onClick={() => setCancellationTiers((prev) => prev.filter((_, idx) => idx !== i))}
-                    style={{ background: "none", border: "none", color: tokens.red, fontSize: tokens.fontSize.lg, cursor: "pointer", padding: 0, lineHeight: 1 }}
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={() => setCancellationTiers((prev) => [...prev, { hours: 72, charge_percent: 25 }])}
-                className="text-[12px] font-semibold"
-                style={{ color: tokens.blue, background: "none", border: "none", padding: 0, marginTop: 6, alignSelf: "flex-start", cursor: "pointer", ...POPPINS }}
-              >
-                + Add tier
-              </button>
-
-              {/* Auto-charge toggle */}
-              <div className="flex items-start gap-3" style={{ marginTop: 16 }}>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[14px] text-[#0B1F3A]" style={POPPINS}>Auto-apply charges on cancellation</div>
-                  <div className="text-[12px] text-[#9CA3AF] mt-1" style={POPPINS}>Automatically calculate and add the charge when cancelling</div>
-                </div>
-                <ToggleSwitch checked={autoChargeNoShow} onChange={setAutoChargeNoShow} />
-              </div>
-
-              <div style={{ marginTop: 12 }}>
-                <SaveRow onClick={() => saveReminderPrefs({ cancellation_tiers: JSON.stringify(cancellationTiers), no_show_charge_percent: noShowPercent, auto_charge_no_show: autoChargeNoShow })} />
-              </div>
-            </div>
-          )}
-        </SectionCard>
-
-        {/* Section 2 — Lesson reminders (automation) */}
-        <SectionCard>
-          <MenuRow
-            icon={<IconBell color="#1877D6" />}
-            iconBg="#E0F4FF"
-            label="Lesson reminders"
-            subLabel="Automated reminders for lessons and payments"
-            expanded={expanded === "reminders2"}
-            onClick={() => setExpanded(expanded === "reminders2" ? null : "reminders2")}
-            isFirst
-            isLast
-          />
-          {expanded === "reminders2" && (
-            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
-              <div className="flex items-start gap-3">
-                <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Send lesson reminders to pupils</div>
-                </div>
-                <ToggleSwitch checked={reminderEnabled} onChange={setReminderEnabled} />
-              </div>
-              {reminderEnabled && (
-                <div>
-                  <FieldLabel>Send</FieldLabel>
-                  <div className="flex items-center gap-2">
-                    <SelectBox value={String(reminderHoursBefore)} onChange={(v) => setReminderHoursBefore(Number(v))}
-                      options={[1,2,4,8,12,24,48].map((h) => ({ value: String(h), label: `${h} hrs` }))} />
-                    <span className="text-[13px] text-[#6B7280]" style={POPPINS}>before lesson</span>
-                  </div>
-                </div>
-              )}
-              <div className="flex items-start gap-3 pt-2">
-                <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Chase outstanding payments</div>
-                </div>
-                <ToggleSwitch checked={paymentReminderEnabled} onChange={setPaymentReminderEnabled} />
-              </div>
-              {paymentReminderEnabled && (
-                <div>
-                  <FieldLabel>Maximum reminders</FieldLabel>
-                  <SelectBox value={String(paymentChaseMax)} onChange={(v) => setPaymentChaseMax(Number(v))}
-                    options={[
-                      { value: "1", label: "1" },
-                      { value: "2", label: "2" },
-                      { value: "3", label: "3" },
-                      { value: "5", label: "5" },
-                      { value: "0", label: "Unlimited" },
-                    ]} />
-                </div>
-              )}
-              <div className="flex items-start gap-3 pt-2">
-                <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Daily morning briefing</div>
-                  <div className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>Receive today's lesson summary at 7am</div>
-                </div>
-                <ToggleSwitch checked={morningBriefing} onChange={setMorningBriefing} />
-              </div>
-              <SaveRow onClick={() => saveReminderPrefs({ reminder_enabled: reminderEnabled, reminder_hours_before: reminderHoursBefore, payment_reminder_enabled: paymentReminderEnabled, payment_chase_max_reminders: paymentChaseMax, morning_briefing: morningBriefing, auto_track_lessons: autoTrackLessons })} />
-            </div>
-          )}
-        </SectionCard>
-
-        {/* Section 3 — Deposit settings */}
-        <SectionCard>
-          <MenuRow
-            icon={<IconCurrencyPound color="#16A34A" />}
-            iconBg="#DCFCE7"
-            label="Deposit settings"
-            subLabel="Require deposits when pupils book courses"
-            expanded={expanded === "deposit"}
-            onClick={() => setExpanded(expanded === "deposit" ? null : "deposit")}
-            isFirst
-            isLast
-          />
-          {expanded === "deposit" && (
-            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
-              <div className="flex items-start gap-3">
-                <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Require a deposit to book</div>
-                </div>
-                <ToggleSwitch checked={depositEnabled} onChange={setDepositEnabled} />
-              </div>
-              {depositEnabled && (
-                <>
-                  <FieldLabel>Deposit amount</FieldLabel>
-                  <PoundInput value={depositAmount} onChange={setDepositAmount} />
-                  <FieldLabel>Payment deadline</FieldLabel>
-                  <SelectBox value={String(depositDeadlineDays)} onChange={(v) => setDepositDeadlineDays(Number(v))}
-                    options={[
-                      { value: "1", label: "24 hours" },
-                      { value: "2", label: "48 hours" },
-                      { value: "3", label: "72 hours" },
-                      { value: "7", label: "1 week" },
-                      { value: "14", label: "2 weeks" },
-                      { value: "30", label: "1 month" },
-                    ]} />
-                </>
-              )}
-              <SaveRow onClick={() => saveInstructorPatch({ deposit_enabled: depositEnabled, deposit_amount: depositAmount, deposit_deadline_days: depositDeadlineDays })} />
-            </div>
-          )}
-        </SectionCard>
-
-        {/* Section 4 — Payment options */}
-        <SectionCard>
-          <MenuRow
-            icon={<IconCreditCard color="#7C3AED" />}
-            iconBg="#EDE9FE"
-            label="Payment options"
-            subLabel="Which payment methods you accept"
-            expanded={expanded === "paymethods"}
-            onClick={() => setExpanded(expanded === "paymethods" ? null : "paymethods")}
-            isFirst
-            isLast
-          />
-          {expanded === "paymethods" && (
-            <div className="px-4 pb-4 flex flex-col gap-3" style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
-              <FieldLabel>Accepted payment methods</FieldLabel>
-              <div className="flex flex-col gap-2">
-                {PAYMENT_METHODS.map((m) => {
-                  const checked = acceptedPaymentMethods.includes(m);
-                  return (
-                    <label key={m} className="flex items-center gap-3 cursor-pointer" style={POPPINS}>
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => {
-                          setAcceptedPaymentMethods((prev) =>
-                            prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m]
-                          );
-                        }}
-                        style={{ width: 18, height: 18 }}
-                      />
-                      <span className="text-[14px] text-[#0B1F3A]">{m}</span>
-                    </label>
-                  );
-                })}
-              </div>
-              <FieldLabel>Payment due</FieldLabel>
-              <SelectBox value={paymentTerms} onChange={setPaymentTerms}
-                options={["Before lesson", "Same day", "Within 24hrs", "Within 7 days", "Monthly"].map((v) => ({ value: v, label: v }))} />
-              <SaveRow onClick={() => saveInstructorPatch({ accepted_payment_methods: acceptedPaymentMethods, payment_terms: paymentTerms })} />
-            </div>
-          )}
-        </SectionCard>
-
-        {/* Section 4b — Square (standalone tile) */}
-        <SectionCard>
-          <MenuRow
-            icon={<img src={squareLogo.url} alt="Square" style={{ width: 22, height: 22, objectFit: "contain" }} />}
-            iconBg="#FFFFFF"
-
-            label="Square"
-            subLabel={squareConnected ? "Connected — taking card payments" : "Set up card payments"}
-            value={squareConnected ? "Connected" : undefined}
-            onClick={() => navigate({ to: "/square" as never })}
-            isFirst
-            isLast
-          />
-        </SectionCard>
-
-        {/* Section 4c — Payment methods (Square / PayPal / Bank) */}
-        <SectionCard>
-          <MenuRow
-            icon={<IconCreditCard color="#0F52A8" />}
-            iconBg="#E6F0FB"
-            label="Payment methods"
-            subLabel={
-              activePaymentMethod === "paypal"
-                ? "PayPal.me is your active method"
-                : activePaymentMethod === "bank"
-                  ? "Bank transfer is your active method"
-                  : "Square is your active method"
-            }
-            expanded={expanded === "paymethodsetup"}
-            onClick={() => setExpanded(expanded === "paymethodsetup" ? null : "paymethodsetup")}
-            isFirst
-            isLast
-          />
-          {expanded === "paymethodsetup" && (
-            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
-              {/* Active method pills */}
-              <FieldLabel>Active payment method</FieldLabel>
-              <div className="grid grid-cols-3 gap-2">
-                {([
-                  { k: "square" as const, label: "Square" },
-                  { k: "paypal" as const, label: "PayPal" },
-                  { k: "bank" as const, label: "Bank" },
-                ]).map((opt) => {
-                  const active = activePaymentMethod === opt.k;
-                  return (
-                    <button
-                      key={opt.k}
-                      type="button"
-                      onClick={() => {
-                        setActivePaymentMethod(opt.k);
-                        void saveInstructorPatch({ active_payment_method: opt.k });
-                      }}
-                      className="rounded-full py-2 text-[13px] font-semibold border"
-                      style={{
-                        backgroundColor: active ? "#0B1F3A" : "#FFFFFF",
-                        color: active ? "#FFFFFF" : "#6B7280",
-                        borderColor: active ? "#0B1F3A" : "#E2E8F0",
-                        ...POPPINS,
-                      }}
-                    >
-                      {opt.label}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Square */}
-              <div style={{ borderTop: "1px solid #EFEFF2", paddingTop: 12 }}>
-                <FieldLabel>Square</FieldLabel>
-                <div className="flex items-center justify-between mt-1">
-                  <span className="text-[13px] text-[#6B7280]" style={POPPINS}>
-                    {squareConnected ? "Connected — taking card payments" : "Not connected"}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => navigate({ to: "/square" as never })}
-                    className="rounded-full px-4 py-2 text-[13px] font-semibold"
-                    style={{ background: "#0B1F3A", color: "#fff", ...POPPINS }}
-                  >
-                    {squareConnected ? "Manage" : "Connect"}
-                  </button>
-                </div>
-              </div>
-
-              {/* PayPal */}
-              <div style={{ borderTop: "1px solid #EFEFF2", paddingTop: 12 }}>
-                <FieldLabel>PayPal.me username</FieldLabel>
-                <div
-                  className="flex items-center"
-                  style={{ border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, overflow: "hidden" }}
-                >
-                  <span className="text-[14px] text-[#6B7280] pl-3" style={POPPINS}>paypal.me/</span>
-                  <input
-                    type="text"
-                    value={paypalUsername}
-                    onChange={(e) => setPaypalUsername(e.target.value.replace(/^.*paypal\.me\//i, "").trim())}
-                    placeholder="yourname"
-                    className="flex-1 text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "12px 12px 12px 2px", border: "none", outline: "none", background: "transparent", ...POPPINS }}
-                  />
-                </div>
-                <p className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
-                  Pupils pay you directly via PayPal — no fees from EDP
-                </p>
-                <SaveRow onClick={() => saveInstructorPatch({ paypal_me_username: paypalUsername.trim() || null })} />
-              </div>
-
-              {/* Bank transfer */}
-              <div style={{ borderTop: "1px solid #EFEFF2", paddingTop: 12 }}>
-                <FieldLabel>Account name</FieldLabel>
-                <input
-                  type="text"
-                  value={bankAccountName}
-                  onChange={(e) => setBankAccountName(e.target.value)}
-                  placeholder="Mr A Instructor"
-                  className="w-full text-[14px] text-[#0B1F3A]"
-                  style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }}
-                />
-                <div className="h-3" />
-                <FieldLabel>Sort code</FieldLabel>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={bankSortCode}
-                  onChange={(e) => {
-                    const digits = e.target.value.replace(/\D/g, "").slice(0, 6);
-                    const parts = digits.match(/.{1,2}/g) ?? [];
-                    setBankSortCode(parts.join("-"));
-                  }}
-                  placeholder="00-00-00"
-                  className="w-full text-[14px] text-[#0B1F3A]"
-                  style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }}
-                />
-                <div className="h-3" />
-                <FieldLabel>Account number</FieldLabel>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={bankAccountNumber}
-                  onChange={(e) => setBankAccountNumber(e.target.value.replace(/\D/g, "").slice(0, 8))}
-                  placeholder="12345678"
-                  className="w-full text-[14px] text-[#0B1F3A]"
-                  style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }}
-                />
-                <p className="text-[12px] text-[#6B7280] mt-1" style={POPPINS}>
-                  Pupils pay via bank transfer — show your details on payment requests
-                </p>
-                <SaveRow
-                  onClick={() =>
-                    saveInstructorPatch({
-                      bank_account_name: bankAccountName.trim() || null,
-                      bank_sort_code: bankSortCode.trim() || null,
-                      bank_account_number: bankAccountNumber.trim() || null,
-                    })
-                  }
-                />
-              </div>
-            </div>
-          )}
-        </SectionCard>
-
-
-        {/* Section 5 — Tax & expenses */}
-        <SectionCard>
-          <MenuRow
-            icon={<IconCalculator color="#B45309" />}
-            iconBg="#FEF3C7"
-            label="Tax & expenses"
-            subLabel="Tax code, vehicle costs and allowable deductions"
-            expanded={expanded === "tax"}
-            onClick={() => setExpanded(expanded === "tax" ? null : "tax")}
-            isFirst
-            isLast
-          />
-          {expanded === "tax" && (
-            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
-              <FieldLabel>Tax code</FieldLabel>
-              <input
-                type="text"
-                value={taxCode}
-                onChange={(e) => setTaxCode(e.target.value.toUpperCase())}
-                className="w-full text-[14px] text-[#0B1F3A]"
-                style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }}
-              />
-              <FieldLabel>Vehicle type</FieldLabel>
-              <div className="flex gap-2">
-                {[
-                  { key: false, label: "Petrol/Diesel" },
-                  { key: true, label: "Electric" },
-                ].map((opt) => (
-                  <button
-                    key={String(opt.key)}
-                    type="button"
-                    onClick={() => setIsElectric(opt.key)}
-                    className="flex-1 text-[13px]"
-                    style={{
-                      padding: "9px 16px",
-                      borderRadius: tokens.radiusCard,
-                      border: "1px solid #E2E6ED",
-                      background: isElectric === opt.key ? "#1877D6" : "#FFFFFF",
-                      color: isElectric === opt.key ? "#FFFFFF" : "#0B1F3A",
-                      fontWeight: tokens.fontWeight.medium,
-                      ...POPPINS,
-                    }}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-              {!isElectric ? (
-                <>
-                  <FieldLabel>Vehicle MPG</FieldLabel>
-                  <input type="number" value={vehicleMpg} onChange={(e) => setVehicleMpg(Number(e.target.value) || 0)}
-                    className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
-                  <FieldLabel>Fuel cost per litre (£)</FieldLabel>
-                  <input type="number" step="0.01" value={fuelCostPerLitre} onChange={(e) => setFuelCostPerLitre(Number(e.target.value) || 0)}
-                    className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
-                </>
-              ) : (
-                <>
-                  <FieldLabel>Battery capacity (kWh)</FieldLabel>
-                  <input type="number" value={batteryKwh} onChange={(e) => setBatteryKwh(Number(e.target.value) || 0)}
-                    className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
-                  <FieldLabel>Electricity cost per kWh (£)</FieldLabel>
-                  <input type="number" step="0.01" value={electricityCostPerKwh} onChange={(e) => setElectricityCostPerKwh(Number(e.target.value) || 0)}
-                    className="w-full text-[14px] text-[#0B1F3A]"
-                    style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }} />
-                </>
-              )}
-              <FieldLabel>Allowable deductions</FieldLabel>
-              <div className="flex flex-col gap-2">
-                {DEDUCTIONS.map((d) => {
-                  const checked = claimedDeductions.includes(d);
-                  return (
-                    <label key={d} className="flex items-center gap-3 cursor-pointer" style={POPPINS}>
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => {
-                          setClaimedDeductions((prev) =>
-                            prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]
-                          );
-                        }}
-                        style={{ width: 18, height: 18 }}
-                      />
-                      <span className="text-[14px] text-[#0B1F3A]">{d}</span>
-                    </label>
-                  );
-                })}
-              </div>
-              <SaveRow onClick={() => saveInstructorPatch({ tax_code: taxCode, vehicle_mpg: vehicleMpg, fuel_cost_per_litre: fuelCostPerLitre, is_electric: isElectric, electricity_cost_per_kwh: electricityCostPerKwh, battery_kwh: batteryKwh, claimed_deductions: claimedDeductions })} />
-            </div>
-          )}
-        </SectionCard>
-
-        {/* Section 6 — Referral programme */}
-        <SectionCard>
-          <MenuRow
-            icon={<IconGift color="#00B5A5" />}
-            iconBg="#CCFBF1"
-            label="Referral programme"
-            subLabel="Reward pupils who refer their friends"
-            expanded={expanded === "referral"}
-            onClick={() => setExpanded(expanded === "referral" ? null : "referral")}
-            isFirst
-            isLast
-          />
-          {expanded === "referral" && (
-            <div className="px-4 pb-4 flex flex-col gap-4" style={{ borderTop: "1px solid #EFEFF2", paddingTop: 14 }}>
-              <div className="flex items-start gap-3">
-                <div className="flex-1 min-w-0">
-                  <div className="text-[14px] font-medium text-[#0B1F3A]" style={POPPINS}>Enable referral programme</div>
-                </div>
-                <ToggleSwitch
-                  checked={referralEnabled}
-                  onChange={(next) => {
-                    setReferralEnabled(next);
-                    if (next && !referralCode) setReferralCode(generateReferralCode());
-                  }}
-                />
-              </div>
-              {referralEnabled && (
-                <>
-                  <FieldLabel>Your referral code</FieldLabel>
-                  <div className="flex gap-2">
-                    <input
-                      readOnly
-                      value={referralCode}
-                      className="flex-1 text-[14px] text-[#0B1F3A] font-mono"
-                      style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: "#F7FAFC", ...POPPINS }}
-                    />
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        try {
-                          await navigator.clipboard.writeText(referralCode);
-                          toast.success("Referral code copied");
-                        } catch { toast.error("Copy failed"); }
-                      }}
-                      className="flex items-center gap-1 text-[13px]"
-                      style={{ padding: "12px 16px", borderRadius: tokens.radiusCard, background: tokens.canvas, color: tokens.navy, border: "none", cursor: "pointer", ...POPPINS }}
-                    >
-                      <IconCopy size={14} /> IconCopy
-                    </button>
-                  </div>
-                  <FieldLabel>Discount amount</FieldLabel>
-                  <div className="flex gap-2">
-                    <input
-                      type="number"
-                      value={referralDiscountAmount}
-                      onChange={(e) => setReferralDiscountAmount(Number(e.target.value) || 0)}
-                      className="flex-1 text-[14px] text-[#0B1F3A]"
-                      style={{ padding: "12px 16px", border: "1px solid #E2E6ED", borderRadius: tokens.radiusCard, background: tokens.white, ...POPPINS }}
-                    />
-                    <div className="flex" style={{ border: "1px solid #E2E6ED", borderRadius: 8, overflow: "hidden" }}>
-                      {(["fixed", "percent"] as const).map((t) => (
-                        <button
-                          key={t}
-                          type="button"
-                          onClick={() => setReferralDiscountType(t)}
-                          style={{
-                            padding: "10px 14px",
-                            background: referralDiscountType === t ? "#1877D6" : "#FFFFFF",
-                            color: referralDiscountType === t ? "#FFFFFF" : "#0B1F3A",
-                            border: "none",
-                            cursor: "pointer",
-                            fontWeight: tokens.fontWeight.medium,
-                            ...POPPINS,
-                          }}
-                        >
-                          {t === "fixed" ? "£ fixed" : "% off"}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-              <SaveRow onClick={() => saveInstructorPatch({ referral_enabled: referralEnabled, referral_discount_amount: referralDiscountAmount, referral_discount_type: referralDiscountType, referral_code: referralCode || null })} />
-            </div>
-          )}
-        </SectionCard>
-
-        <Label>LEGAL</Label>
-        <SectionCard>
-          <MenuRow
-            icon={<IconShield size={18} color="#1877D6" />}
-            iconBg="#E7F1FC"
-            label="Privacy Policy"
-            onClick={() => navigate({ to: "/privacy" })}
-            isFirst
-          />
-          <MenuRow
-            icon={<IconFileText size={18} color="#1877D6" />}
-            iconBg="#E7F1FC"
-            label="Terms of Service"
-            onClick={() => navigate({ to: "/terms" })}
-          />
-        </SectionCard>
-
-        <Label>SUPPORT</Label>
-        <SectionCard>
-          <MenuRow
-            icon={<IconHelpCircle size={18} color="#52525B" />}
-            iconBg="#F4F4F5"
-            label="Help"
-            onClick={() => navigate({ to: "/help" })}
-            isFirst
-          />
-          <MenuRow
-            icon={<IconShield size={18} color="#1877D6" />}
-            iconBg="#FEECEE"
-            label="Admin"
-            onClick={() => navigate({ to: "/admin" })}
-          />
-        </SectionCard>
-
-        <SectionCard>
-          <MenuRow
-            icon={<IconLogout color="#CC2229" />}
-            iconBg="#FCEBEB"
+            icon={<IconLogout size={18} color="#E53935" />}
+            iconBg="#FEE2E2"
             label="Sign out"
-            labelColor="#CC2229"
-            hideChevron
-            isFirst
+            subLabel="Log out of this account"
             onClick={() => setSignOutOpen(true)}
+            labelColor="#E53935"
+            hideChevron
+            isFirst={!isAdmin}
+            isLast
           />
         </SectionCard>
-
       </div>
 
       <ConfirmDialog
@@ -2733,10 +1080,10 @@ function MenuRow({
     isLast === undefined
       ? isFirst
         ? undefined
-        : { borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2" }
+        : { borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#F4F6F8" }
       : isLast
         ? undefined
-        : { borderBottomWidth: "1px", borderBottomStyle: "solid", borderBottomColor: "#EFEFF2" };
+        : { borderBottomWidth: "1px", borderBottomStyle: "solid", borderBottomColor: "#F4F6F8" };
 
   return (
     <button
@@ -2745,21 +1092,21 @@ function MenuRow({
       disabled={disabled}
       className={`w-full flex items-center text-left [&_svg]:!w-[17px] [&_svg]:!h-[17px] ${ROW_INTERACTION}`}
       style={{
-        gap: 14,
-        padding: "15px 16px",
+        gap: 12,
+        padding: "14px 16px",
         ...dividerStyle,
       }}
     >
       <div
         className="flex items-center justify-center"
-        style={{ width: 38, height: 38, minWidth: 38, minHeight: 38, borderRadius: 12, backgroundColor: iconBg, flexShrink: 0 }}
+        style={{ width: 34, height: 34, minWidth: 34, minHeight: 34, borderRadius: 8, backgroundColor: iconBg, flexShrink: 0 }}
       >
         {icon}
       </div>
       <div className="flex-1 min-w-0 flex flex-col">
         <span
           className="truncate flex items-center gap-2"
-          style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: labelColor ?? "#0B1F3A", ...POPPINS }}
+          style={{ fontSize: 15, fontWeight: tokens.fontWeight.medium, color: labelColor ?? "#0B2341", ...POPPINS }}
         >
           {label}
           {warning ? (
@@ -2780,7 +1127,7 @@ function MenuRow({
           <span
             className="truncate"
             title={warning}
-            style={{ fontSize: tokens.fontSize.sm, color: "#B45309", ...POPPINS, marginTop: 2 }}
+            style={{ fontSize: 12, color: "#B45309", ...POPPINS, marginTop: 2 }}
           >
             {warning}
           </span>
@@ -2788,7 +1135,7 @@ function MenuRow({
           <span
             className="truncate"
             title={subLabel}
-            style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, ...POPPINS, marginTop: 2 }}
+            style={{ fontSize: 12, color: "#536579", ...POPPINS, marginTop: 2 }}
           >
             {subLabel}
           </span>
@@ -2811,108 +1158,10 @@ function MenuRow({
         </span>
       ) : null}
       {hideChevron ? null : expanded ? (
-        <IconChevronDown size={15} color="#C7C7CC" />
+        <IconChevronDown size={18} color="#D1D5DB" />
       ) : (
-        <IconChevronRight size={15} color="#C7C7CC" />
+        <IconChevronRight size={18} color="#D1D5DB" />
       )}
-    </button>
-  );
-}
-
-function AccountRow({
-  icon,
-  iconBg,
-  label,
-  subLabel,
-  value,
-  onClick,
-  isFirst,
-  warning,
-  disabled,
-}: {
-  icon: React.ReactNode;
-  iconBg: string;
-  label: string;
-  subLabel?: string;
-  value?: string;
-  onClick: () => void;
-  isFirst?: boolean;
-  warning?: string;
-  disabled?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className={`w-full flex items-center text-left bg-white ${ROW_INTERACTION}`}
-      style={{
-        gap: 14,
-        padding: "15px 16px",
-        borderTop: isFirst ? undefined : "1px solid #EFEFF2",
-      }}
-    >
-      <div
-        className="flex items-center justify-center"
-        style={{ width: 38, height: 38, minWidth: 38, minHeight: 38, borderRadius: 12, backgroundColor: iconBg, flexShrink: 0 }}
-      >
-        {icon}
-      </div>
-      <div className="flex-1 min-w-0 flex flex-col">
-        <span
-          className="truncate flex items-center gap-2"
-          style={{ fontSize: tokens.fontSize.md, fontWeight: tokens.fontWeight.medium, color: tokens.navy, ...POPPINS }}
-        >
-          {label}
-          {warning ? (
-            <span
-              aria-hidden
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: 999,
-                background: "#B45309",
-                display: "inline-block",
-                flexShrink: 0,
-              }}
-            />
-          ) : null}
-        </span>
-        {warning ? (
-          <span
-            className="truncate"
-            title={warning}
-            style={{ fontSize: tokens.fontSize.sm, color: "#B45309", ...POPPINS, marginTop: 2 }}
-          >
-            {warning}
-          </span>
-        ) : subLabel ? (
-          <span
-            className="truncate"
-            title={subLabel}
-            style={{ fontSize: tokens.fontSize.sm, color: tokens.textMuted, ...POPPINS, marginTop: 2 }}
-          >
-            {subLabel}
-          </span>
-        ) : null}
-      </div>
-      {value ? (
-        <span
-          style={{
-            background: "#E6F1FB",
-            color: tokens.blue,
-            fontSize: tokens.fontSize.sm,
-            fontWeight: tokens.fontWeight.bold,
-            padding: "4px 10px",
-            borderRadius: 999,
-            marginRight: 4,
-            ...POPPINS,
-          }}
-        >
-          {value}
-        </span>
-      ) : null}
-      <IconChevronRight size={15} color="#C7C7CC" />
     </button>
   );
 }
@@ -2921,14 +1170,12 @@ function AccountRow({
 function Label({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="mb-2"
       style={{
-        marginTop: 24,
-        paddingLeft: 4,
-        fontSize: 12,
+        padding: "16px 16px 6px",
+        fontSize: 11,
         fontWeight: tokens.fontWeight.bold,
-        color: "#8A8A8E",
-        letterSpacing: "0.5px",
+        color: "#536579",
+        letterSpacing: "0.6px",
         textTransform: "uppercase",
         ...POPPINS,
       }}
@@ -2944,10 +1191,10 @@ function SectionCard({ children, style }: { children: React.ReactNode; style?: R
     <div
       style={{
         background: tokens.white,
-        borderRadius: tokens.radiusCard,
+        borderRadius: 12,
+        border: "1px solid #E4E8EF",
         overflow: "hidden",
-        boxShadow: "0 4px 0 #E4E4E8",
-        marginBottom: 20,
+        marginBottom: 4,
         ...style,
       }}
     >
@@ -2956,17 +1203,6 @@ function SectionCard({ children, style }: { children: React.ReactNode; style?: R
   );
 }
 
-
-function PlaceholderBlock({ text }: { text: string }) {
-  return (
-    <div
-      className="px-4 py-4 text-[13px] text-[#6B7280]"
-      style={{ borderTopWidth: "1px", borderTopStyle: "solid", borderTopColor: "#EFEFF2", ...POPPINS }}
-    >
-      {text}
-    </div>
-  );
-}
 
 // ============ Shared helpers for new settings sections ============
 
