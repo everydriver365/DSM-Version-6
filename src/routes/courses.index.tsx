@@ -203,7 +203,7 @@ function CoursesPage() {
 
   return (
     <DSMTopSheet title="Courses">
-      <div style={{ ...POPPINS }}>
+      <div style={{ ...POPPINS, background: "#F4F6F8", flex: 1 }}>
 
       {/* Action bar */}
       <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 16px" }}>

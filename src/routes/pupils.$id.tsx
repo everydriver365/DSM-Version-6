@@ -1382,7 +1382,7 @@ function PupilDetailPage() {
 
   return (
     <DSMTopSheet title={pupil?.name ?? "Pupil"} onBack={() => goBack('/pupils')}>
-      <div className="mx-auto w-full md:max-w-3xl md:px-4 md:pt-4">
+      <div className="mx-auto w-full md:max-w-3xl md:px-4 md:pt-4" style={{ background: "#F4F6F8", flex: 1 }}>
         <div className="px-4">
 
         {/* Identity card */}
