@@ -313,10 +313,10 @@ function GlobalMenu() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || !mounted) return;
       const email = user.email ?? "";
-      const { data } = await supabase.from("instructors").select("name, profile_image_url").eq("id", user.id).limit(1).single();
+      const { data } = await supabase.from("instructors").select("name, profile_image_url, website_tier").eq("id", user.id).limit(1).single();
       if (mounted) {
         const resolvedName = data?.name ?? "Instructor";
-        setProfile({ name: resolvedName, email, profile_image_url: data?.profile_image_url ?? null });
+        setProfile({ name: resolvedName, email, profile_image_url: data?.profile_image_url ?? null, website_tier: data?.website_tier ?? null });
         // Share the already-fetched name so the header avatar badge needs no extra query.
         try { localStorage.setItem("dsm-instructor-name", resolvedName); } catch { /* ignore */ }
         window.dispatchEvent(new CustomEvent("dsm-instructor-name", { detail: resolvedName }));
