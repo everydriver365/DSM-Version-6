@@ -498,6 +498,53 @@ function GlobalMenu() {
         <div style={{ flex: 1, background: "#fff", display: "flex", flexDirection: "column" }}>
           <button
             type="button"
+            onClick={() => go("/subscription")}
+            style={{
+              width: "100%",
+              textAlign: "left",
+              padding: "14px 16px",
+              background: "none",
+              border: "none",
+              borderTop: "1px solid #E4E8EF",
+              borderBottom: "1px solid #E4E8EF",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              cursor: "pointer",
+            }}
+          >
+            <span
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: 8,
+                background: "#EAF5FC",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <IconCrown size={18} stroke={1.8} color="#2C97DE" />
+            </span>
+            <span style={{ flex: 1, fontSize: 14, fontWeight: tokens.fontWeight.semibold, color: "#0B2341" }}>My Plan</span>
+            <span
+              style={{
+                background: "#2C97DE",
+                color: "#fff",
+                fontSize: 10,
+                fontWeight: tokens.fontWeight.bold,
+                padding: "2px 8px",
+                borderRadius: 999,
+                textTransform: "capitalize",
+              }}
+            >
+              {({ free: "Free", website: "Essential", pro: "Pro", managed: "Max" } as Record<string, string>)[profile?.website_tier ?? "free"] ?? "Free"}
+            </span>
+            <IconChevronRight size={18} stroke={1.5} color="#D1D5DB" />
+          </button>
+          <button
+            type="button"
             onClick={() => go("/settings")}
             style={{
               width: "100%",
