@@ -1489,6 +1489,8 @@ function HomePage() {
   }, []);
 
   const [addLessonOpen, setAddLessonOpen] = useState(false);
+  const [quickAddOpen, setQuickAddOpen] = useState(false);
+
   const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
   const [addExpenseOpen, setAddExpenseOpen] = useState(false);
   const [logMileageOpen, setLogMileageOpen] = useState(false);
