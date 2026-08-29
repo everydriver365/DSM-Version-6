@@ -181,9 +181,12 @@ export function ProRadioPlayer() {
           {/* Header */}
           <div
             style={{
+              position: "sticky",
+              top: 0,
+              zIndex: 30,
               background: "#0B2341",
-              padding: "20px 16px 16px",
-              paddingTop: "calc(20px + max(env(safe-area-inset-top), 0px))",
+              marginTop: "calc(-1 * env(safe-area-inset-top, 0px))",
+              padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",

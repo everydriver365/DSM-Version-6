@@ -186,6 +186,20 @@ function formatDateSeparator(iso: string) {
   return d.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short" });
 }
 
+type DateGroup = "Today" | "Yesterday" | "This week" | "Older";
+
+function conversationGroup(iso: string): DateGroup {
+  const d = new Date(iso);
+  const now = new Date();
+  if (d.toDateString() === now.toDateString()) return "Today";
+  const y = new Date(now);
+  y.setDate(now.getDate() - 1);
+  if (d.toDateString() === y.toDateString()) return "Yesterday";
+  const diffDays = (now.getTime() - d.getTime()) / 86400000;
+  if (diffDays < 7) return "This week";
+  return "Older";
+}
+
 function MessagesIndexPage() {
   const navigate = useNavigate();
   const { jobOfferId: jobOfferIdParam } = Route.useSearch();
@@ -1107,7 +1121,7 @@ function MessagesIndexPage() {
         display: "flex",
         flexDirection: "column",
         minHeight: 0,
-        background: NAVY,
+        background: "#F4F6F8",
         overflow: "hidden",
       }}
     >
@@ -1201,7 +1215,7 @@ function MessagesIndexPage() {
             flex: 1,
             minHeight: 0,
             marginTop: -18,
-            background: tokens.white,
+            background: "#F4F6F8",
             borderRadius: "16px 16px 0 0",
             overflowY: "auto",
             overflowX: "hidden",
@@ -1396,46 +1410,49 @@ function MessagesIndexPage() {
                 </div>
               </div>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ display: "flex", flexDirection: "column", padding: "0 16px" }}>
                 {(() => {
-                  const today: InboxItem[] = [];
-                  const earlier: InboxItem[] = [];
-                  const now = new Date();
+                  const groups: Record<DateGroup, InboxItem[]> = {
+                    Today: [],
+                    Yesterday: [],
+                    "This week": [],
+                    Older: [],
+                  };
                   for (const item of visibleItems) {
-                    const d = new Date(item.ts);
-                    if (d.toDateString() === now.toDateString()) today.push(item);
-                    else earlier.push(item);
+                    const g = conversationGroup(item.ts);
+                    groups[g].push(item);
                   }
-                  const sections = [
-                    { label: "Today", items: today },
-                    { label: "Earlier", items: earlier },
-                  ] as const;
+                  const sections: { label: DateGroup; items: InboxItem[] }[] = [
+                    { label: "Today", items: groups["Today"] },
+                    { label: "Yesterday", items: groups["Yesterday"] },
+                    { label: "This week", items: groups["This week"] },
+                    { label: "Older", items: groups["Older"] },
+                  ];
                   return (
                     <>
                       {sections.map(
                         (s, sIdx) =>
                           s.items.length > 0 && (
-                              <div key={s.label}>
-                                <div
-                                  style={{
-                                    fontSize: 11,
-                                    fontWeight: 500,
-                                    textTransform: "uppercase",
-                                    letterSpacing: "0.3px",
-                                    color: "#6E6E73",
-                                    padding: `${sIdx === 0 ? 4 : 12}px 16px 8px`,
-                                    fontFamily: "Poppins, sans-serif",
-                                  }}
-                                >
-                                  {s.label}
-                                </div>
+                            <div key={s.label}>
+                              <div
+                                style={{
+                                  fontSize: 11,
+                                  fontWeight: 700,
+                                  textTransform: "uppercase",
+                                  letterSpacing: "0.6px",
+                                  color: "#536579",
+                                  padding: sIdx === 0 ? "8px 0 6px" : "16px 0 6px",
+                                  fontFamily: "Poppins, sans-serif",
+                                }}
+                              >
+                                {s.label}
+                              </div>
                               <div style={{ display: "flex", flexDirection: "column" }}>
-                                {s.items.map((item, idx) => (
+                                {s.items.map((item) => (
                                   <InboxRow
                                     key={item.key}
                                     item={item}
                                     muted={muted.has(item.key)}
-                                    isLast={idx === s.items.length - 1}
                                     onMenu={() => setMenuItem(item)}
                                     onArchive={() => toggleArchive(item.key)}
                                   />
@@ -1729,16 +1746,18 @@ interface InboxItem {
 const SWIPE_ACTION_W = 76;
 const SWIPE_OPEN_DX = -(SWIPE_ACTION_W * 2);
 
+function firstInitial(name?: string | null) {
+  return (name || "").trim()[0]?.toUpperCase() || "?";
+}
+
 function InboxRow({
   item,
   muted,
-  isLast,
   onMenu,
   onArchive,
 }: {
   item: InboxItem;
   muted: boolean;
-  isLast: boolean;
   onMenu: () => void;
   onArchive: () => void;
 }) {
@@ -1785,20 +1804,6 @@ function InboxRow({
     applyDx(dxRef.current < SWIPE_OPEN_DX / 2 ? SWIPE_OPEN_DX : 0, true);
   };
 
-  const tag = (() => {
-    switch (item.kind) {
-      case "local":
-        return { label: "Local", bg: "#E8F3E8", color: "#3B8B3B" };
-      case "admin":
-        return { label: "Admin", bg: "#F1ECFA", color: "#8A5BC9" };
-      case "instructor":
-        return { label: "EDP", bg: "#E6F1FB", color: "#2B7BC8" };
-      case "pupil":
-      default:
-        return { label: "Pupil", bg: "#E6F1FB", color: "#2B7BC8" };
-    }
-  })();
-
   const swipeActionStyle = (bg: string): React.CSSProperties => ({
     width: SWIPE_ACTION_W,
     background: bg,
@@ -1817,171 +1822,179 @@ function InboxRow({
   });
 
   return (
-    <div>
-      <div style={{ position: "relative", overflow: "hidden" }}>
-        {/* Swipe actions revealed underneath the row */}
-        <div style={{ position: "absolute", top: 0, right: 0, bottom: 0, display: "flex" }}>
-          <button
-            type="button"
-            aria-label="Archive conversation"
-            onClick={(e) => {
-              e.stopPropagation();
-              closeActions();
-              onArchive();
-            }}
-            style={swipeActionStyle("#2B7BC8")}
-          >
-            <IconArchive size={18} color="#FFFFFF" stroke={1.8} />
-            Archive
-          </button>
-          <button
-            type="button"
-            aria-label="More actions"
-            onClick={(e) => {
-              e.stopPropagation();
-              closeActions();
-              onMenu();
-            }}
-            style={swipeActionStyle("#8E8E93")}
-          >
-            <IconDots size={18} color="#FFFFFF" stroke={1.8} />
-            More
-          </button>
-        </div>
-
-        {/* Foreground row */}
-        <div
-          ref={rowRef}
-          role="button"
-          tabIndex={0}
-          onClick={() => {
-            if (dxRef.current !== 0) {
-              closeActions();
-              return;
-            }
-            tapLight();
-            item.open();
+    <div
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        borderRadius: 12,
+        border: `1px solid ${unread ? "#2C97DE" : "#E4E8EF"}`,
+        boxShadow: "0 2px 0 #E4E4E8",
+        marginBottom: 8,
+        background: "#FFFFFF",
+      }}
+    >
+      {/* Swipe actions revealed underneath the row */}
+      <div style={{ position: "absolute", top: 0, right: 0, bottom: 0, display: "flex" }}>
+        <button
+          type="button"
+          aria-label="Archive conversation"
+          onClick={(e) => {
+            e.stopPropagation();
+            closeActions();
+            onArchive();
           }}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
+          style={swipeActionStyle("#2B7BC8")}
+        >
+          <IconArchive size={18} color="#FFFFFF" stroke={1.8} />
+          Archive
+        </button>
+        <button
+          type="button"
+          aria-label="More actions"
+          onClick={(e) => {
+            e.stopPropagation();
+            closeActions();
+            onMenu();
+          }}
+          style={swipeActionStyle("#8E8E93")}
+        >
+          <IconDots size={18} color="#FFFFFF" stroke={1.8} />
+          More
+        </button>
+      </div>
+
+      {/* Foreground row */}
+      <div
+        ref={rowRef}
+        role="button"
+        tabIndex={0}
+        onClick={() => {
+          if (dxRef.current !== 0) {
+            closeActions();
+            return;
+          }
+          tapLight();
+          item.open();
+        }}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        style={{
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          padding: "14px 16px",
+          background: "#FFFFFF",
+          borderRadius: 12,
+          cursor: "pointer",
+          touchAction: "pan-y",
+          WebkitTapHighlightColor: "transparent",
+          fontFamily: "Poppins, sans-serif",
+        }}
+      >
+        {/* Avatar */}
+        <div
           style={{
-            position: "relative",
+            width: 44,
+            height: 44,
+            borderRadius: "50%",
+            flexShrink: 0,
+            overflow: "hidden",
+            background: item.photo ? "transparent" : "#EAF5FC",
+            border: unread ? "2px solid #2C97DE" : "none",
             display: "flex",
             alignItems: "center",
-            gap: 12,
-            padding: "10px 16px",
-            background: "#FFFFFF",
-            cursor: "pointer",
-            touchAction: "pan-y",
-            WebkitTapHighlightColor: "transparent",
-            fontFamily: "Poppins, sans-serif",
+            justifyContent: "center",
+            color: "#2C97DE",
+            fontSize: 16,
+            fontWeight: 700,
           }}
         >
-          {/* Unread dot at the row's left edge */}
-          {unread && (
-            <span
-              style={{
-                position: "absolute",
-                left: 4,
-                top: "50%",
-                transform: "translateY(-50%)",
-                width: 7,
-                height: 7,
-                borderRadius: "50%",
-                background: "#2B7BC8",
-              }}
+          {item.photo ? (
+            <img
+              src={item.photo}
+              alt={item.name}
+              style={{ width: 44, height: 44, objectFit: "cover" }}
             />
+          ) : item.system ? (
+            <IconSpeakerphone size={20} color="#2C97DE" stroke={1.8} />
+          ) : (
+            firstInitial(item.name)
           )}
+        </div>
 
-          {/* Avatar */}
+        {/* Centre */}
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}>
           <div
             style={{
-              width: 46,
-              height: 46,
-              borderRadius: "50%",
-              flexShrink: 0,
-              overflow: "hidden",
-              background: item.bg,
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#FFFFFF",
-              fontSize: 17,
-              fontWeight: 600,
+              alignItems: "baseline",
+              justifyContent: "space-between",
+              minWidth: 0,
             }}
           >
-            {item.photo ? (
-              <img
-                src={item.photo}
-                alt={item.name}
-                style={{ width: 46, height: 46, objectFit: "cover" }}
-              />
-            ) : item.system ? (
-              <IconSpeakerphone size={22} color="#FFFFFF" stroke={1.8} />
-            ) : (
-              item.initials
-            )}
-          </div>
-
-          {/* Centre */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
+            <span
               style={{
-                display: "flex",
-                alignItems: "baseline",
-                justifyContent: "space-between",
-                minWidth: 0,
+                fontSize: 15,
+                fontWeight: unread ? 700 : 600,
+                color: "#0B2341",
+                letterSpacing: "-0.1px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
-                <span
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 500,
-                    color: "#000000",
-                    letterSpacing: "-0.1px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {item.name}
-                </span>
-                <span
-                  style={{
-                    flexShrink: 0,
-                    fontSize: 9,
-                    fontWeight: 500,
-                    padding: "1px 6px",
-                    borderRadius: 999,
-                    background: tag.bg,
-                    color: tag.color,
-                  }}
-                >
-                  {tag.label}
-                </span>
-              </div>
-              <span style={{ fontSize: 12, color: "#6E6E73", flexShrink: 0, marginLeft: 8 }}>
-                {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
-              </span>
-            </div>
+              {item.name}
+            </span>
+            <span style={{ fontSize: 11, color: "#536579", flexShrink: 0, marginLeft: 8 }}>
+              {item.ts && new Date(item.ts).getTime() > 0 ? formatStamp(item.ts) : ""}
+            </span>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              minWidth: 0,
+            }}
+          >
             <div
               style={{
+                flex: 1,
                 fontSize: 13,
-                color: "#6E6E73",
+                fontWeight: unread ? 600 : 400,
+                color: unread ? "#0B2341" : "#536579",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
-                marginTop: 2,
               }}
             >
               {item.preview}
             </div>
+            {unread && (
+              <div
+                style={{
+                  minWidth: 20,
+                  height: 20,
+                  borderRadius: "50%",
+                  background: "#2C97DE",
+                  color: "#FFFFFF",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  padding: "0 4px",
+                }}
+              >
+                {item.unread}
+              </div>
+            )}
           </div>
         </div>
       </div>
-      {!isLast && <div style={{ height: "0.5px", background: "#E5E5EA", marginLeft: 74 }} />}
     </div>
   );
 }

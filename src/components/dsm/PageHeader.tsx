@@ -16,7 +16,7 @@ interface PageHeaderProps {
   right?: React.ReactNode;
 }
 
-const NAVY = "#0B1F3A";
+const NAVY = "#0B2341";
 
 export function PageHeader({
   title,
@@ -44,7 +44,8 @@ export function PageHeader({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        padding: "calc(max(env(safe-area-inset-top, 0px), 24px) + 12px) 16px 12px",
+        marginTop: "calc(-1 * env(safe-area-inset-top, 0px))",
+        padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px",
         borderRadius: 0,
       }}
     >
