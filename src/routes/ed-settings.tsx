@@ -67,6 +67,16 @@ function EDSettingsPage() {
   const isPremium = (name: string) =>
     ["Samantha", "Daniel", "Kate", "Serena", "Martha", "Arthur"].includes(name);
 
+  const previewVoice = (voice: SpeechSynthesisVoice) => {
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance("Hi, I'm ED. How can I help?");
+    utt.voice = voice;
+    utt.pitch = 1.0;
+    utt.rate = 0.92;
+    utt.volume = 1.0;
+    window.speechSynthesis.speak(utt);
+  };
+
   const handleTestED = () => {
     (window as any).__edVoice?.activate?.();
   };
@@ -78,7 +88,8 @@ function EDSettingsPage() {
         style={{
           background: "#0B2341",
           padding: "16px",
-          paddingTop: "env(safe-area-inset-top, 16px)",
+          paddingTop: "calc(env(safe-area-inset-top) + 16px)",
+          marginTop: "calc(env(safe-area-inset-top) * -1)",
           display: "flex",
           alignItems: "center",
           gap: 12,
@@ -254,7 +265,7 @@ function EDSettingsPage() {
               padding: "12px 16px",
               background: "transparent",
               border: "none",
-              borderBottom: availableVoices.length > 0 ? "1px solid #F4F6F8" : "none",
+              borderBottom: voices.length > 0 ? "1px solid #F4F6F8" : "none",
               cursor: "pointer",
               textAlign: "left",
             }}
@@ -395,7 +406,7 @@ function EDSettingsPage() {
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          speak("Hi, I'm ED. How can I help?", false);
+                          previewVoice(voice);
                         }}
                         style={{
                           background: "#EAF5FC",
@@ -515,7 +526,7 @@ function EDSettingsPage() {
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          speak("Hi, I'm ED. How can I help?", false);
+                          previewVoice(voice);
                         }}
                         style={{
                           background: "#EAF5FC",
