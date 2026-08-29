@@ -587,10 +587,14 @@ function NearestPage() {
         <p style={{ padding: "16px 20px", color: MUTED, fontSize: 14, textAlign: "center" }}>Nothing found nearby</p>
       ) : (
         results.map((r) => (
-          <button
+          <div
             key={r.id}
-            type="button"
+            role="button"
+            tabIndex={0}
             onClick={() => centreOn(r)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") centreOn(r);
+            }}
             style={{
               display: "block",
               width: "calc(100% - 24px)",
