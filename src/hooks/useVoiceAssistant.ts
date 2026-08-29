@@ -145,16 +145,28 @@ export function useVoiceAssistant({
     }
   }, []);
 
-  // Get best UK English voice
+  // Get best UK English / iOS voice
   const getVoice = useCallback(() => {
     if (!synthRef.current) return null;
     const voices = synthRef.current.getVoices();
+    // iOS premium voices in order of preference
+    const preferred = [
+      'Samantha',      // iOS default US English
+      'Daniel',        // iOS UK English — best UK voice
+      'Kate',          // iOS UK English
+      'Serena',        // iOS UK English enhanced
+      'Martha',        // iOS UK English
+      'Arthur',        // iOS UK English
+    ];
+    for (const name of preferred) {
+      const v = voices.find(v => v.name === name);
+      if (v) return v;
+    }
+    // Fall back to any en-GB voice
     return (
-      voices.find(v =>
-        v.lang === 'en-GB' && v.localService) ||
+      voices.find(v => v.lang === 'en-GB' && v.localService) ||
       voices.find(v => v.lang === 'en-GB') ||
-      voices.find(v =>
-        v.lang.startsWith('en')) ||
+      voices.find(v => v.lang.startsWith('en')) ||
       null
     );
   }, []);
@@ -163,19 +175,33 @@ export function useVoiceAssistant({
   const speak = useCallback((text: string, listenAfter = false) => {
     if (!synthRef.current) return;
     synthRef.current.cancel();
-    const utt = new SpeechSynthesisUtterance(text);
-    const voice = getVoice();
-    if (voice) utt.voice = voice;
-    utt.pitch = 1.0;
-    utt.rate = 0.95;
-    utt.volume = 1.0;
-    utt.onstart = () => setIsSpeaking(true);
-    utt.onend = () => {
-      setIsSpeaking(false);
-      if (listenAfter && supported) startListening();
+
+    const doSpeak = () => {
+      const utt = new SpeechSynthesisUtterance(text);
+      const voice = getVoice();
+      if (voice) utt.voice = voice;
+      utt.pitch = 1.0;
+      utt.rate = 0.92;
+      utt.volume = 1.0;
+      utt.onstart = () => setIsSpeaking(true);
+      utt.onend = () => {
+        setIsSpeaking(false);
+        if (listenAfter && supported) startListening();
+      };
+      utt.onerror = () => setIsSpeaking(false);
+      synthRef.current!.speak(utt);
     };
-    utt.onerror = () => setIsSpeaking(false);
-    synthRef.current.speak(utt);
+
+    // iOS loads voices async — wait for them if needed
+    const voices = synthRef.current.getVoices();
+    if (voices.length === 0) {
+      speechSynthesis.onvoiceschanged = () => {
+        speechSynthesis.onvoiceschanged = null;
+        doSpeak();
+      };
+    } else {
+      doSpeak();
+    }
   }, [getVoice, startListening, supported]);
 
   // Build and speak the lesson brief
