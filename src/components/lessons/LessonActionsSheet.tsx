@@ -913,7 +913,7 @@ export function LessonActionsSheet({
         title={pupilName}
         subtitle={`${dateLabel} · ${timeLabel}${durationLabel}`}
         onClose={onClose}
-        headerStyle={{ backgroundColor: "#0B2341" }}
+        headerStyle={{ backgroundColor: "#0B2341", position: "relative" }}
         titleStyle={{
           color: "#FFFFFF",
           fontSize: 18,
@@ -924,23 +924,53 @@ export function LessonActionsSheet({
         }}
         subtitleStyle={{ color: "rgba(255,255,255,0.6)", fontSize: 12 }}
         headerRight={
-          payPill ? (
-            <div
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+              gap: 8,
+            }}
+          >
+            <button
+              type="button"
+              onClick={onClose}
               style={{
-                display: "inline-flex",
+                position: "absolute",
+                top: 0,
+                right: 0,
+                width: 32,
+                height: 32,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.15)",
+                border: "none",
+                display: "flex",
                 alignItems: "center",
-                padding: "3px 10px",
-                borderRadius: 999,
-                background: payPill.bg,
-                color: payPill.fg,
-                fontSize: 11,
-                fontWeight: 600,
-                fontFamily: "Poppins, sans-serif",
+                justifyContent: "center",
+                cursor: "pointer",
               }}
             >
-              {payPill.label}
-            </div>
-          ) : null
+              <IconX stroke={1.5} size={18} color="#fff" />
+            </button>
+            {payPill ? (
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  marginTop: 40,
+                  padding: "3px 10px",
+                  borderRadius: 999,
+                  background: payPill.bg,
+                  color: payPill.fg,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                {payPill.label}
+              </div>
+            ) : null}
+          </div>
         }
       >
 
