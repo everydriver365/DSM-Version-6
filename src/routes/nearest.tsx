@@ -362,7 +362,7 @@ function NearestPage() {
     const isApple = /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent);
     const url = isApple
       ? `https://maps.apple.com/?daddr=${r.lat},${r.lng}&q=${encodeURIComponent(r.name)}&dirflg=d`
-      : `https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lng}&destination_place_id=&travelmode=driving`;
+      : `https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lng}&travelmode=driving`;
     openUrl(url, "_system");
   };
 
