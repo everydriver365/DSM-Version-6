@@ -254,6 +254,18 @@ export function useVoiceAssistant({
 
   // Build and speak the lesson brief
   const activate = useCallback(() => {
+    const now = Date.now();
+    const timeSinceBrief = now - lastBriefTime.current;
+
+    if (timeSinceBrief < BRIEF_COOLDOWN) {
+      // Skip the brief — just start listening immediately
+      speak("Yes?", true);
+      return;
+    }
+
+    // Read full brief
+    lastBriefTime.current = now;
+
     // Pause wake-word listening while ED speaks / listens
     wakeActiveRef.current = false;
     setWakeActive(false);
