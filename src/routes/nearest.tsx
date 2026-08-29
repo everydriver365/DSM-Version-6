@@ -103,8 +103,12 @@ function haversine(lat1: number, lng1: number, lat2: number, lng2: number) {
   return 2 * R * Math.asin(Math.sqrt(a));
 }
 
+const METRES_PER_MILE = 1609.344;
+const RADIUS_OPTIONS = [1, 5, 10, 20] as const;
+
 function fmtDistance(m: number) {
-  return m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(1)} km`;
+  const mi = m / METRES_PER_MILE;
+  return mi < 0.1 ? `${Math.round(m)} m` : `${mi.toFixed(1)} mi`;
 }
 
 type Result = {
