@@ -786,10 +786,32 @@ function NearestPage() {
               fontFamily: "Poppins, sans-serif",
             }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "flex-start" }}>
               <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>{r.name}</span>
-              <span style={{ fontSize: 13, fontWeight: 700, color: BLUE, whiteSpace: "nowrap" }}>
-                {fmtDistance(r.distance)}
+              <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: BLUE, whiteSpace: "nowrap" }}>
+                  {fmtDistance(r.distance)}
+                </span>
+                <button
+                  type="button"
+                  aria-label={savedFor(r) ? `Remove ${r.name} from favourites` : `Save ${r.name} to favourites`}
+                  disabled={savingId === r.id}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    void toggleSave(r);
+                  }}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    fontSize: 18,
+                    lineHeight: 1,
+                    cursor: "pointer",
+                    color: savedFor(r) ? "#F5B301" : "#C6CEDA",
+                  }}
+                >
+                  {savedFor(r) ? "★" : "☆"}
+                </button>
               </span>
             </div>
 
