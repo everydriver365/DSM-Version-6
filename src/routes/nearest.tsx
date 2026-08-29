@@ -643,7 +643,32 @@ function NearestPage() {
             </div>
 
             {r.address && <p style={{ margin: "6px 0 0", fontSize: 12, color: MUTED }}>{r.address}</p>}
-          </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigateTo(r);
+              }}
+              style={{
+                marginTop: 10,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                background: NAVY,
+                color: "#FFFFFF",
+                border: "none",
+                borderRadius: 8,
+                padding: "9px 14px",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              ➤ Navigate
+            </button>
+          </div>
         ))
       )}
     </div>
