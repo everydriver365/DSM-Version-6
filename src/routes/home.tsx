@@ -9489,6 +9489,10 @@ function HomePage() {
               <DiscoverGrid />
             </div>
 
+            {/* ===== PRO RADIO CARD ===== */}
+            <div style={SECTION_WRAPPER_STYLE}>
+              <ProRadioHomeCard />
+            </div>
 
 
 
