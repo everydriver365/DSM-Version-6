@@ -328,23 +328,41 @@ function PaymentsPage() {
     const rows = history ?? [];
     const now = new Date();
     let fromMs = -Infinity;
+    let toMs = Infinity;
     switch (datePreset) {
-      case "today": fromMs = startOfDay(now).getTime(); break;
+      case "today": fromMs = startOfDay(now).getTime(); toMs = fromMs + 86400000; break;
       case "week": fromMs = startOfWeek(now).getTime(); break;
       case "month": fromMs = startOfMonth(now).getTime(); break;
-      case "year": fromMs = startOfYear(now).getTime(); break;
+      case "lastMonth":
+        fromMs = new Date(now.getFullYear(), now.getMonth() - 1, 1).getTime();
+        toMs = startOfMonth(now).getTime();
+        break;
       case "all": default: break;
     }
+    const internalMethod = METHOD_FILTER_MAP[methodFilter];
     return rows.filter((r) => {
       if (pupilFilter && r.pupil_id !== pupilFilter) return false;
-      if (new Date(r.created_at).getTime() < fromMs) return false;
-      if (methodFilter !== "all") {
-        if (methodFilter === "refund") { if (r.payment_status !== "refund") return false; }
-        else if (r.payment_method !== methodFilter) return false;
+      const t = new Date(r.created_at).getTime();
+      if (t < fromMs || t >= toMs) return false;
+      if (internalMethod !== "all") {
+        if (internalMethod === "refund") { if (r.payment_status !== "refund") return false; }
+        else if (r.payment_method !== internalMethod) return false;
       }
       return true;
     });
   }, [history, pupilFilter, datePreset, methodFilter]);
+
+  // Summary for the current filter selection
+  const summary = useMemo(() => {
+    let totalReceived = 0;
+    let outstanding = 0;
+    for (const r of filtered) {
+      const amt = Number(r.lesson_cost ?? 0);
+      if (r.payment_status === "paid") totalReceived += amt;
+      else if (r.payment_status !== "refund") outstanding += amt;
+    }
+    return { totalReceived, transactions: filtered.length, outstanding };
+  }, [filtered]);
 
   const groups = useMemo(() => {
     const map = new Map<string, { label: string; rows: HistoryRow[]; total: number }>();
