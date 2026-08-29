@@ -24,8 +24,9 @@ const POPPINS = { fontFamily: "Poppins, sans-serif" } as const;
 
 function EDSettingsPage() {
   const navigate = useNavigate();
-  const { availableVoices, selectedVoiceName, setVoice, speak } = useVoiceAssistant({});
+  const { selectedVoiceName, setVoice } = useVoiceAssistant({});
   const [aiLimit, setAiLimit] = useState<{ date: string; count: number } | null>(null);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10);
@@ -42,13 +43,25 @@ function EDSettingsPage() {
     }
   }, []);
 
+  useEffect(() => {
+    const load = () => {
+      const v = window.speechSynthesis.getVoices().filter((voice) => voice.lang.startsWith("en"));
+      setVoices(v);
+    };
+    load();
+    window.speechSynthesis.onvoiceschanged = load;
+    return () => {
+      window.speechSynthesis.onvoiceschanged = null;
+    };
+  }, []);
+
   const ukVoices = useMemo(
-    () => availableVoices.filter((v) => v.lang === "en-GB" || v.lang.toLowerCase().includes("gb")),
-    [availableVoices],
+    () => voices.filter((v) => v.lang === "en-GB" || v.lang.toLowerCase().includes("gb")),
+    [voices],
   );
   const usVoices = useMemo(
-    () => availableVoices.filter((v) => v.lang === "en-US" || v.lang.toLowerCase().includes("us")),
-    [availableVoices],
+    () => voices.filter((v) => v.lang === "en-US" || v.lang.toLowerCase().includes("us")),
+    [voices],
   );
 
   const isPremium = (name: string) =>
