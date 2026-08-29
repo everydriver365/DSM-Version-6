@@ -127,9 +127,9 @@ const ACTION_ROW_LABEL: React.CSSProperties = {
 
 const ACTION_CARD: React.CSSProperties = {
   background: "#fff",
-  borderRadius: tokens.radiusCard,
+  borderRadius: 12,
+  border: "1px solid #E4E8EF",
   overflow: "hidden",
-  boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
   marginBottom: 10,
 };
 
@@ -137,7 +137,7 @@ const ACTION_ROW_BASE: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   gap: 12,
-  padding: "15px 16px",
+  padding: "14px 16px",
   width: "100%",
   textAlign: "left",
   border: "none",
@@ -146,20 +146,66 @@ const ACTION_ROW_BASE: React.CSSProperties = {
   fontFamily: "Poppins, sans-serif",
 };
 
+const ACTION_ROW_LABEL: React.CSSProperties = {
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 15,
+  fontWeight: tokens.fontWeight.medium,
+  color: NAVY,
+  minWidth: 0,
+};
+
 const SECTION_LABEL_STYLE: React.CSSProperties = {
   fontFamily: "Poppins, sans-serif",
-  fontSize: 11.5,
+  fontSize: 11,
   fontWeight: tokens.fontWeight.bold,
-  color: "#8A8A8E",
+  color: "#536579",
   textTransform: "uppercase",
-  letterSpacing: 0.5,
-  margin: "4px 4px 10px",
+  letterSpacing: 0.6,
+  padding: "8px 4px 6px",
+};
+
+const DANGER_SECTION_LABEL_STYLE: React.CSSProperties = {
+  ...SECTION_LABEL_STYLE,
+  color: "#E53935",
+};
+
+const DANGER_CARD: React.CSSProperties = {
+  ...ACTION_CARD,
+  border: "1px solid #FEE2E2",
+};
+
+const PROMINENT_BUTTON: React.CSSProperties = {
+  height: 48,
+  borderRadius: 12,
+  background: "#0B2341",
+  color: "#fff",
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 15,
+  fontWeight: tokens.fontWeight.bold,
+  border: "none",
+  cursor: "pointer",
+  width: "calc(100% - 32px)",
+  margin: "12px 16px",
+};
+
+const EOL_BUTTON: React.CSSProperties = {
+  height: 48,
+  borderRadius: 12,
+  background: "#16A34A",
+  color: "#fff",
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 15,
+  fontWeight: tokens.fontWeight.bold,
+  border: "none",
+  cursor: "pointer",
+  width: "calc(100% - 32px)",
+  margin: "12px 16px",
 };
 
 function ChevronRight() {
   return (
     <span style={{ marginLeft: "auto", display: "flex", flexShrink: 0 }}>
-      <IconChevronRight size={15} stroke={1.8} color="#C7C7CC" />
+      <IconChevronRight size={18} stroke={1.5} color="#C2CAD6" />
     </span>
   );
 }
