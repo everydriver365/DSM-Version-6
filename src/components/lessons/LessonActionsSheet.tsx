@@ -117,19 +117,11 @@ function Chevron() {
   );
 }
 
-const ACTION_ROW_LABEL: React.CSSProperties = {
-  fontFamily: "Poppins, sans-serif",
-  fontSize: 15,
-  fontWeight: tokens.fontWeight.bold,
-  color: NAVY,
-  minWidth: 0,
-};
-
 const ACTION_CARD: React.CSSProperties = {
   background: "#fff",
-  borderRadius: tokens.radiusCard,
+  borderRadius: 12,
+  border: "1px solid #E4E8EF",
   overflow: "hidden",
-  boxShadow: "0 4px 0 #E4E4E8, 0 12px 26px rgba(0,0,0,0.06)",
   marginBottom: 10,
 };
 
@@ -137,7 +129,7 @@ const ACTION_ROW_BASE: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   gap: 12,
-  padding: "15px 16px",
+  padding: "14px 16px",
   width: "100%",
   textAlign: "left",
   border: "none",
@@ -146,20 +138,66 @@ const ACTION_ROW_BASE: React.CSSProperties = {
   fontFamily: "Poppins, sans-serif",
 };
 
+const ACTION_ROW_LABEL: React.CSSProperties = {
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 15,
+  fontWeight: tokens.fontWeight.medium,
+  color: NAVY,
+  minWidth: 0,
+};
+
 const SECTION_LABEL_STYLE: React.CSSProperties = {
   fontFamily: "Poppins, sans-serif",
-  fontSize: 11.5,
+  fontSize: 11,
   fontWeight: tokens.fontWeight.bold,
-  color: "#8A8A8E",
+  color: "#536579",
   textTransform: "uppercase",
-  letterSpacing: 0.5,
-  margin: "4px 4px 10px",
+  letterSpacing: 0.6,
+  padding: "8px 4px 6px",
+};
+
+const DANGER_SECTION_LABEL_STYLE: React.CSSProperties = {
+  ...SECTION_LABEL_STYLE,
+  color: "#E53935",
+};
+
+const DANGER_CARD: React.CSSProperties = {
+  ...ACTION_CARD,
+  border: "1px solid #FEE2E2",
+};
+
+const PROMINENT_BUTTON: React.CSSProperties = {
+  height: 48,
+  borderRadius: 12,
+  background: "#0B2341",
+  color: "#fff",
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 15,
+  fontWeight: tokens.fontWeight.bold,
+  border: "none",
+  cursor: "pointer",
+  width: "calc(100% - 32px)",
+  margin: "12px 16px",
+};
+
+const EOL_BUTTON: React.CSSProperties = {
+  height: 48,
+  borderRadius: 12,
+  background: "#16A34A",
+  color: "#fff",
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 15,
+  fontWeight: tokens.fontWeight.bold,
+  border: "none",
+  cursor: "pointer",
+  width: "calc(100% - 32px)",
+  margin: "12px 16px",
 };
 
 function ChevronRight() {
   return (
     <span style={{ marginLeft: "auto", display: "flex", flexShrink: 0 }}>
-      <IconChevronRight size={15} stroke={1.8} color="#C7C7CC" />
+      <IconChevronRight size={18} stroke={1.5} color="#C2CAD6" />
     </span>
   );
 }
@@ -1207,416 +1245,377 @@ export function LessonActionsSheet({
 
         {inlineView === "main" && (
           <>
-            {/* CHANGE 2 — Lesson info card (time / location / payment) */}
-            <div style={ACTION_CARD}>
-              <div style={{ ...ACTION_ROW_BASE, borderTop: "none", cursor: "default" }}>
-                <TintedIcon icon={IconClock} bg="#E7F1FC" color="#1877D6" />
-                <span style={ACTION_ROW_LABEL}>
-                  {timeLabel}
-                  {lesson.duration_minutes ? ` · ${lesson.duration_minutes} min` : ""}
-                </span>
-              </div>
-              <div style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2", cursor: "default" }}>
-                <TintedIcon icon={IconMapPin} bg="#F3EEFB" color="#7B4FC9" />
-                <span style={{ ...ACTION_ROW_LABEL, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
-                  {pickupValue || "No address set"}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setIsEditingPickup((v) => !v)}
-                  aria-label="Edit pickup address"
-                  style={{ marginLeft: "auto", background: "none", border: "none", padding: 0, cursor: "pointer", color: "#B0B0B5", display: "flex" }}
-                >
-                  <IconPencil stroke={1.5} size={15} />
-                </button>
-              </div>
-              {isEditingPickup ? (
-                <div style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}>
-                  <input
-                    value={pickupValue}
-                    onChange={(e) => {
-                      setPickupValue(e.target.value);
-                      setPickupState("idle");
-                      verifiedForRef.current = null;
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        verifyAndSavePickup();
-                      }
-                    }}
-                    placeholder="Enter pickup address"
-                    style={fieldInput}
-                    autoFocus
-                  />
+            <div style={{ background: "#F4F6F8", margin: "0 -16px", padding: "0 16px" }}>
+              {/* GROUP 1 — Get there */}
+              <div style={SECTION_LABEL_STYLE}>Get there</div>
+              <div style={ACTION_CARD}>
+                {/* Pickup location (preserved editing) */}
+                <div style={{ ...ACTION_ROW_BASE, borderTop: "none", cursor: "default" }}>
+                  <TintedIcon icon={IconMapPin} bg="#F3EEFB" color="#7B4FC9" />
+                  <span style={{ ...ACTION_ROW_LABEL, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
+                    {pickupValue || "No address set"}
+                  </span>
                   <button
                     type="button"
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={verifyAndSavePickup}
-                    disabled={pickupState === "checking"}
-                    aria-label="Verify and save pickup address"
-                    style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius: 12,
-                      border: "1px solid #B7E4C7",
-                      background: pickupState === "checking" ? "#F5F7FA" : "#E8F5E9",
-                      color: "#1F6B2E",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}
+                    onClick={() => setIsEditingPickup((v) => !v)}
+                    aria-label="Edit pickup address"
+                    style={{ marginLeft: "auto", background: "none", border: "none", padding: 0, cursor: "pointer", color: "#B0B0B5", display: "flex" }}
                   >
-                    <IconCircleCheck size={18} stroke={1.8} />
+                    <IconPencil stroke={1.5} size={15} />
                   </button>
                 </div>
-              ) : null}
-              <div style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2", cursor: "default" }}>
-                <TintedIcon icon={IconCurrencyPound} bg="#E6F7EC" color="#248A3D" />
-                <span style={ACTION_ROW_LABEL}>
-                  {balance > 0 ? `£${balance.toFixed(2)} due` : "Nothing outstanding"}
-                </span>
-                {payPill && (
-                  <span
-                    style={{
-                      marginLeft: "auto",
-                      fontFamily: "Poppins, sans-serif",
-                      fontSize: 11.5,
-                      fontWeight: tokens.fontWeight.extrabold,
-                      color: payPill.fg,
-                      background: "#E6F7EC",
-                      borderRadius: tokens.radiusCard,
-                      padding: "5px 16px",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {payPill.label}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* Live traffic / road issues to pickup */}
-            {trafficLoading && !trafficData ? (
-              <div
-                style={{
-                  background: "#F5F7FA",
-                  borderRadius: 12,
-                  padding: "12px 14px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  marginBottom: 12,
-                }}
-              >
-                <div style={{ width: 32, height: 32, borderRadius: 999, background: "#E4E8EF", flexShrink: 0 }} />
-                <div style={{ fontFamily: "Poppins, sans-serif", fontSize: 13, fontWeight: 600, color: "#6B7686" }}>
-                  Checking route…
-                </div>
-              </div>
-            ) : trafficData ? (
-              (() => {
-                const s = trafficData.status;
-                const bg = s === "clear" ? "#F0FDF4" : s === "delay" ? "#FEF3C7" : "#FEE2E2";
-                const fg = s === "clear" ? "#15803D" : s === "delay" ? "#D68A1B" : "#CC2229";
-                const circleBg = s === "clear" ? "#DCFCE7" : s === "delay" ? "#FDE9BC" : "#FBD5D5";
-                const Icon = s === "clear" ? IconRoad : s === "delay" ? IconAlertTriangle : IconAlertCircle;
-                const normalMins = Math.max(trafficData.travelMins - trafficData.delayMins, 0);
-                const title =
-                  s === "clear"
-                    ? "Route clear"
-                    : s === "delay"
-                      ? `Traffic delay — add ${trafficData.delayMins} mins`
-                      : (trafficData.incidents[0]?.description ??
-                        `Heavy traffic — add ${trafficData.delayMins} mins`);
-                const sub =
-                  s === "delay"
-                    ? `${trafficData.travelMins} mins to pickup (normally ${normalMins} mins)`
-                    : `${trafficData.travelMins} mins to pickup`;
-                const extra = trafficData.incidents.length > 1
-                  ? `+${trafficData.incidents.length - 1} more incident${trafficData.incidents.length - 1 === 1 ? "" : "s"} on route`
-                  : null;
-                return (
-                  <div
-                    style={{
-                      background: bg,
-                      borderRadius: 12,
-                      padding: "12px 14px",
-                      display: "flex",
-                      gap: 10,
-                      marginBottom: 12,
-                    }}
-                  >
-                    <div
+                {isEditingPickup ? (
+                  <div style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}>
+                    <input
+                      value={pickupValue}
+                      onChange={(e) => {
+                        setPickupValue(e.target.value);
+                        setPickupState("idle");
+                        verifiedForRef.current = null;
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          verifyAndSavePickup();
+                        }
+                      }}
+                      placeholder="Enter pickup address"
+                      style={fieldInput}
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={verifyAndSavePickup}
+                      disabled={pickupState === "checking"}
+                      aria-label="Verify and save pickup address"
                       style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 999,
-                        background: circleBg,
+                        width: 34,
+                        height: 34,
+                        borderRadius: 12,
+                        border: "1px solid #B7E4C7",
+                        background: pickupState === "checking" ? "#F5F7FA" : "#E8F5E9",
+                        color: "#1F6B2E",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         flexShrink: 0,
                       }}
                     >
-                      <Icon size={16} color={fg} stroke={1.5} />
-                    </div>
-                    <div style={{ minWidth: 0, fontFamily: "Poppins, sans-serif" }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: fg }}>{title}</div>
-                      <div style={{ fontSize: 11, color: "#6B7686", marginTop: 2 }}>{sub}</div>
-                      {extra ? (
-                        <div style={{ fontSize: 11, color: "#CC2229", marginTop: 2 }}>{extra}</div>
-                      ) : null}
-                    </div>
+                      <IconCircleCheck size={18} stroke={1.8} />
+                    </button>
                   </div>
-                );
-              })()
-            ) : null}
+                ) : null}
 
+                {/* View route */}
+                <button type="button" onClick={openMaps} style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}>
+                  <TintedIcon icon={IconMap} bg="#F3EEFB" color="#7B4FC9" />
+                  <span style={ACTION_ROW_LABEL}>View route</span>
+                  <ChevronRight />
+                </button>
 
-            {/* CHANGE 3 — Quick Actions */}
-            <div style={SECTION_LABEL_STYLE}>Quick Actions</div>
-            <div style={ACTION_CARD}>
-              <button
-                type="button"
-                onClick={() => {
-                  setMessageOpen(true);
-                }}
-                style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
-              >
-                <TintedIcon icon={IconMessage} bg="#E7F1FC" color="#1877D6" />
-                <span style={ACTION_ROW_LABEL}>Message pupil</span>
-                <ChevronRight />
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  if (!phone) {
-                    toast("No phone number");
-                    return;
-                  }
-                  window.location.href = `tel:${phone}`;
-                }}
-                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
-              >
-                <TintedIcon icon={IconPhone} bg="#E6F7EC" color="#248A3D" />
-                <span style={ACTION_ROW_LABEL}>Call pupil</span>
-                <ChevronRight />
-              </button>
-              <button
-                type="button"
-                onClick={openMaps}
-                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
-              >
-                <TintedIcon icon={IconMap} bg="#F3EEFB" color="#7B4FC9" />
-                <span style={ACTION_ROW_LABEL}>View route</span>
-                <ChevronRight />
-              </button>
-              <button
-                type="button"
-                onClick={() => setUnifiedPayOpen(true)}
-                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
-              >
-                <TintedIcon icon={IconCurrencyPound} bg="#E0F7F5" color="#0E9488" />
-                <span style={ACTION_ROW_LABEL}>Take payment</span>
-                <ChevronRight />
-              </button>
-              <button
-                type="button"
-                onClick={onEol}
-                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
-              >
-                <TintedIcon icon={IconCheck} bg="#E6F7EC" color="#248A3D" />
-                <span style={ACTION_ROW_LABEL}>Mark complete</span>
-                <ChevronRight />
-              </button>
-            </div>
+                {/* Traffic info */}
+                {trafficLoading && !trafficData ? (
+                  <div style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8", cursor: "default" }}>
+                    <TintedIcon icon={IconRoad} bg="#E4E8EF" color="#6B7686" />
+                    <span style={ACTION_ROW_LABEL}>Checking route…</span>
+                  </div>
+                ) : trafficData ? (
+                  (() => {
+                    const s = trafficData.status;
+                    const circleBg = s === "clear" ? "#DCFCE7" : s === "delay" ? "#FDE9BC" : "#FBD5D5";
+                    const fg = s === "clear" ? "#15803D" : s === "delay" ? "#D68A1B" : "#CC2229";
+                    const Icon = s === "clear" ? IconRoad : s === "delay" ? IconAlertTriangle : IconAlertCircle;
+                    const normalMins = Math.max(trafficData.travelMins - trafficData.delayMins, 0);
+                    const title =
+                      s === "clear"
+                        ? "Route clear"
+                        : s === "delay"
+                          ? `Traffic delay — add ${trafficData.delayMins} mins`
+                          : (trafficData.incidents[0]?.description ??
+                            `Heavy traffic — add ${trafficData.delayMins} mins`);
+                    const sub =
+                      s === "delay"
+                        ? `${trafficData.travelMins} mins to pickup (normally ${normalMins} mins)`
+                        : `${trafficData.travelMins} mins to pickup`;
+                    return (
+                      <div style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8", cursor: "default" }}>
+                        <TintedIcon icon={Icon} bg={circleBg} color={fg} />
+                        <div style={{ minWidth: 0, flex: 1 }}>
+                          <div style={{ fontFamily: "Poppins, sans-serif", fontSize: 15, fontWeight: tokens.fontWeight.medium, color: NAVY }}>
+                            {title}
+                          </div>
+                          <div style={{ fontFamily: "Poppins, sans-serif", fontSize: 11, color: "#6B7686", marginTop: 2 }}>
+                            {sub}
+                          </div>
+                        </div>
+                        <ChevronRight />
+                      </div>
+                    );
+                  })()
+                ) : null}
 
-            {/* On the road — kept with existing functionality */}
-            <div style={SECTION_LABEL_STYLE}>On the road</div>
-            <div style={ACTION_CARD}>
-              <button
-                type="button"
-                onClick={() => {
-                  setGoingActive(true);
-                  sendSms(`Hi ${firstName}, on the way!`);
-                }}
-                style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
-              >
-                <TintedIcon icon={IconNavigation} bg="#E7F1FC" color="#1877D6" />
-                <span style={ACTION_ROW_LABEL}>Tell pupil I'm on the way</span>
-                <ChevronRight />
-              </button>
-              <button
-                type="button"
-                onClick={() =>
-                  navigate({
-                    to: "/live",
-                    search: { autostart: "1", lessonId: lesson.id, pupilId: lesson.pupil_id },
-                  } as never)
-                }
-                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
-              >
-                <TintedIcon icon={IconRoute} bg="#F3EEFB" color="#7B4FC9" />
-                <span style={ACTION_ROW_LABEL}>Track lesson live</span>
-                <ChevronRight />
-              </button>
-              <button
-                type="button"
-                onClick={onOpenLate}
-                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
-              >
-                <TintedIcon icon={IconClockExclamation} bg="#FFF6DC" color="#D68A1B" />
-                <span style={ACTION_ROW_LABEL}>Running late</span>
-                <ChevronRight />
-              </button>
-              <button
-                type="button"
-                onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
-                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
-              >
-                <TintedIcon icon={IconCurrentLocation} bg="#E7F1FC" color="#1877D6" />
-                <span style={ACTION_ROW_LABEL}>I'm here</span>
-                <ChevronRight />
-              </button>
-              <button
-                type="button"
-                onClick={onOpenLesson}
-                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
-              >
-                <TintedIcon icon={IconClipboardList} bg="#F2F2F7" color="#6B6B6F" />
-                <span style={ACTION_ROW_LABEL}>Lesson prep</span>
-                <ChevronRight />
-              </button>
-              <button
-                type="button"
-                onClick={() =>
-                  navigate({ to: "/pupils/$id", params: { id: lesson.pupil_id }, search: { lessonId: lesson.id } } as never)
-                }
-                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
-              >
-                <TintedIcon icon={IconClipboardList} bg="#F2F2F7" color="#6B6B6F" />
-                <span style={ACTION_ROW_LABEL}>View full pupil profile</span>
-                <ChevronRight />
-              </button>
-            </div>
-
-            {/* CHANGE 4 — Manage */}
-            <div style={{ ...SECTION_LABEL_STYLE, marginTop: 20 }}>Manage</div>
-            <div style={ACTION_CARD}>
-              <button
-                type="button"
-                onClick={() => navigate({ to: "/lessons/edit/$id", params: { id: lesson.id } })}
-                style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
-              >
-                <TintedIcon icon={IconPencil} bg="#FFF6DC" color="#D68A1B" />
-                <span style={ACTION_ROW_LABEL}>Edit lesson</span>
-                <ChevronRight />
-              </button>
-              <button
-                type="button"
-                onClick={() => setInlineView("reschedule")}
-                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
-              >
-                <TintedIcon icon={IconRepeat} bg="#E7F1FC" color="#1877D6" />
-                <span style={ACTION_ROW_LABEL}>Reschedule</span>
-                <ChevronRight />
-              </button>
-              <button
-                type="button"
-                onClick={() => setInlineView("duration")}
-                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
-              >
-                <TintedIcon icon={IconClock} bg="#F3EEFB" color="#7B4FC9" />
-                <span style={ACTION_ROW_LABEL}>Change duration</span>
-                <ChevronRight />
-              </button>
-              <button
-                type="button"
-                onClick={() => setInlineView("note")}
-                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
-              >
-                <TintedIcon icon={IconNotes} bg="#F2F2F7" color="#6B6B6F" />
-                <span style={ACTION_ROW_LABEL}>Add note</span>
-                <ChevronRight />
-              </button>
-              <button
-                type="button"
-                onClick={() => setInlineView("cancel")}
-                style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #EFEFF2" }}
-              >
-                <TintedIcon icon={IconX} bg="#FDEDEC" color="#FF3B30" />
-                <span style={{ ...ACTION_ROW_LABEL, color: "#FF3B30" }}>Cancel lesson</span>
-                <ChevronRight />
-              </button>
-            </div>
-
-            {/* Delete lesson — kept for existing functionality, styled as destructive */}
-            <div style={{ marginTop: 10 }}>
-              <div style={ACTION_CARD}>
+                {/* On the road rows (preserved) */}
                 <button
                   type="button"
-                  onClick={() => setInlineView("delete")}
-                  style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
+                  onClick={() => {
+                    setGoingActive(true);
+                    sendSms(`Hi ${firstName}, on the way!`);
+                  }}
+                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
                 >
-                  <TintedIcon icon={IconTrash} bg="#FDEDEC" color="#FF3B30" />
-                  <span style={{ ...ACTION_ROW_LABEL, color: "#FF3B30" }}>Delete lesson</span>
+                  <TintedIcon icon={IconNavigation} bg="#E7F1FC" color="#1877D6" />
+                  <span style={ACTION_ROW_LABEL}>Tell pupil I'm on the way</span>
+                  <ChevronRight />
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate({
+                      to: "/live",
+                      search: { autostart: "1", lessonId: lesson.id, pupilId: lesson.pupil_id },
+                    } as never)
+                  }
+                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
+                >
+                  <TintedIcon icon={IconRoute} bg="#F3EEFB" color="#7B4FC9" />
+                  <span style={ACTION_ROW_LABEL}>Track lesson live</span>
+                  <ChevronRight />
+                </button>
+                <button
+                  type="button"
+                  onClick={onOpenLate}
+                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
+                >
+                  <TintedIcon icon={IconClockExclamation} bg="#FFF6DC" color="#D68A1B" />
+                  <span style={ACTION_ROW_LABEL}>Running late</span>
+                  <ChevronRight />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => sendSms(`Hi ${firstName}, I'm outside whenever you're ready 👋`)}
+                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
+                >
+                  <TintedIcon icon={IconCurrentLocation} bg="#E7F1FC" color="#1877D6" />
+                  <span style={ACTION_ROW_LABEL}>I'm here</span>
+                  <ChevronRight />
+                </button>
+                <button
+                  type="button"
+                  onClick={onOpenLesson}
+                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
+                >
+                  <TintedIcon icon={IconClipboardList} bg="#F2F2F7" color="#6B6B6F" />
+                  <span style={ACTION_ROW_LABEL}>Lesson prep</span>
                   <ChevronRight />
                 </button>
               </div>
-            </div>
 
-            {/* what3words */}
-            <SheetGroup>
-              <SheetRow>
-                <span style={{ color: "#E11F26", fontWeight: tokens.fontWeight.bold, fontFamily: "Poppins, sans-serif", fontSize: 15 }}>
-                  ///
-                </span>
-                {[0, 1, 2].map((i) => (
-                  <Fragment key={i}>
-                    {i > 0 && <span style={{ color: NAVY, fontWeight: 700 }}>.</span>}
-                    <input
-                      value={w3w[i]}
-                      onChange={(e) => {
-                        const next = [...w3w] as [string, string, string];
-                        next[i] = e.target.value.replace(/[^a-zA-Z\u00C0-\u024F-]/g, "");
-                        setW3w(next);
-                        setW3wState("idle");
+              {/* GROUP 2 — Pupil */}
+              <div style={SECTION_LABEL_STYLE}>Pupil</div>
+              <div style={ACTION_CARD}>
+                <button
+                  type="button"
+                  onClick={() => setMessageOpen(true)}
+                  style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
+                >
+                  <TintedIcon icon={IconMessage} bg="#E7F1FC" color="#1877D6" />
+                  <span style={ACTION_ROW_LABEL}>Message pupil</span>
+                  <ChevronRight />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!phone) {
+                      toast("No phone number");
+                      return;
+                    }
+                    window.location.href = `tel:${phone}`;
+                  }}
+                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
+                >
+                  <TintedIcon icon={IconPhone} bg="#E6F7EC" color="#248A3D" />
+                  <span style={ACTION_ROW_LABEL}>Call pupil</span>
+                  <ChevronRight />
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate({ to: "/pupils/$id", params: { id: lesson.pupil_id }, search: { lessonId: lesson.id } } as never)
+                  }
+                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
+                >
+                  <TintedIcon icon={IconClipboardList} bg="#F2F2F7" color="#6B6B6F" />
+                  <span style={ACTION_ROW_LABEL}>View pupil profile</span>
+                  <ChevronRight />
+                </button>
+              </div>
+
+              {/* GROUP 3 — Lesson */}
+              <div style={SECTION_LABEL_STYLE}>Lesson</div>
+              <div style={ACTION_CARD}>
+                <button
+                  type="button"
+                  style={PROMINENT_BUTTON}
+                  onClick={() => setGoingActive(!goingActive)}
+                >
+                  {goingActive ? "Going active" : "Start lesson"}
+                </button>
+                <div style={{ borderBottom: "1px solid #F4F6F8" }} />
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/lessons/edit/$id", params: { id: lesson.id } })}
+                  style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
+                >
+                  <TintedIcon icon={IconPencil} bg="#FFF6DC" color="#D68A1B" />
+                  <span style={ACTION_ROW_LABEL}>Edit lesson</span>
+                  <ChevronRight />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInlineView("reschedule")}
+                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
+                >
+                  <TintedIcon icon={IconRepeat} bg="#E7F1FC" color="#1877D6" />
+                  <span style={ACTION_ROW_LABEL}>Reschedule</span>
+                  <ChevronRight />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInlineView("duration")}
+                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
+                >
+                  <TintedIcon icon={IconClock} bg="#F3EEFB" color="#7B4FC9" />
+                  <span style={ACTION_ROW_LABEL}>Change duration</span>
+                  <ChevronRight />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInlineView("note")}
+                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
+                >
+                  <TintedIcon icon={IconNotes} bg="#F2F2F7" color="#6B6B6F" />
+                  <span style={ACTION_ROW_LABEL}>Add/edit note</span>
+                  <ChevronRight />
+                </button>
+              </div>
+
+              {/* GROUP 4 — Payment */}
+              <div style={SECTION_LABEL_STYLE}>Payment</div>
+              <div style={ACTION_CARD}>
+                <button
+                  type="button"
+                  onClick={() => setUnifiedPayOpen(true)}
+                  style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
+                >
+                  <TintedIcon icon={IconCurrencyPound} bg="#E0F7F5" color="#0E9488" />
+                  <span style={ACTION_ROW_LABEL}>Take payment</span>
+                  <ChevronRight />
+                </button>
+                {payPill && (
+                  <div style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8", cursor: "default" }}>
+                    <TintedIcon icon={IconCurrencyPound} bg="#E6F7EC" color="#248A3D" />
+                    <span style={ACTION_ROW_LABEL}>Payment status</span>
+                    <span
+                      style={{
+                        marginLeft: "auto",
+                        fontFamily: "Poppins, sans-serif",
+                        fontSize: 11,
+                        fontWeight: tokens.fontWeight.extrabold,
+                        color: payPill.fg,
+                        background: payPill.bg,
+                        borderRadius: 999,
+                        padding: "5px 12px",
+                        whiteSpace: "nowrap",
                       }}
-                      onBlur={verifyAndSaveW3w}
-                      placeholder={`word${i + 1}`}
-                      style={{ ...fieldInput, textAlign: "center", padding: "9px 6px" }}
-                    />
-                  </Fragment>
-                ))}
-              </SheetRow>
-              {w3wState !== "idle" ? (
-                <SheetRow>{statusLine(w3wState, "Verified via what3words", "Not a recognised what3words address")}</SheetRow>
-              ) : null}
-            </SheetGroup>
-
-            {/* Last lesson */}
-            <SheetGroup>
-              <SheetRow>
-                <IconNotes size={20} stroke={1.8} color="#6B7686" />
-                {prev ? (
-                  <div style={{ minWidth: 0 }}>
-                    <div style={rowLabel}>
-                      {new Date(prev.lesson_date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })} ·{" "}
-                      <span style={{ textTransform: "capitalize", color: tokens.textSecondary }}>{prev.status}</span>
-                    </div>
-                    {prev.notes && (
-                      <div style={{ marginTop: 3, color: tokens.textSecondary, fontSize: 12, fontFamily: "Poppins, sans-serif", lineHeight: 1.4 }}>
-                        {prev.notes}
-                      </div>
-                    )}
+                    >
+                      {payPill.label}
+                    </span>
                   </div>
-                ) : (
-                  <span style={{ ...rowLabel, color: "#8A93A3" }}>No previous lesson</span>
                 )}
-              </SheetRow>
-            </SheetGroup>
+              </div>
+
+              {/* GROUP 5 — End of lesson */}
+              <div style={ACTION_CARD}>
+                <button type="button" style={EOL_BUTTON} onClick={onEol}>
+                  End of lesson (EOL)
+                </button>
+              </div>
+
+              {/* GROUP 6 — Danger zone */}
+              <div style={DANGER_SECTION_LABEL_STYLE}>Danger zone</div>
+              <div style={DANGER_CARD}>
+                <button
+                  type="button"
+                  onClick={() => setInlineView("cancel")}
+                  style={{ ...ACTION_ROW_BASE, borderTop: "none" }}
+                >
+                  <TintedIcon icon={IconX} bg="#FDEDEC" color="#FF3B30" />
+                  <span style={{ ...ACTION_ROW_LABEL, color: "#E53935" }}>Cancel lesson</span>
+                  <ChevronRight />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInlineView("delete")}
+                  style={{ ...ACTION_ROW_BASE, borderTop: "1px solid #F4F6F8" }}
+                >
+                  <TintedIcon icon={IconTrash} bg="#FDEDEC" color="#FF3B30" />
+                  <span style={{ ...ACTION_ROW_LABEL, color: "#E53935" }}>Delete lesson</span>
+                  <ChevronRight />
+                </button>
+              </div>
+
+              {/* what3words */}
+              <SheetGroup>
+                <SheetRow>
+                  <span style={{ color: "#E11F26", fontWeight: tokens.fontWeight.bold, fontFamily: "Poppins, sans-serif", fontSize: 15 }}>
+                    ///
+                  </span>
+                  {[0, 1, 2].map((i) => (
+                    <Fragment key={i}>
+                      {i > 0 && <span style={{ color: NAVY, fontWeight: 700 }}>.</span>}
+                      <input
+                        value={w3w[i]}
+                        onChange={(e) => {
+                          const next = [...w3w] as [string, string, string];
+                          next[i] = e.target.value.replace(/[^a-zA-Z\u00C0-\u024F-]/g, "");
+                          setW3w(next);
+                          setW3wState("idle");
+                        }}
+                        onBlur={verifyAndSaveW3w}
+                        placeholder={`word${i + 1}`}
+                        style={{ ...fieldInput, textAlign: "center", padding: "9px 6px" }}
+                      />
+                    </Fragment>
+                  ))}
+                </SheetRow>
+                {w3wState !== "idle" ? (
+                  <SheetRow>{statusLine(w3wState, "Verified via what3words", "Not a recognised what3words address")}</SheetRow>
+                ) : null}
+              </SheetGroup>
+
+              {/* Last lesson */}
+              <SheetGroup>
+                <SheetRow>
+                  <IconNotes size={20} stroke={1.8} color="#6B7686" />
+                  {prev ? (
+                    <div style={{ minWidth: 0 }}>
+                      <div style={rowLabel}>
+                        {new Date(prev.lesson_date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })} ·{" "}
+                        <span style={{ textTransform: "capitalize", color: tokens.textSecondary }}>{prev.status}</span>
+                      </div>
+                      {prev.notes && (
+                        <div style={{ marginTop: 3, color: tokens.textSecondary, fontSize: 12, fontFamily: "Poppins, sans-serif", lineHeight: 1.4 }}>
+                          {prev.notes}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <span style={{ ...rowLabel, color: "#8A93A3" }}>No previous lesson</span>
+                  )}
+                </SheetRow>
+              </SheetGroup>
+            </div>
           </>
         )}
 
