@@ -193,20 +193,21 @@ function MorePage() {
     >
       <div {...pullToRefreshProps} style={{ minHeight: '100%', paddingBottom: 'calc(96px + env(safe-area-inset-bottom, 0px))' }}>
 
-      {/* IconSearch */}
+      {/* Search features */}
       <div
         style={{
-          background: '#F1F4F9',
-          border: 'none',
-          borderRadius: 14,
-          padding: '14px 16px',
+          background: '#fff',
+          border: '0.5px solid #E5E5EA',
+          borderRadius: 12,
+          padding: '12px 14px',
           margin: '4px 16px 8px',
           display: 'flex',
           alignItems: 'center',
-          gap: 12,
+          gap: 10,
+          boxShadow: '0 4px 0 #E4E4E8',
         }}
       >
-        <IconSearch size={20} color="#9CA3AF" stroke={2} />
+        <IconSearch size={20} color="#8A93A3" stroke={1.8} />
         <input
           type="text"
           ref={searchRef}
@@ -217,9 +218,9 @@ function MorePage() {
             flex: 1,
             border: 'none',
             outline: 'none',
-            fontSize: 16,
+            fontSize: 15,
             fontFamily: 'Poppins, sans-serif',
-            color: '#0F2044',
+            color: '#0B1F3A',
             background: 'transparent',
           }}
         />
@@ -230,7 +231,7 @@ function MorePage() {
             style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex' }}
             aria-label="Clear search"
           >
-            <IconX size={16} color="#9CA3AF" />
+            <IconX size={18} color="#8A93A3" />
           </button>
         )}
       </div>
@@ -245,35 +246,39 @@ function MorePage() {
           />
         ) : (
           <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {filtered.map((tool) => (
-              <button
-                key={tool.label}
-                onClick={() => go(tool.route)}
-                style={{
-                  width: '100%',
-                  background: '#fff',
-                  border: 'none',
-                  borderRadius: tokens.radiusCard,
-                  padding: '10px 14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  fontFamily: 'Poppins, sans-serif',
-                  boxShadow: '0 2px 8px rgba(15,32,68,0.06)',
-                }}
-              >
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: tokens.canvas, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <tool.icon size={20} color={tokens.blue} />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, color: '#0F2044' }}>{tool.label}</div>
-                  <div style={{ fontSize: 12, color: '#9CA3AF' }}>{tool.sub}</div>
-                </div>
-                <span style={{ fontSize: tokens.fontSize.xs, color: '#9CA3AF', marginLeft: 'auto' }}>{tool.group}</span>
-              </button>
-            ))}
+            {filtered.map((tool) => {
+              const isTeaching = tool.group === 'Teaching';
+              return (
+                <button
+                  key={tool.label}
+                  onClick={() => go(tool.route)}
+                  style={{
+                    width: '100%',
+                    background: '#fff',
+                    border: isTeaching ? '0.5px solid #E5E5EA' : 'none',
+                    borderRadius: isTeaching ? 12 : tokens.radiusCard,
+                    padding: isTeaching ? '12px 14px' : '10px 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: isTeaching ? 12 : 12,
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    fontFamily: 'Poppins, sans-serif',
+                    boxShadow: isTeaching ? '0 4px 0 #E4E4E8' : '0 2px 8px rgba(15,32,68,0.06)',
+                    minHeight: isTeaching ? 62 : undefined,
+                  }}
+                >
+                  <div style={{ width: isTeaching ? 38 : 40, height: isTeaching ? 38 : 40, borderRadius: 10, background: isTeaching ? '#E6F0FB' : tokens.canvas, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <tool.icon size={isTeaching ? 18 : 20} color={isTeaching ? '#1877D6' : tokens.blue} stroke={1.8} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: isTeaching ? 15 : 13, fontWeight: isTeaching ? 500 : undefined, color: '#0B1F3A' }}>{tool.label}</div>
+                    <div style={{ fontSize: isTeaching ? 13 : 12, color: isTeaching ? '#8A93A3' : '#9CA3AF' }}>{tool.sub}</div>
+                  </div>
+                  <span style={{ fontSize: tokens.fontSize.xs, color: '#8A93A3', marginLeft: 'auto' }}>{tool.group}</span>
+                </button>
+              );
+            })}
           </div>
         )
       ) : (
@@ -305,17 +310,17 @@ function MorePage() {
                   >
                     <div
                       style={{
-                        width: 40,
-                        height: 40,
+                        width: 38,
+                        height: 38,
                         borderRadius: 10,
-                        background: tokens.navy,
+                        background: '#E6F0FB',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
                       }}
                     >
-                      <IconPlayerPlay size={20} color="white" />
+                      <IconPlayerPlay size={18} color="#1877D6" stroke={1.8} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -370,6 +375,7 @@ function MorePage() {
                   const sub = isSquare
                     ? (squareConnected ? 'Connected' : 'Set up card payments')
                     : tool.sub;
+                  const isTeaching = group === 'Teaching';
                   return (
                   <button
                     key={tool.label}
@@ -377,42 +383,43 @@ function MorePage() {
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 14,
-                      padding: '10px 14px',
+                      gap: isTeaching ? 12 : 14,
+                      padding: isTeaching ? '12px 14px' : '10px 14px',
                       background: '#fff',
-                      border: 'none',
-                      borderRadius: 14,
+                      border: isTeaching ? '0.5px solid #E5E5EA' : 'none',
+                      borderRadius: isTeaching ? 12 : 14,
                       cursor: 'pointer',
                       textAlign: 'left',
                       width: '100%',
                       fontFamily: 'Poppins, sans-serif',
-                      boxShadow: '0 1px 3px rgba(15,32,68,0.06)',
+                      boxShadow: isTeaching ? '0 4px 0 #E4E4E8' : '0 1px 3px rgba(15,32,68,0.06)',
+                      minHeight: isTeaching ? 62 : undefined,
                     }}
                   >
                     <div
                       style={{
-                        width: 40,
-                        height: 40,
+                        width: isTeaching ? 38 : 40,
+                        height: isTeaching ? 38 : 40,
                         borderRadius: 10,
-                        background: tokens.canvas,
+                        background: isTeaching ? '#E6F0FB' : tokens.canvas,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
                       }}
                     >
-                      <tool.icon size={20} color={tokens.blue} stroke={1.5} />
+                      <tool.icon size={isTeaching ? 18 : 20} color={isTeaching ? '#1877D6' : tokens.blue} stroke={1.8} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, color: '#0B1F3A' }}>{tool.label}</div>
-                      <div style={{ fontSize: 12, color: '#8592A6', marginTop: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <div style={{ fontSize: isTeaching ? 15 : 13, fontWeight: isTeaching ? 500 : undefined, color: '#0B1F3A' }}>{tool.label}</div>
+                      <div style={{ fontSize: isTeaching ? 13 : 12, color: isTeaching ? '#8A93A3' : '#8592A6', marginTop: isTeaching ? 0 : 2, display: 'flex', alignItems: 'center', gap: 5 }}>
                         {isSquare && squareConnected && (
                           <span style={{ width: 7, height: 7, borderRadius: 999, background: '#16A34A', flexShrink: 0 }} />
                         )}
                         {sub}
                       </div>
                     </div>
-                    <IconChevronRight size={13} color="#C7C7CC" stroke={1.5} style={{ marginLeft: 'auto', flexShrink: 0 }} />
+                    <IconChevronRight size={isTeaching ? 18 : 13} color={isTeaching ? '#C4C9D2' : '#C7C7CC'} stroke={1.5} style={{ marginLeft: 'auto', flexShrink: 0 }} />
 
                   </button>
                   );
