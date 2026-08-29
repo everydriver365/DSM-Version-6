@@ -312,7 +312,9 @@ function GlobalMenu() {
     let mounted = true;
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user || !mounted) return;
+      if (!mounted) return;
+      setIsSignedIn(!!user);
+      if (!user) return;
       const email = user.email ?? "";
       const { data } = await supabase.from("instructors").select("name, profile_image_url, website_tier").eq("id", user.id).limit(1).single();
       if (mounted) {
