@@ -369,21 +369,18 @@ function GlobalMenu() {
             aria-label="Close menu"
             style={{
               position: "absolute",
-              top: 16,
-              right: 16,
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              background: "rgba(255,255,255,0.15)",
+              top: "calc(env(safe-area-inset-top) + 8px)",
+              right: 4,
+              background: "none",
               border: "none",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              padding: 0,
+              padding: 12,
             }}
           >
-            <IconX stroke={1.5} size={20} color="#fff" />
+            <IconX stroke={1.5} size={20} color="rgba(255,255,255,0.7)" />
           </button>
           <div style={{ display: "flex", alignItems: "center", gap: 14, paddingRight: 40 }}>
             <div style={{ minWidth: 0, flex: 1 }}>
