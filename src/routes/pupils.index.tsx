@@ -87,13 +87,6 @@ function displayName(n: string | null | undefined) {
 // NOTE: DB cleanup SQL (run manually — Lovable Cloud DB tools not available in this session):
 //   update pupils set name = trim(trailing '.' from trim(name)) where name like '%.';
 
-function statusBadgeColor(status: StatusKey) {
-  if (status === "active") return "#1877D6";
-  if (status === "passed") return "#1877D6";
-  if (status === "waiting") return "#F59E0B";
-  if (status === "lapsed") return "#9CA3AF";
-  return "#6B7280";
-}
 
 function pupilMatchesFilter(
   p: Pupil,
