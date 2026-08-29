@@ -569,19 +569,42 @@ export function BottomNav({
   };
 
   return (
-    <nav
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white flex items-end justify-around"
-      style={{
-        fontFamily: "Poppins, sans-serif",
-        borderRadius: "16px 16px 0 0",
-        boxShadow: "0 -4px 24px rgba(15,32,68,0.08)",
-        paddingTop: 8,
-        paddingBottom: "max(env(safe-area-inset-bottom), 8px)",
-        height: "calc(56px + max(env(safe-area-inset-bottom), 8px) + 8px)",
-      }}
-    >
-      {useCustom ? renderCustomItems(items!) : renderDefaultItems()}
-    </nav>
+    <>
+      <MicPulseStyle />
+      <nav
+        className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white flex items-end justify-around"
+        style={{
+          fontFamily: "Poppins, sans-serif",
+          borderRadius: "16px 16px 0 0",
+          boxShadow: "0 -4px 24px rgba(15,32,68,0.08)",
+          paddingTop: 8,
+          paddingBottom: "max(env(safe-area-inset-bottom), 8px)",
+          height: "calc(56px + max(env(safe-area-inset-bottom), 8px) + 8px)",
+        }}
+      >
+        {useCustom ? renderCustomItems(items!) : renderDefaultItems()}
+      </nav>
+      {isSpeaking && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 70,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 100,
+            background: "#0B2341",
+            color: "#fff",
+            fontSize: 12,
+            borderRadius: 20,
+            padding: "4px 12px",
+            fontFamily: "Poppins, sans-serif",
+            pointerEvents: "none",
+          }}
+        >
+          ED is speaking…
+        </div>
+      )}
+    </>
   );
 }
 
