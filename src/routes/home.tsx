@@ -3319,6 +3319,41 @@ function HomePage() {
       toast("Lesson marked as paid");
     };
 
+    const onNearest = (e: Event) => {
+      const type = (e as CustomEvent).detail?.type ?? "gas_station";
+      navigate({ to: "/nearest", search: { type } } as never);
+    };
+    const onEarnings = () => {
+      const todayYmd = ymd(new Date());
+      const amount = lessons
+        .filter((l) => l.lesson_date === todayYmd && l.payment_status === "paid")
+        .reduce((sum, l) => sum + Number(l.amount_due ?? 0), 0);
+      window.dispatchEvent(new CustomEvent("ed:earnings:response", { detail: { amount } }));
+    };
+    const onLessonCount = async () => {
+      if (!upcoming?.pupil_id || !userId) return;
+      const { count } = await supabase
+        .from("lessons")
+        .select("*", { count: "exact", head: true })
+        .eq("pupil_id", upcoming.pupil_id)
+        .eq("instructor_id", userId)
+        .is("deleted_at", null);
+      window.dispatchEvent(new CustomEvent("ed:lessoncount:response", { detail: { count: count ?? 0 } }));
+    };
+    const onEnquiries = async () => {
+      if (!userId) return;
+      const { count } = await supabase
+        .from("enquiries")
+        .select("*", { count: "exact", head: true })
+        .eq("instructor_id", userId)
+        .eq("status", "new");
+      window.dispatchEvent(new CustomEvent("ed:enquiries:response", { detail: { count: count ?? 0 } }));
+    };
+
+    window.addEventListener("ed:nearest", onNearest as EventListener);
+    window.addEventListener("ed:earnings", onEarnings);
+    window.addEventListener("ed:lessoncount", onLessonCount);
+    window.addEventListener("ed:enquiries", onEnquiries);
     window.addEventListener("ed:onmyway", onMyWay);
     window.addEventListener("ed:imhere", imHere);
     window.addEventListener("ed:late", onLate);
@@ -3326,6 +3361,10 @@ function HomePage() {
     window.addEventListener("ed:schedule", onSchedule);
     window.addEventListener("ed:markpaid", onMarkPaid as EventListener);
     return () => {
+      window.removeEventListener("ed:nearest", onNearest as EventListener);
+      window.removeEventListener("ed:earnings", onEarnings);
+      window.removeEventListener("ed:lessoncount", onLessonCount);
+      window.removeEventListener("ed:enquiries", onEnquiries);
       window.removeEventListener("ed:onmyway", onMyWay);
       window.removeEventListener("ed:imhere", imHere);
       window.removeEventListener("ed:late", onLate);
@@ -3333,7 +3372,7 @@ function HomePage() {
       window.removeEventListener("ed:schedule", onSchedule);
       window.removeEventListener("ed:markpaid", onMarkPaid as EventListener);
     };
-  }, [upcoming, navigate]);
+  }, [upcoming, navigate, lessons, userId]);
 
 
 
