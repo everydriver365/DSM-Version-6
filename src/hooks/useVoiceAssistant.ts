@@ -197,6 +197,16 @@ export function useVoiceAssistant({
     );
   }, [selectedVoiceName]);
 
+  // Persist user voice preference
+  const setVoice = useCallback((name: string | null) => {
+    setSelectedVoiceName(name);
+    if (name) {
+      localStorage.setItem('ed_voice_name', name);
+    } else {
+      localStorage.removeItem('ed_voice_name');
+    }
+  }, []);
+
   // Speak a string. listenAfter → start listening when speech ends.
   const speak = useCallback((text: string, listenAfter = false) => {
     if (!synthRef.current) return;
