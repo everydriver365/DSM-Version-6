@@ -232,6 +232,125 @@ function TintedIcon({
   );
 }
 
+// ---------------------------------------------------------------------------
+// Tile grid layout
+// ---------------------------------------------------------------------------
+const TILE_GRID: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "repeat(4, 1fr)",
+  gap: 8,
+};
+
+const TILE: React.CSSProperties = {
+  background: "#fff",
+  border: "1px solid #E4E8EF",
+  borderRadius: 12,
+  padding: "12px 6px",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: 6,
+  cursor: "pointer",
+  boxShadow: "0 2px 0 #E4E4E8",
+};
+
+const TILE_ICON_CONTAINER: React.CSSProperties = {
+  width: 38,
+  height: 38,
+  borderRadius: 10,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+const TILE_LABEL: React.CSSProperties = {
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 11,
+  fontWeight: 600,
+  color: "#0B2341",
+  textAlign: "center",
+  lineHeight: 1.2,
+};
+
+const TILE_SECTION_LABEL: React.CSSProperties = {
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 11,
+  fontWeight: tokens.fontWeight.bold,
+  color: "#536579",
+  textTransform: "uppercase",
+  letterSpacing: 0.6,
+  padding: "4px 4px 8px",
+};
+
+const PROMINENT_BUTTON_ROW: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: 8,
+  marginBottom: 12,
+};
+
+const PROMINENT_BUTTON_BASE: React.CSSProperties = {
+  height: 48,
+  borderRadius: 12,
+  border: "none",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 6,
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 14,
+  fontWeight: 700,
+  color: "#fff",
+};
+
+const DANGER_BUTTON_ROW: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: 8,
+  marginTop: 12,
+  marginBottom: 12,
+};
+
+const DANGER_BUTTON: React.CSSProperties = {
+  height: 44,
+  borderRadius: 12,
+  border: "1px solid #FEE2E2",
+  background: "#fff",
+  color: "#E53935",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 6,
+  fontFamily: "Poppins, sans-serif",
+  fontSize: 13,
+  fontWeight: 600,
+};
+
+function ActionTile({
+  icon: Icon,
+  iconBg,
+  iconColor,
+  label,
+  onClick,
+}: {
+  icon: React.ComponentType<{ size?: number; stroke?: number; color?: string }>;
+  iconBg: string;
+  iconColor: string;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button type="button" onClick={onClick} style={TILE}>
+      <div style={{ ...TILE_ICON_CONTAINER, background: iconBg }}>
+        <Icon size={20} stroke={1.8} color={iconColor} />
+      </div>
+      <span style={TILE_LABEL}>{label}</span>
+    </button>
+  );
+}
+
 
 function formatLessonTime(time: string): string {
   const [hStr, mStr] = (time ?? "00:00").split(":");
