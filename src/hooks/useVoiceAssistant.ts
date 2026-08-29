@@ -837,6 +837,7 @@ export function useVoiceAssistant({
     unreadCount,
     weatherData,
     trafficData,
+    lastCommand,
     speak,
     activate,
     deactivate,
