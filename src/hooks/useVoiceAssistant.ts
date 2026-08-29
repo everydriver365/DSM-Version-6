@@ -68,11 +68,61 @@ export function useVoiceAssistant({
     recognition.interimResults = false;
     recognition.lang = 'en-GB';
     recognitionRef.current = recognition;
+
+    // ---- "Hey ED" wake word: continuous background recognition ----
+    let stopped = false;
+    const wake = new SpeechRecognitionCtor();
+    wake.continuous = true;
+    wake.interimResults = true;
+    wake.lang = 'en-GB';
+    wakeRef.current = wake;
+
+    wake.onresult = (event: any) => {
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const t = String(event.results[i][0].transcript).toLowerCase();
+        if (
+          t.includes('hey ed') ||
+          t.includes('hey e d') ||
+          t.includes('hey eddie') ||
+          t.includes('hey edie')
+        ) {
+          try { wake.stop(); } catch { /* noop */ }
+          wakeActiveRef.current = false;
+          setWakeActive(false);
+          activateRef.current();
+          return;
+        }
+      }
+    };
+    wake.onend = () => {
+      // Restart continuous listening unless ED is currently active
+      if (!stopped && wakeActiveRef.current) {
+        try { wake.start(); } catch { /* noop */ }
+      }
+    };
+    wake.onerror = (e: any) => {
+      if (e?.error === 'no-speech' || e?.error === 'aborted') return;
+      setTimeout(() => {
+        if (stopped || !wakeActiveRef.current) return;
+        try { wake.start(); } catch { /* noop */ }
+      }, 1000);
+    };
+
+    try { wake.start(); } catch { /* noop */ }
+    wakeActiveRef.current = true;
+    setWakeActive(true);
+
     return () => {
+      stopped = true;
       try { recognition.stop(); } catch { /* noop */ }
+      try { wake.stop(); } catch { /* noop */ }
       recognitionRef.current = null;
+      wakeRef.current = null;
+      wakeActiveRef.current = false;
+      setWakeActive(false);
     };
   }, [supported]);
+
 
   const startListening = useCallback(() => {
     if (!recognitionRef.current) return;
