@@ -54,14 +54,32 @@ interface Pupil {
 }
 
 
-type StatusKey = "active" | "passed" | "waiting" | "lapsed";
+type GroupKey = "active" | "testBooked" | "passed" | "inactive";
+type FilterKey = "all" | GroupKey;
 
-const STATUS_TABS: { key: StatusKey; label: string }[] = [
+const FILTER_PILLS: { key: FilterKey; label: string }[] = [
+  { key: "all", label: "All" },
   { key: "active", label: "Active" },
+  { key: "testBooked", label: "Test booked" },
   { key: "passed", label: "Passed" },
-  { key: "waiting", label: "Waiting" },
-  { key: "lapsed", label: "Lapsed" },
+  { key: "inactive", label: "Inactive" },
 ];
+
+function getPupilGroup(
+  p: Pupil,
+  nextLessonMap: Record<string, string>,
+  testDateMap: Record<string, string>,
+): GroupKey {
+  const status = (p.status ?? "").toLowerCase();
+  const testStatus = String(p.test_status ?? "").toLowerCase();
+  if (status === "passed" || testStatus.startsWith("pass")) return "passed";
+  const testDate = testDateMap[p.id] ?? p.test_date;
+  const hasFutureTest = testDate && daysUntil(testDate) >= 0;
+  const hasFutureLesson = !!nextLessonMap[p.id];
+  if (hasFutureTest) return "testBooked";
+  if (hasFutureLesson) return "active";
+  return "inactive";
+}
 
 function displayName(n: string | null | undefined) {
   return (n ?? "").replace(/\s*\.\s*$/, "").trim();
