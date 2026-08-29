@@ -1396,7 +1396,7 @@ export function LessonActionsSheet({
 
         {inlineView === "main" && (
           <>
-            <div style={{ background: "#F4F6F8", margin: "0 -16px", padding: "0 16px" }}>
+            <div style={{ background: "#F4F6F8", margin: "0 -16px", padding: "20px 16px 0" }}>
               {/* Prominent buttons */}
               <div style={PROMINENT_BUTTON_ROW}>
                 <button
