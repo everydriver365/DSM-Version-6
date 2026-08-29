@@ -302,9 +302,13 @@ export function useVoiceAssistant({
     }
 
     // SCHEDULE TODAY
-    if (text.includes('schedule') ||
+    if ((text.includes('schedule') ||
       text.includes('today') ||
-      text.includes('lessons today')) {
+      text.includes('lessons today')) &&
+      !text.includes('earn') &&
+      !text.includes('made today') &&
+      !text.includes('income') &&
+      !text.includes('money')) {
       window.dispatchEvent(new CustomEvent('ed:schedule'));
       speak('Opening your schedule');
       return;
