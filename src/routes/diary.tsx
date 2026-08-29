@@ -239,7 +239,7 @@ function DiaryPage() {
 
   return (
     <DSMTopSheet title="Diary">
-      <div style={POPPINS}>
+      <div style={{ ...POPPINS, background: "#F4F6F8", flex: 1 }}>
       {/* Action bar */}
       <div
         style={{
