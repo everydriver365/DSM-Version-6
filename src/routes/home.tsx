@@ -77,6 +77,27 @@ import { resolveEventColour } from "@/lib/googleCalendarColours";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Capacitor } from "@capacitor/core";
 import UniversalSearch from "@/components/dsm/UniversalSearch";
+import { IconFlagCheck, IconNote } from "@tabler/icons-react";
+
+type QuickAddKey =
+  | "lesson" | "test" | "pupil" | "payment" | "unavailability" | "event"
+  | "course" | "note" | "eol" | "enquiry" | "call";
+
+const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus; bg: string }[] = [
+  { key: "lesson", label: "Add lesson", icon: IconCalendarPlus, bg: "#1877D6" },
+  { key: "test", label: "Add test", icon: IconCalendarEvent, bg: "#F59E0B" },
+  { key: "pupil", label: "Add pupil", icon: IconUserPlus, bg: "#18A999" },
+  { key: "payment", label: "Take payment", icon: IconCreditCard, bg: "#16A34A" },
+  { key: "unavailability", label: "Add unavailability", icon: IconCalendarOff, bg: "#E53935" },
+  { key: "event", label: "Add event", icon: IconCalendarEvent, bg: "#7B61FF" },
+  { key: "course", label: "Add course", icon: IconSchool, bg: "#0B2341" },
+  { key: "note", label: "Add note", icon: IconNote, bg: "#536579" },
+  { key: "eol", label: "End of lesson", icon: IconFlagCheck, bg: "#2C97DE" },
+  { key: "enquiry", label: "Log enquiry", icon: IconMail, bg: "#7B61FF" },
+  { key: "call", label: "Log call", icon: IconPhone, bg: "#16A34A" },
+];
+
+
 
 const SUPABASE_URL = "https://bjpqxfrihwjcqprmoqfs.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqcHF4ZnJpaHdqY3Fwcm1vcWZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzQ4MjEsImV4cCI6MjA5NzA1MDgyMX0.HKlgx3dxP3uxX9wMRRUnfb0IPwaBpFcut_iUgT5XFeo";
