@@ -445,6 +445,71 @@ function GlobalMenu() {
           </div>
         </div>
 
+        {/* Sign-in status row */}
+        <div
+          style={{
+            background: "#F4F6F8",
+            padding: "8px 16px",
+            borderBottom: "1px solid #E4E8EF",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          {isSignedIn ? (
+            <>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0, flex: 1 }}>
+                <span
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "#16A34A",
+                    flexShrink: 0,
+                  }}
+                />
+                <span style={{ fontSize: 12, color: "#536579", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  Signed in as {profile?.email ?? ""}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={signOut}
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  marginLeft: 8,
+                  fontSize: 12,
+                  fontWeight: tokens.fontWeight.semibold,
+                  color: "#E53935",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                }}
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => go("/login")}
+              style={{
+                background: "#2C97DE",
+                color: "#fff",
+                borderRadius: 20,
+                padding: "8px 20px",
+                fontSize: 13,
+                fontWeight: tokens.fontWeight.semibold,
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Sign in
+            </button>
+          )}
+        </div>
+
         {/* 2-column action grid */}
         <div
           style={{
