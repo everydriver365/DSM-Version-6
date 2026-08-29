@@ -38,6 +38,11 @@ export function useVoiceAssistant({
   const [transcript, setTranscript] = useState('');
   const [lastCommand, setLastCommand] = useState('');
   const [wakeActive, setWakeActive] = useState(false);
+  const [selectedVoiceName, setSelectedVoiceName] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem('ed_voice_name') ?? null;
+  });
+  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const recognitionRef = useRef<any>(null);
   const wakeRef = useRef<any>(null);
