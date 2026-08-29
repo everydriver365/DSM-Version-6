@@ -593,7 +593,7 @@ export function BottomNav({
       >
         {useCustom ? renderCustomItems(items!) : renderDefaultItems()}
       </nav>
-      {isSpeaking && (
+      {(isSpeaking || isListening) && (
         <div
           style={{
             position: "fixed",
@@ -601,7 +601,7 @@ export function BottomNav({
             left: "50%",
             transform: "translateX(-50%)",
             zIndex: 100,
-            background: "#0B2341",
+            background: isListening ? "#2C97DE" : "#0B2341",
             color: "#fff",
             fontSize: 12,
             borderRadius: 20,
@@ -610,9 +610,10 @@ export function BottomNav({
             pointerEvents: "none",
           }}
         >
-          ED is speaking…
+          {isListening ? "ED is listening…" : "ED is speaking…"}
         </div>
       )}
+
     </>
   );
 }
