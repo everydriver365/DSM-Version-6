@@ -179,7 +179,12 @@ export function useVoiceAssistant({
 
   // Build and speak the lesson brief
   const activate = useCallback(() => {
+    // Pause wake-word listening while ED speaks / listens
+    wakeActiveRef.current = false;
+    setWakeActive(false);
+    try { wakeRef.current?.stop(); } catch { /* noop */ }
     const name = instructorFirstName;
+
     const pupilName = nextLesson?.pupils?.name
       ?.split(' ')[0] ?? null;
     const time = nextLesson?.lesson_time
