@@ -1711,7 +1711,7 @@ function SchedulePage() {
           flex: 1,
           minHeight: 0,
           marginTop: -18,
-          background: tokens.white,
+          background: "#F4F6F8",
           borderRadius: "16px 16px 0 0",
           overflow: "hidden",
           display: "flex",
