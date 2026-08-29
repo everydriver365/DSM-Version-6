@@ -42,18 +42,6 @@ export function ScheduleDateDivider({ date, label }: ScheduleDateDividerProps) {
 
   return (
     <div className={`flex items-center gap-2.5 ${date ? "mb-5" : "mb-1.5"}`}>
-      <span
-        style={{
-          fontSize: typography.sizes.sectionLabel,
-          fontWeight: typography.weights.bold,
-          color: typography.colors.accent,
-          letterSpacing: "0.3px",
-          textTransform: "uppercase",
-          fontFamily: typography.family,
-        }}
-      >
-        {dateLabel}
-      </span>
       <Separator className="flex-1 bg-border" />
     </div>
   );
