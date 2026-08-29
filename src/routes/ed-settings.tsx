@@ -525,7 +525,7 @@ function EDSettingsPage() {
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          speak("Hi, I'm ED. How can I help?", false);
+                          previewVoice(voice);
                         }}
                         style={{
                           background: "#EAF5FC",
