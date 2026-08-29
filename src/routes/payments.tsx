@@ -19,7 +19,7 @@ import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";
 import { pupilColour } from "@/components/PupilAvatar";
 import { BottomSheet, SheetGroup, SheetRow, SheetRadioRow, SheetSearchRow } from "@/components/dsm/BottomSheetV2";
-import SegmentedTabs from "@/components/learn/shared/SegmentedTabs";
+
 
 export const Route = createFileRoute("/payments")({
   head: () => ({
@@ -211,8 +211,32 @@ interface HistoryRow {
   pupils: { name: string } | null;
 }
 
-type DatePreset = "today" | "week" | "month" | "year" | "all";
+type DatePreset = "today" | "week" | "month" | "lastMonth" | "all";
 type MethodFilter = "all" | "cash" | "card" | "qr" | "bank_transfer" | "klarna" | "clearpay" | "refund";
+type UIMethodFilter = "all" | "cash" | "card" | "bank_transfer" | "square" | "refund";
+const METHOD_FILTER_MAP: Record<UIMethodFilter, MethodFilter> = {
+  all: "all",
+  cash: "cash",
+  card: "card",
+  bank_transfer: "bank_transfer",
+  square: "qr",
+  refund: "refund",
+};
+const DATE_PRESETS: { id: DatePreset; label: string }[] = [
+  { id: "today", label: "Today" },
+  { id: "week", label: "This week" },
+  { id: "month", label: "This month" },
+  { id: "lastMonth", label: "Last month" },
+  { id: "all", label: "All time" },
+];
+const METHOD_PILLS: { id: UIMethodFilter; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "cash", label: "Cash" },
+  { id: "card", label: "Card" },
+  { id: "bank_transfer", label: "Bank transfer" },
+  { id: "square", label: "Square" },
+  { id: "refund", label: "Refund" },
+];
 
 // ---------- page ----------
 function PaymentsPage() {
@@ -227,7 +251,7 @@ function PaymentsPage() {
   const [pupilFilter, setPupilFilter] = useState<string>("");
   const [pupilPickerOpen, setPupilPickerOpen] = useState(false);
   const [datePreset, setDatePreset] = useState<DatePreset>("month");
-  const [methodFilter, setMethodFilter] = useState<MethodFilter>("all");
+  const [methodFilter, setMethodFilter] = useState<UIMethodFilter>("all");
 
   const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
   const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
@@ -304,23 +328,41 @@ function PaymentsPage() {
     const rows = history ?? [];
     const now = new Date();
     let fromMs = -Infinity;
+    let toMs = Infinity;
     switch (datePreset) {
-      case "today": fromMs = startOfDay(now).getTime(); break;
+      case "today": fromMs = startOfDay(now).getTime(); toMs = fromMs + 86400000; break;
       case "week": fromMs = startOfWeek(now).getTime(); break;
       case "month": fromMs = startOfMonth(now).getTime(); break;
-      case "year": fromMs = startOfYear(now).getTime(); break;
+      case "lastMonth":
+        fromMs = new Date(now.getFullYear(), now.getMonth() - 1, 1).getTime();
+        toMs = startOfMonth(now).getTime();
+        break;
       case "all": default: break;
     }
+    const internalMethod = METHOD_FILTER_MAP[methodFilter];
     return rows.filter((r) => {
       if (pupilFilter && r.pupil_id !== pupilFilter) return false;
-      if (new Date(r.created_at).getTime() < fromMs) return false;
-      if (methodFilter !== "all") {
-        if (methodFilter === "refund") { if (r.payment_status !== "refund") return false; }
-        else if (r.payment_method !== methodFilter) return false;
+      const t = new Date(r.created_at).getTime();
+      if (t < fromMs || t >= toMs) return false;
+      if (internalMethod !== "all") {
+        if (internalMethod === "refund") { if (r.payment_status !== "refund") return false; }
+        else if (r.payment_method !== internalMethod) return false;
       }
       return true;
     });
   }, [history, pupilFilter, datePreset, methodFilter]);
+
+  // Summary for the current filter selection
+  const summary = useMemo(() => {
+    let totalReceived = 0;
+    let outstanding = 0;
+    for (const r of filtered) {
+      const amt = Number(r.lesson_cost ?? 0);
+      if (r.payment_status === "paid") totalReceived += amt;
+      else if (r.payment_status !== "refund") outstanding += amt;
+    }
+    return { totalReceived, transactions: filtered.length, outstanding };
+  }, [filtered]);
 
   const groups = useMemo(() => {
     const map = new Map<string, { label: string; rows: HistoryRow[]; total: number }>();
@@ -464,63 +506,72 @@ function PaymentsPage() {
         </div>
       )}
 
-      {/* IconSearch bar (opens existing pupil picker) */}
-      <button
-        type="button"
-        onClick={() => setPupilPickerOpen(true)}
-        style={{
-          background: "#F2F2F4",
-          fontFamily: 'Poppins, sans-serif',
-          borderRadius: 10,
-          padding: "9px 12px",
-
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          margin: "0 16px 14px",
-          cursor: "pointer",
-          border: 0,
-          width: "calc(100% - 32px)",
-          textAlign: "left",
-        }}
-      >
-        <IconSearch stroke={1.5} size={14} color="#6E6E73" />
+      {/* Filtered summary */}
+      <div style={{ padding: "0 16px", marginBottom: 12 }}>
         <div
           style={{
-            fontSize: 13,
-            color: pupilFilter ? "#000000" : "#6E6E73",
-            flex: 1,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            ...POPPINS,
+            background: "#fff",
+            borderRadius: 12,
+            border: "1px solid #E4E8EF",
+            padding: "14px 16px",
+            display: "grid",
+            gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+            gap: 8,
           }}
         >
-          {pupilFilter ? pupilName : "All pupils"}
+          <SummaryCol value={formatGBP(summary.totalReceived)} label="Total received" color="#16A34A" />
+          <SummaryCol value={String(summary.transactions)} label="Transactions" color="#0B2341" />
+          <SummaryCol value={formatGBP(summary.outstanding)} label="Outstanding" color="#E53935" />
         </div>
-        {pupilFilter && (
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); setPupilFilter(""); }}
-            style={{ background: "none", border: 0, color: "#8A94A6", fontSize: 12, cursor: "pointer" }}
-          >
-            Clear
-          </button>
-        )}
-      </button>
+      </div>
 
-      {/* Period filter — shared segmented control */}
-      <div style={{ padding: "0 16px", marginBottom: 14 }}>
-        <SegmentedTabs<DatePreset>
-          tabs={[
-            { id: "today", label: "Today" },
-            { id: "week", label: "Week" },
-            { id: "month", label: "Month" },
-            { id: "year", label: "Year" },
-          ]}
-          active={datePreset}
-          onChange={(v) => setDatePreset(v)}
-        />
+      {/* Filter bar */}
+      <div style={{ padding: "0 16px", marginBottom: 14, display: "flex", flexDirection: "column", gap: 10 }}>
+        {/* Row 1 — Date preset pills */}
+        <div className="no-scrollbar" style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }}>
+          {DATE_PRESETS.map((p) => (
+            <FilterPill key={p.id} label={p.label} active={datePreset === p.id} onClick={() => setDatePreset(p.id)} />
+          ))}
+        </div>
+
+        {/* Row 2 — Method filter pills */}
+        <div className="no-scrollbar" style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }}>
+          {METHOD_PILLS.map((p) => (
+            <FilterPill key={p.id} label={p.label} active={methodFilter === p.id} onClick={() => setMethodFilter(p.id)} />
+          ))}
+        </div>
+
+        {/* Row 3 — Pupil search */}
+        <div style={{ position: "relative" }}>
+          <IconSearch stroke={1.5} size={16} color="#536579" style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
+          <input
+            type="text"
+            readOnly
+            value={pupilFilter ? pupilName : ""}
+            placeholder="All pupils"
+            onClick={() => setPupilPickerOpen(true)}
+            style={{
+              width: "100%",
+              background: "#fff",
+              borderRadius: 12,
+              border: "1px solid #E4E8EF",
+              padding: "10px 14px 10px 40px",
+              fontSize: 14,
+              color: pupilFilter ? "#000" : "#536579",
+              cursor: "pointer",
+              ...POPPINS,
+            }}
+          />
+          {pupilFilter && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); setPupilFilter(""); }}
+              style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: 0, color: "#8A94A6", cursor: "pointer", display: "flex", alignItems: "center" }}
+            >
+              <IconX size={16} />
+            </button>
+          )}
+        </div>
       </div>
 
 
@@ -585,13 +636,13 @@ function PaymentsPage() {
                       key={row.id}
                       style={{
                         background: "#FFFFFF",
-                        border: "0.5px solid #E5E5EA",
+                        border: "1px solid #E4E8EF",
                         borderRadius: 12,
                         marginBottom: 8,
                         transition: "transform 0.1s ease, opacity 0.1s ease",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px" }}>
                         <div
                           style={{
                             width: 40,
@@ -625,9 +676,9 @@ function PaymentsPage() {
                         >
                           <div
                             style={{
-                              fontSize: 14,
-                              fontWeight: 500,
-                              color: "#000",
+                              fontSize: 15,
+                              fontWeight: 700,
+                              color: "#0B2341",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
@@ -636,15 +687,30 @@ function PaymentsPage() {
                           >
                             {displayPupilName(row.pupils?.name) || "Unknown pupil"}
                           </div>
-                          <div style={{ fontSize: 12, color: "#6E6E73", marginTop: 2, ...POPPINS }}>
-                            {methodLabel(isRefund ? "refund" : row.payment_method)} · {formatTime(row.created_at)}
+                          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4, ...POPPINS }}>
+                            <span style={{ fontSize: 12, color: "#536579" }}>
+                              {formatTime(row.created_at)} · {methodLabel(isRefund ? "refund" : row.payment_method)}
+                            </span>
+                            <span
+                              style={{
+                                background: methodBg(row.payment_method, isRefund),
+                                color: "#fff",
+                                fontSize: 10,
+                                fontWeight: 600,
+                                padding: "2px 8px",
+                                borderRadius: 999,
+                                ...POPPINS,
+                              }}
+                            >
+                              {methodLabel(isRefund ? "refund" : row.payment_method)}
+                            </span>
                           </div>
                         </button>
                         <div
                           style={{
-                            fontSize: 13,
-                            fontWeight: 500,
-                            color: isNonRevenue ? "#6E6E73" : isRefund ? "#C8434F" : "#3B8B3B",
+                            fontSize: 15,
+                            fontWeight: 700,
+                            color: isNonRevenue ? "#6E6E73" : isRefund ? "#E53935" : "#16A34A",
                             textAlign: "right",
                             flexShrink: 0,
                             ...POPPINS,
@@ -751,6 +817,50 @@ function StatBlock({ label, value, color, valueSize = 19 }: { label: string; val
       </div>
       <div style={{ fontSize: valueSize, fontWeight: 500, letterSpacing: "-0.2px", marginTop: 4, color, ...POPPINS }}>{value}</div>
     </div>
+  );
+}
+
+function SummaryCol({ value, label, color }: { value: string; label: string; color: string }) {
+  return (
+    <div style={{ minWidth: 0, textAlign: "center" }}>
+      <div style={{ fontSize: 16, fontWeight: 700, color, ...POPPINS, lineHeight: 1.2 }}>{value}</div>
+      <div
+        style={{
+          fontSize: 10,
+          fontWeight: 500,
+          color: "#6E6E73",
+          textTransform: "uppercase",
+          letterSpacing: "0.3px",
+          marginTop: 4,
+          ...POPPINS,
+        }}
+      >
+        {label}
+      </div>
+    </div>
+  );
+}
+
+function FilterPill({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        flexShrink: 0,
+        background: active ? "#0B2341" : "#fff",
+        color: active ? "#fff" : "#536579",
+        border: active ? "1px solid #0B2341" : "1px solid #E4E8EF",
+        borderRadius: 20,
+        padding: "6px 14px",
+        fontSize: 13,
+        fontWeight: 600,
+        cursor: "pointer",
+        ...POPPINS,
+      }}
+    >
+      {label}
+    </button>
   );
 }
 
