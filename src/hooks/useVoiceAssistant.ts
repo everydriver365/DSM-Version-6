@@ -902,11 +902,71 @@ export function useVoiceAssistant({
       return;
     }
 
-    // UNRECOGNISED
-    speak('Sorry, I did not understand that. Try saying: call, message, on my way, running late, or stop.');
-    setTimeout(() => {
-      startListening();
-    }, 2500);
+    // UNRECOGNISED — ask ED AI
+    const getRateLimit = (): { date: string; count: number } => {
+      const today = new Date().toISOString().slice(0, 10);
+      try {
+        const stored = localStorage.getItem('ed_ai_limit');
+        if (!stored) return { date: today, count: 0 };
+        const parsed = JSON.parse(stored);
+        if (parsed.date !== today) return { date: today, count: 0 };
+        return parsed;
+      } catch {
+        return { date: today, count: 0 };
+      }
+    };
+
+    const incrementRateLimit = () => {
+      const limit = getRateLimit();
+      try {
+        localStorage.setItem(
+          'ed_ai_limit',
+          JSON.stringify({ date: limit.date, count: limit.count + 1 }),
+        );
+      } catch { /* noop */ }
+    };
+
+    const limit = getRateLimit();
+    if (limit.count >= 20) {
+      speak('You have reached your daily question limit. Try again tomorrow.');
+      return;
+    }
+    incrementRateLimit();
+
+    speak('Let me think about that...');
+
+    (async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        if (!token) {
+          speak('I need you to be logged in to answer questions.');
+          return;
+        }
+
+        const res = await fetch('/api/ed-ai', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            question: text,
+            context: `isPlaying: ${(window as any).__edRadio?.isPlaying ?? false}`,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (data?.answer) {
+          speak(data.answer, true);
+        } else {
+          speak('Sorry, I could not get an answer right now.', true);
+        }
+      } catch {
+        speak('Sorry, I am having trouble connecting right now.', true);
+      }
+    })();
   }, [
     nextLesson,
     unreadCount,
