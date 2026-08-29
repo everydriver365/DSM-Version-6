@@ -1367,37 +1367,6 @@ function QuickActionsGrid({ pages }: { pages: QaTile[][] }) {
   );
 }
 
-function PinnedQuickActions({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
-  const pinned = [
-    { icon: <IconMapPin stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Tracking", route: "/live" },
-    { icon: <IconRosetteDiscount stroke={1.5} size={20} color="#FFFFFF" />, bg: "#7C3AED", label: "Perks", route: "/perks" },
-    { icon: <IconMapSearch stroke={1.5} size={20} color="#FFFFFF" />, bg: "#18A999", label: "Nearest", route: "/nearest" },
-    { icon: <IconMessageCircle stroke={1.5} size={20} color="#FFFFFF" />, bg: "#1877D6", label: "Messages", route: "/messages" },
-    { icon: <IconSchool stroke={1.5} size={20} color="#FFFFFF" />, bg: "#E53935", label: "Courses", route: "/courses" },
-    { icon: <IconUserCircle stroke={1.5} size={20} color="#FFFFFF" />, bg: "#536579", label: "Profile", route: "/settings" },
-  ];
-
-  return (
-    <div style={{ background: PAGE_BACKGROUND, borderBottom: '1px solid #E4E8EF', padding: '12px 16px' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
-        {pinned.map((tile) => (
-          <button
-            key={tile.label}
-            type="button"
-            onClick={() => { tapLight(); navigate({ to: tile.route as never }); }}
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
-          >
-            <span style={{ width: 44, height: 44, borderRadius: 12, background: tile.bg, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-              {tile.icon}
-            </span>
-            <span style={{ fontSize: 10, fontWeight: 600, color: '#0B2341', fontFamily: 'Poppins, sans-serif', textAlign: 'center' }}>{tile.label}</span>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function isLessonPast(
   lessonDate: string,
   lessonTime: string,
@@ -7262,8 +7231,6 @@ function HomePage() {
           );
         })()}
 
-
-            <PinnedQuickActions navigate={navigate} />
 
             <div style={SECTION_WRAPPER_STYLE}>
               <style>{`
