@@ -434,13 +434,15 @@ function NearestPage() {
     }
   };
 
-  const navigateTo = (r: Result) => {
+  const navigateCoords = (lat: number, lng: number, name: string) => {
     const isApple = /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent);
     const url = isApple
-      ? `https://maps.apple.com/?daddr=${r.lat},${r.lng}&q=${encodeURIComponent(r.name)}&dirflg=d`
-      : `https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lng}&travelmode=driving`;
+      ? `https://maps.apple.com/?daddr=${lat},${lng}&q=${encodeURIComponent(name)}&dirflg=d`
+      : `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
     openUrl(url, "_system");
   };
+
+  const navigateTo = (r: Result) => navigateCoords(r.lat, r.lng, r.name);
 
   const submitSearch = (text: string) => {
     const t = text.trim();
