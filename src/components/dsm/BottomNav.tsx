@@ -329,14 +329,22 @@ function MicPulseStyle() {
 function CenterMicButton({
   onClick,
   isSpeaking,
+  isListening,
 }: {
   onClick: () => void;
   isSpeaking: boolean;
+  isListening: boolean;
 }) {
   return (
     <button
       type="button"
-      aria-label={isSpeaking ? "ED is speaking" : "Open voice assistant"}
+      aria-label={
+        isListening
+          ? "ED is listening"
+          : isSpeaking
+            ? "ED is speaking"
+            : "Open voice assistant"
+      }
       onClick={() => {
         tapLight();
         onClick();
@@ -346,7 +354,7 @@ function CenterMicButton({
         width: 54,
         height: 54,
         borderRadius: "50%",
-        background: tokens.blue,
+        background: isListening ? "#2C97DE" : tokens.blue,
         border: "3px solid #FFFFFF",
         boxShadow: "0 4px 14px rgba(24,119,214,0.35), 0 6px 20px rgba(11,31,58,0.12)",
         cursor: "pointer",
@@ -360,11 +368,12 @@ function CenterMicButton({
         size={24}
         color="#FFFFFF"
         stroke={1.8}
-        className={isSpeaking ? "edp-mic-pulsing" : undefined}
+        className={isSpeaking || isListening ? "edp-mic-pulsing" : undefined}
       />
     </button>
   );
 }
+
 
 export function BottomNav({
   active,
