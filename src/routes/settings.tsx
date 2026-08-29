@@ -863,7 +863,7 @@ function SettingsPage() {
                 ...POPPINS,
               }}
             >
-              ED Settings
+              "Hey ED" Settings
             </div>
             <div
               style={{
