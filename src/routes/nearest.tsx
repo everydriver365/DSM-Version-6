@@ -4,6 +4,7 @@ import { LoadingSpinner } from "@/components/dsm/LoadingSpinner";
 import { findNearbyPlaces } from "@/lib/nearest.functions";
 import { reverseGeocode } from "@/lib/geocode.functions";
 import { openUrl } from "@/lib/openUrl";
+import { supabase } from "@/lib/supabaseClient";
 
 export const Route = createFileRoute("/nearest")({
   head: () => ({
