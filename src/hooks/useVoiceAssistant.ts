@@ -103,7 +103,11 @@ export function useVoiceAssistant({
           try { wake.stop(); } catch { /* noop */ }
           wakeActiveRef.current = false;
           setWakeActive(false);
-          activateRef.current();
+          // Wake word always just says "Yes?" and listens — never reads the full brief
+          speak("Yes?");
+          setTimeout(() => {
+            startListening();
+          }, 800);
           return;
         }
       }
