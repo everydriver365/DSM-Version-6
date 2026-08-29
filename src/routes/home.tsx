@@ -3350,6 +3350,219 @@ function HomePage() {
       window.dispatchEvent(new CustomEvent("ed:enquiries:response", { detail: { count: count ?? 0 } }));
     };
 
+    // ---------------- Phase 5 voice handlers ----------------
+    const addDays = (d: Date, n: number) => {
+      const x = new Date(d);
+      x.setDate(x.getDate() + n);
+      return x;
+    };
+    const startOfWeek = () => {
+      const d = new Date();
+      const dow = (d.getDay() + 6) % 7; // Monday = 0
+      return addDays(d, -dow);
+    };
+    const hhmm = (t?: string | null) => (t ?? "").slice(0, 5);
+
+    const onOwes = async () => {
+      if (!userId) return;
+      const { data } = await supabase
+        .from("lessons")
+        .select("amount_due, payment_status, pupil_id, pupils(name)")
+        .eq("instructor_id", userId)
+        .is("deleted_at", null)
+        .neq("payment_status", "paid")
+        .gt("amount_due", 0);
+      const totals = new Map<string, { name: string; amount: number }>();
+      for (const row of (data ?? []) as Array<{ pupil_id: string; amount_due: number | null; pupils?: { name?: string } | null }>) {
+        const name = (row.pupils?.name ?? "A pupil").split(/\s+/)[0]!;
+        const prev = totals.get(row.pupil_id);
+        totals.set(row.pupil_id, { name, amount: (prev?.amount ?? 0) + Number(row.amount_due ?? 0) });
+      }
+      window.dispatchEvent(new CustomEvent("ed:owes:response", {
+        detail: { pupils: [...totals.values()] },
+      }));
+    };
+
+    const sumPaidBetween = async (from: string, to: string) => {
+      if (!userId) return 0;
+      const { data } = await supabase
+        .from("lessons")
+        .select("amount_due")
+        .eq("instructor_id", userId)
+        .is("deleted_at", null)
+        .eq("payment_status", "paid")
+        .gte("lesson_date", from)
+        .lte("lesson_date", to);
+      return (data ?? []).reduce((s: number, l: { amount_due: number | null }) => s + Number(l.amount_due ?? 0), 0);
+    };
+
+    const onEarningsWeek = async () => {
+      const from = ymd(startOfWeek());
+      const to = ymd(addDays(startOfWeek(), 6));
+      const amount = await sumPaidBetween(from, to);
+      window.dispatchEvent(new CustomEvent("ed:earnings:week:response", { detail: { amount } }));
+    };
+
+    const onEarningsMonth = async () => {
+      const now2 = new Date();
+      const from = ymd(new Date(now2.getFullYear(), now2.getMonth(), 1));
+      const to = ymd(new Date(now2.getFullYear(), now2.getMonth() + 1, 0));
+      const amount = await sumPaidBetween(from, to);
+      window.dispatchEvent(new CustomEvent("ed:earnings:month:response", { detail: { amount } }));
+    };
+
+    const onTomorrow = () => {
+      const target = ymd(addDays(new Date(), 1));
+      const rows = lessons
+        .filter((l) => l.lesson_date === target && l.status !== "cancelled")
+        .sort((a, b) => (a.lesson_time ?? "").localeCompare(b.lesson_time ?? ""));
+      window.dispatchEvent(new CustomEvent("ed:tomorrow:response", {
+        detail: {
+          count: rows.length,
+          firstName: rows[0]?.pupils?.name?.split(/\s+/)[0],
+          firstTime: hhmm(rows[0]?.lesson_time),
+        },
+      }));
+    };
+
+    const onLastLesson = () => {
+      const todayYmd = ymd(new Date());
+      const rows = lessons
+        .filter((l) => l.lesson_date === todayYmd && l.status !== "cancelled")
+        .sort((a, b) => (a.lesson_time ?? "").localeCompare(b.lesson_time ?? ""));
+      const last = rows[rows.length - 1];
+      window.dispatchEvent(new CustomEvent("ed:lastlesson:response", {
+        detail: { name: last?.pupils?.name?.split(/\s+/)[0], time: hhmm(last?.lesson_time) },
+      }));
+    };
+
+    const onPupilCount = () => {
+      const ids = new Set(lessons.filter((l) => l.pupil_id).map((l) => l.pupil_id));
+      window.dispatchEvent(new CustomEvent("ed:pupilcount:response", { detail: { count: ids.size } }));
+    };
+
+    const onTestDate = async (e: Event) => {
+      const pupilId = (e as CustomEvent).detail?.pupilId ?? upcoming?.pupil_id;
+      if (!pupilId || !userId) {
+        window.dispatchEvent(new CustomEvent("ed:testdate:response", { detail: {} }));
+        return;
+      }
+      const { data } = await supabase
+        .from("lessons")
+        .select("lesson_date, lesson_time, pupils(name)")
+        .eq("instructor_id", userId)
+        .eq("pupil_id", pupilId)
+        .eq("lesson_type", "test")
+        .is("deleted_at", null)
+        .gte("lesson_date", ymd(new Date()))
+        .order("lesson_date", { ascending: true })
+        .limit(1);
+      const row = (data ?? [])[0] as { lesson_date?: string; pupils?: { name?: string } | null } | undefined;
+      window.dispatchEvent(new CustomEvent("ed:testdate:response", {
+        detail: {
+          name: row?.pupils?.name?.split(/\s+/)[0] ?? upcoming?.pupils?.name?.split(/\s+/)[0],
+          date: row?.lesson_date
+            ? new Date(`${row.lesson_date}T00:00:00`).toLocaleDateString("en-GB", {
+                weekday: "long", day: "numeric", month: "long",
+              })
+            : undefined,
+        },
+      }));
+    };
+
+    const onHours = async (e: Event) => {
+      const pupilId = (e as CustomEvent).detail?.pupilId ?? upcoming?.pupil_id;
+      if (!pupilId || !userId) return;
+      const { data } = await supabase
+        .from("lessons")
+        .select("duration_minutes")
+        .eq("instructor_id", userId)
+        .eq("pupil_id", pupilId)
+        .is("deleted_at", null)
+        .neq("status", "cancelled");
+      const mins = (data ?? []).reduce((s: number, l: { duration_minutes: number | null }) => s + Number(l.duration_minutes ?? 0), 0);
+      window.dispatchEvent(new CustomEvent("ed:hours:response", {
+        detail: {
+          name: upcoming?.pupils?.name?.split(/\s+/)[0],
+          hours: Math.round((mins / 60) * 10) / 10,
+        },
+      }));
+    };
+
+    const onReminder = async (e: Event) => {
+      const detail = (e as CustomEvent).detail ?? {};
+      const phone: string | undefined = detail.phone ?? upcoming?.pupils?.phone ?? undefined;
+      const name: string = detail.name ?? firstName();
+      const time: string = detail.time ?? hhmm(upcoming?.lesson_time);
+      if (!phone || !userId) {
+        window.dispatchEvent(new CustomEvent("ed:reminder:response", { detail: { name, ok: false } }));
+        return;
+      }
+      const message = `Hi ${name}, just a reminder your lesson is tomorrow at ${time}. See you then!`;
+      const { error } = await supabase.from("sms_queue").insert({
+        instructor_id: userId,
+        pupil_phone: phone,
+        message,
+      });
+      if (!error) void supabase.functions.invoke("send-sms", { body: {} });
+      window.dispatchEvent(new CustomEvent("ed:reminder:response", { detail: { name, ok: !error } }));
+    };
+
+    const onPaymentRequest = (e: Event) => {
+      const pupilId = (e as CustomEvent).detail?.pupilId ?? upcoming?.pupil_id;
+      navigate({ to: "/take-payment", search: { pupilId, lessonId: upcoming?.id } } as never);
+    };
+
+    const onCancelLesson = async (e: Event) => {
+      const lessonId = (e as CustomEvent).detail?.lessonId ?? upcoming?.id;
+      if (!lessonId) return;
+      const { error } = await supabase
+        .from("lessons")
+        .update({ deleted_at: new Date().toISOString() })
+        .eq("id", lessonId);
+      if (error) { toast("Couldn't cancel the lesson"); return; }
+      toast("Lesson cancelled");
+      setReloadKey((k) => k + 1);
+    };
+
+    const onBusiestDay = () => {
+      const from = startOfWeek();
+      const counts = new Map<string, number>();
+      for (let i = 0; i < 7; i++) {
+        const key = ymd(addDays(from, i));
+        counts.set(key, 0);
+      }
+      for (const l of lessons) {
+        if (l.status === "cancelled") continue;
+        if (counts.has(l.lesson_date)) counts.set(l.lesson_date, (counts.get(l.lesson_date) ?? 0) + 1);
+      }
+      let bestKey: string | null = null;
+      let best = 0;
+      for (const [key, n] of counts) {
+        if (n > best) { best = n; bestKey = key; }
+      }
+      window.dispatchEvent(new CustomEvent("ed:busiestday:response", {
+        detail: {
+          day: bestKey && best > 0
+            ? new Date(`${bestKey}T00:00:00`).toLocaleDateString("en-GB", { weekday: "long" })
+            : undefined,
+          count: best,
+        },
+      }));
+    };
+
+    const onCancellations = () => {
+      const todayYmd = ymd(new Date());
+      const names = lessons
+        .filter((l) => l.lesson_date === todayYmd && l.status === "cancelled")
+        .map((l) => l.pupils?.name?.split(/\s+/)[0] ?? "a pupil");
+      window.dispatchEvent(new CustomEvent("ed:cancellations:response", { detail: { names } }));
+    };
+
+    const onCancelConfirm = () => { /* waits for the yes/no follow-up */ };
+
+
+
     // ---- Pro Radio / Pro Live (Phase 4) ----
     // The player lives on /live-news; when it isn't mounted we navigate there
     // and leave a flag it picks up on mount.
