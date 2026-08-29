@@ -542,6 +542,77 @@ function LiveNewsPage() {
   }, [episodes]);
 
 
+  // ---- ED voice assistant: Pro Radio / Pro Live control (Phase 4) ----
+  useEffect(() => {
+    (window as any).__edRadioMounted = true;
+    return () => {
+      (window as any).__edRadioMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const firstPlayable = () =>
+      visibleEpisodes.find((e) => e.audioUrl) ?? (episodes ?? []).find((e) => e.audioUrl) ?? null;
+
+    const onPlay = () => {
+      goToTab("podcasts");
+      const el = audioRef.current;
+      if (playing && el) {
+        void el.play().catch(() => undefined);
+        return;
+      }
+      const ep = firstPlayable();
+      if (ep) playEpisode(ep);
+    };
+    const onStop = () => {
+      audioRef.current?.pause();
+    };
+    const onNext = () => {
+      if (playing) {
+        playNext();
+        return;
+      }
+      const ep = firstPlayable();
+      if (ep) playEpisode(ep);
+    };
+    const onWhats = () => {
+      const name = playing ? `${playing.title}${playing.showName ? `, from ${playing.showName}` : ""}` : "Pro Radio";
+      window.dispatchEvent(new CustomEvent("ed:radio:whats:response", { detail: { name } }));
+    };
+    const onLiveOpen = () => goToTab("live");
+    const onLiveJoin = () => {
+      const session = sessions?.find((x) => x.is_live);
+      if (session) navigate({ to: `/dsm-live/${session.id}` as never });
+      else goToTab("live");
+    };
+
+    window.addEventListener("ed:radio:play", onPlay);
+    window.addEventListener("ed:radio:stop", onStop);
+    window.addEventListener("ed:radio:next", onNext);
+    window.addEventListener("ed:radio:whats", onWhats);
+    window.addEventListener("ed:live:open", onLiveOpen);
+    window.addEventListener("ed:live:join", onLiveJoin);
+    return () => {
+      window.removeEventListener("ed:radio:play", onPlay);
+      window.removeEventListener("ed:radio:stop", onStop);
+      window.removeEventListener("ed:radio:next", onNext);
+      window.removeEventListener("ed:radio:whats", onWhats);
+      window.removeEventListener("ed:live:open", onLiveOpen);
+      window.removeEventListener("ed:live:join", onLiveJoin);
+    };
+  }, [visibleEpisodes, episodes, playing, playEpisode, playNext, goToTab, sessions, navigate]);
+
+  // Voice asked for radio from another screen — autoplay once we arrive.
+  useEffect(() => {
+    if (!episodes || episodes.length === 0) return;
+    let flag: string | null = null;
+    try { flag = localStorage.getItem("ed_radio_autoplay"); } catch { /* noop */ }
+    if (!flag) return;
+    try { localStorage.removeItem("ed_radio_autoplay"); } catch { /* noop */ }
+    const ep = episodes.find((e) => e.audioUrl);
+    if (ep) playEpisode(ep);
+  }, [episodes, playEpisode]);
+
   const upcomingSessions = sessions?.filter((s) => !s.is_live) ?? [];
   const allSessions = activeSession ? [activeSession, ...upcomingSessions] : upcomingSessions;
 
