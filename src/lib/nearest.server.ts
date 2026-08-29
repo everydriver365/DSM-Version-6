@@ -95,21 +95,39 @@ export async function searchNearbyPlaces(args: {
         locationRestriction: { circle: { center: { latitude: lat, longitude: lng }, radius } },
       };
 
-  const url = googleApiKey ? `https://places.googleapis.com${path}` : `${GATEWAY_URL}${path}`;
-  const headers: Record<string, string> = googleApiKey
-    ? {
-        "X-Goog-Api-Key": googleApiKey,
-        "Content-Type": "application/json",
-        "X-Goog-FieldMask": FIELD_MASK,
-      }
-    : {
-        Authorization: `Bearer ${lovableKey}`,
-        "X-Connection-Api-Key": googleMapsKey!,
-        "Content-Type": "application/json",
-        "X-Goog-FieldMask": FIELD_MASK,
-      };
+  const canGateway = Boolean(lovableKey && googleMapsKey);
+  const canDirect = Boolean(googleApiKey);
 
-  const res = await fetch(url, { method: "POST", headers, body: JSON.stringify(body) });
+  const doFetch = (viaGateway: boolean) =>
+    fetch(viaGateway ? `${GATEWAY_URL}${path}` : `https://places.googleapis.com${path}`, {
+      method: "POST",
+      headers: viaGateway
+        ? {
+            Authorization: `Bearer ${lovableKey}`,
+            "X-Connection-Api-Key": googleMapsKey!,
+            "Content-Type": "application/json",
+            "X-Goog-FieldMask": FIELD_MASK,
+          }
+        : {
+            "X-Goog-Api-Key": googleApiKey!,
+            "Content-Type": "application/json",
+            "X-Goog-FieldMask": FIELD_MASK,
+          },
+      body: JSON.stringify(body),
+    });
+
+  // Prefer the connector gateway; fall back to a direct key only if the gateway isn't configured.
+  let usedGateway = canGateway;
+  let res = await doFetch(usedGateway);
+
+  // Safety net: if the chosen path fails with 403/404, try the other path once.
+  if ((res.status === 403 || res.status === 404) && ((usedGateway && canDirect) || (!usedGateway && canGateway))) {
+    const firstStatus = res.status;
+    const firstBody = await res.text().catch(() => "");
+    console.error(`[nearest] ${usedGateway ? "gateway" : "direct"} failed [${firstStatus}]: ${firstBody}`);
+    usedGateway = !usedGateway;
+    res = await doFetch(usedGateway);
+  }
 
   if (res.status === 403) {
     const json = (await res.json().catch(() => null)) as
@@ -134,11 +152,12 @@ export async function searchNearbyPlaces(args: {
   }
 
   if (!res.ok) {
-    const text = await res.text();
-    console.error(`[nearest] gateway failed [${res.status}]: ${text}`);
+    const text = await res.text().catch(() => "");
+    console.error(`[nearest] ${usedGateway ? "gateway" : "direct"} failed [${res.status}]: ${text}`);
     return { places: [], error: "Could not search nearby places right now." };
   }
 
   const json = (await res.json()) as { places?: PlacesApiPlace[] };
   return { places: mapPlaces(json.places ?? []) };
 }
+
