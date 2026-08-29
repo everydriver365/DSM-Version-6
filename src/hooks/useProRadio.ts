@@ -7,14 +7,13 @@ import {
   useContext,
 } from "react";
 
-const STREAM_URL = "https://streams.radio.co/s056b6f87a/listen";
-const RADIO_CO_STATUS_URL =
-  "https://public.radio.co/stations/s056b6f87a/status";
+const STREAM_URL = "https://ice1.somafm.com/groovesalad-256-mp3";
+const SOMAFM_STATUS_URL = "https://api.somafm.com/groovesalad.json";
 
 export interface NowPlaying {
   title: string;
   artist?: string;
-  artwork?: string;
+  artwork?: string | null;
 }
 
 export interface RadioState {
@@ -49,7 +48,7 @@ export function useProRadio() {
     stateRef.current = state;
   }, [state]);
 
-  // Initialise audio element once + poll Radio.co status every 30s
+  // Initialise audio element once + poll SomaFM now playing every 30s
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -113,23 +112,38 @@ export function useProRadio() {
 
     const fetchStatus = async () => {
       try {
-        const res = await fetch(RADIO_CO_STATUS_URL);
+        const res = await fetch(SOMAFM_STATUS_URL);
         const data = await res.json();
+        const song = data.channel?.lastPlaying;
+        const current = data.channel?.songs?.[0];
         const nextNowPlaying = {
-          title: data.current_track?.title ?? "PRO Radio",
-          artist: data.current_track?.artist,
-          artwork: data.current_track?.artwork_url,
+          title: current?.title ?? song?.title ?? "Groove Salad",
+          artist: current?.artist ?? song?.artist ?? "SomaFM",
+          artwork: current?.cover ?? null,
         };
-        const nextShowName = data.current_show?.name ?? "PRO Radio";
+        const nextShowName = "PRO Chill";
         setState((s) => ({
           ...s,
           nowPlaying: nextNowPlaying,
           showName: nextShowName,
-          isLive: data.status === "online",
+          isLive: true,
         }));
         updateMediaSession(nextNowPlaying, nextShowName);
       } catch {
         // fail silently
+        const fallbackNowPlaying = {
+          title: "Groove Salad",
+          artist: "SomaFM",
+          artwork: null,
+        };
+        const fallbackShowName = "PRO Chill";
+        setState((s) => ({
+          ...s,
+          nowPlaying: fallbackNowPlaying,
+          showName: fallbackShowName,
+          isLive: true,
+        }));
+        updateMediaSession(fallbackNowPlaying, fallbackShowName);
       }
     };
 
