@@ -111,7 +111,7 @@ export default function DSMTopSheet({
           flex: 1,
           minHeight: 0,
           marginTop: -18,
-          background: tokens.white,
+          background: "#DCE4F0",
           borderRadius: `${tokens.radiusSheet}px ${tokens.radiusSheet}px 0 0`,
           boxShadow: tokens.shadowSheet,
           overflowY: "auto",

@@ -358,7 +358,7 @@ function WeeklyReportPage() {
 
   return (
     <DSMTopSheet title="Weekly Report">
-      <div style={{ ...POPPINS, background: "#F4F6F8", flex: 1 }}>
+      <div style={{ ...POPPINS, background: "#DCE4F0", flex: 1 }}>
       {/* Week navigation */}
       <div
         style={{

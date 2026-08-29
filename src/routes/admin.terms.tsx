@@ -128,14 +128,14 @@ function AdminTermsPage() {
 
   if (gate === "checking") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, ...POPPINS, color: GREY }}>
+      <div style={{ background: "#DCE4F0", minHeight: "100vh", padding: 24, ...POPPINS, color: GREY }}>
         Checking access…
       </div>
     );
   }
   if (gate === "denied") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, ...POPPINS }}>
+      <div style={{ background: "#DCE4F0", minHeight: "100vh", padding: 24, ...POPPINS }}>
         <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: BLUE }}>Access denied</div>
       </div>
     );

@@ -219,7 +219,7 @@ function ExpensesPage() {
         </button>
       }
     >
-      <div style={{ background: "#F4F6F8", flex: 1, minHeight: "100%" }}>
+      <div style={{ background: "#DCE4F0", flex: 1, minHeight: "100%" }}>
       {/* Summary cards */}
       <div
         style={{

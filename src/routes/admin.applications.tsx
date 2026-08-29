@@ -215,7 +215,7 @@ function AdminApplicationsPage() {
   }
   if (status === "denied") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
+      <div style={{ background: "#DCE4F0", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
         <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: RED }}>Access denied</div>
         <div style={{ color: MUTED, marginTop: 8 }}>Your account doesn't have admin access.</div>
         <button
@@ -230,7 +230,7 @@ function AdminApplicationsPage() {
   }
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif", paddingBottom: 80 }}>
+    <div style={{ background: "#DCE4F0", minHeight: "100vh", fontFamily: "Poppins, sans-serif", paddingBottom: 80 }}>
       {/* Top bar */}
       <div
         style={{

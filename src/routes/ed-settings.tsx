@@ -82,7 +82,7 @@ function EDSettingsPage() {
   };
 
   return (
-    <div style={{ ...POPPINS, minHeight: "100vh", background: "#F4F6F8", display: "flex", flexDirection: "column" }}>
+    <div style={{ ...POPPINS, minHeight: "100vh", background: "#DCE4F0", display: "flex", flexDirection: "column" }}>
       {/* Header */}
       <div
         style={{

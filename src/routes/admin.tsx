@@ -1061,14 +1061,14 @@ function AdminHub() {
 
   if (status === "checking") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif", color: "#6B7280" }}>
+      <div style={{ background: "#DCE4F0", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif", color: "#6B7280" }}>
         Checking access…
       </div>
     );
   }
   if (status === "denied") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
+      <div style={{ background: "#DCE4F0", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
         <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: tokens.blue }}>Access denied</div>
         <div style={{ color: "#6B7280", marginTop: 8 }}>
           Your account doesn't have admin access.
@@ -1115,7 +1115,7 @@ function AdminHub() {
   }
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
+    <div style={{ background: "#DCE4F0", minHeight: "100vh", fontFamily: "Poppins, sans-serif" }}>
       <AdminTopBar title="Admin" onBack={() => navigate({ to: "/home" })} />
       <div style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 80px)" }}>
         <div style={{ padding: 16 }}>

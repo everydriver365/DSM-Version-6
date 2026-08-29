@@ -109,7 +109,7 @@ function AvailabilityPage() {
 
   return (
     <DSMTopSheet title="Availability">
-    <div className="pb-8 pb-safe" style={{ ...POPPINS, minHeight: "100%", background: "#F4F6F8", flex: 1 }}>
+    <div className="pb-8 pb-safe" style={{ ...POPPINS, minHeight: "100%", background: "#DCE4F0", flex: 1 }}>
 
       <div className="px-4">
         <SectionHeader>WORKING DAYS</SectionHeader>

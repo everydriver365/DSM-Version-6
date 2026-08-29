@@ -229,7 +229,7 @@ function AdminPodcasts() {
 
   if (status === "checking") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>
+      <div style={{ background: "#DCE4F0", minHeight: "100vh", padding: 24, color: "#6B7280", fontFamily: "Poppins, sans-serif" }}>
         Checking access…
       </div>
     );
@@ -238,7 +238,7 @@ function AdminPodcasts() {
 
   return (
     <>
-    <div style={{ background: "#fff", minHeight: "100vh", fontFamily: "Poppins, sans-serif", paddingBottom: 40 }}>
+    <div style={{ background: "#DCE4F0", minHeight: "100vh", fontFamily: "Poppins, sans-serif", paddingBottom: 40 }}>
       <PageHeader
         title="Podcasts"
         backTo="/admin"
