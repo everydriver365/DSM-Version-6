@@ -40,6 +40,7 @@ import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ReminderRouteImport } from './routes/reminder'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReferralsRouteImport } from './routes/referrals'
+import { Route as RadioRouteImport } from './routes/radio'
 import { Route as QuotesRouteImport } from './routes/quotes'
 import { Route as QuickavailabilityRouteImport } from './routes/quickavailability'
 import { Route as QuickaccessRouteImport } from './routes/quickaccess'
@@ -331,6 +332,11 @@ const RegisterRoute = RegisterRouteImport.update({
 const ReferralsRoute = ReferralsRouteImport.update({
   id: '/referrals',
   path: '/referrals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RadioRoute = RadioRouteImport.update({
+  id: '/radio',
+  path: '/radio',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuotesRoute = QuotesRouteImport.update({
@@ -1100,6 +1106,7 @@ export interface FileRoutesByFullPath {
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
   '/quotes': typeof QuotesRouteWithChildren
+  '/radio': typeof RadioRoute
   '/referrals': typeof ReferralsRoute
   '/register': typeof RegisterRoute
   '/reminder': typeof ReminderRoute
@@ -1267,6 +1274,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
+  '/radio': typeof RadioRoute
   '/referrals': typeof ReferralsRoute
   '/register': typeof RegisterRoute
   '/reminder': typeof ReminderRoute
@@ -1438,6 +1446,7 @@ export interface FileRoutesById {
   '/quickaccess': typeof QuickaccessRoute
   '/quickavailability': typeof QuickavailabilityRoute
   '/quotes': typeof QuotesRouteWithChildren
+  '/radio': typeof RadioRoute
   '/referrals': typeof ReferralsRoute
   '/register': typeof RegisterRoute
   '/reminder': typeof ReminderRoute
@@ -1610,6 +1619,7 @@ export interface FileRouteTypes {
     | '/quickaccess'
     | '/quickavailability'
     | '/quotes'
+    | '/radio'
     | '/referrals'
     | '/register'
     | '/reminder'
@@ -1777,6 +1787,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/quickaccess'
     | '/quickavailability'
+    | '/radio'
     | '/referrals'
     | '/register'
     | '/reminder'
@@ -1947,6 +1958,7 @@ export interface FileRouteTypes {
     | '/quickaccess'
     | '/quickavailability'
     | '/quotes'
+    | '/radio'
     | '/referrals'
     | '/register'
     | '/reminder'
@@ -2118,6 +2130,7 @@ export interface RootRouteChildren {
   QuickaccessRoute: typeof QuickaccessRoute
   QuickavailabilityRoute: typeof QuickavailabilityRoute
   QuotesRoute: typeof QuotesRouteWithChildren
+  RadioRoute: typeof RadioRoute
   ReferralsRoute: typeof ReferralsRoute
   RegisterRoute: typeof RegisterRoute
   ReminderRoute: typeof ReminderRoute
@@ -2412,6 +2425,13 @@ declare module '@tanstack/react-router' {
       path: '/referrals'
       fullPath: '/referrals'
       preLoaderRoute: typeof ReferralsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/radio': {
+      id: '/radio'
+      path: '/radio'
+      fullPath: '/radio'
+      preLoaderRoute: typeof RadioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/quotes': {
@@ -3527,6 +3547,7 @@ const rootRouteChildren: RootRouteChildren = {
   QuickaccessRoute: QuickaccessRoute,
   QuickavailabilityRoute: QuickavailabilityRoute,
   QuotesRoute: QuotesRouteWithChildren,
+  RadioRoute: RadioRoute,
   ReferralsRoute: ReferralsRoute,
   RegisterRoute: RegisterRoute,
   ReminderRoute: ReminderRoute,
