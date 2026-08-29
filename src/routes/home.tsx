@@ -9093,32 +9093,117 @@ function HomePage() {
         <div style={{ height: 10 }} />
         </section>
 
+        {quickAddOpen && (
+          <div
+            onClick={() => setQuickAddOpen(false)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.3)",
+              zIndex: 99,
+            }}
+          />
+        )}
+
+        {quickAddOpen && (
+          <div
+            style={{
+              position: "fixed",
+              right: 20,
+              bottom: "calc(80px + 56px + 12px + env(safe-area-inset-bottom, 0px))",
+              width: 244,
+              maxHeight: "60vh",
+              overflowY: "auto",
+              background: "#FFFFFF",
+              borderRadius: 16,
+              boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+              padding: "8px 0",
+              zIndex: 100,
+              fontFamily: "Poppins, sans-serif",
+              animation: "dsmQuickAddIn 160ms ease-out",
+            }}
+          >
+            <style>{`@keyframes dsmQuickAddIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}`}</style>
+            {QUICK_ADD_ITEMS.map((item, i) => {
+              const ItemIcon = item.icon;
+              return (
+                <button
+                  key={item.label}
+                  type="button"
+                  onClick={() => {
+                    setQuickAddOpen(false);
+                    runQuickAdd(item.key);
+                  }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    width: "100%",
+                    background: "transparent",
+                    border: "none",
+                    borderBottom: i < QUICK_ADD_ITEMS.length - 1 ? "1px solid #F4F6F8" : "none",
+                    padding: "14px 20px",
+                    fontSize: 15,
+                    fontWeight: 500,
+                    color: "#0B2341",
+                    fontFamily: "Poppins, sans-serif",
+                    textAlign: "left",
+                    cursor: "pointer",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: 8,
+                      background: item.bg,
+                      display: "grid",
+                      placeItems: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <ItemIcon size={20} stroke={1.8} color="#FFFFFF" />
+                  </span>
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         <button
           type="button"
-          aria-label="Open command menu"
-          onClick={() => {
-            window.dispatchEvent(new CustomEvent("dsm-open-command-palette"));
-          }}
+          aria-label={quickAddOpen ? "Close quick add menu" : "Open quick add menu"}
+          onClick={() => setQuickAddOpen((v) => !v)}
           style={{
-            position: "absolute",
-            right: 16,
-            bottom: "calc(70px + env(safe-area-inset-bottom, 0px))",
-            width: 54,
-            height: 54,
+            position: "fixed",
+            right: 20,
+            bottom: "calc(80px + env(safe-area-inset-bottom, 0px))",
+            width: 56,
+            height: 56,
             borderRadius: "50%",
-            background: tokens.blue,
-            border: "3px solid #FFFFFF",
-            boxShadow: "0 4px 14px rgba(24,119,214,0.35), 0 6px 20px rgba(11,31,58,0.12)",
+            background: "#16A34A",
+            border: "none",
+            boxShadow: "0 4px 12px rgba(22,163,74,0.4)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            zIndex: 40,
+            zIndex: 100,
             padding: 0,
           }}
         >
-          <IconLayoutGrid size={24} color="#FFFFFF" stroke={1.8} />
+          <IconPlus
+            size={28}
+            color="#fff"
+            stroke={2}
+            style={{
+              transform: quickAddOpen ? "rotate(45deg)" : "rotate(0deg)",
+              transition: "transform 180ms ease",
+            }}
+          />
         </button>
+
 
 
 
