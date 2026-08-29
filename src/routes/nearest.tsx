@@ -309,7 +309,7 @@ function NearestPage() {
     return () => {
       cancelled = true;
     };
-  }, [pos, cat, activeQuery]);
+  }, [pos, cat, activeQuery, radiusMi]);
 
   /* 5. Map init + markers */
   React.useEffect(() => {
