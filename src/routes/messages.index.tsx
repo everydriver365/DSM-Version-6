@@ -1410,46 +1410,49 @@ function MessagesIndexPage() {
                 </div>
               </div>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ display: "flex", flexDirection: "column", padding: "0 16px" }}>
                 {(() => {
-                  const today: InboxItem[] = [];
-                  const earlier: InboxItem[] = [];
-                  const now = new Date();
+                  const groups: Record<DateGroup, InboxItem[]> = {
+                    Today: [],
+                    Yesterday: [],
+                    "This week": [],
+                    Older: [],
+                  };
                   for (const item of visibleItems) {
-                    const d = new Date(item.ts);
-                    if (d.toDateString() === now.toDateString()) today.push(item);
-                    else earlier.push(item);
+                    const g = conversationGroup(item.ts);
+                    groups[g].push(item);
                   }
-                  const sections = [
-                    { label: "Today", items: today },
-                    { label: "Earlier", items: earlier },
-                  ] as const;
+                  const sections: { label: DateGroup; items: InboxItem[] }[] = [
+                    { label: "Today", items: groups["Today"] },
+                    { label: "Yesterday", items: groups["Yesterday"] },
+                    { label: "This week", items: groups["This week"] },
+                    { label: "Older", items: groups["Older"] },
+                  ];
                   return (
                     <>
                       {sections.map(
                         (s, sIdx) =>
                           s.items.length > 0 && (
-                              <div key={s.label}>
-                                <div
-                                  style={{
-                                    fontSize: 11,
-                                    fontWeight: 500,
-                                    textTransform: "uppercase",
-                                    letterSpacing: "0.3px",
-                                    color: "#6E6E73",
-                                    padding: `${sIdx === 0 ? 4 : 12}px 16px 8px`,
-                                    fontFamily: "Poppins, sans-serif",
-                                  }}
-                                >
-                                  {s.label}
-                                </div>
+                            <div key={s.label}>
+                              <div
+                                style={{
+                                  fontSize: 11,
+                                  fontWeight: 700,
+                                  textTransform: "uppercase",
+                                  letterSpacing: "0.6px",
+                                  color: "#536579",
+                                  padding: sIdx === 0 ? "8px 0 6px" : "16px 0 6px",
+                                  fontFamily: "Poppins, sans-serif",
+                                }}
+                              >
+                                {s.label}
+                              </div>
                               <div style={{ display: "flex", flexDirection: "column" }}>
-                                {s.items.map((item, idx) => (
+                                {s.items.map((item) => (
                                   <InboxRow
                                     key={item.key}
                                     item={item}
                                     muted={muted.has(item.key)}
-                                    isLast={idx === s.items.length - 1}
                                     onMenu={() => setMenuItem(item)}
                                     onArchive={() => toggleArchive(item.key)}
                                   />
