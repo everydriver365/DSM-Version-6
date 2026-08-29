@@ -449,7 +449,7 @@ export function BottomNav({
     };
   }, []);
 
-  const { isSpeaking, activate } = useVoiceAssistant({
+  const { isSpeaking, isListening, activate } = useVoiceAssistant({
     instructorFirstName: voiceContext.instructorFirstName ?? "there",
     nextLesson: voiceContext.nextLesson ?? null,
     unreadCount: unreadMessages,
@@ -545,7 +545,7 @@ export function BottomNav({
           }, it.key === "messages" || it.to === "/messages");
         })}
         <div key="mic" className="flex flex-1 flex-col items-center justify-end select-none relative" style={{ minWidth: 54 }}>
-          <CenterMicButton onClick={activate} isSpeaking={isSpeaking} />
+          <CenterMicButton onClick={activate} isSpeaking={isSpeaking} isListening={isListening} />
         </div>
         {right.map((it, i) => {
           const wsMatch = typeof it.ws === 'number' && it.ws === currentWs;
@@ -569,7 +569,7 @@ export function BottomNav({
         {renderTab("home", "/home", "Home", IconHome, isActive("home"))}
         {renderTab("schedule", "/schedule", "Schedule", IconCalendar, isActive("schedule"))}
         <div key="mic" className="flex flex-1 flex-col items-center justify-end select-none relative" style={{ minWidth: 54 }}>
-          <CenterMicButton onClick={activate} isSpeaking={isSpeaking} />
+          <CenterMicButton onClick={activate} isSpeaking={isSpeaking} isListening={isListening} />
         </div>
         {renderTab("messages", "/messages", "Messages", IconMessageCircle, isActive("messages"), undefined, true)}
         {renderTab("more", "/more", "More", IconDots, isActive("more"))}
