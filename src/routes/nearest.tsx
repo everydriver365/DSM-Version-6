@@ -3,6 +3,7 @@ import * as React from "react";
 import { LoadingSpinner } from "@/components/dsm/LoadingSpinner";
 import { findNearbyPlaces } from "@/lib/nearest.functions";
 import { reverseGeocode } from "@/lib/geocode.functions";
+import { openUrl } from "@/lib/openUrl";
 
 export const Route = createFileRoute("/nearest")({
   head: () => ({
@@ -357,6 +358,14 @@ function NearestPage() {
     }
   };
 
+  const navigateTo = (r: Result) => {
+    const isApple = /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent);
+    const url = isApple
+      ? `https://maps.apple.com/?daddr=${r.lat},${r.lng}&q=${encodeURIComponent(r.name)}&dirflg=d`
+      : `https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lng}&travelmode=driving`;
+    openUrl(url, "_system");
+  };
+
   const submitSearch = (text: string) => {
     const t = text.trim();
     if (!t) return;
@@ -578,10 +587,14 @@ function NearestPage() {
         <p style={{ padding: "16px 20px", color: MUTED, fontSize: 14, textAlign: "center" }}>Nothing found nearby</p>
       ) : (
         results.map((r) => (
-          <button
+          <div
             key={r.id}
-            type="button"
+            role="button"
+            tabIndex={0}
             onClick={() => centreOn(r)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") centreOn(r);
+            }}
             style={{
               display: "block",
               width: "calc(100% - 24px)",
@@ -630,7 +643,32 @@ function NearestPage() {
             </div>
 
             {r.address && <p style={{ margin: "6px 0 0", fontSize: 12, color: MUTED }}>{r.address}</p>}
-          </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigateTo(r);
+              }}
+              style={{
+                marginTop: 10,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                background: NAVY,
+                color: "#FFFFFF",
+                border: "none",
+                borderRadius: 8,
+                padding: "9px 14px",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+                fontFamily: "Poppins, sans-serif",
+              }}
+            >
+              ➤ Navigate
+            </button>
+          </div>
         ))
       )}
     </div>
