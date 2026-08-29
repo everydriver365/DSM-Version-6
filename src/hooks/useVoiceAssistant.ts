@@ -1040,6 +1040,9 @@ export function useVoiceAssistant({
     transcript,
     lastCommand,
     supported,
+    availableVoices,
+    selectedVoiceName,
+    setVoice,
   };
 
 }
