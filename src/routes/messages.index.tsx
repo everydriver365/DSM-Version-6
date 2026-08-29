@@ -186,6 +186,20 @@ function formatDateSeparator(iso: string) {
   return d.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short" });
 }
 
+type DateGroup = "Today" | "Yesterday" | "This week" | "Older";
+
+function conversationGroup(iso: string): DateGroup {
+  const d = new Date(iso);
+  const now = new Date();
+  if (d.toDateString() === now.toDateString()) return "Today";
+  const y = new Date(now);
+  y.setDate(now.getDate() - 1);
+  if (d.toDateString() === y.toDateString()) return "Yesterday";
+  const diffDays = (now.getTime() - d.getTime()) / 86400000;
+  if (diffDays < 7) return "This week";
+  return "Older";
+}
+
 function MessagesIndexPage() {
   const navigate = useNavigate();
   const { jobOfferId: jobOfferIdParam } = Route.useSearch();
