@@ -147,6 +147,7 @@ import { Route as DrivingTestPupilIdRouteImport } from './routes/driving-test.$p
 import { Route as CoursesNewRouteImport } from './routes/courses.new'
 import { Route as CoursesIdRouteImport } from './routes/courses.$id'
 import { Route as ApiSquareCreateSubscriptionRouteImport } from './routes/api/square-create-subscription'
+import { Route as ApiEdAiRouteImport } from './routes/api/ed-ai'
 import { Route as AdminTermsRouteImport } from './routes/admin.terms'
 import { Route as AdminPodcastsRouteImport } from './routes/admin.podcasts'
 import { Route as AdminNewsRouteImport } from './routes/admin.news'
@@ -872,6 +873,11 @@ const ApiSquareCreateSubscriptionRoute =
     path: '/api/square-create-subscription',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiEdAiRoute = ApiEdAiRouteImport.update({
+  id: '/api/ed-ai',
+  path: '/api/ed-ai',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminTermsRoute = AdminTermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -1166,6 +1172,7 @@ export interface FileRoutesByFullPath {
   '/admin/news': typeof AdminNewsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
+  '/api/ed-ai': typeof ApiEdAiRoute
   '/api/square-create-subscription': typeof ApiSquareCreateSubscriptionRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
@@ -1336,6 +1343,7 @@ export interface FileRoutesByTo {
   '/admin/news': typeof AdminNewsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
+  '/api/ed-ai': typeof ApiEdAiRoute
   '/api/square-create-subscription': typeof ApiSquareCreateSubscriptionRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
@@ -1510,6 +1518,7 @@ export interface FileRoutesById {
   '/admin/news': typeof AdminNewsRoute
   '/admin/podcasts': typeof AdminPodcastsRoute
   '/admin/terms': typeof AdminTermsRoute
+  '/api/ed-ai': typeof ApiEdAiRoute
   '/api/square-create-subscription': typeof ApiSquareCreateSubscriptionRoute
   '/courses/$id': typeof CoursesIdRoute
   '/courses/new': typeof CoursesNewRoute
@@ -1685,6 +1694,7 @@ export interface FileRouteTypes {
     | '/admin/news'
     | '/admin/podcasts'
     | '/admin/terms'
+    | '/api/ed-ai'
     | '/api/square-create-subscription'
     | '/courses/$id'
     | '/courses/new'
@@ -1855,6 +1865,7 @@ export interface FileRouteTypes {
     | '/admin/news'
     | '/admin/podcasts'
     | '/admin/terms'
+    | '/api/ed-ai'
     | '/api/square-create-subscription'
     | '/courses/$id'
     | '/courses/new'
@@ -2028,6 +2039,7 @@ export interface FileRouteTypes {
     | '/admin/news'
     | '/admin/podcasts'
     | '/admin/terms'
+    | '/api/ed-ai'
     | '/api/square-create-subscription'
     | '/courses/$id'
     | '/courses/new'
@@ -2189,6 +2201,7 @@ export interface RootRouteChildren {
   WeeklyReportRoute: typeof WeeklyReportRoute
   WeeklyreportRoute: typeof WeeklyreportRoute
   WhatsChangedRoute: typeof WhatsChangedRoute
+  ApiEdAiRoute: typeof ApiEdAiRoute
   ApiSquareCreateSubscriptionRoute: typeof ApiSquareCreateSubscriptionRoute
   CoursesIdRoute: typeof CoursesIdRoute
   CoursesNewRoute: typeof CoursesNewRoute
@@ -3202,6 +3215,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSquareCreateSubscriptionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/ed-ai': {
+      id: '/api/ed-ai'
+      path: '/api/ed-ai'
+      fullPath: '/api/ed-ai'
+      preLoaderRoute: typeof ApiEdAiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/terms': {
       id: '/admin/terms'
       path: '/terms'
@@ -3622,6 +3642,7 @@ const rootRouteChildren: RootRouteChildren = {
   WeeklyReportRoute: WeeklyReportRoute,
   WeeklyreportRoute: WeeklyreportRoute,
   WhatsChangedRoute: WhatsChangedRoute,
+  ApiEdAiRoute: ApiEdAiRoute,
   ApiSquareCreateSubscriptionRoute: ApiSquareCreateSubscriptionRoute,
   CoursesIdRoute: CoursesIdRoute,
   CoursesNewRoute: CoursesNewRoute,
