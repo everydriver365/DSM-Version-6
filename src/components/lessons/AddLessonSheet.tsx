@@ -1032,7 +1032,6 @@ export function AddLessonSheet({
                         border: "1px solid #E4E8EF",
                         boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                         marginTop: 4,
-                        marginTop: 4,
                       }}
                     >
                       {testCentreResults.map((r: any) => (
