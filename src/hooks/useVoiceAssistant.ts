@@ -90,7 +90,12 @@ export function useVoiceAssistant({
           t.includes('hey ed') ||
           t.includes('hey e d') ||
           t.includes('hey eddie') ||
-          t.includes('hey edie')
+          t.includes('hey edie') ||
+          t.includes('hey every driver') ||
+          t.includes('hey every') ||
+          t.includes('a ed') ||
+          t.includes('hey et') ||
+          t.includes('hey at')
         ) {
           try { wake.stop(); } catch { /* noop */ }
           wakeActiveRef.current = false;
