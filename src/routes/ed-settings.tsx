@@ -208,6 +208,60 @@ function EDSettingsPage() {
           </div>
         </div>
 
+        {/* "Hey ED" wake word — opt in */}
+        <div
+          style={{
+            background: tokens.white,
+            borderRadius: 12,
+            border: "1px solid #E4E8EF",
+            padding: 16,
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
+          <IconMicrophone size={20} color="#2C97DE" />
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: tokens.fontWeight.bold, color: "#0B2341", ...POPPINS }}>
+              "Hey ED" wake word
+            </div>
+            <div style={{ fontSize: 12, color: "#536579", marginTop: 2, ...POPPINS }}>
+              Off by default. When on, the microphone listens in the background so you can say "Hey ED".
+            </div>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={wakeWord}
+            aria-label='Toggle "Hey ED" wake word'
+            onClick={toggleWakeWord}
+            style={{
+              width: 50,
+              height: 30,
+              borderRadius: 15,
+              border: "none",
+              background: wakeWord ? "#2C97DE" : "#CBD5E1",
+              position: "relative",
+              cursor: "pointer",
+              flexShrink: 0,
+              transition: "background 0.2s",
+            }}
+          >
+            <span
+              style={{
+                position: "absolute",
+                top: 3,
+                left: wakeWord ? 23 : 3,
+                width: 24,
+                height: 24,
+                borderRadius: "50%",
+                background: "#fff",
+                transition: "left 0.2s",
+              }}
+            />
+          </button>
+        </div>
+
         {/* Voice selection */}
         <div
           style={{
