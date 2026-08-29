@@ -257,11 +257,13 @@ function NearestPage() {
     setLoading(true);
     setError(null);
 
+    const radiusM = Math.round(radiusMi * METRES_PER_MILE);
+
     const run = async () => {
       try {
         if (!activeQuery && cat === "ev") {
-          const rows = await fetchEvChargers(pos.lat, pos.lng);
-          if (!cancelled) setResults(rows);
+          const rows = await fetchEvChargers(pos.lat, pos.lng, radiusMi);
+          if (!cancelled) setResults(rows.filter((r) => r.distance <= radiusM));
           return;
         }
         const r = await findNearbyPlaces({
@@ -270,7 +272,7 @@ function NearestPage() {
             lng: pos.lng,
             category: activeQuery ? "search" : cat,
             ...(activeQuery ? { query: activeQuery } : {}),
-            radius: 2000,
+            radius: radiusM,
           },
         });
         if (cancelled) return;
@@ -291,6 +293,7 @@ function NearestPage() {
               lng: p.lng,
               distance: haversine(pos.lat, pos.lng, p.lat, p.lng),
             }))
+            .filter((p) => p.distance <= radiusM)
             .sort((a, b) => a.distance - b.distance),
         );
       } catch {
