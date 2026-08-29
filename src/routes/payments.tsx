@@ -19,7 +19,7 @@ import { UnifiedPaymentSheet } from "@/components/payments/UnifiedPaymentSheet";
 import { QuickActionsMenu } from "@/components/dsm/QuickActionsMenu";
 import { pupilColour } from "@/components/PupilAvatar";
 import { BottomSheet, SheetGroup, SheetRow, SheetRadioRow, SheetSearchRow } from "@/components/dsm/BottomSheetV2";
-import SegmentedTabs from "@/components/learn/shared/SegmentedTabs";
+
 
 export const Route = createFileRoute("/payments")({
   head: () => ({
@@ -211,8 +211,32 @@ interface HistoryRow {
   pupils: { name: string } | null;
 }
 
-type DatePreset = "today" | "week" | "month" | "year" | "all";
+type DatePreset = "today" | "week" | "month" | "lastMonth" | "all";
 type MethodFilter = "all" | "cash" | "card" | "qr" | "bank_transfer" | "klarna" | "clearpay" | "refund";
+type UIMethodFilter = "all" | "cash" | "card" | "bank_transfer" | "square" | "refund";
+const METHOD_FILTER_MAP: Record<UIMethodFilter, MethodFilter> = {
+  all: "all",
+  cash: "cash",
+  card: "card",
+  bank_transfer: "bank_transfer",
+  square: "qr",
+  refund: "refund",
+};
+const DATE_PRESETS: { id: DatePreset; label: string }[] = [
+  { id: "today", label: "Today" },
+  { id: "week", label: "This week" },
+  { id: "month", label: "This month" },
+  { id: "lastMonth", label: "Last month" },
+  { id: "all", label: "All time" },
+];
+const METHOD_PILLS: { id: UIMethodFilter; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "cash", label: "Cash" },
+  { id: "card", label: "Card" },
+  { id: "bank_transfer", label: "Bank transfer" },
+  { id: "square", label: "Square" },
+  { id: "refund", label: "Refund" },
+];
 
 // ---------- page ----------
 function PaymentsPage() {
@@ -227,7 +251,7 @@ function PaymentsPage() {
   const [pupilFilter, setPupilFilter] = useState<string>("");
   const [pupilPickerOpen, setPupilPickerOpen] = useState(false);
   const [datePreset, setDatePreset] = useState<DatePreset>("month");
-  const [methodFilter, setMethodFilter] = useState<MethodFilter>("all");
+  const [methodFilter, setMethodFilter] = useState<UIMethodFilter>("all");
 
   const [unifiedPayOpen, setUnifiedPayOpen] = useState(false);
   const [unifiedPayPupilId, setUnifiedPayPupilId] = useState<string | undefined>();
