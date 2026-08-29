@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { supabase } from '@/lib/supabaseClient';
 
 interface VoiceAssistantProps {
   instructorFirstName?: string;
