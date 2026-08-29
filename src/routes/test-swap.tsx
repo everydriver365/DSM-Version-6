@@ -1728,7 +1728,7 @@ function TestSwapPage() {
       <div
         style={{
           padding: `20px ${tokens.pagePadding}px 40px`,
-          background: "#F5F7FA",
+          background: "#F4F6F8",
           minHeight: "100%",
           boxSizing: "border-box",
         }}
