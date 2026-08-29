@@ -370,6 +370,20 @@ function SettingsPage() {
       setEmail(user.email ?? "");
       setBadgePrefs(readBadgePrefs(user.id));
 
+      // Check admin role
+      supabase
+        .from("user_roles")
+        .select("role", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .then(({ count, error: roleErr }) => {
+          if (roleErr) {
+            console.error("[settings] admin role check error", roleErr);
+            return;
+          }
+          setIsAdmin(typeof count === "number" && count > 0);
+        });
+
       // Coverage areas count for the settings row
       supabase
         .from("instructor_coverage_areas")
