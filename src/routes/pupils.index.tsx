@@ -1040,17 +1040,44 @@ function PupilsIndexPage() {
         </button>
       </div>
 
-      {/* Status filter tabs */}
-      <SegmentedTabs
-        style={{ margin: "4px 16px 12px" }}
-        active={statusFilter}
-        onChange={(key) => { tapLight(); setStatusFilter(key); }}
-        tabs={STATUS_TABS.map((tab) => ({
-          id: tab.key,
-          label: tab.label,
-          count: statusCounts?.[tab.key] ?? 0,
-        }))}
-      />
+      {/* Status filter pills */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          margin: "4px 16px 12px",
+          overflowX: "auto",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
+      >
+        {FILTER_PILLS.map((pill) => {
+          const active = statusFilter === pill.key;
+          return (
+            <button
+              key={pill.key}
+              type="button"
+              onClick={() => { tapLight(); setStatusFilter(pill.key); }}
+              style={{
+                flexShrink: 0,
+                borderRadius: 20,
+                padding: "6px 14px",
+                fontSize: 13,
+                fontWeight: 600,
+                color: active ? "#fff" : "#536579",
+                background: active ? "#0B2341" : "#fff",
+                border: active ? "none" : "1px solid #E4E8EF",
+                fontFamily: "Poppins, sans-serif",
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {pill.label}
+            </button>
+          );
+        })}
+      </div>
 
 
       {/* IconSearch input */}
@@ -1117,9 +1144,9 @@ function PupilsIndexPage() {
           </div>
         ) : filtered.length === 0 ? (
           (() => {
-            const emptyConfig: Record<StatusKey, { title: string; description: string; action?: ReactNode }> = {
-              active: {
-                title: "No active pupils",
+            const emptyConfig: Record<FilterKey, { title: string; description: string; action?: ReactNode }> = {
+              all: {
+                title: "No pupils found",
                 description: "Add your first pupil to start tracking lessons.",
                 action: (
                   <Link
@@ -1131,13 +1158,9 @@ function PupilsIndexPage() {
                   </Link>
                 ),
               },
-              passed: {
-                title: "No pupils have passed yet",
-                description: "Passed pupils will appear here once they pass their test.",
-              },
-              waiting: {
-                title: "No pupils on the waiting list",
-                description: "Add pupils on the waiting list or from enquiries to see them here.",
+              active: {
+                title: "No active pupils",
+                description: "Active pupils have future lessons and no upcoming test.",
                 action: (
                   <Link
                     to="/pupils/new"
@@ -1148,9 +1171,17 @@ function PupilsIndexPage() {
                   </Link>
                 ),
               },
-              lapsed: {
-                title: "No lapsed pupils",
-                description: "Lapsed pupils appear after 60 days without a lesson.",
+              testBooked: {
+                title: "No test bookings",
+                description: "Pupils with a future test date will appear here.",
+              },
+              passed: {
+                title: "No pupils have passed yet",
+                description: "Passed pupils will appear here once they pass their test.",
+              },
+              inactive: {
+                title: "No inactive pupils",
+                description: "Inactive pupils have no future lessons and no upcoming test.",
               },
             };
             const config = emptyConfig[statusFilter];
@@ -1167,67 +1198,44 @@ function PupilsIndexPage() {
             );
           })()
         ) : (
-          <>
-            {statusFilter === "active" && needsAttention.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingBottom: 16 }}>
+            {grouped && (
               <>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '14px 16px 8px',
-                    fontFamily: 'Poppins, sans-serif',
-                  }}
-                >
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                    <IconAlertTriangle size={14} stroke={1.8} color="#C8434F" fill="none" />
-                    <span
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 500,
-                        color: '#6E6E73',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.3px',
-                      }}
-                    >
-                      Needs attention
-                    </span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => tapLight()}
-                    style={{
-                      background: 'transparent',
-                      border: 'none',
-                      padding: 0,
-                      fontSize: 12,
-                      fontWeight: 500,
-                      color: '#2B7BC8',
-                      fontFamily: 'Poppins, sans-serif',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    View all
-                  </button>
-                </div>
-                <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 20 }}>
-                  {needsAttention.map((p) =>
-                    renderSwipeRow(
-                      p,
-                      testDateMap[p.id] && !((balanceMap[p.id] || 0) > 0) ? '#B8801F' : '#C8434F',
-                    )
-                  )}
-                </div>
+                {(statusFilter === "all" || statusFilter === "active") && grouped.active.length > 0 && (
+                  <>
+                    <SectionLabel label={`Active (${sectionCounts?.active ?? grouped.active.length})`} />
+                    <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                      {grouped.active.map((p) => renderSwipeRow(p))}
+                    </div>
+                  </>
+                )}
+                {(statusFilter === "all" || statusFilter === "testBooked") && grouped.testBooked.length > 0 && (
+                  <>
+                    <SectionLabel label={`Test booked (${sectionCounts?.testBooked ?? grouped.testBooked.length})`} />
+                    <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                      {grouped.testBooked.map((p) => renderSwipeRow(p))}
+                    </div>
+                  </>
+                )}
+                {(statusFilter === "all" || statusFilter === "passed") && grouped.passed.length > 0 && (
+                  <>
+                    <SectionLabel label={`Passed (${sectionCounts?.passed ?? grouped.passed.length})`} />
+                    <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                      {grouped.passed.map((p) => renderSwipeRow(p))}
+                    </div>
+                  </>
+                )}
+                {(statusFilter === "all" || statusFilter === "inactive") && grouped.inactive.length > 0 && (
+                  <>
+                    <SectionLabel label={`Inactive (${sectionCounts?.inactive ?? grouped.inactive.length})`} />
+                    <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                      {grouped.inactive.map((p) => renderSwipeRow(p))}
+                    </div>
+                  </>
+                )}
               </>
             )}
-            <div style={{ margin: '12px 16px 0', display: 'flex', flexDirection: 'column', gap: 20 }}>
-              {(statusFilter === "active" ? activePupils : filtered).map((p) =>
-                renderSwipeRow(p)
-              )}
-            </div>
-
-
-          </>
+          </div>
         )}
       </div>
       </div>
