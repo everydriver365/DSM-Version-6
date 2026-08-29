@@ -5661,6 +5661,7 @@ function HomePage() {
       </div>
 
 
+      <UniversalSearch isOpen={universalSearchOpen} onClose={() => setUniversalSearchOpen(false)} />
 
       {upcoming && heroExpanded && (
         <LessonActionsSheet
