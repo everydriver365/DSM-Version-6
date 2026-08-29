@@ -33,19 +33,19 @@ export default function DSMTopSheet({
   return (
     <div
       style={{
-        position: "fixed",
-        inset: 0,
+        // Flows below the global app header instead of covering it — two
+        // stacked navy headers left an empty band at the top of the page.
+        position: "relative",
+        minHeight: "100dvh",
         display: "flex",
         flexDirection: "column",
         background: tokens.navy,
-        overflow: "hidden",
       }}
     >
       <header
         style={{
-          height: "calc(max(env(safe-area-inset-top, 0px), 24px) + 86px)",
           flexShrink: 0,
-          paddingTop: "calc(max(env(safe-area-inset-top, 0px), 24px) + 13px)",
+          paddingTop: 14,
           paddingBottom: 28,
           paddingLeft: tokens.pagePadding,
           paddingRight: tokens.pagePadding,
