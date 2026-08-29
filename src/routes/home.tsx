@@ -3361,6 +3361,10 @@ function HomePage() {
     window.addEventListener("ed:schedule", onSchedule);
     window.addEventListener("ed:markpaid", onMarkPaid as EventListener);
     return () => {
+      window.removeEventListener("ed:nearest", onNearest as EventListener);
+      window.removeEventListener("ed:earnings", onEarnings);
+      window.removeEventListener("ed:lessoncount", onLessonCount);
+      window.removeEventListener("ed:enquiries", onEnquiries);
       window.removeEventListener("ed:onmyway", onMyWay);
       window.removeEventListener("ed:imhere", imHere);
       window.removeEventListener("ed:late", onLate);
