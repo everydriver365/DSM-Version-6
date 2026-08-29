@@ -391,6 +391,63 @@ export function BottomNav({
   const currentWs = listenerWs;
   const unreadMessages = useUnreadMessages();
 
+  // Voice assistant context is written to localStorage by the home screen
+  // (dsm_next_lesson, dsm-instructor-name) so the bottom nav can use it
+  // without prop drilling or touching other route files.
+  const [voiceContext, setVoiceContext] = useState<{
+    instructorFirstName?: string;
+    nextLesson?: VoiceNextLesson;
+  }>({});
+
+  useEffect(() => {
+    const update = () => {
+      let instructorFirstName: string | undefined;
+      try {
+        const storedName = window.localStorage.getItem("dsm-instructor-name");
+        instructorFirstName = storedName ? storedName.trim().split(/\s+/)[0] : undefined;
+      } catch {
+        // ignore
+      }
+
+      let nextLesson: VoiceNextLesson = null;
+      try {
+        const raw = window.localStorage.getItem("dsm_next_lesson");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          nextLesson = {
+            pupils: { name: parsed.pupilName, phone: parsed.phone },
+            lesson_time: parsed.time ? `${parsed.time}:00` : undefined,
+            lesson_date: parsed.date,
+            pickup_location: parsed.address,
+            duration_minutes: undefined,
+            payment_status: undefined,
+            notes: undefined,
+          };
+        }
+      } catch {
+        // ignore
+      }
+
+      setVoiceContext({ instructorFirstName, nextLesson });
+    };
+
+    update();
+    window.addEventListener("storage", update);
+    window.addEventListener("dsm-instructor-name", update as EventListener);
+    return () => {
+      window.removeEventListener("storage", update);
+      window.removeEventListener("dsm-instructor-name", update as EventListener);
+    };
+  }, []);
+
+  const { isSpeaking, activate } = useVoiceAssistant({
+    instructorFirstName: voiceContext.instructorFirstName ?? "there",
+    nextLesson: voiceContext.nextLesson ?? null,
+    unreadCount: unreadMessages,
+    trafficData: null,
+    weatherData: null,
+  });
+
   const renderIcon = (
     icon: ComponentType<{ size?: number; color?: string; stroke?: number }>,
     keyName: string,
