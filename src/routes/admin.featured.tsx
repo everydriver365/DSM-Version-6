@@ -217,14 +217,14 @@ function AdminFeatured() {
 
   if (status === "checking") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif", color: "#6B7280" }}>
+      <div style={{ background: "#DCE4F0", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif", color: "#6B7280" }}>
         Checking access…
       </div>
     );
   }
   if (status === "denied") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
+      <div style={{ background: "#DCE4F0", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif" }}>
         <div style={{ fontSize: tokens.fontSize.xl, fontWeight: tokens.fontWeight.semibold, color: tokens.blue }}>Access denied</div>
         <div style={{ color: "#6B7280", marginTop: 8 }}>Redirecting…</div>
       </div>

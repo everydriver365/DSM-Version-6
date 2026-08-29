@@ -572,7 +572,7 @@ function AdminDsmLive() {
 
   if (status === "checking") {
     return (
-      <div style={{ background: "#fff", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif", color: "#6B7280" }}>
+      <div style={{ background: "#DCE4F0", minHeight: "100vh", padding: 24, fontFamily: "Poppins, sans-serif", color: "#6B7280" }}>
         Checking access…
       </div>
     );
