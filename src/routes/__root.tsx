@@ -811,11 +811,15 @@ function Header({ unreadCount }: { unreadCount: number }) {
                 color: "#fff",
                 fontSize: 8,
                 fontWeight: 700,
+                overflow: "hidden",
               }}
             >
-              {firstInitial}
+              {instructorAvatar
+                ? <img src={instructorAvatar} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                : firstInitial}
             </span>
           )}
+
         </div>
       </div>
 
