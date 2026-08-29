@@ -7346,12 +7346,12 @@ function HomePage() {
             {/* 4. PINNED QUICK ACCESS (horizontal scroll) */}
             {(() => {
               const pinnedTiles = [
-                { key: 'radio', label: 'PRO Radio', bg: '#072B47', icon: radio.isPlaying ? IconPlayerPause : IconRadio, onClick: () => { tapLight(); radio.toggle(); } },
                 { key: 'schedule', label: 'Schedule', bg: '#1877D6', icon: IconCalendar, onClick: () => { tapLight(); navigate({ to: '/schedule' as never }); } },
                 { key: 'pupils', label: 'Pupils', bg: '#1877D6', icon: IconUsers, onClick: () => { tapLight(); navigate({ to: '/pupils' as never }); } },
                 { key: 'payments', label: 'Payments', bg: '#1877D6', icon: IconCurrencyPound, onClick: () => { tapLight(); navigate({ to: '/payments' as never }); } },
                 { key: 'messages', label: 'Messages', bg: '#1877D6', icon: IconMessage, onClick: () => { tapLight(); navigate({ to: '/messages' as never }); } },
                 { key: 'perks', label: 'My Perks', bg: '#7C3AED', icon: IconRosetteDiscount, onClick: () => { tapLight(); navigate({ to: '/perks' as never }); } },
+                { key: 'radio', label: 'PRO Radio', bg: '#072B47', icon: radio.isPlaying ? IconPlayerPause : IconRadio, onClick: () => { tapLight(); navigate({ to: '/radio' as never }); } },
               ] as const;
               return (
                 <div style={SECTION_WRAPPER_STYLE}>
