@@ -67,6 +67,16 @@ function EDSettingsPage() {
   const isPremium = (name: string) =>
     ["Samantha", "Daniel", "Kate", "Serena", "Martha", "Arthur"].includes(name);
 
+  const previewVoice = (voice: SpeechSynthesisVoice) => {
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance("Hi, I'm ED. How can I help?");
+    utt.voice = voice;
+    utt.pitch = 1.0;
+    utt.rate = 0.92;
+    utt.volume = 1.0;
+    window.speechSynthesis.speak(utt);
+  };
+
   const handleTestED = () => {
     (window as any).__edVoice?.activate?.();
   };
