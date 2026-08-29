@@ -1403,6 +1403,14 @@ function isLessonNow(
 function HomePage() {
   const navigate = useNavigate();
 
+  // Universal search bottom sheet
+  const [universalSearchOpen, setUniversalSearchOpen] = useState(false);
+  useEffect(() => {
+    const open = () => setUniversalSearchOpen(true);
+    window.addEventListener("dsm-open-universal-search", open as EventListener);
+    return () => window.removeEventListener("dsm-open-universal-search", open as EventListener);
+  }, []);
+
   
   
   const [runningLateOpen, setRunningLateOpen] = useState(false);
