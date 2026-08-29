@@ -646,23 +646,32 @@ export function useVoiceAssistant({
       speak(`You have ${count} unanswered enquir${count !== 1 ? 'ies' : 'y'}.`);
     };
 
+    const onRadioWhats = (e: Event) => {
+      const name = (e as CustomEvent).detail?.name ?? 'Pro Radio';
+      speak(`Now playing: ${name}`);
+    };
+
     window.addEventListener('ed:earnings:response', onEarnings);
     window.addEventListener('ed:lessoncount:response', onLessonCount);
     window.addEventListener('ed:enquiries:response', onEnquiries);
+    window.addEventListener('ed:radio:whats:response', onRadioWhats);
     return () => {
       window.removeEventListener('ed:earnings:response', onEarnings);
       window.removeEventListener('ed:lessoncount:response', onLessonCount);
       window.removeEventListener('ed:enquiries:response', onEnquiries);
+      window.removeEventListener('ed:radio:whats:response', onRadioWhats);
     };
   }, [nextLesson, speak]);
 
   return {
     isSpeaking,
     isListening,
+    wakeActive,
     activate,
     deactivate,
     transcript,
     lastCommand,
     supported,
   };
+
 }
