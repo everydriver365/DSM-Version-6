@@ -1705,6 +1705,49 @@ function HomePage() {
   const [claimedAwaitingPaymentCount, setClaimedAwaitingPaymentCount] = useState(0);
   const [swapRequests, setSwapRequests] = useState<Array<{ id: string; name: string; test_centre: string | null; current_test_date: string | null; current_test_time: string | null; status: string; created_at: string }>>([]);
   const [eolLesson, setEolLesson] = useState<LessonRow | null>(null);
+
+  const runQuickAdd = (key: QuickAddKey) => {
+    switch (key) {
+      case "lesson":
+        setAddLessonPupilId(undefined);
+        setAddLessonOpen(true);
+        break;
+      case "test":
+        navigate({ to: "/tests" as never });
+        break;
+      case "pupil":
+        navigate({ to: "/pupils/new" as never });
+        break;
+      case "payment":
+        navigate({ to: "/take-payment" as never });
+        break;
+      case "unavailability":
+        navigate({ to: "/quickavailability" as never });
+        break;
+      case "event":
+        setEditingPersonal(null);
+        setPersonalSheetOpen(true);
+        break;
+      case "course":
+        navigate({ to: "/courses/new" as never });
+        break;
+      case "note":
+        navigate({ to: "/notes" as never });
+        break;
+      case "eol": {
+        const candidate =
+          lessons.find((l) => !l.eol_completed && l.status !== "cancelled") ?? null;
+        if (candidate) setEolLesson(candidate);
+        else toast.info("No lesson available to complete");
+        break;
+      }
+      case "enquiry":
+      case "call":
+        navigate({ to: "/enquiries" as never });
+        break;
+    }
+  };
+
   const [recentCancellations, setRecentCancellations] = useState<Array<{ id: string; pupil_first_name: string | null }>>([]);
   const [rescheduleRequestsCount, setRescheduleRequestsCount] = useState<number>(0);
   const [expiredCerts, setExpiredCerts] = useState<Array<{ id: string; title: string; expiry_date: string }>>([]);
