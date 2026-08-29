@@ -624,6 +624,11 @@ export function useVoiceAssistant({
     handleCommandRef.current = handleCommand;
   }, [handleCommand]);
 
+  useEffect(() => {
+    activateRef.current = activate;
+  }, [activate]);
+
+
   // Responses to async lookups performed by the host screen
   useEffect(() => {
     const pupilName = nextLesson?.pupils?.name?.split(' ')[0] ?? 'your pupil';
