@@ -171,27 +171,31 @@ export function useVoiceAssistant({
   const getVoice = useCallback(() => {
     if (!synthRef.current) return null;
     const voices = synthRef.current.getVoices();
-    // iOS premium voices in order of preference
+    // Use user's chosen voice if set
+    if (selectedVoiceName) {
+      const chosen = voices.find(v => v.name === selectedVoiceName);
+      if (chosen) return chosen;
+    }
+    // Fall back to preferred voices
     const preferred = [
-      'Samantha',      // iOS default US English
-      'Daniel',        // iOS UK English — best UK voice
-      'Kate',          // iOS UK English
-      'Serena',        // iOS UK English enhanced
-      'Martha',        // iOS UK English
-      'Arthur',        // iOS UK English
+      'Daniel',
+      'Samantha',
+      'Kate',
+      'Serena',
+      'Martha',
+      'Arthur',
     ];
     for (const name of preferred) {
       const v = voices.find(v => v.name === name);
       if (v) return v;
     }
-    // Fall back to any en-GB voice
     return (
       voices.find(v => v.lang === 'en-GB' && v.localService) ||
       voices.find(v => v.lang === 'en-GB') ||
       voices.find(v => v.lang.startsWith('en')) ||
       null
     );
-  }, []);
+  }, [selectedVoiceName]);
 
   // Speak a string. listenAfter → start listening when speech ends.
   const speak = useCallback((text: string, listenAfter = false) => {
