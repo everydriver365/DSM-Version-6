@@ -8,6 +8,7 @@ import {
 } from "react";
 
 const STREAM_URL = "https://ice1.somafm.com/groovesalad-256-mp3";
+const SOMAFM_STATUS_URL = "https://api.somafm.com/groovesalad.json";
 
 export interface NowPlaying {
   title: string;
@@ -47,7 +48,7 @@ export function useProRadio() {
     stateRef.current = state;
   }, [state]);
 
-  // Initialise audio element once + poll Radio.co status every 30s
+  // Initialise audio element once + poll SomaFM now playing every 30s
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -109,17 +110,41 @@ export function useProRadio() {
         setState((s) => ({ ...s, isLoading: false, isPlaying: false }));
     }
 
-    const fetchStatus = () => {
-      setState((s) => ({
-        ...s,
-        nowPlaying: {
+    const fetchStatus = async () => {
+      try {
+        const res = await fetch(SOMAFM_STATUS_URL);
+        const data = await res.json();
+        const song = data.channel?.lastPlaying;
+        const current = data.channel?.songs?.[0];
+        const nextNowPlaying = {
+          title: current?.title ?? song?.title ?? "Groove Salad",
+          artist: current?.artist ?? song?.artist ?? "SomaFM",
+          artwork: current?.cover ?? null,
+        };
+        const nextShowName = "PRO Chill";
+        setState((s) => ({
+          ...s,
+          nowPlaying: nextNowPlaying,
+          showName: nextShowName,
+          isLive: true,
+        }));
+        updateMediaSession(nextNowPlaying, nextShowName);
+      } catch {
+        // fail silently
+        const fallbackNowPlaying = {
           title: "Groove Salad",
           artist: "SomaFM",
           artwork: null,
-        },
-        showName: "PRO Chill",
-        isLive: true,
-      }));
+        };
+        const fallbackShowName = "PRO Chill";
+        setState((s) => ({
+          ...s,
+          nowPlaying: fallbackNowPlaying,
+          showName: fallbackShowName,
+          isLive: true,
+        }));
+        updateMediaSession(fallbackNowPlaying, fallbackShowName);
+      }
     };
 
     fetchStatus();
