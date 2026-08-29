@@ -5012,38 +5012,6 @@ function HomePage() {
             position: 'relative',
           }}
         >
-        {isTestLesson(upcoming) && (
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            width: 120,
-            height: 120,
-            overflow: 'hidden',
-            zIndex: 50,
-            borderRadius: '0 8px 0 0',
-          }}>
-            <div style={{
-              position: 'absolute',
-              top: 18,
-              right: -35,
-              width: 160,
-              background: '#2C97DE',
-              color: '#FFFFFF',
-              textAlign: 'center',
-              padding: '6px 0',
-              transform: 'rotate(45deg)',
-              fontSize: 12,
-              fontWeight: tokens.fontWeight.bold,
-              fontFamily: 'Poppins, sans-serif',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-              letterSpacing: 0.5,
-              textTransform: 'uppercase',
-            }}>
-              Test Day
-            </div>
-          </div>
-        )}
         {(() => {
 
           // ETA calculation
@@ -5221,17 +5189,48 @@ function HomePage() {
                 return (
                   <div
                     style={{
-                      display: 'flex',
                       position: 'relative',
                       height: 160,
                       overflow: 'hidden',
                       borderRadius: '8px 8px 0 0',
                     }}
                   >
-                    {/* RIGHT PANEL — map */}
+                    {isTestLesson(upcoming) && (
+                      <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        width: 120,
+                        height: 120,
+                        overflow: 'hidden',
+                        zIndex: 4,
+                        borderRadius: '0 8px 0 0',
+                      }}>
+                        <div style={{
+                          position: 'absolute',
+                          top: 18,
+                          right: -35,
+                          width: 160,
+                          background: '#2C97DE',
+                          color: '#FFFFFF',
+                          textAlign: 'center',
+                          padding: '6px 0',
+                          transform: 'rotate(45deg)',
+                          fontSize: 12,
+                          fontWeight: tokens.fontWeight.bold,
+                          fontFamily: 'Poppins, sans-serif',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                          letterSpacing: 0.5,
+                          textTransform: 'uppercase',
+                        }}>
+                          Test Day
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Map full width */}
                     <div style={{
-                      position: 'absolute', top: 0, right: 0, bottom: 0, left: '46%',
-                      overflow: 'hidden',
+                      position: 'absolute', inset: 0,
                       zIndex: 1,
                       background: 'linear-gradient(135deg, #1e3a5f, #0B1F3A)',
                     }}>
@@ -5240,7 +5239,7 @@ function HomePage() {
                           <img
                             src={staticMapUrl}
                             alt="Pickup location"
-                            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                             onError={(e) => {
                               const el = e.currentTarget;
                               el.style.display = 'none';
@@ -5283,152 +5282,136 @@ function HomePage() {
                           </div>
                         </>
                       )}
-
-                      {/* Seam fade overlay */}
-                      <div style={{
-                        position: 'absolute', top: 0, left: 0, bottom: 0, width: '45%',
-                        background: 'linear-gradient(100deg, #F4F7FB 0%, rgba(244,247,251,0.6) 18%, rgba(244,247,251,0) 38%)',
-                        zIndex: 3,
-                        pointerEvents: 'none',
-                      }} />
-
-                      {/* Payment pill */}
-                      <div style={{
-                        position: 'absolute', top: 10, right: 10, zIndex: 5,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-                        borderRadius: 999,
-                      }}>
-                        <LessonPaymentBadge
-                          status={upcoming?.payment_status}
-                          amountDue={upcoming?.amount_due}
-                          paidAmount={(upcoming as any)?.paid_amount}
-                          prepaidHours={upcoming?.pupils?.prepaid_hours}
-                          size="md"
-                        />
-                      </div>
-
-
-                      {/* ETA pill + traffic warning */}
-
-                      {driveData && (
-                        <div style={{
-                          position: 'absolute', bottom: 10, right: 10, zIndex: 4,
-                          display: 'flex', alignItems: 'center', gap: 6,
-                        }}>
-                          {/* ETA pill — styling unchanged */}
-                          <div style={{
-                            background: 'rgba(255,255,255,0.55)',
-                            backdropFilter: 'blur(10px)',
-                            WebkitBackdropFilter: 'blur(10px)',
-                            border: '1px solid rgba(255,255,255,0.6)',
-                            borderRadius: 999, padding: '4px 10px',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                            display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4,
-                          }}>
-                            <IconCar stroke={1.5} size={13} color="#1877D6" />
-                            <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
-                              {driveData.durationMinutes} min
-                            </span>
-                            {driveData.distanceText && (
-                              <span style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>
-                                · {driveData.distanceText}
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Traffic warning indicator */}
-                          {trafficData && trafficData.status !== 'clear' && (
-                            <div style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 4,
-                              background: trafficData.status === 'incident' ? 'rgba(204,34,41,0.2)' : 'rgba(214,138,27,0.2)',
-                              borderRadius: 20,
-                              padding: '3px 8px',
-                            }}>
-                              <IconAlertTriangle
-                                size={11}
-                                color={trafficData.status === 'incident' ? '#FF6B6B' : '#FCD34D'}
-                                stroke={2}
-                              />
-                              <span style={{
-                                fontSize: 10,
-                                fontWeight: 700,
-                                color: trafficData.status === 'incident' ? '#FF6B6B' : '#FCD34D',
-                              }}>
-                                {trafficData.status === 'incident' ? 'Road issue' : `+${trafficData.delayMins}m`}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      )}
-
                     </div>
 
-                    {/* LEFT PANEL */}
+                    {/* White fade overlay */}
                     <div style={{
-                      width: '68%',
-                      background: '#F4F7FB',
-                      clipPath: 'polygon(0 0, 100% 0, 88% 100%, 0 100%)',
-                      position: 'relative',
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'linear-gradient(90deg, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.90) 35%, rgba(255,255,255,0.50) 60%, rgba(255,255,255,0.00) 100%)',
                       zIndex: 2,
-                      padding: '14px 14px 14px 14px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 8,
-                      justifyContent: 'space-between',
+                      pointerEvents: 'none',
+                    }} />
+
+                    {/* Text content */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 16,
+                      left: 16,
+                      zIndex: 3,
+                      maxWidth: '62%',
+                      fontFamily: 'Poppins, sans-serif',
                     }}>
                       <div style={{
-                        background: '#E5E8EE',
-                        borderRadius: 999,
-                        padding: '4px 10px',
-                        display: 'inline-flex',
-                        alignSelf: 'flex-start',
-                        alignItems: 'center', gap: 4,
-                        fontSize: tokens.fontSize.sm, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A',
-                        fontFamily: 'Poppins, sans-serif',
+                        color: '#18A999',
+                        fontSize: 11,
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.8px',
+                        marginBottom: 4,
+                      }}>
+                        Next lesson
+                      </div>
+                      <div style={{
+                        color: '#0B2341',
+                        fontSize: 22,
+                        fontWeight: 700,
+                        lineHeight: 1.15,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
                       }}>
-                        <span>{isLessonToday ? 'TODAY' : `${railDow} ${railDay} ${railMon}`}</span>
-                        <span style={{ fontWeight: tokens.fontWeight.semibold, color: '#4A5568' }}>{startText}{endText ? ` - ${endText}` : ''}</span>
+                        {pupilFullName || 'Pupil'}
                       </div>
-
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
-                        <PupilAvatar pupil={upcoming?.pupils ?? null} pupilId={upcoming?.pupil_id ?? null} size={40} />
-                        <div style={{
-                          fontSize: tokens.fontSize.lg, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A',
-                          fontFamily: 'Poppins, sans-serif',
-                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                          minWidth: 0,
-                        }}>
-                          {pupilFullName || 'Pupil'}
-                        </div>
+                      <div style={{
+                        color: '#0B2341',
+                        fontSize: 14,
+                        opacity: 0.8,
+                        marginTop: 3,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}>
+                        {isLessonToday ? 'Today' : `${railDow} ${railDay} ${railMon}`}
+                        <span style={{ color: '#18A999' }}> · </span>
+                        {startText}{endText ? ` - ${endText}` : ''}
+                        <span style={{ color: '#18A999' }}> · </span>
+                        {durationDecimal} hr
+                        {(upcoming?.pupils as any)?.transmission && (
+                          <>
+                            <span style={{ color: '#18A999' }}> · </span>
+                            {(upcoming?.pupils as any).transmission}
+                          </>
+                        )}
                       </div>
-
-
-                      <button
-                        type="button"
-                        onClick={(e) => { e.stopPropagation(); openMaps(); }}
-                        style={{
-                          alignSelf: 'flex-start',
-                          background: '#FFFFFF',
-                          color: '#0B1F3A',
-                          padding: '5px 12px',
-                          borderRadius: tokens.radiusCard,
-                          border: '1px solid #E5E8EE',
-                          boxShadow: '0 1px 3px rgba(11,31,58,0.06)',
-                          fontSize: 12,
-                          fontWeight: tokens.fontWeight.bold,
-                          cursor: 'pointer',
-                          fontFamily: 'Poppins, sans-serif',
-                          display: 'flex', alignItems: 'center', gap: 4,
-                        }}
-                      >
-                        <IconNavigation stroke={1.5} size={13} color="#1877D6" />
-                        <span>Navigate</span>
-                      </button>
+                      <div style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        padding: '3px 10px',
+                        borderRadius: 999,
+                        background: hPillBgFinal,
+                        color: hPillFgFinal,
+                        fontSize: 11,
+                        fontWeight: 600,
+                        marginTop: 6,
+                      }}>
+                        {hLabelFinal}
+                      </div>
                     </div>
 
+                    {/* ETA pill + traffic warning */}
+                    {driveData && (
+                      <div style={{
+                        position: 'absolute', bottom: 10, right: 10, zIndex: 4,
+                        display: 'flex', alignItems: 'center', gap: 6,
+                      }}>
+                        {/* ETA pill — styling unchanged */}
+                        <div style={{
+                          background: 'rgba(255,255,255,0.55)',
+                          backdropFilter: 'blur(10px)',
+                          WebkitBackdropFilter: 'blur(10px)',
+                          border: '1px solid rgba(255,255,255,0.6)',
+                          borderRadius: 999, padding: '4px 10px',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                          display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4,
+                        }}>
+                          <IconCar stroke={1.5} size={13} color="#1877D6" />
+                          <span style={{ fontSize: 12, fontWeight: tokens.fontWeight.bold, color: '#0B1F3A', fontFamily: 'Poppins, sans-serif' }}>
+                            {driveData.durationMinutes} min
+                          </span>
+                          {driveData.distanceText && (
+                            <span style={{ fontSize: tokens.fontSize.sm, color: '#6B7686', fontFamily: 'Poppins, sans-serif' }}>
+                              · {driveData.distanceText}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Traffic warning indicator */}
+                        {trafficData && trafficData.status !== 'clear' && (
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 4,
+                            background: trafficData.status === 'incident' ? 'rgba(204,34,41,0.2)' : 'rgba(214,138,27,0.2)',
+                            borderRadius: 20,
+                            padding: '3px 8px',
+                          }}>
+                            <IconAlertTriangle
+                              size={11}
+                              color={trafficData.status === 'incident' ? '#FF6B6B' : '#FCD34D'}
+                              stroke={2}
+                            />
+                            <span style={{
+                              fontSize: 10,
+                              fontWeight: 700,
+                              color: trafficData.status === 'incident' ? '#FF6B6B' : '#FCD34D',
+                            }}>
+                              {trafficData.status === 'incident' ? 'Road issue' : `+${trafficData.delayMins}m`}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 );
               })()}
