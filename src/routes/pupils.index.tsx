@@ -700,13 +700,16 @@ function PupilsIndexPage() {
       </>
     );
 
-    const lastLessonText = lastLesson
-      ? `Last lesson ${formatShortDate(lastLesson)} (${formatRelativeDate(lastLesson)})`
-      : nextLesson
-        ? `Next ${formatShortDate(nextLesson)}`
-        : lp
-          ? `Last seen ${formatRelativeDate(lp.date)}`
-          : "No lessons yet";
+    const isTestBooked = testDate && daysUntil(testDate) >= 0 && testResultState !== "passed" && p.status?.toLowerCase() !== "passed";
+    const lastLessonText = isTestBooked
+      ? `Test ${formatShortDate(testDate)}`
+      : lastLesson
+        ? `Last lesson ${formatShortDate(lastLesson)} (${formatRelativeDate(lastLesson)})`
+        : nextLesson
+          ? `Next ${formatShortDate(nextLesson)}`
+          : lp
+            ? `Last seen ${formatRelativeDate(lp.date)}`
+            : "No lessons yet";
 
     const avatar = (
       <div style={{ position: "relative", flexShrink: 0 }}>
