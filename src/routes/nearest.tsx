@@ -654,6 +654,105 @@ function NearestPage() {
         }}
       />
 
+      {/* 5b. SAVED FAVOURITES */}
+      <div style={{ padding: "0 12px 8px" }}>
+        <button
+          type="button"
+          onClick={() => setShowSaved((v) => !v)}
+          aria-expanded={showSaved}
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            background: "#FFFFFF",
+            border: `1px solid ${BORDER}`,
+            borderRadius: 12,
+            padding: "12px 14px",
+            fontSize: 14,
+            fontWeight: 700,
+            color: NAVY,
+            cursor: "pointer",
+            fontFamily: "Poppins, sans-serif",
+          }}
+        >
+          <span>★ Saved places {saved.length ? `(${saved.length})` : ""}</span>
+          <span style={{ color: MUTED, fontSize: 13 }}>{showSaved ? "Hide" : "Show"}</span>
+        </button>
+
+        {showSaved &&
+          (saved.length === 0 ? (
+            <p style={{ padding: "12px 4px", color: MUTED, fontSize: 13 }}>
+              No saved places yet — tap the star on any result to save it.
+            </p>
+          ) : (
+            saved.map((s) => (
+              <div
+                key={s.id}
+                style={{
+                  marginTop: 8,
+                  background: "#FFFFFF",
+                  border: `1px solid ${BORDER}`,
+                  borderRadius: 12,
+                  padding: 14,
+                  fontFamily: "Poppins, sans-serif",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>{s.name}</span>
+                  {pos && typeof s.lat === "number" && typeof s.lng === "number" && (
+                    <span style={{ fontSize: 13, fontWeight: 700, color: BLUE, whiteSpace: "nowrap" }}>
+                      {fmtDistance(haversine(pos.lat, pos.lng, s.lat, s.lng))}
+                    </span>
+                  )}
+                </div>
+                {s.address && <p style={{ margin: "6px 0 0", fontSize: 12, color: MUTED }}>{s.address}</p>}
+                <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                  {typeof s.lat === "number" && typeof s.lng === "number" && (
+                    <button
+                      type="button"
+                      onClick={() => navigateCoords(s.lat!, s.lng!, s.name)}
+                      style={{
+                        background: NAVY,
+                        color: "#FFFFFF",
+                        border: "none",
+                        borderRadius: 8,
+                        padding: "9px 14px",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        fontFamily: "Poppins, sans-serif",
+                      }}
+                    >
+                      ➤ Navigate
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await supabase.from("saved_locations").delete().eq("id", s.id);
+                      setSaved((prev) => prev.filter((x) => x.id !== s.id));
+                    }}
+                    style={{
+                      background: "#FFFFFF",
+                      color: MUTED,
+                      border: `1px solid ${BORDER}`,
+                      borderRadius: 8,
+                      padding: "9px 14px",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))
+          ))}
+      </div>
+
       {/* 6. RESULTS */}
       {locating || (loading && results.length === 0) ? (
         <div style={{ padding: 32, display: "flex", justifyContent: "center" }}>
