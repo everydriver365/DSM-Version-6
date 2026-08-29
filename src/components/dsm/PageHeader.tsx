@@ -44,7 +44,6 @@ export function PageHeader({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        marginTop: "calc(-1 * env(safe-area-inset-top, 0px))",
         padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px",
         borderRadius: 0,
       }}
