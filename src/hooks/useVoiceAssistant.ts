@@ -262,6 +262,25 @@ export function useVoiceAssistant({
       return;
     }
 
+    // HAS PUPIL PAID (question — must be checked before MARK PAID)
+    if ((text.includes('has') && text.includes('paid')) ||
+      text.includes('have they paid') ||
+      text.includes('payment status') ||
+      text.includes('did they pay')) {
+      const status = nextLesson?.payment_status;
+      const amountDue = Number(nextLesson?.amount_due ?? 0);
+      if (status === 'paid') {
+        speak(`Yes, ${pupilName} has paid.`);
+      } else if (status === 'partial') {
+        speak(`${pupilName} has partially paid. There is still £${amountDue} outstanding.`);
+      } else if (amountDue > 0) {
+        speak(`No, ${pupilName} has not paid. They owe £${amountDue}.`);
+      } else {
+        speak(`${pupilName}'s payment status is ${status ?? 'unknown'}.`);
+      }
+      return;
+    }
+
     // MARK PAID
     if (text.includes('paid') ||
       text.includes('mark paid') ||
