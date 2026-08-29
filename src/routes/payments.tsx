@@ -340,7 +340,7 @@ function PaymentsPage() {
     <DSMTopSheet title="Payments">
       <div
         {...pullToRefreshProps}
-        style={{ minHeight: "100%" }}
+        style={{ minHeight: "100%", background: "#F4F6F8", flex: 1 }}
         onTouchStart={(e) => {
           (window as any).__wsSwipe = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         }}

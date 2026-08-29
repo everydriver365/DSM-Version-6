@@ -219,6 +219,7 @@ function ExpensesPage() {
         </button>
       }
     >
+      <div style={{ background: "#F4F6F8", flex: 1, minHeight: "100%" }}>
       {/* Summary cards */}
       <div
         style={{
@@ -354,6 +355,7 @@ function ExpensesPage() {
         }}
       />
       {confirmSheet}
+      </div>
     </DSMTopSheet>
   );
 }

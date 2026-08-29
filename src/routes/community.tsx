@@ -512,7 +512,7 @@ function CommunityPage() {
 
   return (
     <DSMTopSheet title="Community" right={reportButton}>
-      <div style={{ fontFamily: "Poppins, sans-serif" }}>
+      <div style={{ fontFamily: "Poppins, sans-serif", background: "#F4F6F8", flex: 1 }}>
 
       {/* TABS */}
       <div style={{

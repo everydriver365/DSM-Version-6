@@ -205,7 +205,7 @@ function OutstandingPage() {
 
   return (
     <DSMTopSheet title="Outstanding">
-      <div style={POPPINS}>
+      <div style={{ ...POPPINS, background: "#F4F6F8", flex: 1 }}>
       {!loading && total > 0 && (
         <div
           style={{
