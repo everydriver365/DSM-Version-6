@@ -312,14 +312,34 @@ function ActiveIcon({
   return null;
 }
 
-function CenterMicButton() {
+function MicPulseStyle() {
+  return (
+    <style>{`
+      @keyframes edp-mic-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+      }
+      .edp-mic-pulsing {
+        animation: edp-mic-pulse 1s infinite;
+      }
+    `}</style>
+  );
+}
+
+function CenterMicButton({
+  onClick,
+  isSpeaking,
+}: {
+  onClick: () => void;
+  isSpeaking: boolean;
+}) {
   return (
     <button
       type="button"
-      aria-label="Open voice assistant"
+      aria-label={isSpeaking ? "ED is speaking" : "Open voice assistant"}
       onClick={() => {
         tapLight();
-        window.dispatchEvent(new CustomEvent("dsm-open-voice-assistant"));
+        onClick();
       }}
       className="flex items-center justify-center"
       style={{
@@ -336,7 +356,12 @@ function CenterMicButton() {
         zIndex: 2,
       }}
     >
-      <IconMicrophone size={24} color="#FFFFFF" stroke={1.8} />
+      <IconMicrophone
+        size={24}
+        color="#FFFFFF"
+        stroke={1.8}
+        className={isSpeaking ? "edp-mic-pulsing" : undefined}
+      />
     </button>
   );
 }
