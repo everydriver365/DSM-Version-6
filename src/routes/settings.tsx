@@ -96,6 +96,7 @@ function SettingsPage() {
   
   const [expanded, setExpanded] = useState<ExpandKey>(null);
   const [signOutOpen, setSignOutOpen] = useState(false);
+  const { availableVoices, selectedVoiceName, setVoice, speak, isSpeaking } = useVoiceAssistant({});
   const [hourlyRate, setHourlyRate] = useState<number>(35);
   const [defaultDuration, setDefaultDuration] = useState<number>(60);
   const [bufferMinutes, setBufferMinutes] = useState<number>(15);
