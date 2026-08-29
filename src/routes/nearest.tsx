@@ -177,6 +177,7 @@ function NearestPage() {
   const [activeBrand, setActiveBrand] = React.useState<string | null>(null);
   const [results, setResults] = React.useState<Result[]>([]);
   const [locating, setLocating] = React.useState(true);
+  const [radiusMi, setRadiusMi] = React.useState<number>(5);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
