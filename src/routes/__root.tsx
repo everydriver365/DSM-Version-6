@@ -824,6 +824,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
       </div>
 
       <div
+        onClick={() => navigate({ to: "/home" as never })}
         style={{
           position: "absolute",
           left: "50%",
@@ -833,7 +834,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          pointerEvents: "none",
+          cursor: "pointer",
         }}
       >
         <img
@@ -842,6 +843,7 @@ function Header({ unreadCount }: { unreadCount: number }) {
           style={{ height: 44, width: "auto", objectFit: "contain" }}
         />
       </div>
+
 
       <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
         <div
