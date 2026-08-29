@@ -301,6 +301,157 @@ export function useVoiceAssistant({
       return;
     }
 
+    // NEAREST FUEL
+    if (text.includes('fuel') ||
+      text.includes('petrol') ||
+      text.includes('diesel') ||
+      text.includes('garage')) {
+      speak('Finding nearest fuel station');
+      window.dispatchEvent(new CustomEvent('ed:nearest', {
+        detail: { type: 'gas_station' },
+      }));
+      return;
+    }
+
+    // NEAREST TOILET
+    if (text.includes('toilet') ||
+      text.includes('loo') ||
+      text.includes('bathroom') ||
+      text.includes('convenience')) {
+      speak('Finding nearest toilet');
+      window.dispatchEvent(new CustomEvent('ed:nearest', {
+        detail: { type: 'toilet' },
+      }));
+      return;
+    }
+
+    // NEAREST FOOD
+    if (text.includes('food') ||
+      text.includes('cafe') ||
+      text.includes('coffee') ||
+      text.includes('lunch') ||
+      text.includes('eat') ||
+      text.includes('hungry')) {
+      speak('Finding nearest food');
+      window.dispatchEvent(new CustomEvent('ed:nearest', {
+        detail: { type: 'restaurant' },
+      }));
+      return;
+    }
+
+    // NEAREST EV CHARGER
+    if (text.includes('charger') ||
+      text.includes('charging') ||
+      text.includes('electric') ||
+      text.includes('ev')) {
+      speak('Finding nearest EV charger');
+      window.dispatchEvent(new CustomEvent('ed:nearest', {
+        detail: { type: 'ev' },
+      }));
+      return;
+    }
+
+    // NEAREST PARKING
+    if (text.includes('parking') ||
+      text.includes('park')) {
+      speak('Finding nearest parking');
+      window.dispatchEvent(new CustomEvent('ed:nearest', {
+        detail: { type: 'parking' },
+      }));
+      return;
+    }
+
+    // NEAREST ATM
+    if (text.includes('atm') ||
+      text.includes('cash machine') ||
+      text.includes('cashpoint') ||
+      text.includes('money')) {
+      speak('Finding nearest cash machine');
+      window.dispatchEvent(new CustomEvent('ed:nearest', {
+        detail: { type: 'atm' },
+      }));
+      return;
+    }
+
+    // HOW MUCH DO THEY OWE
+    if (text.includes('owe') ||
+      text.includes('outstanding') ||
+      text.includes('balance')) {
+      const amountDue = Number(nextLesson?.amount_due ?? 0);
+      if (amountDue > 0) {
+        speak(`${pupilName} owes £${amountDue}.`);
+      } else {
+        speak(`${pupilName} has no outstanding balance.`);
+      }
+      return;
+    }
+
+    // EARNINGS TODAY
+    if (text.includes('earn') ||
+      text.includes('made today') ||
+      text.includes('income') ||
+      text.includes('money today')) {
+      window.dispatchEvent(new CustomEvent('ed:earnings'));
+      return;
+    }
+
+    // SUMMARY OF LAST LESSON
+    if (text.includes('last lesson') ||
+      text.includes('previous lesson') ||
+      text.includes('summary') ||
+      text.includes('last time')) {
+      const notes = nextLesson?.notes;
+      if (notes) {
+        speak(`Notes from last lesson with ${pupilName}: ${notes}`);
+      } else {
+        speak(`No notes recorded for ${pupilName}'s last lesson.`);
+      }
+      return;
+    }
+
+    // HOW MANY LESSONS
+    if (text.includes('how many lessons') ||
+      text.includes('lesson count') ||
+      text.includes('how many hours')) {
+      window.dispatchEvent(new CustomEvent('ed:lessoncount'));
+      return;
+    }
+
+    // ENQUIRIES
+    if (text.includes('enquir')) {
+      window.dispatchEvent(new CustomEvent('ed:enquiries'));
+      return;
+    }
+
+    // WEATHER
+    if (text.includes('weather') ||
+      text.includes('temperature') ||
+      text.includes('raining') ||
+      text.includes('sunny')) {
+      if (weatherData?.condition) {
+        speak(`Current weather is ${weatherData.condition}, ${Math.round(weatherData.tempC ?? 0)} degrees.`);
+      } else {
+        speak('Weather data is not available.');
+      }
+      return;
+    }
+
+    // TRAFFIC
+    if (text.includes('traffic') ||
+      text.includes('route') ||
+      text.includes('journey time') ||
+      text.includes('how long')) {
+      if (trafficData?.status === 'clear') {
+        speak(`Route is clear. Journey time is ${trafficData.travelMins} minutes.`);
+      } else if (trafficData?.status === 'delay' ||
+        trafficData?.status === 'incident') {
+        speak(`There is traffic on your route. Journey time is ${trafficData.travelMins} minutes, with a delay of ${trafficData.delayMins} minutes.`);
+      } else {
+        speak('Traffic data is not available.');
+      }
+      return;
+    }
+
     // UNRECOGNISED
     speak('Sorry, I did not understand that. Try saying: call, message, on my way, running late, or stop.');
     setTimeout(() => {
