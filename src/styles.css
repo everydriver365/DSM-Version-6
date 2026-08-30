@@ -462,9 +462,12 @@ html.dsm-native body::before {
   right: 0;
   height: var(--dsm-safe-top, 0px);
   background-color: #0B1F3A;
-  z-index: 2147483000;
+  /* Behind the app header (z-index 50) so it only ever paints *behind* the
+     status bar — it must never cover the header row and leave a navy void. */
+  z-index: 5;
   pointer-events: none;
 }
+
 
 /* ============================================================
  * Page & card enter animations
