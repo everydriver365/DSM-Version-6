@@ -87,6 +87,22 @@ const ICON_EMOJI: Record<string, string> = {
 
 type Tool = "draw" | "car" | "hazard" | "arrow" | "text" | "ruler";
 
+/** GROUP I — DVSA test routes, keyed by rounded "lat,lng" area. Populated as
+ *  local routes are contributed; the Static Maps URL accepts &path= overlays. */
+const TEST_ROUTES: Record<
+  string,
+  { name: string; color: string; points: [number, number][] }[]
+> = {};
+
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result ?? ""));
+    reader.onerror = () => reject(new Error("read failed"));
+    reader.readAsDataURL(blob);
+  });
+}
+
 /** Isolated overlay layer: placing/dragging an icon only re-renders this. */
 const IconOverlay = React.memo(function IconOverlay({
   icons,
