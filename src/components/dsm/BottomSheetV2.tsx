@@ -176,7 +176,7 @@ export function BottomSheet({ title, subtitle, onClose, children, footer, header
 
         {footer && (
           <div
-            className="px-4 pt-6 pb-6 shrink-0"
+            className="px-4 pt-4 pb-3 shrink-0"
             style={{
               background: `linear-gradient(to bottom, rgba(238,242,247,0), ${canvas})`,
             }}
