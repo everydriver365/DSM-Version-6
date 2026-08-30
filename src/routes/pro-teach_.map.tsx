@@ -52,6 +52,19 @@ function MapDrawPage() {
   const navigate = useNavigate();
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
   const wrapRef = React.useRef<HTMLDivElement | null>(null);
+  const rootRef = React.useRef<HTMLDivElement | null>(null);
+  const [shellHeight, setShellHeight] = React.useState<number | string>("100dvh");
+
+  // fit between the app header and the bottom nav
+  React.useEffect(() => {
+    const fit = () => {
+      const top = rootRef.current?.getBoundingClientRect().top ?? 0;
+      setShellHeight(Math.max(320, window.innerHeight - top - 76));
+    };
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, []);
   const strokesRef = React.useRef<Stroke[]>([]);
   const drawingRef = React.useRef(false);
 
