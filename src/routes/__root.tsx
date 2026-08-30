@@ -1054,7 +1054,9 @@ function RootComponent() {
 
   const showHeader = !hideNav;
 
-  const wrapperStyle: Record<string, string | number> = {};
+  const wrapperStyle: Record<string, string | number> = {
+    minHeight: "100vh",
+  };
   if (!showHeader) {
     // Sticky header already occupies its own space; only pad when it's absent.
     wrapperStyle.paddingTop = 'env(safe-area-inset-top, 0px)';
