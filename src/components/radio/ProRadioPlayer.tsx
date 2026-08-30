@@ -13,6 +13,7 @@ import {
   IconWaveSine,
   IconCar,
   IconMicrophone,
+  IconTree,
 } from "@tabler/icons-react";
 import { toast } from "@/lib/toast";
 import { useProRadioContext } from "@/hooks/useProRadio";
@@ -29,6 +30,7 @@ const COMING_SOON_STATIONS = [
   { name: "PRO Chill", Icon: IconWaveSine, bg: "#18A999" },
   { name: "PRO Drive", Icon: IconCar, bg: "#2C97DE" },
   { name: "PRO Talk", Icon: IconMicrophone, bg: "#7B61FF" },
+  { name: "PRO Xmas", Icon: IconTree, bg: "#E53935", toastText: "PRO Xmas coming soon! 🎄" },
 ];
 
 function LiveDot({ size = 6 }: { size?: number }) {
@@ -375,15 +377,15 @@ export function ProRadioPlayer() {
               </div>
             </div>
 
-            {COMING_SOON_STATIONS.map(({ name, Icon, bg }) => (
+            {COMING_SOON_STATIONS.map(({ name, Icon, bg, toastText }) => (
               <div
                 key={name}
                 role="button"
                 tabIndex={0}
-                onClick={() => toast(`${name} coming soon!`)}
+                onClick={() => toast(toastText || `${name} coming soon!`)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ")
-                    toast(`${name} coming soon!`);
+                    toast(toastText || `${name} coming soon!`);
                 }}
                 style={{
                   background: "#FFFFFF",

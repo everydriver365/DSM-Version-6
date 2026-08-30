@@ -1859,6 +1859,7 @@ function HomePage() {
   const [takePaymentSheetOpen, setTakePaymentSheetOpen] = useState(false);
 
   const runQuickAdd = (key: QuickAddKey) => {
+    setQuickAddOpen(false);
     switch (key) {
       case "lesson":
         setAddLessonPupilId(undefined);
@@ -9713,7 +9714,6 @@ function HomePage() {
                   key={item.key}
                   type="button"
                   onClick={() => {
-                    setQuickAddOpen(false);
                     runQuickAdd(item.key as QuickAddKey);
                   }}
                   style={{
