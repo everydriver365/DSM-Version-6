@@ -152,7 +152,7 @@ export function useProRadio() {
         };
         setState((s) => {
           const liveSelected = s.selectedStation === "PRO Live" || s.selectedStation == null;
-          const nextShowName = liveSelected ? "PRO Live" : s.selectedStation;
+          const nextShowName = liveSelected ? "PRO Live" : (s.selectedStation || "PRO Radio");
           return {
             ...s,
             nowPlaying: nextNowPlaying,
