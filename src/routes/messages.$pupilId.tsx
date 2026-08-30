@@ -997,15 +997,10 @@ function PupilThreadPage() {
       {/* Header */}
       <div
         style={{
-          position: "fixed",
+          position: "sticky",
           top: 0,
-          left: 0,
-          right: 0,
           zIndex: 60,
-          maxWidth: 480,
-          margin: "0 auto",
           background: tokens.navy,
-          paddingTop: "env(safe-area-inset-top, 0px)",
         }}
       >
         <div
@@ -1210,7 +1205,7 @@ function PupilThreadPage() {
           )}
         </div>
       </div>
-      <div style={{ height: "calc(56px + env(safe-area-inset-top, 0px))" }} />
+      
 
 
       {noAccount && (
