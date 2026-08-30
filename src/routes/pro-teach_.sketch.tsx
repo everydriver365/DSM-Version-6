@@ -577,7 +577,7 @@ function SketchBoardPage() {
               background: tool === "line" ? "#EAF5FC" : "#fff",
             }}
           >
-            <IconCheck size={18} color={tool === "line" ? "#2C97DE" : MUTED} />
+            <IconMinus size={18} color={tool === "line" ? "#2C97DE" : MUTED} />
           </button>
           <button
             type="button"
