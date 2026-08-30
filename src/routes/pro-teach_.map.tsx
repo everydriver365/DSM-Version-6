@@ -769,12 +769,14 @@ function MapDrawPage() {
       const uid = auth?.user?.id;
       if (!uid) throw new Error("no user");
       const imageData = (await compositeDataUrl()) ?? "";
+      const audioData = audioBlob ? await blobToBase64(audioBlob) : null;
 
       const { error } = await supabase.from("teach_resources" as never).insert({
         instructor_id: uid,
         pupil_id: pupil.id,
         type: "map_draw",
         image_data: imageData,
+        audio_data: audioData,
         map_url: staticMapUrl,
         lat: coords?.lat ?? null,
         lng: coords?.lng ?? null,
