@@ -1613,7 +1613,9 @@ function PupilThreadPage() {
           background: "#fff",
           borderTop: "1px solid #E4E8EF",
           padding: "12px 16px",
-          paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))",
+          /* The root wrapper already reserves the bottom-nav + safe-area space
+             below this column, so the composer only needs its own padding. */
+          paddingBottom: 12,
           display: "flex",
           gap: 10,
           alignItems: "flex-end",
