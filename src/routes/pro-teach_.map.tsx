@@ -106,10 +106,11 @@ function MapDrawPage() {
       zoom: String(zoom),
       size: "390x500",
       scale: "2",
+      maptype: mapType,
       key: GOOGLE_KEY,
     });
     return `https://maps.googleapis.com/maps/api/staticmap?${params.toString()}&style=feature:poi|visibility:off`;
-  }, [coords, zoom]);
+  }, [coords, zoom, mapType]);
 
   const repaint = React.useCallback(() => {
     const canvas = canvasRef.current;
