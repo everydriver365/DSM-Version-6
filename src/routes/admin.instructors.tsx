@@ -269,6 +269,173 @@ function AdminInstructorsPage() {
         </div>
       </div>
 
+      {/* FILTER BAR */}
+      <div style={{ padding: "16px 16px 0" }}>
+        <div className="flex gap-2" style={{ overflowX: "auto", scrollbarWidth: "none" }}>
+          {(["all", "new", "active", "inactive"] as const).map((key) => {
+            const isSelected = filter === key;
+            const label =
+              key === "all" ? "All" : key === "new" ? "New" : key === "active" ? "Active" : "Inactive";
+            const count =
+              key === "all"
+                ? active.length
+                : key === "new"
+                  ? newInstructors.length
+                  : key === "active"
+                    ? active.length
+                    : archived.length;
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setFilter(key)}
+                style={{
+                  flexShrink: 0,
+                  padding: "6px 12px",
+                  borderRadius: 999,
+                  border: "none",
+                  fontSize: 12,
+                  fontWeight: tokens.fontWeight.bold,
+                  fontFamily: "Poppins, sans-serif",
+                  cursor: "pointer",
+                  backgroundColor: isSelected ? "#0B1F3A" : "#fff",
+                  color: isSelected ? "#fff" : "#536579",
+                  boxShadow: isSelected ? "none" : "0 1px 3px rgba(0,0,0,0.06)",
+                }}
+              >
+                {label} {count > 0 && `(${count})`}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* NEW INSTRUCTORS BANNER */}
+      {filter !== "inactive" && newInstructors.length > 0 && (
+        <div style={{ padding: "16px 16px 0" }}>
+          <div
+            style={{
+              backgroundColor: "#EAF5FC",
+              border: "1px solid #2C97DE",
+              borderRadius: 12,
+              padding: 16,
+            }}
+          >
+            {/* Header row */}
+            <div className="flex items-center gap-2" style={{ marginBottom: 12 }}>
+              <div
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  backgroundColor: "#2C97DE",
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: tokens.fontWeight.bold,
+                  color: "#2C97DE",
+                  textTransform: "uppercase",
+                  letterSpacing: 0.5,
+                }}
+              >
+                New this week
+              </span>
+              <span
+                style={{
+                  backgroundColor: "#2C97DE",
+                  color: "#fff",
+                  borderRadius: 20,
+                  padding: "2px 8px",
+                  fontSize: 11,
+                  fontWeight: tokens.fontWeight.extrabold,
+                }}
+              >
+                {newInstructors.length}
+              </span>
+            </div>
+
+            {newInstructors.map((inst, idx) => (
+              <div
+                key={inst.id}
+                className="flex items-center gap-3"
+                style={{
+                  padding: "12px 0",
+                  borderBottom: idx === newInstructors.length - 1 ? "none" : "1px solid #D0E8F8",
+                }}
+              >
+                <div
+                  className="flex items-center justify-center rounded-full shrink-0"
+                  style={{
+                    width: 40,
+                    height: 40,
+                    backgroundColor: "#2C97DE",
+                    color: "#fff",
+                    fontSize: 14,
+                    fontWeight: tokens.fontWeight.bold,
+                  }}
+                >
+                  {inst.profile_image_url ? (
+                    <img
+                      src={inst.profile_image_url}
+                      alt={inst.name ?? ""}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    initials(inst.name).slice(0, 1)
+                  )}
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div
+                    style={{
+                      fontSize: 15,
+                      fontWeight: tokens.fontWeight.bold,
+                      color: "#0B2341",
+                    }}
+                    className="truncate"
+                  >
+                    {inst.name || "Unnamed"}
+                  </div>
+                  <div className="truncate" style={{ fontSize: 12, color: "#536579", marginTop: 2 }}>
+                    {inst.email || "No email"}
+                  </div>
+                  <div className="truncate" style={{ fontSize: 12, color: "#536579", marginTop: 2 }}>
+                    {inst.home_postcode || "No location"}
+                  </div>
+                  <div style={{ fontSize: 12, color: "#536579", marginTop: 2 }}>
+                    Joined {relativeTime(inst.created_at)}
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedInstructor(inst);
+                  }}
+                  style={{
+                    backgroundColor: "#2C97DE",
+                    color: "#fff",
+                    fontSize: 11,
+                    fontWeight: tokens.fontWeight.bold,
+                    padding: "4px 10px",
+                    borderRadius: 20,
+                    border: "none",
+                    cursor: "pointer",
+                    fontFamily: "Poppins, sans-serif",
+                    flexShrink: 0,
+                  }}
+                >
+                  View
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* LIST */}
       <div style={{ padding: "16px 16px 0" }}>
         <div
@@ -279,141 +446,166 @@ function AdminInstructorsPage() {
             boxShadow: "0 4px 0 #E4E4E8, 0 12px 28px rgba(0,0,0,0.06)",
           }}
         >
-        {active.length === 0 && (
-          <div style={{ padding: 24, textAlign: "center", fontSize: tokens.fontSize.base, color: MUTED }}>
-            No instructors found
-          </div>
-        )}
-        {active.map((inst, idx) => {
-          const deleted = !!inst.deleted_at;
-          return (
-            <div
-              key={inst.id}
-              className="flex items-center relative"
-              onClick={() => setSelectedInstructor(inst)}
-              style={{
-                gap: 12,
-                padding: "15px 16px",
-                borderTop: idx === 0 ? "none" : "1px solid #EFEFF2",
-                cursor: "pointer",
-              }}
-            >
+          {visibleInstructors.length === 0 && (
+            <div style={{ padding: 24, textAlign: "center", fontSize: tokens.fontSize.base, color: MUTED }}>
+              {filter === "inactive"
+                ? "No archived instructors"
+                : filter === "new"
+                  ? "No new instructors"
+                  : "No instructors found"}
+            </div>
+          )}
+          {visibleInstructors.map((inst, idx) => {
+            const deleted = !!inst.deleted_at;
+            const isNew = isNewInstructor(inst);
+            return (
               <div
-                className="flex items-center justify-center rounded-full shrink-0 overflow-hidden"
+                key={inst.id}
+                className="flex items-center relative"
+                onClick={() => setSelectedInstructor(inst)}
                 style={{
-                  width: 44,
-                  height: 44,
-                  backgroundColor: deleted ? BORDER : BLUE,
-                  color: deleted ? "#9CA3AF" : "#fff",
-                  fontSize: tokens.fontSize.md,
-                  fontWeight: tokens.fontWeight.bold,
+                  gap: 12,
+                  padding: "15px 16px",
+                  borderTop: idx === 0 ? "none" : "1px solid #EFEFF2",
+                  cursor: "pointer",
                 }}
               >
-                {inst.profile_image_url ? (
-                  <img
-                    src={inst.profile_image_url}
-                    alt={inst.name ?? ""}
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  />
-                ) : (
-                  initials(inst.name)
-                )}
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span
-                    style={{
-                      fontSize: tokens.fontSize.lg,
-                      fontWeight: tokens.fontWeight.extrabold,
-                      letterSpacing: "-0.1px",
-                      color: "#000",
-                      textDecoration: deleted ? "line-through" : "none",
-                    }}
-                    className="truncate"
-                  >
-                    {inst.name || "Unnamed"}
-                  </span>
-                  {deleted && (
-                    <span style={{ fontSize: 12, color: RED, fontWeight: 600 }}>(removed)</span>
-                  )}
-                </div>
                 <div
-                  className="truncate"
+                  className="flex items-center justify-center rounded-full shrink-0 overflow-hidden"
                   style={{
-                    fontSize: tokens.fontSize.base,
-                    fontWeight: tokens.fontWeight.medium,
-                    color: inst.phone ? "#6B6B6F" : "#C7C7CC",
-                    marginTop: 2,
+                    width: 44,
+                    height: 44,
+                    backgroundColor: deleted ? BORDER : BLUE,
+                    color: deleted ? "#9CA3AF" : "#fff",
+                    fontSize: tokens.fontSize.md,
+                    fontWeight: tokens.fontWeight.bold,
                   }}
                 >
-                  {inst.phone || "No phone number"}
+                  {inst.profile_image_url ? (
+                    <img
+                      src={inst.profile_image_url}
+                      alt={inst.name ?? ""}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    initials(inst.name)
+                  )}
                 </div>
-                <div style={{ fontSize: 12, color: "#B0B0B5", marginTop: 2 }}>
-                  Joined {fmtDate(inst.created_at)}
-                </div>
-              </div>
 
-              <button
-                type="button"
-                aria-label="Actions"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setMenuFor(menuFor === inst.id ? null : inst.id);
-                }}
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 12,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <IconDotsVertical stroke={1.5} size={18} color="#8A8A8E" />
-              </button>
-
-              {menuFor === inst.id && (
-                <>
-                  <div className="fixed inset-0 z-30" onClick={() => setMenuFor(null)} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      style={{
+                        fontSize: tokens.fontSize.lg,
+                        fontWeight: tokens.fontWeight.extrabold,
+                        letterSpacing: "-0.1px",
+                        color: "#000",
+                        textDecoration: deleted ? "line-through" : "none",
+                      }}
+                      className="truncate"
+                    >
+                      {inst.name || "Unnamed"}
+                    </span>
+                    {isNew && (
+                      <span
+                        style={{
+                          backgroundColor: "#2C97DE",
+                          color: "#fff",
+                          fontSize: 10,
+                          fontWeight: tokens.fontWeight.extrabold,
+                          padding: "2px 8px",
+                          borderRadius: 20,
+                          marginLeft: 8,
+                        }}
+                      >
+                        New
+                      </span>
+                    )}
+                    {deleted && (
+                      <span style={{ fontSize: 12, color: RED, fontWeight: 600 }}>(removed)</span>
+                    )}
+                  </div>
                   <div
-                    className="absolute z-40 rounded-lg overflow-hidden bg-white"
+                    className="truncate"
                     style={{
-                      right: 12,
-                      top: 46,
-                      minWidth: 180,
-                      boxShadow: "0 6px 20px rgba(0,0,0,0.14)",
-                      border: `1px solid ${BORDER}`,
+                      fontSize: tokens.fontSize.base,
+                      fontWeight: tokens.fontWeight.medium,
+                      color: inst.phone ? "#6B6B6F" : "#C7C7CC",
+                      marginTop: 2,
                     }}
                   >
-                    <button
-                      type="button"
-                      onClick={() => openEdit(inst)}
-                      className="flex items-center gap-2 w-full text-left px-3 py-3"
-                      style={{ fontSize: tokens.fontSize.base, color: NAVY }}
-                    >
-                      <IconPencil stroke={1.5} size={15} color={NAVY} /> Edit details
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setMenuFor(null);
-                        setConfirmDelete(inst);
-                      }}
-                      className="flex items-center gap-2 w-full text-left px-3 py-3"
-                      style={{ fontSize: tokens.fontSize.base, color: RED, borderTop: `0.5px solid ${BORDER}` }}
-                    >
-                      <IconTrash stroke={1.5} size={15} color={RED} /> Remove instructor
-                    </button>
+                    {inst.phone || "No phone number"}
                   </div>
-                </>
-              )}
-            </div>
-          );
-        })}
+                  <div style={{ fontSize: 12, color: "#B0B0B5", marginTop: 2 }}>
+                    Joined {fmtDate(inst.created_at)}
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  aria-label="Actions"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setMenuFor(menuFor === inst.id ? null : inst.id);
+                  }}
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 12,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <IconDotsVertical stroke={1.5} size={18} color="#8A8A8E" />
+                </button>
+
+                {menuFor === inst.id && (
+                  <>
+                    <div className="fixed inset-0 z-30" onClick={() => setMenuFor(null)} />
+                    <div
+                      className="absolute z-40 rounded-lg overflow-hidden bg-white"
+                      style={{
+                        right: 12,
+                        top: 46,
+                        minWidth: 180,
+                        boxShadow: "0 6px 20px rgba(0,0,0,0.14)",
+                        border: `1px solid ${BORDER}`,
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => openEdit(inst)}
+                        className="flex items-center gap-2 w-full text-left px-3 py-3"
+                        style={{ fontSize: tokens.fontSize.base, color: NAVY }}
+                      >
+                        <IconPencil stroke={1.5} size={15} color={NAVY} /> Edit details
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMenuFor(null);
+                          setConfirmDelete(inst);
+                        }}
+                        className="flex items-center gap-2 w-full text-left px-3 py-3"
+                        style={{
+                          fontSize: tokens.fontSize.base,
+                          color: RED,
+                          borderTop: `0.5px solid ${BORDER}`,
+                        }}
+                      >
+                        <IconTrash stroke={1.5} size={15} color={RED} /> Remove instructor
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
+
 
 
       {/* ARCHIVE */}
