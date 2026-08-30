@@ -1873,8 +1873,7 @@ function HomePage() {
         setQuickPupilSheetOpen(true);
         break;
       case "payment":
-        setUnifiedPayPupilId(undefined);
-        setUnifiedPayOpen(true);
+        navigate({ to: "/take-payment" as never });
         break;
       case "unavailability":
         setUnavailabilitySheetOpen(true);
