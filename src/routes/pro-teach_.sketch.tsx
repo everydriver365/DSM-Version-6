@@ -3,11 +3,11 @@ import * as React from "react";
 import {
   IconArrowBackUp,
   IconArrowLeft,
-  IconBucket,
-  IconCheck,
   IconEraser,
   IconMaximize,
   IconMinimize,
+  IconMinus,
+  IconPaint,
   IconPencil,
   IconShare,
   IconTrash,
