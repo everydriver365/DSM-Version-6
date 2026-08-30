@@ -28,7 +28,7 @@ import { supabase } from "../lib/supabaseClient";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
 
 import { isBiometricAvailable, authenticate } from "@/lib/biometric";
-import { IconFingerprint } from "@tabler/icons-react";
+import { IconFingerprint, IconChevronLeft } from "@tabler/icons-react";
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
