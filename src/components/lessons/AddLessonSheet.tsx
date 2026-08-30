@@ -207,6 +207,31 @@ export function AddLessonSheet({
     return d.toISOString().split("T")[0];
   });
 
+  const goBack = useGoBack();
+
+  const hasUnsavedChanges = useCallback(() => {
+    return Boolean(
+      pupilId ||
+      time ||
+      pickup.trim() ||
+      notes.trim() ||
+      testCentre.trim() ||
+      eventTitle.trim() ||
+      isRecurring
+    );
+  }, [pupilId, time, pickup, notes, testCentre, eventTitle, isRecurring]);
+
+  const handleCloseAttempt = useCallback(() => {
+    if (saving) return;
+    if (hasUnsavedChanges()) {
+      if (window.confirm("You have unsaved changes. Discard them?")) {
+        onClose();
+      }
+    } else {
+      onClose();
+    }
+  }, [saving, hasUnsavedChanges, onClose]);
+
   useEffect(() => {
     if (!open) return;
     setPupilId(initialPupilId ?? "");
