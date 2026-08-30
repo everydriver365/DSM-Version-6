@@ -241,6 +241,7 @@ function MapDrawPage() {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
+    const dpr = window.devicePixelRatio || 1;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (const s of drawnStrokesRef.current) {
       ctx.beginPath();
@@ -251,6 +252,7 @@ function MapDrawPage() {
       s.points.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
       ctx.stroke();
     }
+    void dpr;
   }, []);
 
   // size canvas to its container with DPR-aware backing store
@@ -264,6 +266,8 @@ function MapDrawPage() {
       canvas.height = rect.height * dpr;
       canvas.style.width = `${rect.width}px`;
       canvas.style.height = `${rect.height}px`;
+      // draw in CSS pixels so pointer coords map 1:1 to canvas coords
+      canvas.getContext("2d")?.setTransform(dpr, 0, 0, dpr, 0, 0);
       repaint();
     });
     observer.observe(canvas);
@@ -273,7 +277,8 @@ function MapDrawPage() {
   // clear drawing when map type changes so annotations don't sit on the wrong imagery
   React.useEffect(() => {
     drawnStrokesRef.current = [];
-    setStrokes([]);
+    strokesRef.current = [];
+    setStrokeCount(0);
     setPlacedIcons([]);
     setSelectedIconId(null);
     setDraggingId(null);
@@ -289,7 +294,6 @@ function MapDrawPage() {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
     let clientX: number;
     let clientY: number;
     if ("touches" in e && e.touches.length > 0) {
@@ -302,10 +306,8 @@ function MapDrawPage() {
       clientX = (e as MouseEvent).clientX;
       clientY = (e as MouseEvent).clientY;
     }
-    return {
-      x: (clientX - rect.left) * dpr,
-      y: (clientY - rect.top) * dpr,
-    };
+    // CSS pixels — matches both the scaled canvas context and the DOM overlay
+    return { x: clientX - rect.left, y: clientY - rect.top };
   };
 
   const pushUndoSnapshot = () => {
@@ -313,8 +315,11 @@ function MapDrawPage() {
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
     const snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    setStrokes((prev) => [...prev, snapshot]);
+    strokesRef.current.push(snapshot);
+    if (strokesRef.current.length > MAX_UNDO) strokesRef.current.shift();
+    setStrokeCount(strokesRef.current.length);
   };
+
 
   const draw = (x: number, y: number, newStroke: boolean) => {
     const canvas = canvasRef.current;
