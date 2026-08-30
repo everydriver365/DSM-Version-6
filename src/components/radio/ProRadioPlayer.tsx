@@ -257,8 +257,17 @@ export function ProRadioPlayer() {
               fontSize: 11,
             }}
           >
-            <LiveDot />
-            LIVE · PRO Radio
+            {radio.isLive ? (
+              <>
+                <LiveDot />
+                {radio.isPlaying ? "LIVE" : "PAUSED"} · PRO Radio
+              </>
+            ) : (
+              <>
+                <span style={{ fontSize: 9, color: "#536579" }}>COMING SOON</span>
+                <span>· {radio.showName}</span>
+              </>
+            )}
           </div>
         </div>
 
