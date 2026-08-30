@@ -43,6 +43,7 @@ function AdminInstructorsPage() {
 
   const [instructors, setInstructors] = useState<any[]>([]);
   const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<"all" | "new" | "active" | "inactive">("all");
   const [menuFor, setMenuFor] = useState<string | null>(null);
   const [editInstructor, setEditInstructor] = useState<any>(null);
   const [editName, setEditName] = useState("");
@@ -60,6 +61,27 @@ function AdminInstructorsPage() {
     joinedDate: string;
   } | null>(null);
   const [loadingStats, setLoadingStats] = useState(false);
+
+  function isNewInstructor(inst: any) {
+    if (!inst.created_at) return false;
+    const created = new Date(inst.created_at).getTime();
+    const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    return created >= sevenDaysAgo;
+  }
+
+  function relativeTime(iso?: string | null) {
+    if (!iso) return "";
+    const then = new Date(iso).getTime();
+    const diffMs = Date.now() - then;
+    const mins = Math.floor(diffMs / 60000);
+    const hours = Math.floor(mins / 60);
+    const days = Math.floor(hours / 24);
+    if (mins < 1) return "Just now";
+    if (mins < 60) return `${mins} min${mins === 1 ? "" : "s"} ago`;
+    if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+    return `${days} day${days === 1 ? "" : "s"} ago`;
+  }
+
 
   async function fetchInstructors() {
     const BASE =
