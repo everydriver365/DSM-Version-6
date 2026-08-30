@@ -1674,7 +1674,6 @@ function RootComponent() {
       {showHeader && <Header unreadCount={unreadCount} />}
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <BackBarProvider>
-        {showHeader && <GlobalBackBar pathname={pathname} />}
         <div style={Object.keys(wrapperStyle).length ? wrapperStyle : undefined}>
           <Outlet />
         </div>
