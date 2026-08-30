@@ -243,6 +243,133 @@ function MapDrawPage() {
     }, "image/png");
   };
 
+  /* ---------- composite (map + drawing) as a data URL ---------- */
+  const compositeDataUrl = React.useCallback(async (): Promise<string | null> => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+    const offscreen = document.createElement("canvas");
+    offscreen.width = canvas.width;
+    offscreen.height = canvas.height;
+    const ctx = offscreen.getContext("2d");
+    if (!ctx) return null;
+
+    if (staticMapUrl) {
+      try {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        await new Promise<void>((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = () => reject(new Error("map image"));
+          img.src = staticMapUrl;
+        });
+        ctx.drawImage(img, 0, 0, offscreen.width, offscreen.height);
+      } catch {
+        ctx.fillStyle = "#e8f0e8";
+        ctx.fillRect(0, 0, offscreen.width, offscreen.height);
+      }
+    } else {
+      ctx.fillStyle = "#e8f0e8";
+      ctx.fillRect(0, 0, offscreen.width, offscreen.height);
+    }
+    ctx.drawImage(canvas, 0, 0);
+    try {
+      return offscreen.toDataURL("image/png");
+    } catch {
+      return canvas.toDataURL("image/png");
+    }
+  }, [staticMapUrl]);
+
+  /* ---------- FEATURE 2 — save to favourites ---------- */
+  const saveFavourite = async () => {
+    try {
+      const imageData = (await compositeDataUrl()) ?? "";
+      const favourite = {
+        id: Date.now().toString(),
+        name: `Map ${new Date().toLocaleDateString("en-GB")}`,
+        imageData,
+        mapUrl: staticMapUrl,
+        lat: coords?.lat ?? null,
+        lng: coords?.lng ?? null,
+        zoom,
+        createdAt: new Date().toISOString(),
+      };
+      localStorage.setItem(`pro_teach_fav_${favourite.id}`, JSON.stringify(favourite));
+      setSavedFav(true);
+      toast.success("Saved to favourites ✅");
+    } catch {
+      toast.error("Could not save this map");
+    }
+  };
+
+  /* ---------- FEATURE 3 — save to pupil ---------- */
+  const openPupilPicker = async () => {
+    setPupilSheet(true);
+    setLoadingPupils(true);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth?.user?.id;
+      if (!uid) {
+        setPupils([]);
+        return;
+      }
+      const { data } = await supabase
+        .from("pupils")
+        .select("id, name")
+        .eq("instructor_id", uid)
+        .is("deleted_at", null)
+        .order("name");
+      setPupils((data ?? []) as Array<{ id: string; name: string | null }>);
+    } catch {
+      setPupils([]);
+    } finally {
+      setLoadingPupils(false);
+    }
+  };
+
+  const saveToPupil = async (pupil: { id: string; name: string | null }) => {
+    setSavingPupil(pupil.id);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth?.user?.id;
+      if (!uid) throw new Error("no user");
+      const imageData = (await compositeDataUrl()) ?? "";
+
+      const { error } = await supabase.from("teach_resources" as never).insert({
+        instructor_id: uid,
+        pupil_id: pupil.id,
+        type: "map_draw",
+        image_data: imageData,
+        map_url: staticMapUrl,
+        lat: coords?.lat ?? null,
+        lng: coords?.lng ?? null,
+        zoom,
+        created_at: new Date().toISOString(),
+      } as never);
+
+      if (error) {
+        // table may not exist — fall back to appending a note on the pupil
+        const { data: existing } = await supabase
+          .from("pupils")
+          .select("notes")
+          .eq("id", pupil.id)
+          .maybeSingle();
+        const prev = ((existing as { notes?: string | null } | null)?.notes ?? "") as string;
+        const { error: noteErr } = await supabase
+          .from("pupils")
+          .update({ notes: `${prev}\n[Map saved: ${new Date().toLocaleDateString("en-GB")}]` })
+          .eq("id", pupil.id);
+        if (noteErr) throw noteErr;
+      }
+
+      toast.success(`Saved to ${pupil.name ?? "pupil"} ✅`);
+      setPupilSheet(false);
+    } catch {
+      toast.error("Could not save to that pupil");
+    } finally {
+      setSavingPupil(null);
+    }
+  };
+
   const iconBtn: React.CSSProperties = {
     width: 34,
     height: 34,
