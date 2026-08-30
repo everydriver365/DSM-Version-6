@@ -339,10 +339,6 @@ export function AddLessonSheet({
     return Number(selectedPupil?.prepaid_hours ?? 0) > 0;
   })();
 
-  const filteredPupils = pupilQuery.trim()
-    ? pupils.filter((p) => p.name.toLowerCase().includes(pupilQuery.trim().toLowerCase()))
-    : pupils;
-
   const effectiveDuration = duration === "test" ? 0 : duration;
 
   async function handleSave() {
