@@ -959,16 +959,18 @@ function RootComponent() {
   const showHeader = !hideNav;
 
   const wrapperStyle: Record<string, string | number> = {
-    // Full viewport minus the sticky app header, so pages that already size
-    // themselves (e.g. a chat thread) don't push the document past the screen.
+    // Full viewport minus the sticky app header. --dsm-header-h is published
+    // by the header itself (measured), so nothing hard-codes its height and no
+    // safe-area value is ever counted twice.
     minHeight: showHeader
-      ? "calc(100dvh - env(safe-area-inset-top, 0px) - 58px)"
+      ? "calc(100dvh - var(--dsm-header-h, 58px))"
       : "100dvh",
   };
   if (!showHeader) {
     // Sticky header already occupies its own space; only pad when it's absent.
     wrapperStyle.paddingTop = 'env(safe-area-inset-top, 0px)';
   }
+
 
   if (!hideNav) {
     wrapperStyle.paddingBottom =
