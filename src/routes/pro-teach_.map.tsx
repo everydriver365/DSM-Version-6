@@ -3,7 +3,7 @@ import * as React from "react";
 import {
   IconArrowBackUp,
   IconArrowLeft,
-  IconArrowUp,
+  IconArrowUpRight,
   IconCheck,
   IconEraser,
   IconHeart,
@@ -15,7 +15,7 @@ import {
   IconPlus,
   IconRotate,
   IconRotateClockwise,
-  IconRuler,
+  IconRuler2,
   IconShare,
   IconTextSize,
   IconTrash,
