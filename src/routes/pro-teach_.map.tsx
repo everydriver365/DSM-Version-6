@@ -87,6 +87,63 @@ const ICON_EMOJI: Record<string, string> = {
 
 type Tool = "draw" | "car" | "hazard" | "arrow" | "text" | "ruler";
 
+/** Isolated overlay layer: placing/dragging an icon only re-renders this. */
+const IconOverlay = React.memo(function IconOverlay({
+  icons,
+  selectedId,
+}: {
+  icons: PlacedIcon[];
+  selectedId: string | null;
+}) {
+  const selected = selectedId ? icons.find((i) => i.id === selectedId) : undefined;
+  return (
+    <div style={{ position: "absolute", inset: 0, pointerEvents: "none", contain: "layout paint" }}>
+      {icons.map((icon) => (
+        <div
+          key={icon.id}
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            fontSize: 28,
+            lineHeight: "30px",
+            userSelect: "none",
+            pointerEvents: "none",
+            transform: `translate3d(${icon.x - 15}px, ${icon.y - 15}px, 0) rotate(${icon.rotation}deg)`,
+            willChange: "transform",
+            width: 30,
+            height: 30,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {ICON_EMOJI[icon.type]}
+        </div>
+      ))}
+
+      {selected && (
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            transform: `translate3d(${selected.x - 25}px, ${selected.y - 25}px, 0)`,
+            width: 50,
+            height: 50,
+            borderRadius: "50%",
+            border: "2px solid #2C97DE",
+            pointerEvents: "none",
+            boxShadow: "0 0 0 4px rgba(44,151,222,0.2)",
+          }}
+        />
+      )}
+    </div>
+  );
+});
+
+
+
 function MapDrawPage() {
   const navigate = useNavigate();
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
