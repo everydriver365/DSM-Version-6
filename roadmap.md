@@ -9,4 +9,4 @@
 - [x] FAB "Take payment" opens /take-payment (amount + QR) instead of payment history
 - [x] PRO Radio expanded player uses shared DSM bottom sheet shell
 - [x] Move FAB quick-add pill menu up so bottom items aren't obscured
-- [ ] Auto-refresh payment history after taking a payment
+- [x] Auto-refresh payment history after taking a payment
