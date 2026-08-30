@@ -119,15 +119,15 @@ function DsmLivePage() {
       <div style={{ fontFamily: poppins }}>
 
       {/* Live status pill */}
-      <div style={{ background: tokens.navy, padding: "0 16px 12px", display: "flex" }}>
+      <div style={{ padding: "12px 16px 0", display: "flex" }}>
         <span
           style={{
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
-            background: "rgba(255,255,255,0.1)",
-            border: "0.5px solid rgba(255,255,255,0.25)",
-            color: tokens.white,
+            background: "#E6F1FB",
+            border: "0.5px solid #D3E2F3",
+            color: "#0B1F3A",
             fontSize: tokens.fontSize.sm,
             fontWeight: tokens.fontWeight.medium,
             padding: "4px 12px",
@@ -147,6 +147,7 @@ function DsmLivePage() {
           Live
         </span>
       </div>
+
 
 
       {/* Hero */}
