@@ -6,3 +6,5 @@
 - [x] Favorite radio stations and show favorites first in stations grid
 - [x] Clear "now playing" indicator showing selected PRO station and status
 - [x] Remember last selected station and auto-select on return
+- [x] FAB "Take payment" opens /take-payment (amount + QR) instead of payment history
+- [x] PRO Radio expanded player uses shared DSM bottom sheet shell
