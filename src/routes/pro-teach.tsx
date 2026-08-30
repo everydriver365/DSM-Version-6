@@ -140,6 +140,37 @@ function ProTeachPage() {
   const [shareTemplate, setShareTemplate] = React.useState<string | null>(null);
   const recent = useRecentSketches(3);
 
+  // GROUP G — favourite templates first
+  const [favourites, setFavourites] = React.useState<string[]>([]);
+  // GROUP H — custom templates saved from the sketch board
+  const [customTemplates, setCustomTemplates] = React.useState<CustomTemplate[]>([]);
+  const [deleteTemplate, setDeleteTemplate] = React.useState<CustomTemplate | null>(null);
+
+  React.useEffect(() => {
+    try {
+      const raw = localStorage.getItem(FAV_TEMPLATE_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      setFavourites(Array.isArray(parsed) ? (parsed as string[]) : []);
+    } catch {
+      setFavourites([]);
+    }
+    setCustomTemplates(readCustomTemplates());
+  }, []);
+
+  const orderedTemplates = React.useMemo(
+    () =>
+      [...TEMPLATES].sort(
+        (a, b) => Number(favourites.includes(b.key)) - Number(favourites.includes(a.key)),
+      ),
+    [favourites],
+  );
+
+  const removeCustomTemplate = (item: CustomTemplate) => {
+    localStorage.removeItem(item.key);
+    setCustomTemplates((prev) => prev.filter((t) => t.key !== item.key));
+    setDeleteTemplate(null);
+  };
+
   React.useEffect(() => {
     if (!pupilId) {
       setPupilName(null);
