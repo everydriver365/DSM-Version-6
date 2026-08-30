@@ -5,15 +5,21 @@ import {
   IconArrowLeft,
   IconEraser,
   IconMaximize,
+  IconMessageShare,
+  IconMicrophone,
   IconMinimize,
   IconMinus,
   IconPaint,
   IconPencil,
+  IconPlayerPlay,
   IconShare,
+  IconStar,
+  IconStarFilled,
   IconTrash,
   IconX,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
+import { supabase } from "../lib/supabaseClient";
 
 export const Route = createFileRoute("/pro-teach_/sketch")({
   head: () => ({
@@ -46,12 +52,44 @@ const SIZES = [
   { dot: 18, width: 8 },
 ];
 
+const FAV_TEMPLATE_KEY = "pro_teach_template_fav";
+const CUSTOM_TEMPLATE_PREFIX = "pro_teach_custom_";
+
 type Point = { x: number; y: number };
 type Tool = "pen" | "fill" | "line";
+type Background = "blank" | "dots" | "lines" | "road";
+type DrawEvent = {
+  type: "start" | "move" | "end";
+  x: number;
+  y: number;
+  color: string;
+  width: number;
+  t: number;
+};
+
+function readFavourites(): string[] {
+  try {
+    const raw = localStorage.getItem(FAV_TEMPLATE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? (parsed as string[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result ?? ""));
+    reader.onerror = () => reject(new Error("read failed"));
+    reader.readAsDataURL(blob);
+  });
+}
 
 function SketchBoardPage() {
   const navigate = useNavigate();
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+  const canvasWrapperRef = React.useRef<HTMLDivElement | null>(null);
   const rootRef = React.useRef<HTMLDivElement | null>(null);
   const [shellHeight, setShellHeight] = React.useState<number | string>("100dvh");
 
@@ -79,6 +117,55 @@ function SketchBoardPage() {
 
   const [strokes, setStrokes] = React.useState<ImageData[]>([]);
 
+  // GROUP E — background
+  const [background, setBackground] = React.useState<Background>("dots");
+
+  // GROUP G — favourite templates
+  const [favourites, setFavourites] = React.useState<string[]>([]);
+  React.useEffect(() => setFavourites(readFavourites()), []);
+  const toggleFavourite = (key: string) => {
+    setFavourites((prev) => {
+      const next = prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key];
+      try {
+        localStorage.setItem(FAV_TEMPLATE_KEY, JSON.stringify(next));
+      } catch {
+        /* storage full */
+      }
+      return next;
+    });
+  };
+  const orderedTemplates = React.useMemo(
+    () =>
+      [...TEMPLATE_PILLS].sort(
+        (a, b) => Number(favourites.includes(b.key)) - Number(favourites.includes(a.key)),
+      ),
+    [favourites],
+  );
+
+  // GROUP F — drawing replay
+  const drawHistoryRef = React.useRef<DrawEvent[]>([]);
+  const [replaying, setReplaying] = React.useState(false);
+
+  // GROUP D — pinch zoom
+  const scaleRef = React.useRef(1);
+  const lastDistRef = React.useRef(0);
+
+  // GROUP B — voice annotation
+  const [isRecording, setIsRecording] = React.useState(false);
+  const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
+  const audioChunksRef = React.useRef<Blob[]>([]);
+  const [audioBlob, setAudioBlob] = React.useState<Blob | null>(null);
+  const [hasAudio, setHasAudio] = React.useState(false);
+
+  // GROUP A — pupil sheet
+  const [pupilSheet, setPupilSheet] = React.useState<null | "save" | "send">(null);
+  const [pupils, setPupils] = React.useState<Array<{ id: string; name: string | null }>>([]);
+  const [loadingPupils, setLoadingPupils] = React.useState(false);
+  const [busyPupil, setBusyPupil] = React.useState<string | null>(null);
+
+  // GROUP H — save as template
+  const [templateNameInput, setTemplateNameInput] = React.useState<string | null>(null);
+
   React.useEffect(() => {
     if (isFullScreen) {
       document.body.classList.add("pro-teach-fullscreen");
@@ -102,10 +189,12 @@ function SketchBoardPage() {
     const observer = new ResizeObserver(() => {
       const dpr = window.devicePixelRatio || 1;
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      canvas.style.width = `${rect.width}px`;
-      canvas.style.height = `${rect.height}px`;
+      const cssWidth = rect.width / (scaleRef.current || 1);
+      const cssHeight = rect.height / (scaleRef.current || 1);
+      canvas.width = cssWidth * dpr;
+      canvas.height = cssHeight * dpr;
+      canvas.style.width = `${cssWidth}px`;
+      canvas.style.height = `${cssHeight}px`;
       repaint();
     });
     observer.observe(canvas);
@@ -121,7 +210,6 @@ function SketchBoardPage() {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
     let clientX: number;
     let clientY: number;
     if ("touches" in e && e.touches.length > 0) {
@@ -134,9 +222,10 @@ function SketchBoardPage() {
       clientX = (e as MouseEvent).clientX;
       clientY = (e as MouseEvent).clientY;
     }
+    // normalised through the rect so pinch zoom never offsets the ink
     return {
-      x: (clientX - rect.left) * dpr,
-      y: (clientY - rect.top) * dpr,
+      x: ((clientX - rect.left) / (rect.width || 1)) * canvas.width,
+      y: ((clientY - rect.top) / (rect.height || 1)) * canvas.height,
     };
   };
 
@@ -159,6 +248,14 @@ function SketchBoardPage() {
       ctx.stroke();
     }
     ctx.globalCompositeOperation = "source-over";
+    drawHistoryRef.current.push({
+      type: newStroke ? "start" : "move",
+      x,
+      y,
+      color: colour,
+      width,
+      t: Date.now(),
+    });
   };
 
   const pushUndoSnapshot = () => {
@@ -170,6 +267,14 @@ function SketchBoardPage() {
   };
 
   const start = (e: React.TouchEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>) => {
+    if ("touches" in e && e.touches.length === 2) {
+      lastDistRef.current = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY,
+      );
+      drawingRef.current = false;
+      return;
+    }
     const { x, y } = getPos(e);
     if (tool === "fill") {
       floodFill(Math.round(x), Math.round(y));
@@ -199,14 +304,41 @@ function SketchBoardPage() {
   };
 
   const move = (e: React.TouchEvent<HTMLCanvasElement> | React.MouseEvent<HTMLCanvasElement>) => {
+    // GROUP D — two-finger pinch zooms the board instead of drawing
+    if ("touches" in e && e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY,
+      );
+      if (lastDistRef.current > 0) {
+        const delta = dist / lastDistRef.current;
+        scaleRef.current = Math.min(Math.max(scaleRef.current * delta, 0.5), 4);
+        const wrapper = canvasWrapperRef.current;
+        if (wrapper) {
+          wrapper.style.transform = `scale(${scaleRef.current})`;
+          wrapper.style.transformOrigin = "center center";
+        }
+      }
+      lastDistRef.current = dist;
+      return;
+    }
     if (tool !== "pen" || !drawingRef.current) return;
     const { x, y } = getPos(e);
     draw(x, y, false);
   };
 
   const end = () => {
+    lastDistRef.current = 0;
     if (!drawingRef.current) return;
     drawingRef.current = false;
+    drawHistoryRef.current.push({
+      type: "end",
+      x: 0,
+      y: 0,
+      color: currentColor,
+      width: lineWidth,
+      t: Date.now(),
+    });
     pushUndoSnapshot();
   };
 
@@ -234,7 +366,40 @@ function SketchBoardPage() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
     setStrokes([]);
+    drawHistoryRef.current = [];
     setConfirmClear(false);
+  };
+
+  // GROUP F — replay the drawing at 2x speed
+  const replay = async () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+    const history = drawHistoryRef.current.slice();
+    if (!history.length || replaying) return;
+    setReplaying(true);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (template) drawTemplate(ctx, template, canvas.width, canvas.height);
+    const startTime = history[0].t;
+    let elapsed = 0;
+    for (const point of history) {
+      const target = (point.t - startTime) / 2; // 2x speed
+      const wait = Math.min(Math.max(target - elapsed, 0), 400);
+      elapsed = target;
+      if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+      if (point.type === "start") {
+        ctx.beginPath();
+        ctx.moveTo(point.x, point.y);
+      } else if (point.type === "move") {
+        ctx.strokeStyle = point.color;
+        ctx.lineWidth = point.width;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.lineTo(point.x, point.y);
+        ctx.stroke();
+      }
+    }
+    setReplaying(false);
   };
 
   const floodFill = (startX: number, startY: number) => {
@@ -320,6 +485,228 @@ function SketchBoardPage() {
     toast.success("Sketch downloaded");
   };
 
+  // ---- GROUP B: voice recording -------------------------------------------
+  const startRecording = () => {
+    navigator.mediaDevices
+      ?.getUserMedia({ audio: true })
+      .then((stream) => {
+        const mr = new MediaRecorder(stream);
+        mediaRecorderRef.current = mr;
+        audioChunksRef.current = [];
+        mr.ondataavailable = (e) => audioChunksRef.current.push(e.data);
+        mr.onstop = () => {
+          const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+          setAudioBlob(blob);
+          setHasAudio(true);
+          stream.getTracks().forEach((t) => t.stop());
+        };
+        mr.start();
+        setIsRecording(true);
+      })
+      .catch(() => toast.error("Microphone unavailable"));
+  };
+
+  const stopRecording = () => {
+    mediaRecorderRef.current?.stop();
+    setIsRecording(false);
+  };
+
+  const playAudio = () => {
+    if (!audioBlob) return;
+    const url = URL.createObjectURL(audioBlob);
+    const audio = new Audio(url);
+    audio.onended = () => URL.revokeObjectURL(url);
+    void audio.play();
+  };
+
+  // ---- GROUP A/C: pupils --------------------------------------------------
+  const canvasDataUrl = (quality = 0.7) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return "";
+    try {
+      return canvas.toDataURL("image/jpeg", quality);
+    } catch {
+      return "";
+    }
+  };
+
+  const openPupilPicker = async (mode: "save" | "send") => {
+    setPupilSheet(mode);
+    setLoadingPupils(true);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth?.user?.id;
+      if (!uid) {
+        setPupils([]);
+        return;
+      }
+      const { data } = await supabase
+        .from("pupils")
+        .select("id, name")
+        .eq("instructor_id", uid)
+        .is("deleted_at", null)
+        .order("name");
+      setPupils((data ?? []) as Array<{ id: string; name: string | null }>);
+    } catch {
+      setPupils([]);
+    } finally {
+      setLoadingPupils(false);
+    }
+  };
+
+  const sendToPupil = async (pupil: { id: string; name: string | null }) => {
+    setBusyPupil(pupil.id);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth?.user?.id;
+      if (!uid) throw new Error("no user");
+      const image = canvasDataUrl();
+      const base = {
+        instructor_id: uid,
+        pupil_id: pupil.id,
+        content: "[PRO Teach sketch]",
+        body: "[PRO Teach sketch]",
+        image_data: image,
+        message_type: "teach_sketch",
+        sender_type: "instructor",
+        created_at: new Date().toISOString(),
+      };
+      const { error } = await supabase.from("chat_messages" as never).insert(base as never);
+      if (error) {
+        const { error: altError } = await supabase
+          .from("instructor_messages" as never)
+          .insert(base as never);
+        if (altError) throw altError;
+      }
+      toast.success(`Sent to ${pupil.name ?? "pupil"} ✅`);
+      setPupilSheet(null);
+    } catch {
+      toast.error("Could not send that sketch");
+    } finally {
+      setBusyPupil(null);
+    }
+  };
+
+  const saveToPupil = async (pupil: { id: string; name: string | null }) => {
+    setBusyPupil(pupil.id);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth?.user?.id;
+      if (!uid) throw new Error("no user");
+      const image = canvasDataUrl(0.8);
+      const audio = audioBlob ? await blobToBase64(audioBlob) : null;
+
+      const { error } = await supabase.from("teach_resources" as never).insert({
+        instructor_id: uid,
+        pupil_id: pupil.id,
+        type: "sketch",
+        image_data: image,
+        audio_data: audio,
+        created_at: new Date().toISOString(),
+      } as never);
+
+      if (error) {
+        const { data: existing } = await supabase
+          .from("pupils")
+          .select("notes")
+          .eq("id", pupil.id)
+          .maybeSingle();
+        const prev = ((existing as { notes?: string | null } | null)?.notes ?? "") as string;
+        const { error: noteErr } = await supabase
+          .from("pupils")
+          .update({ notes: `${prev}\n[PRO Teach sketch: ${new Date().toLocaleDateString("en-GB")}]` })
+          .eq("id", pupil.id);
+        if (noteErr) throw noteErr;
+      }
+      toast.success(`Saved to ${pupil.name ?? "pupil"} ✅`);
+      setPupilSheet(null);
+    } catch {
+      toast.error("Could not save to that pupil");
+    } finally {
+      setBusyPupil(null);
+    }
+  };
+
+  // ---- GROUP C: auto-save to lesson notes ---------------------------------
+  const canvasHasContent = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return false;
+    try {
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      return imageData.data.some((v, i) => i % 4 === 3 && v !== 0);
+    } catch {
+      return strokes.length > 0;
+    }
+  };
+
+  const saveToLessonNotes = async () => {
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth?.user?.id;
+      if (!uid) throw new Error("no user");
+      const today = new Date().toISOString().slice(0, 10);
+      const { data } = await supabase
+        .from("lessons")
+        .select("id, pupil_id, notes, lesson_time")
+        .eq("instructor_id", uid)
+        .eq("lesson_date", today)
+        .neq("status", "cancelled")
+        .order("lesson_time")
+        .limit(1);
+      const lesson = (data ?? [])[0] as
+        | { id: string; pupil_id: string | null; notes: string | null }
+        | undefined;
+      if (!lesson) {
+        toast.error("No lesson today to attach this to");
+        return;
+      }
+      const stamp = new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+      await supabase
+        .from("lessons")
+        .update({ notes: `${lesson.notes ?? ""}\n[PRO Teach sketch - ${stamp}]`.trim() })
+        .eq("id", lesson.id);
+      await supabase.from("teach_resources" as never).insert({
+        instructor_id: uid,
+        pupil_id: lesson.pupil_id,
+        lesson_id: lesson.id,
+        type: "sketch",
+        image_data: canvasDataUrl(0.6),
+        created_at: new Date().toISOString(),
+      } as never);
+      toast.success("Saved to lesson notes ✅");
+    } catch {
+      toast.error("Could not save to lesson notes");
+    }
+  };
+
+  const leaveWithPrompt = () => {
+    if (canvasHasContent()) {
+      toast("Save sketch to lesson notes?", {
+        duration: 5000,
+        action: { label: "Save", onClick: () => void saveToLessonNotes() },
+        cancel: { label: "Dismiss", onClick: () => undefined },
+      });
+    }
+    navigate({ to: "/pro-teach" as never });
+  };
+
+  // ---- GROUP H: save as template ------------------------------------------
+  const saveAsTemplate = (name: string) => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    try {
+      localStorage.setItem(
+        `${CUSTOM_TEMPLATE_PREFIX}${trimmed}`,
+        JSON.stringify({ name: trimmed, imageData: canvasDataUrl(0.7), createdAt: new Date().toISOString() }),
+      );
+      toast.success("Template saved");
+    } catch {
+      toast.error("Could not save template");
+    }
+    setTemplateNameInput(null);
+  };
+
   const iconBtn: React.CSSProperties = {
     width: 34,
     height: 34,
@@ -343,6 +730,25 @@ function SketchBoardPage() {
     cursor: "pointer",
   };
 
+  const backgroundStyle = (): React.CSSProperties => {
+    if (background === "dots") {
+      return {
+        background: "#fff",
+        backgroundImage: "radial-gradient(circle, #E4E8EF 1px, transparent 1px)",
+        backgroundSize: "20px 20px",
+      };
+    }
+    if (background === "lines") {
+      return {
+        background: "#fff",
+        backgroundImage:
+          "repeating-linear-gradient(transparent, transparent 24px, #E4E8EF 24px, #E4E8EF 25px)",
+      };
+    }
+    if (background === "road") return { background: "#e8f0e8" };
+    return { background: "#fff" };
+  };
+
   return (
     <div
       ref={rootRef}
@@ -357,7 +763,7 @@ function SketchBoardPage() {
       }}
     >
       <div style={{ background: NAVY, paddingTop: "calc(env(safe-area-inset-top, 0px) + 14px)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 16px 14px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "0 16px 14px" }}>
           {isFullScreen ? (
             <button
               type="button"
@@ -368,16 +774,19 @@ function SketchBoardPage() {
               <IconX size={20} color="#fff" />
             </button>
           ) : (
-            <button
-              type="button"
-              aria-label="Back"
-              style={iconBtn}
-              onClick={() => navigate({ to: "/pro-teach" as never })}
-            >
+            <button type="button" aria-label="Back" style={iconBtn} onClick={leaveWithPrompt}>
               <IconArrowLeft size={18} color="#fff" />
             </button>
           )}
           <div style={{ flex: 1, color: "#fff", fontSize: 15, fontWeight: 700 }}>Sketch Board</div>
+          <button
+            type="button"
+            aria-label="Replay drawing"
+            style={{ ...iconBtn, opacity: replaying ? 0.5 : 1 }}
+            onClick={replay}
+          >
+            <IconPlayerPlay size={18} color="#fff" />
+          </button>
           <button
             type="button"
             aria-label={isFullScreen ? "Exit full screen" : "Enter full screen"}
@@ -385,6 +794,14 @@ function SketchBoardPage() {
             onClick={() => setIsFullScreen((v) => !v)}
           >
             {isFullScreen ? <IconMinimize size={20} color="#fff" /> : <IconMaximize size={20} color="#fff" />}
+          </button>
+          <button
+            type="button"
+            aria-label="Send to pupil"
+            style={iconBtn}
+            onClick={() => void openPupilPicker("send")}
+          >
+            <IconMessageShare size={20} color="#fff" />
           </button>
           <button type="button" aria-label="Share" style={iconBtn} onClick={shareSketch}>
             <IconShare size={18} color="#fff" />
@@ -403,23 +820,57 @@ function SketchBoardPage() {
           background: "#F9FAFB",
         }}
       >
-        <canvas
-          ref={canvasRef}
+        <div
+          ref={canvasWrapperRef}
           style={{
             position: "absolute",
             inset: 0,
-            width: "100%",
-            height: "100%",
-            touchAction: "none",
+            transformOrigin: "center center",
+            ...backgroundStyle(),
           }}
-          onTouchStart={start}
-          onTouchMove={move}
-          onTouchEnd={end}
-          onMouseDown={start}
-          onMouseMove={move}
-          onMouseUp={end}
-          onMouseLeave={end}
-        />
+        >
+          {background === "road" && (
+            <svg
+              width="100%"
+              height="100%"
+              viewBox="0 0 100 200"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+              style={{ position: "absolute", inset: 0 }}
+            >
+              <rect x="32" y="0" width="36" height="200" fill="#D6DCE3" />
+              <line x1="32" y1="0" x2="32" y2="200" stroke="#fff" strokeWidth="1.2" />
+              <line x1="68" y1="0" x2="68" y2="200" stroke="#fff" strokeWidth="1.2" />
+              <line
+                x1="50"
+                y1="0"
+                x2="50"
+                y2="200"
+                stroke="#fff"
+                strokeWidth="1.2"
+                strokeDasharray="8 8"
+              />
+            </svg>
+          )}
+
+          <canvas
+            ref={canvasRef}
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              touchAction: "none",
+            }}
+            onTouchStart={start}
+            onTouchMove={move}
+            onTouchEnd={end}
+            onMouseDown={start}
+            onMouseMove={move}
+            onMouseUp={end}
+            onMouseLeave={end}
+          />
+        </div>
 
         {lineStart && (
           <div
@@ -448,29 +899,114 @@ function SketchBoardPage() {
           gap: 10,
         }}
       >
-        {/* template pills */}
-        <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4 }}>
-          {TEMPLATE_PILLS.map((t) => {
-            const active = template === t.key;
+        {/* background pills */}
+        <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }}>
+          {(
+            [
+              { key: "blank", label: "⬜ Blank" },
+              { key: "dots", label: "⋯ Dots" },
+              { key: "lines", label: "≡ Lines" },
+              { key: "road", label: "🛣️ Road" },
+            ] as { key: Background; label: string }[]
+          ).map((b) => {
+            const active = background === b.key;
             return (
               <button
-                key={t.key}
+                key={b.key}
                 type="button"
-                onClick={() => setTemplate(active ? null : t.key)}
+                onClick={() => setBackground(b.key)}
                 style={{
                   flexShrink: 0,
-                  padding: "6px 12px",
+                  padding: "5px 10px",
                   borderRadius: 20,
-                  fontSize: 12,
+                  fontSize: 11,
                   fontWeight: active ? 700 : 600,
                   border: active ? "none" : `1px solid ${BORDER}`,
-                  background: active ? NAVY : "#fff",
-                  color: active ? "#fff" : NAVY,
+                  background: active ? "#EAF5FC" : "#fff",
+                  color: active ? "#2C97DE" : MUTED,
                   cursor: "pointer",
                 }}
               >
-                {t.label}
+                {b.label}
               </button>
+            );
+          })}
+
+          <span style={{ width: 1, height: 22, background: BORDER, flexShrink: 0 }} />
+
+          <button
+            type="button"
+            onClick={() => setTemplateNameInput("")}
+            style={{
+              flexShrink: 0,
+              padding: "5px 10px",
+              borderRadius: 20,
+              fontSize: 11,
+              fontWeight: 600,
+              border: `1px solid ${BORDER}`,
+              background: "#fff",
+              color: MUTED,
+              cursor: "pointer",
+            }}
+          >
+            Save as template
+          </button>
+        </div>
+
+        {/* template pills */}
+        <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4 }}>
+          {orderedTemplates.map((t) => {
+            const active = template === t.key;
+            const fav = favourites.includes(t.key);
+            return (
+              <div
+                key={t.key}
+                style={{
+                  flexShrink: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  borderRadius: 20,
+                  border: active ? "none" : `1px solid ${BORDER}`,
+                  background: active ? NAVY : "#fff",
+                  padding: "2px 6px 2px 2px",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setTemplate(active ? null : t.key)}
+                  style={{
+                    padding: "4px 8px",
+                    borderRadius: 20,
+                    fontSize: 12,
+                    fontWeight: active ? 700 : 600,
+                    border: "none",
+                    background: "transparent",
+                    color: active ? "#fff" : NAVY,
+                    cursor: "pointer",
+                  }}
+                >
+                  {t.label}
+                </button>
+                <button
+                  type="button"
+                  aria-label={fav ? `Unstar ${t.label}` : `Star ${t.label}`}
+                  onClick={() => toggleFavourite(t.key)}
+                  style={{
+                    border: "none",
+                    background: "transparent",
+                    padding: 0,
+                    display: "flex",
+                    cursor: "pointer",
+                  }}
+                >
+                  {fav ? (
+                    <IconStarFilled size={13} color="#F59E0B" />
+                  ) : (
+                    <IconStar size={13} color={active ? "rgba(255,255,255,0.6)" : "#C7CDD6"} />
+                  )}
+                </button>
+              </div>
             );
           })}
         </div>
@@ -594,8 +1130,209 @@ function SketchBoardPage() {
           <button type="button" aria-label="Undo" onClick={undo} style={toolBtn}>
             <IconArrowBackUp size={18} color={MUTED} />
           </button>
+
+          {/* GROUP B — voice annotation */}
+          <button
+            type="button"
+            aria-label={isRecording ? "Stop recording" : "Record voice note"}
+            onClick={isRecording ? stopRecording : startRecording}
+            style={{
+              ...toolBtn,
+              borderColor: isRecording ? "#E53935" : BORDER,
+              animation: isRecording ? "proTeachPulse 1s ease-in-out infinite" : undefined,
+            }}
+          >
+            <IconMicrophone size={20} color={isRecording ? "#E53935" : MUTED} />
+          </button>
+          {hasAudio && (
+            <button
+              type="button"
+              onClick={playAudio}
+              style={{
+                borderRadius: 20,
+                padding: "6px 10px",
+                fontSize: 11,
+                fontWeight: 700,
+                border: "1px solid #18A999",
+                background: "#E7F7F4",
+                color: "#0F7A6E",
+                cursor: "pointer",
+              }}
+            >
+              🎤 Voice note
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => void openPupilPicker("save")}
+            style={{
+              borderRadius: 20,
+              padding: "6px 12px",
+              fontSize: 11,
+              fontWeight: 700,
+              border: `1px solid ${BORDER}`,
+              background: "#fff",
+              color: NAVY,
+              cursor: "pointer",
+            }}
+          >
+            Save to pupil
+          </button>
         </div>
       </div>
+
+      <style>{`@keyframes proTeachPulse { 0%,100% { opacity: 1 } 50% { opacity: 0.45 } }`}</style>
+
+      {pupilSheet && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(11,35,65,0.45)",
+            display: "flex",
+            alignItems: "flex-end",
+            zIndex: 60,
+          }}
+          onClick={() => setPupilSheet(null)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#fff",
+              width: "100%",
+              borderRadius: "18px 18px 0 0",
+              padding: "14px 16px calc(env(safe-area-inset-bottom, 0px) + 16px)",
+              maxHeight: "70vh",
+              overflowY: "auto",
+            }}
+          >
+            <div style={{ width: 36, height: 4, borderRadius: 2, background: "#C7C7CC", margin: "0 auto 12px" }} />
+            <div style={{ fontSize: 16, fontWeight: 700, color: NAVY, marginBottom: 10 }}>
+              {pupilSheet === "send" ? "Send to which pupil?" : "Save to which pupil?"}
+            </div>
+            {loadingPupils ? (
+              <div style={{ fontSize: 13, color: MUTED, padding: "16px 0" }}>Loading pupils…</div>
+            ) : pupils.length === 0 ? (
+              <div style={{ fontSize: 13, color: MUTED, padding: "16px 0" }}>No pupils found.</div>
+            ) : (
+              pupils.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  disabled={busyPupil !== null}
+                  onClick={() => (pupilSheet === "send" ? void sendToPupil(p) : void saveToPupil(p))}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "10px 4px",
+                    background: "transparent",
+                    border: "none",
+                    borderBottom: `1px solid ${BORDER}`,
+                    cursor: "pointer",
+                    opacity: busyPupil && busyPupil !== p.id ? 0.5 : 1,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 34,
+                      height: 34,
+                      borderRadius: "50%",
+                      background: "#EAF1FB",
+                      color: NAVY,
+                      fontSize: 14,
+                      fontWeight: 700,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {(p.name ?? "?").trim().charAt(0).toUpperCase()}
+                  </span>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>
+                    {p.name ?? "Unnamed pupil"}
+                  </span>
+                  {busyPupil === p.id && (
+                    <span style={{ marginLeft: "auto", fontSize: 12, color: MUTED }}>Working…</span>
+                  )}
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {templateNameInput !== null && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(11,35,65,0.45)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 24,
+            zIndex: 60,
+          }}
+          onClick={() => setTemplateNameInput(null)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ background: "#fff", borderRadius: 16, padding: 20, width: "100%", maxWidth: 320 }}
+          >
+            <div style={{ fontSize: 15, fontWeight: 700, color: NAVY }}>Save as template</div>
+            <input
+              autoFocus
+              value={templateNameInput}
+              onChange={(e) => setTemplateNameInput(e.target.value)}
+              placeholder="Template name"
+              style={{
+                width: "100%",
+                marginTop: 12,
+                padding: "10px 12px",
+                borderRadius: 10,
+                border: `1px solid ${BORDER}`,
+                fontSize: 14,
+              }}
+            />
+            <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
+              <button
+                type="button"
+                onClick={() => setTemplateNameInput(null)}
+                style={{
+                  flex: 1,
+                  padding: "10px 0",
+                  borderRadius: 10,
+                  border: `1px solid ${BORDER}`,
+                  background: "#fff",
+                  color: NAVY,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => saveAsTemplate(templateNameInput)}
+                style={{
+                  flex: 1,
+                  padding: "10px 0",
+                  borderRadius: 10,
+                  border: "none",
+                  background: NAVY,
+                  color: "#fff",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {confirmClear && (
         <div
