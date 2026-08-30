@@ -526,6 +526,140 @@ function ProTeachPage() {
           </div>
         </div>
 
+        {/* My templates (saved from the sketch board) */}
+        {customTemplates.length > 0 && (
+          <div>
+            <SectionLabel text="My templates" />
+            <div style={{ display: "flex", gap: 10, overflowX: "auto", paddingBottom: 4 }}>
+              {customTemplates.map((item) => (
+                <div
+                  key={item.key}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() =>
+                    navigate({
+                      to: "/pro-teach/sketch" as never,
+                      search: { template: item.key } as never,
+                    })
+                  }
+                  onKeyDown={(e) =>
+                    e.key === "Enter" &&
+                    navigate({
+                      to: "/pro-teach/sketch" as never,
+                      search: { template: item.key } as never,
+                    })
+                  }
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    setDeleteTemplate(item);
+                  }}
+                  style={{
+                    flexShrink: 0,
+                    width: 120,
+                    borderRadius: 12,
+                    border: `1px solid ${BORDER}`,
+                    overflow: "hidden",
+                    background: "#fff",
+                    cursor: "pointer",
+                  }}
+                >
+                  <div style={{ height: 80, background: "#F9FAFB" }}>
+                    {item.imageData ? (
+                      <img
+                        src={item.imageData}
+                        alt={item.name}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : null}
+                  </div>
+                  <div style={{ padding: 8, display: "flex", alignItems: "center", gap: 6 }}>
+                    <div
+                      style={{
+                        flex: 1,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: NAVY,
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item.name}
+                    </div>
+                    <button
+                      type="button"
+                      aria-label={`Delete ${item.name}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteTemplate(item);
+                      }}
+                      style={{
+                        border: "none",
+                        background: "transparent",
+                        color: MUTED,
+                        fontSize: 12,
+                        cursor: "pointer",
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {deleteTemplate && (
+              <div
+                style={{
+                  marginTop: 8,
+                  background: "#fff",
+                  border: `1px solid ${BORDER}`,
+                  borderRadius: 12,
+                  padding: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+              >
+                <div style={{ flex: 1, fontSize: 12, color: NAVY }}>
+                  Delete “{deleteTemplate.name}”?
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setDeleteTemplate(null)}
+                  style={{
+                    borderRadius: 10,
+                    border: `1px solid ${BORDER}`,
+                    background: "#F4F6F8",
+                    color: MUTED,
+                    fontSize: 12,
+                    padding: "6px 12px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeCustomTemplate(deleteTemplate)}
+                  style={{
+                    borderRadius: 10,
+                    border: "none",
+                    background: "#FEE2E2",
+                    color: "#E53935",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    padding: "6px 12px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+
         {/* section 3 */}
         <div>
           <SectionLabel text="Coming soon" dim />
