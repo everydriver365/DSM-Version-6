@@ -1045,12 +1045,19 @@ function PupilThreadPage() {
         overflow: "hidden",
       }}
     >
-      {/* Header — in flow at the top of the fixed-height column */}
+      {/* Header — in flow at the top of the fixed-height column.
+          Pinned to exactly 56px and non-shrinking: no safe-area padding here
+          (the app header above already owns the status-bar inset), so this
+          block can never grow into an empty navy band. */}
       <div
         style={{
           position: "relative",
           zIndex: 60,
           background: tokens.navy,
+          height: 56,
+          flexShrink: 0,
+          paddingTop: 0,
+          marginTop: 0,
         }}
       >
         <div
