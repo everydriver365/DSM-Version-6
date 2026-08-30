@@ -5,6 +5,7 @@ import {
   IconArrowLeft,
   IconArrowUpRight,
   IconCheck,
+  IconCurrentLocation,
   IconEraser,
   IconHeart,
   IconHeartFilled,
@@ -251,7 +252,11 @@ function MapDrawPage() {
       return;
     }
     navigator.geolocation.getCurrentPosition(
-      (pos) => setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      (pos) => {
+        const c = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        setCoords(c);
+        setHomeCoords(c);
+      },
       () => setGeoError("Allow location access to load the map"),
       { enableHighAccuracy: true, timeout: 10000 },
     );
@@ -318,6 +323,76 @@ function MapDrawPage() {
     repaint();
   }, [mapType, repaint]);
 
+  // ---- drag to pan the static map ----
+  const mapLayerRef = React.useRef<HTMLDivElement | null>(null);
+  const panStartRef = React.useRef<{ x: number; y: number } | null>(null);
+  const panDeltaRef = React.useRef({ x: 0, y: 0 });
+  const panFrameRef = React.useRef<number | null>(null);
+  const [homeCoords, setHomeCoords] = React.useState<{ lat: number; lng: number } | null>(null);
+
+  const applyPanTransform = () => {
+    if (panFrameRef.current !== null) return;
+    panFrameRef.current = requestAnimationFrame(() => {
+      panFrameRef.current = null;
+      const el = mapLayerRef.current;
+      if (el) {
+        const { x, y } = panDeltaRef.current;
+        el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      }
+    });
+  };
+
+  const panDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (mode !== "pan") return;
+    panStartRef.current = { x: e.clientX, y: e.clientY };
+    panDeltaRef.current = { x: 0, y: 0 };
+    (e.currentTarget as HTMLDivElement).setPointerCapture?.(e.pointerId);
+  };
+
+  const panMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (mode !== "pan" || !panStartRef.current) return;
+    panDeltaRef.current = {
+      x: e.clientX - panStartRef.current.x,
+      y: e.clientY - panStartRef.current.y,
+    };
+    applyPanTransform();
+  };
+
+  const panUp = () => {
+    const startPoint = panStartRef.current;
+    if (!startPoint) return;
+    panStartRef.current = null;
+    if (panFrameRef.current !== null) {
+      cancelAnimationFrame(panFrameRef.current);
+      panFrameRef.current = null;
+    }
+    const { x: dx, y: dy } = panDeltaRef.current;
+    panDeltaRef.current = { x: 0, y: 0 };
+    const el = mapLayerRef.current;
+    if (el) el.style.transform = "translate3d(0,0,0)";
+    if (!coords || (Math.abs(dx) < 2 && Math.abs(dy) < 2)) return;
+
+    // metres per CSS pixel at this latitude/zoom (image is requested at scale:2)
+    const mPerPx = (156543.03392 * Math.cos((coords.lat * Math.PI) / 180)) / Math.pow(2, zoom);
+    const dLng = (-dx * mPerPx) / (111320 * Math.cos((coords.lat * Math.PI) / 180));
+    const dLat = (dy * mPerPx) / 110540;
+    setCoords({ lat: coords.lat + dLat, lng: coords.lng + dLng });
+  };
+
+  const recentre = () => {
+    if (homeCoords) {
+      setCoords(homeCoords);
+      return;
+    }
+    if (!("geolocation" in navigator)) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => toast.error("Couldn't get your location"),
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  };
+
+
   const getPos = (
     e: React.TouchEvent<HTMLCanvasElement>
       | React.MouseEvent<HTMLCanvasElement>
@@ -380,12 +455,13 @@ function MapDrawPage() {
 
   const placeIcon = (x: number, y: number) => {
     if (activeTool === "car") {
-      const type = selectedCarTypeRef.current;
-      if (!type) return;
+      // never leave the tool armed with nothing — fall back to the first car
+      const type = selectedCarTypeRef.current ?? CAR_TYPES[0];
+      if (!selectedCarTypeRef.current) setSelectedCarType(type);
       addIcon(x, y, "car", type);
     } else if (activeTool === "hazard") {
-      const type = selectedHazardTypeRef.current;
-      if (!type) return;
+      const type = selectedHazardTypeRef.current ?? HAZARD_TYPES[0];
+      if (!selectedHazardTypeRef.current) setSelectedHazardType(type);
       addIcon(x, y, "hazard", type);
     }
   };
@@ -1111,14 +1187,30 @@ function MapDrawPage() {
       {/* map + canvas */}
       <div
         ref={wrapRef}
+        onPointerDown={panDown}
+        onPointerMove={panMove}
+        onPointerUp={panUp}
+        onPointerCancel={panUp}
         style={{
           flex: 1,
           position: "relative",
           overflow: "hidden",
-          background: staticMapUrl ? `url("${staticMapUrl}") center/cover no-repeat` : "#e8f0e8",
-          touchAction: mode === "draw" ? "none" : "auto",
+          background: "#e8f0e8",
+          touchAction: "none",
+          cursor: mode === "pan" ? "grab" : "default",
         }}
       >
+        {/* map imagery layer — transformed live while panning */}
+        <div
+          ref={mapLayerRef}
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: staticMapUrl ? `url("${staticMapUrl}") center/cover no-repeat` : "#e8f0e8",
+            willChange: "transform",
+            pointerEvents: "none",
+          }}
+        />
         {!staticMapUrl && (
           <div
             style={{
@@ -1266,7 +1358,7 @@ function MapDrawPage() {
             cursor: "pointer",
           }}
         >
-          {mode === "draw" ? "Draw" : "Pan"}
+          {mode === "draw" ? "Draw" : "Move map"}
         </button>
 
         {/* tool indicator */}
@@ -1338,6 +1430,9 @@ function MapDrawPage() {
             onClick={() => setZoom((z) => Math.max(13, z - 1))}
           >
             <IconMinus size={20} color={NAVY} />
+          </button>
+          <button type="button" aria-label="Recentre on my location" style={zoomBtn} onClick={recentre}>
+            <IconCurrentLocation size={18} color={NAVY} />
           </button>
         </div>
 
@@ -1481,8 +1576,15 @@ function MapDrawPage() {
                 type="button"
                 aria-label={`Place ${type}`}
                 onClick={() => {
-                  setSelectedCarType((current) => (current === type ? null : type));
-                  setActiveTool("car");
+                  if (selectedCarType === type && activeTool === "car") {
+                    // tapping the armed pill disarms back to the pen
+                    setSelectedCarType(null);
+                    setActiveTool("draw");
+                  } else {
+                    setSelectedCarType(type);
+                    setActiveTool("car");
+                  }
+                  setMode("draw");
                   setSelectedHazardType(null);
                   setIsErasing(false);
                 }}
@@ -1508,8 +1610,14 @@ function MapDrawPage() {
                 type="button"
                 aria-label={`Place ${type}`}
                 onClick={() => {
-                  setSelectedHazardType((current) => (current === type ? null : type));
-                  setActiveTool("hazard");
+                  if (selectedHazardType === type && activeTool === "hazard") {
+                    setSelectedHazardType(null);
+                    setActiveTool("draw");
+                  } else {
+                    setSelectedHazardType(type);
+                    setActiveTool("hazard");
+                  }
+                  setMode("draw");
                   setSelectedCarType(null);
                   setIsErasing(false);
                 }}

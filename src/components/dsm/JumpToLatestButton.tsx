@@ -29,7 +29,17 @@ export default function JumpToLatestButton({
     };
     onScroll();
     el.addEventListener("scroll", onScroll, { passive: true });
-    return () => el.removeEventListener("scroll", onScroll);
+    // Also re-evaluate when the thread grows (new message arrives) or resizes,
+    // otherwise the pill stays stale while the reader is scrolled up.
+    const mo = new MutationObserver(onScroll);
+    mo.observe(el, { childList: true, subtree: true });
+    const ro = new ResizeObserver(onScroll);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      mo.disconnect();
+      ro.disconnect();
+    };
   }, [scrollerRef, threshold]);
 
   if (!visible) return null;
