@@ -368,91 +368,40 @@ export function ProRadioPlayer() {
             }}
           >
             {/* PRO Live — active */}
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => radio.toggle()}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") radio.toggle();
-              }}
-              style={{
-                background: "#0B2341",
-                borderRadius: 14,
-                padding: "14px 8px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 8,
-                boxShadow: "0 4px 12px rgba(11,35,65,0.3)",
-                cursor: "pointer",
-              }}
-            >
-              <div
-                style={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: 12,
-                  background: "#2C97DE",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <IconRadio size={22} color="#FFFFFF" stroke={1.8} />
-              </div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#FFFFFF" }}>
-                PRO Live
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                <LiveDot size={5} />
-                <span style={{ fontSize: 9, color: "rgba(255,255,255,0.7)" }}>
-                  LIVE
-                </span>
-              </div>
-            </div>
+            <StationTile
+              name="PRO Live"
+              Icon={IconRadio}
+              bg="#2C97DE"
+              isLive
+              isPlaying={radio.isPlaying}
+              isSelected={radio.selectedStation === "PRO Live"}
+              isFavorite={radio.favorites.includes("PRO Live")}
+              onToggle={() => radio.toggle()}
+              onToggleFavorite={() => radio.toggleFavorite("PRO Live")}
+            />
 
-            {COMING_SOON_STATIONS.map(({ name, Icon, bg, toastText }) => (
-              <div
-                key={name}
-                role="button"
-                tabIndex={0}
-                onClick={() => toast(toastText || `${name} coming soon!`)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ")
-                    toast(toastText || `${name} coming soon!`);
-                }}
-                style={{
-                  background: "#FFFFFF",
-                  borderRadius: 14,
-                  padding: "14px 8px",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 8,
-                  border: "1px solid #E4E8EF",
-                  boxShadow: "0 2px 0 #E4E4E8",
-                  cursor: "pointer",
-                }}
-              >
-                <div
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 12,
-                    background: bg,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Icon size={22} color="#FFFFFF" stroke={1.8} />
-                </div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "#0B2341" }}>
-                  {name}
-                </div>
-                <div style={{ fontSize: 9, color: "#536579" }}>COMING SOON</div>
-              </div>
-            ))}
+            {[...COMING_SOON_STATIONS]
+              .sort((a, b) => {
+                const aFav = radio.favorites.includes(a.name);
+                const bFav = radio.favorites.includes(b.name);
+                if (aFav === bFav) return 0;
+                return aFav ? -1 : 1;
+              })
+              .map(({ name, Icon, bg, toastText }) => (
+                <StationTile
+                  key={name}
+                  name={name}
+                  Icon={Icon}
+                  bg={bg}
+                  isLive={false}
+                  isPlaying={false}
+                  isSelected={radio.selectedStation === name}
+                  isFavorite={radio.favorites.includes(name)}
+                  toastText={toastText}
+                  onToggle={() => radio.selectStation(name)}
+                  onToggleFavorite={() => radio.toggleFavorite(name)}
+                />
+              ))}
           </div>
         </div>
       )}
