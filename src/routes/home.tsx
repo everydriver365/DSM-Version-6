@@ -97,6 +97,7 @@ const QUICK_ADD_ITEMS: { key: QuickAddKey; label: string; icon: typeof IconPlus;
   { key: "unavailability", label: "Add unavailability", icon: IconCalendarOff, bg: "#E53935", group: "Teaching" },
   { key: "availability", label: "Availability", icon: IconCalendarCheck, bg: "#18A999", group: "Teaching" },
   { key: "event", label: "Add event", icon: IconCalendarEvent, bg: "#7B61FF", group: "Teaching" },
+  { key: "proteach", label: "PRO Teach", icon: IconSchool, bg: "#7B61FF", group: "Teaching" },
   { key: "pupil", label: "Add pupil", icon: IconUserPlus, bg: "#18A999", group: "People" },
   { key: "enquiry", label: "Log enquiry", icon: IconMail, bg: "#7B61FF", group: "People" },
   { key: "call", label: "Log call", icon: IconPhone, bg: "#16A34A", group: "People" },
