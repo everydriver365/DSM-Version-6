@@ -196,9 +196,9 @@ function NewPupilPage() {
     <PageLayout
       style={{
         fontFamily: "Poppins, sans-serif",
-        paddingTop: "calc(env(safe-area-inset-top, 0px) + 16px)",
       }}
     >
+
       <div className="px-4 pt-6">
         <div className="flex items-center gap-3 mb-4">
           <button
